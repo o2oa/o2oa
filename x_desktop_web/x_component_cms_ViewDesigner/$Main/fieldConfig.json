@@ -1,0 +1,69 @@
+{
+  "formFileldType" : [
+    {
+      "name":"checkbox",
+      "type":"string"
+    },
+    {
+      "name":"radio",
+      "type":"string"
+    },
+    {
+      "name":"calendar",
+      "type":"datetime"
+    },
+    {
+      "name":"personfield",
+      "type":"string"
+    },
+    {
+      "name":"select",
+      "type":"string"
+    },
+    {
+      "name":"textfield",
+      "type":"string"
+    },
+    {
+      "name":"select",
+      "type":"string"
+    }
+  ],
+  "documentFields" : [
+    {
+      "name":"title",
+      "type":"string"
+    },
+//    {
+//      "name":"catagoryName",
+//      "type":"string"
+//    },
+    {
+      "name":"createTime",
+      "type":"datetime"
+    },
+    {
+      "name":"updateTime",
+      "type":"datetime"
+    },
+//    {
+//      "name":"id",
+//      "type":"string"
+//    },
+    {
+      "name":"creatorPerson",
+      "type":"string"
+    },
+    {
+      "name":"creatorDepartment",
+      "type":"string"
+    },
+    {
+      "name":"creatorCompany",
+      "type":"string"
+    }
+  ]
+  //  "documentFields" : [
+  //    "title", "catagoryId","catagoryName","catagoryAlias","createTime","updateTime","id","appId","form","formName","creatorPerson","creatorIdentity","creatorDepartment","creatorCompany","docStatus","attachmentList"
+  //    ]
+}

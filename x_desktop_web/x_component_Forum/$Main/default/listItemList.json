@@ -1,0 +1,56 @@
+{
+  "viewSetting": {
+    "html": "<div styles='documentListNode'></div>"
+  },
+  "documentSetting": {
+    "html": "<div styles='documentNode_list'></div>",
+    //"mouseoverStyles": "documentNode_list_over",
+    "action": "open",
+    "event" : "mouseover^^function( documentNode, ev ){ this.mouseoverDocument() }##mouseout^^function( documentNode, ev ){ this.mouseoutDocument() }"
+  },
+  "items": [
+    {
+      "name": "work",
+      "content": {
+        "html": "<div styles='documentItemNode_list'>"+
+        "<div styles='documentItemLeftNode'>"+
+        " <div styles='documentItemLeftIconNode'>"+
+        "   <img styles='documentItemLeftIcon' item='icon'>"+
+        " </div>"+
+        " <div styles='documentItemLeftContent'>"+
+        "   <div styles='documentItemTopDiv'><div styles='documentItemTitleNode' item='sectionName'></div><div styles='documentItemToday' item='totalToday'></div></div>"+
+        "   <div styles='documentItemLeftDiv'><div styles='documentItemLeftMemo' item='sectionDescription'></div></div>"+
+        "   <div styles='documentItemTopDiv'>"+
+        "     <div styles='documentItemTopInfor' lable='subject'></div><div styles='documentItemTopInfor'>：</div><div styles='documentItemTopInfor' item='subjectTotal'></div>"+
+        "     <div styles='documentItemTopInfor'>，</div><div styles='documentItemTopInfor' lable='replyCount'></div><div styles='documentItemTopInfor'>：</div><div styles='documentItemTopInfor' item='replyTotal'></div>"+
+        "     <div styles='documentItemTopInfor'>，</div><div styles='documentItemTopInfor' lable='moderatorNames'></div><div styles='documentItemTopInfor'>：</div><div styles='documentItemTopInfor' item='moderatorNames'></div>"+
+        "   </div>"+
+        " </div>"+
+        "</div>"+
+        "<div styles='documentItemListNode_list'>"+
+        "</div>"+
+        "<div styles='documentItemReplyListNode_list'>"+
+        "</div>"+
+        "</div>",
+        "items": {
+          "totalToday" : {
+            "value" : "function(d){ return this.lp.today + ':'+ ( d.subjectTotalToday + d.replyTotalToday) }"
+          },
+          "sectionName": {
+            "value" : "function(d){ return d.sectionName.length > 8 ? d.sectionName.substr(0,8)+'...' : d.sectionName }",
+            "event" : "click^^function( documentNode, ev ){ this.openSection() }"
+          },
+          "subjectTotal" : {},
+          "replyTotal" : {},
+//          "moderatorNames": {},
+          "sectionDescription": {},
+          "icon" : {
+            "attr" : "src^^function( d ){ if( d.icon ){ return 'data:image/png;base64,'+ d.icon }else{ return '/x_component_Forum/$Setting/default/sectionIcon/forum_icon.png' } }",
+            "event" : "click^^function(documentNode, ev){ this.openSection() }"
+          }
+        }
+      }
+    }
+  ]
+}
+

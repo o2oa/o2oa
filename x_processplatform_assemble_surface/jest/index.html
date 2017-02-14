@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>x_processplatform_assemble_surface</title>
+<script src="./common.js"></script>
+<script src="./jquery.js"></script>
+<script src="./application.js"></script>
+<script src="./applicationDict.js"></script>
+<script src="./attachment.js"></script>
+<script src="./data.js"></script>
+<script src="./process.js"></script>
+<script src="./read.js"></script>
+<script src="./readCompleted.js"></script>
+<script src="./task.js"></script>
+<script src="./taskCompleted.js"></script>
+<script src="./work.js"></script>
+<script src="./queryView.js"></script>
+<script src="./queryStat.js"></script>
+<script>
+    $(document).ready(function() {
+	task_list_init();
+    });
+</script>
+</head>
+
+<body style="margin: 0; font-size: 1.0em; font-family: Microsoft Yahei">
+	<div id="container" style="width: 1000px; margin: 0 auto;">
+		<div id="header"
+			style="background-color: #4682B4; clear: both; text-align: center;">
+			x_processplatform_assemble_surface</div>
+		<div id="menu"
+			style="background-color: #B0E0E6; height: 950px; width: 280px; float: left;">
+			<ul>
+				<li>Application
+					<ul>
+						<li><a onclick="application_listWithPerson()" href="#">ListWithPerson</a></li>
+						<li><a onclick="application_listWithPersonComplex()" href="#">ListWithPersonComplex</a></li>
+						<li><a onclick="application_get_init()" href="#">Get</a></li>
+					</ul>
+				</li>
+				<li>ApplicationDict
+					<ul>
+						<li><a onclick="applicationDict_listWithApplication_init()"
+							href="#">ListWithApplication</a></li>
+						<li><a onclick="applicationDict_get_init()" href="#">Get</a></li>
+						<li><a onclick="applicationDict_query()" href="#">Query</a></li>
+					</ul>
+				</li>
+				<li>Attachment
+					<ul>
+						<li><a onclick="attachment_listWithWork_init()" href="#">ListWithWork</a></li>
+						<li><a onclick="attachment_listWithWorkCompleted_init()"
+							href="#">ListWithWorkCompleted</a></li>
+						<li><a onclick="attachment_getWithWork_init()" href="#">GetWithWork</a></li>
+						<li><a onclick="attachment_getWithWorkCompleted_init()"
+							href="#">GetWithWorkCompleted</a></li>
+						<li><a onclick="attachment_download_init()" href="#">Download</a></li>
+						<li><a onclick="attachment_upload_init()" href="#">Upload</a></li>
+						<li><a onclick="attachment_update_init()" href="#">Update</a></li>
+					</ul>
+				</li>
+				<li>Data
+					<ul>
+						<li><a onclick="data_getWithWork_init()" href="#">GetWithWork</a></li>
+						<li><a onclick="data_getWithWorkCompleted_init()" href="#">GetWithWorkCompleted</a></li>
+					</ul>
+				</li>
+				<li>Process
+					<ul>
+						<li><a onclick="process_getComplex_init()" href="#">GetComplex</a></li>
+						<li><a onclick="process_getAllowRerouteTo_init()" href="#">GetAllowRerouteTo</a></li>
+						<li><a onclick="process_listWithApplication_init()" href="#">ListWithApplication</a></li>
+					</ul>
+				</li>
+				<li>Read
+					<ul>
+						<li><a onclick="read_list_init()" href="#">List</a></li>
+						<li><a onclick="read_listWithApplication_init()" href="#">ListWithApplication</a></li>
+						<li><a onclick="read_listWithProcess_init()" href="#">ListProcess</a></li>
+						<li><a onclick="read_listCountWithApplication()" href="#">ListCountWithApplication</a></li>
+						<li><a onclick="read_listCountWithProcess_init()" href="#">ListCountWithProcess</a></li>
+						<li><a onclick="read_countWithPerson_init()" href="#">CountWithPerson</a></li>
+						<li><a onclick="read_get_init()" href="#">Get</a></li>
+					</ul>
+				</li>
+				<li>ReadCompleted
+					<ul>
+						<li><a onclick="readCompleted_list_init()" href="#">List</a></li>
+						<li><a onclick="readCompleted_listWithApplication_init()"
+							href="#">ListWithApplication</a></li>
+						<li><a onclick="readCompleted_listWithProcess_init()"
+							href="#">ListProcess</a></li>
+						<li><a onclick="readCompleted_listCountWithApplication()"
+							href="#">ListCountWithApplication</a></li>
+						<li><a onclick="readCompleted_listCountWithProcess_init()"
+							href="#">ListCountWithProcess</a></li>
+						<li><a onclick="readCompleted_countWithPerson_init()"
+							href="#">CountWithPerson</a></li>
+						<li><a onclick="readCompleted_forward_init()" href="#">Forward</a></li>
+						<li><a onclick="readCompleted_listFilter_init()" href="#">ListFilter</a></li>
+					</ul>
+				</li>
+				<li>Task
+					<ul>
+						<li><a onclick="task_list_init()" href="#">List</a></li>
+						<li><a onclick="task_listWithApplication_init()" href="#">ListWithApplication</a></li>
+						<li><a onclick="task_listWithProcess_init()" href="#">ListProcess</a></li>
+						<li><a onclick="task_listCountWithApplication()" href="#">ListCountWithApplication</a></li>
+						<li><a onclick="task_listCountWithProcess_init()" href="#">ListCountWithProcess</a></li>
+						<li><a onclick="task_countWithPerson_init()" href="#">CountWithPerson</a></li>
+						<li><a onclick="task_get_init()" href="#">Get</a></li>
+					</ul>
+				</li>
+				<li>TaskCompleted
+					<ul>
+						<li><a onclick="taskCompleted_list_init()" href="#">List</a></li>
+						<li><a onclick="taskCompleted_listWithApplication_init()"
+							href="#">ListWithApplication</a></li>
+						<li><a onclick="taskCompleted_listWithProcess_init()"
+							href="#">ListProcess</a></li>
+						<li><a onclick="taskCompleted_listCountWithApplication()"
+							href="#">ListCountWithApplication</a></li>
+						<li><a onclick="taskCompleted_listCountWithProcess_init()"
+							href="#">ListCountWithProcess</a></li>
+						<li><a onclick="taskCompleted_countWithPerson_init()"
+							href="#">CountWithPerson</a></li>
+						<li><a onclick="taskCompleted_reference_init()" href="#">Reference</a></li>
+						<li><a onclick="taskCompleted_listFilter_init()" href="#">ListFilter</a></li>
+					</ul>
+				</li>
+				<li>Work
+					<ul>
+						<li><a onclick="work_count_init()" href="#">Count</a></li>
+						<li><a onclick="work_get_init()" href="#">Get</a></li>
+						<li><a onclick="work_create_init()" href="#">Create</a></li>
+						<li><a onclick="work_listCountWithApplication()" href="#">ListCountWithApplication</a></li>
+						<li><a onclick="work_listCountWithProcess_init()" href="#">ListCountWithProcess</a></li>
+						<li><a onclick="work_list_init()" href="#">List</a></li>
+						<li><a onclick="work_listWithApplication_init()" href="#">ListWithApplication</a></li>
+						<li><a onclick="work_listWithProcess_init()" href="#">ListWithProcess</a></li>
+						<li><a onclick="work_manage_countWithProcess_init()" href="#">ManageCountWithProcess</a></li>
+						<li><a onclick="work_manage_list_init()" href="#">ManageList</a></li>
+						<li><a onclick="work_manage_filter_init()()" href="#">ManageFilter</a></li>
+					</ul>
+				</li>
+				<li>QueryView
+					<ul>
+						<li><a onclick="queryView_init()" href="#">Query</a></li>
+					</ul>
+				</li>
+				<li>QueryStat
+					<ul>
+						<li><a onclick="queryStat_init()" href="#">Query</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div style="float: left; width: 720px;">
+			<div id="content" style="width: 100%;">&nbsp;</div>
+			<div id="result"
+				style="width: 100%; white-space: pre; font-size: 10px; word-break: break-all; word-wrap: break-word;">
+				&nbsp;</div>
+		</div>
+		<div id="footer"
+			style="background-color: #4682B4; clear: both; text-align: center; display: none">
+			Copyright © x</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>x_collaboration_assemble_websocket_jest</title>
+<script src="./jquery.js"></script>
+<script src="./common.js"></script>
+<script src="./ws.js"></script>
+<script src="./online.js"></script>
+<script src="./dialog.js"></script>
+<script src="./talk.js"></script>
+<script>
+    $(document).ready(function() {
+	ws_connect();
+    });
+</script>
+</head>
+
+<body style="margin: 0; font-size: 1.0em; font-family: Microsoft Yahei">
+	<div id="container" style="width: 1000px; margin: 0 auto;">
+		<div id="header"
+			style="background-color: #4682B4; clear: both; text-align: center;">
+			x_collaboration_assemble_websocket_jest</div>
+		<div id="menu"
+			style="background-color: #B0E0E6; height: 950px; width: 280px; float: left;">
+			<ul>
+				<li>WebSocket
+					<ul>
+						<li><a onclick="ws_connect()" href="#">Connect</a></li>
+					</ul>
+				</li>
+				<li>Online
+					<ul>
+						<li><a onclick="online_get_init()" href="#">Get</a></li>
+						<li><a onclick="online_list_init()" href="#">List</a></li>
+						<li><a onclick="online_listAll()" href="#">All</a></li>
+						<li><a onclick="online_listAllLocal()" href="#">All Local</a></li>
+					</ul>
+				</li>
+				<li>Dialog
+					<ul>
+						<li><a onclick="dialog_listTalk_init()" href="#">List
+								Talk</a></li>
+					</ul>
+				</li>
+				<li>Talk
+					<ul>
+						<li><a onclick="talk_list()" href="#">List</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div style="float: left; width: 720px;">
+			<div id="content" style="width: 100%;">&nbsp;</div>
+			<div id="result"
+				style="width: 100%; white-space: pre; font-size: 10px; word-break: break-all; word-wrap: break-word;">
+				&nbsp;</div>
+		</div>
+		<div id="footer"
+			style="background-color: #4682B4; clear: both; text-align: center; display: none">
+			Copyright © x</div>
+	</div>
+</body>
+</html>

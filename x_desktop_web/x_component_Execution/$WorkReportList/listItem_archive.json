@@ -1,0 +1,46 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='editTable'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='documentNode'></tr>",
+    "mouseoverStyles": "documentNode_over",
+    "action": "open"
+  },
+  "items": [
+    {
+      "name": "title",
+      "head": {
+        "html": "<th styles='normalThNode' lable='title'></th>",
+        "width": "40%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>" +
+        " <div item='title' styles='documentSubject'></div>" +
+        "</td>",
+        "items": {
+          "title": {"value" : "function(d){ return d.title.length > 50 ? d.title.substr(0,50)+'...' : d.title }"}
+        }
+      }
+    },
+    {
+      "name": "createTime",
+      "head": {
+        "html": "<th styles='normalThNode' lable='createTime'></th>",
+        "width": "20%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode'>"  +
+          "<div styles='itemBlock' item='createTime'></div>"+
+        "</td>",
+        "items": {
+          "createTime": { }
+        }
+      }
+    }
+  ]
+}
+

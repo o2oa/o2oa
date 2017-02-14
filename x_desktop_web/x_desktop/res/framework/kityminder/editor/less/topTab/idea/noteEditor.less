@@ -1,0 +1,168 @@
+.gfm-render {
+
+    font-size: 12px;
+    -webkit-user-select: text;
+    color: #333;
+    line-height: 1.8em;
+
+    blockquote, ul, table, p, pre, hr {
+        margin: 1em 0;
+        cursor: text;
+        &:first-child:last-child {
+            margin: 0;
+        }
+    }
+
+    img {
+        max-width: 100%;
+    }
+
+    a {
+        color: blue;
+        &:hover {
+            color: red;
+        }
+    }
+
+    blockquote {
+        display: block;
+        border-left: 4px solid #E4AD91;
+        color: darken(#E4AD91, 10%);
+        padding-left: 10px;
+        font-style: italic;
+        margin-left: 2em;
+    }
+
+    ul, ol {
+        padding-left: 3em;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        th, td {
+            border: 1px solid #666;
+            padding: 2px 4px;
+        }
+        th {
+            background: rgba(45, 141, 234, 0.2);
+        }
+        tr:nth-child(even) td {
+            background: rgba(45, 141, 234, 0.03);
+        }
+        margin: 1em 0;
+    }
+
+    em {
+        color: red;
+    }
+
+    del {
+        color: #999;
+    }
+
+    pre {
+        background: rgba(45, 141, 234, 0.1);
+        padding: 5px;
+        border-radius: 5px;
+        word-break: break-all;
+        word-wrap: break-word;
+    }
+
+    code {
+        background: rgba(45, 141, 234, 0.1);
+        /*         display: inline-block; */
+        padding: 0 5px;
+        border-radius: 3px;
+    }
+
+    pre code {
+        background: none;
+    }
+
+    hr {
+        border: none;
+        border-top: 1px solid #CCC;
+    }
+
+    .highlight {
+        background: yellow;
+        color: red;
+    }
+}
+
+.km-note {
+    width: 300px;
+    border-left: 1px solid #babfcd;
+    padding: 5px 10px;
+    background: white;
+    position: absolute;
+    top: 92px;
+    right: 0;
+    bottom: 0;
+    left: auto;
+    z-index: 3;
+
+    &.panel {
+        margin: 0;
+        padding: 0;
+
+        .panel-heading {
+
+            h3 {
+                display: inline-block;
+            }
+
+            .close-note-editor {
+                width: 15px;
+                height: 15px;
+                display: inline-block;
+                float: right;
+
+                &:hover {
+                    cursor: pointer;
+                }
+            }
+        }
+
+        .panel-body {
+            padding: 0;
+        }
+    }
+
+    .CodeMirror {
+        position: absolute;
+        top: 41px;
+        bottom: 0;
+        height: auto;
+        cursor: text;
+        font-size: 14px;
+        line-height: 1.3em;
+        font-family: consolas;
+    }
+}
+.km-note-tips {
+    color: #ccc;
+    padding: 3px 8px;
+}
+#previewer-content {
+    position: absolute;
+    background: #FFD;
+    padding: 5px 15px;
+    border-radius: 5px;
+    max-width: 400px;
+    max-height: 200px;
+    overflow: auto;
+    z-index: 10;
+    box-shadow: 0 0 15px rgba(0, 0, 0, .5);
+    word-break: break-all;
+    .gfm-render;
+}
+#previewer-content.ng-hide {
+    display: block!important;
+    left: -99999px!important;
+    top: -99999px!important;
+}
+.panel-body {
+    padding: 10px;
+}

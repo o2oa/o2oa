@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>x_processplatform_assemble_surface_data</title>
+<script src="./common.js"></script>
+<script src="./jquery.js"></script>
+<script src="./template.js"></script>
+<script>
+    $(document).ready(function() {
+    	
+		$("#main_content").load("main_entiity.html");
+		
+		$("#uuid").click(function(){ $("#main_content").load("uuid.html"); });
+		$("#dataitem").click(function(){ $("#main_content").load("entity_data.html"); });
+		$("#viewdata").click(function(){ $("#main_content").load("entity_viewdata.html"); });
+		
+		$("#entity_appinfo").click(function(){ $("#main_content").load("entity_appinfo.html"); });		
+		$("#entity_script").click(function(){ $("#main_content").load("entity_script.html"); });
+		$("#entity_catagoryinfo").click(function(){ $("#main_content").load("entity_catagoryinfo.html"); });
+		$("#entity_document").click(function(){ $("#main_content").load("entity_document.html"); });
+		$("#entity_appdict").click(function(){ $("#main_content").load("entity_appdict.html"); });
+		$("#entity_log").click(function(){ $("#main_content").load("entity_log.html"); });
+		$("#entity_fileinfo").click(function(){ $("#main_content").load("entity_fileinfo.html"); });
+		$("#permission_appcatagoryadmin").click(function(){ $("#main_content").load("permission_appcatagoryadmin.html"); });
+		$("#permission_appcatagorypermission").click(function(){ $("#main_content").load("permission_appcatagorypermission.html"); });
+		$("#search_searchfilter").click(function(){ $("#main_content").load("search_searchfilter.html"); });
+		
+		$("#entity_view").click(function(){ $("#main_content").load("entity_view.html"); });
+		$("#entity_viewcatagory").click(function(){ $("#main_content").load("entity_viewcatagory.html"); });
+		$("#entity_viewFieldConfig").click(function(){ $("#main_content").load("entity_viewfieldconfig.html"); });
+		$("#image_file").click(function(){ $("#main_content").load("image_file.html"); });
+		$("#image_url").click(function(){ $("#main_content").load("image_url.html"); });
+		
+		$("#attachment_query").click(function(){
+			$("#main_content").load("main_attachment.html");
+		});
+		
+		$("#appinfo_icon").click( function(){
+			$("#main_content").load("main_appicon.html");
+		});
+    });
+</script>
+</head>
+<body style="margin: 0; font-size: 1.0em; font-family: Microsoft Yahei">
+	<div id="container" style="width: 1000px; margin: 0 auto;">
+		<div id="header" style="background-color: #4682B4; clear: both; text-align: center;">
+			x_cms_assemble_control_jest for x_cms_assemble_control
+		</div>
+		<div id="menu" style="background-color: #B0E0E6; height: 950px; width: 280px; float: left;">
+			<ul>
+				<li>UUID
+					<ul>
+						<li><a id="uuid" href="javascript:void(0)">RandomUUID</a></li>
+					</ul>
+				</li>
+				<li>SEARCH
+					<ul>
+						<li><a id="search_searchfilter" href="javascript:void(0)">SearchFilter</a></li>
+					</ul>
+				</li>
+				<li>PERMISSION
+					<ul>
+						<li><a id="permission_appcatagoryadmin" href="javascript:void(0)">Admin</a></li>
+						<li><a id="permission_appcatagorypermission" href="javascript:void(0)">Permission</a></li>
+					</ul>
+				</li>
+				<li>DATA
+					<ul>
+						<li><a id="dataitem" href="javascript:void(0)">DataItem</a></li>
+						<li><a id="viewdata" href="javascript:void(0)">ViewData</a></li>
+					</ul>
+				</li>
+				<li>Entity
+					<ul>
+						<li><a id="entity_appinfo" href="javascript:void(0)">AppInfo</a></li>
+						<li><a id="entity_catagoryinfo" href="javascript:void(0)">CatagoryInfo</a></li>
+						<li><a id="entity_document" href="javascript:void(0)">Document</a></li>
+						<li><a id="entity_fileinfo" href="javascript:void(0)">FileInfo</a></li>
+						<li><a id="entity_appdict" href="javascript:void(0)">AppDict</a></li>
+						<li><a id="entity_script" href="javascript:void(0)">Script</a></li>
+						<li><a id="entity_log" href="javascript:void(0)">Log</a></li>
+						<li><a id="entity_view" href="javascript:void(0)">View</a></li>
+						<li><a id="entity_viewcatagory" href="javascript:void(0)">ViewCatagory</a></li>
+						<li><a id="entity_viewFieldConfig" href="javascript:void(0)">ViewFieldConfig</a></li>
+					</ul>
+				</li>
+				<li>Attachment
+					<ul>
+						<li><a id="attachment_query" href="javascript:void(0)">Query</a></li>
+					</ul>
+				</li>
+				<li>AppInfo Icon
+					<ul>
+						<li><a id="appinfo_icon" href="javascript:void(0)">From File</a></li>
+					</ul>
+				</li>
+				<li>Image
+					<ul>
+						<li><a id="image_file" href="javascript:void(0)">image_file</a></li>
+						<li><a id="image_url" href="javascript:void(0)">image_url</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div id="main_content" style="float: left; width: 720px;"></div>
+		<div id="footer" style="background-color: #4682B4; clear: both; text-align: center; display: none"> Copyright © x</div>
+	</div>
+</body>
+</html>

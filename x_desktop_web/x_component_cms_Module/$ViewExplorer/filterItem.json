@@ -1,0 +1,37 @@
+{
+  "key" : {
+    "categoryTitle": "标题",
+    "itemNameKey": "key",
+    "itemValueKey": "key",
+    "resultListKey" : "titleList",
+    "resultItemName": "title"
+  },
+  "appfileter_list":{
+    "categoryTitle": "栏目",
+    "itemNameKey": "appName",
+    "itemValueKey": "id",
+    "resultListKey" : "appIdList",
+    "resultItemName": "appId"
+  },
+  "catagoryfileter_list":{
+    "categoryTitle": "分类",
+    "itemNameKey": "cataogryName",
+    "itemValueKey": "catagoryId",
+    "resultListKey" : "catagoryIdList",
+    "resultItemName": "catagoryId"
+  },
+  "companyfileter_list":{
+    "categoryTitle": "创建公司",
+    "itemNameKey": "companyName",
+    "itemValueKey": "companyName",
+    "resultListKey" : "createCompanyNameList",
+    "resultItemName": "companyName"
+  },
+  "departmentfileter_list":{
+    "categoryTitle": "创建部门",
+    "itemNameKey": "departmentName",
+    "itemValueKey": "departmentName",
+    "resultListKey" : "createDepartmentNameList",
+    "resultItemName": "departmentName"
+  }
+}

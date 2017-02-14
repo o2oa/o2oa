@@ -1,0 +1,791 @@
+{
+	"agentList": [
+
+	],
+	"begin": {
+		"createTime": "2016-10-11 10:46:35",
+		"updateTime": "2016-10-31 10:01:15",
+		"id": "1a13b640-bf66-4f8a-ab63-d1312a5c26da",
+		"name": "开始",
+		"alias": "",
+		"description": "",
+		"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+		"position": "340,30",
+		"readIdentityList": [
+
+		],
+		"readDepartmentList": [
+
+		],
+		"readScript": "",
+		"readScriptText": "",
+		"reviewIdentityList": [
+
+		],
+		"reviewDepartmentList": [
+
+		],
+		"reviewScript": "",
+		"reviewScriptText": "",
+		"beforeArriveScript": "",
+		"afterArriveScript": "",
+		"beforeExecuteScript": "",
+		"afterExecuteScript": "",
+		"route": "4b808d29-9fa2-4199-9cc8-cd717fa31e9a",
+		"distributeFactor": 149,
+		"type": "begin"
+	},
+	"cancelList": [
+
+	],
+	"choiceList": [
+		{
+			"createTime": "2016-10-11 10:46:35",
+			"updateTime": "2016-10-31 10:01:16",
+			"id": "1dfca387-51af-415c-972e-dfecbb7b14b5",
+			"name": "选择",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"position": "340,180",
+			"extension": "",
+			"form": "",
+			"readIdentityList": [
+
+			],
+			"readDepartmentList": [
+
+			],
+			"readScript": "",
+			"readScriptText": "",
+			"reviewIdentityList": [
+
+			],
+			"reviewDepartmentList": [
+
+			],
+			"reviewScript": "",
+			"reviewScriptText": "",
+			"beforeArriveScript": "",
+			"beforeArriveScriptText": "",
+			"afterArriveScript": "",
+			"afterArriveScriptText": "",
+			"beforeExecuteScript": "",
+			"beforeExecuteScriptText": "",
+			"afterExecuteScript": "",
+			"afterExecuteScriptText": "",
+			"routeList": [
+				"15dd5f85-f9c8-435c-b6a7-5860b653c025",
+				"b4b63d0a-6fd3-4a67-b299-47d6848931b1"
+			],
+			"distributeFactor": 916,
+			"type": "choice"
+		}
+	],
+	"delayList": [
+
+	],
+	"embedList": [
+
+	],
+	"endList": [
+		{
+			"createTime": "2016-10-11 10:46:35",
+			"updateTime": "2016-10-31 10:01:18",
+			"id": "992647f6-2d10-4d96-8368-8dbd83fabe82",
+			"name": "结束",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"position": "340,650",
+			"readIdentityList": [
+
+			],
+			"readDepartmentList": [
+
+			],
+			"readScript": "",
+			"readScriptText": "",
+			"reviewIdentityList": [
+
+			],
+			"reviewDepartmentList": [
+
+			],
+			"reviewScript": "",
+			"reviewScriptText": "",
+			"beforeArriveScript": "",
+			"afterArriveScript": "",
+			"beforeExecuteScript": "",
+			"afterExecuteScript": "",
+			"distributeFactor": 701,
+			"type": "end",
+			"routeList": [
+
+			]
+		}
+	],
+	"invokeList": [
+
+	],
+	"manualList": [
+		{
+			"createTime": "2016-10-11 10:46:35",
+			"updateTime": "2016-10-31 10:01:24",
+			"id": "cf55b1b8-3e93-4109-9b09-bb7c95821052",
+			"name": "分管高管审批",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"position": "340,490",
+			"extension": "",
+			"form": "414ddf8b-fb26-4a34-a389-119c31cd1934",
+			"readIdentityList": [
+
+			],
+			"readDepartmentList": [
+
+			],
+			"readScript": "",
+			"readScriptText": "",
+			"reviewIdentityList": [
+
+			],
+			"reviewDepartmentList": [
+
+			],
+			"reviewScript": "",
+			"reviewScriptText": "",
+			"beforeArriveScript": "",
+			"beforeArriveScriptText": "",
+			"afterArriveScript": "",
+			"afterArriveScriptText": "",
+			"beforeExecuteScript": "",
+			"beforeExecuteScriptText": "",
+			"afterExecuteScript": "",
+			"afterExecuteScriptText": "",
+			"routeList": [
+				"1b01afda-f53c-4d44-bdf7-849deb73c8c9",
+				"acca7a87-2942-431b-a572-76073dc1a5ad"
+			],
+			"beforeArrivedExecuteScript": "",
+			"beforeArrivedExecuteScriptText": "",
+			"afterArrivedExecuteScript": "",
+			"afterArrivedExecuteScriptText": "",
+			"taskIdentityList": [
+
+			],
+			"taskDepartmentList": [
+
+			],
+			"taskScript": "",
+			"taskScriptText": "return this.data.fggg;",
+			"taskExpireType": "never",
+			"manualMode": "single",
+			"allowReset": true,
+			"allowRetract": true,
+			"allowReroute": true,
+			"allowRerouteTo": true,
+			"allowDeleteWork": false,
+			"allowRapid": false,
+			"group": "",
+			"resetRange": "department",
+			"resetCount": 0,
+			"distributeFactor": 699,
+			"type": "manual"
+		},
+		{
+			"createTime": "2016-10-11 10:46:35",
+			"updateTime": "2016-10-31 10:01:24",
+			"id": "aab7ae96-af40-41f9-8cb2-2d95cffea611",
+			"name": "申请人发起",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"position": "340,110",
+			"extension": "",
+			"form": "414ddf8b-fb26-4a34-a389-119c31cd1934",
+			"readIdentityList": [
+
+			],
+			"readDepartmentList": [
+
+			],
+			"readScript": "",
+			"readScriptText": "",
+			"reviewIdentityList": [
+
+			],
+			"reviewDepartmentList": [
+
+			],
+			"reviewScript": "",
+			"reviewScriptText": "",
+			"beforeArriveScript": "",
+			"beforeArriveScriptText": "",
+			"afterArriveScript": "",
+			"afterArriveScriptText": "",
+			"beforeExecuteScript": "",
+			"beforeExecuteScriptText": "",
+			"afterExecuteScript": "",
+			"afterExecuteScriptText": "",
+			"routeList": [
+				"4fc9706e-0732-44c5-a7f2-e5c3e5fa6620"
+			],
+			"beforeArrivedExecuteScript": "",
+			"beforeArrivedExecuteScriptText": "",
+			"afterArrivedExecuteScript": "",
+			"afterArrivedExecuteScriptText": "",
+			"taskIdentityList": [
+
+			],
+			"taskDepartmentList": [
+
+			],
+			"taskScript": "",
+			"taskScriptText": "",
+			"taskExpireType": "never",
+			"manualMode": "single",
+			"allowReset": true,
+			"allowRetract": true,
+			"allowReroute": true,
+			"allowRerouteTo": true,
+			"allowDeleteWork": true,
+			"allowRapid": false,
+			"group": "",
+			"resetRange": "department",
+			"resetCount": 0,
+			"distributeFactor": 947,
+			"type": "manual"
+		},
+		{
+			"createTime": "2016-10-11 10:46:35",
+			"updateTime": "2016-10-31 10:01:24",
+			"id": "573217d1-423b-4bfa-9783-c8f7bba5f78a",
+			"name": "部门经理",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"position": "340,250",
+			"extension": "",
+			"form": "414ddf8b-fb26-4a34-a389-119c31cd1934",
+			"readIdentityList": [
+
+			],
+			"readDepartmentList": [
+
+			],
+			"readScript": "",
+			"readScriptText": "",
+			"reviewIdentityList": [
+
+			],
+			"reviewDepartmentList": [
+
+			],
+			"reviewScript": "",
+			"reviewScriptText": "",
+			"beforeArriveScript": "",
+			"beforeArriveScriptText": "",
+			"afterArriveScript": "",
+			"afterArriveScriptText": "",
+			"beforeExecuteScript": "",
+			"beforeExecuteScriptText": "",
+			"afterExecuteScript": "",
+			"afterExecuteScriptText": "",
+			"routeList": [
+				"66a37f29-24e8-488c-bd0e-766fc0b3eed5",
+				"fa9992c4-4df7-4ada-8398-5eb4566084e2"
+			],
+			"beforeArrivedExecuteScript": "",
+			"beforeArrivedExecuteScriptText": "",
+			"afterArrivedExecuteScript": "",
+			"afterArrivedExecuteScriptText": "",
+			"taskIdentityList": [
+
+			],
+			"taskDepartmentList": [
+
+			],
+			"taskScript": "",
+			"taskScriptText": "return this.data.bmjl;",
+			"taskExpireType": "never",
+			"manualMode": "single",
+			"allowReset": true,
+			"allowRetract": true,
+			"allowReroute": true,
+			"allowRerouteTo": true,
+			"allowDeleteWork": false,
+			"allowRapid": false,
+			"group": "",
+			"resetRange": "department",
+			"resetCount": 0,
+			"distributeFactor": 813,
+			"type": "manual"
+		},
+		{
+			"createTime": "2016-10-11 10:46:35",
+			"updateTime": "2016-10-31 10:01:24",
+			"id": "202ce31e-ff81-44cf-bb48-498fe76872cb",
+			"name": "总经理审批",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"position": "340,570",
+			"extension": "",
+			"form": "414ddf8b-fb26-4a34-a389-119c31cd1934",
+			"readIdentityList": [
+
+			],
+			"readDepartmentList": [
+
+			],
+			"readScript": "",
+			"readScriptText": "",
+			"reviewIdentityList": [
+
+			],
+			"reviewDepartmentList": [
+
+			],
+			"reviewScript": "",
+			"reviewScriptText": "",
+			"beforeArriveScript": "",
+			"beforeArriveScriptText": "",
+			"afterArriveScript": "",
+			"afterArriveScriptText": "",
+			"beforeExecuteScript": "",
+			"beforeExecuteScriptText": "",
+			"afterExecuteScript": "",
+			"afterExecuteScriptText": "",
+			"routeList": [
+				"9acc487d-b398-459b-95d3-74b7a531baf1",
+				"7f8bb977-6625-4250-a94b-48f1ec72cdb0"
+			],
+			"beforeArrivedExecuteScript": "",
+			"beforeArrivedExecuteScriptText": "",
+			"afterArrivedExecuteScript": "",
+			"afterArrivedExecuteScriptText": "",
+			"taskIdentityList": [
+
+			],
+			"taskDepartmentList": [
+
+			],
+			"taskScript": "",
+			"taskScriptText": "return this.data.zjl;",
+			"taskExpireType": "never",
+			"manualMode": "single",
+			"allowReset": true,
+			"allowRetract": true,
+			"allowReroute": true,
+			"allowRerouteTo": true,
+			"allowDeleteWork": false,
+			"allowRapid": false,
+			"group": "",
+			"resetRange": "department",
+			"resetCount": 0,
+			"distributeFactor": 694,
+			"type": "manual"
+		},
+		{
+			"createTime": "2016-10-11 10:46:35",
+			"updateTime": "2016-10-31 10:01:24",
+			"id": "06279ebd-013a-4423-ae74-a4c6f02e6e4b",
+			"name": "财务副总监审批",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"position": "340,330",
+			"extension": "",
+			"form": "414ddf8b-fb26-4a34-a389-119c31cd1934",
+			"readIdentityList": [
+
+			],
+			"readDepartmentList": [
+
+			],
+			"readScript": "",
+			"readScriptText": "",
+			"reviewIdentityList": [
+
+			],
+			"reviewDepartmentList": [
+
+			],
+			"reviewScript": "",
+			"reviewScriptText": "",
+			"beforeArriveScript": "",
+			"beforeArriveScriptText": "",
+			"afterArriveScript": "",
+			"afterArriveScriptText": "",
+			"beforeExecuteScript": "",
+			"beforeExecuteScriptText": "",
+			"afterExecuteScript": "",
+			"afterExecuteScriptText": "",
+			"routeList": [
+				"65725393-9005-43f5-b963-7052cad5ca23",
+				"245c6732-3136-4bdd-96f0-bfee41f43448"
+			],
+			"beforeArrivedExecuteScript": "",
+			"beforeArrivedExecuteScriptText": "",
+			"afterArrivedExecuteScript": "",
+			"afterArrivedExecuteScriptText": "",
+			"taskIdentityList": [
+
+			],
+			"taskDepartmentList": [
+
+			],
+			"taskScript": "",
+			"taskScriptText": "return this.data.cwfzj;",
+			"taskExpireType": "never",
+			"manualMode": "single",
+			"allowReset": true,
+			"allowRetract": true,
+			"allowReroute": true,
+			"allowRerouteTo": true,
+			"allowDeleteWork": false,
+			"allowRapid": false,
+			"group": "",
+			"resetRange": "department",
+			"resetCount": 0,
+			"distributeFactor": 608,
+			"type": "manual"
+		},
+		{
+			"createTime": "2016-10-11 10:46:35",
+			"updateTime": "2016-10-31 10:01:24",
+			"id": "2acf5d39-17ca-4fcf-9bac-260625bdfca2",
+			"name": "财务总监审批",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"position": "340,410",
+			"extension": "",
+			"form": "414ddf8b-fb26-4a34-a389-119c31cd1934",
+			"readIdentityList": [
+
+			],
+			"readDepartmentList": [
+
+			],
+			"readScript": "",
+			"readScriptText": "",
+			"reviewIdentityList": [
+
+			],
+			"reviewDepartmentList": [
+
+			],
+			"reviewScript": "",
+			"reviewScriptText": "",
+			"beforeArriveScript": "",
+			"beforeArriveScriptText": "",
+			"afterArriveScript": "",
+			"afterArriveScriptText": "",
+			"beforeExecuteScript": "",
+			"beforeExecuteScriptText": "",
+			"afterExecuteScript": "",
+			"afterExecuteScriptText": "",
+			"routeList": [
+				"1e6f2345-696c-45cb-9e24-9c8133e516b4",
+				"4672500a-e254-47a8-a5a8-22aa957316c3"
+			],
+			"beforeArrivedExecuteScript": "",
+			"beforeArrivedExecuteScriptText": "",
+			"afterArrivedExecuteScript": "",
+			"afterArrivedExecuteScriptText": "",
+			"taskIdentityList": [
+
+			],
+			"taskDepartmentList": [
+
+			],
+			"taskScript": "",
+			"taskScriptText": "return this.data.cwzj;",
+			"taskExpireType": "never",
+			"manualMode": "single",
+			"allowReset": true,
+			"allowRetract": true,
+			"allowReroute": true,
+			"allowRerouteTo": true,
+			"allowDeleteWork": false,
+			"allowRapid": false,
+			"group": "",
+			"resetRange": "department",
+			"resetCount": 0,
+			"distributeFactor": 466,
+			"type": "manual"
+		}
+	],
+	"mergeList": [
+
+	],
+	"messageList": [
+
+	],
+	"routeList": [
+		{
+			"createTime": "2016-10-11 10:46:35",
+			"updateTime": "2016-10-31 10:01:32",
+			"id": "15dd5f85-f9c8-435c-b6a7-5860b653c025",
+			"name": "部门经理",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"activityType": "manual",
+			"activity": "06279ebd-013a-4423-ae74-a4c6f02e6e4b",
+			"track": "470,179.58453548759323 470,329.999999999999",
+			"position": "",
+			"scriptText": "return this.workContext.getWork().creatorIdentity==this.data.bmjl[0];",
+			"distributeFactor": 595
+		},
+		{
+			"createTime": "2016-10-11 10:46:35",
+			"updateTime": "2016-10-31 10:01:32",
+			"id": "4b808d29-9fa2-4199-9cc8-cd717fa31e9a",
+			"name": "开始",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"activityType": "manual",
+			"activity": "aab7ae96-af40-41f9-8cb2-2d95cffea611",
+			"track": "",
+			"position": "",
+			"scriptText": "return true;",
+			"distributeFactor": 71
+		},
+		{
+			"createTime": "2016-10-11 10:49:34",
+			"updateTime": "2016-10-31 10:01:32",
+			"id": "1b01afda-f53c-4d44-bdf7-849deb73c8c9",
+			"name": "同意",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"activityType": "manual",
+			"activity": "202ce31e-ff81-44cf-bb48-498fe76872cb",
+			"track": "",
+			"position": "",
+			"scriptText": "return true;",
+			"distributeFactor": 76
+		},
+		{
+			"createTime": "2016-10-11 10:49:34",
+			"updateTime": "2016-10-31 10:01:32",
+			"id": "245c6732-3136-4bdd-96f0-bfee41f43448",
+			"name": "退回",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"activityType": "manual",
+			"activity": "aab7ae96-af40-41f9-8cb2-2d95cffea611",
+			"track": "200,329.17636857038553 200,110.00008073448538",
+			"position": "",
+			"scriptText": "return true;",
+			"distributeFactor": 84
+		},
+		{
+			"createTime": "2016-10-11 10:46:35",
+			"updateTime": "2016-10-31 10:01:32",
+			"id": "66a37f29-24e8-488c-bd0e-766fc0b3eed5",
+			"name": "同意",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"activityType": "manual",
+			"activity": "06279ebd-013a-4423-ae74-a4c6f02e6e4b",
+			"track": "",
+			"position": "",
+			"scriptText": "return true;",
+			"distributeFactor": 126
+		},
+		{
+			"createTime": "2016-10-11 10:49:34",
+			"updateTime": "2016-10-31 10:01:32",
+			"id": "acca7a87-2942-431b-a572-76073dc1a5ad",
+			"name": "退回",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"activityType": "manual",
+			"activity": "2acf5d39-17ca-4fcf-9bac-260625bdfca2",
+			"track": "200,489.7489652549899 200,409.475449786547",
+			"position": "",
+			"scriptText": "return true;",
+			"distributeFactor": 292
+		},
+		{
+			"createTime": "2016-10-11 10:46:35",
+			"updateTime": "2016-10-31 10:01:32",
+			"id": "b4b63d0a-6fd3-4a67-b299-47d6848931b1",
+			"name": "普通员工",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"activityType": "manual",
+			"activity": "573217d1-423b-4bfa-9783-c8f7bba5f78a",
+			"track": "",
+			"position": "",
+			"scriptText": "return this.workContext.getWork().creatorIdentity!=this.data.bmjl[0];",
+			"distributeFactor": 990
+		},
+		{
+			"createTime": "2016-10-11 10:49:34",
+			"updateTime": "2016-10-31 10:01:32",
+			"id": "7f8bb977-6625-4250-a94b-48f1ec72cdb0",
+			"name": "退回",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"activityType": "manual",
+			"activity": "cf55b1b8-3e93-4109-9b09-bb7c95821052",
+			"track": "200,569.6845751509796 200,489.993698155679",
+			"position": "",
+			"scriptText": "return true;",
+			"distributeFactor": 661
+		},
+		{
+			"createTime": "2016-10-11 10:49:34",
+			"updateTime": "2016-10-31 10:01:32",
+			"id": "9acc487d-b398-459b-95d3-74b7a531baf1",
+			"name": "同意",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"activityType": "end",
+			"activity": "992647f6-2d10-4d96-8368-8dbd83fabe82",
+			"track": "",
+			"position": "",
+			"scriptText": "return true;",
+			"distributeFactor": 349
+		},
+		{
+			"createTime": "2016-10-11 10:49:34",
+			"updateTime": "2016-10-31 10:01:32",
+			"id": "fa9992c4-4df7-4ada-8398-5eb4566084e2",
+			"name": "退回",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"activityType": "manual",
+			"activity": "aab7ae96-af40-41f9-8cb2-2d95cffea611",
+			"track": "200,249.9998290130169 200,110.00008073448538",
+			"position": "",
+			"scriptText": "return true;",
+			"distributeFactor": 722
+		},
+		{
+			"createTime": "2016-10-11 10:49:34",
+			"updateTime": "2016-10-31 10:01:32",
+			"id": "65725393-9005-43f5-b963-7052cad5ca23",
+			"name": "同意",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"activityType": "manual",
+			"activity": "2acf5d39-17ca-4fcf-9bac-260625bdfca2",
+			"track": "",
+			"position": "",
+			"scriptText": "return true;",
+			"distributeFactor": 979
+		},
+		{
+			"createTime": "2016-10-11 10:49:34",
+			"updateTime": "2016-10-31 10:01:32",
+			"id": "1e6f2345-696c-45cb-9e24-9c8133e516b4",
+			"name": "同意",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"activityType": "manual",
+			"activity": "cf55b1b8-3e93-4109-9b09-bb7c95821052",
+			"track": "",
+			"position": "",
+			"scriptText": "return true;",
+			"distributeFactor": 323
+		},
+		{
+			"createTime": "2016-10-11 10:46:35",
+			"updateTime": "2016-10-31 10:01:32",
+			"id": "4fc9706e-0732-44c5-a7f2-e5c3e5fa6620",
+			"name": "请审核",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"activityType": "choice",
+			"activity": "1dfca387-51af-415c-972e-dfecbb7b14b5",
+			"track": "",
+			"position": "",
+			"scriptText": "return true;",
+			"distributeFactor": 559
+		},
+		{
+			"createTime": "2016-10-11 10:49:34",
+			"updateTime": "2016-10-31 10:01:32",
+			"id": "4672500a-e254-47a8-a5a8-22aa957316c3",
+			"name": "退回",
+			"alias": "",
+			"description": "",
+			"process": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+			"activityType": "manual",
+			"activity": "06279ebd-013a-4423-ae74-a4c6f02e6e4b",
+			"track": "200,411.09607507288473 200,329.9999999999994",
+			"position": "",
+			"scriptText": "return true;",
+			"distributeFactor": 520
+		}
+	],
+	"parallelList": [
+
+	],
+	"serviceList": [
+
+	],
+	"splitList": [
+
+	],
+	"createTime": "2016-10-11 10:46:35",
+	"updateTime": "2016-10-31 10:01:31",
+	"id": "c54d382f-a267-4fbe-985d-0afe1e405a9d",
+	"name": "市场活动申请审批流程",
+	"alias": "",
+	"description": "",
+	"creatorPerson": "蔡艳红",
+	"lastUpdatePerson": "蔡艳红",
+	"lastUpdateTime": "2016-10-31 09:33:17",
+	"application": "18c5c98b-ab0f-4f86-a255-072988a168d6",
+	"controllerList": [
+
+	],
+	"reviewIdentityList": [
+
+	],
+	"beforeBeginScript": "",
+	"beforeBeginScriptText": "",
+	"afterBeginScript": "",
+	"afterBeginScriptText": "",
+	"beforeEndScript": "",
+	"beforeEndScriptText": "",
+	"afterEndScript": "",
+	"afterEndScriptText": "",
+	"startableIdentityList": [
+
+	],
+	"startableDepartmentList": [
+
+	],
+	"startableCompanyList": [
+
+	],
+	"serialTexture": "[{"key":"text","value":"SCHD","script":"return serial.text(\"SCHD\")"},{"key":"year","value":"created","script":"return serial.createYear(\"yyyy\")"},{"key":"month","value":"created","script":"return serial.createMonth(\"MM\")"},{"key":"day","value":"created","script":"return serial.createDay(\"dd\")"},{"key":"number","value":{"lng":"6","by":[1]},"script":"return serial.nextSerialNumber([1], 6)"}]",
+	"serialActivity": "aab7ae96-af40-41f9-8cb2-2d95cffea611",
+	"expireType": "never",
+	"expireDay": 7,
+	"expireHour": 0,
+	"expireWorkTime": true,
+	"distributeFactor": 253,
+	"isNewProcess": false,
+	"applicationName": "信泰-财务"
+}

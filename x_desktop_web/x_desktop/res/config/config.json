@@ -1,0 +1,11 @@
+{
+  //"center": "xc01.zoneland.net:30080"
+  //"center": "devewp.vsettan.com.cn:30080"
+  //"center": "xc01.vsettan.com.cn:30080",
+  //"center": "xc01dev.ray.local:30080",
+  //"mail": "mail.vsettan.com.cn",
+  "center": {
+    "host": "",
+    "port": "20030"
+  }
+}

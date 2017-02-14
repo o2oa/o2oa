@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>x_attendance_assemble_control</title>
+<script src="./common.js"></script>
+<script src="./jquery.js"></script>
+<script>
+    $(document).ready(function() {
+    	
+		$("#main_content").load("uuid.html");
+		
+		$("#uuid").click(function(){ $("#main_content").load("uuid.html"); });
+		
+		$("#entity_AttendanceAdmin").click(function(){ $("#main_content").load("entity_AttendanceAdmin.html"); });		
+		$("#entity_AttendanceDetail").click(function(){ $("#main_content").load("entity_AttendanceDetail.html"); });
+		$("#entity_AttendanceAppeal").click(function(){ $("#main_content").load("entity_AttendanceAppeal.html"); });
+		$("#entity_AttendanceImportFileInfo").click(function(){ $("#main_content").load("entity_AttendanceImportFileInfo.html"); });
+		$("#entity_AttendanceScheduleSetting").click(function(){ $("#main_content").load("entity_AttendanceScheduleSetting.html"); });
+		$("#entity_AttendanceSetting").click(function(){ $("#main_content").load("entity_AttendanceSetting.html"); });
+		$("#entity_AttendanceWorkDayConfig").click(function(){ $("#main_content").load("entity_AttendanceWorkDayConfig.html"); });
+		$("#entity_AttendanceSelfHoliday").click(function(){ $("#main_content").load("entity_AttendanceSelfHoliday.html"); });
+		
+		$("#entity_AttendanceDetailFileImport").click(function(){ $("#main_content").load("entity_AttendanceDetailFileImport.html"); });
+		
+		$("#do_statistic").click(function(){ $("#main_content").load("do_statistic.html"); });
+		$("#showStatistic").click(function(){ $("#main_content").load("showStatistic.html"); });
+		
+		
+		$("#test").click(function(){ $("#main_content").load("test.html"); });
+		
+    });
+</script>
+</head>
+<body style="margin: 0; font-size: 1.0em; font-family: Microsoft Yahei">
+	<div id="container" style="width: 1000px; margin: 0 auto;">
+		<div id="header" style="background-color: #4682B4; clear: both; text-align: center;">
+			x_attendance_assemble_control_jest for x_attendance_assemble_control
+		</div>
+		<div id="menu" style="background-color: #B0E0E6; height: 950px; width: 280px; float: left;">
+			<ul>
+				<li>UUID
+					<ul>
+						<li><a id="uuid" href="javascript:void(0)">RandomUUID</a></li>
+					</ul>
+				</li>
+				<li>通用测试页
+					<ul>
+						<li><a id="test" href="javascript:void(0)">Test</a></li>
+					</ul>
+				</li>
+				<li>Entity
+					<ul>
+						<li><a id="entity_AttendanceAdmin" href="javascript:void(0)">Admin</a></li>
+						<li><a id="entity_AttendanceDetail" href="javascript:void(0)">Detail</a></li>
+						<li><a id="entity_AttendanceAppeal" href="javascript:void(0)">Appeal</a></li>
+						<li><a id="entity_AttendanceScheduleSetting" href="javascript:void(0)">ScheduleSetting</a></li>
+						<li><a id="entity_AttendanceSetting" href="javascript:void(0)">Setting</a></li>
+						<li><a id="entity_AttendanceWorkDayConfig" href="javascript:void(0)">WorkDayConfig</a></li>
+						<li><a id="entity_AttendanceSelfHoliday" href="javascript:void(0)">SelfHoliday</a></li>
+					</ul>
+				</li>
+				<li>Import
+					<ul>
+						<li><a id="entity_AttendanceImportFileInfo" href="javascript:void(0)">FileUpload</a></li>
+						<li><a id="entity_AttendanceDetailFileImport" href="javascript:void(0)">DetailImport</a></li>					
+					</ul>
+				</li>
+				<li>Statistic
+					<ul>
+						<li><a id="do_statistic" href="javascript:void(0)">doStatistic</a></li>	
+						<li><a id="showStatistic" href="javascript:void(0)">ShowStatistic</a></li>	
+					</ul>
+				</li>
+				<li>ShowStatistic
+					<ul>
+						<li><a id="statistic_Person" href="javascript:void(0)">Person</a></li>
+						<li><a id="statistic_Department" href="javascript:void(0)">Department</a></li>
+						<li><a id="statistic_Company" href="javascript:void(0)">Company</a></li>			
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div id="main_content" style="float: left; width: 720px;"></div>
+		<div id="footer" style="background-color: #4682B4; clear: both; text-align: center; display: none"> Copyright © x</div>
+	</div>
+</body>
+</html>

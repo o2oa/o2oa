@@ -1,0 +1,162 @@
+{
+  "rightContentNode": {
+    "height": "100%",
+    "margin-left": "200px",
+    "overflow": "hidden",
+    "opacity": 1
+  },
+  "defaultMenuNode": {
+    "overflow": "hidden",
+    "box-shadow": "0px 0px 10px #333",
+    "border": "5px solid #999",
+    "position": "absolute",
+    "height": "130px",
+    "margin": "auto",
+    "background-color": "#EEE"
+  },
+  "defaultMenuNaviNode": {
+    "width": "198px",
+    "height": "30px",
+    "float": "left",
+    "margin": "0px",
+    "cursor": "pointer",
+    "background-color": "#EEE",
+    "border": "1px solid #EEE"
+  },
+  "defaultMenuNaviNode_over": {
+    "background-color": "#F8F8F8",
+    "border-top": "1px solid #BBB",
+    "border-bottom": "1px solid #BBB"
+  },
+  "defaultMenuNaviNode_current": {
+    "background-color": "#FFF",
+    "border-top": "1px solid #CCC",
+    "border-bottom": "1px solid #CCC"
+  },
+  "defaultMenuNaviNode_down": {
+    "border-top": "1px solid #CCC",
+    "border-left": "1px solid #CCC",
+    "border-right": "1px solid #FFF",
+    "border-bottom": "1px solid #FFF",
+    "background-color": "#EEE"
+  },
+  "defaultMenuIconNode": {
+    "width": "35px",
+    "height": "30px",
+    "float" :"left",
+    "background-repeat": "no-repeat",
+    "background-position": "8px center"
+  },
+  "defaultMenuTextNode": {
+    "float":"left",
+    "text-align": "left",
+    "line-height" :"30px",
+    "font-family": "微软雅黑",
+    "font-size": "14px"
+  },
+  "normalDefaultMenuNode": {
+    "width": "202px",
+    "height": "100%",
+    "top": "0",
+    "left": "0",
+    "overflow": "hidden",
+    "border": "0px",
+    "border-radius": "0px",
+    "float": "left",
+    "position": "static",
+    "overflow": "hidden",
+    "margin-right" : "-7px"
+  },
+
+  "columnMenuNaviNode": {
+    "width": "198px",
+    "height": "35px",
+    "float": "left",
+    "margin": "0px",
+    "cursor": "pointer",
+    "background-color": "#EEE",
+    "border-top": "1px solid #EEE",
+    "border-bottom": "1px solid #EEE",
+    "font-weight" : "bold"
+  },
+  "columnMenuNaviNode_over": {
+    "background-color": "#F8F8F8",
+    "border-top": "1px solid #BBB",
+    "border-bottom": "1px solid #BBB"
+  },
+  "columnMenuNaviNode_current": {
+    "background-color": "#FFF",
+    "border-top": "1px solid #CCC",
+    "border-bottom": "1px solid #CCC"
+  },
+  "columnMenuNaviNode_down": {
+    "border-top": "1px solid #CCC",
+    "border-left": "1px solid #CCC",
+    "border-right": "1px solid #FFF",
+    "border-bottom": "1px solid #FFF",
+    "background-color": "#EEE"
+  },
+  "columnMenuIconNode": {
+    "width": "35px",
+    "height": "35px",
+    "float" :"left",
+    "background-repeat": "no-repeat",
+    "background-position": "5px center"
+  },
+  "columnMenuImgNode": {
+    "width": "24px",
+    "height": "24px",
+    "float" :"left",
+    "padding-top" : "5px",
+    "padding-left" : "5px"
+  },
+  "columnMenuTextNode": {
+    "float":"left",
+    "text-align": "left",
+    "line-height" :"35px",
+    "font-family": "微软雅黑",
+    "font-size": "14px"
+  },
+
+
+  "categoryMenuNaviNode": {
+    "width": "198px",
+    "height": "30px",
+    "float": "left",
+    "margin": "0px",
+    "cursor": "pointer",
+    "background-color": "#EEE",
+    "border": "1px solid #EEE"
+  },
+  "categoryMenuNaviNode_over": {
+    "background-color": "#F8F8F8",
+    "border-top": "1px solid #BBB",
+    "border-bottom": "1px solid #BBB"
+  },
+  "categoryMenuNaviNode_current": {
+    "background-color": "#FFF",
+    "border-top": "1px solid #CCC",
+    "border-bottom": "1px solid #CCC"
+  },
+  "categoryMenuNaviNode_down": {
+    "border-top": "1px solid #CCC",
+    "border-left": "1px solid #CCC",
+    "border-right": "1px solid #FFF",
+    "border-bottom": "1px solid #FFF",
+    "background-color": "#EEE"
+  },
+  "categoryMenuIconNode": {
+    "width": "35px",
+    "height": "30px",
+    "float" :"left",
+    "background-repeat": "no-repeat",
+    "background-position": "5px center"
+  },
+  "categoryMenuTextNode": {
+    "float":"left",
+    "text-align": "left",
+    "line-height" :"30px",
+    "font-family": "微软雅黑",
+    "font-size": "14px"
+  }
+}

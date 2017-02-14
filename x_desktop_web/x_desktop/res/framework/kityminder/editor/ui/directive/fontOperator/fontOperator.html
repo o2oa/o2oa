@@ -1,0 +1,51 @@
+<div class="font-operator">
+    <div class="dropdown font-family-list" dropdown>
+        <div class="dropdown-toggle current-font-item" dropdown-toggle ng-disabled="minder.queryCommandState('fontfamily') === -1">
+            <a href class="current-font-family"  title="{{ 'fontfamily' | lang: 'ui' }}">{{ getFontfamilyName(minder.queryCommandValue('fontfamily')) || '字体' }}</a>
+            <span class="caret"></span>
+        </div>
+        <ul class="dropdown-menu font-list">
+            <li ng-repeat="f in fontFamilyList" class="font-item-wrap">
+                <a ng-click="minder.execCommand('fontfamily', f.val)" class="font-item" ng-class="{ 'font-item-selected' : f == minder.queryCommandValue('fontfamily') }" ng-style="{'font-family': f.val }">{{ f.name }}</a>
+            </li>
+        </ul>
+    </div>
+    <div class="dropdown font-size-list" dropdown>
+        <div class="dropdown-toggle current-font-item" dropdown-toggle ng-disabled="minder.queryCommandState('fontsize') === -1">
+            <a href class="current-font-size"  title="{{ 'fontsize' | lang: 'ui' }}">{{ minder.queryCommandValue('fontsize') || '字号' }}</a>
+            <span class="caret"></span>
+        </div>
+        <ul class="dropdown-menu font-list">
+            <li ng-repeat="f in fontSizeList" class="font-item-wrap">
+                <a ng-click="minder.execCommand('fontsize', f)" class="font-item" ng-class="{ 'font-item-selected' : f == minder.queryCommandValue('fontsize') }" ng-style="{'font-size': f + 'px'}">{{ f }}</a>
+            </li>
+        </ul>
+    </div>
+    <span class="s-btn-icon font-bold"
+          ng-click="minder.queryCommandState('bold') === -1 || minder.execCommand('bold')"
+          ng-class="{'font-bold-selected' : minder.queryCommandState('bold') == 1}"
+          ng-disabled="minder.queryCommandState('bold') === -1"></span>
+    <span class="s-btn-icon font-italics"
+          ng-click="minder.queryCommandState('italic') === -1 || minder.execCommand('italic')"
+          ng-class="{'font-italics-selected' : minder.queryCommandState('italic') == 1}"
+          ng-disabled="minder.queryCommandState('italic') === -1">
+    </span>
+    <div class="font-color-wrap">
+        <span class="quick-font-color"
+              ng-click="minder.queryCommandState('forecolor') === -1 || minder.execCommand('forecolor', foreColor)"
+              ng-disabled="minder.queryCommandState('forecolor') === -1">A</span>
+		<span color-picker
+              class="font-color"
+              set-color="setDefaultColor()"
+              ng-disabled="minder.queryCommandState('forecolor') === -1">
+            <span class="caret"></span>
+        </span>
+        <span class="font-color-preview"
+              ng-style="{ 'background-color': foreColor }"
+              ng-click="minder.queryCommandState('forecolor') === -1 || minder.execCommand('forecolor', foreColor)"
+              ng-disabled="minder.queryCommandState('forecolor') === -1"></span>
+
+    </div>
+    <color-panel minder="minder" class="inline-directive"></color-panel>
+
+</div>

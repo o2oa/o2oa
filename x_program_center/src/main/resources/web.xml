@@ -1,0 +1,216 @@
+<web-app id="x_program_center" metadata-complete="false" version="3.1">
+<display-name>x_program_center</display-name>
+<servlet>
+<servlet-name>ActionApplication</servlet-name>
+<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+<init-param>
+<param-name>javax.ws.rs.Application</param-name>
+<param-value>com.x.program.center.jaxrs.ActionApplication</param-value>
+</init-param>
+</servlet>
+<servlet-mapping>
+<servlet-name>ActionApplication</servlet-name>
+<url-pattern>/jaxrs/*</url-pattern>
+</servlet-mapping>
+<filter>
+<filter-name>AdminLoginJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.AdminLoginJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>AdminLoginJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/adminlogin/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>ApplicationServerJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.ApplicationServerJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>ApplicationServerJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/applicationserver/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>ApplicationServersJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.ApplicationServersJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>ApplicationServersJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/applicationservers/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>ApplicationsJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.ApplicationsJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>ApplicationsJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/applications/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>AssembleJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.AssembleJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>AssembleJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/assemble/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>CacheJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.CacheJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>CacheJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/cache/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>CenterJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.CenterJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>CenterJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/center/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>CenterServerJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.CenterServerJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>CenterServerJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/centerserver/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>CollectJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.CollectJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>CollectJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/collect/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>DataJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.DataJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>DataJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/data/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>DataMappingsJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.DataMappingsJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>DataMappingsJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/datamappings/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>DataServerJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.DataServerJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>DataServerJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/dataserver/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>DataServersJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.DataServersJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>DataServersJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/dataservers/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>DatasJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.DatasJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>DatasJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/datas/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>DistributeJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.DistributeJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>DistributeJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/distribute/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>DruidFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.DruidFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>DruidFilter</filter-name>
+<url-pattern>/druid/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>EchoJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.EchoJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>EchoJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/echo/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>ExportJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.ExportJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>ExportJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/export/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>StorageServerJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.StorageServerJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>StorageServerJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/storageserver/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>StorageServersJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.StorageServersJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>StorageServersJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/storageservers/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>StroageJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.StroageJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>StroageJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/storage/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>StroageMappingsJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.StroageMappingsJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>StroageMappingsJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/storagemappings/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>StroagesJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.StroagesJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>StroagesJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/storages/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>WebServerJaxrsFilter</filter-name>
+<filter-class>com.x.program.center.jaxrs.WebServerJaxrsFilter</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>WebServerJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/webserver/*</url-pattern>
+</filter-mapping>
+<filter>
+<filter-name>WebServersJaxrsFilter</filter-name>
+	<filter-class>com.x.program.center.jaxrs.WebServersJaxrsFilter
+	</filter-class>
+</filter>
+	<filter-mapping>
+<filter-name>WebServersJaxrsFilter</filter-name>
+<url-pattern>/jaxrs/webservers/*</url-pattern>
+</filter-mapping>
+</web-app>

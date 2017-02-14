@@ -1,0 +1,74 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Table",
+	"description": "",
+	"defaultValue": {
+		"code": "",
+		"html": ""
+	},
+	"events": {
+		"click": {
+			"code": "",
+			"html": ""
+		},
+		"dblclick": {
+			"code": "",
+			"html": ""
+		},
+		"keydown": {
+			"code": "",
+			"html": ""
+		},
+		"keypress": {
+			"code": "",
+			"html": ""
+		},
+		"keyup": {
+			"code": "",
+			"html": ""
+		},
+		"mousedown": {
+			"code": "",
+			"html": ""
+		},
+		"mousemove": {
+			"code": "",
+			"html": ""
+		},
+		"mouseout": {
+			"code": "",
+			"html": ""
+		},
+		"mouseover": {
+			"code": "",
+			"html": ""
+		},
+		"mouseup": {
+			"code": "",
+			"html": ""
+		},
+		"focus": {
+			"code": "",
+			"html": ""
+		},
+		"blur": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+    "titleTdStyles":{
+      "background-color": "#d8dbe4",
+      "color": "#333",
+      "font-weight": "bold"
+    },
+    "contentTdStyles": {
+      "background-color": "#FFFFFF",
+      "color": "#333"
+    },
+    "layoutTdStyles": {},
+	"container": ""
+}

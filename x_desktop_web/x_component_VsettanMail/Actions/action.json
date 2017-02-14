@@ -1,0 +1,3 @@
+{
+  "getPassword": {"uri": "/jaxrs/password/decrypt"}
+}

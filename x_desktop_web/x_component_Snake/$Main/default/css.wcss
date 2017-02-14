@@ -1,0 +1,116 @@
+{
+	"contentNode": {
+		"width": "100%", 
+		"height": "100%", 
+		"overflow": "hidden",
+		"background-color": "#2a2a2a"
+	},
+	"gameNode":{
+		"width": "360px",
+		"height": "420px",
+		"margin": "4px auto 10px auto",
+		"border": "3px solid #666",
+		"border-radius": "3px"
+	},
+	"inforNode":{
+		"width": "360px",
+		"height": "30px",
+		"margin": "auto",
+		"line-height": "30px",
+		"color": "#EEE",
+		"font-family": "Cooper Black",
+		"font-size": "16px"
+	},
+	"scoreNode": {
+		"float": "left",
+		"line-height": "30px"
+	},
+	"levelNode": {
+		"float": "right",
+		"line-height": "30px"
+	},
+	"logoNode":{
+		"margin": "80px auto 40px auto" ,
+		"width": "251px",
+		"height": "82px",
+		"background-image": "url("+"/x_component_Snake/$Main/default/snake_bg.png)"
+	},
+	"beginNode": {
+		"margin": "20px auto 20px auto",
+		"width": "180px",
+		"height": "40px",
+		"color": "#EEE",
+		"text-align": "center",
+		"line-height": "40px",
+		"font-size": "36px",
+		"font-family": "Cooper Black",
+		"cursor": "pointer"
+	},
+	"timerNode": {
+		"font-size": "48px",
+		"color": "#EEE",
+		"font-family": "Cooper Black",
+		"width": "80px",
+		"height": "80px",
+		"line-height": "80px",
+		"text-align": "center",
+		"position": "absolute"
+	},
+	"eatPointNode": {
+		"width": "8px",
+		"height": "8px",
+		"border": "1px solid #2a2a2a",
+		"background-color": "#ff5353",
+		"font-size": "8px",
+		"line-height": "8px",
+		"position": "absolute"
+	},
+	"snakePointNode": {
+		"width": "8px",
+		"height": "8px",
+		"border": "1px solid #2a2a2a",
+		"background-color": "#EEE",
+		"position": "absolute"
+	},
+	"pauseMarkNode": {
+		"width": "360px",
+		"height": "420px",
+		"opacity": 0.7,
+		"background-color": "#000",
+		"position": "absolute"
+	},
+	"playNode": {
+		"width": "72px",
+		"height": "72px",
+		"background": "url("+"/x_component_Snake/$Main/default/pause.png) no-repeat center center",
+		"position": "absolute",
+		"cursor": "pointer"
+	},
+	"gemeOverMarkNode": {
+		"width": "360px",
+		"height": "420px",
+		"opacity": 0.7,
+		"background-color": "#000",
+		"position": "absolute"
+	},
+	"gameOverNode": {
+		"width": "300px",
+		"height": "70px",
+		"position": "absolute",
+		"font-size": "42px",
+		"color": "#FFF",
+		"font-family": "Cooper Black",
+		"text-align": "center"
+	},
+	"replayNode": {
+		"width": "300px",
+		"height": "70px",
+		"line-height": "70px",
+		"position": "absolute",
+		"font-size": "32px",
+		"color": "#EEE",
+		"font-family": "Cooper Black",
+		"text-align": "center",
+		"cursor": "pointer"
+	}
+}

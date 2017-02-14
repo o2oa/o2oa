@@ -1,0 +1,134 @@
+{
+    "contentNode": {
+        "height": "366px",
+        "margin": "20px",
+    },
+    "screenNode": {
+        "border": "1px solid #999",
+        "height": "80px",
+        "margin-bottom": "10px",
+        "font-family": "Consolas"
+    },
+    "screenReferenceNode": {
+        "height": "20px",
+        "line-height": "20px",
+        "font-size": "14px",
+        "color": "#777",
+        "padding": "0px 5px",
+        "text-align": "right"
+    },
+    "screenContentNode": {
+        "height": "60px",
+        "line-height": "60px",
+        "font-size": "36px",
+        "padding": "0px 5px",
+        "text-align": "right",
+        "color": "#333"
+    },
+
+    "buttonAreaNode": {
+        "margin-top": "10px",
+        "height": "280px"
+    },
+
+    "buttonStyle1": {
+        "height": "34px",
+        "border": "1px solid #AAA",
+        "box-shadow": "0px 0px 2px #999",
+        "border-radius":"3px",
+        "text-align": "center",
+        "font-size": "14px",
+        "background": "url(/x_component_Calculator/$Main/default/icon/but1.png) center center",
+        "line-height": "34px",
+        "cursor": "pointer"
+    },
+    "buttonStyle2": {
+        "height": "34px",
+        "border": "1px solid #AAA",
+        "box-shadow": "0px 0px 2px #999",
+        "border-radius":"3px",
+        "text-align": "center",
+        "font-size": "14px",
+        "background": "url(/x_component_Calculator/$Main/default/icon/but2.png) center center",
+        "line-height": "34px",
+        "cursor": "pointer"
+    },
+    "buttonStyle3": {
+        "height": "34px",
+        "border": "1px solid #AAA",
+        "box-shadow": "0px 0px 2px #999",
+        "border-radius":"3px",
+        "text-align": "center",
+        "font-size": "14px",
+        "background": "url(/x_component_Calculator/$Main/default/icon/but3.png) center center",
+        "line-height": "34px",
+        "cursor": "pointer"
+    },
+    "button_over": {
+        "border": "1px solid #ffdb00",
+        "box-shadow": "0px 0px 3px #ffdb00",
+        "background": "url(/x_component_Calculator/$Main/default/icon/but_over.png) center center",
+    },
+    "button_down": {
+        "border": "1px solid #c29b29",
+        "box-shadow": "0px 0px 3px #c29b29",
+        "background": "url(/x_component_Calculator/$Main/default/icon/but_down.png) center center",
+    },
+    "but_equal": {
+        "height": "76px",
+        "border": "1px solid #AAA",
+        "box-shadow": "0px 0px 2px #999",
+        "border-radius":"3px",
+        "text-align": "center",
+        "font-size": "18px",
+        "font-weight": "bold",
+        "background": "url(/x_component_Calculator/$Main/default/icon/but4.png) center center",
+        "line-height": "76px",
+        "cursor": "pointer"
+    },
+    "but_equal_over": {
+        "border": "1px solid #ffdb00",
+        "box-shadow": "0px 0px 3px #ffdb00",
+        "background": "url(/x_component_Calculator/$Main/default/icon/but4_over.png) center center",
+    },
+    "but_equal_down": {
+        "border": "1px solid #c29b29",
+        "box-shadow": "0px 0px 3px #c29b29",
+        "background": "url(/x_component_Calculator/$Main/default/icon/but4_down.png) center center",
+    },
+    "but_0": {
+        "height": "34px",
+        "border": "1px solid #AAA",
+        "box-shadow": "0px 0px 2px #999",
+        "border-radius":"3px",
+        "text-align": "center",
+        "font-size": "14px",
+        "background": "url(/x_component_Calculator/$Main/default/icon/but5.png) center center",
+        "line-height": "34px",
+        "cursor": "pointer"
+    },
+    "but_0_over": {
+        "border": "1px solid #ffdb00",
+        "box-shadow": "0px 0px 3px #ffdb00",
+        "background": "url(/x_component_Calculator/$Main/default/icon/but5_over.png) center center",
+    },
+    "but_0_down": {
+        "border": "1px solid #c29b29",
+        "box-shadow": "0px 0px 3px #c29b29",
+        "background": "url(/x_component_Calculator/$Main/default/icon/but5_down.png) center center",
+    },
+
+    "but_back_icon": {
+        "height": "100%",
+        "width": "100%",
+        "background": "url(/x_component_Calculator/$Main/default/icon/back.png) center center no-repeat",
+    },
+    "but_sqrt_icon": {
+        "height": "100%",
+        "width": "100%",
+        "background": "url(/x_component_Calculator/$Main/default/icon/sqrt.png) center center no-repeat",
+    }
+
+
+
+}

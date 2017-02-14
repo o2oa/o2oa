@@ -1,0 +1,65 @@
+.readjust-layout {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0 10px 0 5px;
+    border-right: 1px dashed #eee;
+}
+
+.btn-icon {
+    width: 25px;
+    height: 25px;
+    margin-left: 12px;
+    display: block;
+}
+
+.btn-label {
+    font-size: 12px;
+}
+
+.btn-wrap {
+    width: 50px;
+    height: 42px;
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+
+    &[disabled] span {
+        opacity: 0.5;
+    }
+
+    &[disabled] {
+        cursor: default;
+    }
+
+    &[disabled]:hover {
+        background-color: transparent;
+    }
+
+    &[disabled]:active {
+        background-color: transparent;
+    }
+
+    &:link {
+        text-decoration: none;
+    }
+
+    &:visited {
+        text-decoration: none;
+    }
+
+    &:hover {
+        background-color: @tool-hover;
+        text-decoration: none;
+    }
+
+    &:active {
+        background-color: @tool-active;
+    }
+
+}
+
+.reset-layout-icon {
+    background: url(images/icons.png) no-repeat;
+    background-position: 0 -150px;
+}
+

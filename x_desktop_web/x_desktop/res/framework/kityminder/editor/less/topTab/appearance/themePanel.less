@@ -1,0 +1,53 @@
+.theme-panel {
+    height: 42px;
+    margin: 5px;
+    padding: 0 5px 0 0;
+    border-right: 1px dashed #eee;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.theme-list {
+    min-width: 162px;
+}
+
+div a.theme-item {
+    display: inline-block;
+    width: 70px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    padding: 0 5px;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    color: #000;
+}
+
+.theme-item-selected {
+    width: 100px;
+    padding: 6px 7px;
+    border: 1px solid #fff;
+
+    &:hover {
+        background-color: @tool-hover;
+    }
+
+    .caret {
+        margin-left: 5px;
+    }
+
+    &[disabled] {
+        opacity: 0.5;
+    }
+}
+
+.theme-item-wrap {
+    display: inline-block;
+    width: 80px;
+    height: 40px;
+    padding: 5px;
+}
+.theme-item-wrap:hover {
+    background-color: #eff3fa;
+}

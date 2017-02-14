@@ -1,0 +1,13 @@
+<div class="dropdown temp-panel" dropdown on-toggle="toggled(open)">
+	<div class="dropdown-toggle current-temp-item"
+         ng-disabled="minder.queryCommandState('template') === -1"
+         dropdown-toggle>
+		<a href class=" temp-item {{ minder.queryCommandValue('template') }}"  title="{{ minder.queryCommandValue('template') | lang: 'template' }}"></a>
+		<span class="caret"></span>
+	</div>
+	<ul class="dropdown-menu temp-list">
+		<li ng-repeat="(key, templateObj) in templateList" class="temp-item-wrap">
+			<a ng-click="minder.execCommand('template', key);" class="temp-item {{key}}" ng-class="{ 'temp-item-selected' : key == minder.queryCommandValue('template') }" title="{{ key | lang: 'template' }}"></a>
+		</li>
+	</ul>
+</div>

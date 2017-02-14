@@ -1,0 +1,133 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='editTable'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='documentNode'></tr>",
+    "mouseoverStyles": "documentNode_over",
+    "action": "open"
+  },
+  "items": [
+    {
+      "name": "subject",
+      "head": {
+        "html": "<th styles='normalThNode' lable='subject'></th>",
+        "width": "40%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>" +
+        " <div item='title' styles='documentSubject'></div>" +
+        " <div>" +
+        "   <div item='workType' styles='itemInLine'></div><div item='workLevel' styles='itemInLine'></div>" +
+        " </div>" +
+        "</td>",
+        "items": {
+          "title": {},
+          "workType": {},
+          "workLevel": {}
+        }
+      }
+    },
+    {
+      "name": "relativeDepartment",
+      "head": {
+        "html": "<th styles='normalThNode' lable='relativeDepartment'></th>",
+        "width": "20%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>"  +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='responsibilityOrganizationName' colon='true'></div><div styles='itemInLine' item='responsibilityOrganizationName'></div></div>" +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='deployerOrganizationName' colon='true'></div><div styles='itemInLine' item='deployerOrganizationName'></div></div>" +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='cooperateOrganizationName' colon='true'></div><div styles='itemInLine' item='cooperateOrganizationName'></div></div>" +
+        "</td>",
+        "items": {
+          "responsibilityOrganizationName": {
+
+          },
+          "deployerOrganizationName": {},
+          "cooperateOrganizationName": {}
+        }
+      }
+    },
+    {
+      "name": "relativePerson",
+      "head": {
+        "html": "<th styles='normalThNode' lable='relativePerson'></th>",
+        "width": "15%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>" +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='responsibilityEmployeeName' colon='true'></div><div styles='itemInLine' item='responsibilityEmployeeName'></div></div>" +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='deployerName' colon='true'></div><div styles='itemInLine' item='deployerName'></div></div>" +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='cooperateEmployeeName' colon='true'></div><div styles='itemInLine' item='cooperateEmployeeName'></div></div>" +
+        "</td>",
+        "items": {
+          "responsibilityEmployeeName": {},
+          "deployerName": {},
+          "cooperateEmployeeName": {}
+        }
+      }
+    },
+    {
+      "name": "timeLimit",
+      "head": {
+        "html": "<th styles='normalThNode' lable='completeDateLimitStr'></th>",
+        "width": "15%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' item='completeDateLimitStr'></td>",
+        "items": {
+          "completeDateLimitStr" : {}
+        }
+      }
+    },
+    {
+      //"access": "admin",
+      "head": {
+        "html": "<th styles='normalThNode' lable='action'></th>",
+        "width": "10%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode'>" +
+        " <span styles='documentActionNode' item='action_report'></span>" +
+        " <span styles='documentActionNode' item='action_split'></span>" +
+//        " <span styles='documentActionNode' item='remove'></span>" +
+        "</td>",
+        "items": {
+          "action_report": {
+//            "access": "isEdit",
+            "title": "report",
+            "text": "report",
+            "action": "action_report",
+            "styles": "documentActionNode",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "action_split": {
+            //"access": "admin",
+            "title": "split",
+            "text": "split",
+            "action": "action_split",
+            "styles": "documentActionNode",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "remove": {
+            "title": "remove",
+            "text": "remove",
+            "action": "remove",
+//            "condition": "function( d ){ return this.test(d) }",
+            "condition": "function( d ){ return true; }",
+            "styles": "documentActionNode",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          }
+        }
+      }
+    }
+  ]
+}
+

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="src" path="src/test/resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="D:/x/applicationRepository/x_base_core_bean-4.0.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/applicationRepository/x_base_core_entity-4.0.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/applicationRepository/x_base_core_exception-4.0.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/applicationRepository/x_base_core_gson-4.0.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/applicationRepository/x_base_core_http-4.0.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/applicationRepository/x_base_core_utils-4.0.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/google/gson/gson-2.3.1.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/sourceforge/dom4j/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/lang3/commons-lang3-3.4.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/dbcp2/commons-dbcp2-2.1.1.jar"/>
+	<classpathentry kind="lib" path="D:/x/applicationRepository/openjpa/openjpa-all-2.4.2-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/ibm/informix/ifxjdbc.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/ibm/informix/ifxjdbcx.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/alibaba/druid/druid-1.0.19.jar"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>

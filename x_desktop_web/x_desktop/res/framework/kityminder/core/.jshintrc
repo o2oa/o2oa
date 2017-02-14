@@ -1,0 +1,15 @@
+{
+    "undef" : true,
+    "unused" : false,
+    "strict" : false,
+    "curly" : false,
+    "newcap" : true,
+    "trailing" : true,
+    "white": false,
+    "quotmark": false,
+    "browser": true,
+    "boss": true,
+    "predef" : [
+        "define"
+    ]
+}

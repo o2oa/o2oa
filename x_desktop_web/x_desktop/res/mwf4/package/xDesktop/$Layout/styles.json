@@ -1,0 +1,42 @@
+[
+  {
+    "title": "默认",
+    "style": "default"
+  },
+  {
+    "title": "酷黑",
+    "style": "black"
+  },
+  {
+    "title": "色彩",
+    "style": "color"
+  },
+//  {
+//    "title": "荷花",
+//    "style": "lotus"
+//  },
+//  {
+//    "title": "仙鹤",
+//    "style": "crane"
+//  },
+  {
+    "title": "牡丹",
+    "style": "peony"
+  },
+  {
+    "title": "老爷车",
+    "style": "car"
+  },
+  {
+    "title": "码头",
+    "style": "dock"
+  },
+  {
+    "title": "熊猫",
+    "style": "panda"
+  },
+  {
+    "title": "星空",
+    "style": "star"
+  }
+]

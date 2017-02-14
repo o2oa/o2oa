@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." name="main" default="package">
+	<basename property="project" file="${basedir}" />
+	<dirname property="root.dir" file="${basedir}../" />
+	<property file="${root.dir}/building/build.properties" />
+	<include file="${root.dir}/building/build_common.xml" as="common" />
+
+	<target name="package">
+		<antcall target="common.clean" />
+		<antcall target="common.compile" />
+		<jar destfile="console.jar" basedir="${build.dir}/classes" manifest="${src.dir}/main/resources/META-INF/MANIFEST.MF" />
+		<copy todir="d:/o2server" overwrite="true">
+			<fileset file="console.jar" />
+		</copy>
+	</target>
+
+</project>

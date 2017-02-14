@@ -1,0 +1,52 @@
+<div class="modal-header">
+    <h3 class="modal-title">图片</h3>
+</div>
+<div class="modal-body">
+    <tabset>
+        <tab heading="图片搜索">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="search-keyword">关键词：</label>
+                    <input type="text" class="form-control" ng-model="data.searchKeyword2" id="search-keyword" placeholder="请输入搜索的关键词">
+                </div>
+                <button class="btn btn-primary" ng-click="searchImage()">百度一下</button>
+            </form>
+            <div class="search-result" id="search-result">
+                <ul>
+                    <li ng-repeat="image in list" id="{{ 'img-item' + $index }}" ng-class="{'selected' : isSelected}" ng-click="selectImage($event)">
+                        <img id="{{ 'img-' + $index }}" ng-src="{{ image.src || '' }}" alt="{{ image.title }}" onerror="this.parentNode.removeChild(this)" />
+                        <span>{{ image.title }}</span>
+                    </li>
+                </ul>
+            </div>
+        </tab>
+        <tab heading="插入图片" active="true">
+            <form>
+                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[urlPassed]">
+                    <label for="image-url">链接地址：</label>
+                    <input type="text"
+                           class="form-control"
+                           ng-model="data.url"
+                           ng-blur="urlPassed = data.R_URL.test(data.url)"
+                           ng-focus="this.value = data.url"
+                           ng-keydown="shortCut($event)"
+                           id="image-url"
+                           placeholder="必填：以 http(s):// 开头">
+                </div>
+                <div class="form-group" ng-class="{'has-success' : titlePassed}">
+                    <label for="image-title">提示文本：</label>
+                    <input type="text" class="form-control" ng-model="data.title" ng-blur="titlePassed = true" id="image-title" placeholder="选填：鼠标在图片上悬停时提示的文本">
+                </div>
+                <div class="form-group">
+                    <label for="image-preview">图片预览：</label>
+                    <img class="image-preview" id="image-preview" ng-src="{{ data.url }}" alt="{{ data.title }}"/>
+                </div>
+            </form>
+        </tab>
+    </tabset>
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()">确定</button>
+    <button class="btn btn-warning" ng-click="cancel()">取消</button>
+</div>

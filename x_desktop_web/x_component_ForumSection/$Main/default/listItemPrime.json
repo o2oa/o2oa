@@ -1,0 +1,133 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='editTable' style='table-layout:fixed;'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='documentNode'></tr>",
+    "mouseoverStyles": "documentNode_over",
+    "action": "open"
+  },
+  "items": [
+    //    {
+    //      "name": "$checkbox",
+    //      "head": {
+    //        "html": "<th styles='normalThNode'></th>",
+    //        "width": "5%"
+    //      },
+    //      "content": {
+    //        "html": "<td styles='normalTdNode'></td>",
+    //        //"condition": "function(d){ return d.status==0 ? true : false }",
+    //        "value": ""
+    //      }
+    //    },
+    {
+      "name": "title",
+      "head": {
+        "html": "<th styles='normalThNode'><div lable='allSubject' styles='thActionNode'></div><div style='float:left'>|</div><div lable='prime' styles='thActionNodeCurrent'></div></th>",
+        "width": "60%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' width='60%'>"+
+        " <div item='icon' styles='tdIcon'></div>"+
+        " <div styles='tdType'>[</div><div item='type' styles='tdType'></div><div styles='tdType'>]</div>"+
+        " <div item='title' styles='tdTitle'></div>"+
+        "</td>",
+        "items": {
+          "title" : {},
+          "type" : {},
+          "icon" : {
+            "type" : "html",
+            "value" : "function(d){ return d.isCreamSubject ? '<img src=/x_component_ForumSection/$Main/default/icon/flag-24.png title=精华帖>' :  '<img src=/x_component_ForumSection/$Main/default/icon/document-24.png>' }"
+          }
+        }
+      }
+    },
+    {
+      "name": "creatorName",
+      "head": {
+        "html": "<th styles='normalThNode' lable='create'></th>",
+        "width": "12%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='12%'><div item='creatorName'></div><div item='createTime' styles='normalTdBottom'></div></td>",
+        "items": {
+          "creatorName" : {
+            "styles" : "person",
+            "mouseoverStyles": "person_over",
+            "event" : "click^^function(node){ this.app.openPerson( this.data.creatorName ) }"},
+          "createTime" : {
+            "value" : "function(d){ return this.app.getDateDiff( d.createTime ) }"
+          }
+        }
+      }
+    },
+    {
+      "name": "replyAndReadCount",
+      "head": {
+        "html": "<th styles='normalThNode' lable='replyAndReadCount'></th>",
+        "width": "7%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='7%'><div item='replyTotal'></div><div item='viewTotal' styles='normalTdBottom'></td>",
+        "items": {
+          "replyTotal" : {},
+          "viewTotal" : {}
+        }
+      }
+    },
+    {
+      "name": "lastReply",
+      "head": {
+        "html": "<th styles='normalThNode' lable='lastReply'></th>",
+        "width": "7%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='7%'><div item='latestReplyUser'><div></td>",
+        "items": {
+          "latestReplyUser" : {
+            "styles" : "person",
+            "mouseoverStyles": "person_over",
+            "event" : "click^^function(node){ this.app.openPerson( this.data.latestReplyUser ) }"
+          }
+        }
+      }
+    },
+    {
+      //"access": "admin",
+      "head": {
+        "html": "<th styles='normalThNode' lable='action'></th>",
+        "width": "14%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='14%'>" +
+        " <span styles='documentActionNode' item='edit'></span>" +
+        " <span styles='documentActionNode' item='remove'></span>" +
+        "</td>",
+        "items": {
+          "edit": {
+            //"access": "admin",
+            "title": "edit",
+            "text": "edit",
+            "action": "edit",
+            "condition": "function( d ){ return this.app.isAdmin || (d.creatorName == this.app.userName) }",
+            "styles": "documentActionNode",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "remove": {
+            "title": "remove",
+            "text": "remove",
+            "action": "remove",
+            "condition": "function( d ){ return this.app.isAdmin || (d.creatorName == this.app.userName) }",
+            "styles": "documentActionNode",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          }
+        }
+      }
+    }
+  ]
+}

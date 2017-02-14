@@ -1,0 +1,9 @@
+<ul class="km-priority tool-group" ng-disabled="commandDisabled">
+    <li class="km-priority-item tool-group-item"
+        ng-repeat="p in priorities"
+        ng-click="commandDisabled || minder.execCommand('priority', p)"
+	    ng-class="{ active: commandValue == p }"
+        title="{{ getPriorityTitle(p) }}">
+	    <div class="km-priority-icon tool-group-icon priority-{{p}}"></div>
+    </li>
+</ul>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." name="main" default="default">
+	<basename property="project" file="${basedir}" />
+	<dirname property="root.dir" file="${basedir}../" />
+	<property file="${root.dir}/building/build.properties" />
+	<include file="${root.dir}/building/build_common.xml" as="common" />
+
+	<target name="default">
+		<antcall target="common.clean" />
+		<antcall target="common.compile" />
+		<antcall target="common.persistenceXmlWriter" />
+		<antcall target="common.issue" />
+		<antcall target="common.httpMethodDescribeWriter" />
+		<antcall target="common.zipStaticResources" />
+	</target>
+
+	<target name="deployDev" depends="default">
+		<java classname="com.x.common.core.application.component.${project}" fork="true">
+			<classpath refid="project.classpath" />
+			<arg value="{
+				centerHost:'127.0.0.1',
+				centerPort:30080,
+				centerProxyHost:'dev.xplatform.tech',
+				centerProxyPort:30080,
+				centerCipher:'xplatform',
+				'keepRemoteMeta' : false,
+				applicationServersFilePath:'${configuration.dir}/dev.xplatform.tech/applicationServers.json',
+				datasFilePath:'${configuration.dir}/dev.xplatform.tech/datas.json',
+				dataServersFilePath:'${configuration.dir}/dev.xplatform.tech/dataServers.json',
+				storagesFilePath:'${configuration.dir}/dev.xplatform.tech/storages.json',
+				storageServersFilePath:'${configuration.dir}/dev.xplatform.tech/storageServers.json',
+				webServersFilePath:'${configuration.dir}/dev.xplatform.tech/webServers.json',
+				distPath:'${dist.dir}',
+				applicationRepositoryPath:'${applicationRepository.dir}',
+				webRepositoryPath:'${webRepository.dir}',
+				resourcesPath:'${configuration.dir}/dev.xplatform.tech/resources'
+			}" />
+		</java>
+		<java classname="com.x.common.core.application.component.Tomcat8Deploy" fork="true">
+			<classpath refid="project.classpath" />
+			<arg value="{
+				'filePath':'${dist.dir}/${project}.war',
+				'server':'dev.xplatform.tech',
+				'port':30080,
+				'username':'xadmin',
+				'password':'xpfadmin'
+			}" />
+		</java>
+	</target>
+
+	<target name="deployDemo" depends="default">
+		<java classname="com.x.common.core.application.component.${project}" fork="true">
+			<classpath refid="project.classpath" />
+			<arg value="{
+				centerHost:'127.0.0.1',
+				centerPort:30080,
+				centerProxyHost:'demo.xplatform.tech',
+				centerProxyPort:30080,
+				centerCipher:'xplatform',
+				'keepRemoteMeta' : false,
+				resourcesPath:'${configuration.dir}/demo.xplatform.tech/resources',
+				applicationServersFilePath:'${configuration.dir}/demo.xplatform.tech/applicationServers.json',
+				datasFilePath:'${configuration.dir}/demo.xplatform.tech/datas.json',
+				dataServersFilePath:'${configuration.dir}/demo.xplatform.tech/dataServers.json',
+				storagesFilePath:'${configuration.dir}/demo.xplatform.tech/storages.json',
+				storageServersFilePath:'${configuration.dir}/demo.xplatform.tech/storageServers.json',
+				webServersFilePath:'${configuration.dir}/demo.xplatform.tech/webServers.json',
+				distPath:'${dist.dir}',
+				applicationRepositoryPath:'${applicationRepository.dir}',
+				webRepositoryPath:'${webRepository.dir}'
+			}" />
+		</java>
+		<java classname="com.x.common.core.application.component.Tomcat8Deploy" fork="true">
+			<classpath refid="project.classpath" />
+			<arg value="{
+				'server':'demo.xplatform.tech',
+				'port':30080,
+				'username':'xadmin',
+				'password':'xpfadmin',
+				'filePath':'${dist.dir}/${project}.war'
+			}" />
+		</java>
+	</target>
+
+	<target name="compileAll">
+		<java classname="com.x.common.core.application.component.CompileAll" fork="true">
+			<classpath refid="project.classpath" />
+			<arg value="{
+				rootPath:'${root.dir}',
+				includeAssemble:true,
+				includeCore:true,
+				includeService:true,
+				includeCenter:true,
+				excludes:[]
+			}" />
+		</java>
+	</target>
+
+	<target name="applicationDev">
+		<java classname="com.x.common.core.application.component.DeployAll" fork="true">
+			<classpath refid="project.classpath" />
+			<arg value="{
+				distPath:'${dist.dir}',
+				repositoryPath:'${applicationRepository.dir}',
+				centerHost:null,
+				centerPort:30080,
+				centerContext:null,
+				centerCipher:'xplatform',
+				configHost:null,
+				configPort:20080,
+				configWeight:null,
+				server:'dev.xplatform.tech',
+				port:20080,
+				username:'xadmin',
+				password:'xpfadmin',
+				includeAssemble: true,
+				includeService: true,
+				excludes:[]
+			}" />
+		</java>
+	</target>
+
+	<target name="applicationDemo">
+		<java classname="com.x.common.core.application.component.DeployAll" fork="true">
+			<classpath refid="project.classpath" />
+			<arg value="{
+				server:'demo.xplatform.tech',
+				port:20080,
+				centerCipher:'xplatform',
+				distPath:'${dist.dir}',
+				repositoryPath:'${applicationRepository.dir}',
+				centerHost:null,
+				centerPort:30080,
+				centerContext:null,
+				configHost:null,
+				configPort:20080,
+				configWeight:null,
+				username:'xadmin',
+				password:'xpfadmin',
+				includeAssemble: true,
+				includeService: true,
+				excludes:[]
+					}" />
+		</java>
+	</target>
+</project>
+

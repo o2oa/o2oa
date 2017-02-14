@@ -1,0 +1,433 @@
+MWF.xApplication.Execution = MWF.xApplication.Execution || {};
+
+MWF.xDesktop.requireApp("Template", "Explorer", null, false);
+MWF.xDesktop.requireApp("Template", "MForm", null, false);
+MWF.xDesktop.requireApp("Execution","Attachment",null,false);
+
+MWF.xApplication.Execution.WorkForm = new Class({
+    Extends: MWF.xApplication.Template.Explorer.PopupForm,
+    Implements: [Options, Events],
+    options: {
+        "style": "default",
+        "width": "800",
+        "height": "100%",
+        "top" : 0,
+        "left" : 0,
+        "hasTop": true,
+        "hasIcon": false,
+        "hasBottom": true,
+        "title": "",
+        "draggable": false,
+        "closeAction": true
+    },
+    initialize: function (explorer, actions, data, options) {
+        this.setOptions(options);
+        this.explorer = explorer;
+        this.app = explorer.app;
+        this.lp = this.app.lp.workForm;
+        this.actions = this.app.restActions;
+        this.path = "/x_component_Execution/$WorkForm/";
+        this.cssPath = this.path + this.options.style + "/css.wcss";
+        this._loadCss();
+
+        this.options.title = this.lp.title;
+
+        this.data = data || {};
+        this.actions = actions;
+    },
+    load: function () {
+        //isNew = false,重新获取一遍，isNew = new 是新建工作 新建判断都方在options里 有parentWorkId一定是有上级工作，如果是centerWorkId是第一层创建
+        if(this.options.isNew){
+            if(this.options.parentWorkId){
+                this.actions.getBaseWorkInfo(this.options.parentWorkId,function(json){
+                        if(json.data){
+                            this.parentWorkData = json.data
+                        }
+                    }.bind(this),
+                    function(xhr,text,error){
+                        this.showErrorMessage(xhr,text,error)
+                    }.bind(this),false
+                )
+            }else if(this.options.centerWorkId){
+                this.data.centerId = this.options.centerWorkId
+            }else if(this.data.centerWorkId) {
+                this.data.centerId = this.data.centerWorkId
+            }
+        }else{
+            if(this.data.id){
+                this.id = this.data.id
+            }else if(this.options.id){
+                this.id = this.options.id
+            }
+            this.actions.getBaseWorkInfo(this.id,function(json){
+                    if(json.data){
+                        this.data = json.data
+                    }
+                }.bind(this),
+                function(xhr,text,error){
+                    this.showErrorMessage(xhr,text,error)
+                }.bind(this),false
+            )
+        }
+
+        if (this.options.isNew) {
+            this.create();
+        } else if (this.options.isEdited) {
+            this.edit();
+        } else {
+            this.open();
+        }
+    },
+    createTopNode: function () {
+        if (!this.formTopNode) {
+            this.formTopNode = new Element("div.formTopNode", {
+                "styles": this.css.formTopNode
+            }).inject(this.formNode);
+
+            this.formTopIconNode = new Element("div", {
+                "styles": this.css.formTopIconNode
+            }).inject(this.formTopNode)
+
+            this.formTopTextNode = new Element("div", {
+                "styles": this.css.formTopTextNode,
+                "text": this.options.title + ( this.data.title ? ("-" + this.data.title ) : "" )
+            }).inject(this.formTopNode)
+
+            if (this.options.closeAction) {
+                this.formTopCloseActionNode = new Element("div", {"styles": this.css.formTopCloseActionNode}).inject(this.formTopNode);
+                this.formTopCloseActionNode.addEvent("click", function () {
+                    this.close()
+                }.bind(this))
+            }
+
+            this.formTopContentNode = new Element("div", {
+                "styles": this.css.formTopContentNode
+            }).inject(this.formTopNode)
+
+            this._createTopContent();
+
+        }
+    },
+    _createTopContent: function () {
+
+    },
+    _createTableContent: function () {
+        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
+            "<tr>" +
+            "   <td styles='formTableTitle' lable='timeLimit'></td>" +
+            "   <td styles='formTableValue' item='timeLimit'></td>" +
+            "   <td styles='formTableTitle' lable='reportCycle'></td>" +
+            "   <td styles='formTableValue'><span item='reportCycle'></span><span item='reportDay'></span></td>" +
+            "</tr><tr>" +
+            "   <td styles='formTableTitle' lable='dutyDepartment'></td>" +
+            "   <td styles='formTableValue' item='dutyDepartment'></td>" +
+            "   <td styles='formTableTitle' lable='dutyPerson'></td>" +
+            "   <td styles='formTableValue' item='dutyPerson'></td>" +
+            "</tr><tr>" +
+            "   <td styles='formTableTitle' lable='secondDepartment'></td>" +
+            "   <td styles='formTableValue' item='secondDepartment'></td>" +
+            "   <td styles='formTableTitle' lable='secondPerson'></td>" +
+            "   <td styles='formTableValue' item='secondPerson'></td>" +
+            "</tr><tr>" +
+            "   <td styles='formTableTitle' lable='readReader'></td>" +
+            "   <td styles='formTableValue' item='readReader' colspan='3'></td>" +
+            "</tr><tr>" +
+            "   <td styles='formTableValue' colspan='4'>" +
+            "       <div styles='formTableTitleDiv' lable='workSplitAndDescription'></div>" +
+            "       <div styles='formTableValueDiv' item='workSplitAndDescription'></div>" +
+            "   </td>" +
+            "</tr><tr>" +
+            "   <td styles='formTableValue' colspan='4'>" +
+            "       <div styles='formTableTitleDiv' lable='specificActionInitiatives'></div>" +
+            "       <div styles='formTableValueDiv' item='specificActionInitiatives'></div>" +
+            "   </td>" +
+            "</tr><tr>" +
+            "</tr><tr>" +
+            "   <td styles='formTableValue' colspan='4'>" +
+            "       <div styles='formTableTitleDiv' lable='milestoneMark'></div>" +
+            "       <div styles='formTableValueDiv' item='milestoneMark'></div>" +
+            "   </td>" +
+            "</tr><tr>" +
+            "   <td styles='formTableValue' colspan='4'>" +
+            "       <div styles='formTableValueDiv' item='attachments'></div>"+
+            "   </td>" +
+            "</tr>"+
+            "</table>"
+        this.formTableArea.set("html", html);
+
+       this.loadForm();
+    },
+    loadForm: function(){
+        if(this.parentWorkData){
+            this.data.parentWorkId = this.parentWorkData.id;
+            this.data.workDetail = this.parentWorkData.workDetail;
+            this.data.centerId = this.parentWorkData.centerId;
+        }
+        this.form = new MForm(this.formTableArea, this.data, {
+            style: "execution",
+            isEdited: this.isEdited || this.isNew,
+            itemTemplate: this.getItemTemplate(this.lp )
+        },this.app);
+        this.form.load();
+        var taObj = this.formTableArea.getElements("textarea");
+        taObj.setStyles({height:"70px"})
+
+        this.attachmentArea = this.formTableArea.getElement("[item='attachments']");
+        this.loadAttachment( this.attachmentArea );
+
+    },
+    getItemTemplate: function( lp ){
+        _self = this;
+        return {
+            workType: {
+                text: lp.workType + ":",
+                    type: "select",
+                    notEmpty:true,
+                    selectValue: lp.workTypeValue.split(",")
+            },
+            workLevel: {
+                text: lp.workLevel + ":",
+                    type: "select",
+                    notEmpty:true,
+                    selectValue: lp.workLevelValue.split(",")
+            },
+            timeLimit: {text: lp.timeLimit + ":", tType: "date",name:"completeDateLimitStr",notEmpty:true},
+            reportCycle: {
+                text: lp.reportCycle + ":",
+                    type: "select",
+                    notEmpty:true,
+                    //selectValue: lp.reportCycleValue.split(","),
+                    selectText: lp.reportCycleText.split(","),
+                    className: "inputSelectUnformatWidth",
+                    event: {
+                    change: function (item, ev) {
+                        if (item.get("value") == lp.reportCycleText.split(",")[0]) {
+                            this.form.getItem("reportDay").resetItemOptions(lp.weekDayValue.split(","),lp.weekDayText.split(","))
+                        } else if (item.get("value") == lp.reportCycleText.split(",")[1]) {
+                            this.form.getItem("reportDay").resetItemOptions(lp.monthDayValue.split(","),lp.monthDayText.split(","))
+                        }
+                    }.bind(this)
+                }
+            },
+            reportDay: {
+                type: "select",
+                name:"reportDayInCycle",
+                notEmpty:true,
+                selectValue: (!this.data.reportCycle || this.data.reportCycle==lp.reportCycleText.split(",")[0])?lp.weekDayValue.split(","):lp.monthDayValue.split(","), //lp.weekDayValue.split(","),
+                selectText:  (!this.data.reportCycle || this.data.reportCycle==lp.reportCycleText.split(",")[0])?lp.weekDayText.split(","):lp.monthDayText.split(","),
+                className: "inputSelectUnformatWidth"
+            },
+            dutyDepartment: {text: lp.dutyDepartment + ":", tType: "department",name:"responsibilityOrganizationName",notEmpty:true,event:{
+                "change":function(item){
+                    var department = item.getValue();
+                    if( department ){
+                        _self.getDepartmentLeader( department, function( leader ){
+                            _self.form.getItem("dutyPerson").setValue(leader);
+                        })
+                    }
+
+                }
+            }},
+            dutyPerson: {text: lp.dutyPerson + ":", tType: "identity",count:1,name:"responsibilityIdentity",notEmpty:true, onQuerySelect : function( item ){
+                var department = this.form.getItem("dutyDepartment").getValue();
+                item.options.departments = department ? [department] : [] ;
+            }.bind(this)},
+            secondDepartment: {text: lp.secondDepartment + ":", tType: "department",name:"cooperateOrganizationName", count: 0,event:{
+                "change":function(item){
+                    var deptstr = item.getValue();
+                    if(deptstr){
+                        var depts = deptstr.split(",");
+                        var users = ""
+                        for(var i=0;i<depts.length;i++){
+                            if(depts[i]!=""){
+                                _self.getDepartmentLeader( depts[i], function( leader ){
+                                    if(users=="") users = leader
+                                    else users = users + ","+leader
+                                })
+                            }
+                        }
+
+                        _self.form.getItem("secondPerson").setValue(users);
+                    }
+                }
+            }},
+            secondPerson: {text: lp.secondPerson + ":", tType: "identity",name:"cooperateIdentity", count: 0},
+            readReader: {text: lp.readReader + ":", tType: "identity", name:"readLeaderIdentity",count: 0},
+            subject: {text: lp.subject + ":",name:"title",notEmpty:true},
+            workSplitAndDescription: {text: lp.workSplitAndDescription + ":", type: "textarea",name:"workDetail",notEmpty:true},
+            specificActionInitiatives: {text: lp.specificActionInitiatives + ":", type: "textarea",name:"progressAction"},
+            cityCompanyDuty: {text: lp.cityCompanyDuty + ":", type: "textarea",name:"dutyDescription"},
+            milestoneMark: {text: lp.milestoneMark + ":", type: "textarea",name:"landmarkDescription"},
+            importantMatters: {text: lp.importantMatters + ":", type: "textarea",name:"majorIssuesDescription"}
+        }
+    },
+    loadAttachment: function( area ){
+        this.attachment = new MWF.xApplication.Execution.Attachment( area, this.app, this.actions, this.app.lp, {
+            documentId : this.data.id,
+            isNew : this.options.isNew,
+            isEdited : this.options.isEdited,
+            onQueryUploadAttachment : function(){
+                this.attachment.isQueryUploadSuccess = true;
+                if( !this.data.id || this.data.id=="" ){
+                    var data = this.form.getResult(true, ",", true, false, true);
+                    if( !data ){
+                        this.attachment.isQueryUploadSuccess = false;
+                        return;
+                    }
+                    if(this.options.isNew){
+                        data.centerId = this.options.centerWorkId || this.data.centerWorkId || this.data.centerId ;
+                    }
+
+                    this.app.restActions.saveTask(data, function(json){
+                        if(json.type && json.type == "success"){
+                            if(json.userMessage) {
+                                this.attachment.options.documentId = json.userMessage;
+                                this.data.id = json.userMessage;
+                                //this.options.isNew = false;
+                            }
+                        }
+                    }.bind(this),null,false)
+                }
+            }.bind(this)
+        })
+        this.attachment.load();
+    },
+    _createBottomContent: function () {
+        this.cancelActionNode = new Element("div.formCancelActionNode", {
+            "styles": this.css.formCancelActionNode,
+            "text": this.app.lp.cancel
+        }).inject(this.formBottomNode);
+
+
+        this.cancelActionNode.addEvent("click", function (e) {
+            this.cancel(e);
+        }.bind(this));
+
+        if ((this.isNew || this.isEdited) && this.options.actionStatus == "save" ) {
+            this.okActionNode = new Element("div.formOkActionNode", {
+                "styles": this.css.formOkActionNode,
+                "text": this.app.lp.ok
+            }).inject(this.formBottomNode);
+
+            this.okActionNode.addEvent("click", function (e) {
+                this.ok(e);
+            }.bind(this));
+        }
+
+        if(this.options.actionStatus=="deploy"){
+            this.deployActionNode = new Element("div.formDeployActionNode",{
+                "styles": this.css.formOkActionNode,
+                "text" : this.app.lp.deploy
+            }).inject(this.formBottomNode)
+                .addEvent("click",function(){
+                    this.deploy();
+                }.bind(this))
+        }
+    },
+    deploy: function(){
+        //先调用保存，再部署
+        var data = this.form.getResult(true, ",", true, false, true);
+        if (data) {
+            data.title = data.workDetail;
+            data.deployerName = this.app.user;
+            data.creatorName = this.app.user;
+            data.centerId = this.data.centerId;
+            this.app.restActions.saveTask(data,function(json){
+                if(json.type && json.type == "success"){
+                    if(json.userMessage){
+                        var ids = [];
+                        ids.push(json.userMessage);
+                        var workData = {  "workIds":ids };
+
+                        this.actions.deployBaseWork( workData, function( json ){
+                            if(json.type && json.type=="success"){
+                                this.app.notice(this.app.lp.WorkDeploy.deployeSuccess, "ok");
+                                //this.reloadContent();
+                                this.close();
+
+                            }
+                            this.fireEvent("postDeploy", json);
+                        }.bind(this),function(xhr,error,text){
+                            var errorText = error;
+                            if (xhr) errorMessage = xhr.responseText;
+                            var e = JSON.parse(errorMessage);
+                            if(e.userMessage){
+                                this.app.notice( e.userMessage,"error");
+                            }else{
+                                this.app.notice( errorText,"error");
+                            }
+                        }.bind(this));
+                    }
+                }
+            }.bind(this))
+        }
+    },
+    _ok: function (data, callback) {
+        //data.title = data.workDetail;
+        //if(this.options.isNew){
+        //    data.deployerName = this.app.user;
+        //    data.creatorName = this.app.user;
+        //    data.centerId = this.data.centerWorkId
+        //}
+        this.app.restActions.saveTask(data,function(json){
+            if(json.type && json.type=="success"){
+                this.app.notice(this.lp.submitSuccess, "ok");
+                if(this.options.tabLocation){
+                    //if(this.options.from == "view"){
+                        //if(this.app.workTask.contentDiv)  this.app.workTask.contentDiv.destroy()
+                        if(this.app.workTask)this.app.workTask.loadBaseWorkList(this.options.tabLocation);
+                        if(this.app.workList)this.app.workList.loadBaseWorkList(this.options.tabLocation)
+                    //}
+
+                }else{
+                    if(this.explorer && this.explorer.explorer && this.explorer.explorer.reloadList){
+                        this.explorer.explorer.reloadList();
+                    }
+                }
+
+
+                this.close();
+            }
+            this.fireEvent("postSave", json);
+        }.bind(this),function(xhr,text,error){
+            var errorText = error;
+            if (xhr) errorMessage = xhr.responseText;
+            var e = JSON.parse(errorMessage);
+            if(e.userMessage){
+                this.app.notice( e.userMessage,"error");
+            }else{
+                this.app.notice( errorText,"error");
+            }
+        }.bind(this));
+        //this.app.restActions.saveDocument( this.data.id, data, function(json){
+        //    if( callback )callback(json);
+        //}.bind(this));
+    },
+    getDepartmentLeader:function(department, callback){
+        this.app.restActions.getDepartmentDuty(function( json ){
+            if( json.data.identityList && json.data.identityList.length > 0 ){
+                if(callback) callback(json.data.identityList[0])
+                //this.app.restActions.getPersonByIdentity( function(data){
+                //    if(callback)callback(data.data.name);
+                //}.bind(this),null, json.data.identityList[0] ,false)
+            }
+        }.bind(this),null,this.app.lp.departmentLeader, department, false )
+    },
+    showErrorMessage:function(xhr,text,error){
+        var errorText = error;
+        if (xhr) errorMessage = xhr.responseText;
+        if(errorMessage!=""){
+            var e = JSON.parse(errorMessage);
+            if(e.userMessage){
+                this.app.notice( e.userMessage,"error");
+            }else{
+                this.app.notice( errorText,"error");
+            }
+        }else{
+            this.app.notice(errorText,"error")
+        }
+
+    }
+});
+
+

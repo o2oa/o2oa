@@ -1,0 +1,20 @@
+[
+  {
+    "title" : "中心工作",
+    "icon" :"Collect-104.png",
+    "action" : "openCenterWork"
+  }//,
+//  {
+//    "title" : "我的工作",
+//    "icon" :"Prototype-100.png"
+//  },
+//  {
+//    "title" : "部门工作",
+//    "icon" :"Conference-100.png"
+//
+//  },
+//  {
+//    "title" : "公司工作",
+//    "icon" :"Department-100.png"
+//  }
+]

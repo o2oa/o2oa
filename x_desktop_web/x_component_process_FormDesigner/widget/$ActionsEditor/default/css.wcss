@@ -1,0 +1,123 @@
+{
+	"actionsContainer":{
+		"overflow": "hidden"
+	},
+
+	"actionTitleArea": {
+        "height": "20px",
+        "background-color": "#EEE",
+        "line-height": "20px",
+        "border-bottom": "1px solid #999"
+	},
+	"actionArea": {
+	    "overflow": "hidden",
+	    "min-height": "30px"
+	},
+    "createActionButton": {
+        "height": "20px",
+        "width": "20",
+        "margin-left": "10px",
+        "float": "left",
+        "cursor": "pointer",
+        "color": "#333"
+    },
+
+
+
+
+
+    "actionNode": {
+        "overflow": "hidden",
+        "border-bottom": "1px solid #666"
+    },
+    "actionTitleNode": {
+        "background-color": "#F6F6F6",
+        "height": "24px",
+        "line-height": "24px",
+    },
+    "actionIconNode": {
+        "height": "24px",
+        "width": "24px",
+        "background-repeat": "no-repeat",
+        "background-position": "center center",
+        "float": "left"
+    },
+    "actionDelButtonNode": {
+        "height": "24px",
+        "width": "24px",
+        "text-align": "center",
+        "line-height": "24px",
+        "float": "right",
+        "cursor": "pointer",
+        "color": "#333"
+    },
+    "actionEditButtonNode": {
+       "height": "24px",
+       "width": "20px",
+       "background": "url("+"/x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/edit.png) no-repeat center center",
+       "float": "right",
+    },
+    "actionReadButtonNode": {
+       "height": "24px",
+       "width": "20px",
+       "background": "url("+"/x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/read.png) no-repeat center center",
+       "float": "right",
+    },
+    "actionConditionButtonNode": {
+       "height": "24px",
+       "width": "20px",
+       "background": "url("+"/x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/code_empty.png) no-repeat center center",
+       "float": "right",
+    },
+    "actionTextNode": {
+        "height": "24px",
+        "float": "left"
+    },
+    "actionEditTextNode": {
+        "border": "0px",
+        "background-color": "#F6F6F6",
+        "height": "22px"
+    },
+    "actionScriptNode": {
+        "overflow": "hidden",
+        "display": "none"
+    },
+
+
+
+
+
+
+
+
+    "actionTitleNode": {
+        "height": "24px",
+        "line-height": "24px",
+        "background-color": "#DDD",
+        "cursor": "pointer"
+    },
+    "titleActionNode": {
+        "height": "24px",
+        "width": "50px",
+        "float": "right"
+    },
+    "titleTextNode": {
+        "height": "24px",
+        "margin-right": "50px"
+    },
+    "delAction": {
+        "height": "24px",
+        "width": "240px",
+        "float": "right",
+        "cursor": "pointer",
+        "background": "url("+"/x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/delete1.png) no-repeat center center"
+    },
+    "addAction": {
+        "height": "24px",
+        "width": "240px",
+        "float": "right",
+        "cursor": "pointer",
+        "background": "url("+"/x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/add2.png) no-repeat center center"
+    }
+
+}

@@ -1,0 +1,10 @@
+{
+	"contentNode": {
+		"width": "100%", 
+		"height": "100%", 
+		"background-color": "#EECCCC",
+		"-webkit-user-select": "text",
+		"-moz-user-select": "text",
+		"overflow": "hidden"
+	}
+}

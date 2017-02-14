@@ -1,0 +1,160 @@
+.font-operator {
+    width: 170px;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 12px;
+    padding: 0 5px;
+
+    .font-size-list {
+        display: inline-block;
+        border: 1px solid #eee;
+        padding: 2px 4px;
+    }
+
+    .font-family-list {
+        display: inline-block;
+        border: 1px solid #eee;
+        padding: 2px 4px;
+    }
+
+}
+
+.current-font-item a {
+    text-decoration: none;
+    display: inline-block;
+}
+
+.current-font-family {
+    width: 75px;
+    height: 18px;
+    overflow: hidden;
+    vertical-align: bottom;
+}
+.current-font-size {
+    width: 32px;
+    height: 18px;
+    overflow: hidden;
+    vertical-align: bottom;
+}
+
+.current-font-item[disabled] {
+    opacity: 0.5;
+}
+
+.font-item {
+    line-height: 1em;
+    text-align: left;
+}
+
+.font-item-selected {
+    background-color: @tool-selected;
+}
+
+.font-bold, .font-italics {
+    display: inline-block;
+    background: url(images/icons.png) no-repeat;
+    cursor: pointer;
+    margin: 0 3px;
+
+
+    &:hover {
+        background-color: @tool-hover;
+    }
+
+    &:active {
+        background-color: @tool-active;
+    }
+
+    &[disabled] {
+        opacity: 0.5;
+    }
+}
+
+.font-bold {
+    background-position: 0 -240px;
+}
+
+.font-italics {
+    background-position: 0 -260px;
+}
+
+.font-bold-selected, .font-italics-selected {
+    background-color: @tool-selected;
+}
+
+.font-color-wrap {
+    display: inline-block;
+    width: 30px;
+    height: 22px;
+    margin: 3px 3px 0 0;
+    border: 1px #efefef solid;
+    vertical-align: middle;
+    font-size: 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    &[disabled] {
+        opacity: 0.5;
+    }
+
+    .quick-font-color {
+        display: inline-block;
+        width: 20px;
+        height: 16px;
+        font-size: 14px;
+        line-height: 16px;
+        vertical-align: top;
+        text-align: center;
+        cursor: default;
+        color: #000;
+
+        &:hover {
+            background-color: @tool-hover;
+        }
+
+        &:active {
+            background-color: @tool-active;
+        }
+
+        &[disabled] {
+            opacity: 0.5;
+        }
+    }
+
+    .font-color-preview {
+        display: inline-block;
+        width: 12px;
+        height: 2px;
+        margin: 0 4px 0;
+        background-color: #000;
+
+        &[disabled] {
+            opacity: 0.5;
+        }
+    }
+}
+
+.font-color {
+    display: inline-block;
+    width: 8px;
+    height: 16px;
+
+    &:hover {
+        background-color: @tool-hover;
+    }
+
+    &:active {
+        background-color: @tool-active;
+    }
+
+    &[disabled] {
+        opacity: 0.5;
+    }
+
+    .caret {
+        margin-left: -2px;
+        margin-top: 7px;
+    }
+}

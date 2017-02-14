@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>x_processplatform_assemble_surface_work_jest</title>
+<script src="./common.js"></script>
+<script src="./jquery.js"></script>
+<script src="./work.js"></script>
+<script src="./job.js"></script>
+<script>
+    $(document).ready(function() {
+	work_getComplex_init();
+    });
+</script>
+</head>
+
+<body style="margin: 0; font-size: 1.0em; font-family: Microsoft Yahei">
+	<div id="container" style="width: 1000px; margin: 0 auto;">
+		<div id="header"
+			style="background-color: #4682B4; clear: both; text-align: center;">
+			x_processplatform_assemble_surface_work_jest<br /> for <br />
+			x_processplatform_assemble_surface_work
+		</div>
+		<div id="menu"
+			style="background-color: #B0E0E6; height: 950px; width: 280px; float: left;">
+			<ul>
+				<li>Work
+					<ul>
+						<li><a onclick="work_getComplex_init()" href="#">Get
+								Complex</a></li>
+						<li><a onclick="work_retract_init()" href="#">Retract</a></li>
+					</ul>
+				</li>
+				<li>Job
+					<ul>
+						<li><a onclick="job_get_init()" href="#">Get</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div style="float: left; width: 720px;">
+			<div id="content" style="width: 100%;">&nbsp;</div>
+			<div id="result"
+				style="width: 100%; white-space: pre; font-size: 10px; word-break: break-all; word-wrap: break-word;">
+				&nbsp;</div>
+		</div>
+		<div id="footer"
+			style="background-color: #4682B4; clear: both; text-align: center; display: none">
+			Copyright © x</div>
+	</div>
+</body>
+</html>

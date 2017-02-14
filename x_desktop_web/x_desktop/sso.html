@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <!--<script src="res/framework/mootools/mootools-core-1.4.5-full-nocompat.js"></script>-->
+    <!--<script src="res/framework/mootools/mootools-more-1.4.0.1-all_2.js"></script>-->
+    <script src="res/framework/mootools/mootools-1.6.0.min.js"></script>
+    <script src="res/common.js?v=0.3.16"></script>
+    <script>
+        function getServiceAddress(config, callback){
+            var host = config.center.host || window.location.host;
+            var port = config.center.port;
+            var uri = "";
+            if (!port || port=="80"){
+                uri = "http://"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+            }else{
+                uri = "http://"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+            }
+            var currenthost = window.location.hostname;
+            uri = uri.replace(/{source}/g, currenthost);
+            //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
+            MWF.restful("get", uri, null, function(json){
+                var serviceAddressList = json.data;
+                var addressObj = serviceAddressList["x_organization_assemble_authentication"];
+                var address = "http://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
+
+                if (callback) callback(address);
+            }.bind(this));
+        }
+        COMMON.setContentPath("/x_desktop");
+        COMMON.AjaxModule.load("mwf", function(){
+            MWF.getJSON("res/config/config.json", function(config){
+                getServiceAddress(config, function(address){
+                    var uri = new URI(window.location.toString());
+                    var xtoken = uri.getData("xtoken");
+                    if (xtoken){
+                        var res = new Request.JSON({
+                            //url: "http://hbxa01.bf.ctc.com:20080/x_organization_assemble_authentication/jaxrs/sso",
+                            url: address+"/jaxrs/sso",
+                            secure: false,
+                            method: "POST",
+                            noCache: true,
+                            withCredentials: true,
+                            onSuccess: function(responseJSON, responseText){
+                                debugger;
+                                window.location = "/";
+                            }.bind(this),
+                            onFailure: function(xhr){
+                                window.location = "/";
+                            }.bind(this),
+                            onError: function(text, error){
+                                window.location = "/";
+                            }.bind(this)
+                        });
+                        res.setHeader("Content-Type", "application/json; charset=utf-8");
+                        var json = {"token": xtoken};
+
+                        res.send(JSON.encode(json));
+                    }else{
+                        window.location = "/"
+                    }
+                });
+            });
+
+
+            //	MWF.require("MWF.process.RestActions", function(){
+            //		layout.restActions = new MWF.process.RestActions(Properties.action);
+            //	});
+        });
+
+
+    </script>
+</head>
+<body bgcolor="#faebd7" bgcolor="#ffc0cb">
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/x/lib/imgscalr/imgscalr-lib-4.2.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/beanutils/commons-beanutils-1.8.3.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/lang3/commons-lang3-3.4.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/collections4/commons-collections4-4.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/google/gson/gson-2.7.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/javax/javaee-api-7.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/io/commons-io-2.4.jar" sourcepath="D:/x/lib/apache/commons/io/commons-io-2.4-sources.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/ant/ant.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/cargo/cargo-core-uberjar-1.5.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/codec/commons-codec-1.8.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/net/commons-net-3.3.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="D:/x/lib/github/fast-classpath-scanner/fast-classpath-scanner-1.91.6.jar"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>

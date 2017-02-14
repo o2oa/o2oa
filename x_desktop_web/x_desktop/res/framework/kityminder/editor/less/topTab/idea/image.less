@@ -1,0 +1,129 @@
+.btn-group-vertical {
+
+    .image-btn, .image-btn-caption {
+        width: 40px;
+        margin: 0;
+        padding: 0;
+        border: none!important;
+        border-radius: 0!important;
+
+        &:hover {
+            background-color: @tool-hover;
+        }
+
+        &:active {
+            background-color: @tool-active;
+        }
+
+        &.active {
+            box-shadow: none;
+            background-color: @tool-hover;
+        }
+    }
+
+    .image-btn {
+        height: 25px;
+        background: url(images/icons.png) no-repeat center -125px;
+    }
+
+    .image-btn-caption {
+        height: 20px;
+
+        .caption {
+            font-size: 12px;
+        }
+    }
+}
+
+.image-preview {
+    display: block;
+    max-width: 50%;
+}
+
+.modal-body {
+    .tab-pane {
+        font-size: inherit;
+        padding-top: 15px;
+    }
+}
+
+.search-result {
+    margin-top: 15px;
+    height: 370px;
+    overflow: hidden;
+
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        clear: both;
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+
+        li {
+            list-style: none;
+            float: left;
+            display: block;
+            width: 130px;
+            height: 130px;
+            line-height: 130px;
+            margin: 6px;
+            padding: 0;
+            font-size: 12px;
+            position: relative;
+            vertical-align: top;
+            text-align: center;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid #fcfcfc;
+
+            &.selected {
+                border: 2px solid #fc8383;
+            }
+
+
+            img {
+                max-width: 126px;
+                max-height: 130px;
+                vertical-align: middle;
+            }
+
+            span {
+                display: block;
+                position: absolute;
+                bottom: 0;
+                height: 20px;
+                background: rgba(0, 0, 0, 0.5);
+                left: 0;
+                right: 0;
+                color: white;
+                line-height: 20px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                word-break: break-all;
+                white-space: nowrap;
+                opacity: 0;
+                -webkit-transform: translate(0, 20px);
+                -ms-transform: translate(0, 20px);
+                transform: translate(0, 20px);
+                -webkit-transition: all .2s ease;
+                transition: all .2s ease;
+            }
+        }
+
+        li:hover span {
+            opacity: 1;
+            -webkit-transform: translate(0, 0);
+            -ms-transform: translate(0, 0);
+            transform: translate(0, 0);
+        }
+    }
+}
+
+// 覆盖 bootstrap 样式
+@media (min-width: 768px){
+    .form-inline .form-control {
+         width: 422px;
+     }
+}

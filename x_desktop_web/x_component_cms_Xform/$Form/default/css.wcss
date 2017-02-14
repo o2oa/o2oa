@@ -1,0 +1,290 @@
+{
+	"container": {
+		"padding": "3px",
+		"overflow": "hidden"
+	},
+	"textfieldNode": {
+	  "padding-left" : "5px",
+		"display": "inline-block",
+	  	"border" : "1px solid #dbdbdb",
+	  "border-radius" : "2px",
+	  "height" : "24px",
+	  "line-height" : "24px",
+	  "width" : "80%"
+	},
+	"textfieldNode_select": {
+	  "border" : "1px solid #3587d7"
+	},
+
+  "textareaNode": {
+	"border-radius" : "2px",
+	"padding-left" : "5px",
+	"border" : "1px solid #dbdbdb",
+	"min-height" : "48px",
+	"width" : "80%"
+  },
+  "textareaNode_select": {
+	"border" : "1px solid #3587d7"
+  },
+
+	"personfieldIcon": {
+		"background": "url("+"/x_component_cms_Xform/$Form/default/icon/selectperson.png) center center no-repeat",
+		"width": "18px",
+		"height": "18px",
+	  	"top": "5px",
+	  	"left": "-24px",
+		"position": "relative",
+		"display": "inline-block",
+		"cursor": "pointer" 
+	},
+	"calendarIcon": {
+		"background": "url("+"/x_component_cms_Xform/$Form/default/icon/calendar.png) center center no-repeat",
+		"width": "18px",
+		"height": "18px",
+	  "top": "5px",
+	  "left": "-24px",
+		"position": "relative",
+		"display": "inline-block",
+		"cursor": "pointer" 
+	},
+	"selectIcon": {
+		"background": "url("+"/x_component_cms_Xform/$Form/default/icon/pull.png) center center no-repeat",
+		"width": "18px",
+		"height": "18px",
+	  "top": "5px",
+	  "left": "-24px",
+		"position": "relative",
+		"display": "inline-block",
+		"cursor": "pointer"
+	},
+	"buttonStyles": {
+		"border-radius": "3px",
+		"border-top": "1px solid #999",
+		"border-left": "1px solid #999",
+		"border-right": "1px solid #333",
+		"border-bottom": "1px solid #333",
+		"overflow": "hidden",
+		"cursor": "pointer",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "static",
+		"top": "auto",
+		"left": "auto",
+		"opacity": 1,
+	  	"line-height": "26px",
+		"height": "26px"
+	},
+	"datagridTitle": {
+		"height": "20px",
+		"cursor": "pointer",
+		"line-height": "20px",
+		"overflow": "hidden",
+		"opacity": 1,
+		"background": "#C3CEEA"
+	},
+	"gridLineActionCell": {
+		"width": "40px"
+	},
+	"gridMoveActionCell": {
+		"width": "5px"
+	},
+	"addLineAction": {
+		"width": "20px",
+		"height": "20px",
+		"background": "url("+"/x_component_cms_Xform/$Form/default/icon/addline.png) center center no-repeat",
+		"cursor": "pointer",
+		"float": "left"
+	},
+	"delLineAction": {
+		"width": "20px",
+		"height": "20px",
+		"background": "url("+"/x_component_cms_Xform/$Form/default/icon/delline.png) center center no-repeat",
+		"cursor": "pointer",
+		"float": "left"
+	},
+	"completeLineAction": {
+		"width": "20px",
+		"height": "20px",
+		"background": "url("+"/x_component_cms_Xform/$Form/default/icon/check.png) center center no-repeat",
+		"cursor": "pointer",
+		"float": "left"
+	},
+	"moveLineAction": {
+		"width": "5px",
+		"height": "20px",
+		"background": "url("+"/x_component_cms_Xform/$Form/default/icon/move.png) center center no-repeat",
+		"cursor": "move",
+		"float": "left"
+	},
+	"gridMoveLineDragNode": {
+		"opacity": 0.7,
+		"z-index": 30000,
+		"background-color": "#CCC",
+		position: 'absolute'
+	},
+	"gridMoveLineDragNodeTr": {
+		//"background-color": "#f3f1ad"
+		"background-color": "#e4f6e9"
+	},
+	"logActivityNode": {
+	    "overflow": "hidden",
+	    "margin": "10px",
+	    "border": "1px solid #CCC",
+	    "background-color": "#FFF"
+	},
+	"logActivityNode_even": {
+	    "overflow": "hidden",
+        "margin": "10px",
+        "border": "1px solid #CCC",
+        "background-color": "#FFF"
+	},
+	"logActivityTitleNode": {
+	    "height": "40px",
+	    "line-height": "40px",
+        "background-color": "#edf3f9",
+	    "border-bottom": "1px solid #CCC",
+	    "font-size": "12px",
+	    "overflow": "hidden"
+	},
+	"logActivityTitleNode_even": {
+        "height": "40px",
+        "line-height": "40px",
+        "background-color": "#edf3f9",
+        "border-bottom": "1px solid #CCC",
+        "font-size": "12px",
+        "overflow": "hidden"
+	},
+	"logActivityChildNode": {
+	    "clear": "both",
+	    "overflow": "hidden"
+	},
+	"logActivityIconNode": {
+	    "height": "40px",
+	    "width": "30px",
+	    "background-position": "center center",
+	    "background-repeat": "no-repeat",
+	    "float": "left"
+	},
+	"logActivityFromNode": {
+        "height": "40px",
+        "line-height": "40px",
+        "float": "left",
+        "font-size": "14px"
+	},
+	"logActivityArrowNode": {
+        "height": "40px",
+        "width": "30px",
+        "background-position": "center center",
+        "background-repeat": "no-repeat",
+        "float": "left"
+	},
+	"logActivityArrivedNode": {
+	    "height": "40px",
+	    "line-height": "40px",
+        "float": "left",
+        "font-size": "14px"
+	},
+	"logActivityTimeNode": {
+	    "height": "40px",
+    	"line-height": "20px",
+    	"margin-right": "5px",
+        "float": "right"
+
+	},
+	"logTaskNode": {
+	    "clear": "both",
+	    "overflow": "hidden",
+        "line-height": "28px",
+        "border-bottom": "1px solid #CCC",
+        "font-size": "12px",
+        "background": "transparent"
+	},
+	"logTaskNode_even": {
+        "overflow": "hidden",
+        "line-height": "28px",
+        "border-bottom": "1px solid #CCC",
+        "font-size": "12px",
+        "background": "#e7ecf6"
+    },
+	"logTaskIconNode": {
+        "height": "28px",
+        "width": "28px",
+        "margin-left": "20px",
+        "background-position": "center center",
+        "background-repeat": "no-repeat",
+        "float": "left"
+    },
+    "logTaskTextNode": {
+        "margin-right": "10px",
+        "overflow": "hidden"
+    },
+
+    "logTable": {
+        "border-left": "1px solid #CCC",
+        "border-top": "1px solid #CCC"
+    },
+    "logTableTr": {
+        "background-color": "#edf3f9"
+    },
+    "logTableIconTd": {
+        "width": "20px",
+        "background-position": "center center",
+        "background-repeat": "no-repeat",
+        "border-right": "0px solid #CCC",
+        "border-bottom": "1px solid #CCC"
+    },
+    "logTableActivityTd": {
+        "border-right": "1px solid #CCC",
+        "border-bottom": "1px solid #CCC",
+
+    },
+    "logTableTaskTd": {
+        "border-right": "1px solid #CCC",
+        "border-bottom": "1px solid #CCC",
+        "background-color": "#FFF"
+    },
+
+    "logTableActivityNode": {
+        "line-height": "28px",
+        "font-size": "14px",
+        "text-align": "center"
+    },
+    "logTableActivityTimeNode": {
+        "line-height": "20px",
+        "text-align": "center"
+    },
+    "logTableTask": {
+        "border-left": "1px solid #CCC",
+        "border-top": "1px solid #CCC",
+        "font-size": "12px"
+    },
+    "logTableTaskTitleLine": {
+        "text-align": "center",
+        "font-weight": "bold",
+        "background-color": "#edf3f9"
+    },
+    "logTableTaskTitle": {
+        "border-right": "1px solid #CCC",
+        "border-bottom": "1px solid #CCC"
+    },
+    "logTableTaskLine": {
+        "border-right": "1px solid #CCC",
+        "border-bottom": "1px solid #CCC"
+    },
+    "logTableTaskLine_task": {
+     "border-right": "1px solid #CCC",
+     "border-bottom": "1px solid #CCC",
+     "color": "red"
+    },
+    "datagridTotalTr": {
+        "height": "20px",
+        "cursor": "pointer",
+        "line-height": "20px",
+        "overflow": "hidden",
+        "background": "#e1e6f3"
+    },
+    "datagridTotalTd": {
+        "font-weight": "bold"
+    }
+
+}

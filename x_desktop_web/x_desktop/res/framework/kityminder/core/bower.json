@@ -1,0 +1,34 @@
+{
+    "name": "kityminder-core",
+    "title": "Kity Minder Core",
+    "description": "Powerful online mind graphic visualization and editor (command based)",
+    "version": "1.4.33",
+    "main": [
+        "dist/kityminder.core.min.js",
+        "dist/kityminder.core.css"
+    ],
+    "keywords": ["kityminder", "kity", "svg"],
+    "homepage": "https://github.com/fex-team/kityminder-core",
+    "devDependencies": {
+        "seajs": "~2.3.0"
+    },
+    "dependencies": {
+        "kity": "~2.0.0",
+        "json-diff": "*"
+    },
+    "licenses": [{
+        "type": "BSD",
+        "url": "https://github.com/fex-team/kityminder-core/blob/dev/LICENSE"
+    }],
+    "bugs": {
+        "url": "https://github.com/fex-team/kityminder-core/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/fex-team/kityminder-core.git"
+    },
+    "author": {
+        "name": "Baidu FEX",
+        "url": "http://fex.baidu.com"
+    }
+}

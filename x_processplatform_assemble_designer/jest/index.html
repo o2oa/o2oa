@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>x_processplatform_front_designer</title>
+<script src="jquery.js"></script>
+<script src="common.js"></script>
+<script src="application.js"></script>
+<script src="applicationCategory.js"></script>
+<script src="applicationDict.js"></script>
+<script src="process.js"></script>
+<script src="form.js"></script>
+<script src="script.js"></script>
+<script src="queryView.js"></script>
+<script src="queryStat.js"></script>
+<script>
+    $(document).ready(function() {
+	applicatiionCategory_list();
+    });
+</script>
+</head>
+
+<body style="margin: 0; font-size: 1.0em; font-family: Microsoft Yahei">
+	<div id="container" style="width: 1000px; margin: 0 auto;">
+		<div id="header"
+			style="background-color: #4682B4; clear: both; text-align: center;">
+			x_processplatform_assemble_designer</div>
+		<div id="menu"
+			style="background-color: #B0E0E6; height: 950px; width: 280px; float: left;">
+			<ul>
+				<li>ApplicationCategory
+					<ul>
+						<li><a onclick="applicatiionCategory_list()" href="#">List</a>
+						</li>
+					</ul>
+				</li>
+				<li>Application
+					<ul>
+						<li><a onclick="application_list_summary()" href="#">List
+								Summary</a></li>
+						<li><a onclick="application_create()" href="#">Create</a></li>
+						<li>Icon
+							<ul>
+								<li><a onclick="application_icon_update()" href="#">Update</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+
+				</li>
+				<li>Process
+					<ul>
+						<li><a onclick="process_query()" href="#">Query</a></li>
+						<li><a onclick="process_create()" href="#">Create</a></li>
+						<li>Demo
+							<ul>
+								<li><a onclick="process_demo_simple_create()" href="#">Simple</a>
+								</li>
+								<li><a onclick="process_demo_split_create()" href="#">Split</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li>Form
+					<ul>
+						<li><a onclick="form_query()" href="#">Query</a></li>
+						<li><a onclick="form_create()" href="#">Create</a></li>
+						<li><a onclick="form_list_reload()" href="#">List</a></li>
+
+					</ul>
+				</li>
+				<li>Script
+					<ul>
+						<li><a onclick="script_query()" href="#">Query</a></li>
+						<li><a onclick="script_create()" href="#">Create</a></li>
+					</ul>
+				</li>
+				<li>ApplicationDict
+					<ul>
+						<li><a onclick="applicationDict_list_init()" href="#">List</a>
+						</li>
+						<li><a onclick="applicationDict_create()" href="#">Create</a>
+						</li>
+						<li><a onclick="applicationDict_view()" href="#">View</a></li>
+						<li><a onclick="applicationDict_query_init()" href="#">Query</a>
+						</li>
+					</ul>
+				</li>
+				<li>QueryView
+					<ul>
+						<li><a onclick="queryView_list_next('(0)')" href="#">List</a></li>
+						<li><a onclick="queryView_listWithApplication_init()"
+							href="#">ListWithApplication</a></li>
+						<li><a onclick="queryView_create()" href="#">Create</a></li>
+						<li><a onclick="queryView_simulate_init()" href="#">Simulate</a></li>
+					</ul>
+				</li>
+				<li>QueryStat
+					<ul>
+						<li><a onclick="queryStat_list_next('(0)')" href="#">List</a></li>
+						<li><a onclick="queryStat_listWithApplication_init()"
+							href="#">ListWithApplication</a></li>
+						<li><a onclick="queryStat_create()" href="#">Create</a></li>
+						<li><a onclick="queryStat_simulate_init()" href="#">Simulate</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div style="float: left; width: 720px;">
+			<div id="content" style="width: 100%;">&nbsp;</div>
+			<div id="result"
+				style="width: 100%; white-space: pre; font-size: 10px; word-break: break-all; word-wrap: break-word;">
+				&nbsp;</div>
+		</div>
+		<div id="footer"
+			style="background-color: #4682B4; clear: both; text-align: center; display: none">
+			Copyright © x</div>
+	</div>
+</body>
+</html>

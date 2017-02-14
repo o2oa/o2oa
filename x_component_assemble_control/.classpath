@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/x/lib/google/gson/gson-2.7.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/javax/javaee-api-7.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/collections4/commons-collections4-4.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/lang3/commons-lang3-3.4.jar"/>
+	<classpathentry kind="lib" path="D:/x/store/jars/x_component_core_entity-4.0.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/openjpa/openjpa-2.4.2-SNAPSHOT.jar"/>
+	
+	<classpathentry kind="lib" path="D:/x/store/jars/x_base_core_project-4.0.0.jar"/>
+	<classpathentry kind="output" path="build/WEB-INF/classes"/>
+</classpath>

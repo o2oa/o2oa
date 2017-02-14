@@ -1,0 +1,16 @@
+{
+  "addNote": {
+    "uri": "/jaxrs/note",
+    "method": "POST"
+  },
+  "updateNote": {
+    "uri": "/jaxrs/note/{id}",
+    "method": "PUT"
+  },
+  "deleteNote": {
+    "uri": "/jaxrs/note/{id}",
+    "method": "Delete"
+  }
+
+
+}

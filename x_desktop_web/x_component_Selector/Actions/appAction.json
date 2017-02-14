@@ -1,0 +1,7 @@
+{
+  "listApplications": {"uri": "/jaxrs/application/list"},
+  "getApplications": {"uri": "/jaxrs/application/{flag}"},
+
+  "listApplicationsProcess": {"uri": "/jaxrs/application/list/complex"},
+  "listProcess": {"uri": "/jaxrs/process/list/application/{id}"}
+}

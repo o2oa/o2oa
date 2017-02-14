@@ -1,0 +1,124 @@
+{
+
+	"viewListNode": {
+        "width": "260px",
+        "overflow": "hidden",
+        "border": "1px solid #505050",
+        "height": "100%",
+        "float": "left",
+        "background-color": "#EEE"
+    },
+
+	"contentNode": {
+	    "margin-left": "261px",
+//		"margin-right": "301px",
+		"border-right": "1px solid #505050",
+		"border-left": "1px solid #505050",
+		"background-color": "#FFF",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none" 
+	},
+
+    "viewListResizeNode": {
+        "width": "3px",
+        "float": "right",
+        "background-color": "#505050",
+        "margin-right": "2px",
+        "cursor": "col-resize"
+    },
+    "viewListAreaSccrollNode": {
+        "margin": "4px",
+        "margin-right": "8px",
+        "overflow": "hidden",
+        "background-color": "#FFF",
+        "border-top": "1px solid #999",
+        "border-left": "1px solid #999",
+        "border-bottom": "1px solid #DDD",
+        "border-right": "1px solid #DDD"
+    },
+    "viewListAreaNode": {
+        "overflow": "hidden"
+    },
+	"viewListTitleNode": {
+        "height": "26px",
+        "background-color": "#505050",
+        "border-radius": "0px",
+        "margin": "2px",
+        "color": "#FFF",
+        "line-height": "26px",
+        "font-size": "12px",
+        "font-weight": "bold",
+        "padding-left": "10px",
+        "clear": "both"
+    },
+    "listViewItem": {
+        "height": "24px",
+        "line-height": "24px",
+        "margin": "3px 10px 0px 10px",
+        "cursor": "pointer",
+        "background": "#FFF",
+        "color": "#333"
+    },
+    "listViewItem_over": {
+        "background": "#e8eef7"
+    },
+    "listViewItem_current": {
+        "background": "#48638f",
+        "color": "#FFF"
+    },
+    "listViewItemIcon": {
+        "height": "24px",
+        "width": "26px",
+        "background": "url("+"/x_component_cms_ViewDesigner/$Main/default/view.png) no-repeat center center",
+        "float": "left"
+    },
+    "listViewItemText": {
+        "height": "24px",
+        "margin-left": "28px",
+        "white-space": "nowrap"
+    },
+
+
+	"contentToolbarNode": {
+		"height": "30px",
+		"background-color": "#EEE"
+	},
+	"editContentNode": {
+		"overflow": "hidden",
+		"background": "#CCC",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none" 
+	},
+	"designFrame": {
+		"width": "100%",
+		"height": "100%",
+		"border": "0px"
+	},
+	"designBody": {
+		"margin": "0px"
+	},
+	"designNode": {
+		//"height": "100%",
+		"margin": "15px",
+		"box-shadow": "0px 0px 20px #606060", 
+		"background": "#FFF",
+		"-webkit-user-select": "none",
+		"overflow": "hidden",
+		"-moz-user-select": "none" 
+	},
+
+    "jsonDomNode": {
+        "overflow": "hidden",
+        "background": "#FFF",
+        "min-height": "500px"
+    },
+    "jsonTextNode": {
+        "overflow": "hidden",
+        "background": "#FFF"
+    },
+    "jsonTextAreaNode": {
+        "border": "0px",
+        "width": "100%",
+        "height": "500px"
+    }
+}

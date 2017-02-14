@@ -1,0 +1,148 @@
+<div>
+    <div title="基本" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">标识:</td>
+                <td class="editTableValue">text{$.id}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">创建时间:</td>
+                <td class="editTableValue">text{$.createTime}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">类型:</td>
+                <td class="editTableValue">text{$.type}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">名称:</td>
+                <td class="editTableValue"><input type="text" name="FLActivityNameOS" id="FLActivityNameOS" jsondata="name" value="text{$.name}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">别名:</td>
+                <td class="editTableValue"><input type="text" name="FLActivityAliasOS" id="FLActivityAliasOS" jsondata="alias" value="text{$.alias}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">描述:</td>
+                <td class="editTableValue"><textarea name="FLActivityDescriptionOS" id="FLActivityDescriptionOS" jsondata="description" class="editTableTextarea">text{$.description}</textarea></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">表单:</td>
+                <td class="editTableValue">
+                    <div class="MWFFormSelect" name="form"></div></td>
+            </tr>
+        </table>
+    </div>
+    <div title="人员"  class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableHeadTitle" colspan="2">待阅人</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">待阅人标识:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonIdentity" name="readIdentityList" type="identity"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">待阅部门:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonDepartment" name="readDepartmentList" type="department"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">脚本:</td>
+                <td class="editTableValue">
+                    <div class="MWFScript" name="readScript"></div>
+                </td>
+            </tr>
+        </table>
+        <div class="MWFScriptText" name="readScriptText"></div>
+        <hr />
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableHeadTitle" colspan="2">阅读人</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">阅读人标识:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonIdentity" name="reviewIdentityList" type="identity"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">阅读部门:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonDepartment" name="reviewDepartmentList" type="department"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">脚本:</td>
+                <td class="editTableValue">
+                    <div class="MWFScript" name="reviewScript"></div>
+                </td>
+            </tr>
+        </table>
+        <div class="MWFScriptText" name="reviewScriptText"></div>
+    </div>
+    <div title="事件"  class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">文件收到前:</td>
+                <td class="editTableValue">
+                    <div class="MWFScript" name="beforeArriveScript"></div>
+                </td>
+            </tr>
+        </table>
+        <div class="MWFScriptText" name="beforeArriveScriptText"></div><hr />
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">文件收到后:</td>
+                <td class="editTableValue">
+                    <div class="MWFScript" name="afterArriveScript"></div>
+                </td>
+            </tr>
+        </table>
+        <div class="MWFScriptText" name="afterArriveScriptText"></div><hr />
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">文件流转前:</td>
+                <td class="editTableValue">
+                    <div class="MWFScript" name="beforeExecuteScript"></div>
+                </td>
+            </tr>
+        </table>
+        <div class="MWFScriptText" name="beforeExecuteScriptText"></div><hr />
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">文件流转后:</td>
+                <td class="editTableValue">
+                    <div class="MWFScript" name="afterExecuteScript"></div>
+                </td>
+            </tr>
+        </table>
+        <div class="MWFScriptText" name="afterExecuteScriptText"></div><hr />
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">路由前事件:</td>
+                <td class="editTableValue">
+                    <div class="MWFScript" name="beforeInquiryScript"></div>
+                </td>
+            </tr>
+        </table>
+        <div class="MWFScriptText" name="beforeInquiryScriptText"></div><hr />
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">路由后事件:</td>
+                <td class="editTableValue">
+                    <div class="MWFScript" name="afterInquiryScript"></div>
+                </td>
+            </tr>
+        </table>
+        <div class="MWFScriptText" name="afterInquiryScriptText"></div><hr />
+
+    </div>
+</div>

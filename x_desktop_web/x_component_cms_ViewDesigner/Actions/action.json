@@ -1,0 +1,11 @@
+{
+  "getId" : {"uri":"/jaxrs/uuid/random"},
+
+  "listView": {"uri" : "/jaxrs/view/list/catagory/{catagoryId}"},
+  "getView" : {"uri" : "/jaxrs/view/{id}"},
+  "addView": {"uri" : "/jaxrs/view", "method": "POST"},
+  "updateView" : {"uri":"/jaxrs/view/{id}","medthod":"PUT"},
+  "removeView" : {"uri":"/jaxrs/view/{id}","method": "DELETE"}
+
+
+}

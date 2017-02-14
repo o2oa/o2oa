@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." name="main" default="default">
+	<basename property="project" file="${basedir}" />
+	<dirname property="root.dir" file="${basedir}../" />
+	<property file="${root.dir}/building/build.properties" />
+	<include file="${root.dir}/building/build_common.xml" as="common" />
+
+	<target name="default">
+		<antcall target="common.clean" />
+		<antcall target="common.compile" />
+		<antcall target="common.persistenceXmlWriter" />
+		<antcall target="common.issue" />
+		<antcall target="common.httpMethodDescribeWriter" />
+		<antcall target="common.zipStaticResources" />
+	</target>
+
+	<target name="deploy" depends="default">
+		<java classname="com.x.common.core.application.component.${project}" fork="true">
+			<classpath refid="project.classpath" />
+			<arg value="{
+				centerHost:'xc01.mss.hl.com',
+				centerPort:30080,
+				centerContext:'/x_program_center',
+				centerCipher:'xplatform',
+				'keepRemoteMeta' : false,
+				applicationServersFilePath:'${configuration.dir}/xc01.mss.hl.com/applicationServers.json',
+				datasFilePath:'${configuration.dir}/xc01.mss.hl.com/datas.json',
+				dataServersFilePath:'${configuration.dir}/xc01.mss.hl.com/dataServers.json',
+				storagesFilePath:'${configuration.dir}/xc01.mss.hl.com/storages.json',
+				storageServersFilePath:'${configuration.dir}/xc01.mss.hl.com/storageServers.json',
+				webServersFilePath:'${configuration.dir}/xc01.mss.hl.com/webServers.json',
+				resourcesPath:'${configuration.dir}/xc01.mss.hl.com/resources',
+				distPath:'${dist.dir}',
+				applicationRepositoryPath:'${applicationRepository.dir}',
+				webRepositoryPath:'${webRepository.dir}'
+			}" />
+		</java>
+		<java classname="com.x.common.core.application.component.Tomcat8Deploy" fork="true">
+			<classpath refid="project.classpath" />
+			<arg value="{
+				'server':'xc01.mss.hl.com',
+				'port':30080,
+				'username':'xadmin',
+				'password':'xpfadmin',
+				'filePath':'${dist.dir}/${project}.war'
+			}" />
+		</java>
+	</target>
+
+</project>
+
