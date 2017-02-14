@@ -1,0 +1,42 @@
+<div class="nav-bar">
+    <div class="nav-btn zoom-in"
+         ng-click="minder.execCommand('zoomIn')"
+         title="{{ 'zoom-in' | lang : 'ui' }}"
+         ng-class="{ 'active' : getZoomRadio(zoom) == 0 }">
+        <div class="icon"></div>
+    </div>
+    <div class="zoom-pan">
+        <div class="origin"
+             ng-style="{'transform': 'translate(0, ' + getHeight(100) + 'px)'}"
+             ng-click="minder.execCommand('zoom', 100);"></div>
+        <div class="indicator"
+             ng-style="{
+             'transform': 'translate(0, ' + getHeight(zoom) + 'px)',
+             'transition': 'transform 200ms'
+             }"></div>
+    </div>
+    <div class="nav-btn zoom-out"
+         ng-click="minder.execCommand('zoomOut')"
+         title="{{ 'zoom-out' | lang : 'ui' }}"
+         ng-class="{ 'active' : getZoomRadio(zoom) == 1 }">
+        <div class="icon"></div>
+    </div>
+    <div class="nav-btn hand"
+         ng-click="minder.execCommand('hand')"
+         title="{{ 'hand' | lang : 'ui' }}"
+         ng-class="{ 'active' : minder.queryCommandState('hand') == 1 }">
+        <div class="icon"></div>
+    </div>
+    <div class="nav-btn camera"
+         ng-click="minder.execCommand('camera', minder.getRoot(), 600);"
+         title="{{ 'camera' | lang : 'ui' }}">
+        <div class="icon"></div>
+    </div>
+    <div class="nav-btn nav-trigger"
+         ng-class="{'active' : isNavOpen}"
+         ng-click="toggleNavOpen()"
+         title="{{ 'navigator' | lang : 'ui' }}">
+        <div class="icon"></div>
+    </div>
+</div>
+<div class="nav-previewer" ng-show="isNavOpen"></div>

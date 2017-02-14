@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." name="main" default="default">
+	<basename property="project" file="${basedir}" />
+	<dirname property="root.dir" file="${basedir}../" />
+	<property name="build.dir" value="${basedir}/build" />
+	<property name="dist.dir" value="${basedir}/dist" />
+	<property name="src.dir" value="${basedir}/src" />
+	<property name="lib.dir" value="${root.dir}/lib" />
+	<property name="store.dir" value="${root.dir}/store" />
+
+	<path id="project.classpath">
+		<pathelement location="${src.dir}/main/java" />
+		<pathelement location="${src.dir}/main/resources" />
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${store.dir}/jars">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<target name="default">
+		<echo message="${pack}" />
+		<mkdir dir="${build.dir}" />
+		<delete includeemptydirs="true">
+			<fileset dir="${build.dir}" includes="**/*" />
+		</delete>
+		<mkdir dir="${build.dir}/classes" />
+		<javac destdir="${build.dir}/classes" includes="update/**,${pack}/**" debug="true" debuglevel="source,lines,vars" encoding="UTF-8" includeantruntime="true" target="1.8" source="1.8" fork="true">
+			<src path="${src.dir}/main/java" />
+			<classpath refid="project.classpath" />
+		</javac>
+		<mkdir dir="${dist.dir}" />
+		<delete file="${dist.dir}/${pack}.jar" />
+		<jar destfile="${dist.dir}/${pack}.jar" basedir="${build.dir}/classes" />
+	</target>
+
+</project>
+

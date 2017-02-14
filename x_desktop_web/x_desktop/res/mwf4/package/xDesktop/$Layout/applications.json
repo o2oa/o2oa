@@ -1,0 +1,109 @@
+[
+  {
+    "name": "Deployment",
+    "path": "Deployment",
+    "title": "部署管理",
+    "iconPath": "appicon.png"
+  },
+//  {
+//    "name": "Setting",
+//    "path": "Setting",
+//    "title": "平台管理",
+//    "iconPath": "appicon.png"
+//  },
+  {
+    "name": "ApplicationExplorer",
+    "path": "process.ApplicationExplorer",
+    "title": "流程应用管理",
+    "iconPath": "appicon.png"
+  },
+//  {
+//    "name": "cmsManager",
+//    "path": "cms.Column",
+//    "title": "内容管理配置",
+//    "iconPath": "appicon.png"
+//  },
+  {
+    "name": "Organization",
+    "path": "Organization",
+    "title": "组织管理",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "Profile",
+    "path": "Profile",
+    "title": "个人设置",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "BAM",
+    "path": "BAM",
+    "title": "流程监控",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "TaskCenter",
+    "path": "process.TaskCenter",
+    "title": "办公中心",
+    "iconPath": "appicon.png",
+    "widgetName": "TaskWidget",
+    "widgetTitle": "待办列表",
+    "widgetIconPath": "widgeticon.png"
+  },
+//  {
+//    "name": "cms",
+//    "path": "cms.Index",
+//    "title": "信息平台",
+//    "iconPath": "appicon.png"
+//  },
+  {
+    "name": "File",
+    "path": "File",
+    "title": "云文件",
+    "iconPath": "appicon.png"
+  },
+//  {
+//    "name": "IM",
+//    "path": "IM",
+//    "title": "在线交流",
+//    "iconPath": "appicon.png",
+//    "widgetName": "IMWidget",
+//    "widgetTitle": "IMWidget",
+//    "widgetIconPath": "widgeticon.png",
+//    "widgetStart": true
+//  },
+  {
+    "name": "Note",
+    "path": "Note",
+    "title": "便签",
+    "iconPath": "appicon.png"
+  },
+
+
+//  {
+//    "name": "Console",
+//    "path": "Console",
+//    "title": "控制台",
+//    "iconPath": "appicon.png"
+//  },
+
+//  {
+//    "name": "AppDesigner",
+//    "path": "AppDesigner",
+//    "title": "组件开发工具",
+//    "iconPath": "appicon.png",
+//    "visible": true
+//  },
+  {
+    "name": "VsettanMail",
+    "path": "VsettanMail",
+    "title": "邮件",
+    "iconPath": "appicon.png",
+    "widgetName": "MailWidget",
+    "widgetTitle": "定时获取新邮件",
+    "widgetIconPath": "widgeticon.png",
+    "widgetStart": true,
+    "widgetVisible": false,
+    "visible": true
+  }
+]

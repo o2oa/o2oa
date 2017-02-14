@@ -1,0 +1,16 @@
+<div class="km-btn-group do-group">
+    <div class="km-btn-item undo"
+         ng-disabled="editor.history.hasUndo() == false"
+         ng-click="editor.history.hasUndo() == false || editor.history.undo();"
+         title="{{ 'undo' | lang:'ui' }}">
+        <i class="km-btn-icon"></i>
+        <!--<span class="km-btn-caption">{{ 'undo' | lang:'ui' }}</span>-->
+    </div>
+    <div class="km-btn-item redo"
+         ng-disabled="editor.history.hasRedo() == false"
+         ng-click="editor.history.hasRedo() == false || editor.history.redo()"
+         title="{{ 'redo' | lang:'ui' }}">
+        <i class="km-btn-icon"></i>
+        <!--<span class="km-btn-caption">{{ 'redo' | lang:'ui' }}</span>-->
+    </div>
+</div>

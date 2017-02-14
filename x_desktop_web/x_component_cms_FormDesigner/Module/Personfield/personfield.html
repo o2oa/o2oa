@@ -1,0 +1,73 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="基本" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		  <tr>
+		    <td class="editTableTitle">标识:</td>
+		    <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">名称:</td>
+		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">描述:</td>
+		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+		  </tr>
+		</table>
+        <br/>
+        <div style="height: 24px; line-height:24px; font-weight:bold;background-color: #DDD; border-top:1px solid #999">人员选择配置</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">选择范围:</td>
+                <td class="editTableValue">
+                    <select name="range" onchange="var selV = this.options[this.selectedIndex].value; $('text{$.id}rangeScriptValue').setStyle('display', 'none'); if (selV=='depart' || selV=='company') $('text{$.id}rangeScriptValue').setStyle('display', 'block') ">
+                        <option value="currentdepart" text{($.range=='currentdepart')?'selected':''}>本部门</option>
+                        <option value="currentcompany" text{($.range=='currentcompany')?'selected':''}>本公司</option>
+                        <option value="depart" text{($.range=='depart')?'selected':''}>指定部门</option>
+                        <option value="company" text{($.range=='company')?'selected':''}>指定公司</option>
+                        <option value="all" text{($.range=='all')?'selected':''}>所有</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">选择数量:</td>
+                <td class="editTableValue"><input type="text" name="count" value="text{$.count}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">选择类型:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="selectType" value="identity" text{($.selectType.indexOf('identity')!=-1)?'checked':''}/>个人
+                    <input type="radio" name="selectType" value="department" text{($.selectType.indexOf('department')!=-1)?'checked':''}/>部门
+                    <input type="radio" name="selectType" value="company" text{($.selectType.indexOf('company')!=-1)?'checked':''}/>公司
+                </td>
+            </tr>
+        </table>
+        <div id="text{$.id}rangeScriptValue" style="display: text{($.range=='depart' || $.range=='company')?'block':'none'}" class="MWFFormulaArea" name="rangeKey" title="指定值 (S)"></div>
+        <br/>
+
+		<div class="MWFMaplist" name="styles" title="样式"></div>
+		<div class="MWFMaplist" name="properties" title="属性"></div>
+
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">计算:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="compute" value="create" text{($.compute.indexOf('create')!=-1)?'checked':''}/>创建
+                    <input type="radio" name="compute" value="save" text{($.compute.indexOf('save')!=-1)?'checked':''}/>保存
+                    <input type="radio" name="compute" value="show" text{($.compute.indexOf('show')!=-1)?'checked':''}/>显示
+                </td>
+            </tr>
+        </table>
+		
+		<div class="MWFScriptArea" name="defaultValue" title="默认值 (S)"></div>
+        <div class="MWFScriptArea" name="validation" title="校验 (S)"></div>
+		
+	</div>
+	<div title="事件"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

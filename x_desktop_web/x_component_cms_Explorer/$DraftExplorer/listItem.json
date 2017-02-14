@@ -1,0 +1,32 @@
+[
+  {
+    "title" : "主题",
+    "styles" : "titleAreaHeadNode",
+    "item" : "title",
+    "name" : "titleAreaNode"
+  },
+  {
+    "title" : "创建时间",
+    "styles" : "timeAreaHeadNode",
+    "item" : "createTime",
+    "name" : "timeAreaNode"
+  },
+  {
+    "title" : "创建人",
+    "styles" : "personAreaHeadNode",
+    "item" : "",
+    "name" : "personAreaNode"
+  },
+  {
+    "title" : "创建部门",
+    "styles" : "departmentAreaHeadNode",
+    "item" : "creatorDepartment",
+    "name" : "departmentAreaNode"
+  },
+  {
+    "title" : "操作",
+    "styles" : "actionAreaHeadNode",
+    "item" : "action",
+    "name" : "actionAreaNode"
+  }
+]

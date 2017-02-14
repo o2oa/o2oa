@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="src" path="src/test/resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/collections4/commons-collections4-4.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/lang3/commons-lang3-3.4.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/google/gson/gson-2.7.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/javax/javaee-api-7.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/net/commons-net-3.3.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/cxf/cxf-core-3.1.1.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/cxf/cxf-rt-bindings-soap-3.1.1.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/cxf/cxf-rt-databinding-jaxb-3.1.1.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/cxf/cxf-rt-frontend-jaxws-3.1.1.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/cxf/cxf-rt-frontend-simple-3.1.1.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/cxf/cxf-rt-transports-http-3.1.1.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/cxf/cxf-rt-wsdl-3.1.1.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/cxf/neethi-3.0.3.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/cxf/stax2-api-3.1.4.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/cxf/woodstox-core-asl-4.4.1.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/cxf/wsdl4j-1.6.3.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/cxf/xmlschema-core-2.2.1.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/xinge/XingeApp.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/ehcache/ehcache-2.10.1.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/openjpa/openjpa-2.4.2-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="D:/x/store/jars/x_organization_core_entity-4.0.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/store/jars/x_organization_core_express-4.0.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/store/jars/x_processplatform_core_entity-4.0.0.jar"/>
+	
+	<classpathentry kind="lib" path="D:/x/store/jars/x_base_core_project-4.0.0.jar"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>

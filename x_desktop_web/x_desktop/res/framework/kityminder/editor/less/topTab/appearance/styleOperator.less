@@ -1,0 +1,83 @@
+.style-operator {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0 5px;
+    border-right: 1px dashed #eee;
+
+    .clear-style {
+        vertical-align: middle;
+    }
+
+}
+
+.clear-style-icon {
+    background: url(images/icons.png) no-repeat;
+    background-position: 0 -175px;;
+}
+
+.s-btn-group-vertical {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.s-btn-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 3px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.s-btn-label {
+    font-size: 12px;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.s-btn-wrap {
+//    margin-bottom: 2px;
+    padding: 0 5px 0 3px;
+    display: inline-block;
+    text-decoration: none;
+    font-size: 0;
+
+    &[disabled] span {
+        opacity: 0.5;
+    }
+
+    &[disabled] {
+        cursor: default;
+    }
+
+    &[disabled]:hover {
+        background-color: transparent;
+    }
+
+    &[disabled]:active {
+        background-color: transparent;
+    }
+
+    &:hover {
+        background-color: @tool-hover;
+        text-decoration: none;
+    }
+
+    &:active {
+        background-color: @tool-active;
+    }
+
+}
+
+.copy-style-icon {
+    background: url(images/icons.png) no-repeat;
+    background-position: 0 -200px;
+}
+
+.paste-style-wrap {
+    display: block;
+}
+
+.paste-style-icon {
+    background: url(images/icons.png) no-repeat;
+    background-position: 0 -220px;
+}

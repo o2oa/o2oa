@@ -1,0 +1,51 @@
+{
+  "getApplication": {"uri": "/jaxrs/application/{id}"},
+  "listApplication": {"uri": "/jaxrs/application/list"},
+  "getApplicationIcon": {"uri": "/jaxrs/application/{id}/icon"},
+
+  "listWorkNext": {"uri": "/jaxrs/work/list/{id}/next/{count}/application/{applicationId}"},
+  "listWorkPrev": {"uri": "/jaxrs/work/list/{id}/prev/{count}/application/{applicationId}"},
+  "listAssignments": {"uri": "/jaxrs/work/{id}/assignment/application/{applicationId}"},
+  "listRelatives": {"uri": "/jaxrs/work/{id}/relative/application/{applicationId}"},
+  "listProcess": {"uri": "/jaxrs/work/list/process/count/application/{applicationId}"},
+
+  "listWorkFilter": {"uri": "/jaxrs/work/filter/list/{id}/next/{count}/application/{applicationId}", "method": "POST"},
+  "listFilterAttribute": {"uri": "/jaxrs/work/filter/attribute/application/{applicationId}"},
+
+  "listWorkCompletedNext": {"uri": "/jaxrs/workcompleted/list/{id}/next/{count}/application/{applicationId}"},
+  "listWorkCompletedPrev": {"uri": "/jaxrs/workcompleted/list/{id}/prev/{count}/application/{applicationId}"},
+  "listWorkCompletedFilter": {"uri": "/jaxrs/workcompleted/filter/list/{id}/next/{count}/application/{applicationId}", "method": "POST"},
+  "listWorkCompletedFilterAttribute": {"uri": "/jaxrs/workcompleted/filter/attribute/application/{applicationId}"},
+  "listWorkCompletedProcess": {"uri": "/jaxrs/workcompleted/list/process/count/application/{applicationId}"},
+  "listWorkCompletedAssignments": {"uri": "/jaxrs/workcompleted/{id}/assignment/application/{applicationId}"},
+
+  "removeAllWork": {"uri": "/jaxrs/work/{id}/all/application/{applicationId}", "method": "DELETE"},
+  "removeWork": {"uri": "/jaxrs/work/{id}/single/application/{applicationId}", "method": "DELETE"},
+  "removeWorkCompleted": {"uri": "/jaxrs/workcompleted/{id}/all/application/{applicationId}", "method": "DELETE"},
+
+  "resetTask": {"uri": "/jaxrs/work/task/{id}/reset/application/{applicationId}", "method": "PUT"},
+  "flowTask": {"uri": "/jaxrs/work/task/{id}/completed/application/{applicationId}", "method": "PUT"},
+
+  "resetRead": {"uri": "/jaxrs/work/read/{id}/reset/application/{applicationId}", "method": "PUT"},
+  "flagRead": {"uri": "/jaxrs/work/read/{id}/completed/application/{applicationId}", "method": "PUT"},
+
+
+  "getWork": {"uri": "/jaxrs/work/{id}/application/{applicationId}"},
+  "getWorkCompleted": {"uri": "/jaxrs/workcompleted/{id}/application/{applicationId}"},
+
+  "removeTask": {"uri": "/jaxrs/work/task/{id}/application/{applicationId}", "method": "DELETE"},
+  "removeDone": {"uri": "/jaxrs/work/taskcompleted/{id}/application/{applicationId}", "method": "DELETE"},
+  "removeRead": {"uri": "/jaxrs/work/read/{id}/application/{applicationId}", "method": "DELETE"},
+  "removeReaded": {"uri": "/jaxrs/work/readcompleted/{id}/application/{applicationId}", "method": "DELETE"},
+
+  "listDictionary": {"uri": "/jaxrs/applicationdict/list/application/{application}"},
+  "getDictionary": {"uri": "/jaxrs/applicationdict/{applicationDict}"},
+  "addDictionary": {"uri": "/jaxrs/applicationdict", "method": "POST"},
+  "removeDictionary": {"uri": "/jaxrs/applicationdict/{applicationDict}","method": "DELETE"},
+  "updataDictionary": {"uri": "/jaxrs/applicationdict/{applicationDict}","method": "PUT"},
+
+  "listSerialNumber": {"uri": "/jaxrs/serialnumber/list/application/{application}"},
+  "getSerialNumber": {"uri": "/jaxrs/serialnumber/{id}"},
+  "deleteSerialNumber": {"uri": "/jaxrs/serialnumber/{id}","method": "DELETE"},
+  "updateSerialNumber": {"uri": "/jaxrs/serialnumber/{id}","method": "PUT"},
+}

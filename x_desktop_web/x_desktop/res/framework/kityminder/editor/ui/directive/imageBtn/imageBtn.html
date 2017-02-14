@@ -1,0 +1,27 @@
+<div class="btn-group-vertical" dropdown is-open="isopen">
+    <button type="button"
+            class="btn btn-default image-btn"
+            title="{{ 'image' | lang:'ui' }}"
+            ng-class="{'active': isopen}"
+            ng-click="addImage()"
+            ng-disabled="minder.queryCommandState('Image') === -1"></button>
+    <button type="button"
+            class="btn btn-default image-btn-caption dropdown-toggle"
+            ng-disabled="minder.queryCommandState('Image') === -1"
+            title="{{ 'image' | lang:'ui' }}"
+            dropdown-toggle>
+        <span class="caption">{{ 'image' | lang:'ui' }}</span>
+        <span class="caret"></span>
+        <span class="sr-only">{{ 'image' | lang:'ui' }}</span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+        <li>
+            <a href
+               ng-click="addImage()">{{ 'insertimage' | lang:'ui' }}</a>
+        </li>
+        <li>
+            <a href
+               ng-click="minder.execCommand('Image', '')">{{ 'removeimage' | lang:'ui' }}</a>
+        </li>
+    </ul>
+</div>

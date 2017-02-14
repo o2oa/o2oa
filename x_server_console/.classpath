@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="src" path="src/test/resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/lang3/commons-lang3-3.4.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/collections4/commons-collections4-4.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/beanutils/commons-beanutils-1.8.3.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/cli/commons-cli-1.3.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/io/commons-io-2.4.jar" sourcepath="D:/x/lib/apache/commons/io/commons-io-2.4-sources.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/google/gson/gson-2.7.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/slf4j/slf4j-api-1.7.21.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/logback/logback-access-1.1.7.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/logback/logback-classic-1.1.7.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/logback/logback-core-1.1.7.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/ant/ant.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/ant/ant-launcher.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/cargo/cargo-core-uberjar-1.5.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/store/jars/x_base_core_project-4.0.0.jar" sourcepath="/x_base_core_project"/>
+	<classpathentry kind="lib" path="D:/x/lib/sourceforge/dom4j/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/openjpa/openjpa-2.4.2-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/ibm/db2/db2jcc_license_cu.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/ibm/db2/db2jcc4.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/ibm/informix/ifxjdbc.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/ibm/informix/ifxjdbcx.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/postgresql/postgresql-9.4-1205.jdbc42.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/mysql/mysql-connector-java-5.1.36-bin.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/alibaba/druid/druid-1.0.19.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/github/fast-classpath-scanner/fast-classpath-scanner-1.91.6.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/javax/javaee-api-7.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/codec/commons-codec-1.8.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/mina/ftplet-api-1.1.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/mina/ftpserver-core-1.1.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/mina/mina-core-2.0.16.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/h2/h2-1.4.193.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/eclipse/jetty/jetty-all-9.3.14.v20161028-uber.jar"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>

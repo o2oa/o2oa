@@ -1,0 +1,67 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="基本" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		  <tr>
+		    <td class="editTableTitle">标识:</td>
+		    <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">名称:</td>
+		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">描述:</td>
+		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">Class:</td>
+		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+		  </tr>
+		</table>
+		
+		<div class="MWFMaplist" name="styles" title="样式"></div>
+		<div class="MWFMaplist" name="properties" title="属性"></div>
+
+        <div class="MWFMaplist" name="titleStyles" title="标题样式"></div>
+        <div class="MWFMaplist" name="itemStyles" title="数据样式"></div>
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">视图:</td>
+                <td class="editTableValue">
+                    <div class="MWFViewSelect" name="view"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">显示标题</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isTitle" text{($.isTitle!='no')?'checked':''} type="radio" value="yes"/>显示
+                    <input class="editTableRadio" name="isTitle" text{($.isTitle=='no')?'checked':''} type="radio" value="no"/>不显示
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">选择文件</td>
+                <td class="editTableValue">
+                    <select name="select">
+                        <option text{($.select!='single' && $.select!='multi')?'selected':''} value="no">不允许</option>
+                        <option text{($.select=='single')?'selected':''} value="single">单选</option>
+                        <option text{($.select=='multi')?'selected':''} value="multi">多选</option>
+                    </select>
+                </td>
+            </tr>
+            <!--<tr>-->
+                <!--<td class="editTableTitle">打开文件</td>-->
+                <!--<td class="editTableValue">-->
+                    <!--<input class="editTableRadio" name="isOpen" text{($.isOpen!='no')?'checked':''} type="radio" value="yes"/>允许-->
+                    <!--<input class="editTableRadio" name="isOpen" text{($.isOpen=='no')?'checked':''} type="radio" value="no"/>不允许-->
+                <!--</td>-->
+            <!--</tr>-->
+        </table>
+	</div>
+	<div title="事件"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

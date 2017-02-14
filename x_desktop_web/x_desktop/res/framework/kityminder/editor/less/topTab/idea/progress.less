@@ -1,0 +1,26 @@
+.progress-sprite(@count) when (@count >= 0) {
+    .progress-sprite(@count - 1);
+    &.progress-@{count} {
+        background-position: 0 (-20px * (@count - 1));
+    }
+}
+
+.tab-content .km-progress {
+    vertical-align: middle;
+    font-size: inherit;
+    display: inline-block;
+    width: 140px;
+    margin: 5px;
+    border-right: 1px dashed #eee;
+
+    .km-progress-item {
+        margin: 0 1px;
+        padding: 1px;
+
+        .km-progress-icon {
+            .progress-sprite(9);
+            background: url(images/iconprogress.png) repeat-y;
+            background-color: transparent;
+        }
+    }
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "name": "form.json",
+    "title": "空白表单",
+    "icon": "form.png"
+  },
+  {
+    "name": "form_tab.json",
+    "title": "标准表单样式(蓝色)",
+    "icon": "form_tab.png"
+  },
+  {
+    "name": "form_tab_red.json",
+    "title": "标准表单样式(红色)",
+    "icon": "form_tab_red.png"
+  },
+  {
+    "name": "form_tab.json",
+    "title": "传统表单样式",
+    "icon": "form_tab.png"
+  }
+]

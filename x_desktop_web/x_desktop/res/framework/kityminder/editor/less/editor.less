@@ -1,0 +1,131 @@
+.km-editor {
+    overflow: hidden;
+    z-index: 2;
+}
+
+.km-editor > .mask {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: transparent;
+}
+
+.km-editor > .receiver {
+    position: absolute;
+    background: white;
+    outline: none;
+    box-shadow: 0 0 20px fadeout(black, 50%);
+    left: 0;
+    top: 0;
+    padding: 3px 5px;
+    margin-left: -3px;
+    margin-top: -5px;
+    max-width: 300px;
+    width: auto;
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 1.4em;
+    min-height: 1.4em;
+    box-sizing: border-box;
+    overflow: hidden;
+    word-break: break-all;
+    word-wrap: break-word;
+    border: none;
+    -webkit-user-select: text;
+    pointer-events: none;
+    opacity: 0;
+    z-index: -1000;
+    &.debug {
+        opacity: 1;
+        outline: 1px solid green;
+        background: none;
+        z-index: 0;
+    }
+
+    &.input {
+        pointer-events: all;
+        opacity: 1;
+        z-index: 999;
+        background: white;
+        outline: none;
+    }
+}
+
+div.minder-editor-container {
+    position: absolute;
+    top: 40px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    font-family: Arial, "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+}
+
+
+.minder-editor {
+    position: absolute;
+    top: 92px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.minder-viewer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+
+.control-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 250px;
+    bottom: 0;
+    border-left: 1px solid #CCC;
+}
+.minder-divider {
+    position: absolute;
+    top: 0;
+    right: 250px;
+    bottom: 0;
+    width: 2px;
+    background-color: rgb(251, 251, 251);
+    cursor: ew-resize;
+}
+
+// @override bootstrap
+.panel-body {
+    padding: 10px;
+}
+
+@import (less) "_vars.less";
+@import (less) "topTab/topTab.less";
+@import (less) "topTab/idea/undoRedo.less";
+@import (less) "topTab/idea/appendNode.less";
+@import (less) "topTab/idea/arrange.less";
+@import (less) "topTab/idea/operation.less";
+@import (less) "topTab/idea/hyperlink.less";
+@import (less) "topTab/idea/image.less";
+@import (less) "topTab/idea/note.less";
+@import (less) "topTab/idea/noteEditor.less";
+@import (less) "topTab/idea/priority.less";
+@import (less) "topTab/idea/progress.less";
+@import (less) "topTab/idea/resource.less";
+@import (less) "topTab/appearance/templatePanel.less";
+@import (less) "topTab/appearance/themePanel.less";
+@import (less) "topTab/appearance/layout.less";
+@import (less) "topTab/appearance/styleOperator.less";
+@import (less) "topTab/appearance/fontOperator.less";
+@import (less) "topTab/appearance/colorPanel.less";
+@import (less) "topTab/view/expand.less";
+@import (less) "topTab/view/select.less";
+@import (less) "topTab/view/search.less";
+@import (less) "topTab/searchBox.less";
+@import (less) "_tool_group.less";
+@import (less) "_navigator.less";

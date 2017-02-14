@@ -1,0 +1,27 @@
+<div class="btn-group-vertical note-btn-group" dropdown is-open="isopen">
+    <button type="button"
+            class="btn btn-default note-btn"
+            title="{{ 'note' | lang:'ui' }}"
+            ng-class="{'active': isopen}"
+            ng-click="addNote()"
+            ng-disabled="minder.queryCommandState('note') === -1"></button>
+    <button type="button"
+            class="btn btn-default note-btn-caption dropdown-toggle"
+            ng-disabled="minder.queryCommandState('note') === -1"
+            title="{{ 'note' | lang:'ui' }}"
+            dropdown-toggle>
+        <span class="caption">{{ 'note' | lang:'ui' }}</span>
+        <span class="caret"></span>
+        <span class="sr-only">{{ 'note' | lang:'ui' }}</span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+        <li>
+            <a href
+               ng-click="addNote()">{{ 'insertnote' | lang:'ui' }}</a>
+        </li>
+        <li>
+            <a href
+               ng-click="minder.execCommand('note', null)">{{ 'removenote' | lang:'ui' }}</a>
+        </li>
+    </ul>
+</div>

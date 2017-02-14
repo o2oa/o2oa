@@ -1,0 +1,144 @@
+{
+	"toolbarNode": {
+
+	},
+	"gadgetAreaNode": {
+        "width": "135px",
+        "overflow": "hidden",
+        "float": "left",
+        "-webkit-user-select": "none",
+        "-moz-user-select": "none",
+        "border-right": "1px solid #505050",
+        "background-color": "#DDD",
+        "height": "100%"
+	},
+	"gadgetTitleNode": {
+        "height": "26px",
+        "background-color": "#505050",
+        "border-radius": "0px",
+        "margin": "2px",
+        "color": "#FFF",
+        "line-height": "26px",
+        "font-size": "12px",
+        "font-weight": "bold",
+        "padding-left": "10px"
+    },
+    "gadgetTitleActionNode": {
+        "width": "22px",
+        "height": "22px",
+        "margin-top": "-26px",
+        "background": "url("+"/x_component_process_ProcessDesigner/$Main/default/left.png) no-repeat center center",
+        "float": "right",
+        "cursor": "pointer"
+    },
+    "gadgetTitleActionNodeRight": {
+        "width": "22px",
+        "height": "22px",
+        "margin-top": "-26px",
+        "background": "url("+"/x_component_process_ProcessDesigner/$Main/default/right.png) no-repeat center center",
+        "float": "right",
+        "cursor": "pointer"
+    },
+    "gadgetContentNode": {
+        "background-color": "#DDD",
+        "border-radius": "0px",
+        "margin": "2px",
+        "padding-right": "4px",
+        "overflow": "hidden"
+    },
+    "gadgetToolNode": {
+        "margin-top": "3px",
+        "background": "#DDD",
+        "border": "2px solid #DDD",
+        "height": "42px",
+        "color": "#000",
+        "cursor": "move",
+        "border-radius": "8px"
+    },
+    "gadgetToolNodeOver": {
+        "margin-top": "3px",
+        "border": "2px solid #8daed5",
+        "height": "42px",
+        "color": "#000",
+        "cursor": "move",
+        "background": "#b0c9e7",
+        "border-radius": "8px",
+        "background": "linear-gradient(#e5eef9, #b0c9e7 35%, #b0c9e7 65%, #e5eef9)"
+    },
+    "gadgetToolNodeOverCSS2": {
+        "margin-top": "3px",
+        "border": "2px solid #8daed5",
+        "height": "42px",
+        "color": "#000",
+        "cursor": "move",
+        "background": "#b0c9e7"
+    },
+    "gadgetToolNodeDown": {
+        "margin-top": "3px",
+        "border": "2px solid #6390c6",
+        "height": "42px",
+        "color": "#000",
+        "cursor": "move",
+        "background": "#d1e2f7",
+        "border-radius": "8px",
+        "background": "linear-gradient(#d1e2f7, #eef4fb 35%, #eef4fb 65%, #d1e2f7)"
+    },
+    "gadgetToolNodeDownCSS2": {
+        "margin-top": "3px",
+        "border": "2px solid #6390c6",
+        "height": "42px",
+        "color": "#000",
+        "cursor": "move",
+        "background": "#d1e2f7"
+    },
+    "gadgetToolNodeUp": {
+        "margin-top": "3px",
+        "border": "2px solid #8daed5",
+        "height": "42px",
+        "color": "#000",
+        "cursor": "move",
+        "background": "#b0c9e7",
+        "border-radius": "8px",
+        "background": "linear-gradient(#e5eef9, #b0c9e7 35%, #b0c9e7 65%, #e5eef9)"
+    },
+    "gadgetToolNodeUpCSS2": {
+        "margin-top": "3px",
+        "border": "2px solid #8daed5",
+        "height": "42px",
+        "color": "#000",
+        "cursor": "move",
+        "background": "#b0c9e7"
+    },
+    "gadgetToolIconNode": {
+        "width": "42px",
+        "height": "42px",
+        "background-position": "center center",
+        "background-repeat": "no-repeat",
+        "float": "left"
+    },
+    "gadgetToolTextNode": {
+        "margin-left": "46px",
+        "height": "42px",
+        "line-height": "42px",
+        "font-size": "12px"
+    },
+	"rightContentNode": {
+        "margin-left": "135px"
+	},
+
+	"paperAreaNode": {
+		"background": "#CCC",
+		"overflow": "hidden",
+		"height": "100%"
+	},
+	"paperNode": {
+		"background-color": "#FFF",
+		"background-image": "url("+"/x_component_process_ProcessDesigner/$Main/default/griddingbg.gif)",
+		"overflow": "auto",
+		"margin": "15px",
+		"box-shadow": "0px 0px 20px #606060"
+	},
+	"paperInNode": {
+	    "height": "100%"
+	}
+}

@@ -1,0 +1,14 @@
+<div class="btn-group-vertical" dropdown is-open="isopen">
+    <button type="button"
+            class="btn btn-default search"
+            title="{{ 'search' | lang:'ui' }}"
+            ng-class="{'active': isopen}"
+            ng-click="enterSearch()"></button>
+    <button type="button"
+            class="btn btn-default search-caption dropdown-toggle"
+            ng-click="enterSearch()"
+            title="{{ 'search' | lang:'ui' }}">
+        <span class="caption">{{ 'search' | lang:'ui' }}</span>
+        <span class="sr-only">{{ 'search' | lang:'ui' }}</span>
+    </button>
+</div>

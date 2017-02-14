@@ -1,0 +1,16 @@
+<div class="bg-color-wrap">
+        <span class="quick-bg-color"
+              ng-click="minder.queryCommandState('background') === -1 || minder.execCommand('background', bgColor)"
+              ng-disabled="minder.queryCommandState('background') === -1"></span>
+		<span color-picker
+              class="bg-color"
+              set-color="setDefaultBg()"
+              ng-disabled="minder.queryCommandState('background') === -1">
+            <span class="caret"></span>
+        </span>
+        <span class="bg-color-preview"
+              ng-style="{ 'background-color': bgColor }"
+              ng-click="minder.queryCommandState('background') === -1 || minder.execCommand('background', bgColor)"
+              ng-disabled="minder.queryCommandState('background') === -1"></span>
+
+</div>

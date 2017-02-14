@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
+
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+	<Set name="contextPath">/x_organization_assemble_authentication</Set>
+	<Set name="war">d:/o2server/store/x_organization_assemble_authentication.war
+	</Set>
+	<Set name="extraClasspath">d:/o2server/commons/ext/slf4j-api-1.7.21.jar;d:/o2server/commons/ext/slf4j-simple-1.7.21.jar;d:/o2server/commons/ext/openjpa-all-2.4.2-SNAPSHOT.jar;d:/o2server/commons/ext/ehcache-2.10.1.jar;d:/o2server/store/jars/x_base_core_foundation-4.0.0.jar;d:/o2server/store/jars/x_base_core_project-4.0.0.jar;d:/o2server/store/jars/x_organization_core_entity-4.0.0.jar
+	</Set>
+	<Set name="tempDirectory">d:/o2server/temp/aaa</Set>
+	<!-- Get name="classLoader"> <Call name="addClassPath"> <Arg>d:/lib/ehcache-2.10.1.jar</Arg> 
+		</Call> <Call name="addClassPath"> <Arg>d:/lib/openjpa-all-2.4.2-SNAPSHOT.jar</Arg> 
+		</Call> <Call name="addClassPath"> <Arg>d:/lib/slf4j-api-1.7.21.jar</Arg> 
+		</Call> <Call name="addClassPath"> <Arg>d:/lib/slf4j-simple-1.7.21.jar</Arg> 
+		</Call> <Call name="addClassPath"> <Arg>d:/lib/x_base_core_foundation-4.0.0.jar</Arg> 
+		</Call> <Call name="addClassPath"> <Arg>d:/lib/x_base_core_project-4.0.0.jar</Arg> 
+		</Call> <Call name="addClassPath"> <Arg>d:/lib/x_organization_core_entity-4.0.0.jar</Arg> 
+		</Call> </Get -->
+</Configure>

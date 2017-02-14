@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="src" path="src/test/resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/lang3/commons-lang3-3.4.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/collections4/commons-collections4-4.0.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/beanutils/commons-beanutils-1.8.3.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/ant/ant.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/ant/ant-launcher.jar"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>

@@ -1,0 +1,52 @@
+package com.x.cms.core.entity.query;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.builder.CompareToBuilder;
+
+import com.x.base.core.utils.ListTools;
+
+public class OrderEntryTools {
+
+	public static Table order(Table table, List<OrderEntry> orderEntries) {
+		List<Row> list = new ArrayList<>();
+		if ((null != table) && (!table.isEmpty())) {
+			if (ListTools.isNotEmpty(orderEntries)) {
+				List<OrderEntry> orders = valid(orderEntries);
+				if (ListTools.isNotEmpty(orders)) {
+					list = table.stream().sorted((o1, o2) -> compareWith(o1, o2, orders)).collect(Collectors.toList());
+					Table o = new Table();
+					o.addAll(list);
+					return o;
+				}
+			}
+		}
+		return table;
+	}
+
+	private static List<OrderEntry> valid(List<OrderEntry> orderEntries) {
+		List<OrderEntry> list = new ArrayList<>();
+		for (OrderEntry o : ListTools.nullToEmpty(orderEntries)) {
+			if (o.available()) {
+				list.add(o);
+			}
+		}
+		return list;
+	}
+
+	public static int compareWith(Row o1, Row o2, List<OrderEntry> orderEntries) {
+		CompareToBuilder compareToBuilder = new CompareToBuilder();
+		for (OrderEntry en : orderEntries) {
+			if (Objects.equals(OrderType.asc, en.getOrderType())) {
+				compareToBuilder.append(o1.get(en.getColumn()), o2.get(en.getColumn()));
+			} else {
+				compareToBuilder.append(o2.get(en.getColumn()), o1.get(en.getColumn()));
+			}
+		}
+		return compareToBuilder.toComparison();
+	}
+
+}

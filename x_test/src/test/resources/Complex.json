@@ -1,0 +1,40 @@
+{
+	"name01":"name01",
+	"date01":"2010-1-1",
+	"dateTime01":"2010-1-1 12:00:00",
+	"time01":"1:1:1",
+	"null01":null,
+	"boolean01":true,
+	"integer01":15,
+	"double01":12.456,
+	"object01":{
+		
+	},
+	"array01":[
+		
+	],
+	"object02":{
+		"name02":"name01",
+		"date02":"2010-1-1",
+		"dateTime02":"2010-1-1 12:00:00",
+		"time02":"1:1:1",
+		"null02":null,
+		"boolean02":true,
+		"integer02":15,
+		"double02":12.456,
+		"object02":{
+			
+		},
+		"array02":[
+			
+		],
+		"array03":[
+			"abc",
+			"efg",
+			111,
+			"2222",
+			"zzz",
+			"aaaa"
+		]
+	}
+}

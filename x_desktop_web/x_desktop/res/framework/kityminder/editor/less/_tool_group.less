@@ -1,0 +1,24 @@
+.tool-group {
+    padding: 0;
+
+    &[disabled] {
+        opacity: 0.5;
+    }
+
+    .tool-group-item {
+        display: inline-block;
+        border-radius: 4px;
+
+        .tool-group-icon {
+            width: 20px;
+            height: 20px;
+            padding: 2px;
+            margin: 1px;
+        }
+
+        &:hover {background-color: @button-hover;}
+        &:active {background-color: @button-active;}
+
+        &.active {background-color: @button-active;}
+    }
+}

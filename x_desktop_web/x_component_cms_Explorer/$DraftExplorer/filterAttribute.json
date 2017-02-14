@@ -1,0 +1,18 @@
+[
+  {
+    "name" : "分类",
+    "item" : "catagoryName"
+  },
+  {
+    "name" : "创建公司",
+    "item" : "creatorCompany"
+  },
+  {
+    "name" : "创建部门",
+    "item" : "creatorDepartment"
+  },
+  {
+    "name" : "创建时间",
+    "item" : "createTime"
+  }
+]

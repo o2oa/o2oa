@@ -1,0 +1,402 @@
+{
+    "node": {
+        "width": "100%",
+        "height": "100%",
+        "overflow": "hidden",
+        "opacity": 0,
+        "display": "block",
+        "-moz-background-size": "cover",
+        "-webkit-background-size": "cover",
+        "-o-background-size": "cover",
+        "background-size": "cover",
+        "font-family": "微软雅黑",
+        "background-image": "url(/x_component_Meeting/$Main/default/bk.jpg)",
+    },
+    "topNode": {
+        "height": "80px",
+        "text-shadow" : "1px 1px 1px #000",
+        "overflow": "hidden"
+    },
+    "todayNode": {
+        "height": "70px",
+        "line-height": "70px",
+        "margin-top": "10px",
+        "width": "360px",
+        "float": "left",
+        "color": "#FFF",
+        "padding-left": "40px",
+        "text-shadow" : "1px 1px 1px #000",
+        "font-size": "28px"
+    },
+    "currentNode": {
+        "height": "70px",
+        "line-height": "70px",
+        "margin-top": "10px",
+        "margin-left": "400px",
+        "color": "#EEE",
+        "padding-right": "40px",
+        "text-align": "right",
+        "font-size": "24px"
+    },
+
+    "contentNode": {
+        "overflow": "hidden"
+    },
+    "bottomNode": {
+        "height": "280px",
+        "padding-left": "30px",
+        "padding-right": "10px",
+        "overflow-x": "auto"
+    },
+    "dayContentNode": {
+        "overflow": "hidden",
+        "width": "10500px"
+    },
+
+    "dayNode": {
+        "width": "340px",
+        "height": "250px",
+        "margin-right": "10px",
+        "float": "left"
+    },
+    "dayDateNode": {
+        "height": "40px",
+        "padding": "0px 20px",
+        "line-height": "40px",
+        "cursor": "pointer",
+        "float": "left",
+        "color": "#FFF",
+        "font-size": "16px",
+        "background-color": "#4277a8"
+    },
+    "dayBodyNode": {
+        "margin-top": "10px",
+        "float": "left",
+        "width": "100%",
+        "height": "150px",
+        "overflow": "hidden",
+        "padding-bottom": "10px",
+        "background-color": "#4277a8"
+    },
+
+
+    "dayMeetingNode": {
+        "cursor": "pointer",
+        "width": "310px",
+        "height": "160px",
+        "margin-right": "10px",
+        "margin-top": "50px",
+        "border-left": "10px solid #2968cf",
+        "padding": "0px 10px",
+        "background-color": "#FFF",
+        "float": "left"
+    },
+    "dayMeetingTitleNode": {
+        "height": "40px",
+        "line-height": "40px",
+        "color": "#2968cf",
+        "font-size": "18px",
+        "font-weight": "bold"
+    },
+    "dayMeetingTimeNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "font-size": "18px",
+        "color": "#666"
+    },
+    "dayMeetingDescriptionNode": {
+        "margin-top": "10px",
+        "height": "70px",
+        "font-size": "14px",
+        "color": "#666"
+
+    },
+
+    "dayTaskNode": {
+        "margin": "5px 10px 0px 10px",
+        "height": "26px",
+        "cursor": "pointer",
+        "line-height": "26px",
+        //"background-color": "#FFF",
+        "color": "#FFF",
+        "font-size": "18px"
+    },
+    "dayTaskIconNode": {
+        "width": "20px",
+        "height": "26px",
+        "background-repeat": "no-repeat",
+        "background-position": "center center",
+        "float": "left"
+    },
+    "dayTaskTimeNode": {
+        "width": "90px",
+        "height": "26px",
+        "font-size": "14px",
+        "float": "left"
+    },
+    "dayTaskTitleNode": {
+        "margin-left": "115px",
+        "height": "26px"
+    },
+    "documentContentInfoNode": {
+        "width": "30%",
+        "background-color": "#EEE",
+        "height": "100%",
+        "float": "left",
+        "overflow-y": "auto"
+    },
+    "documentContentNode": {
+        "margin-left": "30%",
+        "height": "100%"
+    },
+
+    "documentInfoTitleNode": {
+        "height": "50px",
+        "line-height": "25px",
+        "margin": "10px 20px",
+        "overflow": "hidden"
+    },
+    "documentInfoTitleTextNode": {
+        "color": "#2968cf",
+        "font-weight": "bold",
+        "font-size": "18px"
+    },
+    "documentInfoLineNode": {
+        "min-height": "48px",
+        "overflow": "hidden",
+        "margin": "10px 20px"
+    },
+    "documentInfoTextNode": {
+        "height": "24px",
+        "line-height": "24px",
+        "font-size": "14px"
+    },
+    "documentInfoBodyNode": {
+        "border": "1px solid #CCC",
+        "background-color": "#FFF",
+        "min-height": "24px",
+        "padding": "0px 5px",
+        "font-size": "14px",
+        "color": "#666",
+        "line-height": "24px",
+        "overflow": "hidden",
+    },
+    "documentInfoBody1Node": {
+        "border": "1px solid #CCC",
+        "background-color": "#FFF",
+        "width": "36px",
+        "float": "left",
+        "height": "24px",
+        "padding": "0px 5px",
+        "font-size": "14px",
+        "color": "#666",
+        "line-height": "24px"
+    },
+    "documentInfoBody2Node": {
+        "width": "10px",
+        "float": "left",
+        "text-align": "center",
+        "height": "24px",
+        "font-size": "14px",
+        "color": "#666",
+        "line-height": "24px"
+    },
+    "documentInfoBody3Node": {
+        "margin-left": "112px",
+        "height": "24px",
+        "font-size": "14px",
+        "color": "#666",
+        "line-height": "24px"
+    },
+    "documentInfoAcceptIconNode": {
+        "height": "20px",
+        "width": "14px",
+        "margin-right": "3px",
+        "float": "left",
+        "background": "url(/x_component_Meeting/$MeetingView/default/icon/accept.png) no-repeat center center"
+    },
+    "documentInfoRejectIconNode": {
+        "height": "20px",
+        "width": "14px",
+        "margin-right": "3px",
+        "float": "left",
+        "background": "url(/x_component_Meeting/$MeetingView/default/icon/reject.png) no-repeat center center"
+    },
+    "documentInfoAcceptTextNode": {
+        "height": "20px",
+        "line-height": "20px",
+        "margin-top": "10px",
+        "font-size": "14px",
+        "color": "#1fbf04",
+        "text-align": "center"
+    },
+    "documentInfoRejectTextNode": {
+        "height": "20px",
+        "line-height": "20px",
+        "margin-top": "10px",
+        "font-size": "14px",
+        "color": "#FF0000",
+        "text-align": "center"
+    },
+    "documentTopNode": {
+        "height": "60px",
+        "overflow": "hidden",
+        "margin": "0px 20px",
+        "border-bottom": "2px solid #2968cf",
+    },
+    "documentTopCloseNode": {
+        "height": "60px",
+        "width": "40px",
+        "float": "right",
+        "cursor": "pointer",
+        "background": "url(/x_component_Meeting/$MeetingView/default/icon/close.png) no-repeat center center"
+    },
+    "documentTopCloseNode_over": {
+        "background": "url(/x_component_Meeting/$MeetingView/default/icon/close_over.png) no-repeat center center"
+    },
+    "documentTopCloseNode_down": {
+        "background": "url(/x_component_Meeting/$MeetingView/default/icon/close_down.png) no-repeat center center"
+    },
+    "documentTopSaveNode": {
+        "height": "60px",
+        "width": "40px",
+        "float": "right",
+        "cursor": "pointer",
+        "background": "url(/x_component_Meeting/$MeetingView/default/icon/save.png) no-repeat center center"
+    },
+    "documentTopSaveNode_over": {
+        "background": "url(/x_component_Meeting/$MeetingView/default/icon/save_over.png) no-repeat center center"
+    },
+    "documentTopSaveNode_down": {
+        "background": "url(/x_component_Meeting/$MeetingView/default/icon/save_down.png) no-repeat center center"
+    },
+    "documentContentSubjectNode": {
+        "height": "60px",
+        "margin-right": "80px",
+        "line-height": "60px",
+        "font-size": "32px",
+        "color": "#2968cf"
+    },
+    "documentContentSubjectInputNode": {
+        "height": "60px",
+        "width": "99%",
+        "line-height": "60px",
+        "font-size": "32px",
+        "border": "0px",
+        "color": "#2968cf"
+    },
+    "documentContentDescriptionNode": {
+        "margin": "0px 20px",
+        "overflow": "auto",
+        "font-size": "16px",
+        "color": "#555",
+        "padding": "10px 0px",
+        "line-height": "20px",
+        "border-bottom": "2px solid #2968cf",
+    },
+    "documentContentDescriptionInputNode": {
+        "width": "100%",
+        "height": "95%",
+        "overflow": "auto",
+        "font-size": "16px",
+        "color": "#555",
+        "padding": "10px 0px",
+        "line-height": "20px",
+        "font-family": "微软雅黑",
+        "border": "0px"
+    },
+
+    "documentContentAttachmentnNode": {
+        "margin": "0px 20px",
+        "padding": "10px 0px",
+        "height": "40px"
+    },
+
+
+    "documentInfoTitleActionNode": {
+        "width": "124px",
+        "height": "25px",
+        "float": "right",
+        "top": "-24px",
+        "position": "relative"
+    },
+    "documentInfoActionNode": {
+        "border": "1px solid #999",
+        "cursor": "pointer",
+        "background": "#FFF",
+        "height": "22px",
+        "width": "55px",
+        "margin-right": "5px",
+        "float": "right",
+        "color": "#666",
+        "line-height": "22px"
+    },
+    "documentInfoActionNode_over": {
+        "background": "#F3F3F3",
+        "color": "#666",
+    },
+    "documentInfoActionNode_down": {
+        "background": "#666",
+        "color": "#FFF"
+    },
+
+    "documentInfoActionIconAcceptNode": {
+        "height": "22px",
+        "width": "22px",
+        "float": "left",
+        "background": "url(/x_component_Meeting/$MeetingView/default/icon/acceptAction.png) no-repeat center center"
+    },
+    "documentInfoActionIconAcceptNode_down": {
+        "background": "url(/x_component_Meeting/$MeetingView/default/icon/acceptAction_down.png) no-repeat center center"
+    },
+    "documentInfoActionIconRejectNode": {
+        "height": "22px",
+        "width": "22px",
+        "float": "left",
+        "background": "url(/x_component_Meeting/$MeetingView/default/icon/rejectAction.png) no-repeat center center"
+    },
+    "documentInfoActionIconRejectNode_down": {
+        "background": "url(/x_component_Meeting/$MeetingView/default/icon/rejectAction_down.png) no-repeat center center"
+    },
+    "documentInfoActionTextNode": {
+        "margin-left": "22px",
+        "height": "22px"
+    },
+
+    "documentAddInviteActionNode": {
+        "height": "20px",
+        "width": "90px",
+        "float": "right",
+        "line-height": "20px",
+        "border": "1px solid #999",
+        "background-color":"#FFF",
+        "position": "relative",
+        "color": "#666",
+        "cursor": "pointer",
+        "top": "-50px"
+    },
+    "documentAddInviteActionNode_over": {
+        "background": "#F3F3F3",
+        "color": "#666",
+    },
+    "documentAddInviteActionNode_down": {
+        "background": "#666",
+        "color": "#FFF"
+    },
+
+    "documentAddInviteActionIconNode": {
+        "height": "22px",
+        "width": "22px",
+        "float": "left",
+        "background": "url(/x_component_Meeting/$MeetingView/default/icon/addPerson.png) no-repeat center center"
+    },
+    "documentAddInviteActionIconNode_down": {
+        "background": "url(/x_component_Meeting/$MeetingView/default/icon/addPerson_down.png) no-repeat center center"
+    },
+    "documentAddInviteActionTextNode": {
+        "margin-left": "22px",
+        "height": "22px"
+    }
+
+
+}

@@ -1,0 +1,16 @@
+<div class="km-btn-group operation-group">
+    <div class="km-btn-item edit-node"
+         ng-disabled="minder.queryCommandState('text') === -1"
+         ng-click="minder.queryCommandState('text') === -1 || editNode()"
+         title="{{ 'editnode' | lang:'ui/command' }}">
+        <i class="km-btn-icon"></i>
+        <span class="km-btn-caption">{{ 'editnode' | lang:'ui/command' }}</span>
+    </div>
+    <div class="km-btn-item remove-node"
+         ng-disabled="minder.queryCommandState('RemoveNode') === -1"
+         ng-click="minder.queryCommandState('RemoveNode') === -1 || minder.execCommand('RemoveNode');"
+         title="{{ 'removenode' | lang:'ui/command' }}">
+        <i class="km-btn-icon"></i>
+        <span class="km-btn-caption">{{ 'removenode' | lang:'ui/command' }}</span>
+    </div>
+</div>

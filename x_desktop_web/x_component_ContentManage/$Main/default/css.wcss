@@ -1,0 +1,19 @@
+{
+    "contenNode":{
+        "width": "80%",
+    	"margin": "10px auto",
+    	"border": "1px solid #666",
+    	"padding": "20px"
+    },
+	"titleNode":{
+
+	},
+	"departmentNode":{
+
+    },
+    "dataNode":{
+
+    },
+    "submitButton": {
+    }
+}

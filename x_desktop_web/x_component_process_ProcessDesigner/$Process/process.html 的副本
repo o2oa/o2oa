@@ -1,0 +1,44 @@
+<div>
+	<div class="editNode">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		  <tr>
+		    <td class="editTableTitle">标识:</td>
+		    <td class="editTableValue">text{$.id}</td>
+		  </tr>
+		   <tr>
+		    <td class="editTableTitle">创建时间:</td>
+		    <td class="editTableValue">text{$.createTime}</td>
+		  </tr>
+		   <tr>
+		    <td class="editTableTitle">更新时间:</td>
+		    <td class="editTableValue">text{$.updataTime}</td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">分类:</td>
+		    <td class="editTableValue">text{$.categoryName}</td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">名称:</td>
+		    <td class="editTableValue"><input type="text" jsondata="name" value="text{$.name}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">别名:</td>
+		    <td class="editTableValue"><input type="text" jsondata="alias" value="text{$.alias}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">描述:</td>
+		    <td class="editTableValue"><textarea  jsondata="description" class="editTableTextarea">text{$.description}</textarea></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">启动者:</td>
+		    <td class="editTableValue">
+		    	<input type="radio" jsondata="starterMode" text{($.starterMode=='all')?'checked':''} value="all"/>所有人
+		    	<input type="radio" jsondata="starterMode" text{($.starterMode=="auth")?"checked":""} value="auth"/>认证用户
+		    	<input type="radio" jsondata="starterMode" text{($.starterMode=="assign")?"checked":""} value="assign" />指定用户
+		    	<input type="radio" jsondata="starterMode" text{($.starterMode=="none")?"checked":""} value="none"/>无
+		    </td>
+		  </tr>
+		  
+		</table>
+	</div>
+</div>

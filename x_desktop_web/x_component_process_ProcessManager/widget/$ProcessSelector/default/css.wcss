@@ -1,0 +1,168 @@
+{
+    "contentNode": {
+        "height": "24px",
+        "margin-right": "100px"
+    },
+
+
+    "maskNode": {
+        "background-color": "#666",
+        "opacity": 0.6,
+        "z-index":10002
+    },
+    "containerNode": {
+		"height": "540px",
+		"width": "820px",
+		"background-color": "#EEE",
+		"overflow": "hidden",
+		"border": "3px solid #666",
+		"border-radius": "10px",
+		"box-shadow": "0px 0px 15px #666",
+		"position": "absolute",
+		"z-index":10003
+	},
+	"titleNode": {
+        "height": "30px",
+        "background-color": "#EEE",
+        "border-bottom": "1px solid #CCC"
+    },
+    "titleTextNode": {
+        "margin-right": "30px",
+        "height": "30px",
+        "padding": "0px 10px",
+        "color": "#666",
+        "font-weight": "bold",
+        "font-size": "14px",
+        "line-height": "30px"
+    },
+    "titleActionNode": {
+        "width": "30px",
+        "height": "30px",
+        "float": "right",
+        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/close.png) no-repeat center center",
+        "cursor": "pointer"
+    },
+    "windowContentScrollNode": {
+        "overflow": "hidden",
+        "height": "455px",
+        "padding": "5px",
+        "margin-right": "6px",
+        "margin-bottom": "5px"
+    },
+    "windowContentNode": {
+        "overflow": "hidden"
+    },
+    "actionNode": {
+        "height": "40px",
+        //"width": "280px",
+        //"float": "right",
+        "border-top": "1px solid #CCC",
+        "background-color": "#EEE",
+        "margin": "auto"
+    },
+    "okActionNode": {
+        "width": "150px",
+        "height": "30px",
+        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/editOk_bg.png) no-repeat center center",
+        "border": "0px",
+        "color": "#FFF",
+        "font-size": "18px",
+        "padding-left": "35px",
+        "border-radius": "4px",
+        "margin": "5px 10px 0px 0px",
+        "float": "right",
+        "cursor": "pointer"
+    },
+    "cancelActionNode": {
+        "width": "100px",
+        "height": "30px",
+        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/editCancel_bg.png) no-repeat center center",
+        "border": "0px",
+        "color": "#FFF",
+        "font-size": "18px",
+        "padding-left": "20px",
+        "border-radius": "4px",
+        "float": "right",
+        "margin": "5px 10px 0px 0px",
+        "cursor": "pointer"
+    },
+    "scriptListNode": {
+        "width": "160px"
+    },
+
+    "editorNode": {
+        "height": "200px"
+    },
+    "itemNode": {
+        "width": "230px",
+        "padding": "10px",
+        "height": "60px",
+        "margin-top": "10px",
+        "margin-left": "10px",
+        "border": "1px solid #CCC",
+        "float": "left",
+        "background-color": "#FFF",
+        "box-shadow": "0px 0px 0px #BBB",
+        "cursor": "pointer"
+    },
+    "itemNode_select": {
+        "background-color": "#ffb7b7",
+        "border": "1px solid #e97070",
+        "box-shadow": "0px 0px 10px #e97070"
+    },
+    "itemIconNode": {
+        "padding": "0px",
+        "float": "left",
+        "width": "40px",
+        "height": "60px"
+    },
+    "itemTextTitleNode": {
+        "margin-left": "50px",
+        "margin-right": "20px",
+        "height": "20px",
+        "line-height": "20px",
+        "font-size": "14px",
+        "font-weight": "bold",
+        "overflow": "hidden",
+        "cursor": "pointer",
+        "color": "#333"
+    },
+    "processItemSelectIcon": {
+        "padding": "0px",
+        "float": "right",
+        "width": "24px",
+        "height": "24px",
+        "opacity": 1,
+        "cursor": "pointer",
+        "background": "url("+"/x_component_process_ProcessManager/widget/$ProcessSelector/default/icon/select.png) no-repeat center center"
+    },
+    "processItemSelectIcon_selected": {
+        "background": "url("+"/x_component_process_ProcessManager/widget/$ProcessSelector/default/icon/selected.png) no-repeat center center"
+    },
+    "itemTextDescriptionNode": {
+        "margin-left": "50px",
+        "margin-right": "20px",
+        "font-size": "12px",
+        "line-height": "20px",
+        "height": "20px",
+        "color": "#777",
+        "overflow": "hidden",
+        "white-space": "normal"
+    },
+    "itemTextDateNode": {
+        "margin-left": "50px",
+        "font-size": "12px",
+        "line-height": "20px",
+        "height": "20px",
+        "color": "#777",
+        "text-align": "right"
+    },
+    "itemNewNode": {
+        "width": "47px",
+        "height": "47px",
+        "position": "relative",
+        "top": "-70px",
+        "left": "-10px",
+        "background": "url("+"/x_component_process_ProcessManager/$Explorer/default/icon/new.png) no-repeat right"
+    },
+}

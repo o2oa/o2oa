@@ -1,0 +1,27 @@
+[
+  {
+    "name": "process.json",
+    "title": "默认流程",
+    "icon": "process.png"
+  },
+  {
+    "name": "process_sequence.json",
+    "title": "顺序流程",
+    "icon": "process_sequence.png"
+  },
+  {
+    "name": "process_choice.json",
+    "title": "选择流程",
+    "icon": "process_choice.png"
+  },
+//  {
+//    "name": "process_condition.json",
+//    "title": "条件流程",
+//    "icon": "process_condition.png"
+//  },
+  {
+    "name": "process_parallel.json",
+    "title": "并行流程",
+    "icon": "process_parallel.png"
+  }
+]

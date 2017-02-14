@@ -1,0 +1,24 @@
+<div id="search" class="search-box clearfix" ng-show="showSearch">
+    <div class="input-group input-group-sm search-input-wrap">
+        <input type="text"
+               id="search-input"
+               class="form-control search-input"
+               ng-model="keyword"
+               ng-keydown="handleKeyDown($event)"
+               aria-describedby="basic-addon2"/>
+        <span class="input-group-addon search-addon" id="basic-addon2"
+              ng-show="showTip"
+              ng-bind="'第 ' + curIndex + ' 条，共 ' + resultNum + ' 条'"></span>
+    </div>
+    <div class="btn-group btn-group-sm prev-and-next-btn" role="group">
+        <button type="button" class="btn btn-default" ng-click="doSearch(keyword, 'prev')">
+            <span class="glyphicon glyphicon-chevron-up"></span>
+        </button>
+        <button type="button" class="btn btn-default" ng-click="doSearch(keyword, 'next')">
+            <span class="glyphicon glyphicon-chevron-down"></span>
+        </button>
+    </div>
+    <div class="close-search" ng-click="exitSearch()">
+        <span class="glyphicon glyphicon-remove"></span>
+    </div>
+</div>

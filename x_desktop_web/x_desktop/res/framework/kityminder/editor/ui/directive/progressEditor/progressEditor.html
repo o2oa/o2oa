@@ -1,0 +1,9 @@
+<ul class="km-progress tool-group" ng-disabled="commandDisabled">
+	<li class="km-progress-item tool-group-item"
+	    ng-repeat="p in progresses"
+	    ng-click="commandDisabled || minder.execCommand('progress', p)"
+		ng-class="{ active: commandValue == p }"
+	    title="{{ getProgressTitle(p) }}">
+		<div class="km-progress-icon tool-group-icon progress-{{p}}"></div>
+	</li>
+</ul>

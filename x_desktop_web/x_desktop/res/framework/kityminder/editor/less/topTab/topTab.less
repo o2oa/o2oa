@@ -1,0 +1,89 @@
+.top-tab {
+
+    .nav-tabs {
+        background-color: #e1e1e1;
+        border: 0;
+        height: 32px;
+
+        li {
+            margin: 0;
+
+            a {
+                margin: 0;
+                border: 0;
+                padding: 6px 15px;
+                border-radius: 0;
+                vertical-align: middle;
+
+
+                &:hover, &:focus {
+                    background: inherit;
+                    border: 0;
+                }
+            }
+
+
+            &.active a {
+                border: 0;
+                background-color: #fff;
+
+                &:hover, &:focus {
+                    border: 0;
+                }
+            }
+        }
+    }
+
+    .tab-content {
+        height: 60px;
+        background-color: #fff;
+        border-bottom: 1px solid #dbdbdb;
+    }
+
+    .tab-pane {
+        font-size: 0;
+    }
+}
+
+.km-btn-group {
+    display: inline-block;
+    margin: 5px 0;
+    padding: 0 5px;
+    vertical-align: middle;
+    border-right: 1px dashed #eee;
+}
+
+.km-btn-item {
+    display: inline-block;
+    margin: 0 3px;
+    font-size: 0;
+    cursor: default;
+
+    &[disabled] {
+        opacity: 0.5;
+
+        &:hover, &:active {
+            background-color: #fff;
+        }
+    }
+
+    .km-btn-icon {
+        display: inline-block;
+        background: url(images/icons.png) no-repeat;
+        background-position: 0 20px;
+        width: 20px;
+        height: 20px;
+        padding: 2px;
+        margin: 1px;
+        vertical-align: middle;
+    }
+
+    .km-btn-caption {
+        display: inline-block;
+        font-size: 12px;
+        vertical-align: middle;
+    }
+
+    &:hover {background-color: @button-hover;}
+    &:active {background-color: @button-active;}
+}

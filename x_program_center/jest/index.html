@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>x_propram_center</title>
+<script src="./common.js"></script>
+<script src="./jquery.js"></script>
+<script src="./adminLogin.js"></script>
+<script src="./centerServer.js"></script>
+<script src="./applicationServer.js"></script>
+<script src="./applicationServers.js"></script>
+<script src="./applications.js"></script>
+<script src="./distribute.js"></script>
+<script src="./storageServer.js"></script>
+<script src="./storageServers.js"></script>
+<script src="./storage.js"></script>
+<script src="./storages.js"></script>
+<script src="./storageMappings.js"></script>
+<script src="./dataServer.js"></script>
+<script src="./dataServers.js"></script>
+<script src="./collect.js"></script>
+<script src="./data.js"></script>
+<script src="./datas.js"></script>
+<script src="./dataMappings.js"></script>
+<script src="./webServer.js"></script>
+<script src="./webServers.js"></script>
+<script src="./resource.js"></script>
+<script>
+    $(document).ready(function() {
+	adminLogin_init();
+    });
+</script>
+</head>
+
+<body style="margin: 0; font-size: 1.0em; font-family: Microsoft Yahei">
+	<div id="container" style="width: 1000px; margin: 0 auto;">
+		<div id="header"
+			style="background-color: #4682B4; clear: both; text-align: center;">
+			x_program_center_jest <br /> for <br /> x_program_center
+		</div>
+		<div id="menu"
+			style="background-color: #B0E0E6; height: 950px; width: 280px; float: left;">
+			<ul>
+				<li>AdminLogin
+					<ul>
+						<li><a onclick="adminLogin_init()" href="#">Login</a></li>
+					</ul>
+				</li>
+				<li>Distribute
+					<ul>
+						<li><a onclick="distribute_init()" href="#">Get</a></li>
+					</ul>
+				</li>
+				<li>Server
+					<ul>
+						<li>CenterServer
+							<ul>
+								<li><a onclick="centerServer_get()" href="#">Get</a></li>
+							</ul>
+						</li>
+						<li>ApplicationServer
+							<ul>
+								<li><a onclick="applicationServers_list()" href="#">List</a></li>
+								<li><a onclick="applicationServer_create()" href="#">Create</a>
+								</li>
+							</ul>
+						</li>
+						<li>WebServer
+							<ul>
+								<li><a onclick="webServers_list()" href="#">List</a></li>
+								<li><a onclick="webServer_create()" href="#">Create</a></li>
+							</ul>
+						</li>
+						<li>DataServer
+							<ul>
+								<li><a onclick="dataServers_list()" href="#">List</a></li>
+								<li><a onclick="dataServer_create()" href="#">Create</a></li>
+							</ul>
+						</li>
+						<li>StorageServer
+							<ul>
+								<li><a onclick="storageServers_list()" href="#">List</a></li>
+								<li><a onclick="storageServer_create()" href="#">Create</a></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li>Setting
+					<ul>
+						<li>Applications
+							<ul>
+								<li><a onclick="applications_get()" href="#">Get</a></li>
+							</ul>
+						</li>
+						<li>Datas
+							<ul>
+								<li><a onclick="datas_list()" href="#">List</a></li>
+								<li><a onclick="data_create()" href="#">Create</a></li>
+							</ul>
+						</li>
+						<li>DataMappings
+							<ul>
+								<li><a onclick="dataMappings_get()" href="#">Get</a></li>
+							</ul>
+						</li>
+						<li>Storages
+							<ul>
+								<li><a onclick="storages_list()" href="#">List</a></li>
+							</ul>
+						</li>
+						<li>StorageMappings
+							<ul>
+								<li><a onclick="storageMappings_get()" href="#">Get</a></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li>Resource
+					<ul>
+						<li><a onclick="resource_get_administratorDefinition()"
+							href="#">AdministratorDefinition</a></li>
+						<li><a onclick="resource_get_collectDefinition()" href="#">CollectDefinition</a></li>
+						<li><a onclick="resource_get_openMeetingJunctionDefinition()"
+							href="#">OpenMeetingJunctionDefinition</a></li>
+						<li><a onclick="resource_get_passwordDefinition()" href="#">PasswordDefinition</a></li>
+						<li><a onclick="resource_get_personDefinition()" href="#">PersonDefinition</a></li>
+						<li><a onclick="resource_get_ssoDefinition()" href="#">SsoDefinition</a></li>
+						<li><a onclick="resource_get_workTimeDefinition()" href="#">WorkTimeDefinition</a></li>
+					</ul>
+				</li>
+				<li>Collect
+					<ul>
+						<li><a onclick="collect_check_connect_select()" href="#">Check
+								Connect</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div style="float: left; width: 720px;">
+			<div id="content" style="width: 100%;">&nbsp;</div>
+			<div id="result"
+				style="width: 100%; white-space: pre; font-size: 10px; word-break: break-all; word-wrap: break-word;">
+				&nbsp;</div>
+		</div>
+		<div id="footer"
+			style="background-color: #4682B4; clear: both; text-align: center; display: none">
+			Copyright © x</div>
+	</div>
+</body>
+</html>

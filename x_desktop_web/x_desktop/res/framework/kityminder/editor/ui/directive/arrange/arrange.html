@@ -1,0 +1,16 @@
+<div class="km-btn-group arrange-group">
+    <div class="km-btn-item arrange-up"
+         ng-disabled="minder.queryCommandState('ArrangeUp') === -1"
+         ng-click="minder.queryCommandState('ArrangeUp') === -1 || minder.execCommand('ArrangeUp')"
+         title="{{ 'arrangeup' | lang:'ui/command' }}">
+        <i class="km-btn-icon"></i>
+        <span class="km-btn-caption">{{ 'arrangeup' | lang:'ui/command' }}</span>
+    </div>
+    <div class="km-btn-item arrange-down"
+         ng-disabled="minder.queryCommandState('ArrangeDown') === -1"
+         ng-click="minder.queryCommandState('ArrangeDown') === -1 || minder.execCommand('ArrangeDown');"
+         title="{{ 'arrangedown' | lang:'ui/command' }}">
+        <i class="km-btn-icon"></i>
+        <span class="km-btn-caption">{{ 'arrangedown' | lang:'ui/command' }}</span>
+    </div>
+</div>

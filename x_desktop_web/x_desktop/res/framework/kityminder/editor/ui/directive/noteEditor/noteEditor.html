@@ -1,0 +1,24 @@
+<div class="panel panel-default" ng-init="noteEditorOpen = false" ng-show="noteEditorOpen">
+    <div class="panel-heading">
+        <h3 class="panel-title">备注</h3>
+        <span>（<a class="help" href="https://www.zybuluo.com/techird/note/46064" target="_blank">支持 GFM 语法书写</a>）</span>
+        <i class="close-note-editor glyphicon glyphicon-remove" ng-click="closeNoteEditor()"></i>
+    </div>
+    <div class="panel-body">
+        <div ng-show="noteEnabled"
+             ui-codemirror="{ onLoad: codemirrorLoaded }"
+             ng-model="noteContent"
+             ui-codemirror-opts="{
+                gfm: true,
+                breaks: true,
+                lineWrapping : true,
+                mode: 'gfm',
+                dragDrop: false,
+                lineNumbers:true
+             }">
+        </div>
+        <p ng-show="!noteEnabled" class="km-note-tips">
+            请选择节点编辑备注
+        </p>
+    </div>
+</div>

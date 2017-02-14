@@ -1,0 +1,29 @@
+<div class="resource-editor">
+	<div class="input-group">
+		<input class="form-control" type="text" ng-model="newResourceName"
+		       ng-required
+		       ng-keypress="$event.keyCode == 13 && addResource(newResourceName)"
+		       ng-disabled="!enabled" />
+    <span class="input-group-btn">
+        <button class="btn btn-default" ng-click="addResource(newResourceName)" ng-disabled="!enabled">添加</button>
+    </span>
+	</div>
+    <div class="resource-dropdown clearfix" id="resource-dropdown">
+        <ul class="km-resource"
+            ng-init="resourceListOpen = false"
+            ng-class="{'open': resourceListOpen}">
+            <li ng-repeat="resource in used" ng-disabled="!enabled" ng-blur="blurCB()">
+                <label style="background: {{resourceColor(resource.name)}}">
+                    <input type="checkbox" ng-model="resource.selected" ng-disabled="!enabled" />
+                    <span>{{resource.name}}</span>
+                </label>
+            </li>
+        </ul>
+        <div class="resource-caret"
+             click-anywhere-but-here="resourceListOpen = false"
+             is-active="resourceListOpen"
+             ng-click="resourceListOpen = !resourceListOpen">
+            <span class="caret"></span>
+        </div>
+    </div>
+</div>

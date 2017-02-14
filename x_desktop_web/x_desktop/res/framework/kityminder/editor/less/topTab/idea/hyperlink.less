@@ -1,0 +1,43 @@
+.btn-group-vertical {
+    vertical-align: middle;
+    margin: 5px;
+
+    .hyperlink, .hyperlink-caption {
+        width: 40px;
+        margin: 0;
+        padding: 0;
+        border: none!important;
+        border-radius: 0!important;
+
+        &:hover {
+            background-color: @tool-hover;
+        }
+
+        &:active {
+            background-color: @tool-active;
+        }
+
+        &.active {
+            box-shadow: none;
+            background-color: @tool-hover;
+        }
+    }
+
+    .hyperlink {
+        height: 25px;
+        background: url(images/icons.png) no-repeat center -100px;
+    }
+
+    .hyperlink-caption {
+        height: 20px;
+
+        .caption {
+            font-size: 12px;
+        }
+    }
+}
+
+//override bootstrap
+.open > .dropdown-toggle.btn-default {
+    background-color: @tool-hover;
+}

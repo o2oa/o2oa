@@ -1,0 +1,50 @@
+{
+  "name": "kityminder",
+  "title": "kityminder",
+  "description": "KityMinder Core Implement",
+  "version": "1.4.33",
+  "homepage": "https://github.com/fex-team/kityminder-core",
+  "author": {
+    "name": "Baidu FEX",
+    "url": "http://fex.baidu.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fex-team/kityminder-core.git"
+  },
+  "keywords": [
+    "kityminder",
+    "kity",
+    "minder",
+    "svg",
+    "graphic",
+    "javascript"
+  ],
+  "bugs": {
+    "url": "https://github.com/fex-team/kityminder-core/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/fex-team/kityminder-core/blob/dev/LICENSE"
+    }
+  ],
+  "dependencies": {
+    "grunt-contrib-copy": "^0.8.0"
+  },
+  "devDependencies": {
+    "cz-conventional-changelog": "^1.1.5",
+    "grunt": "~0.4.1",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-concat": "~0.5.0",
+    "grunt-contrib-copy": "~0.5.0",
+    "grunt-contrib-uglify": "~0.4.0",
+    "grunt-module-dependence": "~0.2.0",
+    "grunt-replace": "~0.8.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}

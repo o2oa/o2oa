@@ -1,0 +1,26 @@
+[
+  {
+    "title" : "中心工作",
+    "icon" :"center.png",
+    "action" : "openCenterWork"
+  },
+  {
+    "title" : "按日期统计",
+    "icon" :"BulletedListFilled-100.png",
+    "action" : "statDate"
+  },
+  {
+    "title" : "按部门统计",
+    "icon" :"department.png",
+    "action":"statDepartment"
+  }
+//  {
+//    "title" : "部门工作",
+//    "icon" :"Conference-100.png"
+//
+//  },
+//  {
+//    "title" : "公司工作",
+//    "icon" :"Department-100.png"
+//  }
+]

@@ -1,0 +1,901 @@
+{
+    "titleBar": {
+        "overflow": "hidden",
+        "height": "50px",
+        "background-color": "#4c6b87"
+    },
+    "titleTextNode": {
+        "padding-left": "20px",
+        "color": "#FFF",
+        "font-size": "18px",
+        "line-height": "50px",
+        "font-weight": "bold",
+        "width": "160px",
+        "float": "left"
+    },
+    "tabAreaNode": {
+        "overflow": "auto",
+        "height": "100%"
+    },
+    "serverNaviAreaNode": {
+        "float": "left",
+        "width": "180px",
+        //"margin-top": "1%",
+        "height": "100%",
+        "background-color": "#4c6b87"
+    },
+    "serverNaviNode": {
+        "overflow": "hidden",
+        "margin-top": "40px"
+    },
+    "serverContentAreaNode":{
+        "background-color": "#eee",
+        "margin-left": "180px",
+        "overflow": "auto",
+      //  "border-top-left-radius": "10px",
+        "height": "100%"
+    },
+    "naviItemNode": {
+        "cursor": "pointer",
+        "height": "40px",
+        "border-top-left-radius": "20px",
+        "border-bottom-left-radius": "20px",
+        "margin": "0px 0px 0px 20px",
+        "border-bottom": "1px solid #CCC",
+        "background-color": "#4c6b87",
+        "background-repeat": "no-repeat",
+        "background-position": "8px center",
+        "color": "#FFF",
+        "line-height": "40px",
+        "overflow": "hidden",
+        "font-size": "14px",
+        "padding": "0px 0px 0px 40px"
+    },
+    "naviItemNode_current": {
+        "background-color": "#EEE",
+        "border-bottom": "1px solid #EEE",
+        "color": "#4c6b87"
+    },
+    "applicationServerContent": {
+        "overflow": "hidden",
+        "margin": "auto"
+    },
+
+
+
+
+
+    "applicationServerCreateAction": {
+        "cursor": "pointer",
+        "height": "77px",
+        "width": "77px",
+        "float": "left",
+        "margin-left": "20px",
+        "margin-top": "20px",
+        "background-color": "#FFF",
+        "border-radius": "10px",
+        "box-shadow": "0px 0px 0px #CCC",
+        "border": "3px solid #C3C3C3",
+        "background-repeat": "no-repeat",
+        "background-position": "center center",
+        "background-image": "url(/x_component_Setting/$Main/default/icon/add.png)"
+    },
+    "applicationServerCreateAction_over": {
+        "background-image": "url(/x_component_Setting/$Main/default/icon/add_over.png)",
+        "border": "3px solid #3498db",
+        "box-shadow": "0px 0px 5px #666"
+    },
+
+
+    "applicationServerNode": {
+        "height": "80px",
+        "float": "left",
+        "width": "320px",
+        "margin-left": "20px",
+        "margin-top": "20px",
+        "border": "1px solid #999",
+        "cursor": "pointer",
+        "background-color": "#FFF"
+    },
+    "applicationServerIconNode": {
+        "height": "80px",
+        "width": "80px",
+        "margin-bottom": "10px",
+        "border-radius": "10px",
+        "box-shadow": "0px 0px 0px #CCC",
+        "float": "left",
+        "background-repeat": "no-repeat",
+        "background-position": "center center",
+        "background-image": "url(/x_component_Setting/$Main/default/icon/server.png)"
+    },
+    "applicationServerStatusNode": {
+        "width": "5px",
+        "height": "80px",
+        "float": "right"
+    },
+    "applicationServerTextNode": {
+        "height": "80px",
+        "margin-left": "88px",
+        "margin-right": "8px",
+        "overflow": "hidden"
+    },
+    "applicationServerNameNode": {
+        "height": "26px",
+        "font-size": "14px",
+        "font-weight": "bold",
+        "line-height": "26px"
+    },
+    "applicationServerHostNode": {
+        "height": "20px",
+        "width": "100px",
+        "float": "left",
+        "font-size": "12px",
+        "line-height": "20px",
+        "color": "#333"
+    },
+    "applicationServerAdminNode": {
+        "height": "20px",
+        "width": "100px",
+        "float": "right",
+        "margin-right": "10px",
+        "font-size": "12px",
+        "line-height": "20px",
+        "text-align": "right",
+        "color": "#333"
+    },
+    "applicationServerMessageNode": {
+        "height": "34px",
+        "font-size": "12px",
+        "line-height": "17px",
+        "clear": "both",
+        "color": "#666"
+    },
+    "applicationServerDocumentNode": {
+        "background-color": "#FFF",
+        "position": "absolute"
+    },
+    "centerServerDocumentNode": {
+        "height": "100%",
+        "overflow": "auto"
+    },
+
+    "applicationServerDocumentActionNode": {
+        "height": "50px",
+        "overflow": "hidden",
+        "background-color": "#EEE",
+        "border-bottom": "1px solid #CCC"
+    },
+    "applicationServerDocumentSaveNode": {
+        "height": "50px",
+        "width": "40px",
+        "float": "left",
+        "margin-left": "10px",
+        "cursor": "pointer",
+        "background": "url(/x_component_Setting/$Main/default/icon/save.png) no-repeat center center"
+    },
+    "applicationServerDocumentSaveNode_over": {
+        "background": "url(/x_component_Setting/$Main/default/icon/save_over.png) no-repeat center center"
+    },
+    "applicationServerDocumentSaveNode_down": {
+        "background": "url(/x_component_Setting/$Main/default/icon/save_down.png) no-repeat center center"
+    },
+
+    "applicationServerDocumentDeleteNode": {
+        "height": "50px",
+        "width": "40px",
+        "float": "left",
+        "cursor": "pointer",
+        "background": "url(/x_component_Setting/$Main/default/icon/delete.png) no-repeat center center"
+    },
+    "applicationServerDocumentDeleteNode_over": {
+        "background": "url(/x_component_Setting/$Main/default/icon/delete_over.png) no-repeat center center"
+    },
+    "applicationServerDocumentDeleteNode_down": {
+        "background": "url(/x_component_Setting/$Main/default/icon/delete_down.png) no-repeat center center"
+    },
+    "applicationServerDocumentCloseNode": {
+        "height": "50px",
+        "width": "40px",
+        "float": "right",
+        "margin-right": "10px",
+        "cursor": "pointer",
+        "background": "url(/x_component_Setting/$Main/default/icon/close.png) no-repeat center center"
+    },
+    "applicationServerDocumentCloseNode_over": {
+        "background": "url(/x_component_Setting/$Main/default/icon/close_over.png) no-repeat center center"
+    },
+    "applicationServerDocumentCloseNode_down": {
+        "background": "url(/x_component_Setting/$Main/default/icon/close_down.png) no-repeat center center"
+    },
+    "applicationServerDocumentDeployNode": {
+        "height": "50px",
+        "width": "40px",
+        "float": "left",
+        "margin-left": "20px",
+        "cursor": "pointer",
+        "background": "url(/x_component_Setting/$Main/default/icon/deploy.png) no-repeat center center"
+    },
+    "applicationServerDocumentDeployNode_over": {
+        "background": "url(/x_component_Setting/$Main/default/icon/deploy_over.png) no-repeat center center"
+    },
+    "applicationServerDocumentDeployNode_down": {
+        "background": "url(/x_component_Setting/$Main/default/icon/deploy_down.png) no-repeat center center"
+    },
+
+
+
+
+    "applicationServerDocumentInforAreaNode": {
+        "overflow": "hidden"
+    },
+    "applicationServerDocumentInforNode": {
+        "overflow": "auto",
+        //"margin": "auto",
+        "float": "left",
+        "background-color": "#EEE",
+        "width": "30%",
+        "min-width": "200px",
+        "font-size": "14px"
+    },
+    "dataServerDocumentInforNode": {
+        "overflow": "auto",
+        //"margin": "auto",
+        //"float": "left",
+        "background-color": "#EEE",
+        "font-size": "14px"
+    },
+
+
+
+    "applicationServerDocumentTdNode": {
+        "font-weight": "bold"
+    },
+    "applicationServerDocumentInputNode": {
+        "width": "98%",
+        "height": "24px",
+        "line-height": "24px",
+        "border": "2px solid #CCC"
+    },
+    "applicationServerDocumentTextareasNode": {
+        "width": "98%",
+        "height": "50px",
+        "line-height": "24px",
+        "border": "2px solid #CCC",
+        "overflow": "auto"
+    },
+    "applicationServerDocumentApplicationAreaNode": {
+        "overflow": "auto"
+    },
+    "applicationServerDocumentApplicationNode": {
+        "margin": "10px",
+        "font-size": "14px",
+        "overflow": "hidden"
+    },
+    "applicationServerDocumentApplicationDeployedNode": {
+        "height": "20px",
+        "width": "20px",
+        "background": "url(/x_component_Setting/$Main/default/icon/deployed.png) no-repeat center center"
+    },
+    "applicationServerDocumentApplicationReadyDeployNode":{
+        "height": "20px",
+        "width": "20px",
+        "background": "url(/x_component_Setting/$Main/default/icon/readyDeploy.png) no-repeat center center"
+    },
+    "applicationServerDocumentApplicationReadyDeleteNode":{
+        "height": "20px",
+        "width": "20px",
+        "background": "url(/x_component_Setting/$Main/default/icon/readyDelete.png) no-repeat center center"
+    },
+    "applicationServerDocumentApplicationNotDepolyNode": {
+        "height": "20px",
+        "width": "20px"
+    },
+
+
+    "applicationsContent": {
+        "overflow": "hidden"
+    },
+    "applicationNode": {
+        "margin": "20px",
+        "overflow": "hidden",
+        "background-color": "#CCC"
+    },
+    "applicationNameNode": {
+        "height": "40px"
+    },
+    "applicationNameIconNode": {
+        "height": "40px",
+        "width": "40px",
+        "float": "left",
+        "background": "url(/x_component_Setting/$Main/default/icon/app_current.png) no-repeat center center"
+    },
+    "dataNameIconNode": {
+        "height": "40px",
+        "width": "40px",
+        "float": "left",
+        "background": "url(/x_component_Setting/$Main/default/icon/data_current.png) no-repeat center center"
+    },
+    "storageNameIconNode": {
+        "height": "40px",
+        "width": "40px",
+        "float": "left",
+        "background": "url(/x_component_Setting/$Main/default/icon/storage_current.png) no-repeat center center"
+    },
+    "storageNameAddNode": {
+        "height": "40px",
+        "width": "60px",
+        "float": "right",
+        "text-align": "center",
+        "line-height": "40px",
+        "cursor": "pointer",
+        "color": "#0000FF"
+    },
+
+    "applicationNameTextNode": {
+        "margin-left": "40px",
+        "margin-right": "60px",
+        "height": "40px",
+        "line-height": "40px",
+        "font-size": "14px",
+        "font-weight": "bold",
+        "color": "#333"
+    },
+    "applicationServerListNode": {
+        //"height": "120px",
+        "overflow": "hidden",
+        "padding": "0px 0px 10px 0px"
+    },
+
+    "applicationInServerNode": {
+        "overflow": "hidden",
+        "margin": "5px 10px 0px 10px",
+        "background-color": "#EEE"
+    },
+    "applicationInServerTableNode": {
+        "height": "40px"
+    },
+    "applicationInServerJsonNode": {
+        "overflow": "hidden",
+        "display": "none",
+        "border-top": "1px solid #CCC",
+        "border-bottom": "1px solid #CCC",
+        "-webkit-user-select": "text",
+        "-moz-user-select": "text",
+        "padding": "5px 10px"
+    },
+    "applicationInServerJsonButtonNode": {
+        "height": "12px",
+        "border-top": "0px solid #CCC",
+        "cursor": "pointer",
+        "background": "url(/x_component_Setting/$Main/default/icon/down.png) no-repeat center center"
+    },
+    "applicationInServerIconNode": {
+        "height": "40px",
+        "width": "40px",
+        "background": "url(/x_component_Setting/$Main/default/icon/server24.png) no-repeat center center"
+    },
+    "applicationInServerEditNode": {
+        "height": "40px",
+        "width": "40px",
+        "cursor": "pointer",
+        "background": "url(/x_component_Setting/$Main/default/icon/edit.png) no-repeat center center"
+    },
+    "applicationInServerSaveNode": {
+        "background": "url(/x_component_Setting/$Main/default/icon/saveWeight.png) no-repeat center center"
+    },
+    "applicationInServerWeightInputNode": {
+        "border": "1px solid #BBB",
+        "width": "78px"
+    },
+
+    "dataInServerDataJsonNode": {
+        "width": "50%",
+        "float": "left",
+        "overflow": "hidden"
+    },
+    "dataInServerMappingJsonNode": {
+        "width": "50%",
+        "float": "right",
+        "overflow": "hidden"
+    },
+
+    "mobileCheckInforNode": {
+        "width": "80%",
+        "margin": "20px auto",
+        "height": "160px",
+        "font-size": "18px",
+        "color": "#666"
+    },
+    "mobileCheckActionNode": {
+        "width": "80%",
+        "margin": "20px auto",
+        "height": "60px",
+        "font-size": "18px",
+        "border-top": "1px solid #999",
+        "color": "#666"
+    },
+    "mobileCenterOnlineNode": {
+        "margin": "auto",
+        "height": "70px",
+        "overflow": "hidden"
+    },
+    "mobileCenterIconNode": {
+        "float": "left",
+        "width": "80px",
+        "height": "70px",
+        "background": "url(/x_component_Setting/$Main/default/mobile/center.png) no-repeat center center"
+    },
+    "mobileCenterOnlineLineNode": {
+        "float": "left",
+        "width": "80px",
+        "height": "70px",
+        "background": "url(/x_component_Setting/$Main/default/mobile/line.png) no-repeat center center"
+    },
+    "mobileServer1IconNode": {
+        "float": "left",
+        "width": "80px",
+        "height": "70px",
+        "background": "url(/x_component_Setting/$Main/default/mobile/server.png) no-repeat center center"
+    },
+    "mobileCenterOnlineTextNode": {
+        "margin": "0px 106px 0px 250px",
+        "line-height": "70px",
+        "hieght": "70px"
+    },
+    "mobileCenterOnlineStatusNode":{
+        "float": "right",
+        "width": "70px",
+        "height": "70px",
+        "line-height": "70px",
+        "background": "url(/x_component_Setting/$Main/default/mobile/failure.png) no-repeat left center",
+        "padding-left": "36px"
+    },
+
+    "mobileComputerOnlineNode": {
+        "height": "70px",
+        "margin": "20px auto",
+        "overflow": "hidden"
+    },
+    "mobileComputerIconNode": {
+        "float": "left",
+        "width": "80px",
+        "height": "70px",
+        "background": "url(/x_component_Setting/$Main/default/mobile/computer.png) no-repeat center center"
+    },
+    "mobileComputerOnlineLineNode": {
+        "float": "left",
+        "width": "80px",
+        "height": "70px",
+        "background": "url(/x_component_Setting/$Main/default/mobile/line.png) no-repeat center center"
+    },
+    "mobileServer2IconNode": {
+        "float": "left",
+        "width": "80px",
+        "height": "70px",
+        "background": "url(/x_component_Setting/$Main/default/mobile/server.png) no-repeat center center"
+    },
+    "mobileComputerOnlineTextNode": {
+        "margin": "0px 106px 0px 250px",
+        "line-height": "70px",
+        "hieght": "70px"
+    },
+    "mobileComputerOnlineStatusNode":{
+        "float": "right",
+        "width": "70px",
+        "height": "70px",
+        "line-height": "70px",
+        "background": "url(/x_component_Setting/$Main/default/mobile/failure.png) no-repeat left center",
+        "padding-left": "36px"
+    },
+    "mobileReCheckActionNode": {
+        "float": "right",
+        "margin-top": "10px",
+        "height": "40px",
+        "width": "150px",
+        "border-radius": "5px",
+        "background-color": "#3498db",
+        "line-height": "40px",
+        "text-align": "center",
+        "cursor": "pointer",
+        "color": "#FFF"
+    },
+    "mobileNextActionNode": {
+        "float": "right",
+        "margin-top": "10px",
+        "height": "40px",
+        "width": "150px",
+        "border-radius": "5px",
+        "background-color": "#999",
+        "line-height": "40px",
+        "text-align": "center",
+        "cursor": "pointer",
+        "color": "#FFF"
+    },
+
+    "mobileAccountInforNode": {
+        "width": "60%",
+        "max-width": "500px",
+        "min-width": "300px",
+        "margin": "30px auto",
+        "height": "460px",
+        "font-size": "18px",
+        "border-radius": "0px",
+        //"border": "1px solid #FFF",
+        //"background-color": "#DDD",
+        //"box-shadow": "0px 0px 20px #666",
+        "color": "#666"
+    },
+    "mobileAccountTitleNode": {
+        "height": "60px",
+        "color": "#FFF",
+        "background": "#666",
+        "font-size": "24px",
+        "line-height": "60px",
+        "text-align": "center"
+    },
+    "mobileAccountTitleLoginNode": {
+        "height": "60px",
+        "color": "#FFF",
+        "background": "#3498db",
+        "font-size": "24px",
+        "line-height": "60px",
+        "text-align": "center"
+    },
+    "mobileAccountUsernameNode": {
+        "margin-top": "20px",
+        "height": "60px",
+        "background-color": "#DDD"
+    },
+    "mobileAccountUsernameIconNode": {
+        "width": "60px",
+        "height": "60px",
+        "float": "left",
+        "border-right": "2px solid #EEE",
+        "background": "url(/x_component_Setting/$Main/default/mobile/user.png) no-repeat center center"
+    },
+    "mobileAccountUsernameInputNode": {
+        "height": "60px",
+        "margin-left": "62px",
+        "text-align": "center"
+    },
+    "mobileAccountUsernameInput": {
+        "width": "98%",
+        "line-height": "60px",
+        "color": "#666",
+        "border": "0px",
+        "height": "60px",
+        "font-size": "18px",
+        "font-family": "微软雅黑",
+        "background": "transparent"
+    },
+
+    "mobileAccountPasswordNode": {
+        "margin-top": "20px",
+        "height": "60px",
+        "background-color": "#DDD"
+    },
+    "mobileAccountPasswordIconNode": {
+        "width": "60px",
+        "height": "60px",
+        "float": "left",
+        "border-right": "2px solid #EEE",
+        "background": "url(/x_component_Setting/$Main/default/mobile/password.png) no-repeat center center"
+    },
+    "mobileAccountPasswordInputNode": {
+        "height": "60px",
+        "margin-left": "62px",
+        "text-align": "center"
+    },
+    "mobileAccountPasswordInput": {
+        "width": "98%",
+        "line-height": "60px",
+        "color": "#666",
+        "border": "0px",
+        "height": "60px",
+        "font-size": "18px",
+        "font-family": "微软雅黑",
+        "background": "transparent"
+    },
+
+    "mobileAccountCodeNode": {
+        "margin-top": "20px",
+        "height": "60px",
+        "background-color": "#DDD"
+    },
+    "mobileAccountCodeIconNode": {
+        "width": "60px",
+        "height": "60px",
+        "float": "left",
+        "border-right": "2px solid #EEE",
+        "background": "url(/x_component_Setting/$Main/default/mobile/code.png) no-repeat center center"
+    },
+    "mobileAccountCodePicNode": {
+        "height": "60px",
+        "float": "right",
+        "cursor": "pointer",
+        "background-color": "#FFF",
+        "width": "120px"
+    },
+    "mobileAccountCodeInputNode": {
+        "height": "60px",
+        "margin-left": "62px",
+        "margin-right": "120px",
+        "text-align": "center"
+    },
+    "mobileAccountCodeInput": {
+        "width": "98%",
+        "line-height": "60px",
+        "color": "#666",
+        "border": "0px",
+        "height": "60px",
+        "font-size": "18px",
+        "font-family": "微软雅黑",
+        "background": "transparent"
+    },
+
+
+    "mobileAccountInforTextNode": {
+        "margin-top": "0px",
+        "color": "#FF0000",
+        "font-size": "14px",
+        "height": "24px",
+        "line-height": "24px"
+    },
+
+    "mobileAccountLoginActionNode": {
+        "margin-top": "20px",
+        "background": "#3498db",
+        "color": "#FFF",
+        "height": "50px",
+        "line-height": "50px",
+        "cursor": "pointer",
+        "text-align": "center"
+    },
+    "mobileAccountLogoutActionNode": {
+        "margin-top": "20px",
+        "background": "#e74c3c",
+        "color": "#FFF",
+        "height": "50px",
+        "line-height": "50px",
+        "cursor": "pointer",
+        "text-align": "center"
+    },
+    "mobileAccountRegisterActionNode": {
+        "margin-top": "20px",
+        "font-size": "18px",
+        "color": "#666",
+        "cursor": "pointer",
+        "height": "30px",
+        "line-height": "30px",
+        "text-align": "center"
+
+    },
+
+    "registerMaskNode": {
+        "background-color": "#666",
+        "opacity": 0.4,
+        "position": "absolute",
+        "top": "0px",
+        "left": "0px",
+        "width": "100%",
+        "height": "100%"
+    },
+    "registerAreaNode": {
+        "position": "absolute",
+        "top": "0px",
+        "opacity": 1,
+        "left": "0px",
+        "width": "100%",
+        "height": "100%"
+    },
+    "registerNode": {
+        "position": "absolute",
+        "width": "70%",
+        "height": "70%",
+        "min-width": "400px",
+        "min-height": "440px",
+        "font-size": "14px",
+        "padding": "2px",
+        "border": "3px solid #666",
+        "background": "#EEE",
+        "border-radius": "8px",
+        "box-shadow": "0px 0px 20px #000",
+    },
+    "registerTitleNode": {
+        "height": "50px",
+        "color": "#FFF",
+        "background": "#3498db",
+        "border-top-left-radius": "8px",
+        "border-top-right-radius": "8px",
+        "font-size": "24px",
+        "line-height": "50px",
+        "text-align": "center"
+    },
+    "registerUsernameNode": {
+        "margin": "10px 30px 0px 30px",
+        "height": "50px",
+        "background-color": "#DDD"
+    },
+    "registerUsernameIconNode": {
+        "width": "50px",
+        "height": "50px",
+        "float": "left",
+        "border-right": "2px solid #EEE",
+        "background": "url(/x_component_Setting/$Main/default/mobile/user.png) no-repeat center center"
+    },
+    "registerPhoneIconNode": {
+        "width": "50px",
+        "height": "50px",
+        "float": "left",
+        "border-right": "2px solid #EEE",
+        "background": "url(/x_component_Setting/$Main/default/mobile/phone.png) no-repeat center center"
+    },
+    "registerPasswordIconNode": {
+        "width": "50px",
+        "height": "50px",
+        "float": "left",
+        "border-right": "2px solid #EEE",
+        "background": "url(/x_component_Setting/$Main/default/mobile/password.png) no-repeat center center"
+    },
+    "registerUsernameInputNode": {
+        "height": "50px",
+        "margin-left": "52px",
+        "text-align": "center"
+    },
+    "registerUsernameInput": {
+        "width": "98%",
+        "line-height": "50px",
+        "color": "#666",
+        "border": "0px",
+        "height": "50px",
+        "font-size": "14px",
+        "font-family": "微软雅黑",
+        "background": "transparent"
+    },
+
+    "registerCodeNode": {
+        "margin": "10px 30px 0px 30px",
+        "height": "50px",
+        "background-color": "#DDD"
+    },
+    "registerCodeIconNode": {
+        "width": "50px",
+        "height": "50px",
+        "float": "left",
+        "border-right": "2px solid #EEE",
+        "background": "url(/x_component_Setting/$Main/default/mobile/code.png) no-repeat center center"
+    },
+    "registerCodeActionNode": {
+        "height": "50px",
+        "line-height": "50px",
+        "float": "right",
+        "cursor": "pointer",
+        "background-color": "#3498db",
+        "text-align": "center",
+        "color": "#FFF",
+        "font-size": "14px",
+        "width": "180px",
+        "border-left": "10px solid #EEE"
+    },
+    "registerCodeInputNode": {
+        "height": "50px",
+        "margin-left": "52px",
+        "margin-right": "190px",
+        "text-align": "center"
+    },
+    "registerCodeInput": {
+        "width": "98%",
+        "line-height": "50px",
+        "color": "#666",
+        "border": "0px",
+        "height": "50px",
+        "font-size": "14px",
+        "font-family": "微软雅黑",
+        "background": "transparent"
+    },
+
+    "registerPasswordHintNode": {
+        "clear": "both",
+        "position": "relative",
+        "top": "-50px",
+        "left": "56px",
+        "height": "50px",
+        "line-height": "50px",
+        "color": "#666"
+    },
+    "registerConfirmHintNode": {
+        "clear": "both",
+        "position": "relative",
+        "top": "-50px",
+        "left": "56px",
+        "height": "50px",
+        "line-height": "50px",
+        "color": "#666"
+    },
+
+    "registerActionNode": {
+        "margin-top": "20px",
+        "background": "#3498db",
+        "color": "#FFF",
+        "height": "40px",
+        "float": "right",
+        "width": "300px",
+        "line-height": "40px",
+        "cursor": "pointer",
+        "margin-right": "30px",
+        "text-align": "center"
+    },
+    "registerCancelActionNode": {
+        "margin-top": "20px",
+        "background": "#CCC",
+        "color": "#666",
+        "height": "40px",
+        "float": "right",
+        "width": "100px",
+        "line-height": "40px",
+        "cursor": "pointer",
+        "margin-right": "20px",
+        "text-align": "center"
+    },
+
+    "registerErrorNode": {
+        "position": "relative",
+        "top": "-50px",
+        "line-height": "50px",
+        "padding": "0px 10px",
+        "color": "#FF0000",
+        "text-align": "right"
+    },
+    "registerInforTextNode": {
+        "margin-right": "440px",
+        "margin-left": "30px",
+        "margin-top": "20px",
+        "height": "50px",
+        "color": "#FF0000",
+        "font-size": "14px",
+        "line-height": "25px"
+    },
+    "registerSuccessInforNode": {
+        "margin": "40px",
+        "text-align": "center",
+        "color": "#3498db",
+        "font-weight": "bold",
+        "line-height": "40px",
+        "cursor": "pointer",
+        "font-size": "24px"
+    },
+    "mobileAccountMaskNode": {
+        "background-color": "#666",
+        "opacity": 0.4,
+        "position": "relative ",
+        "top": "-100%",
+        "width": "100%",
+        "height": "100%"
+    },
+
+    "mobileServerTitleNode": {
+        "height": "40px",
+        "line-height": "40px",
+        "background": "#666",
+        "margin": "0px 20px",
+        "color": "#FFF",
+        "text-align": "center",
+        "font-size": "18px",
+        "font-weight": "bold"
+    },
+    "mobileCenterServerListNode": {
+        "overflow": "hidden",
+        "margin": "0px 20px"
+    },
+    "mobileServerListNode": {
+        "overflow": "hidden",
+        "margin": "0px"
+    },
+    "mobileServerNode": {
+        "overflow": "hidden",
+        "margin": "0px 20px",
+        "padding": "10px 0px",
+        "border-bottom": "1px solid #999"
+    }
+
+}

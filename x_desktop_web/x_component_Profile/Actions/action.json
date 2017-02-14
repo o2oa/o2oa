@@ -1,0 +1,6 @@
+{
+  "changePassword": {"uri": "/jaxrs/password", "method": "PUT"},
+  "getPerson": {"uri": "/jaxrs/person"},
+  "updatePerson": {"uri": "/jaxrs/person", "method": "PUT"},
+  "changeIcon": {"uri": "/servlet/icon", "method": "POST", "enctype": "formData"}
+}

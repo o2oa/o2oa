@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." name="main" default="default">
+	<basename property="project" file="${basedir}" />
+	<dirname property="root.dir" file="${basedir}../" />
+	<property file="${root.dir}/building/build.properties" />
+	<include file="${root.dir}/building/build_common.xml" as="common" />
+
+
+	<tstamp>
+		<format property="TODAY" pattern="yyyyMMdd" locale="	zh-cn" />
+	</tstamp>
+
+	<target name="default">
+		<mkdir dir="dist/o2server" />
+		<mkdir dir="versions" />
+		<delete includeemptydirs="true">
+			<fileset dir="dist/o2server" includes="**/*" />
+		</delete>
+		<copy todir="dist/o2server/commons/">
+			<fileset dir="D:/o2server/commons/" />
+		</copy>
+		<copy todir="dist/o2server/config/">
+			<fileset dir="D:/o2server/config/sample/" />
+		</copy>
+		<mkdir dir="dist/o2server/local" />
+		<touch file="dist/o2server/local/node.cfg" />
+		<mkdir dir="dist/o2server/logs" />
+		<mkdir dir="dist/o2server/servers/centerServer/webapps" />
+		<mkdir dir="dist/o2server/servers/centerServer/work" />
+		<mkdir dir="dist/o2server/servers/applicationServer/webapps" />
+		<mkdir dir="dist/o2server/servers/applicationServer/work" />
+		<copy todir="dist/o2server/servers/webServer/">
+			<fileset dir="D:/o2server/servers/webServer/">
+				<exclude name="**/.svn/" />
+				<exclude name="**/Thumbs.db" />
+				<exclude name="**/*.bak" />
+				<exclude name="**/~*" />
+			</fileset>
+		</copy>
+		<copy todir="dist/o2server/store/">
+			<fileset dir="D:/o2server/store/" />
+		</copy>
+		<copy todir="dist/o2server">
+			<fileset dir="D:/o2server/">
+				<include name="console.jar" />
+				<include name="start.bat" />
+				<include name="start.sh" />
+				<include name="version.o2" />
+			</fileset>
+		</copy>
+		<zip encoding="utf-8" destfile="versions/o2server${TODAY}.zip" update="false">
+			<zipfileset dir="dist/o2server/" filemode="777" dirmode="777" encoding="utf-8" />
+		</zip>
+	</target>
+</project>

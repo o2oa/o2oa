@@ -1,0 +1,39 @@
+.btn-group-vertical {
+    vertical-align: middle;
+    margin: 5px;
+
+    .expand, .expand-caption {
+        width: 40px;
+        margin: 0;
+        padding: 0;
+        border: none!important;
+        border-radius: 0!important;
+
+        &:hover {
+            background-color: @tool-hover;
+        }
+
+        &:active {
+            background-color: @tool-active;
+        }
+
+        &.active {
+            box-shadow: none;
+            background-color: @tool-hover;
+        }
+    }
+
+    .expand {
+        height: 25px;
+        background: url(images/icons.png) no-repeat 0 -995px;
+        background-position-x: 50%;
+    }
+
+    .expand-caption {
+        height: 20px;
+
+        .caption {
+            font-size: 12px;
+        }
+    }
+}

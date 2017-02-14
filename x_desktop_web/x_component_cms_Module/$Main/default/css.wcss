@@ -1,0 +1,227 @@
+{
+  "node": {
+    "width": "100%",
+    "height": "100%",
+    "overflow": "hidden",
+    "background-color":"#fff"
+  },
+  "rightContentNode": {
+    "height": "100%",
+    "margin-left": "222px",
+    "overflow": "hidden",
+    "background-color" : "#fff",
+    "opacity": 1
+  },
+
+  "titleBar": {
+    "overflow": "hidden",
+    "height": "80px",
+    "background":"url(/x_component_cms_Index/$Main/default/icon/titleBackground.png) center center repeat-x"
+  },
+
+  "titleIconAreaNode" : {
+    "float": "left",
+    "padding-top" :"8px",
+    "padding-left" : "8px"
+  },
+  "titleIconNode": {
+    "width": "64px",
+    "height": "64px",
+    "border-bottom-left-radius": "10px",
+    "border-bottom-right-radius": "10px",
+    "border-top-left-radius": "10px",
+    "border-top-right-radius": "10px"
+  },
+
+
+
+  "createDocumentAction": {
+    "width": "80px",
+    "height": "80px",
+    "background": "url(/x_component_cms_Index/$Main/default/icon/createDocument.png) center center no-repeat",
+    "float": "left",
+    "border-right": "1px solid #FFF",
+    "cursor": "pointer"
+  },
+  "titleTextNode": {
+    "padding-left": "20px",
+    "color": "#3587d7",
+    "font-size": "20px",
+    "line-height": "80px",
+    "font-weight": "bold",
+    "width": "160px",
+    "float": "left",
+    "text-shadow": "0px 0px 3px #fff"
+  },
+  "searchBarAreaNode": {
+    "margin": "0px 20px 0px 20px",
+    "height": "60px",
+    "overflow": "hidden",
+    "float" : "right",
+    "width" : "700px"
+  },
+  "searchBarNode": {
+    "width": "80%",
+    "max-width": "500px",
+    "height": "30px",
+    "background-color": "#FFF",
+    "border": "0px solid #999",
+    "border-radius":"12px",
+    "margin-top": "25px",
+    "float": "right"
+  },
+  "searchBarActionNode": {
+    "width": "40px",
+    "height": "30px",
+    "background": "url("+"/x_component_cms_Module/$Main/default/icon/search.png) center center no-repeat",
+    "float": "right",
+    "cursor": "pointer"
+  },
+  "searchBarResetActionNode": {
+    "width": "40px",
+    "height": "30px",
+    "background": "url("+"/x_component_cms_Module/$Main/default/icon/reset.png) center center no-repeat",
+    "float": "right",
+    "cursor": "pointer"
+  },
+  "searchBarInputBoxNode": {
+    "height": "30px",
+    "line-height": "30px",
+    "margin-left": "10px",
+    "margin-right": "50px"
+  },
+  "searchBarInputNode": {
+    "width": "100%",
+    "height": "24px",
+    "border": "0px",
+    "color": "#666"
+  },
+  "refreshAreaNode": {
+    "float": "right",
+    "margin": "0px 40px 0px 0px",
+    "width" : "40px",
+    "overflow": "hidden"
+  },
+  "refreshActionNode": {
+    "width": "40px",
+    "height": "80px",
+    "line-height": "80px",
+    "background": "url(/x_component_cms_Index/$Main/default/icon/refresh.png) center center no-repeat",
+    "cursor": "pointer"
+  },
+
+  "naviContainerNode": {
+    "border-top" : "1px solid #fff",
+    "float": "left",
+    "overflow": "hidden",
+    "width": "217px",
+    "height": "100%",
+    "background-color" : "#f1f8ff"
+  },
+  "naviNode": {
+//    "border": "0px",
+//    "border-radius": "0px",
+    "position": "relative",
+    "overflow": "hidden"
+    //"margin-right" : "-7px",
+  },
+//  "categoryNaviNode": {
+//    "cursor" : "pointer",
+//    "display" : "block",
+//    "height": "35px",
+//    "margin": "0px",
+//    "background": "url(/x_component_cms_Module/$Main/default/icon/category.png) no-repeat 20px center",
+//    "background-color" : "#f1f8ff",
+//    "line-height" :"35px",
+//    "font-family": "微软雅黑",
+//    "font-size": "14px",
+//    "color" : "#3587d7",
+//    "padding-left" : "40px"
+//  },
+
+  "categoryNaviNode": {
+    "cursor" : "pointer",
+    "color" : "#3587d7",
+    "padding-left" : "50px",
+    "height" : "40px",
+    "font-weight" : "normal",
+    "line-height" : "40px",
+    "font-family": "微软雅黑",
+    "font-size": "14px",
+    "background" : "url(/x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 20px 12px",
+    "background-color": "#f1f8ff"
+  },
+  "categoryNaviNode_selected" : {
+    "color" : "#fff",
+    "background": "url(/x_component_cms_Module/$Main/default/icon/category_folder_selected.png) no-repeat 20px 12px",
+    "background-color" : "#398dee"
+  },
+  "categoryNaviNode_over" : {
+    "background": "url(/x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 20px 12px",
+    "background-color" : "#e4edf9",
+    "color" : "#3587d7"
+  },
+
+  "viewNaviListNode" : {
+  },
+  "viewNaviListNode_all" : {
+//    "padding-top" : "10px"
+  },
+  "viewNaviNode_all" : {
+    "cursor" : "pointer",
+    "color" : "#3587d7",
+    "padding-left" : "50px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "font-family": "微软雅黑",
+    "font-size": "14px",
+    "background" : "url(/x_component_cms_Module/$Main/default/icon/category_all3.png) no-repeat 20px 12px",
+    "background-color": "#f1f8ff"
+  },
+  "viewNaviNode_all_selected" : {
+    "background": "url(/x_component_cms_Module/$Main/default/icon/category_all_selected.png) no-repeat 20px 12px",
+    "background-color" : "#398dee",
+    "color" : "#fff"
+  },
+  "viewNaviNode_all_over" : {
+    "background" : "url(/x_component_cms_Module/$Main/default/icon/category_all3.png) no-repeat 20px 12px",
+    "background-color" : "#e4edf9",
+    "color" : "#3587d7"
+  },
+
+
+  "viewNaviNode" : {
+    "cursor" : "pointer",
+    "color" : "#69aef1",
+    "padding-left" : "60px",
+    "height" : "30px",
+    "line-height" : "30px",
+    "font-family": "微软雅黑",
+    "font-size": "14px",
+    "background" : "url(/x_component_cms_Module/$Main/default/icon/category_view.png) no-repeat 30px 8px",
+    "background-color": "#f1f8ff"
+  },
+  "viewNaviNode_selected" : {
+    "background-color" : "#398dee",
+    "color" : "#fff"
+  },
+  "viewNaviNode_over" : {
+    "background-color" : "#e4edf9",
+    "color" : "#69aef1"
+  },
+  "viewNaviSepartorNode" : {
+//    "margin" : "0 auto",
+//    "height" : "1px",
+//    "width" : "180px",
+//    "border-bottom" : "1px solid rgba(240, 242, 251, 1)"
+  },
+  "viewNaviBottom" : {
+//    "width" : "200px",
+//    "height" : "88px",
+//    "position" : "absolute",
+//    "bottom" : "88px",
+//    "left" : "0px",
+//    "background-image" : "url(/x_component_cms_Module/$Main/default/icon/titleBackground2.png)",
+//    "background-position" : "-538px -508px"
+  }
+}

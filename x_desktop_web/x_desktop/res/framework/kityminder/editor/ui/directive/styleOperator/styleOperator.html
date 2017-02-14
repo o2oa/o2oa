@@ -1,0 +1,17 @@
+<div class="style-operator">
+    <a ng-click="minder.queryCommandState('clearstyle') === -1 || minder.execCommand('clearstyle')" class="btn-wrap clear-style" ng-disabled="minder.queryCommandState('clearstyle') === -1">
+        <span class="btn-icon clear-style-icon"></span>
+        <span class="btn-label">{{ 'clearstyle' | lang: 'ui' }}</span>
+    </a>
+    <div class="s-btn-group-vertical">
+        <a class="s-btn-wrap" href ng-click="minder.queryCommandState('copystyle') === -1 || minder.execCommand('copystyle')" ng-disabled="minder.queryCommandState('copystyle') === -1">
+            <span class="s-btn-icon copy-style-icon"></span>
+            <span class="s-btn-label">{{ 'copystyle' | lang: 'ui' }}</span>
+        </a>
+
+        <a class="s-btn-wrap paste-style-wrap" href ng-click="minder.queryCommandState('pastestyle') === -1 || minder.execCommand('pastestyle')" ng-disabled="minder.queryCommandState('pastestyle') === -1">
+            <span class="s-btn-icon paste-style-icon"></span>
+            <span class="s-btn-label">{{ 'pastestyle' | lang: 'ui' }}</span>
+        </a>
+    </div>
+</div>

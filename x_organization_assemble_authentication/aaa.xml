@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
+ 
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+  <Set name="contextPath">/blah</Set>
+  <Set name="war"><Property name="jetty.webapps"/>/webapps/blah.war</Set>
+  <Set name="virtualHosts">
+    <Array type="java.lang.String">
+      <Item>www.blah.com</Item>
+      <Item>www.blah.net</Item>
+      <Item>www.blah.org</Item>
+    </Array>
+  </Set>
+</Configure>

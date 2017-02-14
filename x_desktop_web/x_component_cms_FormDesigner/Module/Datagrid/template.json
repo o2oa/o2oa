@@ -1,0 +1,80 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Datagrid",
+	"description": "",
+    "sequence": "yes",
+	"defaultValue": {
+		"code": "",
+		"html": ""
+	},
+	"events": {
+		"click": {
+			"code": "",
+			"html": ""
+		},
+		"dblclick": {
+			"code": "",
+			"html": ""
+		},
+		"keydown": {
+			"code": "",
+			"html": ""
+		},
+		"keypress": {
+			"code": "",
+			"html": ""
+		},
+		"keyup": {
+			"code": "",
+			"html": ""
+		},
+		"mousedown": {
+			"code": "",
+			"html": ""
+		},
+		"mousemove": {
+			"code": "",
+			"html": ""
+		},
+		"mouseout": {
+			"code": "",
+			"html": ""
+		},
+		"mouseover": {
+			"code": "",
+			"html": ""
+		},
+		"mouseup": {
+			"code": "",
+			"html": ""
+		},
+		"focus": {
+			"code": "",
+			"html": ""
+		},
+		"blur": {
+			"code": "",
+			"html": ""
+		},
+		"editCheck": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"border": "1px solid #000",
+	"backgroundColor": "#FFFFFF",
+	"zebraColor": "#FFFFFF",
+	"editableScript": {
+		"code": "",
+		"html": ""
+	},
+	"defaultData": {
+		"code": "",
+		"html": ""
+	},
+	"container": ""
+}

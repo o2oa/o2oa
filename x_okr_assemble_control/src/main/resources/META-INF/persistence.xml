@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd" version="2.0">
+  <persistence-unit name="com.x.okr.entity.OkrAttachmentFileInfo" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.base.core.entity.StorageObject</class>
+    <class>com.x.okr.entity.OkrAttachmentFileInfo</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrCenterWorkInfo" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.okr.entity.OkrCenterWorkInfo</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrCenterWorkReportStatistic" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.okr.entity.OkrCenterWorkReportStatistic</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrConfigSecretary" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.okr.entity.OkrConfigSecretary</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrConfigSystem" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.okr.entity.OkrConfigSystem</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrConfigWorkLevel" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.okr.entity.OkrConfigWorkLevel</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrConfigWorkType" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.okr.entity.OkrConfigWorkType</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrPermissionInfo" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.okr.entity.OkrPermissionInfo</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrPersonPermission" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.okr.entity.OkrPersonPermission</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrRoleInfo" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.okr.entity.OkrRoleInfo</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrRolePermission" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.okr.entity.OkrRolePermission</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrTask" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.okr.entity.OkrTask</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrTaskHandled" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.okr.entity.OkrTaskHandled</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrUserInfo" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.okr.entity.OkrUserInfo</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrWorkAuthorizeRecord" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.okr.entity.OkrWorkAuthorizeRecord</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrWorkBaseInfo" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.okr.entity.OkrWorkBaseInfo</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrWorkChat" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.okr.entity.OkrWorkChat</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrWorkDetailInfo" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.okr.entity.OkrWorkDetailInfo</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrWorkDynamics" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.okr.entity.OkrWorkDynamics</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrWorkPerson" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.okr.entity.OkrWorkPerson</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrWorkProblemInfo" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.okr.entity.OkrWorkProblemInfo</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrWorkProblemPersonLink" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.okr.entity.OkrWorkProblemPersonLink</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrWorkProblemProcessLog" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.okr.entity.OkrWorkProblemProcessLog</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrWorkProcessLink" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.okr.entity.OkrWorkProcessLink</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrWorkReportBaseInfo" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.okr.entity.OkrWorkReportBaseInfo</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrWorkReportDetailInfo" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.okr.entity.OkrWorkReportDetailInfo</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrWorkReportPersonLink" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.okr.entity.OkrWorkReportPersonLink</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.okr.entity.OkrWorkReportProcessLog" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.okr.entity.OkrWorkReportProcessLog</class>
+    <properties/>
+  </persistence-unit>
+</persistence>

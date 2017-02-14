@@ -1,0 +1,43 @@
+[
+  {
+    "title" : "标题",
+    "headStyles" : "titleAreaHeadNode",
+    "contentStyles" : "titleAreaContentNode",
+    "item" : "title",
+    "name" : "titleAreaNode",
+    "width" : "40%"
+  },
+  {
+    "title" : "创建时间",
+    "headStyles" : "timeAreaHeadNode",
+    "contentStyles" : "timeAreaContentNode",
+    "item" : "createTime",
+    "name" : "timeAreaNode",
+    "width" : "18%"
+  },
+  {
+    "title" : "创建人",
+    "headStyles" : "personAreaHeadNode",
+    "contentStyles" : "personAreaContentNode",
+    "item" : "creatorIdentity",
+    "name" : "personAreaNode",
+    "width" : "15%"
+  },
+  {
+    "title" : "创建部门",
+    "headStyles" : "departmentAreaHeadNode",
+    "contentStyles" : "departmentAreaContentNode",
+    "item" : "creatorDepartment",
+    "name" : "departmentAreaNode",
+    "width" : "13%"
+  },
+  {
+    "access" : "admin",
+    "title" : "操作",
+    "headStyles" : "actionAreaHeadNode",
+    "contentStyles" : "actionAreaContentNode",
+    "item" : "action",
+    "name" : "actionAreaNode",
+    "width" : "13%"
+  }
+]

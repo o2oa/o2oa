@@ -1,0 +1,56 @@
+{
+  "default" : {
+	"deleteDocument" : {
+	  "action" : "this.form.deleteDocument",
+	  "icon" : "delete.png",
+	  "iconOver": "delete_over.png",
+	  "title" : "delete"
+	} ,
+	"editDocument" : {
+	  "action" : "this.form.editDocument",
+	  "icon" : "edit.png",
+	  "iconOver": "edit_over.png",
+	  "title" : "edit"
+	}
+	//	"share":{
+//	  "action" : "this.document.share",
+//	  "icon" : "share.png",
+//	  "iconOver": "share_over.png",
+//	  "title" : "share"
+//	}
+  },
+  "custom" : {
+	"icon1" : {
+	  "icon": "icon2.png",
+	  "iconOver": "icon2_over.png"
+	},
+	"icon3" : {
+	  "icon": "icon3.png",
+	  "iconOver": "icon3_over.png"
+	},
+	"icon4" : {
+	  "icon": "icon4.png",
+	  "iconOver": "icon4_over.png"
+	},
+	"icon5" : {
+	  "icon": "icon5.png",
+	  "iconOver": "icon5_over.png"
+	},
+	"icon6" : {
+	  "icon": "icon6.png",
+	  "iconOver": "icon6_over.png"
+	},
+	"icon7" : {
+	  "icon": "icon7.png",
+	  "iconOver": "icon7_over.png"
+	},
+	"icon8" : {
+	  "icon": "icon8.png",
+	  "iconOver": "icon8_over.png"
+	},
+	"icon9" : {
+	  "icon": "icon9.png",
+	  "iconOver": "icon9_over.png"
+	}
+  }
+}
