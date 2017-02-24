@@ -295,6 +295,7 @@
   },
   "processInfoContent":{
     "margin-left":"10px",
+    "padding-right":"5px",
     "margin-bottom":"20px",
     "font-size":"12px"
   },
@@ -345,7 +346,7 @@
     "float": "left"
   },
   "chatContentNode":{
-    "min-height" : "580px",
+    //"min-height" : "580px",
     "background-color" : "#f2f2f2"
   },
   "chatContentListNode":{
@@ -389,6 +390,10 @@
   },
   "prevContentValueDiv":{
     "margin":"0px 20px"
+  },
+  "reportLeaderContentDiv":{
+    "border-bottom":"1px dashed #3c76c1",
+    "padding-top":"10px"
   },
 
   "authDiv":{

@@ -299,7 +299,7 @@ MWF.xApplication.Attendance.PermissionExplorer.Permission = new Class({
         if (data.adminName ){
             this.app.restActions.savePermission(data, function(json){
                 if( json.type == "ERROR" ){
-                    this.app.notice( json.userMessage  , "error");
+                    this.app.notice( json.message  , "error");
                 }else{
                     this.createMarkNode.destroy();
                     this.createAreaNode.destroy();

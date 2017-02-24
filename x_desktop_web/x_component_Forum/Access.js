@@ -2,7 +2,7 @@ MWF.xApplication.Forum.IS_LOGIN = false;
 MWF.xApplication.Forum.ForumSetting = null;
 MWF.xApplication.Forum.RoleInfoList = [];
 MWF.xApplication.Forum.PermissionInfoList = [];
-
+MWF.xApplication.Forum.isBBSSystemAdmin = false;
 
 MWF.xApplication.Forum.Access = new Class({
     //SECTION_SUBJECT_MANAGEMENT_  主题管理
@@ -32,6 +32,7 @@ MWF.xApplication.Forum.Access = new Class({
         if( !MWF.xApplication.Forum.ForumSetting ){
             MWF.xApplication.Forum.ForumSetting = {};
             this.actions.listCategoryAll(function (json) {
+                if( !json.data )json.data = [];
                 json.data.each(function (d) {
                     MWF.xApplication.Forum.ForumSetting[d.id] = d;
                 }.bind(this))
@@ -46,6 +47,7 @@ MWF.xApplication.Forum.Access = new Class({
                 MWF.xApplication.Forum.RoleInfoList = json.data ? json.data.roleInfoList : [];
                 MWF.xApplication.Forum.PermissionInfoList = json.data ? json.data.permissionInfoList : [];
                 MWF.xApplication.Forum.IS_LOGIN = true;
+                MWF.xApplication.Forum.isBBSSystemAdmin = json.data ?　json.data.isBBSSystemAdmin : false;
                 if( callback )callback();
             }.bind(this))
         }else{
@@ -55,8 +57,21 @@ MWF.xApplication.Forum.Access = new Class({
     isAnonymous : function(){
       return this.anonymous;
     },
+    isAnonymousDynamic : function(){
+      var flag = true;
+        this.actions.authentication( function( json ){
+            if (json.data.tokenType == "anonymous"){
+                this.userName = layout.desktop.session.user.name = "anonymous";
+                flag = true;
+            }else{
+                this.userName = layout.desktop.session.user.name = json.data.name;
+                flag = false;
+            }
+        }.bind(this), null, false );
+        return flag;
+    },
     isAdmin : function(){
-        return MWF.AC.isAdministrator();
+        return MWF.AC.isAdministrator() || MWF.xApplication.Forum.isBBSSystemAdmin; //(layout.desktop.session.user.roleList.indexOf("BBSSystemAdmin")!=-1);
     },
     inArray : function( managers, callback, username ){
         var flag = false;
@@ -76,7 +91,7 @@ MWF.xApplication.Forum.Access = new Class({
                     flag = false
                 }
             }
-        })
+        });
         return flag;
     },
     isSectionViewer : function( sectionIdOrData ){
@@ -197,7 +212,7 @@ MWF.xApplication.Forum.Access = new Class({
         var flag = false;
         this.getCategoryData( forumIdOrData, function( forumData ){
             flag = this.inArray( forumData.forumManagerName , callback, username );
-        }.bind(this) )
+        }.bind(this) );
         return flag;
     },
     isSectionManager : function( sectionIdOrData , callback, username , async){  //是否板块管理员

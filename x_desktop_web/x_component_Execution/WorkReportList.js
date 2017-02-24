@@ -436,15 +436,15 @@ MWF.xApplication.Execution.WorkReportList.DrafterView = new Class({
         this.actions.deleteWortReport(documentData.id, function(json){
             if(json.type && json.type == "success"){
                 this.explorer.createDrafterView()
-                this.app.notice(json.userMessage, "success");
+                this.app.notice(this.explorer.lp.prompt.deleteWortReport, "success");
             }
 
         }.bind(this),function(xhr,text,error){
             var errorText = error;
             if (xhr) errorMessage = xhr.responseText;
             var e = JSON.parse(errorMessage);
-            if(e.userMessage){
-                this.app.notice( e.userMessage,"error");
+            if(e.message){
+                this.app.notice( e.message,"error");
             }else{
                 this.app.notice( errorText,"error");
             }

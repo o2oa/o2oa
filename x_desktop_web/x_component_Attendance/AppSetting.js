@@ -256,7 +256,7 @@ MWF.xApplication.Attendance.AppSetting = new Class({
         arr.each( function( d ){
             this.app.restActions.saveSetting( d, function(json){
                 if( json.type == "ERROR" ){
-                    this.app.notice( json.userMessage  , "error");
+                    this.app.notice( json.message  , "error");
                     flag = false;
                 }
             }.bind(this), null, false);

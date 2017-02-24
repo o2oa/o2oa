@@ -75,6 +75,9 @@ MWF.xApplication.Execution.LP = {
 
 	},
 	"workGather":{
+		"prompt":{
+			"submitWorkReport":"提交成功"
+		},
 		"bottomAction":{
 			"submit":"提交",
 			"close":"关闭"
@@ -109,6 +112,11 @@ MWF.xApplication.Execution.LP = {
 	"workConditionMenuTitleMore":"更多...",
 
 	"workList":{
+		"prompt":{
+			"deleteCenterWork":"删除成功",
+			"deleteBaseWork":"删除成功",
+			"tackbackBaseWork":"收回成功"
+		},
 		"navi":{
 			"title":"工作部署",
 			"items":{
@@ -152,6 +160,9 @@ MWF.xApplication.Execution.LP = {
 
 	},
 	"workTask":{
+		"prompt":{
+			"tackbackBaseWork":"收回成功"
+		},
 		"naviTitle":"工作部署",
 		"newTask":"部署新工作",
 		"centerWork":"中心工作",
@@ -266,6 +277,15 @@ MWF.xApplication.Execution.LP = {
 		split : "拆解"
 	},
 	"WorkDeploy" : {
+		prompt:{
+			deleteCenterWork:"删除成功",
+			deployCenterWork:"部署成功",
+			comfirmCenterWork:"确认成功",
+			archiveCenterWork:"归档成功",
+			deleteBaseWork:"删除成功",
+			tackbackBaseWork:"收回成功",
+			authorizeBaseWork:"委派成功"
+		},
 		title : "部署中心工作",
 		drafter : "拟稿人",
 		draftDepartment : "拟稿部门",
@@ -493,6 +513,9 @@ MWF.xApplication.Execution.LP = {
 	"search" : "搜索",
 	"return" : "返回",
 	"WorkReportList":{
+		prompt:{
+			deleteWortReport:"删除成功"
+		},
 		title:"工作汇报",
 		naviItem:{
 			workDeploy: "工作部署",
@@ -512,6 +535,10 @@ MWF.xApplication.Execution.LP = {
 		archiveTab: "已归档工作"
 	},
 	"WorkReport" :{
+		prompt:{
+			readDone:"已阅成功",
+			submitWorkReport:"提交成功"
+		},
 		topTitle :"工作汇报",
 		reportLinks:"查看历次汇报",
 		reportContentTitle:"汇报内容",

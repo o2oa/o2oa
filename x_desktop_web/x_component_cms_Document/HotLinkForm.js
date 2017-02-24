@@ -238,7 +238,7 @@ MWF.xApplication.cms.Document.HotLinkForm = new Class({
     _cancelHotPic :  function(){
         this.actions.removeHotPic( this.hotPicData.id , function( json ) {
             if (json.type == "error") {
-                this.app.notice(json.userMessage, "error");
+                this.app.notice(json.message, "error");
             } else {
                 this.formMarkNode.destroy();
                 this.formAreaNode.destroy();
@@ -266,7 +266,7 @@ MWF.xApplication.cms.Document.HotLinkForm = new Class({
 
         this._ok(this.hotPicData, function (json) {
             if (json.type == "error") {
-                this.app.notice(json.userMessage, "error");
+                this.app.notice(json.message, "error");
             } else {
                 this.formMarkNode.destroy();
                 this.formAreaNode.destroy();

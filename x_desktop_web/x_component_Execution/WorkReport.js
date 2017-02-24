@@ -38,7 +38,6 @@ MWF.xApplication.Execution.WorkReport = new Class({
         this.actions = actions;
     },
     load: function () {
-
         if (this.options.isNew) {
             this.create();
         } else if (this.options.isEdited) {
@@ -793,7 +792,7 @@ MWF.xApplication.Execution.WorkReport = new Class({
     readDone: function(){
         //alert(this.data.todoId)
         this.actions.readDone(this.data.todoId,function(json){
-            this.app.notice(json.userMessage,"success");
+            this.app.notice(this.lp.prompt.readDone,"success");
             this.fireEvent("reloadView", json);
             this.close();
         }.bind(this),function(xhr){}.bind(this))
@@ -819,8 +818,8 @@ MWF.xApplication.Execution.WorkReport = new Class({
             var errorText = error;
             if (xhr) errorMessage = xhr.responseText;
             var e = JSON.parse(errorMessage);
-            if(e.userMessage){
-                this.app.notice( e.userMessage,"error");
+            if(e.message){
+                this.app.notice( e.message,"error");
             }else{
                 this.app.notice( errorText,"error");
             }
@@ -866,7 +865,7 @@ MWF.xApplication.Execution.WorkReport = new Class({
 
         this.actions.submitWorkReport( saveData, function(json){
             if(json.type == "success"){
-                this.app.notice(json.userMessage,"success");
+                this.app.notice(this.lp.prompt.submitWorkReport,"success");
                 this.fireEvent("reloadView", json);
                 this.close();
             }
@@ -874,8 +873,8 @@ MWF.xApplication.Execution.WorkReport = new Class({
             var errorText = error;
             if (xhr) errorMessage = xhr.responseText;
             var e = JSON.parse(errorMessage);
-            if(e.userMessage){
-                this.app.notice( e.userMessage,"error");
+            if(e.message){
+                this.app.notice( e.message,"error");
             }else{
                 this.app.notice( errorText,"error");
             }

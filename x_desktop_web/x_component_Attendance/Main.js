@@ -309,6 +309,11 @@ MWF.xApplication.Attendance.Navi = new Class({
 		this.load();
 	},
 	load: function(){
+		this.scrollNode = new Element("div.naviScrollNode", { "styles" : this.css.naviScrollNode }).inject( this.node );
+		this.areaNode = new Element("div.naviAreaNode", { "styles" : this.css.naviAreaNode }).inject( this.scrollNode );
+
+		this.setNodeScroll();
+
 		var naviUrl = this.app.path+"navi.json";
 		MWF.getJSON(naviUrl, function(json){
 			json.each(function(navi){
@@ -321,6 +326,18 @@ MWF.xApplication.Attendance.Navi = new Class({
 				}
 			}.bind(this));
 			if( this.options.id == "" )this.elements[0].click();
+
+			this.setContentSize();
+
+			this.app.addEvent("resize", this.setContentSize.bind(this));
+		}.bind(this));
+	},
+	setNodeScroll: function(){
+		MWF.require("MWF.widget.DragScroll", function(){
+			new MWF.widget.DragScroll(this.scrollNode);
+		}.bind(this));
+		MWF.require("MWF.widget.ScrollBar", function(){
+			new MWF.widget.ScrollBar(this.scrollNode, {"indent": false});
 		}.bind(this));
 	},
 	createNaviNode :function(data){
@@ -332,7 +349,7 @@ MWF.xApplication.Attendance.Navi = new Class({
 				if( !this.app.isDepartmentManager() && !this.app.isAdmin() )flag = false;
 			}
 			if( flag ){
-				new Element("div", { "styles": this.css.viewNaviSepartorNode }).inject(this.node);
+				new Element("div", { "styles": this.css.viewNaviSepartorNode }).inject(this.areaNode);
 			}
 		}else if( data.sub && data.sub.length > 0 ){
 			this.createNaviMenuNode(data);
@@ -359,7 +376,7 @@ MWF.xApplication.Attendance.Navi = new Class({
 			"text": data.title
 		});
 		textNode.inject(menuNode);
-		menuNode.inject(this.node);
+		menuNode.inject(this.areaNode);
 
 		this.menus[data.id] = {};
 		this.menus[data.id].node = menuNode;
@@ -435,7 +452,7 @@ MWF.xApplication.Attendance.Navi = new Class({
 		});
 		textNode.inject(itemNode);
 
-		itemNode.inject(this.node);
+		itemNode.inject(this.areaNode);
 
 		this.elements.push(itemNode);
 		this.items[data.id] = itemNode;
@@ -468,6 +485,10 @@ MWF.xApplication.Attendance.Navi = new Class({
 		if (navi.action && this.app[navi.action]) {
 			this.app[navi.action].call(this.app, navi);
 		}
+	},
+	setContentSize : function(){
+		var size = this.app.content.getSize();
+		this.scrollNode.setStyle("height", size.y - 5 );
 	}
 	//loadCalendar: function () {
 	//	var calendarArea = new Element("div#calendarArea",{

@@ -380,42 +380,43 @@
   },
   "newCategoryNaviNode" : {
 	"color" : "#333",
-	"padding-left" : "50px",
-	"height" : "40px",
+	"padding-left" : "45px",
+	"height" : "39px",
 	"font-weight" : "normal",
-	"line-height" : "40px",
+	"line-height" : "39px",
 	"font-family": "微软雅黑",
 	"overflow" : "hidden",
 	"font-size": "14px",
-	"background" : "url(/x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 20px 12px",
-	"background-color": "#fff",
+//	"background" : "url(/x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 20px 12px",
+//	"background-color": "#fff",
 	"border-bottom" : "1px solid #ccc",
 	"position" : "relative"
   },
   "categoryNaviNode": {
 	"cursor" : "pointer",
-	"color" : "#333",
-	"padding-left" : "50px",
-	"height" : "40px",
+	"color" : "#666",
+	"padding-left" : "45px",
+	"height" : "39px",
 	"overflow" : "hidden",
 	"font-weight" : "normal",
-	"line-height" : "40px",
+	"line-height" : "39px",
 	"font-family": "微软雅黑",
 	"font-size": "14px",
-	"background" : "url(/x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 20px 12px",
-	"background-color": "#fff",
-	"position" : "relative"
+	//"background" : "url(/x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 20px 12px",
+	//"background-color": "#fff",
+	"position" : "relative",
+	"background-color" : "#f7f7f7"
   },
   "categoryNaviTextNode" : {
 
   },
   "categoryNaviNode_selected" : {
-	"color" : "#333",
-	"background": "url(/x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 20px 12px",
-	"background-color" : "#eee"
+	"color" : "#447bbb",
+	//"background": "url(/x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 20px 12px",
+	"background-color" : "#f2f8ff"
   },
   "categoryNaviNode_over" : {
-	"background": "url(/x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 20px 12px",
+	//"background": "url(/x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 20px 12px",
 	"background-color" : "#f2f2f2"
   },
   "categoryListResizeNode": {
@@ -427,11 +428,10 @@
 	"cursor": "col-resize"
   },
   "rightContent" : {
-	"margin-left": "300px"
-	//"float": "left"
+	//"margin-left": "300px"
   },
   "viewNaviListNode" : {
-	"border-bottom" : "1px solid #ccc"
+	"border-bottom" : "1px solid #f7f7f7"
   },
   "viewNaviListNode_dragIn" : {
 	"border-bottom" : "1px solid #ffa200"
@@ -443,23 +443,22 @@
 
   "viewNaviNode" : {
 	"cursor" : "pointer",
-	"color" : "#333",
+	"color" : "#999",
 	"padding-left" : "60px",
 	"height" : "30px",
 	"line-height" : "30px",
 	"font-family": "微软雅黑",
-	"font-size": "14px",
-	"background" : "url(/x_component_cms_Module/$Main/default/icon/category_view.png) no-repeat 30px 8px",
-	"background-color": "#fff",
-	//"overflow" : "hidden"
+	"font-size": "14px"
+	//"background" : "url(/x_component_cms_Module/$Main/default/icon/category_view.png) no-repeat 30px 8px",
+	//"background-color": "#fff"
   },
   "viewNaviNode_selected" : {
-	"background-color" : "#eee",
-	"color" : "#333"
+	"background-color" : "#f7f7f7",
+	"color" : "#999"
   },
   "viewNaviNode_over" : {
-	"background-color" : "#f2f2f2",
-	"color" : "#333"
+	"background-color" : "#f7f7f7",
+	"color" : "#999"
   },
   "viewNaviSepartorNode" : {
 	//    "margin" : "0 auto",
@@ -476,35 +475,45 @@
 	//    "background-image" : "url(/x_component_cms_Module/$Main/default/icon/titleBackground2.png)",
 	//    "background-position" : "-538px -508px"
   },
+  "formAreaNode" : {
+	"float" : "left",
+	"border-right" : "1px solid #ccc"
+  },
   "formTitleNode" : {
 	"overflow" : "hidden",
-	"background-color" : "#ddd",
-	"height" : "30px",
+	"background-color" : "#f7f7f7",
+	"height" : "50px",
 	"padding-left" : "10px",
-	"line-height" : "30px"
+	"line-height" : "50px",
+	"color" : "#333"
   },
   "formCreateNode" : {
-	"float" : "left",
-	"width" : "16px",
-	"margin-top" : "7px",
+	"float" : "right",
+	"width" : "24px",
+	"margin-right" : "18px",
+	"margin-top" : "14px",
 	"cursor" : "pointer",
-	"height" : "16px",
-	"line-height" : "16px",
-	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/newForm.png) no-repeat center center"
+	"height" : "24px",
+	"line-height" : "24px",
+	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/add.png) no-repeat center center"
+  },
+  "formCreateNode_over" : {
+	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/add_blue.png) no-repeat center center"
   },
   "formTitleSepNode" : {
 	"float" : "left",
-	"height" : "30px",
+	"height" : "50px",
 	"margin-left" : "10px",
-	"line-height" : "30px",
+	"line-height" : "50px",
 	"width" : "1px",
 	"border-left" : "1px solid #333"
   },
   "formTitleTextNode" : {
+	"font-size" : "16px",
 	"float" : "left",
-	"height" : "30px",
+	"height" : "50px",
 	"margin-left" : "10px",
-	"line-height" : "30px"
+	"line-height" : "50px"
   },
   "formContainerNode" : {
 	"overflow": "hidden",
@@ -516,42 +525,51 @@
 	"background-color" : "#fff"
   },
   "rightContentResizeNode": {
-	"height": "3px",
+	"width": "3px",
+	"float": "left",
 	"background-color": "#505050",
-	"cursor": "row-resize",
-	"margin-top": "5px",
-	"margin-bottom": "5px",
-	"margin-left" : "10px"
+	"margin-right": "5px",
+	"margin-left": "5px",
+	"cursor": "col-resize"
+  },
+  "viewAreaNode" : {
+	"float" : "left"
   },
   "viewTitleNode" : {
 	"overflow" : "hidden",
-	"background-color" : "#ddd",
-	"height" : "30px",
+	"background-color" : "#f7f7f7",
+	"height" : "50px",
 	"padding-left" : "10px",
-	"line-height" : "30px"
+	"line-height" : "50px",
+	"color" : "#333"
   },
   "viewCreateNode" : {
-	"float" : "left",
-	"margin-top" : "7px",
+	"float" : "right",
+	"width" : "24px",
+	"margin-right" : "18px",
+	"margin-top" : "14px",
 	"cursor" : "pointer",
-	"width" : "16px",
-	"height" : "16px",
-	"line-height" : "16px",
-	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/newList.png) no-repeat center center"
+	"height" : "24px",
+	"line-height" : "24px",
+	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/add.png) no-repeat center center"
+  },
+  "viewCreateNode_over" : {
+	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/add_blue.png) no-repeat center center"
   },
   "viewTitleSepNode" : {
 	"float" : "left",
-	"height" : "30px",
+	"height" : "50px",
 	"margin-left" : "10px",
-	"line-height" : "30px",
+	"line-height" : "50px",
 	"width" : "1px",
 	"border-left" : "1px solid #333"
   },
   "viewTitleTextNode" : {
+	"font-size" : "16px",
 	"float" : "left",
-	"height" : "30px",
+	"height" : "50px",
 	"margin-left" : "10px",
-	"line-height" : "30px"
+	"line-height" : "50px"
   },
   "viewContainerNode" : {
 	"overflow": "hidden",
@@ -593,7 +611,7 @@
 	//"box-shadow": "0px 2px 5px #999",
 	"opacity": 1,
 	"top" : "10px",
-	"right" : "0px",
+	"right" : "5px",
 	"z-index": 100
   },
   "actionNodeStyles": {
@@ -602,7 +620,7 @@
 	"margin-left": "2px",
 	"margin-right": "2px",
 	"float": "left",
-	"border": "1px solid #eee",
+	//"border": "1px solid #eee",
 	"cursor": "pointer"
   }
 }

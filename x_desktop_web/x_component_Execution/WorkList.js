@@ -513,6 +513,21 @@ MWF.xApplication.Execution.WorkList = new Class({
         }else if(this.workNavi1 == "center"){
             this.loadCenterWorkList(this.workNavi2,filterData)
         }
+    },
+    showErrorMessage:function(xhr,text,error){
+        var errorText = error;
+        if (xhr) errorMessage = xhr.responseText;
+        if(errorMessage!=""){
+            var e = JSON.parse(errorMessage);
+            if(e.message){
+                this.app.notice( e.message,"error");
+            }else{
+                this.app.notice( errorText,"error");
+            }
+        }else{
+            this.app.notice(errorText,"error")
+        }
+
     }
 
 })
@@ -551,27 +566,13 @@ MWF.xApplication.Execution.WorkList.WorkForm = new Class({
             "styles":this.css.createExplainDiv,
             "html":html
         }).inject(this.formBottomNode);
-    },
-
-
-
-
-
-    showErrorMessage:function(xhr,text,error){
-        var errorText = error;
-        if (xhr) errorMessage = xhr.responseText;
-        if(errorMessage!=""){
-            var e = JSON.parse(errorMessage);
-            if(e.userMessage){
-                this.app.notice( e.userMessage,"error");
-            }else{
-                this.app.notice( errorText,"error");
-            }
-        }else{
-            this.app.notice(errorText,"error")
-        }
-
     }
+
+
+
+
+
+
 
 })
 
@@ -715,11 +716,11 @@ MWF.xApplication.Execution.WorkList.CenterWorkDocument = new Class({
         _self.view.app.confirm("warn",e,_self.view.app.lp.workList.submitWarn.warnTitle,_self.view.app.lp.workList.submitWarn.warnContent.delete,300,120,function(){
             _self.actions.deleteCenterWork(_self.data.id, function(json){
                 if(json.type && json.type=="success"){
-                    this.app.notice(json.userMessage, "success");
+                    this.app.notice(_self.view.app.lp.workList.prompt.deleteCenterWork, "success");
                     _self.app.workList.loadCenterWorkList(this.app.workList.workNavi2)
                 }
             }.bind(_self),function(xhr,text,error){
-                _self.app.workList.showErrorMessage(xhr,text,error)
+                _self.explorer.explorer.showErrorMessage(xhr,text,error)
             }.bind(_self));
 
             this.close()
@@ -841,8 +842,8 @@ MWF.xApplication.Execution.WorkList.BaseWorkView = new Class({
             var errorText = error;
             if (xhr) errorMessage = xhr.responseText;
             var e = JSON.parse(errorMessage);
-            if(e.userMessage){
-                this.app.notice( e.userMessage,"error");
+            if(e.message){
+                this.app.notice( e.message,"error");
             }else{
                 this.app.notice( errorText,"error");
             }
@@ -1024,13 +1025,13 @@ MWF.xApplication.Execution.WorkList.BaseWorkDocument = new Class({
             };
 
             _self.actions.unAppointBaseWork(data,function(json){
-                this.app.notice(json.userMessage,"success");
+                this.app.notice(_self.view.app.lp.workList.prompt.tackbackBaseWork,"success");
             }.bind(_self),function(xhr,text,error){
                 var errorText = error;
                 if (xhr) errorMessage = xhr.responseText;
                 var e = JSON.parse(errorMessage);
-                if(e.userMessage){
-                    this.app.notice( e.userMessage,"error");
+                if(e.message){
+                    this.app.notice( e.message,"error");
                 }else{
                     this.app.notice( errorText,"error");
                 }
@@ -1062,7 +1063,7 @@ MWF.xApplication.Execution.WorkList.BaseWorkDocument = new Class({
         _self.view.app.confirm("warn",e,_self.view.app.lp.workList.submitWarn.warnTitle,_self.view.app.lp.workList.submitWarn.warnContent.delete,300,120,function(){
             _self.actions.deleteBaseWork(_self.data.id, function(json){
                 if(json.type && json.type=="success"){
-                    this.app.notice(json.userMessage, "success");
+                    this.app.notice(_self.view.app.lp.workList.prompt.deleteBaseWork, "success");
                     _self.app.workList.clickBaseWorkTaskNavi(_self.app.workList.workNavi2)
                 }
             }.bind(_self),function(xhr,text,error){
@@ -1263,8 +1264,8 @@ MWF.xApplication.Execution.WorkList.Appoint = new Class({
             var errorText = error;
             if (xhr) errorMessage = xhr.responseText;
             var e = JSON.parse(errorMessage);
-            if(e.userMessage){
-                this.app.notice( e.userMessage,"error");
+            if(e.message){
+                this.app.notice( e.message,"error");
             }else{
                 this.app.notice( errorText,"error");
             }

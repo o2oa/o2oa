@@ -113,31 +113,60 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
 //		}.bind(this));
     },
     loadStartMenu: function(callback){
-        this.startMenuNode = new Element("div", {
-            "styles": this.css.startMenuNode
+        this.leftContentNode = new Element("div", {
+            "styles": this.css.leftContentNode
         }).inject(this.node);
+
+        this.leftTitleNode = new Element("div", {
+            "styles": this.css.leftTitleNode
+        }).inject(this.leftContentNode);
+
+        this.leftTitleIconNode = new Element("div", {
+            "styles": this.css.leftTitleIconNode
+        }).inject(this.leftTitleNode);
+
+        if (this.options.column){
+            var icon = this.options.column.icon || this.options.column.appIcon;
+            if (icon){
+                this.leftTitleIconNode.setStyle("background-image", "url(data:image/png;base64,"+icon+")");
+            }else{
+                this.leftTitleIconNode.setStyle("background-image", "url("+"/x_component_cms_Column/$Main/default/icon/column.png)");
+            }
+        }
+
+        this.leftTitleTextNode = new Element("div", {
+            "styles": this.css.leftTitleTextNode,
+            "text" : this.options.column.appName
+        }).inject(this.leftTitleNode);
+
+        this.startMenuNode = new Element("div", {
+            "styles": this.css.normalStartMenuNode
+        }).inject(this.leftContentNode);
+
         this.menu = new MWF.xApplication.cms.ColumnManager.Menu(this, this.startMenuNode, {
             "onPostLoad": function(){
+                var defaultId = "categoryConfig";
                 if (this.status){
-                    if (this.status.navi!=null){
-                        this.menu.doAction(this.menu.startNavis[this.status.navi]);
+                    if (this.status.navi!=null && this.menu.itemObject[this.status.navi]){
+                        this.menu.doAction(this.menu.itemObject[this.status.navi]);
                     }else{
-                        this.menu.doAction(this.menu.startNavis[0]);
+                        this.menu.doAction(this.menu.itemObject[defaultId]);
                     }
                 }else{
                     this.menu.doAction(this.menu.startNavis[0]);
                 }
             }.bind(this)
         });
-        this.addEvent("resize", function(){
-            if (this.menu) this.menu.onResize();
-        }.bind(this));
+        //this.addEvent("resize", function(){
+        //    if (this.menu) this.menu.onResize();
+        //}.bind(this));
     },
     clearContent: function(){
         if (this.categoryConfiguratorContent){
-            if (this.categoryConfigurator) delete this.categoryConfigurator;
-            this.categoryConfiguratorContent.destroy();
-            this.categoryConfiguratorContent = null;
+            this.categoryConfiguratorContent.setStyle("display","none");
+            //if (this.categoryConfigurator) delete this.categoryConfigurator;
+            //this.categoryConfiguratorContent.destroy();
+            //this.categoryConfiguratorContent = null;
         }
         if (this.formConfiguratorContent){
             if (this.formConfigurator) delete this.formConfigurator;
@@ -180,41 +209,43 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
         this.property.load();
     },
 
-
     cagetoryConfig: function(){
         this.clearContent();
-        this.categoryConfiguratorContent = new Element("div", {
-            "styles": this.css.rightContentNode
-        }).inject(this.node);
-        this.loadCategoryConfig();
+        if( this.categoryConfiguratorContent ) {
+            this.categoryConfiguratorContent.setStyle("display","");
+            if( this.menu.itemObject["categoryConfig"] ){
+                this.menu.expend( this.menu.itemObject["categoryConfig"] );
+            }
+            this.categoryConfigurator.refresh();
+        }else{
+            this.categoryConfiguratorContent = new Element("div", {
+                "styles": this.css.rightContentNode
+            }).inject(this.node);
+            this.loadCategoryConfig();
+        }
     },
     loadCategoryConfig: function(){
         MWF.xDesktop.requireApp("cms.ColumnManager", "CategoryExplorer", function(){
             MWF.xDesktop.requireApp("cms.ColumnManager", "Actions.RestActions", function(){
+                var navi = this.menu.itemObject.categoryConfig;
+                var subNode = navi.retrieve( "subNode" );
                 if (!this.restActions) this.restActions = new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
-                this.categoryConfigurator = new MWF.xApplication.cms.ColumnManager.CategoryExplorer(this.categoryConfiguratorContent, this.restActions);
+                this.categoryConfigurator = new MWF.xApplication.cms.ColumnManager.CategoryExplorer(this.categoryConfiguratorContent, subNode, this.restActions, {
+                    "onPostLoadCategoryList" : function(){
+                    }.bind(this)
+                });
                 this.categoryConfigurator.app = this;
+                //this.categoryConfigurator.categoryScrollWrapNode = this.menu.naviNode;
+                //this.categoryConfigurator.categoryScrollContentNode = this.menu.areaNode;
                 this.categoryConfigurator.load();
             }.bind(this));
         }.bind(this));
     },
-
-    cagetoryConfigV2: function(){
-        this.clearContent();
-        this.categoryConfiguratorContent = new Element("div", {
-            "styles": this.css.rightContentNode
-        }).inject(this.node);
-        this.loadCategoryConfigV2();
-    },
-    loadCategoryConfigV2: function(){
-        MWF.xDesktop.requireApp("cms.ColumnManager", "CategoryExplorerV2", function(){
-            MWF.xDesktop.requireApp("cms.ColumnManager", "Actions.RestActions", function(){
-                if (!this.restActions) this.restActions = new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
-                this.categoryConfigurator = new MWF.xApplication.cms.ColumnManager.CategoryExplorerV2(this.categoryConfiguratorContent, this.restActions);
-                this.categoryConfigurator.app = this;
-                this.categoryConfigurator.load();
-            }.bind(this));
-        }.bind(this));
+    createCategory : function(){
+        this.cagetoryConfig();
+        if( this.categoryConfigurator ){
+            this.categoryConfigurator.categoryList.newCategory();
+        }
     },
 
     formConfig: function(){
@@ -228,12 +259,27 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
         MWF.xDesktop.requireApp("cms.ColumnManager", "FormExplorer", function(){
             MWF.xDesktop.requireApp("cms.ColumnManager", "Actions.RestActions", function(){
                 if (!this.restActions) this.restActions = new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
-                this.formConfigurator = new MWF.xApplication.cms.ColumnManager.FormExplorer(this.formConfiguratorContent, this.restActions);
+                this.formConfigurator = new MWF.xApplication.cms.ColumnManager.FormExplorer(this.formConfiguratorContent, this.restActions, { "title" : "表单配置" });
                 this.formConfigurator.app = this;
                 this.formConfigurator.load();
             }.bind(this));
         }.bind(this));
     },
+    createForm : function(){
+        if( this.formConfigurator ){
+            this.formConfigurator._createElement();
+        }else{
+            MWF.xDesktop.requireApp("cms.ColumnManager", "FormExplorer", function(){
+                MWF.xDesktop.requireApp("cms.ColumnManager", "Actions.RestActions", function(){
+                    if (!this.restActions) this.restActions = new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
+                    this.formConfigurator = new MWF.xApplication.cms.ColumnManager.FormExplorer(this.formConfiguratorContent, this.restActions);
+                    this.formConfigurator.app = this;
+                    this.formConfigurator._createElement();
+                }.bind(this));
+            }.bind(this));
+        }
+    },
+
     dataConfig: function(){
         this.clearContent();
         this.dataConfiguratorContent = new Element("div", {
@@ -245,12 +291,27 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
         MWF.xDesktop.requireApp("cms.ColumnManager", "DictionaryExplorer", function(){
             MWF.xDesktop.requireApp("cms.ColumnManager", "Actions.RestActions", function(){
                 if (!this.restActions) this.restActions = new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
-                this.dataConfigurator = new MWF.xApplication.cms.ColumnManager.DictionaryExplorer(this.dataConfiguratorContent, this.restActions);
+                this.dataConfigurator = new MWF.xApplication.cms.ColumnManager.DictionaryExplorer(this.dataConfiguratorContent, this.restActions, { "title" : "数据配置" });
                 this.dataConfigurator.app = this;
                 this.dataConfigurator.load();
             }.bind(this));
         }.bind(this));
     },
+    createDataConfig : function(){
+        if( this.dataConfigurator ){
+            this.dataConfigurator._createElement();
+        }else{
+            MWF.xDesktop.requireApp("cms.ColumnManager", "DictionaryExplorer", function(){
+                MWF.xDesktop.requireApp("cms.ColumnManager", "Actions.RestActions", function(){
+                    if (!this.restActions) this.restActions = new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
+                    this.dataConfigurator = new MWF.xApplication.cms.ColumnManager.DictionaryExplorer(this.dataConfiguratorContent, this.restActions);
+                    this.dataConfigurator.app = this;
+                    this.dataConfigurator._createElement();
+                }.bind(this));
+            }.bind(this));
+        }
+    },
+
     scriptConfig: function(){
         this.clearContent();
         this.scriptConfiguratorContent = new Element("div", {
@@ -262,11 +323,25 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
         MWF.xDesktop.requireApp("cms.ColumnManager", "ScriptExplorer", function(){
             MWF.xDesktop.requireApp("cms.ColumnManager", "Actions.RestActions", function(){
                 if (!this.restActions) this.restActions = new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
-                this.scriptConfigurator = new MWF.xApplication.cms.ColumnManager.ScriptExplorer(this.scriptConfiguratorContent, this.restActions);
+                this.scriptConfigurator = new MWF.xApplication.cms.ColumnManager.ScriptExplorer(this.scriptConfiguratorContent, this.restActions, { "title" : "脚本配置" });
                 this.scriptConfigurator.app = this;
                 this.scriptConfigurator.load();
             }.bind(this));
         }.bind(this));
+    },
+    createScriptConfig : function(){
+        if( this.scriptConfigurator ){
+            this.scriptConfigurator._createElement();
+        }else{
+            MWF.xDesktop.requireApp("cms.ColumnManager", "ScriptExplorer", function(){
+                MWF.xDesktop.requireApp("cms.ColumnManager", "Actions.RestActions", function(){
+                    if (!this.restActions) this.restActions = new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
+                    this.scriptConfigurator = new MWF.xApplication.cms.ColumnManager.ScriptExplorer(this.scriptConfiguratorContent, this.restActions);
+                    this.scriptConfigurator.app = this;
+                    this.scriptConfigurator._createElement();
+                }.bind(this));
+            }.bind(this));
+        }
     },
 
     viewConfig: function(){
@@ -280,11 +355,25 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
         MWF.xDesktop.requireApp("cms.ColumnManager", "ViewExplorer", function(){
             MWF.xDesktop.requireApp("cms.ColumnManager", "Actions.RestActions", function(){
                 if (!this.restActions) this.restActions = new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
-                this.viewConfigurator = new MWF.xApplication.cms.ColumnManager.ViewExplorer(this.viewConfiguratorContent, this.restActions);
+                this.viewConfigurator = new MWF.xApplication.cms.ColumnManager.ViewExplorer(this.viewConfiguratorContent, this.restActions, { "title" : "列表配置" });
                 this.viewConfigurator.app = this;
                 this.viewConfigurator.load();
             }.bind(this));
         }.bind(this));
+    },
+    createView : function(){
+        if( this.viewConfigurator ){
+            this.viewConfigurator._createElement();
+        }else{
+            MWF.xDesktop.requireApp("cms.ColumnManager", "ViewExplorer", function(){
+                MWF.xDesktop.requireApp("cms.ColumnManager", "Actions.RestActions", function(){
+                    if (!this.restActions) this.restActions = new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
+                    this.viewConfigurator = new MWF.xApplication.cms.ColumnManager.ViewExplorer(this.viewConfiguratorContent, this.restActions);
+                    this.viewConfigurator.app = this;
+                    this.viewConfigurator._createElement();
+                }.bind(this));
+            }.bind(this));
+        }
     },
 
     queryViewConfig: function(){
@@ -298,11 +387,25 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
         MWF.xDesktop.requireApp("cms.ColumnManager", "QueryViewExplorer", function(){
             MWF.xDesktop.requireApp("cms.ColumnManager", "Actions.RestActions", function(){
                 if (!this.restActions) this.restActions = new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
-                this.queryViewConfigurator = new MWF.xApplication.cms.ColumnManager.QueryViewExplorer(this.queryViewConfiguratorContent, this.restActions);
+                this.queryViewConfigurator = new MWF.xApplication.cms.ColumnManager.QueryViewExplorer(this.queryViewConfiguratorContent, this.restActions, { "title" : "数据视图配置" });
                 this.queryViewConfigurator.app = this;
                 this.queryViewConfigurator.load();
             }.bind(this));
         }.bind(this));
+    },
+    createQueryView : function(){
+        if( this.queryViewConfigurator ){
+            this.queryViewConfigurator._createElement();
+        }else{
+            MWF.xDesktop.requireApp("cms.ColumnManager", "QueryViewExplorer", function(){
+                MWF.xDesktop.requireApp("cms.ColumnManager", "Actions.RestActions", function(){
+                    if (!this.restActions) this.restActions = new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
+                    this.queryViewConfigurator = new MWF.xApplication.cms.ColumnManager.QueryViewExplorer(this.queryViewConfiguratorContent, this.restActions);
+                    this.queryViewConfigurator.app = this;
+                    this.queryViewConfigurator._createElement();
+                }.bind(this));
+            }.bind(this));
+        }
     },
 
     //getCategoryCount: function(){
@@ -334,11 +437,12 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
         this.currentContentNode = node;
     },
     recordStatus: function(){
-        var idx = null;
+        var id = null;
         if (this.menu.currentNavi){
-            idx = this.menu.startNavis.indexOf(this.menu.currentNavi);
+            var naviData = this.menu.currentNavi.retrieve( "naviData" );
+            id = naviData.id;
         }
-        return {"navi": idx, "column": this.options.column.id};
+        return {"navi": id, "column": this.options.column.id};
     }
 
 //	onResize: function(){
@@ -356,9 +460,19 @@ MWF.xApplication.cms.ColumnManager.Menu = new Class({
         this.currentNavi = null;
         this.status = "start";
         this.startNavis = [];
+        this.itemObject = {};
+        //this.
         this.load();
     },
     load: function(){
+        this.areaNode = new Element("div.startMenuAreaNode", this.app.css.startMenuAreaNode).inject( this.node );
+
+        MWF.require("MWF.widget.ScrollBar", function(){
+            new MWF.widget.ScrollBar(this.node, {
+                "style":"xApp_ProcessManager_StartMenu", "distance": 100, "friction": 4,	"axis": {"x": false, "y": true}
+            });
+        }.bind(this));
+
         var menuUrl = this.app.path+"startMenu.json";
         MWF.getJSON(menuUrl, function(json){
             json.each(function(navi){
@@ -371,23 +485,68 @@ MWF.xApplication.cms.ColumnManager.Menu = new Class({
                     "styles": this.app.css.startMenuIconNode
                 }).inject(naviNode);
                 iconNode.setStyle("background-image", "url("+this.app.path+this.app.options.style+"/icon/"+navi.icon+")");
+                naviNode.store("iconNode", iconNode );
 
                 var textNode =  new Element("div", {
                     "styles": this.app.css.startMenuTextNode,
                     "text": navi.title
                 });
                 textNode.inject(naviNode);
-                naviNode.inject(this.node);
+
+                if( navi.expand ){
+                    var expandNode =  new Element("div", {
+                        "styles": this.app.css.startMenuExpandNode
+                    });
+                    expandNode.inject(naviNode);
+                    naviNode.store("expandNode", expandNode );
+                }
+
+                if( navi.create ){
+                    var createNode = new Element("div", {
+                        "styles": this.app.css.startMenuCreateNode,
+                        "title" : "新建"+navi.title
+                    });
+                    createNode.inject(naviNode);
+                    naviNode.store("createNode", createNode );
+                    createNode.addEvents({
+                        "click" : function(ev){
+                            this.obj.app[ this.navi.createAction ]();
+                            ev.stopPropagation();
+                        }.bind( { obj : this, navi : navi } ),
+                        "mouseover" : function(ev){
+                            this.createNode.setStyles( this.obj.app.css.startMenuCreateNode_over )
+                        }.bind({ obj : this, createNode : createNode }),
+                        "mouseout" : function(ev){
+                            this.createNode.setStyles( this.obj.app.css.startMenuCreateNode )
+                        }.bind({ obj : this, createNode : createNode })
+                    })
+                }
+
+                naviNode.inject(this.areaNode);
+
+                if( navi.expand ){
+                    var subNode = new Element("div", {
+                        "styles": this.app.css.startMenuSubContentNode
+                    });
+                    subNode.inject(this.areaNode);
+                    naviNode.store("subNode", subNode );
+                }
 
                 this.startNavis.push(naviNode);
+                this.itemObject[ navi.id ] = naviNode;
 
                 this.setStartNaviEvent(naviNode, navi);
 
-                this.setNodeCenter(this.node);
+
+                //this.setNodeCenter(this.node);
             }.bind(this));
-            this.setStartMenuWidth();
+            //this.setStartMenuWidth();
+            this.setContentSize();
+
+            this.app.addEvent("resize", this.setContentSize.bind(this));
 
             this.fireEvent("postLoad");
+
         }.bind(this));
     },
     setStartNaviEvent: function(naviNode){
@@ -403,92 +562,85 @@ MWF.xApplication.cms.ColumnManager.Menu = new Class({
             }
         });
     },
+    expend : function( naviNode ){
+        var isExpand = naviNode.retrieve("isExpand");
+        if( !isExpand ){
+            var expandNode = naviNode.retrieve("expandNode");
+            expandNode.setStyles(this.app.css.startMenuCollapseNode);
+            var subNode = naviNode.retrieve("subNode");
+            subNode.setStyle( "display" , "" );
+            naviNode.store("isExpand",true);
+        }
+    },
+    collapse : function( naviNode ){
+        var isExpand = naviNode.retrieve("isExpand");
+        if( isExpand ){
+            var expandNode = naviNode.retrieve("expandNode");
+            expandNode.setStyles(this.app.css.startMenuExpandNode);
+            var subNode = naviNode.retrieve("subNode");
+            subNode.setStyle( "display" , "none" );
+            naviNode.store("isExpand",false);
+        }
+    },
     doAction: function(naviNode){
+        if( this.currentNavi && this.currentNavi == naviNode ){
+            var navi = this.currentNavi.retrieve("naviData");
+            if( navi.expand ){
+                var isExpand = this.currentNavi.retrieve("isExpand");
+                if( isExpand ){
+                    var expandNode = this.currentNavi.retrieve("expandNode");
+                    expandNode.setStyles(this.app.css.startMenuExpandNode);
+                    var subNode = this.currentNavi.retrieve("subNode");
+                    subNode.setStyle( "display" , "none" );
+                    this.currentNavi.store("isExpand",false);
+                }else{
+                    var expandNode = this.currentNavi.retrieve("expandNode");
+                    expandNode.setStyles(this.app.css.startMenuCollapseNode);
+                    var subNode = this.currentNavi.retrieve("subNode");
+                    subNode.setStyle( "display" , "" );
+                    this.currentNavi.store("isExpand",true);
+                }
+            }
+            return;
+        }
+
+        if (this.currentNavi){
+            this.currentNavi.setStyles(this.app.css.startMenuNaviNode);
+            var iconNode = this.currentNavi.retrieve("iconNode");
+            var navi = this.currentNavi.retrieve("naviData");
+            iconNode.setStyle("background-image", "url("+this.app.path+this.app.options.style+"/icon/"+navi.icon+")");
+            if( navi.expand ){
+                var expandNode = this.currentNavi.retrieve("expandNode");
+                expandNode.setStyles(this.app.css.startMenuExpandNode);
+                var subNode = this.currentNavi.retrieve("subNode");
+                subNode.setStyle( "display" , "none" );
+                this.currentNavi.store("isExpand",false);
+            }
+        }
+
         var navi = naviNode.retrieve("naviData");
         var action = navi.action;
 
-        if (this.currentNavi) this.currentNavi.setStyles(this.app.css.startMenuNaviNode);
-
         naviNode.setStyles(this.app.css.startMenuNaviNode_current);
+        var iconNode = naviNode.retrieve("iconNode");
+        iconNode.setStyle("background-image", "url("+this.app.path+this.app.options.style+"/icon/"+navi.selectedIcon+")");
+
+        if( navi.expand ){
+            var expandNode = naviNode.retrieve("expandNode");
+            expandNode.setStyles(this.app.css.startMenuCollapseNode);
+            var subNode = naviNode.retrieve("subNode");
+            subNode.setStyle( "display" , "" );
+            naviNode.store("isExpand",true);
+
+        }
         this.currentNavi = naviNode;
 
         if (this.app[action]) this.app[action].apply(this.app);
 
-        if (this.status == "start"){
-            this.toNormal();
-            this.status = "normal";
-        }
     },
-    toNormal: function(){
-//		var size = this.getStartMenuNormalSize();
-        var css = this.app.css.normalStartMenuNode;
-        //css.height = size.height+"px";
-//		css.height = "100%";
-//		css.width = size.width+"px";
-
-////		this.node.setStyles(css);
-//
-        if (!this.morph){
-            this.morph = new Fx.Morph(this.node, {duration: 50, link: "chain"});
-        }
-//        this.morph.start(css).chain(function(){
-            this.node.setStyles(css);
-
-            MWF.require("MWF.widget.ScrollBar", function(){
-                new MWF.widget.ScrollBar(this.node, {
-                    "style":"xApp_ProcessManager_StartMenu", "distance": 100, "friction": 4,	"axis": {"x": false, "y": true}
-                });
-            }.bind(this));
-//        }.bind(this));
-//
-////			this.node.setStyles(css);
-////
-////			this.startNavis.each(function(naviNode){
-////				if (this.currentNavi!=naviNode) naviNode.setStyles(this.app.css.startMenuNaviNode);
-////			}.bind(this));
-
-//
-//		this.node.set("morph", {duration: 50});
-//		this.node.morph(css);
-    },
-    setNodeCenter: function(node){
-        var size = node.getSize();
-        var contentSize = this.app.node.getSize();
-
-        var top = contentSize.y/2 - size.y/2;
-        var left = contentSize.x/2 - size.x/2;
-
-        if (left<0) left = 0;
-        if (top<0) top = 0;
-        node.setStyles({"left": left, "top": top});
-    },
-    getStartMenuNormalSize: function(){
-        var naviItemNode = this.node.getFirst();
-
-        var size = naviItemNode.getComputedSize();
-        var mt = naviItemNode.getStyle("margin-top").toFloat();
-        var mb = naviItemNode.getStyle("margin-bottom").toFloat();
-        var height = size.totalWidth+mt+mb;
-
-        var ml = naviItemNode.getStyle("margin-left").toFloat();
-        var mr = naviItemNode.getStyle("margin-right").toFloat();
-        var width = size.totalWidth+ml+mr;
-
-        return {"width": width, "height": height*this.startNavis.length};
-    },
-    setStartMenuWidth: function(){
-        var naviItemNode = this.node.getFirst();
-
-        var size = naviItemNode.getComputedSize();
-        var ml = naviItemNode.getStyle("margin-left").toFloat();
-        var mr = naviItemNode.getStyle("margin-right").toFloat();
-        var width = size.totalWidth+ml+mr;
-        this.node.setStyle("width", (width*this.startNavis.length)+"px");
-    },
-    onResize: function(){
-        if (this.status == "start"){
-            this.setNodeCenter(this.node);
-        }
+    setContentSize : function(){
+        var size = this.app.content.getSize();
+        this.node.setStyle("height", size.y - 82);
     }
 });
 
@@ -509,7 +661,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
     load: function(){
         this.propertyTitleBar = new Element("div", {
             "styles": this.app.css.propertyTitleBar,
-            "text": this.data.name || this.data.appName
+            "text": "栏目属性"  //this.data.name || this.data.appName
         }).inject(this.node);
 
         this.contentNode =  new Element("div", {

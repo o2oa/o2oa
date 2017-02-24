@@ -91,8 +91,8 @@ MWF.xApplication.Execution.ReportAttachment = new Class({
                         formData.append('site', this.options.documentId);
                         this.actions.uploadReportAttachment(this.options.documentId, function (o, text) {
                             j = JSON.decode(text);
-                            if (j.userMessage) {
-                                this.actions.getAttachment(j.userMessage, this.options.documentId, function (json) {
+                            if (j.data && j.data.id) {
+                                this.actions.getAttachment(j.data.id, this.options.documentId, function (json) {
                                     json = this.transportData(json);
                                     if (json.data) {
                                         this.attachmentController.addAttachment(json.data);
@@ -101,10 +101,19 @@ MWF.xApplication.Execution.ReportAttachment = new Class({
                                     this.attachmentController.checkActions();
 
                                     this.fireEvent("upload", [json.data]);
+                                }.bind(this),function(xhr,text,error){
+                                    var errorText = error;
+                                    if (xhr) errorMessage = xhr.responseText;
+                                    var e = JSON.parse(errorMessage);
+                                    if(e.message){
+                                        this.app.notice( e.message,"error");
+                                    }else{
+                                        this.app.notice( errorText,"error");
+                                    }
                                 }.bind(this))
                             }
                             this.attachmentController.checkActions();
-                        }.bind(this), function(){alert("err")}.bind(this), formData, file);
+                        }.bind(this), function(){}.bind(this), formData, file);
                     }
                 }
             }else{

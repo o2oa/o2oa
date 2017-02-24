@@ -371,7 +371,7 @@ MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
                         "configDate": date,
                         "configType": "Holiday"
                     }, function(json){
-                        if( json.type == "ERROR" ){error=json.userMessage}
+                        if( json.type == "ERROR" ){error=json.message}
                     }.bind(this),
                         function(json){
                         flag = false;
@@ -386,7 +386,7 @@ MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
                             "configDate": this.dateFormat( new Date(date),"yyyy-MM-dd"),
                             "configType": "Workday"
                         }, function(json){
-                            if( json.type == "ERROR" ){error=json.userMessage}
+                            if( json.type == "ERROR" ){error=json.message}
                         },function(json){
                             flag = false;
                         }.bind(this),false);

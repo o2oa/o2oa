@@ -608,7 +608,7 @@ MWF.xApplication.ForumSection.Explorer = new Class({
 						this.node.setStyles(this.obj.css.toolbarActionNode);
 					}.bind({obj: this, node: createActionNode}),
 					"click": function () {
-						if( this.app.access.isAnonymous() ){
+						if( this.app.access.isAnonymousDynamic() ){
 							this.app.openLoginForm(
 								function(){ this.createSubject(); }.bind(this)
 							);

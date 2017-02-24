@@ -753,8 +753,10 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
                 "openDictionarys": openDictionarys,
                 "currentId": currentId
             };
+            debugger;
             return status;
         }
+        debugger;
         return {"id": this.options.id, "application": this.application};
     }
 });

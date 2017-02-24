@@ -59,7 +59,7 @@ MWF.xApplication.Execution.WorkDeploy = new Class({
         }
 
         this.actions.getCenterWorkInfo(id,function(json){
-            if(json.type = "SUCCESS"){
+            if(json.type = "success"){
                 this.centerWorkData = json.data;
                 this.centerWorkId = this.centerWorkData.id
             }
@@ -377,9 +377,9 @@ MWF.xApplication.Execution.WorkDeploy = new Class({
         if(this.options.isNew || this.options.isEdited){
             this.saveCenterWork(r,function(json){
                 if(json.type && json.type == "error"){
-                    this.app.notice(json.userMessage, "error")
+                    this.app.notice(json.message, "error")
                 }else{
-                    if(json.userMessage)this.reloadTableContent(json.userMessage)
+                    if(json.data && json.data.id)this.reloadTableContent(json.data.id)
                     if(this.centerWorkData)this.openWorkForm(this.centerWorkData)
                 }
             }.bind(this))
@@ -396,11 +396,11 @@ MWF.xApplication.Execution.WorkDeploy = new Class({
         if(this.options.isNew || this.options.isEdited){
             this.saveCenterWork(r,function(json){
                 if(json.type && json.type == "error"){
-                    this.app.notice(json.userMessage, "error")
+                    this.app.notice(json.message, "error")
                 }else{
-                    if(json.userMessage){
-                        centerId = json.userMessage;
-                        this.reloadTableContent(json.userMessage)
+                    if(json.data && json.data.id){
+                        centerId = json.data.id;
+                        this.reloadTableContent(json.data.id)
                     }
 
                 }
@@ -451,7 +451,7 @@ MWF.xApplication.Execution.WorkDeploy = new Class({
         _self.app.confirm("warn",e,_self.lp.submitWarn.warnTitle,_self.lp.submitWarn.warnContent,300,120,function(){
             _self.actions.deleteCenterWork(_self.centerWorkData.id, function(json){
                 if(json.type && json.type=="success"){
-                    _self.app.notice(json.userMessage, "success");
+                    _self.app.notice(this.lp.prompt.deleteCenterWork, "success");
                     _self.closeWork({"action":"reload"});
                 }
             }.bind(_self),function(xhr,text,error){
@@ -470,7 +470,7 @@ MWF.xApplication.Execution.WorkDeploy = new Class({
         _self.app.confirm("warn",e,_self.lp.submitWarn.warnTitle,_self.lp.submitWarn.warnDeployContent,300,120,function(){
             _self.actions.deployCenterWork(_self.centerWorkData.id, function(json){
                 if(json.type && json.type=="success"){
-                    _self.app.notice(json.userMessage, "success");
+                    _self.app.notice(this.lp.prompt.deployCenterWrk, "success");
                     _self.close();
                     _self.fireEvent("reloadView", {"action":"reload"});
                 }
@@ -489,7 +489,7 @@ MWF.xApplication.Execution.WorkDeploy = new Class({
         _self.app.confirm("warn",e,_self.lp.submitWarn.warnTitle,_self.lp.submitWarn.warnConfirmContent,300,120,function(){
             _self.actions.deployCenterWork(_self.centerWorkData.id, function(json){
                 if(json.type && json.type=="success"){
-                    _self.app.notice(json.userMessage, "success");
+                    _self.app.notice(this.lp.prompt.comfirmCenterWork, "success");
                     _self.close();
                     _self.fireEvent("reloadView", {"action":"reload"});
                 }
@@ -508,7 +508,7 @@ MWF.xApplication.Execution.WorkDeploy = new Class({
         _self.app.confirm("warn",e,_self.lp.submitWarn.warnTitle,_self.lp.submitWarn.warnArchiveContent,300,120,function(){
             _self.actions.archiveMainTask(_self.centerWorkData.id, function(json){
                 if(json.type && json.type=="success"){
-                    _self.app.notice(json.userMessage, "success");
+                    _self.app.notice(this.lp.prompt.archiveCenterWork, "success");
                     _self.close();
                     _self.fireEvent("reloadView", {"action":"reload"});
                 }
@@ -577,8 +577,8 @@ MWF.xApplication.Execution.WorkDeploy = new Class({
         if (xhr) errorMessage = xhr.responseText;
         if(errorMessage!=""){
             var e = JSON.parse(errorMessage);
-            if(e.userMessage){
-                this.app.notice( e.userMessage,"error");
+            if(e.message){
+                this.app.notice( e.message,"error");
             }else{
                 this.app.notice( errorText,"error");
             }
@@ -778,7 +778,7 @@ MWF.xApplication.Execution.WorkDeploy.MyDeployWorkDocument = new Class({
         _self.view.app.confirm("warn",e,_self.view.app.lp.WorkDeploy.submitWarn.warnTitle,_self.view.app.lp.WorkDeploy.submitWarn.warnContent,300,120,function(){
             _self.actions.deleteBaseWork(id, function(json){
                 if(json.type && json.type=="success"){
-                    this.app.notice(json.userMessage, "success");
+                    this.app.notice(_self.view.explorer.lp.prompt.deleteBaseWork, "success");
                     _self.view.explorer.reloadTableContent()
                 }
             }.bind(_self),function(xhr,text,error){
@@ -923,7 +923,7 @@ MWF.xApplication.Execution.WorkDeploy.MyWorkDocument = new Class({
         _self.app.confirm("warn",e,_self.lp.submitWarn.warnTitle,_self.lp.submitWarn.warnTackBackContent,300,120,function(){
             _self.actions.unAppointBaseWork({workId:_self.data.id}, function(json){
                 if(json.type && json.type=="success"){
-                    _self.app.notice(json.userMessage, "success");
+                    _self.app.notice(_self.explorer.lp.prompt.tackbackBaseWork, "success");
                     _self.explorer.reloadTableContent();
                 }
             }.bind(_self),function(xhr,text,error){
@@ -1098,14 +1098,15 @@ MWF.xApplication.Execution.WorkDeploy.Appoint = new Class({
             authorizeOpinion : this.appointOpinion.get("value")
         }
         this.actions.appointBaseWork(submitData,function(json){
+            this.app.notice(this.app.lp.WorkDeploy.prompt.authorizeBaseWork,"success")
             this.close();
             this.fireEvent("reloadView");
         }.bind(this),function(xhr,text,error){
             var errorText = error;
             if (xhr) errorMessage = xhr.responseText;
             var e = JSON.parse(errorMessage);
-            if(e.userMessage){
-                this.app.notice( e.userMessage,"error");
+            if(e.message){
+                this.app.notice( e.message,"error");
             }else{
                 this.app.notice( errorText,"error");
             }

@@ -6,16 +6,20 @@
     "background-color" : "#fff", //"#fcfcfc",
     "opacity": 1
   },
+  "naviScrollNode" : {
+    "overflow": "hidden"
+  },
+  "naviAreaNode" : {
+  },
   "naviNode": {
     "padding-top" : "10px",
-    "width": "192px",
+    "width": "202px",
     "height": "100%",
     "overflow": "hidden",
     //    "border": "0px",
     //    "border-radius": "0px",
     "float": "left",
     "position": "static",
-    "overflow": "hidden",
     //"margin-right" : "-7px",
     //"background-color" : "#fcfcfc",
     "background-color" : "#365775" //"#476783"

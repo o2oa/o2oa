@@ -271,7 +271,8 @@ MWF.xApplication.Forum.Setting.CategorySettingView = new Class({
                 this.reload();
             }.bind(this)
         })
-        if( this.app.access.hasForumAdminAuthority( documentData ) ){
+        //if( this.app.access.hasForumAdminAuthority( documentData ) ){
+        if( this.app.access.isAdmin() ){
             form.edit();
         }else{
             form.open();
@@ -518,18 +519,20 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
             department : [],
             person : []
         };
-        this.actions.listRoleMemberByCode( { "bindRoleCode" : code+ this.data.id }, function(json){
-            json.data = json.data || [];
-            json.data.each( function( d ){
-                if(d.objectType == "公司"){
-                    r.company.push( d.objectName );
-                }else if(d.objectType == "部门"){
-                    r.department.push( d.objectName );
-                }else{
-                    r.person.push( d.objectName );
-                }
-            }.bind(this) )
-        }, null, false );
+        if( this.data && this.data.id ){
+            this.actions.listRoleMemberByCode( { "bindRoleCode" : code+ this.data.id }, function(json){
+                json.data = json.data || [];
+                json.data.each( function( d ){
+                    if(d.objectType == "公司"){
+                        r.company.push( d.objectName );
+                    }else if(d.objectType == "部门"){
+                        r.department.push( d.objectName );
+                    }else{
+                        r.person.push( d.objectName );
+                    }
+                }.bind(this) )
+            }, function(){}, false );
+        }
         return r;
     }
 });
@@ -737,7 +740,8 @@ MWF.xApplication.Forum.Setting.SectionSettingView = new Class({
                 this.reload();
             }.bind(this)
         })
-        this.app.access.hasSectionAdminAuthority( documentData , function( flag ){
+        //this.app.access.hasSectionAdminAuthority( documentData , function( flag ){  只有分区管理员可以对分区以下的板块进行增删改，版主不能
+        this.app.access.hasForumAdminAuthority( documentData.forumId , function( flag ){
             flag ?  form.edit() : form.open();
         } )
     },
@@ -1173,18 +1177,20 @@ MWF.xApplication.Forum.Setting.SectionSettingForm = new Class({
             return r;
         }
         this.RoleMember[ code ] = r;
-        this.actions.listRoleMemberByCode( { "bindRoleCode" : code+ this.data.id }, function(json){
-            json.data = json.data || [];
-            json.data.each( function( d ){
-                if(d.objectType == "公司"){
-                    r.company.push( d.objectName );
-                }else if(d.objectType == "部门"){
-                    r.department.push( d.objectName );
-                }else{
-                    r.person.push( d.objectName );
-                }
-            }.bind(this) )
-        }, null, false );
+        if( this.data && this.data.id ){
+            this.actions.listRoleMemberByCode( { "bindRoleCode" : code+ this.data.id }, function(json){
+                json.data = json.data || [];
+                json.data.each( function( d ){
+                    if(d.objectType == "公司"){
+                        r.company.push( d.objectName );
+                    }else if(d.objectType == "部门"){
+                        r.department.push( d.objectName );
+                    }else{
+                        r.person.push( d.objectName );
+                    }
+                }.bind(this) )
+            }, function(){}, false );
+        }
         //}
         return r;
     },

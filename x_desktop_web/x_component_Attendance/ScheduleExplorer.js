@@ -345,7 +345,7 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
         if (data.onDutyTime && data.offDutyTime && data.lateStartTime ){
             this.app.restActions.saveSchedule(data, function(json){
                 if( json.type == "ERROR" ){
-                    this.app.notice( json.userMessage  , "error");
+                    this.app.notice( json.message  , "error");
                 }else{
                     this.createMarkNode.destroy();
                     this.createAreaNode.destroy();

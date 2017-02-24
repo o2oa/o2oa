@@ -880,8 +880,8 @@ MWF.xApplication.Execution.WorkTask.BaseWorkView = new Class({
             var errorText = error;
             if (xhr) errorMessage = xhr.responseText;
             var e = JSON.parse(errorMessage);
-            if(e.userMessage){
-                this.app.notice( e.userMessage,"error");
+            if(e.message){
+                this.app.notice( e.message,"error");
             }else{
                 this.app.notice( errorText,"error");
             }
@@ -1056,13 +1056,13 @@ MWF.xApplication.Execution.WorkTask.BaseWorkDocument = new Class({
             };
 
             _self.actions.unAppointBaseWork(data,function(json){
-                this.app.notice(json.userMessage,"success");
+                this.app.notice(_self.view.app.lp.workTask.prompt.tackbackBaseWork,"success");
             }.bind(_self),function(xhr,text,error){
                 var errorText = error;
                 if (xhr) errorMessage = xhr.responseText;
                 var e = JSON.parse(errorMessage);
-                if(e.userMessage){
-                    this.app.notice( e.userMessage,"error");
+                if(e.message){
+                    this.app.notice( e.message,"error");
                 }else{
                     this.app.notice( errorText,"error");
                 }
@@ -1236,8 +1236,8 @@ MWF.xApplication.Execution.WorkTask.Appoint = new Class({
             var errorText = error;
             if (xhr) errorMessage = xhr.responseText;
             var e = JSON.parse(errorMessage);
-            if(e.userMessage){
-                this.app.notice( e.userMessage,"error");
+            if(e.message){
+                this.app.notice( e.message,"error");
             }else{
                 this.app.notice( errorText,"error");
             }

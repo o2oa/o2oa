@@ -412,19 +412,19 @@ MWF.xApplication.cms.Column.Column = new Class({
             this.app.options.tooltip.column.delete_confirm_content, "320px", "100px", function () {
                 _self._deleteElement();
                 this.close();
-            }, function () {
+            }, function( ) {
                 this.close();
             }
         )
     },
     _deleteElement: function (id, success, failure) {
-        this.app.restActions.removeColumn(this.data.id, function () {
+        this.app.restActions.removeColumn( id || this.data.id, function () {
             this.destroy();
             if (success) success();
-        }.bind(this), function (xhr, text, error) {
-            var errorText = error;
-            if (xhr) errorText = xhr.responseText;
-            if (failure) failure(errorText);
+        }.bind(this), function( error ){
+            var errorObj = JSON.parse( error.responseText );
+            this.app.notice(errorObj.message , "error");
+            if(failure)failure();
         }.bind(this));
     },
     destroy: function () {
@@ -654,6 +654,7 @@ MWF.xApplication.cms.Column.Column = new Class({
             "description": $("createColumnDescription").get("value"),
             "appInfoSeq": $("createColumnSort").get("value")
         };
+        if( this.data.appIcon )data.appIcon = this.data.appIcon;
         if (data.appName) {
 
             var callback = function () {
@@ -682,7 +683,7 @@ MWF.xApplication.cms.Column.Column = new Class({
             this.app.notice(this.isNew ? this.app.options.tooltip.column.createColumnSuccess : this.app.options.tooltip.column.updateColumnSuccess, "success");
             this.app.restActions.saveColumn(data, function (json) {
                 if (json.type == "error") {
-                    this.app.notice(json.userMessage, "error");
+                    this.app.notice(json.message, "error");
                 } else {
                     this.columnCreateMarkNode.destroy();
                     this.columnCreateAreaNode.destroy();
