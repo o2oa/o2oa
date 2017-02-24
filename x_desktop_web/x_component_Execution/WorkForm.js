@@ -59,6 +59,7 @@ MWF.xApplication.Execution.WorkForm = new Class({
             }else if(this.options.id){
                 this.id = this.options.id
             }
+
             this.actions.getBaseWorkInfo(this.id,function(json){
                     if(json.data){
                         this.data = json.data
@@ -277,19 +278,21 @@ MWF.xApplication.Execution.WorkForm = new Class({
                     if(this.options.isNew){
                         data.centerId = this.options.centerWorkId || this.data.centerWorkId || this.data.centerId ;
                     }
-
                     this.app.restActions.saveTask(data, function(json){
                         if(json.type && json.type == "success"){
-                            if(json.userMessage) {
-                                this.attachment.options.documentId = json.userMessage;
-                                this.data.id = json.userMessage;
+                            if(json.data.id) {
+                                this.attachment.options.documentId = json.data.id;
+                                this.data.id = json.data.id;
                                 //this.options.isNew = false;
                             }
                         }
-                    }.bind(this),null,false)
+                    }.bind(this), function(xhr,text,error){
+                        this.showErrorMessage(xhr,text,error)
+                    }.bind(this),false)
                 }
             }.bind(this)
         })
+
         this.attachment.load();
     },
     _createBottomContent: function () {
@@ -334,9 +337,9 @@ MWF.xApplication.Execution.WorkForm = new Class({
             data.centerId = this.data.centerId;
             this.app.restActions.saveTask(data,function(json){
                 if(json.type && json.type == "success"){
-                    if(json.userMessage){
+                    if(json.data.id){
                         var ids = [];
-                        ids.push(json.userMessage);
+                        ids.push(json.data.id);
                         var workData = {  "workIds":ids };
 
                         this.actions.deployBaseWork( workData, function( json ){
@@ -351,8 +354,8 @@ MWF.xApplication.Execution.WorkForm = new Class({
                             var errorText = error;
                             if (xhr) errorMessage = xhr.responseText;
                             var e = JSON.parse(errorMessage);
-                            if(e.userMessage){
-                                this.app.notice( e.userMessage,"error");
+                            if(e.message){
+                                this.app.notice( e.message,"error");
                             }else{
                                 this.app.notice( errorText,"error");
                             }
@@ -393,8 +396,8 @@ MWF.xApplication.Execution.WorkForm = new Class({
             var errorText = error;
             if (xhr) errorMessage = xhr.responseText;
             var e = JSON.parse(errorMessage);
-            if(e.userMessage){
-                this.app.notice( e.userMessage,"error");
+            if(e.message){
+                this.app.notice( e.message,"error");
             }else{
                 this.app.notice( errorText,"error");
             }
@@ -418,8 +421,8 @@ MWF.xApplication.Execution.WorkForm = new Class({
         if (xhr) errorMessage = xhr.responseText;
         if(errorMessage!=""){
             var e = JSON.parse(errorMessage);
-            if(e.userMessage){
-                this.app.notice( e.userMessage,"error");
+            if(e.message){
+                this.app.notice( e.message,"error");
             }else{
                 this.app.notice( errorText,"error");
             }

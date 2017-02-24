@@ -31,8 +31,8 @@ MWF.xApplication.cms.ColumnManager.ScriptExplorer = new Class({
         if (this.app.options.application) id = this.app.options.application.id;
         this.actions.listScript(id,callback);
     },
-    _getItemObject: function(item){
-        return new MWF.xApplication.cms.ColumnManager.ScriptExplorer.Script(this, item)
+    _getItemObject: function(item, index){
+        return new MWF.xApplication.cms.ColumnManager.ScriptExplorer.Script(this, item, {index : index})
     },
     setTooltip: function(){
         this.options.tooltip = {
@@ -89,7 +89,7 @@ MWF.xApplication.cms.ColumnManager.ScriptExplorer.Script = new Class({
 		return {
 			"icon": this.explorer.path+this.explorer.options.style+"/scriptIcon/lnk.png",
 			"title": this.data.name,
-			"par": "cms.ScriptDesigner#{\"id\": \""+this.data.id+"\", \"applicationId\": \""+ (this.explorer.app.options.application.id ||this.explorer.app.options.column.id)+"\"}"
+			"par": "cms.ScriptDesigner#{\"id\": \""+this.data.id+"\", \"application\": "+ JSON.stringify(this.explorer.app.options.application ||this.explorer.app.options.column)+"}"
 		};
 	},
 //	deleteItem: function(e){

@@ -101,8 +101,10 @@ MWF.xApplication.Forum.Attachment = new Class({
 
                         this.actions.uploadAttachment(this.options.documentId, function (o, text) {
                             j = JSON.decode(text);
-                            if (j.userMessage) {
-                                this.actions.getAttachment(j.userMessage, this.options.documentId, function (json) {
+                            if ( j.data ) {
+                                //j.userMessage
+                                var aid = typeOf( j.data ) == "object" ? j.data.id : j.data[0].id;
+                                this.actions.getAttachment(aid, this.options.documentId, function (json) {
                                     json = this.transportData(json);
                                     if (json.data) {
                                         this.attachmentController.addAttachment(json.data);
@@ -200,7 +202,7 @@ MWF.xApplication.Forum.Attachment = new Class({
         this.fileReplaceNode.click();
     },
     downloadAttachment: function (e, node, attachments) {
-        if( this.app.access.isAnonymous() ){
+        if( this.app.access.isAnonymousDynamic() ){
             this.app.openLoginForm( function(){ this.app.reload() }.bind(this) )
         }else {
             attachments.each(function (att) {
@@ -209,7 +211,7 @@ MWF.xApplication.Forum.Attachment = new Class({
         }
     },
     openAttachment: function (e, node, attachments) {
-        if( this.app.access.isAnonymous() ){
+        if( this.app.access.isAnonymousDynamic() ){
             this.app.openLoginForm( function(){ this.app.reload() }.bind(this) )
         }else{
             attachments.each(function (att) {

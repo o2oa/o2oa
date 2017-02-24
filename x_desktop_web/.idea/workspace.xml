@@ -2,6 +2,389 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="0047d22c-6d8e-4857-9099-141a70138b96" name="默认的" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/Actions" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/add.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/addProcess.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/addProcess.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/addProcess_gray.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/addProcess_gray.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/addToDeskTop.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/addToDeskTop.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/add_blue.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/appicon.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/cancel.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/cancel_over.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/category_add.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/category_add_gray.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/category_delete.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/category_delete_gray.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/checkmark.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/icon/checkmark.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/checkmark_selected.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/icon/checkmark_selected.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/checkmark_selected2.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/icon/checkmark_selected2.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/collapse.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/collapse.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/createCategory.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/createCategory.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/createCategory.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/icon/createProcess.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/delete.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/icon/delete.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/deleteCategory.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/deleteCategory.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/deleteCategory.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/deleteCategory_gray.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/deleteCategory_gray.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/deleteCategory_red.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/deleteCategory_red1.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/deleteProcess.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/deleteProcess.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/deleteProcess.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/deleteProcess_red.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/deleteProcess_red.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/deleteProcess_red1.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/deleteProcess_red1.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/deleteRow1.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/dictionaryIcon" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/dictionaryIcon" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/edit.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/edit.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/editCancel.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/editCancel.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/editCancel.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/editCancel_bg.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/editCancel_bg.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/editCancel_bg.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/editCategory.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/editCategory.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/editCategory_gray.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/editCategory_gray.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/editOk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/editOk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/editOk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/editOk_bg.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/editOk_bg.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/editOk_bg.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/editOk_gray.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/editOk_gray.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/editProcess.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/editProcess.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/editProcess.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/edit_over.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/icon/error.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/expand.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/expand.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/eye.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/icon/eye.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/eye_selected.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/icon/eye_selected.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/icon/form.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/form.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/form.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/formIcon" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/formIcon" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/home.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/home_selected.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon1.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon1.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon10.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon10.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon10_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon10_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon11.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon11.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon11_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon11_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon1_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon1_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon2.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon2.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon2_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon2_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon3.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon3.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon3_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon3_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon4.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon4.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon4_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon4_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon5.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon5.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon5_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon5_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon6.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon6.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon6_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon6_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon7.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon7.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon7_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon7_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon8.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon8.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon8_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon8_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon9.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon9.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/icon9_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/icon9_light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/icon" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_additional.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_additional_click.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_bian_ji_lie_biao.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_bian_ji_lie_biao_click.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_biao_dan_pei_zhi.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_biao_dan_pei_zhi_click.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_delete_blue_click.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_delete_grey.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_down2.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_down2_click.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_edit.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_edit_click.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_edit_form.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_edit_form_blue_click.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_fen_lei.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_fen_lei_click.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_insert.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_insert_click.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_jiao_ben.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_jiao_ben_click.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_lan_mu.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_lan_mu_click.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_lie_biao.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_lie_biao_click.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_mo_ren_lie_biao.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_mo_ren_lie_biao_click.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_read.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_read_click.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_shu_ju_pei_zhi.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_shu_ju_pei_zhi_click.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_shu_ju_shi_tu.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_shu_ju_shi_tu_click.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_turn.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/icon_turn_click.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/insertAfter.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/insertAfter_over.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/insertBefore.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/insertBefore_over.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/insertColAfter.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/insertColBefore.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/insertRow1.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/list_view.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/lnk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/lnk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/lnk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/dictionaryIcon/lnk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/formIcon/lnk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/lnk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/queryViewIcon/lnk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/scriptIcon/lnk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/viewIcon/lnk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/dictionaryIcon/lnk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/formIcon/lnk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/lnk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/queryViewIcon/lnk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/scriptIcon/lnk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/viewIcon/lnk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/lnk2.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/lnk2.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/lnk_form.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/lp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/move1.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/new.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/new.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/new.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/icon/new.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/newCategory.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/newCategory.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/newForm.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/newList.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/plus.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/plus.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/plus2.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/plus_over.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/plus_over.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/process_data.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/process_flow.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/process_form.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_0.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_0.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_0.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_1.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_1.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_1.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_10.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_10.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_10.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_11.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_11.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_11.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_12.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_12.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_12.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_13.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_13.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_13.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_14.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_14.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_14.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_15.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_15.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_15.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_16.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_16.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_16.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_17.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_17.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_17.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_18.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_18.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_18.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_19.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_19.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_19.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_2.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_2.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_2.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_20.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_20.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_20.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_21.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_21.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_21.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_22.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_22.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_22.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_23.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_23.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_23.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_24.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_24.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_24.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_25.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_25.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_25.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_26.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_26.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_26.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_27.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_27.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_27.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_28.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_28.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_28.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_29.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_29.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_29.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_3.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_3.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_3.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_30.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_30.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_30.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_31.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_31.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_31.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_32.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_32.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_32.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_4.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_4.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_4.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_5.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_5.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_5.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_6.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_6.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_6.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_7.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_7.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_7.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_8.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_8.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_8.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/processIcon/process_icon_9.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/processIcon/process_icon_9.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/processIcon/process_icon_9.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/process_plugin.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/process_property.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/process_rule.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/process_script.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/process_view.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/icon/process_view_bak.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/queryViewIcon" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/queryViewIcon" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/read.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/save.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/save_over.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/scriptIcon" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/scriptIcon" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/search.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/categoryIcon/searchCategory.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/searchCategory.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/categoryIcon/searchCategory.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/search_gray.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/trash.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/icon/trash.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/trash_over.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/turn.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/turn_over.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/viewIcon" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/viewIcon" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/icon/yes.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/CategoryExplorer.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/CategoryExplorer.min.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/DictionaryExplorer.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/DictionaryExplorer.min.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/Explorer.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/Explorer.min.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/FormExplorer.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/FormExplorer.min.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/Main.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/Main.min.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/QueryViewExplorer.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/QueryViewExplorer.min.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/RestActions.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/Actions/RestActions.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/RestActions.min.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/Actions/RestActions.min.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/ScriptExplorer.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/ScriptExplorer.min.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/ViewExplorer.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/ViewExplorer.min.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/Actions/action.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/css.wcss" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/css.wcss" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/css.wcss" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/css.wcss" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/css_bak.wcss" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/package.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/package.min.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/process.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/process.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/startMenu.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/lp/zh-cn.js.bak" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/lp/zh-cn.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/x_component_cms_ApplicationManager/lp/zh-cn.min.js" />
       <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_HotPicture\$Main\appicon.png" afterPath="D:\x\x_desktop_web\x_component_HotPicture\$Main\appicon.png" />
       <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_HotPicture\$Main\bak\icon\bbs.png" afterPath="D:\x\x_desktop_web\x_component_HotPicture\$Main\bak\icon\bbs.png" />
       <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_HotPicture\$Setting\default\icon\bbs.png" afterPath="D:\x\x_desktop_web\x_component_HotPicture\$Setting\default\icon\bbs.png" />
@@ -35,17 +418,82 @@
       <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_HotPicture\$Setting\default\sectionIcon\icon7.png" afterPath="D:\x\x_desktop_web\x_component_HotPicture\$Setting\default\sectionIcon\icon7.png" />
       <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_HotPicture\$Setting\default\sectionIcon\icon8.png" afterPath="D:\x\x_desktop_web\x_component_HotPicture\$Setting\default\sectionIcon\icon8.png" />
       <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_HotPicture\$Setting\default\sectionIcon\icon9.png" afterPath="D:\x\x_desktop_web\x_component_HotPicture\$Setting\default\sectionIcon\icon9.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_additional.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_additional.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_additional_click.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_additional_click.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_bian_ji_lie_biao.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_bian_ji_lie_biao.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_bian_ji_lie_biao_click.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_bian_ji_lie_biao_click.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_biao_dan_pei_zhi.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_biao_dan_pei_zhi.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_biao_dan_pei_zhi_click.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_biao_dan_pei_zhi_click.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_delete_blue_click.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_delete_blue_click.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_delete_grey.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_delete_grey.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_down2.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_down2.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_down2_click.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_down2_click.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_edit.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_edit.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_edit_click.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_edit_click.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_edit_form.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_edit_form.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_edit_form_blue_click.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_edit_form_blue_click.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_fen_lei.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_fen_lei.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_fen_lei_click.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_fen_lei_click.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_insert.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_insert.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_insert_click.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_insert_click.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_jiao_ben.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_jiao_ben.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_jiao_ben_click.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_jiao_ben_click.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_lan_mu.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_lan_mu.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_lan_mu_click.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_lan_mu_click.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_lie_biao.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_lie_biao.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_lie_biao_click.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_lie_biao_click.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_mo_ren_lie_biao.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_mo_ren_lie_biao.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_mo_ren_lie_biao_click.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_mo_ren_lie_biao_click.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_read.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_read.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_read_click.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_read_click.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_shu_ju_pei_zhi.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_shu_ju_pei_zhi.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_shu_ju_pei_zhi_click.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_shu_ju_pei_zhi_click.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_shu_ju_shi_tu.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_shu_ju_shi_tu.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_shu_ju_shi_tu_click.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_shu_ju_shi_tu_click.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_turn.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_turn.png" />
+      <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_turn_click.png" afterPath="D:\x\x_desktop_web\x_component_cms_ColumnManagerV2\$Main\default\icon\icon_turn_click.png" />
       <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_HotPicture\$Setting\default\icon\permission.png" afterPath="D:\x\x_desktop_web\x_component_HotPicture\$Setting\default\icon\permission.png" />
       <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_HotPicture\$Setting\default\icon\role.png" afterPath="D:\x\x_desktop_web\x_component_HotPicture\$Setting\default\icon\role.png" />
       <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_HotPicture\$Main\bak\icon\settings.png" afterPath="D:\x\x_desktop_web\x_component_HotPicture\$Main\bak\icon\settings.png" />
       <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_HotPicture\$Setting\default\icon\settings.png" afterPath="D:\x\x_desktop_web\x_component_HotPicture\$Setting\default\icon\settings.png" />
       <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_HotPicture\$Setting\default\icon\squared.png" afterPath="D:\x\x_desktop_web\x_component_HotPicture\$Setting\default\icon\squared.png" />
       <change type="MODIFICATION" beforePath="D:\x\x_desktop_web\x_component_HotPicture\$Main\bak\icon\title_background.png" afterPath="D:\x\x_desktop_web\x_component_HotPicture\$Main\bak\icon\title_background.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/Attachment.js" afterPath="$PROJECT_DIR$/x_component_Execution/Attachment.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Forum/Attachment.js" afterPath="$PROJECT_DIR$/x_component_Forum/Attachment.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_cms_Document/Attachment.js" afterPath="$PROJECT_DIR$/x_component_cms_Document/Attachment.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/Attachment.min.js" afterPath="$PROJECT_DIR$/x_component_Execution/Attachment.min.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Forum/Attachment.min.js" afterPath="$PROJECT_DIR$/x_component_Forum/Attachment.min.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_cms_Document/Attachment.min.js" afterPath="$PROJECT_DIR$/x_component_cms_Document/Attachment.min.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/Chat.js" afterPath="$PROJECT_DIR$/x_component_Execution/Chat.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/Chat.min.js" afterPath="$PROJECT_DIR$/x_component_Execution/Chat.min.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/CoreWork.min.js" afterPath="$PROJECT_DIR$/x_component_Execution/CoreWork.min.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/CreateMainTask.min.js" afterPath="$PROJECT_DIR$/x_component_Execution/CreateMainTask.min.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Attendance/Main.js" afterPath="$PROJECT_DIR$/x_component_Attendance/Main.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/ReportAttachment.js" afterPath="$PROJECT_DIR$/x_component_Execution/ReportAttachment.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/ReportAttachment.min.js" afterPath="$PROJECT_DIR$/x_component_Execution/ReportAttachment.min.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/StatForm.js" afterPath="$PROJECT_DIR$/x_component_Execution/StatForm.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/StatForm.min.js" afterPath="$PROJECT_DIR$/x_component_Execution/StatForm.min.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/WorkDeploy.js" afterPath="$PROJECT_DIR$/x_component_Execution/WorkDeploy.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/WorkDeploy.min.js" afterPath="$PROJECT_DIR$/x_component_Execution/WorkDeploy.min.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/WorkDetail.js" afterPath="$PROJECT_DIR$/x_component_Execution/WorkDetail.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/WorkDetail.min.js" afterPath="$PROJECT_DIR$/x_component_Execution/WorkDetail.min.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/WorkForm.js" afterPath="$PROJECT_DIR$/x_component_Execution/WorkForm.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/WorkForm.min.js" afterPath="$PROJECT_DIR$/x_component_Execution/WorkForm.min.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/WorkGather.js" afterPath="$PROJECT_DIR$/x_component_Execution/WorkGather.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/WorkGather.min.js" afterPath="$PROJECT_DIR$/x_component_Execution/WorkGather.min.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/WorkGatherNew.min.js" afterPath="$PROJECT_DIR$/x_component_Execution/WorkGatherNew.min.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_desktop/res/mwf4/package/widget/$ScriptHelp/cms/code.json" afterPath="$PROJECT_DIR$/x_desktop/res/mwf4/package/widget/$ScriptHelp/cms/code.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/WorkList.js" afterPath="$PROJECT_DIR$/x_component_Execution/WorkList.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/WorkList.min.js" afterPath="$PROJECT_DIR$/x_component_Execution/WorkList.min.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/WorkReport.js" afterPath="$PROJECT_DIR$/x_component_Execution/WorkReport.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/WorkReport.min.js" afterPath="$PROJECT_DIR$/x_component_Execution/WorkReport.min.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/WorkReportList.js" afterPath="$PROJECT_DIR$/x_component_Execution/WorkReportList.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/WorkReportList.min.js" afterPath="$PROJECT_DIR$/x_component_Execution/WorkReportList.min.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/WorkStat.js" afterPath="$PROJECT_DIR$/x_component_Execution/WorkStat.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/WorkStat.min.js" afterPath="$PROJECT_DIR$/x_component_Execution/WorkStat.min.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/WorkTask.js" afterPath="$PROJECT_DIR$/x_component_Execution/WorkTask.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/WorkTask.min.js" afterPath="$PROJECT_DIR$/x_component_Execution/WorkTask.min.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/$WorkDetail/default/css.wcss" afterPath="$PROJECT_DIR$/x_component_Execution/$WorkDetail/default/css.wcss" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/$WorkStat/default/css.wcss" afterPath="$PROJECT_DIR$/x_component_Execution/$WorkStat/default/css.wcss" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_desktop/res/framework/d3/d3.min.js" afterPath="$PROJECT_DIR$/x_desktop/res/framework/d3/d3.min.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_desktop/res/framework/kityminder/kity/kity.min.js" afterPath="$PROJECT_DIR$/x_desktop/res/framework/kityminder/kity/kity.min.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_desktop/res/framework/kityminder/editor/dist/kityminder.editor.min.js" afterPath="$PROJECT_DIR$/x_desktop/res/framework/kityminder/editor/dist/kityminder.editor.min.js" />
@@ -92,6 +540,8 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_desktop/res/framework/htmleditor/tinymce/themes/modern/theme.min.js" afterPath="$PROJECT_DIR$/x_desktop/res/framework/htmleditor/tinymce/themes/modern/theme.min.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_desktop/res/framework/htmleditor/tinymce/tinymce.jquery.min.js" afterPath="$PROJECT_DIR$/x_desktop/res/framework/htmleditor/tinymce/tinymce.jquery.min.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_desktop/res/framework/htmleditor/tinymce/tinymce.min.js" afterPath="$PROJECT_DIR$/x_desktop/res/framework/htmleditor/tinymce/tinymce.min.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/lp/zh-cn.js" afterPath="$PROJECT_DIR$/x_component_Execution/lp/zh-cn.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/x_component_Execution/lp/zh-cn.min.js" afterPath="$PROJECT_DIR$/x_component_Execution/lp/zh-cn.min.js" />
     </list>
     <ignored path="x_desktop_web.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -112,41 +562,31 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Main.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/x_component_ForumPerson/Main.js">
+      <file leaf-file-name="Main.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/x_component_cms_FormDesigner/Main.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.12013348">
-              <caret line="149" column="14" selection-start-line="149" selection-start-column="14" selection-end-line="149" selection-end-column="14" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="25" column="25" selection-start-line="25" selection-start-column="25" selection-end-line="25" selection-end-column="25" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Main.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/x_component_ForumSearch/Main.js">
+      <file leaf-file-name="Label.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/x_component_cms_FormDesigner/Module/Label.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="406" column="34" selection-start-line="406" selection-start-column="29" selection-end-line="406" selection-end-column="34" />
+              <caret line="2" column="56" selection-start-line="2" selection-start-column="53" selection-end-line="2" selection-end-column="56" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Main.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/x_component_ForumSection/Main.js">
+      <file leaf-file-name="Monitor.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/x_component_cms_FormDesigner/Module/Monitor.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="704" column="53" selection-start-line="704" selection-start-column="53" selection-end-line="704" selection-end-column="53" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Main.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/x_component_ForumCategory/Main.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="226" column="58" selection-start-line="226" selection-start-column="58" selection-end-line="226" selection-end-column="58" />
+            <state vertical-scroll-proportion="0.09399478">
+              <caret line="3" column="17" selection-start-line="3" selection-start-column="17" selection-end-line="3" selection-end-column="22" />
               <folding />
             </state>
           </provider>
@@ -163,60 +603,63 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/x_component_cms_Xform/widget/$QueryView/select/css.wcss" />
-        <option value="$PROJECT_DIR$/x_component_cms_QueryViewDesigner/$Main/default/toolbars.html" />
-        <option value="$PROJECT_DIR$/x_component_cms_Xform/widget/$QueryView/default/css.wcss" />
-        <option value="$PROJECT_DIR$/x_desktop/res/mwf4/package/xDesktop/Actions/action.json" />
-        <option value="$PROJECT_DIR$/x_component_cms_Index/Main.js" />
-        <option value="$PROJECT_DIR$/x_component_cms_QueryViewDesigner/$View/view.html" />
-        <option value="$PROJECT_DIR$/x_component_cms_QueryViewDesigner/Property.js" />
-        <option value="$PROJECT_DIR$/x_component_cms_QueryViewDesigner/$View/column.html" />
-        <option value="$PROJECT_DIR$/x_desktop/index.html" />
-        <option value="$PROJECT_DIR$/x_component_cms_Xform/widget/QueryView.js" />
-        <option value="$PROJECT_DIR$/x_component_cms_QueryViewDesigner/$View/view.json" />
-        <option value="$PROJECT_DIR$/x_desktop/res/mwf4/package/widget/$ScriptHelp/cms/code.json" />
-        <option value="$PROJECT_DIR$/x_desktop/res/mwf4/package/xScript/CMSEnvironment.js" />
-        <option value="$PROJECT_DIR$/x_component_cms_Xform/QueryView.js" />
-        <option value="$PROJECT_DIR$/x_component_cms_Module/Main.js" />
-        <option value="$PROJECT_DIR$/x_component_cms_QueryViewDesigner/Main.js" />
-        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/FormExplorer.js" />
-        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/CategoryExplorer.min.js" />
-        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/DictionaryExplorer.js" />
-        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/DictionaryExplorer.min.js" />
         <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/Explorer.js" />
-        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/Explorer.min.js" />
-        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/ViewExplorer.min.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/$Explorer/full/css.wcss" />
+        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/DictionaryExplorer.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_DictionaryDesigner/Main.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_QueryViewDesigner/View.js" />
         <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/QueryViewExplorer.js" />
         <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/ScriptExplorer.js" />
         <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/ViewExplorer.js" />
-        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/CategoryExplorer_bak.js" />
-        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/$Main/startMenu.json" />
-        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/CategoryExplorer_bak2.js" />
-        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/CategoryExplorer.js" />
-        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/Main.js" />
-        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/lp/zh-cn.js" />
-        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/$CategoryExplorer/default/css.wcss" />
-        <option value="$PROJECT_DIR$/x_component_cms_ViewDesigner/lp/zh-cn.js" />
-        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/$Explorer/full/css.wcss" />
-        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/$ViewExplorer/default/css.wcss" />
-        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/CategoryExplorerV2.js" />
-        <option value="$PROJECT_DIR$/x_component_Forum/Actions/action.json" />
-        <option value="$PROJECT_DIR$/x_component_Template/MDomItem.js" />
-        <option value="$PROJECT_DIR$/x_component_Template/MForm.js" />
-        <option value="$PROJECT_DIR$/x_component_Template/Explorer.js" />
-        <option value="$PROJECT_DIR$/x_component_ForumDocument/$Main/default/css.wcss" />
-        <option value="$PROJECT_DIR$/x_component_ForumDocument/$Main/default/listItemReply.json" />
-        <option value="$PROJECT_DIR$/x_component_ForumDocument/$Main/default/listItemSubject.json" />
+        <option value="$PROJECT_DIR$/x_desktop/res/mwf4/package/xDesktop/$Authentication/default/css.wcss" />
+        <option value="$PROJECT_DIR$/x_desktop/res/mwf4/package/xDesktop/Authentication.js" />
+        <option value="$PROJECT_DIR$/x_desktop/res/mwf4/package/xDesktop/$Authentication/application/css.wcss" />
+        <option value="$PROJECT_DIR$/x_component_Forum/$Setting/listItemSection.json" />
+        <option value="$PROJECT_DIR$/x_component_Forum/$Setting/listItemCategory.json" />
+        <option value="$PROJECT_DIR$/x_component_Forum/Setting.js" />
         <option value="$PROJECT_DIR$/x_component_Forum/Main.js" />
         <option value="$PROJECT_DIR$/x_component_ForumCategory/Main.js" />
-        <option value="$PROJECT_DIR$/x_component_ForumDocument/Main.js" />
-        <option value="$PROJECT_DIR$/x_component_ForumPerson/Main.js" />
-        <option value="$PROJECT_DIR$/x_component_ForumSearch/Main.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/lp/zh-cn.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/FormExplorer.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_Column/Main.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/CategoryExplorer.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_ColumnManager/Main.js" />
+        <option value="$PROJECT_DIR$/x_component_Forum/Actions/action.json" />
+        <option value="$PROJECT_DIR$/x_component_Forum/Actions/RestActions.js" />
         <option value="$PROJECT_DIR$/x_component_ForumSection/Main.js" />
-        <option value="$PROJECT_DIR$/x_desktop/res/js/forum.js" />
+        <option value="$PROJECT_DIR$/x_component_Forum/Access.js" />
+        <option value="$PROJECT_DIR$/x_component_ForumDocument/Main.js" />
+        <option value="$PROJECT_DIR$/x_component_Attendance/Common.js" />
+        <option value="$PROJECT_DIR$/x_component_Attendance/$Main/default/css.wcss" />
+        <option value="$PROJECT_DIR$/x_component_Attendance/Main.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/css.wcss" />
+        <option value="$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/css_bak.wcss" />
+        <option value="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/css.wcss" />
+        <option value="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/css.wcss" />
+        <option value="$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/css.wcss" />
+        <option value="$PROJECT_DIR$/x_component_cms_ApplicationManager/Actions/RestActions.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_ApplicationManager/Actions/RestActions.min.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_ApplicationManager/CategoryExplorer.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_ApplicationManager/CategoryExplorer.min.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_ApplicationManager/DictionaryExplorer.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_ApplicationManager/DictionaryExplorer.min.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_ApplicationManager/Explorer.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_ApplicationManager/Explorer.min.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_ApplicationManager/FormExplorer.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_ApplicationManager/FormExplorer.min.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_ApplicationManager/Main.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_ApplicationManager/Main.min.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_ApplicationManager/QueryViewExplorer.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_ApplicationManager/QueryViewExplorer.min.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_ApplicationManager/RestActions.js" />
+        <option value="$PROJECT_DIR$/x_component_Forum/Attachment.js" />
+        <option value="$PROJECT_DIR$/x_component_cms_Document/Attachment.js" />
       </list>
     </option>
   </component>
@@ -249,7 +692,7 @@
       </profile-state>
     </entry>
   </component>
-  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="添加" />
     <OptionsSetting value="true" id="移除" />
     <OptionsSetting value="true" id="签出" />
@@ -272,7 +715,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -323,86 +765,9 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="x_desktop_web" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="x_desktop_web" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="x_desktop" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mwf4" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="x_desktop_web" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="x_desktop_web" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="x_desktop" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mwf4" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="package" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="x_desktop_web" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="x_desktop_web" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="x_desktop" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mwf4" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="package" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="xDesktop" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
       <pane id="Scratches" />
     </panes>
   </component>
@@ -423,18 +788,18 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\x\x_desktop_web\x_component_cms_ColumnManager\$ViewExplorer\default\icon" />
-      <recent name="D:\x\x_desktop_web\x_component_cms_ColumnManager\$Explorer\default\icon" />
-      <recent name="D:\x\x_desktop_web\x_component_cms_ColumnManager\$CategoryExplorer\default\icon" />
-      <recent name="D:\x\x_desktop_web\x_component_cms_ColumnManager\$ViewExplorer\default\processIcon" />
-      <recent name="D:\x\x_desktop_web\x_component_cms_ColumnManager\$Explorer\full\processIcon" />
+      <recent name="D:\x\x_desktop_web" />
+      <recent name="D:\x\x_desktop_web\x_component_Attendance\$Common\fullcalendar\lib" />
+      <recent name="D:\x\x_desktop_web\x_component_Attendance\$Common\echarts" />
+      <recent name="D:\x\x_desktop_web\x_desktop\res\mwf4\package\xDesktop\$Authentication\default\icon" />
+      <recent name="D:\x\x_desktop_web\x_component_cms_ColumnManager\$Explorer\default" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\x\x_desktop_web\x_component_cms_ColumnManager\$Explorer\default\icon" />
       <recent name="D:\x\x_desktop_web\x_component_Forum\$Login\lp" />
       <recent name="D:\x\x_desktop_web\x_component_Forum\$Setting" />
       <recent name="D:\x\x_desktop_web\x_component_Forum\$Main\default" />
       <recent name="D:\x\x_desktop_web\x_component_Forum\$SettingExplorer" />
-      <recent name="D:\x\x_desktop_web\x_component_Forum\$Main" />
     </key>
   </component>
   <component name="RunManager">
@@ -557,31 +922,31 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-11" y="0" width="3854" height="2091" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17305152" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17173052" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32844734" sideWeight="0.4980185" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="版本控制" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3274098" sideWeight="0.48645833" order="15" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32256326" sideWeight="0.6375165" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="版本控制" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3274098" sideWeight="0.48538318" order="15" side_tool="false" content_ui="tabs" />
+      <window_info id="调试" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3523344" sideWeight="0.6612946" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.11129207" sideWeight="0.35984147" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24986945" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3274098" sideWeight="0.4266843" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="运行" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3284868" sideWeight="0.4990782" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="找到" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3523344" sideWeight="0.33870542" order="14" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="调试" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.111834966" sideWeight="0.3680317" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="消息" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.045556385" sideWeight="0.448512" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="运行" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32899022" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="消息" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.044695746" sideWeight="0.448512" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32995737" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="找到" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.34961998" sideWeight="0.3624835" order="14" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -604,7 +969,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/x_component_cms_ColumnManager/Main.js</url>
-          <line>348</line>
+          <line>421</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/x_desktop/res/mwf4/package/widget/SimpleEditor.js</url>
@@ -633,7 +998,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/x_component_Forum/Setting.js</url>
-          <line>1452</line>
+          <line>1458</line>
           <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
@@ -643,7 +1008,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/x_component_Forum/Setting.js</url>
-          <line>290</line>
+          <line>291</line>
           <option name="timeStamp" value="15" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
@@ -651,396 +1016,438 @@
           <line>1611</line>
           <option name="timeStamp" value="16" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/x_component_cms_ColumnManager/CategoryExplorer.js</url>
+          <line>1026</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="17" />
+      <option name="time" value="18" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/x_component_cms_QueryViewDesigner/$Main/default/css.wcss">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-15.377778">
-          <caret line="144" column="30" selection-start-line="144" selection-start-column="5" selection-end-line="144" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_desktop/res/framework/mootools/mootools-1.6.0.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.0288944">
-          <caret line="990" column="4" selection-start-line="990" selection-start-column="4" selection-end-line="990" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_QueryViewDesigner/Main.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.0565177">
-          <caret line="63" column="46" selection-start-line="63" selection-start-column="34" selection-end-line="63" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/CategoryExplorerV2.min.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.0">
-          <caret line="0" column="11514" selection-start-line="0" selection-start-column="11514" selection-end-line="0" selection-end-column="11514" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/DictionaryExplorer.min.js">
+    <entry file="file://$PROJECT_DIR$/x_desktop/res/mwf4/package/xDesktop/Authentication.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="2488" selection-start-line="0" selection-start-column="2488" selection-end-line="0" selection-end-column="2488" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/Explorer.min.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="4812" selection-start-line="0" selection-start-column="4812" selection-end-line="0" selection-end-column="4812" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/ViewExplorer.min.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="4347" selection-start-line="0" selection-start-column="4347" selection-end-line="0" selection-end-column="4347" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/DictionaryExplorer.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="103" column="34" selection-start-line="103" selection-start-column="34" selection-end-line="103" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/QueryViewExplorer.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="19" column="32" selection-start-line="19" selection-start-column="32" selection-end-line="19" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/ScriptExplorer.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="21" column="38" selection-start-line="21" selection-start-column="38" selection-end-line="21" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/$Main/startMenu.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7440207">
-          <caret line="60" column="31" selection-start-line="60" selection-start-column="15" selection-end-line="60" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ViewDesigner/$View/default/operation.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.25270963">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ViewDesigner/$Main/default/css.wcss">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.17865565">
-          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ViewDesigner/View.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1013" column="42" selection-start-line="1013" selection-start-column="30" selection-end-line="1013" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ViewDesigner/$View/default/css.wcss">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-14.4">
-          <caret line="100" column="6" selection-start-line="92" selection-start-column="4" selection-end-line="100" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/Main.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="680" column="56" selection-start-line="680" selection-start-column="54" selection-end-line="680" selection-end-column="56" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/lp/zh-cn.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="124" column="42" selection-start-line="124" selection-start-column="42" selection-end-line="124" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ViewDesigner/lp/zh-cn.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="51" column="47" selection-start-line="51" selection-start-column="47" selection-end-line="51" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/FormExplorer.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="3" column="51" selection-start-line="3" selection-start-column="51" selection-end-line="3" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/Explorer.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="257" column="4" selection-start-line="257" selection-start-column="4" selection-end-line="264" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/$Explorer/default/css.wcss">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.264706">
-          <caret line="8" column="43" selection-start-line="8" selection-start-column="43" selection-end-line="8" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/$Explorer/full/css.wcss">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-9.921569">
-          <caret line="335" column="115" selection-start-line="335" selection-start-column="115" selection-end-line="335" selection-end-column="115" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/ViewExplorer.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.13251534">
-          <caret line="218" column="5" selection-start-line="218" selection-start-column="5" selection-end-line="218" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/$CategoryExplorer/default/css.wcss">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="598" column="2" selection-start-line="598" selection-start-column="2" selection-end-line="606" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/$ViewExplorer/default/css.wcss">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="348" column="20" selection-start-line="348" selection-start-column="20" selection-end-line="348" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/CategoryExplorer.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="368" column="52" selection-start-line="368" selection-start-column="46" selection-end-line="368" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/Actions/RestActions.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="367" column="11" selection-start-line="367" selection-start-column="4" selection-end-line="367" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/CategoryExplorerV2.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1600" column="65" selection-start-line="1600" selection-start-column="65" selection-end-line="1600" selection-end-column="65" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_Forum/Actions/RestActions.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="361" column="19" selection-start-line="361" selection-start-column="4" selection-end-line="361" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_Template/Explorer.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="16.570621">
-          <caret line="1447" column="31" selection-start-line="1447" selection-start-column="31" selection-end-line="1447" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_Template/MForm.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.2937853">
-          <caret line="324" column="25" selection-start-line="324" selection-start-column="25" selection-end-line="324" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_Template/MDomItem.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3898305">
-          <caret line="1248" column="34" selection-start-line="1248" selection-start-column="34" selection-end-line="1248" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_ForumDocument/$Main/default/css.wcss">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2850436">
-          <caret line="536" column="26" selection-start-line="536" selection-start-column="26" selection-end-line="536" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_desktop/res/mwf4/package/xAction/Authentication/action.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.8">
-          <caret line="6" column="78" selection-start-line="6" selection-start-column="78" selection-end-line="6" selection-end-column="78" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_ForumPerson/lp/zh-cn.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_Forum/lp/zh-cn.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-10.140351">
-          <caret line="234" column="16" selection-start-line="234" selection-start-column="5" selection-end-line="234" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_Common/Main.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-14.526316">
-          <caret line="56" column="27" selection-start-line="56" selection-start-column="18" selection-end-line="56" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_desktop/res/js/forumDocMobile.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="175" column="16" selection-start-line="175" selection-start-column="16" selection-end-line="175" selection-end-column="16" />
+          <caret line="21" column="4" selection-start-line="21" selection-start-column="4" selection-end-line="21" selection-end-column="4" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/x_component_Forum/Access.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="42" column="9" selection-start-line="42" selection-start-column="4" selection-end-line="42" selection-end-column="9" />
+          <caret line="59" column="22" selection-start-line="59" selection-start-column="4" selection-end-line="59" selection-end-column="22" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_Forum/Actions/action.json">
+    <entry file="file://$PROJECT_DIR$/x_component_Forum/Actions/RestActions.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="144" column="68" selection-start-line="144" selection-start-column="68" selection-end-line="144" selection-end-column="68" />
+        <state vertical-scroll-proportion="0.82067245">
+          <caret line="372" column="124" selection-start-line="372" selection-start-column="124" selection-end-line="372" selection-end-column="124" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_ForumDocument/$Main/default/listItemReply.json">
+    <entry file="file://$PROJECT_DIR$/x_component_Attendance/$Common/echarts/echarts.common.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="97" column="139" selection-start-line="97" selection-start-column="117" selection-end-line="97" selection-end-column="139" />
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_ForumSearch/Main.js">
+    <entry file="file://$PROJECT_DIR$/x_component_Attendance/$Common/echarts/echarts.common.min.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="406" column="34" selection-start-line="406" selection-start-column="29" selection-end-line="406" selection-end-column="34" />
-          <folding />
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/x_component_ForumSection/Main.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="704" column="53" selection-start-line="704" selection-start-column="53" selection-end-line="704" selection-end-column="53" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_ForumCategory/Main.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="226" column="58" selection-start-line="226" selection-start-column="58" selection-end-line="226" selection-end-column="58" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_desktop/res/mwf4/package/xDesktop/Layout.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="676" column="26" selection-start-line="676" selection-start-column="26" selection-end-line="676" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_desktop/res/mwf4/package/xDesktop/Authentication.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.66518354">
-          <caret line="1375" column="89" selection-start-line="1375" selection-start-column="89" selection-end-line="1375" selection-end-column="89" />
-          <folding>
-            <marker date="1483411126172" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1483411126172" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1483411126172" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1483411126172" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1483411126172" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1483411126172" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1483411126172" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1483411126172" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1483411126172" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1483411126172" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1483411126172" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1483411126172" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1483411126172" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1483411126172" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1483411126172" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1483411126172" expanded="true" signature="-1:-1" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/x_desktop/res/js/forum.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="156" column="50" selection-start-line="156" selection-start-column="50" selection-end-line="156" selection-end-column="50" />
+          <caret line="610" column="62" selection-start-line="610" selection-start-column="62" selection-end-line="610" selection-end-column="62" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/x_component_ForumDocument/$Main/default/listItemSubject.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6098117">
-          <caret line="113" column="144" selection-start-line="113" selection-start-column="144" selection-end-line="113" selection-end-column="144" />
+        <state vertical-scroll-proportion="0.49263293">
+          <caret line="110" column="28" selection-start-line="110" selection-start-column="28" selection-end-line="110" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_Forum/Actions/action.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.07751442">
+          <caret line="136" column="19" selection-start-line="136" selection-start-column="3" selection-end-line="136" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_Attendance/$Common/fullcalendar/lib/jquery-ui.custom.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_Attendance/Common.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.42611682">
+          <caret line="52" column="93" selection-start-line="52" selection-start-column="93" selection-end-line="52" selection-end-column="93" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_desktop/res/mwf4/package/xAction/Authentication/RestActions.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6185567">
+          <caret line="74" column="17" selection-start-line="74" selection-start-column="17" selection-end-line="74" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_Attendance/$Main/default/css.wcss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="8" column="22" selection-start-line="8" selection-start-column="22" selection-end-line="8" selection-end-column="22" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/$Main/default/css.wcss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="39" column="22" selection-start-line="39" selection-start-column="22" selection-end-line="39" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/Explorer.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="180" column="4" selection-start-line="180" selection-start-column="4" selection-end-line="187" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/FormExplorer.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="3" column="48" selection-start-line="3" selection-start-column="48" selection-end-line="3" selection-end-column="48" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/CategoryExplorer.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="1065" column="50" selection-start-line="1065" selection-start-column="50" selection-end-line="1065" selection-end-column="50" />
+          <folding>
+            <element signature="e#14746#20258#0" expanded="false" />
+            <element signature="e#20335#39881#0" expanded="false" />
+            <element signature="e#39963#41187#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ColumnManager/Main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.66101694">
+          <caret line="639" column="5" selection-start-line="639" selection-start-column="5" selection-end-line="643" selection-end-column="5" />
+          <folding>
+            <element signature="e#28366#56704#0" expanded="false" />
+            <element signature="e#56761#57874#0" expanded="false" />
+            <marker date="1487602679826" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1487602679826" expanded="true" signature="-1:-1" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_Attendance/Main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.86440676">
+          <caret line="491" column="5" selection-start-line="491" selection-start-column="5" selection-end-line="491" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/css.wcss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.177778">
+          <caret line="556" column="41" selection-start-line="556" selection-start-column="41" selection-end-line="556" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ApplicationManager/$CategoryExplorer/default/css_bak.wcss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.177778">
+          <caret line="226" column="47" selection-start-line="226" selection-start-column="47" selection-end-line="226" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/default/css.wcss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-14.933333">
+          <caret line="498" column="41" selection-start-line="498" selection-start-column="41" selection-end-line="498" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ApplicationManager/$Explorer/full/css.wcss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-14.933333">
+          <caret line="536" column="41" selection-start-line="536" selection-start-column="41" selection-end-line="536" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ApplicationManager/$Main/default/css.wcss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.177778">
+          <caret line="191" column="22" selection-start-line="191" selection-start-column="22" selection-end-line="191" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ApplicationManager/Actions/RestActions.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="7" column="126" selection-start-line="7" selection-start-column="126" selection-end-line="7" selection-end-column="126" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ApplicationManager/Actions/RestActions.min.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.0">
+          <caret line="0" column="563" selection-start-line="0" selection-start-column="563" selection-end-line="0" selection-end-column="563" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ApplicationManager/CategoryExplorer.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="1585" column="34" selection-start-line="1585" selection-start-column="34" selection-end-line="1585" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ApplicationManager/CategoryExplorer.min.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="90.92453">
+          <caret line="1" column="2317" selection-start-line="1" selection-start-column="2317" selection-end-line="1" selection-end-column="2317" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ApplicationManager/DictionaryExplorer.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="79" column="34" selection-start-line="79" selection-start-column="34" selection-end-line="79" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ApplicationManager/RestActions.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.12743251">
+          <caret line="211" column="72" selection-start-line="211" selection-start-column="72" selection-end-line="211" selection-end-column="72" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ApplicationManager/QueryViewExplorer.min.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="1428" selection-start-line="0" selection-start-column="1428" selection-end-line="0" selection-end-column="1428" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ApplicationManager/QueryViewExplorer.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.24042687">
+          <caret line="58" column="34" selection-start-line="58" selection-start-column="34" selection-end-line="58" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ApplicationManager/Main.min.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7896104">
+          <caret line="1" column="1339" selection-start-line="1" selection-start-column="1339" selection-end-line="1" selection-end-column="1339" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ApplicationManager/Main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.24042687">
+          <caret line="1320" column="21" selection-start-line="1320" selection-start-column="21" selection-end-line="1320" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ApplicationManager/FormExplorer.min.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="3578" selection-start-line="0" selection-start-column="3578" selection-end-line="0" selection-end-column="3578" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ApplicationManager/FormExplorer.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.24042687">
+          <caret line="140" column="34" selection-start-line="140" selection-start-column="34" selection-end-line="140" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ApplicationManager/Explorer.min.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.8181818">
+          <caret line="0" column="8409" selection-start-line="0" selection-start-column="8409" selection-end-line="0" selection-end-column="8409" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ApplicationManager/Explorer.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.24042687">
+          <caret line="376" column="88" selection-start-line="376" selection-start-column="88" selection-end-line="376" selection-end-column="88" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_ApplicationManager/DictionaryExplorer.min.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="2033" selection-start-line="0" selection-start-column="2033" selection-end-line="0" selection-end-column="2033" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_Document/Attachment.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="105" column="36" selection-start-line="105" selection-start-column="36" selection-end-line="105" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_Column/Main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33333334">
+          <caret line="699" column="78" selection-start-line="699" selection-start-column="78" selection-end-line="699" selection-end-column="78" />
+          <folding>
+            <marker date="1487601226577" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1487601226577" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1487601226577" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1487601226577" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1487601226577" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1487601226577" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1487601226577" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1487601226577" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1487601226577" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1487601226577" expanded="true" signature="-1:-1" placeholder="..." />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/x_component_ForumDocument/Main.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1037" column="33" selection-start-line="1037" selection-start-column="33" selection-end-line="1037" selection-end-column="33" />
+        <state vertical-scroll-proportion="0.33333334">
+          <caret line="1912" column="45" selection-start-line="1912" selection-start-column="45" selection-end-line="1912" selection-end-column="45" />
           <folding>
-            <marker date="1486713763332" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1486713763332" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1487736421939" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1487736421939" expanded="true" signature="-1:-1" placeholder="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_Forum/Main.js">
+    <entry file="file://$PROJECT_DIR$/x_component_Forum/Attachment.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="249" column="9" selection-start-line="249" selection-start-column="9" selection-end-line="249" selection-end-column="9" />
+        <state vertical-scroll-proportion="0.33333334">
+          <caret line="104" column="36" selection-start-line="104" selection-start-column="36" selection-end-line="104" selection-end-column="36" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/x_component_ForumPerson/Main.js">
+    <entry file="file://$PROJECT_DIR$/x_component_cms_FormDesigner/Module/Attachment/attachment.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.12013348">
-          <caret line="149" column="14" selection-start-line="149" selection-start-column="14" selection-end-line="149" selection-end-column="14" />
+        <state vertical-scroll-proportion="1.4891304">
+          <caret line="91" column="61" selection-start-line="91" selection-start-column="61" selection-end-line="91" selection-end-column="61" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_FormDesigner/Module/Actionbar/actionbar.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_FormDesigner/Module/Html.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.6971278">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_FormDesigner/Module/Form.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="5.7023497">
+          <caret line="182" column="59" selection-start-line="182" selection-start-column="59" selection-end-line="182" selection-end-column="59" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_FormDesigner/Module/Office.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_DictionaryDesigner/Dictionary.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_FormDesigner/Main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="25" column="25" selection-start-line="25" selection-start-column="25" selection-end-line="25" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_FormDesigner/Module/Label.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="2" column="56" selection-start-line="2" selection-start-column="53" selection-end-line="2" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/x_component_cms_FormDesigner/Module/Monitor.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.09399478">
+          <caret line="3" column="17" selection-start-line="3" selection-start-column="17" selection-end-line="3" selection-end-column="22" />
           <folding />
         </state>
       </provider>

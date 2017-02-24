@@ -256,7 +256,7 @@ MWF.xApplication.Execution.WorkGather = new Class({
         }
         this.actions.submitWorkReport( submitData, function(json){
             if(json.type == "success"){
-                this.app.notice(json.userMessage,"success");
+                this.app.notice(this.lp.prompt.submitWorkReport,"success");
                 this.actions.getDepartmentGather(this.data.gatherId,function(json){
                     if(json.data && json.data.length==0){
                         this.fireEvent("reloadView");
@@ -275,8 +275,8 @@ MWF.xApplication.Execution.WorkGather = new Class({
             var errorText = error;
             if (xhr) errorMessage = xhr.responseText;
             var e = JSON.parse(errorMessage);
-            if(e.userMessage){
-                this.app.notice( e.userMessage,"error");
+            if(e.message){
+                this.app.notice( e.message,"error");
             }else{
                 this.app.notice( errorText,"error");
             }
@@ -321,7 +321,7 @@ MWF.xApplication.Execution.WorkGather = new Class({
 
                     }.bind(this), function(xhr){
                         var json = JSON.parse(xhr.responseText);
-                        this.submitError = "《"+this.currentReportData.title+"》"+json.userMessage
+                        this.submitError = "《"+this.currentReportData.title+"》"+json.message
                         this.submitStatus = false;
                     }.bind(this),false);
                 }

@@ -521,8 +521,8 @@ MWF.xApplication.Execution.StatForm = new Class({
         var errorText = error;
         if (xhr) errorMessage = xhr.responseText;
         var e = JSON.parse(errorMessage);
-        if (e.userMessage) {
-            this.app.notice(e.userMessage, "error");
+        if (e.message) {
+            this.app.notice(e.message, "error");
         } else {
             this.app.notice(errorText, "error");
         }

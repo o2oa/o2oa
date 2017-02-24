@@ -36,8 +36,8 @@ MWF.xApplication.cms.ColumnManager.QueryViewExplorer = new Class({
     _loadItemDataList: function(callback){
         this.app.restActions.listQueryView(this.app.options.application.id,callback);
     },
-    _getItemObject: function(item){
-        return new MWF.xApplication.cms.ColumnManager.QueryViewExplorer.View(this, item)
+    _getItemObject: function(item, index){
+        return new MWF.xApplication.cms.ColumnManager.QueryViewExplorer.View(this, item, {index : index})
     },
     deleteItems: function(){
         while (this.deleteMarkItems.length){
@@ -86,15 +86,14 @@ MWF.xApplication.cms.ColumnManager.QueryViewExplorer.View = new Class({
         //}.bind(this));
 	},
 	_getIcon: function(){
-		//var x = (Math.random()*33).toInt();
-		//return "process_icon_"+x+".png";
-        return "view.png"
+		var x = (Math.random()*33).toInt();
+		return "process_icon_"+x+".png";
 	},
 	_getLnkPar: function(){
 		return {
-			"icon": this.explorer.path+this.explorer.options.style+"/viewIcon/lnk.png",
+			"icon": this.explorer.path+this.explorer.options.style+"/queryViewIcon/lnk.png",
 			"title": this.data.name,
-            "par": "cms.QueryViewDesigner#{\"id\": \""+this.data.id+"\", \"applicationId\": \""+this.explorer.app.options.application.id+"\"}"
+            "par": "cms.QueryViewDesigner#{\"id\": \""+this.data.id+"\", \"application\": "+JSON.stringify( this.explorer.app.options.application )+"}"
 		};
 	},
 //	deleteItem: function(e){

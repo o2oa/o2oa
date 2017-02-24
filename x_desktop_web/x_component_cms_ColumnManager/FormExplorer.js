@@ -85,13 +85,33 @@ MWF.xApplication.cms.ColumnManager.FormExplorer = new Class({
         });
 
     },
-
+    showDeleteAction: function(){
+        if (!this.deleteItemsAction){
+            this.deleteItemsAction = new Element("div", {
+                "styles": this.css.deleteItemsAction,
+                "text": this.app.lp.deleteItems
+            }).inject(this.node);
+            this.deleteItemsAction.fade("in");
+            this.deleteItemsAction.position({
+                relativeTo: this.elementContentListNode
+            });
+            this.deleteItemsAction.addEvent("click", function(){
+                var _self = this;
+                this.app.confirm("warn", this.deleteItemsAction, MWF.CMSCM.LP.form.deleteFormTitle, MWF.CMSCM.LP.form.deleteForm, 300, 120, function(){
+                    _self.deleteItems();
+                    this.close();
+                }, function(){
+                    this.close();
+                });
+            }.bind(this));
+        }
+    },
 
     _loadItemDataList: function(callback){
         this.app.restActions.listForm(this.app.options.column.id,callback);
     },
-    _getItemObject: function(item){
-        return new MWF.xApplication.cms.ColumnManager.FormExplorer.Form(this, item)
+    _getItemObject: function(item, index){
+        return new MWF.xApplication.cms.ColumnManager.FormExplorer.Form(this, item, {index:index})
     },
     setTooltip: function(){
         this.options.tooltip = {

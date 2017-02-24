@@ -368,6 +368,8 @@ MWF.xApplication.Forum.Actions.RestActions = new Class({
     },
     logout: function(success, failure, async){
         this.actionAuthentication.invoke({"name": "logout", "success": success,"failure": failure, "async": async});
+    },
+    authentication: function( success, failure, async){
+        this.actionAuthentication.invoke({"name": "authentication", "success": success,"failure": failure, "async": async});
     }
-
 });

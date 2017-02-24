@@ -10,53 +10,7 @@ MWF.xApplication.cms.ColumnManager.ViewExplorer = new Class({
         "noElement": MWF.CMSCM.LP.view.noViewNoticeText
     },
 
-    initialize: function(node, actions, options){
-        this.setOptions(options);
-        this.setTooltip();
 
-        this.path = "/x_component_cms_ColumnManager/$ViewExplorer/";
-        this.cssPath = "/x_component_cms_ColumnManager/$ViewExplorer/"+this.options.style+"/css.wcss";
-
-        this._loadCss();
-
-        this.actions = actions;
-        this.node = $(node);
-        this.initData();
-    },
-    setContentSize: function(){
-        var toolbarSize = this.toolbarNode ? this.toolbarNode.getSize() : { x :0 , y :0 };
-        var nodeSize = this.node.getSize();
-        var pt = this.elementContentNode.getStyle("padding-top").toFloat();
-        var pb = this.elementContentNode.getStyle("padding-bottom").toFloat();
-
-        var height = nodeSize.y-toolbarSize.y-pt-pb;
-        this.elementContentNode.setStyle("height", ""+height+"px");
-
-        if (this.options.noCreate) this.createElementNode.destroy();
-    },
-    showDeleteAction: function(){
-        if (!this.deleteItemsAction){
-            this.deleteItemsAction = new Element("div", {
-                "styles": this.css.deleteItemsAction,
-                "text": this.app.lp.deleteItems
-            }).inject(this.node);
-            this.deleteItemsAction.fade("in");
-            this.deleteItemsAction.position({
-                relativeTo: this.elementContentListNode,
-                position: 'centerTop',
-                edge: 'centerTop'
-            });
-            this.deleteItemsAction.addEvent("click", function(){
-                var _self = this;
-                this.app.confirm("warn", this.deleteItemsAction, MWF.CMSCM.LP.deleteElementTitle, MWF.CMSCM.LP.deleteElement, 300, 120, function(){
-                    _self.deleteItems();
-                    this.close();
-                }, function(){
-                    this.close();
-                });
-            }.bind(this));
-        }
-    },
     //_createElement: function(e){
     //    var _self = this;
     //    var options = {
@@ -87,7 +41,7 @@ MWF.xApplication.cms.ColumnManager.ViewExplorer = new Class({
                 layout.desktop.openApplication(e, "cms.ViewDesigner", options);
             }.bind(this));
 
-        }
+        };
 
         var selectFormMaskNode = new Element("div", {"styles": this.css.selectFormMaskNode}).inject(this.app.content);
         var selectFormAreaNode = new Element("div", {"styles": this.css.selectFormTemplateAreaNode}).inject(this.app.content);
@@ -149,6 +103,18 @@ MWF.xApplication.cms.ColumnManager.ViewExplorer = new Class({
 
             }.bind(this))
 
+            var size = this.app.content.getSize();
+            var nodeSize = selectFormAreaNode.getSize();
+
+            var y = (size.y - nodeSize.y)/2;
+            var x = (size.x - nodeSize.x)/2;
+            if (y<0) y=0;
+            if (x<0) x=0;
+            selectFormAreaNode.setStyles({
+                "top": ""+y+"px",
+                "left": ""+x+"px"
+            });
+
         }.bind(this));
 
         selectFormMaskNode.addEvent("click", function(){
@@ -156,22 +122,13 @@ MWF.xApplication.cms.ColumnManager.ViewExplorer = new Class({
             selectFormMaskNode.destroy();
         });
 
-        var size = this.app.content.getSize();
-        var y = (size.y - 262)/2;
-        var x = (size.x - 828)/2;
-        if (y<0) y=0;
-        if (x<0) x=0;
-        selectFormAreaNode.setStyles({
-            "top": ""+y+"px",
-            "left": ""+x+"px"
-        });
 
     },
     _loadItemDataList: function(callback){
         this.actions.listView(this.app.options.column.id,callback);
     },
-    _getItemObject: function(item){
-        return new MWF.xApplication.cms.ColumnManager.ViewExplorer.View(this, item)
+    _getItemObject: function(item, index){
+        return new MWF.xApplication.cms.ColumnManager.ViewExplorer.View(this, item, {index:index})
     },
     setTooltip: function(){
         this.options.tooltip = {
@@ -185,7 +142,7 @@ MWF.xApplication.cms.ColumnManager.ViewExplorer = new Class({
         this._loadItemDataList(function(json){
             if (json.data.length){
                 json.data.each(function(item){
-                    var itemObj = this._getItemObject(item);
+                    var itemObj = this._getItemObject(item, this.itemArray.length+1);
                     itemObj.load();
                     this.itemObject[ item.id ] = itemObj;
                     this.itemArray.push( itemObj );
@@ -222,14 +179,24 @@ MWF.xApplication.cms.ColumnManager.ViewExplorer = new Class({
 MWF.xApplication.cms.ColumnManager.ViewExplorer.View = new Class({
     Extends: MWF.xApplication.cms.ColumnManager.Explorer.Item,
 
-    load: function(){
+    load_bak: function(){
+        if( this.options.index % 2 == 0 ){
+            this.itemNodeCss = this.explorer.css.itemNode_even
+        }else{
+            this.itemNodeCss = this.explorer.css.itemNode
+        }
         this.node = new Element("div", {
-            "styles": this.explorer.css.itemNode,
+            "styles": this.itemNodeCss,
             "events": {
-                "mouseover": function(){if (this.deleteActionNode) this.deleteActionNode.fade("in");}.bind(this),
-                "mouseout": function(){if (this.deleteActionNode) this.deleteActionNode.fade("out");}.bind(this)
+                "click": function(e){this._open(e);e.stopPropagation();}.bind(this),
+                "mouseover": function(){
+                    this.node.setStyles( this.explorer.css.itemNode_over )
+                }.bind(this),
+                "mouseout": function(){
+                    this.node.setStyles( this.itemNodeCss )
+                }.bind(this)
             }
-        }).inject(this.container);
+        }).inject(this.container,this.options.where);
 
         if (this.data.name.icon) this.icon = this.data.name.icon;
         var iconUrl = this.explorer.path+""+this.explorer.options.style+"/processIcon/"+this.icon;
@@ -246,50 +213,59 @@ MWF.xApplication.cms.ColumnManager.ViewExplorer.View = new Class({
             "par": this._getLnkPar()
         });
 
+        this.actionsArea = new Element("div.actionsArea",{
+            styles : this.explorer.css.actionsArea
+        }).inject(this.node);
         if (!this.explorer.options.noDelete){
-            this.deleteActionNode = new Element("div", {
-                "styles": this.explorer.css.deleteActionNode
-            }).inject(this.node);
+            this.deleteActionNode = new Element("div.deleteAction", {
+                "styles": this.explorer.css.deleteAction
+            }).inject(this.actionsArea);
             this.deleteActionNode.addEvent("click", function(e){
                 this.deleteItem(e);
+                e.stopPropagation();
             }.bind(this));
+            this.deleteActionNode.addEvents({
+                "mouseover" : function(ev){
+                    this.deleteActionNode.setStyles( this.explorer.css.deleteAction_over )
+                }.bind(this),
+                "mouseout" : function(ev){
+                    this.deleteActionNode.setStyles( this.explorer.css.deleteAction )
+                }.bind(this)
+            })
         }
 
-        var inforNode = new Element("div", {
+        var inforNode = new Element("div.itemInforNode", {
             "styles": this.explorer.css.itemInforNode
         }).inject(this.node);
-        var inforBaseNode = new Element("div", {
+        var inforBaseNode = new Element("div.itemInforBaseNode", {
             "styles": this.explorer.css.itemInforBaseNode
         }).inject(inforNode);
 
-        new Element("div", {
+        new Element("div.itemTextTitleNode", {
             "styles": this.explorer.css.itemTextTitleNode,
             "text": this.data.name,
-            "title": this.data.name,
-            "events": {
-                "click": function(e){this._open(e);e.stopPropagation();}.bind(this)
-            }
+            "title": this.data.name
         }).inject(inforBaseNode);
 
-        new Element("div", {
+        new Element("div.itemTextAliasNode", {
             "styles": this.explorer.css.itemTextAliasNode,
             "text": this.data.alias,
             "title": this.data.alias
         }).inject(inforBaseNode);
-        new Element("div", {
+        new Element("div.itemTextDateNode", {
             "styles": this.explorer.css.itemTextDateNode,
             "text": (this.data.updateTime || "")
         }).inject(inforBaseNode);
 
-        new Element("div", {
+        new Element("div.itemTextDescriptionNode", {
             "styles": this.explorer.css.itemTextDescriptionNode,
             "text": this.data.description || "",
             "title": this.data.description || ""
-        }).inject(inforNode);
+        }).inject(inforBaseNode);
 
         this._customNodes();
 
-        this._isNew();
+        //this._isNew();
     },
     _customNodes: function(){},
 
@@ -317,7 +293,7 @@ MWF.xApplication.cms.ColumnManager.ViewExplorer.View = new Class({
         return {
             "icon": this.explorer.path+this.explorer.options.style+"/viewIcon/lnk.png",
             "title": this.data.name,
-            "par": "cms.ViewDesigner#{\"id\": \""+this.data.id+"\"}"
+            "par": "cms.ViewDesigner#{\"id\": \""+this.data.id+"\", \"application\": "+JSON.stringify( this.explorer.app.options.application )+"}"
         };
     },
 //	deleteItem: function(e){

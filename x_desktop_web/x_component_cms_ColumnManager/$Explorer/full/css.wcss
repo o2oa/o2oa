@@ -128,21 +128,42 @@
 		"font-size": "16px"
 	},
   "itemNode": {
-	"padding": "5px",
-	"height": "40px",
-	"margin-top": "10px",
+	//"padding": "5px",
+	"height": "50px",
+	//"margin-top": "10px",
 	"margin-left": "0px",
-	"border": "1px solid #CCC",
+	//"border": "1px solid #CCC",
 	"background-color": "#FFF",
 	"cursor": "default",
 	"position" : "relative"
   },
+  "itemNode_even" : {
+	"height": "50px",
+	"margin-left": "0px",
+	"background-color": "#f7f7f7",
+	"cursor": "default",
+	"position" : "relative"
+  },
+  "itemStatusNode" : {
+	"overflow" : "hidden",
+	"float": "left",
+	"width": "5px",
+	"height": "50px"
+  },
+  "itemStatusTopNode" : {
+	"width": "5px",
+	"height": "25px"
+  },
+  "itemStatusBottomNode" : {
+	"width": "5px",
+	"height": "25px"
+  },
   "itemIconNode": {
 	"padding": "0px",
 	"float": "left",
-	"margin-left": "10px",
-	"width": "40px",
-	"height": "40px"
+	//"margin-left": "5px",
+	"width": "50px",
+	"height": "50px"
   },
   "deleteActionNode": {
 	"padding": "0px",
@@ -151,27 +172,26 @@
 	"height": "16px",
 	"opacity": 0,
 	"cursor": "pointer",
-	"background": "url("+"/x_component_cms_ColumnManager/$ViewExplorer/default/icon/delete.png) no-repeat center center"
+	"background": "url("+"/x_component_cms_ColumnManager/$Explorer/default/icon/delete.png) no-repeat center center"
   },
 
   "itemInforNode": {
 	"margin-left": "60px",
 	"margin-right": "26px",
-	"height": "40px",
+	"height": "50px",
 	"overflow": "hidden"
   },
   "itemInforBaseNode": {
-	"height": "20px",
-	"line-height": "20px",
+	"height": "50px",
+	"line-height": "50px",
 	"font-size": "12px"
   },
   "itemTextTitleNode": {
-	"height": "20px",
-	"font-weight": "bold",
+	"font-size": "14px",
 	"overflow": "hidden",
 	"cursor": "pointer",
-	"color": "#333",
-	"width": "38%",
+	"color": "#666",
+	"width": "60%",
 	"float": "left"
   },
   "itemTextAliasNode": {
@@ -183,10 +203,11 @@
 	"width": "38%"
   },
   "itemTextDateNode": {
-	"height": "20px",
+	"font-size": "12px",
+	"height": "50px",
 	"overflow": "hidden",
 	"cursor": "pointer",
-	"color": "#777",
+	"color": "#999",
 	"float": "left",
 	"text-align": "right",
 	"width": "24%"
@@ -204,7 +225,7 @@
 	"width": "16px",
 	"height": "16px",
 	"float": "right",
-	"background": "url("+"/x_component_cms_ColumnManager/$ViewExplorer/default/icon/error.png) no-repeat center center",
+	"background": "url("+"/x_component_cms_ColumnManager/$Explorer/default/icon/error.png) no-repeat center center",
 	"position": "relative",
 	"top": "-16px",
 	"left": "0px"
@@ -215,7 +236,7 @@
 	"position": "relative",
 	"top": "-45px",
 	"left": "-5px",
-	"background": "url("+"/x_component_cms_ColumnManager/$ViewExplorer/default/icon/new.png) no-repeat right"
+	"background": "url("+"/x_component_cms_ColumnManager/$Explorer/default/icon/new.png) no-repeat right"
   },
 
     "createTemplateMaskNode": {
@@ -302,34 +323,205 @@
         "height": "100%",
         "border-radius": "10px"
     },
-  	"formActionsArea" : {
-	  "display": "none",
+
+
+  "selectFormMaskNode": {
+	"width": "100%",
+	"height": "100%",
+	"background-color": "#666",
+	"position": "absolute",
+	"top": "0px",
+	"left": "0px",
+	"opacity": 0.4,
+	"z-index":100
+  },
+  "selectFormAreaNode": {
+	"width": "900px",
+	"height": "226",
+	"border": "3px solid #999",
+	"border-radius": "12px",
+	"box-shadow": "0px 0px 10px #999",
+	"position": "absolute",
+	"top": "20%",
+	"left": "10%",
+	"z-index": "30000",
+	"background-color": "#FFF",
+	"opacity": 0
+  },
+  "selectFormTemplateAreaNode": {
+	"width": "900px",
+	"height": "226",
+	"border": "3px solid #999",
+	"border-radius": "12px",
+	"box-shadow": "0px 0px 10px #999",
+	"position": "absolute",
+	"top": "20%",
+	"left": "10%",
+	"z-index": "30000",
+	"background-color": "#FFF",
+	"opacity": 0
+  },
+  "selectFormTitleNode": {
+	"border-top-left-radius": "12px",
+	"border-top-right-radius": "12px",
+	"padding": "0px 10px",
+	"height": "30px",
+	"color": "rgb(102, 102, 102)",
+	"line-height": "30px",
+	"font-size": "14px",
+	"font-weight": "bold",
+	"background-color": "#EEE"
+  },
+  "selectFormScrollNode": {
+	"margin-right": "0px",
+	"height": "100%",
+	"overflow": "hidden"
+  },
+  "selectFormContentNode": {
+	"overflow": "hidden",
+	"padding": "10px 40px 40px 10px"
+  },
+
+  "formNode": {
+	"width": "240px",
+	"padding": "10px",
+	"height": "60px",
+	"margin-top": "20px",
+	"margin-left": "20px",
+	"border": "1px solid #CCC",
+	"float": "left",
+	"background-color": "#FFF",
+	"cursor": "pointer"
+  },
+  "formNode_over": {
+	"border": "1px solid #999",
+	"box-shadow": "0px 0px 5px #999"
+  },
+  "formNode_down": {
+	"border-top": "1px solid #999",
+	"border-left": "1px solid #999",
+	"border-bottom": "1px solid #FFF",
+	"border-right": "1px solid #FFF",
+	"box-shadow": "0px 0px 0px #999"
+  },
+  "formIconNode": {
+	"padding": "0px",
+	"float": "left",
+	"width": "40px",
+	"height": "60px"
+  },
+  "formTitleNode": {
+	"margin-left": "50px",
+	"margin-right": "20px",
+	"height": "20px",
+	"line-height": "20px",
+	"font-size": "14px",
+	"font-weight": "bold",
+	"overflow": "hidden",
+	"cursor": "pointer",
+	"color": "#333"
+  },
+  "formDescriptionNode": {
+	"margin-left": "50px",
+	"margin-right": "20px",
+	"font-size": "12px",
+	"line-height": "20px",
+	"height": "20px",
+	"color": "#777",
+	"overflow": "hidden",
+	"white-space": "normal"
+  },
+
+  "actionsArea" : {
 	  "position": "absolute",
 	  "padding": "1px",
 	  "padding-right": "0px",
 	  //"opacity": 1,
 	  "top" : "15px",
-	  "right" : "0px",
+	  "right" : "5px",
 	  "z-index": 100
 	},
 	"setEditAction": {
 	  "width": "16px",
 	  "height": "16px",
-	  "background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/yes.png) no-repeat left",
+	  "background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/checkmark.png) no-repeat left",
 	  "margin-left": "2px",
 	  "margin-right": "2px",
 	  "float": "left",
 	  "cursor": "pointer"
 	},
+  "setEditAction_selected": {
+	"width": "16px",
+	"height": "16px",
+	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/checkmark_selected2.png) no-repeat left",
+	"margin-left": "2px",
+	"margin-right": "2px",
+	"float": "left",
+	"cursor": "pointer"
+  },
 	"setReadAction": {
 	  "width": "16px",
 	  "height": "16px",
-	  "background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/read.png) no-repeat left",
+	  "background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/eye.png) no-repeat left",
 	  "margin-left": "2px",
 	  "margin-right": "2px",
 	  "float": "left",
 	  "cursor": "pointer"
 	},
+  "setReadAction_selected": {
+	"width": "16px",
+	"height": "16px",
+	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/eye_selected.png) no-repeat left",
+	"margin-left": "2px",
+	"margin-right": "2px",
+	"float": "left",
+	"cursor": "pointer"
+  },
+  "setCategoryViewAction": {
+	"width": "16px",
+	"height": "16px",
+	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/checkmark.png) no-repeat left",
+	"margin-left": "2px",
+	"margin-right": "2px",
+	"float": "left",
+	"cursor": "pointer"
+  },
+  "setCategoryViewAction_selected": {
+	"width": "16px",
+	"height": "16px",
+	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/checkmark_selected2.png) no-repeat left",
+	"margin-left": "2px",
+	"margin-right": "2px",
+	"float": "left",
+	"cursor": "pointer"
+  },
+  "cancelCategoryViewAction": {
+	"width": "16px",
+	"height": "16px",
+	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/checkmark_selected2.png) no-repeat left",
+	"margin-left": "2px",
+	"margin-right": "2px",
+	"float": "left",
+	"cursor": "pointer"
+  },
+  "setDefaultCategoryViewAction": {
+	"width": "16px",
+	"height": "16px",
+	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/home.png) no-repeat left",
+	"margin-left": "2px",
+	"margin-right": "2px",
+	"float": "left",
+	"cursor": "pointer"
+  },
+  "setDefaultCategoryViewAction_selected": {
+	"width": "16px",
+	"height": "16px",
+	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/home_selected.png) no-repeat left",
+	"margin-left": "2px",
+	"margin-right": "2px",
+	"float": "left",
+	"cursor": "pointer"
+  },
   	"deleteAction" : {
 	  "width": "16px",
 	  "height": "16px",
@@ -338,5 +530,14 @@
 	  "margin-right": "2px",
 	  "float": "left",
 	  "cursor": "pointer"
-	}
+	},
+  "deleteAction_over" : {
+	"width": "16px",
+	"height": "16px",
+	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/trash_over.png) no-repeat left",
+	"margin-left": "2px",
+	"margin-right": "2px",
+	"float": "left",
+	"cursor": "pointer"
+  }
 }

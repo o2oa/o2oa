@@ -369,7 +369,7 @@ MWF.xApplication.Attendance.StatisticsCycleExplorer.StatisticsCycle = new Class(
         if (data.cycleStartDateString && data.cycleEndDateString ){
             this.app.restActions.saveCycle(data, function(json){
                 if( json.type == "ERROR" ){
-                    this.app.notice( json.userMessage  , "error");
+                    this.app.notice( json.message  , "error");
                 }else{
                     this.createMarkNode.destroy();
                     this.createAreaNode.destroy();

@@ -113,7 +113,7 @@
             "title": "remove",
             "text": "remove",
             "action": "remove",
-            "condition": "function( d ){ return this.app.access.hasForumAdminAuthority( d ) }",
+            "condition": "function( d ){ return this.app.access.isAdmin() }", //this.app.access.hasForumAdminAuthority( d )
             "styles": "documentActionNode",
             "mouseoverStyles": "documentActionNode_over",
             "mousedownStyles": "documentActionNode_down"

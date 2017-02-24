@@ -338,7 +338,7 @@ MWF.xApplication.Attendance.AppealExplorer.Document = new Class({
     process: function( data ){
         this.app.restActions.processAppeal( this.data.id, data, function(json){
             if( json.type == "ERROR" ){
-                this.app.notice( json.userMessage  , "error");
+                this.app.notice( json.message  , "error");
             }else{
                 if( !this.explorer.batchAppeals ){
                     if(this.explorer.view)this.explorer.view.reload();
@@ -615,7 +615,7 @@ MWF.xApplication.Attendance.AppealExplorer.Appeal = new Class({
     process: function( data ){
         this.app.restActions.processAppeal( this.data.id, data, function(json){
             if( json.type == "ERROR" ){
-                this.app.notice( json.userMessage , "error");
+                this.app.notice( json.message , "error");
             }else{
                 this.createMarkNode.destroy();
                 this.createAreaNode.destroy();

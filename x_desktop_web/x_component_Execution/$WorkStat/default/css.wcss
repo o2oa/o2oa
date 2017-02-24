@@ -111,7 +111,7 @@
 
   //***********************统计按部门**************************************
   "deptToolbar":{
-    "width":"100%","min-width":"1000px","padding-top":"8px","margin-bottom":"10px","padding-left":"10px",
+    "width":"100%","min-width":"1000px","padding-top":"8px","padding-left":"10px",
     "border-bottom" : "1px dashed #dedede", "overflow" : "hidden"
   },
   "deptStatInfo":{
@@ -122,6 +122,7 @@
   "deptStatContent":{
     "overflow-x":"auto",
     "overflow-y":"auto",
+    "padding-top":"10px",
 //    "width":"100%",
     "height":"520px"
   },
@@ -233,7 +234,8 @@
     "color":"#ec6a1a"
   },
   "dateStatBaseTd":{
-    "border":"solid #000 1px"
+    "border":"solid #000 1px",
+    "min-width":"100px"
   },
 
   //***********************统计按日期**************************************

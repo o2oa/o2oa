@@ -70,7 +70,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
 		"noFormNoticeText": "此栏目现在还没有表单，您可以点击此处创建一个新表单",
 		"loaded": "表单加载完毕",
 		"deleteFormTitle": "删除表单确认",
-		"deleteForm": "是否确定要删除当前表单？"
+		"deleteForm": "删除表单同时将删除此表单的关联列表，是否确定要删除当前表单？"
 		
 	},
     "view": {

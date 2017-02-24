@@ -986,7 +986,7 @@ MWF.xApplication.Attendance.PersonDetail.Appeal = new Class({
             data.processPerson1 = identity;
             this.app.restActions.createAppeal(this.data.id, data, function (json) {
                 if (json.type == "ERROR") {
-                    this.app.notice(json.userMessage, "error");
+                    this.app.notice(json.message, "error");
                 } else {
                     this.createMarkNode.destroy();
                     this.createAreaNode.destroy();
@@ -999,7 +999,7 @@ MWF.xApplication.Attendance.PersonDetail.Appeal = new Class({
                 data.processPerson1 = js.data.name;
                 this.app.restActions.createAppeal(this.data.id, data, function (json) {
                     if (json.type == "ERROR") {
-                        this.app.notice(json.userMessage, "error");
+                        this.app.notice(json.message, "error");
                     } else {
                         this.createMarkNode.destroy();
                         this.createAreaNode.destroy();

@@ -792,7 +792,7 @@ MWF.xApplication.Attendance.Explorer.PopupForm = new Class({
         if( data ){
             this._ok( data, function( json ){
                 if( json.type == "ERROR" ){
-                    this.app.notice( json.userMessage  , "error");
+                    this.app.notice( json.message  , "error");
                 }else{
                     this.formMarkNode.destroy();
                     this.formAreaNode.destroy();

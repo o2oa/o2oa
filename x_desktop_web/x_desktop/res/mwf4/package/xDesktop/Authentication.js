@@ -254,7 +254,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
 				"<div styles='bindTipArea'>"+
 				"   <div styles='bindTipIconArea'></div>" +
 				"   <div styles='bindTipTextArea'>"+
-				"       <div>打开<div styles='bindTipLinkArea'>智和APP</div>扫一扫</div>" +
+				"       <div>打开<div styles='bindTipLinkArea'>O2APP</div>扫一扫</div>" +
 				"       <div>登录网页版</div>" +
 				"</div>";
 
@@ -503,7 +503,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
 		if (data) {
 			this._ok(data, function (json) {
 				if (json.type == "error") {
-					if(this.app)this.app.notice(json.userMessage, "error");
+					if(this.app)this.app.notice(json.message, "error");
 				} else {
 					this._close();
 					if( this.formMarkNode )this.formMarkNode.destroy();
@@ -949,7 +949,7 @@ MWF.xDesktop.Authentication.SignUpForm = new Class({
 		if (data) {
 			this._ok(data, function (json) {
 				if (json.type == "error") {
-					if(this.app)this.app.notice(json.userMessage, "error");
+					if(this.app)this.app.notice(json.message, "error");
 				} else {
 					if(this.formMarkNode)this.formMarkNode.destroy();
 					this.formAreaNode.destroy();

@@ -11,7 +11,7 @@ MWF.require("MWF.widget.ImageClipper", null, false);
 MWF.xApplication.ForumDocument.options = {
 	multitask: true,
 	executable: true
-}
+};
 MWF.xApplication.ForumDocument.Main = new Class({
 	Extends: MWF.xApplication.Common.Main,
 	Implements: [Options, Events],
@@ -478,7 +478,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		data.attachmentList = this.attachment.getAttachmentIds();
 		if (data) {
 			data.sectionId = this.sectionData.id;
-			data.pictureBase64 = this.clipper.getBase64Image();
+			data.pictureBase64 = this.clipper.getBase64Image() || "";
 			this.restActions.saveSubject(data, function (json) {
 				this.notice(this.options.isNew ? this.lp.createSuccess : this.lp.updateSuccess, "success");
 				this.fireEvent("postPublish");
@@ -552,7 +552,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 						this.node.setStyles(this.obj.css.pagingActionNode);
 					}.bind({obj: this, node: createActionNode}),
 					"click": function () {
-						if( this.access.isAnonymous() ){
+						if( this.access.isAnonymousDynamic() ){
 							this.openLoginForm(
 								function(){ this.createNewDocument(); }.bind(this)
 							);
@@ -776,7 +776,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 					"mouseover" : function(){ this.itemNode.setStyles( this.obj.css.actionItem_over ) }.bind({ obj : this, itemNode : action }),
 					"mouseout" : function(){ this.itemNode.setStyles( this.obj.css.actionItem ) }.bind({ obj : this, itemNode : action }),
 					"click" : function(){
-						if( this.access.isAnonymous() ){
+						if( this.access.isAnonymousDynamic() ){
 							this.openLoginForm( function(){ this.reload() }.bind(this) );
 						}else{
 							this.createReply();
@@ -1302,7 +1302,7 @@ MWF.xApplication.ForumDocument.SubjectView = new Class({
 				} } );
 			}, function(){
 				if( callback )callback( { data : {
-					icon : "/x_component_ForumDocument/$Main/"+this.view.options.style+"/icon/noavatar_big.gif"
+					icon : "/x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif"
 				} } );
 			}.bind(this))
 		}else{
@@ -1311,7 +1311,7 @@ MWF.xApplication.ForumDocument.SubjectView = new Class({
 				if(  json.data.icon ){
 					json.data.icon = 'data:image/png;base64,'+json.data.icon;
 				}else{
-					json.data.icon = "/x_component_ForumDocument/$Main/"+this.view.options.style+"/icon/noavatar_big.gif"
+					json.data.icon = "/x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif"
 				}
 				if( callback )callback( json );
 			}.bind(this), null, name, true )
@@ -1344,7 +1344,7 @@ MWF.xApplication.ForumDocument.SubjectView = new Class({
 	_postCreateViewHead: function( headNode ){
 	}
 
-})
+});
 
 MWF.xApplication.ForumDocument.SubjectDocument = new Class({
 	Extends: MWF.xApplication.Template.Explorer.ComplexDocument,
@@ -1377,7 +1377,7 @@ MWF.xApplication.ForumDocument.SubjectDocument = new Class({
 		}
 	},
 	createReply : function(itemNode, ev ){
-		if( this.app.access.isAnonymous() ){
+		if( this.app.access.isAnonymousDynamic() ){
 			this.app.openLoginForm( function(){ this.app.reload() }.bind(this) );
 		}else{
 			var form = new MWF.xApplication.ForumDocument.ReplyForm(this, {}, {
@@ -1385,7 +1385,7 @@ MWF.xApplication.ForumDocument.SubjectDocument = new Class({
 				onPostOk : function( id ){
 					this.app.postCreateReply( id );
 				}.bind(this)
-			})
+			});
 			form.mainData = this.data;
 			form.create()
 		}
@@ -1475,7 +1475,7 @@ MWF.xApplication.ForumDocument.ReplyEditor = new Class({
 			data.subjectId = this.mainData.id ;
 			this.app.restActions.saveReply(data, function (json) {
 				if (json.type == "error") {
-					this.app.notice(json.userMessage, "error");
+					this.app.notice(json.message, "error");
 				} else {
 					this.app.notice( this.app.lp.saveReplySuccess, "ok" );
 					this.form.getItem("content").setValue("");
@@ -1588,7 +1588,7 @@ MWF.xApplication.ForumDocument.ReplyForm = new Class({
 		if (data) {
 			this._ok(data, function (json) {
 				if (json.type == "error") {
-					this.app.notice(json.userMessage, "error");
+					this.app.notice(json.message, "error");
 				} else {
 					this.formMarkNode.destroy();
 					this.formAreaNode.destroy();
@@ -1762,7 +1762,7 @@ MWF.xApplication.ForumDocument.ReplyDocument = new Class({
 		}
 	},
 	createReply : function(itemNode, ev ){ // 对回复进行回复
-		if( this.app.access.isAnonymous() ){
+		if( this.app.access.isAnonymousDynamic() ){
 			this.app.openLoginForm( function(){ this.app.reload() }.bind(this) );
 		}else{
 			var form = new MWF.xApplication.ForumDocument.ReplyForm(this, {}, {
@@ -1929,7 +1929,7 @@ MWF.xApplication.ForumDocument.TopSettingForm = new Class({
 			if( data.topToForum === true || data.topToForum === "true" ){
 				this.actions.topToForum( this.app.data.id , function( json ){
 					if (json.type == "error") {
-						this.app.notice(json.userMessage, "error");
+						this.app.notice(json.message, "error");
 						flag = false;
 					}
 				}, function(){
@@ -1938,7 +1938,7 @@ MWF.xApplication.ForumDocument.TopSettingForm = new Class({
 			}else if( this.topToForum === true || this.topToForum === "true" ){
 				this.actions.cancelTopToForum( this.app.data.id , function( json ){
 					if (json.type == "error") {
-						this.app.notice(json.userMessage, "error");
+						this.app.notice(json.message, "error");
 						flag = false;
 					}
 				}, function(){
@@ -1948,7 +1948,7 @@ MWF.xApplication.ForumDocument.TopSettingForm = new Class({
 			if( data.topToSection === true || data.topToSection === "true" ){
 				this.actions.topToSection( this.app.data.id , function( json ){
 					if (json.type == "error") {
-						this.app.notice(json.userMessage, "error");
+						this.app.notice(json.message, "error");
 						flag = false;
 					}
 				}, function(){
@@ -1957,7 +1957,7 @@ MWF.xApplication.ForumDocument.TopSettingForm = new Class({
 			}else if( this.topToSection === true || this.topToSection === "true" ){
 				this.actions.cancelTopToSection( this.app.data.id , function( json ){
 					if (json.type == "error") {
-						this.app.notice(json.userMessage, "error");
+						this.app.notice(json.message, "error");
 						flag = false;
 					}
 				}, function(){

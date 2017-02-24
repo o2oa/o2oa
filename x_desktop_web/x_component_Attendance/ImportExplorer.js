@@ -383,7 +383,7 @@ MWF.xApplication.Attendance.ImportExplorer.Importer = new Class({
     import: function( id ){
         this.actions.importAttachment( id, function(json){
             if( json.type == "ERROR" ){
-                this.app.notice( json.userMessage  , "error");
+                this.app.notice( json.message  , "error");
             }else{
                 this.app.notice("数据导入成功！","success");
 

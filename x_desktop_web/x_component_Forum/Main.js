@@ -959,7 +959,7 @@ MWF.xApplication.Forum.Main.ImageDocument = new Class({
             if( json.data ){
                 var d = json.data[0];
                 this.node.set("title", d.title);
-                this.node.set("src", d.pictureUrl );
+                this.node.set("src", d.pictureBase64 );
                 this.node.addEvents({
                     "click": function () {
                         var appId = "ForumDocument" + this.da.id;

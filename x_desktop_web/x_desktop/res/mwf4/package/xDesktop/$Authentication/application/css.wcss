@@ -30,7 +30,7 @@
 	"text-align": "left"
   },
   "formTopIconNode" : {
-	"width" : "98px",
+	"width" : "36px",
 	"height" : "36px",
 	"margin" : "22px 18px 22px 30px",
 	"float": "left",

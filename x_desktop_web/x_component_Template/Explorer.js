@@ -1194,7 +1194,7 @@ MWF.xApplication.Template.Explorer.PopupForm = new Class({
         if (data) {
             this._ok(data, function (json) {
                 if (json.type == "error") {
-                    if( this.app )this.app.notice(json.userMessage, "error");
+                    if( this.app )this.app.notice(json.message, "error");
                 } else {
                     if( this.formMarkNode )this.formMarkNode.destroy();
                     this.formAreaNode.destroy();
