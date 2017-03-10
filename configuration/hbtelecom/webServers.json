@@ -1,0 +1,10 @@
+[
+    {
+        "host": "hbxw01.bf.ctc.com",
+        "port": 80,
+        "username": "admin",
+        "password": "xpfadmin",
+        "order": 0,
+        "name": "xw01"
+    }
+]

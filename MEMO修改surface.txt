@@ -1,0 +1,18 @@
+21:02 2016/8/29 task processing 的返回值为啥是workLog
+
+8:43 2016/9/13 删除了一个DeleteWork
+
+8:43 2016/9/13 applicationDict 为啥有post方法
+
+View @Path("flag/{viewFlag}/application/flag/{applicationFlag}")
+改为 @Path("{viewFlag}/application/{applicationFlag}")
+
+
+@Path@Path("flag/{viewFlag}/application/flag/{applicationFlag}/design")
+改为 @Path("{viewFlag}/application/{applicationFlag}/design")
+
+attachment download update upload url 修改
+/servlet/download/* --> /servlet/attachment/download/*
+
+Process
+ManageIdentityList --> 改为 controllerList

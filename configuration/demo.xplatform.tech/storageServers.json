@@ -1,0 +1,38 @@
+[
+  {
+    "storageServiceType": "ftp",
+    "path": "",
+    "host": "",
+    "port": 40021,
+    "username": "file",
+    "password": "xpfftp",
+    "order": 0,
+    "name": "xs01file",
+    "status": "connected",
+    "message": "last connect at 2016-04-11 18:55:25"
+  },
+  {
+    "storageServiceType": "ftp",
+    "path": "",
+    "host": "",
+    "port": 40021,
+    "username": "processplatform",
+    "password": "xpfftp",
+    "order": 1,
+    "name": "xs01processplatform",
+    "status": "connected",
+    "message": "last connect at 2016-04-11 18:55:25"
+  },
+  {
+    "storageServiceType": "ftp",
+    "path": "",
+    "host": "",
+    "port": 40021,
+    "username": "meeting",
+    "password": "xpfftp",
+    "order": 1,
+    "name": "xs01meeting",
+    "status": "connected",
+    "message": "last connect at 2016-04-11 18:55:25"
+  }
+]

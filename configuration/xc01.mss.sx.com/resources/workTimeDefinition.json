@@ -1,0 +1,9 @@
+{
+	"amStart":"09:00:00",
+	"amEnd":"11:30:00",
+	"pmStart":"13:00:00",
+	"pmEnd":"17:30:00",
+	"weekends":[1,6],
+	"holidays":[],
+	"workdays":[]
+}

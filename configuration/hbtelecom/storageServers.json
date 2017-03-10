@@ -1,0 +1,90 @@
+[
+  {
+    "storageServiceType": "ftp",
+    "path": "",
+    "weight": 100,
+    "host": "hbxs01.bf.ctc.com",
+    "port": 40021,
+    "username": "file",
+    "password": "xpfftp",
+    "order": 0,
+    "name": "file01"
+  },
+  {
+    "storageServiceType": "ftp",
+    "path": "",
+    "weight": 100,
+    "host": "hbxs02.bf.ctc.com",
+    "port": 40021,
+    "username": "file",
+    "password": "xpfftp",
+    "order": 1,
+    "name": "file02"
+  },
+  {
+    "storageServiceType": "ftp",
+    "path": "",
+    "weight": 100,
+    "host": "hbxs03.bf.ctc.com",
+    "port": 40021,
+    "username": "file",
+    "password": "xpfftp",
+    "order": 2,
+    "name": "file03"
+  },
+  {
+    "storageServiceType": "ftp",
+    "path": "",
+    "weight": 100,
+    "host": "hbxs04.bf.ctc.com",
+    "port": 40021,
+    "username": "file",
+    "password": "xpfftp",
+    "order": 3,
+    "name": "file04"
+  },
+  {
+    "storageServiceType": "ftp",
+    "path": "",
+    "weight": 100,
+    "host": "hbxs01.bf.ctc.com",
+    "port": 40021,
+    "username": "processplatform",
+    "password": "xpfftp",
+    "order": 0,
+    "name": "processplatform01"
+  },
+  {
+    "storageServiceType": "ftp",
+    "path": "",
+    "weight": 100,
+    "host": "hbxs02.bf.ctc.com",
+    "port": 40021,
+    "username": "processplatform",
+    "password": "xpfftp",
+    "order": 1,
+    "name": "processplatform02"
+  },
+  {
+    "storageServiceType": "ftp",
+    "path": "",
+    "weight": 100,
+    "host": "hbxs03.bf.ctc.com",
+    "port": 40021,
+    "username": "processplatform",
+    "password": "xpfftp",
+    "order": 2,
+    "name": "processplatform03"
+  },
+  {
+    "storageServiceType": "ftp",
+    "path": "",
+    "weight": 100,
+    "host": "hbxs04.bf.ctc.com",
+    "port": 40021,
+    "username": "processplatform",
+    "password": "xpfftp",
+    "order": 3,
+    "name": "processplatform04"
+  }
+]

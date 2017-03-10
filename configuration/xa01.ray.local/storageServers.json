@@ -1,0 +1,57 @@
+[
+  {
+    "storageServiceType": "ftp",
+    "path": "",
+    "weight": 100,
+    "host": "",
+    "port": 40021,
+    "username": "file",
+    "password": "xpfftp",
+    "order": 0,
+    "name": "xs01file"
+  },
+  {
+    "storageServiceType": "ftp",
+    "path": "",
+    "weight": 100,
+    "host": "",
+    "port": 40021,
+    "username": "processplatform",
+    "password": "xpfftp",
+    "order": 1,
+    "name": "xs01processplatform"
+  },
+  {
+    "storageServiceType": "ftp",
+    "path": "",
+    "weight": 100,
+    "host": "",
+    "port": 40021,
+    "username": "meeting",
+    "password": "xpfftp",
+    "order": 1,
+    "name": "xs01meeting"
+  },
+  {
+    "storageServiceType": "ftp",
+    "path": "",
+    "weight": 100,
+    "host": "",
+    "port": 40021,
+    "username": "cms",
+    "password": "xpfftp",
+    "order": 1,
+    "name": "xs01cms"
+  },
+  {
+    "storageServiceType": "ftp",
+    "path": "",
+    "weight": 100,
+    "host": "",
+    "port": 40021,
+    "username": "okr",
+    "password": "xpfftp",
+    "order": 1,
+    "name": "xs01okr"
+  }
+]
