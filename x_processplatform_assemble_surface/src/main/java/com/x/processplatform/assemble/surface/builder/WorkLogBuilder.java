@@ -72,6 +72,8 @@ public class WorkLogBuilder {
 		IncludeWorkLogFields.add("arrivedTime");
 		IncludeWorkLogFields.add("route");
 		IncludeWorkLogFields.add("routeName");
+		IncludeWorkLogFields.add("work");
+		IncludeWorkLogFields.add("workCompleted");
 		// IncludeWorkLogFields.add("processingType");
 		IncludeWorkLogFields.add("connected");
 		IncludeWorkLogFields.add("splitting");

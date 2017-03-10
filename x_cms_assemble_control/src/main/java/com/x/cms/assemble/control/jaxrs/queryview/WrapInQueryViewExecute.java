@@ -1,42 +1,101 @@
 package com.x.cms.assemble.control.jaxrs.queryview;
 
-import java.util.List;
-
+import com.google.gson.JsonElement;
 import com.x.base.core.gson.GsonPropertyObject;
-import com.x.cms.core.entity.query.FilterEntry;
-import com.x.cms.core.entity.query.WhereEntry;
+import com.x.cms.core.entity.query.DateRangeEntry;
+
 
 
 public class WrapInQueryViewExecute extends GsonPropertyObject {
 
-	private List<FilterEntry> filterEntryList;
+	private DateRangeEntry date;
 
-	private WhereEntry whereEntry;
+	private JsonElement filter;
 
-	private List<String> columnList;
+	private JsonElement column;
 
-	public List<FilterEntry> getFilterEntryList() {
-		return filterEntryList;
+	private JsonElement application;
+
+	private JsonElement process;
+
+	private JsonElement company;
+
+	private JsonElement department;
+
+	private JsonElement person;
+
+	private JsonElement identity;
+
+	public DateRangeEntry getDate() {
+		return date;
 	}
 
-	public void setFilterEntryList(List<FilterEntry> filterEntryList) {
-		this.filterEntryList = filterEntryList;
+	public void setDate(DateRangeEntry date) {
+		this.date = date;
 	}
 
-	public WhereEntry getWhereEntry() {
-		return whereEntry;
+	public JsonElement getFilter() {
+		return filter;
 	}
 
-	public void setWhereEntry(WhereEntry whereEntry) {
-		this.whereEntry = whereEntry;
+	public void setFilter(JsonElement filter) {
+		this.filter = filter;
 	}
 
-	public List<String> getColumnList() {
-		return columnList;
+	public JsonElement getColumn() {
+		return column;
 	}
 
-	public void setColumnList(List<String> columnList) {
-		this.columnList = columnList;
+	public void setColumn(JsonElement column) {
+		this.column = column;
+	}
+
+	public JsonElement getApplication() {
+		return application;
+	}
+
+	public void setApplication(JsonElement application) {
+		this.application = application;
+	}
+
+	public JsonElement getProcess() {
+		return process;
+	}
+
+	public void setProcess(JsonElement process) {
+		this.process = process;
+	}
+
+	public JsonElement getCompany() {
+		return company;
+	}
+
+	public void setCompany(JsonElement company) {
+		this.company = company;
+	}
+
+	public JsonElement getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(JsonElement department) {
+		this.department = department;
+	}
+
+	public JsonElement getPerson() {
+		return person;
+	}
+
+	public void setPerson(JsonElement person) {
+		this.person = person;
+	}
+
+	public JsonElement getIdentity() {
+		return identity;
+	}
+
+	public void setIdentity(JsonElement identity) {
+		this.identity = identity;
 	}
 
 }

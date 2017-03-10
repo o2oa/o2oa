@@ -6,12 +6,15 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.exception.ExceptionWhen;
+import com.x.base.core.project.server.Config;
 import com.x.base.core.utils.StringTools;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.ReviewType;
@@ -20,12 +23,15 @@ import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.content.WorkStatus;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.log.ProcessingError;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.configurator.ActivityProcessingConfigurator;
 
 public abstract class AbstractBaseProcessor {
+
+	private static Logger logger = LoggerFactory.getLogger(AbstractBaseProcessor.class);
 
 	private EntityManagerContainer entityManagerContainer;
 
@@ -102,7 +108,10 @@ public abstract class AbstractBaseProcessor {
 		work.setInquired(false);
 		work.setErrorRetry(0);
 		if (StringUtils.isNotEmpty(activity.getForm())) {
-			work.setForm(activity.getForm());
+			/** 检查表单存在 */
+			if (null != this.business().element().get(activity.getForm(), Form.class)) {
+				work.setForm(activity.getForm());
+			}
 		}
 	}
 
@@ -113,7 +122,7 @@ public abstract class AbstractBaseProcessor {
 		if (StringUtils.isNotEmpty(id)) {
 			workLog = business.entityManagerContainer().find(id, WorkLog.class);
 			this.connectWorkLog(activity, workLog, work, token, date);
-			workLog.setDuration(business.workTime().betweenMinutes(workLog.getFromTime(), workLog.getArrivedTime()));
+			workLog.setDuration(Config.workTime().betweenMinutes(workLog.getFromTime(), workLog.getArrivedTime()));
 		} else {
 			List<String> ids = business.workLog().listWithFromActivityToken(work.getActivityToken());
 			if (!ids.isEmpty()) {
@@ -121,8 +130,7 @@ public abstract class AbstractBaseProcessor {
 				WorkLog template = business.entityManagerContainer().find(ids.get(0), WorkLog.class);
 				template.copyTo(workLog, JpaObject.ID_DISTRIBUTEFACTOR);
 				this.connectWorkLog(activity, workLog, work, token, date);
-				workLog.setDuration(
-						business.workTime().betweenMinutes(workLog.getFromTime(), workLog.getArrivedTime()));
+				workLog.setDuration(Config.workTime().betweenMinutes(workLog.getFromTime(), workLog.getArrivedTime()));
 				business.entityManagerContainer().persist(workLog, CheckPersistType.all);
 			} else {
 				throw new Exception("can not get workLog form activityToken:" + work.getActivityToken() + ".");

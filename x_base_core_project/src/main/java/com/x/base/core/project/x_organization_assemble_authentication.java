@@ -18,8 +18,10 @@ public class x_organization_assemble_authentication extends Assemble {
 	static {
 		containerEntities.add("com.x.organization.core.entity.Person");
 		containerEntities.add("com.x.organization.core.entity.Role");
+		containerEntities.add("com.x.organization.core.entity.Bind");
 		dependents.add(x_base_core_project.class);
 		dependents.add(x_organization_core_entity.class);
+		dependents.add(x_instrument_core_express.class);
 	}
 
 	protected void custom(File lib, String xLib) throws Exception {

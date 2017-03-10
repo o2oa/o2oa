@@ -29,6 +29,10 @@ public class NameValuePair extends GsonPropertyObject {
 		return value;
 	}
 
+	public <T> T getValue(Class<T> clz) {
+		return this.value == null ? null : (T) value;
+	}
+
 	public void setValue(Object value) {
 		this.value = value;
 	}

@@ -72,9 +72,9 @@
 	"class": "",
 	"styles": {},
     "tableStyles": {},
-	"border": "1px solid #999",
-	"backgroundColor": "#f7f7f7",
-	"zebraColor": "#e9f3fd",
+	"border": "",
+	"backgroundColor": "",
+	"zebraColor": "",
 	"editableScript": {
 		"code": "",
 		"html": ""

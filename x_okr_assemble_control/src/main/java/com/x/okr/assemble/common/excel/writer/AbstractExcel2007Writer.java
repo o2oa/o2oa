@@ -33,6 +33,7 @@ public abstract class AbstractExcel2007Writer {
 	 * @param fileName
 	 * @throws Exception
 	 */
+	@SuppressWarnings("resource")
 	public void process( String fileName ) throws Exception{
 		// 建立工作簿和电子表格对象
 		XSSFWorkbook wb = new XSSFWorkbook();
@@ -70,6 +71,7 @@ public abstract class AbstractExcel2007Writer {
 	 * @param fileName
 	 * @throws Exception
 	 */
+	@SuppressWarnings("resource")
 	public void process( OutputStream out ) throws Exception{
 		// 建立工作簿和电子表格对象
 		XSSFWorkbook wb = new XSSFWorkbook();
@@ -138,6 +140,7 @@ public abstract class AbstractExcel2007Writer {
 	 * @param entry the name of the sheet entry to substitute, e.g. xl/worksheets/sheet1.xml
 	 * @param out the stream to write the result to
 	 */
+	@SuppressWarnings("resource")
 	private static void substitute(File zipfile, File tmpfile, String entry,
 			OutputStream out) throws IOException {
 		ZipFile zip = new ZipFile(zipfile);

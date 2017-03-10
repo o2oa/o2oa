@@ -8,13 +8,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.AttendanceDetail;
 import com.x.attendance.entity.AttendanceDetail_;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 
 /**
  * 打卡信息统计服务类，以打卡信息表为基础进行统计
@@ -38,7 +37,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countAbNormalDutyByEmployeeCycleYearAndMonth(List<String> employeeNames, String cycleYear, String cycleMonth) throws Exception{
 		if( employeeNames == null || employeeNames.size() == 0 ){
-			logger.error("employeeNames is null!");
+			logger.error( new EmployeeNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -49,12 +48,12 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		p = cb.and( p, cb.isTrue( root.get( AttendanceDetail_.isAbnormalDuty) ));
 		if( cycleYear == null || cycleYear.isEmpty() ){
-			logger.error("cycleYear is null!");
+			logger.error( new CycleYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleYear), cycleYear));
 		}
 		if( cycleMonth == null || cycleMonth.isEmpty() ){
-			logger.error("cycleMonth is null!");
+			logger.error( new CycleMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleMonth), cycleMonth));
 		}
@@ -73,7 +72,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countLackOfTimeByEmployeeCycleYearAndMonth( List<String> employeeNames, String cycleYear, String cycleMonth) throws Exception{
 		if( employeeNames == null || employeeNames.size() == 0 ){
-			logger.error("employeeNames is null!");
+			logger.error( new EmployeeNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -84,12 +83,12 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		p = cb.and( p, cb.isTrue( root.get( AttendanceDetail_.isLackOfTime) ));
 		if( cycleYear == null || cycleYear.isEmpty() ){
-			logger.error("cycleYear is null!");
+			logger.error( new CycleYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleYear), cycleYear));
 		}
 		if( cycleMonth == null || cycleMonth.isEmpty() ){
-			logger.error("cycleMonth is null!");
+			logger.error( new CycleMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleMonth), cycleMonth));
 		}
@@ -108,7 +107,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countLeaveEarlierByEmployeeCycleYearAndMonth( List<String> employeeNames, String cycleYear, String cycleMonth) throws Exception{
 		if( employeeNames == null || employeeNames.size() == 0 ){
-			logger.error("employeeNames is null!");
+			logger.error( new EmployeeNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -119,12 +118,12 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		p = cb.and( p, cb.isTrue( root.get( AttendanceDetail_.isLeaveEarlier ) ));
 		if( cycleYear == null || cycleYear.isEmpty() ){
-			logger.error("cycleYear is null!");
+			logger.error( new CycleYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleYear), cycleYear));
 		}
 		if( cycleMonth == null || cycleMonth.isEmpty() ){
-			logger.error("cycleMonth is null!");
+			logger.error( new CycleMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleMonth), cycleMonth));
 		}
@@ -143,7 +142,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countLateByEmployeeCycleYearAndMonth( List<String> employeeNames, String cycleYear, String cycleMonth) throws Exception{
 		if( employeeNames == null || employeeNames.size() == 0 ){
-			logger.error("employeeNames is null!");
+			logger.error( new EmployeeNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -154,12 +153,12 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, cb.isTrue( root.get( AttendanceDetail_.isLate ) ));
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		if( cycleYear == null || cycleYear.isEmpty() ){
-			logger.error("cycleYear is null!");
+			logger.error( new CycleYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleYear), cycleYear));
 		}
 		if( cycleMonth == null || cycleMonth.isEmpty() ){
-			logger.error("cycleMonth is null!");
+			logger.error( new CycleMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleMonth), cycleMonth));
 		}
@@ -178,7 +177,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countOffDutyByEmployeeCycleYearAndMonth( List<String> employeeNames, String cycleYear, String cycleMonth) throws Exception{
 		if( employeeNames == null || employeeNames.size() == 0 ){
-			logger.error("employeeNames is null!");
+			logger.error( new EmployeeNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -190,12 +189,12 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, root.get( AttendanceDetail_.empName).in( employeeNames ));
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		if( cycleYear == null || cycleYear.isEmpty() ){
-			logger.error("cycleYear is null!");
+			logger.error( new CycleYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleYear), cycleYear));
 		}
 		if( cycleMonth == null || cycleMonth.isEmpty() ){
-			logger.error("cycleMonth is null!");
+			logger.error( new CycleMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleMonth), cycleMonth));
 		}
@@ -214,7 +213,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countOnDutyByEmployeeCycleYearAndMonth( List<String> employeeNames, String cycleYear, String cycleMonth) throws Exception{
 		if( employeeNames == null || employeeNames.size() == 0 ){
-			logger.error("employeeNames is null!");
+			logger.error( new EmployeeNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -226,12 +225,12 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, root.get( AttendanceDetail_.empName).in( employeeNames ));
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		if( cycleYear == null || cycleYear.isEmpty() ){
-			logger.error("cycleYear is null!");
+			logger.error( new CycleYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleYear), cycleYear));
 		}
 		if( cycleMonth == null || cycleMonth.isEmpty() ){
-			logger.error("cycleMonth is null!");
+			logger.error( new CycleMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleMonth), cycleMonth));
 		}
@@ -250,7 +249,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Double sumOnSelfHolidayDaysByEmployeeYearAndMonth( List<String> employeeNames, String cycleYear, String cycleMonth) throws Exception{
 		if( employeeNames == null || employeeNames.size() == 0 ){
-			logger.error("employeeNames is null!");
+			logger.error( new EmployeeNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -266,12 +265,12 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, cb.isFalse(root.get( AttendanceDetail_.isHoliday ))); //不是节假日
 		p = cb.and( p, p1 ); //不是周末并且未调休工作晶
 		if( cycleYear == null || cycleYear.isEmpty() ){
-			logger.error("cycleYear is null!");
+			logger.error( new CycleYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleYear), cycleYear ));
 		}
 		if( cycleMonth == null || cycleMonth.isEmpty() ){
-			logger.error("cycleMonth is null!");
+			logger.error( new CycleMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(AttendanceDetail_.cycleMonth), cycleMonth ));
 		}
@@ -294,7 +293,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Double sumAbsenceDaysByEmployeeYearAndMonth( List<String> employeeNames, String cycleYear, String cycleMonth) throws Exception{
 		if( employeeNames == null || employeeNames.size() == 0 ){
-			logger.error("employeeNames is null!");
+			logger.error( new EmployeeNamesEmptyException() );
 			return null;
 		}
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -304,13 +303,13 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		Predicate p = root.get(AttendanceDetail_.empName).in( employeeNames );		
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		if( cycleYear == null || cycleYear.isEmpty() ){
-			logger.error("cycleYear is null!");
+			logger.error( new CycleYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(AttendanceDetail_.cycleYear), cycleYear));
 		}
 		
 		if( cycleMonth == null || cycleMonth.isEmpty() ){
-			logger.error("cycleMonth is null!");
+			logger.error( new CycleMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(AttendanceDetail_.cycleMonth), cycleMonth));
 		}
@@ -329,7 +328,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countAbNormalDutyByDempartmentCycleYearAndMonth(List<String> departmentNames, String cycleYear, String cycleMonth) throws Exception{
 		if( departmentNames == null || departmentNames.size() == 0 ){
-			logger.error("departmentNames is null!");
+			logger.error( new DepartmentNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -340,12 +339,12 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		p = cb.and( p, cb.isTrue( root.get( AttendanceDetail_.isAbnormalDuty) ));
 		if( cycleYear == null || cycleYear.isEmpty() ){
-			logger.error("cycleYear is null!");
+			logger.error( new CycleYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleYear), cycleYear));
 		}
 		if( cycleMonth == null || cycleMonth.isEmpty() ){
-			logger.error("cycleMonth is null!");
+			logger.error( new CycleMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleMonth), cycleMonth));
 		}
@@ -364,7 +363,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countLackOfTimeByDempartmentCycleYearAndMonth( List<String> departmentNames, String cycleYear, String cycleMonth) throws Exception{
 		if( departmentNames == null || departmentNames.size() == 0 ){
-			logger.error("departmentNames is null!");
+			logger.error( new DepartmentNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -375,12 +374,12 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		p = cb.and( p, cb.isTrue( root.get( AttendanceDetail_.isLackOfTime) ));
 		if( cycleYear == null || cycleYear.isEmpty() ){
-			logger.error("cycleYear is null!");
+			logger.error( new CycleYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleYear), cycleYear));
 		}
 		if( cycleMonth == null || cycleMonth.isEmpty() ){
-			logger.error("cycleMonth is null!");
+			logger.error( new CycleMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleMonth), cycleMonth));
 		}
@@ -399,7 +398,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countLeaveEarlierByDempartmentCycleYearAndMonth( List<String> departmentNames, String cycleYear, String cycleMonth) throws Exception{
 		if( departmentNames == null || departmentNames.size() == 0 ){
-			logger.error("departmentNames is null!");
+			logger.error( new DepartmentNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -410,12 +409,12 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		p = cb.and( p, cb.isTrue( root.get( AttendanceDetail_.isLeaveEarlier ) ));
 		if( cycleYear == null || cycleYear.isEmpty() ){
-			logger.error("cycleYear is null!");
+			logger.error( new CycleYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleYear), cycleYear));
 		}
 		if( cycleMonth == null || cycleMonth.isEmpty() ){
-			logger.error("cycleMonth is null!");
+			logger.error( new CycleMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleMonth), cycleMonth));
 		}
@@ -434,7 +433,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countLateByDempartmentCycleYearAndMonth( List<String> departmentNames, String cycleYear, String cycleMonth) throws Exception{
 		if( departmentNames == null || departmentNames.size() == 0 ){
-			logger.error("departmentNames is null!");
+			logger.error( new DepartmentNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -445,12 +444,12 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		p = cb.and( p, cb.isTrue( root.get( AttendanceDetail_.isLate ) ));
 		if( cycleYear == null || cycleYear.isEmpty() ){
-			logger.error("cycleYear is null!");
+			logger.error( new CycleYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleYear), cycleYear));
 		}
 		if( cycleMonth == null || cycleMonth.isEmpty() ){
-			logger.error("cycleMonth is null!");
+			logger.error( new CycleMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleMonth), cycleMonth));
 		}
@@ -468,7 +467,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countAbNormalDutyByDempartmentAndDate(List<String> departmentNames, String recordDate ) throws Exception{
 		if( departmentNames == null || departmentNames.size() == 0 ){
-			logger.error("departmentNames is null!");
+			logger.error( new DepartmentNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -479,7 +478,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		p = cb.and( p, cb.isTrue( root.get( AttendanceDetail_.isAbnormalDuty) ));
 		if( recordDate == null || recordDate.isEmpty() ){
-			logger.error("recordDate is null!");
+			logger.error( new RecordDateEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordDateString ), recordDate));
 		}
@@ -497,7 +496,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countLackOfTimeByDempartmentAndDate( List<String> departmentNames, String recordDate ) throws Exception{
 		if( departmentNames == null || departmentNames.size() == 0 ){
-			logger.error("departmentNames is null!");
+			logger.error( new DepartmentNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -508,7 +507,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		p = cb.and( p, cb.isTrue( root.get( AttendanceDetail_.isLackOfTime) ));
 		if( recordDate == null || recordDate.isEmpty() ){
-			logger.error("recordDate is null!");
+			logger.error( new RecordDateEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordDateString ), recordDate));
 		}
@@ -526,7 +525,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countLeaveEarlierByDempartmentAndDate( List<String> departmentNames, String recordDate ) throws Exception{
 		if( departmentNames == null || departmentNames.size() == 0 ){
-			logger.error("departmentNames is null!");
+			logger.error( new DepartmentNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -537,7 +536,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		p = cb.and( p, cb.isTrue( root.get( AttendanceDetail_.isLeaveEarlier ) ));
 		if( recordDate == null || recordDate.isEmpty() ){
-			logger.error("recordDate is null!");
+			logger.error( new RecordDateEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordDateString ), recordDate));
 		}
@@ -555,7 +554,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countLateByDempartmentAndDate( List<String> departmentNames, String recordDate ) throws Exception{
 		if( departmentNames == null || departmentNames.size() == 0 ){
-			logger.error("departmentNames is null!");
+			logger.error( new DepartmentNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -566,7 +565,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		p = cb.and( p, cb.isTrue( root.get( AttendanceDetail_.isLate ) ));
 		if( recordDate == null || recordDate.isEmpty() ){
-			logger.error("recordDate is null!");
+			logger.error( new RecordDateEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordDateString ), recordDate));
 		}
@@ -584,7 +583,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Double sumAbsenceDaysByDepartmentAndDate( List<String> departmentNames, String recordDate ) throws Exception{
 		if( departmentNames == null || departmentNames.size() == 0 ){
-			logger.error("departmentNames is null!");
+			logger.error( new DepartmentNamesEmptyException() );
 			return null;
 		}
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -594,7 +593,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		Predicate p = root.get( AttendanceDetail_.departmentName ).in( departmentNames );
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		if( recordDate == null || recordDate.isEmpty() ){
-			logger.error("recordDate is null!");
+			logger.error( new RecordDateEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordDateString ), recordDate));
 		}
@@ -612,7 +611,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Double sumOnSelfHolidayDaysByDepartmentAndDate( List<String> departmentNames, String recordDate ) throws Exception{
 		if( departmentNames == null || departmentNames.size() == 0 ){
-			logger.error("departmentNames is null!");
+			logger.error( new DepartmentNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -622,7 +621,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		Predicate p = root.get( AttendanceDetail_.departmentName ).in( departmentNames );
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		if( recordDate == null || recordDate.isEmpty() ){
-			logger.error("recordDate is null!");
+			logger.error( new RecordDateEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordDateString ), recordDate));
 		}		
@@ -641,7 +640,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countOffDutyByDepartmentAndDate( List<String> departmentNames, String recordDate ) throws Exception{
 		if( departmentNames == null || departmentNames.size() == 0 ){
-			logger.error("departmentNames is null!");
+			logger.error( new DepartmentNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -653,7 +652,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, root.get( AttendanceDetail_.departmentName).in( departmentNames ));
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		if( recordDate == null || recordDate.isEmpty() ){
-			logger.error("cycleYear is null!");
+			logger.error( new CycleYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.departmentName), recordDate));
 		}
@@ -671,7 +670,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countOnDutyByDepartmentAndDate( List<String> departmentNames, String recordDate) throws Exception{
 		if( departmentNames == null || departmentNames.size() == 0 ){
-			logger.error("departmentNames is null!");
+			logger.error( new DepartmentNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -683,7 +682,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, root.get( AttendanceDetail_.departmentName ).in( departmentNames ));
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		if( recordDate == null || recordDate.isEmpty() ){
-			logger.error("cycleYear is null!");
+			logger.error( new CycleYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.departmentName), recordDate));
 		}
@@ -701,7 +700,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countAbNormalDutyByCompanyAndDate(List<String> companyNames, String recordDate ) throws Exception{
 		if( companyNames == null || companyNames.size() == 0 ){
-			logger.error("companyNames is null!");
+			logger.error( new CompanyNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -712,7 +711,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		p = cb.and( p, cb.isTrue( root.get( AttendanceDetail_.isAbnormalDuty) ));
 		if( recordDate == null || recordDate.isEmpty() ){
-			logger.error("recordDate is null!");
+			logger.error( new RecordDateEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordDateString ), recordDate));
 		}
@@ -730,7 +729,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countLackOfTimeByCompanyAndDate( List<String> companyNames, String recordDate ) throws Exception{
 		if( companyNames == null || companyNames.size() == 0 ){
-			logger.error("companyNames is null!");
+			logger.error( new CompanyNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -741,7 +740,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		p = cb.and( p, cb.isTrue( root.get( AttendanceDetail_.isLackOfTime) ));
 		if( recordDate == null || recordDate.isEmpty() ){
-			logger.error("recordDate is null!");
+			logger.error( new RecordDateEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordDateString ), recordDate));
 		}
@@ -759,7 +758,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countLeaveEarlierByCompanyAndDate( List<String> companyNames, String recordDate ) throws Exception{
 		if( companyNames == null || companyNames.size() == 0 ){
-			logger.error("companyNames is null!");
+			logger.error( new CompanyNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -770,7 +769,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		p = cb.and( p, cb.isTrue( root.get( AttendanceDetail_.isLeaveEarlier ) ));
 		if( recordDate == null || recordDate.isEmpty() ){
-			logger.error("recordDate is null!");
+			logger.error( new RecordDateEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordDateString ), recordDate));
 		}
@@ -788,7 +787,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countLateByCompanyAndDate( List<String> companyNames, String recordDate ) throws Exception{
 		if( companyNames == null || companyNames.size() == 0 ){
-			logger.error("companyNames is null!");
+			logger.error( new CompanyNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -799,7 +798,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		p = cb.and( p, cb.isTrue( root.get( AttendanceDetail_.isLate ) ));
 		if( recordDate == null || recordDate.isEmpty() ){
-			logger.error("recordDate is null!");
+			logger.error( new RecordDateEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordDateString ), recordDate));
 		}
@@ -817,7 +816,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Double sumAbsenceDaysByCompanyAndDate( List<String> companyNames, String recordDate ) throws Exception{
 		if( companyNames == null || companyNames.size() == 0 ){
-			logger.error("companyNames is null!");
+			logger.error( new CompanyNamesEmptyException() );
 			return null;
 		}
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -827,7 +826,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		Predicate p = root.get( AttendanceDetail_.companyName ).in( companyNames );
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		if( recordDate == null || recordDate.isEmpty() ){
-			logger.error("recordDate is null!");
+			logger.error( new RecordDateEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordDateString ), recordDate));
 		}
@@ -845,7 +844,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Double sumOnSelfHolidayDaysByCompanyAndDate( List<String> companyNames, String recordDate ) throws Exception{
 		if( companyNames == null || companyNames.size() == 0 ){
-			logger.error("companyNames is null!");
+			logger.error( new CompanyNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -855,7 +854,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		Predicate p = root.get( AttendanceDetail_.companyName ).in( companyNames );
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		if( recordDate == null || recordDate.isEmpty() ){
-			logger.error("recordDate is null!");
+			logger.error( new RecordDateEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordDateString ), recordDate));
 		}		
@@ -874,7 +873,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countOffDutyByCompanyAndDate( List<String> companyNames, String recordDate ) throws Exception{
 		if( companyNames == null || companyNames.size() == 0 ){
-			logger.error("companyNames is null!");
+			logger.error( new CompanyNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -886,7 +885,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, root.get( AttendanceDetail_.companyName ).in( companyNames ));
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		if( recordDate == null || recordDate.isEmpty() ){
-			logger.error("recordDate is null!");
+			logger.error( new RecordDateEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordDateString), recordDate));
 		}
@@ -904,7 +903,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 	 */
 	public Long countOnDutyByCompanyAndDate( List<String> companyNames, String recordDate ) throws Exception{
 		if( companyNames == null || companyNames.size() == 0 ){
-			logger.error("companyNames is null!");
+			logger.error( new CompanyNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
@@ -916,7 +915,7 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		p = cb.and( p, root.get( AttendanceDetail_.companyName).in( companyNames ));
 		p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordStatus ), 1));
 		if( recordDate == null || recordDate.isEmpty() ){
-			logger.error("recordDate is null!");
+			logger.error( new RecordDateEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.recordDateString), recordDate));
 		}

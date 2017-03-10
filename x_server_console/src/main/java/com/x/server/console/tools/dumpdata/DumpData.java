@@ -64,11 +64,11 @@ public class DumpData {
 	private List<Class<?>> listEntityToDump() throws Exception {
 		ScanResult scanResult = new FastClasspathScanner(Packages.PREFIX).scan();
 		List<String> all = scanResult.getNamesOfClassesWithAnnotation(ContainerEntity.class);
-		if (ListTools.isNotEmpty(Config.dumpRestoreDataConfig().getIncludes())) {
-			all = ListUtils.intersection(all, Config.dumpRestoreDataConfig().getIncludes());
+		if (ListTools.isNotEmpty(Config.dumpRestoreData().getIncludes())) {
+			all = ListUtils.intersection(all, Config.dumpRestoreData().getIncludes());
 		}
-		if (ListTools.isNotEmpty(Config.dumpRestoreDataConfig().getExcludes())) {
-			all = ListUtils.subtract(all, Config.dumpRestoreDataConfig().getExcludes());
+		if (ListTools.isNotEmpty(Config.dumpRestoreData().getExcludes())) {
+			all = ListUtils.subtract(all, Config.dumpRestoreData().getExcludes());
 		}
 		List<Class<?>> list = new ArrayList<>();
 		for (String str : all) {

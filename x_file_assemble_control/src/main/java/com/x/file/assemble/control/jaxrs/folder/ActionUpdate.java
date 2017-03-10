@@ -10,7 +10,7 @@ import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.file.assemble.control.Business;
-import com.x.file.core.entity.Folder;
+import com.x.file.core.entity.personal.Folder;
 
 public class ActionUpdate {
 

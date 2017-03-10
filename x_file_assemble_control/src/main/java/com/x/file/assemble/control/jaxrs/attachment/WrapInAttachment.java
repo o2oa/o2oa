@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.x.base.core.http.annotation.Wrap;
-import com.x.file.core.entity.Attachment;
+import com.x.file.core.entity.personal.Attachment;
 
 @Wrap(Attachment.class)
 public class WrapInAttachment extends Attachment {

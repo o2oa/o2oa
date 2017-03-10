@@ -6,6 +6,7 @@
 <script src="jquery.js"></script>
 <script src="common.js"></script>
 <script src="attachment.js"></script>
+<script src="file.js"></script>
 <script>
     $(document).ready(function() {
 	attachment_get_init();
@@ -24,6 +25,26 @@
 				<li>Attachment
 					<ul>
 						<li><a onclick="attachment_get_init()" href="#">Get</a></li>
+					</ul>
+				</li>
+				<li>File
+					<ul>
+						<li><a onclick="file_list_referenceType()" href="#">List
+								ReferenceType</a></li>
+						<li><a onclick="file_get_init()" href="#">Get</a></li>
+						<li><a onclick="file_list_next('(0)')" href="#">List</a></li>
+						<li><a onclick="file_list_withReferenceType_init()" href="#">List
+								With ReferenceType</a></li>
+						<li><a onclick="file_list_next_all('(0)')" href="#">List
+								All</a></li>
+						<li><a onclick="file_upload_init()" href="#">Upload</a></li>
+						<li><a onclick="file_download_init()" href="#">Download</a></li>
+						<li><a onclick="file_copy_init()" href="#">Copy</a></li>
+					</ul>
+				</li>
+				<li>Debug
+					<ul>
+						<li><a onclick="debug_init()" href="#">Debug</a></li>
 					</ul>
 				</li>
 			</ul>

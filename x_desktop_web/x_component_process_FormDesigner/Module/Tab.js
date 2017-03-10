@@ -71,6 +71,7 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
     },
 
     setTemplateStyles: function(styles){
+        debugger;
         if (styles.styles) this.copyStyles(styles.styles, "styles");
         if (styles.properties) this.copyStyles(styles.properties, "properties");
         if (styles.tabAreaStyles) this.copyStyles(styles.tabAreaStyles, "tabNodeContainer");
@@ -119,6 +120,7 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
 
 		this.tabWidget = new MWF.widget.Tab(this.node, {"style": style});
 		this._loadPageStyle();
+
 		this.tabWidget.load();
 		
 		var tabNode = new Element("div");

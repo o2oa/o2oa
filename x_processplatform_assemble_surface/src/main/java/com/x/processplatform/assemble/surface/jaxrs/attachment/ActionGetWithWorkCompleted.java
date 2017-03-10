@@ -20,14 +20,21 @@ class ActionGetWithWorkCompleted extends ActionBase {
 			ActionResult<WrapOutAttachment> result = new ActionResult<>();
 			Business business = new Business(emc);
 			WorkCompleted workCompleted = emc.find(workCompletedId, WorkCompleted.class, ExceptionWhen.not_found);
-			Attachment attachment = emc.find(id, Attachment.class, ExceptionWhen.not_found);
+			if (null == workCompleted) {
+				throw new WorkCompletedNotExistedException(workCompletedId);
+			}
+			Attachment attachment = emc.find(id, Attachment.class);
+			if (null == attachment) {
+				throw new AttachmentNotExistedException(id);
+			}
 			Control control = business.getControlOfWorkCompleted(effectivePerson, workCompleted);
 			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
-				throw new Exception("person{name:" + effectivePerson.getName() + "} access workCompleted{id:"
-						+ workCompletedId + "} was denied.");
+				throw new WorkCompletedAccessDeniedException(effectivePerson.getName(), workCompleted.getTitle(),
+						workCompleted.getId());
 			}
 			if (!workCompleted.getAttachmentList().contains(id)) {
-				throw new Exception("workCompleted{id" + workCompletedId + "} not contian attachment{id:" + id + "}.");
+				throw new WorkCompletedNotContainsAttachmentException(workCompleted.getTitle(), workCompleted.getId(),
+						attachment.getName(), attachment.getId());
 			}
 			WrapOutAttachment wrap = attachmentOutCopier.copy(attachment);
 			result.setData(wrap);

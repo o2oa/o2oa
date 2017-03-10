@@ -14,7 +14,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.organization.core.entity.Role.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:18:53 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:09:50 CST 2017")
 public class Role_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Role,Date> createTime;
     public static volatile SingularAttribute<Role,String> display;

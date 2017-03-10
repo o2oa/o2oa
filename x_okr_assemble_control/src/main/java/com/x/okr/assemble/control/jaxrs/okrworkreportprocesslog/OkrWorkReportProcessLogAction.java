@@ -11,9 +11,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
@@ -21,7 +19,10 @@ import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
+import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.service.OkrWorkReportProcessLogService;
 import com.x.okr.entity.OkrWorkReportProcessLog;
 
@@ -32,56 +33,61 @@ public class OkrWorkReportProcessLogAction extends StandardJaxrsAction{
 	private BeanCopyTools<OkrWorkReportProcessLog, WrapOutOkrWorkReportProcessLog> wrapout_copier = BeanCopyToolsBuilder.create( OkrWorkReportProcessLog.class, WrapOutOkrWorkReportProcessLog.class, null, WrapOutOkrWorkReportProcessLog.Excludes);
 	private OkrWorkReportProcessLogService okrWorkReportProcessLogService = new OkrWorkReportProcessLogService();
 
-	@HttpMethodDescribe(value = "新建或者更新OkrWorkReportProcessLog对象.", request = WrapInOkrWorkReportProcessLog.class, response = WrapOutOkrWorkReportProcessLog.class)
+	@HttpMethodDescribe(value = "新建或者更新OkrWorkReportProcessLog对象.", request = JsonElement.class, response = WrapOutId.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response post(@Context HttpServletRequest request, WrapInOkrWorkReportProcessLog wrapIn) {
-		ActionResult<WrapOutOkrWorkReportProcessLog> result = new ActionResult<>();
+	public Response post(@Context HttpServletRequest request, JsonElement jsonElement) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		OkrWorkReportProcessLog okrWorkReportProcessLog = null;
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		//logger.debug( "user " + currentPerson.getName() + "[proxy:'"+ThisApplication.getLoginIdentity( currentPerson.getName() )+"'] try to save OkrWorkReportProcessLog......" );
-		if( wrapIn != null ){
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		WrapInOkrWorkReportProcessLog wrapIn = null;
+		Boolean check = true;
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInOkrWorkReportProcessLog.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
+		}
+		if( check ){
 			try {
 				okrWorkReportProcessLog = okrWorkReportProcessLogService.save( wrapIn );
-				if( okrWorkReportProcessLog != null ){
-					result.setUserMessage( okrWorkReportProcessLog.getId() );
-				}else{
-					result.error( new Exception( "系统在保存信息时发生异常!" ) );
-					result.setUserMessage( "系统在保存信息时发生异常!" );
-				}
+				result.setData( new WrapOutId( okrWorkReportProcessLog.getId() ) );
 			} catch (Exception e) {
-				result.error( e );
-				result.setUserMessage( "系统在保存信息时发生异常!" );
-				logger.error( "OkrWorkReportProcessLogService save object got an exception", e );
+				Exception exception = new ReportProcessLogSaveException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
-		}else{
-			result.error( new Exception( "请求传入的参数为空，无法继续保存!" ) );
-			result.setUserMessage( "请求传入的参数为空，无法继续保存!" );
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "根据ID删除OkrWorkReportProcessLog数据对象.", response = WrapOutOkrWorkReportProcessLog.class)
+	@HttpMethodDescribe(value = "根据ID删除OkrWorkReportProcessLog数据对象.", response = WrapOutId.class)
 	@DELETE
 	@Path( "{id}" )
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response delete(@Context HttpServletRequest request, @PathParam( "id" ) String id) {
-		ActionResult<WrapOutOkrWorkReportProcessLog> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		//logger.debug( "user " + currentPerson.getName() + "[proxy:'"+ThisApplication.getLoginIdentity( currentPerson.getName() )+"'] try to delete okrWorkReportProcessLog{'id':'"+id+"'}......" );
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not delete any object." );
+			Exception exception = new ReportProcessLogIdEmptyException();
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
+		}else{
+			try{
+				okrWorkReportProcessLogService.delete( id );
+				result.setData( new WrapOutId( id ) );
+			}catch(Exception e){
+				Exception exception = new ReportProcessLogDeleteException( e, id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
+			}
 		}
-		try{
-			okrWorkReportProcessLogService.delete( id );
-			result.setUserMessage( "成功删除工作汇报处理记录数据信息。id=" + id );
-		}catch(Exception e){
-			logger.error( "system delete okrWorkReportProcessLogService get an exception, {'id':'"+id+"'}", e );
-			result.setUserMessage( "删除工作汇报处理记录数据过程中发生异常。" );
-			result.error( e );
-		}
+		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
@@ -94,24 +100,30 @@ public class OkrWorkReportProcessLogAction extends StandardJaxrsAction{
 		ActionResult<WrapOutOkrWorkReportProcessLog> result = new ActionResult<>();
 		WrapOutOkrWorkReportProcessLog wrap = null;
 		OkrWorkReportProcessLog okrWorkReportProcessLog = null;
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		//logger.debug( "user[" + currentPerson.getName() + "][proxy:'"+ThisApplication.getLoginIdentity( currentPerson.getName() )+"'] try to get okrWorkReportProcessLog{'id':'"+id+"'}......" );
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not get any object." );
-		}
-		try {
-			okrWorkReportProcessLog = okrWorkReportProcessLogService.get( id );
-			if( okrWorkReportProcessLog != null ){
-				wrap = wrapout_copier.copy( okrWorkReportProcessLog );
-				result.setData(wrap);
-			}else{
-				logger.error( "system can not get any object by {'id':'"+id+"'}. " );
+			Exception exception = new ReportProcessLogIdEmptyException();
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
+		}else{
+			try {
+				okrWorkReportProcessLog = okrWorkReportProcessLogService.get( id );
+				if( okrWorkReportProcessLog != null ){
+					wrap = wrapout_copier.copy( okrWorkReportProcessLog );
+					result.setData(wrap);
+				}else{
+					Exception exception = new ReportProcessLogNotExistsException( id );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
+				}
+			} catch (Throwable th) {
+				Exception exception = new ReportProcessLogQueryByIdException( th, id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
-		} catch (Throwable th) {
-			logger.error( "system get by id got an exception" );
-			th.printStackTrace();
-			result.error(th);
 		}
+		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 }

@@ -109,7 +109,7 @@ public class Log extends SliceJpaObject {
 	 * 在执行给定实体的相应 EntityManager 持久操作之前，调用该实体的 @PrePersist 回调方法。
 	 */
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if ( null == this.createTime ) {
 			this.createTime = date;
@@ -124,12 +124,12 @@ public class Log extends SliceJpaObject {
 	 * 在对实体数据进行数据库更新操作之前，调用实体的 @PreUpdate 回调方法。
 	 */
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
 
-	private void onPersist() {
+	private void onPersist() throws Exception{
 	}
 	/* ==================================================================================
 	 *                             以上为 JpaObject 默认字段
@@ -141,12 +141,12 @@ public class Log extends SliceJpaObject {
 	 * ================================================================================== */
 	@EntityFieldDescribe( "操作类别：新增|修改|删除|查看|查询" )
 	@Column( name="xoperationType", length = JpaObject.length_64B )
-	@CheckPersist( simplyString = true, allowEmpty = true )
+	@CheckPersist( allowEmpty = true )
 	private String operationType;
 
 	@EntityFieldDescribe( "操作级别：应用|分类|文档|文件" )
 	@Column( name="xoperationLevel", length = JpaObject.length_64B )
-	@CheckPersist( simplyString = true, allowEmpty = true )
+	@CheckPersist( allowEmpty = true )
 	private String operationLevel;
 	
 	@EntityFieldDescribe( "操作对象：应用ID" )
@@ -155,9 +155,9 @@ public class Log extends SliceJpaObject {
 	private String appId;
 	
 	@EntityFieldDescribe( "操作对象：分类ID" )
-	@Column( name="xcatagoryId", length = JpaObject.length_64B )
+	@Column( name="xcategoryId", length = JpaObject.length_64B )
 	@CheckPersist( allowEmpty = true )
-	private String catagoryId;
+	private String categoryId;
 	
 	@EntityFieldDescribe( "操作对象：文档ID" )
 	@Column( name="xdocumentId", length = JpaObject.length_64B )
@@ -258,15 +258,15 @@ public class Log extends SliceJpaObject {
 	 * 获取操作的分类ID
 	 * @return
 	 */
-	public String getCatagoryId() {
-		return catagoryId;
+	public String getCategoryId() {
+		return categoryId;
 	}
 	/**
 	 * 设置操作的分类ID
 	 * @param appId
 	 */
-	public void setCatagoryId(String catagoryId) {
-		this.catagoryId = catagoryId;
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
 	}
 	/**
 	 * 获取操作的文档ID

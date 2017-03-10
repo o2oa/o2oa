@@ -2,9 +2,6 @@ package com.x.attendance.assemble.control.service;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.AttendanceStatisticRequireLog;
 import com.x.base.core.container.EntityManagerContainer;
@@ -14,8 +11,6 @@ import com.x.base.core.entity.annotation.CheckRemoveType;
 
 
 public class AttendanceStatisticRequireLogService {
-	
-	private Logger logger = LoggerFactory.getLogger( AttendanceStatisticRequireLogService.class );
 
 	public List<AttendanceStatisticRequireLog> listAll( EntityManagerContainer emc ) throws Exception {
 		Business business =  new Business( emc );
@@ -47,7 +42,7 @@ public class AttendanceStatisticRequireLogService {
 	public void delete( EntityManagerContainer emc, String id ) throws Exception {
 		AttendanceStatisticRequireLog attendanceStatisticRequireLog = null;
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not delete any object." );
+			throw new Exception("id is empty.");
 		}
 		attendanceStatisticRequireLog = emc.find( id, AttendanceStatisticRequireLog.class );
 		if ( null == attendanceStatisticRequireLog ) {
@@ -67,6 +62,24 @@ public class AttendanceStatisticRequireLogService {
 	public List<AttendanceStatisticRequireLog> listByStatisticTypeAndStatus( String statisticType, String processStatus ) throws Exception {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			return listByStatisticTypeAndStatus( emc, statisticType, processStatus );
+		}catch(Exception e){
+			throw e;
+		}
+	}
+
+	public void resetStatisticError() throws Exception {
+		List<AttendanceStatisticRequireLog> logList = null;
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			Business business =  new Business( emc );
+			logList = business.getAttendanceStatisticRequireLogFactory().listByStatisticTypeAndStatus( null, "ERROR" );
+			if( logList != null && !logList.isEmpty() ){
+				emc.beginTransaction( AttendanceStatisticRequireLog.class );
+				for( AttendanceStatisticRequireLog log : logList ){
+					log.setProcessStatus( "WAITING" );
+					emc.check( log, CheckPersistType.all );
+				}
+				emc.commit();
+			}
 		}catch(Exception e){
 			throw e;
 		}

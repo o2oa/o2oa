@@ -14,7 +14,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.cms.core.entity.element.View.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:17:48 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 13:46:13 CST 2017")
 public class View_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<View,String> alias;
     public static volatile SingularAttribute<View,String> appId;

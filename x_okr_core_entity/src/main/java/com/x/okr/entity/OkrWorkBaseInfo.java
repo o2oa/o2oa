@@ -117,7 +117,7 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 	 * 在执行给定实体的相应 EntityManager 持久操作之前，调用该实体的 @PrePersist 回调方法。
 	 */
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -135,12 +135,12 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 	 * 在对实体数据进行数据库更新操作之前，调用实体的 @PreUpdate 回调方法。
 	 */
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
 
-	private void onPersist() {
+	private void onPersist() throws Exception{
 	}
 	/* ==================================================================================
 	 *                             以上为 JpaObject 默认字段
@@ -163,7 +163,7 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 	
 	@EntityFieldDescribe( "中心工作标题" )
 	@Column(name="xcenterTitle", length = JpaObject.length_255B )
-	@CheckPersist( allowEmpty = false)
+	@CheckPersist( allowEmpty = true)
 	private String centerTitle = "";
 	
 	@EntityFieldDescribe( "上级工作ID" )
@@ -179,19 +179,19 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 
 	@EntityFieldDescribe( "工作期限类型:短期工作(不需要自动启动定期汇报) | 长期工作（需要自动启动定期汇报）" )
 	@Column(name="xworkDateTimeType", length = JpaObject.length_16B )
-	@CheckPersist( allowEmpty = false)
+	@CheckPersist( allowEmpty = true)
 	private String workDateTimeType = "长期工作";
 	
 	@EntityFieldDescribe( "工作部署年份" )
 	@Column(name="xdeployYear", length = JpaObject.length_16B )
 	@Index(name = TABLE + "_deployYear" )
-	@CheckPersist( allowEmpty = false)
+	@CheckPersist( allowEmpty = true)
 	private String deployYear = "";
 	
 	@EntityFieldDescribe( "工作部署月份" )
 	@Column(name="xdeployMonth", length = JpaObject.length_16B )
 	@Index(name = TABLE + "_deployMonth" )
-	@CheckPersist( allowEmpty = false)
+	@CheckPersist( allowEmpty = true)
 	private String deployMonth = "";
 	
 	@EntityFieldDescribe( "部署者姓名" )
@@ -385,7 +385,7 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 	
 	@EntityFieldDescribe( "处理状态：正常|已删除" )
 	@Column(name="xstatus", length = JpaObject.length_16B )
-	@CheckPersist( allowEmpty = false )
+	@CheckPersist( allowEmpty = true )
 	private String status = "正常";
 	
 	@EntityFieldDescribe( "工作汇报是否需要管理补充信息" )
@@ -398,7 +398,7 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 	@CheckPersist( allowEmpty = true )
 	private String reportAdminName = null;
 	
-	@EntityFieldDescribe( "工作管理员姓名" )
+	@EntityFieldDescribe( "工作管理员身份" )
 	@Column( name="xreportAdminIdentity", length = JpaObject.length_255B )
 	@CheckPersist( allowEmpty = true )
 	private String reportAdminIdentity = null;

@@ -18,10 +18,14 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.wrapout.element.WrapOutProcess;
 
 @Path("process")
 public class ProcessAction extends AbstractJaxrsAction {
+
+	private static Logger logger = LoggerFactory.getLogger(ProcessAction.class);
 
 	@HttpMethodDescribe(value = "获取流程内容,附带所有的Activity信息", response = WrapOutProcess.class)
 	@GET
@@ -30,12 +34,12 @@ public class ProcessAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getComplex(@Context HttpServletRequest request, @PathParam("flag") String flag) {
 		ActionResult<WrapOutProcess> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGetComplex().execute(effectivePerson, flag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -47,12 +51,12 @@ public class ProcessAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getAllowRerouteTo(@Context HttpServletRequest request, @PathParam("flag") String flag) {
 		ActionResult<WrapOutProcess> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGetAllowRerouteTo().execute(effectivePerson, flag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -65,12 +69,12 @@ public class ProcessAction extends AbstractJaxrsAction {
 	public Response listWithPersonWithApplication(@Context HttpServletRequest request,
 			@PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<List<WrapOutProcess>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListWithPersonWithApplication().execute(effectivePerson, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

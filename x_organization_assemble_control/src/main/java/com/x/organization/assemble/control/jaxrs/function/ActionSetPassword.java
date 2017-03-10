@@ -15,9 +15,9 @@ public class ActionSetPassword {
 
 	protected WrapOutId execute(Business business, String name, WrapInString wrapIn) throws Exception {
 		EntityManagerContainer emc = business.entityManagerContainer();
-		String personId = business.person().getWithName(name);
+		String personId = business.person().getWithName(name, null);
 		if (StringUtils.isEmpty(personId)) {
-			personId = business.person().getWithUnique(name);
+			personId = business.person().getWithUnique(name, null);
 		}
 		if (StringUtils.isEmpty(personId)) {
 			throw new Exception("can not find person:" + name);
@@ -27,7 +27,7 @@ public class ActionSetPassword {
 			}
 			Person person = emc.find(personId, Person.class, ExceptionWhen.not_found);
 			emc.beginTransaction(Person.class);
-			business.setPassword(person, wrapIn.getValue());
+			business.person().setPassword(person, wrapIn.getValue());
 			emc.check(person, CheckPersistType.all);
 			emc.commit();
 			ApplicationCache.notify(Person.class);

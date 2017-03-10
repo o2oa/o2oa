@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Lob;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -109,7 +110,7 @@ public class OkrWorkChat extends SliceJpaObject {
 	 * 在执行给定实体的相应 EntityManager 持久操作之前，调用该实体的 @PrePersist 回调方法。
 	 */
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -127,12 +128,12 @@ public class OkrWorkChat extends SliceJpaObject {
 	 * 在对实体数据进行数据库更新操作之前，调用实体的 @PreUpdate 回调方法。
 	 */
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
 
-	private void onPersist() {
+	private void onPersist() throws Exception{
 	}
 	/* ==================================================================================
 	 *                             以上为 JpaObject 默认字段
@@ -149,7 +150,7 @@ public class OkrWorkChat extends SliceJpaObject {
 	private String centerId = null;
 	
 	@EntityFieldDescribe( "中心工作标题" )
-	@Column(name="xcenterTitle", length = JpaObject.length_255B )
+	@Column( name="xcenterTitle", length = JpaObject.length_255B )
 	@CheckPersist( allowEmpty = true)
 	private String centerTitle = null;
 	
@@ -160,37 +161,38 @@ public class OkrWorkChat extends SliceJpaObject {
 	private String workId = null;
 	
 	@EntityFieldDescribe( "工作标题" )
-	@Column(name="xworkTitle", length = JpaObject.length_255B )
+	@Column( name="xworkTitle", length = JpaObject.length_255B )
 	@CheckPersist( allowEmpty = true)
 	private String workTitle = null;
 	
 	@EntityFieldDescribe( "发送者姓名" )
-	@Column(name="xsenderName", length = AbstractPersistenceProperties.organization_name_length )
+	@Column( name="xsenderName", length = AbstractPersistenceProperties.organization_name_length )
 	@CheckPersist( allowEmpty = true)
 	private String senderName = null;
 	
 	@EntityFieldDescribe( "发送者身份" )
-	@Column(name="xsenderIdentity", length = AbstractPersistenceProperties.organization_name_length )
+	@Column( name="xsenderIdentity", length = AbstractPersistenceProperties.organization_name_length )
 	@CheckPersist( allowEmpty = true)
 	private String senderIdentity = null;
 	
 	@EntityFieldDescribe( "目标者姓名" )
-	@Column(name="xtargetName", length = AbstractPersistenceProperties.organization_name_length )
+	@Column( name="xtargetName", length = AbstractPersistenceProperties.organization_name_length )
 	@CheckPersist( allowEmpty = true)
 	private String targetName = null;
 	
 	@EntityFieldDescribe( "目标者身份" )
-	@Column(name="xtargetIdentity", length = AbstractPersistenceProperties.organization_name_length )
+	@Column( name="xtargetIdentity", length = AbstractPersistenceProperties.organization_name_length )
 	@CheckPersist( allowEmpty = true)
 	private String targetIdentity = null;
 	
+	@Lob
 	@EntityFieldDescribe( "内容" )
-	@Column(name="xcontent", length = JpaObject.length_255B )
+	@Column( name="xcontent", length = JpaObject.length_1M )
 	@CheckPersist( allowEmpty = true)
 	private String content = null;
 	
 	@EntityFieldDescribe( "备注说明" )
-	@Column(name="xdescription", length = JpaObject.length_255B )
+	@Column( name="xdescription", length = JpaObject.length_255B )
 	@CheckPersist( allowEmpty = true)
 	private String description = null;
 	

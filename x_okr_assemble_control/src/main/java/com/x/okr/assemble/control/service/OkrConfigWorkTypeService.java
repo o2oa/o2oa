@@ -1,10 +1,10 @@
 package com.x.okr.assemble.control.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
@@ -66,7 +66,7 @@ public class OkrConfigWorkTypeService{
 					emc.commit();
 				}
 			}catch( Exception e ){
-				logger.error( "OkrConfigWorkType update/ got a error!" );
+				logger.warn( "OkrConfigWorkType update/ got a error!" );
 				throw e;
 			}
 		}else{//没有传入指定的ID
@@ -77,7 +77,7 @@ public class OkrConfigWorkTypeService{
 				emc.persist( okrConfigWorkType, CheckPersistType.all);	
 				emc.commit();
 			}catch( Exception e ){
-				logger.error( "OkrConfigWorkType create got a error!", e);
+				logger.warn( "OkrConfigWorkType create got a error!", e);
 				throw e;
 			}
 		}
@@ -92,13 +92,13 @@ public class OkrConfigWorkTypeService{
 	public void delete( String id ) throws Exception {
 		OkrConfigWorkType okrConfigWorkType = null;
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not delete any object." );
+			throw new Exception( "id is null, system can not delete any object." );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			okrConfigWorkType = emc.find(id, OkrConfigWorkType.class);
 			if (null == okrConfigWorkType) {
-				logger.error( "object is not exist {'id':'"+ id +"'}" );
+				throw new Exception( "object is not exist {'id':'"+ id +"'}" );
 			}else{
 				emc.beginTransaction( OkrConfigWorkType.class );
 				emc.remove( okrConfigWorkType, CheckRemoveType.all );
@@ -117,6 +117,24 @@ public class OkrConfigWorkTypeService{
 		}catch( Exception e ){
 			throw e;
 		}
+	}
+
+	public List<String> listAllTypeName() throws Exception {
+		List<OkrConfigWorkType> workTypeList = null;
+		List<String> workTypeNameList = new ArrayList<>();
+		Business business = null;
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			business = new Business(emc);
+			workTypeList = business.okrConfigWorkTypeFactory().listAll();
+			if( workTypeList != null && !workTypeList.isEmpty() ){
+				for( OkrConfigWorkType type : workTypeList ){
+					workTypeNameList.add( type.getWorkTypeName() );
+				}
+			}
+		}catch( Exception e ){
+			throw e;
+		}
+		return workTypeNameList;
 	}
 	
 }

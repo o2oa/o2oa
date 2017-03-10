@@ -2,10 +2,12 @@
 <html>
 <head>
 <meta charset="UTF-8" />
-<title>x_organization_assemble_surface_authentication_jest</title>
+<title>x_organization_assemble_surface_authentication</title>
 <script src="./jquery.js"></script>
 <script src="./common.js"></script>
+<script src="./debug.js"></script>
 <script src="authentication.js"></script>
+<script src="bind.js"></script>
 <script>
     $(document).ready(function() {
 	authentication_who();
@@ -17,18 +19,26 @@
 	<div id="container" style="width: 1000px; margin: 0 auto;">
 		<div id="header"
 			style="background-color: #4682B4; clear: both; text-align: center;">
-			x_organization_assemble_surface_authentication_jest <br /> for <br />
-			x_organization_assemble_surface_authentication
-		</div>
+			x_organization_assemble_surface_authentication</div>
 		<div id="menu"
 			style="background-color: #B0E0E6; height: 950px; width: 280px; float: left;">
 			<ul>
 				<li>Authentication
 					<ul>
 						<li><a onclick="authentication_who()" href="#">Who</a></li>
-						<li><a onclick="authentication_login()" href="#">Login</a></li>
+						<li><a onclick="authentication_login_init()" href="#">Login</a></li>
 						<li><a onclick="authentication_logout()" href="#">Logout</a>
 						</li>
+					</ul>
+				</li>
+				<li>Bind
+					<ul>
+						<li><a onclick="bind_list()" href="#">List</a></li>
+					</ul>
+				</li>
+				<li>Debug
+					<ul>
+						<li><a onclick="debug_init()" href="#">Debug</a></li>
 					</ul>
 				</li>
 			</ul>

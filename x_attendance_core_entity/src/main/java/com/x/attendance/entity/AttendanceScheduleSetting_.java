@@ -12,7 +12,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.attendance.entity.AttendanceScheduleSetting.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:17:03 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:07:18 CST 2017")
 public class AttendanceScheduleSetting_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<AttendanceScheduleSetting,String> absenceStartTime;
     public static volatile SingularAttribute<AttendanceScheduleSetting,String> companyName;

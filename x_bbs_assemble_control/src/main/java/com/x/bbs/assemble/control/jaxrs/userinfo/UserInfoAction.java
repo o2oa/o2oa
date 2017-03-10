@@ -9,16 +9,17 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
+import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.bbs.assemble.control.service.BBSUserInfoService;
 import com.x.bbs.assemble.control.service.UserManagerService;
 import com.x.bbs.entity.BBSUserInfo;
@@ -30,27 +31,33 @@ public class UserInfoAction extends AbstractJaxrsAction {
 	private UserManagerService userManagerService = new UserManagerService();
 	private BeanCopyTools< BBSUserInfo, WrapOutUserInfo > wrapout_copier = BeanCopyToolsBuilder.create( BBSUserInfo.class, WrapOutUserInfo.class, null, WrapOutUserInfo.Excludes);
 
-	@HttpMethodDescribe(value = "列示根据过滤条件的UserInfo", response = WrapOutUserInfo.class, request = WrapInFilter.class)
+	@HttpMethodDescribe(value = "列示根据过滤条件的UserInfo", response = WrapOutUserInfo.class, request = JsonElement.class)
 	@PUT
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response filterUserInfo( @Context HttpServletRequest request, WrapInFilter wrapIn ) {
+	public Response filterUserInfo( @Context HttpServletRequest request, JsonElement jsonElement ) {
 		ActionResult<WrapOutUserInfo> result = new ActionResult<>();
+		EffectivePerson currentPerson = this.effectivePerson(request);
 		WrapOutUserInfo wrap = null;
 		BBSUserInfo userInfo = null;
+		WrapInFilter wrapIn = null;
 		Boolean check = true;
-		if( check ){
-			if( wrapIn == null ){
-				check = false;
-				result.error( new Exception("传入的参数为空，无法查询主题信息！" ) );
-				result.setUserMessage( "传入的参数为空，无法查询主题信息！" );
-			}
+		
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilter.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
+
 		if( check ){
 			if( wrapIn.getUserName() == null ){
 				check = false;
-				result.error( new Exception("传入的参数userName为空，无法继续查询用户信息！" ) );
-				result.setUserMessage( "传入的参数userName为空，无法继续查询用户信息！" );
+				Exception exception = new PropertyEmptyException( "用户姓名(userName)" );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		//查询版块信息是否存在
@@ -59,9 +66,9 @@ public class UserInfoAction extends AbstractJaxrsAction {
 				userInfo = userInfoService.getByUserName( wrapIn.getUserName() );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据userName查询用户信息时发生异常！");
-				logger.error("system query user info with userName got an exceptin. userName:" + wrapIn.getUserName(), e);
+				Exception exception = new UserInfoQueryByNameException( e, wrapIn.getUserName() );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if (check) {
@@ -70,9 +77,9 @@ public class UserInfoAction extends AbstractJaxrsAction {
 					userInfo = userManagerService.refreshUserRoleAndPermission( wrapIn.getUserName() );
 				} catch (Exception e) {
 					check = false;
-					result.error(e);
-					result.setUserMessage("系统在根据userName查询用户信息时发生异常！");
-					logger.error("system refresh user role and permissoin got an exceptin. userName:" + wrapIn.getUserName(), e);
+					Exception exception = new UserInfoQueryByNameException( e, wrapIn.getUserName() );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -82,9 +89,9 @@ public class UserInfoAction extends AbstractJaxrsAction {
 				result.setData( wrap );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage("系统在转换对象为输出格式时发生异常！");
-				logger.error("system copy user info to wrap got an exceptin. userName:" + wrapIn.getUserName(), e);
+				Exception exception = new UserInfoWrapOutException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}		
 		}
 		

@@ -100,6 +100,8 @@ MWF.xApplication.cms.QueryViewDesigner.widget.PersonSelector = new Class({
                 type = "CMSApplication";
             }else if( type == "category" ){
                 type = "CMSCategory";
+            }else if( type == "formField" ){
+                type = "CMSFormField";
             }
             var options = {
                 "type": type,
@@ -108,6 +110,7 @@ MWF.xApplication.cms.QueryViewDesigner.widget.PersonSelector = new Class({
                 "count": (this.options.type.toLowerCase()=="duty")? 1: 0,
                 "values": selecteds,
                 "zIndex": 20000,
+                "form" : this.options.form,
                 "onComplete": function(items){
                     this.identitys = [];
                     if (this.options.type.toLowerCase()!="duty") this.node.empty();

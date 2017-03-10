@@ -45,7 +45,7 @@ public class Script extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.Element.Script.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -58,7 +58,7 @@ public class Script extends SliceJpaObject {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -117,7 +117,7 @@ public class Script extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception{
 	}
 
 	/* 更新运行方法 */

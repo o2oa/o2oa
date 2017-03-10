@@ -16,7 +16,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.okr.entity.OkrWorkBaseInfo.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:18:45 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:09:40 CST 2017")
 public class OkrWorkBaseInfo_ extends SliceJpaObject_  {
     public static volatile ListAttribute<OkrWorkBaseInfo,String> attachmentList;
     public static volatile SingularAttribute<OkrWorkBaseInfo,String> centerId;

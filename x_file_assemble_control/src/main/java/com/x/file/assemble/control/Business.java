@@ -2,6 +2,7 @@ package com.x.file.assemble.control;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.file.assemble.control.factory.AttachmentFactory;
+import com.x.file.assemble.control.factory.FileFactory;
 import com.x.file.assemble.control.factory.FolderFactory;
 import com.x.organization.core.express.Organization;
 
@@ -33,6 +34,15 @@ public class Business {
 			this.folder = new FolderFactory(this);
 		}
 		return folder;
+	}
+
+	private FileFactory file;
+
+	public FileFactory file() throws Exception {
+		if (null == this.file) {
+			this.file = new FileFactory(this);
+		}
+		return file;
 	}
 
 	private Organization organization;

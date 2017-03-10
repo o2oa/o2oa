@@ -30,6 +30,7 @@ import com.x.base.core.BaseTools;
 import com.x.base.core.DefaultCharset;
 import com.x.base.core.Packages;
 import com.x.base.core.entity.Storage;
+import com.x.base.core.entity.StorageObject;
 import com.x.base.core.gson.XGsonBuilder;
 import com.x.base.core.project.server.Config;
 import com.x.base.core.project.server.DataMapping;
@@ -61,12 +62,12 @@ public class RestoreStorage {
 		this.dir = new File(this.base, "local/dump/dumpStorage_" + DateTools.compact(date));
 		this.catalog = BaseTools.readObject("local/dump/dumpStorage_" + DateTools.compact(date) + "/catalog.json",
 				DumpStorageCatalog.class);
-		List<Class<?>> classes = this.listEntityToRestore();
+		List<Class<? extends StorageObject>> classes = this.listEntityToRestore();
 		logger.info("restore storage find {} to store.", classes.size());
 		DataMappings mappings = Config.dataMappings();
 		StorageMappings storageMappings = Config.storageMappings();
 		for (int i = 0; i < classes.size(); i++) {
-			Class<?> cls = classes.get(i);
+			Class<? extends StorageObject> cls = classes.get(i);
 			logger.info("restore storage({}/{}):{}.", (i + 1), classes.size(), cls.getName());
 			List<DataMapping> sources = mappings.get(cls.getName());
 			if (ListTools.isEmpty(sources)) {
@@ -77,19 +78,20 @@ public class RestoreStorage {
 		logger.info("restore storage completed.");
 	}
 
-	private List<Class<?>> listEntityToRestore() throws Exception {
+	private List<Class<? extends StorageObject>> listEntityToRestore() throws Exception {
 		ScanResult scanResult = new FastClasspathScanner(Packages.PREFIX).scan();
-		List<Class<?>> list = new ArrayList<>();
+		List<Class<? extends StorageObject>> list = new ArrayList<>();
 		List<String> all = scanResult.getNamesOfClassesWithAnnotation(Storage.class);
 		for (String str : this.catalog.keySet()) {
 			if (all.contains(str)) {
-				list.add(Class.forName(str));
+				list.add((Class<? extends StorageObject>) Class.forName(str));
 			}
 		}
 		return list;
 	}
 
-	private <T> void store(Class<T> cls, List<DataMapping> sources, StorageMappings storageMappings) throws Exception {
+	private <T extends StorageObject> void store(Class<T> cls, List<DataMapping> sources,
+			StorageMappings storageMappings) throws Exception {
 		Gson gson = XGsonBuilder.pureGsonDateFormated();
 		File folder = new File(dir, cls.getName());
 		File xml = new File(folder, cls.getName() + "_restore.xml");
@@ -108,10 +110,10 @@ public class RestoreStorage {
 			String name = Objects.toString(PropertyUtils.getProperty(t, "name"));
 			String storage = Objects.toString(PropertyUtils.getProperty(t, "storage"));
 			StorageMapping mapping = null;
-			if (BooleanUtils.isNotTrue(Config.dumpRestoreStorageConfig().getRedistribute())) {
-				mapping = storageMappings.random(t.getClass().getAnnotation(Storage.class).type());
+			if (BooleanUtils.isNotTrue(Config.dumpRestoreStorage().getRedistribute())) {
+				mapping = storageMappings.random(t.getClass());
 			} else {
-				mapping = storageMappings.get(t.getClass().getAnnotation(Storage.class).type(), storage);
+				mapping = storageMappings.get(t.getClass(), storage);
 			}
 			ByteArrayInputStream input = new ByteArrayInputStream(bytes);
 			MethodUtils.invokeMethod(t, "saveContent", mapping, input, name);

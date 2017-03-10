@@ -33,13 +33,14 @@ public class CenterServerTools extends JettySeverTools {
 
 	public static Server start(CenterServer centerServer) throws Exception {
 		File configDir = new File(Config.base(), "config");
+		File commonsDir = new File(Config.base(), "commons");
 		File webappsDir = new File(Config.base(), "servers/centerServer/webapps");
 		File workDir = new File(Config.base(), "servers/centerServer/work");
 		File extDir = new File(Config.base(), "commons/ext");
 		File storeDir = new File(Config.base(), "store");
 		File jarsDir = new File(Config.base(), "store/jars");
 
-		if (BooleanUtils.isTrue(centerServer.getForceRedeploy())) {
+		if (BooleanUtils.isTrue(centerServer.getRedeploy())) {
 			cleanDirectory(webappsDir);
 			cleanDirectory(workDir);
 			createDeployDescriptor(x_program_center.class, webappsDir, workDir, storeDir, extDir, jarsDir);
@@ -65,7 +66,7 @@ public class CenterServerTools extends JettySeverTools {
 
 		WebAppProvider webAppProvider = new WebAppProvider();
 		webAppProvider.setMonitoredDirName(webappsDir.getAbsolutePath());
-		webAppProvider.setDefaultsDescriptor(new File(configDir, "webdefault.xml").getAbsolutePath());
+		webAppProvider.setDefaultsDescriptor(new File(commonsDir, "webdefault.xml").getAbsolutePath());
 		webAppProvider.setScanInterval(centerServer.getScanInterval());
 		webAppProvider.setExtractWars(true);
 		webAppProvider.setConfigurationManager(new PropertiesConfigurationManager());

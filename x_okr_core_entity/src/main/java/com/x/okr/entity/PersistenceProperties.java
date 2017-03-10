@@ -4,12 +4,20 @@ import com.x.base.core.entity.AbstractPersistenceProperties;
 
 public final class PersistenceProperties extends AbstractPersistenceProperties {
 	
-	public static class OkrCenterWorkReportStatistic {
+	public static class OkrStatisticReportContent {
 		/**
 		 * 中心工作汇报情况统计信息实体类
 		 */
-		public static final String table = "OKR_CENTERWORK_REPORTSTATISTIC";
+		public static final String table = "OKR_STATISTIC_REPORT_CONTENT";
 	}
+	
+	public static class OkrStatisticReportStatus {
+		/**
+		 * 所有工作汇报情况状态信息实体类
+		 */
+		public static final String table = "OKR_STATISTIC_REPORT_STATUS";
+	}
+	
 	public static class OkrCenterWorkInfo {
 		/**
 		 * 中心工作信息管理表
@@ -94,27 +102,6 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static final String table = "OKR_WORK_REPORT_PROCESSLOG";
 	}
 	
-	public static class OkrWorkProblemInfo {
-		/**
-		 * 工作问题请示信息记录表
-		 */
-		public static final String table = "OKR_WORK_PROBLEM_INFO";
-	}
-	
-	public static class OkrWorkProblemProcessLog {
-		/**
-		 * 工作问题请示处理记录表
-		 */
-		public static final String table = "OKR_PROBLEM_PROCESSLOG";
-	}
-	
-	public static class OkrWorkProblemPersonLink {
-		/**
-		 * 工作汇报审批链
-		 */
-		public static final String table = "OKR_WORK_PROBLEM_PERSONLINK";
-	}
-	
 	public static class OkrWorkDynamics {
 		/**
 		 * 工作动态信息记录表
@@ -169,41 +156,6 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		 * 工作附件信息管理表
 		 */
 		public static final String table = "OKR_ATTACHMENTFILEINFO";
-	}
-	
-	public static class OkrWorkProcessLink {
-		/**
-		 * 工作附件信息管理表
-		 */
-		public static final String table = "OKR_WORKPROCESSLINK";
-	}
-	
-	public static class OkrPermissionInfo {
-		/**
-		 * 系统权限信息表
-		 */
-		public static final String table = "OKR_PERMISSIONINFO";
-	}
-	
-	public static class OkrRoleInfo {
-		/**
-		 * 系统角色信息表
-		 */
-		public static final String table = "OKR_ROLEINFO";
-	}
-	
-	public static class OkrRolePermission {
-		/**
-		 * 系统权限角色配置信息表
-		 */
-		public static final String table = "OKR_ROLE_PERMISSION";
-	}
-	
-	public static class OkrPersonPermission {
-		/**
-		 * 人员权限配置信息表
-		 */
-		public static final String table = "OKR_PERSON_PERMISSION";
 	}
 	
 	public static class OkrWorkChat {

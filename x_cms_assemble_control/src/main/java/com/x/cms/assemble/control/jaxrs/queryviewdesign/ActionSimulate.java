@@ -25,8 +25,8 @@ class ActionSimulate extends ActionBase {
 				if (ListTools.isNotEmpty(wrapIn.getFilterEntryList())) {
 					query.setFilterEntryList(wrapIn.getFilterEntryList());
 				}
-				if (this.selectEntryListAvailable(wrapIn)) {
-					query.setWhereEntry(wrapIn.getWhereEntry());
+				if (this.selectEntryListAvailable( wrapIn )) {
+					query.setWhereEntry( wrapIn.getWhereEntry() );
 				}
 			}
 			query.query();

@@ -8,6 +8,7 @@ import com.x.base.core.application.jaxrs.AbstractActionApplication;
 import com.x.meeting.assemble.control.jaxrs.attachment.AttachmentAction;
 import com.x.meeting.assemble.control.jaxrs.building.BuildingAction;
 import com.x.meeting.assemble.control.jaxrs.meeting.MeetingAction;
+import com.x.meeting.assemble.control.jaxrs.openmeeting.OpenMeetingAction;
 import com.x.meeting.assemble.control.jaxrs.room.RoomAction;
 
 @ApplicationPath("jaxrs")
@@ -18,6 +19,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(RoomAction.class);
 		classes.add(MeetingAction.class);
 		classes.add(AttachmentAction.class);
+		classes.add(OpenMeetingAction.class);
 		return classes;
 	}
 

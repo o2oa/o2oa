@@ -3,14 +3,10 @@ function failure(data) {
     alert(data.message);
 }
 
-function splitValue(str, split) {
-    var s = ',';
-    if (split) {
-	s = '' + split;
-    }
+function splitValue(str) {
     if (str) {
 	if (str.length > 0) {
-	    return str.split(s);
+	    return str.split(',');
 	}
     }
     return [];

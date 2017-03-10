@@ -10,6 +10,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
 import com.x.base.core.http.ActionResult;
@@ -22,8 +25,7 @@ import com.x.base.core.http.annotation.HttpMethodDescribe;
 @Path("message")
 public class MessageAction extends AbstractJaxrsAction {
 
-	// private static Logger logger =
-	// LoggerFactory.getLogger(MessageAction.class);
+	private static Logger logger = LoggerFactory.getLogger(MessageAction.class);
 
 	@HttpMethodDescribe(value = "发送WebSocket消息接口,同时呼叫其他模块进行发送,如果不能发送则保存到本地.", response = WrapOutString.class)
 	@POST
@@ -33,7 +35,7 @@ public class MessageAction extends AbstractJaxrsAction {
 		ActionResult<WrapOutBoolean> result = new ActionResult<>();
 		WrapOutBoolean wrap = null;
 		try {
-			// logger.warn("receive message:{}", jsonElement);
+			logger.debug("receive message:{}", jsonElement);
 			wrap = new ActionSend().execute(jsonElement);
 			result.setData(wrap);
 		} catch (Throwable th) {

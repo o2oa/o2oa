@@ -28,4 +28,15 @@ public class InvokeFactory extends AbstractFactory {
 		cq.select(root.get(Invoke_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
+	
+	/** 查找使用表单的invoke */
+	public List<String> listWithForm(String formId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Invoke.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Invoke> root = cq.from(Invoke.class);
+		Predicate p = cb.equal(root.get(Invoke_.form), formId);
+		cq.select(root.get(Invoke_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
 }

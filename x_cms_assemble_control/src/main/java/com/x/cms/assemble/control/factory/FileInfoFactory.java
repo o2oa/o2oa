@@ -15,11 +15,6 @@ import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.FileInfo;
 import com.x.cms.core.entity.FileInfo_;
 
-/**
- * 文件附件信息管理表基础功能服务类
- * 
- * @author liyi
- */
 public class FileInfoFactory extends AbstractFactory {
 
 	public FileInfoFactory( Business business ) throws Exception {
@@ -81,8 +76,7 @@ public class FileInfoFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery( String.class );
 		Root<FileInfo> root = cq.from( FileInfo.class );		
-		Predicate p = cb.equal(root.get( FileInfo_.documentId ), doucmentId);
-		
+		Predicate p = cb.equal(root.get( FileInfo_.documentId ), doucmentId);		
 		cq.select(root.get(FileInfo_.id));
 		return em.createQuery(cq.where(p)).getResultList();
 	}

@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
@@ -48,13 +47,13 @@ public class OkrWorkPersonService {
 	 * 向数据库保存OkrWorkPerson对象
 	 * @param wrapIn
 	 */
-	public void save( WrapInOkrWorkPerson wrapIn ) throws Exception {
+	public void saveCenterWorkPerson( WrapInOkrWorkPerson wrapIn ) throws Exception {
 		OkrWorkPerson entity = new OkrWorkPerson();
 		entity = wrapin_copier.copy( wrapIn, entity );
 		if( wrapIn.getId() !=null && wrapIn.getId().trim().length() > 20 ){
 			entity.setId( wrapIn.getId() );
 		}
-		save( entity );
+		saveCenterWorkPerson( entity );
 	}
 	
 	/**
@@ -62,27 +61,22 @@ public class OkrWorkPersonService {
 	 * 不仅是ID要唯一，并且员工姓名，中心工作ID和工作ID，还有身份也是一套唯一键
 	 * @param OkrWorkPerson
 	 */
-	public void save( OkrWorkPerson entity ) throws Exception {
-		OkrWorkPerson okrWorkPerson = null;
+	public void saveCenterWorkPerson( OkrWorkPerson entity ) throws Exception {
 		Business business = null;
 		List<String> ids = null;
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+		List<String> stauts = new ArrayList<>();
+		stauts.add("正常");
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business(emc);
 			//同一个员工在相同的工作里同一个身份只能有一条记录
-			ids = business.okrWorkPersonFactory().listByWorkAndIdentity( entity.getCenterId(), entity.getWorkId(), entity.getEmployeeIdentity(), entity.getProcessIdentity(), null );
-			emc.beginTransaction( OkrWorkPerson.class );
-			if( ids != null && ids.size() > 0 ){
-				for( String id : ids ){
-					okrWorkPerson =  emc.find( id, OkrWorkPerson.class );
-					if( okrWorkPerson != null ){
-						emc.remove( okrWorkPerson );
-					}
-				}
+			ids = business.okrWorkPersonFactory().listIdsForCenterWorkByCenterId( entity.getCenterId(), entity.getEmployeeIdentity(), entity.getProcessIdentity(), stauts );
+			if( ids == null || ids.isEmpty() ){
+				emc.beginTransaction( OkrWorkPerson.class );
+				emc.persist( entity, CheckPersistType.all);	
+				emc.commit();
 			}
-			emc.persist( entity, CheckPersistType.all);	
-			emc.commit();
 		}catch( Exception e ){
-			logger.error( "OkrWorkPerson update/ get a error!" );
+			logger.warn( "OkrWorkPerson update/ get a error!" );
 			throw e;
 		}
 	}
@@ -101,7 +95,7 @@ public class OkrWorkPersonService {
 			//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			okrWorkPerson = emc.find(id, OkrWorkPerson.class);
 			if (null == okrWorkPerson) {
-				logger.error( "object is not exist {'id':'"+ id +"'}" );
+				throw new Exception( "object is not exist {'id':'"+ id +"'}" );
 			}else{		
 				emc.beginTransaction( OkrWorkPerson.class );
 				emc.remove( okrWorkPerson, CheckRemoveType.all );
@@ -114,10 +108,6 @@ public class OkrWorkPersonService {
 
 	/**
 	 * 根据用户姓名，查询用户有权限访问的所有具体工作ID列表
-	 * @param name
-	 * @param processIdentity
-	 * @return
-	 * @throws Exception 
 	 */
 	public List<String> listDistinctWorkIdsByIdentity( String userIdentity, String centerId, List<String> statuses ) throws Exception {
 		Business business = null;
@@ -127,6 +117,22 @@ public class OkrWorkPersonService {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			return business.okrWorkPersonFactory().listDistinctWorkIdsByIdentity( userIdentity, centerId, statuses );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * 根据用户姓名，查询用户有权限访问的所有具体工作ID列表
+	 */
+	public List<String> listDistinctWorkIdsWithMe( String userIdentity, String centerId ) throws Exception {
+		Business business = null;
+		if( userIdentity == null || userIdentity.isEmpty() ){
+			throw new Exception( "userIdentity is null, system can not query any object." );
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			return business.okrWorkPersonFactory().listDistinctWorkIdsWithMe( userIdentity, centerId );
 		} catch ( Exception e ) {
 			throw e;
 		}
@@ -295,19 +301,59 @@ public class OkrWorkPersonService {
 	 * @param okrCenterWorkInfo
 	 * @throws Exception 
 	 */
-	public void saveWorkPersonByCenterWork( OkrCenterWorkInfo okrCenterWorkInfo) throws Exception {
+	public void saveCenterWorkPersonByCenterWork( OkrCenterWorkInfo okrCenterWorkInfo) throws Exception {
 		OkrWorkPerson okrWorkPerson = null;
 		if( okrCenterWorkInfo.getCreatorName() != null && !okrCenterWorkInfo.getCreatorName().isEmpty() ){
 			okrWorkPerson = createWorkPersonByCenterInfo( okrCenterWorkInfo, okrCenterWorkInfo.getCreatorName(), okrCenterWorkInfo.getCreatorIdentity(), okrCenterWorkInfo.getCreatorOrganizationName(), okrCenterWorkInfo.getCreatorCompanyName(), "创建者", okrCenterWorkInfo.getCreateTime() );
-			save( okrWorkPerson );
+			okrWorkPerson.setWorkProcessStatus( okrCenterWorkInfo.getProcessStatus() );
+			saveCenterWorkPerson( okrWorkPerson );
 			okrWorkPerson = createWorkPersonByCenterInfo( okrCenterWorkInfo, okrCenterWorkInfo.getCreatorName(), okrCenterWorkInfo.getCreatorIdentity(), okrCenterWorkInfo.getCreatorOrganizationName(), okrCenterWorkInfo.getCreatorCompanyName(), "观察者", okrCenterWorkInfo.getCreateTime() );
-			save( okrWorkPerson );
+			okrWorkPerson.setWorkProcessStatus( okrCenterWorkInfo.getProcessStatus() );
+			okrWorkPerson.setDiscription( "中心工作创建者" );
+			saveCenterWorkPerson( okrWorkPerson );
 		}
 		if( okrCenterWorkInfo.getDeployerName() != null && !okrCenterWorkInfo.getDeployerName().isEmpty() ){
 			okrWorkPerson = createWorkPersonByCenterInfo( okrCenterWorkInfo, okrCenterWorkInfo.getDeployerName(), okrCenterWorkInfo.getDeployerIdentity(), okrCenterWorkInfo.getDeployerOrganizationName(), okrCenterWorkInfo.getDeployerCompanyName(), "部署者", okrCenterWorkInfo.getCreateTime() );
-			save( okrWorkPerson );
+			okrWorkPerson.setWorkProcessStatus( okrCenterWorkInfo.getProcessStatus() );
+			saveCenterWorkPerson( okrWorkPerson );
 			okrWorkPerson = createWorkPersonByCenterInfo( okrCenterWorkInfo, okrCenterWorkInfo.getDeployerName(), okrCenterWorkInfo.getDeployerIdentity(), okrCenterWorkInfo.getDeployerOrganizationName(), okrCenterWorkInfo.getDeployerCompanyName(), "观察者", okrCenterWorkInfo.getCreateTime() );
-			save( okrWorkPerson );
+			okrWorkPerson.setWorkProcessStatus( okrCenterWorkInfo.getProcessStatus() );
+			okrWorkPerson.setDiscription( "中心工作部署者" );
+			saveCenterWorkPerson( okrWorkPerson );
+		}
+		//为工作汇报审核领导添加观察权限
+		if( okrCenterWorkInfo.getAuditLeaderIdentity() != null && !okrCenterWorkInfo.getAuditLeaderIdentity().isEmpty() ){
+			String[] identityArray = null;
+			String userName = null, departmentName = null, companyName = null;
+			identityArray = okrCenterWorkInfo.getAuditLeaderIdentity().split( "," );
+			if( identityArray != null && identityArray.length > 0 ){
+				for( String identity : identityArray ){
+					companyName = okrUserManagerService.getCompanyNameByIdentity(identity);
+					departmentName = okrUserManagerService.getDepartmentNameByIdentity(identity);
+					userName = okrUserManagerService.getUserNameByIdentity (identity );
+					okrWorkPerson = createWorkPersonByCenterInfo( okrCenterWorkInfo, userName, identity, departmentName, companyName, "观察者", okrCenterWorkInfo.getCreateTime() );
+					okrWorkPerson.setWorkProcessStatus( okrCenterWorkInfo.getProcessStatus() );
+					okrWorkPerson.setDiscription( "中心工作阅知领导" );
+					saveCenterWorkPerson( okrWorkPerson );
+				}
+			}
+		}
+		
+		if( okrCenterWorkInfo.getReportAuditLeaderIdentity() != null && !okrCenterWorkInfo.getReportAuditLeaderIdentity().isEmpty() ){
+			String[] identityArray = null;
+			String userName = null, departmentName = null, companyName = null;
+			identityArray = okrCenterWorkInfo.getReportAuditLeaderIdentity().split( "," );
+			if( identityArray != null && identityArray.length > 0 ){
+				for( String identity : identityArray ){
+					companyName = okrUserManagerService.getCompanyNameByIdentity(identity);
+					departmentName = okrUserManagerService.getDepartmentNameByIdentity(identity);
+					userName = okrUserManagerService.getUserNameByIdentity (identity );
+					okrWorkPerson = createWorkPersonByCenterInfo( okrCenterWorkInfo, userName, identity, departmentName, companyName, "观察者", okrCenterWorkInfo.getCreateTime() );
+					okrWorkPerson.setWorkProcessStatus( okrCenterWorkInfo.getProcessStatus() );
+					okrWorkPerson.setDiscription( "中心工作汇报审核领导" );
+					saveCenterWorkPerson( okrWorkPerson );
+				}
+			}
 		}
 	}
 	
@@ -458,7 +504,7 @@ public class OkrWorkPersonService {
 					if( okrUserManagerService.getUserNameByIdentity( identityName ) == null ){
 						throw new Exception( "person not exsits, identity:" + identityName );
 					}
-					userName = okrUserManagerService.getUserNameByIdentity(identityName).getName();
+					userName = okrUserManagerService.getUserNameByIdentity(identityName);
 					organizationName = okrUserManagerService.getDepartmentNameByIdentity(identityName);
 					companyName = okrUserManagerService.getCompanyNameByIdentity(identityName);
 					okrWorkPerson = createWorkPersonByCenterInfo( okrCenterWorkInfo, userName, identityName, organizationName, companyName, "阅知者", okrCenterWorkInfo.getCreateTime() );
@@ -498,7 +544,7 @@ public class OkrWorkPersonService {
 		if( okrCenterWorkInfo == null ){
 			throw new Exception( "okrCenterWorkInfo{'id':'"+centerId+"'} is not exists." );
 		}else{
-			userName = okrUserManagerService.getUserNameByIdentity(employeeIdentityName).getName();
+			userName = okrUserManagerService.getUserNameByIdentity(employeeIdentityName);
 			organizationName = okrUserManagerService.getDepartmentNameByIdentity(employeeIdentityName);
 			companyName = okrUserManagerService.getCompanyNameByIdentity(employeeIdentityName);
 			return createWorkPersonByCenterInfo( okrCenterWorkInfo, userName, employeeIdentityName, organizationName, companyName, processIdentity, createTime );
@@ -514,6 +560,7 @@ public class OkrWorkPersonService {
 	 */
 	public OkrWorkPerson createWorkPersonByCenterInfo( OkrCenterWorkInfo okrCenterWorkInfo, String employeeName, String employeeIdentity, String employeeOrganization, String empoyeeCompany, String processIdentity, Date createTime) throws Exception {
 		String deployYear = null, deployMonth = null;
+		Date now = new Date();
 		if( okrCenterWorkInfo == null ){
 			throw new Exception( " okrCenterWorkInfo id is null, can not create new OkrWorkPerson!" );
 		}
@@ -521,28 +568,29 @@ public class OkrWorkPersonService {
 			throw new Exception( " employeeName is null, can not create new OkrWorkPerson!" );
 		}
 		if( employeeIdentity == null ){
-			logger.error( " employeeIdentity is null, can not create new OkrWorkPerson!" );
-			return null;
+			throw new Exception( " employeeIdentity is null, can not create new OkrWorkPerson!" );
 		}
 		if( employeeOrganization == null ){
-			logger.error( " employeeOrganization is null, can not create new OkrWorkPerson!" );
-			return null;
+			throw new Exception( " employeeOrganization is null, can not create new OkrWorkPerson!" );
 		}
 		if( empoyeeCompany == null ){
-			logger.error( " empoyeeCompany is null, can not create new OkrWorkPerson!" );
-			return null;
+			throw new Exception( " empoyeeCompany is null, can not create new OkrWorkPerson!" );
 		}
 		if( processIdentity == null ){
 			throw new Exception( " processIdentity is null, can not create new OkrWorkPerson!" );
 		}
 		if( createTime == null ){
-			throw new Exception( " createtime is null, can not create new OkrWorkPerson!" );
+			createTime = new Date();
 		}
 		try{
 			deployYear = dateOperation.getYear( createTime );
 			deployMonth = dateOperation.getMonth( createTime );
+			if( "0".equals( deployYear ) ){
+				deployYear = dateOperation.getYear( now );
+				deployMonth = dateOperation.getMonth( now );
+			}
 		}catch(Exception e){
-			logger.error( "system get year and month from createtime got an exception: ", e);
+			logger.warn( "system get year and month from createtime got an exception: " );
 			return null;
 		}
 		
@@ -556,6 +604,17 @@ public class OkrWorkPersonService {
 		okrWorkPerson.setCompanyName(empoyeeCompany);
 		okrWorkPerson.setDeployMonth(deployMonth);
 		okrWorkPerson.setDeployYear(deployYear);
+		
+		okrWorkPerson.setDeployDateStr( okrCenterWorkInfo.getDeployDateStr() );
+		if( okrCenterWorkInfo.getCreateTime() != null ){
+			okrWorkPerson.setWorkCreateDateStr( dateOperation.getDateStringFromDate( okrCenterWorkInfo.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+		}else{
+			okrWorkPerson.setWorkCreateDateStr( dateOperation.getDateStringFromDate( new Date(), "yyyy-MM-dd HH:mm:ss"));
+		}
+		okrWorkPerson.setCompleteDateLimitStr( okrCenterWorkInfo.getDefaultCompleteDateLimitStr() );
+		okrWorkPerson.setCompleteDateLimit( okrCenterWorkInfo.getDefaultCompleteDateLimit() );
+		okrWorkPerson.setRecordType( "中心工作" );
+		
 		okrWorkPerson.setProcessIdentity( processIdentity );
 		okrWorkPerson.setIsDelegateTarget( false );
 		okrWorkPerson.setIsOverTime( false );
@@ -586,8 +645,7 @@ public class OkrWorkPersonService {
 			throw new Exception( " okrWorkBaseInfo is null, can not create new OkrWorkPerson!" );
 		}
 		if( employeeIdentity == null ){
-			logger.error( " employeeIdentity is null, can not create new OkrWorkPerson!" );
-			return null;
+			throw new Exception( " employeeIdentity is null, can not create new OkrWorkPerson!" );
 		}
 		if( processIdentity == null ){
 			throw new Exception( " processIdentity is null, can not create new OkrWorkPerson!" );
@@ -595,7 +653,7 @@ public class OkrWorkPersonService {
 		
 		Date createTime = new Date();
 		WrapPerson wrapPerson  = null;
-		wrapPerson = okrUserManagerService.getUserNameByIdentity( employeeIdentity );
+		wrapPerson = okrUserManagerService.getUserByIdentity( employeeIdentity );
 		if( wrapPerson != null ){
 			String employeeName = wrapPerson.getName();
 			String employeeOrganization = okrUserManagerService.getDepartmentNameByIdentity( employeeIdentity );
@@ -604,7 +662,7 @@ public class OkrWorkPersonService {
 				deployYear = dateOperation.getYear( createTime );
 				deployMonth = dateOperation.getMonth( createTime );
 			}catch(Exception e){
-				logger.error( "system get year and month from createtime got an exception: ", e);
+				logger.warn( "system get year and month from createtime got an exception: " );
 				return null;
 			}
 			//根据以上信息创建一个新的工作干系人信息对象
@@ -617,6 +675,17 @@ public class OkrWorkPersonService {
 			okrWorkPerson.setCompanyName( empoyeeCompany );
 			okrWorkPerson.setDeployMonth( deployMonth );
 			okrWorkPerson.setDeployYear( deployYear );
+			
+			okrWorkPerson.setDeployDateStr( okrWorkBaseInfo.getDeployDateStr() );
+			if( okrWorkBaseInfo.getCreateTime() != null ){
+				okrWorkPerson.setWorkCreateDateStr( dateOperation.getDateStringFromDate( okrWorkBaseInfo.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+			}else{
+				okrWorkPerson.setWorkCreateDateStr( dateOperation.getDateStringFromDate( new Date(), "yyyy-MM-dd HH:mm:ss"));
+			}
+			okrWorkPerson.setCompleteDateLimitStr( okrWorkBaseInfo.getCompleteDateLimitStr() );
+			okrWorkPerson.setCompleteDateLimit( okrWorkBaseInfo.getCompleteDateLimit() );
+			okrWorkPerson.setRecordType( "具体工作" );
+			
 			okrWorkPerson.setProcessIdentity( processIdentity );
 			okrWorkPerson.setIsOverTime( okrWorkBaseInfo.getIsOverTime() );
 			okrWorkPerson.setWorkId( okrWorkBaseInfo.getId() );
@@ -669,7 +738,7 @@ public class OkrWorkPersonService {
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			return business.okrWorkPersonFactory().listIdsForCenterWorkByCenterId( centerId, null, statuses );
+			return business.okrWorkPersonFactory().listIdsForCenterWorkByCenterId( centerId, null, null, statuses );
 		} catch ( Exception e ) {
 			throw e;
 		}
@@ -721,7 +790,7 @@ public class OkrWorkPersonService {
 		}
 	}
 
-	public List<String> countCenterWorkByWorkType(String workTypeName, String loginIdentity, String processIdentity ) throws Exception {
+	public List<String> listCenterWorkIdsByWorkType( List<String> workTypeName, String loginIdentity, String processIdentity ) throws Exception {
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
@@ -735,12 +804,22 @@ public class OkrWorkPersonService {
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			return business.okrWorkPersonFactory().listByWorkAndIdentity(centerId, workId, employeeIdentity, processIdentity, statuses);
+			return business.okrWorkPersonFactory().listByWorkAndIdentity( centerId, workId, employeeIdentity, processIdentity, statuses);
 		} catch ( Exception e ) {
 			throw e;
 		}
 	}
-
+	
+	public List<String> listDistinctWorkIdsByWorkAndIdentity( String centerId, String workId, String employeeIdentity, String processIdentity, List<String> statuses) throws Exception {
+		Business business = null;
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			return business.okrWorkPersonFactory().listDistinctWorkIdsByWorkAndIdentity( centerId, workId, employeeIdentity, processIdentity, statuses);
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+	
 	public List<OkrWorkPerson> list(List<String> ids) throws Exception {
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -764,14 +843,23 @@ public class OkrWorkPersonService {
 		}
 	}
 
-	public List<String> listDistinctWorkIdsByPersonIndentity( String identity, String processIdentity, List<String> deploy_ids) throws Exception {
+	/**
+	 * 
+	 * @param centerId
+	 * @param identity
+	 * @param processIdentity
+	 * @param notInCenterIds 排除的中心工作ID
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listDistinctWorkIdsByPersonIndentity( String centerId, String identity, String processIdentity, List<String> notInCenterIds) throws Exception {
 		Business business = null;
 		if( identity == null || identity.isEmpty() ){
 			throw new Exception( "identity is null, system can not query any object." );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			return business.okrWorkPersonFactory().listDistinctWorkIdsByPersonIndentity( identity, processIdentity, deploy_ids );
+			return business.okrWorkPersonFactory().listDistinctWorkIdsByPersonIndentity( centerId, identity, processIdentity, notInCenterIds );
 		} catch ( Exception e ) {
 			throw e;
 		}
@@ -816,6 +904,16 @@ public class OkrWorkPersonService {
 			throw e;
 		}
 	}
+	
+	public Long getOvertimenessWorkCountByCenterId(String identity, List<String> status, String processIdentity) throws Exception {
+		Business business = null;	
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			return business.okrWorkPersonFactory().getOvertimenessWorkCountByCenterId( identity, status, processIdentity );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
 
 	public Long getDraftWorkCountByCenterId(String identity, List<String> status, String processIdentity) throws Exception {
 		Business business = null;	
@@ -825,5 +923,76 @@ public class OkrWorkPersonService {
 		} catch ( Exception e ) {
 			throw e;
 		}
+	}
+
+	public OkrWorkPerson createCenterWorkPersonByWorkPersonInfo( OkrWorkPerson workPerson, String processIdentity, Date createTime ) throws Exception {
+		if( workPerson == null ){
+			return null;
+		}
+		String deployYear = null, deployMonth = null;
+		Date now = new Date();
+		OkrCenterWorkInfo okrCenterWorkInfo = null;
+		
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			okrCenterWorkInfo = business.okrCenterWorkInfoFactory().get( workPerson.getCenterId() );
+			if( okrCenterWorkInfo == null ){
+				throw new Exception("center work is not exists.id:" + workPerson.getCenterId() );
+			}
+		} catch ( Exception e ) {
+			throw e;
+		}
+		
+		try{
+			deployYear = dateOperation.getYear( createTime );
+			deployMonth = dateOperation.getMonth( createTime );
+			if( "0".equals( deployYear ) ){
+				deployYear = dateOperation.getYear( now );
+				deployMonth = dateOperation.getMonth( now );
+			}
+		}catch(Exception e){
+			logger.warn( "system get year and month from createtime got an exception: " );
+			return null;
+		}
+		
+		//根据以上信息创建一个新的工作干系人信息对象
+		OkrWorkPerson okrWorkPerson = new OkrWorkPerson();
+		okrWorkPerson.setCenterId( workPerson.getCenterId() );
+		okrWorkPerson.setCenterTitle( workPerson.getCenterTitle() );
+		okrWorkPerson.setEmployeeName( workPerson.getEmployeeName() );
+		okrWorkPerson.setEmployeeIdentity( workPerson.getEmployeeIdentity() );
+		okrWorkPerson.setOrganizationName( workPerson.getOrganizationName() );
+		okrWorkPerson.setCompanyName( workPerson.getCompanyName() );
+		okrWorkPerson.setDeployMonth( deployMonth );
+		okrWorkPerson.setDeployYear( deployYear );
+		
+		okrWorkPerson.setDeployDateStr( okrCenterWorkInfo.getDeployDateStr() );
+		if( okrCenterWorkInfo.getCreateTime() != null ){
+			okrWorkPerson.setWorkCreateDateStr( dateOperation.getDateStringFromDate( okrCenterWorkInfo.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+		}else{
+			okrWorkPerson.setWorkCreateDateStr( dateOperation.getDateStringFromDate( new Date(), "yyyy-MM-dd HH:mm:ss"));
+		}
+		okrWorkPerson.setCompleteDateLimitStr( okrCenterWorkInfo.getDefaultCompleteDateLimitStr() );
+		okrWorkPerson.setCompleteDateLimit( okrCenterWorkInfo.getDefaultCompleteDateLimit() );
+		okrWorkPerson.setRecordType( "中心工作" );
+		
+		if( processIdentity != null && !processIdentity.isEmpty() ){
+			okrWorkPerson.setProcessIdentity( processIdentity );
+		}else{
+			okrWorkPerson.setProcessIdentity( workPerson.getProcessIdentity() );
+		}
+		okrWorkPerson.setIsDelegateTarget( false );
+		okrWorkPerson.setIsOverTime( false );
+		okrWorkPerson.setStatus( "正常" );
+		okrWorkPerson.setWorkId( null );
+		okrWorkPerson.setWorkTitle( null );
+		okrWorkPerson.setWorkType( okrCenterWorkInfo.getDefaultWorkType() );
+		okrWorkPerson.setWorkLevel( okrCenterWorkInfo.getDefaultWorkLevel() );
+		okrWorkPerson.setViewTime( null );
+		okrWorkPerson.setIsCompleted( false );
+		okrWorkPerson.setParentWorkId( null );
+		okrWorkPerson.setWorkDateTimeType( null );
+		okrWorkPerson.setWorkProcessStatus( "执行中" );
+		return okrWorkPerson;	
 	}
 }

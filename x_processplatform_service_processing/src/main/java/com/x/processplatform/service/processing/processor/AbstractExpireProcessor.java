@@ -6,6 +6,8 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.gson.XGsonBuilder;
@@ -21,6 +23,8 @@ import com.x.processplatform.service.processing.ScriptHelperFactory;
 import com.x.processplatform.service.processing.configurator.ActivityProcessingConfigurator;
 
 public abstract class AbstractExpireProcessor extends AbstractBaseProcessor {
+	
+	private static Logger logger = LoggerFactory.getLogger(AbstractExpireProcessor.class);
 
 	protected AbstractExpireProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);

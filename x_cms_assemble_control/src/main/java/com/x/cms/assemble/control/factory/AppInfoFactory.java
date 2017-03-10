@@ -37,12 +37,13 @@ public class AppInfoFactory extends AbstractFactory {
 		cq.select(root.get(AppInfo_.id));
 		return em.createQuery(cq).getResultList();
 	}
+	@SuppressWarnings("unused")
 	@MethodDescribe("列示全部的Appinfo应用信息列表")
 	public List<AppInfo> listAll() throws Exception {
-		EntityManager em = this.entityManagerContainer().get(AppInfo.class);
+		EntityManager em = this.entityManagerContainer().get( AppInfo.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<AppInfo> cq = cb.createQuery(AppInfo.class);
-		Root<AppInfo> root = cq.from(AppInfo.class);
+		CriteriaQuery<AppInfo> cq = cb.createQuery( AppInfo.class );
+		Root<AppInfo> root = cq.from( AppInfo.class );
 		return em.createQuery(cq).getResultList();
 	}
 	
@@ -84,5 +85,13 @@ public class AppInfoFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
-	
+	public List<String> listByAppName(String appName) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(AppInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<AppInfo> root = cq.from(AppInfo.class);
+		Predicate p = cb.equal( root.get(AppInfo_.appName ), appName );
+		cq.select(root.get( AppInfo_.id ));
+		return em.createQuery(cq.where( p )).getResultList();
+	}	
 }

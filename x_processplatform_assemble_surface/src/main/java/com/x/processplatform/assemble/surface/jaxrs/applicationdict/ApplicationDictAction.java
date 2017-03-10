@@ -23,44 +23,51 @@ import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.wrapin.element.WrapInApplicationDict;
 import com.x.processplatform.assemble.surface.wrapout.element.WrapOutApplicationDict;
 
 @Path("applicationdict")
 public class ApplicationDictAction extends StandardJaxrsAction {
 
+	private static Logger logger = LoggerFactory.getLogger(ApplicationDictAction.class);
+
 	@HttpMethodDescribe(value = "获取单个数据字典以及数据字典数据.", response = WrapOutApplicationDict.class)
 	@GET
-	@Path("{applicationDictFlag}")
+	@Path("{applicationDictFlag}/application/{applicationFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get(@Context HttpServletRequest request,
-			@PathParam("applicationDictFlag") String applicationDictFlag) {
+			@PathParam("applicationDictFlag") String applicationDictFlag,
+			@PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<WrapOutApplicationDict> result = new ActionResult<>();
+		logger.debug("run get applicationDictFlag:{}, applicationFlag:{}.", applicationDictFlag, applicationFlag);
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionGet().execute(effectivePerson, applicationDictFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ActionGet().execute(effectivePerson, applicationDictFlag, applicationFlag);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
 	@HttpMethodDescribe(value = "更新数据字典以及数据.", request = WrapInApplicationDict.class, response = WrapOutId.class)
 	@PUT
-	@Path("{flag}")
+	@Path("{applicationDictFlag}/application/{applicationFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response update(@Context HttpServletRequest request, @PathParam("flag") String flag,
-			WrapInApplicationDict wrapIn) {
+	public Response update(@Context HttpServletRequest request,
+			@PathParam("applicationDictFlag") String applicationDictFlag,
+			@PathParam("applicationFlag") String applicationFlag, WrapInApplicationDict wrapIn) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionUpdate().execute(effectivePerson, flag, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ActionUpdate().execute(effectivePerson, applicationDictFlag, applicationFlag, wrapIn);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -73,11 +80,12 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 	public Response listWithApplication(@Context HttpServletRequest request,
 			@PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<List<WrapOutApplicationDict>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionListWithApplication().execute(applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -91,11 +99,12 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("applicationDictFlag") String applicationDictFlag,
 			@PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionGetData().execute(applicationDictFlag, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -109,11 +118,12 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("applicationDictFlag") String applicationDictFlag,
 			@PathParam("applicationFlag") String applicationFlag, @PathParam("path0") String path0) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionGetDataPath0().execute(applicationDictFlag, applicationFlag, path0);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -128,11 +138,12 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("applicationFlag") String applicationFlag, @PathParam("path0") String path0,
 			@PathParam("path1") String path1) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionGetDataPath1().execute(applicationDictFlag, applicationFlag, path0, path1);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -147,11 +158,12 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("applicationFlag") String applicationFlag, @PathParam("path0") String path0,
 			@PathParam("path1") String path1, @PathParam("path2") String path2) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionGetDataPath2().execute(applicationDictFlag, applicationFlag, path0, path1, path2);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -166,11 +178,12 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("applicationFlag") String applicationFlag, @PathParam("path0") String path0,
 			@PathParam("path1") String path1, @PathParam("path2") String path2, @PathParam("path3") String path3) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionGetDataPath3().execute(applicationDictFlag, applicationFlag, path0, path1, path2, path3);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -186,12 +199,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("path1") String path1, @PathParam("path2") String path2, @PathParam("path3") String path3,
 			@PathParam("path4") String path4) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionGetDataPath4().execute(applicationDictFlag, applicationFlag, path0, path1, path2, path3,
 					path4);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -207,12 +221,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("path1") String path1, @PathParam("path2") String path2, @PathParam("path3") String path3,
 			@PathParam("path4") String path4, @PathParam("path5") String path5) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionGetDataPath5().execute(applicationDictFlag, applicationFlag, path0, path1, path2, path3,
 					path4, path5);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -228,12 +243,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("path1") String path1, @PathParam("path2") String path2, @PathParam("path3") String path3,
 			@PathParam("path4") String path4, @PathParam("path5") String path5, @PathParam("path6") String path6) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionGetDataPath6().execute(applicationDictFlag, applicationFlag, path0, path1, path2, path3,
 					path4, path5, path6);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -250,12 +266,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("path4") String path4, @PathParam("path5") String path5, @PathParam("path6") String path6,
 			@PathParam("path7") String path7) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionGetDataPath7().execute(applicationDictFlag, applicationFlag, path0, path1, path2, path3,
 					path4, path5, path6, path7);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -270,11 +287,12 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("applicationFlag") String applicationFlag, @PathParam("path0") String path0,
 			JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionUpdateDataPath0().execute(applicationDictFlag, applicationFlag, path0, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -289,12 +307,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("applicationFlag") String applicationFlag, @PathParam("path0") String path0,
 			@PathParam("path1") String path1, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionUpdateDataPath1().execute(applicationDictFlag, applicationFlag, path0, path1,
 					jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -309,12 +328,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("applicationFlag") String applicationFlag, @PathParam("path0") String path0,
 			@PathParam("path1") String path1, @PathParam("path2") String path2, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionUpdateDataPath2().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
 					jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -330,12 +350,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("path1") String path1, @PathParam("path2") String path2, @PathParam("path3") String path3,
 			JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionUpdateDataPath3().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
 					path3, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -351,12 +372,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("path1") String path1, @PathParam("path2") String path2, @PathParam("path3") String path3,
 			@PathParam("path4") String path4, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionUpdateDataPath4().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
 					path3, path4, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -372,12 +394,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("path1") String path1, @PathParam("path2") String path2, @PathParam("path3") String path3,
 			@PathParam("path4") String path4, @PathParam("path5") String path5, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionUpdateDataPath5().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
 					path3, path4, path5, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -394,12 +417,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("path4") String path4, @PathParam("path5") String path5, @PathParam("path6") String path6,
 			JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionUpdateDataPath6().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
 					path3, path4, path5, path6, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -416,12 +440,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("path4") String path4, @PathParam("path5") String path5, @PathParam("path6") String path6,
 			@PathParam("path7") String path7, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionUpdateDataPath7().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
 					path3, path4, path5, path6, path7, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -436,11 +461,12 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("applicationFlag") String applicationFlag, @PathParam("path0") String path0,
 			JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateDataPath0().execute(applicationDictFlag, applicationFlag, path0, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -455,12 +481,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("applicationFlag") String applicationFlag, @PathParam("path0") String path0,
 			@PathParam("path1") String path1, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateDataPath1().execute(applicationDictFlag, applicationFlag, path0, path1,
 					jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -475,12 +502,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("applicationFlag") String applicationFlag, @PathParam("path0") String path0,
 			@PathParam("path1") String path1, @PathParam("path2") String path2, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateDataPath2().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
 					jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -496,12 +524,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("path1") String path1, @PathParam("path2") String path2, @PathParam("path3") String path3,
 			JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateDataPath3().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
 					path3, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -517,12 +546,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("path1") String path1, @PathParam("path2") String path2, @PathParam("path3") String path3,
 			@PathParam("path4") String path4, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateDataPath4().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
 					path3, path4, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -538,12 +568,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("path1") String path1, @PathParam("path2") String path2, @PathParam("path3") String path3,
 			@PathParam("path4") String path4, @PathParam("path5") String path5, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateDataPath5().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
 					path3, path4, path5, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -560,12 +591,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("path4") String path4, @PathParam("path5") String path5, @PathParam("path6") String path6,
 			JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateDataPath6().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
 					path3, path4, path5, path6, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -582,12 +614,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("path4") String path4, @PathParam("path5") String path5, @PathParam("path6") String path6,
 			@PathParam("path7") String path7, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateDataPath7().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
 					path3, path4, path5, path6, path7, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -601,11 +634,12 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("applicationDictFlag") String applicationDictFlag,
 			@PathParam("applicationFlag") String applicationFlag, @PathParam("path0") String path0) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionDeleteDataPath0().execute(applicationDictFlag, applicationFlag, path0);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -620,11 +654,12 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("applicationFlag") String applicationFlag, @PathParam("path0") String path0,
 			@PathParam("path1") String path1) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionDeleteDataPath1().execute(applicationDictFlag, applicationFlag, path0, path1);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -639,11 +674,12 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("applicationFlag") String applicationFlag, @PathParam("path0") String path0,
 			@PathParam("path1") String path1, @PathParam("path2") String path2) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionDeleteDataPath2().execute(applicationDictFlag, applicationFlag, path0, path1, path2);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -658,12 +694,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("applicationFlag") String applicationFlag, @PathParam("path0") String path0,
 			@PathParam("path1") String path1, @PathParam("path2") String path2, @PathParam("path3") String path3) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionDeleteDataPath3().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
 					path3);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -679,12 +716,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("path1") String path1, @PathParam("path2") String path2, @PathParam("path3") String path3,
 			@PathParam("path4") String path4) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionDeleteDataPath4().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
 					path3, path4);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -700,12 +738,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("path1") String path1, @PathParam("path2") String path2, @PathParam("path3") String path3,
 			@PathParam("path4") String path4, @PathParam("path5") String path5) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionDeleteDataPath5().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
 					path3, path4, path5);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -721,12 +760,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("path1") String path1, @PathParam("path2") String path2, @PathParam("path3") String path3,
 			@PathParam("path4") String path4, @PathParam("path5") String path5, @PathParam("path6") String path6) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionDeleteDataPath6().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
 					path3, path4, path5, path6);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -743,12 +783,13 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@PathParam("path4") String path4, @PathParam("path5") String path5, @PathParam("path6") String path6,
 			@PathParam("path7") String path7) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionDeleteDataPath7().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
 					path3, path4, path5, path6, path7);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e,  effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

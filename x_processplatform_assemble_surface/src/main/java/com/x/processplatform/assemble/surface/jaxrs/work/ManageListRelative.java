@@ -28,7 +28,7 @@ class ManageListRelative extends ActionBase {
 			Process process = business.process().pick(work.getProcess());
 			// 需要对这个应用的管理权限
 			if (!business.process().allowControl(effectivePerson, process)) {
-				throw new Exception("person{name:" + effectivePerson.getName() + "} has insufficient permissions.");
+				throw new ProcessAccessDeniedException(effectivePerson.getName(), process.getId());
 			}
 			List<String> ids = this.listRelative(business, work);
 			for (String str : ids) {

@@ -13,16 +13,16 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
-import com.x.base.core.http.WrapOutListString;
+import com.x.base.core.http.WrapOutStringList;
 import com.x.organization.core.entity.DepartmentDuty;
 import com.x.organization.core.entity.DepartmentDuty_;
 
 class ActionDistinctName extends ActionBase {
 
-	protected ActionResult<WrapOutListString> execute() throws Exception {
+	protected ActionResult<WrapOutStringList> execute() throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<WrapOutListString> result = new ActionResult<>();
-			WrapOutListString wrap = new WrapOutListString();
+			ActionResult<WrapOutStringList> result = new ActionResult<>();
+			WrapOutStringList wrap = new WrapOutStringList();
 			EntityManager em = emc.get(DepartmentDuty.class);
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<String> cq = cb.createQuery(String.class);

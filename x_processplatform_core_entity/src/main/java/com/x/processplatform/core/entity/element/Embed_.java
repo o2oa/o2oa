@@ -14,7 +14,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.processplatform.core.entity.element.Embed.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:19:07 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:10:19 CST 2017")
 public class Embed_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Embed,String> afterArriveScript;
     public static volatile SingularAttribute<Embed,String> afterArriveScriptText;
@@ -41,12 +41,15 @@ public class Embed_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Embed,String> name;
     public static volatile SingularAttribute<Embed,String> position;
     public static volatile SingularAttribute<Embed,String> process;
+    public static volatile ListAttribute<Embed,String> readDataPathList;
     public static volatile ListAttribute<Embed,String> readDepartmentList;
     public static volatile SingularAttribute<Embed,String> readDuty;
     public static volatile ListAttribute<Embed,String> readIdentityList;
     public static volatile SingularAttribute<Embed,String> readScript;
     public static volatile SingularAttribute<Embed,String> readScriptText;
+    public static volatile ListAttribute<Embed,String> reviewDataPathList;
     public static volatile ListAttribute<Embed,String> reviewDepartmentList;
+    public static volatile SingularAttribute<Embed,String> reviewDuty;
     public static volatile ListAttribute<Embed,String> reviewIdentityList;
     public static volatile SingularAttribute<Embed,String> reviewScript;
     public static volatile SingularAttribute<Embed,String> reviewScriptText;

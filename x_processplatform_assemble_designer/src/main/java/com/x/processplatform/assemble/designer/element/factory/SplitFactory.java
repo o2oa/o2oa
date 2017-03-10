@@ -28,4 +28,15 @@ public class SplitFactory extends AbstractFactory {
 		cq.select(root.get(Split_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
+	
+	/** 查找使用表单的split */
+	public List<String> listWithForm(String formId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Split.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Split> root = cq.from(Split.class);
+		Predicate p = cb.equal(root.get(Split_.form), formId);
+		cq.select(root.get(Split_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
 }

@@ -9,7 +9,6 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,20 +19,23 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
 import org.imgscalr.Scalr;
 
-import com.x.base.core.application.servlet.FileUploadServletTools;
+import com.x.base.core.application.servlet.AbstractServletAction;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.core.entity.element.Application;
 
 @WebServlet("/servlet/application/*")
 @MultipartConfig
-public class ApplicationIconServlet extends HttpServlet {
+public class ApplicationIconServlet extends AbstractServletAction {
+
+	private static Logger logger = LoggerFactory.getLogger(ApplicationIconServlet.class);
 
 	private static final long serialVersionUID = -516827649716075968L;
 
@@ -42,18 +44,25 @@ public class ApplicationIconServlet extends HttpServlet {
 			throws ServletException, IOException {
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		WrapOutId wrap = null;
+		EffectivePerson effectivePerson = null;
 		try {
+			effectivePerson = this.effectivePerson(request);
 			request.setCharacterEncoding("UTF-8");
 			if (!ServletFileUpload.isMultipartContent(request)) {
 				throw new Exception("not mulit part request.");
 			}
-			EffectivePerson effectivePerson = FileUploadServletTools.effectivePerson(request);
-			String part = FileUploadServletTools.getURIPart(request.getRequestURI(), "application");
+			String part = this.getURIPart(request.getRequestURI(), "application");
 			String applicationId = StringUtils.substringBefore(part, "/icon");
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				Application application = emc.find(applicationId, Application.class,ExceptionWhen.not_found);
-				business.applicationEditAvailable(effectivePerson, application, ExceptionWhen.not_allow);
+				Application application = emc.find(applicationId, Application.class);
+				if (null == application) {
+					throw new ApplicationNotExistedException(applicationId);
+				}
+				if (!business.applicationEditAvailable(effectivePerson, application)) {
+					throw new ApplicationAccessDeniedException(effectivePerson.getName(), application.getName(),
+							application.getId());
+				}
 				FileItemIterator fileItemIterator = new ServletFileUpload().getItemIterator(request);
 				while (fileItemIterator.hasNext()) {
 					FileItemStream item = fileItemIterator.next();
@@ -75,10 +84,10 @@ public class ApplicationIconServlet extends HttpServlet {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
-		FileUploadServletTools.result(response, result);
+		this.result(response, result);
 	}
 }

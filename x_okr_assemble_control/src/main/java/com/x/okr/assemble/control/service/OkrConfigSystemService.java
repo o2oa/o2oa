@@ -2,9 +2,8 @@ package com.x.okr.assemble.control.service;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
@@ -66,7 +65,7 @@ public class OkrConfigSystemService{
 					emc.commit();
 				}
 			}catch( Exception e ){
-				logger.error( "OkrConfigSystem update/ got a error!" );
+				logger.warn( "OkrConfigSystem update/ got a error!" );
 				throw e;
 			}
 		}else{//没有传入指定的ID
@@ -77,7 +76,7 @@ public class OkrConfigSystemService{
 				emc.persist( okrConfigSystem, CheckPersistType.all);	
 				emc.commit();
 			}catch( Exception e ){
-				logger.error( "OkrConfigSystem create got a error!", e);
+				logger.warn( "OkrConfigSystem create got a error!", e);
 				throw e;
 			}
 		}
@@ -92,13 +91,13 @@ public class OkrConfigSystemService{
 	public void delete( String id ) throws Exception {
 		OkrConfigSystem okrConfigSystem = null;
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not delete any object." );
+			throw new Exception( "id is null, system can not delete any object." );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			okrConfigSystem = emc.find(id, OkrConfigSystem.class);
 			if (null == okrConfigSystem) {
-				logger.error( "object is not exist {'id':'"+ id +"'}" );
+				throw new Exception( "object is not exist {'id':'"+ id +"'}" );
 			}else{
 				emc.beginTransaction( OkrConfigSystem.class );
 				emc.remove( okrConfigSystem, CheckRemoveType.all );
@@ -178,7 +177,8 @@ public class OkrConfigSystemService{
 			business = new Business(emc);
 			okrConfigSystem = business.okrConfigSystemFactory().getWithConfigCode( configCode );
 		}catch( Exception e ){
-			logger.error( "system find system config{'configCode':'"+configCode+"'} got an exception. " , e );
+			logger.warn( "system find system config{'configCode':'"+configCode+"'} got an exception. " );
+			throw e;
 		}
 		//如果配置不存在，则新建一个配置记录
 		if( okrConfigSystem == null ){
@@ -197,7 +197,8 @@ public class OkrConfigSystemService{
 				//logger.info("系统参数基础信息已经被新增：" + okrConfigSystem.getConfigCode() + "[" + okrConfigSystem.getConfigName()+ "].");
 				emc.commit();
 			}catch( Exception e ){
-				logger.error("system persist new system config{'configCode':'"+configCode+"'} got an exception. " , e );
+				logger.warn("system persist new system config{'configCode':'"+configCode+"'} got an exception. " );
+				throw e;
 			}
 		}else{
 			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
@@ -225,7 +226,8 @@ public class OkrConfigSystemService{
 				emc.commit();
 				//logger.info("系统参数基础信息已经被更新：" + okrConfigSystem.getConfigCode() + "[" + okrConfigSystem.getConfigName()+ "].");
 			}catch( Exception e ){
-				logger.error("system update system config{'configCode':'"+configCode+"'} got an exception. " , e );
+				logger.warn("system update system config{'configCode':'"+configCode+"'} got an exception. ");
+				throw e;
 			}
 		}
 	}
@@ -236,8 +238,9 @@ public class OkrConfigSystemService{
 		REPORT_AUDIT_LEADER	        汇报审阅领导	               周睿(O2研发团队),胡起(O2研发团队),刘振兴(O2研发团队)
 		REPORT_AUDIT_LEVEL	        汇报审阅控制层级	   1
 		COMPANY_WORK_ADMIN      公司工作管理员            蔡艳红(O2研发团队)
+	 * @throws Exception 
 	 */
-	public void initAllSystemConfig() {
+	public void initAllSystemConfig() throws Exception {
 		String value = null, description = null, type = null, selectContent = null;
 		Boolean isMultiple = false;
 		Integer ordernumber = 0;
@@ -245,12 +248,13 @@ public class OkrConfigSystemService{
 		value = "";
 		type = "identity";
 		selectContent = null;
-		isMultiple = false;
-		description = "公司工作管理员：可选值为指定的人员身份，单值。公司工作管理可以进行工作部署，其他人员不允许进行工作部署。（暂定配置，后续使用权限设计实现）。";
+		isMultiple = true;
+		description = "公司工作管理员：可选值为指定的人员身份，可多值。公司工作管理可以进行工作部署，其他人员不允许进行工作部署。（暂定配置，后续使用权限设计实现）。";
 		try {
 			checkAndInitSystemConfig("COMPANY_WORK_ADMIN", "公司工作管理员", value, description, type, selectContent, isMultiple,  ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "system init system config 'COMPANY_WORK_ADMIN' got an exception.", e );
+			logger.warn( "system init system config 'COMPANY_WORK_ADMIN' got an exception." );
+			throw e;
 		}
 		
 		/**
@@ -266,7 +270,8 @@ public class OkrConfigSystemService{
 		try {
 			checkAndInitSystemConfig("REPORT_WORKFLOW_TYPE", "工作汇报工作流方式", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "system init system config 'REPORT_WORKFLOW_TYPE' got an exception.", e );
+			logger.warn( "system init system config 'REPORT_WORKFLOW_TYPE' got an exception." );
+			throw e;
 		}
 		
 		value = null;
@@ -277,7 +282,8 @@ public class OkrConfigSystemService{
 		try {
 			checkAndInitSystemConfig("REPORT_SUPERVISOR", "汇报督办员身份", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "system init system config 'REPORT_SUPERVISOR' got an exception.", e );
+			logger.warn( "system init system config 'REPORT_SUPERVISOR' got an exception." );
+			throw e;
 		}
 		
 		value = null;
@@ -288,7 +294,8 @@ public class OkrConfigSystemService{
 		try {
 			checkAndInitSystemConfig("REPORT_AUDIT_LEADER", "汇报审阅领导", value, description, type, selectContent, isMultiple , ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "system init system config 'REPORT_AUDIT_LEADER' got an exception.", e );
+			logger.warn( "system init system config 'REPORT_AUDIT_LEADER' got an exception." );
+			throw e;
 		}
 		
 		value = "1";
@@ -299,7 +306,8 @@ public class OkrConfigSystemService{
 		try {
 			checkAndInitSystemConfig("REPORT_AUDIT_LEVEL", "汇报审阅控制层级", value, description, type, selectContent, isMultiple , ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "system init system config 'REPORT_AUDIT_LEVEL' got an exception.", e );
+			logger.warn( "system init system config 'REPORT_AUDIT_LEVEL' got an exception." );
+			throw e;
 		}
 		
 		value = "OPEN";
@@ -310,7 +318,8 @@ public class OkrConfigSystemService{
 		try {
 			checkAndInitSystemConfig("REPORT_AUTOCREATE", "定期汇报自动生成", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "system init system config 'REPORT_AUTOCREATE' got an exception.", e );
+			logger.warn( "system init system config 'REPORT_AUTOCREATE' got an exception." );
+			throw e;
 		}
 		
 		value = "10:00:00"; //10:00:00
@@ -321,7 +330,8 @@ public class OkrConfigSystemService{
 		try {
 			checkAndInitSystemConfig("REPORT_CREATETIME", "定期汇报生成时间", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "system init system config 'REPORT_CREATETIME' got an exception.", e );
+			logger.warn( "system init system config 'REPORT_CREATETIME' got an exception." );
+			throw e;
 		}
 		
 		value = "OPEN"; //OPEN|CLOSE
@@ -332,7 +342,8 @@ public class OkrConfigSystemService{
 		try {
 			checkAndInitSystemConfig("REPORT_USERCREATE", "用户工作汇报功能", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "system init system config 'REPORT_USERCREATE' got an exception.", e );
+			logger.warn( "system init system config 'REPORT_USERCREATE' got an exception." );
+			throw e;
 		}
 		
 		value = "OPEN"; //OPEN|CLOSE
@@ -343,7 +354,8 @@ public class OkrConfigSystemService{
 		try {
 			checkAndInitSystemConfig("REPORT_PROGRESS", "汇报工作进度", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "system init system config 'REPORT_PROGRESS' got an exception.", e );
+			logger.warn( "system init system config 'REPORT_PROGRESS' got an exception." );
+			throw e;
 		}
 		
 		value = "ICON"; //LIST|ICON
@@ -354,7 +366,8 @@ public class OkrConfigSystemService{
 		try {
 			checkAndInitSystemConfig("MIND_LISTSTYLE", "脑图工作列表样式", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "system init system config 'MIND_LISTSTYLE' got an exception.", e );
+			logger.warn( "system init system config 'MIND_LISTSTYLE' got an exception." );
+			throw e;
 		}
 		
 		value = "OPEN"; //OPEN|CLOSE
@@ -365,7 +378,8 @@ public class OkrConfigSystemService{
 		try {
 			checkAndInitSystemConfig("WORK_AUTHORIZE", "工作授权功能", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "system init system config 'WORK_AUTHORIZE' got an exception.", e );
+			logger.warn( "system init system config 'WORK_AUTHORIZE' got an exception." );
+			throw e;
 		}
 		
 		value = "NONE"; //NONE|READ|TASK
@@ -376,7 +390,8 @@ public class OkrConfigSystemService{
 		try {
 			checkAndInitSystemConfig("REPORT_AUTHOR_NOTICE", "汇报通知授权人方式", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "system init system config 'REPORT_AUTHOR_NOTICE' got an exception.", e );
+			logger.warn( "system init system config 'REPORT_AUTHOR_NOTICE' got an exception." );
+			throw e;
 		}
 		
 		value = "CLOSE"; //OPEN|CLOSE
@@ -387,7 +402,8 @@ public class OkrConfigSystemService{
 		try {
 			checkAndInitSystemConfig("REPORTOR_AUDIT_NOTICE", "汇报审核进展通知", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "system init system config 'REPORTOR_AUDIT_NOTICE' got an exception.", e );
+			logger.warn( "system init system config 'REPORTOR_AUDIT_NOTICE' got an exception." );
+			throw e;
 		}
 		
 		value = "OPEN"; //OPEN|CLOSE
@@ -398,7 +414,8 @@ public class OkrConfigSystemService{
 		try {
 			checkAndInitSystemConfig("WORK_DISMANTLING", "工作拆分功能", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "system init system config 'WORK_DISMANTLING' got an exception.", e );
+			logger.warn( "system init system config 'WORK_DISMANTLING' got an exception." );
+			throw e;
 		}
 		
 		value = "OPEN"; //OPEN|CLOSE
@@ -409,7 +426,8 @@ public class OkrConfigSystemService{
 		try {
 			checkAndInitSystemConfig("INDEX_WORK_STATUSLIST", "首页工作状态列表", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "system init system config 'INDEX_WORK_STATUSLIST' got an exception.", e );
+			logger.warn( "system init system config 'INDEX_WORK_STATUSLIST' got an exception." );
+			throw e;
 		}
 		
 		value = "PROMPTNESSRATE"; //PROMPTNESSRATE|COMPLETIONRATE
@@ -420,7 +438,8 @@ public class OkrConfigSystemService{
 		try {
 			checkAndInitSystemConfig("INDEX_STATISTIC_TYPE", "首页统计状态类别", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "system init system config 'INDEX_STATISTIC_TYPE' got an exception.", e );
+			logger.warn( "system init system config 'INDEX_STATISTIC_TYPE' got an exception." );
+			throw e;
 		}
 		
 		value = ""; //可以执行归档的用户身份列表，多值，可以用,号分隔
@@ -431,7 +450,20 @@ public class OkrConfigSystemService{
 		try {
 			checkAndInitSystemConfig("ARCHIVEMANAGER", "工作归档管理员", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "system init system config 'ARCHIVEMANAGER' got an exception.", e );
+			logger.warn( "system init system config 'ARCHIVEMANAGER' got an exception." );
+			throw e;
+		}
+		
+		value = "OPEN"; //OPEN|CLOSE
+		type = "select";
+		selectContent = "OPEN|CLOSE";
+		isMultiple = false;
+		description = "工作汇报自动结束：可选值[OPEN|CLOSE]。此配置控制系统是否会在生成新的汇报时自动结束已经存在的工作汇报信息，删除之前的汇报待办信息。";
+		try {
+			checkAndInitSystemConfig("REPORT_AUTO_OVER", "工作汇报自动结束", value, description, type, selectContent, isMultiple, ++ordernumber );
+		} catch (Exception e) {
+			logger.warn( "system init system config 'REPORT_AUTO_OVER' got an exception." );
+			throw e;
 		}
 	}
 }

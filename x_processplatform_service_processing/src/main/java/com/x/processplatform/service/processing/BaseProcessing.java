@@ -1,21 +1,21 @@
 package com.x.processplatform.service.processing;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.processplatform.service.processing.processor.AgentProcessor;
-import com.x.processplatform.service.processing.processor.BeginProcessor;
-import com.x.processplatform.service.processing.processor.CancelProcessor;
-import com.x.processplatform.service.processing.processor.ChoiceProcessor;
-import com.x.processplatform.service.processing.processor.ConditionProcessor;
-import com.x.processplatform.service.processing.processor.DelayProcessor;
-import com.x.processplatform.service.processing.processor.EmbedProcessor;
-import com.x.processplatform.service.processing.processor.EndProcessor;
-import com.x.processplatform.service.processing.processor.InvokeProcessor;
-import com.x.processplatform.service.processing.processor.ManualProcessor;
-import com.x.processplatform.service.processing.processor.MergeProcessor;
-import com.x.processplatform.service.processing.processor.MessageProcessor;
-import com.x.processplatform.service.processing.processor.ParallelProcessor;
-import com.x.processplatform.service.processing.processor.ServiceProcessor;
-import com.x.processplatform.service.processing.processor.SplitProcessor;
+import com.x.processplatform.service.processing.processor.agent.AgentProcessor;
+import com.x.processplatform.service.processing.processor.begin.BeginProcessor;
+import com.x.processplatform.service.processing.processor.cancel.CancelProcessor;
+import com.x.processplatform.service.processing.processor.choice.ChoiceProcessor;
+import com.x.processplatform.service.processing.processor.condition.ConditionProcessor;
+import com.x.processplatform.service.processing.processor.delay.DelayProcessor;
+import com.x.processplatform.service.processing.processor.embed.EmbedProcessor;
+import com.x.processplatform.service.processing.processor.end.EndProcessor;
+import com.x.processplatform.service.processing.processor.invoke.InvokeProcessor;
+import com.x.processplatform.service.processing.processor.manual.ManualProcessor;
+import com.x.processplatform.service.processing.processor.merge.MergeProcessor;
+import com.x.processplatform.service.processing.processor.message.MessageProcessor;
+import com.x.processplatform.service.processing.processor.parallel.ParallelProcessor;
+import com.x.processplatform.service.processing.processor.service.ServiceProcessor;
+import com.x.processplatform.service.processing.processor.split.SplitProcessor;
 
 public abstract class BaseProcessing {
 

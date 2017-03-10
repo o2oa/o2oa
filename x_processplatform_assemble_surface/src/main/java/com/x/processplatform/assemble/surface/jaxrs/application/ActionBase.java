@@ -9,10 +9,10 @@ import com.x.processplatform.core.entity.element.Process;
 
 abstract class ActionBase {
 
-	protected static BeanCopyTools<Application, WrapOutApplication> applicationOutCopier = BeanCopyToolsBuilder
+	static BeanCopyTools<Application, WrapOutApplication> applicationOutCopier = BeanCopyToolsBuilder
 			.create(Application.class, WrapOutApplication.class, null, WrapOutApplication.Excludes);
 
-	protected static BeanCopyTools<Process, WrapOutProcess> processOutCopier = BeanCopyToolsBuilder
-			.create(Process.class, WrapOutProcess.class, null, WrapOutProcess.Excludes);
-	
+	static BeanCopyTools<Process, WrapOutProcess> processOutCopier = BeanCopyToolsBuilder.create(Process.class,
+			WrapOutProcess.class, null, WrapOutProcess.Excludes);
+
 }

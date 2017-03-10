@@ -1,6 +1,8 @@
 package com.x.organization.assemble.authentication;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.instrument.assemble.express.Instrument;
+import com.x.organization.assemble.authentication.factory.BindFactory;
 import com.x.organization.assemble.authentication.factory.PersonFactory;
 import com.x.organization.assemble.authentication.factory.RoleFactory;
 
@@ -14,6 +16,15 @@ public class Business {
 
 	public EntityManagerContainer entityManagerContainer() {
 		return this.emc;
+	}
+
+	private Instrument instrument;
+
+	public Instrument instrument() throws Exception {
+		if (null == this.instrument) {
+			this.instrument = new Instrument();
+		}
+		return instrument;
 	}
 
 	private PersonFactory person;
@@ -32,6 +43,15 @@ public class Business {
 			this.role = new RoleFactory(this);
 		}
 		return role;
+	}
+
+	private BindFactory bind;
+
+	public BindFactory bind() throws Exception {
+		if (null == this.bind) {
+			this.bind = new BindFactory(this);
+		}
+		return bind;
 	}
 
 }

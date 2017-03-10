@@ -38,7 +38,7 @@ public class Room extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.Room.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -51,7 +51,7 @@ public class Room extends SliceJpaObject {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception {
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -111,7 +111,7 @@ public class Room extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception {
 		this.pinyin = StringUtils.lowerCase(PinyinHelper.convertToPinyinString(name, "", PinyinFormat.WITHOUT_TONE));
 		this.pinyinInitial = StringUtils.lowerCase(PinyinHelper.getShortPinyin(name));
 	}
@@ -135,7 +135,7 @@ public class Room extends SliceJpaObject {
 	@Index(name = TABLE + "_name")
 	@CheckPersist(allowEmpty = false, citationNotExists =
 	/* 验证不可重名 */
-	@CitationNotExist(fields = { "name", "id" }, type = Room.class) )
+	@CitationNotExist(fields = { "name", "id" }, type = Room.class))
 	private String name;
 
 	@EntityFieldDescribe("所属building.")

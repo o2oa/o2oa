@@ -16,6 +16,8 @@ import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.gson.XGsonBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.wrapin.element.WrapInQueryExecute;
@@ -27,7 +29,9 @@ import com.x.processplatform.core.entity.query.Query;
 import com.x.processplatform.core.entity.query.SelectEntry;
 import com.x.processplatform.core.entity.query.WhereEntry;
 
-public class ActionExecute extends ActionBase {
+class ActionExecute extends ActionBase {
+
+	private static Logger logger = LoggerFactory.getLogger(ActionExecute.class);
 
 	private static Type filterEntryCollectionType = new TypeToken<List<FilterEntry>>() {
 	}.getType();
@@ -37,10 +41,11 @@ public class ActionExecute extends ActionBase {
 
 	private Gson gson = XGsonBuilder.instance();
 
-	public ActionResult<Query> execute(EffectivePerson effectivePerson, String flag, String applicationFlag,
-			WrapInQueryExecute wrapIn) throws Exception {
+	ActionResult<Query> execute(EffectivePerson effectivePerson, String flag, String applicationFlag,
+			JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Query> result = new ActionResult<>();
+			WrapInQueryExecute wrapIn = this.convertToWrapIn(jsonElement, WrapInQueryExecute.class);
 			Business business = new Business(emc);
 			Application application = business.application().pick(applicationFlag);
 			QueryView queryView = business.queryView().pick(flag, application, ExceptionWhen.not_found);
@@ -49,6 +54,14 @@ public class ActionExecute extends ActionBase {
 			}
 			Query query = this.concrete(queryView, wrapIn);
 			query.query();
+			/* 整理一下输出值 */
+			if ((null != query.getGroupEntry()) && query.getGroupEntry().available()) {
+				query.setGrid(null);
+			}
+			if ((null != query.getCalculate()) && (query.getCalculate().available())) {
+				query.setGrid(null);
+				query.setGroupGrid(null);
+			}
 			result.setData(query);
 			return result;
 		}

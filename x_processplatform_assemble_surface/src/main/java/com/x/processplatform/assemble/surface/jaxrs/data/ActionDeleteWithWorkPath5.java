@@ -4,7 +4,6 @@ import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
@@ -19,11 +18,13 @@ class ActionDeleteWithWorkPath5 extends ActionBase {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<WrapOutId> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Work work = emc.find(id, Work.class, ExceptionWhen.not_found);
+			Work work = emc.find(id, Work.class);
+			if (null == work) {
+				throw new WorkNotExistedException(id);
+			}
 			Control control = business.getControlOfWorkComplex(effectivePerson, work);
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
-				throw new Exception("person{name:" + effectivePerson.getName()
-						+ "} has insufficient permissions to read work{id:" + work.getId() + "}.");
+				throw new WorkAccessDeniedException(effectivePerson.getName(), work.getTitle(), work.getId());
 			}
 			this.deleteData(business, work, path0, path1, path2, path3, path4, path5);
 			emc.commit();

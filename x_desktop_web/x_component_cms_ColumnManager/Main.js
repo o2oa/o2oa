@@ -44,7 +44,7 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
         //    }
         //}
         this.getColumn(function(){
-            this.setTitle( this.options.column.appName );
+            this.setTitle( this.options.column.appName +this.lp.setting );
             this.loadController(function(){
                 if( !this.isAdmin ){
                     this.notice(  MWF.CMSCM.LP.noAdministratorAccess  , "error");
@@ -65,7 +65,7 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
             json.data = json.data || [];
             json.data.each(function(item){
                 this.controllers.push(item.adminUid)
-            }.bind(this))
+            }.bind(this));
             this.isAdmin = MWF.AC.isAdministrator() || this.controllers.contains(layout.desktop.session.user.name);
             if(callback)callback(this.isAdmin);
         }.bind(this));
@@ -136,7 +136,7 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
 
         this.leftTitleTextNode = new Element("div", {
             "styles": this.css.leftTitleTextNode,
-            "text" : this.options.column.appName
+            "text" : this.options.column.appName + this.lp.setting
         }).inject(this.leftTitleNode);
 
         this.startMenuNode = new Element("div", {
@@ -652,11 +652,6 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
 
         this.controllerData = [];
         this.controllerList = [];
-
-        this.availableData = [];
-        this.availablePersonList = [];
-        this.availableDepartmentList = [];
-        this.availableCompanyList = [];
     },
     load: function(){
         this.propertyTitleBar = new Element("div", {
@@ -696,13 +691,31 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
 
         this.createIconContentNode();
 
-        this.listPermission( function(){
-            this.createAvailableNode();
-        }.bind(this))
+        this.publisherContainer = new Element( "div").inject( this.contentAreaNode );
+        MWF.xDesktop.requireApp("cms.ColumnManager", "widget.PublisherSetting", null, false);
+        this.publisherSetting = new MWF.xApplication.cms.ColumnManager.PublisherSetting( this.app,
+            this.app.lp.application.publisherSetting, this.publisherContainer, {
+                objectId : this.data.id,
+                objectType : "APPINFO",
+                permission : "PUBLISH"
+            }
+        );
+        this.publisherSetting.load();
+
+        this.permissionContainer = new Element( "div").inject( this.contentAreaNode );
+        MWF.xDesktop.requireApp("cms.ColumnManager", "widget.PermissionSetting", null, false);
+        this.permissionSetting = new MWF.xApplication.cms.ColumnManager.PermissionSetting( this.app,
+            this.app.lp.application.availableSetting, this.permissionContainer, {
+                objectId : this.data.id,
+                objectType : "APPINFO",
+                permission : "VIEW"
+            }
+        );
+        this.permissionSetting.load();
 
         this.listController( function(  ){
             this.createControllerListNode();
-        }.bind(this) )
+        }.bind(this) );
 
 
     },
@@ -714,22 +727,6 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
                     this.controllerList.push( d.adminName );
                 }.bind(this))
                 callback.call(  )
-        }.bind(this), null ,false)
-    },
-    listPermission:function( callback ){
-        this.app.restActions.listColumnPermission(this.data.id, function(json){
-            json.data = json.data || [];
-            this.availableData = json.data;
-            json.data.each(function( d ){
-                if(d.usedObjectType == "USER" ){
-                    this.availablePersonList.push( d.usedObjectName )
-                }else if(d.usedObjectType == "DEPARTMENT"){
-                    this.availableDepartmentList.push( d.usedObjectName )
-                }else{
-                    this.availableCompanyList.push( d.usedObjectName )
-                }
-            }.bind(this))
-            callback.call( )
         }.bind(this), null ,false)
     },
     setContentHeight: function(){
@@ -825,7 +822,6 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
     },
 
 
-
     createPropertyContentNode: function(){
         this.propertyContentNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.contentAreaNode);
 
@@ -872,7 +868,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
                 "color": "#666",
                 "cursor": "pointer"
             },
-            "text": "设置管理者"
+            "text": "设置栏目管理者"
         }).inject(this.contentAreaNode);
         changeAdministrators.addEvent("click", function(){
             this.changeAdministrators();
@@ -896,7 +892,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
             "app": {
                 "lp": this.app.lp
             }
-        }
+        };
 
         var options = {
             "type": "person",
@@ -958,250 +954,6 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
 
                 this.controllerList = controllerList;
                 this.app.notice(  MWF.CMSCM.LP.setControllerSuccess  , "success");
-            }.bind(this)
-        };
-
-        var selector = new MWF.OrgSelector(this.app.content, options);
-    },
-
-    createAvailableNode: function(){
-        if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();
-
-        this.availableTitleNode = new Element("div", {
-            "styles": this.app.css.availableTitleNode,
-            "text": this.app.lp.application.available
-        }).inject(this.contentAreaNode);
-
-        this.availableContentNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.contentAreaNode);
-        this.availableItemsContentNode = new Element("div", {"styles": this.app.css.availableItemsContentNode}).inject(this.availableContentNode);
-        this.availableActionAreaNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.contentAreaNode);
-
-        var changeIdentityList = new Element("div", {
-            "styles": this.app.css.selectButtonStyle,
-            "text": "设置可用人员"
-        }).inject(this.availableActionAreaNode);
-        changeIdentityList.addEvent("click", function(){
-            this.changeAvailableIdentitys();
-        }.bind(this));
-
-        var changeDepartmentList = new Element("div", {
-            "styles": this.app.css.selectButtonStyle,
-            "text": "设置可用部门"
-        }).inject(this.availableActionAreaNode);
-        changeDepartmentList.addEvent("click", function(){
-            this.changeAvailableDepartments();
-        }.bind(this));
-
-        var changeCompanyList = new Element("div", {
-            "styles": this.app.css.selectButtonStyle,
-            "text": "设置可用公司"
-        }).inject(this.availableActionAreaNode);
-        changeCompanyList.addEvent("click", function(){
-            this.changeAvailableCompanys();
-        }.bind(this));
-
-        this.setAvailableItems();
-    },
-    setAvailableItems: function(){
-        var explorer = {
-            "actions": this.personActions,
-            "app": {
-                "lp": this.app.lp
-            }
-        }
-        if (this.availablePersonList){
-            this.availablePersonList.each(function(name){
-                if (name) new MWF.widget.Person({"name": name}, this.availableItemsContentNode, explorer, false, null, {"style": "application"});
-            }.bind(this));
-        }
-        if (this.availableDepartmentList){
-            this.availableDepartmentList.each(function(name){
-                if (name) new MWF.widget.Department({"name": name}, this.availableItemsContentNode, explorer, false, null, {"style": "application"});
-            }.bind(this));
-        }
-        if (this.availableCompanyList){
-            this.availableCompanyList.each(function(name){
-                if (name) new MWF.widget.Company({"name": name}, this.availableItemsContentNode, explorer, false, null, {"style": "application"});
-            }.bind(this));
-        }
-    },
-
-    changeAvailableIdentitys: function(){
-        var explorer = {
-            "actions": this.personActions,
-            "app": {
-                "lp": this.app.lp
-            }
-        }
-        var options = {
-            "type": "person",
-            "title": "设置应用可用人员",
-            "names": this.availablePersonList || [],
-            "onComplete": function(items){
-                var availablePersonList = [];
-
-                items.each(function(item){
-                    availablePersonList.push(item.data.name);
-                }.bind(this));
-
-                availablePersonList.each(function(item){
-                    if( !this.availablePersonList.contains( item ) ){
-                        var permissionData = {
-                            "objectType": "APPINFO",
-                            "objectId": this.data.id,
-                            "usedObjectType": "USER",
-                            "usedObjectCode": item,
-                            "usedObjectName": item
-                        }
-                        this.app.restActions.savePermission(permissionData, function(json){
-                            permissionData.id = json.data.id;
-                            this.availableData.push( permissionData );
-                        }.bind(this), null, false);
-                    }
-                }.bind(this))
-
-                this.availablePersonList.each(function(item){
-                    if( !availablePersonList.contains( item ) ){
-                        var ad = null;
-                        var id = ""
-                        this.availableData.each(function(data){
-                            if( data.usedObjectName == item ){
-                                ad = data;
-                                id = data.id;
-                            }
-                        }.bind(this));
-                        this.app.restActions.removePermission(id, function(json){
-                            this.availableData.erase( ad )
-                        }.bind(this), null, false);
-                    }
-                }.bind(this))
-
-                this.availablePersonList = availablePersonList;
-                this.availableItemsContentNode.empty();
-                this.setAvailableItems();
-
-                this.app.notice(  MWF.CMSCM.LP.setAvailableIdentitySuccess , "success");
-            }.bind(this)
-        };
-
-        var selector = new MWF.OrgSelector(this.app.content, options);
-    },
-    changeAvailableDepartments: function(){
-        var explorer = {
-            "actions": this.personActions,
-            "app": {
-                "lp": this.app.lp
-            }
-        }
-        var options = {
-            "type": "department",
-            "title": "设置应用可用部门",
-            "names": this.availableDepartmentList || [],
-            "onComplete": function(items){
-                var availableDepartmentList = [];
-
-                items.each(function(item){
-                    availableDepartmentList.push(item.data.name);
-                }.bind(this));
-
-                availableDepartmentList.each(function(item){
-                    if( !this.availableDepartmentList.contains( item ) ){
-                        var permissionData = {
-                            "objectType": "APPINFO",
-                            "objectId": this.data.id,
-                            "usedObjectType": "DEPARTMENT",
-                            "usedObjectCode": item,
-                            "usedObjectName": item
-                        }
-                        this.app.restActions.savePermission(permissionData, function(json){
-                            permissionData.id = json.data.id;
-                            this.availableData.push( permissionData );
-                        }.bind(this), null, false);
-                    }
-                }.bind(this))
-
-                this.availableDepartmentList.each(function(item){
-                    if( !availableDepartmentList.contains( item ) ){
-                        var ad = null;
-                        var id = ""
-                        this.availableData.each(function(data){
-                            if( data.usedObjectName == item ){
-                                ad = data;
-                                id = data.id;
-                            }
-                        }.bind(this));
-                        this.app.restActions.removePermission(id, function(json){
-                            this.availableData.erase( ad )
-                        }.bind(this), null, false);
-                    }
-                }.bind(this))
-
-                this.availableDepartmentList = availableDepartmentList;
-                this.availableItemsContentNode.empty();
-                this.setAvailableItems();
-
-                this.app.notice(  MWF.CMSCM.LP.setAvailableDepartmentSuccess , "success");
-            }.bind(this)
-        };
-
-        var selector = new MWF.OrgSelector(this.app.content, options);
-    },
-    changeAvailableCompanys: function(){
-        var explorer = {
-            "actions": this.personActions,
-            "app": {
-                "lp": this.app.lp
-            }
-        }
-        var options = {
-            "type": "company",
-            "title": "设置应用可用公司",
-            "names": this.availableCompanyList || [],
-            "onComplete": function(items) {
-                var availableCompanyList = [];
-
-                items.each(function (item) {
-                    availableCompanyList.push(item.data.name);
-                }.bind(this));
-
-                availableCompanyList.each(function (item) {
-                    if (!this.availableCompanyList.contains(item)) {
-                        var permissionData = {
-                            "objectType": "APPINFO",
-                            "objectId": this.data.id,
-                            "usedObjectType": "COMPANY",
-                            "usedObjectCode": item,
-                            "usedObjectName": item
-                        }
-                        this.app.restActions.savePermission(permissionData, function (json) {
-                            permissionData.id = json.data.id;
-                            this.availableData.push( permissionData );
-                        }.bind(this), null, false);
-                    }
-                }.bind(this))
-
-                this.availableCompanyList.each(function (item) {
-                    if (!availableCompanyList.contains(item)) {
-                        var ad = null;
-                        var id = ""
-                        this.availableData.each(function (data) {
-                            if (data.usedObjectName == item) {
-                                ad = data;
-                                id = data.id;
-                            }
-                        }.bind(this));
-                        this.app.restActions.removePermission(id, function (json) {
-                            this.availableData.erase(ad)
-                        }.bind(this), null, false);
-                    }
-                }.bind(this))
-
-                this.availableCompanyList = availableCompanyList;
-                this.availableItemsContentNode.empty();
-                this.setAvailableItems();
-
-
-                this.app.notice(  MWF.CMSCM.LP.setAvailableCompanySuccess , "success");
             }.bind(this)
         };
 

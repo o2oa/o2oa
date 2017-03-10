@@ -3,15 +3,12 @@ package com.x.okr.assemble.control;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.okr.assemble.control.factory.OkrAttachmentFileInfoFactory;
 import com.x.okr.assemble.control.factory.OkrCenterWorkInfoFactory;
-import com.x.okr.assemble.control.factory.OkrCenterWorkReportStatisticFactory;
 import com.x.okr.assemble.control.factory.OkrConfigSecretaryFactory;
 import com.x.okr.assemble.control.factory.OkrConfigSystemFactory;
 import com.x.okr.assemble.control.factory.OkrConfigWorkLevelFactory;
 import com.x.okr.assemble.control.factory.OkrConfigWorkTypeFactory;
-import com.x.okr.assemble.control.factory.OkrPermissionInfoFactory;
-import com.x.okr.assemble.control.factory.OkrPersonPermissionFactory;
-import com.x.okr.assemble.control.factory.OkrRoleInfoFactory;
-import com.x.okr.assemble.control.factory.OkrRolePermissionFactory;
+import com.x.okr.assemble.control.factory.OkrStatisticReportContentFactory;
+import com.x.okr.assemble.control.factory.OkrStatisticReportStatusFactory;
 import com.x.okr.assemble.control.factory.OkrTaskFactory;
 import com.x.okr.assemble.control.factory.OkrTaskHandledFactory;
 import com.x.okr.assemble.control.factory.OkrUserInfoFactory;
@@ -22,10 +19,6 @@ import com.x.okr.assemble.control.factory.OkrWorkDetailInfoFactory;
 import com.x.okr.assemble.control.factory.OkrWorkDynamicsFactory;
 import com.x.okr.assemble.control.factory.OkrWorkPersonFactory;
 import com.x.okr.assemble.control.factory.OkrWorkPersonSearchFactory;
-import com.x.okr.assemble.control.factory.OkrWorkProblemInfoFactory;
-import com.x.okr.assemble.control.factory.OkrWorkProblemPersonLinkFactory;
-import com.x.okr.assemble.control.factory.OkrWorkProblemProcessLogFactory;
-import com.x.okr.assemble.control.factory.OkrWorkProcessLinkFactory;
 import com.x.okr.assemble.control.factory.OkrWorkReportBaseInfoFactory;
 import com.x.okr.assemble.control.factory.OkrWorkReportDetailInfoFactory;
 import com.x.okr.assemble.control.factory.OkrWorkReportPersonLinkFactory;
@@ -44,6 +37,10 @@ public class Business {
 	}
 	//人员组织业务处理类
 	private Organization organization;
+	
+	private OkrStatisticReportContentFactory okrStatisticReportContentFactory;
+	private OkrStatisticReportStatusFactory okrStatisticReportStatusFactory;
+	
 	private OkrAttachmentFileInfoFactory okrAttachmentFileInfoFactory;
 	private OkrCenterWorkInfoFactory okrCenterWorkInfoFactory;
 	private OkrConfigSecretaryFactory okrConfigSecretaryFactory;
@@ -58,23 +55,14 @@ public class Business {
 	private OkrWorkDynamicsFactory okrWorkDynamicsFactory;
 	private OkrWorkPersonFactory okrWorkPersonFactory;
 	private OkrWorkPersonSearchFactory okrWorkPersonSearchFactory;
-	private OkrWorkProblemInfoFactory okrWorkProblemInfoFactory;
-	private OkrWorkProblemPersonLinkFactory okrWorkProblemPersonLinkFactory;
-	private OkrWorkProblemProcessLogFactory okrWorkProblemProcessLogFactory;
-	private OkrWorkProcessLinkFactory okrWorkProcessLinkFactory;
 	private OkrWorkReportBaseInfoFactory okrWorkReportBaseInfoFactory;
 	private OkrWorkReportDetailInfoFactory okrWorkReportDetailInfoFactory;
 	private OkrWorkReportPersonLinkFactory okrWorkReportPersonLinkFactory;
 	private OkrWorkReportProcessLogFactory okrWorkReportProcessLogFactory;
 	
-	private OkrPermissionInfoFactory okrPermissionInfoFactory;
-	private OkrPersonPermissionFactory okrPersonPermissionFactory;
-	private OkrRoleInfoFactory okrRoleInfoFactory;
-	private OkrRolePermissionFactory okrRolePermissionFactory;
-	
 	private OkrUserInfoFactory okrUserInfoFactory;
 	
-	private OkrCenterWorkReportStatisticFactory okrCenterWorkReportStatisticFactory;
+	
 	
 	private OkrWorkChatFactory okrWorkChatFactory;
 	
@@ -84,47 +72,29 @@ public class Business {
 		}
 		return organization;
 	}
+	public OkrStatisticReportStatusFactory okrStatisticReportStatusFactory() throws Exception {
+		if (null == this.okrStatisticReportStatusFactory) {
+			this.okrStatisticReportStatusFactory = new OkrStatisticReportStatusFactory( this );
+		}
+		return okrStatisticReportStatusFactory;
+	}
 	public OkrUserInfoFactory okrUserInfoFactory() throws Exception {
 		if (null == this.okrUserInfoFactory) {
 			this.okrUserInfoFactory = new OkrUserInfoFactory( this );
 		}
 		return okrUserInfoFactory;
 	} 
-	public OkrCenterWorkReportStatisticFactory okrCenterWorkReportStatisticFactory() throws Exception {
-		if (null == this.okrCenterWorkReportStatisticFactory) {
-			this.okrCenterWorkReportStatisticFactory = new OkrCenterWorkReportStatisticFactory( this );
+	public OkrStatisticReportContentFactory okrStatisticReportContentFactory() throws Exception {
+		if (null == this.okrStatisticReportContentFactory) {
+			this.okrStatisticReportContentFactory = new OkrStatisticReportContentFactory( this );
 		}
-		return okrCenterWorkReportStatisticFactory;
+		return okrStatisticReportContentFactory;
 	} 
 	public OkrWorkChatFactory okrWorkChatFactory() throws Exception {
 		if (null == this.okrWorkChatFactory) {
 			this.okrWorkChatFactory = new OkrWorkChatFactory( this );
 		}
 		return okrWorkChatFactory;
-	} 
-	public OkrPermissionInfoFactory okrPermissionInfoFactory() throws Exception {
-		if (null == this.okrPermissionInfoFactory) {
-			this.okrPermissionInfoFactory = new OkrPermissionInfoFactory( this );
-		}
-		return okrPermissionInfoFactory;
-	} 
-	public OkrPersonPermissionFactory okrPersonPermissionFactory() throws Exception {
-		if (null == this.okrPersonPermissionFactory) {
-			this.okrPersonPermissionFactory = new OkrPersonPermissionFactory( this );
-		}
-		return okrPersonPermissionFactory;
-	} 
-	public OkrRoleInfoFactory okrRoleInfoFactory() throws Exception {
-		if (null == this.okrRoleInfoFactory) {
-			this.okrRoleInfoFactory = new OkrRoleInfoFactory( this );
-		}
-		return okrRoleInfoFactory;
-	} 
-	public OkrRolePermissionFactory okrRolePermissionFactory() throws Exception {
-		if (null == this.okrRolePermissionFactory) {
-			this.okrRolePermissionFactory = new OkrRolePermissionFactory( this );
-		}
-		return okrRolePermissionFactory;
 	} 
 	public OkrAttachmentFileInfoFactory okrAttachmentFileInfoFactory() throws Exception {
 		if (null == this.okrAttachmentFileInfoFactory) {
@@ -210,30 +180,6 @@ public class Business {
 		}
 		return okrWorkPersonSearchFactory;
 	}
-	public OkrWorkProblemInfoFactory okrWorkProblemInfoFactory() throws Exception {
-		if (null == this.okrWorkProblemInfoFactory) {
-			this.okrWorkProblemInfoFactory = new OkrWorkProblemInfoFactory( this );
-		}
-		return okrWorkProblemInfoFactory;
-	}
-	public OkrWorkProblemPersonLinkFactory okrWorkProblemPersonLinkFactory() throws Exception {
-		if (null == this.okrWorkProblemPersonLinkFactory) {
-			this.okrWorkProblemPersonLinkFactory = new OkrWorkProblemPersonLinkFactory( this );
-		}
-		return okrWorkProblemPersonLinkFactory;
-	}
-	public OkrWorkProblemProcessLogFactory okrWorkProblemProcessLogFactory() throws Exception {
-		if (null == this.okrWorkProblemProcessLogFactory) {
-			this.okrWorkProblemProcessLogFactory = new OkrWorkProblemProcessLogFactory( this );
-		}
-		return okrWorkProblemProcessLogFactory;
-	}
-	public OkrWorkProcessLinkFactory okrWorkProcessLinkFactory() throws Exception {
-		if (null == this.okrWorkProcessLinkFactory) {
-			this.okrWorkProcessLinkFactory = new OkrWorkProcessLinkFactory( this );
-		}
-		return okrWorkProcessLinkFactory;
-	} ;
 	public OkrWorkReportBaseInfoFactory okrWorkReportBaseInfoFactory() throws Exception {
 		if (null == this.okrWorkReportBaseInfoFactory) {
 			this.okrWorkReportBaseInfoFactory = new OkrWorkReportBaseInfoFactory( this );

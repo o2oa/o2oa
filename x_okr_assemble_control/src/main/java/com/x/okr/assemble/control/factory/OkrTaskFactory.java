@@ -166,7 +166,7 @@ public class OkrTaskFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 
-	public List<String> listIdsByTargetActivityAndObjId( String dynamicObjectType, String dynamicObjectId, String activityName, String processorIdentity ) throws Exception {
+	public List<String> listIdsByTargetActivityAndObjId( String processType, String dynamicObjectType, String dynamicObjectId, String activityName, String processorIdentity ) throws Exception {
 		if( dynamicObjectType == null || dynamicObjectType.isEmpty() ){
 			throw new Exception( " dynamicObjectType is null!" );
 		}
@@ -177,8 +177,13 @@ public class OkrTaskFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrTask> root = cq.from(OkrTask.class);
-		Predicate p = cb.equal( root.get( OkrTask_.dynamicObjectType ), dynamicObjectType );
-		p = cb.and( p, cb.equal( root.get( OkrTask_.dynamicObjectId ), dynamicObjectId) );
+		Predicate p = cb.equal( root.get( OkrTask_.dynamicObjectId ), dynamicObjectId );
+		if( dynamicObjectType != null && !dynamicObjectType.isEmpty() ){
+			p = cb.and( p, cb.equal( root.get( OkrTask_.dynamicObjectType ), dynamicObjectType) );
+		}
+		if( processType != null && !processType.isEmpty() ){
+			p = cb.and( p, cb.equal( root.get( OkrTask_.processType ), processType) );
+		}
 		if( activityName != null && !activityName.isEmpty() ){
 			p = cb.and( p, cb.equal( root.get( OkrTask_.activityName ), activityName) );
 		}
@@ -216,10 +221,25 @@ public class OkrTaskFactory extends AbstractFactory {
 		if( workTypeName != null && !workTypeName.isEmpty() ){
 			p = cb.and( p, cb.equal( root.get( OkrTask_.workType ), workTypeName ) );
 		}
-		cq.select( cb.count( root ) );		
+		cq.select( cb.count( root ) );	
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
 
+	public Long getNotReportConfirmTaskCount(List<String> taskTypeList, String userIdentity, String workTypeName) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( OkrTask.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<OkrTask> root = cq.from( OkrTask.class);
+		Predicate p = root.get( OkrTask_.dynamicObjectType ).in( taskTypeList );
+		p = cb.and( p, cb.equal( root.get( OkrTask_.targetIdentity ), userIdentity ) );
+		p = cb.and( p, cb.notEqual( root.get( OkrTask_.activityName ), "汇报确认" ) );
+		if( workTypeName != null && !workTypeName.isEmpty() ){
+			p = cb.and( p, cb.equal( root.get( OkrTask_.workType ), workTypeName ) );
+		}
+		cq.select( cb.count( root ) );
+		return em.createQuery(cq.where(p)).getSingleResult();
+	}
+	
 	/**
 	 * 根据待办类别和用户身份，查询待办列表
 	 * @param taskTypeList
@@ -227,7 +247,7 @@ public class OkrTaskFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception 
 	 */
-	public List<OkrTask> listByTaskType(List<String> taskTypeList, String userIdentity, String workTypeName ) throws Exception {
+	public List<OkrTask> listTaskByTaskType( List<String> taskTypeList, String userIdentity, String workTypeName ) throws Exception {
 		List<OkrTask> okrTaskList = null;
 		EntityManager em = this.entityManagerContainer().get( OkrTask.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -235,6 +255,33 @@ public class OkrTaskFactory extends AbstractFactory {
 		Root<OkrTask> root = cq.from( OkrTask.class);
 		Predicate p = root.get( OkrTask_.dynamicObjectType ).in( taskTypeList );
 		p = cb.and( p, cb.equal( root.get( OkrTask_.targetIdentity ), userIdentity ) );
+		p = cb.and( p, cb.equal( root.get( OkrTask_.processType ), "TASK" ) );
+		if( workTypeName != null && !workTypeName.isEmpty() ){
+			p = cb.and( p, cb.equal( root.get( OkrTask_.workType ), workTypeName ) );
+		}
+		okrTaskList = em.createQuery(cq.where(p)).getResultList();
+		if( okrTaskList == null ){
+			return null;
+		}else{
+			return okrTaskList;
+		}
+	}
+	/**
+	 * 根据待办类别和用户身份，查询待办列表
+	 * @param taskTypeList
+	 * @param userIdentity
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<OkrTask> listReadByTaskType( List<String> taskTypeList, String userIdentity, String workTypeName ) throws Exception {
+		List<OkrTask> okrTaskList = null;
+		EntityManager em = this.entityManagerContainer().get( OkrTask.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery< OkrTask > cq = cb.createQuery( OkrTask.class );
+		Root<OkrTask> root = cq.from( OkrTask.class);
+		Predicate p = root.get( OkrTask_.dynamicObjectType ).in( taskTypeList );
+		p = cb.and( p, cb.equal( root.get( OkrTask_.targetIdentity ), userIdentity ) );
+		p = cb.and( p, cb.equal( root.get( OkrTask_.processType ), "READ" ) );
 		if( workTypeName != null && !workTypeName.isEmpty() ){
 			p = cb.and( p, cb.equal( root.get( OkrTask_.workType ), workTypeName ) );
 		}
@@ -277,4 +324,5 @@ public class OkrTaskFactory extends AbstractFactory {
 		cq.select(root.get( OkrTask_.id));
 		return em.createQuery(cq.where(p)).setMaxResults(5000).getResultList();
 	}
+	
 }

@@ -2,6 +2,7 @@ package com.x.organization.core.entity;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -44,7 +45,7 @@ public class Company extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.Company.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -52,12 +53,15 @@ public class Company extends SliceJpaObject {
 		this.updateTime = date;
 		if (null == this.sequence) {
 			this.sequence = StringUtils.join(DateTools.compact(this.getCreateTime()), this.getId());
+		}		
+		if (null == this.distributeFactor) {
+			this.distributeFactor = (new Random()).nextInt(1000);
 		}
 		this.onPersist();
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception {
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -126,7 +130,7 @@ public class Company extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception {
 		this.pinyin = StringUtils.lowerCase(PinyinHelper.convertToPinyinString(name, "", PinyinFormat.WITHOUT_TONE));
 		this.pinyinInitial = StringUtils.lowerCase(PinyinHelper.getShortPinyin(name));
 		this.superior = StringUtils.trimToEmpty(this.superior);

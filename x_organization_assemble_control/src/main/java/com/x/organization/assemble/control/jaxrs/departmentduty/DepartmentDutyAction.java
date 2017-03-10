@@ -24,7 +24,7 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
-import com.x.base.core.http.WrapOutListString;
+import com.x.base.core.http.WrapOutStringList;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.assemble.control.wrapin.WrapInDepartmentDuty;
@@ -188,13 +188,13 @@ public class DepartmentDutyAction extends StandardJaxrsAction {
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "获取去重的部门职务名称.", response = WrapOutListString.class)
+	@HttpMethodDescribe(value = "获取去重的部门职务名称.", response = WrapOutStringList.class)
 	@GET
 	@Path("distinct/name")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response distinctName(@Context HttpServletRequest request) {
-		ActionResult<WrapOutListString> result = new ActionResult<>();
+		ActionResult<WrapOutStringList> result = new ActionResult<>();
 		try {
 			result = new ActionDistinctName().execute();
 		} catch (Throwable th) {
@@ -220,13 +220,13 @@ public class DepartmentDutyAction extends StandardJaxrsAction {
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "模糊匹配部门职务的名称,匹配名称,拼音和首字母.", response = WrapOutListString.class)
+	@HttpMethodDescribe(value = "模糊匹配部门职务的名称,匹配名称,拼音和首字母.", response = WrapOutStringList.class)
 	@GET
 	@Path("distinct/name/like/{key}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response distinctNameLike(@Context HttpServletRequest request, @PathParam("key") String key) {
-		ActionResult<WrapOutListString> result = new ActionResult<>();
+		ActionResult<WrapOutStringList> result = new ActionResult<>();
 		try {
 			result = new ActionDistinctNameLike().execute(key);
 		} catch (Throwable th) {

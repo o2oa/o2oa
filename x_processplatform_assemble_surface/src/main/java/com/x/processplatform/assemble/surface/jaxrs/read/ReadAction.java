@@ -16,6 +16,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.NameValueCountPair;
 import com.x.base.core.http.ActionResult;
@@ -26,12 +27,16 @@ import com.x.base.core.http.WrapOutCount;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.WrapOutMap;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.wrapin.content.WrapInFilter;
 import com.x.processplatform.assemble.surface.wrapin.content.WrapInRead;
 import com.x.processplatform.assemble.surface.wrapout.content.WrapOutRead;
 
 @Path("read")
 public class ReadAction extends StandardJaxrsAction {
+
+	private static Logger logger = LoggerFactory.getLogger(ReadAction.class);
 
 	@HttpMethodDescribe(value = "列示当前用户的Read对象,下一页.", response = WrapOutRead.class)
 	@GET
@@ -41,12 +46,12 @@ public class ReadAction extends StandardJaxrsAction {
 	public Response listNext(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count) {
 		ActionResult<List<WrapOutRead>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListNext().execute(effectivePerson, id, count);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -59,12 +64,12 @@ public class ReadAction extends StandardJaxrsAction {
 	public Response listPrev(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count) {
 		ActionResult<List<WrapOutRead>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListPrev().execute(effectivePerson, id, count);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -77,12 +82,12 @@ public class ReadAction extends StandardJaxrsAction {
 	public Response listNextWithApplication(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count, @PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<List<WrapOutRead>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListNextWithApplication().execute(effectivePerson, id, count, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -95,12 +100,12 @@ public class ReadAction extends StandardJaxrsAction {
 	public Response listPrevWithApplication(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count, @PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<List<WrapOutRead>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListPrevWithApplication().execute(effectivePerson, id, count, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -113,12 +118,12 @@ public class ReadAction extends StandardJaxrsAction {
 	public Response listNextWithProcess(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count, @PathParam("processFlag") String processFlag) {
 		ActionResult<List<WrapOutRead>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListNextWithProcess().execute(effectivePerson, id, count, processFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -131,12 +136,12 @@ public class ReadAction extends StandardJaxrsAction {
 	public Response listPrevWithProcess(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count, @PathParam("processFlag") String processFlag) {
 		ActionResult<List<WrapOutRead>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListPrevWithProcess().execute(effectivePerson, id, count, processFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -148,12 +153,12 @@ public class ReadAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listCountWithApplication(@Context HttpServletRequest request) {
 		ActionResult<List<NameValueCountPair>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListCountWithApplication().execute(effectivePerson);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -166,12 +171,12 @@ public class ReadAction extends StandardJaxrsAction {
 	public Response listCountWithProcess(@Context HttpServletRequest request,
 			@PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<List<NameValueCountPair>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListCountWithProcess().execute(effectivePerson, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -183,12 +188,12 @@ public class ReadAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutRead> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGet().execute(effectivePerson, id);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -198,14 +203,15 @@ public class ReadAction extends StandardJaxrsAction {
 	@Path("{id}/processing")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response processing(@Context HttpServletRequest request, @PathParam("id") String id, WrapInRead wrapIn) {
+	public Response processing(@Context HttpServletRequest request, @PathParam("id") String id,
+			JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionProcessing().execute(effectivePerson, id, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ActionProcessing().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -215,14 +221,14 @@ public class ReadAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response put(@Context HttpServletRequest request, @PathParam("id") String id, WrapInRead wrapIn) {
+	public Response put(@Context HttpServletRequest request, @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionUpdate().execute(effectivePerson, id, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ActionUpdate().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -234,28 +240,29 @@ public class ReadAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response countWithPerson(@Context HttpServletRequest request, @PathParam("credential") String credential) {
 		ActionResult<WrapOutCount> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCountWithPerson().execute(credential);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "获取用于过滤的可选属性值", response = Map.class)
+	@HttpMethodDescribe(value = "获取可用与filter的分类值", response = Map.class)
 	@GET
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("filter/attribute")
 	public Response filterAttribute(@Context HttpServletRequest request) {
 		ActionResult<Map<String, List<NameValueCountPair>>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionFilterAttribute().execute(effectivePerson);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -266,14 +273,14 @@ public class ReadAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listNextWithFilter(@Context HttpServletRequest request, @PathParam("id") String id,
-			@PathParam("count") Integer count, WrapInFilter wrapIn) {
+			@PathParam("count") Integer count, JsonElement jsonElement) {
 		ActionResult<List<WrapOutRead>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionListNextFilter().execute(effectivePerson, id, count, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ActionListNextFilter().execute(effectivePerson, id, count, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -284,14 +291,14 @@ public class ReadAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listPrevWithFilter(@Context HttpServletRequest request, @PathParam("id") String id,
-			@PathParam("count") Integer count, WrapInFilter wrapIn) {
+			@PathParam("count") Integer count, JsonElement jsonElement) {
 		ActionResult<List<WrapOutRead>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionListPrevFilter().execute(effectivePerson, id, count, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ActionListPrevFilter().execute(effectivePerson, id, count, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -303,12 +310,12 @@ public class ReadAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response reference(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutMap> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionReference().execute(effectivePerson, id);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -320,12 +327,12 @@ public class ReadAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response manageDelete(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ManageDelete().execute(effectivePerson, id);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -336,14 +343,14 @@ public class ReadAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response manageCompleted(@Context HttpServletRequest request, @PathParam("id") String id,
-			WrapInRead wrapIn) {
+			JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ManageCompleted().execute(effectivePerson, id, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ManageCompleted().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -353,14 +360,14 @@ public class ReadAction extends StandardJaxrsAction {
 	@Path("{id}/reset/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response manageRead(@Context HttpServletRequest request, @PathParam("id") String id, WrapInRead wrapIn) {
+	public Response manageRead(@Context HttpServletRequest request, @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ManageReset().execute(effectivePerson, id, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ManageReset().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

@@ -58,9 +58,9 @@ MWF.xApplication.process.FormDesigner.Module.Textfield = MWF.FCTextfield = new C
     setPropertiesOrStyles: function(name){
         if (name=="styles"){
             if (this.parentContainer){
-                if (this.parentContainer.moduleName == "datagrid$Data"){
-                    if (!this.json.styles.width) this.json.styles.width = "90%";
-                }
+                //if (this.parentContainer.moduleName == "datagrid$Data"){
+                //    if (!this.json.styles.width) this.json.styles.width = "90%";
+                //}
             }
             this.setCustomStyles();
         }

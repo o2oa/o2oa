@@ -62,16 +62,19 @@ public class OkrWorkBaseInfoFactory extends AbstractFactory {
 	 * @throws Exception 
 	 */
 	@MethodDescribe( "列示指定Id的OkrWorkBaseInfo应用信息列表" )
-	public List<String> getSubNormalWorkBaseInfoIds(String id) throws Exception {
+	public List<String> getSubNormalWorkBaseInfoIds( String id ) throws Exception {
 		if( id == null || id.isEmpty() ){
 			return new ArrayList<String>();
 		}
+		List<String> status = new ArrayList<>();
+		status.add( "正常" );
+		status.add( "已归档" );
 		EntityManager em = this.entityManagerContainer().get(OkrWorkBaseInfo.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrWorkBaseInfo> root = cq.from(OkrWorkBaseInfo.class);
 		Predicate p = cb.equal( root.get(OkrWorkBaseInfo_.parentWorkId ), id );
-		p = cb.and( p, cb.equal( root.get(OkrWorkBaseInfo_.status ), "正常" ));
+		p = cb.and( p, root.get(OkrWorkBaseInfo_.status ).in( status ));
 		cq.select(root.get(OkrWorkBaseInfo_.id));
 		return em.createQuery(cq.where(p)).getResultList();
 	}
@@ -577,10 +580,7 @@ public class OkrWorkBaseInfoFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 
-	public List<OkrWorkBaseInfo> listAllWorks( String centerId, String status ) throws Exception {
-		if( status == null || status.isEmpty() ){
-			throw new Exception( "status is null." );
-		}
+	public List<OkrWorkBaseInfo> listAllDeployedWorks( String centerId, String status ) throws Exception {
 		List<String> processStatus = new ArrayList<String>();
 		EntityManager em = this.entityManagerContainer().get(OkrWorkBaseInfo.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -588,11 +588,32 @@ public class OkrWorkBaseInfoFactory extends AbstractFactory {
 		Root<OkrWorkBaseInfo> root = cq.from(OkrWorkBaseInfo.class);
 		processStatus.add( "执行中" );
 		processStatus.add( "已完成" );
-		Predicate p = cb.equal( root.get(OkrWorkBaseInfo_.status ), status);
-		p = cb.and( p, root.get(OkrWorkBaseInfo_.workProcessStatus ).in( processStatus ) );
+		Predicate p = root.get(OkrWorkBaseInfo_.workProcessStatus ).in( processStatus );
+		if( status != null && !status.isEmpty() ){
+			p = cb.and( p, cb.equal( root.get(OkrWorkBaseInfo_.status ), status ) );
+		}
 		if( centerId != null && !centerId.isEmpty() ){
 			p = cb.and( p, cb.equal( root.get(OkrWorkBaseInfo_.centerId ), centerId ) );
 		}
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+	
+	public List<String> listAllDeployedWorkIds( String centerId, String status ) throws Exception {
+		List<String> processStatus = new ArrayList<String>();
+		EntityManager em = this.entityManagerContainer().get(OkrWorkBaseInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<OkrWorkBaseInfo> root = cq.from(OkrWorkBaseInfo.class);
+		processStatus.add( "执行中" );
+		processStatus.add( "已完成" );
+		Predicate p = root.get( OkrWorkBaseInfo_.workProcessStatus ).in( processStatus );
+		if( status != null && !status.isEmpty() ){
+			p = cb.and( p, cb.equal( root.get( OkrWorkBaseInfo_.status ), status ) );
+		}
+		if( centerId != null && !centerId.isEmpty() ){
+			p = cb.and( p, cb.equal( root.get( OkrWorkBaseInfo_.centerId ), centerId ) );
+		}
+		cq.select( root.get( OkrWorkBaseInfo_.id ) );
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 	

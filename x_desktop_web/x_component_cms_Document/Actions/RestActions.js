@@ -26,7 +26,10 @@ MWF.xApplication.cms.Document.Actions.RestActions = new Class({
             this.getActionActions(this.actionHotPic, callback);
         }.bind(this);
 
-
+        this.actionOrg = new MWF.xDesktop.Actions.RestActions("", "x_organization_assemble_express", "x_component_cms_Document");
+        this.actionOrg.getActions = function(callback){
+            this.getActionActions(this.actionOrg, callback);
+        }.bind(this);
     },
     getActionActions: function(action, callback){
         if (!action.actions){
@@ -65,9 +68,15 @@ MWF.xApplication.cms.Document.Actions.RestActions = new Class({
     listColumnController: function(appId,success, failure, async){
         this.actionDocument.invoke({"name": "listColumnController","async": async, "parameter": {"appId": appId}, "success": success,	"failure": failure});
     },
+    listCategoryController: function(categoryId, success, failure, async){
+        this.actionDocument.invoke({"name": "listCategoryController","async": async, "parameter": {"categoryId": categoryId}, "success": success,	"failure": failure});
+    },
 
     getDocument: function(docId, success, failure){
         this.actionDocument.invoke({"name": "getDocument", "parameter": {"id": docId },"success": success,"failure": failure});
+    },
+    viewDocument: function(docId, success, failure){
+        this.actionDocument.invoke({"name": "viewDocument", "parameter": {"id": docId },"success": success,"failure": failure});
     },
     saveDocument: function(documentData, success, failure, async){
         if (!documentData.isNewDocument){
@@ -110,10 +119,10 @@ MWF.xApplication.cms.Document.Actions.RestActions = new Class({
     },
     transCategoryData : function( json ){
         var trans = function(category){
-            if(!category.name)category.name = category.catagoryName;
-            if(!category.alias)category.alias = category.catagoryAlias;
-            if(!category.catagoryName)category.catagoryName = category.name;
-            if(!category.catagoryAlias)category.catagoryAlias = category.alias;
+            if(!category.name)category.name = category.categoryName;
+            if(!category.alias)category.alias = category.categoryAlias;
+            if(!category.categoryName)category.categoryName = category.name;
+            if(!category.categoryAlias)category.categoryAlias = category.alias;
         };
         if( json.data ){
             if( typeOf(json.data) == "array" ){
@@ -212,6 +221,37 @@ MWF.xApplication.cms.Document.Actions.RestActions = new Class({
     },
     getSubjectAttachmentBase64: function(id, size , success, failure, async){
         this.actionAttachment.invoke({"name": "getSubjectAttachmentBase64", "parameter": {"id": id, "size" : size },"success": success,"failure": failure, "async": async});
+    },
+
+    getPersonByIdentity: function(success, failure, name, async){
+        this.actionOrg.invoke({"name": "getPersonByIdentity","async": async, "parameter": {"name": name},	"success": success,	"failure": failure});
+    },
+    getPerson: function(success, failure, name, async){
+        this.actionOrg.invoke({"name": "getPerson","async": async, "parameter": {"name": name},	"success": success,	"failure": failure});
+    },
+
+    saveImage: function(data, success, failure, async){
+        this.actionDocument.invoke({"name": "saveImage", data : data, "success": success,"failure": failure, "async": async});
+    },
+    getImage: function(id, success, failure, async){
+        this.actionDocument.invoke({"name": "getImage", "async": async, "parameter": {"id": id}, "success": success, "failure": failure});
+    },
+    listImage: function(documentid, success, failure, async){
+        this.actionDocument.invoke({"name": "listImage","async": async, "parameter": {"documentid": documentid},	"success": success,	"failure": failure});
+    },
+    removeImage: function(id, success, failure, async){
+        this.actionDocument.invoke({"name": "removeImage", "async": async, "parameter": {"id": id}, "success": success, "failure": failure});
+    },
+    getImageByDocument: function(documentid, success, failure, async){
+        this.actionDocument.invoke({"name": "getImageByDocument","async": async, "parameter": {"documentid": documentid},	"success": success,	"failure": failure});
+    },
+    getImageUrl: function(id, documentid, callback){
+        this.actionDocument.getActions(function(){
+            var url = this.actionDocument.actions.getImage.uri;
+            url = url.replace("{id}", encodeURIComponent(id));
+            url = url.replace("{documentid}", encodeURIComponent(documentid));
+            if (callback) callback(this.actionDocument.address+url);
+        }.bind(this));
     }
 
 });

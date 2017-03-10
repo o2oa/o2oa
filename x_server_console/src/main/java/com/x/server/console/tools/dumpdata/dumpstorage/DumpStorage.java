@@ -24,6 +24,7 @@ import com.x.base.core.BaseTools;
 import com.x.base.core.DefaultCharset;
 import com.x.base.core.Packages;
 import com.x.base.core.entity.Storage;
+import com.x.base.core.entity.StorageObject;
 import com.x.base.core.gson.XGsonBuilder;
 import com.x.base.core.project.server.Config;
 import com.x.base.core.project.server.DataMapping;
@@ -55,12 +56,12 @@ public class DumpStorage {
 		this.dir = new File(base, "local/dump/dumpStorage_" + DateTools.compact(this.start));
 		this.catalog = new DumpStorageCatalog();
 		FileUtils.forceMkdir(this.dir);
-		List<Class<?>> classes = this.listEntityToDump();
+		List<Class<? extends StorageObject>> classes = this.listEntityToDump();
 		DataMappings dataMappings = Config.dataMappings();
 		StorageMappings storageMappings = Config.storageMappings();
 		logger.info("dump storage find {} to dump.", classes.size());
 		for (int i = 0; i < classes.size(); i++) {
-			Class<?> cls = classes.get(i);
+			Class<? extends StorageObject> cls = classes.get(i);
 			logger.info("dump storage({}/{}):{}.", (i + 1), classes.size(), cls.getName());
 			List<DataMapping> sources = dataMappings.get(cls.getName());
 			if (ListTools.isEmpty(sources)) {
@@ -73,29 +74,28 @@ public class DumpStorage {
 		System.out.println("dump storage completed, directory:" + dir.getAbsolutePath());
 	}
 
-	private List<Class<?>> listEntityToDump() throws Exception {
+	private List<Class<? extends StorageObject>> listEntityToDump() throws Exception {
 		ScanResult scanResult = new FastClasspathScanner(Packages.PREFIX).scan();
 		List<String> all = scanResult.getNamesOfClassesWithAnnotation(Storage.class);
-		List<Class<?>> classes = new ArrayList<>();
-		if (ListTools.isNotEmpty(Config.dumpRestoreStorageConfig().getIncludes())) {
+		List<Class<? extends StorageObject>> classes = new ArrayList<>();
+		if (ListTools.isNotEmpty(Config.dumpRestoreStorage().getIncludes())) {
 			for (String str : all) {
 				Class<?> cls = Class.forName(str);
-				if (Config.dumpRestoreStorageConfig().getIncludes().contains(cls.getAnnotation(Storage.class).type())) {
-					classes.add(cls);
+				if (Config.dumpRestoreStorage().getIncludes().contains(cls.getAnnotation(Storage.class).type())) {
+					classes.add((Class<? extends StorageObject>) cls);
 				}
 			}
 		} else {
 			for (String str : all) {
 				Class<?> cls = Class.forName(str);
-				classes.add(cls);
+				classes.add((Class<? extends StorageObject>) cls);
 			}
 		}
-		if (ListTools.isNotEmpty(Config.dumpRestoreStorageConfig().getExcludes())) {
-			List<Class<?>> retains = new ArrayList<>();
-			for (Class<?> cls : classes) {
-				if (!Config.dumpRestoreStorageConfig().getExcludes()
-						.contains(cls.getAnnotation(Storage.class).type())) {
-					retains.add(cls);
+		if (ListTools.isNotEmpty(Config.dumpRestoreStorage().getExcludes())) {
+			List<Class<? extends StorageObject>> retains = new ArrayList<>();
+			for (Class<? extends StorageObject> cls : classes) {
+				if (!Config.dumpRestoreStorage().getExcludes().contains(cls.getAnnotation(Storage.class).type())) {
+					retains.add((Class<? extends StorageObject>) cls);
 				}
 			}
 			classes = retains;
@@ -103,7 +103,8 @@ public class DumpStorage {
 		return classes;
 	}
 
-	private <T> void dump(Class<T> cls, List<DataMapping> sources, StorageMappings storageMappings) throws Exception {
+	private <T extends StorageObject> void dump(Class<T> cls, List<DataMapping> sources,
+			StorageMappings storageMappings) throws Exception {
 		File folder = new File(dir, cls.getName());
 		FileUtils.forceMkdir(folder);
 		FileUtils.cleanDirectory(folder);
@@ -124,7 +125,7 @@ public class DumpStorage {
 		Gson gson = XGsonBuilder.pureGsonDateFormated();
 		for (T t : list) {
 			String storage = Objects.toString(PropertyUtils.getProperty(t, "storage"));
-			StorageMapping mapping = storageMappings.get(t.getClass().getAnnotation(Storage.class).type(), storage);
+			StorageMapping mapping = storageMappings.get(t.getClass(), storage);
 			MethodUtils.invokeMethod(t, "dumpContent", mapping);
 			File file = new File(folder, PropertyUtils.getProperty(t, "id") + ".json");
 			FileUtils.write(file, gson.toJson(t), DefaultCharset.charset);

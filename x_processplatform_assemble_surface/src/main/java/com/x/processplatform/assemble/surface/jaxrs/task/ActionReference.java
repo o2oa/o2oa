@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutMap;
@@ -12,6 +11,7 @@ import com.x.base.core.utils.SortTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.builder.WorkLogBuilder;
 import com.x.processplatform.assemble.surface.wrapout.content.WrapOutAttachment;
+import com.x.processplatform.assemble.surface.wrapout.content.WrapOutWorkCompleted;
 import com.x.processplatform.assemble.surface.wrapout.content.WrapOutWorkLog;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Task;
@@ -24,10 +24,12 @@ class ActionReference extends ActionBase {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<WrapOutMap> result = new ActionResult<>();
-			Task task = emc.find(id, Task.class, ExceptionWhen.not_found);
+			Task task = emc.find(id, Task.class);
+			if (null == task) {
+				throw new TaskNotExistedException(id);
+			}
 			if (effectivePerson.isNotUser(effectivePerson.getName()) && effectivePerson.isNotManager()) {
-				throw new Exception("person{name:" + effectivePerson.getName() + "} access task{id:" + task.getId()
-						+ "} was denied.");
+				throw new TaskAccessDeniedException(effectivePerson.getName(), task.getId());
 			}
 			WrapOutMap wrap = new WrapOutMap();
 			/* 组装 Task 信息 */
@@ -40,6 +42,7 @@ class ActionReference extends ActionBase {
 				wrap.put("attachmentList", this.listAttachment(business, work));
 			}
 			/* 装载WorkLog 信息 */
+			wrap.put("workCompletedList", this.listWorkCompleted(business, task));
 			wrap.put("workLogList", this.listWorkLog(business, task));
 			result.setData(wrap);
 			return result;
@@ -59,4 +62,10 @@ class ActionReference extends ActionBase {
 		return WorkLogBuilder.complex(business, list);
 	}
 
+	private List<WrapOutWorkCompleted> listWorkCompleted(Business business, Task task) throws Exception {
+		List<WrapOutWorkCompleted> list = workCompletedOutCopier
+				.copy(business.workCompleted().listWithJobObject(task.getJob()));
+		SortTools.asc(list, "createTime");
+		return list;
+	}
 }

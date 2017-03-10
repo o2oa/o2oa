@@ -14,7 +14,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.processplatform.core.entity.element.Merge.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:19:07 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:10:19 CST 2017")
 public class Merge_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Merge,String> afterArriveScript;
     public static volatile SingularAttribute<Merge,String> afterArriveScriptText;
@@ -39,12 +39,15 @@ public class Merge_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Merge,String> name;
     public static volatile SingularAttribute<Merge,String> position;
     public static volatile SingularAttribute<Merge,String> process;
+    public static volatile ListAttribute<Merge,String> readDataPathList;
     public static volatile ListAttribute<Merge,String> readDepartmentList;
     public static volatile SingularAttribute<Merge,String> readDuty;
     public static volatile ListAttribute<Merge,String> readIdentityList;
     public static volatile SingularAttribute<Merge,String> readScript;
     public static volatile SingularAttribute<Merge,String> readScriptText;
+    public static volatile ListAttribute<Merge,String> reviewDataPathList;
     public static volatile ListAttribute<Merge,String> reviewDepartmentList;
+    public static volatile SingularAttribute<Merge,String> reviewDuty;
     public static volatile ListAttribute<Merge,String> reviewIdentityList;
     public static volatile SingularAttribute<Merge,String> reviewScript;
     public static volatile SingularAttribute<Merge,String> reviewScriptText;

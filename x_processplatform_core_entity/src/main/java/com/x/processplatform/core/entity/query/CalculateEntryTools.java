@@ -1,128 +1,139 @@
 package com.x.processplatform.core.entity.query;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
 public class CalculateEntryTools {
 
-	public static CalculateRow calculate(Table table, CalculateEntry calculateEntry, GroupEntry groupEntry)
+	public static List<CalculateCell> calculateAmount(Table table, List<CalculateEntry> calculateEntries)
 			throws Exception {
+		List<CalculateCell> list = new ArrayList<>();
+		for (CalculateEntry o : calculateEntries) {
+			switch (o.getCalculateType()) {
+			case count:
+				list.add(new CalculateCell(o, count(table, o)));
+				break;
+			case sum:
+				list.add(new CalculateCell(o, sum(table, o)));
+				break;
+			case average:
+				list.add(new CalculateCell(o, average(table, o)));
+				break;
+			default:
+				break;
+			}
+		}
+		return list;
+	}
+
+	public static List<?> calculate(Table table, Calculate calculate, GroupEntry groupEntry) throws Exception {
+		List<Object> list = new ArrayList<>();
+		if (BooleanUtils.isTrue(calculate.getIsGroup())) {
+			LinkedHashMap<Object, List<CalculateCell>> map = new LinkedHashMap<>();
+			for (int i = 0; i < calculate.getCalculateEntryList().size(); i++) {
+				CalculateEntry calculateEntry = calculate.getCalculateEntryList().get(i);
+				Map<Object, ? extends Number> m = groupCalcluateEntry(table, calculateEntry, groupEntry);
+				if (i == 0) {
+					for (Entry<Object, ? extends Number> en : m.entrySet()) {
+						List<CalculateCell> row = new ArrayList<>();
+						row.add(new CalculateCell(calculateEntry, en.getValue()));
+						map.put(en.getKey(), row);
+					}
+				} else {
+					for (Entry<Object, ? extends Number> en : m.entrySet()) {
+						map.get(en.getKey()).add(new CalculateCell(calculateEntry, en.getValue()));
+					}
+				}
+			}
+			for (Entry<Object, List<CalculateCell>> en : map.entrySet()) {
+				LinkedHashMap<String, Object> o = new LinkedHashMap<>();
+				o.put("group", en.getKey());
+				o.put("list", en.getValue());
+				list.add(o);
+			}
+		} else {
+			for (CalculateEntry o : calculate.getCalculateEntryList()) {
+				switch (o.getCalculateType()) {
+				case count:
+					list.add(new CalculateCell(o, count(table, o)));
+					break;
+				case sum:
+					list.add(new CalculateCell(o, sum(table, o)));
+					break;
+				case average:
+					list.add(new CalculateCell(o, average(table, o)));
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		return list;
+	}
+
+	private static Map<Object, ? extends Number> groupCalcluateEntry(Table table, CalculateEntry calculateEntry,
+			GroupEntry groupEntry) throws Exception {
 		switch (calculateEntry.getCalculateType()) {
 		case count:
-			return count(table, calculateEntry);
-		case sum:
-			return sum(table, calculateEntry);
-		case average:
-			return average(table, calculateEntry);
-		case groupCount:
 			return groupCount(table, calculateEntry, groupEntry);
-		case groupSum:
+		case sum:
 			return groupSum(table, calculateEntry, groupEntry);
-		case groupAverage:
+		case average:
 			return groupAverage(table, calculateEntry, groupEntry);
 		default:
-			return null;
+			return new LinkedHashMap<Object, Number>();
 		}
 	}
 
-	private static CalculateRow count(Table table, CalculateEntry calculateEntry) throws Exception {
+	private static Long count(Table table, CalculateEntry calculateEntry) throws Exception {
 		Long result = table.stream().count();
-		CalculateRow o = new CalculateRow();
-		o.setColumn(calculateEntry.getColumn());
-		o.setDisplayName(calculateEntry.getDisplayName());
-		o.setValue(result);
-		return o;
+		return result;
 	}
 
-	private static CalculateRow sum(Table table, CalculateEntry calculateEntry) throws Exception {
+	private static Double sum(Table table, CalculateEntry calculateEntry) throws Exception {
 		Double result = table.stream().mapToDouble(row -> row.getAsDouble(calculateEntry.getColumn())).sum();
-		CalculateRow o = new CalculateRow();
-		o.setColumn(calculateEntry.getColumn());
-		o.setDisplayName(calculateEntry.getDisplayName());
-		o.setValue(result);
-		return o;
+		return result;
 	}
 
-	private static CalculateRow average(Table table, CalculateEntry calculateEntry) throws Exception {
+	private static Double average(Table table, CalculateEntry calculateEntry) throws Exception {
 		DoubleSupplier ds = () -> {
 			return 0d;
 		};
 		Double result = table.stream().mapToDouble(row -> row.getAsDouble(calculateEntry.getColumn())).average()
 				.orElseGet(ds);
-		CalculateRow o = new CalculateRow();
-		o.setColumn(calculateEntry.getColumn());
-		o.setDisplayName(calculateEntry.getDisplayName());
-		o.setValue(result);
-		return o;
+		return result;
 	}
 
-	private static CalculateRow groupCount(Table table, CalculateEntry calculateEntry, GroupEntry groupEntry)
+	private static Map<Object, Long> groupCount(Table table, CalculateEntry calculateEntry, GroupEntry groupEntry)
 			throws Exception {
-		CalculateRow o = new CalculateRow();
-		o.setColumn(calculateEntry.getColumn());
-		o.setDisplayName(calculateEntry.getDisplayName());
-		if ((null == groupEntry) || (!groupEntry.available())) {
-			o.setValue(null);
-		} else {
-			Map<Object, Long> map = table.stream()
+		Map<Object, Long> map = new LinkedHashMap<Object, Long>();
+		if ((null != groupEntry) && (groupEntry.available())) {
+			map = table.stream()
 					.collect(Collectors.groupingBy(row -> row.get(groupEntry.getColumn()), Collectors.counting()));
-			LinkedHashMap<Object, Long> linkedHashMap = new LinkedHashMap<>(map);
-			if ((!Objects.equals(OrderType.original, calculateEntry.getOrderType()))
-					&& (null != calculateEntry.getOrderEffectType())) {
-				linkedHashMap = sortGroup(linkedHashMap, calculateEntry);
-			}
-			o.setValue(linkedHashMap);
 		}
-		return o;
+		return map;
 	}
 
-	private static CalculateRow groupSum(List<Row> rows, CalculateEntry calculateEntry, GroupEntry groupEntry)
+	private static Map<Object, Double> groupSum(Table table, CalculateEntry calculateEntry, GroupEntry groupEntry)
 			throws Exception {
-		CalculateRow o = new CalculateRow();
-		o.setColumn(calculateEntry.getColumn());
-		o.setDisplayName(calculateEntry.getDisplayName());
-		if ((null == groupEntry) || (!groupEntry.available())) {
-			o.setValue(null);
-		} else {
-			Map<Object, Double> map = rows.stream()
-					.collect(Collectors.groupingBy(row -> row.get(groupEntry.getColumn()),
-							Collectors.summingDouble(row -> row.getAsDouble(calculateEntry.getColumn()))));
-			LinkedHashMap<Object, Double> linkedHashMap = new LinkedHashMap<>(map);
-			if ((!Objects.equals(OrderType.original, calculateEntry.getOrderType()))
-					&& (null != calculateEntry.getOrderEffectType())) {
-				linkedHashMap = sortGroup(linkedHashMap, calculateEntry);
-			}
-			o.setValue(linkedHashMap);
-		}
-		return o;
+		Map<Object, Double> map = table.stream().collect(Collectors.groupingBy(row -> row.get(groupEntry.getColumn()),
+				Collectors.summingDouble(row -> row.getAsDouble(calculateEntry.getColumn()))));
+		return map;
 	}
 
-	private static CalculateRow groupAverage(List<Row> rows, CalculateEntry calculateEntry, GroupEntry groupEntry)
-			throws Exception {
-		CalculateRow o = new CalculateRow();
-		o.setColumn(calculateEntry.getColumn());
-		o.setDisplayName(calculateEntry.getDisplayName());
-		if ((null == groupEntry) || (!groupEntry.available())) {
-			o.setValue(null);
-		} else {
-			Map<Object, Double> map = rows.stream()
-					.collect(Collectors.groupingBy(row -> row.get(groupEntry.getColumn()),
-							Collectors.averagingDouble(row -> row.getAsDouble(calculateEntry.getColumn()))));
-			LinkedHashMap<Object, Double> linkedHashMap = new LinkedHashMap<>(map);
-			if ((!Objects.equals(OrderType.original, calculateEntry.getOrderType()))
-					&& (null != calculateEntry.getOrderEffectType())) {
-				linkedHashMap = sortGroup(linkedHashMap, calculateEntry);
-			}
-			o.setValue(linkedHashMap);
-		}
-		return o;
+	private static Map<Object, Double> groupAverage(List<Row> rows, CalculateEntry calculateEntry,
+			GroupEntry groupEntry) throws Exception {
+		Map<Object, Double> map = rows.stream().collect(Collectors.groupingBy(row -> row.get(groupEntry.getColumn()),
+				Collectors.averagingDouble(row -> row.getAsDouble(calculateEntry.getColumn()))));
+		return map;
 	}
 
 	private static <T extends Number> LinkedHashMap<Object, T> sortGroup(LinkedHashMap<Object, T> linkedHashMap,

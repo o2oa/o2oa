@@ -40,7 +40,7 @@ public class Form extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.Element.Form.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception {
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -53,7 +53,7 @@ public class Form extends SliceJpaObject {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception {
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -144,7 +144,7 @@ public class Form extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception {
 		// this.editor = StringUtils.trimToEmpty(this.editor);
 	}
 
@@ -199,12 +199,6 @@ public class Form extends SliceJpaObject {
 	@Index(name = TABLE + "_application")
 	@CheckPersist(allowEmpty = false, citationExists = { @CitationExist(type = Application.class) })
 	private String application;
-
-	// @EntityFieldDescribe("最后的编辑者.")
-	// @Column(length = AbstractPersistenceProperties.organization_name_length,
-	// name = "xeditor")
-	// @CheckPersist(allowEmpty = true)
-	// private String editor;
 
 	@EntityFieldDescribe("最后的编辑者.")
 	@Column(length = AbstractPersistenceProperties.organization_name_length, name = "xlastUpdatePerson")

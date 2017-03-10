@@ -16,6 +16,7 @@ public class x_attendance_assemble_control extends Assemble {
 	public static List<Class<? extends Compilable>> dependents = new ArrayList<>();
 
 	static {
+		containerEntities.add("com.x.attendance.entity.AttendanceWorkPlace");
 		containerEntities.add("com.x.attendance.entity.AttendanceAdmin");
 		containerEntities.add("com.x.attendance.entity.AttendanceDetailMobile");
 		containerEntities.add("com.x.attendance.entity.AttendanceDetail");

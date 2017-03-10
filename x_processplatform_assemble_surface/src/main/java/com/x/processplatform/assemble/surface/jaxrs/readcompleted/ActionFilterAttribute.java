@@ -20,8 +20,8 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.ReadCompleted_;
 
-public class ActionFilterAttribute extends ActionBase {
-	
+class ActionFilterAttribute extends ActionBase {
+
 	ActionResult<Map<String, List<NameValueCountPair>>> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Map<String, List<NameValueCountPair>>> result = new ActionResult<>();

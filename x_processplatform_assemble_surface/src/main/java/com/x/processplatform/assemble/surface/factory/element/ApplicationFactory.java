@@ -113,6 +113,7 @@ public class ApplicationFactory extends ElementFactory {
 					cb.isEmpty(root.get(Application_.availableDepartmentList)),
 					cb.isEmpty(root.get(Application_.availableCompanyList)));
 			p = cb.or(p, cb.isMember(effectivePerson.getName(), root.get(Application_.controllerList)));
+			p = cb.or(p, cb.equal(root.get(Application_.creatorPerson), effectivePerson.getName()));
 			if (ListTools.isNotEmpty(identities)) {
 				p = cb.or(p, root.get(Application_.availableIdentityList).in(identities));
 			}

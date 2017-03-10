@@ -13,19 +13,26 @@ import com.x.base.core.utils.ListTools;
 public class StorageServer extends GsonPropertyObject {
 
 	private static final Integer default_port = 20040;
-
-	/*2的八次方最小的质数*/
+	/** 2的八次方最小的质数 */
 	private static final String default_name = "251";
 
-	private Boolean enable = false;
+	public static StorageServer defaultInstance() {
+		return new StorageServer();
+	}
 
-	private Integer port = default_port;
+	public StorageServer() {
+		this.enable = true;
+		this.port = default_port;
+		this.sslEnable = false;
+		this.name = default_name;
+		this.accounts = new CopyOnWriteArrayList<Account>();
+	}
 
-	private Boolean sslEnable = false;
-
-	private String name = default_name;
-
-	private CopyOnWriteArrayList<Account> accounts = new CopyOnWriteArrayList<>();
+	private Boolean enable;
+	private Integer port;
+	private Boolean sslEnable;
+	private String name;
+	private CopyOnWriteArrayList<Account> accounts;
 
 	public CopyOnWriteArrayList<Account> getCalculatedAccounts() throws Exception {
 		if (ListTools.isEmpty(accounts)) {

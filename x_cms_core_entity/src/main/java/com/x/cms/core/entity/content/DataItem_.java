@@ -18,13 +18,13 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.cms.core.entity.content.DataItem.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:17:48 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 13:46:13 CST 2017")
 public class DataItem_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<DataItem,String> appId;
     public static volatile SingularAttribute<DataItem,String> appName;
     public static volatile SingularAttribute<DataItem,Boolean> booleanValue;
-    public static volatile SingularAttribute<DataItem,String> catagoryId;
-    public static volatile SingularAttribute<DataItem,String> catagoryName;
+    public static volatile SingularAttribute<DataItem,String> categoryId;
+    public static volatile SingularAttribute<DataItem,String> categoryName;
     public static volatile SingularAttribute<DataItem,Date> createTime;
     public static volatile SingularAttribute<DataItem,String> creatorCompany;
     public static volatile SingularAttribute<DataItem,String> creatorDepartment;
@@ -38,6 +38,7 @@ public class DataItem_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<DataItem,ItemPrimitiveType> itemPrimitiveType;
     public static volatile SingularAttribute<DataItem,ItemStringValueType> itemStringValueType;
     public static volatile SingularAttribute<DataItem,ItemType> itemType;
+    public static volatile SingularAttribute<DataItem,String> lobItem;
     public static volatile SingularAttribute<DataItem,Double> numberValue;
     public static volatile SingularAttribute<DataItem,String> path0;
     public static volatile SingularAttribute<DataItem,Integer> path0Location;

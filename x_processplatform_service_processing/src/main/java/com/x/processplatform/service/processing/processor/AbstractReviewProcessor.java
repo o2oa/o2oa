@@ -1,6 +1,8 @@
 package com.x.processplatform.service.processing.processor;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -12,6 +14,8 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.service.processing.Business;
 
 public abstract class AbstractReviewProcessor extends AbstractExpireProcessor {
+
+	private static Logger logger = LoggerFactory.getLogger(AbstractReviewProcessor.class);
 
 	protected AbstractReviewProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
@@ -45,6 +49,7 @@ public abstract class AbstractReviewProcessor extends AbstractExpireProcessor {
 		review.setWork(work.getId());
 		review.setCompleted(false);
 		review.setTitle(work.getTitle());
+		review.setSerial(work.getSerial());
 		review.setStartTime(work.getStartTime());
 		review.setApplication(work.getApplication());
 		review.setApplicationName(work.getApplicationName());

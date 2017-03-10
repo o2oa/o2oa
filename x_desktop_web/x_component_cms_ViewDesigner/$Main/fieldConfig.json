@@ -35,7 +35,7 @@
       "type":"string"
     },
 //    {
-//      "name":"catagoryName",
+//      "name":"categoryName",
 //      "type":"string"
 //    },
     {
@@ -64,6 +64,6 @@
     }
   ]
   //  "documentFields" : [
-  //    "title", "catagoryId","catagoryName","catagoryAlias","createTime","updateTime","id","appId","form","formName","creatorPerson","creatorIdentity","creatorDepartment","creatorCompany","docStatus","attachmentList"
+  //    "title", "categoryId","categoryName","categoryAlias","createTime","updateTime","id","appId","form","formName","creatorPerson","creatorIdentity","creatorDepartment","creatorCompany","docStatus","attachmentList"
   //    ]
 }

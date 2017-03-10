@@ -69,15 +69,15 @@ public class LogFactory extends AbstractFactory {
 	/**
 	 * 列示指定对象的Log日志管理信息ID列表
 	 * @param appId
-	 * @param catagoryId
+	 * @param categoryId
 	 * @param documentId
 	 * @param fileId
 	 * @return
 	 * @throws Exception
 	 */
 	@MethodDescribe("列示指定对象的Log日志管理信息ID列表")
-	public List<String> listByObject(String appId, String catagoryId, String documentId, String fileId) throws Exception {
-		if( appId == null && catagoryId == null && documentId == null && fileId == null ){
+	public List<String> listByObject( String appId, String categoryId, String documentId, String fileId) throws Exception {
+		if( appId == null && categoryId == null && documentId == null && fileId == null ){
 			return new ArrayList<String>();
 		}
 		EntityManager em = this.entityManagerContainer().get( Log.class );
@@ -88,11 +88,11 @@ public class LogFactory extends AbstractFactory {
 		if( appId != null && !appId.isEmpty() ){
 			p = cb.equal(root.get(Log_.appId), appId );
 		}
-		if( catagoryId != null && !catagoryId.isEmpty() ){
+		if( categoryId != null && !categoryId.isEmpty() ){
 			if( p == null ){
-				p = cb.equal(root.get(Log_.catagoryId), catagoryId );
+				p = cb.equal(root.get(Log_.categoryId), categoryId );
 			}else{
-				p = cb.and( p, cb.equal(root.get(Log_.catagoryId), catagoryId ) );
+				p = cb.and( p, cb.equal(root.get(Log_.categoryId), categoryId ) );
 			}
 		}
 		if( documentId != null && !documentId.isEmpty() ){

@@ -16,7 +16,7 @@ import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.utils.annotation.MethodDescribe;
 import com.x.okr.assemble.control.AbstractFactory;
 import com.x.okr.assemble.control.Business;
-import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.WrapInFilter;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.WrapInFilterCenterWorkInfo;
 import com.x.okr.entity.OkrCenterWorkInfo;
 import com.x.okr.entity.OkrCenterWorkInfo_;
 
@@ -67,7 +67,7 @@ public class OkrCenterWorkInfoFactory extends AbstractFactory {
 	 * @throws Exception
 	 */
 	@SuppressWarnings( "unchecked" )
-	public List<OkrCenterWorkInfo> listNextWithFilter( String id, Integer count, Object sequence, WrapInFilter wrapIn ) throws Exception {
+	public List<OkrCenterWorkInfo> listNextWithFilter( String id, Integer count, Object sequence, WrapInFilterCenterWorkInfo wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( OkrCenterWorkInfo.class );
 		String order = wrapIn.getOrder();//排序方式
@@ -87,7 +87,7 @@ public class OkrCenterWorkInfoFactory extends AbstractFactory {
 			index++;
 		}
 		if ((null != wrapIn.getDefaultWorkTypes()) && wrapIn.getDefaultWorkTypes().size() > 0) {
-			sql_stringBuffer.append( " and o.defaultWorkTypes in ( ?" + (index) + " )" );
+			sql_stringBuffer.append( " and o.defaultWorkType in ( ?" + (index) + " )" );
 			vs.add( wrapIn.getDefaultWorkTypes() );
 			index++;
 		}
@@ -136,7 +136,7 @@ public class OkrCenterWorkInfoFactory extends AbstractFactory {
 	 * @throws Exception
 	 */
 	@SuppressWarnings( "unchecked" )
-	public List<OkrCenterWorkInfo> listPrevWithFilter( String id, Integer count, Object sequence, WrapInFilter wrapIn ) throws Exception {
+	public List<OkrCenterWorkInfo> listPrevWithFilter( String id, Integer count, Object sequence, WrapInFilterCenterWorkInfo wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( OkrCenterWorkInfo.class );
 		String order = wrapIn.getOrder();//排序方式
@@ -155,7 +155,7 @@ public class OkrCenterWorkInfoFactory extends AbstractFactory {
 			index++;
 		}
 		if ((null != wrapIn.getDefaultWorkTypes()) && wrapIn.getDefaultWorkTypes().size() > 0) {
-			sql_stringBuffer.append( " and o.defaultWorkTypes in ( ?" + (index) + " )" );
+			sql_stringBuffer.append( " and o.defaultWorkType in ( ?" + (index) + " )" );
 			vs.add( wrapIn.getDefaultWorkTypes() );
 			index++;
 		}
@@ -203,7 +203,7 @@ public class OkrCenterWorkInfoFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	public long getCountWithFilter( WrapInFilter wrapIn ) throws Exception {
+	public long getCountWithFilter( WrapInFilterCenterWorkInfo wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( OkrCenterWorkInfo.class );
 		List<Object> vs = new ArrayList<>();
@@ -223,6 +223,13 @@ public class OkrCenterWorkInfoFactory extends AbstractFactory {
 			vs.add( wrapIn.getProcessStatusList() );
 			index++;
 		}
+		
+		if ((null != wrapIn.getDefaultWorkTypes()) && wrapIn.getDefaultWorkTypes().size() > 0) {
+			sql_stringBuffer.append( " and o.defaultWorkType in ( ?" + (index) + " )" );
+			vs.add( wrapIn.getDefaultWorkTypes() );
+			index++;
+		}
+		
 		if (null != wrapIn.getTitle() && !wrapIn.getTitle().isEmpty() ) {
 			sql_stringBuffer.append( " and o.title like ?" + (index) );
 			vs.add( "%"+wrapIn.getTitle()+"%" );

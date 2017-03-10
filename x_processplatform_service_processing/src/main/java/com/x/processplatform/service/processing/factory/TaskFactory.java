@@ -29,6 +29,10 @@ public class TaskFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
+	public List<Task> listObjectWithWork(String id) throws Exception {
+		return this.entityManagerContainer().list(Task.class, this.listWithWork(id));
+	}
+
 	public List<String> listWithJob(String job) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Task.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();

@@ -22,12 +22,9 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
-import com.x.base.core.bean.BeanCopyTools;
-import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.cache.ApplicationCache;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -39,7 +36,10 @@ import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.assemble.control.WrapTools;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.Log;
@@ -54,41 +54,33 @@ public class ScriptAction extends StandardJaxrsAction {
 	private Logger logger = LoggerFactory.getLogger( ScriptAction.class );
 	private LogService logService = new LogService();
 	private Ehcache cache = ApplicationCache.instance().getCache( Script.class );
-	BeanCopyTools<Script, WrapOutScript> copier = BeanCopyToolsBuilder.create(Script.class, WrapOutScript.class);
 	
-	@HttpMethodDescribe(value = "获取指定的脚本信息.", response = WrapOutScript.class)
+	@HttpMethodDescribe( value = "获取指定的脚本信息.", response = WrapOutScript.class )
 	@GET
-	@Path("{id}")
+	@Path( "{id}" )
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutScript> result = new ActionResult<>();
 		WrapOutScript wrap = null;
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		logger.debug("[get]user[" + currentPerson.getName() + "] try to get script, script{'id':'"+id+"'}.");
 		
 		String cacheKey = "script.get." + id;
 		Element element = null;
 		element = cache.get(cacheKey);	
 		if( element != null ){
-			logger.debug("[get]get script from cache. cacheKey="+cacheKey );
 			wrap = (WrapOutScript) element.getObjectValue();
 			result.setData( wrap );
 		}else{
-			logger.debug("[get]no script cache exists for script{'id':'"+id+"'}. cacheKey=" + cacheKey );
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);
 				Script script = emc.find(id, Script.class);
 				if (null == script) {
 					throw new Exception("[get]script{id:" + id + "} not existed.");
 				}
-				AppInfo appInfo = emc.find(script.getAppId(), AppInfo.class);
 				wrap = new WrapOutScript();
-				copier.copy(script, wrap);
+				WrapTools.script_wrapout_copier.copy(script, wrap);
 				result.setData(wrap);
 				
 				//将查询结果放进缓存里
-				logger.debug("[get]push script{'id':'"+id+"'} to cache. cacheKey="+cacheKey );
 				cache.put( new Element( cacheKey, wrap ) );
 				
 			} catch (Throwable th) {
@@ -103,43 +95,55 @@ public class ScriptAction extends StandardJaxrsAction {
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response post(@Context HttpServletRequest request, WrapInScript wrapIn) {
+	public Response post(@Context HttpServletRequest request, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		WrapInScript wrapIn = null;
 		WrapOutId wrap = null;
 		EffectivePerson currentPerson = this.effectivePerson(request);
-		logger.debug("[post]user[" + currentPerson.getName() + "] try to save script......");
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-			Business business = new Business(emc);
-			AppInfo appInfo = emc.find(wrapIn.getAppId(), AppInfo.class);
-			if (null == appInfo) {
-				throw new Exception("[post]appinfo{id:" + wrapIn.getAppId() + "} not existed.");
-			}
-			logger.debug("[post]system try to save script.");
-			emc.beginTransaction(Script.class);
-			Script script = new Script();
-			wrapIn.copyTo(script);
-			script.setCreatorPerson( currentPerson.getName() );
-			script.setLastUpdatePerson( currentPerson.getName() );
-			script.setLastUpdateTime(new Date());
-			emc.persist(script, CheckPersistType.all);
-			emc.commit();
-			logger.debug("[post]script{'id':'"+script.getId()+"'} has saved.");
-			
-			logger.debug("[post]System try to remove all Script cache......" );
-			//清除所有的Script缓存
-			ApplicationCache.notify( Script.class );
-			
-			//记录日志
-			emc.beginTransaction( Log.class );
-			logService.log( emc,  currentPerson.getName(), "用户[" + currentPerson.getName() + "]成功新增一个脚本信息", script.getAppId(), "", "", script.getId(), "SCRIPT", "新增" );
-			emc.commit();
-			wrap = new WrapOutId(script.getId());
-			wrap.copyTo(script);
-			result.setData(wrap);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		Boolean check = true;
+		
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInScript.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
+		if( check ){
+			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+				AppInfo appInfo = emc.find(wrapIn.getAppId(), AppInfo.class);
+				if (null == appInfo) {
+					throw new Exception("[post]appinfo{id:" + wrapIn.getAppId() + "} not existed.");
+				}
+				logger.debug("[post]system try to save script.");
+				emc.beginTransaction(Script.class);
+				Script script = new Script();
+				wrapIn.copyTo(script);
+				script.setCreatorPerson( currentPerson.getName() );
+				script.setLastUpdatePerson( currentPerson.getName() );
+				script.setLastUpdateTime(new Date());
+				emc.persist(script, CheckPersistType.all);
+				emc.commit();
+				logger.debug("[post]script{'id':'"+script.getId()+"'} has saved.");
+				
+				logger.debug("[post]System try to remove all Script cache......" );
+				//清除所有的Script缓存
+				ApplicationCache.notify( Script.class );
+				
+				//记录日志
+				emc.beginTransaction( Log.class );
+				logService.log( emc,  currentPerson.getName(), script.getName(), script.getAppId(), "", "", script.getId(), "SCRIPT", "新增" );
+				emc.commit();
+				wrap = new WrapOutId(script.getId());
+				wrap.copyTo(script);
+				result.setData(wrap);
+			} catch (Throwable th) {
+				th.printStackTrace();
+				result.error(th);
+			}
+		}
+		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
@@ -148,40 +152,48 @@ public class ScriptAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response put(@Context HttpServletRequest request, @PathParam("id") String id, WrapInScript wrapIn) {
+	public Response put(@Context HttpServletRequest request, @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		WrapOutId wrap = null;
 		EffectivePerson currentPerson = this.effectivePerson(request);
-		logger.debug("[put]user[" + currentPerson.getName() + "] try to update script{'id':'"+id+"'}.");
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			Script script = emc.find(id, Script.class);
-			if (null == script) {
-				throw new Exception("script{id:" + id + "} not existed.");
-			}
-			AppInfo appInfo = emc.find(script.getAppId(), AppInfo.class);
-			logger.debug("[put]system try to update script{'id':'"+script.getId()+"'}");
-			emc.beginTransaction(Script.class);
-			wrapIn.copyTo(script);
-			script.setLastUpdatePerson( currentPerson.getName() );
-			script.setLastUpdateTime(new Date());
-			emc.commit();
-			logger.debug("[put]script{'id':'"+script.getId()+"'} has update.");
-			
-			logger.debug("[put]System try to remove all Script cache......" );
-			//清除所有的Script缓存
-			ApplicationCache.notify( Script.class );
-			
-			//记录日志
-			emc.beginTransaction( Log.class );
-			logService.log( emc,  currentPerson.getName(), "用户[" + currentPerson.getName() + "]成功更新一个脚本信息", script.getAppId(), "", "", script.getId(), "SCRIPT", "更新" );
-			emc.commit();
-			wrap = new WrapOutId(script.getId());
-			result.setData(wrap);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		WrapInScript wrapIn = null;
+		Boolean check = true;
+		
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInScript.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
+
+		if( check ){
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Script script = emc.find(id, Script.class);
+				if (null == script) {
+					throw new Exception("script{id:" + id + "} not existed.");
+				}
+				emc.beginTransaction(Script.class);
+				wrapIn.copyTo(script);
+				script.setLastUpdatePerson( currentPerson.getName() );
+				script.setLastUpdateTime(new Date());
+				emc.commit();
+				//清除所有的Script缓存
+				ApplicationCache.notify( Script.class );
+				
+				//记录日志
+				emc.beginTransaction( Log.class );
+				logService.log( emc,  currentPerson.getName(), script.getName(),script.getAppId(), "", "", script.getId(), "SCRIPT", "更新" );
+				emc.commit();
+				wrap = new WrapOutId(script.getId());
+				result.setData(wrap);
+			} catch (Throwable th) {
+				th.printStackTrace();
+				result.error(th);
+			}
+		}
+		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
@@ -195,25 +207,19 @@ public class ScriptAction extends StandardJaxrsAction {
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		logger.debug("[delete]user[" + currentPerson.getName() + "] try to delete script{'id':'"+id+"'}.");
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
 			Script script = emc.find(id, Script.class);
 			if (null == script) {
 				throw new Exception("script{id:" + id + "} not existed.");
 			}
-			AppInfo appInfo = emc.find(script.getAppId(), AppInfo.class);
-			logger.debug("[delete]system try to delete script{'id':'"+script.getId()+"'}");
 			emc.beginTransaction(Script.class);
 			emc.remove(script, CheckRemoveType.all);
 			emc.commit();
-			logger.debug("[delete]script{'id':'"+script.getId()+"'} has deleted.");
-			
-			logger.debug("[delete]System try to remove all Script cache......" );
 			//清除所有的Script缓存
 			ApplicationCache.notify( Script.class );
 			
 			//记录日志
 			emc.beginTransaction( Log.class );
-			logService.log( emc,  currentPerson.getName(), "用户[" + currentPerson.getName() + "]成功删除一个脚本信息", script.getAppId(), "", "", script.getId(), "SCRIPT", "删除" );
+			logService.log( emc,  currentPerson.getName(), script.getName(), script.getAppId(), "", "", script.getId(), "SCRIPT", "删除" );
 			emc.commit();
 			result.setData(new WrapOutId(script.getId()));
 		} catch (Throwable th) {
@@ -223,6 +229,7 @@ public class ScriptAction extends StandardJaxrsAction {
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
+	@SuppressWarnings("unchecked")
 	@HttpMethodDescribe(value = "列示应用所有脚本.", response = WrapOutScript.class)
 	@GET
 	@Path("list/app/{appId}")
@@ -253,7 +260,7 @@ public class ScriptAction extends StandardJaxrsAction {
 				
 				for (Script o : emc.list(Script.class, ids)) {
 					WrapOutScript wrap = new WrapOutScript();
-					copier.copy(o, wrap);
+					WrapTools.script_wrapout_copier.copy(o, wrap);
 					wraps.add(wrap);
 				}
 				Collections.sort(wraps, new Comparator<WrapOutScript>() {
@@ -335,7 +342,7 @@ public class ScriptAction extends StandardJaxrsAction {
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		logger.debug("[standardListNext]user[" + currentPerson.getName() + "] try to list script nextpage {'id':'"+id+"','count':'"+count+"'}.");
 		try {
-			result = this.standardListNext(copier, id, count, "sequence", null, null, null, null, null, null, null, true, DESC);
+			result = this.standardListNext( WrapTools.script_wrapout_copier, id, count, "sequence", null, null, null, null, null, null, null, true, DESC);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -353,7 +360,7 @@ public class ScriptAction extends StandardJaxrsAction {
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		logger.debug("[standardListNext]user[" + currentPerson.getName() + "] try to list script prevpage {'id':'"+id+"','count':'"+count+"'}.");
 		try {
-			result = this.standardListPrev(copier, id, count, "sequence", null, null, null, null, null, null, null, true, DESC);
+			result = this.standardListPrev( WrapTools.script_wrapout_copier, id, count, "sequence", null, null, null, null, null, null, null, true, DESC);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -366,39 +373,51 @@ public class ScriptAction extends StandardJaxrsAction {
 	@Path("{uniqueName}/app/{appId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response getScriptNested(@Context HttpServletRequest request, @PathParam("uniqueName") String uniqueName, @PathParam("appId") String appId, WrapInScriptNested wrapIn) {
+	public Response getScriptNested(@Context HttpServletRequest request, @PathParam("uniqueName") String uniqueName, @PathParam("appId") String appId, JsonElement jsonElement) {
 		ActionResult<WrapOutScriptNested> result = new ActionResult<>();
 		WrapOutScriptNested wrap = null;
 		EffectivePerson currentPerson = this.effectivePerson(request);
-		logger.debug("[get]user[" + currentPerson.getName() + "] try to getScriptNested, uniqueName=" + uniqueName + ", appId=" + appId );
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-			Business business = new Business(emc);
-			AppInfo appInfo = business.getAppInfoFactory().get( appId );
-			if ( null == appInfo ) {
-				throw new Exception("appInfo{id:" + appId + "} not existed.");
-			}
-			List<Script> list = new ArrayList<>();
-			for (Script o : business.getScriptFactory().listScriptNestedWithAppInfoWithUniqueName( appInfo.getId(), uniqueName)) {
-				if ((!wrapIn.getImportedList().contains(o.getAlias())) && (!wrapIn.getImportedList().contains(o.getName())) && (!wrapIn.getImportedList().contains(o.getId()))) {
-					list.add(o);
+		WrapInScriptNested wrapIn = null;
+		Boolean check = true;
+		
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInScriptNested.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
+		}
+		if( check ){
+			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+				Business business = new Business(emc);
+				AppInfo appInfo = business.getAppInfoFactory().get( appId );
+				if ( null == appInfo ) {
+					throw new Exception("appInfo{id:" + appId + "} not existed.");
 				}
+				List<Script> list = new ArrayList<>();
+				for (Script o : business.getScriptFactory().listScriptNestedWithAppInfoWithUniqueName( appInfo.getId(), uniqueName)) {
+					if ((!wrapIn.getImportedList().contains(o.getAlias())) && (!wrapIn.getImportedList().contains(o.getName())) && (!wrapIn.getImportedList().contains(o.getId()))) {
+						list.add(o);
+					}
+				}
+				StringBuffer buffer = new StringBuffer();
+				List<String> imported = new ArrayList<>();
+				for (Script o : list) {
+					buffer.append(o.getText());
+					buffer.append(SystemUtils.LINE_SEPARATOR);
+					imported.add(o.getId());
+					imported.add(o.getName());
+					imported.add(o.getAlias());
+				}
+				wrap = new WrapOutScriptNested();
+				wrap.setImportedList(imported);
+				wrap.setText(buffer.toString());
+				result.setData(wrap);
+			} catch (Throwable th) {
+				th.printStackTrace();
+				result.error(th);
 			}
-			StringBuffer buffer = new StringBuffer();
-			List<String> imported = new ArrayList<>();
-			for (Script o : list) {
-				buffer.append(o.getText());
-				buffer.append(SystemUtils.LINE_SEPARATOR);
-				imported.add(o.getId());
-				imported.add(o.getName());
-				imported.add(o.getAlias());
-			}
-			wrap = new WrapOutScriptNested();
-			wrap.setImportedList(imported);
-			wrap.setText(buffer.toString());
-			result.setData(wrap);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

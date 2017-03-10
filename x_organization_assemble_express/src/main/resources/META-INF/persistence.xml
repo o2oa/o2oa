@@ -24,16 +24,16 @@
   </persistence-unit>
   <persistence-unit name="com.x.organization.core.entity.Department" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.organization.core.entity.Department</class>
     <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.organization.core.entity.Department</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.organization.core.entity.DepartmentAttribute" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>com.x.base.core.entity.JpaObject</class>
-    <class>com.x.base.core.entity.SliceJpaObject</class>
     <class>com.x.organization.core.entity.DepartmentAttribute</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.organization.core.entity.DepartmentDuty" transaction-type="RESOURCE_LOCAL">
@@ -45,29 +45,29 @@
   </persistence-unit>
   <persistence-unit name="com.x.organization.core.entity.Group" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.organization.core.entity.Group</class>
     <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.organization.core.entity.Group</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.organization.core.entity.Identity" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.organization.core.entity.Identity</class>
     <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.organization.core.entity.Identity</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.organization.core.entity.Person" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.organization.core.entity.Person</class>
     <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.organization.core.entity.Person</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.organization.core.entity.PersonAttribute" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.organization.core.entity.PersonAttribute</class>
     <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.organization.core.entity.PersonAttribute</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>

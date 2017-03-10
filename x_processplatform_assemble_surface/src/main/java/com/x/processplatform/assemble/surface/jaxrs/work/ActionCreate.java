@@ -6,9 +6,10 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.JsonElement;
+import com.x.base.core.DefaultCharset;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.TokenType;
@@ -27,27 +28,29 @@ import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
-class ActionCreate {
+class ActionCreate extends ActionBase {
 
-	ActionResult<List<WrapOutWorkLog>> execute(EffectivePerson effectivePerson, String processFlag, WrapInWork wrapIn)
-			throws Exception {
+	ActionResult<List<WrapOutWorkLog>> execute(EffectivePerson effectivePerson, String processFlag,
+			JsonElement jsonElement) throws Exception {
 		String workId = "";
 		WrapIdentity identity = null;
 		List<WrapOutWorkLog> wraps = new ArrayList<>();
 		ActionResult<List<WrapOutWorkLog>> result = new ActionResult<>();
+		WrapInWork wrapIn = this.convertToWrapIn(jsonElement, WrapInWork.class);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			identity = this.decideCreatorIdentity(business, effectivePerson, wrapIn);
 			Process process = business.process().pick(processFlag);
 			if (null == process) {
-				throw new Exception("process not existed:" + processFlag + ".");
+				throw new ProcessNotExistedException(processFlag);
 			}
 			Application application = business.application().pick(process.getApplication());
 			if (!business.application().allowRead(effectivePerson, application)) {
-				throw new Exception("person can not access process:" + processFlag);
+				throw new ApplicationAccessDeniedException(effectivePerson.getName(), application.getId());
 			}
 			WrapOutId wrapOutId = ThisApplication.applications.postQuery(x_processplatform_service_processing.class,
-					"work/process/" + URLEncoder.encode(process.getId(), "UTF-8"), wrapIn.getData(), WrapOutId.class);
+					"work/process/" + URLEncoder.encode(process.getId(), DefaultCharset.name), wrapIn.getData(),
+					WrapOutId.class);
 			workId = wrapOutId.getId();
 		}
 		/* 设置Work信息 并返回job信息 */
@@ -55,7 +58,10 @@ class ActionCreate {
 			Business business = new Business(emc);
 			Organization organization = business.organization();
 			emc.beginTransaction(Work.class);
-			Work work = emc.find(workId, Work.class, ExceptionWhen.not_found);
+			Work work = emc.find(workId, Work.class);
+			if (null == work) {
+				throw new WorkNotExistedException(workId);
+			}
 			work.setTitle(wrapIn.getTitle());
 			work.setCreatorIdentity(identity.getName());
 			work.setCreatorPerson(organization.person().getWithIdentity(identity.getName()).getName());
@@ -70,11 +76,14 @@ class ActionCreate {
 		}
 		/* 驱动工作 */
 		ThisApplication.applications.putQuery(x_processplatform_service_processing.class,
-				"work/" + URLEncoder.encode(workId, "UTF-8") + "/processing", null);
+				"work/" + URLEncoder.encode(workId, DefaultCharset.name) + "/processing", null);
 		/* 拼装返回结果 */
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			Work work = emc.find(workId, Work.class, ExceptionWhen.not_found);
+			Work work = emc.find(workId, Work.class);
+			if (null == work) {
+				throw new WorkNotExistedException(workId);
+			}
 			List<String> ids = business.workLog().listWithFromActivityTokenForwardNotConnected(work.getActivityToken());
 			/* 先取得没有结束的WorkLog */
 			wraps = WorkLogBuilder.complex(business, emc.list(WorkLog.class, ids));
@@ -101,7 +110,9 @@ class ActionCreate {
 			List<WrapIdentity> identities = business.organization().identity()
 					.listWithPerson(effectivePerson.getName());
 			if (identities.size() == 0) {
-				throw new Exception("can not get identity of person:" + effectivePerson.getName() + ".");
+				throw new NoneIdentityException(effectivePerson.getName());
+				// throw new Exception("can not get identity of person:" +
+				// effectivePerson.getName() + ".");
 			} else if (identities.size() == 1) {
 				return identities.get(0);
 			} else {
@@ -115,7 +126,7 @@ class ActionCreate {
 		} else {
 			List<WrapIdentity> list = business.organization().identity().listWithPerson(effectivePerson.getName());
 			if (!list.isEmpty()) {
-				list.get(0);
+				return list.get(0);
 			}
 		}
 		throw new Exception("decideCreatorIdentity error:" + wrapIn.toString());

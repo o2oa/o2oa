@@ -67,6 +67,7 @@
 		"border-radius": "6px"
 	},
 	"selectedScrollNode": {
+	  	"overflow" : "hidden",
 		"width": "331px",
 		"height": "410px",
 		"float": "right",

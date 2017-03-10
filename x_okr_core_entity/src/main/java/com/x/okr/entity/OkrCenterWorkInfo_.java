@@ -15,7 +15,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.okr.entity.OkrCenterWorkInfo.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:18:45 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:09:40 CST 2017")
 public class OkrCenterWorkInfo_ extends SliceJpaObject_  {
     public static volatile ListAttribute<OkrCenterWorkInfo,String> attachmentList;
     public static volatile SingularAttribute<OkrCenterWorkInfo,String> auditLeaderCompanyName;
@@ -34,6 +34,7 @@ public class OkrCenterWorkInfo_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<OkrCenterWorkInfo,String> defaultLeaderIdentity;
     public static volatile SingularAttribute<OkrCenterWorkInfo,String> defaultWorkLevel;
     public static volatile SingularAttribute<OkrCenterWorkInfo,String> defaultWorkType;
+    public static volatile SingularAttribute<OkrCenterWorkInfo,String> deployDateStr;
     public static volatile SingularAttribute<OkrCenterWorkInfo,String> deployMonth;
     public static volatile SingularAttribute<OkrCenterWorkInfo,String> deployYear;
     public static volatile SingularAttribute<OkrCenterWorkInfo,String> deployerCompanyName;

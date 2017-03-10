@@ -18,4 +18,12 @@ public class NumberTools {
 		return x > y;
 	}
 
+	public static Integer valueEuqalsThan(Integer x, Integer y, Integer euqalsValue, Integer notEuqalsValue) {
+		if (valueEuqals(x, y)) {
+			return euqalsValue;
+		} else {
+			return notEuqalsValue;
+		}
+	}
+
 }

@@ -31,6 +31,17 @@
     "personOnline": {"uri": "/jaxrs/online/person/{person}"},
 
     "getTask": {"uri": "/jaxrs/task/{id}"},
+    "getRead": {"uri": "/jaxrs/read/{id}"},
 
-    "listCMSApplication": {"uri": "/jaxrs/appinfo/list/user" }
+    "listCMSApplication": {"uri": "/jaxrs/appinfo/list/user/view" },
+    "listPortalApplication": {"uri": "/jaxrs/portal/list" },
+
+    "collectConnected": {"uri": "/jaxrs/collect/connect"},
+    "getCollectConfig": {"uri": "/jaxrs/collect"},
+    "collectValidate": {"uri": "/jaxrs/collect/validate"},
+
+    "uploadImage": {"uri": "/servlet/file/upload/referencetype/{referencetype}/reference/{reference}", "method": "POST", "enctype": "formData"},
+    "uploadImageByScale": {"uri": "/servlet/file/upload/referencetype/{referencetype}/reference/{reference}/scale/{scale}", "method" : "POST", "enctype": "formData" },
+    "copyImage" : {"uri":"/jaxrs/file/copy/attachment/{attachmentId}/referencetype/{referencetype}/reference/{reference}/scale/{scale}"}
+
 }

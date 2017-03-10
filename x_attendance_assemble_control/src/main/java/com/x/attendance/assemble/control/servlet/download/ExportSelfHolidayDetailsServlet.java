@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,26 +16,26 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.attendanceimportfileinfo.WrapOutAttendanceImportFileInfo;
 import com.x.attendance.entity.AttendanceSelfHoliday;
-import com.x.base.core.application.servlet.FileUploadServletTools;
+import com.x.base.core.application.servlet.AbstractServletAction;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.project.server.Config;
 
 @WebServlet(urlPatterns = "/servlet/export/selfholiday/*")
-public class ExportSelfHolidayDetailsServlet extends HttpServlet {
+public class ExportSelfHolidayDetailsServlet extends AbstractServletAction {
 
 	private static final long serialVersionUID = -4314532091497625540L;
-	private Logger logger = LoggerFactory.getLogger( ExportSelfHolidayDetailsServlet.class );
+	private Logger logger = LoggerFactory.getLogger(ExportSelfHolidayDetailsServlet.class);
 
 	@HttpMethodDescribe(value = "导出信息 servlet/export/selfholiday/{startdate}/{enddate}/stream", response = WrapOutAttendanceImportFileInfo.class)
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -45,9 +44,9 @@ public class ExportSelfHolidayDetailsServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		DateOperation dateOperation = new DateOperation();
 		try {
-			EffectivePerson effectivePerson = FileUploadServletTools.effectivePerson(request);
+			EffectivePerson effectivePerson = this.effectivePerson(request);
 			logger.debug("[ExportSelfHolidayDetailsServlet]用户" + effectivePerson.getName() + "尝试下载数据文件.....");
-			String part = FileUploadServletTools.getURIPart(request.getRequestURI(), "selfholiday");
+			String part = this.getURIPart(request.getRequestURI(), "selfholiday");
 			logger.debug("[ExportSelfHolidayDetailsServlet]截取URL, part=[" + part + "]");
 			// 从URI里截取需要的信息
 			String startdate = StringUtils.substringBefore(part, "/"); // year
@@ -73,7 +72,8 @@ public class ExportSelfHolidayDetailsServlet extends HttpServlet {
 				ids = business.getAttendanceSelfHolidayFactory().listByStartDateAndEndDate(startDate, endDate);
 				detailList = business.getAttendanceSelfHolidayFactory().list(ids);
 			} catch (Exception e) {
-				logger.error("系统在查询所有[" + startdate + "] 到 [" + enddate + "]的所有请假记录时发生异常。", e);
+				logger.info("系统在查询所有[" + startdate + "] 到 [" + enddate + "]的所有请假记录时发生异常。");
+				e.printStackTrace();
 			}
 			// 将结果组织成EXCEL
 			String fileName = "" + startdate + "至" + enddate + "月请假记录.xls";
@@ -117,11 +117,12 @@ public class ExportSelfHolidayDetailsServlet extends HttpServlet {
 			output.flush();
 			output.close();
 		} catch (Exception e) {
-			logger.error("[ExportSelfHolidayDetailsServlet]用户下载请假记录文件发生未知异常！", e);
+			e.printStackTrace();
+			logger.info("[ExportSelfHolidayDetailsServlet]用户下载请假记录文件发生未知异常！");
 			ActionResult<Object> result = new ActionResult<>();
 			result.error(e);
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			FileUploadServletTools.result(response, result);
+			this.result(response, result);
 		}
 	}
 
@@ -131,7 +132,7 @@ public class ExportSelfHolidayDetailsServlet extends HttpServlet {
 			response.setHeader("Content-Type", "application/octet-stream");
 			response.setHeader("Content-Disposition", "fileInfo; filename=" + URLEncoder.encode(fileName, "utf-8"));
 		} else {
-			response.setHeader("Content-Type", Config.mimeTypes().getContentType(fileName));
+			response.setHeader("Content-Type", Config.mimeTypes().getMimeByExtension(fileName));
 			response.setHeader("Content-Disposition", "inline; filename=" + URLEncoder.encode(fileName, "utf-8"));
 		}
 	}

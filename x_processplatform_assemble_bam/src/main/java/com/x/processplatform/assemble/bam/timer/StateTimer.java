@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.bam.timer;
 
+import java.util.TimerTask;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.processplatform.assemble.bam.Business;
@@ -13,7 +15,7 @@ import com.x.processplatform.assemble.bam.jaxrs.state.TimerPersonStubs;
 import com.x.processplatform.assemble.bam.jaxrs.state.TimerRunning;
 import com.x.processplatform.assemble.bam.jaxrs.state.TimerSummary;
 
-public class StateTimer implements Runnable {
+public class StateTimer extends TimerTask {
 
 	public void run() {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

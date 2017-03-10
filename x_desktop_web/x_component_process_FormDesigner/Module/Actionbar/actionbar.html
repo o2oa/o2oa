@@ -13,6 +13,14 @@
 		    <td class="editTableTitle">描述:</td>
 		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
 		  </tr>
+          <tr>
+            <td class="editTableTitle">系统操作:</td>
+            <td class="editTableValue">
+                <input type="radio" name="hideSystemTools" value="false" text{(!$.hideSystemTools)?'checked':''}/>显示
+                <input type="radio" name="hideSystemTools" value="true" text{($.hideSystemTools)?'checked':''}/>不显示
+            </td>
+          </tr>
+
 		</table>
 	</div>
     <div title="操作"  class="MWFTab" style="overflow: hidden">

@@ -9,13 +9,10 @@ import com.x.base.core.application.jaxrs.ManagerUserJaxrsFilter;
  * @author liyi *
  */
 @WebFilter(urlPatterns = {
+		"/jaxrs/mind/*",
 		"/jaxrs/uuid/*",
 		"/jaxrs/login/*",
 		"/jaxrs/logout/*",
-		"/jaxrs/okrpermissioninfo/*",
-		"/jaxrs/okrpersonpermission/*",
-		"/jaxrs/okrroleinfo/*",
-		"/jaxrs/okrrolepermission/*",
 		"/jaxrs/okrauthorize/*",
 		"/jaxrs/okrworkchat/*",
 		"/jaxrs/okrattachmentfileinfo/*",
@@ -30,20 +27,18 @@ import com.x.base.core.application.jaxrs.ManagerUserJaxrsFilter;
 		"/jaxrs/okrworkbaseinfo/*",
 		"/jaxrs/okrworkdetailinfo/*",
 		"/jaxrs/okrworkdynamics/*",
-		"/jaxrs/okrworkprobleminfo/*",
-		"/jaxrs/okrworkproblempersonlink/*",
-		"/jaxrs/okrworkproblemprocesslog/*",
 		"/jaxrs/okrworkprocesslink/*",
 		"/jaxrs/okrworkreportbaseinfo/*",
 		"/jaxrs/okrworkreportdetailinfo/*",
 		"/jaxrs/okrworkreportpersonlink/*",
 		"/jaxrs/okrworkreportprocesslog/*",
-		"/jaxrs/workreportstatistic/*",
 		"/jaxrs/admin/okrcenterworkinfo/*",
 		"/jaxrs/admin/okrworkbaseinfo/*",
 		"/jaxrs/admin/okrtask/*",
 		"/jaxrs/admin/okrtaskhandled/*",
 		"/jaxrs/admin/okrworkreportbaseinfo/*",
+		"/jaxrs/streportcontent/*",
+		"/jaxrs/streportstatus/*",
 		"/servlet/*"
 })
 public class OkrJaxrsFilter extends ManagerUserJaxrsFilter {

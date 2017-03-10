@@ -23,6 +23,7 @@ public class GroupEntryTools {
 			LinkedHashMap<String, Object> m = new LinkedHashMap<>();
 			m.put("group", en.getKey());
 			m.put("list", OrderEntryTools.order(o, orderEntries));
+			// m.put("list", o);
 			result.add(m);
 		}
 		/* 分类值再进行一次排序 */

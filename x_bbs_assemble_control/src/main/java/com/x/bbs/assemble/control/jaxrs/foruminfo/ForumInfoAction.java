@@ -13,9 +13,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
@@ -24,6 +21,8 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.bbs.assemble.control.jaxrs.MethodExcuteResult;
 import com.x.bbs.assemble.control.service.BBSForumInfoServiceAdv;
 import com.x.bbs.assemble.control.service.UserManagerService;
@@ -55,7 +54,7 @@ public class ForumInfoAction extends AbstractJaxrsAction {
 		List<String> ids = null;
 		Boolean check = true;
 		MethodExcuteResult methodExcuteResult = null;
-		EffectivePerson currentPerson = null;		
+		EffectivePerson currentPerson = null;
 		if( check ){
 			try {
 				currentPerson = this.effectivePerson(request);
@@ -73,7 +72,7 @@ public class ForumInfoAction extends AbstractJaxrsAction {
 				}
 			}else{
 				result.error( methodExcuteResult.getError() );
-				result.setUserMessage( methodExcuteResult.getMessage() );
+				logger.error( methodExcuteResult.getError(), currentPerson, request, null);
 			}
 		}
 		if( check ){//从数据库查询论坛列表
@@ -83,9 +82,9 @@ public class ForumInfoAction extends AbstractJaxrsAction {
 					forumInfoList = new ArrayList<BBSForumInfo>();
 				}
 			} catch (Exception e) {
-				result.error( e );
-				result.setUserMessage( "系统在查询所有有权限访问的论坛信息时发生异常" );
-				logger.error( "system query all forum info got an exception!", e );
+				Exception exception = new ForumInfoListByPermissionException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){//转换论坛列表为输出格式
@@ -93,9 +92,9 @@ public class ForumInfoAction extends AbstractJaxrsAction {
 				try {
 					wraps = wrapout_copier.copy( forumInfoList );
 				} catch (Exception e) {
-					result.error( e );
-					result.setUserMessage( "系统在将论坛信息列表转换为输出格式时发生异常" );
-					logger.error( "system copy forum list to wraps got an exception!", e );
+					Exception exception = new ForumInfoWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 				result.setData( wraps );
 			}
@@ -112,14 +111,16 @@ public class ForumInfoAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutForumInfo> result = new ActionResult<>();
+		EffectivePerson currentPerson = this.effectivePerson(request);
 		WrapOutForumInfo wrap = null;
 		BBSForumInfo forumInfo = null;
 		Boolean check = true;
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数ID为空，无法继续进行查询！") );
-				result.setUserMessage( "传入的参数ID为空，无法继续进行查询" );
+				Exception exception = new ForumInfoIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -128,9 +129,9 @@ public class ForumInfoAction extends AbstractJaxrsAction {
 				forumInfo = forumInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据Id查询论坛信息时发生异常" );
-				logger.error( "system query forum with id got an exception!", e );
+				Exception exception = new ForumInfoQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -141,13 +142,14 @@ public class ForumInfoAction extends AbstractJaxrsAction {
 					result.setData( wrap );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "系统在将论坛信息列表转换为输出格式时发生异常" );
-					logger.error( "system copy forum to wrap got an exception!", e );
+					Exception exception = new ForumInfoWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}else{
-				result.error( new Exception("论坛信息不存在！") );
-				result.setUserMessage( "论坛信息不存在！" );
+				Exception exception = new ForumInfoNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);

@@ -109,6 +109,9 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
                 if (this.json[to][key] && this.json[to][key]==style){
                     delete this.json[to][key];
                 }
+                //if (this.json[to][key]){
+                //    delete this.json[to][key];
+                //}
             }.bind(this));
         }
     },
@@ -488,6 +491,8 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		}
 	},
 	_dragComplete: function(){
+        this.setStyleTemplate();
+
 		if (!this.node){
 			this._createNode(); 
 		}

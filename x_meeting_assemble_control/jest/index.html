@@ -9,6 +9,7 @@
 <script src="./room.js"></script>
 <script src="./meeting.js"></script>
 <script src="./attachment.js"></script>
+<script src="./openMeeting.js"></script>
 <script>
     $(document).ready(function() {
 	building_list();
@@ -89,6 +90,13 @@
 								Next</a></li>
 						<li><a onclick="attachment_list_prev()" href="#">List
 								Prev</a></li>
+					</ul>
+				</li>
+				<li>OpenMeeting
+					<ul>
+						<li><a onclick="openMeeting_get()" href="#">Get</a></li>
+						<li><a onclick="openMeeting_list_room()" href="#">List
+								Room</a></li>
 					</ul>
 				</li>
 			</ul>

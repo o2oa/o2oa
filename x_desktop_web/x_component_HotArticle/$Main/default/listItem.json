@@ -41,7 +41,7 @@
             "value" : "function(d){ return this.lp.today + ':'+ getDateDiff( d.createTime ) }"
           },
           "icon" : {
-            "attr" : "picUrl^^function( d ){ return d.picUrl }"
+            "attr" : "src^^function( d ){ return MWF.xDesktop.getImageSrc( d.picId ) }"
           }
         }
       }

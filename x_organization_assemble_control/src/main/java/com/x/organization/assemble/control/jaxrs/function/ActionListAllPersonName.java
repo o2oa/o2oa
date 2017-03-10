@@ -11,13 +11,13 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.http.WrapInListString;
+import com.x.base.core.http.WrapInStringList;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Person;
 
 public class ActionListAllPersonName {
 
-	protected List<Tuple> execute(Business business, WrapInListString wrapIn) throws Exception {
+	protected List<Tuple> execute(Business business, WrapInStringList wrapIn) throws Exception {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		EntityManager em = emc.get(Person.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();

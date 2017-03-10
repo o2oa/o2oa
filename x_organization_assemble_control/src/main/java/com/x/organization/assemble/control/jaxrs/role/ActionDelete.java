@@ -7,22 +7,23 @@ import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.organization.assemble.control.Business;
+import com.x.organization.assemble.control.jaxrs.personattribute.ActionBase;
 import com.x.organization.core.entity.Person;
-import com.x.organization.core.entity.PersonAttribute;
+import com.x.organization.core.entity.Role;
 
-public class ActionDelete extends ActionBase {
+class ActionDelete extends ActionBase {
 
-	protected WrapOutId execute(Business business, EffectivePerson effectivePerson, String id) throws Exception {
+	WrapOutId execute(Business business, EffectivePerson effectivePerson, String id) throws Exception {
 		EntityManagerContainer emc = business.entityManagerContainer();
-		PersonAttribute o = emc.find(id, PersonAttribute.class, ExceptionWhen.not_found);
-		Person person = emc.find(o.getPerson(), Person.class, ExceptionWhen.not_found);
-		if (!business.personUpdateAvailable(effectivePerson, person)) {
+		if (!business.roleEditAvailable(effectivePerson)) {
 			throw new Exception("person{name:" + effectivePerson.getName() + "} has sufficient permissions");
 		}
-		emc.beginTransaction(PersonAttribute.class);
+		Role o = emc.find(id, Role.class, ExceptionWhen.not_found);
+		emc.beginTransaction(Role.class);
 		emc.remove(o, CheckRemoveType.all);
 		emc.commit();
-		ApplicationCache.notify(PersonAttribute.class);
+		ApplicationCache.notify(Role.class);
+		ApplicationCache.notify(Person.class);
 		WrapOutId wrap = new WrapOutId(o.getId());
 		return wrap;
 	}

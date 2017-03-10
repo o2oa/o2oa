@@ -18,7 +18,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.processplatform.core.entity.element.ApplicationDictItem.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:19:07 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:10:19 CST 2017")
 public class ApplicationDictItem_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<ApplicationDictItem,String> application;
     public static volatile SingularAttribute<ApplicationDictItem,String> applicationDict;
@@ -30,6 +30,7 @@ public class ApplicationDictItem_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<ApplicationDictItem,ItemPrimitiveType> itemPrimitiveType;
     public static volatile SingularAttribute<ApplicationDictItem,ItemStringValueType> itemStringValueType;
     public static volatile SingularAttribute<ApplicationDictItem,ItemType> itemType;
+    public static volatile SingularAttribute<ApplicationDictItem,String> lobItem;
     public static volatile SingularAttribute<ApplicationDictItem,Double> numberValue;
     public static volatile SingularAttribute<ApplicationDictItem,String> path0;
     public static volatile SingularAttribute<ApplicationDictItem,Integer> path0Location;
@@ -48,7 +49,6 @@ public class ApplicationDictItem_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<ApplicationDictItem,String> path7;
     public static volatile SingularAttribute<ApplicationDictItem,Integer> path7Location;
     public static volatile SingularAttribute<ApplicationDictItem,String> sequence;
-    public static volatile SingularAttribute<ApplicationDictItem,String> stringLobValue;
     public static volatile SingularAttribute<ApplicationDictItem,String> stringValue;
     public static volatile SingularAttribute<ApplicationDictItem,Date> timeValue;
     public static volatile SingularAttribute<ApplicationDictItem,Date> updateTime;

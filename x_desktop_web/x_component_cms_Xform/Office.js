@@ -1,47 +1,4 @@
-MWF.xDesktop.requireApp("cms.Xform", "$Module", null, false);
+MWF.xDesktop.requireApp("process.Xform", "Office", null, false);
 MWF.xApplication.cms.Xform.Office = MWF.CMSOffice =  new Class({
-	Extends: MWF.CMS$Module,
-	isActive: false,
-
-	_loadUserInterface: function(){
-		this.node.empty();
-		this.node.setStyles({
-			"min-height": "100px"
-		});
-        alert(Browser.name);
-		if (Browser.name=="ie") this.isActive = true;
-	},
-	
-	_afterLoaded: function(){
-		if (!this.isActive){
-			this.loadOfficeNotActive();
-		}else{
-			this.loadOffice();
-		}
-	},
-	loadOffice: function(){
-		this.node.set("text", "office");
-	},
-	loadOfficeNotActive: function(){
-		this.node.setStyles({
-			"background-color": "#EEE"
-		});
-		var icon = new Element("div", {
-			"styles": {
-				"width": "24px",
-				"height": "24px",
-				"float": "left",
-				"background": "url("+this.form.path+"/"+this.form.options.style+"/icon/warning.png"+") no-repeat center center"
-			}
-		}).inject(this.node);
-		var div = new Element("div", {
-			"text": MWF.xApplication.cms.Xform.LP.browserNotActiveX,
-			"styles": {
-				"height": "24px",
-				"line-height": "24px",
-				"float": "left",
-				"font-size": "12px"
-			}
-		}).inject(this.node);
-	}
+	Extends: MWF.APPOffice
 }); 

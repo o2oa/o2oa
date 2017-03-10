@@ -17,9 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
@@ -29,6 +27,8 @@ import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.bbs.assemble.control.service.BBSOperationRecordService;
 import com.x.bbs.assemble.control.service.BBSSectionInfoServiceAdv;
 import com.x.bbs.assemble.control.service.BBSSubjectInfoServiceAdv;
@@ -59,6 +59,7 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
+		EffectivePerson currentPerson = this.effectivePerson(request);
 		List<WrapOutSubjectAttachment> wrapSubjectAttachmentList = null;
 		List<BBSSubjectAttachment> subjectAttachmentList = null;
 		String subjectVoteResult = null;
@@ -73,8 +74,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -84,17 +86,18 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 
 		if (check) {
 			if ( subjectInfo == null ) {
 				check = false;
-				result.error( new Exception( "根据传入的主题ID未能查询到任何主题信息！" ) );
-				result.setUserMessage( "根据传入的主题ID未能查询到任何主题信息！" );
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}else{//查到了主题信息
 				try {
 					wrap = wrapout_copier.copy( subjectInfo );
@@ -108,9 +111,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 					}
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage("系统在转换对象为输出格式时发生异常！");
-					logger.error("system copy subject info to wrap got an exceptin. id:" + id, e);
+					Exception exception = new SubjectWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}			
 		}
@@ -124,9 +127,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 					}
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage("系统在根据ID查询主题的内容时发生异常！");
-					logger.error("system query subjec content with id got an exceptin. id:" + id, e);
+					Exception exception = new SubjectContentQueryByIdException( e, id );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -136,9 +139,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 					voteOptionList = subjectVoteService.listVoteOption( id );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage("系统在根据主题ID查询主题所有投票选项信息列表时发生异常！");
-					logger.error("system query all vote options for subject with id got an exceptin. id:" + id, e);
+					Exception exception = new VoteOptionListByIdException( e, id );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -148,9 +151,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 					wrapOutSubjectVoteOptionList = voteOptionWrapout_copier.copy( voteOptionList );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage("系统转换投票信息列表为输出格式时发生异常！");
-					logger.error("system wrap vote options got an exceptin. id:" + id, e);
+					Exception exception = new SubjectWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -163,9 +166,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 						option.setOptionBinary( optionBinaryContent );
 					} catch (Exception e) {
 						check = false;
-						result.error( e );
-						result.setUserMessage("系统在根据选项ID查询选项的二进制内容时发生异常！");
-						logger.error("system query subjec content with id got an exceptin. id:" + id, e);
+						Exception exception = new VoteOptionBinaryQueryByIdException( e, option.getId() );
+						result.error( exception );
+						logger.error( exception, currentPerson, request, null);
 					}
 				}
 			}
@@ -183,9 +186,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 					wrap.setVoteResult( subjectVoteResult );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage("系统在根据主题ID查询主题投票结果时发生异常！");
-					logger.error("system query subjec vote result with id got an exceptin. id:" + id, e);
+					Exception exception = new VoteResultQueryByIdException( e, id );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -193,13 +196,13 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "设置为精华主题.", response = WrapOutSubjectInfo.class)
+	@HttpMethodDescribe(value = "设置为精华主题.", response = WrapOutId.class)
 	@GET
 	@Path("setCream/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response setCream( @Context HttpServletRequest request, @PathParam("id") String id ) {
-		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		BBSSubjectInfo subjectInfo = null;
 		Boolean check = true;
@@ -207,8 +210,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -218,42 +222,43 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception( "主题不存在，无法继续进行操作！" ) );
-				result.setUserMessage("主题不存在，无法继续进行操作！");
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			try {
 				subjectInfo = subjectInfoServiceAdv.setCream( id, true, currentPerson.getName() );
-				result.setUserMessage( id );
+				result.setData( new WrapOutId(id) );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("对主题设置精华主题时发生异常！");
-				logger.error("system set subject info for cream with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectOperationException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "取消精华主题.", response = WrapOutSubjectInfo.class)
+	@HttpMethodDescribe(value = "取消精华主题.", response = WrapOutId.class)
 	@GET
 	@Path("nonCream/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response nonCream( @Context HttpServletRequest request, @PathParam("id") String id ) {
-		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		BBSSubjectInfo subjectInfo = null;
 		Boolean check = true;
@@ -261,8 +266,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -272,42 +278,43 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception( "主题不存在，无法继续进行操作！" ) );
-				result.setUserMessage("主题不存在，无法继续进行操作！");
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			try {
 				subjectInfo = subjectInfoServiceAdv.setCream( id, false, currentPerson.getName() );
-				result.setUserMessage( id );
+				result.setData( new WrapOutId(id) );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("对主题取消精华主题时发生异常！");
-				logger.error("system set subject info for non cream with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectOperationException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "设置为原创主题.", response = WrapOutSubjectInfo.class)
+	@HttpMethodDescribe(value = "设置为原创主题.", response = WrapOutId.class)
 	@GET
 	@Path("setOriginal/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response setOriginal( @Context HttpServletRequest request, @PathParam("id") String id ) {
-		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		BBSSubjectInfo subjectInfo = null;
 		Boolean check = true;
@@ -315,8 +322,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -326,42 +334,43 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception( "主题不存在，无法继续进行操作！" ) );
-				result.setUserMessage("主题不存在，无法继续进行操作！");
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			try {
 				subjectInfo = subjectInfoServiceAdv.setOriginal( id, true, currentPerson.getName() );
-				result.setUserMessage( id );
+				result.setData( new WrapOutId(id) );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("对主题设置原创主题时发生异常！");
-				logger.error("system set subject info for original with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectOperationException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "取消原创主题.", response = WrapOutSubjectInfo.class)
+	@HttpMethodDescribe(value = "取消原创主题.", response = WrapOutId.class)
 	@GET
 	@Path("nonOriginal/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response nonOriginal( @Context HttpServletRequest request, @PathParam("id") String id ) {
-		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		BBSSubjectInfo subjectInfo = null;
 		Boolean check = true;
@@ -369,8 +378,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -380,50 +390,52 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception( "主题不存在，无法继续进行操作！" ) );
-				result.setUserMessage("主题不存在，无法继续进行操作！");
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			try {
 				subjectInfo = subjectInfoServiceAdv.setOriginal( id, false, currentPerson.getName() );
-				result.setUserMessage( id );
+				result.setData( new WrapOutId(id) );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("对主题取消原创主题时发生异常！");
-				logger.error("system set subject info for non original with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectOperationException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "锁定主题: 状态修改为'启用', 属性stopReply = false.", response = WrapOutSubjectInfo.class)
+	@HttpMethodDescribe(value = "锁定主题: 状态修改为'启用', 属性stopReply = false.", response = WrapOutId.class)
 	@GET
 	@Path("unlock/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response unlock( @Context HttpServletRequest request, @PathParam("id") String id ) {
-		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		BBSSubjectInfo subjectInfo = null;
 		Boolean check = true;		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
@@ -431,47 +443,49 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception( "主题不存在，无法继续进行操作！" ) );
-				result.setUserMessage("主题不存在，无法继续进行操作！");
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
 			try {
 				subjectInfo = subjectInfoServiceAdv.lock( id, false, currentPerson.getName() );
-				result.setUserMessage( id );
+				result.setData( new WrapOutId(id) );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("对主题解除锁定时发生异常！");
-				logger.error( "system unlock subject info with id got an exceptin. id:" + id, e );
+				Exception exception = new SubjectOperationException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "锁定主题: 状态修改为'已锁定', 属性stopReply = true.", response = WrapOutSubjectInfo.class)
+	@HttpMethodDescribe(value = "锁定主题: 状态修改为'已锁定', 属性stopReply = true.", response = WrapOutId.class)
 	@GET
 	@Path("lock/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response lock( @Context HttpServletRequest request, @PathParam("id") String id ) {
-		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		BBSSubjectInfo subjectInfo = null;
 		Boolean check = true;		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
@@ -479,47 +493,49 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception( "主题不存在，无法继续进行操作！" ) );
-				result.setUserMessage("主题不存在，无法继续进行操作！");
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
 			try {
 				subjectInfo = subjectInfoServiceAdv.lock( id, true, currentPerson.getName() );
-				result.setUserMessage( id );
+				result.setData( new WrapOutId(id) );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("对主题锁定时发生异常！");
-				logger.error( "system lock subject info with id got an exceptin. id:" + id, e );
+				Exception exception = new SubjectOperationException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "取消完成主题: 属性isCompleted = false.", response = WrapOutSubjectInfo.class)
+	@HttpMethodDescribe(value = "取消完成主题: 属性isCompleted = false.", response = WrapOutId.class)
 	@GET
 	@Path("uncomplete/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response unComplete( @Context HttpServletRequest request, @PathParam("id") String id ) {
-		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		BBSSubjectInfo subjectInfo = null;
 		Boolean check = true;		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
@@ -527,47 +543,49 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception( "主题不存在，无法继续进行操作！" ) );
-				result.setUserMessage("主题不存在，无法继续进行操作！");
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
 			try {
 				subjectInfo = subjectInfoServiceAdv.complete( id, true, currentPerson.getName() );
-				result.setUserMessage( id );
+				result.setData( new WrapOutId(id) );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("对主题取消完成时发生异常！");
-				logger.error( "system unComplete subject info with id got an exceptin. id:" + id, e );
+				Exception exception = new SubjectOperationException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "完成主题: 属性isCompleted = true.", response = WrapOutSubjectInfo.class)
+	@HttpMethodDescribe(value = "完成主题: 属性isCompleted = true.", response = WrapOutId.class)
 	@GET
 	@Path("complete/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response complete( @Context HttpServletRequest request, @PathParam("id") String id ) {
-		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		BBSSubjectInfo subjectInfo = null;
 		Boolean check = true;		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
@@ -575,47 +593,49 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception( "主题不存在，无法继续进行操作！" ) );
-				result.setUserMessage("主题不存在，无法继续进行操作！");
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
 			try {
 				subjectInfo = subjectInfoServiceAdv.complete( id, true, currentPerson.getName() );
-				result.setUserMessage( id );
+				result.setData( new WrapOutId(id) );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("对主题设置完成时发生异常！");
-				logger.error( "system complete subject info with id got an exceptin. id:" + id, e );
+				Exception exception = new SubjectOperationException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "取消问题贴采纳回复.", response = WrapOutSubjectInfo.class)
+	@HttpMethodDescribe(value = "取消问题贴采纳回复.", response = WrapOutId.class)
 	@GET
 	@Path("unacceptreply/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response unAcceptReply( @Context HttpServletRequest request, @PathParam("id") String id ) {
-		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		BBSSubjectInfo subjectInfo = null;
 		Boolean check = true;		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
@@ -623,47 +643,49 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception( "主题不存在，无法继续进行操作！" ) );
-				result.setUserMessage("主题不存在，无法继续进行操作！");
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
 			try {
 				subjectInfo = subjectInfoServiceAdv.acceptReply( id, "", currentPerson.getName() );
-				result.setUserMessage( id );
+				result.setData( new WrapOutId(id) );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("对主题取消回复采纳时发生异常！");
-				logger.error( "system unAcceptReply subject got an exceptin. id:" + id, e );
+				Exception exception = new SubjectOperationException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "问题贴采纳回复.", response = WrapOutSubjectInfo.class)
+	@HttpMethodDescribe(value = "问题贴采纳回复.", response = WrapOutId.class)
 	@GET
 	@Path("acceptreply/{id}/{replyId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response acceptReply( @Context HttpServletRequest request, @PathParam("id") String id, @PathParam("replyId") String replyId ) {
-		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		BBSSubjectInfo subjectInfo = null;
 		Boolean check = true;		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
@@ -671,47 +693,49 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception( "主题不存在，无法继续进行操作！" ) );
-				result.setUserMessage("主题不存在，无法继续进行操作！");
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
 			try {
 				subjectInfo = subjectInfoServiceAdv.acceptReply( id, replyId, currentPerson.getName() );
-				result.setUserMessage( id );
+				result.setData( new WrapOutId(id) );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("对主题设置完成时发生异常！");
-				logger.error( "system acceptReply subject got an exceptin. id:" + id, e );
+				Exception exception = new SubjectOperationException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "版块置顶.", response = WrapOutSubjectInfo.class)
+	@HttpMethodDescribe(value = "版块置顶.", response = WrapOutId.class)
 	@GET
 	@Path("topToSection/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response topToSection( @Context HttpServletRequest request, @PathParam("id") String id ) {
-		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		BBSSubjectInfo subjectInfo = null;
 		Boolean check = true;		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
@@ -719,39 +743,40 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception( "主题不存在，无法继续进行操作！" ) );
-				result.setUserMessage("主题不存在，无法继续进行操作！");
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
 			try {
 				subjectInfo = subjectInfoServiceAdv.setTopToSection( id, true, currentPerson.getName() );
-				result.setUserMessage( id );
+				result.setData( new WrapOutId(id) );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("对主题设置版块置顶时发生异常！");
-				logger.error("system set subject info for top to section with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectOperationException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "取消版块置顶.", response = WrapOutSubjectInfo.class)
+	@HttpMethodDescribe(value = "取消版块置顶.", response = WrapOutId.class)
 	@GET
 	@Path("nonTopToSection/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response nonTopToSection( @Context HttpServletRequest request, @PathParam("id") String id ) {
-		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		BBSSubjectInfo subjectInfo = null;
 		Boolean check = true;
@@ -759,8 +784,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -770,42 +796,43 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception( "主题不存在，无法继续进行操作！" ) );
-				result.setUserMessage("主题不存在，无法继续进行操作！");
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			try {
 				subjectInfo = subjectInfoServiceAdv.setTopToSection( id, false, currentPerson.getName() );
-				result.setUserMessage( id );
+				result.setData( new WrapOutId(id) );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("对主题取消版块置顶时发生异常！");
-				logger.error("system set subject info for non top to section with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectOperationException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "主版块置顶.", response = WrapOutSubjectInfo.class)
+	@HttpMethodDescribe(value = "主版块置顶.", response = WrapOutId.class)
 	@GET
 	@Path("topToMainSection/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response topToMainSection( @Context HttpServletRequest request, @PathParam("id") String id ) {
-		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		BBSSubjectInfo subjectInfo = null;
 		Boolean check = true;
@@ -813,8 +840,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -824,42 +852,43 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception( "主题不存在，无法继续进行操作！" ) );
-				result.setUserMessage("主题不存在，无法继续进行操作！");
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			try {
 				subjectInfo = subjectInfoServiceAdv.setTopToMainSection( id, true, currentPerson.getName() );
-				result.setUserMessage( id );
+				result.setData( new WrapOutId(id) );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("对主题设置主版块置顶时发生异常！");
-				logger.error("system set subject info for top to main section with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectOperationException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "取消主版块置顶.", response = WrapOutSubjectInfo.class)
+	@HttpMethodDescribe(value = "取消主版块置顶.", response = WrapOutId.class)
 	@GET
 	@Path("nonTopToMainSection/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response nonTopToMainSection( @Context HttpServletRequest request, @PathParam("id") String id ) {
-		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		BBSSubjectInfo subjectInfo = null;
 		Boolean check = true;
@@ -867,8 +896,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -878,42 +908,43 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception( "主题不存在，无法继续进行操作！" ) );
-				result.setUserMessage("主题不存在，无法继续进行操作！");
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			try {
 				subjectInfo = subjectInfoServiceAdv.setTopToMainSection( id, false, currentPerson.getName() );
-				result.setUserMessage( id );
+				result.setData( new WrapOutId(id) );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("对主题取消版主块置顶时发生异常！");
-				logger.error("system set subject info for non top to main section with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectOperationException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "论坛置顶.", response = WrapOutSubjectInfo.class)
+	@HttpMethodDescribe(value = "论坛置顶.", response = WrapOutId.class)
 	@GET
 	@Path("topToForum/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response topToForum( @Context HttpServletRequest request, @PathParam("id") String id ) {
-		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		BBSSubjectInfo subjectInfo = null;
 		Boolean check = true;
@@ -921,8 +952,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -932,42 +964,43 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception( "主题不存在，无法继续进行操作！" ) );
-				result.setUserMessage("主题不存在，无法继续进行操作！");
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			try {
 				subjectInfo = subjectInfoServiceAdv.setTopToForum( id, true, currentPerson.getName() );
-				result.setUserMessage( id );
+				result.setData( new WrapOutId(id) );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("对主题设置论坛置顶时发生异常！");
-				logger.error("system set subject info for top to forum with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectOperationException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "取消论坛置顶.", response = WrapOutSubjectInfo.class)
+	@HttpMethodDescribe(value = "取消论坛置顶.", response = WrapOutId.class)
 	@GET
 	@Path("nonTopToForum/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response nonTopToForum( @Context HttpServletRequest request, @PathParam("id") String id ) {
-		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		BBSSubjectInfo subjectInfo = null;
 		Boolean check = true;
@@ -975,8 +1008,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -986,42 +1020,43 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception( "主题不存在，无法继续进行操作！" ) );
-				result.setUserMessage("主题不存在，无法继续进行操作！");
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			try {
 				subjectInfo = subjectInfoServiceAdv.setTopToForum( id, false, currentPerson.getName() );
-				result.setUserMessage( id );
+				result.setData( new WrapOutId(id) );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("对主题取消论坛置顶时发生异常！");
-				logger.error("system set subject info for non top to forum with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectOperationException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "全局置顶.", response = WrapOutSubjectInfo.class)
+	@HttpMethodDescribe(value = "全局置顶.", response = WrapOutId.class)
 	@GET
 	@Path("topToBBS/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response topToBBS( @Context HttpServletRequest request, @PathParam("id") String id ) {
-		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		BBSSubjectInfo subjectInfo = null;
 		Boolean check = true;
@@ -1029,8 +1064,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -1040,42 +1076,43 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception( "主题不存在，无法继续进行操作！" ) );
-				result.setUserMessage("主题不存在，无法继续进行操作！");
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			try {
 				subjectInfo = subjectInfoServiceAdv.setTopToBBS( id, true, currentPerson.getName() );
-				result.setUserMessage( id );
+				result.setData( new WrapOutId(id) );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("对主题设置全局置顶时发生异常！");
-				logger.error("system set subject info for top to BBS with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectOperationException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "推荐到BBS首页.", response = WrapOutSubjectInfo.class)
+	@HttpMethodDescribe(value = "推荐到BBS首页.", response = WrapOutId.class)
 	@GET
 	@Path("setRecommendToBBSIndex/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response setRecommendToBBSIndex( @Context HttpServletRequest request, @PathParam("id") String id ) {
-		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		BBSSubjectInfo subjectInfo = null;
 		Boolean check = true;
@@ -1083,8 +1120,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -1094,42 +1132,43 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception( "主题不存在，无法继续进行操作！" ) );
-				result.setUserMessage("主题不存在，无法继续进行操作！");
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			try {
 				subjectInfo = subjectInfoServiceAdv.recommendToBBSIndex( id, true, currentPerson.getName() );
-				result.setUserMessage( id );
+				result.setData( new WrapOutId(id) );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("对主题推荐到BBS首页时发生异常！");
-				logger.error("system set subject info for recommend to BBSIndex with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectOperationException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "取消推荐到BBS首页.", response = WrapOutSubjectInfo.class)
+	@HttpMethodDescribe(value = "取消推荐到BBS首页.", response = WrapOutId.class)
 	@GET
 	@Path("nonRecommendToBBSIndex/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response nonRecommendToBBSIndex( @Context HttpServletRequest request, @PathParam("id") String id ) {
-		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		BBSSubjectInfo subjectInfo = null;
 		Boolean check = true;
@@ -1137,8 +1176,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -1148,42 +1188,43 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception( "主题不存在，无法继续进行操作！" ) );
-				result.setUserMessage("主题不存在，无法继续进行操作！");
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			try {
 				subjectInfo = subjectInfoServiceAdv.recommendToBBSIndex( id, false, currentPerson.getName() );
-				result.setUserMessage( id );
+				result.setData( new WrapOutId(id) );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("对主题推荐到BBS首页时发生异常！");
-				logger.error("system set subject info for recommend to BBSIndex with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectOperationException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "取消全局置顶.", response = WrapOutSubjectInfo.class)
+	@HttpMethodDescribe(value = "取消全局置顶.", response = WrapOutId.class)
 	@GET
 	@Path("nonTopToBBS/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response nonTopToBBS( @Context HttpServletRequest request, @PathParam("id") String id ) {
-		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		BBSSubjectInfo subjectInfo = null;
 		Boolean check = true;
@@ -1191,8 +1232,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -1202,83 +1244,90 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception( "主题不存在，无法继续进行操作！" ) );
-				result.setUserMessage("主题不存在，无法继续进行操作！");
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			try {
 				subjectInfo = subjectInfoServiceAdv.setTopToBBS( id, false, currentPerson.getName() );
-				result.setUserMessage( id );
+				result.setData( new WrapOutId(id) );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("对主题取消全局置顶时发生异常！");
-				logger.error("system set subject info for non top to BBS with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectOperationException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
     
-	@HttpMethodDescribe(value = "创建新的主题信息或者更新主题信息.", request = WrapInSubjectInfo.class, response = WrapOutId.class)
+	@HttpMethodDescribe(value = "创建新的主题信息或者更新主题信息.", request = JsonElement.class, response = WrapOutId.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response post(@Context HttpServletRequest request, WrapInSubjectInfo wrapIn) {
+	public Response save(@Context HttpServletRequest request, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		WrapInSubjectInfo wrapIn = null;
 		BBSSectionInfo sectionInfo = null;
 		BBSSubjectInfo subjectInfo = null;
 		EffectivePerson currentPerson = this.effectivePerson( request );
 		Boolean check = true;
 		
-		if( check ){
-			if( wrapIn == null ){
-				check = false;
-				result.error( new Exception("传入的参数为空，无法保存主题信息！" ) );
-				result.setUserMessage( "传入的参数为空，无法保存主题信息！" );
-			}
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInSubjectInfo.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
 		
 		if( check ){
 			wrapIn.setHostIp( request.getRemoteHost() );
 			if( wrapIn.getTitle() == null ){
 				check = false;
-				result.error( new Exception("传入的主题标题为空，无法保存主题信息！" ) );
-				result.setUserMessage( "传入的主题标题为空，无法保存主题信息！" );
+				Exception exception = new SubjectPropertyEmptyException( "主题标题" );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if( check ){
 			if( wrapIn.getType() == null ){
 				check = false;
-				result.error( new Exception("传入的主题类别为空，无法保存主题信息！" ) );
-				result.setUserMessage( "传入的主题类别为空，无法保存主题信息！" );
+				Exception exception = new SubjectPropertyEmptyException( "主题类别" );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if( check ){
 			if( wrapIn.getContent() == null ){
 				check = false;
-				result.error( new Exception("传入的主题内容为空，无法保存主题信息！" ) );
-				result.setUserMessage( "传入的主题内容为空，无法保存主题信息！" );
+				Exception exception = new SubjectPropertyEmptyException( "主题内容" );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
 			if( wrapIn.getSectionId() == null || wrapIn.getSectionId().isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数版块ID为空，无法保存主题信息！" ) );
-				result.setUserMessage( "传入的参数版块ID为空，无法保存主题信息！" );
+				Exception exception = new SubjectPropertyEmptyException( "所属版块ID" );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -1288,17 +1337,18 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				sectionInfo = sectionInfoServiceAdv.get( wrapIn.getSectionId() );
 			} catch (Exception e) {
 				check = false;
-				result.error( new Exception("根据版块ID查询版块信息发生异常，无法保存主题信息！" ) );
-				result.setUserMessage( "根据版块ID查询版块信息发生异常，无法保存主题信息！" );
-				logger.error( "system query section info with id got an exceptin. id:" + wrapIn.getSectionId(), e );
+				Exception exception = new SectionQueryByIdException( e, wrapIn.getSectionId() );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if( check ){
 			if( sectionInfo == null ){
 				check = false;
-				result.error( new Exception("根据传入的版块ID未能查询到任何版块信息，无法保存主题信息！id:"+ wrapIn.getSectionId() ) );
-				result.setUserMessage( "根据传入的版块ID未能查询到任何版块信息，无法保存主题信息！id:"+ wrapIn.getSectionId() );
+				Exception exception = new SectionNotExistsException( wrapIn.getSectionId() );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -1306,7 +1356,10 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				wrapIn.setTypeCatagory( "信息" );
 			}else{
 				if( sectionInfo.getTypeCatagory() == null || sectionInfo.getTypeCatagory().isEmpty() ){
-					wrapIn.setTypeCatagory( "信息" );
+					check = false;
+					Exception exception = new SectionTypeCatagoryEmptyException( wrapIn.getSectionId() );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}else{
 					//判断TypeCatagory是否合法
 					String[] catagories = sectionInfo.getTypeCatagory().split("\\|");
@@ -1319,21 +1372,23 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 						}
 						if( !catagoryValid ){
 							check = false;
-							result.error( new Exception("type catagory is invalid in section！catagory:"+ wrapIn.getTypeCatagory() ) );
-							result.setUserMessage( "主题贴类别分类在版块允许分类中不允许发布！catagory:"+ wrapIn.getTypeCatagory() );
+							Exception exception = new SectionTypeCatagoryInvalidException( catagories );
+							result.error( exception );
+							logger.error( exception, currentPerson, request, null);
 						}
-					}else{
-						wrapIn.setTypeCatagory( "信息" );
 					}
 				}
 			}				
 		}
 		if( check ){
-			if( wrapIn.getType() == null || !wrapIn.getType().isEmpty() ){
+			if( wrapIn.getType() == null || wrapIn.getType().isEmpty() ){
 				wrapIn.setType( "未知类别" );
 			}else{
 				if( sectionInfo.getSubjectType() == null || sectionInfo.getSubjectType().isEmpty() ){
-					wrapIn.setType( "未知类别" );
+					check = false;
+					Exception exception = new SectionSubjectTypeEmptyException( wrapIn.getSectionId() );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}else{
 					//判断Type是否合法
 					String[] types = sectionInfo.getSubjectType().split("\\|");
@@ -1346,24 +1401,22 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 						}
 						if( !typeValid ){
 							check = false;
-							result.error( new Exception("subject type is invalid in section！type:"+ wrapIn.getType() ) );
-							result.setUserMessage( "主题类别在版块允许分类中无效！type:"+ wrapIn.getType() );
+							Exception exception = new SectionSubjectTypeInvalidException( types );
+							result.error( exception );
+							logger.error( exception, currentPerson, request, null);
 						}
-					}else{
-						wrapIn.setTypeCatagory( "未知类别" );
 					}
 				}
 			}				
 		}
 		if( check ){
-			subjectInfo = new BBSSubjectInfo();
 			try {
 				subjectInfo = wrapin_copier.copy( wrapIn );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "将传入的参数转换为主题对象发生异常，无法保存主题信息！" );
-				logger.error( "system copy wrap into bbssubjectinfo object got an exceptin. " , e );
+				Exception exception = new SubjectWrapInException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -1377,6 +1430,8 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 			subjectInfo.setCreatorName( currentPerson.getName() );
 			subjectInfo.setLatestReplyTime( new Date() );
 			subjectInfo.setTypeCatagory( wrapIn.getTypeCatagory() );
+			subjectInfo.setType( wrapIn.getType() );
+			subjectInfo.setTitle( subjectInfo.getTitle().trim() );
 		}
 		
 		if( check ){
@@ -1384,13 +1439,12 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 			subjectInfo.setSystemType( wrapIn.getSubjectSystemName() );
 			try {
 				subjectInfo = subjectInfoServiceAdv.save( subjectInfo, wrapIn.getContent(), wrapIn.getPictureBase64() );
-				result.setUserMessage( subjectInfo.getId() );
 				result.setData( new WrapOutId(subjectInfo.getId()));
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "保存主题信息到数据库时发生异常！" );
-				logger.error( "system save bbssubjectinfo object got an exceptin. " , e );
+				Exception exception = new SubjectSaveException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -1411,8 +1465,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数为空，无法根据ID删除主题！" ) );
-				result.setUserMessage( "传入的参数为空，无法根据ID删除主题！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		//判断主题信息是否存在
@@ -1421,16 +1476,17 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error( new Exception("根据ID获取主题信息时发生异常！" ) );
-				result.setUserMessage( "根据ID获取主题信息时发生异常！" );
-				logger.error( "system query subject info with id got an exceptin.", e );
+				Exception exception = new SubjectQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if( check ){
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception("根据ID未能获取到任何主题信息！" ) );
-				result.setUserMessage( "根据ID未能获取到任何主题信息！" );
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		try {
@@ -1440,35 +1496,38 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 			operationRecordService.subjectOperation( currentPerson.getName(), subjectInfo, "DELETE", hostIp, hostName );
 		} catch (Exception e) {
 			check = false;
-			result.error( new Exception("根据ID删除主题信息时发生异常！" ) );
-			result.setUserMessage( "根据ID删除主题信息时发生异常！" );
-			logger.error( "system delete subject info with id got an exceptin.", e );
+			Exception exception = new SubjectDeleteException( e, id );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
 		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "列示我发布的主题.", response = WrapOutSubjectInfo.class, request = WrapInFilter.class)
+	@HttpMethodDescribe(value = "列示我发布的主题.", response = WrapOutSubjectInfo.class, request = JsonElement.class)
 	@PUT
 	@Path("my/list/page/{page}/count/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listMySubjectForPage( @Context HttpServletRequest request, @PathParam("page") Integer page, @PathParam("count") Integer count, WrapInFilter wrapIn ) {
+	public Response listMySubjectForPage( @Context HttpServletRequest request, @PathParam("page") Integer page, @PathParam("count") Integer count, JsonElement jsonElement ) {
 		ActionResult<List<WrapOutSubjectInfo>> result = new ActionResult<>();
 		List<WrapOutSubjectInfo> wraps = new ArrayList<>();
 		List<BBSSubjectInfo> subjectInfoList = null;
 		List<BBSSubjectInfo> subjectInfoList_out = new ArrayList<BBSSubjectInfo>();
 		Long total = 0L;
 		EffectivePerson currentPerson = this.effectivePerson(request);
+		WrapInFilter wrapIn = null;
 		Boolean check = true;
 		
-		if( check ){
-			if( wrapIn == null ){
-				check = false;
-				result.error( new Exception("传入的参数为空，无法查询主题信息！" ) );
-				result.setUserMessage( "传入的参数为空，无法查询主题信息！" );
-			}
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilter.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
+
 		if( check ){
 			if( page == null ){
 				page = 1;
@@ -1484,9 +1543,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				total = subjectInfoServiceAdv.countUserSubjectForPage( wrapIn.getForumId(), wrapIn.getMainSectionId(), wrapIn.getSectionId(), wrapIn.getNeedPicture(), wrapIn.getWithTopSubject(), currentPerson.getName() );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "根据ID信息查询登录者的主题信息数量时发生异常！" );
-				logger.error( "system count my subject info with section info got an exceptin.", e );
+				Exception exception = new SubjectFilterException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -1495,9 +1554,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 					subjectInfoList = subjectInfoServiceAdv.listUserSubjectForPage( wrapIn.getForumId(), wrapIn.getMainSectionId(), wrapIn.getSectionId(), wrapIn.getNeedPicture(), wrapIn.getWithTopSubject(), page*count, currentPerson.getName() );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "根据ID信息查询登录者的主题信息时发生异常！" );
-					logger.error( "system query my subject info with section info got an exceptin.", e );
+					Exception exception = new SubjectFilterException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -1522,9 +1581,9 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 					result.setCount( total );
 				} catch (Exception e) {
 					check = false;
-					result.error( new Exception("将主题转换为输出格式发生异常！" ) );
-					result.setUserMessage( "将主题转换为输出格式发生异常！" );
-					logger.error( "system copy subject info list to wrapout got an exceptin.", e );
+					Exception exception = new SubjectWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}

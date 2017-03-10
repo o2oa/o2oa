@@ -1,24 +1,22 @@
 package com.x.base.core.project.server;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.activation.MimetypesFileTypeMap;
-
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jetty.http.MimeTypes;
 
 import com.x.base.core.BaseTools;
 import com.x.base.core.Packages;
 import com.x.base.core.entity.annotation.ContainerEntity;
+import com.x.base.core.utils.Host;
 import com.x.base.core.utils.ListTools;
 
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
@@ -30,6 +28,20 @@ public class Config {
 
 	private Config() {
 	}
+
+	public static final String PATH_VERSION = "version.o2";
+	public static final String PATH_CONFIG = "config";
+	public static final String PATH_LOCAL_NODE = "local/node.cfg";
+	public static final String PATH_CONFIG_TOKEN = "config/token.json";
+	public static final String PATH_CONFIG_EXTERNALDATASOURCES = "config/externalDataSources.json";
+	public static final String PATH_CONFIG_ADMINISTRATOR = "config/administrator.json";
+	public static final String PATH_CONFIG_PERSON = "config/person.json";
+	public static final String PATH_CONFIG_MEETING = "config/meeting.json";
+	public static final String PATH_CONFIG_WORKTIME = "config/workTime.json";
+	public static final String PATH_CONFIG_CENTERSERVER = "config/centerServer.json";
+	public static final String PATH_CONFIG_COLLECT = "config/collect.json";
+	public static final String PATH_CONFIG_DUMPRESTOREDATA = "config/dumpRestoreData.json";
+	public static final String PATH_CONFIG_DUMPRESTORESTORAGE = "config/dumpRestoreStorage.json";
 
 	public static void flush() {
 		if (null != INSTANCE) {
@@ -52,13 +64,26 @@ public class Config {
 		return INSTANCE;
 	}
 
+	private String version;
+
+	public static String version() throws Exception {
+		if (null == instance().version) {
+			synchronized (Config.class) {
+				if (null == instance().version) {
+					instance().version = BaseTools.readCfg(PATH_VERSION);
+				}
+			}
+		}
+		return instance().version;
+	}
+
 	private String node;
 
 	public static String node() throws Exception {
 		if (null == instance().node) {
 			synchronized (Config.class) {
 				if (null == instance().node) {
-					instance().node = BaseTools.readCfg("local/node.cfg", "127.0.0.1");
+					instance().node = BaseTools.readCfg(PATH_LOCAL_NODE, Host.ROLLBACK_IPV4);
 				}
 			}
 		}
@@ -78,48 +103,6 @@ public class Config {
 		return instance().base;
 	}
 
-	// private String password;
-	//
-	// public static String password() throws Exception {
-	// if (null == instance().password) {
-	// synchronized (Config.class) {
-	// if (null == instance().password) {
-	// instance().password = BaseTools.readCfg("config/password.cfg",
-	// "o2server");
-	// // if (StringUtils.isEmpty(instance().password)) {
-	// // throw new Exception("read a empty password.");
-	// // }
-	// }
-	// }
-	// }
-	// return instance().password;
-	// }
-
-	// public static String passwordKey() throws Exception {
-	// if (null == instance().passwordKey) {
-	// synchronized (Config.class) {
-	// if (null == instance().passwordKey) {
-	// instance().passwordKey = BaseTools.readCfg("config/passwordKey.cfg",
-	// "o2platform");
-	// }
-	// }
-	// }
-	// return instance().passwordKey;
-	// }
-
-	// private String cipher;
-	//
-	// public static String cipher() throws Exception {
-	// if (null == instance().cipher) {
-	// synchronized (Config.class) {
-	// if (null == instance().cipher) {
-	// instance().cipher = password() + "o2platform";
-	// }
-	// }
-	// }
-	// return instance().cipher;
-	// }
-
 	private Nodes nodes;
 
 	public static Nodes nodes() throws Exception {
@@ -128,18 +111,20 @@ public class Config {
 				if (null == instance().nodes) {
 					Nodes nodes = new Nodes();
 					String base = BaseTools.getBasePath();
-					File dir = new File(base, "config");
 					FileFilter fileFilter = new WildcardFileFilter("node_*.json");
+					File dir = new File(base, PATH_CONFIG);
 					File[] files = dir.listFiles(fileFilter);
-					if (null == files) {
-						throw new Exception("can not find any node file.");
-					}
-					for (File o : files) {
-						String name = StringUtils.substringBetween(o.getName(), "node_", ".json");
-						Node node = BaseTools.readObject("config/" + o.getName(), Node.class);
-						if (StringUtils.isNotEmpty(name) && BooleanUtils.isTrue(node.getEnable())) {
-							nodes.put(name, node);
+					if (null != files && files.length > 0) {
+						for (File o : files) {
+							String name = StringUtils.substringBetween(o.getName(), "node_", ".json");
+							Node node = BaseTools.readObject(PATH_CONFIG + "/" + o.getName(), Node.class);
+							if (StringUtils.isNotEmpty(name) && BooleanUtils.isTrue(node.getEnable())) {
+								nodes.put(name, node);
+							}
 						}
+					} else {
+						Node o = Node.defaultInstance();
+						nodes.put(node(), o);
 					}
 					instance().nodes = nodes;
 				}
@@ -148,28 +133,17 @@ public class Config {
 		return instance().nodes;
 	}
 
-	// private Boolean externalDataSourceEnable;
-	//
-	// public static Boolean externalDataSourceEnable() throws Exception {
-	// if (null == instance().externalDataSourceEnable) {
-	// synchronized (Config.class) {
-	// if (null == instance().externalDataSourceEnable) {
-	// String val = BaseTools.readCfg("config/externalDataSourceEnable.cfg",
-	// "false");
-	// instance().externalDataSourceEnable = BooleanUtils.toBooleanObject(val);
-	// }
-	// }
-	// }
-	// return instance().externalDataSourceEnable;
-	// }
-
 	private Token token;
 
 	public static Token token() throws Exception {
 		if (null == instance().token) {
 			synchronized (Config.class) {
 				if (null == instance().token) {
-					instance().token = BaseTools.readObject("config/token.json", Token.class);
+					Token o = BaseTools.readObject(PATH_CONFIG_TOKEN, Token.class);
+					if (null == o) {
+						o = Token.defaultInstance();
+					}
+					instance().token = o;
 				}
 			}
 		}
@@ -182,8 +156,11 @@ public class Config {
 		if (null == instance().externalDataSources) {
 			synchronized (Config.class) {
 				if (null == instance().externalDataSources) {
-					ExternalDataSources obj = BaseTools.readObject("config/externalDataSources.json",
+					ExternalDataSources obj = BaseTools.readObject(PATH_CONFIG_EXTERNALDATASOURCES,
 							ExternalDataSources.class);
+					if (null == obj) {
+						obj = ExternalDataSources.defaultInstance();
+					}
 					instance().externalDataSources = obj;
 				}
 			}
@@ -191,61 +168,75 @@ public class Config {
 		return instance().externalDataSources;
 	}
 
-	private Administrator administrator;
+	// private Administrator administrator;
+	//
+	// public static Administrator administrator() throws Exception {
+	// if (null == instance().administrator) {
+	// synchronized (Config.class) {
+	// if (null == instance().administrator) {
+	// Administrator obj = BaseTools.readObject(PATH_CONFIG_ADMINISTRATOR,
+	// Administrator.class);
+	// if (null == obj) {
+	// obj = Administrator.defaultInstance();
+	// }
+	// instance().administrator = obj;
+	// }
+	// }
+	// }
+	// return instance().administrator;
+	// }
 
-	public static Administrator administrator() throws Exception {
-		if (null == instance().administrator) {
+	private Person person;
+
+	public static Person person() throws Exception {
+		if (null == instance().person) {
 			synchronized (Config.class) {
-				if (null == instance().administrator) {
-					Administrator obj = BaseTools.readObject("config/administrator.json", Administrator.class);
-					instance().administrator = obj;
+				if (null == instance().person) {
+					Person obj = BaseTools.readObject(PATH_CONFIG_PERSON, Person.class);
+					if (null == obj) {
+						obj = Person.defaultInstance();
+					}
+					instance().person = obj;
 				}
 			}
 		}
-		return instance().administrator;
+		return instance().person;
 	}
 
-	private PersonTemplate personTemplate;
+	private Meeting meeting;
 
-	public static PersonTemplate personTemplate() throws Exception {
-		if (null == instance().personTemplate) {
+	public static Meeting meeting() throws Exception {
+		if (null == instance().meeting) {
 			synchronized (Config.class) {
-				if (null == instance().personTemplate) {
-					PersonTemplate obj = BaseTools.readObject("config/personTemplate.json", PersonTemplate.class);
-					instance().personTemplate = obj;
+				if (null == instance().meeting) {
+					Meeting obj = BaseTools.readObject(PATH_CONFIG_MEETING, Meeting.class);
+					if (null == obj) {
+						obj = Meeting.defaultInstance();
+					}
+					instance().meeting = obj;
 				}
 			}
 		}
-		return instance().personTemplate;
+		return instance().meeting;
 	}
 
-	private OpenMeetingJunction openMeetingJunction;
+	private com.x.base.core.utils.time.WorkTime workTime;
 
-	public static OpenMeetingJunction openMeetingJunction() throws Exception {
-		if (null == instance().openMeetingJunction) {
+	public static com.x.base.core.utils.time.WorkTime workTime() throws Exception {
+		if (null == instance().workTime) {
 			synchronized (Config.class) {
-				if (null == instance().openMeetingJunction) {
-					OpenMeetingJunction obj = BaseTools.readObject("config/openMeetingJunction.json",
-							OpenMeetingJunction.class);
-					instance().openMeetingJunction = obj;
+				if (null == instance().workTime) {
+					com.x.base.core.project.server.WorkTime obj = BaseTools.readObject(PATH_CONFIG_WORKTIME,
+							com.x.base.core.project.server.WorkTime.class);
+					if (null == obj) {
+						obj = com.x.base.core.project.server.WorkTime.defaultInstance();
+					}
+					instance().workTime = new com.x.base.core.utils.time.WorkTime(obj.getAmStart(), obj.getAmEnd(),
+							obj.getPmStart(), obj.getPmEnd(), obj.getHolidays(), obj.getWorkdays(), obj.getWeekends());
 				}
 			}
 		}
-		return instance().openMeetingJunction;
-	}
-
-	private WorkTimeConfig workTimeConfig;
-
-	public static WorkTimeConfig workTimeConfig() throws Exception {
-		if (null == instance().workTimeConfig) {
-			synchronized (Config.class) {
-				if (null == instance().workTimeConfig) {
-					WorkTimeConfig obj = BaseTools.readObject("config/workTimeConfig.json", WorkTimeConfig.class);
-					instance().workTimeConfig = obj;
-				}
-			}
-		}
-		return instance().workTimeConfig;
+		return instance().workTime;
 	}
 
 	public CenterServer centerServer;
@@ -254,7 +245,10 @@ public class Config {
 		if (null == instance().centerServer) {
 			synchronized (Config.class) {
 				if (null == instance().centerServer) {
-					CenterServer obj = BaseTools.readObject("config/centerServer.json", CenterServer.class);
+					CenterServer obj = BaseTools.readObject(PATH_CONFIG_CENTERSERVER, CenterServer.class);
+					if (null == obj) {
+						obj = CenterServer.defaultInstance();
+					}
 					instance().centerServer = obj;
 				}
 			}
@@ -268,42 +262,61 @@ public class Config {
 		if (null == instance().collect) {
 			synchronized (Config.class) {
 				if (null == instance().collect) {
-					Collect obj = BaseTools.readObject("config/collect.json", Collect.class);
+					Collect obj = BaseTools.readObject(PATH_CONFIG_COLLECT, Collect.class);
+					if (null == obj) {
+						obj = Collect.defaultInstance();
+					}
 					instance().collect = obj;
+
 				}
 			}
 		}
 		return instance().collect;
 	}
 
-	public DumpRestoreDataConfig dumpRestoreDataConfig;
-
-	public static DumpRestoreDataConfig dumpRestoreDataConfig() throws Exception {
-		if (null == instance().dumpRestoreDataConfig) {
+	public static void flushCollect() throws Exception {
+		if (null != instance().collect) {
 			synchronized (Config.class) {
-				if (null == instance().dumpRestoreDataConfig) {
-					DumpRestoreDataConfig obj = BaseTools.readObject("config/dumpRestoreDataConfig.json",
-							DumpRestoreDataConfig.class);
-					instance().dumpRestoreDataConfig = obj;
+				if (null != instance().collect) {
+					instance().collect = null;
 				}
 			}
 		}
-		return instance().dumpRestoreDataConfig;
 	}
 
-	public DumpRestoreStorageConfig dumpRestoreStorageConfig;
+	public DumpRestoreData dumpRestoreData;
 
-	public static DumpRestoreStorageConfig dumpRestoreStorageConfig() throws Exception {
-		if (null == instance().dumpRestoreStorageConfig) {
+	public static DumpRestoreData dumpRestoreData() throws Exception {
+		if (null == instance().dumpRestoreData) {
 			synchronized (Config.class) {
-				if (null == instance().dumpRestoreStorageConfig) {
-					DumpRestoreStorageConfig obj = BaseTools.readObject("config/dumpRestoreStorageConfig.json",
-							DumpRestoreStorageConfig.class);
-					instance().dumpRestoreStorageConfig = obj;
+				if (null == instance().dumpRestoreData) {
+					DumpRestoreData obj = BaseTools.readObject(PATH_CONFIG_DUMPRESTOREDATA, DumpRestoreData.class);
+					if (null == obj) {
+						obj = DumpRestoreData.defaultInstance();
+					}
+					instance().dumpRestoreData = obj;
 				}
 			}
 		}
-		return instance().dumpRestoreStorageConfig;
+		return instance().dumpRestoreData;
+	}
+
+	public DumpRestoreStorage dumpRestoreStorage;
+
+	public static DumpRestoreStorage dumpRestoreStorage() throws Exception {
+		if (null == instance().dumpRestoreStorage) {
+			synchronized (Config.class) {
+				if (null == instance().dumpRestoreStorage) {
+					DumpRestoreStorage obj = BaseTools.readObject(PATH_CONFIG_DUMPRESTORESTORAGE,
+							DumpRestoreStorage.class);
+					if (null == obj) {
+						obj = DumpRestoreStorage.defaultInstance();
+					}
+					instance().dumpRestoreStorage = obj;
+				}
+			}
+		}
+		return instance().dumpRestoreStorage;
 	}
 
 	public String initialScriptText;
@@ -312,45 +325,32 @@ public class Config {
 		if (null == instance().initialScriptText) {
 			synchronized (Config.class) {
 				if (null == instance().initialScriptText) {
-					instance().initialScriptText = BaseTools.readString("config/initialScriptText.js");
+					instance().initialScriptText = BaseTools.readString("commons/initialScriptText.js");
 				}
 			}
 		}
 		return instance().initialScriptText;
 	}
 
-	// public String passwordKey;
-	//
-	// public String ssoKey;
-	//
-	// public static String ssoKey() throws Exception {
-	// if (null == instance().ssoKey) {
-	// synchronized (Config.class) {
-	// if (null == instance().ssoKey) {
-	// instance().ssoKey = BaseTools.readCfg("config/ssoKey.cfg", "o2platform");
-	// }
-	// }
-	// }
-	// return instance().ssoKey;
-	// }
+	private MimeTypes mimeTypes;
 
-	private MimetypesFileTypeMap mimeTypes;
-
-	public static MimetypesFileTypeMap mimeTypes() throws Exception {
+	public static MimeTypes mimeTypes() throws Exception {
 		if (null == instance().mimeTypes) {
 			synchronized (Config.class) {
 				if (null == instance().mimeTypes) {
-					byte[] bytes = BaseTools.readBytes("config/mime.types");
-					try (InputStream is = new ByteArrayInputStream(bytes)) {
-						instance().mimeTypes = new MimetypesFileTypeMap(is);
-					}
+					MimeTypes mimeTypes = new MimeTypes();
+					/* 添加o2自定义格式 */
+					mimeTypes.addMimeMapping("wcss", "application/json");
+					/* 添加默认格式 */
+					mimeTypes.addMimeMapping("", "application/octet-stream");
+					instance().mimeTypes = mimeTypes;
 				}
 			}
 		}
 		return instance().mimeTypes;
 	}
 
-	public DataMappings dataMappings;
+	private DataMappings dataMappings;
 
 	public static DataMappings dataMappings() throws Exception {
 		if (null == instance().dataMappings) {
@@ -361,6 +361,19 @@ public class Config {
 			}
 		}
 		return instance().dataMappings;
+	}
+
+	private StorageMappings storageMappings;
+
+	public static StorageMappings storageMappings() throws Exception {
+		if (null == instance().storageMappings) {
+			synchronized (Config.class) {
+				if (null == instance().storageMappings) {
+					instance().storageMappings = new StorageMappings(nodes());
+				}
+			}
+		}
+		return instance().storageMappings;
 	}
 
 	private static DataMappings dataMappingsInit() throws Exception {
@@ -430,7 +443,7 @@ public class Config {
 						+ dataServers.firstEntry().getValue().getTcpPort() + "/X";
 				o.setUrl(url);
 				o.setUsername("sa");
-				o.setPassword(dataServers.firstEntry().getValue().getCalculatedPassword());
+				o.setPassword(Config.token().getPassword());
 				dataMappings.get(cls.getName()).add(o);
 			}
 		} else {
@@ -452,16 +465,29 @@ public class Config {
 					String url = "jdbc:h2:tcp://" + node + ":" + server.getTcpPort() + "/X";
 					o.setUrl(url);
 					o.setUsername("sa");
-					String password = server.getCalculatedPassword();
-					if (StringUtils.isEmpty(password)) {
-						password = Config.token().getPassword();
-					}
-					o.setPassword(password);
+					o.setPassword(Config.token().getPassword());
 					dataMappings.get(str).add(o);
 				}
 			}
 		}
 		return dataMappings;
+	}
+
+	private File sslKeyStore;
+
+	public static File sslKeyStore() throws Exception {
+		if (null == instance().sslKeyStore) {
+			synchronized (Config.class) {
+				if (null == instance().sslKeyStore) {
+					File file = new File(BaseTools.getBasePath(), "o2.keystore");
+					if (!file.exists() || file.isDirectory()) {
+						file = new File(new File(BaseTools.getBasePath(), "sample"), "o2.keystore");
+					}
+					instance().sslKeyStore = file;
+				}
+			}
+		}
+		return instance().sslKeyStore;
 	}
 
 	private static List<Class<?>> dataMappingsScanEntities() throws Exception {
@@ -472,19 +498,6 @@ public class Config {
 			list.add(Class.forName(str));
 		}
 		return list;
-	}
-
-	public StorageMappings storageMappings;
-
-	public static StorageMappings storageMappings() throws Exception {
-		if (null == instance().storageMappings) {
-			synchronized (Config.class) {
-				if (null == instance().storageMappings) {
-					instance().storageMappings = new StorageMappings(nodes());
-				}
-			}
-		}
-		return instance().storageMappings;
 	}
 
 	public static Node currentNode() throws Exception {

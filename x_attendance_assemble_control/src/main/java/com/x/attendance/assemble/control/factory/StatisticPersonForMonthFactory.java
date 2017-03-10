@@ -12,8 +12,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
@@ -21,6 +19,8 @@ import com.x.attendance.assemble.control.jaxrs.attendancestatistic.WrapInFilterS
 import com.x.attendance.entity.StatisticPersonForMonth;
 import com.x.attendance.entity.StatisticPersonForMonth_;
 import com.x.base.core.exception.ExceptionWhen;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.annotation.MethodDescribe;
 
 public class StatisticPersonForMonthFactory extends AbstractFactory {
@@ -61,7 +61,7 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 
 	public List<String> listByUserYearAndMonth( String employeeName, String sYear, String sMonth ) throws Exception {
 		if( employeeName == null || employeeName.isEmpty() ){
-			logger.error("employeeName is null!");
+			logger.error( new EmployeeNamesEmptyException() );
 			return null;
 		}
 		
@@ -71,12 +71,12 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 		Root<StatisticPersonForMonth> root = cq.from( StatisticPersonForMonth.class );
 		Predicate p = cb.equal( root.get( StatisticPersonForMonth_.employeeName ), employeeName );
 		if( sYear == null || sYear.isEmpty() ){
-			logger.error( "sYear is null!" );
+			logger.error( new StatisticYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( StatisticPersonForMonth_.statisticYear ), sYear));
 		}
 		if( sMonth == null || sMonth.isEmpty() ){
-			logger.error("sMonth is null!");
+			logger.error( new StatisticMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( StatisticPersonForMonth_.statisticMonth ), sMonth));
 		}
@@ -87,7 +87,7 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 	public List<String> listByDepartmentYearAndMonth( List<String> departmentNameList, String year, String month ) throws Exception{
 		
 		if( departmentNameList == null || departmentNameList.size() == 0 ){
-			logger.error( "name is null!" );
+			logger.error( new DepartmentNamesEmptyException() );
 			return null;
 		}
 		
@@ -97,12 +97,12 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 		Root<StatisticPersonForMonth> root = cq.from( StatisticPersonForMonth.class );
 		Predicate p = root.get( StatisticPersonForMonth_.organizationName ).in(departmentNameList);
 		if( year == null || year.isEmpty() ){
-			logger.error("year is null!");
+			logger.error( new StatisticYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( StatisticPersonForMonth_.statisticYear ), year ) );
 		}
 		if( month == null || month.isEmpty() ){
-			logger.error("month is null!");
+			logger.error( new StatisticMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( StatisticPersonForMonth_.statisticMonth ), month ));
 		}
@@ -301,7 +301,7 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 	
 	public StatisticPersonForMonth get(String employeeName, String cycleYear, String cycleMonth) throws Exception {
 		if( employeeName == null ){
-			logger.error("employeeName is null!");
+			logger.error( new EmployeeNamesEmptyException() );
 			return null;
 		}
 		EntityManager em = this.entityManagerContainer().get( StatisticPersonForMonth.class);
@@ -310,13 +310,13 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 		Root<StatisticPersonForMonth> root = cq.from( StatisticPersonForMonth.class);	
 		Predicate p = cb.equal( root.get( StatisticPersonForMonth_.employeeName ), employeeName);		
 		if( cycleYear == null || cycleYear.isEmpty() ){
-			logger.error("cycleYear is null!");
+			logger.error( new CycleYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( StatisticPersonForMonth_.statisticYear), cycleYear));
 		}
 		
 		if( cycleMonth == null || cycleMonth.isEmpty() ){
-			logger.error("cycleMonth is null!");
+			logger.error( new CycleMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( StatisticPersonForMonth_.statisticMonth), cycleMonth));
 		}
@@ -337,7 +337,7 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 	 */
 	public Long countEmployeeCountByDepartmentYearAndMonth( List<String> organizationName, String sYear, String sMonth) throws Exception{
 		if( organizationName == null || organizationName.size() == 0 ){
-			logger.error("organizationName is null!");
+			logger.error( new OganizationNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( StatisticPersonForMonth.class);
@@ -346,12 +346,12 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 		Root<StatisticPersonForMonth> root = cq.from( StatisticPersonForMonth.class);
 		Predicate p = root.get(StatisticPersonForMonth_.organizationName).in( organizationName );
 		if( sYear == null || sYear.isEmpty() ){
-			logger.error("sYear is null!");
+			logger.error( new StatisticYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticYear), sYear));
 		}
 		if( sMonth == null || sMonth.isEmpty() ){
-			logger.error("sMonth is null!");
+			logger.error( new StatisticMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticMonth), sMonth));
 		}
@@ -370,7 +370,7 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 	 */
 	public Long sumLateCountByDepartmentYearAndMonth(List<String> organizationName, String sYear, String sMonth) throws Exception{
 		if( organizationName == null || organizationName.size() == 0 ){
-			logger.error("organizationName is null!");
+			logger.error( new OganizationNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( StatisticPersonForMonth.class);
@@ -381,12 +381,12 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 		cq.select( cb.sum( root.get(StatisticPersonForMonth_.lateTimes ) ) );		
 		Predicate p = root.get(StatisticPersonForMonth_.organizationName).in( organizationName );
 		if( sYear == null || sYear.isEmpty() ){
-			logger.error("sYear is null!");
+			logger.error( new StatisticYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticYear), sYear));
 		}
 		if( sMonth == null || sMonth.isEmpty() ){
-			logger.error("sMonth is null!");
+			logger.error( new StatisticMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticMonth), sMonth));
 		}
@@ -404,7 +404,7 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 	 */
 	public Double sumAttendanceDayCountByDepartmentYearAndMonth( List<String> organizationName, String sYear, String sMonth) throws Exception{
 		if( organizationName == null || organizationName.size() == 0 ){
-			logger.error("organizationName is null!");
+			logger.error( new OganizationNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( StatisticPersonForMonth.class);
@@ -415,12 +415,12 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 		cq.select( cb.sum( root.get(StatisticPersonForMonth_.onDutyDayCount) ) );		
 		Predicate p = root.get(StatisticPersonForMonth_.organizationName).in( organizationName );
 		if( sYear == null || sYear.isEmpty() ){
-			logger.error("sYear is null!");
+			logger.error( new StatisticYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticYear), sYear));
 		}
 		if( sMonth == null || sMonth.isEmpty() ){
-			logger.error("sMonth is null!");
+			logger.error( new StatisticMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticMonth), sMonth));
 		}
@@ -437,7 +437,7 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 	 */
 	public Long sumAbNormalDutyCountByDepartmentYearAndMonth( List<String> organizationName, String sYear, String sMonth) throws Exception{
 		if( organizationName == null || organizationName.size() == 0 ){
-			logger.error("organizationName is null!");
+			logger.error( new OganizationNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( StatisticPersonForMonth.class);
@@ -448,12 +448,12 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 		cq.select( cb.sum( root.get(StatisticPersonForMonth_.abNormalDutyCount) ) );		
 		Predicate p = root.get(StatisticPersonForMonth_.organizationName).in( organizationName );
 		if( sYear == null || sYear.isEmpty() ){
-			logger.error("sYear is null!");
+			logger.error( new StatisticYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticYear), sYear));
 		}
 		if( sMonth == null || sMonth.isEmpty() ){
-			logger.error("sMonth is null!");
+			logger.error( new StatisticMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticMonth), sMonth));
 		}
@@ -470,7 +470,7 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 	 */
 	public Long sumLackOfTimeCountByDepartmentYearAndMonth(List<String> organizationName, String sYear, String sMonth) throws Exception{
 		if( organizationName == null || organizationName.size() == 0 ){
-			logger.error("organizationName is null!");
+			logger.error( new OganizationNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( StatisticPersonForMonth.class);
@@ -481,12 +481,12 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 		cq.select( cb.sum( root.get(StatisticPersonForMonth_.lackOfTimeCount) ) );		
 		Predicate p = root.get(StatisticPersonForMonth_.organizationName).in( organizationName );
 		if( sYear == null || sYear.isEmpty() ){
-			logger.error("sYear is null!");
+			logger.error( new StatisticYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticYear), sYear));
 		}
 		if( sMonth == null || sMonth.isEmpty() ){
-			logger.error("sMonth is null!");
+			logger.error( new StatisticMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticMonth), sMonth));
 		}
@@ -503,7 +503,7 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 	 */
 	public Long sumLeaveEarlyCountByDepartmentYearAndMonth( List<String> organizationName, String sYear, String sMonth) throws Exception{
 		if( organizationName == null || organizationName.size() == 0 ){
-			logger.error("organizationName is null!");
+			logger.error( new OganizationNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( StatisticPersonForMonth.class);
@@ -514,12 +514,12 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 		cq.select( cb.sum( root.get(StatisticPersonForMonth_.leaveEarlyTimes ) ) );		
 		Predicate p = root.get(StatisticPersonForMonth_.organizationName).in( organizationName );
 		if( sYear == null || sYear.isEmpty() ){
-			logger.error("sYear is null!");
+			logger.error( new StatisticYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticYear), sYear));
 		}
 		if( sMonth == null || sMonth.isEmpty() ){
-			logger.error("sMonth is null!");
+			logger.error( new StatisticMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticMonth), sMonth));
 		}
@@ -536,7 +536,7 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 	 */
 	public Long sumOffDutyCountByDepartmentYearAndMonth( List<String> organizationName, String sYear, String sMonth) throws Exception{
 		if( organizationName == null || organizationName.size() == 0 ){
-			logger.error("organizationName is null!");
+			logger.error( new OganizationNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( StatisticPersonForMonth.class);
@@ -547,12 +547,12 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 		cq.select( cb.sum( root.get(StatisticPersonForMonth_.offDutyTimes ) ) );		
 		Predicate p = root.get(StatisticPersonForMonth_.organizationName).in( organizationName );
 		if( sYear == null || sYear.isEmpty() ){
-			logger.error("sYear is null!");
+			logger.error( new StatisticYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticYear), sYear));
 		}
 		if( sMonth == null || sMonth.isEmpty() ){
-			logger.error("sMonth is null!");
+			logger.error( new StatisticMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticMonth), sMonth));
 		}
@@ -569,7 +569,7 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 	 */
 	public Long sumOnDutyCountByDepartmentYearAndMonth( List<String> organizationName, String sYear, String sMonth) throws Exception{
 		if( organizationName == null || organizationName.size() == 0 ){
-			logger.error("organizationName is null!");
+			logger.error( new OganizationNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( StatisticPersonForMonth.class);
@@ -580,12 +580,12 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 		cq.select( cb.sum( root.get(StatisticPersonForMonth_.onDutyTimes ) ) );		
 		Predicate p = root.get(StatisticPersonForMonth_.organizationName).in( organizationName );
 		if( sYear == null || sYear.isEmpty() ){
-			logger.error("sYear is null!");
+			logger.error( new StatisticYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticYear), sYear));
 		}
 		if( sMonth == null || sMonth.isEmpty() ){
-			logger.error("sMonth is null!");
+			logger.error( new StatisticMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticMonth), sMonth));
 		}
@@ -602,7 +602,7 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 	 */
 	public Double sumOnSelfHolidayCountByDepartmentYearAndMonth( List<String> organizationName, String sYear, String sMonth) throws Exception{
 		if( organizationName == null || organizationName.size() == 0 ){
-			logger.error("organizationName is null!");
+			logger.error( new OganizationNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( StatisticPersonForMonth.class);
@@ -613,12 +613,12 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 		cq.select( cb.sum( root.get(StatisticPersonForMonth_.onSelfHolidayCount) ) );		
 		Predicate p = root.get(StatisticPersonForMonth_.organizationName).in( organizationName );
 		if( sYear == null || sYear.isEmpty() ){
-			logger.error("sYear is null!");
+			logger.error( new StatisticYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticYear), sYear));
 		}
 		if( sMonth == null || sMonth.isEmpty() ){
-			logger.error("sMonth is null!");
+			logger.error( new StatisticMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticMonth), sMonth));
 		}
@@ -635,7 +635,7 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 	 */
 	public Double sumAbsenceDayCountByDepartmentYearAndMonth( List<String> organizationName, String sYear, String sMonth) throws Exception{
 		if( organizationName == null || organizationName.size() == 0 ){
-			logger.error("organizationName is null!");
+			logger.error( new OganizationNamesEmptyException() );
 			return null;
 		}
 		EntityManager em = this.entityManagerContainer().get( StatisticPersonForMonth.class);
@@ -648,13 +648,13 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 		Predicate p = root.get(StatisticPersonForMonth_.organizationName).in( organizationName );
 		
 		if( sYear == null || sYear.isEmpty() ){
-			logger.error("sYear is null!");
+			logger.error( new StatisticYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticYear), sYear));
 		}
 		
 		if( sMonth == null || sMonth.isEmpty() ){
-			logger.error("sMonth is null!");
+			logger.error( new StatisticMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticMonth), sMonth));
 		}

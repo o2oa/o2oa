@@ -57,7 +57,7 @@ public class DataItemFactory extends AbstractFactory {
 			//如果数据不存在，则返回一个新的数据对象
 			item = new DataItem();
 			item.setAppId( document.getAppId() );
-			item.setCatagoryId( document.getCatagoryId() );
+			item.setCategoryId( document.getCategoryId() );
 			item.setDocId( document.getId() );
 			item.setPath0("");
 			item.setPath1("");

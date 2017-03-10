@@ -1,18 +1,20 @@
 {
   "getId" : {"uri":"/jaxrs/uuid/random"},
 
-  "listColumnController" : {"uri": "/jaxrs/appcatagoryadmin/list/app/{appId}"},
+  "listColumnController" : {"uri": "/jaxrs/appcategoryadmin/list/app/{appId}"},
+  "listCategoryController" : {"uri": "/jaxrs/appcategoryadmin/list/category/{categoryId}"},
 
   "getDocument" : {"uri" : "/jaxrs/document/{id}"},
+  "viewDocument" : {"uri" : "/jaxrs/document/{id}/view"},
   "addDocument": {"uri" : "/jaxrs/document", "method": "POST"},
-  "updateDocument" : {"uri":"/jaxrs/document/{id}","method":"PUT"},
+  "updateDocument" : {"uri":"/jaxrs/document","method":"POST"},
   "removeDocument" : {"uri":"/jaxrs/document/{id}","method": "DELETE"},
   "publishDocument" : {"uri":"/jaxrs/document/publish/{id}","method":"PUT"},  //发布文档信息
   "cancelPublishDocument" : {"uri":"/jaxrs/document/publish/{id}/cancel","method":"PUT"}, //取消发布文档信息
   "archiveDocument" : {"uri":"/jaxrs/document/achive/{id}","method":"PUT"}, //归档文档信息
   "redraftDocument" : {"uri":"/jaxrs/document/draft/{id}","method":"PUT"}, //恢复为草稿
 
-  "getCategory" : {"uri":"/jaxrs/catagoryinfo/{id}"},
+  "getCategory" : {"uri":"/jaxrs/categoryinfo/{id}"},
 
   "getForm": {"uri": "/jaxrs/form/{id}"},
 
@@ -47,7 +49,19 @@
   //上传一个图片,直接转换为一个base64编码[Servlet]
   "convertLocalImageToBase64": {"uri": "/servlet/image/encode/base64/size/{size}", "method": "POST", "enctype": "formData"},
   //将用户已经上传的图片附件直接转换为一个base64编码[Jaxrs]
-  "getSubjectAttachmentBase64" : {"uri":"/jaxrs/fileinfo/{id}/binary/base64/{size}"}
+  "getSubjectAttachmentBase64" : {"uri":"/jaxrs/fileinfo/{id}/binary/base64/{size}"},
 
+  "getPersonByIdentity": {"uri": "/jaxrs/person/identity/{name}"},
+  "getPerson": {"uri": "/jaxrs/person/{name}"},
 
+  //id                   -- ID
+//  documentId           --文档ID
+//  description          --信息说明（size:255）
+//  base64               --图片Base64编码后的文本（size:1MB）
+  "saveImage" : {"uri" : "/jaxrs/document/pic", "method": "POST" },
+  "getImage" : {"uri":"/jaxrs/document/pic/{id}"},
+  "listImage" :{"uri":"/jaxrs/document/pic/doc/{documentid}"},
+  "removeImage" : {"uri":"/jaxrs/document/pic/{id}","method": "DELETE"},
+  //4、获取指定文档的ID获取文档大图的base64编码，如果有多个则获取第一个，如果没有则返回“0”
+  "getImageByDocument" : {"uri":"/servlet/document/{documentid}/mainpic", "method": "PUT"}
 }

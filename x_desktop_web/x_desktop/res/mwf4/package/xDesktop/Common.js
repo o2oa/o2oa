@@ -100,4 +100,54 @@ MWF.xDesktop.confirm = function(type, e, title, text, width, height, ok, cancel,
         dlg.show();
         if (callback) callback(dlg);
     }.bind(this));
-}
+};
+MWF.xDesktop.getImageSrc = function( id ){
+    var addressObj = layout.desktop.serviceAddressList["x_file_assemble_control"];
+    if (addressObj){
+        var address = "http://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
+    }else{
+        var host = layout.config.center.host || window.location.hostname;
+        var port = layout.config.center.port;
+        var address = "http://"+host+(port=="80" ? "" : ":"+port)+"/x_program_center";
+    }
+    var url = "/servlet/file/download/"+id+"/stream";
+    return address+url;
+};
+MWF.xDesktop.setImageSrc = function(){
+    if( !event )return;
+    var obj = event.srcElement ? event.srcElement : event.target;
+    if( !obj )return;
+    var id = obj.get("data-id");
+    if( id )obj.set("src" , MWF.xDesktop.getImageSrc(id) );
+};
+MWF.xDesktop.uploadImage = function( reference, referencetype, formData, file, success, failure ){
+    this.action = new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_file_assemble_control");
+    this.action.invoke({
+        "name": "uploadImage",
+        "parameter": {"reference" : reference, "referencetype": referencetype},
+        "data": formData,
+        "file": file,
+        "success": success,
+        "failure": failure
+    });
+};
+MWF.xDesktop.uploadImageByScale = function( reference, referencetype, scale, formData, file, success, failure ){
+    this.action = new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_file_assemble_control");
+    this.action.invoke({
+        "name": "uploadImageByScale",
+        "parameter": {"reference" : reference, "referencetype": referencetype, "scale" : scale || 0},
+        "data": formData,
+        "file": file,
+        "success": success,
+        "failure": failure
+    });
+};
+MWF.xDesktop.copyImage = function( reference, referencetype, attachmentId, scale, success, failure ){
+    this.action = new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_file_assemble_control");
+    this.action.invoke({
+        "name": "copyImage",
+        "parameter": {"reference" : reference, "referencetype": referencetype, "attachmentId" : attachmentId, "scale":scale || 0 },
+        "success": success,
+        "failure": failure
+    });
+};

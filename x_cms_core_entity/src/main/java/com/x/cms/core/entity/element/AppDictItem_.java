@@ -18,7 +18,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.cms.core.entity.element.AppDictItem.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:17:48 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 13:46:13 CST 2017")
 public class AppDictItem_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<AppDictItem,String> appDictId;
     public static volatile SingularAttribute<AppDictItem,Boolean> booleanValue;
@@ -29,6 +29,7 @@ public class AppDictItem_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<AppDictItem,ItemPrimitiveType> itemPrimitiveType;
     public static volatile SingularAttribute<AppDictItem,ItemStringValueType> itemStringValueType;
     public static volatile SingularAttribute<AppDictItem,ItemType> itemType;
+    public static volatile SingularAttribute<AppDictItem,String> lobItem;
     public static volatile SingularAttribute<AppDictItem,Double> numberValue;
     public static volatile SingularAttribute<AppDictItem,String> path0;
     public static volatile SingularAttribute<AppDictItem,Integer> path0Location;

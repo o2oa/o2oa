@@ -7,8 +7,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 
 /**
  * 
@@ -468,7 +468,8 @@ public class DateOperation {
 			java.util.Date d2 = df.parse(date2);
 			dayNumber = (d2.getTime() - d1.getTime()) / mins;
 		} catch (Exception e) {
-			logger.error( "系统获取得到两个时间之前的分差发生异常",  e);
+			logger.warn( "系统获取得到两个时间之前的分差发生异常" );
+			logger.error(e);
 		}
 		return dayNumber;
 	}
@@ -486,7 +487,8 @@ public class DateOperation {
 		try {
 			dayNumber = (date2.getTime() - date1.getTime()) / mins;
 		} catch (Exception e) {
-			logger.error( "系统获取得到两个时间之前的分差发生异常",  e);
+			logger.warn( "系统获取得到两个时间之前的分差发生异常");
+			logger.error(e);
 		}
 		return dayNumber;
 	}
@@ -510,9 +512,11 @@ public class DateOperation {
 			try {
 				date = format1.parse( "0000-00-00" );
 			} catch (ParseException e1) {
-				logger.error( "系统日期格式转换发生异常",  e1);
+				logger.warn( "系统日期格式转换发生异常" );
+				logger.error(e);
 			}
-			logger.error( "系统日期格式转换发生异常",  e);
+			logger.warn( "系统日期格式转换发生异常");
+			logger.error(e);
 		}
 		
 		return reslut;
@@ -565,9 +569,11 @@ public class DateOperation {
 			cal.add(Calendar.DATE, -(tmp-1));
 			return getDateStringFromDate(cal.getTime(), "yyyy-MM-dd" ) + " 00:00:00";
 		} catch (ParseException e) {
-			logger.error( "系统getStartOfWeek日期格式转换发生异常",  e);
+			logger.warn( "系统getStartOfWeek日期格式转换发生异常");
+			logger.error(e);
 		} catch (Exception e) {
-			logger.error( "系统getStartOfWeek发生异常",  e);
+			logger.warn( "系统getStartOfWeek发生异常");
+			logger.error(e);
 		}
 		return null;
 	}
@@ -581,9 +587,11 @@ public class DateOperation {
 			cal.add(Calendar.DATE, 6);
 			return getDateStringFromDate(cal.getTime(), "yyyy-MM-dd" ) + " 23:59:59";
 		} catch (ParseException e) {
-			logger.error( "系统getEndOfWeek日期格式转换发生异常",  e);
+			logger.warn( "系统getEndOfWeek日期格式转换发生异常");
+			logger.error(e);
 		} catch (Exception e) {
-			logger.error( "系统getEndOfWeek发生异常",  e);
+			logger.warn( "系统getEndOfWeek发生异常");
+			logger.error(e);
 		}
 		return null;
 	}
@@ -603,7 +611,8 @@ public class DateOperation {
 		try{
 			_date = getDateFromString( dateString, style );
 		}catch(Exception e){
-			logger.error( "系统getDateCNString日期格式转换发生异常",  e);
+			logger.warn( "系统getDateCNString日期格式转换发生异常");
+			logger.error(e);
 		}
 		if(_date == null ){
 			_date = new Date();
@@ -639,7 +648,8 @@ public class DateOperation {
 		try{
 			_date = getDateFromString( dateString, style );
 		}catch(Exception e){
-			logger.error( "系统getDateCNString2日期格式转换发生异常",  e);
+			logger.warn( "系统getDateCNString2日期格式转换发生异常");
+			logger.error(e);
 		}
 		if(_date == null ){
 			_date = new Date();
@@ -679,9 +689,11 @@ public class DateOperation {
 			cal.setFirstDayOfWeek(2);//设置每周的第一天是星期一
 			return cal.get( Calendar.WEEK_OF_YEAR );
 		} catch (ParseException e) {
-			logger.error( "系统getWeekNumOfYear日期格式转换发生异常",  e);
+			logger.warn( "系统getWeekNumOfYear日期格式转换发生异常");
+			logger.error(e);
 		} catch (Exception e) {
-			logger.error( "系统getWeekNumOfYear发生异常",  e);
+			logger.warn( "系统getWeekNumOfYear发生异常");
+			logger.error(e);
 		}
 		return -1;
 	}
@@ -699,7 +711,8 @@ public class DateOperation {
 			cal.setFirstDayOfWeek(2);//设置每周的第一天是星期一
 			return cal.get( Calendar.WEEK_OF_YEAR );
 		} catch (Exception e) {
-			logger.error( "系统getWeekNumOfYear发生异常",  e);
+			logger.warn( "系统getWeekNumOfYear发生异常");
+			logger.error(e);
 		}
 		return -1;
 	}

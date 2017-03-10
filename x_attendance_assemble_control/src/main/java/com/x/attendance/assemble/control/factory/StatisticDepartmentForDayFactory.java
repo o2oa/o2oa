@@ -11,8 +11,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
@@ -20,6 +18,8 @@ import com.x.attendance.assemble.control.jaxrs.attendancestatistic.WrapInFilterS
 import com.x.attendance.entity.StatisticDepartmentForDay;
 import com.x.attendance.entity.StatisticDepartmentForDay_;
 import com.x.base.core.exception.ExceptionWhen;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.annotation.MethodDescribe;
 
 public class StatisticDepartmentForDayFactory extends AbstractFactory {
@@ -60,7 +60,7 @@ public class StatisticDepartmentForDayFactory extends AbstractFactory {
 
 	public List<String> listByDepartmentRecordDateString( List<String> organizationName, String sDate) throws Exception {
 		if( organizationName == null || organizationName.size() == 0 ){
-			logger.error("organizationName is null!");
+			logger.error( new OganizationNamesEmptyException() );
 			return null;
 		}
 		EntityManager em = this.entityManagerContainer().get( StatisticDepartmentForDay.class);
@@ -69,7 +69,7 @@ public class StatisticDepartmentForDayFactory extends AbstractFactory {
 		Root< StatisticDepartmentForDay> root = cq.from( StatisticDepartmentForDay.class);
 		Predicate p = root.get( StatisticDepartmentForDay_.organizationName).in(organizationName);
 		if( sDate == null || sDate.isEmpty() ){
-			logger.error("sDate is null!");
+			logger.error( new StatisticDateEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( StatisticDepartmentForDay_.statisticDate), sDate));
 		}
@@ -79,7 +79,7 @@ public class StatisticDepartmentForDayFactory extends AbstractFactory {
 	
 	public List<String> listByDepartmentRecordDateString( String organizationName, String sDate) throws Exception {
 		if( organizationName == null || organizationName.isEmpty() ){
-			logger.error("organizationName is null!");
+			logger.error( new OganizationNamesEmptyException() );
 			return null;
 		}
 		
@@ -89,7 +89,7 @@ public class StatisticDepartmentForDayFactory extends AbstractFactory {
 		Root< StatisticDepartmentForDay> root = cq.from( StatisticDepartmentForDay.class);
 		Predicate p = cb.equal( root.get( StatisticDepartmentForDay_.organizationName), organizationName);
 		if( sDate == null || sDate.isEmpty() ){
-			logger.error("sDate is null!");
+			logger.error( new StatisticDateEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( StatisticDepartmentForDay_.statisticDate), sDate));
 		}
@@ -99,7 +99,7 @@ public class StatisticDepartmentForDayFactory extends AbstractFactory {
 
 	public List<String> listByDepartmentDayYearAndMonth(List<String> name, String year, String month) throws Exception {
 		if( name == null || name.size() == 0 ){
-			logger.error("name is null!");
+			logger.error( new OganizationNamesEmptyException() );
 			return null;
 		}
 		
@@ -109,12 +109,12 @@ public class StatisticDepartmentForDayFactory extends AbstractFactory {
 		Root< StatisticDepartmentForDay> root = cq.from( StatisticDepartmentForDay.class);
 		Predicate p = root.get( StatisticDepartmentForDay_.organizationName).in(name);
 		if( year == null || year.isEmpty() ){
-			logger.error("year is null!");
+			logger.error( new StatisticYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( StatisticDepartmentForDay_.statisticYear), year));
 		}
 		if( month == null || month.isEmpty() ){
-			logger.error("month is null!");
+			logger.error( new StatisticMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( StatisticDepartmentForDay_.statisticMonth), month));
 		}
@@ -124,7 +124,7 @@ public class StatisticDepartmentForDayFactory extends AbstractFactory {
 
 	public List<String> listByDepartmentDayDate(List<String> name, String date) throws Exception{
 		if( name == null || name.size() == 0 ){
-			logger.error("name is null!");
+			logger.error( new OganizationNamesEmptyException() );
 			return null;
 		}
 		
@@ -134,7 +134,7 @@ public class StatisticDepartmentForDayFactory extends AbstractFactory {
 		Root< StatisticDepartmentForDay> root = cq.from( StatisticDepartmentForDay.class);
 		Predicate p = root.get( StatisticDepartmentForDay_.organizationName).in( name );
 		if( date == null || date.isEmpty() ){
-			logger.error("year is null!");
+			logger.error( new StatisticDateEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( StatisticDepartmentForDay_.statisticDate), date));
 		}
@@ -144,7 +144,7 @@ public class StatisticDepartmentForDayFactory extends AbstractFactory {
 	
 	public List<String> listByDepartmentDayDate( String name, String date) throws Exception{
 		if( name == null || name.isEmpty() ){
-			logger.error("name is null!");
+			logger.error( new OganizationNamesEmptyException() );
 			return null;
 		}
 		
@@ -154,7 +154,7 @@ public class StatisticDepartmentForDayFactory extends AbstractFactory {
 		Root< StatisticDepartmentForDay> root = cq.from( StatisticDepartmentForDay.class);
 		Predicate p = cb.equal(root.get( StatisticDepartmentForDay_.organizationName), name);
 		if( date == null || date.isEmpty() ){
-			logger.error("year is null!");
+			logger.error( new StatisticDateEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get( StatisticDepartmentForDay_.statisticDate), date));
 		}

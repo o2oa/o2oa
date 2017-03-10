@@ -55,7 +55,7 @@ public  class Excel2003Reader implements HSSFListener{
 	//表索引
 	private int sheetIndex = -1;
 	private BoundSheetRecord[] orderedBSRs;
-	@SuppressWarnings( "unchecked" )
+	@SuppressWarnings("rawtypes")
 	private ArrayList boundSheetRecords = new ArrayList();
 
 	// For handling formulas with string results

@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.entity.StorageType;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.project.server.StorageMapping;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.DataItem;
+import com.x.processplatform.core.entity.content.DataLobItem;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Review;
@@ -32,6 +32,7 @@ public class ActionDelete {
 		emc.beginTransaction(Attachment.class);
 		emc.beginTransaction(WorkLog.class);
 		emc.beginTransaction(DataItem.class);
+		emc.beginTransaction(DataLobItem.class);
 		emc.beginTransaction(Work.class);
 		emc.beginTransaction(WorkCompleted.class);
 		emc.delete(Task.class, business.task().listWithJob(job));
@@ -41,7 +42,7 @@ public class ActionDelete {
 		emc.delete(Review.class, business.review().listWithJob(job));
 		// 删除所有附件
 		for (Attachment o : emc.list(Attachment.class, business.attachment().listWithJob(job))) {
-			StorageMapping mapping = ThisApplication.storageMappings.get(StorageType.processPlatform, o.getStorage());
+			StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class, o.getStorage());
 			// 如果没有附件存储的对象就算了
 			// if (null != mapping) {
 			o.deleteContent(mapping);
@@ -50,6 +51,10 @@ public class ActionDelete {
 		}
 		emc.delete(WorkLog.class, business.workLog().listWithJob(job));
 		for (DataItem o : business.dataItem().listWithJobWithPath(job)) {
+			if (o.isLobItem()) {
+				DataLobItem lob = emc.find(o.getLobItem(), DataLobItem.class);
+				emc.remove(lob);
+			}
 			emc.remove(o);
 		}
 		List<String> workIds = business.work().listWithJob(job);

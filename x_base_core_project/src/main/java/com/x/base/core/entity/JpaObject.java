@@ -144,6 +144,14 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 
 	public static final String DISTRIBUTEFACTOR = "distributeFactor";
 
+	public static final String CREATETIME = "createTime";
+
+	public static final String UPDATETIME = "updateTime";
+
+	public static final String SEQUENCE = "sequence";
+
+	public static final String PASSWORD = "password";
+
 	public static final String[] ID_DISTRIBUTEFACTOR = new String[] { "id", "distributeFactor" };
 
 	public Object get(String name) throws Exception {
@@ -153,12 +161,12 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 	static {
 		FieldsUnmodifies.add(DISTRIBUTEFACTOR);
 		FieldsUnmodifies.add(ID);
-		FieldsUnmodifies.add("updateTime");
-		FieldsUnmodifies.add("createTime");
-		FieldsUnmodifies.add("sequence");
+		FieldsUnmodifies.add(CREATETIME);
+		FieldsUnmodifies.add(UPDATETIME);
+		FieldsUnmodifies.add(SEQUENCE);
 		FieldsInvisible.add(DISTRIBUTEFACTOR);
-		FieldsInvisible.add("sequence");
-		FieldsInvisible.add("password");
+		FieldsInvisible.add(SEQUENCE);
+		FieldsInvisible.add(PASSWORD);
 	}
 
 	@SuppressWarnings("unchecked")

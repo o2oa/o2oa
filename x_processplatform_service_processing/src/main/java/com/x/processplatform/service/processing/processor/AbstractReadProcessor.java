@@ -3,6 +3,8 @@ package com.x.processplatform.service.processing.processor;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -14,6 +16,8 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.service.processing.Business;
 
 public abstract class AbstractReadProcessor extends AbstractReviewProcessor {
+
+	private static Logger logger = LoggerFactory.getLogger(AbstractReadProcessor.class);
 
 	protected AbstractReadProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
@@ -42,6 +46,7 @@ public abstract class AbstractReadProcessor extends AbstractReviewProcessor {
 		Read read = new Read();
 		read.setViewed(false);
 		read.setTitle(work.getTitle());
+		read.setSerial(work.getSerial());
 		read.setActivity(work.getActivity());
 		read.setActivityName(work.getActivityName());
 		read.setActivityType(work.getActivityType());

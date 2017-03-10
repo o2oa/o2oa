@@ -160,6 +160,7 @@ public class OkrWorkReportPersonLinkFactory extends AbstractFactory {
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	public List<OkrWorkReportPersonLink> listNextWithFilter(String id, Integer count, Object sequence, WrapInFilter wrapIn) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( OkrWorkReportPersonLink.class);
@@ -213,6 +214,7 @@ public class OkrWorkReportPersonLinkFactory extends AbstractFactory {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public List<OkrWorkReportPersonLink> listPrevWithFilter( String id, Integer count, Object sequence, WrapInFilter wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( OkrWorkReportPersonLink.class );

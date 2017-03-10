@@ -118,7 +118,7 @@ public class AttendanceImportFileInfo extends SliceJpaObject {
 	 * 在执行给定实体的相应 EntityManager 持久操作之前，调用该实体的 @PrePersist 回调方法。
 	 */
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if ( null == this.createTime ) {
 			this.createTime = date;
@@ -133,12 +133,12 @@ public class AttendanceImportFileInfo extends SliceJpaObject {
 	 * 在对实体数据进行数据库更新操作之前，调用实体的 @PreUpdate 回调方法。
 	 */
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
 
-	private void onPersist() {
+	private void onPersist() throws Exception{
 	}
 
 	/* ==================================================================================
@@ -166,10 +166,19 @@ public class AttendanceImportFileInfo extends SliceJpaObject {
 	@CheckPersist( allowEmpty = true)
 	private byte[] fileBody;
 	
-	@EntityFieldDescribe("文件内容JSON")
-	@Column(name="xdataContent", length = JpaObject.length_255B )
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@EntityFieldDescribe("文件数据JSON内容, 10M大约可以存储50万行Excel")
+	@Column(name="xdataContent", length = JpaObject.length_10M )
 	@CheckPersist( allowEmpty = true)
-	private String dataContent = "";
+	private String dataContent;
+	
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@EntityFieldDescribe("错误数据JSON内容, 10M大约可以存储50万行Excel")
+	@Column(name="xerrorContent", length = JpaObject.length_10M )
+	@CheckPersist( allowEmpty = true)
+	private String errorContent;
 	
 	@EntityFieldDescribe( "文件说明" )
 	@Column( name="xdescription", length = JpaObject.length_255B )
@@ -283,4 +292,12 @@ public class AttendanceImportFileInfo extends SliceJpaObject {
 	public void setName(String name) {
 		this.name = name;
 	}
+	public String getErrorContent() {
+		return errorContent;
+	}
+	public void setErrorContent(String errorContent) {
+		this.errorContent = errorContent;
+	}
+	
+	
 }

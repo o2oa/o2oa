@@ -422,7 +422,7 @@ function taskCompleted_listFilter_init() {
     });
 }
 
-function taskCompleted_listFilter_next() {
+function taskCompleted_listFilter_next(id) {
     var id = (id ? id : taskCompleted_parameter.last);
     $.ajax({
 	type : 'post',
@@ -438,7 +438,6 @@ function taskCompleted_listFilter_next() {
 	    creatorCompany : $('#creatorCompanyFilter').val(),
 	    creatorDepartment : $('#creatorDepartmentFilter').val(),
 	    completedTimeMonth : $('#completedTimeMonthFilter').val(),
-	    creatorDepartment : $('#creatorDepartmentFilter').val(),
 	    activityName : $('#activityNameFilter').val(),
 	    key : $('#keyFilter').val()
 	}),
@@ -458,7 +457,7 @@ function taskCompleted_listFilter_next() {
     });
 }
 
-function taskCompleted_listFilter_prev() {
+function taskCompleted_listFilter_prev(id) {
     var id = (id ? id : taskCompleted_parameter.first);
     $.ajax({
 	type : 'post',
@@ -474,7 +473,6 @@ function taskCompleted_listFilter_prev() {
 	    creatorCompany : $('#creatorCompanyFilter').val(),
 	    creatorDepartment : $('#creatorDepartmentFilter').val(),
 	    completedTimeMonth : $('#completedTimeMonthFilter').val(),
-	    creatorDepartment : $('#creatorDepartmentFilter').val(),
 	    activityName : $('#activityNameFilter').val(),
 	    key : $('#keyFilter').val()
 	}),

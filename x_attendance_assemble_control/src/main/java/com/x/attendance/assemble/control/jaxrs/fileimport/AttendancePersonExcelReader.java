@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.common.excel.reader.IRowReader;
 import com.x.attendance.assemble.control.ApplicationGobal;
@@ -40,7 +38,7 @@ public class AttendancePersonExcelReader implements IRowReader{
 		
 		if( colmlist!= null && colmlist.size() > 0 ){
 			
-			cacheImportFileStatus.setRowCount(curRow);
+			cacheImportFileStatus.setRowCount( curRow );
 			
 			if( cacheImportFileStatus.getDetailList() == null ){
 				cacheImportFileStatus.setDetailList( new ArrayList<CacheImportRowDetail>());
@@ -75,7 +73,7 @@ public class AttendancePersonExcelReader implements IRowReader{
 					checkSuccess = false;
 					cacheImportRowDetail.setCheckStatus("error");
 					cacheImportRowDetail.setDescription( cacheImportRowDetail.getDescription() + "打卡日期格式异常：" + cacheImportRowDetail.getRecordDateString() );
-					logger.error("数据导入第"+curRow+"行，打卡日期格式异常，时间：" + cacheImportRowDetail.getRecordDateString(), e);
+					logger.info("数据导入第"+curRow+"行，打卡日期格式异常，时间：" + cacheImportRowDetail.getRecordDateString(), e);
 				}
 				
 				if( cacheImportRowDetail.getOnDutyTime() != null && cacheImportRowDetail.getOnDutyTime().trim().length() > 0 ){
@@ -86,7 +84,7 @@ public class AttendancePersonExcelReader implements IRowReader{
 						checkSuccess = false;
 						cacheImportRowDetail.setCheckStatus("error");
 						cacheImportRowDetail.setDescription( cacheImportRowDetail.getDescription() + "上班打卡时间格式异常：" + cacheImportRowDetail.getOnDutyTime() );
-						logger.error("数据导入第"+curRow+"行，上班打卡时间格式异常，时间：" + cacheImportRowDetail.getOnDutyTime(), e);
+						logger.info("数据导入第"+curRow+"行，上班打卡时间格式异常，时间：" + cacheImportRowDetail.getOnDutyTime(), e);
 					}
 				}
 				
@@ -98,7 +96,7 @@ public class AttendancePersonExcelReader implements IRowReader{
 						checkSuccess = false;
 						cacheImportRowDetail.setCheckStatus("error");
 						cacheImportRowDetail.setDescription( cacheImportRowDetail.getDescription() + "下班打卡时间格式异常：" + cacheImportRowDetail.getOffDutyTime() );
-						logger.error("数据导入第"+curRow+"行，下班打卡时间格式异常，时间：" +cacheImportRowDetail.getOffDutyTime(), e);
+						logger.info("数据导入第"+curRow+"行，下班打卡时间格式异常，时间：" +cacheImportRowDetail.getOffDutyTime(), e);
 					}
 				}
 				
@@ -106,18 +104,8 @@ public class AttendancePersonExcelReader implements IRowReader{
 					cacheImportFileStatus.setCheckStatus("error");
 					cacheImportFileStatus.setErrorCount( (cacheImportFileStatus.getErrorCount() + 1) );
 				}
-				
 				cacheImportFileStatus.getDetailList().add( cacheImportRowDetail );
 			}
-			
-			
-			//for( String a : colmlist ){
-			//	System.out.print( a + " | " );
-			//}
-			//System.out.println("");
 		}
-		//if( cacheImportFileStatus != null && cacheImportFileStatus.getDetailList() != null ){
-		//	logger.debug( "【分析导入文件】导入文件["+fileKey+"]里有"+cacheImportFileStatus.getDetailList().size()+"条数据可供导入。" );
-		//}
 	}
 }

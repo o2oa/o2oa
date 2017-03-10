@@ -24,9 +24,11 @@ import org.apache.openjpa.persistence.jdbc.Index;
 
 import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.annotation.EntityFieldDescribe;
 import com.x.base.core.entity.item.Item;
+import com.x.base.core.entity.item.ItemConverter;
 import com.x.base.core.entity.item.ItemPrimitiveType;
 import com.x.base.core.entity.item.ItemStringValueType;
 import com.x.base.core.entity.item.ItemType;
@@ -43,7 +45,7 @@ public class AppDictItem extends Item {
 	private static final String TABLE = PersistenceProperties.Element.AppDictItem.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -56,7 +58,7 @@ public class AppDictItem extends Item {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -115,7 +117,7 @@ public class AppDictItem extends Item {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception{
 		this.path0 = StringUtils.trimToEmpty(this.path0);
 		this.path1 = StringUtils.trimToEmpty(this.path1);
 		this.path2 = StringUtils.trimToEmpty(this.path2);
@@ -220,7 +222,7 @@ public class AppDictItem extends Item {
 	@Index(name = TABLE + "_itemStringValueType")
 	private ItemStringValueType itemStringValueType;
 
-	@Column(name="xstringValue", length = StringValueMaxLength)
+	@Column(name="xstringValue", length = ItemConverter.STRING_VALUE_MAX_LENGTH )
 	@Index(name = TABLE + "_stringValue")
 	private String stringValue = null;
 
@@ -251,6 +253,12 @@ public class AppDictItem extends Item {
 	@Column(name="xbooleanValue")
 	@Index(name = TABLE + "_booleanValue")
 	private Boolean booleanValue = null;
+	
+	@EntityFieldDescribe("lobItem连接Id.")
+	@Column(length = JpaObject.length_id, name = "xlobItem")
+	@Index(name = TABLE + "_lobItem")
+	@CheckPersist(allowEmpty = false)
+	private String lobItem;
 	
 	public String getAppDictId() {
 		return appDictId;
@@ -466,6 +474,14 @@ public class AppDictItem extends Item {
 
 	public void setBooleanValue(Boolean booleanValue) {
 		this.booleanValue = booleanValue;
+	}
+
+	public String getLobItem() {
+		return lobItem;
+	}
+
+	public void setLobItem(String lobItem) {
+		this.lobItem = lobItem;
 	}
 
 }

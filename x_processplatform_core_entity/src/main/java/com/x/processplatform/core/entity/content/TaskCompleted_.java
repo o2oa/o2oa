@@ -17,7 +17,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.processplatform.core.entity.content.TaskCompleted.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:19:07 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:10:19 CST 2017")
 public class TaskCompleted_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<TaskCompleted,String> activity;
     public static volatile SingularAttribute<TaskCompleted,String> activityName;

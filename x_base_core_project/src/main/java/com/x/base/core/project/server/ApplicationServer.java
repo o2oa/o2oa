@@ -1,5 +1,6 @@
 package com.x.base.core.project.server;
 
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -10,19 +11,41 @@ import com.x.base.core.utils.Host;
 
 public class ApplicationServer extends GsonPropertyObject {
 
+
+	public static ApplicationServer defaultInstance() {
+		return new ApplicationServer();
+	}
+
+	public ApplicationServer() {
+		this.enable = true;
+		this.port = default_port;
+		this.sslEnable = false;
+		this.proxyHost = "";
+		this.proxyPort = default_port;
+		this.redeploy = true;
+		this.scanInterval = default_scanInterval;
+		this.includes = new CopyOnWriteArrayList<String>();
+		this.excludes = new CopyOnWriteArrayList<String>();
+		this.weights = new CopyOnWriteArrayList<NameWeightPair>();
+
+	}
+
 	private static final Integer default_port = 20020;
 	private static final Integer default_scanInterval = 0;
-	private static final Integer default_weight = 100;
+	public static final Integer default_weight = 100;
 
-	private Boolean enable = false;
-	private Integer port = default_port;
-	private Boolean sslEnable = false;
-	private String proxyHost = "";
-	private Integer proxyPort = default_port;
-	private Boolean forceRedeploy = true;
-	private Integer scanInterval = default_scanInterval;
+	private Boolean enable;
+	private Integer port;
+	private Boolean sslEnable;
+	private String proxyHost;
+	private Integer proxyPort;
+	private Boolean redeploy;
+	private Integer scanInterval;
+	// private CopyOnWriteArrayList<NameWeightPair> projects;
+	private CopyOnWriteArrayList<String> includes;
+	private CopyOnWriteArrayList<String> excludes;
 
-	private CopyOnWriteArrayList<NameWeightPair> projects = new CopyOnWriteArrayList<>();
+	private CopyOnWriteArrayList<NameWeightPair> weights;
 
 	public Integer getScanInterval() {
 		if (null != this.scanInterval && this.scanInterval > 0) {
@@ -87,15 +110,8 @@ public class ApplicationServer extends GsonPropertyObject {
 		return default_port;
 	}
 
-	public Boolean getForceRedeploy() {
-		return BooleanUtils.isNotFalse(this.forceRedeploy);
-	}
-
-	public CopyOnWriteArrayList<NameWeightPair> getProjects() {
-		if (null == this.projects) {
-			return new CopyOnWriteArrayList<NameWeightPair>();
-		}
-		return this.projects;
+	public Boolean getRedeploy() {
+		return BooleanUtils.isTrue(this.redeploy);
 	}
 
 	public void setEnable(Boolean enable) {
@@ -118,16 +134,36 @@ public class ApplicationServer extends GsonPropertyObject {
 		this.proxyPort = proxyPort;
 	}
 
-	public void setForceRedeploy(Boolean forceRedeploy) {
-		this.forceRedeploy = forceRedeploy;
-	}
-
 	public void setScanInterval(Integer scanInterval) {
 		this.scanInterval = scanInterval;
 	}
 
-	public void setProjects(CopyOnWriteArrayList<NameWeightPair> projects) {
-		this.projects = projects;
+	public void setRedeploy(Boolean redeploy) {
+		this.redeploy = redeploy;
+	}
+
+	public CopyOnWriteArrayList<String> getIncludes() {
+		return includes;
+	}
+
+	public void setIncludes(CopyOnWriteArrayList<String> includes) {
+		this.includes = includes;
+	}
+
+	public CopyOnWriteArrayList<String> getExcludes() {
+		return excludes;
+	}
+
+	public void setExcludes(CopyOnWriteArrayList<String> excludes) {
+		this.excludes = excludes;
+	}
+
+	public CopyOnWriteArrayList<NameWeightPair> getWeights() {
+		return weights;
+	}
+
+	public void setWeights(CopyOnWriteArrayList<NameWeightPair> weights) {
+		this.weights = weights;
 	}
 
 }

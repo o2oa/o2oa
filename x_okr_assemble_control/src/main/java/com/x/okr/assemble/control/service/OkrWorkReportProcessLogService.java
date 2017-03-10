@@ -5,16 +5,14 @@ import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.HttpAttribute;
 import com.x.okr.assemble.control.Business;
 import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.WrapInFilter;
@@ -72,7 +70,7 @@ public class OkrWorkReportProcessLogService{
 					emc.commit();
 				}
 			}catch( Exception e ){
-				logger.error( "OkrWorkReportProcessLog update/ got a error!" );
+				logger.warn( "OkrWorkReportProcessLog update/ got a error!" );
 				throw e;
 			}
 		}else{//没有传入指定的ID
@@ -83,7 +81,7 @@ public class OkrWorkReportProcessLogService{
 				emc.persist( okrWorkReportProcessLog, CheckPersistType.all);	
 				emc.commit();
 			}catch( Exception e ){
-				logger.error( "OkrWorkReportProcessLog create got a error!", e);
+				logger.warn( "OkrWorkReportProcessLog create got a error!", e);
 				throw e;
 			}
 		}
@@ -98,13 +96,13 @@ public class OkrWorkReportProcessLogService{
 	public void delete( String id ) throws Exception {
 		OkrWorkReportProcessLog okrWorkReportProcessLog = null;
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not delete any object." );
+			throw new Exception( "id is null, system can not delete any object." );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			okrWorkReportProcessLog = emc.find(id, OkrWorkReportProcessLog.class);
 			if (null == okrWorkReportProcessLog) {
-				logger.error( "object is not exist {'id':'"+ id +"'}" );
+				throw new Exception( "object is not exist {'id':'"+ id +"'}" );
 			}else{
 				emc.beginTransaction( OkrWorkReportProcessLog.class );
 				emc.remove( okrWorkReportProcessLog, CheckRemoveType.all );
@@ -131,44 +129,10 @@ public class OkrWorkReportProcessLogService{
 			business = new Business(emc);
 			if( id != null && !"(0)".equals(id) && id.trim().length() > 20 ){
 				if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
-					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkReportProcessLog.class, ExceptionWhen.not_found), "sequence" );
+					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkReportProcessLog.class ), "sequence" );
 				}
 			}
 			ids = business.okrWorkReportProcessLogFactory().listNextWithFilter( id, count, sequence, wrapIn );
-			if( ids != null && !ids.isEmpty() ){
-				for( String _id : ids ){
-					okrWorkReportProcessLog = emc.find( _id, OkrWorkReportProcessLog.class );
-					if( okrWorkReportProcessLogList != null && !okrWorkReportProcessLogList.contains( okrWorkReportProcessLog )){
-						okrWorkReportProcessLogList.add( okrWorkReportProcessLog );
-					}
-				}
-			}
-		} catch ( Exception e ) {
-			throw e;
-		}
-		return okrWorkReportProcessLogList;
-	}
-	
-	public List<OkrWorkReportProcessLog> listPrevWithFilter(String id, Integer count, WrapInFilter wrapIn) throws Exception {
-		Business business = null;
-		Object sequence = null;
-		OkrWorkReportProcessLog okrWorkReportProcessLog = null;
-		List<OkrWorkReportProcessLog> okrWorkReportProcessLogList = new ArrayList<OkrWorkReportProcessLog>();
-		List<String> ids = null;
-		if( count == null ){
-			count = 20;
-		}
-		if( wrapIn == null ){
-			throw new Exception( "wrapIn is null!" );
-		}
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			business = new Business(emc);
-			if( id != null && !"(0)".equals(id) && id.trim().length() > 20 ){
-				if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
-					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkReportProcessLog.class, ExceptionWhen.not_found), "sequence" );
-				}
-			}
-			ids = business.okrWorkProblemProcessLogFactory().listPrevWithFilter( id, count, sequence, wrapIn );
 			if( ids != null && !ids.isEmpty() ){
 				for( String _id : ids ){
 					okrWorkReportProcessLog = emc.find( _id, OkrWorkReportProcessLog.class );

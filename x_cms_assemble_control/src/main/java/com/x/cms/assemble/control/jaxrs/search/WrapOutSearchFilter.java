@@ -16,7 +16,7 @@ public class WrapOutSearchFilter {
 
 	private List<AppFilter> appfileter_list = null;
 	
-	private List<CatagoryFilter> catagoryfileter_list = null;
+	private List<CategoryFilter> categoryfileter_list = null;
 	
 	private List<CompanyFilter> companyfileter_list = null;
 	
@@ -46,12 +46,12 @@ public class WrapOutSearchFilter {
 		this.appfileter_list = appfileter_list;
 	}
 
-	public List<CatagoryFilter> getCatagoryfileter_list() {
-		return catagoryfileter_list;
+	public List<CategoryFilter> getCategoryfileter_list() {
+		return categoryfileter_list;
 	}
 
-	public void setCatagoryfileter_list(List<CatagoryFilter> catagoryfileter_list) {
-		this.catagoryfileter_list = catagoryfileter_list;
+	public void setCategoryfileter_list(List<CategoryFilter> categoryfileter_list) {
+		this.categoryfileter_list = categoryfileter_list;
 	}
 	
 }

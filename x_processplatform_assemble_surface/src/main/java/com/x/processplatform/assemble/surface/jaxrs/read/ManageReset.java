@@ -6,9 +6,9 @@ import java.util.List;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
@@ -21,18 +21,23 @@ import com.x.processplatform.core.entity.content.Read;
 
 class ManageReset extends ActionBase {
 
-	ActionResult<WrapOutId> execute(EffectivePerson effectivePerson, String id, WrapInRead wrapIn) throws Exception {
+	ActionResult<WrapOutId> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement)
+			throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<WrapOutId> result = new ActionResult<>();
+			WrapInRead wrapIn = this.convertToWrapIn(jsonElement, WrapInRead.class);
 			Business business = new Business(emc);
-			Read read = emc.find(id, Read.class, ExceptionWhen.not_found);
+			Read read = emc.find(id, Read.class);
+			if (null == read) {
+				throw new ReadNotExistedException(id);
+			}
 			Control control = business.getControlOfRead(effectivePerson, read);
 			if (BooleanUtils.isNotTrue(control.getAllowReadReset())) {
-				throw new Exception("person{name:" + effectivePerson.getName() + "} has insufficient permissions.");
+				throw new ReadAccessDeniedException(effectivePerson.getName(), read.getId());
 			}
 			List<String> identites = business.organization().identity().check(wrapIn.getIdentityList());
 			if (identites.isEmpty()) {
-				throw new Exception("reset identities is empty or identity not existed:" + wrapIn.getIdentityList());
+				throw new IdentityEmptyException();
 			}
 			wrapIn.setIdentityList(identites);
 			emc.beginTransaction(Read.class);

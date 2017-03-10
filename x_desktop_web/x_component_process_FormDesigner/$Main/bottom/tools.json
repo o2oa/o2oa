@@ -56,7 +56,7 @@
     "text": "图片",
     "className": "Image"
   },
-  "image": {
+  "attachment": {
     "icon": "attachment.png",
     "text": "附件",
     "className": "Attachment"
@@ -75,6 +75,16 @@
     "icon": "datagrid.png",
     "text": "数据网格",
     "className": "Datagrid"
+  },
+  "ViewSelector": {
+    "icon": "viewSelector.png",
+    "text": "选择视图",
+    "className": "ViewSelector"
+  },
+  "view": {
+    "icon": "view.png",
+    "text": "嵌入视图",
+    "className": "View"
   },
   "html": {
     "icon": "html.png",

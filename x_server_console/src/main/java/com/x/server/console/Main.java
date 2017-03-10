@@ -4,11 +4,17 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.InputStreamReader;
+import java.io.RandomAccessFile;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileChannel.MapMode;
+import java.nio.channels.FileLock;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -24,6 +30,7 @@ import com.x.base.core.project.server.DataServer;
 import com.x.base.core.project.server.StorageServer;
 import com.x.base.core.project.server.WebServer;
 import com.x.server.console.action.ActionConfig;
+import com.x.server.console.action.ActionSetPassword;
 import com.x.server.console.action.ActionUpdate;
 import com.x.server.console.action.ActionVersion;
 import com.x.server.console.log.LogTools;
@@ -39,16 +46,17 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 		String base = getBasePath();
+		scanWar(base);
 		loadJars(base);
 		/* getVersion需要FileUtils在后面运行 */
-		String version = getVersion(base);
 		cleanTempDir(base);
 		createTempClassesDirectory(base);
 		SystemOutErrorSideCopyBuilder.start(base);
-		LogTools.setSlf4jSimple(Config.currentNode().getLogLevel());
-		Boolean go = executeUpdateAfterScript(base, version);
+		LogTools.setSlf4jSimple();
+		Boolean go = executeUpdateAfterScript(base, Config.version());
+		startSwapCommand();
 		if (go) {
-			CommandFactory.printHelp(base, version);
+			CommandFactory.printHelp(base, Config.version());
 			Matcher matcher = null;
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
 				String cmd = "";
@@ -139,7 +147,7 @@ public class Main {
 					}
 					matcher = CommandFactory.help_pattern.matcher(cmd);
 					if (matcher.find()) {
-						CommandFactory.printHelp(base, version);
+						CommandFactory.printHelp(base, Config.version());
 						continue;
 					}
 
@@ -169,10 +177,19 @@ public class Main {
 						}
 					}
 
+					matcher = CommandFactory.setPassword_pattern.matcher(cmd);
+					if (matcher.find()) {
+						setPassword(matcher.group(1), matcher.group(2));
+						if (config()) {
+							break;
+						} else {
+							continue;
+						}
+					}
+
 					matcher = CommandFactory.exit_pattern.matcher(cmd);
 					if (matcher.find()) {
-						stopAll();
-						System.exit(0);
+						exit();
 					}
 
 					System.out.println("unknown command:" + cmd);
@@ -362,6 +379,11 @@ public class Main {
 		}
 	}
 
+	private static void exit() {
+		stopAll();
+		System.exit(0);
+	}
+
 	private static void stopAll() {
 		try {
 			WebServer webServer = Config.currentNode().getWeb();
@@ -450,6 +472,32 @@ public class Main {
 		FileUtils.cleanDirectory(tempDir);
 	}
 
+	/**
+	 * 检查store目录下的war文件是否全部在manifest.cfg中
+	 * 
+	 * @param base
+	 *            o2server的根目录
+	 */
+	private static void scanWar(String base) throws Exception {
+		File dir = new File(base, "store");
+		File manifest = new File(dir, MANIFEST_FILENAME);
+		if ((!manifest.exists()) || manifest.isDirectory()) {
+			throw new Exception("can not find " + MANIFEST_FILENAME + " in store.");
+		}
+		List<String> manifestNames = readManifest(manifest);
+		for (File o : dir.listFiles()) {
+			if (o.isDirectory() && o.getName().equals("jars")) {
+				continue;
+			}
+			if (o.getName().equals(MANIFEST_FILENAME)) {
+				continue;
+			}
+			if (!manifestNames.contains(o.getName())) {
+				o.delete();
+			}
+		}
+	}
+
 	private static void loadJars(String base) throws Exception {
 		URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 		Class<?> urlClass = URLClassLoader.class;
@@ -510,13 +558,13 @@ public class Main {
 		throw new Exception("can not define o2server base directory.");
 	}
 
-	private static String getVersion(String base) throws Exception {
-		File file = new File(base, "version.o2");
-		if (file.exists() && file.isFile()) {
-			return FileUtils.readFileToString(file);
-		}
-		throw new Exception("can not find version file.");
-	}
+	// private static String getVersion(String base) throws Exception {
+	// File file = new File(base, "version.o2");
+	// if (file.exists() && file.isFile()) {
+	// return FileUtils.readFileToString(file);
+	// }
+	// throw new Exception("can not find version file.");
+	// }
 
 	private static void cleanTempDir(String base) throws Exception {
 		File file = new File(base, "local/temp");
@@ -564,4 +612,41 @@ public class Main {
 		return list;
 	}
 
+	private static boolean setPassword(String oldPassword, String newPassword) throws Exception {
+		try {
+			return new ActionSetPassword().execute(oldPassword, newPassword);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	private static void startSwapCommand() {
+		new Thread() {
+			public void run() {
+				try (RandomAccessFile raf = new RandomAccessFile(Config.base() + "/command.swap", "rw")) {
+					FileChannel fc = raf.getChannel();
+					MappedByteBuffer mbb = fc.map(MapMode.READ_WRITE, 0, 64);
+					byte[] bs = new byte[64];
+					Arrays.fill(bs, (byte) 0);
+					mbb.put(bs);
+					FileLock flock = null;
+					byte b;
+					while (true) {
+						flock = fc.lock();
+						b = mbb.get(0);
+						mbb.put(0, (byte) 0);
+						flock.release();
+						if (b == 1) {
+							exit();
+						} else {
+							Thread.sleep(3000);
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}.start();
+	}
 }

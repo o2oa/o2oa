@@ -31,8 +31,8 @@ MWF.xDesktop.Actions.RestActions = new Class({
         if (addressObj){
             this.address = "http://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
         }else{
-            var host = layout.config.center.host || window.location.hostname;
-            var port = layout.config.center.port;
+            var host = layout.desktop.centerServer.host || window.location.hostname;
+            var port = layout.desktop.centerServer.port;
             this.address = "http://"+host+(port=="80" ? "" : ":"+port)+"/x_program_center";
         }
 

@@ -10,9 +10,13 @@ public class CalculateEntry extends GsonPropertyObject {
 
 	private CalculateType calculateType;
 
+	private String displayName;
+
 	private OrderType orderType;
 
 	private OrderEffectType orderEffectType;
+	
+	private String id;
 
 	public Boolean available() {
 		if (StringUtils.isEmpty(this.column)) {
@@ -60,6 +64,22 @@ public class CalculateEntry extends GsonPropertyObject {
 
 	public void setOrderEffectType(OrderEffectType orderEffectType) {
 		this.orderEffectType = orderEffectType;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

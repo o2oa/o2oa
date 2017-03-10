@@ -10,7 +10,11 @@ public class WrapInAuthentication extends GsonPropertyObject {
 
 	private String password;
 
-	private String code;
+	private String codeAnswer;
+
+	private String captcha;
+
+	private String captchaAnswer;
 
 	public String getPassword() {
 		return password;
@@ -20,20 +24,36 @@ public class WrapInAuthentication extends GsonPropertyObject {
 		this.password = password;
 	}
 
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
 	public String getCredential() {
 		return credential;
 	}
 
 	public void setCredential(String credential) {
 		this.credential = credential;
+	}
+
+	public String getCodeAnswer() {
+		return codeAnswer;
+	}
+
+	public void setCodeAnswer(String codeAnswer) {
+		this.codeAnswer = codeAnswer;
+	}
+
+	public String getCaptcha() {
+		return captcha;
+	}
+
+	public void setCaptcha(String captcha) {
+		this.captcha = captcha;
+	}
+
+	public String getCaptchaAnswer() {
+		return captchaAnswer;
+	}
+
+	public void setCaptchaAnswer(String captchaAnswer) {
+		this.captchaAnswer = captchaAnswer;
 	}
 
 }

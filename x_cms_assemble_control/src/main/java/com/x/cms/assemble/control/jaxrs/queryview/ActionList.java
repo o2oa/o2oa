@@ -8,6 +8,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -25,7 +26,7 @@ import com.x.organization.core.express.wrap.WrapIdentity;
 
 public class ActionList extends ActionBase {
 
-	public ActionResult<List<WrapOutQueryView>> execute(EffectivePerson effectivePerson) throws Exception {
+	public ActionResult<List<WrapOutQueryView>> execute( HttpServletRequest request, EffectivePerson effectivePerson ) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<WrapOutQueryView>> result = new ActionResult<>();

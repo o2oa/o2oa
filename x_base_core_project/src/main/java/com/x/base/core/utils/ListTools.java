@@ -2,14 +2,16 @@ package com.x.base.core.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.set.ListOrderedSet;
-import org.apache.commons.lang3.ObjectUtils;
 
 public class ListTools {
 
@@ -147,7 +149,7 @@ public class ListTools {
 		return CollectionUtils.containsAny(list, other);
 	}
 
-	public static <T> ArrayList<T> concreteArrayList(List<T> list, boolean ignoreNull, boolean unique,
+	public static <T> ArrayList<T> trim(List<T> list, boolean ignoreNull, boolean unique,
 			@SuppressWarnings("unchecked") T... ts) {
 		ArrayList<T> arrayList = new ArrayList<>();
 		if (null != list) {
@@ -165,15 +167,17 @@ public class ListTools {
 		return arrayList;
 	}
 
-	public static <T> boolean isEmpty(List<T> list) {
-		if (null == list || list.isEmpty()) {
-			return true;
+	public static boolean isEmpty(List<?>... os) {
+		for (List<?> o : os) {
+			if ((null != o) && (!o.isEmpty())) {
+				return false;
+			}
 		}
-		return false;
+		return true;
 	}
 
-	public static <T> boolean isNotEmpty(List<T> list) {
-		return !isEmpty(list);
+	public static boolean isNotEmpty(List<?>... os) {
+		return !isEmpty(os);
 	}
 
 	public static <T> List<T> nullToEmpty(List<T> list) {
@@ -207,45 +211,49 @@ public class ListTools {
 		return properties;
 	}
 
-	public static void asc(List<Object> list) {
-		asc(list, false);
+	public static <T extends Comparable<?>> T maxCountElement(List<T> list) {
+		if (null == list || list.isEmpty()) {
+			return null;
+		}
+		Map<T, Long> group = list.stream().collect(Collectors.groupingBy(e -> e, Collectors.counting()));
+		LinkedHashMap<T, Long> sort = group.entrySet().stream()
+				.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+		return sort.entrySet().stream().findFirst().get().getKey();
 	}
 
-	public static void asc(List<Object> list, boolean nullGreater) {
-		Collections.sort(list, new Comparator<Object>() {
-			@SuppressWarnings({ "unchecked", "rawtypes" })
-			public int compare(Object o1, Object o2) {
-				Comparable c1 = null;
-				Comparable c2 = null;
-				if (null != o1) {
-					c1 = (o1 instanceof Comparable) ? (Comparable) o1 : o1.toString();
-				}
-				if (null != o2) {
-					c2 = (o2 instanceof Comparable) ? (Comparable) o2 : o2.toString();
-				}
-				return ObjectUtils.compare(c1, c2, nullGreater);
+	public static <T> List<T> includesExcludes(List<T> list, List<T> includes, List<T> excludes) {
+		if (isEmpty(list)) {
+			return list;
+		}
+		if (isNotEmpty(includes)) {
+			list = ListUtils.intersection(list, includes);
+		}
+		if (isNotEmpty(excludes)) {
+			list = ListUtils.subtract(list, excludes);
+		}
+		return list;
+	}
+
+	public static <T> List<List<T>> batch(List<T> list, Integer size) throws Exception {
+		if (null == size || size < 1) {
+			throw new Exception("size can not be null or less than 1.");
+		}
+		List<List<T>> result = new ArrayList<>();
+		if (isEmpty(list)) {
+			return result;
+		}
+		List<T> os = null;
+		for (int i = 0; i < list.size(); i++) {
+			if (i % size == 0) {
+				os = new ArrayList<T>();
 			}
-		});
-	}
-
-	public static void desc(List<Object> list) {
-		desc(list, false);
-	}
-
-	public static void desc(List<Object> list, boolean nullGreater) {
-		Collections.sort(list, new Comparator<Object>() {
-			@SuppressWarnings({ "unchecked", "rawtypes" })
-			public int compare(Object o1, Object o2) {
-				Comparable c1 = null;
-				Comparable c2 = null;
-				if (null != o1) {
-					c1 = (o1 instanceof Comparable) ? (Comparable) o1 : o1.toString();
-				}
-				if (null != o2) {
-					c2 = (o2 instanceof Comparable) ? (Comparable) o2 : o2.toString();
-				}
-				return ObjectUtils.compare(c2, c1, nullGreater);
+			os.add(list.get(i));
+			if ((i % size == (size - 1)) || (i == list.size() - 1)) {
+				result.add(os);
 			}
-		});
+		}
+		return result;
 	}
+
 }

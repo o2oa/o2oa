@@ -14,6 +14,8 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.bbs.assemble.control.service.BBSOperationRecordService;
 import com.x.bbs.assemble.control.service.UserManagerService;
 import com.x.bbs.assemble.control.service.bean.RoleAndPermission;
@@ -22,6 +24,7 @@ import com.x.bbs.assemble.control.service.bean.RoleAndPermission;
 @Path( "login" )
 public class LoginAction extends StandardJaxrsAction{
 
+	private Logger logger = LoggerFactory.getLogger( LoginAction.class );
 	private UserManagerService userManagerService = new UserManagerService();
 	private BBSOperationRecordService BBSOperationRecordService = new BBSOperationRecordService();
 	
@@ -32,26 +35,40 @@ public class LoginAction extends StandardJaxrsAction{
 	public Response login(@Context HttpServletRequest request, WrapInLoginInfo wrapIn ) {
 		ActionResult<RoleAndPermission> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson( request );
+		Boolean isBBSSystemAdmin = false;
 		String hostIp = request.getRemoteAddr();
 		String hostName = request.getRemoteAddr();
+		
 		if( "anonymous".equalsIgnoreCase( currentPerson.getTokenType().name() )){
 			try {
 				BBSOperationRecordService.loginOperation( "anonymous", hostIp, hostName );
-				result.setUserMessage("登录成功！");
+				result.setData( new RoleAndPermission() );
 			} catch (Exception e) {
-				result.error( e );
-				result.setUserMessage( "系统根据用户获取权限信息时发生异常！" );
+				Exception exception = new UserLoginException( e, "anonymous" );
+				result.error( exception );
+				logger.error(exception);
 			}
 		}else{
+			RoleAndPermission roleAndPermission = null;
 			try {
 				BBSOperationRecordService.loginOperation( currentPerson.getName(), hostIp, hostName );
-				RoleAndPermission roleAndPermission = userManagerService.getUserRoleAndPermissionForLogin( currentPerson.getName() );			
-				result.setData( roleAndPermission );
-				result.setUserMessage("登录成功！");
+				roleAndPermission = userManagerService.getUserRoleAndPermissionForLogin( currentPerson.getName() );	
 			} catch (Exception e) {
-				result.error( e );
-				result.setUserMessage( "系统根据用户获取权限信息时发生异常！" );
+				Exception exception = new UserLoginException( e, currentPerson.getName() );
+				result.error( exception );
+				logger.error(exception);
 			}
+			try {
+				isBBSSystemAdmin = userManagerService.isHasRole( currentPerson.getName(), "BBSSystemAdmin");
+			} catch (Exception e1) {
+				Exception exception = new InsufficientPermissionsException( currentPerson.getName(), "BBSSystemAdmin" );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
+			}
+			if( roleAndPermission != null ){
+				roleAndPermission.setIsBBSSystemAdmin(isBBSSystemAdmin);
+			}
+			result.setData( roleAndPermission );
 		}
 		return ResponseFactory.getDefaultActionResultResponse( result );
 	}

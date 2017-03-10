@@ -239,7 +239,7 @@ public class OkrUserManagerService {
 	 * @return
 	 * @throws Exception 
 	 */
-	public WrapPerson getUserNameByIdentity( String identity ) throws Exception {
+	public WrapPerson getUserByIdentity( String identity ) throws Exception {
 		if( identity == null || identity.isEmpty() ){
 			throw new Exception( "identity is null!" );
 		}
@@ -252,6 +252,30 @@ public class OkrUserManagerService {
 			throw e;
 		}
 		return wrapPerson;
+	}
+	
+	/**
+	 * 根据用户的身份查询用户的姓名
+	 * @param identity
+	 * @return
+	 * @throws Exception 
+	 */
+	public String getUserNameByIdentity( String identity ) throws Exception {
+		if( identity == null || identity.isEmpty() ){
+			throw new Exception( "identity is null!" );
+		}
+		Business business = null;
+		WrapPerson wrapPerson = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			wrapPerson = business.organization().person().getWithIdentity( identity );
+		} catch ( Exception e ) {
+			throw e;
+		}
+		if( wrapPerson != null ){
+			return wrapPerson.getName();
+		}
+		return null;
 	}
 	/**
 	 * 根据用户姓名查询用户所有的身份信息
@@ -295,14 +319,14 @@ public class OkrUserManagerService {
 
 	/**
 	 * 判断用户是否有指定的权限
-	 * @param name
-	 * @param string
+	 * @param userName
+	 * @param roleName
 	 * @return
 	 * @throws Exception 
 	 */
-	public boolean isHasRole(String name, String roleName ) throws Exception {
-		if( name == null || name.isEmpty() ){
-			throw new Exception( "name is null!" );
+	public boolean isHasRole( String userName, String roleName ) throws Exception {
+		if( userName == null || userName.isEmpty() ){
+			throw new Exception( "userName is null!" );
 		}
 		if( roleName == null || roleName.isEmpty() ){
 			throw new Exception( "roleName is null!" );
@@ -311,10 +335,43 @@ public class OkrUserManagerService {
 		Business business = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			roleList = business.organization().role().listWithPerson( name );
+			roleList = business.organization().role().listWithPerson( userName );
 			if( roleList != null && !roleList.isEmpty() ){
 				for( WrapRole role : roleList ){
 					if( role.getName().equalsIgnoreCase( roleName )){
+						return true;
+					}
+				}
+			}else{
+				return false;
+			}
+		} catch ( Exception e ) {
+			throw e;
+		}
+		return false;
+	}
+	
+	/**
+	 * 判断用户是否有指定的权限
+	 * @param userName
+	 * @param roleName
+	 * @return
+	 * @throws Exception 
+	 */
+	public boolean isCompanyWorkManager( String userIdentity ) throws Exception {
+		if( userIdentity == null || userIdentity.isEmpty() ){
+			throw new Exception( "userIdentity is null!" );
+		}
+		String[] configValues = null;
+		String configValue = null;
+		Business business = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			configValue = business.okrConfigSystemFactory().getValueWithConfigCode("COMPANY_WORK_ADMIN");
+			if( configValue != null && !configValue.isEmpty() ){
+				configValues = configValue.split( "," );
+				for( String identityName : configValues ){
+					if( identityName.equalsIgnoreCase( userIdentity )){
 						return true;
 					}
 				}

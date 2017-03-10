@@ -21,7 +21,10 @@ MWF.xApplication.process.FormDesigner.Module.$Component = MWF.FC$Component = new
 //		}.bind(this));
 	},
 	_initModule: function(){
+        this.setStyleTemplate();
+
 		if (!this.initialized){
+
             this.setPropertiesOrStyles("styles");
             this.setPropertiesOrStyles("properties");
 

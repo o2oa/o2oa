@@ -32,13 +32,13 @@ class ActionSimulate extends ActionBase {
 
 	private static Type stringCollectionType = new TypeToken<List<String>>() {
 	}.getType();
-	
+
 	private Gson gson = XGsonBuilder.instance();
 
-	ActionResult<Query> execute(EffectivePerson effectivePerson, String id, WrapInQueryViewExecute wrapIn)
-			throws Exception {
+	ActionResult<Query> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Query> result = new ActionResult<>();
+			WrapInQueryViewExecute wrapIn = this.convertToWrapIn(jsonElement, WrapInQueryViewExecute.class);
 			QueryView queryView = emc.flag(id, QueryView.class, ExceptionWhen.not_found, false, QueryView.FLAGS);
 			Query query = gson.fromJson(queryView.getData(), Query.class);
 			if (null != wrapIn) {
@@ -58,6 +58,14 @@ class ActionSimulate extends ActionBase {
 				}
 			}
 			query.query();
+			/* 整理一下输出值 */
+			if ((null != query.getGroupEntry()) && query.getGroupEntry().available()) {
+				query.setGrid(null);
+			}
+			if ((null != query.getCalculate()) && (query.getCalculate().available())) {
+				query.setGrid(null);
+				query.setGroupGrid(null);
+			}
 			result.setData(query);
 			return result;
 		}

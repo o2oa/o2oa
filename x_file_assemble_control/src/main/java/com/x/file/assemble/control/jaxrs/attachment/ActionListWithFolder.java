@@ -12,8 +12,8 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.utils.SortTools;
 import com.x.file.assemble.control.Business;
 import com.x.file.assemble.control.wrapout.WrapOutAttachment;
-import com.x.file.core.entity.Attachment;
-import com.x.file.core.entity.Folder;
+import com.x.file.core.entity.personal.Attachment;
+import com.x.file.core.entity.personal.Folder;
 
 public class ActionListWithFolder extends ActionBase {
 

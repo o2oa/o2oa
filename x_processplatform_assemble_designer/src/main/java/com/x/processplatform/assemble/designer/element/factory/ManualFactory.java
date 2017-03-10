@@ -28,4 +28,16 @@ public class ManualFactory extends AbstractFactory {
 		cq.select(root.get(Manual_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
+
+	/** 查找使用表单的manual */
+	public List<String> listWithForm(String formId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Manual.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Manual> root = cq.from(Manual.class);
+		Predicate p = cb.equal(root.get(Manual_.form), formId);
+		cq.select(root.get(Manual_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
 }

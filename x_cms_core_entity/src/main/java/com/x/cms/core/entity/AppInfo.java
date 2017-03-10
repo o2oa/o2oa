@@ -121,7 +121,7 @@ public class AppInfo extends SliceJpaObject {
 	 * 在执行给定实体的相应 EntityManager 持久操作之前，调用该实体的 @PrePersist 回调方法。
 	 */
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -137,12 +137,12 @@ public class AppInfo extends SliceJpaObject {
 	 * 在对实体数据进行数据库更新操作之前，调用实体的 @PreUpdate 回调方法。
 	 */
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
 
-	private void onPersist() {
+	private void onPersist() throws Exception{
 	}
 	/*
 	 * =========================================================================
@@ -159,14 +159,14 @@ public class AppInfo extends SliceJpaObject {
 	 */
 	@EntityFieldDescribe("应用名称")
 	@Column(name = "xappName", length = JpaObject.length_96B)
-	@CheckPersist(simplyString = true, citationNotExists = {
+	@CheckPersist(citationNotExists = {
 			/* 验证不可重名 */
 			@CitationNotExist(fields = "appName", type = AppInfo.class) }, allowEmpty = true)
 	private String appName;
 
 	@EntityFieldDescribe("应用别名")
 	@Column(name = "xappAlias", length = JpaObject.length_96B)
-	@CheckPersist(simplyString = true, allowEmpty = true)
+	@CheckPersist(allowEmpty = true)
 	private String appAlias;
 
 	@EntityFieldDescribe("应用信息排序号")
@@ -175,7 +175,7 @@ public class AppInfo extends SliceJpaObject {
 
 	@EntityFieldDescribe("应用信息说明")
 	@Column(name = "xdescription", length = JpaObject.length_255B)
-	@CheckPersist(simplyString = true, allowEmpty = true)
+	@CheckPersist(allowEmpty = true)
 	private String description;
 
 	@EntityFieldDescribe("图标icon Base64编码后的文本.")
@@ -186,7 +186,7 @@ public class AppInfo extends SliceJpaObject {
 
 	@EntityFieldDescribe("备注信息")
 	@Column(name = "xappMemo", length = JpaObject.length_255B)
-	@CheckPersist(simplyString = true, allowEmpty = true)
+	@CheckPersist(allowEmpty = true)
 	private String appMemo;
 
 	@EntityFieldDescribe("创建人，可能为空，如果由系统创建。")
@@ -216,11 +216,11 @@ public class AppInfo extends SliceJpaObject {
 	@EntityFieldDescribe("分类列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
-	@ContainerTable(name = TABLE + "_catagoryList", joinIndex = @Index(name = TABLE + "_catagoryList_join"))
+	@ContainerTable(name = TABLE + "_categoryList", joinIndex = @Index(name = TABLE + "_categoryList_join"))
 	@ElementColumn(length = JpaObject.length_id)
-	@ElementIndex(name = TABLE + "_catagoryList_element")
+	@ElementIndex(name = TABLE + "_categoryList_element")
 	@CheckPersist(allowEmpty = true)
-	private List<String> catagoryList;
+	private List<String> categoryList;
 
 	/**
 	 * 获取应用名称
@@ -338,12 +338,12 @@ public class AppInfo extends SliceJpaObject {
 		this.appMemo = appMemo;
 	}
 
-	public List<String> getCatagoryList() {
-		return catagoryList;
+	public List<String> getCategoryList() {
+		return categoryList;
 	}
 
-	public void setCatagoryList(List<String> catagoryList) {
-		this.catagoryList = catagoryList;
+	public void setCategoryList(List<String> categoryList) {
+		this.categoryList = categoryList;
 	}
 
 	public String getCreatorPerson() {

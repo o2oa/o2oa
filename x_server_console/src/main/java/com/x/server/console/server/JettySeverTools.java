@@ -1,9 +1,6 @@
 package com.x.server.console.server;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,15 +20,19 @@ import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 import com.x.base.core.DefaultCharset;
+import com.x.base.core.project.server.Config;
 
 public abstract class JettySeverTools {
 
 	protected static void addHttpsConnector(File configDir, Server server, Integer port) throws Exception {
 		SslContextFactory sslContextFactory = new SslContextFactory();
-		sslContextFactory.setKeyStorePath((new File(configDir, "o2.keystore")).getAbsolutePath());
-		String password = FileUtils.readFileToString(new File(configDir, "o2.keystore.password"), "UTF-8");
-		sslContextFactory.setKeyStorePassword(password);
-		sslContextFactory.setKeyManagerPassword(password);
+		// File file = new File(configDir, "o2.keystore");
+		// if (!file.exists() || file.isDirectory()) {
+		// file = new File(new File(configDir, "sample"), "o2.keystore");
+		// }
+		sslContextFactory.setKeyStorePath(Config.sslKeyStore().getAbsolutePath());
+		sslContextFactory.setKeyStorePassword(Config.token().getSsl());
+		sslContextFactory.setKeyManagerPassword(Config.token().getSsl());
 		HttpConfiguration config = new HttpConfiguration();
 		config.setSecureScheme("https");
 		config.setOutputBufferSize(32768);
@@ -94,6 +95,7 @@ public abstract class JettySeverTools {
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("slf4j-simple-*.jar"));
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("openjpa-*.jar"));
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("ehcache-*.jar"));
+		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jetty-all-*.jar"));
 		for (File o : FileUtils.listFiles(extDir, filter, null)) {
 			jars.add(o.getAbsolutePath());
 		}
@@ -113,6 +115,5 @@ public abstract class JettySeverTools {
 		}
 		return jars;
 	}
-
 
 }

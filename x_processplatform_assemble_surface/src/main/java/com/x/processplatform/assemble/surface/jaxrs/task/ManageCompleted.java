@@ -4,9 +4,10 @@ import java.net.URLEncoder;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.JsonElement;
+import com.x.base.core.DefaultCharset;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
@@ -19,21 +20,25 @@ import com.x.processplatform.core.entity.element.Application;
 
 class ManageCompleted extends ActionBase {
 
-	ActionResult<WrapOutId> execute(EffectivePerson effectivePerson, String id, String applicationFlag,
-			WrapInTask wrapIn) throws Exception {
+	ActionResult<WrapOutId> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement)
+			throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<WrapOutId> result = new ActionResult<>();
+			WrapInTask wrapIn = this.convertToWrapIn(jsonElement, WrapInTask.class);
 			Task task = null;
 			Business business = new Business(emc);
-			emc.beginTransaction(Task.class);
-			Application application = business.application().pick(applicationFlag, ExceptionWhen.not_found);
-			task = emc.find(id, Task.class, ExceptionWhen.not_found);
-			if (!StringUtils.equals(task.getApplication(), application.getId())) {
-				throw new Exception("application{id:" + applicationFlag + "} not match with task{id:" + id + "}.");
+			task = emc.find(id, Task.class);
+			if (null == task) {
+				throw new TaskNotExistedException(id);
+			}
+			Application application = business.application().pick(task.getApplication());
+			if (null == application) {
+				throw new ApplicationNotExistedException(task.getApplication());
 			}
 			// 需要对这个应用的管理权限
+			emc.beginTransaction(Task.class);
 			if (!business.application().allowControl(effectivePerson, application)) {
-				throw new Exception("person{name:" + effectivePerson.getName() + "} has insufficient permissions.");
+				throw new TaskAccessDeniedException(effectivePerson.getName(), task.getId());
 			}
 			/* 如果有输入新的路由决策覆盖原有决策 */
 			if (StringUtils.isNotEmpty(wrapIn.getRouteName())) {
@@ -45,7 +50,7 @@ class ManageCompleted extends ActionBase {
 			}
 			emc.commit();
 			ThisApplication.applications.putQuery(x_processplatform_service_processing.class,
-					"task/" + URLEncoder.encode(task.getId(), "UTF-8") + "/completed", null);
+					"task/" + URLEncoder.encode(task.getId(), DefaultCharset.name) + "/completed", null);
 			WrapOutId wrap = new WrapOutId(task.getId());
 			result.setData(wrap);
 			return result;

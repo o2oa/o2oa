@@ -56,6 +56,14 @@ MWF.xApplication.process.FormDesigner.Module.Select = MWF.FCSelect = new Class({
 	},
 	
 	_setEditStyle_custom: function(name){
+        if (name=="styles"){
+            if (this.parentContainer){
+                if (this.parentContainer.moduleName == "datagrid$Data"){
+                    if (!this.json.styles.width) this.json.styles.width = "90%";
+                }
+            }
+            this.setCustomStyles();
+        }
 		if (name=="id"){
 			this.node.getLast().set("text", this.json.id);
 		}

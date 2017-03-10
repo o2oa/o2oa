@@ -3,9 +3,8 @@ package com.x.bbs.assemble.control.service;
 import java.util.Date;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -109,7 +108,7 @@ public class BBSReplyInfoService {
 			}
 			emc.commit();
 		}catch( Exception e ){
-			logger.error( "system find BBSReplyInfo{'id':'"+_bBSReplyInfo.getId()+"'} got an exception!" );
+			logger.warn( "system find BBSReplyInfo{'id':'"+_bBSReplyInfo.getId()+"'} got an exception!" );
 			throw e;
 		}
 		return _bBSReplyInfo;
@@ -127,7 +126,7 @@ public class BBSReplyInfoService {
 		BBSSectionInfo _mainSectoinInfo = null;
 		BBSForumInfo _forumInfo = null;
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not delete any object." );
+			throw new Exception( "id is null, system can not delete any object." );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
 			//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作

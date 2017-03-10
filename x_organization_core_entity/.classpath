@@ -7,9 +7,9 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="D:/x/lib/apache/commons/lang3/commons-lang3-3.4.jar"/>
-	<classpathentry kind="lib" path="D:/x/lib/jpinyin/jpinyin-1.0.jar"/>
-	<classpathentry kind="lib" path="D:/x/lib/apache/openjpa/openjpa-2.4.2-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/openjpa/openjpa-2.4.3-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="D:/x/lib/javax/javaee-api-7.0.jar"/>
 	<classpathentry kind="lib" path="D:/x/store/jars/x_base_core_project-4.0.0.jar" sourcepath="/x_base_core_project"/>
+	<classpathentry kind="lib" path="D:/x/lib/jpinyin/jpinyin-1.1.8.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

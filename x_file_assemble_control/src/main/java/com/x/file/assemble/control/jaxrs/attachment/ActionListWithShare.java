@@ -10,7 +10,7 @@ import com.x.base.core.project.server.Config;
 import com.x.base.core.utils.SortTools;
 import com.x.file.assemble.control.Business;
 import com.x.file.assemble.control.wrapout.WrapOutAttachment;
-import com.x.file.core.entity.Attachment;
+import com.x.file.core.entity.personal.Attachment;
 
 public class ActionListWithShare extends ActionBase {
 
@@ -22,7 +22,7 @@ public class ActionListWithShare extends ActionBase {
 			List<String> ids = business.attachment().listWithPersonWithShare(owner, effectivePerson.getName());
 			List<WrapOutAttachment> wraps = copier.copy(emc.list(Attachment.class, ids));
 			for (WrapOutAttachment o : wraps) {
-				o.setContentType(Config.mimeTypes().getContentType(o.getName()));
+				o.setContentType(Config.mimeTypes().getMimeByExtension("." + o.getExtension()));
 			}
 			SortTools.asc(wraps, false, "name");
 			result.setData(wraps);

@@ -2,6 +2,20 @@
 <project version="4">
   <component name="PublishConfigData" autoUpload="Always" serverName="dev.xplatform.tech">
     <serverData>
+      <paths name="12366-2">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/data/o2server/servers/webServer/" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="12366-3">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/data/o2server/servers/webServer/" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="demo.xplatform.tech">
         <serverdata>
           <mappings>
@@ -10,6 +24,13 @@
         </serverdata>
       </paths>
       <paths name="demo.zhiheyun.net">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="dev.xplatform">
         <serverdata>
           <mappings>
             <mapping deploy="/" local="$PROJECT_DIR$" web="/" />

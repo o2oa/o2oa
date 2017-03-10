@@ -5,13 +5,13 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.http.WrapInListString;
+import com.x.base.core.http.WrapInStringList;
 import com.x.base.core.http.WrapOutOnline;
 import com.x.base.core.utils.ListTools;
 
 public class ActionListOnline extends ActionBase {
 
-	public List<WrapOutOnline> execute(WrapInListString wrapIn) throws Exception {
+	public List<WrapOutOnline> execute(WrapInStringList wrapIn) throws Exception {
 		List<WrapOutOnline> wraps = new ArrayList<>();
 		if (ListTools.isNotEmpty(wrapIn.getValueList())) {
 			for (String str : wrapIn.getValueList()) {

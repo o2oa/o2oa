@@ -13,6 +13,8 @@ public class RoleAndPermission {
 	private List<String> visiableForumIds = null;
 	
 	private List<String> visiableSectionIds = null;
+	
+	private Boolean isBBSSystemAdmin = false;
 
 	public List<String> getRoleInfoList() {
 		return roleInfoList;
@@ -52,6 +54,14 @@ public class RoleAndPermission {
 
 	public void setVisiableSectionIds(List<String> visiableSectionIds) {
 		this.visiableSectionIds = visiableSectionIds;
+	}
+
+	public Boolean getIsBBSSystemAdmin() {
+		return isBBSSystemAdmin;
+	}
+
+	public void setIsBBSSystemAdmin(Boolean isBBSSystemAdmin) {
+		this.isBBSSystemAdmin = isBBSSystemAdmin;
 	}
 	
 }

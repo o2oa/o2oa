@@ -4,12 +4,15 @@
 	<classpathentry excluding="**/*.java" kind="src" output="target/test-classes" path="src/test/resources"/>
 	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
 	<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="M2_REPO/org/xeustechnologies/jcl-core/2.7/jcl-core-2.7.jar" sourcepath="M2_REPO/org/xeustechnologies/jcl-core/2.7/jcl-core-2.7-sources.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/objenesis/objenesis/2.1/objenesis-2.1.jar" sourcepath="M2_REPO/org/objenesis/objenesis/2.1/objenesis-2.1-sources.jar"/>
-	<classpathentry kind="var" path="M2_REPO/cglib/cglib-nodep/2.2/cglib-nodep-2.2.jar" sourcepath="M2_REPO/cglib/cglib-nodep/2.2/cglib-nodep-2.2-sources.jar"/>
-	<classpathentry kind="var" path="M2_REPO/javax/javaee-web-api/7.0/javaee-web-api-7.0.jar" sourcepath="M2_REPO/javax/javaee-web-api/7.0/javaee-web-api-7.0-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="D:/x/lib/apache/commons/io/commons-io-2.4.jar" sourcepath="D:/x/lib/apache/commons/io/commons-io-2.4-sources.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/google/zxing/zxing-core-3.3.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/x/lib/github/checkpasswordstrength/checkpasswordstrength.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/alibaba/aliqin/taobao-sdk-java-auto_1455552377940-20160607.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

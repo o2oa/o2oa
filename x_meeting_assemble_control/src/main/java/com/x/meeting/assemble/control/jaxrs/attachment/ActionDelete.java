@@ -2,7 +2,6 @@ package com.x.meeting.assemble.control.jaxrs.attachment;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.StorageType;
 import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
@@ -23,7 +22,7 @@ class ActionDelete {
 			Meeting meeting = emc.find(attachment.getMeeting(), Meeting.class, ExceptionWhen.not_found);
 			business.meetingReadAvailable(effectivePerson, meeting, ExceptionWhen.not_allow);
 			emc.beginTransaction(Attachment.class);
-			StorageMapping mapping = ThisApplication.storageMappings.get(StorageType.meeting, attachment.getStorage());
+			StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class, attachment.getStorage());
 			attachment.deleteContent(mapping);
 			emc.remove(attachment);
 			emc.commit();

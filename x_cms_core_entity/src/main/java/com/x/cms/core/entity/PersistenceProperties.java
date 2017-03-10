@@ -14,17 +14,23 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static class ViewFieldConfig {
 			public static final String table = "CMS_VIEWFIELD_CONFIG";
 		}
-		public static class ViewCatagory {
-			public static final String table = "CMS_VIEWCATAGORY";
+		public static class ViewCategory {
+			public static final String table = "CMS_VIEWCATEGORY";
 		}
 		public static class Form {
 			public static final String table = "CMS_FORM";
+		}
+		public static class TemplateForm {
+			public static final String table = "CMS_TEMPLATEFORM";
 		}
 		public static class AppDict {
 			public static final String table = "CMS_APPNDICT";
 		}
 		public static class AppDictItem {
 			public static final String table = "CMS_APPDICTITEM";
+		}
+		public static class AppDictLobItem {
+			public static final String table = "CMS_APPDICTLOBITEM";
 		}
 		public static class Script {
 			public static final String table = "CMS_SCRIPT";
@@ -35,18 +41,29 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static class DataItem {
 			public static final String table = "CMS_DATAITEM";
 		}
+		public static class DataLobItem {
+			public static final String table = "CMS_DATALOBITEM";
+		}
 	}
 
 	public static class AppInfo {
 		public static final String table = "CMS_APPINFO";
 	}
 	
-	public static class CatagoryInfo {
-		public static final String table = "CMS_CATAGORYINFO";
+	public static class CategoryInfo {
+		public static final String table = "CMS_CATEGORYINFO";
 	}
 	
 	public static class Document {
 		public static final String table = "CMS_DOCUMENT";
+	}
+	
+	public static class DocumentPermission {
+		public static final String table = "CMS_DOCUMENT_PERMISSION";
+	}
+	
+	public static class DocumentPictureInfo {
+		public static final String table = "CMS_DOCUMENT_PICTUREINFO";
 	}
 	
 	public static class FileInfo {
@@ -57,12 +74,16 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static final String table = "CMS_LOG";
 	}
 	
-	public static class AppCatagoryAdmin {
-		public static final String table = "CMS_APPCATAGORY_ADMIN";
+	public static class DocumentViewRecord {
+		public static final String table = "CMS_DOCUMENT_VIEWRECORD";
 	}
 	
-	public static class AppCatagoryPermission {
-		public static final String table = "CMS_APPCATAGORY_PERMISSION";
+	public static class AppCategoryAdmin {
+		public static final String table = "CMS_APPCATEGORY_ADMIN";
+	}
+	
+	public static class AppCategoryPermission {
+		public static final String table = "CMS_APPCATEGORY_PERMISSION";
 	}
 
 }

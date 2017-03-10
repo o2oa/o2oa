@@ -22,23 +22,23 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
-import com.x.base.core.http.WrapInListString;
 import com.x.base.core.http.WrapInString;
+import com.x.base.core.http.WrapInStringList;
 import com.x.base.core.http.WrapOutCount;
 import com.x.base.core.http.WrapOutId;
-import com.x.base.core.http.WrapOutListString;
+import com.x.base.core.http.WrapOutStringList;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.organization.assemble.control.Business;
 
 @Path("function")
 public class FunctionAction extends StandardJaxrsAction {
 
-	@HttpMethodDescribe(value = "获取人员指定信息.", response = WrapOutListString.class)
+	@HttpMethodDescribe(value = "获取人员指定信息.", response = WrapOutStringList.class)
 	@POST
 	@Path("list/person")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listAllPersonName(@Context HttpServletRequest request, WrapInListString wrapIn) {
+	public Response listAllPersonName(@Context HttpServletRequest request, WrapInStringList wrapIn) {
 		ActionResult<List<Tuple>> result = new ActionResult<>();
 		List<Tuple> wraps = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

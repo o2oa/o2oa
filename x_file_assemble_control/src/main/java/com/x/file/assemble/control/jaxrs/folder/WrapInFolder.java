@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.x.base.core.http.annotation.Wrap;
-import com.x.file.core.entity.Folder;
+import com.x.file.core.entity.personal.Folder;
 
 @Wrap(Folder.class)
 public class WrapInFolder extends Folder {

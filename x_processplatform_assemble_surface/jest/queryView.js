@@ -64,7 +64,6 @@ function queryView_init() {
 
 function queryView_list(applicationFlag) {
     $('#result').html('');
-    star
     $.ajax({
 	type : 'get',
 	dataType : 'json',
@@ -128,7 +127,7 @@ function queryView_execute(flag, applicationFlag) {
 	dataType : 'json',
 	url : '../jaxrs/queryview/flag/' + flag + '/application/flag/' + applicationFlag + '/execute',
 	contentType : 'application/json; charset=utf-8',
-	data : JSON.stringify(request),
+	data : JSON.stringify(data),
 	xhrFields : {
 	    'withCredentials' : true
 	},

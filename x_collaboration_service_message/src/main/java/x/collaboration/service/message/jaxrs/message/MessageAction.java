@@ -9,16 +9,16 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.http.ActionResult;
+import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutString;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 
 import x.collaboration.service.message.PushMessageConnector;
 import x.collaboration.service.message.WsConnector;
@@ -32,18 +32,18 @@ public class MessageAction extends StandardJaxrsAction {
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-
 	public Response post(@Context HttpServletRequest request, JsonElement jsonElement) {
 		ActionResult<WrapOutString> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapOutString wrap = null;
 		try {
-			logger.warn("receive message:{}", jsonElement);
+			logger.debug("receive message:{}.", jsonElement);
 			WsConnector.send(jsonElement);
 			PushMessageConnector.send(jsonElement);
 			result.setData(wrap);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

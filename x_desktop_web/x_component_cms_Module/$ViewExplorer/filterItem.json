@@ -13,12 +13,12 @@
     "resultListKey" : "appIdList",
     "resultItemName": "appId"
   },
-  "catagoryfileter_list":{
+  "categoryfileter_list":{
     "categoryTitle": "分类",
-    "itemNameKey": "cataogryName",
-    "itemValueKey": "catagoryId",
-    "resultListKey" : "catagoryIdList",
-    "resultItemName": "catagoryId"
+    "itemNameKey": "categoryName",
+    "itemValueKey": "categoryId",
+    "resultListKey" : "categoryIdList",
+    "resultItemName": "categoryId"
   },
   "companyfileter_list":{
     "categoryTitle": "创建公司",

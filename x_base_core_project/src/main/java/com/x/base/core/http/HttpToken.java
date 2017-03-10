@@ -30,28 +30,42 @@ public class HttpToken {
 	}
 
 	public EffectivePerson who(String token, String key) {
-		if (StringUtils.isBlank(token)) {
+		if (StringUtils.length(token) < 16) {
+			/* token应该是8的倍数有可能前台会输入null空值等可以通过这个过滤掉 */
 			return EffectivePerson.anonymous();
 		}
 		try {
-			token = Crypto.decrypt(token, key);
+			String plain = "";
+			try {
+				plain = Crypto.decrypt(token, key);
+			} catch (Exception e) {
+				System.out.println("can not decrypt token:" + token + ". " + e.getMessage());
+			}
 			Pattern pattern = Pattern.compile(RegularExpression_Token, Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(token);
+			Matcher matcher = pattern.matcher(plain);
 			if (!matcher.find()) {
-				throw new Exception("token format error." + token);
+				// throw new Exception("token format error." + token);
+				/* 不报错,跳过错误,将用户设置为anonymous */
+				System.out.println("token format error:" + plain + ".");
+				return EffectivePerson.anonymous();
 			}
 			Date date = DateUtils.parseDate(matcher.group(2), DateTools.formatCompact_yyyyMMddHHmmss);
 			TokenType tokenType = TokenType.valueOf(matcher.group(1));
 			long diff = (new Date().getTime() - date.getTime());
 			diff = Math.abs(diff);
 			if (TokenType.user.equals(tokenType) || TokenType.manager.equals(tokenType)) {
-				if (diff > (60000 * 60 * 12)) {
-					throw new Exception("token expired." + token);
+				if (diff > (60000 * 60 * 24 * 15)) {
+					// throw new Exception("token expired." + token);
+					/* 不报错,跳过错误,将用户设置为anonymous */
+					System.out.println("token expired." + plain);
+					return EffectivePerson.anonymous();
 				}
 			}
 			if (TokenType.cipher.equals(tokenType)) {
 				if (diff > (60000 * 20)) {
-					throw new Exception("cipher token expired." + token);
+					/* 不报错,跳过错误,将用户设置为anonymous */
+					System.out.println("cipher token expired." + plain);
+					return EffectivePerson.anonymous();
 				}
 			}
 			EffectivePerson effectivePerson = new EffectivePerson(URLDecoder.decode(matcher.group(3), "utf-8"),
@@ -94,9 +108,11 @@ public class HttpToken {
 
 	private void setResponseToken(HttpServletRequest request, HttpServletResponse response,
 			EffectivePerson effectivePerson) throws Exception {
-		String cookie = X_Token + "=" + effectivePerson.getToken() + "; path=/; domain=" + this.domain(request);
-		response.setHeader("Set-Cookie", cookie);
-		response.setHeader(X_Token, effectivePerson.getToken());
+		if (!StringUtils.isEmpty(effectivePerson.getToken())) {
+			String cookie = X_Token + "=" + effectivePerson.getToken() + "; path=/; domain=" + this.domain(request);
+			response.setHeader("Set-Cookie", cookie);
+			response.setHeader(X_Token, effectivePerson.getToken());
+		}
 	}
 
 	public String getToken(HttpServletRequest request) throws Exception {
@@ -108,9 +124,6 @@ public class HttpToken {
 					break;
 				}
 			}
-		}
-		if (StringUtils.isEmpty(token)) {
-			token = request.getParameter(X_Token);
 		}
 		if (StringUtils.isEmpty(token)) {
 			token = request.getHeader(X_Token);

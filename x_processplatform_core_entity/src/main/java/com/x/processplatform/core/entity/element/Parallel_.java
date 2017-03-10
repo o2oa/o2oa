@@ -14,7 +14,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.processplatform.core.entity.element.Parallel.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:19:07 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:10:19 CST 2017")
 public class Parallel_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Parallel,String> afterArriveScript;
     public static volatile SingularAttribute<Parallel,String> afterArriveScriptText;
@@ -39,12 +39,15 @@ public class Parallel_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Parallel,String> name;
     public static volatile SingularAttribute<Parallel,String> position;
     public static volatile SingularAttribute<Parallel,String> process;
+    public static volatile ListAttribute<Parallel,String> readDataPathList;
     public static volatile ListAttribute<Parallel,String> readDepartmentList;
     public static volatile SingularAttribute<Parallel,String> readDuty;
     public static volatile ListAttribute<Parallel,String> readIdentityList;
     public static volatile SingularAttribute<Parallel,String> readScript;
     public static volatile SingularAttribute<Parallel,String> readScriptText;
+    public static volatile ListAttribute<Parallel,String> reviewDataPathList;
     public static volatile ListAttribute<Parallel,String> reviewDepartmentList;
+    public static volatile SingularAttribute<Parallel,String> reviewDuty;
     public static volatile ListAttribute<Parallel,String> reviewIdentityList;
     public static volatile SingularAttribute<Parallel,String> reviewScript;
     public static volatile SingularAttribute<Parallel,String> reviewScriptText;

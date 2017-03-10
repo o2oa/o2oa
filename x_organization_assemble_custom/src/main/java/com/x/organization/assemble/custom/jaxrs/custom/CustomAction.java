@@ -157,20 +157,20 @@ public class CustomAction extends StandardJaxrsAction {
 		}
 	}
 
-	@MethodDescribe("根据Person查找Custom")
-	private List<String> listName(EntityManagerContainer emc, String person) throws Exception {
-		try {
-			EntityManager em = emc.get(Custom.class);
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<String> cq = cb.createQuery(String.class);
-			Root<Custom> root = cq.from(Custom.class);
-			Predicate p = cb.equal(root.get(Custom_.person), person);
-			cq.select(root.get(Custom_.name)).where(p);
-			return em.createQuery(cq.where(p)).getResultList();
-		} catch (Exception e) {
-			throw new Exception("listName error.", e);
-		}
-	}
+//	@MethodDescribe("根据Person查找Custom")
+//	private List<String> listName(EntityManagerContainer emc, String person) throws Exception {
+//		try {
+//			EntityManager em = emc.get(Custom.class);
+//			CriteriaBuilder cb = em.getCriteriaBuilder();
+//			CriteriaQuery<String> cq = cb.createQuery(String.class);
+//			Root<Custom> root = cq.from(Custom.class);
+//			Predicate p = cb.equal(root.get(Custom_.person), person);
+//			cq.select(root.get(Custom_.name)).where(p);
+//			return em.createQuery(cq.where(p)).getResultList();
+//		} catch (Exception e) {
+//			throw new Exception("listName error.", e);
+//		}
+//	}
 
 	private String getCustomKey(String person, String name) throws Exception {
 		return person + "#" + name;

@@ -96,7 +96,7 @@ MWF.xApplication.Organization.Selector.CMSCategory.ItemCategory = new Class({
 
             this.selector.action.listCMSCategory(function(subJson){
                 subJson.data.each(function(subData){
-                    subData.name = subData.catagoryName;
+                    subData.name = subData.categoryName;
                     subData.applicationName = this.data.name;
                     subData.application = this.data.id;
                     var category = this.selector._newItem(subData, this.selector, this.children, this.level+1);
@@ -110,6 +110,6 @@ MWF.xApplication.Organization.Selector.CMSCategory.ItemCategory = new Class({
         }
     },
     _hasChild: function(){
-        return (this.data.wrapOutCatagoryList && this.data.wrapOutCatagoryList.length);
+        return (this.data.wrapOutCategoryList && this.data.wrapOutCategoryList.length);
     }
 });

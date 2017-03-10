@@ -17,8 +17,10 @@ import org.apache.poi.hssf.record.LabelSSTRecord;
 import org.apache.poi.hssf.record.NumberRecord;
 import org.apache.poi.hssf.record.RowRecord;
 import org.apache.poi.hssf.record.SSTRecord;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
+
 /**
  * 基于POI HSSF的eventmodel 模型的时间解析方式
  *   优点：解析数据相当快。
@@ -34,7 +36,8 @@ import org.slf4j.LoggerFactory;
  * @version 1.0
  */
 public class UserModelEventListener implements HSSFListener {
-	private static Logger logger=LoggerFactory.getLogger(UserModelEventListener.class);
+	
+	private static Logger logger=LoggerFactory.getLogger( UserModelEventListener.class );
 	private SSTRecord sstrec;
 	/** Should we output the formula, or the value it has? */
 	private boolean outputFormulaValues = true;

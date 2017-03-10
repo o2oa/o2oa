@@ -29,6 +29,7 @@ public class Pagination<T> {
 	/*
 	 * 外界获得PageModel实例
 	 */
+	@SuppressWarnings("rawtypes")
 	public static Pagination newPagination(final String pageSize, final String page, final String totalRecord) {
 		return new Pagination(pageSize, page, totalRecord);
 	}

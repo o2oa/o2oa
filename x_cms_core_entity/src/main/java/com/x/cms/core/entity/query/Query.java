@@ -35,7 +35,7 @@ import com.x.cms.core.entity.content.DataItem_;
 public class Query extends GsonPropertyObject {
 
 	public Query() {
-		this.scopeType = ScopeType.published;
+		this.scopeType = "published";
 		this.selectEntryList = new ArrayList<SelectEntry>();
 		this.whereEntry = new WhereEntry();
 		this.restrictWhereEntry = new WhereEntry();
@@ -44,13 +44,12 @@ public class Query extends GsonPropertyObject {
 		this.dateRangeEntry = new DateRangeEntry();
 		this.restrictDateRangeEntry = new DateRangeEntry();
 		this.orderEntryList = new ArrayList<OrderEntry>();
-		this.groupEntry = null;
-		this.calculateEntryList = new ArrayList<CalculateEntry>();
+		this.groupEntry = new GroupEntry();
+		this.calculate = new Calculate();
+		this.columnList = new ArrayList<String>();
 	}
-	/**
-	 * draft, published
-	 */
-	private ScopeType scopeType;
+
+	private String scopeType;
 
 	private List<SelectEntry> selectEntryList;
 
@@ -70,9 +69,9 @@ public class Query extends GsonPropertyObject {
 
 	private GroupEntry groupEntry;
 
-	private List<CalculateEntry> calculateEntryList;
-
 	private List<String> columnList;
+
+	private Calculate calculate;
 
 	private String afterGridScriptText;
 
@@ -84,7 +83,11 @@ public class Query extends GsonPropertyObject {
 
 	private List<LinkedHashMap<String, Object>> groupGrid;
 
-	private List<Object> calculateGrid;
+	private List<?> calculateGrid;
+
+	private List<CalculateCell> calculateAmountGrid;
+
+	private List<Object> columnGrid;
 
 	public List<SelectEntry> getSelectEntryList() {
 		return selectEntryList;
@@ -108,14 +111,6 @@ public class Query extends GsonPropertyObject {
 
 	public void setFilterEntryList(List<FilterEntry> filterEntryList) {
 		this.filterEntryList = filterEntryList;
-	}
-
-	public List<CalculateEntry> getCalculateEntryList() {
-		return calculateEntryList;
-	}
-
-	public void setCalculateEntryList(List<CalculateEntry> calculateEntryList) {
-		this.calculateEntryList = calculateEntryList;
 	}
 
 	public GroupEntry getGroupEntry() {
@@ -190,28 +185,25 @@ public class Query extends GsonPropertyObject {
 		this.grid = grid;
 	}
 
-	public List<Object> getCalculateGrid() {
-		return calculateGrid;
-	}
-
-	public void setCalculateGrid(List<Object> calculateGrid) {
-		this.calculateGrid = calculateGrid;
-	}
-
 	private void adjust() throws Exception {
 		this.adjustScopeType();
 		this.adjustDateRangeEntry();
 		this.adjustRestrictDateRangeEntry();
+		/* 先调整slectEntry 顺序不能改 */
+		this.adjustSelectEntryList();
+		this.adjustOrderEntryList();
+		this.adjustGroupEntry();
+		this.adjustCalculate();
 	}
 
 	private void adjustScopeType() throws Exception {
-		if ( null == this.scopeType ) {
-			this.scopeType = ScopeType.published;
+		if (null == this.scopeType) {
+			this.scopeType = "published";
 		}
 	}
 
 	private void adjustDateRangeEntry() throws Exception {
-		if ( null == this.getDateRangeEntry() ) {
+		if (null == this.getDateRangeEntry()) {
 			this.setDateRangeEntry(new DateRangeEntry());
 			this.getDateRangeEntry().setDateRangeType(DateRangeType.none);
 		}
@@ -219,14 +211,56 @@ public class Query extends GsonPropertyObject {
 	}
 
 	private void adjustRestrictDateRangeEntry() throws Exception {
-		if ( null == this.getRestrictDateRangeEntry() ) {
+		if (null == this.getRestrictDateRangeEntry()) {
 			this.setRestrictDateRangeEntry(new DateRangeEntry());
 			this.getRestrictDateRangeEntry().setDateRangeType(DateRangeType.none);
 		}
 		this.transformDateRangeEntry(this.getRestrictDateRangeEntry());
 	}
 
-	private void transformDateRangeEntry( DateRangeEntry entry ) throws Exception {
+	private void adjustSelectEntryList() throws Exception {
+		List<SelectEntry> list = new ArrayList<>();
+		for (SelectEntry o : this.getSelectEntryList()) {
+			if (o.available()) {
+				list.add(o);
+			}
+		}
+		this.setSelectEntryList(list);
+	}
+
+	private void adjustGroupEntry() throws Exception {
+		GroupEntry o = null;
+		if (null != this.getGroupEntry() && this.getGroupEntry().available()) {
+			for (SelectEntry selectEntry : this.getSelectEntryList()) {
+				if (StringUtils.equals(this.getGroupEntry().getColumn(), selectEntry.getColumn())) {
+					o = this.getGroupEntry();
+					break;
+				}
+			}
+		}
+		this.setGroupEntry(o);
+	}
+
+	private void adjustOrderEntryList() throws Exception {
+		List<OrderEntry> list = new ArrayList<>();
+		for (OrderEntry o : this.getOrderEntryList()) {
+			if (o.available()) {
+				inner: for (SelectEntry selectEntry : this.getSelectEntryList()) {
+					if (StringUtils.equals(o.getColumn(), selectEntry.getColumn())) {
+						list.add(o);
+						break inner;
+					}
+				}
+			}
+		}
+		this.setOrderEntryList(list);
+	}
+
+	private void adjustCalculate() throws Exception {
+
+	}
+
+	private void transformDateRangeEntry(DateRangeEntry entry) throws Exception {
 		Date now = new Date();
 		if (null == entry.getAdjust()) {
 			entry.setAdjust(0);
@@ -305,51 +339,74 @@ public class Query extends GsonPropertyObject {
 	}
 
 	public void query() throws Exception {
-		/* 先获取所有记录对应的DocumentId值作为返回的结果集 */
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+		/* 先获取所有记录对应的categoryId值作为返回的结果集 */
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			/* 先进行字段调整 */
 			this.adjust();
-			List<String> docIds = this.listDocumentIds(emc);
+			List<String> docIds = this.listDocIds( emc );
 			Table table = this.concreteTable( docIds );
 			if (this.selectEntryListAvailable()) {
 				this.fillSelectEntries(emc, docIds, table);
 			}
-			table = OrderEntryTools.order(table, this.getOrderEntryList());
+			
+			table = OrderEntryTools.order( table, this.getOrderEntryList() );
+			
 			ScriptEngine scriptEngine = (StringUtils.isNotEmpty(this.getAfterGridScriptText())
 					|| StringUtils.isNotEmpty(this.getAfterGroupGridScriptText())
-					|| StringUtils.isNotEmpty(this.getAfterCalculateGridScriptText())) == true ? this.createScriptEngine() : null;
+					|| StringUtils.isNotEmpty(this.getAfterCalculateGridScriptText())) == true
+							? this.createScriptEngine() : null;
 			if (StringUtils.isNotEmpty(this.getAfterGridScriptText())) {
 				scriptEngine.put("grid", table);
 				scriptEngine.eval(this.getAfterGridScriptText());
 			}
 			this.setGrid(table);
-			if (null != this.getGroupEntry() && this.getGroupEntry().available()) {
-				List<LinkedHashMap<String, Object>> groupGrid = GroupEntryTools.group(table, this.getGroupEntry(), this.getOrderEntryList());
+			/**
+			 * GROUP
+			 */
+			if ((null != this.getGroupEntry()) && this.getGroupEntry().available()) {
+				List<LinkedHashMap<String, Object>> groupGrid = GroupEntryTools.group(table, this.getGroupEntry(),
+						this.getOrderEntryList());
 				if (StringUtils.isNotEmpty(this.getAfterGroupGridScriptText())) {
 					scriptEngine.put("groupGrid", groupGrid);
 					scriptEngine.eval(this.getAfterGroupGridScriptText());
 				}
 				this.setGroupGrid(groupGrid);
+				/* 此部分的功能在前台整理数据时完成 */
 				/* 如果分组输出了那么就不输出grid减少前台js解析Json的开销. */
-				this.setGrid(null);
+				// this.setGrid(null);
 			}
-			if (this.calculateEntryListAvailable()) {
-				calculateGrid = new ArrayList<Object>();
-				for (CalculateEntry o : this.getCalculateEntryList()) {
-					if (o.available()) {
-						this.getCalculateGrid().add(CalculateEntryTools.calculate(table, o, this.getGroupEntry()));
-					}
+			
+			if ((null != this.calculate) && (this.calculate.available())) {
+				calculateGrid = CalculateEntryTools.calculate(table, this.calculate, this.getGroupEntry());
+				if ( this.calculate.getIsAmount() ) {
+					calculateAmountGrid = CalculateEntryTools.calculateAmount(table, this.calculate.getCalculateEntryList());
 				}
 				if (StringUtils.isNotEmpty(this.getAfterCalculateGridScriptText())) {
 					scriptEngine.put("calculateGrid", this.getCalculateGrid());
 					scriptEngine.eval(this.getAfterCalculateGridScriptText());
 				}
 			}
+			/* 需要抽取单独的列 */
+			if (ListTools.isNotEmpty(this.columnList)) {
+				this.columnGrid = new ArrayList<Object>();
+				for (String column : this.columnList) {
+					List<Object> list = new ArrayList<>();
+					for (Row o : table) {
+						list.add(o.get(column));
+					}
+					/* 只有一列的情况下直接输出List */
+					if (this.columnList.size() == 1) {
+						this.columnGrid = list;
+					} else {
+						this.columnGrid.add(list);
+					}
+				}
+			}
 		}
 	}
 
 	private Boolean selectEntryListAvailable() {
-		for (SelectEntry o : ListTools.nullToEmpty( this.selectEntryList )) {
+		for (SelectEntry o : ListTools.nullToEmpty(this.selectEntryList)) {
 			if (o.available()) {
 				return true;
 			}
@@ -357,132 +414,135 @@ public class Query extends GsonPropertyObject {
 		return false;
 	}
 
-	private Boolean calculateEntryListAvailable() {
-		for (CalculateEntry o : ListTools.nullToEmpty( this.calculateEntryList )) {
-			if (o.available()) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private List<String> listDocumentIds( EntityManagerContainer emc ) throws Exception {
-		EntityManager em = emc.get( DataItem.class );
+	private List<String> listDocIds( EntityManagerContainer emc ) throws Exception {
+		EntityManager em = emc.get(DataItem.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<DataItem> root = cq.from(DataItem.class);
-		Predicate ps = cb.equal( root.get( DataItem_.docStatus ), ScopeType.published.toString() );
-		Predicate pd = cb.and(DateRangeEntryTools.toPredicate(cb, root, this.getRestrictDateRangeEntry()), DateRangeEntryTools.toPredicate(cb, root, this.getDateRangeEntry()));
-		Predicate pw = cb.and( WhereEntryTools.toPredicate( cb, root, this.getRestrictWhereEntry() ), WhereEntryTools.toPredicate(cb, root, this.getWhereEntry()));
+		Predicate ps = cb.equal( root.get(DataItem_.docStatus), this.scopeType );
+		Predicate pd = cb.and( DateRangeEntryTools.toPredicate( cb, root, this.getRestrictDateRangeEntry()), DateRangeEntryTools.toPredicate(cb, root, this.getDateRangeEntry()));
+		Predicate pw = cb.and(WhereEntryTools.toPredicate( cb, root, this.getRestrictWhereEntry() ), WhereEntryTools.toPredicate(cb, root, this.getWhereEntry()));
 		Predicate pf = cb.and(FilterEntryTools.toPredicate(cb, root, this.getRestrictFilterEntryList()), FilterEntryTools.toPredicate(cb, root, this.getFilterEntryList()));
-		cq.select(root.get( DataItem_.docId )).distinct(true).where( cb.and(ps, pd, pw, pf) );
-		System.out.println(">>>>>>>>>>>>>>>>>SQL:" + em.createQuery(cq).toString() );
+		cq.select(root.get( DataItem_.docId )).distinct( true ).where(cb.and(ps, pd, pw, pf));
 		List<String> docIds = em.createQuery(cq).getResultList();
 		return docIds;
 	}
 
-	private Table concreteTable( List<String> docIds ) throws Exception {
+	private Table concreteTable( List<String> documentIds ) throws Exception {
 		Table table = new Table();
-		for ( String id : docIds ) {
-			Row row = new Row( id );
-			for ( SelectEntry entry : ListTools.nullToEmpty( this.selectEntryList ) ) {
-				if ( entry.available() ) {
-					row.put( entry.getColumn(), null );
+		for (String docId : documentIds) {
+			Row row = new Row( docId );
+			for (SelectEntry entry : ListTools.nullToEmpty(this.selectEntryList)) {
+				if (entry.available()) {
+					row.put(entry.getColumn(), Objects.toString( entry.getDefaultValue(), ""));
 				}
-				table.add( row );
 			}
+			table.add(row);
 		}
 		return table;
 	}
-	
-	private void fillSelectEntries( EntityManagerContainer emc, List<String> docIds, Table table ) throws Exception {
+
+	private void fillSelectEntries(EntityManagerContainer emc, List<String> docIds, Table table) throws Exception {
 		List<SelectEntry> attributeSelectEntries = SelectEntryTools.filterAttributeSelectEntries(this.getSelectEntryList());
 		List<SelectEntry> pathSelectEntries = SelectEntryTools.filterPathSelectEntries(this.getSelectEntryList());
 		this.fillAttributeSelectEntries(emc, docIds, attributeSelectEntries, table);
 		this.fillPathSelectEntries(emc, docIds, pathSelectEntries, table);
 	}
 
-	private void fillAttributeSelectEntries( EntityManagerContainer emc, List<String> docIds, List<SelectEntry> selectEntries, Table table) throws Exception {
-		if (this.scopeType.equals( ScopeType.published )) {
-			this.fillAttributeSelectEntriesDocumentPublished( emc, docIds, selectEntries, table );
+	private void fillAttributeSelectEntries(EntityManagerContainer emc, List<String> docIds,
+			List<SelectEntry> selectEntries, Table table) throws Exception {
+		if (this.scopeType.equals( "published" )) {
+			this.fillAttributeSelectEntriesDocment(emc, docIds, selectEntries, table);
 		} else {
-			this.fillAttributeSelectEntriesDocumentDraft( emc, docIds, selectEntries, table );
+			this.fillAttributeSelectEntriesDocment(emc, docIds, selectEntries, table);
 		}
 	}
 
-	private void fillAttributeSelectEntriesDocumentDraft( EntityManagerContainer emc, List<String> docIds, List<SelectEntry> selectEntries, Table table ) throws Exception {
+	private void fillAttributeSelectEntriesDocment( EntityManagerContainer emc, List<String> docIds, List<SelectEntry> selectEntries, Table table ) throws Exception {
 		EntityManager em = emc.get( Document.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 		Root<Document> root = cq.from(Document.class);
 		List<Selection<?>> selections = new ArrayList<>();
 		Selection<String> selectionDocId = null;
-		for (SelectEntry en : selectEntries) {
+		for ( SelectEntry en : selectEntries) {
 			if (en.available()) {
-				if (StringUtils.equals("docId", en.getAttribute())) {
-					selectionDocId = root.get( Document_.id ).alias(en.getColumn());
+				if ( StringUtils.equals( "docId", en.getAttribute() ) ) {
+					selectionDocId = root.get( Document_.id ).alias( en.getColumn() );
 				} else {
-					selections.add(root.get(en.getAttribute()).alias(en.getColumn()));
+					selections.add( root.get( en.getAttribute()).alias(en.getColumn()) );
 				}
 			}
 		}
 		if (selectionDocId == null) {
-			selectionDocId = root.get(Document_.id );
-			cq.multiselect( ListTools.add(selections, true, false, selectionDocId) );
+			selectionDocId = root.get( Document_.id );
+			cq.multiselect(ListTools.add( selections, true, false, selectionDocId ) );
 		} else {
 			cq.multiselect(selections);
 		}
 		cq.where(root.get( Document_.id ).in( docIds ));
 		List<Tuple> tuples = em.createQuery(cq).getResultList();
-		for (Tuple tuple : tuples) {
-			String docId = tuple.get( selectionDocId );
-			Row row = table.get( docId );
-			for (Selection<?> selection : selections) {
-				row.put(selection.getAlias(), tuple.get(selection));
-			}
-		}
-	}
-
-	private void fillAttributeSelectEntriesDocumentPublished( EntityManagerContainer emc, List<String> docIds, List<SelectEntry> selectEntries, Table table ) throws Exception {
-		EntityManager em = emc.get( Document.class );
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
-		Root<Document> root = cq.from(Document.class);
-		List<Selection<?>> selections = new ArrayList<>();
-		Selection<String> selectionDocId = null;
-		for ( SelectEntry en : selectEntries ) {
-			if ( en.available() ) {
-				if ( StringUtils.equals("docId", en.getAttribute()) ) {
-					selectionDocId = root.get( Document_.id ).alias( en.getColumn() );
-				} else {
-					selections.add( root.get(en.getAttribute()).alias( en.getColumn() ) );
-				}
-			}
-		}
-		if ( selectionDocId == null ) {
-			selectionDocId = root.get( Document_.id );
-			cq.multiselect( ListTools.add( selections, true, false, selectionDocId ) );
-		} else {
-			cq.multiselect( selections );
-		}
-		cq.where( root.get( Document_.id ).in( docIds ) );
-		List<Tuple> tuples = em.createQuery(cq).getResultList();
+		
 		for ( Tuple tuple : tuples ) {
 			String docId = tuple.get( selectionDocId );
 			Row row = table.get( docId );
-			for (Selection<?> selection : selections) {
-				row.put(selection.getAlias(), tuple.get(selection));
+			if( row != null ){
+				for (Selection<?> selection : selections) {
+					/* 前面已经填充了默认值,如果是null那么跳过这个值 */
+					if (null != tuple.get(selection)) {
+						row.put(selection.getAlias(), tuple.get(selection));
+					}
+				}
 			}
 		}
 	}
 
-	private void fillPathSelectEntries( EntityManagerContainer emc, List<String> docIds, List<SelectEntry> selectEntries, Table table) throws Exception {
+//	private void fillAttributeSelectEntriesWorkCompleted(EntityManagerContainer emc, List<String> jobs,
+//			List<SelectEntry> selectEntries, Table table) throws Exception {
+//		EntityManager em = emc.get(WorkCompleted.class);
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
+//		Root<WorkCompleted> root = cq.from(WorkCompleted.class);
+//		List<Selection<?>> selections = new ArrayList<>();
+//		Selection<String> selectionJob = null;
+//		for (SelectEntry en : selectEntries) {
+//			if (en.available()) {
+//				if (StringUtils.equals("job", en.getAttribute())) {
+//					/* 单独处理一下job */
+//					selectionJob = root.get(WorkCompleted_.job).alias(en.getColumn());
+//				} else {
+//					selections.add(root.get(en.getAttribute()).alias(en.getColumn()));
+//				}
+//			}
+//		}
+//		if (selectionJob == null) {
+//			selectionJob = root.get(WorkCompleted_.job);
+//			cq.multiselect(ListTools.add(selections, true, false, selectionJob));
+//		} else {
+//			cq.multiselect(selections);
+//		}
+//		cq.where(root.get(WorkCompleted_.job).in(jobs));
+//		List<Tuple> tuples = em.createQuery(cq).getResultList();
+//		for (Tuple tuple : tuples) {
+//			String job = tuple.get(selectionJob);
+//			Row row = table.get(job);
+//			for (Selection<?> selection : selections) {
+//				/* 前面已经填充了默认值,如果是null那么跳过这个值 */
+//				if (null != tuple.get(selection)) {
+//					row.put(selection.getAlias(), tuple.get(selection));
+//				}
+//			}
+//		}
+//	}
+
+	private void fillPathSelectEntries( EntityManagerContainer emc, List<String> categoryIds, List<SelectEntry> selectEntries,
+			Table table) throws Exception {
 		EntityManager em = emc.get(DataItem.class);
 		for (SelectEntry selectEntry : selectEntries) {
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<DataItem> cq = cb.createQuery(DataItem.class);
 			Root<DataItem> root = cq.from(DataItem.class);
-			Predicate p = root.get( DataItem_.docId ).in( docIds );
+			Predicate p = root.get( DataItem_.categoryId ).in( categoryIds );
 			String[] paths = StringUtils.split(selectEntry.getPath(), ".");
 			p = cb.and(p, cb.equal(root.get(DataItem_.path0), paths.length > 0 ? paths[0] : ""));
 			p = cb.and(p, cb.equal(root.get(DataItem_.path1), paths.length > 1 ? paths[1] : ""));
@@ -493,40 +553,54 @@ public class Query extends GsonPropertyObject {
 			p = cb.and(p, cb.equal(root.get(DataItem_.path6), paths.length > 6 ? paths[6] : ""));
 			p = cb.and(p, cb.equal(root.get(DataItem_.path7), paths.length > 7 ? paths[7] : ""));
 			cq.select(root).distinct(true).where(p);
+			
 			List<DataItem> list = em.createQuery(cq).getResultList();
 			for (DataItem o : list) {
-				Row row = table.get(o.getDocId());
+				Row row = table.get( o.getCategoryId() );
 				switch (o.getItemPrimitiveType()) {
 				case s:
 					switch (o.getItemStringValueType()) {
 					case s:
-						row.put(selectEntry.getColumn(), o.getStringValue());
+						if (null != o.getStringValue()) {
+							row.put(selectEntry.getColumn(), o.getStringValue());
+						}
 						break;
 					case l:
-						row.put(selectEntry.getColumn(), o.getStringLobValue());
+						if (null != o.getStringLobValue()) {
+							row.put(selectEntry.getColumn(), o.getStringLobValue());
+						}
 						break;
 					case d:
-						row.put(selectEntry.getColumn(), JpaObjectTools.confirm(o.getDateValue()));
+						if (null != o.getDateValue()) {
+							row.put(selectEntry.getColumn(), JpaObjectTools.confirm(o.getDateValue()));
+						}
 						break;
 					case t:
-						row.put(selectEntry.getColumn(), JpaObjectTools.confirm(o.getTimeValue()));
+						if (null != o.getTimeValue()) {
+							row.put(selectEntry.getColumn(), JpaObjectTools.confirm(o.getTimeValue()));
+						}
 						break;
 					case dt:
-						row.put(selectEntry.getColumn(), JpaObjectTools.confirm(o.getDateTimeValue()));
+						if (null != o.getDateTimeValue()) {
+							row.put(selectEntry.getColumn(), JpaObjectTools.confirm(o.getDateTimeValue()));
+						}
 						break;
 					default:
-						row.put(selectEntry.getColumn(), null);
+						//row.put(selectEntry.getColumn(), null);
 						break;
 					}
 					break;
 				case n:
-					row.put(selectEntry.getColumn(), o.getNumberValue());
+					if (null != o.getNumberValue()) {
+						row.put(selectEntry.getColumn(), o.getNumberValue());
+					}
 					break;
 				case b:
-					row.put(selectEntry.getColumn(), o.getBooleanValue());
+					if (null != o.getBooleanValue()) {
+						row.put(selectEntry.getColumn(), o.getBooleanValue());
+					}
 					break;
 				default:
-					row.put(selectEntry.getColumn(), null);
 					break;
 				}
 			}
@@ -547,11 +621,11 @@ public class Query extends GsonPropertyObject {
 		this.restrictDateRangeEntry = restrictDateRangeEntry;
 	}
 
-	public ScopeType getScopeType() {
+	public String getScopeType() {
 		return scopeType;
 	}
 
-	public void setScopeType(ScopeType scopeType) {
+	public void setScopeType(String scopeType) {
 		this.scopeType = scopeType;
 	}
 
@@ -563,12 +637,43 @@ public class Query extends GsonPropertyObject {
 		this.columnList = columnList;
 	}
 
-	public void setGroupGrid(List<LinkedHashMap<String, Object>> groupGrid) {
-		this.groupGrid = groupGrid;
+	public Calculate getCalculate() {
+		return calculate;
+	}
+
+	public void setCalculate(Calculate calculate) {
+		this.calculate = calculate;
 	}
 
 	public List<LinkedHashMap<String, Object>> getGroupGrid() {
 		return groupGrid;
 	}
 
+	public void setGroupGrid(List<LinkedHashMap<String, Object>> groupGrid) {
+		this.groupGrid = groupGrid;
+	}
+
+	public List<?> getCalculateGrid() {
+		return calculateGrid;
+	}
+
+	public void setCalculateGrid(List<?> calculateGrid) {
+		this.calculateGrid = calculateGrid;
+	}
+
+	public List<Object> getColumnGrid() {
+		return columnGrid;
+	}
+
+	public void setColumnGrid(List<Object> columnGrid) {
+		this.columnGrid = columnGrid;
+	}
+
+	public List<CalculateCell> getCalculateAmountGrid() {
+		return calculateAmountGrid;
+	}
+
+	public void setCalculateAmountGrid(List<CalculateCell> calculateAmountGrid) {
+		this.calculateAmountGrid = calculateAmountGrid;
+	}
 }

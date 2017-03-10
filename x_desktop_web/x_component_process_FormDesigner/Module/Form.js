@@ -49,10 +49,18 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		
 		this.container.set("html", this.html);
         this.loadStylesList(function(){
+            var oldStyleValue = "";
+            if ((!this.json.formStyleType) || !this.stylesList[this.json.formStyleType]) this.json.formStyleType="blue-simple";
+            if (this.options.mode=="Mobile"){
+                if (this.json.formStyleType != "defaultMobile"){
+                    oldStyleValue = this.json.formStyleType;
+                    this.json.formStyleType = "defaultMobile";
+                }
+            }
+
             this.templateStyles = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType] : null;
             this.loadDomModules();
 
-            if ((!this.json.formStyleType) || !this.stylesList[this.json.formStyleType]) this.json.formStyleType="default";
             if (this.json.formStyleType){
                 if (this.stylesList[this.json.formStyleType]){
                     if (this.stylesList[this.json.formStyleType]["form"]){
@@ -65,6 +73,11 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
             this.node.setProperties(this.json.properties);
 
             this.setNodeEvents();
+
+            if (this.options.mode=="Mobile"){
+                if (oldStyleValue) this._setEditStyle("formStyleType", null, oldStyleValue);
+            }
+
             this.selected();
             this.autoSave();
             this.designer.addEvent("queryClose", function(){
@@ -99,7 +112,8 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
     },
 
     loadStylesList: function(callback){
-        var stylesUrl = "/x_component_process_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "mobileStyles": "styles")+".json";
+        //var stylesUrl = "/x_component_process_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "mobileStyles": "styles")+".json";
+        var stylesUrl = "/x_component_process_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "styles": "styles")+".json";
         MWF.getJSON(stylesUrl,{
                 "onSuccess": function(responseJSON){
                     this.stylesList= responseJSON;

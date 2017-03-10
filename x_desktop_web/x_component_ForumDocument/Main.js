@@ -318,10 +318,10 @@ MWF.xApplication.ForumDocument.Main = new Class({
 					portalImage: {text: this.lp.portalImage },
 					content: {text: this.lp.content, type : "rtf", notEmpty : true, RTFConfig : {
 						isSetImageMaxWidth : true,
-						skin : "bootstrapck",
-						filebrowserCurrentDocumentImage: function (e, callback) {
-							_self.selectDocImage( callback );
-						}
+						skin : "bootstrapck" //,
+						//filebrowserCurrentDocumentImage: function (e, callback) {
+						//	_self.selectDocImage( callback );
+						//}
 					}}
 				}
 			}, this, this.css);
@@ -342,28 +342,28 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		var attachmentArea = this.contentDiv.getElements("[item='attachment']")[0];
 		this.loadAttachment(attachmentArea)
 	},
-	selectDocImage : function( callback, width ){
-		this.selector_doc = new MWF.xApplication.Forum.Attachment(this.content, this, this.restActions, this.lp, {
-			//documentId : this.data ? this.data.id : "",
-			isNew : this.options.isNew,
-			isEdited : this.options.isEdited,
-			"onUpload" : function( attData ){
-				this.attachment.attachmentController.addAttachment(attData);
-				this.attachment.attachmentController.checkActions();
-			}.bind(this)
-		})
-		this.selector_doc.data = this.attachment.getAttachmentData();
-		this.selector_doc.loadAttachmentSelecter({
-			"style": "cms",
-			"title": "选择本文档图片",
-			"listStyle": "preview",
-			"toBase64" : true,
-			"base64MaxSize" : width || 800,
-			"selectType": "images"
-		}, function (url, data, base64Code ) {
-			if (callback)callback(url, base64Code, data);
-		}.bind(this));
-	},
+	//selectDocImage : function( callback, width ){
+	//	this.selector_doc = new MWF.xApplication.Forum.Attachment(this.content, this, this.restActions, this.lp, {
+	//		//documentId : this.data ? this.data.id : "",
+	//		isNew : this.options.isNew,
+	//		isEdited : this.options.isEdited,
+	//		"onUpload" : function( attData ){
+	//			this.attachment.attachmentController.addAttachment(attData);
+	//			this.attachment.attachmentController.checkActions();
+	//		}.bind(this)
+	//	})
+	//	this.selector_doc.data = this.attachment.getAttachmentData();
+	//	this.selector_doc.loadAttachmentSelecter({
+	//		"style": "cms",
+	//		"title": "选择本文档图片",
+	//		"listStyle": "preview",
+	//		"toBase64" : true,
+	//		"base64MaxSize" : width || 800,
+	//		"selectType": "images"
+	//	}, function (url, data, base64Code ) {
+	//		if (callback)callback(url, base64Code, data);
+	//	}.bind(this));
+	//},
 	selectCloudImage : function( callback, width ){
 		var _self = this;
 		MWF.xDesktop.requireApp("File", "FileSelector", function(){
@@ -2083,45 +2083,45 @@ MWF.xApplication.ForumDocument.ImageClipper = new Class({
 
 		this._loadCss();
 		this.fireEvent("init");
-	},
-	_createUploadButtom : function(){
-		if( !this.docId || this.docId=="" ){ return; };
-		this.uploadCurrentFile = new Element("button.uploadActionNode",{
-			"styles" : this.css.uploadActionNode,
-			"text" : "选择本文档图片"
-		}).inject(this.uploadToolbar);
-		this.uploadCurrentFile.addEvents({
-			"click": function(){ this.selectDocPicture(
-				function(url , base64Code){
-					this.loadImageAsUrl( url );
-				}.bind(this)
-			); }.bind(this)
-		});
-	},
-	selectDocPicture: function( callback ){
-		MWF.xDesktop.requireApp("Forum", "Attachment", null, false);
-		this.parent.actions.listAttachment( this.docId, function( json ){
-			this.selector_doc = new MWF.xApplication.Forum.Attachment(document.body, this.parent, this.parent.actions, this.parent.lp, {
-				//documentId : this.data ? this.data.id : "",
-				isNew : false,
-				isEdited : false,
-				"onUpload" : function( attData ){
-					this.attachment.attachmentController.addAttachment(attData);
-					this.attachment.attachmentController.checkActions();
-				}.bind(this)
-			})
-			this.selector_doc.data = json.data || [];
-			this.selector_doc.loadAttachmentSelecter({
-				"style": "cms",
-				"title": "选择本文档图片",
-				"listStyle": "preview",
-				"toBase64" : true,
-				"selectType": "images"
-			}, function (url, data, base64Code) {
-				if (callback)callback(url, base64Code);
-				//this.iconNode.set("src", base64Code || url);
-				//this.hotPicData.pictureBase64 = base64Code || url;
-			}.bind(this));
-		}.bind(this) )
-	}
+	}//,
+	//_createUploadButtom : function(){
+	//	if( !this.docId || this.docId=="" ){ return; };
+	//	this.uploadCurrentFile = new Element("button.uploadActionNode",{
+	//		"styles" : this.css.uploadActionNode,
+	//		"text" : "选择本文档图片"
+	//	}).inject(this.uploadToolbar);
+	//	this.uploadCurrentFile.addEvents({
+	//		"click": function(){ this.selectDocPicture(
+	//			function(url , base64Code){
+	//				this.loadImageAsUrl( url );
+	//			}.bind(this)
+	//		); }.bind(this)
+	//	});
+	//},
+	//selectDocPicture: function( callback ){
+	//	MWF.xDesktop.requireApp("Forum", "Attachment", null, false);
+	//	this.parent.actions.listAttachment( this.docId, function( json ){
+	//		this.selector_doc = new MWF.xApplication.Forum.Attachment(document.body, this.parent, this.parent.actions, this.parent.lp, {
+	//			//documentId : this.data ? this.data.id : "",
+	//			isNew : false,
+	//			isEdited : false,
+	//			"onUpload" : function( attData ){
+	//				this.attachment.attachmentController.addAttachment(attData);
+	//				this.attachment.attachmentController.checkActions();
+	//			}.bind(this)
+	//		})
+	//		this.selector_doc.data = json.data || [];
+	//		this.selector_doc.loadAttachmentSelecter({
+	//			"style": "cms",
+	//			"title": "选择本文档图片",
+	//			"listStyle": "preview",
+	//			"toBase64" : true,
+	//			"selectType": "images"
+	//		}, function (url, data, base64Code) {
+	//			if (callback)callback(url, base64Code);
+	//			//this.iconNode.set("src", base64Code || url);
+	//			//this.hotPicData.pictureBase64 = base64Code || url;
+	//		}.bind(this));
+	//	}.bind(this) )
+	//}
 });

@@ -23,8 +23,8 @@ class ActionTest2 extends ActionBase {
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 			Root<Work> root = cq.from(Work.class);
-			// cq.select(cb.count(root),root.get(Work_.process)).groupBy(root.get(Work_.process));
-			cq.multiselect(cb.count(root), root.get(Work_.process)).groupBy(root.get(Work_.process));
+			// cq.select(root.get(Work_.process),cb.count(root)).groupBy(root.get(Work_.process));
+			cq.multiselect(root.get(Work_.process), cb.count(root.get(Work_.process))).groupBy(root.get(Work_.process));
 			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			System.out.println(cq.toString());
 			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!");

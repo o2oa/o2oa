@@ -13,6 +13,7 @@ import com.x.attendance.assemble.control.factory.AttendanceSettingFactory;
 import com.x.attendance.assemble.control.factory.AttendanceStatisticRequireLogFactory;
 import com.x.attendance.assemble.control.factory.AttendanceStatisticalCycleFactory;
 import com.x.attendance.assemble.control.factory.AttendanceWorkDayConfigFactory;
+import com.x.attendance.assemble.control.factory.AttendanceWorkPlaceFactory;
 import com.x.attendance.assemble.control.factory.StatisticCompanyForDayFactory;
 import com.x.attendance.assemble.control.factory.StatisticCompanyForMonthFactory;
 import com.x.attendance.assemble.control.factory.StatisticDepartmentForDayFactory;
@@ -36,6 +37,8 @@ public class Business {
 	private Organization organization;
 	//系统配置业务处理类
 	private AttendanceSettingFactory attendanceSettingFactory;
+	//工作场所配置业务处理类
+	private AttendanceWorkPlaceFactory attendanceWorkPlaceFactory;
 	//节假日工作日配置业务处理类
 	private AttendanceWorkDayConfigFactory attendanceWorkDayConfigFactory;
 	//人员考勤数据导入文件操作业务处理类
@@ -69,6 +72,13 @@ public class Business {
 	private AttendanceStatisticRequireLogFactory attendanceStatisticRequireLogFactory;
 	
 	private AttendanceDetailStatisticFactory attendanceDetailStatisticFactory;
+	
+	public AttendanceWorkPlaceFactory attendanceWorkPlaceFactory() throws Exception {
+		if (null == this.attendanceWorkPlaceFactory) {
+			this.attendanceWorkPlaceFactory = new AttendanceWorkPlaceFactory( this );
+		}
+		return attendanceWorkPlaceFactory;
+	}
 	
 	public AttendanceDetailMobileFactory getAttendanceDetailMobileFactory() throws Exception {
 		if (null == this.attendanceDetailMobileFactory) {

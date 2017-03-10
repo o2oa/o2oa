@@ -5,8 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 
 /**
  * 
@@ -312,7 +312,7 @@ public class DateOperation {
 	 * @return
 	 * @throws ParseException
 	 */
-	@SuppressWarnings("-access")
+	@SuppressWarnings("static-access")
 	public  int getDaysForYear(String date) throws ParseException {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(format1.parse(date));
@@ -327,7 +327,7 @@ public class DateOperation {
 	 * @return
 	 * @throws ParseException
 	 */
-	@SuppressWarnings("-access")
+	@SuppressWarnings("static-access")
 	public  int getDaysForYear(Date date) throws ParseException {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
@@ -342,7 +342,7 @@ public class DateOperation {
 	 * @return
 	 * @throws ParseException
 	 */
-	@SuppressWarnings("-access")
+	@SuppressWarnings("static-access")
 	public  int getDaysForYear_YYYY(String year) throws ParseException {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(format8.parse(year));
@@ -357,7 +357,7 @@ public class DateOperation {
 	 * @return
 	 * @throws ParseException
 	 */
-	@SuppressWarnings("-access")
+	@SuppressWarnings("static-access")
 	public  int getDaysForMonth(String date) throws ParseException {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(format1.parse(date));
@@ -372,7 +372,7 @@ public class DateOperation {
 	 * @return
 	 * @throws ParseException
 	 */
-	@SuppressWarnings("-access")
+	@SuppressWarnings("static-access")
 	public  int getDaysForMonth_MM(String date) throws ParseException {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(format14.parse(date));
@@ -387,7 +387,6 @@ public class DateOperation {
 	 * @return
 	 * @throws ParseException
 	 */
-	@SuppressWarnings("-access")
 	public  int getDaysForMonth(Date date) throws ParseException {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
@@ -453,7 +452,8 @@ public class DateOperation {
 			java.util.Date d2 = df.parse(date2);
 			dayNumber = (d2.getTime() - d1.getTime()) / mins;
 		} catch (Exception e) {
-			logger.error( "系统获取得到两个时间之前的分差发生异常",  e);
+			logger.warn( "系统获取得到两个时间之前的分差发生异常");
+			logger.error(e);
 		}
 		return dayNumber;
 	}
@@ -471,7 +471,8 @@ public class DateOperation {
 		try {
 			dayNumber = (date2.getTime() - date1.getTime()) / mins;
 		} catch (Exception e) {
-			logger.error( "系统获取得到两个时间之前的分差发生异常",  e);
+			logger.warn( "系统获取得到两个时间之前的分差发生异常" );
+			logger.error(e);
 		}
 		return dayNumber;
 	}
@@ -495,9 +496,11 @@ public class DateOperation {
 			try {
 				date = format1.parse("0000-00-00");
 			} catch (ParseException e1) {
-				logger.error( "系统日期格式转换发生异常",  e1);
+				logger.warn( "系统日期格式转换发生异常");
+				logger.error(e);
 			}
-			logger.error( "系统日期格式转换发生异常",  e);
+			logger.warn( "系统日期格式转换发生异常");
+			logger.error(e);
 		}
 		
 		return reslut;
@@ -548,15 +551,16 @@ public class DateOperation {
 			cal.add(Calendar.DATE, -(tmp-1));
 			return getDateFromDate(cal.getTime(), "yyyy-MM-dd") + " 00:00:00";
 		} catch (ParseException e) {
-			logger.error( "系统getStartOfWeek日期格式转换发生异常",  e);
+			logger.warn( "系统getStartOfWeek日期格式转换发生异常");
+			logger.error(e);
 		} catch (Exception e) {
-			logger.error( "系统getStartOfWeek发生异常",  e);
+			logger.warn( "系统getStartOfWeek发生异常");
+			logger.error(e);
 		}
 		return null;
 	}
 	
 	public  String getEndOfWeek(String dateString){
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		try {
 			Date date = getDateFromString(getStartOfWeek(dateString), "yyyy-MM-dd HH:mm:ss");
 			Calendar cal = Calendar.getInstance();
@@ -565,9 +569,11 @@ public class DateOperation {
 			cal.add(Calendar.DATE, 6);
 			return getDateFromDate(cal.getTime(), "yyyy-MM-dd") + " 23:59:59";
 		} catch (ParseException e) {
-			logger.error( "系统getEndOfWeek日期格式转换发生异常",  e);
+			logger.warn( "系统getEndOfWeek日期格式转换发生异常");
+			logger.error(e);
 		} catch (Exception e) {
-			logger.error( "系统getEndOfWeek发生异常",  e);
+			logger.warn( "系统getEndOfWeek发生异常");
+			logger.error(e);
 		}
 		return null;
 	}
@@ -587,7 +593,8 @@ public class DateOperation {
 		try{
 			_date = getDateFromString( dateString, style );
 		}catch(Exception e){
-			logger.error( "系统getDateCNString日期格式转换发生异常",  e);
+			logger.warn( "系统getDateCNString日期格式转换发生异常");
+			logger.error(e);
 		}
 		if(_date == null ){
 			_date = new Date();
@@ -623,7 +630,8 @@ public class DateOperation {
 		try{
 			_date = getDateFromString( dateString, style );
 		}catch(Exception e){
-			logger.error( "系统getDateCNString2日期格式转换发生异常",  e);
+			logger.warn( "系统getDateCNString2日期格式转换发生异常");
+			logger.error(e);
 		}
 		if(_date == null ){
 			_date = new Date();
@@ -671,9 +679,11 @@ public class DateOperation {
 	        //System.out.println("一周中的天数:" + cal.get(Calendar.DAY_OF_WEEK));
 			return cal.get(Calendar.WEEK_OF_YEAR);
 		} catch (ParseException e) {
-			logger.error( "系统getWeekNumOfYear日期格式转换发生异常",  e);
+			logger.warn( "系统getWeekNumOfYear日期格式转换发生异常");
+			logger.error(e);
 		} catch (Exception e) {
-			logger.error( "系统getWeekNumOfYear发生异常",  e);
+			logger.warn( "系统getWeekNumOfYear发生异常");
+			logger.error(e);
 		}
 		return -1;
 	}

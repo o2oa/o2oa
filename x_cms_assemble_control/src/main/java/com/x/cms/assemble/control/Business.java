@@ -4,20 +4,24 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.http.EffectivePerson;
-import com.x.cms.assemble.control.factory.AppCatagoryAdminFactory;
-import com.x.cms.assemble.control.factory.AppCatagoryPermissionFactory;
+import com.x.cms.assemble.control.factory.AppCategoryAdminFactory;
+import com.x.cms.assemble.control.factory.AppCategoryPermissionFactory;
 import com.x.cms.assemble.control.factory.AppDictFactory;
 import com.x.cms.assemble.control.factory.AppDictItemFactory;
 import com.x.cms.assemble.control.factory.AppInfoFactory;
-import com.x.cms.assemble.control.factory.CatagoryInfoFactory;
+import com.x.cms.assemble.control.factory.CategoryInfoFactory;
 import com.x.cms.assemble.control.factory.DataItemFactory;
 import com.x.cms.assemble.control.factory.DocumentFactory;
+import com.x.cms.assemble.control.factory.DocumentPermissionFactory;
+import com.x.cms.assemble.control.factory.DocumentPictureInfoFactory;
+import com.x.cms.assemble.control.factory.DocumentViewRecordFactory;
 import com.x.cms.assemble.control.factory.FileInfoFactory;
 import com.x.cms.assemble.control.factory.FormFactory;
 import com.x.cms.assemble.control.factory.LogFactory;
 import com.x.cms.assemble.control.factory.ScriptFactory;
 import com.x.cms.assemble.control.factory.SearchFactory;
-import com.x.cms.assemble.control.factory.ViewCatagoryFactory;
+import com.x.cms.assemble.control.factory.TemplateFormFactory;
+import com.x.cms.assemble.control.factory.ViewCategoryFactory;
 import com.x.cms.assemble.control.factory.ViewFactory;
 import com.x.cms.assemble.control.factory.ViewFieldConfigFactory;
 import com.x.cms.assemble.control.factory.element.QueryViewFactory;
@@ -32,18 +36,22 @@ public class Business {
 	public EntityManagerContainer entityManagerContainer() {
 		return this.emc;
 	}
-
+    
+	private TemplateFormFactory templateFormFactory;
 	private AppInfoFactory appInfoFactory;
-	private CatagoryInfoFactory catagoryInfoFactory;
+	private CategoryInfoFactory categoryInfoFactory;
+	private DocumentPictureInfoFactory documentPictureInfoFactory;
 	private FileInfoFactory fileInfoFactory;
-	private AppCatagoryPermissionFactory appCatagoryPermissionFactory;
-	private AppCatagoryAdminFactory appCatagoryAdminFactory;
+	private AppCategoryPermissionFactory appCategoryPermissionFactory;
+	private AppCategoryAdminFactory appCategoryAdminFactory;
 	private LogFactory logFactory;
 	private DataItemFactory dataItemFactory;
 	private DocumentFactory documentFactory;
+	private DocumentPermissionFactory documentPermissionFactory;
+	private DocumentViewRecordFactory documentViewRecordFactory;
 	private FormFactory formFactory;
 	private QueryViewFactory queryViewFactory;
-	private ViewCatagoryFactory viewCatagoryFactory;
+	private ViewCategoryFactory viewCategoryFactory;
 	private ViewFactory viewFactory;
 	private ViewFieldConfigFactory viewFieldConfigFactory;
 	private AppDictFactory appDictFactory;
@@ -58,17 +66,46 @@ public class Business {
 		}
 		return organization;
 	}
+	
+	public TemplateFormFactory templateFormFactory() throws Exception {
+		if (null == this.templateFormFactory) {
+			this.templateFormFactory = new TemplateFormFactory( this );
+		}
+		return templateFormFactory;
+	}
+	
+	public DocumentPictureInfoFactory documentPictureInfoFactory() throws Exception {
+		if (null == this.documentPictureInfoFactory) {
+			this.documentPictureInfoFactory = new DocumentPictureInfoFactory( this );
+		}
+		return documentPictureInfoFactory;
+	}
+	
+	public DocumentViewRecordFactory documentViewRecordFactory() throws Exception {
+		if (null == this.documentViewRecordFactory) {
+			this.documentViewRecordFactory = new DocumentViewRecordFactory( this );
+		}
+		return documentViewRecordFactory;
+	}
+	
+	public DocumentPermissionFactory documentPermissionFactory() throws Exception {
+		if (null == this.documentPermissionFactory) {
+			this.documentPermissionFactory = new DocumentPermissionFactory( this );
+		}
+		return documentPermissionFactory;
+	}
+	
 	public QueryViewFactory queryViewFactory() throws Exception {
 		if (null == this.queryViewFactory) {
 			this.queryViewFactory = new QueryViewFactory(this);
 		}
 		return queryViewFactory;
 	}
-	public ViewCatagoryFactory getViewCatagoryFactory() throws Exception {
-		if (null == this.viewCatagoryFactory) {
-			this.viewCatagoryFactory = new ViewCatagoryFactory(this);
+	public ViewCategoryFactory getViewCategoryFactory() throws Exception {
+		if (null == this.viewCategoryFactory) {
+			this.viewCategoryFactory = new ViewCategoryFactory(this);
 		}
-		return viewCatagoryFactory;
+		return viewCategoryFactory;
 	}
 	public ViewFactory getViewFactory() throws Exception {
 		if (null == this.viewFactory) {
@@ -130,11 +167,11 @@ public class Business {
 		}
 		return appInfoFactory;
 	}
-	public CatagoryInfoFactory getCatagoryInfoFactory() throws Exception {
-		if (null == this.catagoryInfoFactory) {
-			this.catagoryInfoFactory = new CatagoryInfoFactory(this);
+	public CategoryInfoFactory getCategoryInfoFactory() throws Exception {
+		if (null == this.categoryInfoFactory) {
+			this.categoryInfoFactory = new CategoryInfoFactory(this);
 		}
-		return catagoryInfoFactory;
+		return categoryInfoFactory;
 	}
 	public FileInfoFactory getFileInfoFactory() throws Exception {
 		if (null == this.fileInfoFactory) {
@@ -142,17 +179,17 @@ public class Business {
 		}
 		return fileInfoFactory;
 	}
-	public AppCatagoryPermissionFactory getAppCatagoryPermissionFactory() throws Exception {
-		if (null == this.appCatagoryPermissionFactory) {
-			this.appCatagoryPermissionFactory = new AppCatagoryPermissionFactory(this);
+	public AppCategoryPermissionFactory getAppCategoryPermissionFactory() throws Exception {
+		if (null == this.appCategoryPermissionFactory) {
+			this.appCategoryPermissionFactory = new AppCategoryPermissionFactory(this);
 		}
-		return appCatagoryPermissionFactory;
+		return appCategoryPermissionFactory;
 	}
-	public AppCatagoryAdminFactory getAppCatagoryAdminFactory() throws Exception {
-		if (null == this.appCatagoryAdminFactory) {
-			this.appCatagoryAdminFactory = new AppCatagoryAdminFactory(this);
+	public AppCategoryAdminFactory getAppCategoryAdminFactory() throws Exception {
+		if (null == this.appCategoryAdminFactory) {
+			this.appCategoryAdminFactory = new AppCategoryAdminFactory(this);
 		}
-		return appCatagoryAdminFactory;
+		return appCategoryAdminFactory;
 	}
 	public LogFactory getLogFactory() throws Exception {
 		if (null == this.logFactory) {
@@ -187,7 +224,7 @@ public class Business {
 	 */
 	public boolean appInfoDeleteAvailable( String appId ) throws Exception {	
 		//查询是否有下级应用分类信息
-		long count = this.getCatagoryInfoFactory().countByAppId(appId);
+		long count = this.getCategoryInfoFactory().countByAppId(appId);
 		if( count > 0 ){
 			return false;
 		}
@@ -200,9 +237,9 @@ public class Business {
 	 * @return
 	 * @throws Exception 
 	 */
-	public boolean catagoryInfoDeleteAvailable( String catagoryId ) throws Exception {
+	public boolean categoryInfoDeleteAvailable( String categoryId ) throws Exception {
 		// 查询是否有下级应用分类信息
-		long count = this.getDocumentFactory().countByCatagoryId(catagoryId);
+		long count = this.getDocumentFactory().countByCategoryId(categoryId);
 		if (count > 0) {
 			return false;
 		}
@@ -230,15 +267,10 @@ public class Business {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean catagoryInfoEditAvailable( HttpServletRequest request, EffectivePerson person, String appId ) throws Exception {		
-		if( isXAdmin(request, person)){
+	public boolean categoryInfoEditAvailable( EffectivePerson person, String appId ) throws Exception {		
+		if( person.isManager() ){
 			return true;
 		}
-		//判断用户是否应用管理员，应用管理员可以操作应用下的所有分类
-		if( appId != null && appId.length() > 0 ){
-			//判断用户是否有该应用的管理权限，如果有，则返回true
-		}
-		//其他情况暂时全部不允许操作	
 		return true;
 	}
 	
@@ -249,7 +281,7 @@ public class Business {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean appCatagoryPermissionEditAvailable( HttpServletRequest request, EffectivePerson person ) throws Exception {		
+	public boolean appCategoryPermissionEditAvailable( HttpServletRequest request, EffectivePerson person ) throws Exception {		
 		if( isXAdmin(request, person )){
 			return true;
 		}	
@@ -296,7 +328,7 @@ public class Business {
 	 * @return
 	 * @throws Exception 
 	 */
-	public boolean appCatagoryAdminEditAvailable( HttpServletRequest request, EffectivePerson person ) throws Exception {		
+	public boolean appCategoryAdminEditAvailable( HttpServletRequest request, EffectivePerson person ) throws Exception {		
 		if( isXAdmin(request, person)){
 			return true;
 		}

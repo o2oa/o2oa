@@ -1,8 +1,7 @@
 package com.x.okr.assemble.control.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
@@ -63,7 +62,7 @@ public class OkrWorkDetailInfoService{
 					emc.commit();
 				}
 			}catch( Exception e ){
-				logger.error( "OkrWorkDetailInfo update/ got a error!" );
+				logger.warn( "OkrWorkDetailInfo update/ got a error!" );
 				throw e;
 			}
 		}else{//没有传入指定的ID
@@ -74,7 +73,7 @@ public class OkrWorkDetailInfoService{
 				emc.persist( okrWorkDetailInfo, CheckPersistType.all);	
 				emc.commit();
 			}catch( Exception e ){
-				logger.error( "OkrWorkDetailInfo create got a error!", e);
+				logger.warn( "OkrWorkDetailInfo create got a error!", e);
 				throw e;
 			}
 		}
@@ -89,17 +88,36 @@ public class OkrWorkDetailInfoService{
 	public void delete( String id ) throws Exception {
 		OkrWorkDetailInfo okrWorkDetailInfo = null;
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not delete any object." );
+			throw new Exception( "id is null, system can not delete any object." );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			okrWorkDetailInfo = emc.find(id, OkrWorkDetailInfo.class);
 			if (null == okrWorkDetailInfo) {
-				logger.error( "object is not exist {'id':'"+ id +"'}" );
+				throw new Exception( "object is not exist {'id':'"+ id +"'}" );
 			}else{
 				emc.beginTransaction( OkrWorkDetailInfo.class );
 				emc.remove( okrWorkDetailInfo, CheckRemoveType.all );
 				emc.commit();
+			}
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	public String getWorkDetailWithId( String workId ) throws Exception {
+		OkrWorkDetailInfo okrWorkDetailInfo = null;
+		if( workId == null || workId.isEmpty() ){
+			throw new Exception( "workId is null, system can not query any object." );
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
+			okrWorkDetailInfo = emc.find( workId, OkrWorkDetailInfo.class);
+			if ( null == okrWorkDetailInfo ) {
+				logger.warn( "object is not exist {'id':'"+ workId +"'}" );
+				return "无";
+			}else{
+				return okrWorkDetailInfo.getWorkDetail();
 			}
 		} catch ( Exception e ) {
 			throw e;

@@ -14,6 +14,7 @@ class ActionGetIcon extends ActionBase {
 			ActionResult<WrapOutApplication> result = new ActionResult<>();
 			Business business = new Business(emc);
 			Application application = business.application().pick(flag);
+			/** 如果application 不存在,返回空值 */
 			WrapOutApplication wrap = new WrapOutApplication();
 			if (null != application) {
 				wrap.setIcon(application.getIcon());

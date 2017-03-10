@@ -16,7 +16,7 @@ import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.utils.annotation.MethodDescribe;
 import com.x.okr.assemble.control.AbstractFactory;
 import com.x.okr.assemble.control.Business;
-import com.x.okr.assemble.control.jaxrs.okrworkchat.WrapInFilter;
+import com.x.okr.assemble.control.jaxrs.okrworkchat.WrapInFilterWorkChat;
 import com.x.okr.entity.OkrWorkChat;
 import com.x.okr.entity.OkrWorkChat_;
 
@@ -108,7 +108,7 @@ public class OkrWorkChatFactory extends AbstractFactory {
 	 * @throws Exception
 	 */
 	@SuppressWarnings( "unchecked" )
-	public List<OkrWorkChat> listNextWithFilter( String id, Integer count, Object sequence, WrapInFilter wrapIn ) throws Exception {
+	public List<OkrWorkChat> listNextWithFilter( String id, Integer count, Object sequence, WrapInFilterWorkChat wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( OkrWorkChat.class );
 		String order = wrapIn.getOrder();//排序方式
@@ -153,7 +153,7 @@ public class OkrWorkChatFactory extends AbstractFactory {
 	 * @throws Exception
 	 */
 	@SuppressWarnings( "unchecked" )
-	public List<OkrWorkChat> listPrevWithFilter( String id, Integer count, Object sequence, WrapInFilter wrapIn ) throws Exception {
+	public List<OkrWorkChat> listPrevWithFilter( String id, Integer count, Object sequence, WrapInFilterWorkChat wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( OkrWorkChat.class );
 		String order = wrapIn.getOrder();//排序方式
@@ -197,7 +197,7 @@ public class OkrWorkChatFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	public long getCountWithFilter( WrapInFilter wrapIn ) throws Exception {
+	public long getCountWithFilter( WrapInFilterWorkChat wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( OkrWorkChat.class );
 		List<Object> vs = new ArrayList<>();

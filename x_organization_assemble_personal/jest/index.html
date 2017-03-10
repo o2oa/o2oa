@@ -2,12 +2,14 @@
 <html>
 <head>
 <meta charset="UTF-8" />
-<title>x_organization_assemble_personal_jest</title>
+<title>x_organization_assemble_personal</title>
 <script src="./jquery.js"></script>
 <script src="./common.js"></script>
 <script src="./password.js"></script>
 <script src="./person.js"></script>
 <script src="./icon.js"></script>
+<script src="./regist.js"></script>
+<script src="./reset.js"></script>
 <script>
     $(document).ready(function() {
 	person_edit();
@@ -19,9 +21,7 @@
 	<div id="container" style="width: 1000px; margin: 0 auto;">
 		<div id="header"
 			style="background-color: #4682B4; clear: both; text-align: center;">
-			x_organization_assemble_personal_jest <br /> for <br />
-			x_organization_assemble_personal
-		</div>
+			x_organization_assemble_personal</div>
 		<div id="menu"
 			style="background-color: #B0E0E6; height: 950px; width: 280px; float: left;">
 			<ul>
@@ -38,6 +38,16 @@
 				<li>Icon
 					<ul>
 						<li><a onclick="icon_update()" href="#">Update</a></li>
+					</ul>
+				</li>
+				<li>Register
+					<ul>
+						<li><a onclick="register_init()" href="#">Init</a></li>
+					</ul>
+				</li>
+				<li>Reset
+					<ul>
+						<li><a onclick="reset_init()" href="#">Init</a></li>
 					</ul>
 				</li>
 			</ul>

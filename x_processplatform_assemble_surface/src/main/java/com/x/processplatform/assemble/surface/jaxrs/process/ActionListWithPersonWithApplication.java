@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.utils.SortTools;
@@ -24,7 +23,10 @@ class ActionListWithPersonWithApplication extends ActionBase {
 			ActionResult<List<WrapOutProcess>> result = new ActionResult<>();
 			Business business = new Business(emc);
 			List<WrapOutProcess> wraps = new ArrayList<>();
-			Application application = business.application().pick(applicationFlag, ExceptionWhen.not_found);
+			Application application = business.application().pick(applicationFlag);
+			if (null == application) {
+				throw new ApplicationNotExistedException(applicationFlag);
+			}
 			if (!business.application().allowRead(effectivePerson, application)) {
 				throw new Exception("person{name:" + effectivePerson.getName() + "} has insufficient permissions.");
 			}

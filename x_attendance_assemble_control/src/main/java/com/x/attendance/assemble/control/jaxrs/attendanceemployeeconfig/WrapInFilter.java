@@ -3,22 +3,21 @@ package com.x.attendance.assemble.control.jaxrs.attendanceemployeeconfig;
 import java.util.List;
 
 import com.x.attendance.entity.AttendanceEmployeeConfig;
-import com.x.base.core.bean.NameValueCountPair;
 import com.x.base.core.gson.GsonPropertyObject;
 import com.x.base.core.http.annotation.Wrap;
 
 @Wrap( AttendanceEmployeeConfig.class)
 public class WrapInFilter extends GsonPropertyObject {
 
-	private List<NameValueCountPair> appIdList;
+	private List<String> appIdList;
 
 	private String key;	
 
-	public List<NameValueCountPair> getAppIdList() {
+	public List<String> getAppIdList() {
 		return appIdList;
 	}
 
-	public void setAppIdList(List<NameValueCountPair> appIdList) {
+	public void setAppIdList(List<String> appIdList) {
 		this.appIdList = appIdList;
 	}
 

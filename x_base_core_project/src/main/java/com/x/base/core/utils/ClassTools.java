@@ -29,4 +29,13 @@ public class ClassTools {
 		});
 		return list;
 	}
+
+	public static boolean isClass(String className) {
+		try {
+			Class.forName(className);
+			return true;
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
+	}
 }

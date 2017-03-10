@@ -94,11 +94,8 @@ public class WorkAction extends AbstractJaxrsAction {
 	public Response retract(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("workLogId") String workLogId) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		WrapOutId wrap = new WrapOutId();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			wrap = new ActionRetract().execute(business, id, workLogId);
-			result.setData(wrap);
+		try {
+			result = new ActionRetract().execute(id, workLogId);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);

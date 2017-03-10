@@ -14,7 +14,6 @@ import javax.persistence.criteria.Root;
 import com.x.base.core.bean.NameValueCountPair;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.utils.SortTools;
@@ -34,7 +33,10 @@ class ManageFilterAttribute extends ActionBase {
 			Business business = new Business(emc);
 			Map<String, List<NameValueCountPair>> wrap = new HashMap<>();
 			/* 因为是work,application不可能为空 */
-			Application application = business.application().pick(applicationFlag, ExceptionWhen.not_found);
+			Application application = business.application().pick(applicationFlag);
+			if (null == application) {
+				throw new ApplicationNotExistedException(applicationFlag);
+			}
 			wrap.put("processList", this.listProcessPair(business, application));
 			wrap.put("creatorCompanyList", this.listCreatorCompany(business, application));
 			wrap.put("creatorDepartmentList", this.listCreatorDepartment(business, application));

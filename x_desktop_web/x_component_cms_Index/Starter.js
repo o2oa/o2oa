@@ -187,11 +187,11 @@ MWF.xApplication.cms.Index.Starter = new Class({
             "title": title,
             "creatorIdentity": this.identityArea.get("value"),
             "appId" :this.categoryData.appId,
-            "catagoryId" : this.categoryData.id,
+            "categoryId" : this.categoryData.id,
             "form" : this.categoryData.formId,
             "formName" :this.categoryData.formName,
             "docStatus" : "draft",
-            "catagoryName" : this.categoryData.name,
+            "categoryName" : this.categoryData.name,
             "categoryAlias" : this.categoryData.alias,
             "attachmentList" : []
         };

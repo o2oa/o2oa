@@ -2,33 +2,22 @@ package com.x.processplatform.service.processing.processor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.collections4.list.SetUniqueList;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.exception.ExceptionWhen;
-import com.x.base.core.gson.XGsonBuilder;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.ListTools;
-import com.x.organization.core.express.Organization;
-import com.x.organization.core.express.wrap.WrapCompanyDuty;
-import com.x.organization.core.express.wrap.WrapDepartmentDuty;
-import com.x.organization.core.express.wrap.WrapIdentity;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.tools.DataHelper;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Process;
@@ -38,6 +27,7 @@ import com.x.processplatform.service.processing.BindingPair;
 import com.x.processplatform.service.processing.ProcessingAttributes;
 import com.x.processplatform.service.processing.ScriptHelper;
 import com.x.processplatform.service.processing.ScriptHelperFactory;
+import com.x.processplatform.service.processing.WorkDataHelper;
 import com.x.processplatform.service.processing.configurator.ActivityProcessingConfigurator;
 import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
 
@@ -62,15 +52,17 @@ public abstract class AbstractProcessor extends AbstractTaskProcessor {
 			work.setManualTaskIdentityList(new ArrayList<String>());
 			/* 将强制路由标记进行修改 */
 			work.setForceRoute(false);
-			DataHelper dataHelper = new DataHelper(this.entityManagerContainer(), work);
-			Data data = dataHelper.get();
+			WorkDataHelper workDataHelper = new WorkDataHelper(this.entityManagerContainer(), work);
+			Data data = workDataHelper.get();
 			ActivityProcessingConfigurator activityConfigurator = processingConfigurator.get(activityType);
 			this.callBeforeArriveScript(activityConfigurator, attributes, activity, work, data);
 			this.arriveActivity(activityConfigurator, work, activity);
-			// this.createRead(activityConfigurator, attributes, activity, work,
-			// data);
-			// this.createReview(activityConfigurator, attributes, activity,
-			// work, data);
+			/* 创建待阅 */
+			this.concreteRead(attributes, work, data, activity);
+			/* 创建参阅 */
+			this.concreteReview(attributes, work, data, activity);
+			logger.debug("arrive work title:{}, id:{}, actvity name:{}, id:{}, process name:{}, id{}.", work.getTitle(),
+					work.getId(), activity.getName(), activity.getId(), work.getProcessName(), work.getProcess());
 			work = this.arriveProcessing(processingConfigurator, attributes, work, data, activity);
 			if (null == work) {
 				throw new Exception("arrvie return empty, work{id:" + workId + "}.");
@@ -80,12 +72,17 @@ public abstract class AbstractProcessor extends AbstractTaskProcessor {
 					if (StringUtils.isEmpty(work.getSerial())) {
 						SerialBuilder serialBuilder = new SerialBuilder(this.entityManagerContainer(),
 								work.getProcess(), work.getId());
-						work.setSerial(serialBuilder.concrete());
+						String serial = serialBuilder.concrete();
+						work.setSerial(serial);
+						logger.debug(
+								"concrete serial:{}, work title:{}, id:{}, actvity name:{}, id:{}, process name:{}, id{}.",
+								serial, work.getTitle(), work.getId(), activity.getName(), activity.getId(),
+								work.getProcessName(), work.getProcess());
 					}
 				}
 			}
 			callAfterArriveScript(activityConfigurator, attributes, activity, work, data);
-			dataHelper.update(data);
+			workDataHelper.update(data);
 			this.entityManagerContainer().commit();
 			return work.getId();
 		} catch (Exception e) {
@@ -122,6 +119,26 @@ public abstract class AbstractProcessor extends AbstractTaskProcessor {
 		}
 	}
 
+	private void concreteRead(ProcessingAttributes attributes, Work work, Data data, Activity activity)
+			throws Exception {
+		List<String> identities = TranslateReadIdentityTools.translate(this.business(), attributes, work, data,
+				activity);
+		identities = this.business().organization().identity().check(identities);
+		for (String o : ListTools.trim(identities, true, true)) {
+			this.createRead(o, work);
+		}
+	}
+
+	private void concreteReview(ProcessingAttributes attributes, Work work, Data data, Activity activity)
+			throws Exception {
+		List<String> identities = TranslateReviewIdentityTools.translate(this.business(), attributes, work, data,
+				activity);
+		identities = this.business().organization().identity().check(identities);
+		for (String o : ListTools.trim(identities, true, true)) {
+			this.createReview(o, work);
+		}
+	}
+
 	public List<String> execute(String workId, ProcessingConfigurator processingConfigurator,
 			ProcessingAttributes attributes) {
 		List<String> results = new ArrayList<>();
@@ -146,17 +163,20 @@ public abstract class AbstractProcessor extends AbstractTaskProcessor {
 			this.entityManagerContainer().beginTransaction(Work.class);
 			Process process = this.business().element().get(work.getProcess(), Process.class);
 			ActivityProcessingConfigurator activityConfigurator = processingConfigurator.get(activityType);
-			DataHelper dataHelper = new DataHelper(this.entityManagerContainer(), work);
-			Data data = dataHelper.get();
+			WorkDataHelper workDataHelper = new WorkDataHelper(this.entityManagerContainer(), work);
+			Data data = workDataHelper.get();
 			/**
 			 * 运行执行前脚本<br>
 			 * manul环节单独判断 如果没有运行过beforeArrivedExecuteScript那么运行脚本
 			 */
 			this.callBeforeArrivedExecuteScript(activityConfigurator, attributes, activity, work, data);
 			this.callBeforeExecuteScript(activityConfigurator, attributes, activity, work, data);
+			logger.debug("execute work title:{}, id:{}, actvity name:{}, id:{}, process name:{}, id{}.",
+					work.getTitle(), work.getId(), activity.getName(), activity.getId(), work.getProcessName(),
+					work.getProcess());
 			List<Work> works = this.executeProcessing(processingConfigurator, attributes, work, data, activity);
 			/**
-			 * manul环节单独判断<br>
+			 * manual环节单独判断<br>
 			 * 如果没有运行过afterArrivedExecuteScript那么运行脚本
 			 */
 			this.callAfterArrivedExecuteScript(activityConfigurator, attributes, activity, work, data);
@@ -170,9 +190,11 @@ public abstract class AbstractProcessor extends AbstractTaskProcessor {
 			this.calculateExpire(activityConfigurator, work, process, activity, attributes, data);
 			if (activityConfigurator.getUpdateData()) {
 				/** 如果是cancel或者end 那么data已经归档或者删除，就不需要updateData */
-				dataHelper.update(data);
+				workDataHelper.update(data);
 			}
 			this.entityManagerContainer().commit();
+			/* 发送在队列中的待办消息, 待办消息必须在数据提交后发送,否则会不到待办 */
+			this.sendTaskMessageInQueue();
 		} catch (Exception e) {
 			this.logProcessingError(workId, e);
 		}
@@ -238,8 +260,8 @@ public abstract class AbstractProcessor extends AbstractTaskProcessor {
 			ActivityType activityType = work.getActivityType();
 			Activity activity = this.business().element().get(work.getActivity(),
 					ActivityType.getClassOfActivityType(activityType));
-			System.out.println(this.getClass().getSimpleName() + " inquiry workd:" + workId + ", activityName:"
-					+ activity.getName());
+			logger.debug("{} inquiry work:{}, activity:{}.", this.getClass().getSimpleName(), workId,
+					activity.getName());
 			if (BooleanUtils.isTrue(work.getInquired())) {
 				results.add(work.getId());
 				return results;
@@ -249,10 +271,13 @@ public abstract class AbstractProcessor extends AbstractTaskProcessor {
 
 			ActivityProcessingConfigurator activityConfigurator = processingConfigurator.get(activityType);
 			List<Route> routes = this.business().element().listRouteWithActvity(work.getActivity(), activityType);
-			DataHelper dataHelper = new DataHelper(this.entityManagerContainer(), work);
-			Data data = dataHelper.get();
+			WorkDataHelper workDataHelper = new WorkDataHelper(this.entityManagerContainer(), work);
+			Data data = workDataHelper.get();
 			/* 运行查询路由前脚本 */
 			this.callBeforeInquireScript(activityConfigurator, attributes, activity, routes, work, data);
+			logger.debug("inquire work title:{}, id:{}, actvity name:{}, id:{}, process name:{}, id{}.",
+					work.getTitle(), work.getId(), activity.getName(), activity.getId(), work.getProcessName(),
+					work.getProcess());
 			List<Route> selectedRoutes = this.inquireProcessing(processingConfigurator, attributes, work, data,
 					activity, routes);
 			if ((null == selectedRoutes) || selectedRoutes.isEmpty()) {
@@ -290,7 +315,7 @@ public abstract class AbstractProcessor extends AbstractTaskProcessor {
 			for (Work o : works) {
 				results.add(o.getId());
 			}
-			dataHelper.update(data);
+			workDataHelper.update(data);
 			this.entityManagerContainer().commit();
 		} catch (Exception e) {
 			this.logProcessingError(workId, e);
@@ -334,95 +359,4 @@ public abstract class AbstractProcessor extends AbstractTaskProcessor {
 			ProcessingAttributes attributes, Work work, Data data, Activity activity, List<Route> routes)
 			throws Exception;
 
-	/* 计算节点中所有的Review，全部翻译成Identity */
-	protected List<String> translateReviewIdentity(ProcessingAttributes attributes, Work work, Data data,
-			Activity activity) throws Exception {
-		List<String> identities = SetUniqueList.setUniqueList(new ArrayList<String>());
-		Organization organization = new Organization();
-		for (String str : activity.getReviewIdentityList()) {
-			if (StringUtils.isNotEmpty(str)) {
-				identities.add(str);
-			}
-		}
-		for (String str : activity.getReviewDepartmentList()) {
-			if (StringUtils.isNotEmpty(str)) {
-				for (WrapIdentity o : organization.identity().listWithDepartmentSubDirect(str)) {
-					identities.add(o.getName());
-				}
-			}
-		}
-		if ((StringUtils.isNotEmpty(activity.getReviewScript()))
-				|| (StringUtils.isNotEmpty(activity.getReviewScriptText()))) {
-			ScriptHelper scriptHelper = ScriptHelperFactory.create(this.business(), attributes, work, data, activity);
-			identities.addAll(scriptHelper.evalAsStringList(work.getApplication(), activity.getReviewScript(),
-					activity.getReviewScriptText()));
-		}
-		return this.checkIdentity(identities);
-	}
-
-	/* 计算节点中所有的Read，全部翻译成Identity */
-	protected List<String> translateReadIdentity(ProcessingAttributes attributes, Work work, Data data,
-			Activity activity) throws Exception {
-		List<String> identities = SetUniqueList.setUniqueList(new ArrayList<String>());
-		/* 指定待阅人 */
-		for (String str : activity.getReadIdentityList()) {
-			if (StringUtils.isNotEmpty(str)) {
-				identities.add(str);
-			}
-		}
-		/* 指定待阅部门 */
-		for (String str : activity.getReadDepartmentList()) {
-			if (StringUtils.isNotEmpty(str)) {
-				for (WrapIdentity o : this.business().organization().identity().listWithDepartmentSubDirect(str)) {
-					identities.add(o.getName());
-				}
-			}
-		}
-		/* 使用待阅脚本 */
-		if ((StringUtils.isNotEmpty(activity.getReadScript()))
-				|| (StringUtils.isNotEmpty(activity.getReadScriptText()))) {
-			ScriptHelper scriptHelper = ScriptHelperFactory.create(this.business(), attributes, work, data, activity);
-			identities.addAll(scriptHelper.evalAsStringList(work.getApplication(), activity.getReadScript(),
-					activity.getReadScriptText()));
-		}
-		/* 选择了Read角色 */
-		if (StringUtils.isNotEmpty(activity.getReadDuty())) {
-			JsonArray array = XGsonBuilder.instance().fromJson(activity.getReadDuty(), JsonArray.class);
-			Iterator<JsonElement> iterator = array.iterator();
-			while (iterator.hasNext()) {
-				JsonObject o = iterator.next().getAsJsonObject();
-				String name = o.get("name").getAsString();
-				ScriptHelper scriptHelper = ScriptHelperFactory.create(this.business(), attributes, work, data,
-						activity);
-				String str = scriptHelper.evalAsString(work.getApplication(), null, o.get("code").getAsString());
-				if (StringUtils.isNotEmpty(str)) {
-					/* 先尝试去取公司职务 */
-					WrapCompanyDuty wrapCompanyDuty = this.business().organization().companyDuty().getWithName(name,
-							str);
-					if (null != wrapCompanyDuty) {
-						identities.addAll(wrapCompanyDuty.getIdentityList());
-					} else {
-						/* 再尝试取部门职务 */
-						WrapDepartmentDuty wrapDepartmentDuty = this.business().organization().departmentDuty()
-								.getWithName(name, str);
-						if (null != wrapDepartmentDuty) {
-							identities.addAll(wrapDepartmentDuty.getIdentityList());
-						}
-					}
-				}
-			}
-		}
-		return this.checkIdentity(identities);
-	}
-
-	protected List<String> checkIdentity(List<String> identities) throws Exception {
-		List<String> list = new ArrayList<>();
-		for (String str : identities) {
-			WrapIdentity o = this.business().organization().identity().getWithName(str);
-			if ((null != o) && (StringUtils.isNotEmpty(o.getName()))) {
-				list.add(o.getName());
-			}
-		}
-		return list;
-	}
 }

@@ -45,6 +45,10 @@ public class DateTools {
 		return DateFormatUtils.format(date, format);
 	}
 
+	public static String now() {
+		return DateFormatUtils.format(new Date(), format_yyyyMMddHHmmss);
+	}
+
 	public static String compact(Date date) {
 		return DateFormatUtils.format(date, formatCompact_yyyyMMddHHmmss);
 	}

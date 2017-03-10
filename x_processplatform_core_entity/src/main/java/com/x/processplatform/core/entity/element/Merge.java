@@ -41,7 +41,7 @@ public class Merge extends Activity {
 	private static final String TABLE = PersistenceProperties.Element.Merge.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -54,7 +54,7 @@ public class Merge extends Activity {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -114,7 +114,7 @@ public class Merge extends Activity {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception{
 	}
 
 	/* 更新运行方法 */
@@ -192,13 +192,22 @@ public class Merge extends Activity {
 	@Column(length = JpaObject.length_1M, name = "xreadScriptText")
 	@CheckPersist(allowEmpty = true)
 	private String readScriptText;
-	
+
 	@EntityFieldDescribe("待阅角色定义内容.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@Column(length = JpaObject.length_1M, name = "xreadDuty")
 	@CheckPersist(allowEmpty = true)
 	private String readDuty;
+
+	@EntityFieldDescribe("活动待阅人员data数据路径.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + "_readDataPathList", joinIndex = @Index(name = TABLE + "_readDataPathList_join"))
+	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@ElementColumn(length = JpaObject.length_255B, name = "xreadDataPathList")
+	@ElementIndex(name = TABLE + "_readDataPathList_element")
+	@CheckPersist(allowEmpty = true)
+	private List<String> readDataPathList;
 
 	@EntityFieldDescribe("参与人名称,存储 Identity name,多值.")
 	@PersistentCollection(fetch = FetchType.EAGER)
@@ -230,6 +239,22 @@ public class Merge extends Activity {
 	@Column(length = JpaObject.length_1M, name = "xreviewScriptText")
 	@CheckPersist(allowEmpty = true)
 	private String reviewScriptText;
+
+	@EntityFieldDescribe("参阅角色定义内容.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = "xreviewDuty")
+	@CheckPersist(allowEmpty = true)
+	private String reviewDuty;
+
+	@EntityFieldDescribe("活动参阅人员data数据路径.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + "_reviewDataPathList", joinIndex = @Index(name = TABLE + "_reviewDataPathList_join"))
+	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@ElementColumn(length = JpaObject.length_255B, name = "xreviewDataPathList")
+	@ElementIndex(name = TABLE + "_reviewDataPathList_element")
+	@CheckPersist(allowEmpty = true)
+	private List<String> reviewDataPathList;
 
 	@EntityFieldDescribe("活动到达前事件脚本.")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = "xbeforeArriveScript")
@@ -566,6 +591,30 @@ public class Merge extends Activity {
 
 	public void setReadDuty(String readDuty) {
 		this.readDuty = readDuty;
+	}
+
+	public List<String> getReadDataPathList() {
+		return readDataPathList;
+	}
+
+	public void setReadDataPathList(List<String> readDataPathList) {
+		this.readDataPathList = readDataPathList;
+	}
+
+	public String getReviewDuty() {
+		return reviewDuty;
+	}
+
+	public void setReviewDuty(String reviewDuty) {
+		this.reviewDuty = reviewDuty;
+	}
+
+	public List<String> getReviewDataPathList() {
+		return reviewDataPathList;
+	}
+
+	public void setReviewDataPathList(List<String> reviewDataPathList) {
+		this.reviewDataPathList = reviewDataPathList;
 	}
 
 }

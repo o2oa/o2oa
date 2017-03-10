@@ -2,10 +2,8 @@ package com.x.bbs.assemble.control.service;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -29,7 +27,7 @@ import com.x.organization.core.express.wrap.WrapIdentity;
 /**
  * 论坛角色信息管理服务类
  * 
- * 论坛角色>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ * 论坛角色
  * 论坛访客(FORUM_GUEST):论坛访客
  * 		0、论坛可见（FORUM_VIEW）:用户可以BBS系统中访问该论坛
  * 
@@ -47,7 +45,7 @@ import com.x.organization.core.express.wrap.WrapIdentity;
  * 		9、论坛配置管理（FORUM_CONFIG_MANAGEMENT）：用户拥有对论坛的参数配置进行设置的权限
  * 
  * 
- * 版块角色>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 
+ * 版块角色
  * 版块访客(SECTION_GUEST):版块访客
  * 		0、论坛可见（SECTION_VIEW）:用户可以BBS系统中访问该版块
  * 
@@ -91,7 +89,7 @@ import com.x.organization.core.express.wrap.WrapIdentity;
 public class BBSRoleInfoService {
 	
 	private Logger logger = LoggerFactory.getLogger( BBSRoleInfoService.class );
-	
+	//private UserManagerService userManagerService = new UserManagerService();
 	/**
 	 * 根据ID查询指定的角色信息对象
 	 * @param id
@@ -107,7 +105,7 @@ public class BBSRoleInfoService {
 			business = new Business(emc);
 			return business.roleInfoFactory().get( id );
 		}catch( Exception e ){
-			logger.error( "system get role by id got an exception!" );
+			logger.warn( "system get role by id got an exception!" );
 			throw e;
 		}
 	}
@@ -124,7 +122,7 @@ public class BBSRoleInfoService {
 			business = new Business(emc);
 			return business.roleInfoFactory().listAll();
 		}catch( Exception e ){
-			logger.error( "system list all role got an exception!" );
+			logger.warn( "system list all role got an exception!" );
 			throw e;
 		}
 	}
@@ -144,7 +142,7 @@ public class BBSRoleInfoService {
 			business = new Business(emc);
 			return business.roleInfoFactory().list(ids);
 		}catch( Exception e ){
-			logger.error( "system list role by ids got an exception!" );
+			logger.warn( "system list role by ids got an exception!" );
 			throw e;
 		}
 	}
@@ -154,7 +152,7 @@ public class BBSRoleInfoService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			forumInfo = emc.find( forumId, BBSForumInfo.class );
 		}catch( Exception e ){
-			logger.error( "system get forum by id got an exception!" );
+			logger.warn( "system get forum by id got an exception!" );
 			throw e;
 		}
 		if( forumInfo != null ){
@@ -182,7 +180,7 @@ public class BBSRoleInfoService {
 			/**
 			 * 论坛角色信息管理服务类
 			 * 
-			 * 论坛角色>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+			 * 论坛角色
 			 * 论坛访客(FORUM_GUEST):论坛访客
 			 * 		0、论坛可见（FORUM_VIEW）:用户可以BBS系统中访问该论坛
 			 * 
@@ -240,7 +238,7 @@ public class BBSRoleInfoService {
 			}
 			checkAndSaveBBSRoleInfo( emc, _bBSForumInfo, "FORUM_SUPER_MANAGER_" + forumId, forumName + "-论坛超级管理员", "系统角色，在论坛["+ forumName +"]中拥有最大管理权限。", permissionCodeList );
 		}catch( Exception e ){
-			logger.error( "system check and create forum role got an exception!" );
+			logger.warn( "system check and create forum role got an exception!" );
 			throw e;
 		}
 	}
@@ -250,7 +248,7 @@ public class BBSRoleInfoService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			sectionInfo = emc.find( sectionId, BBSSectionInfo.class );
 		}catch( Exception e ){
-			logger.error( "system get section by id got an exception!" );
+			logger.warn( "system get section by id got an exception!" );
 			throw e;
 		}
 		if( sectionInfo != null ){
@@ -385,7 +383,7 @@ public class BBSRoleInfoService {
 			checkAndSaveBBSRoleInfo( emc, _sectionInfo, "SECTION_REPLY_AUDITOR_" + sectionId, forumName + "-" + sectionName + "-回复审核者", "系统角色，用户可以在版块[" + forumName + "-"+ sectionName +"]中对发表的回复进行审核。", permissionCodeList );
 			
 		}catch( Exception e ){
-			logger.error( "system check and create section role got an exception!" );
+			logger.warn( "system check and create section role got an exception!" );
 			throw e;
 		}
 	}
@@ -487,7 +485,7 @@ public class BBSRoleInfoService {
 			ids = business.roleInfoFactory().listRoleByForumId( forumId );
 			return business.roleInfoFactory().list(ids);
 		}catch( Exception e ){
-			logger.error( "system list role by forum id got an exception!" );
+			logger.warn( "system list role by forum id got an exception!" );
 			throw e;
 		}
 	}
@@ -503,7 +501,7 @@ public class BBSRoleInfoService {
 			ids = business.roleInfoFactory().listRoleBySectionId( sectionId );
 			return business.roleInfoFactory().list(ids);
 		}catch( Exception e ){
-			logger.error( "system list role by section id got an exception!" );
+			logger.warn( "system list role by section id got an exception!" );
 			throw e;
 		}
 	}
@@ -530,7 +528,7 @@ public class BBSRoleInfoService {
 			ids = business.userRoleFactory().listRoleIdsByObjectUniqueId( uniqueId, objectType );
 			return business.roleInfoFactory().list(ids);
 		}catch( Exception e ){
-			logger.error( "system list role by object unique id got an exception!" );
+			logger.warn( "system list role by object unique id got an exception!" );
 			throw e;
 		}
 	}
@@ -550,7 +548,7 @@ public class BBSRoleInfoService {
 			business = new Business(emc);
 			return business.roleInfoFactory().getRoleByCode( roleCode );
 		}catch( Exception e ){
-			logger.error( "system get role by role code got an exception!" );
+			logger.warn( "system get role by role code got an exception!" );
 			throw e;
 		}
 	}
@@ -634,7 +632,7 @@ public class BBSRoleInfoService {
 			
 			emc.commit();
 		}catch( Exception e ){
-			logger.error( "system find BBSRoleInfo{'id':'"+_roleInfo.getId()+"'} got an exception!" );
+			logger.warn( "system find BBSRoleInfo{'id':'"+_roleInfo.getId()+"'} got an exception!" );
 			throw e;
 		}
 		return _roleInfo;
@@ -681,7 +679,7 @@ public class BBSRoleInfoService {
 			emc.remove( roleInfo, CheckRemoveType.all );
 			emc.commit();
 		}catch( Exception e ){
-			logger.error( "system delete BBSRoleInfo{'id':'"+ id +"'} got an exception!" );
+			logger.warn( "system delete BBSRoleInfo{'id':'"+ id +"'} got an exception!" );
 			throw e;
 		}
 	}
@@ -723,7 +721,7 @@ public class BBSRoleInfoService {
 			}			
 			emc.commit();
 		}catch( Exception e ){
-			logger.error( "system bindRoleToUser got an exception!" );
+			logger.warn( "system bindRoleToUser got an exception!" );
 			throw e;
 		}
 	}
@@ -766,7 +764,7 @@ public class BBSRoleInfoService {
 			}	
 			emc.commit();
 		}catch( Exception e ){
-			logger.error( "system bindUserToRole got an exception!" );
+			logger.warn( "system bindUserToRole got an exception!" );
 			throw e;
 		}
 	}
@@ -858,6 +856,9 @@ public class BBSRoleInfoService {
 	 * @throws Exception 
 	 */
 	private List<WrapCompany> composeUserCompanys( String companyName, List<WrapCompany> companyList ) throws Exception {
+		if( companyName == null || companyName.isEmpty() ){
+			return companyList;
+		}
 		Business business = null;
 		WrapCompany company = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -866,6 +867,9 @@ public class BBSRoleInfoService {
 			if( company.getSuperior() != null && !company.getSuperior().isEmpty() && !company.getSuperior().equals( companyName ) ){
 				composeUserCompanys( company.getSuperior(), companyList );
 			}
+			if( companyList == null ){
+				companyList = new ArrayList<WrapCompany>();
+			}
 			companyList.add( company );
 			return companyList;
 		} catch ( Exception e ) {
@@ -873,28 +877,6 @@ public class BBSRoleInfoService {
 		}
 	}
 	
-	/**
-	 * 根据身份名称获取部门名称
-	 * @param identity
-	 * @return
-	 * @throws Exception 
-	 */
-	public String getCompanyNameByIdentity( String identity ) throws Exception{	
-		Business business = null;
-		WrapCompany wrapCompany = null;
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			business = new Business(emc);
-			wrapCompany = business.organization().company().getWithIdentity( identity );
-			if ( wrapCompany == null ) {//该根据身份无法查询到组织信息
-				throw new Exception( "can not get company of identity:" + identity + "." );
-			} else {
-				return wrapCompany.getName();
-			}
-		} catch ( Exception e ) {
-			throw e;
-		}
-	}
-
 	public List<String> listAllRoleCodesForUser(String userName) throws Exception {
 		if( userName == null ){
 			throw new Exception("userName is null, can not query any role info!");
@@ -955,5 +937,30 @@ public class BBSRoleInfoService {
 		} catch ( Exception e ) {
 			throw e;
 		}
-	}	
+	}
+	
+	/**
+	 * 根据身份名称获取部门名称
+	 * @param identity
+	 * @return
+	 * @throws Exception 
+	 */
+	public String getCompanyNameByIdentity( String identity ) throws Exception{	
+		if( identity == null || identity.isEmpty() ){
+			return null;
+		}
+		Business business = null;
+		WrapCompany wrapCompany = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			wrapCompany = business.organization().company().getWithIdentity( identity );
+			if ( wrapCompany == null ) {//该根据身份无法查询到组织信息
+				throw new Exception( "can not get company of identity:" + identity + "." );
+			} else {
+				return wrapCompany.getName();
+			}
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
 }

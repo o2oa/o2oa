@@ -19,6 +19,9 @@ class ActionListNextWithProcess extends ActionBase {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Process process = business.process().pick(processFlag, ExceptionWhen.not_found);
+			if (null == process) {
+				throw new ProcessNotExistedException(processFlag);
+			}
 			EqualsTerms equals = new EqualsTerms();
 			equals.put("person", effectivePerson.getName());
 			equals.put("process", process.getId());

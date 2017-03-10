@@ -24,7 +24,7 @@ import com.x.processplatform.core.entity.element.Application;
 /**
  * 在一个应用的管理状态下列示可用于filter的所有值. 权限:不需要权限
  */
-public class ManageFilterAttribute extends ActionBase {
+class ManageFilterAttribute extends ActionBase {
 
 	ActionResult<Map<String, List<NameValueCountPair>>> execute(EffectivePerson effectivePerson, String applicationFlag)
 			throws Exception {

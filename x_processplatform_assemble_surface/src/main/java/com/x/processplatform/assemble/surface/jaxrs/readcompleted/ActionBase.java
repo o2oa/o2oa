@@ -27,17 +27,16 @@ import com.x.processplatform.core.entity.element.Application;
 
 abstract class ActionBase extends StandardJaxrsAction {
 
-	protected static BeanCopyTools<ReadCompleted, WrapOutReadCompleted> readCompletedOutCopier = BeanCopyToolsBuilder
+	static BeanCopyTools<ReadCompleted, WrapOutReadCompleted> readCompletedOutCopier = BeanCopyToolsBuilder
 			.create(ReadCompleted.class, WrapOutReadCompleted.class, WrapOutReadCompleted.FieldsInvisible);
 
-	protected static BeanCopyTools<Work, WrapOutWork> workOutCopier = BeanCopyToolsBuilder.create(Work.class,
-			WrapOutWork.class, null, WrapOutWork.Excludes);
+	static BeanCopyTools<Work, WrapOutWork> workOutCopier = BeanCopyToolsBuilder.create(Work.class, WrapOutWork.class,
+			null, WrapOutWork.Excludes);
 
-	protected static BeanCopyTools<WorkCompleted, WrapOutWorkCompleted> workCompletedOutCopier = BeanCopyToolsBuilder
+	static BeanCopyTools<WorkCompleted, WrapOutWorkCompleted> workCompletedOutCopier = BeanCopyToolsBuilder
 			.create(WorkCompleted.class, WrapOutWorkCompleted.class, null, WrapOutWorkCompleted.Excludes);
 
-	protected List<NameValueCountPair> listApplicationPair(Business business, EffectivePerson effectivePerson)
-			throws Exception {
+	List<NameValueCountPair> listApplicationPair(Business business, EffectivePerson effectivePerson) throws Exception {
 		List<NameValueCountPair> wraps = new ArrayList<>();
 		EntityManager em = business.entityManagerContainer().get(ReadCompleted.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -56,8 +55,7 @@ abstract class ActionBase extends StandardJaxrsAction {
 		return wraps;
 	}
 
-	protected Long countWithApplication(Business business, EffectivePerson effectivePerson, String id)
-			throws Exception {
+	Long countWithApplication(Business business, EffectivePerson effectivePerson, String id) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(ReadCompleted.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
@@ -68,7 +66,7 @@ abstract class ActionBase extends StandardJaxrsAction {
 		return em.createQuery(cq).getSingleResult();
 	}
 
-	protected List<NameValueCountPair> listProcessPair(Business business, EffectivePerson effectivePerson,
+	List<NameValueCountPair> listProcessPair(Business business, EffectivePerson effectivePerson,
 			Application application) throws Exception {
 		List<NameValueCountPair> wraps = new ArrayList<>();
 		EntityManager em = business.entityManagerContainer().get(ReadCompleted.class);
@@ -89,7 +87,7 @@ abstract class ActionBase extends StandardJaxrsAction {
 		return wraps;
 	}
 
-	protected Long countWithProcess(Business business, EffectivePerson effectivePerson, String id) throws Exception {
+	Long countWithProcess(Business business, EffectivePerson effectivePerson, String id) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(ReadCompleted.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);

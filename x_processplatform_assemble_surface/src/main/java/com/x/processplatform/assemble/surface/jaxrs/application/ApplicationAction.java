@@ -20,10 +20,14 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.wrapout.element.WrapOutApplication;
 
 @Path("application")
 public class ApplicationAction extends AbstractJaxrsAction {
+
+	private static Logger logger = LoggerFactory.getLogger(ApplicationAction.class);
 
 	@HttpMethodDescribe(value = "获取指定的Application信息,并在Control段附带其操作权限.", response = WrapOutApplication.class)
 	@GET
@@ -32,12 +36,12 @@ public class ApplicationAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get(@Context HttpServletRequest request, @PathParam("flag") String flag) {
 		ActionResult<WrapOutApplication> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGet().execute(effectivePerson, flag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -49,12 +53,12 @@ public class ApplicationAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listWithPerson(@Context HttpServletRequest request) {
 		ActionResult<List<WrapOutApplication>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListWithPerson().execute(effectivePerson);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -66,12 +70,12 @@ public class ApplicationAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listWithPersonComplex(@Context HttpServletRequest request) {
 		ActionResult<List<WrapOutApplication>> result = new ActionResult<>();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
 			result = new ActionListWithPersonComplex().execute(effectivePerson);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -83,11 +87,12 @@ public class ApplicationAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response GetIcon(@Context HttpServletRequest request, @PathParam("flag") String flag) {
 		ActionResult<WrapOutApplication> result = new ActionResult<>();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
 			result = new ActionGetIcon().execute(flag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

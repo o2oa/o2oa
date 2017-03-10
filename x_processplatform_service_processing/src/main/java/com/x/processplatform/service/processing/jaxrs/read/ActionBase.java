@@ -8,6 +8,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.WrapOutId;
+import com.x.base.core.project.server.Config;
 import com.x.base.core.utils.DateTools;
 import com.x.processplatform.core.entity.content.ProcessingType;
 import com.x.processplatform.core.entity.content.Read;
@@ -45,7 +46,7 @@ public class ActionBase {
 		readCompleted.setCompletedTimeMonth(DateTools.format(date, DateTools.format_yyyyMM));
 		readCompleted.setRead(read.getId());
 		readCompleted.setDuration(
-				business.workTime().betweenMinutes(readCompleted.getStartTime(), readCompleted.getCompletedTime()));
+				Config.workTime().betweenMinutes(readCompleted.getStartTime(), readCompleted.getCompletedTime()));
 		return readCompleted;
 	}
 

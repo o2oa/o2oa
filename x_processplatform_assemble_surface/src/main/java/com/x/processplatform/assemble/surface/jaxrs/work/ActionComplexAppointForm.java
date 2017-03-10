@@ -4,7 +4,6 @@ import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutMap;
@@ -20,12 +19,14 @@ class ActionComplexAppointForm extends ActionBase {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<WrapOutMap> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Work work = emc.find(id, Work.class, ExceptionWhen.not_found);
+			Work work = emc.find(id, Work.class);
+			if (null == work) {
+				throw new WorkNotExistedException(id);
+			}
 			WrapOutMap wrap = this.getComplex(business, effectivePerson, work);
 			Control control = (Control) wrap.get("control");
 			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
-				throw new Exception(
-						"person{name:" + effectivePerson.getName() + "} access work{id:" + id + "} was denied.");
+				throw new WorkAccessDeniedException(effectivePerson.getName(), id);
 			}
 			wrap.put("form", this.getWrapOutForm(business, formFlag));
 			result.setData(wrap);

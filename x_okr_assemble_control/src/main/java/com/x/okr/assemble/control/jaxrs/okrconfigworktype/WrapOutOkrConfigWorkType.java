@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.x.base.core.http.annotation.Wrap;
 import com.x.okr.entity.OkrConfigWorkType;
+
 @Wrap( OkrConfigWorkType.class)
 public class WrapOutOkrConfigWorkType extends OkrConfigWorkType{
 
@@ -11,7 +12,7 @@ public class WrapOutOkrConfigWorkType extends OkrConfigWorkType{
 
 	public static List<String> Excludes = new ArrayList<String>();
 	
-	private Integer centerCount = 0;
+	private Long centerCount = 0L;
 
 	private Long rank = 0L;
 
@@ -22,12 +23,14 @@ public class WrapOutOkrConfigWorkType extends OkrConfigWorkType{
 	public void setRank(Long rank) {
 		this.rank = rank;
 	}
-	
-	public Integer getCenterCount() {
+
+	public Long getCenterCount() {
 		return centerCount;
 	}
 
-	public void setCenterCount( Integer centerCount) {
+	public void setCenterCount(Long centerCount) {
 		this.centerCount = centerCount;
 	}
+	
+	
 }

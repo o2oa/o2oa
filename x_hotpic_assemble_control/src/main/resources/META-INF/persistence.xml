@@ -11,15 +11,15 @@
   <persistence-unit name="com.x.cms.core.entity.Document" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>com.x.base.core.entity.SliceJpaObject</class>
-    <class>com.x.cms.core.entity.Document</class>
     <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.cms.core.entity.Document</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.hotpic.entity.HotPictureInfo" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>com.x.base.core.entity.SliceJpaObject</class>
-    <class>com.x.hotpic.entity.HotPictureInfo</class>
     <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.hotpic.entity.HotPictureInfo</class>
     <properties/>
   </persistence-unit>
 </persistence>

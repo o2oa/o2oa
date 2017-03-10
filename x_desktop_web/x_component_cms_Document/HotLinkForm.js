@@ -2,67 +2,12 @@ MWF.xApplication.cms.Document = MWF.xApplication.cms.Document || {};
 MWF.xDesktop.requireApp("Template", "Explorer", null, false);
 MWF.require("MWF.widget.ImageClipper", null, false);
 
-MWF.xApplication.cms.Document.ImageClipper = new Class({
-    Extends: MWF.widget.ImageClipper,
-    initialize: function(node, options, parent, docId){
-        this.node = node;
-        this.setOptions(options);
-        this.parent = parent;
-        this.docId = docId;
-
-        this.path = MWF.defaultPath+"/widget/$ImageClipper/";
-        this.cssPath = MWF.defaultPath+"/widget/$ImageClipper/"+this.options.style+"/css.wcss";
-
-        this._loadCss();
-        this.fireEvent("init");
-    },
-    _createUploadButtom : function(){
-        this.uploadCurrentFile = new Element("button.uploadActionNode",{
-            "styles" : this.css.uploadActionNode,
-            "text" : "选择本文档图片"
-        }).inject(this.uploadToolbar);
-        this.uploadCurrentFile.addEvents({
-            "click": function(){ this.selectDocPicture(
-                function(url , base64Code){
-                    this.loadImageAsUrl( url );
-                }.bind(this)
-            ); }.bind(this)
-        });
-    },
-    selectDocPicture: function( callback ){
-        MWF.xDesktop.requireApp("cms.Document", "Attachment", null, false);
-        this.parent.actions.listAttachment( this.docId, function( json ){
-            this.selector_doc = new MWF.xApplication.cms.Document.Attachment(document.body, this.parent, this.parent.actions, this.parent.lp, {
-                //documentId : this.data ? this.data.id : "",
-                isNew : false,
-                isEdited : false,
-                "onUpload" : function( attData ){
-                    this.attachment.attachmentController.addAttachment(attData);
-                    this.attachment.attachmentController.checkActions();
-                }.bind(this)
-            })
-            this.selector_doc.data = json.data || [];
-            this.selector_doc.loadAttachmentSelecter({
-                "style": "cms",
-                "title": "选择本文档图片",
-                "listStyle": "preview",
-                "toBase64" : true,
-                "selectType": "images"
-            }, function (url, data, base64Code) {
-                if (callback)callback(url, base64Code);
-                //this.iconNode.set("src", base64Code || url);
-                //this.hotPicData.pictureBase64 = base64Code || url;
-            }.bind(this));
-        }.bind(this) )
-    }
-});
-
 MWF.xApplication.cms.Document.HotLinkForm = new Class({
     Extends: MWF.xApplication.Template.Explorer.PopupForm,
     Implements: [Options, Events],
     options: {
         "style": "default",
-        "width": "900",
+        "width": "760",
         "height": "620",
         "hasTop": true,
         "hasIcon": false,
@@ -86,11 +31,11 @@ MWF.xApplication.cms.Document.HotLinkForm = new Class({
 
             var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
                 "<tr>" +
-                "   <td styles='formTableTitle' lable='hotPicture'></td>" +
+                //"   <td styles='formTableTitle' lable='hotPicture'></td>" +
                 "   <td styles='formTableValue' item='hotPictureArea'></td>" +
                 "</tr>"+
                 "<tr>" +
-                "   <td styles='formTableTitle'></td>" +
+                //"   <td styles='formTableTitle'></td>" +
                 "   <td>"+this.lp.hotLinkDescription+"</td>" +
                 "</tr>"+
                 //"<tr>" +
@@ -123,11 +68,14 @@ MWF.xApplication.cms.Document.HotLinkForm = new Class({
         //    this.iconNode.set("src", this.hotPicData.pictureBase64);
         //}
         MWF.require("MWF.widget.ImageClipper", function () {
-            this.clipper = new MWF.xApplication.cms.Document.ImageClipper(hotPictureArea, {
-                aspectRatio : 1.5,
-                formFileEnable : true
-            }, this, this.options.documentId );
-            this.clipper.load( this.hotPicData.pictureBase64 );
+            this.clipper = new MWF.widget.ImageClipper(hotPictureArea, {
+                aspectRatio : 2,
+                formFileEnable : true,
+                imageUrl : MWF.xDesktop.getImageSrc( this.hotPicData.picId ),
+                reference : this.options.documentId,
+                referenceType : "cmsDocument"
+            });
+            this.clipper.load();
         }.bind(this));
 
         //var hotPictureActionArea = this.formTableArea.getElements("[item='hotPictureActionArea']")[0];
@@ -149,49 +97,49 @@ MWF.xApplication.cms.Document.HotLinkForm = new Class({
         //}.bind(this));
 
     },
-    selectDocPicture: function(){
-        MWF.xDesktop.requireApp("cms.Document", "Attachment", function(){
-            this.actions.listAttachment( this.options.documentId, function( json ){
-                this.selector_doc = new MWF.xApplication.cms.Document.Attachment(document.body, this, this.actions, this.lp, {
-                    //documentId : this.data ? this.data.id : "",
-                    isNew : false,
-                    isEdited : false,
-                    "onUpload" : function( attData ){
-                        this.attachment.attachmentController.addAttachment(attData);
-                        this.attachment.attachmentController.checkActions();
-                    }.bind(this)
-                });
-                this.selector_doc.data = json.data || [];
-                this.selector_doc.loadAttachmentSelecter({
-                    "style": "cms",
-                    "title": "选择本文档图片",
-                    "listStyle": "preview",
-                    "selectType": "images"
-                }, function (url, data, base64Code) {
-                    //if (callback)callback(url, data);
-                    this.iconNode.set("src", base64Code || url);
-                    this.hotPicData.pictureBase64 = base64Code || url;
-                }.bind(this));
-            }.bind(this) )
-        }.bind(this), true);
-    },
-    selectFilePicture: function () {
-        var _self = this;
-        MWF.xDesktop.requireApp("File", "FileSelector", function(){
-            _self.selector_cloud = new MWF.xApplication.File.FileSelector( document.body ,{
-                "style" : "default",
-                "title": "选择云文件图片",
-                "listStyle": "preview",
-                "toBase64" : true,
-                "selectType" : "images",
-                "onPostSelectAttachment" : function(url, base64Code){
-                    _self.iconNode.set("src", base64Code || url);
-                    _self.hotPicData.pictureBase64 = base64Code || url;
-                }
-            });
-            _self.selector_cloud.load();
-        }, true);
-    },
+    //selectDocPicture: function(){
+    //    MWF.xDesktop.requireApp("cms.Document", "Attachment", function(){
+    //        this.actions.listAttachment( this.options.documentId, function( json ){
+    //            this.selector_doc = new MWF.xApplication.cms.Document.Attachment(document.body, this, this.actions, this.lp, {
+    //                //documentId : this.data ? this.data.id : "",
+    //                isNew : false,
+    //                isEdited : false,
+    //                "onUpload" : function( attData ){
+    //                    this.attachment.attachmentController.addAttachment(attData);
+    //                    this.attachment.attachmentController.checkActions();
+    //                }.bind(this)
+    //            });
+    //            this.selector_doc.data = json.data || [];
+    //            this.selector_doc.loadAttachmentSelecter({
+    //                "style": "cms",
+    //                "title": "选择本文档图片",
+    //                "listStyle": "preview",
+    //                "selectType": "images"
+    //            }, function (url, data, base64Code) {
+    //                //if (callback)callback(url, data);
+    //                this.iconNode.set("src", base64Code || url);
+    //                this.hotPicData.pictureBase64 = base64Code || url;
+    //            }.bind(this));
+    //        }.bind(this) )
+    //    }.bind(this), true);
+    //},
+    //selectFilePicture: function () {
+    //    var _self = this;
+    //    MWF.xDesktop.requireApp("File", "FileSelector", function(){
+    //        _self.selector_cloud = new MWF.xApplication.File.FileSelector( document.body ,{
+    //            "style" : "default",
+    //            "title": "选择云文件图片",
+    //            "listStyle": "preview",
+    //            "toBase64" : true,
+    //            "selectType" : "images",
+    //            "onPostSelectAttachment" : function(url, base64Code){
+    //                _self.iconNode.set("src", base64Code || url);
+    //                _self.hotPicData.pictureBase64 = base64Code || url;
+    //            }
+    //        });
+    //        _self.selector_cloud.load();
+    //    }, true);
+    //},
     _createBottomContent: function () {
 
         this.closeActionNode = new Element("div.formCancelActionNode", {
@@ -248,32 +196,35 @@ MWF.xApplication.cms.Document.HotLinkForm = new Class({
     },
     ok: function (e) {
         this.fireEvent("queryOk");
-        //var data = this.form.getResult(true, ",", true, false, true);
+
         var pictureBase64 = this.clipper.getBase64Image();
         if( !pictureBase64 || pictureBase64 == "" ){
             this.app.notice(this.lp.unselectHotPic, "error");
             return;
         }
-        this.hotPicData.pictureBase64 = pictureBase64;
-        //var pictureBase64 =this.hotPicData.pictureBase64.replace("http://","").split("\/");
-        //pictureBase64.shift();
-        //this.hotPicData.pictureBase64 = "/"+ pictureBase64.join("/");
-        this.hotPicData.infoId = this.options.documentId;
-        this.hotPicData.url = this.options.documentId;
-        this.hotPicData.title = this.data.title;
-        this.hotPicData.application = "CMS";
-        this.hotPicData.creator = layout.desktop.session.user.name;
+        this.clipper.uploadImage( function( json ){
 
-        this._ok(this.hotPicData, function (json) {
-            if (json.type == "error") {
-                this.app.notice(json.message, "error");
-            } else {
-                this.formMarkNode.destroy();
-                this.formAreaNode.destroy();
-                this.app.notice(this.lp.setHotLinkSuccess, "success");
-                this.fireEvent("postOk", json.data.id);
-            }
-        }.bind(this))
+            //this.hotPicData.pictureBase64 = pictureBase64;
+            this.hotPicData.infoId = this.options.documentId;
+            this.hotPicData.url = MWF.xDesktop.getImageSrc( json.id );
+            this.hotPicData.picId = json.id;
+            this.hotPicData.title = this.data.title;
+            this.hotPicData.application = "CMS";
+            this.hotPicData.creator = layout.desktop.session.user.name;
+
+            this._ok(this.hotPicData, function (json) {
+                if (json.type == "error") {
+                    this.app.notice(json.message, "error");
+                } else {
+                    this.formMarkNode.destroy();
+                    this.formAreaNode.destroy();
+                    this.app.notice(this.lp.setHotLinkSuccess, "success");
+                    this.fireEvent("postOk", json.data.id);
+                }
+            }.bind(this))
+
+        }.bind(this) );
+
     },
     _ok: function (data, callback) {
         this.actions.saveHotPic( data, function(json){

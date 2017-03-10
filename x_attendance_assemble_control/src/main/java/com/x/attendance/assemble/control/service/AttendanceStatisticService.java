@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.factory.AttendanceDetailStatisticFactory;
 import com.x.attendance.assemble.control.factory.StatisticDepartmentForMonthFactory;
@@ -84,12 +82,14 @@ public class AttendanceStatisticService {
 		try{
 			business = new Business( emc );
 		}catch(Exception e){
-			logger.error("【统计】系统在根据统计周期获取周期内应出勤工作日数量时发生异常！", e);
+			logger.warn("系统在根据统计周期获取周期内应出勤工作日数量时发生异常！" );
+			logger.error(e);
 		}
 		try{
 			workDayCountForMonth = business.getAttendanceWorkDayConfigFactory().getWorkDaysCountForMonth( attendanceStatisticalCycle.getCycleStartDate(), attendanceStatisticalCycle.getCycleEndDate(), workDayConfigList );
 		}catch(Exception e){
-			logger.error("【统计】系统在根据统计周期获取周期内应出勤工作日数量时发生异常！", e);
+			logger.warn("系统在根据统计周期获取周期内应出勤工作日数量时发生异常！" );
+			logger.error(e);
 		}
 		try{
 			statisticPersonForMonth = new StatisticPersonForMonth();
@@ -101,15 +101,12 @@ public class AttendanceStatisticService {
 			
 			if( departmentNames != null && departmentNames.size() > 0){
 				//logger.debug( "从打卡数据中查询到当月所在的部门是:");
-				for( String deptname : departmentNames ){
-					logger.debug( "部门:" + deptname);
-				}
 				statisticPersonForMonth.setOrganizationName( departmentNames.get( 0 ) );
 				wrapDepartment = business.organization().department().getWithName( departmentNames.get( 0 ) );
 				if( wrapDepartment != null ){
 					statisticPersonForMonth.setCompanyName( wrapDepartment.getCompany());
 				}else{
-					logger.error( "根据部门["+departmentNames.get( 0 )+"]未查询到部门信息。" );
+					logger.warn( "根据部门["+departmentNames.get( 0 )+"]未查询到部门信息。" );
 				}
 			}else{
 				//根据员工姓名，查询部门和公司名称
@@ -120,10 +117,10 @@ public class AttendanceStatisticService {
 						statisticPersonForMonth.setOrganizationName( wrapDepartment.getName() );
 						statisticPersonForMonth.setCompanyName( wrapDepartment.getCompany());
 					}else{
-						logger.error( "根据身份["+identities.get(0).getName()+"]未查询到部门信息。" );
+						logger.warn( "根据身份["+identities.get(0).getName()+"]未查询到部门信息。" );
 					}
 				}else{
-					logger.error("系统中未查询到员工的身份，请管理员核实是否有为员工配置部门信息！");
+					logger.warn("系统中未查询到员工的身份，请管理员核实是否有为员工配置部门信息！");
 				}	
 			}
 							
@@ -183,7 +180,8 @@ public class AttendanceStatisticService {
 			updateAttendanceStatisticRequireLog( attendanceStatisticRequireLog.getId(), "COMPLETED", "处理成功" );
 		}catch(Exception e){
 			updateAttendanceStatisticRequireLog( attendanceStatisticRequireLog.getId(), "ERROR", e.getMessage().length()>1000?e.getMessage().substring(0,700):e.getMessage() );
-			logger.error("【统计】系统在根据统计周期获取周期内统计数据时发生异常！", e);
+			logger.warn("系统在根据统计周期获取周期内统计数据时发生异常！" );
+			logger.error(e);
 		}
 	}
 	
@@ -248,7 +246,7 @@ public class AttendanceStatisticService {
 			if( wrapDepartment != null ){
 				statisticDepartmentForMonth.setCompanyName( wrapDepartment.getCompany() );
 			}else{
-				logger.error( "根据部门名称["+departmentName+"]未查询到部门信息。" );
+				logger.warn( "根据部门名称["+departmentName+"]未查询到部门信息。" );
 			}
 			//    1.2.1 应出勤天数
 			workDayCountForMonth = business.getStatisticPersonForMonthFactory().sumAttendanceDayCountByDepartmentYearAndMonth(query_departmentNames, cycleYear, cycleMonth);
@@ -306,7 +304,8 @@ public class AttendanceStatisticService {
 				updateAttendanceStatisticRequireLog( attendanceStatisticRequireLog.getId(), "COMPLETED", "处理成功" );
 			}
 		}catch(Exception e){
-			logger.error("【统计】系统在根据统计周期获取周期内部门统计数据时发生异常！", e);
+			logger.warn("系统在根据统计周期获取周期内部门统计数据时发生异常！" );
+			logger.error(e);
 			if( attendanceStatisticRequireLog != null ){
 				String id = attendanceStatisticRequireLog.getId();
 				String message = e.getMessage().length()>700?e.getMessage().substring(0,700):e.getMessage();
@@ -368,7 +367,7 @@ public class AttendanceStatisticService {
 			statisticCompanyForMonth.setStatisticMonth(cycleMonth);
 			statisticCompanyForMonth.setCompanyName(companyName);
 			if( statisticDepartmentForMonthFactory == null ){
-				logger.error(" statisticDepartmentForMonthFactory  is null !!!");
+				logger.warn(" statisticDepartmentForMonthFactory  is null !!!");
 			}
 			
 			// 1.2.1 出勤天数
@@ -425,7 +424,8 @@ public class AttendanceStatisticService {
 			updateAttendanceStatisticRequireLog( attendanceStatisticRequireLog.getId(), "COMPLETED", "处理成功" );
 		}catch(Exception e){
 			updateAttendanceStatisticRequireLog( attendanceStatisticRequireLog.getId(), "ERROR", e.getMessage().length()>1000?e.getMessage().substring(0,700):e.getMessage() );
-			logger.error("【统计】系统在根据统计周期获取周期内公司统计数据时发生异常！", e);
+			logger.warn("系统在根据统计周期获取周期内公司统计数据时发生异常！" );
+			logger.error(e);
 		}
 	}
 	
@@ -486,7 +486,7 @@ public class AttendanceStatisticService {
 			if( wrapDepartment != null ){
 				statisticDepartmentForDay.setCompanyName( wrapDepartment.getCompany() );
 			}else{
-				logger.error( "根据部门名称["+departmentName+"]未查询到部门信息。" );
+				logger.warn( "根据部门名称["+departmentName+"]未查询到部门信息。" );
 			}
 			//    4.2.1 应出勤天数
 			//statisticDepartmentForDay.setWorkDayCount( workDayCountForMonth );
@@ -543,7 +543,8 @@ public class AttendanceStatisticService {
 			updateAttendanceStatisticRequireLog( attendanceStatisticRequireLog.getId(), "COMPLETED", "处理成功" );
 		}catch(Exception e){
 			updateAttendanceStatisticRequireLog( attendanceStatisticRequireLog.getId(), "ERROR", e.getMessage().length()>1000?e.getMessage().substring(0,700):e.getMessage() );
-			logger.error("【统计】系统在根据统计周期获取周期内统计数据时发生异常！", e);
+			logger.warn("系统在根据统计周期获取周期内统计数据时发生异常！" );
+			logger.error(e);
 		}
 	}
 	
@@ -650,7 +651,8 @@ public class AttendanceStatisticService {
 			updateAttendanceStatisticRequireLog( attendanceStatisticRequireLog.getId(), "COMPLETED", "处理成功" );
 		}catch(Exception e){
 			updateAttendanceStatisticRequireLog( attendanceStatisticRequireLog.getId(), "ERROR", e.getMessage().length()>1000?e.getMessage().substring(0,700):e.getMessage() );
-			logger.error("【统计】系统在根据统计周期获取周期内统计数据时发生异常！", e);
+			logger.warn("系统在根据统计周期获取周期内统计数据时发生异常！" );
+			logger.error(e);
 		}
 	}
 	
@@ -666,10 +668,11 @@ public class AttendanceStatisticService {
 				emc.check( attendanceStatisticRequireLog, CheckPersistType.all);
 				emc.commit();	
 			}else{
-				logger.error( "系统未能根据ID查询到统计需求信息：{'id':'"+id+"'}" );
+				logger.warn( "系统未能根据ID查询到统计需求信息：{'id':'"+id+"'}" );
 			}
 		}catch(Exception e){
-			logger.error( "系统在更新统计需求信息状态时发生异常！", e );
+			logger.warn( "系统在更新统计需求信息状态时发生异常！" );
+			logger.error(e);
 		}
 	}
 	public List<String> listPersonForMonthByUserYearAndMonth(EntityManagerContainer emc, String name, String year, String month) throws Exception {

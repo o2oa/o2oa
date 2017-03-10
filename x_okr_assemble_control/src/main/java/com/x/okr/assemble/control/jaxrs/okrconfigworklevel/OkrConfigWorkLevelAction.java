@@ -13,56 +13,52 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
-import com.x.base.core.bean.BeanCopyTools;
-import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
+import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
-import com.x.okr.assemble.control.service.OkrConfigWorkLevelService;
-import com.x.okr.assemble.control.service.OkrWorkDynamicsService;
-import com.x.okr.entity.OkrConfigWorkLevel;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 
 
 @Path( "okrconfigworklevel" )
 public class OkrConfigWorkLevelAction extends StandardJaxrsAction{
-	private Logger logger = LoggerFactory.getLogger( OkrConfigWorkLevelAction.class );
-	private BeanCopyTools<OkrConfigWorkLevel, WrapOutOkrConfigWorkLevel> wrapout_copier = BeanCopyToolsBuilder.create( OkrConfigWorkLevel.class, WrapOutOkrConfigWorkLevel.class, null, WrapOutOkrConfigWorkLevel.Excludes);
-	private OkrConfigWorkLevelService okrConfigWorkLevelService = new OkrConfigWorkLevelService();
-	private OkrWorkDynamicsService okrWorkDynamicsService = new OkrWorkDynamicsService();
 	
-	@HttpMethodDescribe(value = "新建或者更新OkrConfigWorkLevel对象.", request = WrapInOkrConfigWorkLevel.class, response = WrapOutOkrConfigWorkLevel.class)
+	private Logger logger = LoggerFactory.getLogger( OkrConfigWorkLevelAction.class );
+	
+	
+	@HttpMethodDescribe(value = "新建或者更新OkrConfigWorkLevel对象.", request = JsonElement.class, response = WrapOutId.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response post(@Context HttpServletRequest request, WrapInOkrConfigWorkLevel wrapIn) {
-		ActionResult<WrapOutOkrConfigWorkLevel> result = new ActionResult<>();
-		OkrConfigWorkLevel okrConfigWorkLevel = null;
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		//logger.debug( "user " + currentPerson.getName() + "[proxy:'"+ThisApplication.getLoginIdentity( currentPerson.getName() )+"'] try to save OkrConfigWorkLevel......" );
-		if( wrapIn != null ){
-			try {
-				okrConfigWorkLevel = okrConfigWorkLevelService.save( wrapIn );
-				if( okrConfigWorkLevel != null ){
-					result.setUserMessage( okrConfigWorkLevel.getId() );
-				}else{
-					result.error( new Exception( "系统在保存信息时发生异常!" ) );
-					result.setUserMessage( "系统在保存信息时发生异常!" );
-				}
-			} catch (Exception e) {
-				result.error( e );
-				result.setUserMessage( "系统在保存信息时发生异常!" );
-				logger.error( "OkrConfigWorkLevelService save object got an exception", e );
-			}
-		}else{
-			result.error( new Exception( "请求传入的参数为空，无法继续保存!" ) );
-			result.setUserMessage( "请求传入的参数为空，无法继续保存!" );
+	public Response save(@Context HttpServletRequest request, JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult< WrapOutId > result = new ActionResult<>();
+		WrapInOkrConfigWorkLevel wrapIn = null;
+		Boolean check = true;
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInOkrConfigWorkLevel.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
 		}
+		if( check ){
+			try {
+				result = new ExcuteSave().execute( request, effectivePerson, wrapIn );
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error( e );
+				logger.warn( "system excute ExcuteSave got an exception. " );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
@@ -72,19 +68,15 @@ public class OkrConfigWorkLevelAction extends StandardJaxrsAction{
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response delete(@Context HttpServletRequest request, @PathParam( "id" ) String id) {
-		ActionResult<WrapOutOkrConfigWorkLevel> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		//logger.debug( "user " + currentPerson.getName() + "[proxy:'"+ThisApplication.getLoginIdentity( currentPerson.getName() )+"'] try to delete okrConfigWorkLevel{'id':'"+id+"'}......" );
-		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not delete any object." );
-		}
-		try{
-			okrConfigWorkLevelService.delete( id );
-			result.setUserMessage( "成功删除工作等级数据信息。id=" + id );
-		}catch(Exception e){
-			logger.error( "system delete okrConfigWorkLevelService get an exception, {'id':'"+id+"'}", e );
-			result.setUserMessage( "删除工作等级数据过程中发生异常。" );
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult< WrapOutId > result = new ActionResult<>();
+		try {
+			result = new ExcuteDelete().execute( request, effectivePerson, id );
+		} catch (Exception e) {
+			result = new ActionResult<>();
 			result.error( e );
+			logger.warn( "system excute ExcuteDelete got an exception.id:" + id );
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -95,26 +87,15 @@ public class OkrConfigWorkLevelAction extends StandardJaxrsAction{
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get(@Context HttpServletRequest request, @PathParam( "id" ) String id) {
-		ActionResult<WrapOutOkrConfigWorkLevel> result = new ActionResult<>();
-		WrapOutOkrConfigWorkLevel wrap = null;
-		OkrConfigWorkLevel okrConfigWorkLevel = null;
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		//logger.debug( "user[" + currentPerson.getName() + "][proxy:'"+ThisApplication.getLoginIdentity( currentPerson.getName() )+"'] try to get okrConfigWorkLevel{'id':'"+id+"'}......" );
-		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not get any object." );
-		}
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult< WrapOutOkrConfigWorkLevel > result = new ActionResult<>();
 		try {
-			okrConfigWorkLevel = okrConfigWorkLevelService.get( id );
-			if( okrConfigWorkLevel != null ){
-				wrap = wrapout_copier.copy( okrConfigWorkLevel );
-				result.setData(wrap);
-			}else{
-				logger.error( "system can not get any object by {'id':'"+id+"'}. " );
-			}
-		} catch (Throwable th) {
-			logger.error( "system get by id got an exception" );
-			th.printStackTrace();
-			result.error(th);
+			result = new ExcuteGet().execute( request, effectivePerson, id );
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			result.error( e );
+			logger.warn( "system excute ExcuteGet got an exception. id：" + id);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -125,21 +106,15 @@ public class OkrConfigWorkLevelAction extends StandardJaxrsAction{
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response all(@Context HttpServletRequest request ) {
-		ActionResult<List<WrapOutOkrConfigWorkLevel>> result = new ActionResult<>();
-		List<WrapOutOkrConfigWorkLevel> wraps = null;
-		List<OkrConfigWorkLevel> okrConfigWorkLevelList = null;
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		//logger.debug( "user[" + currentPerson.getName() + "][proxy:'"+ThisApplication.getLoginIdentity( currentPerson.getName() )+"'] try to get okrConfigWorkLevel{'id':'"+id+"'}......" );
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult< List<WrapOutOkrConfigWorkLevel> > result = new ActionResult<>();
 		try {
-			okrConfigWorkLevelList = okrConfigWorkLevelService.listAll();
-			if( okrConfigWorkLevelList != null ){
-				wraps = wrapout_copier.copy( okrConfigWorkLevelList );
-				result.setData(wraps);
-			}
-		} catch (Throwable th) {
-			logger.error( "system get by id got an exception" );
-			th.printStackTrace();
-			result.error(th);
+			result = new ExcuteListAll().execute( request, effectivePerson );
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			result.error( e );
+			logger.warn( "system excute ExcuteListAll got an exception.");
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

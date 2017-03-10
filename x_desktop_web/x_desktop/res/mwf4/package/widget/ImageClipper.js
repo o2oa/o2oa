@@ -13,6 +13,9 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 		"previewerSize" : 300, //预览区域大小
 		"resultMaxSize" : 800, //生成图片的最大宽或高
 
+		"reference": "",
+		"referenceType" : "",
+
 		"showPreviewer" : true,
 		"formLocalEnable" : true,  //本地图片
 		"formFileEnable" : true, //云文件图片
@@ -24,6 +27,10 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 
 		this.path = this.options.path || (MWF.defaultPath+"/widget/$ImageClipper/");
 		this.cssPath = this.path + this.options.style+"/css.wcss";
+
+		this.fileName = "untitled.png";
+		this.fileType = "image/png";
+		this.fileSize = null;
 
 		this._loadCss();
 		this.fireEvent("init");
@@ -53,9 +60,23 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 			this.loadImageAsFile( this.base64ToBlob( imageBase64 ) );
 		}
 	},
+	uploadImage: function(  success, failure  ){
+		if( this.resizedImage ){
+			MWF.xDesktop.uploadImageByScale(
+				this.options.reference,
+				this.options.referenceType,
+				800,
+				this.getFormData(),
+				this.resizedImage,
+				success,
+				failure
+			);
+		}else{
+		}
+	},
 	getFormData : function(){
 		var formData = new FormData();
-		formData.append('file',this.resizedImage);
+		formData.append('file',this.resizedImage, this.fileName );
 		return formData;
 	},
 	getResizedImage : function(){
@@ -66,7 +87,7 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 	},
 	getBase64Image: function(){
 		if( !this.base64Code )return null;
-		return 'data:image/png;base64,' + this.base64Code;
+		return 'data:'+ this.fileType +';base64,' + this.base64Code;
 	},
 	checkBroswer : function(){
 		if( Uint8Array && HTMLCanvasElement && atob && Blob){
@@ -111,6 +132,9 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 			}).inject(this.container);
 			this.fileNode.addEvent("change", function(event){
 				var file=this.fileNode.files[0];
+				this.fileType = file.type;
+				this.fileName = file.name;
+				this.fileSize = file.size;
 				this.loadImageAsFile( file );
 			}.bind(this));
 		}
@@ -124,7 +148,10 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 			}).inject(this.uploadToolbar);
 			this.uploadCloudFile.addEvents({
 				"click": function(){ this.selectFileImage(
-					function(url , base64Code){
+					function( url, id ,attachmentInfo ){
+						this.fileName = attachmentInfo.name;
+						this.fileType = ["jpeg","jpg"].contains( attachmentInfo.extension.toLowerCase() ) ? "image/jpeg" : "image/png" ;
+						this.fileSize = attachmentInfo.length;
 						this.loadImageAsUrl( url );
 					}.bind(this)
 				); }.bind(this)
@@ -145,6 +172,9 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 
 	},
 	reset: function(){
+		this.fileName = "untitled.png";
+		this.fileType = "image/png";
+		this.fileSize = null;
 		this.resizedImage = "";
 		this.base64Code = "";
 		this.resetImage();
@@ -163,17 +193,19 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 			"height" : 0
 		})
 	},
-	selectFileImage : function( callback, width ){
+	selectFileImage : function( callback ){
 		var _self = this;
 		MWF.xDesktop.requireApp("File", "FileSelector", function(){
 			_self.selector_cloud = new MWF.xApplication.File.FileSelector( document.body ,{
 				"style" : "default",
 				"title": "选择云文件图片",
+				"copyToPublic" : false,
+				//"reference" :  _self.options.reference,
+				//"referenceType" : _self.options.referenceType,
 				"listStyle": "preview",
-				"toBase64" : false,
 				"selectType" : "images",
-				"onPostSelectAttachment" : function(url, base64Code){
-					if(callback)callback(url, base64Code);
+				"onPostSelectAttachment" : function( url, id, attachmentInfor ){
+					if(callback)callback(url, id, attachmentInfor );
 				}
 			});
 			_self.selector_cloud.load();
@@ -318,7 +350,7 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 				this.lastPoint=null;
 				this.clipImage();
 				ev.stopPropagation();
-			}.bind(this),
+			}.bind(this)
 		});
 
 		this.bodyMouseMoveFun = this.bodyMouseMove.bind(this);
@@ -371,7 +403,7 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 			h=this.frameOffset.size.height*scale;
 
 		ctx.drawImage(this.imageNode,x,y,w,h,0,0,size.width,size.height);
-		var src=canvas.toDataURL();
+		var src=canvas.toDataURL( this.fileType );
 		this.canvas=canvas;
 		canvas.inject(this.resultNode);
 
@@ -387,9 +419,9 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 		var ia = new Uint8Array(src.length);
 		for (var i = 0; i < src.length; i++) {
 			ia[i] = src.charCodeAt(i);
-		};
+		}
 
-		this.resizedImage = new Blob([ia], {type:"image/png"});
+		this.resizedImage = new Blob([ia], {type: this.fileType });
 
 		var min = Math.min(this.options.previewerSize, nh, nw);
 		size = this.getRatioMaxSize(min, min, ratio);
@@ -437,6 +469,7 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 		this.imageNode.src = url;
 	},
 	onImageLoad: function(){
+		debugger;
 		var nh=this.imageNode.naturalHeight,
 			nw=this.imageNode.naturalWidth;
 		if( isNaN(nh) || isNaN(nw) || nh == 0 || nw == 0 ){
@@ -499,8 +532,12 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 		if( this.options.aspectRatio ){
 			return this.getRatioMaxSize(this.offset.width, this.offset.height);
 		}else{
-			var min = Math.min(this.offset.width, this.offset.height);
-			return { width : min, height : min };
+			//var min = Math.min(this.offset.width, this.offset.height);
+			//return { width : min, height : min };
+			return {
+				width : this.offset.width,
+				height : this.offset.height
+			};
 		}
 	},
 	getRatioMaxSize: function( width, height , radio ){
@@ -598,13 +635,13 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 			x=width-size.width;
 		}else{
 			x=x+left;
-		};
+		}
 
 		if(y+size.height+top>height){
 			y=height-size.height;
 		}else{
 			y=y+top;
-		};
+		}
 		x=x<0?0:x;
 		y=y<0?0:y;
 		this.frameNode.setStyles({
@@ -632,12 +669,12 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 				x:x,
 				y:y
 			};
-		};
+		}
 
 		var offset={
 			x:x-this.lastPoint.x,
 			y:y-this.lastPoint.y
-		}
+		};
 		this.lastPoint={
 			x:x,
 			y:y
@@ -658,7 +695,7 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 			ia[i] = bytes.charCodeAt(i);
 		}
 
-		return new Blob( [ab] , {type : 'image/png'});
+		return new Blob( [ab] , {type : this.fileType });
 	}
 
 });

@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.google.gson.Gson;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -88,6 +87,9 @@ public class UserManagerService {
 	 * @throws Exception 
 	 */
 	public String getCompanyNameByIdentity( String identity ) throws Exception{	
+		if( identity == null || identity.isEmpty() ){
+			return null;
+		}
 		Business business = null;
 		WrapCompany wrapCompany = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -393,7 +395,8 @@ public class UserManagerService {
 				}
 			}
 		} catch (Exception e) {
-			logger.error( "系统根据员工查询论坛用户权限角色信息列表时发生异常！", e );
+			logger.warn( "系统根据员工查询论坛用户权限角色信息列表时发生异常！" );
+			logger.error(e);
 		}
 		
 		return false;
@@ -412,7 +415,8 @@ public class UserManagerService {
 				permissionList = permissionInfoService.listPermissionByCodes( permissionCodes );
 			}
 		} catch (Exception e) {
-			logger.error( "系统根据员工查询论坛用户权限角色信息列表时发生异常！", e );
+			logger.warn( "系统根据员工查询论坛用户权限角色信息列表时发生异常！" );
+			logger.error(e);
 		}
 		return permissionList;
 	}	
@@ -424,15 +428,15 @@ public class UserManagerService {
 		RoleAndPermission roleAndPermission = null;
 		Boolean check = true;
 		if( userName == null ){
-			logger.error( "user name is null!" );
-			return null;
+			throw new Exception( "user name is null!" );
 		}
 		if( check ){
 			try{
 				userInfo = userInfoService.getByUserName( userName );
 			}catch( Exception e ){
 				check = false;
-				logger.error( "系统根据员工查询论坛用户信息时发生异常！", e );
+				logger.warn( "系统根据员工查询论坛用户信息时发生异常！" );
+				logger.error(e);
 			}
 		}
 		if( check ){
@@ -456,8 +460,7 @@ public class UserManagerService {
 		RoleAndPermission roleAndPermission = null;
 		Boolean check = true;
 		if( userName == null ){
-			logger.error( "user name is null!" );
-			return null;
+			throw new Exception( "user name is null!" );
 		}
 		if( check ){
 			userInfo = refreshUserRoleAndPermissionForLogin( userName );
@@ -480,15 +483,15 @@ public class UserManagerService {
 		List<String> permissionCodes = null;
 		Boolean check = true;
 		if( userName == null ){
-			logger.error( "userName is null!" );
-			return null;
+			throw new Exception( "userName is null!" );
 		}else{
 			if( check ){
 				try{
 					roleCodes = roleInfoService.listAllRoleCodesForUser( userName );
 				}catch( Exception e ){
 					check = false;
-					logger.error( "系统根据员工查询所有的角色信息时发生异常！", e );
+					logger.warn( "系统根据员工查询所有的角色信息时发生异常！" );
+					logger.error(e);
 				}
 			}
 			if( check ){
@@ -497,7 +500,8 @@ public class UserManagerService {
 						permissionCodes = permissionInfoService.listPermissionCodesByRoleCodes( roleCodes );
 					}catch( Exception e ){
 						check = false;
-						logger.error( "系统根据员工查询所有的权限信息时发生异常！", e );
+						logger.warn( "系统根据员工查询所有的权限信息时发生异常！" );
+						logger.error(e);
 					}
 				}
 				
@@ -519,7 +523,8 @@ public class UserManagerService {
 					userInfo = userInfoService.getByUserName( userName );
 				}catch( Exception e ){
 					check = false;
-					logger.error( "系统根据员工查询论坛用户信息时发生异常！", e );
+					logger.warn( "系统根据员工查询论坛用户信息时发生异常！" );
+					logger.error(e);
 				}
 				if( userInfo == null ){
 					userInfo = new BBSUserInfo();
@@ -545,8 +550,7 @@ public class UserManagerService {
 		List<String> permissionCodes = null;
 		Boolean check = true;
 		if( userName == null ){
-			logger.error( "userName is null!" );
-			return null;
+			throw new Exception( "userName is null!" );
 		}else{
 			//查询用户所拥有的角色列表
 			if( check ){
@@ -554,7 +558,8 @@ public class UserManagerService {
 					roleCodes = roleInfoService.listAllRoleCodesForUser( userName );
 				}catch( Exception e ){
 					check = false;
-					logger.error( "系统根据员工查询所有的角色信息时发生异常！", e );
+					logger.warn( "系统根据员工查询所有的角色信息时发生异常！" );
+					logger.error(e);
 				}
 			}
 			//查询用户拥有的角色所包含的所有权限列表
@@ -564,7 +569,8 @@ public class UserManagerService {
 						permissionCodes = permissionInfoService.listPermissionCodesByRoleCodes( roleCodes );
 					}catch( Exception e ){
 						check = false;
-						logger.error( "系统根据员工查询所有的权限信息时发生异常！", e );
+						logger.warn( "系统根据员工查询所有的权限信息时发生异常！" );
+						logger.error(e);
 					}
 				}
 			}
@@ -586,7 +592,8 @@ public class UserManagerService {
 					userInfo = userInfoService.getByUserName( userName );
 				}catch( Exception e ){
 					check = false;
-					logger.error( "系统根据员工查询论坛用户信息时发生异常！", e );
+					logger.warn( "系统根据员工查询论坛用户信息时发生异常！" );
+					logger.error(e);
 				}
 				if( userInfo == null ){
 					userInfo = new BBSUserInfo();
@@ -709,7 +716,8 @@ public class UserManagerService {
 					methodExcuteResult.setSuccess( false );
 					methodExcuteResult.error(e);
 					methodExcuteResult.setMessage( "系统获取用户所拥有的权限列表时发生异常" );
-					logger.error( "system get all permission list from ThisApplication.userPermissionInfoMap got an exception!", e );
+					logger.warn( "system get all permission list from ThisApplication.userPermissionInfoMap got an exception!" );
+					logger.error(e);
 				}
 			}
 			if( methodExcuteResult.getSuccess() ){//获取用户可以访问的论坛相关权限
@@ -719,7 +727,8 @@ public class UserManagerService {
 					methodExcuteResult.setSuccess( false );
 					methodExcuteResult.error(e);
 					methodExcuteResult.setMessage( "系统从用户所拥有的权限里过滤论坛访问权限时发生异常" );
-					logger.error( "system filter FORUM_VIEW permission from user permission list got an exception!", e );
+					logger.warn( "system filter FORUM_VIEW permission from user permission list got an exception!" );
+					logger.error(e);
 				}
 			}
 			if( methodExcuteResult.getSuccess() ){//获取可访问的论坛ID列表
@@ -748,7 +757,8 @@ public class UserManagerService {
 					methodExcuteResult.setSuccess( false );
 					methodExcuteResult.error(e);
 					methodExcuteResult.setMessage( "系统获取用户所拥有的权限列表时发生异常" );
-					logger.error( "system get all permission list from ThisApplication.userPermissionInfoMap got an exception!", e );
+					logger.warn( "system get all permission list from ThisApplication.userPermissionInfoMap got an exception!" );
+					logger.error(e);
 				}
 			}
 			if( methodExcuteResult.getSuccess() ){//获取用户可以访问的论坛相关权限
@@ -758,7 +768,8 @@ public class UserManagerService {
 					methodExcuteResult.setSuccess( false );
 					methodExcuteResult.error(e);
 					methodExcuteResult.setMessage( "系统从用户所拥有的权限里过滤论坛访问权限时发生异常" );
-					logger.error( "system filter FORUM_VIEW permission from user permission list got an exception!", e );
+					logger.warn( "system filter FORUM_VIEW permission from user permission list got an exception!" );
+					logger.error(e);
 				}
 			}
 			if( methodExcuteResult.getSuccess() ){//获取可访问的论坛ID列表
@@ -771,5 +782,39 @@ public class UserManagerService {
 		}
 		methodExcuteResult.setBackObject( ids );
 		return methodExcuteResult;
+	}
+	
+	/**
+	 * 判断用户是否有指定的权限
+	 * @param userName
+	 * @param roleName
+	 * @return
+	 * @throws Exception 
+	 */
+	public boolean isHasRole( String userName, String roleName ) throws Exception {
+		if( userName == null || userName.isEmpty() ){
+			throw new Exception( "userName is null!" );
+		}
+		if( roleName == null || roleName.isEmpty() ){
+			throw new Exception( "roleName is null!" );
+		}
+		List<WrapRole> roleList = null;
+		Business business = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			roleList = business.organization().role().listWithPerson( userName );
+			if( roleList != null && !roleList.isEmpty() ){
+				for( WrapRole role : roleList ){
+					if( role.getName().equalsIgnoreCase( roleName )){
+						return true;
+					}
+				}
+			}else{
+				return false;
+			}
+		} catch ( Exception e ) {
+			throw e;
+		}
+		return false;
 	}
 }

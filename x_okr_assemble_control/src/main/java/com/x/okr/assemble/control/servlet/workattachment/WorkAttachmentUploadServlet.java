@@ -1,7 +1,5 @@
 package com.x.okr.assemble.control.servlet.workattachment;
 
-import static com.x.base.core.entity.StorageType.okr;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -12,7 +10,6 @@ import java.util.UUID;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -22,16 +19,17 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.x.base.core.application.servlet.FileUploadServletTools;
+import com.x.base.core.application.servlet.AbstractServletAction;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
+import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.project.server.StorageMapping;
 import com.x.okr.assemble.control.ThisApplication;
 import com.x.okr.entity.OkrAttachmentFileInfo;
@@ -44,14 +42,14 @@ import com.x.okr.entity.OkrWorkBaseInfo;
  */
 @WebServlet(urlPatterns= "/servlet/upload/work/*" )
 @MultipartConfig
-public class WorkAttachmentUploadServlet extends HttpServlet {
+public class WorkAttachmentUploadServlet extends AbstractServletAction {
 
 	private static final long serialVersionUID = 5628571943877405247L;
 	private Logger logger = LoggerFactory.getLogger( WorkAttachmentUploadServlet.class );
 	
-	@HttpMethodDescribe(value = "上传附件 servlet/upload/work/{id}", response = Object.class)
+	@HttpMethodDescribe(value = "上传附件 servlet/upload/work/{id}", response = WrapOutId.class)
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ActionResult<Object> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		List<OkrAttachmentFileInfo> attachments = new ArrayList<OkrAttachmentFileInfo>();
 		OkrAttachmentFileInfo okrAttachmentFileInfo = null;
 		OkrWorkBaseInfo okrWorkBaseInfo = null;
@@ -68,28 +66,27 @@ public class WorkAttachmentUploadServlet extends HttpServlet {
 		
 		if (!ServletFileUpload.isMultipartContent(request)) {
 			check = false;
+			logger.warn("not mulit part request." ); 
 			result.error( new Exception( "请求不是Multipart，无法获取文件信息。" ) );
-			result.setUserMessage( "请求不是Multipart，无法获取文件信息。" );
-			logger.error( "not mulit part request." );
 		}
 		if ( check ) {
 			try {
-				effectivePerson = FileUploadServletTools.effectivePerson( request );
+				effectivePerson = this.effectivePerson( request );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统从请求对象里获取操作用户信息发生异常。" );
-				logger.error( "system get effectivePerson from request got an exception.", e );
+				result.error(e);
+				logger.warn("system get effectivePerson from request url got an exception." ); 
+				logger.error(e);
 			}
 		}
 		if( check ){
 			try {
-				workId = FileUploadServletTools.getURIPart( request.getRequestURI(), "work" );
+				workId = this.getURIPart( request.getRequestURI(), "work" );
 			}catch(Exception e){
 				check = false;
-				result.setUserMessage( "系统从URL获取工作ID参数时发生异常。" );
-				result.error( e );
-				logger.error( "system get work id from url got an exception." );
+				result.error(e);
+				logger.warn("system get workId from request url got an exception." );
+				logger.error(e);
 			}
 		}
 		if( check ){
@@ -98,16 +95,16 @@ public class WorkAttachmentUploadServlet extends HttpServlet {
 					okrWorkBaseInfo = emc.find( workId, OkrWorkBaseInfo.class );
 					if ( null == okrWorkBaseInfo ) {
 						check = false;
-						result.error( new Exception( "工作信息不存在:" + workId ) );
-						result.setUserMessage( "工作信息不存在。" );
-						logger.error( "[UploadServlet]okrWorkBaseInfo{id:" + workId + "} not existed." );
+						Exception exception = new WorkNotExistsException( workId );
+						result.error( exception );
+						logger.error( exception, effectivePerson, request, null);
 					}
 				}
 			}catch(Exception e){
 				check = false;
-				result.setUserMessage( "系统从数据库中根据工作ID获取工作基础信息时发生异常。" );
-				result.error( e );
-				logger.error( "[UploadServlet]system get okrWorkBaseInfo{id:" + workId + "} from database got an exception." );
+				Exception exception = new WorkQueryByIdException( e, workId );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}		
 		
@@ -126,8 +123,8 @@ public class WorkAttachmentUploadServlet extends HttpServlet {
 								site = str;
 							}
 						} else {
-							StorageMapping mapping = ThisApplication.storageMappings.random( okr );
-							okrAttachmentFileInfo = concreteAttachment( effectivePerson.getName(), okrWorkBaseInfo, mapping, FileUploadServletTools.getFileName( item.getName() ), site );
+							StorageMapping mapping = ThisApplication.storageMappings.random( OkrAttachmentFileInfo.class );
+							okrAttachmentFileInfo = concreteAttachment( effectivePerson.getName(), okrWorkBaseInfo, mapping, this.getFileName( item.getName() ), site );
 							okrAttachmentFileInfo.saveContent( mapping, input, item.getName() );
 							attachments.add( okrAttachmentFileInfo );
 						}
@@ -137,9 +134,8 @@ public class WorkAttachmentUploadServlet extends HttpServlet {
 				}
 			}catch(Exception e){
 				check = false;
-				result.setUserMessage( "系统从数据库中根据工作ID获取工作基础信息时发生异常。" );
-				result.error( e );
-				logger.error( "[UploadServlet]system try to save okrAttachmentFileInfo to Storage got an exception.", e);
+				logger.warn( "[UploadServlet]system try to save okrAttachmentFileInfo to Storage got an exception." );
+				logger.error(e);
 			}
 		}
 		
@@ -155,19 +151,19 @@ public class WorkAttachmentUploadServlet extends HttpServlet {
 						emc.beginTransaction( OkrWorkBaseInfo.class );
 						emc.persist( okrAttachmentFileInfo, CheckPersistType.all );
 						okrWorkBaseInfo.getAttachmentList().add( okrAttachmentFileInfo.getId() );
-						result.setUserMessage( okrAttachmentFileInfo.getId() );
 						emc.check( okrWorkBaseInfo, CheckPersistType.all );
 						emc.commit();
-					}					
+					}
+					result.setData( new WrapOutId( okrAttachmentFileInfo.getId()));
 				}catch( Exception e ){
 					check = false;
-					result.setUserMessage( "系统向数据库存储附件和工作信息时发生异常。" );
 					result.error( e );
-					logger.error( "[UploadServlet]system try to save okrAttachmentFileInfo to database got an exception.", e);
+					logger.warn( "[UploadServlet]system try to save okrAttachmentFileInfo to database got an exception." );
+					logger.error(e);
 				}
 			}
 		}
-		FileUploadServletTools.result( response, result );
+		this.result( response, result );
 	}
 	
 	private OkrAttachmentFileInfo concreteAttachment( String person, OkrWorkBaseInfo okrWorkBaseInfo, StorageMapping storage, String name, String site ) throws Exception {
@@ -180,6 +176,12 @@ public class WorkAttachmentUploadServlet extends HttpServlet {
 		}
 		attachment.setFileHost( storage.getHost() );
 		attachment.setFilePath( "" );
+		if( name.indexOf( "\\" ) >0 ){
+			name = StringUtils.substringAfterLast( name, "\\");
+		}
+		if( name.indexOf( "/" ) >0 ){
+			name = StringUtils.substringAfterLast( name, "/");
+		}
 		attachment.setName( name );
 		attachment.setFileName( fileName );
 		attachment.setStorageName( storage.getName() );

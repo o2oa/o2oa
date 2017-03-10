@@ -17,11 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.x.attendance.assemble.common.date.DateOperation;
-import com.x.attendance.assemble.control.jaxrs.WrapOutMessage;
 import com.x.attendance.assemble.control.service.AttendanceDetailServiceAdv;
 import com.x.attendance.entity.AttendanceDetailMobile;
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
@@ -31,11 +27,13 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.http.ActionResult;
+import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
-import com.x.base.core.utils.SortTools;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 
 
 @Path("attendancedetail/mobile")
@@ -52,6 +50,7 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get(@Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutAttendanceDetailMobile> result = new ActionResult<>();
+		EffectivePerson currentPerson = this.effectivePerson(request);
 		WrapOutAttendanceDetailMobile wrap = null;
 		AttendanceDetailMobile attendanceDetailMobile = null;
 		Boolean check = true;
@@ -59,8 +58,9 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 		if( check ){
 			if( id == null ){
 				check = false;
-				result.error( new Exception("需要查询的打卡详细记录ID为空，无法进行数据查询。") );
-				result.setUserMessage( "需要查询的打卡详细记录ID为空，无法进行数据查询。" );
+				Exception exception = new AttendanceDetailMobileIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if( check ){
@@ -68,16 +68,17 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 				attendanceDetailMobile = attendanceDetailServiceAdv.getMobile( id );
 			} catch (Exception e) {
 				check = false;
-				result.error( new Exception("系统在根据用户传入的ID查询打卡详细信息记录时发生异常。") );
-				result.setUserMessage( "系统在根据用户传入的ID查询打卡详细信息记录时发生异常。" );
-				logger.error( "system get attendance detail Mobile info with id:"+ id +" got an exception.", e );
+				Exception exception = new AttendanceDetailMobileQueryByIdException( e, id);
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if( check ){
 			if( attendanceDetailMobile == null ){
 				check = false;
-				result.error( new Exception("系统在根据用户传入的ID未能查询到任何打卡详细信息记录常。" ) );
-				result.setUserMessage( "系统在根据用户传入的ID未能查询到任何打卡详细信息记录常。" );
+				Exception exception = new AttendanceDetaillMobileNotExistsException( id);
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if( check ){
@@ -86,9 +87,9 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 				result.setData(wrap);
 			} catch (Exception e) {
 				check = false;
-				result.error( new Exception("系统在转换数据库对象attendanceDetailMobile为输出对象时发生异常。") );
-				result.setUserMessage( "系统在转换数据库对象为输出对象时发生异常。" );
-				logger.error( "system copy attendanceDetailMobile to wrap got an exception.", e );
+				Exception exception = new AttendanceDetailMobileWrapCopyException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -101,6 +102,7 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listDataForMobile(@Context HttpServletRequest request, @PathParam("page") Integer page, @PathParam("count") Integer count, WrapInAttendanceDetailMobileQuery wrapIn ) {
 		ActionResult<List<WrapOutAttendanceDetailMobile>> result = new ActionResult<>();
+		EffectivePerson currentPerson = this.effectivePerson(request);
 		List<WrapOutAttendanceDetailMobile> wraps = new ArrayList<>();
 		List<WrapOutAttendanceDetailMobile> allResultWrap = null;
 		List<AttendanceDetailMobile> attendanceDetailMobileList = null;
@@ -111,11 +113,11 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 		Boolean check = true;
 		Boolean queryConditionIsNull = true;
 		
-		if( wrapIn == null ){
-			check = false;
-			result.error( new Exception("系统未获取到需要保存的数据！") );
-			result.setUserMessage( "系统未获取到需要保存的数据！" );
-		}
+//		if( wrapIn == null ){
+//			check = false;
+//			result.error( new Exception("系统未获取到需要保存的数据！") );
+//			result.setUserMessage( "系统未获取到需要保存的数据！" );
+//		}
 		if( check ){
 			if( page == null ){
 				page = 1;
@@ -147,8 +149,9 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 			}
 			if( queryConditionIsNull ){
 				check = false;
-				result.error( new Exception("员工号，员工姓名和查询日期不能全部为空！") );
-				result.setUserMessage( "员工号，员工姓名和查询日期不能全部为空！" );
+				Exception exception = new AttendanceDetailMobileQueryParameterEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -158,9 +161,9 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 					wrapIn.setEndDate( dateOperation.getDateStringFromDate( datetime, "YYYY-MM-DD") ); //结束日期
 				}catch( Exception e ){
 					check = false;
-					result.error( new Exception("结束日期格式异常，日期：" + wrapIn.getEndDate() ) );
-					result.setUserMessage( "结束日期格式异常，日期：" + wrapIn.getEndDate() );
-					logger.error("end date string error:" + wrapIn.getEndDate(), e);
+					Exception exception = new AttendanceDetailMobileEndDateFormatException( e, wrapIn.getEndDate() );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 				if( wrapIn.getEndDate() == null || wrapIn.getEndDate().isEmpty() ){
 					wrapIn.setEndDate( wrapIn.getStartDate() );
@@ -172,9 +175,9 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 					wrapIn.setStartDate( dateOperation.getDateStringFromDate( datetime, "YYYY-MM-DD") ); //开始日期
 				}catch( Exception e ){
 					check = false;
-					result.error( new Exception("开始日期格式异常，日期：" + wrapIn.getStartDate() ) );
-					result.setUserMessage( "开始日期格式异常，日期：" + wrapIn.getStartDate() );
-					logger.error("start date string error:" + wrapIn.getStartDate(), e);
+					Exception exception = new AttendanceDetailMobileStartDateFormatException( e, wrapIn.getEndDate() );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -186,9 +189,9 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 					total = attendanceDetailServiceAdv.countAttendanceDetailMobileForPage( wrapIn.getEmpNo(), wrapIn.getEmpName(), wrapIn.getSignDescription(), wrapIn.getStartDate(), wrapIn.getEndDate() );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "根据ID信息查询版块信息时发生异常！" );
-					logger.error( "system query all top subject info with section info got an exceptin.", e );
+					Exception exception = new AttendanceDetailMobileCountException( e, wrapIn.getEmpNo(), wrapIn.getEmpName(), wrapIn.getSignDescription(), wrapIn.getStartDate(), wrapIn.getEndDate() );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -198,9 +201,9 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 					attendanceDetailMobileList = attendanceDetailServiceAdv.listAttendanceDetailMobileForPage( wrapIn.getEmpNo(), wrapIn.getEmpName(), wrapIn.getSignDescription(), wrapIn.getStartDate(), wrapIn.getEndDate(), selectTotal );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "根据ID信息查询版块信息时发生异常！" );
-					logger.error( "system query all top subject info with section info got an exceptin.", e );
+					Exception exception = new AttendanceDetailMobileListByParameterException( e, wrapIn.getEmpNo(), wrapIn.getEmpName(), wrapIn.getSignDescription(), wrapIn.getStartDate(), wrapIn.getEndDate() );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -210,9 +213,9 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 					allResultWrap = wrapout_copier.copy( attendanceDetailMobileList );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "系统将列表转换为输出格式时发生异常！" );
-					logger.error( "system copy list to wraps got an exceptin.", e );
+					Exception exception = new AttendanceDetailMobileWrapCopyException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -251,19 +254,21 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 		WrapOutId wrapOutId = null;
 		Date datetime = null;
 		DateOperation dateOperation = new DateOperation();
+		EffectivePerson currentPerson = this.effectivePerson( request );
 		AttendanceDetailMobile attendanceDetailMobile = new AttendanceDetailMobile();
 		Boolean check = true;
 		
-		if( wrapIn == null ){
-			check = false;
-			result.error( new Exception("系统未获取到需要保存的数据！") );
-			result.setUserMessage( "系统未获取到需要保存的数据！" );
-		}
+//		if( wrapIn == null ){
+//			check = false;
+//			result.error( new Exception("系统未获取到需要保存的数据！") );
+//			result.setUserMessage( "系统未获取到需要保存的数据！" );
+//		}
 		if( check ){
 			if( wrapIn.getRecordAddress() == null || wrapIn.getRecordAddress().isEmpty() ){
 				check = false;
-				result.error( new Exception("打卡信息中打卡地址描述 不能为空！") );
-				result.setUserMessage( "打卡信息中打卡地址描述 不能为空！" );
+				Exception exception = new AttendanceDetailMobileRecordAddressEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}else{
 				attendanceDetailMobile.setRecordAddress( wrapIn.getRecordAddress() );
 			}
@@ -271,8 +276,9 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 		if( check ){
 			if( wrapIn.getLatitude() == null || wrapIn.getLatitude().isEmpty() ){
 				check = false;
-				result.error( new Exception("打卡信息中打卡地址纬度信息不能为空！") );
-				result.setUserMessage( "打卡信息中打卡地址纬度信息不能为空！" );
+				Exception exception = new AttendanceDetailMobileLatitudeEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}else{
 				attendanceDetailMobile.setLatitude( wrapIn.getLatitude() );
 			}
@@ -280,41 +286,15 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 		if( check ){
 			if( wrapIn.getLongitude() == null || wrapIn.getLongitude().isEmpty() ){
 				check = false;
-				result.error( new Exception("打卡信息中打卡地址经度信息不能为空！") );
-				result.setUserMessage( "打卡信息中打卡地址经度信息不能为空！" );
+				Exception exception = new AttendanceDetailMobileLongitudeEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}else{
 				attendanceDetailMobile.setLongitude( wrapIn.getLongitude() );
 			}
 		}
 		if( check ){
-			if( wrapIn.getRecordDateString() == null || wrapIn.getRecordDateString().isEmpty() ){
-				check = false;
-				result.error( new Exception("打卡信息中打卡日期不能为空，格式: yyyy-mm-dd！") );
-				result.setUserMessage( "打卡信息中打卡日期不能为空，格式: yyyy-mm-dd！" );
-			}else{
-				attendanceDetailMobile.setRecordDateString( wrapIn.getRecordDateString() );
-			}
-		}
-		if( check ){
-			if( wrapIn.getEmpName() == null || wrapIn.getEmpName().isEmpty() ){
-				check = false;
-				result.error( new Exception("打卡信息中打卡员工姓名不能为空！") );
-				result.setUserMessage( "打卡信息中打卡员工姓名不能为空！" );
-			}else{
-				attendanceDetailMobile.setEmpName( wrapIn.getEmpName() );
-			}
-		}
-		if( check ){
-			try{
-				datetime = dateOperation.getDateFromString( wrapIn.getRecordDateString() );
-				attendanceDetailMobile.setRecordDate( datetime );
-				attendanceDetailMobile.setRecordDateString( dateOperation.getDateStringFromDate( datetime, "YYYY-MM-DD") );
-			}catch( Exception e ){
-				check = false;
-				result.error( new Exception("打卡日期格式异常，时间：" + wrapIn.getRecordDateString() ) );
-				result.setUserMessage( "打卡日期格式异常，时间：" + wrapIn.getRecordDateString() );
-				logger.error("record date string error:" + wrapIn.getRecordDateString(), e);
-			}
+			attendanceDetailMobile.setEmpName( currentPerson.getName() );
 		}
 		if( check ){
 			if( wrapIn.getSignTime() != null && wrapIn.getSignTime().trim().length() > 0 ){
@@ -323,10 +303,27 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 					attendanceDetailMobile.setSignTime( dateOperation.getDateStringFromDate( datetime, "HH:mm:ss") ); //打卡时间
 				}catch( Exception e ){
 					check = false;
-					result.error( new Exception("打卡时间格式异常，时间：" + wrapIn.getSignTime() ) );
-					result.setUserMessage( "打卡时间格式异常，时间：" + wrapIn.getSignTime() );
-					logger.error("sign time string error:" + wrapIn.getSignTime(), e);
+					Exception exception = new AttendanceDetailMobileSignTimeFormatException( e, wrapIn.getSignTime() );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
+			}else{//打卡时间没有填写就填写为当前时间
+				attendanceDetailMobile.setSignTime( dateOperation.getNowTime() ); //打卡时间
+			}
+		}
+		if( check ){
+			if( wrapIn.getRecordDateString() != null && !wrapIn.getRecordDateString().isEmpty() ){
+				try{
+					datetime = dateOperation.getDateFromString( wrapIn.getRecordDateString() );
+					attendanceDetailMobile.setRecordDateString( dateOperation.getDateStringFromDate( datetime, "yyyy-MM-dd") ); //打卡时间
+				}catch( Exception e ){
+					check = false;
+					Exception exception = new AttendanceDetailMobileRecordDateFormatException( e, wrapIn.getRecordDateString() );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
+				}				
+			}else{
+				attendanceDetailMobile.setRecordDateString( dateOperation.getNowDate() ); //打卡日期
 			}
 		}
 		if( check ){
@@ -340,43 +337,42 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 				result.setData( wrapOutId );
 			} catch (Exception e) {
 				check = false;
-				result.error( new Exception("系统在保存打卡数据信息时发生异常。" ) );
-				result.setUserMessage( "系统在保存打卡数据信息时发生异常。" );
-				logger.error("system save attendanceDetailMobile got an exception.", e);
+				Exception exception = new AttendanceDetailMobileSaveException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "根据ID删除AttendanceDetailMobile数据对象.", response = WrapOutMessage.class)
+	@HttpMethodDescribe(value = "根据ID删除AttendanceDetailMobile数据对象.", response = WrapOutId.class)
 	@DELETE
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response delete(@Context HttpServletRequest request, @PathParam("id") String id) {
-		ActionResult<WrapOutMessage> result = new ActionResult<>();
-		WrapOutMessage wrapOutMessage = new WrapOutMessage();
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson currentPerson = this.effectivePerson( request );
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			AttendanceDetailMobile attendanceDetailMobile = emc.find(id, AttendanceDetailMobile.class);
-			if (null == attendanceDetailMobile) {
-				wrapOutMessage.setStatus("ERROR");
-				wrapOutMessage.setMessage( "需要删除的打卡数据信息不存在。id=" + id );
+			if ( null == attendanceDetailMobile ) {
+				Exception exception = new AttendanceDetaillMobileNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}else{
 				//进行数据库持久化操作				
 				emc.beginTransaction( AttendanceDetailMobile.class );
 				emc.remove( attendanceDetailMobile, CheckRemoveType.all );
-				emc.commit();			
-				wrapOutMessage.setStatus("SUCCESS");
-				wrapOutMessage.setMessage( "成功删除打卡数据信息。id=" + id );
+				emc.commit();
+				result.setData( new WrapOutId(id) );
+				logger.info( "成功删除打卡数据信息。id=" + id );
 			}			
 		} catch ( Exception e ) {
-			e.printStackTrace();
-			wrapOutMessage.setStatus("ERROR");
-			wrapOutMessage.setMessage( "删除打卡数据过程中发生异常。" );
-			wrapOutMessage.setExceptionMessage( e.getMessage() );
+			Exception exception = new AttendanceDetaillMobileNotExistsException( id );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
-		result.setData( wrapOutMessage );
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 }

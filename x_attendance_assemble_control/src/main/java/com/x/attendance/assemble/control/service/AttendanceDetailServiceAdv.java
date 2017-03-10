@@ -2,10 +2,8 @@ package com.x.attendance.assemble.control.service;
 
 import java.util.Date;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.AttendanceDetail;
@@ -138,7 +136,8 @@ public class AttendanceDetailServiceAdv {
 					try{
 						attendanceDetailService.archive( emc, id, datetime );
 					}catch( Exception e ){
-						logger.error( "system archive attendance appeal info got an exception.", e );
+						logger.warn( "system archive attendance appeal info got an exception." );
+						logger.error(e);
 					}
 				}
 			}
@@ -162,7 +161,7 @@ public class AttendanceDetailServiceAdv {
 		if( attendanceDetailMobile == null ){
 			throw new Exception("attendanceDetailMobile is null!");
 		}
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			return attendanceDetailService.save( emc, attendanceDetailMobile );
 		} catch ( Exception e ) {
 			throw e;

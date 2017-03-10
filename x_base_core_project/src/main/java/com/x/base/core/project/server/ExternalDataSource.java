@@ -2,21 +2,26 @@ package com.x.base.core.project.server;
 
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.gson.GsonPropertyObject;
 
 public class ExternalDataSource extends GsonPropertyObject {
 
+	public ExternalDataSource() {
+
+	}
+
 	private String url;
-
 	private String username;
-
 	private String password;
-
 	private List<String> includes;
-
 	private List<String> excludes;
-	
 	private Boolean enable;
+
+	public Boolean getEnable() {
+		return BooleanUtils.isTrue(this.enable);
+	}
 
 	public String getUrl() {
 		return url;
@@ -56,10 +61,6 @@ public class ExternalDataSource extends GsonPropertyObject {
 
 	public void setExcludes(List<String> excludes) {
 		this.excludes = excludes;
-	}
-
-	public Boolean getEnable() {
-		return enable;
 	}
 
 	public void setEnable(Boolean enable) {

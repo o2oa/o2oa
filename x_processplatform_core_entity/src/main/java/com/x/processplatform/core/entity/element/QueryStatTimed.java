@@ -36,7 +36,7 @@ public class QueryStatTimed extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.Element.QueryStatTimed.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -49,7 +49,7 @@ public class QueryStatTimed extends SliceJpaObject {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -109,7 +109,7 @@ public class QueryStatTimed extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception{
 
 	}
 
@@ -135,7 +135,7 @@ public class QueryStatTimed extends SliceJpaObject {
 	@EntityFieldDescribe("预约的运行时间.")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(length = JpaObject.length_255B, name = "xscheduleTime")
-	@Index(name = TABLE + "scheduleTime")
+	@Index(name = TABLE + "_scheduleTime")
 	@CheckPersist(allowEmpty = false)
 	private Date scheduleTime;
 

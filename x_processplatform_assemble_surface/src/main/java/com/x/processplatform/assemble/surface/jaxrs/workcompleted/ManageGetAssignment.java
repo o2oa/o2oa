@@ -2,7 +2,6 @@ package com.x.processplatform.assemble.surface.jaxrs.workcompleted;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutMap;
@@ -22,10 +21,10 @@ class ManageGetAssignment extends ActionBase {
 			ActionResult<WrapOutMap> result = new ActionResult<>();
 			WrapOutMap wrap = new WrapOutMap();
 			Business business = new Business(emc);
-			WorkCompleted workCompleted = emc.find(id, WorkCompleted.class, ExceptionWhen.not_found);
+			WorkCompleted workCompleted = emc.find(id, WorkCompleted.class);
 			Process process = business.process().pick(workCompleted.getProcess());
 			if (!business.process().allowControl(effectivePerson, process)) {
-				throw new Exception("person{name:" + effectivePerson.getName() + "} has insufficient permissions.");
+				throw new ProcessAccessDeniedException(effectivePerson.getName(), workCompleted.getProcess());
 			}
 			wrap.put("taskCompletedList", this.listTaskCompleted(business, workCompleted));
 			wrap.put("readList", this.listRead(business, workCompleted));

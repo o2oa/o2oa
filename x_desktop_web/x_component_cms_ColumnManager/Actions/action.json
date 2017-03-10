@@ -1,7 +1,9 @@
 {
   "getId" : {"uri":"/jaxrs/uuid/random"},
 
-  "listColumn": {"uri": "/jaxrs/appinfo/list/user" }, //"/jaxrs/appinfo/list/all"},
+  "listColumn": {"uri": "/jaxrs/appinfo/list/user/view" }, //"/jaxrs/appinfo/list/all"},
+  "listColumnByPublish": {"uri": "/jaxrs/appinfo/list/user/publish" },
+  "listColumnByAdmin": {"uri": "/jaxrs/appinfo/list/admin" },
   "getColumn": {"uri": "/jaxrs/appinfo/{id}"},
   "addColumn": {"uri": "/jaxrs/appinfo","method": "POST"},
   "removeColumn": {"uri": "/jaxrs/appinfo/{id}","method": "DELETE"},
@@ -13,12 +15,13 @@
     "enctype": "formData"
   },
 
-  "listAllCategory" : {"uri":"/jaxrs/catagoryinfo/list/all"},
-  "listCategory": {"uri": "/jaxrs/catagoryinfo/list/user/app/{appId}" },
-  "addCategory" : {"uri":"/jaxrs/catagoryinfo","method":"POST"},
-  "getCategory" : {"uri":"/jaxrs/catagoryinfo/{id}"},
-  "updateCategory": {"uri": "/jaxrs/catagoryinfo","method": "POST"},
-  "removeCategory": {"uri": "/jaxrs/catagoryinfo/{id}","method": "DELETE"},
+  "listAllCategory" : {"uri":"/jaxrs/categoryinfo/list/all"},
+  "listCategory": {"uri": "/jaxrs/categoryinfo/list/view/app/{appId}" },
+  "listCategoryByPublisher": {"uri": "/jaxrs/categoryinfo/list/publish/app/{appId}" },
+  "addCategory" : {"uri":"/jaxrs/categoryinfo","method":"POST"},
+  "getCategory" : {"uri":"/jaxrs/categoryinfo/{id}"},
+  "updateCategory": {"uri": "/jaxrs/categoryinfo","method": "POST"},
+  "removeCategory": {"uri": "/jaxrs/categoryinfo/{id}","method": "DELETE"},
 
   "listAllForm" : {"uri":"/jaxrs/form/list/all"},
   "listForm": {"uri": "/jaxrs/form/list/app/{appId}"},
@@ -26,6 +29,13 @@
   "addForm": {"uri": "/jaxrs/form","method": "POST"},
   "removeForm": {"uri": "/jaxrs/form/{id}","method": "DELETE"},
   "updataForm": {"uri": "/jaxrs/form/{id}","method": "PUT"},
+
+  "getFormTemplate": {"uri": "/jaxrs/templateform/{id}"},
+  "deleteFormTemplate": {"uri": "/jaxrs/templateform/{id}","method": "DELETE"},
+  "addFormTemplate": {"uri": "/jaxrs/templateform","method": "POST"},
+  "listFormTemplate": {"uri": "/jaxrs/templateform/list"},
+  "listFormTemplateCategory": {"uri": "/jaxrs/templateform/list/category"},
+  "listFormTemplatByCategory": {"uri": "/jaxrs/templateform/list/category","method": "PUT"},
 
   "listDictionary": {"uri": "/jaxrs/appdict/list/app/{appId}"},
   "getDictionary": {"uri": "/jaxrs/appdict/{appDictId}"},
@@ -40,29 +50,31 @@
   "updataScript": {"uri": "/jaxrs/script/{id}", "method": "PUT"},
   "getScriptByName": {"uri": "/jaxrs/script/list/app/{appId}/name/{name}"},
 
-  "listController" : {"uri": "/jaxrs/appcatagoryadmin/list/{person}/type/{objectType}"}, //根据用户帐号和权限类别查询配置记录
-  "listAllController" : {"uri": "/jaxrs/appcatagoryadmin/list/all"},
-  "listCategoryController" : {"uri": "/jaxrs/appcatagoryadmin/list/catagory/{catagoryId}"},
-  "listColumnController" : {"uri": "/jaxrs/appcatagoryadmin/list/app/{appId}"},
-  "listControllerByPerson" : {"uri": "/jaxrs/appcatagoryadmin/list/person/{person}"},
-  "getController" : {"uri": "/jaxrs/appcatagoryadmin/{id}"},
-  "addController" : {"uri":"/jaxrs/appcatagoryadmin", "method":"POST"},
-  "updateController" : {"uri":"/jaxrs/appcatagoryadmin", "method":"POST"},
-  "removeController" : {"uri":"/jaxrs/appcatagoryadmin/{id}", "method":"DELETE"},
+  "listController" : {"uri": "/jaxrs/appcategoryadmin/list/{person}/type/{objectType}"}, //根据用户帐号和权限类别查询配置记录
+  "listAllController" : {"uri": "/jaxrs/appcategoryadmin/list/all"},
+  "listCategoryController" : {"uri": "/jaxrs/appcategoryadmin/list/category/{categoryId}"},
+  "listColumnController" : {"uri": "/jaxrs/appcategoryadmin/list/app/{appId}"},
+  "listControllerByPerson" : {"uri": "/jaxrs/appcategoryadmin/list/person/{person}"},
+  "getController" : {"uri": "/jaxrs/appcategoryadmin/{id}"},
+  "addController" : {"uri":"/jaxrs/appcategoryadmin", "method":"POST"},
+  "updateController" : {"uri":"/jaxrs/appcategoryadmin", "method":"POST"},
+  "removeController" : {"uri":"/jaxrs/appcategoryadmin/{id}", "method":"DELETE"},
 
-  "listPermission" : {"uri": "/jaxrs/appcatagorypermission/list/{person}/type/{objectType}"}, //根据用户帐号和权限类别查询配置记录
-  "listAllPermission" : {"uri": "/jaxrs/appcatagorypermission/list/all"},
-  //"listCategoryController" : {"uri": "/jaxrs/appcatagoryadmin/list/catagory/{catagoryId}"},
-  //"listColumnPermission" : {"uri": "/jaxrs/appcatagorypermission/list/person/{person}/{appId}/catagoryInfo"},
-  "listColumnPermission" : {"uri": "/jaxrs/appcatagorypermission/list/app/{appId}"},
-  "listPermissionByPerson" : {"uri": "/jaxrs/appcatagorypermission/list/person/{person}/appInfo"},
-  "getPermission" : {"uri": "/jaxrs/appcatagorypermission/{id}"},
-  "addPermission" : {"uri":"/jaxrs/appcatagorypermission", "method":"POST"},
-  "updatePermission" : {"uri":"/jaxrs/appcatagorypermission", "method":"POST"},
-  "removePermission" : {"uri":"/jaxrs/appcatagorypermission/{id}", "method":"DELETE"},
+  //"listPermission" : {"uri": "/jaxrs/appcategorypermission/list/{person}/type/{objectType}"}, //根据用户帐号和权限类别查询配置记录
+  //"listAllPermission" : {"uri": "/jaxrs/appcategorypermission/list/all"},
+  "listColumnPermission" : {"uri": "/jaxrs/appcategorypermission/list/app/{appId}/view"},
+  //"listPermissionByPerson" : {"uri": "/jaxrs/appcategorypermission/list/person/{person}/appInfo"},
+  //"getPermission" : {"uri": "/jaxrs/appcategorypermission/{id}"},
+  "addPermission" : {"uri":"/jaxrs/appcategorypermission", "method":"POST"},
+  "updatePermission" : {"uri":"/jaxrs/appcategorypermission", "method":"POST"},
+  "removePermission" : {"uri":"/jaxrs/appcategorypermission/{id}", "method":"DELETE"},
+
+  "listColumnPublisher" : {"uri": "/jaxrs/appcategorypermission/list/app/{appId}/publish"},
+  "listCategoryPermission" : {"uri": "/jaxrs/appcategorypermission/list/category/{categoryId}/view"},
+  "listCategoryPublisher" : {"uri": "/jaxrs/appcategorypermission/list/category/{categoryId}/publish"},
 
   "listView": {"uri" : "/jaxrs/view/list/app/{appId}"},
-  "listViewByCategory": {"uri" : "/jaxrs/view/list/catagory/{catagoryId}"},
+  "listViewByCategory": {"uri" : "/jaxrs/view/list/category/{categoryId}"},
   "listViewByForm": {"uri" : "/jaxrs/view/list/form/{formId}"},
   "getView" : {"uri" : "/jaxrs/view/{id}"},
   "addView": {"uri" : "/jaxrs/view", "method": "POST"},
@@ -75,12 +87,12 @@
   "updateViewColumn" : {"uri":"/jaxrs/viewfieldconfig/{id}","method":"PUT"},
   "deleteViewColumn" : {"uri":"/jaxrs/viewfieldconfig/{id}","method": "DELETE"},
 
-  "listCategoryViewByView": {"uri" : "/jaxrs/viewcatagory/list/view/{viewId}"},
-  "listCategoryViewByCatagory": {"uri" : "/jaxrs/viewcatagory/list/catagory/{catagoryId}"},
+  "listCategoryViewByView": {"uri" : "/jaxrs/viewcategory/list/view/{viewId}"},
+  "listCategoryViewByCategory": {"uri" : "/jaxrs/viewcategory/list/category/{categoryId}"},
   "getCategoryView" : {"uri" : "/jaxrs/viewfieldconfig/{id}"},
-  "addCategoryView" : {"uri":"/jaxrs/viewcatagory", "method": "POST"},
-  "updateCategoryView" : {"uri":"/jaxrs/viewcatagory/{id}","method":"PUT"},
-  "deleteCategoryView" : {"uri":"/jaxrs/viewcatagory/{id}","method": "DELETE"},
+  "addCategoryView" : {"uri":"/jaxrs/viewcategory", "method": "POST"},
+  "updateCategoryView" : {"uri":"/jaxrs/viewcategory/{id}","method":"PUT"},
+  "deleteCategoryView" : {"uri":"/jaxrs/viewcategory/{id}","method": "DELETE"},
 
   "listQueryView": {"uri": "/jaxrs/queryview/design/list/application/{applicationId}"},
   "listQueryViewNextPage": {"uri": "/jaxrs/queryview/design/list/{id}/next/{count}"},
@@ -90,5 +102,7 @@
   "updateQueryView": {"uri": "/jaxrs/queryview/design/{id}","method": "PUT"},
   "deleteQueryView": {"uri": "/jaxrs/queryview/design/{id}","method": "DELETE"},
   "getQueryViewContent": {"uri": "/jaxrs/queryview/design/flag/{flag}"}, //获取QueryView内容.
-  "loadQueryView": {"uri": "/jaxrs/queryview/design/flag/{flag}/simulate","method": "PUT"}
+  "loadQueryView": {"uri": "/jaxrs/queryview/design/flag/{flag}/simulate","method": "PUT"},
+
+  "listProcess": {"uri": "/jaxrs/process/application/{id}"}
 }

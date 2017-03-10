@@ -302,10 +302,10 @@ MWF.xApplication.HotArticle.Main.Document = new Class({
     _queryCreateDocumentNode: function (itemData) {
     },
     _postCreateDocumentNode: function (itemNode, itemData) {
-        var iconNode = itemNode.getElements("[item='icon']")[0];
-        MWF.getJSON( this.view.pictureUrlHost + iconNode.get("picUrl"), function( json ){
-            iconNode.set("src", json.data.value);
-        } )
+        //var iconNode = itemNode.getElements("[item='icon']")[0];
+        //MWF.getJSON( this.view.pictureUrlHost + iconNode.get("picUrl"), function( json ){
+        //    iconNode.set("src", json.data.value);
+        //} )
     },
     open: function(  ){
         var data = this.data;

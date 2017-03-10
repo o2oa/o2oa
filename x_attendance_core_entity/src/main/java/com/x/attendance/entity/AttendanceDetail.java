@@ -108,7 +108,7 @@ public class AttendanceDetail extends SliceJpaObject {
 	 * 在执行给定实体的相应 EntityManager 持久操作之前，调用该实体的 @PrePersist 回调方法。
 	 */
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -124,12 +124,12 @@ public class AttendanceDetail extends SliceJpaObject {
 	 * 在对实体数据进行数据库更新操作之前，调用实体的 @PreUpdate 回调方法。
 	 */
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
 
-	private void onPersist() {
+	private void onPersist() throws Exception{
 	}
 	/* ==================================================================================
 	 *                             以上为 JpaObject 默认字段
@@ -368,13 +368,19 @@ public class AttendanceDetail extends SliceJpaObject {
 	 * @return
 	 */
 	public String getEmpName() {
+		if( empName != null ){
+			empName = empName.trim();
+		}
 		return empName;
 	}
 	/**
 	 * 设置员工姓名（String）
 	 * @param empName
 	 */
-	public void setEmpName(String empName) {
+	public void setEmpName( String empName ) {
+		if( empName != null ){
+			empName = empName.trim();
+		}
 		this.empName = empName;
 	}
 	/**

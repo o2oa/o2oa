@@ -15,21 +15,32 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.wrapout.element.WrapOutApplicationDict;
 import com.x.processplatform.core.entity.element.ApplicationDict;
 import com.x.processplatform.core.entity.element.ApplicationDictItem;
+import com.x.processplatform.core.entity.element.ApplicationDictLobItem;
 
 abstract class ActionBase {
 
-	protected static BeanCopyTools<ApplicationDict, WrapOutApplicationDict> copier = BeanCopyToolsBuilder
+	static BeanCopyTools<ApplicationDict, WrapOutApplicationDict> copier = BeanCopyToolsBuilder
 			.create(ApplicationDict.class, WrapOutApplicationDict.class, null, WrapOutApplicationDict.Excludes);
 
-	protected JsonElement get(Business business, ApplicationDict applicationDict, String... paths) throws Exception {
+	JsonElement get(Business business, ApplicationDict applicationDict, String... paths) throws Exception {
 		List<ApplicationDictItem> list = business.applicationDictItem()
 				.listWithApplicationDictWithPath(applicationDict.getId(), paths);
+		for (ApplicationDictItem o : list) {
+			if (o.isLobItem()) {
+				/** 装载lob字段内容 */
+				ApplicationDictLobItem lob = business.entityManagerContainer().find(o.getLobItem(),
+						ApplicationDictLobItem.class);
+				if (null != lob) {
+					o.setStringLobValue(lob.getData());
+				}
+			}
+		}
 		ItemConverter<ApplicationDictItem> converter = new ItemConverter<>(ApplicationDictItem.class);
 		JsonElement jsonElement = converter.assemble(list, paths.length);
 		return jsonElement;
 	}
 
-	protected void update(Business business, ApplicationDict applicationDict, JsonElement jsonElement, String... paths)
+	void update(Business business, ApplicationDict applicationDict, JsonElement jsonElement, String... paths)
 			throws Exception {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		ItemConverter<ApplicationDictItem> converter = new ItemConverter<>(ApplicationDictItem.class);
@@ -40,20 +51,32 @@ abstract class ActionBase {
 					+ " is not existed.");
 		}
 		emc.beginTransaction(ApplicationDictItem.class);
+		emc.beginTransaction(ApplicationDictLobItem.class);
 		List<ApplicationDictItem> currents = converter.disassemble(jsonElement, paths);
 		List<ApplicationDictItem> removes = converter.subtract(exists, currents);
 		List<ApplicationDictItem> adds = converter.subtract(currents, exists);
 		for (ApplicationDictItem o : removes) {
+			if (o.isLobItem()) {
+				ApplicationDictLobItem lob = emc.find(o.getLobItem(), ApplicationDictLobItem.class);
+				if (null != lob) {
+					emc.remove(lob);
+				}
+			}
 			emc.remove(o);
 		}
 		for (ApplicationDictItem o : adds) {
 			o.setApplicationDict(applicationDict.getId());
+			o.setDistributeFactor(applicationDict.getDistributeFactor());
 			o.setApplication(applicationDict.getApplication());
+			if (o.isLobItem()) {
+				ApplicationDictLobItem lob = this.concreteApplicationDictLobItem(o);
+				emc.persist(lob);
+			}
 			emc.persist(o);
 		}
 	}
 
-	protected void create(Business business, ApplicationDict applicationDict, JsonElement jsonElement, String... paths)
+	void create(Business business, ApplicationDict applicationDict, JsonElement jsonElement, String... paths)
 			throws Exception {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		String[] parentPaths = new String[] { "", "", "", "", "", "", "", "" };
@@ -87,7 +110,12 @@ abstract class ActionBase {
 			List<ApplicationDictItem> adds = converter.disassemble(jsonElement, ps);
 			for (ApplicationDictItem o : adds) {
 				o.setApplicationDict(applicationDict.getId());
+				o.setDistributeFactor(applicationDict.getDistributeFactor());
 				o.setApplication(applicationDict.getApplication());
+				if (o.isLobItem()) {
+					ApplicationDictLobItem lob = this.concreteApplicationDictLobItem(o);
+					emc.persist(lob);
+				}
 				emc.persist(o);
 			}
 		} else if ((cursor == null) && parent.getItemType().equals(ItemType.o)) {
@@ -95,7 +123,15 @@ abstract class ActionBase {
 			List<ApplicationDictItem> adds = converter.disassemble(jsonElement, paths);
 			for (ApplicationDictItem o : adds) {
 				o.setApplicationDict(applicationDict.getId());
+				o.setDistributeFactor(applicationDict.getDistributeFactor());
 				o.setApplication(applicationDict.getApplication());
+				if (o.isLobItem()) {
+					ApplicationDictLobItem lob = new ApplicationDictLobItem();
+					lob.setData(o.getStringLobValue());
+					lob.setDistributeFactor(o.getDistributeFactor());
+					o.setLobItem(lob.getId());
+					emc.persist(lob);
+				}
 				emc.persist(o);
 			}
 		} else {
@@ -104,7 +140,7 @@ abstract class ActionBase {
 		}
 	}
 
-	protected void delete(Business business, ApplicationDict applicationDict, String... paths) throws Exception {
+	void delete(Business business, ApplicationDict applicationDict, String... paths) throws Exception {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		List<ApplicationDictItem> exists = business.applicationDictItem()
 				.listWithApplicationDictWithPath(applicationDict.getId(), paths);
@@ -114,6 +150,12 @@ abstract class ActionBase {
 		}
 		emc.beginTransaction(ApplicationDictItem.class);
 		for (ApplicationDictItem o : exists) {
+			if (o.isLobItem()) {
+				ApplicationDictLobItem lob = emc.find(o.getLobItem(), ApplicationDictLobItem.class);
+				if (null != lob) {
+					emc.remove(lob);
+				}
+			}
 			emc.remove(o);
 		}
 		if (NumberUtils.isNumber(paths[paths.length - 1])) {
@@ -124,5 +166,14 @@ abstract class ActionBase {
 				o.path(Integer.toString(o.pathLocation(position) - 1), position);
 			}
 		}
+	}
+
+	private ApplicationDictLobItem concreteApplicationDictLobItem(ApplicationDictItem o) {
+		/** 创建关联的ApplicationDictLobItem */
+		ApplicationDictLobItem lob = new ApplicationDictLobItem();
+		lob.setData(o.getStringLobValue());
+		lob.setDistributeFactor(o.getDistributeFactor());
+		o.setLobItem(lob.getId());
+		return lob;
 	}
 }

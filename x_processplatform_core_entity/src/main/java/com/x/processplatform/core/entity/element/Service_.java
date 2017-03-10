@@ -14,7 +14,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.processplatform.core.entity.element.Service.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:19:07 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:10:19 CST 2017")
 public class Service_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Service,String> afterArriveScript;
     public static volatile SingularAttribute<Service,String> afterArriveScriptText;
@@ -39,12 +39,15 @@ public class Service_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Service,String> name;
     public static volatile SingularAttribute<Service,String> position;
     public static volatile SingularAttribute<Service,String> process;
+    public static volatile ListAttribute<Service,String> readDataPathList;
     public static volatile ListAttribute<Service,String> readDepartmentList;
     public static volatile SingularAttribute<Service,String> readDuty;
     public static volatile ListAttribute<Service,String> readIdentityList;
     public static volatile SingularAttribute<Service,String> readScript;
     public static volatile SingularAttribute<Service,String> readScriptText;
+    public static volatile ListAttribute<Service,String> reviewDataPathList;
     public static volatile ListAttribute<Service,String> reviewDepartmentList;
+    public static volatile SingularAttribute<Service,String> reviewDuty;
     public static volatile ListAttribute<Service,String> reviewIdentityList;
     public static volatile SingularAttribute<Service,String> reviewScript;
     public static volatile SingularAttribute<Service,String> reviewScriptText;

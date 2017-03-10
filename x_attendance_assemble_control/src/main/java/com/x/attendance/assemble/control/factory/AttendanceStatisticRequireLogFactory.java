@@ -125,7 +125,6 @@ public class AttendanceStatisticRequireLogFactory extends AbstractFactory {
 		if( processStatus != null && !processStatus.isEmpty() ){
 			p = cb.and(p, cb.equal(root.get(AttendanceStatisticRequireLog_.processStatus), processStatus));
 		}
-		//logger.debug( em.createQuery(cq.where(p)).toString() );
 		return em.createQuery( cq.where(p) ).getResultList();
 	}
 }

@@ -24,8 +24,7 @@ class ActionListWithWork extends ActionBase {
 			Work work = emc.find(workId, Work.class, ExceptionWhen.not_found);
 			Control control = business.getControlOfWorkComplex(effectivePerson, work);
 			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
-				throw new Exception(
-						"person{name:" + effectivePerson.getName() + "} access work{id:" + workId + "} was denied.");
+				throw new WorkAccessDeniedException(effectivePerson.getName(), work.getTitle(), work.getId());
 			}
 			List<Attachment> os = emc.list(Attachment.class, work.getAttachmentList());
 			List<WrapOutAttachment> wraps = attachmentOutCopier.copy(os);

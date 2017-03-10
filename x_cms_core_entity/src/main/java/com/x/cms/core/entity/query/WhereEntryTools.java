@@ -20,28 +20,28 @@ public class WhereEntryTools {
 		if ((null == whereEntry) || (!whereEntry.available())) {
 			return cb.conjunction();
 		}
-		return cb.or( predicateApplication(cb, root, whereEntry.getAppIdList()),
-				predicateProcess(cb, root, whereEntry.getCatagoryIdList()),
+		return cb.or( predicateAppInfo(cb, root, whereEntry.getAppInfoList()),
+				predicateCategory(cb, root, whereEntry.getCategoryList()),
 				predicateCompany(cb, root, whereEntry.getCompanyList()),
 				predicateDepartment(cb, root, whereEntry.getDepartmentList()),
 				predicatePerson(cb, root, whereEntry.getPersonList()),
 				predicateIdentity(cb, root, whereEntry.getIdentityList()));
 	}
 
-	private static Predicate predicateApplication(CriteriaBuilder cb, Root<DataItem> root,
-			List<NameIdPair> applications) throws Exception {
-		if (ListTools.isEmpty(applications)) {
+	private static Predicate predicateAppInfo(CriteriaBuilder cb, Root<DataItem> root,
+			List<NameIdPair> appInfoList ) throws Exception {
+		if (ListTools.isEmpty(appInfoList)) {
 			return cb.disjunction();
 		}
-		return root.get( DataItem_.appId ).in(ListTools.extractProperty(applications, JpaObject.ID, String.class, true, true));
+		return root.get( DataItem_.appId ).in(ListTools.extractProperty( appInfoList, JpaObject.ID, String.class, true, true));
 	}
 
-	private static Predicate predicateProcess(CriteriaBuilder cb, Root<DataItem> root, List<NameIdPair> processes)
+	private static Predicate predicateCategory(CriteriaBuilder cb, Root<DataItem> root, List<NameIdPair> categoryList )
 			throws Exception {
-		if (ListTools.isEmpty(processes)) {
+		if (ListTools.isEmpty(categoryList)) {
 			return cb.disjunction();
 		}
-		return root.get(DataItem_.catagoryId ).in(ListTools.extractProperty(processes, JpaObject.ID, String.class, true, true));
+		return root.get(DataItem_.categoryId ).in(ListTools.extractProperty( categoryList, JpaObject.ID, String.class, true, true));
 	}
 
 	private static Predicate predicateCompany(CriteriaBuilder cb, Root<DataItem> root, List<NameIdPair> companies)

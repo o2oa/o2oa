@@ -21,6 +21,7 @@ import com.x.attendance.assemble.control.jaxrs.fileimport.AttendanceDetailFileIm
 import com.x.attendance.assemble.control.jaxrs.selfholiday.AttendanceSelfHolidayAction;
 import com.x.attendance.assemble.control.jaxrs.selfholiday.AttendanceSelfHolidaySimpleAction;
 import com.x.attendance.assemble.control.jaxrs.uuid.UUIDAction;
+import com.x.attendance.assemble.control.jaxrs.workplace.AttendanceWorkPlaceAction;
 import com.x.base.core.application.jaxrs.AbstractActionApplication;
 
 @ApplicationPath("jaxrs")
@@ -28,6 +29,7 @@ public class ActionApplication extends AbstractActionApplication {
 
 	public Set<Class<?>> getClasses() {
 		this.classes.add(UUIDAction.class);
+		this.classes.add(AttendanceWorkPlaceAction.class);
 		this.classes.add(AttendanceDetailAction.class);
 		this.classes.add(AttendanceDetailMobileAction.class);
 		this.classes.add(AttendanceImportFileInfoAction.class);

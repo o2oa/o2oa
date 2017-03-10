@@ -16,13 +16,17 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
                 this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);
                 //alert(this.readonly)
 
-                MWF.getJSON(this.form.path+"toolbars.json", function(json){
-                    this.setToolbars(json, this.toolbarNode, this.readonly);
-
-                    this.setCustomToolbars(this.json.tools, this.toolbarNode);
-
+                if (this.json.hideSystemTools){
+                    his.setCustomToolbars(this.json.tools, this.toolbarNode);
                     this.toolbarWidget.load();
-                }.bind(this), false);
+                }else{
+                    MWF.getJSON(this.form.path+"toolbars.json", function(json){
+                        this.setToolbars(json, this.toolbarNode, this.readonly);
+                        this.setCustomToolbars(this.json.tools, this.toolbarNode);
+                        this.toolbarWidget.load();
+                    }.bind(this), false);
+                }
+
 
  //               if (this.readonly){
  //                   this.setToolbars(this.json.sysTools.readTools, this.toolbarNode);

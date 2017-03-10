@@ -8,7 +8,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.ApplicationDict;
@@ -19,14 +18,16 @@ public class ApplicationDictFactory extends ElementFactory {
 	public ApplicationDictFactory(Business abstractBusiness) throws Exception {
 		super(abstractBusiness);
 	}
-
-	public ApplicationDict pick(String flag) throws Exception {
-		return this.pick(flag, ExceptionWhen.none);
-	}
-
-	public ApplicationDict pick(String flag, ExceptionWhen exceptionWhen) throws Exception {
-		return this.pick(flag, ApplicationDict.class, exceptionWhen, ApplicationDict.FLAGS);
-	}
+	//
+	// public ApplicationDict pick(String flag) throws Exception {
+	// return this.pick(flag, ExceptionWhen.none);
+	// }
+	//
+	// public ApplicationDict pick(String flag, ExceptionWhen exceptionWhen)
+	// throws Exception {
+	// return this.pick(flag, ApplicationDict.class, exceptionWhen,
+	// ApplicationDict.FLAGS);
+	// }
 
 	public List<String> listWithApplication(Application application) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(ApplicationDict.class);

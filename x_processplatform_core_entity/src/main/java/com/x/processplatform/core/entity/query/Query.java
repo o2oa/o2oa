@@ -22,6 +22,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.gson.GsonPropertyObject;
+import com.x.base.core.gson.XGsonBuilder;
 import com.x.base.core.http.annotation.Wrap;
 import com.x.base.core.utils.DateTools;
 import com.x.base.core.utils.ListTools;
@@ -46,7 +47,7 @@ public class Query extends GsonPropertyObject {
 		this.restrictDateRangeEntry = new DateRangeEntry();
 		this.orderEntryList = new ArrayList<OrderEntry>();
 		this.groupEntry = new GroupEntry();
-		this.calculateEntryList = new ArrayList<CalculateEntry>();
+		this.calculate = new Calculate();
 		this.columnList = new ArrayList<String>();
 	}
 
@@ -70,9 +71,9 @@ public class Query extends GsonPropertyObject {
 
 	private GroupEntry groupEntry;
 
-	private List<CalculateEntry> calculateEntryList;
-
 	private List<String> columnList;
+
+	private Calculate calculate;
 
 	private String afterGridScriptText;
 
@@ -84,7 +85,9 @@ public class Query extends GsonPropertyObject {
 
 	private List<LinkedHashMap<String, Object>> groupGrid;
 
-	private List<CalculateRow> calculateGrid;
+	private List<?> calculateGrid;
+
+	private List<CalculateCell> calculateAmountGrid;
 
 	private List<Object> columnGrid;
 
@@ -110,14 +113,6 @@ public class Query extends GsonPropertyObject {
 
 	public void setFilterEntryList(List<FilterEntry> filterEntryList) {
 		this.filterEntryList = filterEntryList;
-	}
-
-	public List<CalculateEntry> getCalculateEntryList() {
-		return calculateEntryList;
-	}
-
-	public void setCalculateEntryList(List<CalculateEntry> calculateEntryList) {
-		this.calculateEntryList = calculateEntryList;
 	}
 
 	public GroupEntry getGroupEntry() {
@@ -192,10 +187,6 @@ public class Query extends GsonPropertyObject {
 		this.grid = grid;
 	}
 
-	public List<CalculateRow> getCalculateGrid() {
-		return calculateGrid;
-	}
-
 	private void adjust() throws Exception {
 		this.adjustScopeType();
 		this.adjustDateRangeEntry();
@@ -204,6 +195,7 @@ public class Query extends GsonPropertyObject {
 		this.adjustSelectEntryList();
 		this.adjustOrderEntryList();
 		this.adjustGroupEntry();
+		this.adjustCalculate();
 	}
 
 	private void adjustScopeType() throws Exception {
@@ -264,6 +256,10 @@ public class Query extends GsonPropertyObject {
 			}
 		}
 		this.setOrderEntryList(list);
+	}
+
+	private void adjustCalculate() throws Exception {
+
 	}
 
 	private void transformDateRangeEntry(DateRangeEntry entry) throws Exception {
@@ -372,15 +368,15 @@ public class Query extends GsonPropertyObject {
 					scriptEngine.eval(this.getAfterGroupGridScriptText());
 				}
 				this.setGroupGrid(groupGrid);
+				/* 此部分的功能在前台整理数据时完成 */
 				/* 如果分组输出了那么就不输出grid减少前台js解析Json的开销. */
-				this.setGrid(null);
+				// this.setGrid(null);
 			}
-			if (this.calculateEntryListAvailable()) {
-				calculateGrid = new ArrayList<CalculateRow>();
-				for (CalculateEntry o : this.getCalculateEntryList()) {
-					if (o.available()) {
-						this.getCalculateGrid().add(CalculateEntryTools.calculate(table, o, this.getGroupEntry()));
-					}
+			if ((null != this.calculate) && (this.calculate.available())) {
+				calculateGrid = CalculateEntryTools.calculate(table, this.calculate, this.getGroupEntry());
+				if (this.calculate.getIsAmount()) {
+					calculateAmountGrid = CalculateEntryTools.calculateAmount(table,
+							this.calculate.getCalculateEntryList());
 				}
 				if (StringUtils.isNotEmpty(this.getAfterCalculateGridScriptText())) {
 					scriptEngine.put("calculateGrid", this.getCalculateGrid());
@@ -415,15 +411,6 @@ public class Query extends GsonPropertyObject {
 		return false;
 	}
 
-	private Boolean calculateEntryListAvailable() {
-		for (CalculateEntry o : ListTools.nullToEmpty(this.calculateEntryList)) {
-			if (o.available()) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	private List<String> listJob(EntityManagerContainer emc) throws Exception {
 		EntityManager em = emc.get(DataItem.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -449,8 +436,8 @@ public class Query extends GsonPropertyObject {
 				if (entry.available()) {
 					row.put(entry.getColumn(), Objects.toString(entry.getDefaultValue(), ""));
 				}
-				table.add(row);
 			}
+			table.add(row);
 		}
 		return table;
 	}
@@ -613,7 +600,6 @@ public class Query extends GsonPropertyObject {
 					}
 					break;
 				default:
-					// row.put(selectEntry.getColumn(), null);
 					break;
 				}
 			}
@@ -650,15 +636,27 @@ public class Query extends GsonPropertyObject {
 		this.columnList = columnList;
 	}
 
-	public void setGroupGrid(List<LinkedHashMap<String, Object>> groupGrid) {
-		this.groupGrid = groupGrid;
+	public Calculate getCalculate() {
+		return calculate;
+	}
+
+	public void setCalculate(Calculate calculate) {
+		this.calculate = calculate;
 	}
 
 	public List<LinkedHashMap<String, Object>> getGroupGrid() {
 		return groupGrid;
 	}
 
-	public void setCalculateGrid(List<CalculateRow> calculateGrid) {
+	public void setGroupGrid(List<LinkedHashMap<String, Object>> groupGrid) {
+		this.groupGrid = groupGrid;
+	}
+
+	public List<?> getCalculateGrid() {
+		return calculateGrid;
+	}
+
+	public void setCalculateGrid(List<?> calculateGrid) {
 		this.calculateGrid = calculateGrid;
 	}
 
@@ -668,6 +666,14 @@ public class Query extends GsonPropertyObject {
 
 	public void setColumnGrid(List<Object> columnGrid) {
 		this.columnGrid = columnGrid;
+	}
+
+	public List<CalculateCell> getCalculateAmountGrid() {
+		return calculateAmountGrid;
+	}
+
+	public void setCalculateAmountGrid(List<CalculateCell> calculateAmountGrid) {
+		this.calculateAmountGrid = calculateAmountGrid;
 	}
 
 }

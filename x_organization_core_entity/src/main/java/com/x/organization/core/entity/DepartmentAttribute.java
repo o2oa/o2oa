@@ -44,7 +44,7 @@ public class DepartmentAttribute extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.DepartmentAttribute.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -57,7 +57,7 @@ public class DepartmentAttribute extends SliceJpaObject {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception {
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -117,7 +117,7 @@ public class DepartmentAttribute extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception {
 		this.pinyin = PinyinHelper.convertToPinyinString(name, "", PinyinFormat.WITHOUT_TONE);
 		this.pinyinInitial = PinyinHelper.getShortPinyin(name);
 	}
@@ -140,7 +140,7 @@ public class DepartmentAttribute extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false, simplyString = true, citationNotExists =
 	/* 同一个公司不可以重名 */
 	@CitationNotExist(fields = { "name",
-			"unique" }, type = DepartmentAttribute.class, equals = @Equal(property = "department", field = "department") ) )
+			"unique" }, type = DepartmentAttribute.class, equals = @Equal(property = "department", field = "department")))
 	private String name;
 
 	@EntityFieldDescribe("唯一标识.")
@@ -149,7 +149,7 @@ public class DepartmentAttribute extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists =
 	/* 同一个公司不可以重名 */
 	@CitationNotExist(fields = { "name", "id",
-			"unique" }, type = DepartmentAttribute.class, equals = @Equal(property = "department", field = "department") ) )
+			"unique" }, type = DepartmentAttribute.class, equals = @Equal(property = "department", field = "department")))
 	private String unique;
 
 	@EntityFieldDescribe("属性所属部门,不可为空.")
@@ -161,7 +161,7 @@ public class DepartmentAttribute extends SliceJpaObject {
 	@EntityFieldDescribe("属性值,多值.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = PersistenceProperties.orderColumn)
-	@ContainerTable(name = TABLE + "_attribbuteList", joinIndex = @Index(name = TABLE + "_attribbuteList_join") )
+	@ContainerTable(name = TABLE + "_attribbuteList", joinIndex = @Index(name = TABLE + "_attribbuteList_join"))
 	@ElementColumn(length = JpaObject.length_255B, name = "xattributeList")
 	@ElementIndex(name = TABLE + "_attribbuteList_element")
 	@CheckPersist(allowEmpty = true, simplyString = true)

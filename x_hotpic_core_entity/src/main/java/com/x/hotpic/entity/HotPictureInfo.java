@@ -2,14 +2,11 @@ package com.x.hotpic.entity;
 
 import java.util.Date;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.Lob;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -111,7 +108,7 @@ public class HotPictureInfo extends SliceJpaObject {
 	 * 在执行给定实体的相应 EntityManager 持久操作之前，调用该实体的 @PrePersist 回调方法。
 	 */
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -127,12 +124,12 @@ public class HotPictureInfo extends SliceJpaObject {
 	 * 在对实体数据进行数据库更新操作之前，调用实体的 @PreUpdate 回调方法。
 	 */
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
 
-	private void onPersist() {
+	private void onPersist() throws Exception{
 	}
 	/* ==================================================================================
 	 *                             以上为 JpaObject 默认字段
@@ -159,14 +156,8 @@ public class HotPictureInfo extends SliceJpaObject {
 	private String url = "";
 	
 	@EntityFieldDescribe( "信息图片URL" )
-	@Column(name="xpicUrl", length = JpaObject.length_255B )
-	private String picUrl = "";
-	
-	@Lob
-	@EntityFieldDescribe( "信息图片的base64编码" )
-	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_1M, name = "xpictureBase64")
-	private String pictureBase64;
+	@Column(name="xpicId", length = JpaObject.length_255B )
+	private String picId = "";
 	
 	@EntityFieldDescribe( "创建者" )
 	@Column(name="xcreator", length = JpaObject.length_64B )
@@ -196,23 +187,17 @@ public class HotPictureInfo extends SliceJpaObject {
 	public void setUrl( String url ) {
 		this.url = url;
 	}
-	public String getPicUrl() {
-		return picUrl;
-	}
-	public void setPicUrl(String picUrl) {
-		this.picUrl = picUrl;
-	}
 	public String getCreator() {
 		return creator;
 	}
 	public void setCreator(String creator) {
 		this.creator = creator;
 	}
-	public String getPictureBase64() {
-		return pictureBase64;
+	public String getPicId() {
+		return picId;
 	}
-	public void setPictureBase64(String pictureBase64) {
-		this.pictureBase64 = pictureBase64;
+	public void setPicId(String picId) {
+		this.picId = picId;
 	}
 
 }

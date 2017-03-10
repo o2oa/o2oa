@@ -1,3 +1,5 @@
+MWF.xApplication.process = MWF.xApplication.process || {};
+MWF.APPFD = MWF.xApplication.process.FormDesigner = MWF.xApplication.process.FormDesigner || {};
 MWF.xApplication.cms.FormDesigner = MWF.xApplication.cms.FormDesigner || {};
 MWF.CMSFD = MWF.xApplication.cms.FormDesigner;
 MWF.CMSFD.options = {
@@ -7,19 +9,20 @@ MWF.CMSFD.options = {
 MWF.xDesktop.requireApp("cms.ColumnManager", "Actions.RestActions", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Package", null, false);
 MWF.xApplication.cms.FormDesigner.Main = new Class({
-	Extends: MWF.xApplication.Common.Main,
+    Extends: MWF.xApplication.Common.Main,
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
         "template": "template.json",
-		"name": "cms.FormDesigner",
-		"icon": "icon.png",
-		"title": MWF.CMSFD.LP.title,
-		"appTitle": MWF.CMSFD.LP.title,
-		"id": "",
-		"actions": null,
-		"category": null,
-		"processData": null
+        "templateId": "",
+        "name": "cms.FormDesigner",
+        "icon": "icon.png",
+        "title": MWF.CMSFD.LP.title,
+        "appTitle": MWF.CMSFD.LP.title,
+        "id": "",
+        "actions": null,
+        "category": null,
+        "processData": null
 	},
 	onQueryLoad: function(){
         this.shortcut = true;
@@ -31,24 +34,25 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
 			this.options.title = this.options.title + "-"+MWF.CMSFD.LP.newForm;
 		}
 		this.actions = new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
-		//alert(this.options.id)
+		
 		this.lp = MWF.xApplication.cms.FormDesigner.LP;
 //		this.processData = this.options.processData;
 	},
-	
-	loadApplication: function(callback){
-		this.createNode();
-		if (!this.options.isRefresh){
-			this.maxSize(function(){
-				this.openForm();
-			}.bind(this));
-		}else{
-			this.openForm();
-		}
+
+
+    loadApplication: function(callback){
+        this.createNode();
+        if (!this.options.isRefresh){
+            this.maxSize(function(){
+                this.openForm();
+            }.bind(this));
+        }else{
+            this.openForm();
+        }
 
         this.addKeyboardEvents();
-		if (callback) callback();
-	},
+        if (callback) callback();
+    },
     addKeyboardEvents: function(){
         this.addEvent("copy", function(){
             this.copyModule();
@@ -138,19 +142,30 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
                             "html": html
                         }).inject(this.content);
 
+                        //var pid = "";
                         Object.each(json, function (moduleJson) {
                             var oid = moduleJson.id;
                             var id = moduleJson.id;
+                            //    if (!pid){
                             var idx = 1;
                             while (this.form.json.moduleList[id]) {
                                 id = oid + "_" + idx;
                                 idx++;
                             }
+                            //        pid = id;
+                            //    }else{
+                            //        idx = 1;
+                            //        var id = pid+"_"+moduleJson.moduleName;
+                            //        var prefix = pid+"_"+moduleJson.moduleName;
+                            //        while (this.form.json.moduleList[id]){
+                            //            id = prefix+"_"+idx;
+                            //            idx++;
+                            //        }
+                            //    }
 
                             if (oid != id) {
                                 moduleJson.id = id;
-                                var moduleNode = tmpNode.getElementById("#" + oid);
-                                //var moduleNode = tmpNode.getElement("#" + oid);
+                                var moduleNode = tmpNode.getElementById(oid);
                                 if (moduleNode) moduleNode.set("id", id);
                             }
                             this.form.json.moduleList[moduleJson.id] = moduleJson;
@@ -189,144 +204,144 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             }
         }
     },
-	createNode: function(){
-		this.content.setStyle("overflow", "hidden");
-		this.node = new Element("div", {
-			"styles": {"width": "100%", "height": "100%", "overflow": "hidden"}
-		}).inject(this.content);
-	},
-	openForm: function(){
-		this.initOptions();
-		this.loadNodes();
-		this.loadToolbar();
-		this.loadFormNode();
-		this.loadProperty();
-		this.loadTools();
-		this.resizeNode();
-		this.addEvent("resize", this.resizeNode.bind(this));
-		this.loadForm();
-		
-		if (this.toolbarContentNode){
-			this.setScrollBar(this.toolbarContentNode, null, {
-				"V": {"x": 0, "y": 0},
-				"H": {"x": 0, "y": 0}
-			});
-			//this.setScrollBar(this.propertyDomScrollArea, "form_property", {
-			//	"V": {"x": 0, "y": 0},
-			//	"H": {"x": 0, "y": 0}
-			//});
+    createNode: function(){
+        this.content.setStyle("overflow", "hidden");
+        this.node = new Element("div", {
+            "styles": {"width": "100%", "height": "100%", "overflow": "hidden"}
+        }).inject(this.content);
+    },
+    openForm: function(){
+        this.initOptions();
+        this.loadNodes();
+        this.loadToolbar();
+        this.loadFormNode();
+        this.loadProperty();
+        this.loadTools();
+        this.resizeNode();
+        this.addEvent("resize", this.resizeNode.bind(this));
+        this.loadForm();
+
+        if (this.toolbarContentNode){
+            this.setScrollBar(this.toolbarContentNode, null, {
+                "V": {"x": 0, "y": 0},
+                "H": {"x": 0, "y": 0}
+            });
+            //this.setScrollBar(this.propertyDomScrollArea, "form_property", {
+            //	"V": {"x": 0, "y": 0},
+            //	"H": {"x": 0, "y": 0}
+            //});
             MWF.require("MWF.widget.ScrollBar", function(){
                 new MWF.widget.ScrollBar(this.propertyDomScrollArea, {
                     "style":"default", "where": "before", "distance": 30, "friction": 4, "indent": false, "axis": {"x": false, "y": true}
                 });
             }.bind(this));
-		}
-	},
-	initOptions: function(){
-		this.toolsData = null;
-		this.toolbarMode = "all";
-		this.tools = [];
-		this.toolbarDecrease = 0;
-		
-		this.designNode = null;
-		this.form = null;
-	},
-	loadNodes: function(){
-		this.toolbarNode = new Element("div", {
-			"styles": this.css.toolbarNode,
-			"events": {"selectstart": function(e){e.preventDefault();}}
-		}).inject(this.node);
-		this.propertyNode = new Element("div", {
-			"styles": this.css.propertyNode
-		}).inject(this.node)
-		this.formNode = new Element("div", {
-			"styles": this.css.formNode
-		}).inject(this.node);
+        }
+    },
+    initOptions: function(){
+        this.toolsData = null;
+        this.toolbarMode = "all";
+        this.tools = [];
+        this.toolbarDecrease = 0;
+
+        this.designNode = null;
+        this.form = null;
+    },
+    loadNodes: function(){
+        this.toolbarNode = new Element("div", {
+            "styles": this.css.toolbarNode,
+            "events": {"selectstart": function(e){e.preventDefault();}}
+        }).inject(this.node);
+        this.propertyNode = new Element("div", {
+            "styles": this.css.propertyNode
+        }).inject(this.node)
+        this.formNode = new Element("div", {
+            "styles": this.css.formNode
+        }).inject(this.node);
 
         if (this.options.style=="bottom") this.propertyNode.inject(this.formNode, "after");
-	},
-	
-	//loadToolbar----------------------
-	loadToolbar: function(){
-		this.toolbarTitleNode = new Element("div", {
-			"styles": this.css.toolbarTitleNode,
-			"text": MWF.CMSFD.LP.tools
-		}).inject(this.toolbarNode);
-		
-		this.toolbarTitleActionNode = new Element("div", {
-			"styles": this.css.toolbarTitleActionNode,
-			"events": {
-				"click": function(e){
-					this.switchToolbarMode();
-				}.bind(this)
-			}
-		}).inject(this.toolbarNode);
-		
-		this.toolbarContentNode = new Element("div", {
-			"styles": this.css.toolbarContentNode,
-			"events": {
-				"selectstart": function(e){
+    },
+
+    //loadToolbar----------------------
+    loadToolbar: function(){
+        this.toolbarTitleNode = new Element("div", {
+            "styles": this.css.toolbarTitleNode,
+            "text": MWF.APPFD.LP.tools
+        }).inject(this.toolbarNode);
+
+        this.toolbarTitleActionNode = new Element("div", {
+            "styles": this.css.toolbarTitleActionNode,
+            "events": {
+                "click": function(e){
+                    this.switchToolbarMode();
+                }.bind(this)
+            }
+        }).inject(this.toolbarNode);
+
+        this.toolbarContentNode = new Element("div", {
+            "styles": this.css.toolbarContentNode,
+            "events": {
+                "selectstart": function(e){
                     e.preventDefault();
                     e.stopPropagation();
-				}
-			}
-		}).inject(this.toolbarNode);
-	},
-	switchToolbarMode: function(){
-		if (this.toolbarMode=="all"){
-			var size = this.toolbarNode.getSize();
-			this.toolbarDecrease = (size.x.toFloat())-60;
-			
-			this.tools.each(function(node){
-				node.getLast().setStyle("display", "none");
-			});
-			this.toolbarTitleNode.set("text", "");
-			
-			this.toolbarNode.setStyle("width", "60px");
-			
-			var formMargin = this.formNode.getStyle("margin-left").toFloat();
-			formMargin = formMargin - this.toolbarDecrease;
-			
-			this.formNode.setStyle("margin-left", ""+formMargin+"px");
-			
-			this.toolbarTitleActionNode.setStyles(this.css.toolbarTitleActionNodeRight);
-			
-			this.toolbarMode="simple";
-		}else{
-			sizeX = 60 + this.toolbarDecrease;
-			var formMargin = this.formNode.getStyle("margin-left").toFloat();
-			formMargin = formMargin + this.toolbarDecrease;
-			
-			this.toolbarNode.setStyle("width", ""+sizeX+"px");
-			this.formNode.setStyle("margin-left", ""+formMargin+"px");
-			
-			this.tools.each(function(node){
-				node.getLast().setStyle("display", "block");
-			});
-			
-			this.toolbarTitleNode.set("text", MWF.CMSFD.LP.tools);
-			
-			this.toolbarTitleActionNode.setStyles(this.css.toolbarTitleActionNode);
-			this.toolbarMode="all";
-		}
-		
-	},
-	
-	//loadFormNode------------------------------
-	loadFormNode: function(){
-		this.formToolbarNode = new Element("div", {
-			"styles": this.css.formToolbarNode
-		}).inject(this.formNode);
-		this.loadFormToolbar();
-		
-		this.formContentNode = new Element("div", {
-			"styles": this.css.formContentNode
-		}).inject(this.formNode);
-		this.loadFormContent(function(){
-			if (this.designDcoument) this.designDcoument.body.setStyles(this.css.designBody);
-			if (this.designNode) this.designNode.setStyles(this.css.designNode);
-		}.bind(this));
-	},
+                }
+            }
+        }).inject(this.toolbarNode);
+    },
+    switchToolbarMode: function(){
+        if (this.toolbarMode=="all"){
+            var size = this.toolbarNode.getSize();
+            this.toolbarDecrease = (size.x.toFloat())-60;
+
+            this.tools.each(function(node){
+                node.getLast().setStyle("display", "none");
+            });
+            this.toolbarTitleNode.set("text", "");
+
+            this.toolbarNode.setStyle("width", "60px");
+
+            var formMargin = this.formNode.getStyle("margin-left").toFloat();
+            formMargin = formMargin - this.toolbarDecrease;
+
+            this.formNode.setStyle("margin-left", ""+formMargin+"px");
+
+            this.toolbarTitleActionNode.setStyles(this.css.toolbarTitleActionNodeRight);
+
+            this.toolbarMode="simple";
+        }else{
+            sizeX = 60 + this.toolbarDecrease;
+            var formMargin = this.formNode.getStyle("margin-left").toFloat();
+            formMargin = formMargin + this.toolbarDecrease;
+
+            this.toolbarNode.setStyle("width", ""+sizeX+"px");
+            this.formNode.setStyle("margin-left", ""+formMargin+"px");
+
+            this.tools.each(function(node){
+                node.getLast().setStyle("display", "block");
+            });
+
+            this.toolbarTitleNode.set("text", MWF.APPFD.LP.tools);
+
+            this.toolbarTitleActionNode.setStyles(this.css.toolbarTitleActionNode);
+            this.toolbarMode="all";
+        }
+
+    },
+
+    //loadFormNode------------------------------
+    loadFormNode: function(){
+        this.formToolbarNode = new Element("div", {
+            "styles": this.css.formToolbarNode
+        }).inject(this.formNode);
+        this.loadFormToolbar();
+
+        this.formContentNode = new Element("div", {
+            "styles": this.css.formContentNode
+        }).inject(this.formNode);
+        this.loadFormContent(function(){
+            if (this.designDcoument) this.designDcoument.body.setStyles(this.css.designBody);
+            if (this.designNode) this.designNode.setStyles(this.css.designNode);
+        }.bind(this));
+    },
     loaddesignerActionNode: function(){
         this.pcDesignerActionNode = this.formToolbarNode.getElement("#MWFFormPCDesignerAction");
         this.mobileDesignerActionNode = this.formToolbarNode.getElement("#MWFFormMobileDesignerAction");
@@ -408,81 +423,84 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
     },
 
 
-	loadFormToolbar: function(callback){
-		this.getFormToolbarHTML(function(toolbarNode){
-			var spans = toolbarNode.getElements("span");
-			spans.each(function(item, idx){
-				var img = item.get("MWFButtonImage");
-				if (img){
-					item.set("MWFButtonImage", this.path+""+this.options.style+"/formtoolbar/"+img);
-				}
-			}.bind(this));
+    loadFormToolbar: function(callback){
+        this.getFormToolbarHTML(function(toolbarNode){
+            var spans = toolbarNode.getElements("span");
+            spans.each(function(item, idx){
+                var img = item.get("MWFButtonImage");
+                if (img){
+                    item.set("MWFButtonImage", this.path+""+this.options.style+"/formtoolbar/"+img);
+                }
+            }.bind(this));
 
-			$(toolbarNode).inject(this.formToolbarNode);
-			MWF.require("MWF.widget.Toolbar", function(){
-				this.formToolbar = new MWF.widget.Toolbar(toolbarNode, {"style": "ProcessCategory"}, this);
-				this.formToolbar.load();
+            $(toolbarNode).inject(this.formToolbarNode);
+            MWF.require("MWF.widget.Toolbar", function(){
+                this.formToolbar = new MWF.widget.Toolbar(toolbarNode, {"style": "ProcessCategory"}, this);
+                this.formToolbar.load();
 
                 this.loaddesignerActionNode();
 
-				if (callback) callback();
-			}.bind(this));
-		}.bind(this));
-	},
-	getFormToolbarHTML: function(callback){
-		var toolbarUrl = this.path+this.options.style+"/formToolbars.html";
-		var r = new Request.HTML({
-			url: toolbarUrl,
-			method: "get",
-			onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
-				var toolbarNode = responseTree[0];
-				if (callback) callback(toolbarNode);
-			}.bind(this),
-			onFailure: function(xhr){
-				this.notice("request cmsToolbars error: "+xhr.responseText, "error");
-			}.bind(this)
-		});
-		r.send();
-	},
-	loadFormContent: function(callback){
+                if (callback) callback();
+            }.bind(this));
+        }.bind(this));
+    },
+    getFormToolbarHTML: function(callback){
+        var toolbarUrl = this.path+this.options.style+"/formToolbars.html";
+        var r = new Request.HTML({
+            url: toolbarUrl,
+            method: "get",
+            onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
+                var toolbarNode = responseTree[0];
+                if (callback) callback(toolbarNode);
+            }.bind(this),
+            onFailure: function(xhr){
+                this.notice("request processToolbars error: "+xhr.responseText, "error");
+            }.bind(this)
+        });
+        r.send();
+    },
+    loadFormContent: function(callback){
         //var iframe = new Element("iframe#iframeaa", {
         //    "styles": {
         //        "width": "100%",
         //        "height": "100%"
         //    },
-        //    //"src": "/x_component_cms_FormDesigner/$Main/blank.html",
+        //    //"src": "/x_component_process_FormDesigner/$Main/blank.html",
         //    "border": "0"
         //}).inject(this.formContentNode);
 
-   //     window.setTimeout(function(){
-   //         iframe.contentDocument.designMode = "on";
-   //
-   //
-   //         var x = document.id("iframeaa");
-   //         this.designNode = document.id(iframe.contentDocument.body, false, iframe.contentDocument);
-   //         this.designNode.setStyle("margin", "0px");
-   //         this.designNode.setStyles(this.css.designNode);
+        //     window.setTimeout(function(){
+        //         iframe.contentDocument.designMode = "on";
+        //
+        //
+        //         var x = document.id("iframeaa");
+        //         this.designNode = document.id(iframe.contentDocument.body, false, iframe.contentDocument);
+        //         this.designNode.setStyle("margin", "0px");
+        //         this.designNode.setStyles(this.css.designNode);
 
         this.designNode = new Element("div", {
             "styles": this.css.designNode
         }).inject(this.formContentNode);
+        //this.designContentNode = new Element("div", {
+        //    "styles": {"overflow": "visible"}
+        //}).inject(this.designNode);
 
-        MWF.require("MWF.widget.ScrollBar", function(){
-            new MWF.widget.ScrollBar(this.designNode, {"distance": 100});
-        }.bind(this));
+        //MWF.require("MWF.widget.ScrollBar", function(){
+        //    new MWF.widget.ScrollBar(this.designNode, {"distance": 100});
+        //}.bind(this));
 
 
         this.designMobileNode = new Element("div", {
             "styles": this.css.designMobileNode
         }).inject(this.formContentNode);
 
-        MWF.require("MWF.widget.ScrollBar", function(){
-            new MWF.widget.ScrollBar(this.designMobileNode, {"distance": 50, "style": "xApp_mobileForm"});
-        }.bind(this));
-    //    }.bind(this), 2000);
+        //MWF.require("MWF.widget.ScrollBar", function(){
+        //    new MWF.widget.ScrollBar(this.designMobileNode, {"distance": 50, "style": "xApp_mobileForm"});
+        //}.bind(this));
+        //    }.bind(this), 2000);
 
 
-	},
+    },
     reloadPropertyStyles: function(){
         //MWF.release(this.css);
         this.css = null;
@@ -535,8 +553,8 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
 
         this.resizeNode();
     },
-	//loadProperty------------------------
-	loadProperty: function(){
+    //loadProperty------------------------
+    loadProperty: function(){
         this.propertyTitleActionNode = new Element("div", {
             "styles": this.css.propertyTitleActionNode
         }).inject(this.propertyNode);
@@ -546,23 +564,23 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             this.reloadPropertyStyles();
         }.bind(this));
 
-		this.propertyTitleNode = new Element("div", {
-			"styles": this.css.propertyTitleNode,
-			"text": MWF.CMSFD.LP.property
-		}).inject(this.propertyNode);
+        this.propertyTitleNode = new Element("div", {
+            "styles": this.css.propertyTitleNode,
+            "text": MWF.APPFD.LP.property
+        }).inject(this.propertyNode);
         if (this.options.style=="bottom"){
             this.propertyTitleNode.setStyle("cursor", "row-resize");
             this.loadPropertyResizeBottom();
         }
-		
-		this.propertyResizeBar = new Element("div", {
-			"styles": this.css.propertyResizeBar
-		}).inject(this.propertyNode);
-		this.loadPropertyResize();
-		
-		this.propertyContentNode = new Element("div", {
-			"styles": this.css.propertyContentNode
-		}).inject(this.propertyNode);
+
+        this.propertyResizeBar = new Element("div", {
+            "styles": this.css.propertyResizeBar
+        }).inject(this.propertyNode);
+        this.loadPropertyResize();
+
+        this.propertyContentNode = new Element("div", {
+            "styles": this.css.propertyContentNode
+        }).inject(this.propertyNode);
 
         this.propertyDomContentArea = new Element("div", {
             "styles": this.css.propertyDomContentArea
@@ -572,22 +590,22 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             "styles": this.css.propertyDomScrollArea
         }).inject(this.propertyDomContentArea);
 
-		this.propertyDomArea = new Element("div", {
-			"styles": this.css.propertyDomArea
-		}).inject(this.propertyDomScrollArea);
-		
-		this.propertyDomPercent = 0.3;
-		this.propertyContentResizeNode = new Element("div", {
-			"styles": this.css.propertyContentResizeNode
-		}).inject(this.propertyContentNode);
-		
-		this.propertyContentArea = new Element("div", {
-			"styles": this.css.propertyContentArea
-		}).inject(this.propertyContentNode);
+        this.propertyDomArea = new Element("div", {
+            "styles": this.css.propertyDomArea
+        }).inject(this.propertyDomScrollArea);
+
+        this.propertyDomPercent = 0.3;
+        this.propertyContentResizeNode = new Element("div", {
+            "styles": this.css.propertyContentResizeNode
+        }).inject(this.propertyContentNode);
+
+        this.propertyContentArea = new Element("div", {
+            "styles": this.css.propertyContentArea
+        }).inject(this.propertyContentNode);
 
 
-		this.loadPropertyContentResize();
-	},
+        this.loadPropertyContentResize();
+    },
     loadPropertyResizeBottom: function(){
         if (!this.propertyResizeBottom){
             this.propertyResizeBottom = new Drag(this.propertyTitleNode,{
@@ -625,35 +643,35 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             this.propertyResizeBottom.attach();
         }
     },
-	loadPropertyResize: function(){
+    loadPropertyResize: function(){
 //		var size = this.propertyNode.getSize();
 //		var position = this.propertyResizeBar.getPosition();
-		this.propertyResize = new Drag(this.propertyResizeBar,{
-			"snap": 1,
-			"onStart": function(el, e){
-				var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
-				var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
-				el.store("position", {"x": x, "y": y});
-				
-				var size = this.propertyNode.getSize();
-				el.store("initialWidth", size.x);
-			}.bind(this),
-			"onDrag": function(el, e){
-				var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
+        this.propertyResize = new Drag(this.propertyResizeBar,{
+            "snap": 1,
+            "onStart": function(el, e){
+                var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
+                var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
+                el.store("position", {"x": x, "y": y});
+
+                var size = this.propertyNode.getSize();
+                el.store("initialWidth", size.x);
+            }.bind(this),
+            "onDrag": function(el, e){
+                var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
 //				var y = e.event.y;
-				var bodySize = this.content.getSize();
-				var position = el.retrieve("position");
-				var initialWidth = el.retrieve("initialWidth").toFloat();
-				var dx = position.x.toFloat()-x.toFloat();
-				
-				var width = initialWidth+dx;
-				if (width> bodySize.x/2) width =  bodySize.x/2;
-				if (width<40) width = 40;
-				this.formNode.setStyle("margin-right", width+1);
-				this.propertyNode.setStyle("width", width);
-			}.bind(this)
-		});
-	},
+                var bodySize = this.content.getSize();
+                var position = el.retrieve("position");
+                var initialWidth = el.retrieve("initialWidth").toFloat();
+                var dx = position.x.toFloat()-x.toFloat();
+
+                var width = initialWidth+dx;
+                if (width> bodySize.x/2) width =  bodySize.x/2;
+                if (width<40) width = 40;
+                this.formNode.setStyle("margin-right", width+1);
+                this.propertyNode.setStyle("width", width);
+            }.bind(this)
+        });
+    },
     propertyResizeDragTopBottom: function(el, e){
         var size = this.propertyContentNode.getSize();
 
@@ -687,27 +705,27 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
 
         this.setPropertyContentResizeBottom();
     },
-	loadPropertyContentResize: function(){
-		this.propertyContentResize = new Drag(this.propertyContentResizeNode, {
-			"snap": 1,
-			"onStart": function(el, e){
-				var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
-				var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
-				el.store("position", {"x": x, "y": y});
-				
-				var size = this.propertyDomContentArea.getSize();
-				el.store("initialHeight", size.y);
+    loadPropertyContentResize: function(){
+        this.propertyContentResize = new Drag(this.propertyContentResizeNode, {
+            "snap": 1,
+            "onStart": function(el, e){
+                var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
+                var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
+                el.store("position", {"x": x, "y": y});
+
+                var size = this.propertyDomContentArea.getSize();
+                el.store("initialHeight", size.y);
                 el.store("initialWidth", size.x);
-			}.bind(this),
-			"onDrag": function(el, e){
+            }.bind(this),
+            "onDrag": function(el, e){
                 if (this.options.style=="bottom"){
                     this.propertyResizeDragLeftRight(el, e);
                 }else{
                     this.propertyResizeDragTopBottom(el, e);
                 }
-			}.bind(this)
-		});
-	},
+            }.bind(this)
+        });
+    },
     setPropertyContentResizeBottom: function(){
         var size = this.propertyContentNode.getSize();
         var resizeNodeSize = this.propertyContentResizeNode.getSize();
@@ -719,125 +737,125 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         this.propertyDomContentArea.setStyle("width", ""+domWidth+"px");
         this.propertyContentArea.setStyle("margin-left", ""+contentMargin+"px");
     },
-	setPropertyContentResize: function(){
-		var size = this.propertyContentNode.getSize();
-		var resizeNodeSize = this.propertyContentResizeNode.getSize();
-		var height = size.y-resizeNodeSize.y;
-		
-		var domHeight = this.propertyDomPercent*height;
-		var contentHeight = height-domHeight;
-		
-		this.propertyDomContentArea.setStyle("height", ""+domHeight+"px");
+    setPropertyContentResize: function(){
+        var size = this.propertyContentNode.getSize();
+        var resizeNodeSize = this.propertyContentResizeNode.getSize();
+        var height = size.y-resizeNodeSize.y;
+
+        var domHeight = this.propertyDomPercent*height;
+        var contentHeight = height-domHeight;
+
+        this.propertyDomContentArea.setStyle("height", ""+domHeight+"px");
         this.propertyDomScrollArea.setStyle("height", ""+domHeight+"px");
-		this.propertyContentArea.setStyle("height", ""+contentHeight+"px");
-		
-		if (this.form){
-			if (this.form.currentSelectedModule){
-				if (this.form.currentSelectedModule.property){
-					var tab = this.form.currentSelectedModule.property.propertyTab;
-					if (tab){
-						var tabTitleSize = tab.tabNodeContainer.getSize();
-						
-						tab.pages.each(function(page){
-							var topMargin = page.contentNodeArea.getStyle("margin-top").toFloat();
-							var bottomMargin = page.contentNodeArea.getStyle("margin-bottom").toFloat();
-							
-							var tabContentNodeAreaHeight = contentHeight - topMargin - bottomMargin - tabTitleSize.y.toFloat()-15;
-							page.contentNodeArea.setStyle("height", tabContentNodeAreaHeight);
-						}.bind(this));
-						
-					}
-				}
-			}
-		}
-	},
-	
-	//loadTools------------------------------
-	loadTools: function(){
-		var designer = this;
-		this.getTools(function(){
-			Object.each(this.toolsData, function(value, key){
-				var toolNode = new Element("div", {
-					"styles": this.css.toolbarToolNode,
-					"title": value.text,
-					"events": {
-						"mouseover": function(e){
-							try {
-								this.setStyles(designer.css.toolbarToolNodeOver);
-							}catch(e){
-								this.setStyles(designer.css.toolbarToolNodeOverCSS2);
-							};
-						},
-						"mouseout": function(e){
-							try {
-								this.setStyles(designer.css.toolbarToolNode);
-							}catch(e){};
-						},
-						"mousedown": function(e){
-							try {
-								this.setStyles(designer.css.toolbarToolNodeDown);
-							}catch(e){
-								this.setStyles(designer.css.toolbarToolNodeDownCSS2);
-							};
-						},
-						"mouseup": function(e){
-							try {
-								this.setStyles(designer.css.toolbarToolNodeUp);
-							}catch(e){
-								this.setStyles(designer.css.toolbarToolNodeUpCSS2);
-							};
-						}
-					}
-				}).inject(this.toolbarContentNode);
-				toolNode.store("toolClass", value.className);
-				
-				var iconNode = new Element("div", {
-					"styles": this.css.toolbarToolIconNode
-				}).inject(toolNode);
-				iconNode.setStyle("background-image", "url("+this.path+this.options.style+"/icon/"+value.icon+")");
-				
-				var textNode = new Element("div", {
-					"styles": this.css.toolbarToolTextNode,
-					"text": value.text
-				});
-				textNode.inject(toolNode);
-				
+        this.propertyContentArea.setStyle("height", ""+contentHeight+"px");
+
+        if (this.form){
+            if (this.form.currentSelectedModule){
+                if (this.form.currentSelectedModule.property){
+                    var tab = this.form.currentSelectedModule.property.propertyTab;
+                    if (tab){
+                        var tabTitleSize = tab.tabNodeContainer.getSize();
+
+                        tab.pages.each(function(page){
+                            var topMargin = page.contentNodeArea.getStyle("margin-top").toFloat();
+                            var bottomMargin = page.contentNodeArea.getStyle("margin-bottom").toFloat();
+
+                            var tabContentNodeAreaHeight = contentHeight - topMargin - bottomMargin - tabTitleSize.y.toFloat()-15;
+                            page.contentNodeArea.setStyle("height", tabContentNodeAreaHeight);
+                        }.bind(this));
+
+                    }
+                }
+            }
+        }
+    },
+
+    //loadTools------------------------------
+    loadTools: function(){
+        var designer = this;
+        this.getTools(function(){
+            Object.each(this.toolsData, function(value, key){
+                var toolNode = new Element("div", {
+                    "styles": this.css.toolbarToolNode,
+                    "title": value.text,
+                    "events": {
+                        "mouseover": function(e){
+                            try {
+                                this.setStyles(designer.css.toolbarToolNodeOver);
+                            }catch(e){
+                                this.setStyles(designer.css.toolbarToolNodeOverCSS2);
+                            };
+                        },
+                        "mouseout": function(e){
+                            try {
+                                this.setStyles(designer.css.toolbarToolNode);
+                            }catch(e){};
+                        },
+                        "mousedown": function(e){
+                            try {
+                                this.setStyles(designer.css.toolbarToolNodeDown);
+                            }catch(e){
+                                this.setStyles(designer.css.toolbarToolNodeDownCSS2);
+                            };
+                        },
+                        "mouseup": function(e){
+                            try {
+                                this.setStyles(designer.css.toolbarToolNodeUp);
+                            }catch(e){
+                                this.setStyles(designer.css.toolbarToolNodeUpCSS2);
+                            };
+                        }
+                    }
+                }).inject(this.toolbarContentNode);
+                toolNode.store("toolClass", value.className);
+
+                var iconNode = new Element("div", {
+                    "styles": this.css.toolbarToolIconNode
+                }).inject(toolNode);
+                iconNode.setStyle("background-image", "url("+this.path+this.options.style+"/icon/"+value.icon+")");
+
+                var textNode = new Element("div", {
+                    "styles": this.css.toolbarToolTextNode,
+                    "text": value.text
+                });
+                textNode.inject(toolNode);
+
 //				var designer = this;
-				toolNode.addEvent("mousedown", function(e){
+                toolNode.addEvent("mousedown", function(e){
+                    debugger;
+                    var className = this.retrieve("toolClass");
+                    designer.form.createModule(className, e);
+                });
 
-					var className = this.retrieve("toolClass");
-					designer.form.createModule(className, e);
-				});
-				
-				this.tools.push(toolNode);
-			}.bind(this));
-		}.bind(this));
-	},
-	getTools: function(callback){
+                this.tools.push(toolNode);
+            }.bind(this));
+        }.bind(this));
+    },
+    getTools: function(callback){
 
-		if (this.toolsData){
-			if (callback) callback();
-		}else{
-			var toolsDataUrl = this.path+this.options.style+"/tools.json";
-			var r = new Request.JSON({
-				url: toolsDataUrl,
-				secure: false,
-				async: false,
-				method: "get",
-				noCache: true,
-				onSuccess: function(responseJSON, responseText){
-					this.toolsData = responseJSON;
-					if (callback) callback();
-				}.bind(this),
-				onError: function(text, error){
-					this.notice("request tools data error: "+error, "error");
-				}.bind(this)
-			});
-			r.send();
-		}
-	},
-	
-	//resizeNode------------------------------------------------
+        if (this.toolsData){
+            if (callback) callback();
+        }else{
+            var toolsDataUrl = this.path+this.options.style+"/tools.json";
+            var r = new Request.JSON({
+                url: toolsDataUrl,
+                secure: false,
+                async: false,
+                method: "get",
+                noCache: true,
+                onSuccess: function(responseJSON, responseText){
+                    this.toolsData = responseJSON;
+                    if (callback) callback();
+                }.bind(this),
+                onError: function(text, error){
+                    this.notice("request tools data error: "+error, "error");
+                }.bind(this)
+            });
+            r.send();
+        }
+    },
+
+    //resizeNode------------------------------------------------
     resizeNodeLeftRight: function(){
         var nodeSize = this.node.getSize();
         this.toolbarNode.setStyle("height", ""+nodeSize.y+"px");
@@ -896,7 +914,7 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         var formToolbarMarginBottom = this.formToolbarNode.getStyle("margin-bottom").toFloat();
         var allFormToolberSize = this.formToolbarNode.getComputedSize();
         var y = designerHeight - allFormToolberSize.totalHeight - formToolbarMarginTop - formToolbarMarginBottom;
-    //    this.formContentNode.setStyle("height", ""+designerHeight+"px");
+        //    this.formContentNode.setStyle("height", ""+designerHeight+"px");
 
         if (this.designNode){
             var designMarginTop = this.designNode.getStyle("margin-top").toFloat();
@@ -956,35 +974,35 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
 
     },
 
-	resizeNode: function(percent){
-		if (this.options.style=="bottom"){
+    resizeNode: function(percent){
+        if (this.options.style=="bottom"){
             this.resizeNodeTopBottom(percent);
             this.setPropertyContentResizeBottom();
         }else{
             this.resizeNodeLeftRight(percent);
             this.setPropertyContentResize();
         }
-	},
-	
-	//loadForm------------------------------------------
-	loadForm: function(){
+    },
+
+    //loadForm------------------------------------------
+    loadForm: function(){
 
 //		try{
-		this.getFormData(function(){
-			this.pcForm = new MWF.CMSFCForm(this, this.designNode);
-			this.pcForm.load(this.formData);
+        this.getFormData(function(){
+            this.pcForm = new MWF.CMSFCForm(this, this.designNode);
+            this.pcForm.load(this.formData);
 
             this.form = this.pcForm;
-		}.bind(this));
-			
+        }.bind(this));
+
 //		}catch(e){
 //			layout.notice("error", {x: "right", y:"top"}, e.message, this.designNode);
 //		}
-		
-		
+
+
 //		MWF.getJSON(COMMON.contentPath+"/res/js/testform.json", {
 //			"onSuccess": function(obj){
-//				this.form = new MWF.CMSFCForm(this);
+//				this.form = new MWF.FCForm(this);
 //				this.form.load(obj);
 //			}.bind(this),
 //			"onerror": function(text){
@@ -994,43 +1012,72 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
 //				layout.notice("error", {x: "right", y:"top"}, xhr.responseText, this.designNode);
 //			}
 //		});
-	},
-	getFormData: function(callback){
-		if (!this.options.id){
-			this.loadNewFormData(callback);
-		}else{
-			this.loadFormData(callback);
-		}
-	},
-	loadNewFormData: function(callback){
+    },
+    getFormData: function(callback){
+        if (!this.options.id){
+            if (this.options.templateId){
+                this.loadNewFormDataFormTemplate(callback);
+            }else{
+                this.loadNewFormData(callback);
+            }
+        }else{
+            this.loadFormData(callback);
+        }
+    },
+    loadNewFormData: function(callback){
         var url = "/x_component_cms_FormDesigner/Module/Form/template/"+this.options.template;
-		//MWF.getJSON("/x_component_process_FormDesigner/Module/Form/template.json", {
+        //MWF.getJSON("/x_component_process_FormDesigner/Module/Form/template.json", {
         MWF.getJSON(url, {
-			"onSuccess": function(obj){
-				this.formData = obj.pcData;
+            "onSuccess": function(obj){
+                this.formData = obj.pcData;
                 this.formData.id="";
                 this.formData.isNewForm = true;
 
                 this.formMobileData = obj.mobileData;
                 this.formMobileData.id="";
                 this.formMobileData.isNewForm = true;
-				if (callback) callback();
-			}.bind(this),
-			"onerror": function(text){
-				this.notice(text, "error");
-			}.bind(this),
-			"onRequestFailure": function(xhr){
-				this.notice(xhr.responseText, "error");
-			}.bind(this)
-		});
-	},
-	loadFormData: function(callback){
-		this.actions.getForm(this.options.id, function(form){
-			if (form){
+                if (callback) callback();
+            }.bind(this),
+            "onerror": function(text){
+                this.notice(text, "error");
+            }.bind(this),
+            "onRequestFailure": function(xhr){
+                this.notice(xhr.responseText, "error");
+            }.bind(this)
+        });
+    },
+    loadNewFormDataFormTemplate: function(callback){
+        this.actions.getFormTemplate(this.options.templateId, function(form){
+            if (form){
 
-				this.formData = JSON.decode(MWF.decodeJsonString(form.data.data));
-				this.formData.isNewForm = false;
-				this.formData.json.id = form.data.id;
+                this.formData = JSON.decode(MWF.decodeJsonString(form.data.data));
+                this.formData.isNewForm = true;
+                this.formData.json.id = "";
+
+                if (form.data.mobileData){
+                    this.formMobileData = JSON.decode(MWF.decodeJsonString(form.data.mobileData));
+                    this.formMobileData.isNewForm = true;
+                    this.formMobileData.json.id = "";
+                }else{
+                    this.formMobileData = Object.clone(this.formData);
+                }
+
+                if (callback) callback();
+
+                //this.actions.getFormCategory(this.formData.json.formCategory, function(category){
+                //	this.category = {"data": {"name": category.data.name, "id": category.data.id}};
+                //	if (callback) callback();
+                //}.bind(this));
+            }
+        }.bind(this));
+    },
+    loadFormData: function(callback){
+        this.actions.getForm(this.options.id, function(form){
+            if (form){
+
+                this.formData = JSON.decode(MWF.decodeJsonString(form.data.data));
+                this.formData.isNewForm = false;
+                this.formData.json.id = form.data.id;
 
                 if (form.data.mobileData){
                     this.formMobileData = JSON.decode(MWF.decodeJsonString(form.data.mobileData));
@@ -1041,86 +1088,123 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
                 }
 
 
-				this.setTitle(this.options.appTitle + "-"+this.formData.json.name);
-				this.taskitem.setText(this.options.appTitle + "-"+this.formData.json.name);
-				this.options.appTitle = this.options.appTitle + "-"+this.formData.json.name;
-
-               // alert( this.column )
-                //alert( this.application )
-                //alert( JSON.stringify(form.data.application ))
+                this.setTitle(this.options.appTitle + "-"+this.formData.json.name);
+                this.taskitem.setText(this.options.appTitle + "-"+this.formData.json.name);
+                this.options.appTitle = this.options.appTitle + "-"+this.formData.json.name;
 
                 if (!this.application){
-                    this.actions.getColumn(form.data.application || { id : form.data.appId } , function(json){
-                        this.application = {"name": json.data.name, "id": json.data.id};
+                    this.actions.getColumn({id : form.data.appId}, function(json){
+                        this.application = {"name": json.data.appName, "id": json.data.id};
                         if (callback) callback();
                     }.bind(this));
                 }else{
                     if (callback) callback();
                 }
 
-				//this.actions.getFormCategory(this.formData.json.formCategory, function(category){
-				//	this.category = {"data": {"name": category.data.name, "id": category.data.id}};
-				//	if (callback) callback();
-				//}.bind(this));
-			}
-		}.bind(this));
-	},
-	
-	saveForm: function(){
-        var pcData, mobileData;
-        if (this.pcForm){
-            this.pcForm._getFormData();
-            pcData = this.pcForm.data;
-        }
-        if (this.mobileForm){
-            this.mobileForm._getFormData();
-            mobileData = this.mobileForm.data;
-        }
-
-        this.actions.saveForm(pcData, mobileData, function(responseJSON){
-        	this.notice(MWF.CMSFD.LP.notice["save_success"], "ok", null, {x: "left", y:"bottom"});
-        	if (!this.pcForm.json.name) this.pcForm.treeNode.setText("<"+this.json.type+"> "+this.json.id);
-        	this.pcForm.treeNode.setTitle(this.pcForm.json.id);
-        	this.pcForm.node.set("id", this.pcForm.json.id);
-
+                //this.actions.getFormCategory(this.formData.json.formCategory, function(category){
+                //	this.category = {"data": {"name": category.data.name, "id": category.data.id}};
+                //	if (callback) callback();
+                //}.bind(this));
+            }
+        }.bind(this));
+    },
+    getFieldList: function(){
+        //fieldTypes = ["calender", "checkbox", "datagrid", "htmledit", "number", "personfield", "radio", "select", "textarea", "textfield"];
+        dataTypes = {
+            "string": ["htmledit", "radio", "select", "textarea", "textfield"],
+            "person": ["personfield","readerfield"],
+            "date": ["calender"],
+            "number": ["number"],
+            "array": ["checkbox"]
+        };
+        fieldList = [];
+        this.pcForm.moduleList.each(function(moudle){
+            var key = "";
+            for (k in dataTypes){
+                if (dataTypes[k].indexOf(moudle.moduleName.toLowerCase())!=-1){
+                    key = k;
+                    break;
+                }
+            }
+            if (key){
+                fieldList.push({
+                    "name": moudle.json.id,
+                    "dataType": key
+                });
+            }
+        }.bind(this));
+        return fieldList;
+    },
+    saveForm: function(){
+        if (!this.isSave){
+            var pcData, mobileData;
+            if (this.pcForm){
+                this.pcForm._getFormData();
+                pcData = this.pcForm.data;
+            }
             if (this.mobileForm){
-                if (!this.mobileForm.json.name) this.mobileForm.treeNode.setText("<"+this.json.type+"> "+this.json.id);
-                this.mobileForm.treeNode.setTitle(this.mobileForm.json.id);
-                this.mobileForm.node.set("id", this.json.id+"_"+this.options.mode);
+                this.mobileForm._getFormData();
+                mobileData = this.mobileForm.data;
+            }else{
+                if (this.formMobileData) mobileData = this.formMobileData;
             }
 
-            var name = this.pcForm.json.name;
-            if (this.pcForm.data.isNewForm) this.setTitle(this.options.appTitle + "-"+name);
-            this.pcForm.data.isNewForm = false;
-            if (this.mobileForm) this.mobileForm.data.isNewForm = false;
+            this.isSave = true;
+            var fieldList = this.getFieldList();
+            //this.actions.saveForm(pcData, mobileData, fieldList, function(responseJSON){  modify by cxy
+            this.actions.saveForm(pcData, mobileData, function(responseJSON){
+                this.notice(MWF.APPFD.LP.notice["save_success"], "ok", null, {x: "left", y:"bottom"});
+                if (!this.pcForm.json.name) this.pcForm.treeNode.setText("<"+this.json.type+"> "+this.json.id);
+                this.pcForm.treeNode.setTitle(this.pcForm.json.id);
+                this.pcForm.node.set("id", this.pcForm.json.id);
 
-            this.options.desktopReload = true;
-            this.options.id = this.pcForm.json.id;
+                if (this.mobileForm){
+                    if (!this.mobileForm.json.name) this.mobileForm.treeNode.setText("<"+this.mobileForm.json.type+"> "+this.mobileForm.json.id);
+                    this.mobileForm.treeNode.setTitle(this.mobileForm.json.id);
+                    this.mobileForm.node.set("id", this.mobileForm.json.id+"_"+this.options.mode);
+                }
 
-            this.fireAppEvent("postSave")
+                var name = this.pcForm.json.name;
+                if (this.pcForm.data.isNewForm) this.setTitle(this.options.appTitle + "-"+name);
+                this.pcForm.data.isNewForm = false;
+                if (this.mobileForm) this.mobileForm.data.isNewForm = false;
 
-        }.bind(this));
+                this.options.desktopReload = true;
+                this.options.id = this.pcForm.json.id;
 
+                this.isSave = false;
 
+                this.fireAppEvent("postSave"); //add by cxy
 
-		//this.form.save(function(){
+            }.bind(this), function(xhr, text, error){
+                this.isSave = false;
+
+                var errorText = error+":"+text;
+                if (xhr) errorText = xhr.responseText;
+                MWF.xDesktop.notice("error", {x: "right", y:"top"}, "request json error: "+errorText);
+            }.bind(this));
+        }else{
+            MWF.xDesktop.notice("info", {x: "right", y:"top"}, this.lp.isSave);
+        }
+
+        //this.form.save(function(){
         //
-		//	var name = this.form.json.name;
-		//	if (this.form.data.isNewForm) this.setTitle(this.options.appTitle + "-"+name);
-		//	this.form.data.isNewForm = false;
-		//	this.options.desktopReload = true;
-		//	this.options.id = this.form.json.id;
-		//}.bind(this));
-	},
-	previewForm: function(){
-		this.form.preview();
-	},
+        //	var name = this.form.json.name;
+        //	if (this.form.data.isNewForm) this.setTitle(this.options.appTitle + "-"+name);
+        //	this.form.data.isNewForm = false;
+        //	this.options.desktopReload = true;
+        //	this.options.id = this.form.json.id;
+        //}.bind(this));
+    },
+    previewForm: function(){
+        this.form.preview();
+    },
     formExplode: function(){
         this.form.explode();
     },
-	recordStatus: function(){
-		return {"id": this.options.id};
-	},
+    recordStatus: function(){
+        return {"id": this.options.id};
+    },
     onPostClose: function(){
         if (this.pcForm){
             MWF.release(this.pcForm.moduleList);
@@ -1137,6 +1221,155 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             MWF.release(this.mobileForm.moduleElementNodeList);
             MWF.release(this.mobileForm.moduleComponentNodeList);
             MWF.release(this.mobileForm);
+        }
+    },
+    setTemplateFormNode: function(formNode){
+        var html = "<table align=\"center\" width=\"100%\" height=\"90%\" border=\"0\" cellPadding=\"0\" cellSpacing=\"0\">" +
+            "<tr><td colSpan=\"2\" style=\"height: 50px; line-height: 60px; text-align: center; font-size: 24px; font-weight: bold\">" +
+            this.lp.saveTemplate+"</td></tr>" +
+
+            "<tr><td style=\"height: 40px;\" width=\"80px\">" +this.lp.templateName+"</td><td>"+
+            "<input value=\""+this.pcForm.json.name+"\" type=\"text\" style=\"width: 98%; height: 22px; border: 1px solid #cccccc\"/>"+"</td></tr>" +
+
+            "<tr><td style=\"height: 40px;\">" +this.lp.templateCategory+"</td><td>"+
+            "<select style=\"width: 30%; height: 24px; border: 1px solid #cccccc\"></select>"+
+            "<input type=\"text\" style=\"width: 68%; height: 22px; border: 1px solid #cccccc\"/>"+"</td></tr>" +
+
+            "<tr><td style=\"height: 40px;\">" +this.lp.templateDescription+"</td><td>"+
+            "<textarea type=\"text\" style=\"width: 98%; height: 44px; border: 1px solid #cccccc\">"+this.pcForm.json.description+"</textarea>"+"</td></tr>" +
+
+            "<tr><td colSpan=\"2\" id=\"form_templatePreview\">" +
+            "<div style=\"position: relative; width: 180px; height: 180px; margin: 20px auto 0px auto;  overflow: hidden\"></div>" +
+            "</td></tr>" +
+            "</table>";
+
+        formNode.set("html", html);
+        var tds = formNode.getElements("td");
+        var iconNode = tds[tds.length-1].getFirst();
+        var previewNode = this.pcForm.node.clone();
+        previewNode.setStyles({
+            "transform-origin": "0px 0px",
+            "transform": "scale(0.15,0.15)",
+            "position": "absolute",
+            "top": "0px",
+            "left": "0px"
+        }).inject(iconNode);
+        return iconNode;
+    },
+    setCategorySelect: function(categorySelect){
+        if (categorySelect){
+            new Element("option", {"value": "$newCategory","text": this.lp.newCategory}).inject(categorySelect);
+            this.actions.listFormTemplateCategory(function(json){
+                json.data.each(function(category){
+                    new Element("option", {"value": category.name,"text": category.name}).inject(categorySelect);
+                }.bind(this));
+            }.bind(this));
+        }
+    },
+    setTemplateActions: function(markNode, areaNode, formNode, iconNode, nameNode, categorySelect, newCategoryNode, descriptionNode){
+        var actionAreaNode= new Element("div", {
+            "styles": this.css.templateActionNode
+        }).inject(formNode);
+
+        var cancelActionNode = new Element("div", {
+            "styles": this.css.templateCancelActionNode,
+            "text": this.lp.cancel,
+            "events":{
+                "click": function(){
+                    markNode.destroy();
+                    areaNode.destroy();
+                }
+            }
+        }).inject(actionAreaNode);
+        var saveActionNode = new Element("div", {
+            "styles": this.css.templateSaveActionNode,
+            "text": this.lp.save,
+            "events":{
+                "click": function(){
+                    this.saveTemplate(markNode, areaNode, iconNode, nameNode, categorySelect, newCategoryNode, descriptionNode);
+                }.bind(this)
+            }
+        }).inject(actionAreaNode);
+    },
+    saveTemplate: function(markNode, areaNode, iconNode, nameNode, categorySelect, newCategoryNode, descriptionNode){
+        var pcData, mobileData;
+        if (this.pcForm){
+            this.pcForm._getFormData();
+            pcData = this.pcForm.data;
+        }
+        if (this.mobileForm){
+            this.mobileForm._getFormData();
+            mobileData = this.mobileForm.data;
+        }
+
+        var name = nameNode.get("value");
+        var category = (categorySelect.options[categorySelect.selectedIndex].value=="$newCategory") ? newCategoryNode.get("value") : categorySelect.options[categorySelect.selectedIndex].value;
+        var description = descriptionNode.get("value");
+        if (!name){
+            this.notice(MWF.APPFD.LP.notice["saveTemplate_inputName"], "error", nameNode, {x: "left", y:"top"});
+            return false;
+        }
+        if (categorySelect.options[categorySelect.selectedIndex].value=="$newCategory" && !newCategoryNode.get("value")){
+            this.notice(MWF.APPFD.LP.notice["saveTemplate_inputCategory"], "error", categorySelect, {x: "left", y:"top"});
+            return false;
+        }
+        //var tds = formNode.getElements("td");
+        //var iconNode = tds[tds.length-1].getFirst();
+
+        var data = {
+            "name": name,
+            "category": category,
+            "description": description,
+            "outline": iconNode.get("html")
+        };
+        this.actions.addFormTemplate(pcData, mobileData, data, function(){
+            this.notice(MWF.APPFD.LP.notice["saveTemplate_success"], "ok", null, {x: "left", y:"bottom"});
+            markNode.destroy();
+            areaNode.destroy();
+        }.bind(this), function(xhr, text, error){
+            var errorText = error+":"+text;
+            if (xhr) errorText = xhr.responseText;
+            MWF.xDesktop.notice("error", {x: "right", y:"top"}, "request json error: "+errorText);
+        });
+    },
+    createTemplateSaveNode: function(){
+        var markNode = new Element("div", {
+            "styles": this.css.templateMarkNode,
+            "events": {
+                "mouseover": function(e){e.stopPropagation();},
+                "mouseout": function(e){e.stopPropagation();}
+            }
+        }).inject(this.content);
+
+        var areaNode = new Element("div", {
+            "styles": this.css.templateAreaNode
+        }).inject(this.content);
+
+        var createNode = new Element("div", {
+            "styles": this.css.templateInfoNode
+        }).inject(areaNode);
+
+        var formNode = new Element("div", {
+            "styles": this.css.templateFormNode
+        }).inject(createNode);
+
+        var iconNode = this.setTemplateFormNode(formNode);
+
+        var nodes = formNode.getElements("input");
+        var nameNode = nodes[0];
+        var newCategoryNode = nodes[1];
+        var descriptionNode = formNode.getElement("textarea");
+        var categorySelect = formNode.getElement("select");
+
+        this.setCategorySelect(categorySelect);
+
+        this.setTemplateActions(markNode, areaNode, formNode, iconNode, nameNode, categorySelect, newCategoryNode, descriptionNode);
+    },
+    saveFormAsTemplate: function(){
+        if (!this.isSave){
+            this.createTemplateSaveNode();
+        }else{
+            MWF.xDesktop.notice("info", {x: "right", y:"top"}, this.lp.isSave);
         }
     }
 });

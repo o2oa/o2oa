@@ -28,6 +28,7 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.annotation.EntityFieldDescribe;
 import com.x.base.core.entity.item.Item;
+import com.x.base.core.entity.item.ItemConverter;
 import com.x.base.core.entity.item.ItemPrimitiveType;
 import com.x.base.core.entity.item.ItemStringValueType;
 import com.x.base.core.entity.item.ItemType;
@@ -45,7 +46,7 @@ public class DataItem extends Item {
 	private static final String TABLE = PersistenceProperties.Content.DataItem.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -58,7 +59,7 @@ public class DataItem extends Item {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -118,7 +119,7 @@ public class DataItem extends Item {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception{
 		this.path0 = StringUtils.trimToEmpty(this.path0);
 		this.path1 = StringUtils.trimToEmpty(this.path1);
 		this.path2 = StringUtils.trimToEmpty(this.path2);
@@ -221,7 +222,7 @@ public class DataItem extends Item {
 	@CheckPersist(allowEmpty = false)
 	private ItemStringValueType itemStringValueType;
 
-	@Column(length = StringValueMaxLength, name = "xstringValue")
+	@Column(length = ItemConverter.STRING_VALUE_MAX_LENGTH, name = "xstringValue")
 	@Index(name = TABLE + "_stringValue")
 	private String stringValue;
 
@@ -289,15 +290,15 @@ public class DataItem extends Item {
 	private String appName;
 
 	@EntityFieldDescribe("分类ID")
-	@Column(length = JpaObject.length_id, name = "xcatagoryId")
-	@Index(name = TABLE + "_catagoryId")
+	@Column(length = JpaObject.length_id, name = "xcategoryId")
+	@Index(name = TABLE + "_categoryId")
 	@CheckPersist(allowEmpty = false)
-	private String catagoryId;
+	private String categoryId;
 
 	@EntityFieldDescribe( "分类名称" )
-	@Column( name="xcatagoryName", length = JpaObject.length_96B  )
+	@Column( name="xcategoryName", length = JpaObject.length_96B  )
 	@CheckPersist( allowEmpty = true )
-	private String catagoryName;
+	private String categoryName;
 	
 	@EntityFieldDescribe("文档ID")
 	@Column(length = JpaObject.length_id, name = "xdocId")
@@ -316,6 +317,12 @@ public class DataItem extends Item {
 	@Index(name = TABLE + "_publishTime")
 	@CheckPersist( allowEmpty = true )
 	private Date publishTime;
+	
+	@EntityFieldDescribe("lobItem连接Id.")
+	@Column(length = JpaObject.length_id, name = "xlobItem")
+	@Index(name = TABLE + "_lobItem")
+	@CheckPersist(allowEmpty = false)
+	private String lobItem;
 	
 	@EntityFieldDescribe("标题")
 	@Column(length = AbstractPersistenceProperties.processPlatform_title_length, name = "xtitle")
@@ -587,20 +594,20 @@ public class DataItem extends Item {
 		this.appName = appName;
 	}
 
-	public String getCatagoryId() {
-		return catagoryId;
+	public String getCategoryId() {
+		return categoryId;
 	}
 
-	public void setCatagoryId(String catagoryId) {
-		this.catagoryId = catagoryId;
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
 	}
 
-	public String getCatagoryName() {
-		return catagoryName;
+	public String getCategoryName() {
+		return categoryName;
 	}
 
-	public void setCatagoryName(String catagoryName) {
-		this.catagoryName = catagoryName;
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
 	}
 
 	public String getDocId() {
@@ -625,5 +632,13 @@ public class DataItem extends Item {
 
 	public void setPublishTime(Date publishTime) {
 		this.publishTime = publishTime;
-	}	
+	}
+
+	public String getLobItem() {
+		return lobItem;
+	}
+
+	public void setLobItem(String lobItem) {
+		this.lobItem = lobItem;
+	}
 }

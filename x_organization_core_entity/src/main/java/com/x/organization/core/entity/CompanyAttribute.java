@@ -44,7 +44,7 @@ public class CompanyAttribute extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.CompanyAttribute.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -57,7 +57,7 @@ public class CompanyAttribute extends SliceJpaObject {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception {
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -117,7 +117,7 @@ public class CompanyAttribute extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception {
 		this.pinyin = PinyinHelper.convertToPinyinString(name, "", PinyinFormat.WITHOUT_TONE);
 		this.pinyinInitial = PinyinHelper.getShortPinyin(name);
 	}
@@ -140,7 +140,7 @@ public class CompanyAttribute extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false, citationNotExists =
 	/* 同一个公司不可以重名 */
 	@CitationNotExist(fields = { "name", "unique" }, type = CompanyAttribute.class, equals = {
-			@Equal(property = "company", field = "company") }) )
+			@Equal(property = "company", field = "company") }))
 	private String name;
 
 	@EntityFieldDescribe("唯一标识.")
@@ -149,7 +149,7 @@ public class CompanyAttribute extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true, citationNotExists =
 	/* 同一个公司不可以重名 */
 	@CitationNotExist(fields = { "id", "name", "unique" }, type = CompanyAttribute.class, equals = {
-			@Equal(property = "company", field = "company") }) )
+			@Equal(property = "company", field = "company") }))
 	private String unique;
 
 	@EntityFieldDescribe("此公司属性值所属的公司ID.不可为空.")
@@ -159,7 +159,7 @@ public class CompanyAttribute extends SliceJpaObject {
 	private String company;
 
 	@EntityFieldDescribe("属性值,多值.")
-	@ContainerTable(name = TABLE + "_attribbuteList", joinIndex = @Index(name = TABLE + "_attribbuteList_join") )
+	@ContainerTable(name = TABLE + "_attribbuteList", joinIndex = @Index(name = TABLE + "_attribbuteList_join"))
 	@ElementIndex(name = TABLE + "_attribbuteList_element")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = PersistenceProperties.orderColumn)

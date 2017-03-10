@@ -14,7 +14,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.processplatform.core.entity.element.Cancel.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:19:07 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:10:19 CST 2017")
 public class Cancel_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Cancel,String> afterArriveScript;
     public static volatile SingularAttribute<Cancel,String> afterArriveScriptText;
@@ -35,12 +35,15 @@ public class Cancel_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Cancel,String> name;
     public static volatile SingularAttribute<Cancel,String> position;
     public static volatile SingularAttribute<Cancel,String> process;
+    public static volatile ListAttribute<Cancel,String> readDataPathList;
     public static volatile ListAttribute<Cancel,String> readDepartmentList;
     public static volatile SingularAttribute<Cancel,String> readDuty;
     public static volatile ListAttribute<Cancel,String> readIdentityList;
     public static volatile SingularAttribute<Cancel,String> readScript;
     public static volatile SingularAttribute<Cancel,String> readScriptText;
+    public static volatile ListAttribute<Cancel,String> reviewDataPathList;
     public static volatile ListAttribute<Cancel,String> reviewDepartmentList;
+    public static volatile SingularAttribute<Cancel,String> reviewDuty;
     public static volatile ListAttribute<Cancel,String> reviewIdentityList;
     public static volatile SingularAttribute<Cancel,String> reviewScript;
     public static volatile SingularAttribute<Cancel,String> reviewScriptText;

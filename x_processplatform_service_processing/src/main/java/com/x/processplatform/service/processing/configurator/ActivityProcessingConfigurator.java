@@ -78,4 +78,64 @@ public abstract class ActivityProcessingConfigurator {
 		return callAfterArrivedExecuteScript;
 	}
 
+	public void setCallBeforeArriveScript(Boolean callBeforeArriveScript) {
+		this.callBeforeArriveScript = callBeforeArriveScript;
+	}
+
+	public void setCallAfterArriveScript(Boolean callAfterArriveScript) {
+		this.callAfterArriveScript = callAfterArriveScript;
+	}
+
+	public void setCallBeforeExecuteScript(Boolean callBeforeExecuteScript) {
+		this.callBeforeExecuteScript = callBeforeExecuteScript;
+	}
+
+	public void setCallAfterExecuteScript(Boolean callAfterExecuteScript) {
+		this.callAfterExecuteScript = callAfterExecuteScript;
+	}
+
+	public void setCallBeforeInquireScript(Boolean callBeforeInquireScript) {
+		this.callBeforeInquireScript = callBeforeInquireScript;
+	}
+
+	public void setCallAfterInquireScript(Boolean callAfterInquireScript) {
+		this.callAfterInquireScript = callAfterInquireScript;
+	}
+
+	public void setCallBeforeArrivedExecuteScript(Boolean callBeforeArrivedExecuteScript) {
+		this.callBeforeArrivedExecuteScript = callBeforeArrivedExecuteScript;
+	}
+
+	public void setCallAfterArrivedExecuteScript(Boolean callAfterArrivedExecuteScript) {
+		this.callAfterArrivedExecuteScript = callAfterArrivedExecuteScript;
+	}
+
+	public void setCreateRead(Boolean createRead) {
+		this.createRead = createRead;
+	}
+
+	public void setCreateReview(Boolean createReview) {
+		this.createReview = createReview;
+	}
+
+	public void setStampArrivedWorkLog(Boolean stampArrivedWorkLog) {
+		this.stampArrivedWorkLog = stampArrivedWorkLog;
+	}
+
+	public void setCreateFromWorkLog(Boolean createFromWorkLog) {
+		this.createFromWorkLog = createFromWorkLog;
+	}
+
+	public void setChangeActivityToken(Boolean changeActivityToken) {
+		this.changeActivityToken = changeActivityToken;
+	}
+
+	public void setUpdateData(Boolean updateData) {
+		this.updateData = updateData;
+	}
+
+	public void setCalculateExpire(Boolean calculateExpire) {
+		this.calculateExpire = calculateExpire;
+	}
+
 }

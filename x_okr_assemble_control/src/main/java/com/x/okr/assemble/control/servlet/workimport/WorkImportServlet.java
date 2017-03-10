@@ -9,31 +9,31 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.x.base.core.application.servlet.FileUploadServletTools;
+import com.x.base.core.application.servlet.AbstractServletAction;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.common.date.DateOperation;
 import com.x.okr.assemble.common.excel.reader.ExcelReaderUtil;
 import com.x.okr.assemble.control.OkrUserCache;
 import com.x.okr.assemble.control.ThisApplication;
 import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.WrapInOkrWorkBaseInfo;
-import com.x.okr.assemble.control.service.OkrCenterWorkInfoService;
+import com.x.okr.assemble.control.service.OkrCenterWorkQueryService;
 import com.x.okr.assemble.control.service.OkrUserInfoService;
 import com.x.okr.assemble.control.service.OkrUserManagerService;
-import com.x.okr.assemble.control.service.OkrWorkBaseInfoService;
+import com.x.okr.assemble.control.service.OkrWorkBaseInfoOperationService;
+import com.x.okr.assemble.control.service.OkrWorkBaseInfoQueryService;
 import com.x.okr.entity.OkrCenterWorkInfo;
 import com.x.okr.entity.OkrWorkBaseInfo;
 
@@ -45,12 +45,13 @@ import com.x.okr.entity.OkrWorkBaseInfo;
  */
 @WebServlet(urlPatterns = "/servlet/import/center/*")
 @MultipartConfig
-public class WorkImportServlet extends HttpServlet {
+public class WorkImportServlet extends AbstractServletAction {
 
 	private static final long serialVersionUID = 5628571943877405247L;
 	private Logger logger = LoggerFactory.getLogger( WorkImportServlet.class );
-	private OkrCenterWorkInfoService okrCenterWorkInfoService = new OkrCenterWorkInfoService();
-	private OkrWorkBaseInfoService okrWorkBaseInfoService = new OkrWorkBaseInfoService();
+	private OkrCenterWorkQueryService okrCenterWorkInfoService = new OkrCenterWorkQueryService();
+	private OkrWorkBaseInfoOperationService okrWorkBaseInfoOperationService = new OkrWorkBaseInfoOperationService();
+	private OkrWorkBaseInfoQueryService okrWorkBaseInfoQueryService = new OkrWorkBaseInfoQueryService();
 	private OkrUserManagerService okrUserManagerService = new OkrUserManagerService();
 	private OkrUserInfoService okrUserInfoService = new OkrUserInfoService();
 	private DateOperation dateOperation = new DateOperation();
@@ -73,91 +74,85 @@ public class WorkImportServlet extends HttpServlet {
 		// 从请求对象里获取操作用户信息
 		if (check) {
 			try {
-				effectivePerson = FileUploadServletTools.effectivePerson(request);
+				effectivePerson = this.effectivePerson(request);
 			} catch (Exception e) {
 				check = false;
 				result.error(e);
-				result.setUserMessage("系统从请求对象里获取操作用户信息发生异常！");
-				logger.error("system get effectivePerson from request got an exception.", e);
+				logger.warn("system get effectivePerson from request url got an exception." ); 
+				logger.error(e);
 			}
 		}
 		
 		if (check) {
 			try {
 				okrUserCache = okrUserInfoService.getOkrUserCacheWithPersonName( effectivePerson.getName() );
-			} catch (Exception e1) {
+			}catch(Exception e){
 				check = false;
-				result.error( new Exception( "系统获取用户登录记录信息发生异常!" ) );
-				result.setUserMessage( "系统获取用户登录记录信息发生异常!" );
-				logger.error( "system get login indentity with person name got an exception", e1 );
-			}	
+				Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName() );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
+			}
 		}
 			
 		
 		if( check && ( okrUserCache == null || okrUserCache.getLoginIdentityName() == null ) ){
 			check = false;
-			logger.error( "system query user identity got an exception.user:" + effectivePerson.getName());
-			result.error( new Exception( "系统未获取到用户登录身份(登录用户名)，请重新打开应用!" ) );
-			result.setUserMessage( "系统未获取到用户登录身份(登录用户名)，请重新打开应用!" );
+			Exception exception = new UserNoLoginException( effectivePerson.getName() );
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
 		}
 		
 		if (check) {
-			// logger.debug( ">>>>>>>>>>>>>>>>>>>>>>>>系统正在校验登录用户身份信息......" );
 			if ( okrUserCache.getLoginUserName() == null ) {
 				check = false;
-				result.error(new Exception("can not find login user identity, please reopen ."));
-				result.setUserMessage("系统未获取到用户登录身份(登录用户名)，请重新打开应用!");
+				Exception exception = new UserNoLoginException( effectivePerson.getName() );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 
 		if (check) {
-			// logger.debug( ">>>>>>>>>>>>>>>>>>>>>>>>系统正在校验上传文件内容是否存在......" );
 			if (!ServletFileUpload.isMultipartContent(request)) {
 				check = false;
-				result.error(new Exception("not mulit part request."));
-				result.setUserMessage("请求中未含有文件信息，未发现需要导入的文件！");
+				logger.warn("not mulit part request." ); 
+				result.error( new Exception( "请求不是Multipart，无法获取文件信息。" ) );
 			}
 		}
 
 		// 从URL里获取centerId
 		if (check) {
-			// logger.debug(
-			// ">>>>>>>>>>>>>>>>>>>>>>>>系统正在从URL里获取需要的参数信息[centerId]......" );
 			try {
-				centerId = FileUploadServletTools.getURIPart(request.getRequestURI(), "center");
+				centerId = this.getURIPart(request.getRequestURI(), "center");
 			} catch (Exception e) {
 				check = false;
 				result.error(e);
-				result.setUserMessage("系统从URL获取中心工作ID参数时发生异常。");
-				logger.error("system get center id from url got an exception.", e);
+				logger.warn("system get centerId from request url got an exception." );
+				logger.error(e);
 			}
 		}
 
 		// 判断中心工作信息是否存在
 		if (check) {
-			// logger.debug(
-			// ">>>>>>>>>>>>>>>>>>>>>>>>系统正在判断中心工作{'id':'"+centerId+"'}信息是否存在......"
-			// );
 			try {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					okrCenterWorkInfo = emc.find(centerId, OkrCenterWorkInfo.class);
 					if (null == okrCenterWorkInfo) {// 中心工作不存在
 						check = false;
-						result.error(new Exception("The center work{'id':'" + centerId + "'} is not exists."));
-						result.setUserMessage("中心工作不存在。");
+						Exception exception = new CenterWorkNotExistsException( centerId );
+						result.error( exception );
+						logger.error( exception, effectivePerson, request, null);
 					}
 				}
 			} catch (Exception e) {// 获取中心工作发生异常
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统从数据库中根据中心工作ID获取中心工作信息时发生异常。");
-				logger.error("system get okrCenterWorkInfo{id:" + centerId + "} from database got an exception.", e);
+				Exception exception = new CenterWorkQueryByIdException( e, centerId );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 
 		// 获取文件内容并且对文件进行分析
 		if (check) {
-			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>系统获取文件内容并且尝试解析并且收集需要导入的数据内容......");
 			try {
 				upload = new ServletFileUpload();
 				fileItemIterator = upload.getItemIterator(request);
@@ -167,15 +162,14 @@ public class WorkImportServlet extends HttpServlet {
 						input = item.openStream();
 						// 读取EXCEL文件中的所有数据
 						ThisApplication.getImportFileStatusMap().remove(effectivePerson.getName());
-						ExcelReaderUtil.readExcel(new WorkImportExcelReader(), item.getName(), input,
-								effectivePerson.getName(), 1);
+						ExcelReaderUtil.readExcel(new WorkImportExcelReader(), item.getName(), input, effectivePerson.getName(), 1);
 					}
 				}
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统从EXCEL文件获取数据时发生异常。");
-				logger.error("[UploadServlet]system try to save okrAttachmentFileInfo to Storage got an exception.", e);
+				Exception exception = new ExcelReadException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			} finally {
 				if (input != null) {
 					input.close();
@@ -184,23 +178,19 @@ public class WorkImportServlet extends HttpServlet {
 		}
 
 		if (check) {
-			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>系统对收集完成的数据进行校验和保存......");
 			List<CacheImportRowDetail> importRowList = null;
-
 			// 对从EXCEL文件里获取的所有信息逐一进行数据校验以及保存操作
 			CacheImportFileStatus cacheImportFileStatus = null;
 			cacheImportFileStatus = ThisApplication.getCacheImportFileStatusElementByKey(effectivePerson.getName());
 			if (cacheImportFileStatus != null) {
 				importRowList = cacheImportFileStatus.getDetailList();
 				if (importRowList != null) {
-					result = saveAllImportRow(centerId, importRowList, effectivePerson);
+					result = saveAllImportRow( request, centerId, importRowList, effectivePerson);
 				}
-			} else {
-				logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>系统中未发现收集完成的数据！");
 			}
 		}
 		ThisApplication.getImportFileStatusMap().remove(effectivePerson.getName());
-		FileUploadServletTools.result(response, result);
+		this.result(response, result);
 	}
 
 	/**
@@ -209,12 +199,12 @@ public class WorkImportServlet extends HttpServlet {
 	 * @param importRowList
 	 * @return
 	 */
-	private ActionResult<Object> saveAllImportRow(String centerId, List<CacheImportRowDetail> importRowList,
-			EffectivePerson effectivePerson) {
+	private ActionResult<Object> saveAllImportRow( HttpServletRequest request, String centerId, List<CacheImportRowDetail> importRowList, EffectivePerson effectivePerson) {
 		ActionResult<Object> result = new ActionResult<Object>();
-		if (importRowList == null || importRowList.isEmpty()) {
-			result.error(new Exception("no data need save, import row list is null."));
-			result.setUserMessage("未获取到任何需要保存的数据。");
+		if ( importRowList == null || importRowList.isEmpty() ) {
+			Exception exception = new NoDataException();
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
 			return result;
 		}
 		List<WrapInOkrWorkBaseInfo> wrapInList = new ArrayList<WrapInOkrWorkBaseInfo>();
@@ -234,20 +224,20 @@ public class WorkImportServlet extends HttpServlet {
 		OkrUserCache  okrUserCache  = null;
 		try {
 			okrUserCache = okrUserInfoService.getOkrUserCacheWithPersonName( effectivePerson.getName() );
-		} catch (Exception e1) {
+		}catch(Exception e){
 			check = false;
-			result.error( new Exception( "系统获取用户登录记录信息发生异常!" ) );
-			result.setUserMessage( "系统获取用户登录记录信息发生异常!" );
-			logger.error( "system get login indentity with person name got an exception", e1 );
+			Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName() );
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
 		}		
 		
 		if( check && ( okrUserCache == null || okrUserCache.getLoginIdentityName() == null ) ){
 			check = false;
-			logger.error( "system query user identity got an exception.user:" + effectivePerson.getName());
-			result.error( new Exception( "系统未获取到用户登录身份(登录用户名)，请重新打开应用!" ) );
-			result.setUserMessage( "系统未获取到用户登录身份(登录用户名)，请重新打开应用!" );
+			Exception exception = new UserNoLoginException( effectivePerson.getName() );
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
 		}
-		// logger.debug( ">>>>>>>>>>>>>>>>>>>>>>>>系统正在为数据校验中心工作信息 :"+centerId );
+
 		if (check) {
 			// 补充中心工作标题
 			if (centerId != null && !centerId.isEmpty()) {
@@ -256,9 +246,9 @@ public class WorkImportServlet extends HttpServlet {
 					okrCenterWorkInfo = okrCenterWorkInfoService.get(centerId);
 				} catch (Exception e) {
 					check = false;
-					result.error(e);
-					result.setUserMessage("中心工作不存在,id:'" + centerId + "'，无法继续保存工作信息!");
-					logger.error("center work info{'id':'" + centerId + "'} is not exists!", e);
+					Exception exception = new CenterWorkQueryByIdException( e, centerId );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
@@ -266,9 +256,9 @@ public class WorkImportServlet extends HttpServlet {
 		if (check) {
 			if (okrCenterWorkInfo == null) {
 				check = false;
-				result.error(new Exception("center work info{'id':'" + centerId + "'} is not exists."));
-				result.setUserMessage("中心工作不存在,id:'" + centerId + "'，无法继续保存工作信息!");
-				logger.error("center work info{'id':'" + centerId + "'} is not exists!");
+				Exception exception = new CenterWorkNotExistsException( centerId );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 
@@ -277,20 +267,19 @@ public class WorkImportServlet extends HttpServlet {
 				currentUserIdentityName = okrUserManagerService.getFistIdentityNameByPerson(effectivePerson.getName());
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统根据登录者获取身份名称发生异常，无法继续保存工作信息!");
-				logger.error("system get identity by effectivePerson got an exception.", e);
+				Exception exception = new UserOrganizationQueryException( e, effectivePerson.getName() );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if (check) {
 			try {
-				currentUserOrganizationName = okrUserManagerService
-						.getDepartmentNameByIdentity(currentUserIdentityName);
+				currentUserOrganizationName = okrUserManagerService.getDepartmentNameByIdentity(currentUserIdentityName);
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统根据登录者获取组织名称发生异常，无法继续保存工作信息!");
-				logger.error("system get organization name by effectivePerson got an exception.", e);
+				Exception exception = new UserOrganizationQueryException( e, currentUserIdentityName );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if (check) {
@@ -298,14 +287,13 @@ public class WorkImportServlet extends HttpServlet {
 				currentUserCompanyName = okrUserManagerService.getCompanyNameByIdentity(currentUserIdentityName);
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统根据登录者获取公司名称发生异常，无法继续保存工作信息!");
-				logger.error("system get company name by effectivePerson got an exception.", e);
+				Exception exception = new UserOrganizationQueryException( e, currentUserIdentityName );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 
 		for (CacheImportRowDetail cacheImportRowDetail : importRowList) {
-			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>系统正在校验工作信息合法性，标题：[" + cacheImportRowDetail.getTitle() + "]");
 			wrapInOkrWorkBaseInfo = new WrapInOkrWorkBaseInfo();
 
 			wrapInOkrWorkBaseInfo.setCompleteDateLimit(cacheImportRowDetail.getCompleteDateLimit());
@@ -338,8 +326,9 @@ public class WorkImportServlet extends HttpServlet {
 					// 对wrapIn里的信息进行校验
 					if (check && okrUserCache.getLoginIdentityName()  == null) {
 						check = false;
-						result.error(new Exception("can not find login user identity, please reopen ."));
-						result.setUserMessage("系统未获取到用户登录身份(登录用户名)，请重新打开应用!");
+						Exception exception = new UserNoLoginException( effectivePerson.getName() );
+						result.error( exception );
+						logger.error( exception, effectivePerson, request, null);
 					}
 
 					if (check) {
@@ -348,8 +337,6 @@ public class WorkImportServlet extends HttpServlet {
 					}
 
 					if (check) {
-						// logger.debug(
-						// ">>>>>>>>>>>>>>>>>>>>>>>>系统正在为数据补充创建人身份......" );
 						// 创建人和部署人信息直接取当前操作人和登录人身份
 						wrapInOkrWorkBaseInfo.setCreatorName(effectivePerson.getName());
 						if (effectivePerson.getName().equals(okrUserCache.getLoginUserName())) {
@@ -366,8 +353,6 @@ public class WorkImportServlet extends HttpServlet {
 					}
 
 					if (check) {
-						// logger.debug(
-						// ">>>>>>>>>>>>>>>>>>>>>>>>系统正在为数据补充部署人身份......" );
 						wrapInOkrWorkBaseInfo.setDeployerName(okrUserCache.getLoginUserName());
 						if (effectivePerson.getName().equals(okrUserCache.getLoginUserName())) {
 							wrapInOkrWorkBaseInfo.setDeployerOrganizationName(okrUserCache.getLoginUserOrganizationName());
@@ -378,46 +363,34 @@ public class WorkImportServlet extends HttpServlet {
 
 					// 补充部署工作的年份和月份
 					if (check) {
-						// logger.debug(
-						// ">>>>>>>>>>>>>>>>>>>>>>>>系统正在为数据补充部署工作的年份和月份......"
-						// );
 						wrapInOkrWorkBaseInfo.setDeployYear(yearString);
 						wrapInOkrWorkBaseInfo.setDeployMonth(monthString);
 						wrapInOkrWorkBaseInfo.setDeployDateStr(nowDateString);
 					}
 
 					if (check) {
-						// logger.debug(
-						// ">>>>>>>>>>>>>>>>>>>>>>>>系统正在为数据校验上级工作信息 ："+
 						// cacheImportRowDetail.getParentWorkId());
 						// 检验上级工作信息
 						if (cacheImportRowDetail.getParentWorkId() != null
 								&& !cacheImportRowDetail.getParentWorkId().isEmpty()) {
 							// 根据ID查询中心工作信息
-							okrWorkBaseInfo = okrWorkBaseInfoService.get(cacheImportRowDetail.getParentWorkId());
+							okrWorkBaseInfo = okrWorkBaseInfoQueryService.get(cacheImportRowDetail.getParentWorkId());
 							if (okrWorkBaseInfo != null) {
 								wrapInOkrWorkBaseInfo.setParentWorkId(okrWorkBaseInfo.getId());
 								wrapInOkrWorkBaseInfo.setParentWorkTitle(okrWorkBaseInfo.getTitle());
 							} else {
 								check = false;
-								result.error(new Exception("parent work info{'id':'"
-										+ cacheImportRowDetail.getParentWorkId() + "'} is not exists."));
-								result.setUserMessage(
-										"上级工作不存在, id:'" + cacheImportRowDetail.getParentWorkId() + "'，无法继续保存工作信息!");
-								logger.error("parent work info{'id':'" + cacheImportRowDetail.getParentWorkId()
-										+ "'} is not exists!");
+								Exception exception = new WorkNotExistsException( cacheImportRowDetail.getParentWorkId() );
+								result.error( exception );
+								logger.error( exception, effectivePerson, request, null);
 								wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
-								wrapInOkrWorkBaseInfo.setDescription(
-										"上级工作不存在, id:'" + cacheImportRowDetail.getParentWorkId() + "'，无法继续保存工作信息!");
+								wrapInOkrWorkBaseInfo.setDescription("上级工作不存在, id:'" + cacheImportRowDetail.getParentWorkId() + "'，无法继续保存工作信息!");
 							}
 						}
 					}
 
 					// 校验工作完成时限数据，补充日期型完成时限数据
 					if (check) {
-						// logger.debug(
-						// ">>>>>>>>>>>>>>>>>>>>>>>>系统正在为数据校验工作完成时限数据，补充日期型完成时限数据
-						// :"+cacheImportRowDetail.getCompleteDateLimitStr() );
 						if (cacheImportRowDetail.getCompleteDateLimitStr() != null
 								&& !cacheImportRowDetail.getCompleteDateLimitStr().isEmpty()) {
 							try {
@@ -425,19 +398,17 @@ public class WorkImportServlet extends HttpServlet {
 										.getDateFromString(cacheImportRowDetail.getCompleteDateLimitStr()));
 							} catch (Exception e) {
 								check = false;
-								result.error(e);
-								result.setUserMessage("工作完成时限格式不正确：" + cacheImportRowDetail.getCompleteDateLimitStr()
-										+ "，无法继续保存工作信息!");
-								logger.error("complete date limit string is not date! "
-										+ cacheImportRowDetail.getCompleteDateLimitStr(), e);
+								Exception exception = new WorkCompleteDateLimitFormatException( e, cacheImportRowDetail.getCompleteDateLimitStr() );
+								result.error( exception );
+								logger.error( exception, effectivePerson, request, null);
 								wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
-								wrapInOkrWorkBaseInfo.setDescription("工作完成时限格式不正确："
-										+ cacheImportRowDetail.getCompleteDateLimitStr() + "，无法继续保存工作信息!");
+								wrapInOkrWorkBaseInfo.setDescription("工作完成时限格式不正确：" + cacheImportRowDetail.getCompleteDateLimitStr() + "，无法继续保存工作信息!");
 							}
 						} else {
 							check = false;
-							result.setUserMessage("工作完成时限信息为空，无法继续保存工作信息!");
-							logger.error("complete date limit string is null.");
+							Exception exception = new WorkCompleteDateLimitEmptyException();
+							result.error( exception );
+							logger.error( exception, effectivePerson, request, null);
 							wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
 							wrapInOkrWorkBaseInfo.setDescription("工作完成时限信息为空，无法继续保存工作信息!");
 						}
@@ -445,11 +416,6 @@ public class WorkImportServlet extends HttpServlet {
 
 					// 校验责任者数据， 判断责任者组织信息是否存在，如果不存在，则需要补充部门者组织信息
 					if (check) {
-						// logger.debug(
-						// ">>>>>>>>>>>>>>>>>>>>>>>>系统正在为数据校验责任者数据，
-						// 判断责任者组织信息是否存在，如果不存在，则需要补充部门者组织信息
-						// :"+cacheImportRowDetail.getResponsibilityIdentity()
-						// );
 						if (cacheImportRowDetail.getResponsibilityIdentity() != null
 								&& !cacheImportRowDetail.getResponsibilityIdentity().isEmpty()) {
 							userName = "";
@@ -468,10 +434,10 @@ public class WorkImportServlet extends HttpServlet {
 										identity += "," + _identity;
 									}
 									if (userName == null || userName.isEmpty()) {
-										userName = okrUserManagerService.getUserNameByIdentity(_identity).getName();
+										userName = okrUserManagerService.getUserNameByIdentity(_identity);
 									} else {
 										userName += ","
-												+ okrUserManagerService.getUserNameByIdentity(_identity).getName();
+												+ okrUserManagerService.getUserNameByIdentity(_identity);
 									}
 									if (organizationName == null || organizationName.isEmpty()) {
 										organizationName = okrUserManagerService.getDepartmentNameByIdentity(_identity);
@@ -491,26 +457,23 @@ public class WorkImportServlet extends HttpServlet {
 								wrapInOkrWorkBaseInfo.setResponsibilityCompanyName(companyName);
 							} catch (Exception e) {
 								check = false;
-								result.error(e);
-								result.setUserMessage("系统校验工作责任人发生异常，" + userName + "!");
-								logger.error("system query organization for Responsibility got an exception.", e);
+								Exception exception = new WorkResponsibilityInvalidException( e, cacheImportRowDetail.getResponsibilityIdentity() );
+								result.error( exception );
+								logger.error( exception, effectivePerson, request, null);
 								wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
 								wrapInOkrWorkBaseInfo.setDescription("系统校验工作责任人发生异常，" + userName + "!");
 							}
 						} else {
 							check = false;
-							result.setUserMessage("责任者[responsibilityEmployeeName]信息为空，无法继续保存工作信息!");
-							logger.error("responsibilityEmployeeName is null.");
+							Exception exception = new WorkResponsibilityEmptyException();
+							result.error( exception );
+							logger.error( exception, effectivePerson, request, null);
 							wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
 							wrapInOkrWorkBaseInfo.setDescription("责任者[responsibilityEmployeeName]信息为空，无法继续保存工作信息!");
 						}
 					}
 
 					if (check) {
-						// logger.debug(
-						// ">>>>>>>>>>>>>>>>>>>>>>>>系统正在为数据校验协助者数据，
-						// 判断协助者组织信息是否存在，如果不存在，则置空 :"+
-						// cacheImportRowDetail.getCooperateIdentity() );
 						if (cacheImportRowDetail.getCooperateIdentity() != null
 								&& !cacheImportRowDetail.getCooperateIdentity().isEmpty()) {
 							userName = "";
@@ -529,10 +492,10 @@ public class WorkImportServlet extends HttpServlet {
 										identity += "," + _identity;
 									}
 									if (userName == null || userName.isEmpty()) {
-										userName = okrUserManagerService.getUserNameByIdentity(_identity).getName();
+										userName = okrUserManagerService.getUserNameByIdentity(_identity);
 									} else {
 										userName += ","
-												+ okrUserManagerService.getUserNameByIdentity(_identity).getName();
+												+ okrUserManagerService.getUserNameByIdentity(_identity);
 									}
 									if (organizationName == null || organizationName.isEmpty()) {
 										organizationName = okrUserManagerService.getDepartmentNameByIdentity(_identity);
@@ -552,9 +515,9 @@ public class WorkImportServlet extends HttpServlet {
 								wrapInOkrWorkBaseInfo.setCooperateCompanyName(companyName);
 							} catch (Exception e) {
 								check = false;
-								result.error(e);
-								result.setUserMessage("系统校验工作协助人发生异常，" + userName + "!");
-								logger.error("system query organization for Cooperate got an exception.", e);
+								Exception exception = new WorkCooperateInvalidException( e, cacheImportRowDetail.getCooperateIdentity() );
+								result.error( exception );
+								logger.error( exception, effectivePerson, request, null);
 								wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
 								wrapInOkrWorkBaseInfo.setDescription("系统校验工作协助人发生异常，" + userName + "!");
 							}
@@ -567,10 +530,6 @@ public class WorkImportServlet extends HttpServlet {
 					}
 
 					if (check) {
-						// logger.debug(
-						// ">>>>>>>>>>>>>>>>>>>>>>>>系统正在为数据校验协助者数据，
-						// 判断协助者组织信息是否存在，如果不存在，则置空
-						// :"+cacheImportRowDetail.getReadLeaderIdentity() );
 						if (cacheImportRowDetail.getReadLeaderIdentity() != null
 								&& !cacheImportRowDetail.getReadLeaderIdentity().isEmpty()) {
 							userName = "";
@@ -589,10 +548,10 @@ public class WorkImportServlet extends HttpServlet {
 										identity += "," + _identity;
 									}
 									if (userName == null || userName.isEmpty()) {
-										userName = okrUserManagerService.getUserNameByIdentity(_identity).getName();
+										userName = okrUserManagerService.getUserNameByIdentity(_identity);
 									} else {
 										userName += ","
-												+ okrUserManagerService.getUserNameByIdentity(_identity).getName();
+												+ okrUserManagerService.getUserNameByIdentity(_identity);
 									}
 									if (organizationName == null || organizationName.isEmpty()) {
 										organizationName = okrUserManagerService.getDepartmentNameByIdentity(_identity);
@@ -612,9 +571,9 @@ public class WorkImportServlet extends HttpServlet {
 								wrapInOkrWorkBaseInfo.setReadLeaderCompanyName(companyName);
 							} catch (Exception e) {
 								check = false;
-								result.error(e);
-								result.setUserMessage("系统校验工作阅知领导信息发生异常，" + identityNames + "!");
-								logger.error("system query organization for ReadLeader got an exception.", e);
+								Exception exception = new WorkReadLeaderInvalidException( e, cacheImportRowDetail.getReadLeaderIdentity() );
+								result.error( exception );
+								logger.error( exception, effectivePerson, request, null);
 								wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
 								wrapInOkrWorkBaseInfo.setDescription("系统校验工作阅知领导信息发生异常，" + identityNames + "!");
 							}
@@ -627,12 +586,8 @@ public class WorkImportServlet extends HttpServlet {
 					}
 
 					if (check) {
-						// logger.debug(
-						// ">>>>>>>>>>>>>>>>>>>>>>>>系统正在为数据校验汇报周期和汇报日期数据，并且补充汇报时间和时间序列:"+cacheImportRowDetail.getReportCycle()
-						// );
 						// 校验汇报周期和汇报日期数据，并且补充汇报时间和时间序列
-						if (cacheImportRowDetail.getReportCycle() != null
-								&& cacheImportRowDetail.getReportCycle().trim().equals("不汇报")) {
+						if (cacheImportRowDetail.getReportCycle() != null && cacheImportRowDetail.getReportCycle().trim().equals("不汇报")) {
 							wrapInOkrWorkBaseInfo.setIsNeedReport(false);
 							wrapInOkrWorkBaseInfo.setReportDayInCycle(null);
 							wrapInOkrWorkBaseInfo.setReportTimeQue(null);
@@ -646,28 +601,28 @@ public class WorkImportServlet extends HttpServlet {
 								if (wrapInOkrWorkBaseInfo.getReportDayInCycle() >= 1
 										&& wrapInOkrWorkBaseInfo.getReportDayInCycle() <= 7) {
 									// 每周1-7
-									String reportTimeQue = okrWorkBaseInfoService.getReportTimeQue(
+									String reportTimeQue = okrWorkBaseInfoQueryService.getReportTimeQue(
 											dateOperation.getDateFromString(wrapInOkrWorkBaseInfo.getDeployDateStr()),
 											wrapInOkrWorkBaseInfo.getCompleteDateLimit(),
 											wrapInOkrWorkBaseInfo.getReportCycle(),
 											wrapInOkrWorkBaseInfo.getReportDayInCycle(), reportStartTime);
-									Date nextReportTime = okrWorkBaseInfoService.getNextReportTime(reportTimeQue,
+									Date nextReportTime = okrWorkBaseInfoQueryService.getNextReportTime(reportTimeQue,
 											wrapInOkrWorkBaseInfo.getLastReportTime());
 									wrapInOkrWorkBaseInfo.setReportTimeQue(reportTimeQue);
 									wrapInOkrWorkBaseInfo.setNextReportTime(nextReportTime);
 								} else {
 									check = false;
-									result.setUserMessage("每周汇报日选择不正确：" + wrapInOkrWorkBaseInfo.getReportDayInCycle()
-											+ "，无法继续保存工作信息!");
-									logger.error("ReportDayInCycle is not valid.");
+									Exception exception = new ReportDayInCycleInvalidException( wrapInOkrWorkBaseInfo.getReportDayInCycle() );
+									result.error( exception );
+									logger.error( exception, effectivePerson, request, null);
 									wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
-									wrapInOkrWorkBaseInfo.setDescription("每周汇报日选择不正确："
-											+ wrapInOkrWorkBaseInfo.getReportDayInCycle() + "，无法继续保存工作信息!");
+									wrapInOkrWorkBaseInfo.setDescription("每周汇报日选择不正确：" + wrapInOkrWorkBaseInfo.getReportDayInCycle() + "，无法继续保存工作信息!");
 								}
 							} else {
 								check = false;
-								result.setUserMessage("每周汇报日为空，无法继续保存工作信息!");
-								logger.error("ReportDayInCycle is null.");
+								Exception exception = new ReportDayInCycleEmptyException();
+								result.error( exception );
+								logger.error( exception, effectivePerson, request, null);
 								wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
 								wrapInOkrWorkBaseInfo.setDescription("每周汇报日为空，无法继续保存工作信息!");
 							}
@@ -678,77 +633,71 @@ public class WorkImportServlet extends HttpServlet {
 								if (wrapInOkrWorkBaseInfo.getReportDayInCycle() >= 1
 										&& wrapInOkrWorkBaseInfo.getReportDayInCycle() <= 31) {
 									// 每月1-31，如果选择的日期大于当月最大日期，那么默认定为当月最后一天
-									String reportTimeQue = okrWorkBaseInfoService.getReportTimeQue(
+									String reportTimeQue = okrWorkBaseInfoQueryService.getReportTimeQue(
 											dateOperation.getDateFromString(wrapInOkrWorkBaseInfo.getDeployDateStr()),
 											wrapInOkrWorkBaseInfo.getCompleteDateLimit(),
 											wrapInOkrWorkBaseInfo.getReportCycle(),
 											wrapInOkrWorkBaseInfo.getReportDayInCycle(), reportStartTime);
-									Date nextReportTime = okrWorkBaseInfoService.getNextReportTime(reportTimeQue,
+									Date nextReportTime = okrWorkBaseInfoQueryService.getNextReportTime(reportTimeQue,
 											wrapInOkrWorkBaseInfo.getLastReportTime());
 									wrapInOkrWorkBaseInfo.setReportTimeQue(reportTimeQue);
 									wrapInOkrWorkBaseInfo.setNextReportTime(nextReportTime);
 								} else {
 									check = false;
-									result.setUserMessage("每月汇报日选择不正确：" + wrapInOkrWorkBaseInfo.getReportDayInCycle()
-											+ "，无法继续保存工作信息!");
-									logger.error("ReportDayInCycle is null.");
+									Exception exception = new ReportDayInCycleInvalidException( wrapInOkrWorkBaseInfo.getReportDayInCycle() );
+									result.error( exception );
+									logger.error( exception, effectivePerson, request, null);
 									wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
-									wrapInOkrWorkBaseInfo.setDescription("每月汇报日选择不正确："
-											+ wrapInOkrWorkBaseInfo.getReportDayInCycle() + "，无法继续保存工作信息!");
+									wrapInOkrWorkBaseInfo.setDescription("每月汇报日选择不正确：" + wrapInOkrWorkBaseInfo.getReportDayInCycle() + "，无法继续保存工作信息!");
 								}
 							} else {
 								check = false;
-								result.setUserMessage("每月汇报日期为空，无法继续保存工作信息!");
-								logger.error("ReportDayInCycle is null.");
+								Exception exception = new ReportDayInCycleEmptyException();
+								result.error( exception );
+								logger.error( exception, effectivePerson, request, null);
 								wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
 								wrapInOkrWorkBaseInfo.setDescription("每月汇报日期为空，无法继续保存工作信息!");
 							}
 						} else {
 							check = false;
-							result.setUserMessage(
-									"汇报周期选择不正确：" + cacheImportRowDetail.getReportCycle() + "，无法继续保存工作信息!");
-							logger.error("cacheImportRowDetail.getReportCycle() is not valid.");
+							Exception exception = new ReportCycleInvalidException( cacheImportRowDetail.getReportCycle() );
+							result.error( exception );
+							logger.error( exception, effectivePerson, request, null);
 							wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
-							wrapInOkrWorkBaseInfo.setDescription(
-									"汇报周期选择不正确：" + cacheImportRowDetail.getReportCycle() + "，无法继续保存工作信息!");
+							wrapInOkrWorkBaseInfo.setDescription( "汇报周期选择不正确：" + cacheImportRowDetail.getReportCycle() + "，无法继续保存工作信息!");
 						}
 					}
 					wrapInList.add(wrapInOkrWorkBaseInfo);
 				} catch (Exception e) {
 					check = false;
-					result.error(e);
-					result.setUserMessage("系统在校验所有待保存数据信息时发生未知异常!");
-					logger.error("system check object get an exception", e);
+					Exception exception = new WorkImportDataCheckException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 					wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
 					wrapInOkrWorkBaseInfo.setDescription("系统在校验所有待保存数据信息时发生未知异常!");
 				}
 			}
 
-			if (!"success".equals(wrapInOkrWorkBaseInfo.getCheckSuccess())) {
-				result.setUserMessage(wrapInOkrWorkBaseInfo.getDescription());
+			if (!"success".equals( wrapInOkrWorkBaseInfo.getCheckSuccess()) ) {
 				errorWrapInList.add(wrapInOkrWorkBaseInfo);
 			}
 		}
 
 		if (errorWrapInList != null && errorWrapInList.size() > 0) {
-			logger.error(">>>>>>>>>>>>>>>>>>>>>>>>系统数据校验发现不合法数据，需要进一步修改......");
 			result.error(new Exception("系统数据校验发现不合法数据，需要进一步修改。"));
 			result.setData(errorWrapInList);
 		} else {
-			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>系统数据校验完成准备保存各项工作信息......");
 			if (check) {
 				if (wrapInList != null && !wrapInList.isEmpty()) {
 					for (WrapInOkrWorkBaseInfo wrapIn : wrapInList) {
-						logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>系统准备保存工作信息:" + wrapIn.getTitle());
 						// 创建新的工作信息，保存到数据库
 						try {
-							okrWorkBaseInfo = okrWorkBaseInfoService.save(wrapIn);
-							result.setUserMessage("系统成功导入所有工作信息!");
+							okrWorkBaseInfo = okrWorkBaseInfoOperationService.save(wrapIn);
 						} catch (Exception e) {
 							check = false;
-							result.error(e);
-							result.setUserMessage("系统在保存数据信息时发生未知异常!");
-							logger.error("system save object get an exception", e);
+							Exception exception = new WorkImportDataException( e );
+							result.error( exception );
+							logger.error( exception, effectivePerson, request, null);
 						}
 					}
 				}

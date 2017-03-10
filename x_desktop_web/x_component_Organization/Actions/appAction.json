@@ -6,8 +6,9 @@
   "listProcess": {"uri": "/jaxrs/process/list/application/{id}"},
   "listFormField": {"uri": "/jaxrs/form/list/formfield/application/{id}"},
 
-  "listCMSApplication": {"uri": "/jaxrs/appinfo/list/user" },
+  "listCMSApplication": {"uri": "/jaxrs/appinfo/list/user/view" },
   "getCMSApplication": {"uri": "/jaxrs/appinfo/{id}"},
 
-  "listCMSCategory" : {"uri": "/jaxrs/catagoryinfo/list/user/app/{appId}" }
+  "listCMSCategory" : {"uri": "/jaxrs/categoryinfo/list/user/app/{appId}" },
+  "getCMSForm" : {"uri": "/jaxrs/form/{id}" }
 }

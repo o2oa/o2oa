@@ -147,6 +147,15 @@
                 this.linkEditMode || (this.linkElement = c.document.createElement("a"));
                 this.commitContent(f, this.imageElement);
                 this.commitContent(2, this.linkElement);
+                if( MWF.xDesktop.uploadedImageId ){
+                    this.imageElement.setAttributes({
+                        "data-id": MWF.xDesktop.uploadedImageId
+                    });
+                }
+                this.imageElement.setAttributes({
+                    "onerror": "MWF.xDesktop.setImageSrc()"
+                });
+                MWF.xDesktop.uploadedImageId = "";
                 this.imageElement.getAttribute("style") || this.imageElement.removeAttribute("style");
                 this.imageEditMode ? !this.linkEditMode && this.addLink ? (c.insertElement(this.linkElement), this.imageElement.appendTo(this.linkElement)) : this.linkEditMode && !this.addLink && (c.getSelection().selectElement(this.linkElement), c.insertElement(this.imageElement)) : this.addLink ? this.linkEditMode ? c.insertElement(this.imageElement) : (c.insertElement(this.linkElement), this.linkElement.append(this.imageElement, !1)) : c.insertElement(this.imageElement)
             },
@@ -203,20 +212,95 @@
                     }]
                 }, {
                     type: "hbox",
-                    widths: ["30%", "70%"],
-                    hidden: (c.config.filebrowserCurrentDocumentImage || c.config.filebrowserFilesImage) ? !1 : !0,
+                    widths: ["27%", "30%", "40%"],
+                    hidden: ( c.config.reference && c.config.referenceType ) ? !1 : !0,
                     children: [{
                         type: "button",
-                        id: "browseDocumentAttachment",
+                        id: "browseLocal",
                         style: "display:inline-block;margin-bottom:4px;",
                         align: "center",
-                        label: "选择本文档图片",//c.lang.common.browseServer,
-                        hidden: c.config.filebrowserCurrentDocumentImage ? !1 : !0, //!0,
+                        label: "选择本地图片",//c.lang.common.browseServer,
+                        hidden: !( c.config.reference && c.config.referenceType ),
                         onClick: function (e) {
+                            var fileNode = document.getElementById("fckLocalFileUpload");
+                            fileNode.click();
+                        },
+                        onLoad: function () {
                             var txtUrlElement = this.getDialog().getContentElement("info", "txtUrl");
-                            c.config.filebrowserCurrentDocumentImage(e, function (url, base64Code) {
-                                txtUrlElement.setValue( base64Code || url);
-                            });
+                            //var onImageLoad = function( imageNode ){
+                            //    var nh= imageNode.naturalHeight,
+                            //        nw= imageNode.naturalWidth;
+                            //    if( isNaN(nh) || isNaN(nw) || nh == 0 || nw == 0 ){
+                            //        setTimeout( function(){
+                            //            onImageLoad();
+                            //        }.bind(this), 100 );
+                            //    }else{
+                            //        var width = Math.min( c.config.localImageMaxWidth , nw );
+                            //        var  scale= width/nw,
+                            //            w=nw*scale,
+                            //            h=nh*scale;
+                            //        var canvas = new Element("canvas", {
+                            //            width : w,
+                            //            height : h
+                            //        });
+                            //        var	ctx=canvas.getContext('2d');
+                            //        ctx.drawImage(imageNode,0,0,nw,nh,0,0,w,h);
+                            //        var src=canvas.toDataURL();
+                            //        src=src.split(',')[1];
+                            //        if(!src){
+                            //            MWF.xDesktop.notice("转换图片失败，请联系管理员","error");
+                            //            return "";
+                            //        }
+                            //        src=window.atob(src);
+                            //
+                            //        var ia = new Uint8Array(src.length);
+                            //        for (var i = 0; i < src.length; i++) {
+                            //            ia[i] = src.charCodeAt(i);
+                            //        }
+                            //
+                            //        var resizedImage = new Blob([ia], {type: "image/png" });
+                            //        var formData = new FormData();
+                            //        formData.append('file',resizedImage);
+                            //        imageNode.src = "";
+                            //        MWF.xDesktop.uploadImage( c.config.reference, c.config.referenceType, formData, resizedImage, function( json ){
+                            //            var src = MWF.xDesktop.getImageSrc( json.id );
+                            //            MWF.xDesktop.uploadedImageId = json.id;
+                            //            txtUrlElement.setValue( src );
+                            //        }, function( error ){
+                            //            MWF.xDesktop.notice("图片上传失败，请联系管理员"+ error.responseText ,"error");
+                            //        } );
+                            //    }
+                            //};
+                            var fileNode = document.getElementById("fckLocalFileUpload");
+                            var imageNode = document.getElementById("fckLocalFileImage");
+                            if( !fileNode ){
+                                imageNode = new Element("img", { "id" : "fckLocalFileImage", "styles" : {"display":"none"} }).inject(document.body);
+                                fileNode = new Element("input", {
+                                    "id" : "fckLocalFileUpload",
+                                    "type" : "file",
+                                    "accept":"images/*",
+                                    "styles" : {"display":"none"}
+                                }).inject(document.body);
+                                fileNode.addEvent("change", function(event){
+                                    var file= fileNode.files[0];
+                                    var formData = new FormData();
+                                    formData.append('file', file, file.name);
+                                    MWF.xDesktop.uploadImageByScale( c.config.reference, c.config.referenceType, 800, formData, file, function( json ){
+                                        var src = MWF.xDesktop.getImageSrc( json.id );
+                                        MWF.xDesktop.uploadedImageId = json.id;
+                                        txtUrlElement.setValue( src );
+                                    }, function( error ){
+                                        MWF.xDesktop.notice("图片上传失败，请联系管理员"+ error.responseText ,"error");
+                                    });
+                                    //var reader=new FileReader();
+                                    //reader.onload=function(){
+                                    //    this.imageNode.src=reader.result;
+                                    //    reader = null;
+                                    //    onImageLoad( this.imageNode );
+                                    //}.bind(this);
+                                    //reader.readAsDataURL(file);
+                                }.bind({ imageNode : imageNode }));
+                            }
                         }
                     }, {
                         type: "button",
@@ -224,11 +308,38 @@
                         style: "display:inline-block;margin-bottom:4px;",
                         align: "center",
                         label: "选择云文件图片",//c.lang.common.browseServer,
-                        hidden: c.config.filebrowserFilesImage ? !1 : !0, //!0,
+                        hidden: !( c.config.reference && c.config.referenceType ), //c.config.filebrowserFilesImage ? !1 : !0, //!0,
                         onClick: function (e) {
                             var txtUrlElement = this.getDialog().getContentElement("info", "txtUrl");
-                            c.config.filebrowserFilesImage(e, function (url, base64Code) {
-                                txtUrlElement.setValue( base64Code || url );
+                            //c.config.filebrowserFilesImage(e, function (url, base64Code) {
+                            //    txtUrlElement.setValue( base64Code || url );
+                            //});
+                            MWF.xDesktop.requireApp("File", "FileSelector", function(){
+                                ( new MWF.xApplication.File.FileSelector( document.body ,{
+                                    "style" : "default",
+                                    "title": "选择云文件图片",
+                                    "reference" :  c.config.reference,
+                                    "referenceType" : c.config.referenceType,
+                                    "listStyle": "preview",
+                                    "selectType" : "images",
+                                    "onPostSelectAttachment" : function( url, id ){
+                                        MWF.xDesktop.uploadedImageId = id;
+                                        txtUrlElement.setValue( url );
+                                    }
+                                })).load();
+                            }, true);
+                        }
+                    },{
+                        type: "button",
+                        id: "browseDocumentAttachment",
+                        style: "display:inline-block;margin-bottom:4px;",
+                        align: "center",
+                        label: "选择本文档图片",//c.lang.common.browseServer,
+                        hidden: !0, //c.config.filebrowserCurrentDocumentImage ? !1 : !0,
+                        onClick: function (e) {
+                            var txtUrlElement = this.getDialog().getContentElement("info", "txtUrl");
+                            c.config.filebrowserCurrentDocumentImage(e, function (url, base64Code) {
+                                txtUrlElement.setValue( base64Code || url);
                             });
                         }
                     }]

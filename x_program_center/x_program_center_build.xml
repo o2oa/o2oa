@@ -8,6 +8,7 @@
 	<target name="default">
 		<antcall target="common.clean" />
 		<antcall target="common.compile" />
+		<antcall target="common.httpMethodDescribeWriter" />
 		<antcall target="common.war" />
 	</target>
 
@@ -27,7 +28,7 @@
 
 	<target name="deployOnLocal" depends="default">
 		<copy file="${store.dir}/${project}.war" todir="d:/o2server/store" />
-		<copy file="${store.dir}/${project}.war" todir="d:/o2server/servers/centerServer/webapps" />
+		<touch file="d:/o2server/servers/centerServer/webapps/${project}.xml" />
 	</target>
 
 </project>

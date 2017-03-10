@@ -11,17 +11,25 @@ public class CenterServer extends GsonPropertyObject {
 	private static final Integer default_port = 20030;
 	private static final Integer default_scanInterval = 0;
 
-	private Boolean sslEnable = false;
+	public static CenterServer defaultInstance() {
+		return new CenterServer();
+	}
 
-	private Boolean forceRedeploy = true;
+	public CenterServer() {
+		this.sslEnable = false;
+		this.redeploy = true;
+		this.port = default_port;
+		this.proxyHost = "";
+		this.proxyPort = default_port;
+		this.scanInterval = default_scanInterval;
+	}
 
-	private Integer port = default_port;
-
-	private String proxyHost = "";
-
-	private Integer proxyPort = default_port;
-
-	private Integer scanInterval = default_scanInterval;
+	private Boolean sslEnable;
+	private Boolean redeploy;
+	private Integer port;
+	private String proxyHost;
+	private Integer proxyPort;
+	private Integer scanInterval;
 
 	public Integer getScanInterval() {
 		if (null != this.scanInterval && this.scanInterval > 0) {
@@ -30,16 +38,16 @@ public class CenterServer extends GsonPropertyObject {
 		return default_scanInterval;
 	}
 
+	public Boolean getRedeploy() {
+		return BooleanUtils.isTrue(this.redeploy);
+	}
+
 	public Boolean getSslEnable() {
 		return BooleanUtils.isTrue(this.sslEnable);
 	}
 
-	public Boolean getForceRedeploy() {
-		return BooleanUtils.isNotFalse(this.forceRedeploy);
-	}
-
 	public Integer getPort() {
-		if (null != this.port && this.port > 0) {
+		if (null != this.port && this.port > 0 && this.port < 65535) {
 			return this.port;
 		}
 		return default_port;
@@ -63,10 +71,6 @@ public class CenterServer extends GsonPropertyObject {
 		this.sslEnable = sslEnable;
 	}
 
-	public void setForceRedeploy(Boolean forceRedeploy) {
-		this.forceRedeploy = forceRedeploy;
-	}
-
 	public void setPort(Integer port) {
 		this.port = port;
 	}
@@ -81,6 +85,10 @@ public class CenterServer extends GsonPropertyObject {
 
 	public void setScanInterval(Integer scanInterval) {
 		this.scanInterval = scanInterval;
+	}
+
+	public void setRedeploy(Boolean redeploy) {
+		this.redeploy = redeploy;
 	}
 
 }

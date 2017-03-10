@@ -14,20 +14,20 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.x.attendance.assemble.control.jaxrs.WrapOutMessage;
+import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.service.AttendanceEmployeeConfigServiceAdv;
 import com.x.attendance.entity.AttendanceEmployeeConfig;
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
+import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 
 
 @Path("attendanceemployeeconfig")
@@ -45,6 +45,7 @@ public class AttendanceEmployeeConfigAction extends StandardJaxrsAction{
 	@Consumes( MediaType.APPLICATION_JSON )
 	public Response listAllAttendanceEmployeeConfig( @Context HttpServletRequest request ) {
 		ActionResult<List<WrapOutAttendanceEmployeeConfig>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		List<WrapOutAttendanceEmployeeConfig> wraps = null;
 		List<AttendanceEmployeeConfig> attendanceEmployeeConfigList = null;
 		Boolean check = true;
@@ -54,8 +55,9 @@ public class AttendanceEmployeeConfigAction extends StandardJaxrsAction{
 			} catch (Exception e) {
 				check = false;
 				result.error(e);
-				result.setUserMessage("系统查询所有人员考勤配置时发生异常。");
-				logger.error( "system query all employee config list got an exception.", e);
+				Exception exception = new AttendanceEmployeeConfigListAllException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check && attendanceEmployeeConfigList != null ){
@@ -65,9 +67,9 @@ public class AttendanceEmployeeConfigAction extends StandardJaxrsAction{
 				result.setData(wraps);
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象时发生异常。");
-				logger.error( "system copy employee config list to wrap got an exception.", e);
+				Exception exception = new AttendanceEmployeeConfigWrapOutException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -80,6 +82,7 @@ public class AttendanceEmployeeConfigAction extends StandardJaxrsAction{
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutAttendanceEmployeeConfig> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapOutAttendanceEmployeeConfig wrap = null;
 		AttendanceEmployeeConfig attendanceEmployeeConfig = null;
 		Boolean check = true;
@@ -87,8 +90,9 @@ public class AttendanceEmployeeConfigAction extends StandardJaxrsAction{
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("查询操作传入的参数ID为空，无法进行查询操作。") );
-				result.setUserMessage("查询操作传入的参数ID为空，无法进行查询操作。。");
+				Exception exception = new AttendanceEmployeeConfigIdEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}		
 		if( check ){
@@ -96,14 +100,15 @@ public class AttendanceEmployeeConfigAction extends StandardJaxrsAction{
 				attendanceEmployeeConfig = attendanceEmployeeConfigServiceAdv.get( id );
 				if( attendanceEmployeeConfig == null ){
 					check = false;
-					result.error(new Exception("指定的人员考勤数据不存在！"));
-					result.setUserMessage("指定的人员考勤数据不存在！");
+					Exception exception = new AttendanceEmployeeConfigNotExistsException( id );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统根据ID查询指定的人员考勤配置信息时发生异常。");
-				logger.error( "system query employee config with id got an exception.id:" + id, e);
+				Exception exception = new AttendanceEmployeeConfigQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -112,30 +117,33 @@ public class AttendanceEmployeeConfigAction extends StandardJaxrsAction{
 				result.setData(wrap);
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象时发生异常。");
-				logger.error( "system copy employee config to wrap got an exception.", e);
+				Exception exception = new AttendanceEmployeeConfigWrapOutException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "新建或者更新AttendanceEmployeeConfig对象.", request = WrapInAttendanceEmployeeConfig.class, response = WrapOutMessage.class)
+	@HttpMethodDescribe(value = "新建或者更新AttendanceEmployeeConfig对象.", request = JsonElement.class, response = WrapOutId.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response post(@Context HttpServletRequest request, WrapInAttendanceEmployeeConfig wrapIn ) {
+	public Response post(@Context HttpServletRequest request, JsonElement jsonElement ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		WrapInAttendanceEmployeeConfig wrapIn = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapOutId wrapOutId = null;
 		AttendanceEmployeeConfig attendanceEmployeeConfig = new AttendanceEmployeeConfig();
 		Boolean check = true;
 		
-		if( check ){
-			if( wrapIn == null ){
-				check = false;
-				result.error(new Exception("请求传入的参数为空，无法继续保存人员考勤数据！"));
-				result.setUserMessage("请求传入的参数为空，无法继续保存人员考勤数据！");
-			}
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInAttendanceEmployeeConfig.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
 		}
 		if( check ){
 			try {
@@ -145,43 +153,43 @@ public class AttendanceEmployeeConfigAction extends StandardJaxrsAction{
 				}
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage("系统将传入的参数COPY到对象里时发生异常！");
-				logger.error( "system copy wrap in to attendanceEmployeeConfig object got an exception.", e );
+				Exception exception = new AttendanceEmployeeConfigWrapInException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
 			try {
 				attendanceEmployeeConfig = attendanceEmployeeConfigServiceAdv.save( attendanceEmployeeConfig );
-				wrapOutId = new WrapOutId( attendanceEmployeeConfig.getId() );
-				result.setData( wrapOutId );
-				result.setUserMessage( "人员考勤配置数据保存成功！" );
+				result.setData( new WrapOutId( attendanceEmployeeConfig.getId() ) );
+				logger.info( "人员考勤配置数据保存成功！" );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage("系统将传入的参数COPY到对象里时发生异常！");
-				logger.error( "system copy wrap in to attendanceEmployeeConfig object got an exception.", e );
+				Exception exception = new AttendanceEmployeeConfigSaveException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "根据ID删除AttendanceEmployeeConfigAttendanceEmployeeConfig对象.", response = WrapOutMessage.class)
+	@HttpMethodDescribe(value = "根据ID删除AttendanceEmployeeConfigAttendanceEmployeeConfig对象.", response = WrapOutId.class)
 	@DELETE
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response delete(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		WrapOutId wrapOutId = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		AttendanceEmployeeConfig attendanceEmployeeConfig = null;
 		Boolean check = true;
 		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数ID为空，无法进行删除操作。") );
-				result.setUserMessage("传入的参数ID为空，无法进行删除操作。。");
+				Exception exception = new AttendanceEmployeeConfigIdEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}		
 		if( check ){
@@ -189,27 +197,27 @@ public class AttendanceEmployeeConfigAction extends StandardJaxrsAction{
 				attendanceEmployeeConfig = attendanceEmployeeConfigServiceAdv.get( id );
 				if( attendanceEmployeeConfig == null ){
 					check = false;
-					result.error(new Exception("需要删除的人员考勤数据不存在！"));
-					result.setUserMessage("需要删除的人员考勤数据不存在！");
+					Exception exception = new AttendanceEmployeeConfigNotExistsException( id );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统根据ID查询指定的人员考勤配置信息时发生异常。");
-				logger.error( "system query employee config with id got an exception.id:" + id, e);
+				Exception exception = new AttendanceEmployeeConfigQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
 			try {
 				attendanceEmployeeConfigServiceAdv.delete( id );
-				result.setUserMessage( "人员考勤配置数据保存成功！" );
-				wrapOutId = new WrapOutId( id );
-				result.setData( wrapOutId );
+				result.setData( new WrapOutId( id ) );
+				logger.info( "人员考勤配置数据保存成功！" );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage("系统根据ID删除指定的人员考勤配置信息时发生异常。");
-				logger.error( "system delete employee config with id got an exception.id:" + id, e);
+				Exception exception = new AttendanceEmployeeConfigDeleteException( e, id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 			
 		}

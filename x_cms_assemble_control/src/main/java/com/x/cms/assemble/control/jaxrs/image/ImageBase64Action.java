@@ -18,15 +18,16 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.codec.binary.Base64;
 import org.imgscalr.Scalr;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
 import com.x.base.core.http.ActionResult;
+import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
-import com.x.cms.core.entity.FileInfo;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 
 @Path("image/encode")
 public class ImageBase64Action extends AbstractJaxrsAction {
@@ -34,29 +35,34 @@ public class ImageBase64Action extends AbstractJaxrsAction {
 	private Logger logger = LoggerFactory.getLogger( ImageBase64Action.class );
 	
 	@Path("base64")
-	@HttpMethodDescribe(value = "将URL指向的图片转换成base64String", response = String.class )
+	@HttpMethodDescribe(value = "将URL指向的图片转换成base64String", request = JsonElement.class , response = String.class )
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response convert( @Context HttpServletRequest request, WrapInImage wrapIn ) { 
+	public Response convert( @Context HttpServletRequest request, JsonElement jsonElement ) { 
 		ActionResult<String> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		WrapInImage wrapIn = null;
 		String wrap = null;
 		URL url = null;
 		BufferedImage image = null;
 		Boolean check = true;
 		
-		if( check ){
-			if( wrapIn == null ){
-				check = false;
-				result.error( new Exception("parameter is null!") );
-				result.setUserMessage( "系统未获取到参数信息,无法转换互联网图片信息!" );
-			}
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInImage.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
 		}
+		
 		if( check ){
 			if( wrapIn.getUrl() != null || wrapIn.getUrl().isEmpty() ){
 				check = false;
-				result.error( new Exception("picture url is null!") );
-				result.setUserMessage( "系统未获取到参数url,无法获取互联网图片信息!" );
+				Exception exception = new URLEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -69,9 +75,9 @@ public class ImageBase64Action extends AbstractJaxrsAction {
 				url = new URL( wrapIn.getUrl() );
 			} catch ( MalformedURLException e ) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "图片地址URL不合法,无法获取互联网图片信息!" );
-				logger.error( "picture url is invalid!url:" + url, e );
+				Exception exception = new URLInvalidException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -79,14 +85,15 @@ public class ImageBase64Action extends AbstractJaxrsAction {
 				image = ImageIO.read( url );
 				if( image == null ){
 					check = false;
-					result.error( new Exception("system can not read image in url.") );
-					result.setUserMessage( "系统未能从图片地址URL中获也不能任何图片信息!" );
+					Exception exception = new ImageIsNullException( url.toString() );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			} catch (IOException e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "从指定的URL获取图片信息发生异常!" );
-				logger.error( "system read picture with url got an exception!url:" + url, e );
+				Exception exception = new LoadImageFromURLException( e, url.toString() );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -103,9 +110,9 @@ public class ImageBase64Action extends AbstractJaxrsAction {
 				result.setData(wrap);
 			} catch ( Exception e ) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统对图片进行base64编码转换时发生异常!" );
-				logger.error( "system encode picture in base64 got an exception!", e );
+				Exception exception = new Base64EncodeException( e, url.toString() );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);

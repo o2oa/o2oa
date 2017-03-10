@@ -3,9 +3,8 @@ package com.x.bbs.assemble.control.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -78,7 +77,7 @@ public class BBSPermissionInfoService {
 				return null;
 			}
 		}catch( Exception e ){
-			logger.error( "system list permission by role code got an exception!" );
+			logger.warn( "system list permission by role code got an exception!" );
 			throw e;
 		}
 	}
@@ -104,7 +103,7 @@ public class BBSPermissionInfoService {
 				return null;
 			}
 		}catch( Exception e ){
-			logger.error( "system list permission by forum id got an exception!" );
+			logger.warn( "system list permission by forum id got an exception!" );
 			throw e;
 		}
 	}
@@ -130,7 +129,7 @@ public class BBSPermissionInfoService {
 				return null;
 			}
 		}catch( Exception e ){
-			logger.error( "system list permission by section id got an exception!" );
+			logger.warn( "system list permission by section id got an exception!" );
 			throw e;
 		}
 	}
@@ -146,7 +145,7 @@ public class BBSPermissionInfoService {
 			business = new Business(emc);
 			return business.permissionInfoFactory().listAll();
 		}catch( Exception e ){
-			logger.error( "system list all permission got an exception!" );
+			logger.warn( "system list all permission got an exception!" );
 			throw e;
 		}
 	}
@@ -166,7 +165,7 @@ public class BBSPermissionInfoService {
 			business = new Business(emc);
 			return business.permissionInfoFactory().list(ids);
 		}catch( Exception e ){
-			logger.error( "system list permission by ids got an exception!" );
+			logger.warn( "system list permission by ids got an exception!" );
 			throw e;
 		}
 	}
@@ -206,7 +205,7 @@ public class BBSPermissionInfoService {
             //论坛配置管理（FORUM_CONFIG_MANAGEMENT）：用户拥有对论坛的参数配置进行设置的权限
             checkAndSaveBBSPermissionInfo( emc, _bBSForumInfo, "FORUM_CONFIG_MANAGEMENT", "FORUM_CONFIG_MANAGEMENT_" + forumId, "论坛["+forumName+"]配置管理", "在论坛[" + forumName + "]中用户拥有对论坛的参数配置进行设置的权限" );            
 		}catch( Exception e ){
-			logger.error( "system check and create forum permission got an exception!" );
+			logger.warn( "system check and create forum permission got an exception!" );
 			throw e;
 		}
 	}
@@ -251,7 +250,7 @@ public class BBSPermissionInfoService {
             //版块配置管理（SECTION_CONFIG_MANAGEMENT）:用户可以对指定版块进行系统参数配置修改
 			checkAndSaveBBSPermissionInfo( emc, _sectionInfo, "SECTION_CONFIG_MANAGEMENT", "SECTION_CONFIG_MANAGEMENT_" + sectionId, "版块["+forumName+"-"+sectionName+"]配置管理", "用户可以对版块["+forumName+"-"+sectionName+"]进行系统参数配置修改" );
 		}catch( Exception e ){
-			logger.error( "system check and create section permission got an exception!" );
+			logger.warn( "system check and create section permission got an exception!" );
 			throw e;
 		}
 	}
@@ -326,7 +325,7 @@ public class BBSPermissionInfoService {
 			permissionCodes = business.permissionRoleFactory().listPermissionCodesByRoleCodes( roleCodes );
 			return business.permissionInfoFactory().listByPermissionCodes(permissionCodes);
 		}catch( Exception e ){
-			logger.error( "system list permission by ids got an exception!" );
+			logger.warn( "system list permission by ids got an exception!" );
 			throw e;
 		}
 	}
@@ -340,7 +339,7 @@ public class BBSPermissionInfoService {
 			business = new Business(emc);
 			return business.permissionRoleFactory().listPermissionCodesByRoleCodes( roleCodes );
 		}catch( Exception e ){
-			logger.error( "system list permission by ids got an exception!" );
+			logger.warn( "system list permission by ids got an exception!" );
 			throw e;
 		}
 	}
@@ -409,7 +408,7 @@ public class BBSPermissionInfoService {
 			}
 			return null;
 		}catch( Exception e ){
-			logger.error( "system list permission by username got an exception!" );
+			logger.warn( "system list permission by username got an exception!" );
 			throw e;
 		}
 	}
@@ -439,7 +438,7 @@ public class BBSPermissionInfoService {
 					}
 				}
 			}catch( Exception e ){
-				logger.error( "system list sup nested by department got an exception!" );
+				logger.warn( "system list sup nested by department got an exception!" );
 				throw e;
 			}
 		}
@@ -455,7 +454,7 @@ public class BBSPermissionInfoService {
 			business = new Business(emc);
 			return business.permissionInfoFactory().listByPermissionCodes(permissionCodes);
 		}catch( Exception e ){
-			logger.error( "system list permission by codes got an exception!" );
+			logger.warn( "system list permission by codes got an exception!" );
 			throw e;
 		}
 	}	

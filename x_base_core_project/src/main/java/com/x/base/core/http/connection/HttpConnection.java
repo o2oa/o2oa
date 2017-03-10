@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.bean.NameValuePair;
 import com.x.base.core.gson.XGsonBuilder;
+import com.x.base.core.http.ActionResult;
 import com.x.base.core.utils.ListTools;
 
 public class HttpConnection {
@@ -86,6 +87,11 @@ public class HttpConnection {
 		connection.connect();
 		doOutput(connection, body);
 		return readResultString(connection);
+	}
+
+	public static ActionResult putAsObject(String address, List<NameValuePair> heads, String body) throws Exception {
+		String result = putAsString(address, heads, body);
+		return XGsonBuilder.instance().fromJson(result, ActionResult.class);
 	}
 
 	public static <T> T putAsObject(String address, List<NameValuePair> heads, String body, Class<T> cls)

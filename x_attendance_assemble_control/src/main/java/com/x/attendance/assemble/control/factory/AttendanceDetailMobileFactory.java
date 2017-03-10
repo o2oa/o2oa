@@ -123,4 +123,14 @@ public class AttendanceDetailMobileFactory extends AbstractFactory {
 		return this.entityManagerContainer().find(id, AttendanceDetailMobile.class );
 	}
 
+	public List<String> listAllAnalyseWithStatus(int status) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(AttendanceDetailMobile.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<AttendanceDetailMobile> root = cq.from( AttendanceDetailMobile.class);
+		cq.select(root.get(AttendanceDetailMobile_.id));
+		Predicate p = cb.equal( root.get(AttendanceDetailMobile_.recordStatus), status );
+		return em.createQuery(cq.where( p )).getResultList();
+	}
+
 }

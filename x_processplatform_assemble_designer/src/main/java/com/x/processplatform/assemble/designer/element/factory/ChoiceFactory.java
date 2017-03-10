@@ -28,4 +28,15 @@ public class ChoiceFactory extends AbstractFactory {
 		cq.select(root.get(Choice_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
+
+	/** 查找使用表单的choice */
+	public List<String> listWithForm(String formId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Choice.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Choice> root = cq.from(Choice.class);
+		Predicate p = cb.equal(root.get(Choice_.form), formId);
+		cq.select(root.get(Choice_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
 }

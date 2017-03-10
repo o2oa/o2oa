@@ -6,10 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.factory.AttendanceStatisticRequireLogFactory;
@@ -87,7 +85,8 @@ public class AttendanceDetailAnalyseService {
 			try{
 				analyseAttendanceDetail( emc, detail, attendanceWorkDayConfigList, companyAttendanceStatisticalCycleMap );	
 			}catch(Exception e){
-				logger.error( "employee attenance detail analyse got an exception:["+detail.getEmpName()+"]["+detail.getRecordDateString()+"]" , e);
+				logger.info( "employee attenance detail analyse got an exception:["+detail.getEmpName()+"]["+detail.getRecordDateString()+"]");
+				logger.error(e);
 			}
 		}
 		logger.info( "employee attendance details by empname, startdate and end date analyse over！" );;
@@ -112,15 +111,13 @@ public class AttendanceDetailAnalyseService {
 			try{
 				analyseAttendanceDetail( emc, detail, attendanceWorkDayConfigList, companyAttendanceStatisticalCycleMap );	
 			}catch(Exception e){
-				logger.error( "employee attendance detail analyse got an exception:["+detail.getEmpName()+"]["+detail.getRecordDateString()+"]" , e);
+				logger.info( "employee attendance detail analyse got an exception:["+detail.getEmpName()+"]["+detail.getRecordDateString()+"]" );
+				logger.error(e);
 			}
 		}
 		logger.info( "employee attendance detail analyse over！" );
 		return true;
-	}	
-
-	
-	
+	}
 	
 	/**
 	 * 对单条的打卡数据分析统计周期
@@ -134,67 +131,51 @@ public class AttendanceDetailAnalyseService {
 		List<AttendanceStatisticalCycle> departmentCycles = null;
 		Map<String, List<AttendanceStatisticalCycle>> departmentAttendanceStatisticalCycleMap = null;
 		boolean hasConfig = false;
-		String companyName = null, departmentName = null;		
-		//logger.debug("companyAttendanceStatisticalCycleMap:"+companyAttendanceStatisticalCycleMap);
+		String companyName = null, departmentName = null;
 		//从Map里查询与公司和部门相应的周期配置信息
 		if( companyAttendanceStatisticalCycleMap != null ){
 			//如果总体的Map不为空
 			departmentAttendanceStatisticalCycleMap = companyAttendanceStatisticalCycleMap.get( detail.getCompanyName() );
 			if( departmentAttendanceStatisticalCycleMap != null ){
-				//logger.debug("查询到公司[" + detail.getCompanyName() + "]的统计周期配置");
 				companyName = detail.getCompanyName();
 				//存在当前公司的配置信息，再根据部门查询部门的配置列表是否存在[company - department]
 				departmentCycles = departmentAttendanceStatisticalCycleMap.get(detail.getDepartmentName());
 				if( departmentCycles != null){
 					departmentName = detail.getDepartmentName();
-					//logger.debug("查询到部门["+detail.getDepartmentName()+"]的统计周期配置");
 				}else{
-					//logger.debug("未查询到部门["+detail.getDepartmentName()+"]的统计周期配置， 部门设置为*");
 					departmentName = "*";
 					departmentCycles = departmentAttendanceStatisticalCycleMap.get("*");
 				}
 			}else{
-				//logger.debug("未查询到公司["+detail.getCompanyName()+"]的统计周期配置，公司设置为*");
 				//找公司为*的Map看看是否存在
 				departmentAttendanceStatisticalCycleMap = companyAttendanceStatisticalCycleMap.get( "*" );
 				companyName = "*";
 				if( departmentAttendanceStatisticalCycleMap != null ){
-					//logger.debug("查询到公司[*]的统计周期配置，再查询部门为[*]的配置列表");
 					//存在当前公司的配置信息，再根据部门查询部门的配置列表是否存在[company - department]
 					departmentCycles = departmentAttendanceStatisticalCycleMap.get(detail.getDepartmentName());
 					if( departmentCycles != null){
-						//logger.debug("查询到公司[*]部门["+detail.getDepartmentName()+"]的统计周期配置");
 						departmentName = detail.getDepartmentName();
 					}else{
-						//logger.debug("未查询到公司[*]部门["+detail.getDepartmentName()+"]的统计周期配置， 部门设置为*,查询部门[*]的配置");
 						departmentName = "*";
 						departmentCycles = departmentAttendanceStatisticalCycleMap.get("*");
 					}
 				}else{
-					//logger.debug("未查询到公司[*]的统计周期配置，公司设置为*，系统中没有任何配置");
 					departmentName = "*";
 				}
 			}
 		}else{
-			//logger.debug("统计周期配置为空，公司为*部门为*，系统中没有任何配置");
 			companyName = "*";
 			departmentName = "*";
 		}
 		
 		Date cycleStartDate = null, cycleEndDate = null;
 		if( departmentCycles != null && departmentCycles.size() > 0 ){
-			//logger.debug( "周期列表信息条数：" + departmentCycles.size() );
 			//说明配置信息里有配置，看看配置信息里的数据是否满足打卡信息需要的周期
 			for( AttendanceStatisticalCycle attendanceStatisticalCycle : departmentCycles ){
 				//如果年份为*
 				cycleStartDate = attendanceStatisticalCycle.getCycleStartDate();
 				cycleEndDate = attendanceStatisticalCycle.getCycleEndDate();
-				//logger.debug( "cycleStartDate = " + cycleStartDate + ", cycleStartDate.getTime() ="+ cycleStartDate.getTime() );
-				//logger.debug( "cycleEndDate = " + cycleEndDate + ", cycleEndDate = .getTime() ="+ cycleEndDate.getTime() );
-				//logger.debug( "detail.getRecordDate() = " + detail.getRecordDate() + ", detail.getRecordDate() ="+ detail.getRecordDate().getTime() );
-				//logger.debug( "判断："+detail.getRecordDate().getTime() +">="+ cycleStartDate.getTime() +"&&"+ detail.getRecordDate().getTime() +"<="+ cycleEndDate.getTime() );
 				if( detail.getRecordDate().getTime() >= cycleStartDate.getTime() && detail.getRecordDate().getTime() <= cycleEndDate.getTime() ){
-					//logger.debug("查询到合适的周期，"+attendanceStatisticalCycle.getCycleYear()+"-"+attendanceStatisticalCycle.getCycleMonth());
 					hasConfig = true;
 					detail.setCycleYear(attendanceStatisticalCycle.getCycleYear());
 					detail.setCycleMonth(attendanceStatisticalCycle.getCycleMonth());
@@ -204,7 +185,6 @@ public class AttendanceDetailAnalyseService {
 		}
 		
 		if( !hasConfig ){
-			//logger.debug("未查询到合适的周期，根据打卡信息创建一条自然月的周期");
 			//说明没有找到任何相关的配置，那么新创建一条配置
 			detail.setCycleYear(detail.getYearString());
 			detail.setCycleMonth(detail.getMonthString());
@@ -239,7 +219,7 @@ public class AttendanceDetailAnalyseService {
 				departmentAttendanceStatisticalCycleMap.put( departmentName, departmentCycles);
 			}
 			attendanceStatisticalCycleService.putDistinctCycleInList( attendanceStatisticalCycle, departmentCycles);
-			//logger.debug("[analyseAttendanceDetailStatisticCycle]准备保存新创建的统计周期信息......");
+
 			//判断需要保存的数据是否已经存在
 			if( attendanceStatisticalCycleService.getAttendanceDetailStatisticCycle(
 					attendanceStatisticalCycle.getCompanyName(), 
@@ -253,11 +233,11 @@ public class AttendanceDetailAnalyseService {
 					emc.persist( attendanceStatisticalCycle, CheckPersistType.all);
 					emc.commit();
 				}catch(Exception e){
-					logger.error("系统在保存新的统计周期信息时发生异常！");
+					logger.info("系统在保存新的统计周期信息时发生异常！");
 					throw e;
 				}
 			}else{
-				logger.debug("需要保存的统计周期数据已经存在。");
+				logger.info("需要保存的统计周期数据已经存在。");
 			}
 		}
 	}
@@ -276,7 +256,7 @@ public class AttendanceDetailAnalyseService {
 			detailList.add( detail );
 			return analyseAttendanceDetails( emc, detailList, companyAttendanceStatisticalCycleMap );
 		}else{
-			logger.error( "[analyseAttendanceDetail]detail为空，无法继续进行分析。" );
+			logger.info( "detail为空，无法继续进行分析。" );
 		}
 		return false;
 	}
@@ -290,7 +270,7 @@ public class AttendanceDetailAnalyseService {
 	//	logger.debug("[getAttendanceScheduleSettingByDepartments]根据部门列表，查询适用的排班配置记录......");
 		List<String> departmentNames = new ArrayList<String>();
 		if( departmentList == null || departmentList.size() == 0 ){
-			logger.error( "[getAttendanceScheduleSettingByDepartments]部门列表为空，无法进行查询。" );
+			logger.warn( "[getAttendanceScheduleSettingByDepartments]部门列表为空，无法进行查询。" );
 			return null;
 		}else{
 			for( WrapDepartment department : departmentList ){
@@ -305,7 +285,6 @@ public class AttendanceDetailAnalyseService {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business(emc);
 			//查询员工所在部门的排班信息
-			logger.debug( "[getAttendanceScheduleSettingByDepartments]查询部门的排班信息:" + departmentNames.toArray());
 			ids = business.getAttendanceScheduleSettingFactory().listByDepartmentNames( departmentNames );
 			//如果未查询到，则查询上级部门是否有配置
 			if( ids !=null && ids.size() > 0){
@@ -317,10 +296,8 @@ public class AttendanceDetailAnalyseService {
 				//循环所有的部门列表，查询每个部门设置的排班信息，如果当前部门没有设置， 则查询上级部门直到公司的排班信息
 				for( WrapDepartment wrapDepartment : departmentList ){
 					//没查到，查询该部门的上级部门名称所对应的排班设置是否存在
-					
 					attendanceScheduleSetting = getAttendanceScheduleSettingByDepartment( wrapDepartment );
 					if( attendanceScheduleSetting != null ){
-						logger.debug( "根据部门["+wrapDepartment.getName()+"]，信息查询到了1个适合的排班信息对象......");
 						//先为当前部门添加一个排班信息设计，再进行返回
 						AttendanceScheduleSetting new_attendanceScheduleSetting = new AttendanceScheduleSetting();
 						new_attendanceScheduleSetting.setAbsenceStartTime( attendanceScheduleSetting.getAbsenceStartTime());
@@ -331,13 +308,11 @@ public class AttendanceDetailAnalyseService {
 						new_attendanceScheduleSetting.setOrganizationOu(attendanceScheduleSetting.getOrganizationOu());
 						new_attendanceScheduleSetting.setCompanyName( wrapDepartment.getCompany() );
 						new_attendanceScheduleSetting.setOrganizationName( wrapDepartment.getName() );
-						//logger.debug("尝试保存["+new_attendanceScheduleSetting.getCompanyName()+"]["+new_attendanceScheduleSetting.getOrganizationName()+"]的排班信息......");
 						emc.beginTransaction( AttendanceScheduleSetting.class );
 						emc.persist( new_attendanceScheduleSetting, CheckPersistType.all );
 						emc.commit();
 						return new_attendanceScheduleSetting;
 					}else{
-						logger.debug( "根据部门["+wrapDepartment.getName()+"]，信息未查询到任何适合的排班信息对象先，为当前部门添加一个排班信息设计，再进行返回");
 						//先为当前部门添加一个排班信息设计，再进行返回
 						AttendanceScheduleSetting new_attendanceScheduleSetting = new AttendanceScheduleSetting();
 						new_attendanceScheduleSetting.setAbsenceStartTime( null );
@@ -348,8 +323,6 @@ public class AttendanceDetailAnalyseService {
 						new_attendanceScheduleSetting.setOrganizationOu("");
 						new_attendanceScheduleSetting.setCompanyName( wrapDepartment.getCompany() );
 						new_attendanceScheduleSetting.setOrganizationName( wrapDepartment.getName() );
-						
-						logger.debug("尝试保存["+new_attendanceScheduleSetting.getCompanyName()+"]["+new_attendanceScheduleSetting.getOrganizationName()+"]的排班信息......");
 						emc.beginTransaction( AttendanceScheduleSetting.class );
 						emc.persist( new_attendanceScheduleSetting, CheckPersistType.all );
 						emc.commit();
@@ -358,7 +331,8 @@ public class AttendanceDetailAnalyseService {
 				}
 			}
 		} catch (Exception e) {
-			logger.error("[analyseAttendanceDetails]系统在查询员工休假记录和部门排班信息时发生异常",  e);
+			logger.warn("[analyseAttendanceDetails]系统在查询员工休假记录和部门排班信息时发生异常" );
+			logger.error(e);
 		}
 		return attendanceScheduleSetting;
 	}
@@ -373,17 +347,12 @@ public class AttendanceDetailAnalyseService {
 		List<String> ids = null;
 		List<AttendanceScheduleSetting> attendanceScheduleSettingList = null;
 		Business business = null;
-		//logger.debug( "[getAttendanceScheduleSettingByDepartment]["+wrapDepartment.getName()+"]的上级部门ID=" + wrapDepartment.getSuperior() );
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business(emc);
 			superDepartment = business.organization().department().getSupDirect( wrapDepartment.getName() );
-			if( superDepartment != null ){
-				//logger.debug("[getAttendanceScheduleSettingByDepartment]["+wrapDepartment.getName()+"]的上级部门是["+superDepartment.getCompany()+"]-["+superDepartment.getName()+"]");
-			}else{
-				//logger.debug("[getAttendanceScheduleSettingByDepartment]["+wrapDepartment.getName()+"]是1级部门，无上级部门。");
-			}
 		} catch (Exception e) {
-			logger.error("[getAttendanceScheduleSettingByDepartment]递归查询部门的排班设置发生异常",  e);
+			logger.warn("[getAttendanceScheduleSettingByDepartment]递归查询部门的排班设置发生异常" );
+			logger.error(e);
 		}		
 		
 		if( superDepartment != null ){//说明还有上级部门
@@ -402,7 +371,8 @@ public class AttendanceDetailAnalyseService {
 						return getAttendanceScheduleSettingByDepartment( _wrapDepartment );
 					}		
 				} catch (Exception e) {
-					logger.error("[getAttendanceScheduleSettingByDepartment]递归查询部门的排班设置发生异常",  e);
+					logger.warn("[getAttendanceScheduleSettingByDepartment]递归查询部门的排班设置发生异常");
+					logger.error(e);
 				}
 			}
 		}else{//说明是一级部门，直接使用公司的排班配置
@@ -411,12 +381,10 @@ public class AttendanceDetailAnalyseService {
 					business = new Business(emc);
 					WrapCompany _wrapCompany  = new WrapCompany();
 					_wrapCompany = business.organization().company().getWithDepartment( wrapDepartment.getName() );
-					if( _wrapCompany != null ){
-						//logger.debug("[getAttendanceScheduleSettingByDepartment]["+wrapDepartment.getName()+"]所属公司为["+_wrapCompany.getName()+"]");
-					}
 					return getAttendanceScheduleSettingByCompany( _wrapCompany );
 				} catch (Exception e) {
-					logger.error("[getAttendanceScheduleSettingByDepartment]递归查询公司的排班设置发生异常",  e);
+					logger.warn("[getAttendanceScheduleSettingByDepartment]递归查询公司的排班设置发生异常");
+					logger.error(e);
 				}
 			}
 		}
@@ -447,7 +415,8 @@ public class AttendanceDetailAnalyseService {
 					try{
 						_wrapCompany = business.organization().company().getSupDirect( wrapCompany.getName() );
 					}catch(Exception e){
-						logger.error( "根据公司["+wrapCompany.getName()+"]获取上级公司的信息发生异常。",  e);
+						logger.warn( "根据公司["+wrapCompany.getName()+"]获取上级公司的信息发生异常。" );
+						logger.error(e);
 					}
 					if( _wrapCompany != null ){
 						return getAttendanceScheduleSettingByCompany( _wrapCompany );
@@ -456,7 +425,8 @@ public class AttendanceDetailAnalyseService {
 					}
 				}	
 			} catch (Exception e) {
-				logger.error("[getAttendanceScheduleSettingByCompany]递归查询公司的排班设置发生异常",  e);
+				logger.warn("[getAttendanceScheduleSettingByCompany]递归查询公司的排班设置发生异常" );
+				logger.error(e);
 			}
 		}
 		return null;
@@ -487,7 +457,8 @@ public class AttendanceDetailAnalyseService {
 					ids = business.getAttendanceSelfHolidayFactory().getByEmployeeName( detail.getEmpName() );
 				}catch( Exception e ){
 					check = false;
-					logger.error( "system list attendance self holiday info ids with employee name got an exception.empname:" + detail.getEmpName(), e );
+					logger.warn( "system list attendance self holiday info ids with employee name got an exception.empname:" + detail.getEmpName() );
+					logger.error(e);
 					saveAnalyseResultAndStatus( emc, detail.getId(), -1, "系统在根据员工姓名查询该员工的所有请假休假信息ID列表时发生异常" );
 				}
 			}
@@ -496,16 +467,23 @@ public class AttendanceDetailAnalyseService {
 					attendanceSelfHolidayList = business.getAttendanceSelfHolidayFactory().list( ids );
 				}catch( Exception e ){
 					check = false;
-					logger.error( "system list attendance self holiday info with ids got an exception." + detail.getEmpName(), e );
+					logger.warn( "system list attendance self holiday info with ids got an exception." + detail.getEmpName() );
+					logger.error(e);
 					saveAnalyseResultAndStatus( emc, detail.getId(), -1, "系统在根据员工姓名查询该员工的所有请假休假信息列表时发生异常" );
 				}
 			}
 			if( check ){//查询员工所在部门的排班信息
 				try{
 					departmentList = business.organization().department().listWithPerson( detail.getEmpName() );
+					if( departmentList == null || departmentList.isEmpty() ){
+						check = false;
+						logger.warn( "user department is not exists, please check employee department info." + detail.getEmpName() );
+						saveAnalyseResultAndStatus( emc, detail.getId(), -1, "员工未设置部门信息,请检查员工部门设置!" );
+					}
 				}catch( Exception e ){
 					check = false;
-					logger.error( "system list department names with employee name got an exception." + detail.getEmpName(), e );
+					logger.warn( "system list department names with employee name got an exception." + detail.getEmpName() );
+					logger.error(e);
 					saveAnalyseResultAndStatus( emc, detail.getId(), -1, "系统在根据员工姓名查询该员工所在的部门和组织列表时发生异常" );
 				}				
 			}
@@ -518,7 +496,8 @@ public class AttendanceDetailAnalyseService {
 					}
 				}catch( Exception e ){
 					check = false;
-					logger.error( "system get department schedule setting for employee with department names got an exception." + detail.getEmpName(), e );
+					logger.warn( "system get department schedule setting for employee with department names got an exception." + detail.getEmpName() );
+					logger.error(e);
 					saveAnalyseResultAndStatus( emc, detail.getId(), -1, "系统在根据部门列表，获取用户所在的部门的所有排班列表中适合用户的配置信息时发生异常" );
 				}
 			}else{
@@ -545,7 +524,7 @@ public class AttendanceDetailAnalyseService {
 					detail.refresh(); //将打卡数据里分析过的状态全部清空，还原成未分析的数据
 				}else{
 					check = false;
-					logger.error( "system can not find detail{'id':'"+detail.getId()+"'}, record may be deleted." );
+					logger.warn( "system can not find detail, record may be deleted." );
 				}
 			}
 			if( check ){
@@ -564,7 +543,8 @@ public class AttendanceDetailAnalyseService {
 					setSelfHolidays( detail, attendanceSelfHolidayList, dateOperation );
 				}catch( Exception e ){
 					check = false;
-					logger.error( "system analyse employee self holiday for detail got an exception." + detail.getEmpName(), e );
+					logger.warn( "system analyse employee self holiday for detail got an exception." + detail.getEmpName() );
+					logger.error(e);
 					saveAnalyseResultAndStatus( emc, detail.getId(), -1, "系统在根据打卡信息，请假信息分析员工请假情况时发生异常" );
 				}
 			}
@@ -573,7 +553,8 @@ public class AttendanceDetailAnalyseService {
 					detail.setIsWeekend( dateOperation.isWeekend( detail.getRecordDate() ));
 				}catch( Exception e ){
 					check = false;
-					logger.error( "system analyse record date may be weekend got an exception." + detail.getRecordDateString(), e );
+					logger.warn( "system analyse record date may be weekend got an exception." + detail.getRecordDateString() );
+					logger.error(e);
 					saveAnalyseResultAndStatus( emc, detail.getId(), -1, "系统在分析打卡日期是否是周末时发生异常, recordDate:" + detail.getRecordDateString() );
 				}
 			}
@@ -582,7 +563,8 @@ public class AttendanceDetailAnalyseService {
 					detail.setIsHoliday( isHoliday( detail, attendanceWorkDayConfigList, dateOperation ) );
 				}catch( Exception e ){
 					check = false;
-					logger.error( "system analyse record date may be holiday got an exception." + detail.getRecordDateString(), e );
+					logger.warn( "system analyse record date may be holiday got an exception." + detail.getRecordDateString() );
+					logger.error(e);
 					saveAnalyseResultAndStatus( emc, detail.getId(), -1, "系统在分析打卡日期是否是节假日时发生异常, recordDate:"+ detail.getRecordDateString() );
 				}
 			}
@@ -591,7 +573,8 @@ public class AttendanceDetailAnalyseService {
 					detail.setIsWorkday( isWorkday( detail, attendanceWorkDayConfigList, dateOperation ) );
 				}catch( Exception e ){
 					check = false;
-					logger.error( "system analyse record date may be workday got an exception." + detail.getRecordDateString(), e );
+					logger.warn( "system analyse record date may be workday got an exception." + detail.getRecordDateString() );
+					logger.error(e);
 					saveAnalyseResultAndStatus( emc, detail.getId(), -1, "系统在分析打卡日期是否是工作日时发生异常" );
 				}
 			}	
@@ -600,7 +583,8 @@ public class AttendanceDetailAnalyseService {
 					analyseAttendanceDetailStatisticCycle( detail, companyAttendanceStatisticalCycleMap );
 				}catch( Exception e ){
 					check = false;
-					logger.error( "system analyse detail statistic cycle got an exception." + detail.getEmpName(), e );
+					logger.warn( "system analyse detail statistic cycle got an exception." + detail.getEmpName() );
+					logger.error(e);
 					saveAnalyseResultAndStatus( emc, detail.getId(), -1, "系统在根据打卡信息以及排班信息进一步分析打卡信息统计周期时发生异常" );
 				}
 			}
@@ -609,8 +593,9 @@ public class AttendanceDetailAnalyseService {
 					analyseAttendanceDetail( detail, attendanceScheduleSetting, dateOperation );
 				}catch( Exception e ){
 					check = false;
-					logger.error( "system analyse detail by on and off work time for advance analyse got an exception." + detail.getEmpName(), e );
-					saveAnalyseResultAndStatus( emc, detail.getId(), -1, "系统在根据打卡信息排班信息进一步深入分析员工出勤情况时发生异常" );
+					logger.warn( "system analyse detail by on and off work time for advance analyse got an exception." + detail.getEmpName() );
+					logger.error(e);
+					saveAnalyseResultAndStatus( emc, detail.getId(), -1, "系统在根据打卡信息排班信息进一步分析员工出勤情况时发生异常" );
 				}
 			}
 			if( check ){
@@ -626,7 +611,7 @@ public class AttendanceDetailAnalyseService {
 			}
 			return true;
 		}else{
-			logger.error( "attendance detail is null, system can not analyse." );
+			logger.warn( "attendance detail is null, system can not analyse." );
 		}
 		return false;
 	}
@@ -732,7 +717,8 @@ public class AttendanceDetailAnalyseService {
 				//logger.debug("统计数据已存在：COMPANY_PER_DAY，"+ detail.getCompanyName() + ", null, null , "+ detail.getRecordDateString() +", WAITING" );
 			}
 		}catch(Exception e){
-			logger.error("系统在向数据库新增统计需求时发生异常", e);
+			logger.warn("系统在向数据库新增统计需求时发生异常" );
+			logger.error(e);
 		}
 	}
 	
@@ -754,7 +740,8 @@ public class AttendanceDetailAnalyseService {
 			//查询员工请假期间有几个统计周期
 			cycleList = business.getAttendanceDetailFactory().getCyclesFromDetailWithDateSplit( holiday.getEmployeeName(), holiday.getStartTime(), holiday.getEndTime());
 		}catch(Exception e){
-			logger.error("系统在查询员工请假期间有几个统计周期时发生异常", e);
+			logger.warn("系统在查询员工请假期间有几个统计周期时发生异常" );
+			logger.error(e);
 		}
 		
 		if( cycleList != null && cycleList.size() > 0 ){
@@ -814,7 +801,8 @@ public class AttendanceDetailAnalyseService {
 						//logger.debug("统计数据已存在：COMPANY_PER_MONTH，"+ holiday.getCompanyName() + ", " + attendanceCycles.getCycleYear() + ", " + attendanceCycles.getCycleMonth() + ", null, WAITING" );
 					}
 				}catch(Exception e){
-					logger.error("系统在向数据库新增每月统计需求时发生异常", e);
+					logger.warn("系统在向数据库新增每月统计需求时发生异常" );
+					logger.error(e);
 				}
 			}
 		}
@@ -825,7 +813,8 @@ public class AttendanceDetailAnalyseService {
 			DateOperation dateOperation = new DateOperation();
 			dateList = dateOperation.listDateStringBetweenDate( holiday.getStartTime(), holiday.getEndTime() );
 		}catch(Exception e){
-			logger.error("系统在查询员工请假期间有几多少天时发生异常", e);
+			logger.warn("系统在查询员工请假期间有几多少天时发生异常" );
+			logger.error(e);
 		}
 		DateOperation dateOperation = new DateOperation();
 		if( dateList != null ){
@@ -836,7 +825,8 @@ public class AttendanceDetailAnalyseService {
 					//查询员工请假期间有几个统计周期
 					cycleList = business.getAttendanceDetailFactory().getCyclesFromDetailWithDateSplit( holiday.getEmployeeName(), dateOperation.getDateFromString(date + " 00:00:00"), dateOperation.getDateFromString(date+ " 23:59:59"));
 				}catch(Exception e){
-					logger.error("系统在查询员工请假期间有几个统计周期时发生异常", e);
+					logger.warn("系统在查询员工请假期间有几个统计周期时发生异常" );
+					logger.error(e);
 				}
 				
 				if( cycleList !=  null && cycleList.size() > 0 ){
@@ -880,7 +870,8 @@ public class AttendanceDetailAnalyseService {
 								//logger.debug("统计数据已存在：COMPANY_PER_DAY，"+ holiday.getCompanyName() + ", null, null , "+ date +", WAITING" );
 							}
 						}catch(Exception e){
-							logger.error("系统在向数据库新增每日统计需求时发生异常", e);
+							logger.warn("系统在向数据库新增每日统计需求时发生异常" );
+							logger.error(e);
 						}
 					}
 				}
@@ -901,7 +892,8 @@ public class AttendanceDetailAnalyseService {
 				try {
 					configDate = dateOperation.getDateFromString( workDayConfig.getConfigDate() );
 				} catch (Exception e) {
-					logger.error( "系统转换"+workDayConfig.getConfigDate()+"格式为日期时发生异常！", e);
+					logger.warn( "系统转换"+workDayConfig.getConfigDate()+"格式为日期时发生异常！" );
+					logger.error(e);
 				}
 				//进行日期对比
 				Calendar calendar_record = Calendar.getInstance();
@@ -933,7 +925,8 @@ public class AttendanceDetailAnalyseService {
 				try {
 					configDate = dateOperation.getDateFromString( workDayConfig.getConfigDate() );
 				} catch (Exception e) {
-					logger.error( "系统转换"+workDayConfig.getConfigDate()+"格式为日期时发生异常！", e);
+					logger.warn( "系统转换"+workDayConfig.getConfigDate()+"格式为日期时发生异常！" );
+					logger.error(e);
 				}
 				//进行日期对比
 				Calendar calendar_record = Calendar.getInstance();
@@ -967,19 +960,22 @@ public class AttendanceDetailAnalyseService {
 			try {
 				dayWorkStart = dateOperation.getDateFromString( dateOperation.getDateStringFromDate(detail.getRecordDate(), "yyyy-MM-dd") + " " + detail.getOnWorkTime());
 			} catch (Exception e) {
-				logger.error( "setSelfHolidays获取打卡日期的一天的工作开始时间发生异常。",  e );
+				logger.warn( "setSelfHolidays获取打卡日期的一天的工作开始时间发生异常。" );
+				logger.error(e);
 				return;
 			}
 			try {
 				dayWorkEnd = dateOperation.getDateFromString( dateOperation.getDateStringFromDate(detail.getRecordDate(), "yyyy-MM-dd") + " " + detail.getOffWorkTime() );
 			} catch (Exception e) {
-				logger.error( "setSelfHolidays获取打卡日期的一天的工作结束时间发生异常。",  e );
+				logger.warn( "setSelfHolidays获取打卡日期的一天的工作结束时间发生异常。" );
+				logger.error(e);
 				return;
 			}
 			try {
 				dayMiddle = dateOperation.getDateFromString( dateOperation.getDateStringFromDate(detail.getRecordDate(), "yyyy-MM-dd") + " 12:00:00" );
 			} catch (Exception e) {
-				logger.error( "setSelfHolidays获取打卡日期的一天的工作午休时间发生异常。",  e );
+				logger.warn( "setSelfHolidays获取打卡日期的一天的工作午休时间发生异常。" );
+				logger.error(e);
 				return;
 			}
 			//循环比对，看看是否全天请假
@@ -1023,8 +1019,19 @@ public class AttendanceDetailAnalyseService {
 	 * @param detail
 	 * @param attendanceScheduleSetting
 	 * @param dateOperation
+	 * @throws Exception 
 	 */
-	private void analyseAttendanceDetail( AttendanceDetail detail, AttendanceScheduleSetting attendanceScheduleSetting, DateOperation dateOperation ) {
+	private void analyseAttendanceDetail( AttendanceDetail detail, AttendanceScheduleSetting attendanceScheduleSetting, DateOperation dateOperation ) throws Exception {
+		if( dateOperation == null ){
+			dateOperation = new DateOperation();
+		}
+		if( detail == null ){
+			throw new Exception("detail is null!" );
+		}
+		if( attendanceScheduleSetting == null ){
+			throw new Exception("attendanceScheduleSetting is null, empName:" + detail.getEmpName() );
+		}
+		
 		Date onDutyTime = null, offDutyTime = null;
 		Date onWorkTime = null, offWorkTime = null;
 		Date lateStartTime = null, leaveEarlyStartTime = null, absenceStartTime = null;
@@ -1032,31 +1039,33 @@ public class AttendanceDetailAnalyseService {
 		
 		//先初始化当前打卡信息中的上下班时间要求，该要求是是根据员工所在部门排班信息获取到的
 		try {
-			//logger.debug( "[analyseAttendanceDetail]格式化[上班签到时间]onWorkTime=" +  detail.getRecordDateString() + " " + detail.getOnWorkTime() );
+			//logger.debug( "格式化[上班签到时间]onWorkTime=" +  detail.getRecordDateString() + " " + detail.getOnWorkTime() );
 			onWorkTime = dateOperation.getDateFromString( detail.getRecordDateString() + " " + detail.getOnWorkTime() );
 		} catch (Exception e) {
 			detail.setDescription( detail.getDescription() + "; 系统进行时间转换时发生异常,onWorkTime=" + detail.getRecordDateString() + " " + detail.getOnWorkTime() );
 			onWorkTime = null;
-			logger.error( "[analyseAttendanceDetail]系统进行时间转换时发生异常,onWorkTime=" + detail.getRecordDateString() + " " + detail.getOnWorkTime() , e );
+			logger.warn( "系统进行时间转换时发生异常,onWorkTime=" + detail.getRecordDateString() + " " + detail.getOnWorkTime());
+			logger.error(e);
 		}
 		
 		try {
-			//logger.debug( "[analyseAttendanceDetail]格式化[下班签退时间]offWorkTime=" +  detail.getRecordDateString() + " " + detail.getOffWorkTime() );
+			//logger.debug( "格式化[下班签退时间]offWorkTime=" +  detail.getRecordDateString() + " " + detail.getOffWorkTime() );
 			offWorkTime = dateOperation.getDateFromString( detail.getRecordDateString() + " " + detail.getOffWorkTime() );
 		} catch (Exception e) {
 			detail.setDescription( detail.getDescription() + "; 系统进行时间转换时发生异常,offWorkTime=" + detail.getRecordDateString() + " " + detail.getOffWorkTime() );
 			offWorkTime = null;
-			logger.error( "[analyseAttendanceDetail]系统进行时间转换时发生异常,offWorkTime=" + detail.getRecordDateString() + " " + detail.getOffWorkTime() , e );
+			logger.warn( "系统进行时间转换时发生异常,offWorkTime=" + detail.getRecordDateString() + " " + detail.getOffWorkTime() );
+			logger.error(e);
 		}
 		
-		if( attendanceScheduleSetting.getLateStartTime()  != null && !attendanceScheduleSetting.getLateStartTime().trim().isEmpty() ){
+		if( attendanceScheduleSetting.getLateStartTime() != null && !attendanceScheduleSetting.getLateStartTime().isEmpty() ){
 			try {
-				//logger.debug( "[analyseAttendanceDetail]格式化[迟到起算时间]lateStartTime=" +  detail.getRecordDateString() + " " + attendanceScheduleSetting.getLateStartTime() );
 				lateStartTime = dateOperation.getDateFromString( detail.getRecordDateString() + " " + attendanceScheduleSetting.getLateStartTime() );
 			} catch (Exception e) {
 				detail.setDescription( detail.getDescription() + "; 系统进行时间转换时发生异常,lateStartTime=" + detail.getRecordDateString() + " " + attendanceScheduleSetting.getLateStartTime() );
 				lateStartTime = null;
-				logger.error( "[analyseAttendanceDetail]系统进行时间转换时发生异常,lateStartTime=" + detail.getRecordDateString() + " " + attendanceScheduleSetting.getLateStartTime(), e );
+				logger.warn( "系统进行时间转换时发生异常,lateStartTime=" + detail.getRecordDateString() + " " + attendanceScheduleSetting.getLateStartTime());
+				logger.error(e);
 			}
 		}else{
 			//logger.warn("迟到时间设置为空！系统将不判断迟到情况");
@@ -1064,12 +1073,13 @@ public class AttendanceDetailAnalyseService {
 		
 		if( attendanceScheduleSetting.getLeaveEarlyStartTime()  != null && !attendanceScheduleSetting.getLeaveEarlyStartTime().trim().isEmpty() ){
 			try {
-				//logger.debug( "[analyseAttendanceDetail]格式化[早退起算时间]leaveEarlyStartTime=" +  detail.getRecordDateString() + " " + attendanceScheduleSetting.getLeaveEarlyStartTime() );
+				//logger.debug( "格式化[早退起算时间]leaveEarlyStartTime=" +  detail.getRecordDateString() + " " + attendanceScheduleSetting.getLeaveEarlyStartTime() );
 				leaveEarlyStartTime = dateOperation.getDateFromString( detail.getRecordDateString() + " " + attendanceScheduleSetting.getLeaveEarlyStartTime() );
 			} catch (Exception e) {
 				detail.setDescription( detail.getDescription() + "; 系统进行时间转换时发生异常,leaveEarlyStartTime=" + detail.getRecordDateString() + " " + attendanceScheduleSetting.getLeaveEarlyStartTime() );
 				leaveEarlyStartTime = null;
-				logger.error( "[analyseAttendanceDetail]系统进行时间转换时发生异常,leaveEarlyStartTime=" + detail.getRecordDateString() + " " + attendanceScheduleSetting.getLeaveEarlyStartTime() , e );
+				logger.warn( "系统进行时间转换时发生异常,leaveEarlyStartTime=" + detail.getRecordDateString() + " " + attendanceScheduleSetting.getLeaveEarlyStartTime() );
+				logger.error(e);
 			}
 		}else{
 			//logger.warn("早退时间设置为空！系统将不判断早退情况");
@@ -1077,54 +1087,58 @@ public class AttendanceDetailAnalyseService {
 		
 		if( attendanceScheduleSetting.getAbsenceStartTime()  != null && !attendanceScheduleSetting.getAbsenceStartTime().trim().isEmpty() ){
 			try {
-				//logger.debug( "[analyseAttendanceDetail]格式化[缺勤起算时间]absenceStartTime=" +  detail.getRecordDateString() + " " + attendanceScheduleSetting.getAbsenceStartTime() );
+				//logger.debug( "格式化[缺勤起算时间]absenceStartTime=" +  detail.getRecordDateString() + " " + attendanceScheduleSetting.getAbsenceStartTime() );
 				absenceStartTime = dateOperation.getDateFromString( detail.getRecordDateString() + " " + attendanceScheduleSetting.getAbsenceStartTime() );
 			} catch (Exception e) {
 				detail.setDescription( detail.getDescription() + "; 系统进行时间转换时发生异常,absenceStartTime=" + detail.getRecordDateString() + " " + attendanceScheduleSetting.getAbsenceStartTime() );
 				absenceStartTime = null;
-				logger.error( "[analyseAttendanceDetail]系统进行时间转换时发生异常,absenceStartTime=" + detail.getRecordDateString() + " " + attendanceScheduleSetting.getAbsenceStartTime() , e );
+				logger.warn( "系统进行时间转换时发生异常,absenceStartTime=" + detail.getRecordDateString() + " " + attendanceScheduleSetting.getAbsenceStartTime() );
+				logger.error(e);
 			}
 		}else{
 			//logger.warn("上午缺勤时间设置为空！系统将不判上午缺勤情况");
 		}
 		
 		try {
-			//logger.debug( "[analyseAttendanceDetail]格式化[上午工作结束时间]morningEndTime=" +  detail.getRecordDateString() + " 12:00:00" );
+			//logger.debug( "格式化[上午工作结束时间]morningEndTime=" +  detail.getRecordDateString() + " 12:00:00" );
 			morningEndTime = dateOperation.getDateFromString( detail.getRecordDateString() + " 12:00:00"  );
 		} catch (Exception e) {
 			detail.setDescription( detail.getDescription() + "; 系统进行时间转换时发生异常,morningEndTime=" + detail.getRecordDateString() + " 12:00:00" );
 			morningEndTime = null;
-			logger.error( "[analyseAttendanceDetail]系统进行时间转换时发生异常,morningEndTime=" + detail.getRecordDateString() + " 12:00:00" , e );
+			logger.warn( "系统进行时间转换时发生异常,morningEndTime=" + detail.getRecordDateString() + " 12:00:00" );
+			logger.error(e);
 		}
 		
 		
 		if( onWorkTime != null && offWorkTime != null ){
-			//logger.debug( "[analyseAttendanceDetail]上下班排班信息获取正常：onWorkTime=" +  onWorkTime + "， offWorkTime="+offWorkTime );
+			//logger.debug( "上下班排班信息获取正常：onWorkTime=" +  onWorkTime + "， offWorkTime="+offWorkTime );
 			//获取员工签到时间
 			try {
 				if( detail.getOnDutyTime() == null || detail.getOnDutyTime().isEmpty() ){
-					//logger.debug( "[analyseAttendanceDetail]onDutyTime 为空 " );
+					//logger.debug( "onDutyTime 为空 " );
 					onDutyTime = null;
 				}else{
-					//logger.debug( "[analyseAttendanceDetail]格式化onDutyTime=" + detail.getRecordDateString() + " " + detail.getOnDutyTime() );
+					//logger.debug( "格式化onDutyTime=" + detail.getRecordDateString() + " " + detail.getOnDutyTime() );
 					onDutyTime = dateOperation.getDateFromString( detail.getRecordDateString() + " " + detail.getOnDutyTime() );
 				}
 			} catch (Exception e) {
 				onDutyTime = null;
-				logger.error( "[analyseAttendanceDetail]系统进行时间转换时发生异常,onDutyTime=" + detail.getRecordDateString() + " " + detail.getOnDutyTime() , e );
+				logger.warn( "系统进行时间转换时发生异常,onDutyTime=" + detail.getRecordDateString() + " " + detail.getOnDutyTime() );
+				logger.error(e);
 			}
 			//获取员工签退时间
 			try {
 				if( detail.getOffDutyTime() == null || detail.getOffDutyTime().isEmpty() ){
-					//logger.debug( "[analyseAttendanceDetail]offDutyTime 为空" );
+					//logger.debug( "offDutyTime 为空" );
 					offDutyTime = null;
 				}else{
-					//logger.debug( "[analyseAttendanceDetail]格式化offDutyTime=" + detail.getRecordDateString() + " " + detail.getOffDutyTime() );
+					//logger.debug( "格式化offDutyTime=" + detail.getRecordDateString() + " " + detail.getOffDutyTime() );
 					offDutyTime = dateOperation.getDateFromString( detail.getRecordDateString() + " " + detail.getOffDutyTime() );
 				}
 			} catch (Exception e) {
 				offDutyTime = null;
-				logger.error( "[analyseAttendanceDetail]系统进行时间转换时发生异常,offDutyTime=" + detail.getRecordDateString() + " " + detail.getOffDutyTime() , e );
+				logger.warn( "系统进行时间转换时发生异常,offDutyTime=" + detail.getRecordDateString() + " " + detail.getOffDutyTime() );
+				logger.error(e);
 			}
 			
 			//=========================================================================================================
@@ -1133,7 +1147,7 @@ public class AttendanceDetailAnalyseService {
 			if( onDutyTime == null && offDutyTime == null ){
 				//if( detail.getIsGetSelfHolidays()  && "全天".equalsIgnoreCase( detail.getSelfHolidayDayTime() ) ){
 				if( detail.getIsGetSelfHolidays()  ){
-					//logger.debug( "[analyseAttendanceDetail]请幸运，全天请假不计缺勤。" );
+					//logger.debug( "请幸运，全天请假不计缺勤。" );
 					detail.setAttendance( 0.0 );
 					detail.setIsAbsent( false );
 					detail.setAbsence( 0.0 );
@@ -1143,14 +1157,14 @@ public class AttendanceDetailAnalyseService {
 					if( ( detail.getIsWeekend() && !detail.getIsWorkday()) //周末，并且未调休为工作日
 						|| detail.getIsHoliday() //或者是节假日
 					){
-						//logger.debug( "[analyseAttendanceDetail]未请假，不是工作日，不计缺勤。" );
+						//logger.debug( "未请假，不是工作日，不计缺勤。" );
 						detail.setAttendance( 0.0 );
 						detail.setIsAbsent( false );
 						detail.setAbsence( 0.0 );
 						detail.setAbsentDayTime("无");
 						detail.setWorkTimeDuration( 0L );
 					}else{
-						//logger.debug( "[analyseAttendanceDetail]未请假，工作日，计缺勤1天。" );
+						//logger.debug( "未请假，工作日，计缺勤1天。" );
 						detail.setAttendance( 0.0 );
 						detail.setIsAbsent( true );
 						detail.setAbsence( 1.0 );
@@ -1163,24 +1177,24 @@ public class AttendanceDetailAnalyseService {
 				//=====上午  如果员工已经签到================================================================================
 				//=========================================================================================================
 				if( onDutyTime != null ){
-					//logger.debug( "[analyseAttendanceDetail]上午打过卡，时间：onDutyTime=" + onDutyTime + ", 上午工作结束时间：morningEndTime=" + morningEndTime );					
+					//logger.debug( "上午打过卡，时间：onDutyTime=" + onDutyTime + ", 上午工作结束时间：morningEndTime=" + morningEndTime );					
 					//absenceStartTimes可以不配置，如果不配置，则为null
 					//上午签到过了，如果排班设置里已经配置过了缺勤起算时间，那么判断员工是否已经缺勤，如果未休假，则视为缺勤半天			
 					if( absenceStartTime != null && onDutyTime.after( absenceStartTime )){
-						//logger.debug( "[analyseAttendanceDetail]上午打卡时间晚于缺勤计时时间......" );
+						//logger.debug( "上午打卡时间晚于缺勤计时时间......" );
 						if( detail.getIsGetSelfHolidays()  && ("上午".equalsIgnoreCase(detail.getSelfHolidayDayTime()) || "全天".equalsIgnoreCase( detail.getSelfHolidayDayTime() ))){
-							//logger.debug( "[analyseAttendanceDetail]请幸运，请假不计考勤，出勤只算半天，但请过假了不算缺勤" );
+							//logger.debug( "请幸运，请假不计考勤，出勤只算半天，但请过假了不算缺勤" );
 							detail.setIsAbsent( false );
 							detail.setAbsence(0.0);
 						}else{
 							if( ( detail.getIsWeekend() && !detail.getIsWorkday()) //周末，并且未调休为工作日
 									|| detail.getIsHoliday() //或者是节假日
 								){
-								//logger.debug( "[analyseAttendanceDetail]休息天，不算缺勤，出勤最多只能算半天" );
+								//logger.debug( "休息天，不算缺勤，出勤最多只能算半天" );
 								detail.setIsAbsent( false );
 								detail.setAbsence(0.0);
 							}else{
-//								logger.debug( "[analyseAttendanceDetail]呵呵，没请假，缺勤半天，出勤最多只能算半天" );
+//								logger.debug( "呵呵，没请假，缺勤半天，出勤最多只能算半天" );
 								detail.setIsAbsent( true );
 								detail.setAbsence(0.5);
 								detail.setAbsentDayTime("上午");
@@ -1191,10 +1205,10 @@ public class AttendanceDetailAnalyseService {
 					}else if( lateStartTime != null && onDutyTime.after( lateStartTime )){ 
 						//上午签到过了，如果排班设置里已经配置过了迟到起算时间，那么判断员工是否已经迟到，如果未休假
 						detail.setAttendance( 1.0 );//迟到没关系，出勤时间不用扣半天
-						//logger.debug( "[analyseAttendanceDetail]上午打卡时间晚于迟到计时时间......" );
+						//logger.debug( "上午打卡时间晚于迟到计时时间......" );
 						if( detail.getIsGetSelfHolidays()  && ("上午".equalsIgnoreCase(detail.getSelfHolidayDayTime()) || "全天".equalsIgnoreCase( detail.getSelfHolidayDayTime() ))
 						){
-							//logger.debug( "[analyseAttendanceDetail]请幸运，请过假了不算迟到" );
+							//logger.debug( "请幸运，请过假了不算迟到" );
 							detail.setLateTimeDuration( 0L ); //请假了不算迟到
 							detail.setIsLate(false );//请假了不算迟到
 						}else{
@@ -1203,7 +1217,7 @@ public class AttendanceDetailAnalyseService {
 								){
 								detail.setLateTimeDuration( 0L );
 								detail.setIsLate( false );
-								//logger.debug( "[analyseAttendanceDetail]休息天，不算迟到" );
+								//logger.debug( "休息天，不算迟到" );
 							}else{
 								if( onDutyTime == null || offDutyTime == null ){
 									detail.setIsAbnormalDuty( true );
@@ -1211,52 +1225,52 @@ public class AttendanceDetailAnalyseService {
 									long minutes = dateOperation.getMinutes( onWorkTime, onDutyTime ); //迟到计算从上班时间开始计算，不是迟到起算时间
 									detail.setLateTimeDuration( minutes );//没请假算迟到时长 
 									detail.setIsLate( true );//没请假算迟到
-									//logger.debug( "[analyseAttendanceDetail]呵呵，没请假，计迟到一次，迟到时长：minutes=" + minutes );
+									//logger.debug( "呵呵，没请假，计迟到一次，迟到时长：minutes=" + minutes );
 								}
 							}
 						}
 					}
 					long minutes = dateOperation.getMinutes( onDutyTime, morningEndTime );
-					//logger.debug( "[analyseAttendanceDetail]上午工作时长, 从"+onDutyTime+"到"+morningEndTime+" ：minutes=" + minutes + "分钟。" );
+					//logger.debug( "上午工作时长, 从"+onDutyTime+"到"+morningEndTime+" ：minutes=" + minutes + "分钟。" );
 					detail.setWorkTimeDuration( minutes );//记录上午的工作时长
 				}else{
 				//	logger.debug( "员工上午未打卡，异常状态......" );
 					if( detail.getIsGetSelfHolidays() && ("上午".equalsIgnoreCase( detail.getSelfHolidayDayTime()) || "全天".equalsIgnoreCase( detail.getSelfHolidayDayTime() ))
 					){
-					//	logger.debug( "[analyseAttendanceDetail]请幸运，请假不计考勤，不需要打卡，不算异常" );
+					//	logger.debug( "请幸运，请假不计考勤，不需要打卡，不算异常" );
 						detail.setIsAbsent( false );
 						//detail.setAttendance( 0.5 );
 					}else{
 						if( ( detail.getIsWeekend()&& !detail.getIsWorkday() ) //周末，并且未调休为工作日
 								|| detail.getIsHoliday() //或者是节假日
 							){
-//							logger.debug( "[analyseAttendanceDetail]休息天，不算打卡异常，本来就不需要打卡" );
+//							logger.debug( "休息天，不算打卡异常，本来就不需要打卡" );
 							detail.setAbnormalDutyDayTime("无");
 							detail.setIsAbnormalDuty( false );
 							//detail.setAttendance( 0 )
 						}else{
-//							logger.debug( "[analyseAttendanceDetail]呵呵，没请假，打卡异常。" );
+//							logger.debug( "呵呵，没请假，打卡异常。" );
 							detail.setAbnormalDutyDayTime("上午");
 							detail.setIsAbnormalDuty(true);
 							//detail.setAttendance( 0.5 ); //上午打卡异常，不知道算不算出勤时间
 						}
 					}
-					//logger.debug( "[analyseAttendanceDetail]上午工作时长, 未打卡：minutes= 0 分钟。" );
+					//logger.debug( "上午工作时长, 未打卡：minutes= 0 分钟。" );
 					detail.setWorkTimeDuration( 0L );//记录上午的工作时长
 				}
 				//=========================================================================================================
 				//=====下午  如果员工已经签退================================================================================
 				//=========================================================================================================
 				if( offDutyTime != null ){
-					//logger.debug( "[analyseAttendanceDetail]早退计时时间：leaveEarlyStartTime=" + leaveEarlyStartTime );
+					//logger.debug( "早退计时时间：leaveEarlyStartTime=" + leaveEarlyStartTime );
 					long minutes = dateOperation.getMinutes( morningEndTime, offDutyTime);
-					//logger.debug( "[analyseAttendanceDetail]下午工作时长, 从"+morningEndTime+"到"+offDutyTime+" ：minutes=" + minutes + "分钟。" );
+					//logger.debug( "下午工作时长, 从"+morningEndTime+"到"+offDutyTime+" ：minutes=" + minutes + "分钟。" );
 					detail.setWorkTimeDuration( detail.getWorkTimeDuration() + minutes );//记录上午的工作时长 + 下午工作时长
-					//logger.debug( "[analyseAttendanceDetail]全天工作时长, ：minutes=" + detail.getWorkTimeDuration() + "分钟。" );					
+					//logger.debug( "全天工作时长, ：minutes=" + detail.getWorkTimeDuration() + "分钟。" );					
 					if( leaveEarlyStartTime != null && offDutyTime.before( leaveEarlyStartTime )){
-						//logger.debug( "[analyseAttendanceDetail]下午打卡时间早于早退计时时间......" );
+						//logger.debug( "下午打卡时间早于早退计时时间......" );
 						if( detail.getIsGetSelfHolidays() && ("下午".equalsIgnoreCase(detail.getSelfHolidayDayTime()) || "全天".equalsIgnoreCase( detail.getSelfHolidayDayTime() ))){
-							//logger.debug( "[analyseAttendanceDetail]请幸运，请假不计考勤，出勤只算半天，但请过假了不算早退" );
+							//logger.debug( "请幸运，请假不计考勤，出勤只算半天，但请过假了不算早退" );
 							detail.setLeaveEarlierTimeDuration( 0L );
 							detail.setIsLeaveEarlier( false );
 							//detail.setAttendance( detail.getAttendance() - 0.5 );//早退了，不知道算不算出勤时间
@@ -1264,7 +1278,7 @@ public class AttendanceDetailAnalyseService {
 							if( ( detail.getIsWeekend() && !detail.getIsWorkday() ) //周末，并且未调休为工作日
 									|| detail.getIsHoliday() //或者是节假日
 								){
-//								logger.debug( "[analyseAttendanceDetail]休息天，不算早退" );
+//								logger.debug( "休息天，不算早退" );
 								detail.setLeaveEarlierTimeDuration( 0L );
 								detail.setIsLeaveEarlier( false );
 								//detail.setAttendance( detail.getAttendance() - 0.5 );//早退了，不知道算不算出勤
@@ -1273,15 +1287,15 @@ public class AttendanceDetailAnalyseService {
 								detail.setLeaveEarlierTimeDuration(minutes); //早退时间
 								detail.setIsLeaveEarlier( true );
 								//detail.setAttendance( detail.getAttendance() - 0.5 );//早退了，不知道算不算出勤
-								//logger.debug( "[analyseAttendanceDetail]呵呵，没请假，早退计一次，全天工作时长："+detail.getWorkTimeDuration()+"分钟，早退时长：minutes=" + minutes );
+								//logger.debug( "呵呵，没请假，早退计一次，全天工作时长："+detail.getWorkTimeDuration()+"分钟，早退时长：minutes=" + minutes );
 							}
 						}
 					}
 				}else{
-					//logger.debug( "[analyseAttendanceDetail]员工下午未打卡，属于异常状态......" );
+					//logger.debug( "员工下午未打卡，属于异常状态......" );
 					//员工未签退，算缺勤了半天，出勤率: - 0.5
 					if( detail.getIsGetSelfHolidays()  && ("下午".equalsIgnoreCase(detail.getSelfHolidayDayTime()) || "全天".equalsIgnoreCase( detail.getSelfHolidayDayTime() ))){
-						//logger.debug( "[analyseAttendanceDetail]请幸运，请假不计考勤，不需要打卡，不算异常状态" );
+						//logger.debug( "请幸运，请假不计考勤，不需要打卡，不算异常状态" );
 						detail.setLeaveEarlierTimeDuration( 0L );
 						detail.setIsLeaveEarlier( false );
 						//detail.setAttendance( detail.getAttendance() - 0.5 );
@@ -1289,16 +1303,16 @@ public class AttendanceDetailAnalyseService {
 						if( ( detail.getIsWeekend() && !detail.getIsWorkday()) //周末，并且未调休为工作日
 								|| detail.getIsHoliday() //或者是节假日
 							){
-							//logger.debug( "[analyseAttendanceDetail]休息天，不算异常" );
+							//logger.debug( "休息天，不算异常" );
 							detail.setAbnormalDutyDayTime("无");
 							detail.setIsAbnormalDuty(false);
 						}else{
 							detail.setAbnormalDutyDayTime("下午");
 							detail.setIsAbnormalDuty(true);
-							//logger.debug( "[analyseAttendanceDetail]呵呵，没请假，未打卡，算异常状态。" );
+							//logger.debug( "呵呵，没请假，未打卡，算异常状态。" );
 						}
 					}
-					//logger.debug( "[analyseAttendanceDetail]全天工作时长,[下午未打卡，只算上午的工作时长] ：minutes=" + detail.getWorkTimeDuration() + "分钟。" );
+					//logger.debug( "全天工作时长,[下午未打卡，只算上午的工作时长] ：minutes=" + detail.getWorkTimeDuration() + "分钟。" );
 				}
 			}
 			
@@ -1325,7 +1339,6 @@ public class AttendanceDetailAnalyseService {
 				}
 			}
 			detail.setRecordStatus( 1 );
-			//logger.debug("[analyseAttendanceDetail]打卡信息对象已经标识为已分析。");
 		}
 	}
 	
@@ -1334,7 +1347,11 @@ public class AttendanceDetailAnalyseService {
 		emc.beginTransaction( AttendanceDetail.class );
 		detail.setRecordStatus( status );
 		detail.setDescription( description );
+		if( detail != null && detail.getEmpName() != null ){
+			detail.setEmpName( detail.getEmpName().trim() );
+		}
 		emc.check( detail, CheckPersistType.all );
 		emc.commit();
 	}
+
 }

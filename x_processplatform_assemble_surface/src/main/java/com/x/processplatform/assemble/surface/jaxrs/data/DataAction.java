@@ -21,9 +21,13 @@ import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 
 @Path("data")
 public class DataAction extends AbstractJaxrsAction {
+
+	private static Logger logger = LoggerFactory.getLogger(DataAction.class);
 
 	@HttpMethodDescribe(value = "根据workId获取Data", response = JsonElement.class)
 	@GET
@@ -32,12 +36,12 @@ public class DataAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getWithWork(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGetWithWork().execute(effectivePerson, id);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -50,12 +54,12 @@ public class DataAction extends AbstractJaxrsAction {
 	public Response getWithWorkPath0(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("path0") String path0) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGetWithWorkPath0().execute(effectivePerson, id, path0);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -68,12 +72,12 @@ public class DataAction extends AbstractJaxrsAction {
 	public Response getWithWorkWithPath1(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("path0") String path0, @PathParam("path1") String path1) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGetWithWorkPath1().execute(effectivePerson, id, path0, path1);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -86,12 +90,12 @@ public class DataAction extends AbstractJaxrsAction {
 	public Response getWithWorkWithPath2(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("path0") String path0, @PathParam("path1") String path1, @PathParam("path2") String path2) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGetWithWorkPath2().execute(effectivePerson, id, path0, path1, path2);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -105,12 +109,12 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path0") String path0, @PathParam("path1") String path1, @PathParam("path2") String path2,
 			@PathParam("path3") String path3) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGetWithWorkPath3().execute(effectivePerson, id, path0, path1, path2, path3);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -124,12 +128,12 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path0") String path0, @PathParam("path1") String path1, @PathParam("path2") String path2,
 			@PathParam("path3") String path3, @PathParam("path4") String path4) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGetWithWorkPath4().execute(effectivePerson, id, path0, path1, path2, path3, path4);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -143,13 +147,13 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path0") String path0, @PathParam("path1") String path1, @PathParam("path2") String path2,
 			@PathParam("path3") String path3, @PathParam("path4") String path4, @PathParam("path5") String path5) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGetWithWorkPath5().execute(effectivePerson, id, path0, path1, path2, path3, path4,
 					path5);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -164,13 +168,13 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path3") String path3, @PathParam("path4") String path4, @PathParam("path5") String path5,
 			@PathParam("path6") String path6) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGetWithWorkPath6().execute(effectivePerson, id, path0, path1, path2, path3, path4, path5,
 					path6);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -185,13 +189,13 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path3") String path3, @PathParam("path4") String path4, @PathParam("path5") String path5,
 			@PathParam("path6") String path6, @PathParam("path7") String path7) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGetWithWorkPath7().execute(effectivePerson, id, path0, path1, path2, path3, path4, path5,
 					path6, path7);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -203,12 +207,12 @@ public class DataAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getWithWorkCompleted(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGetWithWorkCompleted().execute(effectivePerson, id);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -221,12 +225,12 @@ public class DataAction extends AbstractJaxrsAction {
 	public Response getWithWorkCompletedWithPath0(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("path0") String path0) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGetWithWorkCompletedPath0().execute(effectivePerson, id, path0);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -239,12 +243,12 @@ public class DataAction extends AbstractJaxrsAction {
 	public Response getWithWorkCompletedWithPath1(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("path0") String path0, @PathParam("path1") String path1) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGetWithWorkCompletedPath1().execute(effectivePerson, id, path0, path1);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -257,12 +261,12 @@ public class DataAction extends AbstractJaxrsAction {
 	public Response getWithWorkCompletedWithPath2(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("path0") String path0, @PathParam("path1") String path1, @PathParam("path2") String path2) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGetWithWorkCompletedPath2().execute(effectivePerson, id, path0, path1, path2);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -276,12 +280,12 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path0") String path0, @PathParam("path1") String path1, @PathParam("path2") String path2,
 			@PathParam("path3") String path3) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGetWithWorkCompletedPath3().execute(effectivePerson, id, path0, path1, path2, path3);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -295,13 +299,13 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path0") String path0, @PathParam("path1") String path1, @PathParam("path2") String path2,
 			@PathParam("path3") String path3, @PathParam("path4") String path4) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGetWithWorkCompletedPath4().execute(effectivePerson, id, path0, path1, path2, path3,
 					path4);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -315,13 +319,13 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path0") String path0, @PathParam("path1") String path1, @PathParam("path2") String path2,
 			@PathParam("path3") String path3, @PathParam("path4") String path4, @PathParam("path5") String path5) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGetWithWorkCompletedPath5().execute(effectivePerson, id, path0, path1, path2, path3,
 					path4, path5);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -336,13 +340,13 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path3") String path3, @PathParam("path4") String path4, @PathParam("path5") String path5,
 			@PathParam("path6") String path6) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGetWithWorkCompletedPath6().execute(effectivePerson, id, path0, path1, path2, path3,
 					path4, path5, path6);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -357,13 +361,13 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path3") String path3, @PathParam("path4") String path4, @PathParam("path5") String path5,
 			@PathParam("path6") String path6, @PathParam("path7") String path7) {
 		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGetWithWorkCompletedPath7().execute(effectivePerson, id, path0, path1, path2, path3,
 					path4, path5, path6, path7);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -376,12 +380,12 @@ public class DataAction extends AbstractJaxrsAction {
 	public Response updateWithWork(@Context HttpServletRequest request, @PathParam("id") String id,
 			JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionUpdateWithWork().execute(effectivePerson, id, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -394,12 +398,12 @@ public class DataAction extends AbstractJaxrsAction {
 	public Response updateWithWorkWithPath0(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("path0") String path0, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionUpdateWithWorkPath0().execute(effectivePerson, id, path0, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -412,12 +416,12 @@ public class DataAction extends AbstractJaxrsAction {
 	public Response updateWithWorkWithPath1(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("path0") String path0, @PathParam("path1") String path1, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionUpdateWithWorkPath1().execute(effectivePerson, id, path0, path1, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -431,12 +435,12 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path0") String path0, @PathParam("path1") String path1, @PathParam("path2") String path2,
 			JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionUpdateWithWorkPath2().execute(effectivePerson, id, path0, path1, path2, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -450,13 +454,13 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path0") String path0, @PathParam("path1") String path1, @PathParam("path2") String path2,
 			@PathParam("path3") String path3, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionUpdateWithWorkPath3().execute(effectivePerson, id, path0, path1, path2, path3,
 					jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -470,13 +474,13 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path0") String path0, @PathParam("path1") String path1, @PathParam("path2") String path2,
 			@PathParam("path3") String path3, @PathParam("path4") String path4, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionUpdateWithWorkPath4().execute(effectivePerson, id, path0, path1, path2, path3, path4,
 					jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -491,13 +495,13 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path3") String path3, @PathParam("path4") String path4, @PathParam("path5") String path5,
 			JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionUpdateWithWorkPath5().execute(effectivePerson, id, path0, path1, path2, path3, path4,
 					path5, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -512,13 +516,13 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path3") String path3, @PathParam("path4") String path4, @PathParam("path5") String path5,
 			@PathParam("path6") String path6, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionUpdateWithWorkPath6().execute(effectivePerson, id, path0, path1, path2, path3, path4,
 					path5, path6, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -533,13 +537,13 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path3") String path3, @PathParam("path4") String path4, @PathParam("path5") String path5,
 			@PathParam("path6") String path6, @PathParam("path7") String path7, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionUpdateWithWorkPath7().execute(effectivePerson, id, path0, path1, path2, path3, path4,
 					path5, path6, path7, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -552,12 +556,12 @@ public class DataAction extends AbstractJaxrsAction {
 	public Response createWithWork(@Context HttpServletRequest request, @PathParam("id") String id,
 			JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionCreateWithWork().execute(effectivePerson, id, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -570,12 +574,12 @@ public class DataAction extends AbstractJaxrsAction {
 	public Response createWithJobWithPath0(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("path0") String path0, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionCreateWithWorkPath0().execute(effectivePerson, id, path0, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -588,12 +592,12 @@ public class DataAction extends AbstractJaxrsAction {
 	public Response createWithJobWithPath1(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("path0") String path0, @PathParam("path1") String path1, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionCreateWithWorkPath1().execute(effectivePerson, id, path0, path1, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -607,12 +611,12 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path0") String path0, @PathParam("path1") String path1, @PathParam("path2") String path2,
 			JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionCreateWithWorkPath2().execute(effectivePerson, id, path0, path1, path2, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -626,13 +630,13 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path0") String path0, @PathParam("path1") String path1, @PathParam("path2") String path2,
 			@PathParam("path3") String path3, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionCreateWithWorkPath3().execute(effectivePerson, id, path0, path1, path2, path3,
 					jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -646,13 +650,13 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path0") String path0, @PathParam("path1") String path1, @PathParam("path2") String path2,
 			@PathParam("path3") String path3, @PathParam("path4") String path4, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionCreateWithWorkPath4().execute(effectivePerson, id, path0, path1, path2, path3, path4,
 					jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -667,13 +671,13 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path3") String path3, @PathParam("path4") String path4, @PathParam("path5") String path5,
 			JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionCreateWithWorkPath5().execute(effectivePerson, id, path0, path1, path2, path3, path4,
 					path5, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -688,13 +692,13 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path3") String path3, @PathParam("path4") String path4, @PathParam("path5") String path5,
 			@PathParam("path6") String path6, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionCreateWithWorkPath6().execute(effectivePerson, id, path0, path1, path2, path3, path4,
 					path5, path6, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -709,13 +713,13 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path3") String path3, @PathParam("path4") String path4, @PathParam("path5") String path5,
 			@PathParam("path6") String path6, @PathParam("path7") String path7, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionCreateWithWorkPath7().execute(effectivePerson, id, path0, path1, path2, path3, path4,
 					path5, path6, path7, jsonElement);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -727,12 +731,12 @@ public class DataAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response deleteWithWork(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionDeleteWithWork().execute(effectivePerson, id);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -745,12 +749,12 @@ public class DataAction extends AbstractJaxrsAction {
 	public Response deleteWithJobWithPath0(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("path0") String path0) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionDeleteWithWorkPath0().execute(effectivePerson, id, path0);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -763,12 +767,12 @@ public class DataAction extends AbstractJaxrsAction {
 	public Response deleteWithJobWithPath1(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("path0") String path0, @PathParam("path1") String path1) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionDeleteWithWorkPath1().execute(effectivePerson, id, path0, path1);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -781,12 +785,12 @@ public class DataAction extends AbstractJaxrsAction {
 	public Response deleteWithJobWithPath2(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("path0") String path0, @PathParam("path1") String path1, @PathParam("path2") String path2) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionDeleteWithWorkPath2().execute(effectivePerson, id, path0, path1, path2);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -800,12 +804,12 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path0") String path0, @PathParam("path1") String path1, @PathParam("path2") String path2,
 			@PathParam("path3") String path3) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionDeleteWithWorkPath3().execute(effectivePerson, id, path0, path1, path2, path3);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -819,12 +823,12 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path0") String path0, @PathParam("path1") String path1, @PathParam("path2") String path2,
 			@PathParam("path3") String path3, @PathParam("path4") String path4) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionDeleteWithWorkPath4().execute(effectivePerson, id, path0, path1, path2, path3, path4);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -838,13 +842,13 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path0") String path0, @PathParam("path1") String path1, @PathParam("path2") String path2,
 			@PathParam("path3") String path3, @PathParam("path4") String path4, @PathParam("path5") String path5) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionDeleteWithWorkPath5().execute(effectivePerson, id, path0, path1, path2, path3, path4,
 					path5);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -859,13 +863,13 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path3") String path3, @PathParam("path4") String path4, @PathParam("path5") String path5,
 			@PathParam("path6") String path6) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionDeleteWithWorkPath6().execute(effectivePerson, id, path0, path1, path2, path3, path4,
 					path5, path6);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -880,13 +884,13 @@ public class DataAction extends AbstractJaxrsAction {
 			@PathParam("path3") String path3, @PathParam("path4") String path4, @PathParam("path5") String path5,
 			@PathParam("path6") String path6, @PathParam("path7") String path7) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionDeleteWithWorkPath7().execute(effectivePerson, id, path0, path1, path2, path3, path4,
 					path5, path6, path7);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

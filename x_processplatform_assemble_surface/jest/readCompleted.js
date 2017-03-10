@@ -422,7 +422,7 @@ function readCompleted_listFilter_init() {
     });
 }
 
-function readCompleted_listFilter_next() {
+function readCompleted_listFilter_next(id) {
     var id = (id ? id : readCompleted_parameter.last);
     $.ajax({
 	type : 'post',
@@ -438,7 +438,6 @@ function readCompleted_listFilter_next() {
 	    creatorCompany : $('#creatorCompanyFilter').val(),
 	    creatorDepartment : $('#creatorDepartmentFilter').val(),
 	    completedTimeMonth : $('#completedTimeMonthFilter').val(),
-	    creatorDepartment : $('#creatorDepartmentFilter').val(),
 	    activityName : $('#activityNameFilter').val(),
 	    key : $('#keyFilter').val()
 	}),
@@ -458,7 +457,7 @@ function readCompleted_listFilter_next() {
     });
 }
 
-function readCompleted_listFilter_prev() {
+function readCompleted_listFilter_prev(id) {
     var id = (id ? id : readCompleted_parameter.first);
     $.ajax({
 	type : 'post',
@@ -474,7 +473,6 @@ function readCompleted_listFilter_prev() {
 	    creatorCompany : $('#creatorCompanyFilter').val(),
 	    creatorDepartment : $('#creatorDepartmentFilter').val(),
 	    completedTimeMonth : $('#completedTimeMonthFilter').val(),
-	    creatorDepartment : $('#creatorDepartmentFilter').val(),
 	    activityName : $('#activityNameFilter').val(),
 	    key : $('#keyFilter').val()
 	}),

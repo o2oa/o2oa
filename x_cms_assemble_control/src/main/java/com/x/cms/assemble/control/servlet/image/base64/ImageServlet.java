@@ -9,7 +9,6 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,13 +19,13 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.imgscalr.Scalr;
 
-import com.x.base.core.application.servlet.FileUploadServletTools;
+import com.x.base.core.application.servlet.AbstractServletAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 
 @WebServlet(urlPatterns = "/servlet/image/encode/*")
 @MultipartConfig
-public class ImageServlet extends HttpServlet {
+public class ImageServlet extends AbstractServletAction {
 
 	private static final long serialVersionUID = -516827649716075968L;
 
@@ -36,7 +35,7 @@ public class ImageServlet extends HttpServlet {
 		String str = null;
 		String wrap = null;
 		try {
-			str = FileUploadServletTools.getURIPart( request.getRequestURI(), "size" );
+			str = this.getURIPart( request.getRequestURI(), "size" );
 			Integer size = 0;
 			if ( NumberUtils.isNumber( str ) ) {
 				size = Integer.parseInt( str );
@@ -74,6 +73,6 @@ public class ImageServlet extends HttpServlet {
 			result.error(e);
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
-		FileUploadServletTools.result(response, result);
+		this.result(response, result);
 	}
 }

@@ -14,10 +14,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.x.attendance.assemble.control.jaxrs.WrapOutMessage;
+import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.service.AttendanceScheduleSettingServiceAdv;
 import com.x.attendance.assemble.control.service.UserManagerService;
 import com.x.attendance.entity.AttendanceScheduleSetting;
@@ -30,6 +27,8 @@ import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.organization.core.express.wrap.WrapCompany;
 import com.x.organization.core.express.wrap.WrapDepartment;
 
@@ -50,6 +49,7 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listAllAttendanceScheduleSetting(@Context HttpServletRequest request ) {
 		ActionResult<List<WrapOutAttendanceScheduleSetting>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		List<WrapOutAttendanceScheduleSetting> wraps = null;
 		List<AttendanceScheduleSetting> attendanceScheduleSettingList = null;
 		Boolean check = true;
@@ -59,9 +59,9 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 				attendanceScheduleSettingList = attendanceScheduleSettingServiceAdv.listAll();
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统查询所有组织排班信息列表时发生异常。");
-				logger.error( "system query all schedule setting list got an exception.", e);
+				Exception exception = new AttendanceScheduleListAllException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check && attendanceScheduleSettingList != null ){
@@ -70,9 +70,9 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 				result.setData(wraps);
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象时发生异常。");
-				logger.error( "system copy schedule setting list to wrap got an exception.", e);
+				Exception exception = new AttendanceScheduleWrapOutException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -85,6 +85,7 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listAttendanceScheduleSettingByDepartment(@Context HttpServletRequest request, @PathParam("name") String name ) {
 		ActionResult<List<WrapOutAttendanceScheduleSetting>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		List<WrapOutAttendanceScheduleSetting> wraps = null;
 		List<String> ids = null;
 		List<AttendanceScheduleSetting> attendanceScheduleSettingList = null;
@@ -93,8 +94,9 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 		if( check ){
 			if( name == null || name.isEmpty() ){
 				check = false;
-				result.error( new Exception("系统传入的参数name为空。") );
-				result.setUserMessage("系统传入的参数name为空。");
+				Exception exception = new AttendanceScheduleNameEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -102,9 +104,9 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 				ids = attendanceScheduleSettingServiceAdv.listByDepartmentName( name );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统根据部门名称查询指定组织排班信息列表时发生异常。");
-				logger.error( "system query schedule setting id list with department name got an exception.name：" + name, e);
+				Exception exception = new AttendanceScheduleListByDepartmentException( e, name );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check && ids != null && !ids.isEmpty() ){
@@ -112,20 +114,20 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 				attendanceScheduleSettingList = attendanceScheduleSettingServiceAdv.list( ids );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统根据ID列表查询指定组织排班信息列表时发生异常。");
-				logger.error( "system query schedule setting with ids got an exception.", e);
+				Exception exception = new AttendanceScheduleListByIdsException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check && attendanceScheduleSettingList != null ){
 			try {
 				wraps = wrapout_copier.copy( attendanceScheduleSettingList );
 				result.setData(wraps);
-			} catch (Exception e) {
+			} catch ( Exception e ) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象时发生异常。");
-				logger.error( "system copy schedule setting list to wrap got an exception.", e);
+				Exception exception = new AttendanceScheduleWrapOutException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -138,6 +140,7 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listAttendanceScheduleSettingByCompany(@Context HttpServletRequest request, @PathParam("name") String name ) {
 		ActionResult<List<WrapOutAttendanceScheduleSetting>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		List<WrapOutAttendanceScheduleSetting> wraps = null;
 		List<String> ids = null;
 		List<AttendanceScheduleSetting> attendanceScheduleSettingList = null;
@@ -146,8 +149,9 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 		if( check ){
 			if( name == null || name.isEmpty() ){
 				check = false;
-				result.error( new Exception("系统传入的参数name为空。") );
-				result.setUserMessage("系统传入的参数name为空。");
+				Exception exception = new AttendanceScheduleNameEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -155,9 +159,9 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 				ids = attendanceScheduleSettingServiceAdv.listByCompanyName( name );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统根据公司名称查询指定组织排班信息列表时发生异常。");
-				logger.error( "system query schedule setting id list with company name got an exception.name：" + name, e);
+				Exception exception = new AttendanceScheduleListByCompanyException( e, name );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check && ids != null && !ids.isEmpty() ){
@@ -165,9 +169,9 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 				attendanceScheduleSettingList = attendanceScheduleSettingServiceAdv.list( ids );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统根据ID列表查询指定组织排班信息列表时发生异常。");
-				logger.error( "system query schedule setting with ids got an exception.", e);
+				Exception exception = new AttendanceScheduleListByIdsException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check && attendanceScheduleSettingList != null ){
@@ -176,9 +180,9 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 				result.setData(wraps);
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象时发生异常。");
-				logger.error( "system copy schedule setting list to wrap got an exception.", e);
+				Exception exception = new AttendanceScheduleWrapOutException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -191,6 +195,7 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get(@Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutAttendanceScheduleSetting> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapOutAttendanceScheduleSetting wrap = null;
 		AttendanceScheduleSetting attendanceScheduleSetting = null;
 		Boolean check = true;
@@ -198,8 +203,9 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("系统传入的参数id为空。") );
-				result.setUserMessage("系统传入的参数id为空。");
+				Exception exception = new AttendanceScheduleIdEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -207,14 +213,15 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 				attendanceScheduleSetting = attendanceScheduleSettingServiceAdv.get( id );
 				if( attendanceScheduleSetting == null ){
 					check = false;
-					result.error( new Exception("根据ID未能查询到任何信息。") );
-					result.setUserMessage("根据ID未能查询到任何信息。");
+					Exception exception = new AttendanceScheduleNotExistsException( id );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统根据ID查询指定组织排班信息列表时发生异常。");
-				logger.error( "system query schedule setting with id got an exception.name：" + id, e);
+				Exception exception = new AttendanceScheduleGetByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -223,22 +230,23 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 				result.setData(wrap);
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象时发生异常。");
-				logger.error( "system copy schedule setting to wrap got an exception.", e);
+				Exception exception = new AttendanceScheduleWrapOutException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "新建或者更新AttendanceScheduleSetting系统设置对象.", request = WrapInAttendanceScheduleSetting.class, response = WrapOutMessage.class)
+	@HttpMethodDescribe(value = "新建或者更新AttendanceScheduleSetting系统设置对象.", request = JsonElement.class, response = WrapOutId.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response post(@Context HttpServletRequest request, WrapInAttendanceScheduleSetting wrapIn) {
+	public Response post(@Context HttpServletRequest request, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		WrapInAttendanceScheduleSetting wrapIn = null;
 		WrapOutId wrapOutId = null;
-		EffectivePerson currentPerson = this.effectivePerson(request);
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapCompany company = null;
 		WrapDepartment department = null;
 		AttendanceScheduleSetting attendanceScheduleSetting = null;
@@ -246,12 +254,13 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 		String identity = null;
 		Boolean check = true;
 		
-		if( check ){
-			if( wrapIn == null ){
-				check = false;
-				result.error( new Exception("系统未获取到需要保存的数据，无法进行数据保存操作。") );
-				result.setUserMessage( "系统未获取到需要保存的数据，无法进行数据保存操作。" );
-			}
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInAttendanceScheduleSetting.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
 		}
 		if( check ){
 			identity = wrapIn.getIdentity();
@@ -262,25 +271,26 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 						companyName = userManagerService.getCompanyNameByIdentity(identity);
 					} catch (Exception e) {
 						check = false;
-						result.error( e );
-						result.setUserMessage( "系统未能根据参数，身份和登录人信息查询到公司信息，无法进行数据保存。" );
-						logger.error( "system query company name by identity got an exception.identity:" + identity, e );
+						Exception exception = new GetCompanyNameByUserIdentityException( e, identity );
+						result.error( exception );
+						logger.error( exception, effectivePerson, request, null);
 					}
 				}
 				if( companyName == null || companyName.isEmpty() ){
 					try {
-						companyName = userManagerService.getCompanyNameByEmployeeName( currentPerson.getName() );
+						companyName = userManagerService.getCompanyNameByEmployeeName( effectivePerson.getName() );
 					} catch (Exception e) {
 						check = false;
-						result.error( e );
-						result.setUserMessage( "系统未能根据参数，身份和登录人信息查询到公司信息，无法进行数据保存。" );
-						logger.error( "system query company name by employee name got an exception.employee:" + currentPerson.getName(), e );
+						Exception exception = new GetCompanyNameByUserIdentityException( e, effectivePerson.getName() );
+						result.error( exception );
+						logger.error( exception, effectivePerson, request, null);
 					}
 				}
 				if( companyName == null || companyName.isEmpty() ){
 					check = false;
-					result.error( new Exception("系统未能根据参数，身份和登录人信息查询到公司信息，无法进行数据保存。") );
-					result.setUserMessage( "系统未能根据参数，身份和登录人信息查询到公司信息，无法进行数据保存。" );
+					Exception exception = new CanNotFindCompanyWithPersonException( effectivePerson.getName() );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}else{
 					wrapIn.setOrganizationName( companyName );
 				}
@@ -289,25 +299,26 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 					department = userManagerService.getDepartmentByName( wrapIn.getOrganizationName() );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "系统未能根据参数，身份和登录人信息查询到部门信息，无法进行数据保存。" );
-					logger.error( "system query department name by parameter organization name got an exception.organization:" + wrapIn.getOrganizationName(), e );
+					Exception exception = new GetDepartmentWithNameException( e, wrapIn.getOrganizationName() );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 				if( department == null ){
 					try {
 						company = userManagerService.getCompanyByName( wrapIn.getOrganizationName() );
 					} catch (Exception e) {
 						check = false;
-						result.error( e );
-						result.setUserMessage( "系统未能根据参数，身份和登录人信息查询到部门信息，无法进行数据保存。" );
-						logger.error( "system query company name by parameter organization name got an exception.organization:" + wrapIn.getOrganizationName(), e );
+						Exception exception = new GetCompanyWithNameException( e, wrapIn.getOrganizationName() );
+						result.error( exception );
+						logger.error( exception, effectivePerson, request, null);
 					}
 					if( company != null ){
 						wrapIn.setCompanyName( company.getName() );
 					}else{
 						check = false;
-						result.error( new Exception("系统未能根据传入的组织名称查询到部门或者公司信息，无法进行数据保存。名称：" + wrapIn.getOrganizationName() ) );
-						result.setUserMessage( "系统未能根据传入的组织名称查询到部门或者公司信息，无法进行数据保存。名称：" + wrapIn.getOrganizationName() );
+						Exception exception = new CanNotFindCompanyWithOrganNameException( wrapIn.getOrganizationName() );
+						result.error( exception );
+						logger.error( exception, effectivePerson, request, null);
 					}
 				}else{
 					wrapIn.setOrganizationName( department.getName() );
@@ -324,9 +335,9 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 				}
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统根据传入的参数组织排班信息对象发生异常。" );
-				logger.error( "system copy wrapin to attendanceScheduleSetting", e );
+				Exception exception = new AttendanceScheduleWrapOutException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -336,21 +347,22 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 				result.setData( wrapOutId );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统保存排班信息对象发生异常。" );
-				logger.error( "system save attendanceScheduleSetting got an exception", e );
+				Exception exception = new AttendanceScheduleSaveException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "根据ID删除AttendanceScheduleSetting系统设置对象.", response = WrapOutMessage.class)
+	@HttpMethodDescribe(value = "根据ID删除AttendanceScheduleSetting系统设置对象.", response = WrapOutId.class)
 	@DELETE
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response delete(@Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapOutId wrapOutId = null;
 		AttendanceScheduleSetting attendanceScheduleSetting = null;
 		Boolean check = true;
@@ -358,8 +370,9 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception( "系统未获取到需要删除的排班配置信息数据ID。" ) );
-				result.setUserMessage( "系统未获取到需要删除的排班配置信息数据ID。" );
+				Exception exception = new AttendanceScheduleIdEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -367,14 +380,15 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 				attendanceScheduleSetting = attendanceScheduleSettingServiceAdv.get( id );
 				if( attendanceScheduleSetting == null ){
 					check = false;
-					result.error( new Exception("根据ID未能查询到任何信息。") );
-					result.setUserMessage("根据ID未能查询到任何信息。");
+					Exception exception = new AttendanceScheduleNotExistsException( id );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统根据ID查询指定组织排班信息列表时发生异常。");
-				logger.error( "system query schedule setting with id got an exception.name：" + id, e);
+				Exception exception = new GetAttendanceScheduleByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -384,9 +398,9 @@ public class AttendanceScheduleSettingAction extends StandardJaxrsAction{
 				result.setData( wrapOutId );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统根据ID删除排班配置数据时发生异常。");
-				logger.error( "system delete attendance schedule setting info got an exception.name：" + id, e);
+				Exception exception = new AttendanceScheduleDeleteException( e, id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);

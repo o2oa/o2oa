@@ -68,6 +68,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadViewSelect();
                     this.loadValidation();
                     this.loadIconSelect();
+                    this.loadImageClipper();
 //			this.loadScriptInput();
                     //MWF.process.widget.EventsEditor
                 }
@@ -309,6 +310,35 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 item.iconName = icon;
             }
         }
+    },
+    loadImageClipper: function(){
+        var nodes = this.propertyContent.getElements(".MWFImageClipper");
+        if (nodes.length){
+            nodes.each(function(node){
+                var id = node.get("name");
+                var selectNode = new Element("div", {"styles": this.form.css.processIconSelectNode, "text": this.form.designer.lp.selectImage}).inject(node);
+                selectNode.addEvent("click", function(){
+                    this.selectImage(node, id);
+                }.bind(this));
+            }.bind(this));
+        }
+    },
+    selectImage: function(node, name){
+        MWF.xDesktop.requireApp("process.FormDesigner", "widget.ImageClipper", function(){
+            var size = this.module.node.getSize();
+            var image = new MWF.xApplication.process.FormDesigner.widget.ImageClipper(this.designer, {
+                "title": this.form.designer.lp.selectImage,
+                "width": (this.data.styles.width) ? size.x : 0,
+                "height": (this.data.styles.height) ? size.y : 0,
+                "onChange": function(){
+                    debugger;
+                    var data = image.data;
+                    this.changeJsonDate(name, data);
+                    this.changeData(name, node, null);
+                }.bind(this)
+            });
+            image.load(this.data[name])
+        }.bind(this));
     },
 	
 	loadEventsEditor: function(){
@@ -726,8 +756,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 		}
 	},
 	setCheckboxValue: function(name, input){
-		
-		var checkboxList = $$("input:[name='"+name+"']");
+        var id = this.module.json.id;
+		var checkboxList = $$("input[name='"+id+name+"']");
 		var values = [];
 		checkboxList.each(function(checkbox){
 			if (checkbox.get("checked")){
@@ -761,7 +791,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 					obj.focus();
 					return false;
 				}else if (this.module.form.json.moduleList[value]){
-					this.designer.notice("error", MWF.APPFD.LP.repetitionsId, this.module.form.designer.propertyContentArea, {x:"right", y:"bottom"});
+					this.designer.notice(MWF.APPFD.LP.repetitionsId, "error", this.module.form.designer.propertyContentArea, {x:"right", y:"bottom"});
 					obj.focus();
 					return false;
 				}else{

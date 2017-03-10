@@ -226,9 +226,49 @@ COMMON.DOM.addReady(function(){
                     }.bind(this));
                     return returnValue;
                 };
+                //layout.getServiceAddress = function(callback){
+                //    var host = layout.config.center.host || window.location.hostname;
+                //    var port = layout.config.center.port;
+                //    var uri = "";
+                //    if (!port || port=="80"){
+                //        uri = "http://"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+                //    }else{
+                //        uri = "http://"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+                //    }
+                //    var currenthost = window.location.hostname;
+                //    uri = uri.replace(/{source}/g, currenthost);
+                //    //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
+                //    MWF.restful("get", uri, null, function(json){
+                //        this.serviceAddressList = json.data;
+                //        if (callback) callback();
+                //    }.bind(this));
+                //};
                 layout.getServiceAddress = function(callback){
-                    var host = layout.config.center.host || window.location.hostname;
-                    var port = layout.config.center.port;
+                    if (typeOf(layout.config.center)=="object"){
+                        this.getServiceAddressConfigObject(callback);
+                    }else if (typeOf(layout.config.center)=="array"){
+                        this.getServiceAddressConfigArray(callback);
+                    }
+
+                };
+                layout.getServiceAddressConfigArray = function(callback) {
+                    var requests = [];
+                    layout.config.center.each(function(center){
+                        requests.push(
+                            this.getServiceAddressConfigObject(function(){
+                                requests.each(function(res){
+                                    if (res.isRunning()){res.cancel();}
+                                });
+                                if (callback) callback();
+                            }.bind(this), center)
+                        );
+                    }.bind(this));
+                };
+                layout.getServiceAddressConfigObject = function(callback, center){
+                    var centerConfig = center;
+                    if (!centerConfig) centerConfig = layout.config.center;
+                    var host = centerConfig.host || window.location.hostname;
+                    var port = centerConfig.port;
                     var uri = "";
                     if (!port || port=="80"){
                         uri = "http://"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
@@ -238,8 +278,9 @@ COMMON.DOM.addReady(function(){
                     var currenthost = window.location.hostname;
                     uri = uri.replace(/{source}/g, currenthost);
                     //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
-                    MWF.restful("get", uri, null, function(json){
+                    return MWF.restful("get", uri, null, function(json){
                         this.serviceAddressList = json.data;
+                        this.centerServer = center;
                         if (callback) callback();
                     }.bind(this));
                 };

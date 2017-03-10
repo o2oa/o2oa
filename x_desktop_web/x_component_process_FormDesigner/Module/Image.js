@@ -47,15 +47,23 @@ MWF.xApplication.process.FormDesigner.Module.Image = MWF.FCImage = new Class({
 		if (name=="src"){
 			if (this.json.src){
 				this.node.src = this.json.src;
-				var tmpImg = new Element("img",{
-					"src": this.json.src
-				}).inject(this.form.node);
-				var size = tmpImg.getSize();
-				this.node.setStyles({
-					"width": ""+size.x+"px",
-					"height": ""+size.y+"px"
-				});
-				tmpImg.destroy();
+                this.setPropertiesOrStyles("styles");
+                if (!this.json.styles.width || !this.json.styles.height){
+                    var tmpImg = new Element("img",{
+                        "src": this.json.src
+                    }).inject(this.form.node);
+                    var size = tmpImg.getSize();
+                    if (!this.json.styles.width){
+                        this.node.setStyles({"width": ""+size.x+"px"});
+                        this.json.styles.width = ""+size.x+"px";
+                    }
+                    if (!this.json.styles.height){
+                        this.node.setStyles({"height": ""+size.y+"px"});
+                        this.json.styles.height = ""+size.y+"px";
+                    }
+                    this.property.maplists["styles"].reload(this.json.styles);
+                    tmpImg.destroy();
+                }
 			}
 		}
 	}

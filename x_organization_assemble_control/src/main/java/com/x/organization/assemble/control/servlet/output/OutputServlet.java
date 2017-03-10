@@ -13,7 +13,6 @@ import javax.persistence.criteria.Root;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,7 +23,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.x.base.core.application.servlet.FileUploadServletTools;
+import com.x.base.core.application.servlet.AbstractServletAction;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -59,7 +58,7 @@ import com.x.organization.core.entity.Role_;
 
 @WebServlet(urlPatterns = "/servlet/output/*")
 @MultipartConfig
-public class OutputServlet extends HttpServlet {
+public class OutputServlet extends AbstractServletAction {
 
 	private static final long serialVersionUID = 5696850299231151065L;
 
@@ -69,7 +68,7 @@ public class OutputServlet extends HttpServlet {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
 				Workbook workbook = new XSSFWorkbook()) {
 			request.setCharacterEncoding("UTF-8");
-			EffectivePerson effectivePerson = FileUploadServletTools.effectivePerson(request);
+			EffectivePerson effectivePerson = this.effectivePerson(request);
 			if (!effectivePerson.isManager()) {
 				throw new Exception("person{name:" + effectivePerson.getName() + "} has sufficient permissions");
 			}
@@ -93,7 +92,7 @@ public class OutputServlet extends HttpServlet {
 			ActionResult<Object> result = new ActionResult<>();
 			result.error(e);
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			FileUploadServletTools.result(response, result);
+			this.result(response, result);
 		}
 	}
 

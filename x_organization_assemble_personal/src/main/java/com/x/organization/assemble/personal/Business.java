@@ -1,6 +1,7 @@
 package com.x.organization.assemble.personal;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.instrument.assemble.express.Instrument;
 import com.x.organization.assemble.personal.factory.PersonFactory;
 
 public class Business {
@@ -22,6 +23,15 @@ public class Business {
 			this.person = new PersonFactory(this);
 		}
 		return person;
+	}
+
+	private Instrument instrument;
+
+	public Instrument instrument() throws Exception {
+		if (null == this.instrument) {
+			this.instrument = new Instrument();
+		}
+		return instrument;
 	}
 
 }

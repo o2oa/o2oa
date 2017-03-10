@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.task;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -15,6 +16,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.NameValueCountPair;
 import com.x.base.core.http.ActionResult;
@@ -25,12 +27,17 @@ import com.x.base.core.http.WrapOutCount;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.WrapOutMap;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
+import com.x.processplatform.assemble.surface.wrapin.content.WrapInFilter;
 import com.x.processplatform.assemble.surface.wrapin.content.WrapInTask;
 import com.x.processplatform.assemble.surface.wrapout.content.WrapOutTask;
 import com.x.processplatform.assemble.surface.wrapout.content.WrapOutWorkLog;
 
 @Path("task")
 public class TaskAction extends StandardJaxrsAction {
+
+	private static Logger logger = LoggerFactory.getLogger(TaskAction.class);
 
 	@HttpMethodDescribe(value = "列示当前用户创建的Task对象,下一页.", response = WrapOutTask.class)
 	@GET
@@ -40,12 +47,12 @@ public class TaskAction extends StandardJaxrsAction {
 	public Response listNext(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count) {
 		ActionResult<List<WrapOutTask>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListNext().execute(effectivePerson, id, count);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -58,12 +65,12 @@ public class TaskAction extends StandardJaxrsAction {
 	public Response listPrev(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count) {
 		ActionResult<List<WrapOutTask>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListPrev().execute(effectivePerson, id, count);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -76,12 +83,12 @@ public class TaskAction extends StandardJaxrsAction {
 	public Response listNextWithApplication(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count, @PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<List<WrapOutTask>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListNextWithApplication().execute(effectivePerson, id, count, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -94,12 +101,12 @@ public class TaskAction extends StandardJaxrsAction {
 	public Response listPrevWithApplication(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count, @PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<List<WrapOutTask>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListPrevWithApplication().execute(effectivePerson, id, count, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -112,12 +119,12 @@ public class TaskAction extends StandardJaxrsAction {
 	public Response listNextWithProcess(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count, @PathParam("processFlag") String processFlag) {
 		ActionResult<List<WrapOutTask>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListNextWithProcess().execute(effectivePerson, id, count, processFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -130,12 +137,12 @@ public class TaskAction extends StandardJaxrsAction {
 	public Response listPrevWithProcess(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count, @PathParam("processFlag") String processFlag) {
 		ActionResult<List<WrapOutTask>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListPrevWithProcess().execute(effectivePerson, id, count, processFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -147,12 +154,12 @@ public class TaskAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutTask> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionGet().execute(effectivePerson, id);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ActionGet().execute(request, effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -164,12 +171,12 @@ public class TaskAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listCountWithApplication(@Context HttpServletRequest request) {
 		ActionResult<List<NameValueCountPair>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListCountWithApplication().execute(effectivePerson);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -182,12 +189,65 @@ public class TaskAction extends StandardJaxrsAction {
 	public Response listCountWithProcess(@Context HttpServletRequest request,
 			@PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<List<NameValueCountPair>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListCountWithProcess().execute(effectivePerson, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+
+	@HttpMethodDescribe(value = "获取可用与filter的分类值", response = NameValueCountPair.class)
+	@GET
+	@Path("filter/attribute")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response getFilterAttribute(@Context HttpServletRequest request) {
+		ActionResult<Map<String, List<NameValueCountPair>>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionFilterAttribute().execute(effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+
+	@HttpMethodDescribe(value = "获取用户对Task的过滤信息,下一页.", response = WrapOutTask.class, request = WrapInFilter.class)
+	@POST
+	@Path("list/{id}/next/{count}/filter")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response listNextWithFilter(@Context HttpServletRequest request, @PathParam("id") String id,
+			@PathParam("count") Integer count, JsonElement jsonElement) {
+		ActionResult<List<WrapOutTask>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListNextFilter().execute(effectivePerson, id, count, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+
+	@HttpMethodDescribe(value = "获取用户对Task的过滤信息,上一页.", response = WrapOutTask.class, request = WrapInFilter.class)
+	@POST
+	@Path("list/{id}/prev/{count}/filter")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response listPrevWithFilter(@Context HttpServletRequest request, @PathParam("id") String id,
+			@PathParam("count") Integer count, JsonElement jsonElement) {
+		ActionResult<List<WrapOutTask>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListPrevFilter().execute(effectivePerson, id, count, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -197,14 +257,15 @@ public class TaskAction extends StandardJaxrsAction {
 	@Path("{id}/processing")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response processing(@Context HttpServletRequest request, @PathParam("id") String id, WrapInTask wrapIn) {
+	public Response processing(@Context HttpServletRequest request, @PathParam("id") String id,
+			JsonElement jsonElement) {
 		ActionResult<List<WrapOutWorkLog>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionProcessing().execute(effectivePerson, id, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ActionProcessing().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -214,14 +275,14 @@ public class TaskAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response update(@Context HttpServletRequest request, @PathParam("id") String id, WrapInTask wrapIn) {
+	public Response update(@Context HttpServletRequest request, @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionUpdate().execute(effectivePerson, id, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ActionUpdate().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -231,14 +292,14 @@ public class TaskAction extends StandardJaxrsAction {
 	@Path("{id}/reset")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response reset(@Context HttpServletRequest request, @PathParam("id") String id, WrapInTask wrapIn) {
+	public Response reset(@Context HttpServletRequest request, @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionReset().execute(effectivePerson, id, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ActionReset().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -250,12 +311,12 @@ public class TaskAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getReference(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutMap> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionReference().execute(effectivePerson, id);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -267,11 +328,12 @@ public class TaskAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response countWithPerson(@Context HttpServletRequest request, @PathParam("credential") String credential) {
 		ActionResult<WrapOutCount> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCountWithPerson().execute(credential);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -284,12 +346,12 @@ public class TaskAction extends StandardJaxrsAction {
 	public Response manageDelete(@Context HttpServletRequest request,
 			@PathParam("applicationFlag") String applicationFlag, @PathParam("id") String id) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ManageDelete().execute(effectivePerson, id, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -299,15 +361,15 @@ public class TaskAction extends StandardJaxrsAction {
 	@Path("{id}/completed/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response manageCompleted(@Context HttpServletRequest request,
-			@PathParam("applicationFlag") String applicationFlag, @PathParam("id") String id, WrapInTask wrapIn) {
+	public Response manageCompleted(@Context HttpServletRequest request, @PathParam("id") String id,
+			JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ManageCompleted().execute(effectivePerson, id, applicationFlag, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ManageCompleted().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -317,14 +379,15 @@ public class TaskAction extends StandardJaxrsAction {
 	@Path("{id}/reset/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response manageReset(@Context HttpServletRequest request, @PathParam("id") String id, WrapInTask wrapIn) {
+	public Response manageReset(@Context HttpServletRequest request, @PathParam("id") String id,
+			JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ManageReset().execute(effectivePerson, id, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ManageReset().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

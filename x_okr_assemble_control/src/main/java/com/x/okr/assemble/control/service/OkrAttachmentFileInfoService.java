@@ -2,9 +2,8 @@ package com.x.okr.assemble.control.service;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
@@ -85,7 +84,7 @@ public class OkrAttachmentFileInfoService{
 					emc.commit();
 				}
 			}catch( Exception e ){
-				logger.error( "OkrAttachmentFileInfo update/ got a error!" );
+				logger.warn( "OkrAttachmentFileInfo update/ got a error!" );
 				throw e;
 			}
 		}else{//没有传入指定的ID
@@ -96,7 +95,7 @@ public class OkrAttachmentFileInfoService{
 				emc.persist( okrAttachmentFileInfo, CheckPersistType.all);	
 				emc.commit();
 			}catch( Exception e ){
-				logger.error( "OkrAttachmentFileInfo create got a error!", e);
+				logger.warn( "OkrAttachmentFileInfo create got a error!", e);
 				throw e;
 			}
 		}
@@ -111,13 +110,13 @@ public class OkrAttachmentFileInfoService{
 	public void delete( String id ) throws Exception {
 		OkrAttachmentFileInfo okrAttachmentFileInfo = null;
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not delete any object." );
+			throw new Exception( "id is null, system can not delete any object." );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			okrAttachmentFileInfo = emc.find(id, OkrAttachmentFileInfo.class);
-			if (null == okrAttachmentFileInfo) {
-				logger.error( "object is not exist {'id':'"+ id +"'}" );
+			if ( null == okrAttachmentFileInfo ) {
+				throw new Exception( "object is not exist {'id':'"+ id +"'}" );
 			}else{
 				emc.beginTransaction( OkrAttachmentFileInfo.class );
 				emc.remove( okrAttachmentFileInfo, CheckRemoveType.all );

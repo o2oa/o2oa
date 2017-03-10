@@ -16,9 +16,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.bean.NameValueCountPair;
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
@@ -26,12 +25,16 @@ import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.WrapOutMap;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.wrapin.content.WrapInFilter;
 import com.x.processplatform.assemble.surface.wrapout.content.WrapOutTaskCompleted;
 import com.x.processplatform.assemble.surface.wrapout.content.WrapOutWorkCompleted;
 
 @Path("workcompleted")
 public class WorkCompletedAction extends ActionBase {
+
+	private static Logger logger = LoggerFactory.getLogger(WorkCompletedAction.class);
 
 	@HttpMethodDescribe(value = "列示当前用户在指定的application下创建的WorkCompleted对象,下一页.", response = WrapOutWorkCompleted.class)
 	@GET
@@ -41,12 +44,12 @@ public class WorkCompletedAction extends ActionBase {
 	public Response listNextWithApplication(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count, @PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<List<WrapOutWorkCompleted>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListNextWithApplication().execute(effectivePerson, id, count, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -59,12 +62,12 @@ public class WorkCompletedAction extends ActionBase {
 	public Response listPrevWithApplication(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count, @PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<List<WrapOutWorkCompleted>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListPrevWithApplication().execute(effectivePerson, id, count, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -76,12 +79,12 @@ public class WorkCompletedAction extends ActionBase {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getComplex(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutMap> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionComplex().execute(id, effectivePerson);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -93,12 +96,12 @@ public class WorkCompletedAction extends ActionBase {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getComplexMobile(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutMap> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionComplexMobile().execute(id, effectivePerson);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -110,12 +113,12 @@ public class WorkCompletedAction extends ActionBase {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getComplexSnapForm(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutMap> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionComplexSnapForm().execute(id, effectivePerson);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -127,12 +130,12 @@ public class WorkCompletedAction extends ActionBase {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getComplexMobileSnapForm(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutMap> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionComplexSnapForm().execute(id, effectivePerson);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -145,13 +148,13 @@ public class WorkCompletedAction extends ActionBase {
 	public Response countWithApplication(@Context HttpServletRequest request) {
 		ActionResult<List<NameValueCountPair>> result = new ActionResult<>();
 		List<NameValueCountPair> wraps = new ArrayList<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListCountWithApplication().execute(effectivePerson);
 			result.setData(wraps);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -165,13 +168,13 @@ public class WorkCompletedAction extends ActionBase {
 			@PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<List<NameValueCountPair>> result = new ActionResult<>();
 		List<NameValueCountPair> wraps = new ArrayList<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListCountWithProcess().execute(effectivePerson, applicationFlag);
 			result.setData(wraps);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -184,12 +187,12 @@ public class WorkCompletedAction extends ActionBase {
 	public Response filterAttribute(@Context HttpServletRequest request,
 			@PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<Map<String, List<NameValueCountPair>>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionFilterAttribute().execute(effectivePerson, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -201,14 +204,14 @@ public class WorkCompletedAction extends ActionBase {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listNextWithFilter(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count, @PathParam("applicationFlag") String applicationFlag,
-			WrapInFilter wrapIn) {
+			JsonElement jsonElement) {
 		ActionResult<List<WrapOutWorkCompleted>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionListNextWithFilter().execute(effectivePerson, id, count, applicationFlag, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ActionListNextWithFilter().execute(effectivePerson, id, count, applicationFlag, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -220,14 +223,14 @@ public class WorkCompletedAction extends ActionBase {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listPrevWithFilter(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count, @PathParam("applicationFlag") String applicationFlag,
-			WrapInFilter wrapIn) {
+			JsonElement jsonElement) {
 		ActionResult<List<WrapOutWorkCompleted>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionListPrevWithFilter().execute(effectivePerson, id, count, applicationFlag, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ActionListPrevWithFilter().execute(effectivePerson, id, count, applicationFlag, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -239,12 +242,12 @@ public class WorkCompletedAction extends ActionBase {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response manageGet(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutWorkCompleted> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ManageGet().execute(effectivePerson, id);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -258,12 +261,12 @@ public class WorkCompletedAction extends ActionBase {
 			@PathParam("applicationFlag") String applicationFlag, @PathParam("id") String id,
 			@PathParam("count") Integer count) {
 		ActionResult<List<WrapOutWorkCompleted>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ManageListNext().execute(effectivePerson, id, count, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -277,12 +280,12 @@ public class WorkCompletedAction extends ActionBase {
 			@PathParam("applicationFlag") String applicationFlag, @PathParam("id") String id,
 			@PathParam("count") Integer count) {
 		ActionResult<List<WrapOutWorkCompleted>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ManageListPrev().execute(effectivePerson, id, count, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -295,12 +298,12 @@ public class WorkCompletedAction extends ActionBase {
 	public Response manageListCountWithProcess(@Context HttpServletRequest request,
 			@PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<List<NameValueCountPair>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ManageListCountWithProcess().execute(effectivePerson, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -313,12 +316,12 @@ public class WorkCompletedAction extends ActionBase {
 	public Response manageGetAssignment(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count) {
 		ActionResult<WrapOutMap> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ManageGetAssignment().execute(effectivePerson, id);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -330,12 +333,12 @@ public class WorkCompletedAction extends ActionBase {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response manageDelete(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<List<WrapOutId>> result = new ActionResult<>();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
 			result = new ManageDelete().execute(effectivePerson, id);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -348,12 +351,12 @@ public class WorkCompletedAction extends ActionBase {
 	public Response manageFilterAttribute(@Context HttpServletRequest request,
 			@PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<Map<String, List<NameValueCountPair>>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ManageFilterAttribute().execute(effectivePerson, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -365,14 +368,14 @@ public class WorkCompletedAction extends ActionBase {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response manageListNextWithFilter(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count, @PathParam("applicationFlag") String applicationFlag,
-			WrapInFilter wrapIn) {
+			JsonElement jsonElement) {
 		ActionResult<List<WrapOutWorkCompleted>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ManageListNextFilter().execute(effectivePerson, id, count, applicationFlag, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ManageListNextFilter().execute(effectivePerson, id, count, applicationFlag, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -384,14 +387,14 @@ public class WorkCompletedAction extends ActionBase {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response manageListPrevWithFilter(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count, @PathParam("applicationFlag") String applicationFlag,
-			WrapInFilter wrapIn) {
+			JsonElement jsonElement) {
 		ActionResult<List<WrapOutWorkCompleted>> result = new ActionResult<>();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ManageListPrevFilter().execute(effectivePerson, id, count, applicationFlag, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try  {
+			result = new ManageListPrevFilter().execute(effectivePerson, id, count, applicationFlag, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

@@ -15,13 +15,14 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.cms.core.entity.element.QueryView.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:17:48 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 13:46:13 CST 2017")
 public class QueryView_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<QueryView,String> afterCalculateGridScriptText;
     public static volatile SingularAttribute<QueryView,String> afterGridScriptText;
     public static volatile SingularAttribute<QueryView,String> afterGroupGridScriptText;
     public static volatile SingularAttribute<QueryView,String> alias;
     public static volatile SingularAttribute<QueryView,String> appId;
+    public static volatile SingularAttribute<QueryView,String> appName;
     public static volatile ListAttribute<QueryView,String> availableCompanyList;
     public static volatile ListAttribute<QueryView,String> availableDepartmentList;
     public static volatile ListAttribute<QueryView,String> availableIdentityList;
@@ -31,6 +32,7 @@ public class QueryView_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<QueryView,String> creatorPerson;
     public static volatile SingularAttribute<QueryView,String> data;
     public static volatile SingularAttribute<QueryView,String> description;
+    public static volatile SingularAttribute<QueryView,Boolean> display;
     public static volatile SingularAttribute<QueryView,String> icon;
     public static volatile SingularAttribute<QueryView,String> id;
     public static volatile SingularAttribute<QueryView,String> lastUpdatePerson;

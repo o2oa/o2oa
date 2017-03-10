@@ -76,6 +76,7 @@ MWF.xApplication.SelecterTest.Main = new Class({
         this.createButton1("选择身份", "Identity");
         this.createButton1("选择部门", "Department");
         this.createButton1("选择公司", "Company");
+        this.createButton3("复合选择")
 
         new Element("p").inject(this.sel1Content);
 
@@ -88,6 +89,58 @@ MWF.xApplication.SelecterTest.Main = new Class({
 
 
         this.currentButton = null;
+    },
+    createButton3: function(text){
+        var button = new Element("input", {
+        "type": "button",
+        "value": text,
+        "events": {
+            "click": function(e) {
+                var options = {
+                    "types": ["company","group","department", "identity","person"],
+                    "names": [],
+                    "count": 0,
+                    "departments": ["公司领导","工程部"],
+                    "groups" : ["工作组"],
+                    "companys": ["兰德纵横"],
+                    "personNames" : ["王艳琴"],
+                    "identityNames": ["李杰(人力资源部)","林玲(人力资源部)"],
+                    "departmentNames": ["公司领导","工程部"],
+                    "groupNames" : ["工作组"],
+                    "companyValues": ["2cd4ef06-6105-4c85-b0d9-9e9aa806558d"],
+                    "onComplete": function (items, itemsObject) {
+                        debugger;
+                        var values = {};
+                        for( var key in itemsObject ){
+                            var item = itemsObject[key];
+                            var value = [];
+                            item.each( function(it){
+                                value.push({
+                                    id : it.id,
+                                    name: it.name
+                                })
+                            })
+                            values[ key + "Value" ] = value;
+                        }
+                    }.bind(this),
+                    "onCancel": function () {
+
+                    }.bind(this),
+                    "onLoad": function () {
+                        // if (this.descriptionNode) this.descriptionNode.setStyle("display", "none");
+                    }.bind(this),
+                    "onClose": function () {
+                        // var v = this.node.getFirst().get("value");
+                        // if (!v || !v.length) if (this.descriptionNode)  this.descriptionNode.setStyle("display", "block");
+
+                    }.bind(this)
+                };
+
+                //if (layout.mobile) options.style = "mobile";
+
+                //var selector = new MWF.OrgSelector(this.form.node.getParent(), options);
+                var selector = new MWF.OrgSelector(this.content, options);
+            }.bind(this)}}).inject(this.sel1Content);
     },
 
     createButton1: function(text, type){

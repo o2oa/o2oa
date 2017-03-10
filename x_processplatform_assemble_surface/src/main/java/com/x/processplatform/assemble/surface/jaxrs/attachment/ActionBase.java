@@ -6,6 +6,6 @@ import com.x.processplatform.assemble.surface.wrapout.content.WrapOutAttachment;
 import com.x.processplatform.core.entity.content.Attachment;
 
 abstract class ActionBase {
-	protected static BeanCopyTools<Attachment, WrapOutAttachment> attachmentOutCopier = BeanCopyToolsBuilder
+	static BeanCopyTools<Attachment, WrapOutAttachment> attachmentOutCopier = BeanCopyToolsBuilder
 			.create(Attachment.class, WrapOutAttachment.class, null, WrapOutAttachment.Excludes);
 }

@@ -6,17 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.x.okr.assemble.common.date.DateOperation;
 import com.x.okr.assemble.common.excel.reader.IRowReader;
 import com.x.okr.assemble.control.ThisApplication;
 
 
 public class WorkImportExcelReader implements IRowReader{
-	
-	private Logger logger = LoggerFactory.getLogger( WorkImportExcelReader.class );
 	
 	/* 业务逻辑实现方法
 	 * @see com.eprosun.util.excel.IRowReader#getRows(int, int, java.util.List)
@@ -34,11 +29,9 @@ public class WorkImportExcelReader implements IRowReader{
 			}
 		}
 		
-		logger.debug( ">>>>>>>>>>>>>>>>>>>>>>EXCEL数据解析第"+curRow+"行:"+sb.toString() );
 		if( curRow < startRow ){
 			return;
 		}
-		//logger.debug( ">>>>>>>>>>>>>>>>>>>>>>系统正在从EXCEL解析第"+curRow+"行数据......" );
 		
 		CacheImportFileStatus cacheImportFileStatus = getCacheMap( fileKey );
 		
@@ -95,7 +88,16 @@ public class WorkImportExcelReader implements IRowReader{
 //				}
 				if( colmlist != null && colmlist.size() > 0 ){
 					completeDateLimitStr = colmlist.get(0).trim();     //工作完成时限-字符串，显示用：yyyy-mm-dd
-					cacheImportRowDetail.setCompleteDateLimitStr(completeDateLimitStr);
+					try{
+						completeDateLimit = dateOperation.getDateFromString( completeDateLimitStr );
+						cacheImportRowDetail.setCompleteDateLimit(completeDateLimit);
+						
+						completeDateLimitStr = dateOperation.getDateStringFromDate( completeDateLimit,  "yyyy-MM-dd" );
+						cacheImportRowDetail.setCompleteDateLimitStr(completeDateLimitStr);
+					}catch(Exception e){
+						checkSuccess = false;
+						cacheImportRowDetail.setDescription( "工作完成时限不是正常的日期格式：" + completeDateLimitStr );
+					}
 				}
 				if( colmlist != null && colmlist.size() > 1 ){
 					reportCycle = colmlist.get(1).trim();              //汇报周期:不需要汇报|每月汇报|每周汇报
@@ -227,15 +229,15 @@ public class WorkImportExcelReader implements IRowReader{
 					}
 				}
 				
-				if( checkSuccess ){
-					try{
-						completeDateLimit = dateOperation.getDateFromString( completeDateLimitStr );
-						cacheImportRowDetail.setCompleteDateLimit(completeDateLimit);
-					}catch(Exception e){
-						checkSuccess = false;
-						cacheImportRowDetail.setDescription( "工作完成时限不是正常的日期格式：" + completeDateLimitStr );
-					}
-				}
+//				if( checkSuccess ){
+//					try{
+//						completeDateLimit = dateOperation.getDateFromString( completeDateLimitStr );
+//						cacheImportRowDetail.setCompleteDateLimit(completeDateLimit);
+//					}catch(Exception e){
+//						checkSuccess = false;
+//						cacheImportRowDetail.setDescription( "工作完成时限不是正常的日期格式：" + completeDateLimitStr );
+//					}
+//				}
 				
 				if( checkSuccess ){
 					cacheImportRowDetail.setCheckStatus( "success" );         //设置数据检查状态为正常

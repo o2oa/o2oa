@@ -1,6 +1,5 @@
 package com.x.organization.assemble.control.jaxrs.person;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,8 +16,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
@@ -26,7 +23,6 @@ import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapInString;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
-import com.x.organization.assemble.control.Business;
 import com.x.organization.assemble.control.wrapin.WrapInPerson;
 import com.x.organization.assemble.control.wrapout.WrapOutPerson;
 
@@ -40,11 +36,8 @@ public class PersonAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutPerson> result = new ActionResult<>();
-		WrapOutPerson wrap = null;
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			wrap = new ActionGet().execute(business, id);
-			result.setData(wrap);
+		try {
+			result = new ActionGet().execute(id);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -58,12 +51,9 @@ public class PersonAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response create(@Context HttpServletRequest request, WrapInPerson wrapIn) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		WrapOutId wrap = null;
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+		try {
 			EffectivePerson effectivePerson = this.effectivePerson(request);
-			Business business = new Business(emc);
-			wrap = new ActionCreate().execute(business, effectivePerson, wrapIn);
-			result.setData(wrap);
+			result = new ActionCreate().execute(effectivePerson, wrapIn);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -78,12 +68,9 @@ public class PersonAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response put(@Context HttpServletRequest request, @PathParam("id") String id, WrapInPerson wrapIn) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		WrapOutId wrap = null;
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+		try {
 			EffectivePerson effectivePerson = this.effectivePerson(request);
-			Business business = new Business(emc);
-			wrap = new ActionUpdate().execute(business, effectivePerson, id, wrapIn);
-			result.setData(wrap);
+			result = new ActionUpdate().execute(effectivePerson, id, wrapIn);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -98,12 +85,9 @@ public class PersonAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response delete(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		WrapOutId wrap = null;
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+		try {
 			EffectivePerson effectivePerson = this.effectivePerson(request);
-			Business business = new Business(emc);
-			wrap = new ActionDelete().execute(business, effectivePerson, id);
-			result.setData(wrap);
+			result = new ActionDelete().execute(effectivePerson, id);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -116,12 +100,11 @@ public class PersonAction extends StandardJaxrsAction {
 	@Path("list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response standardListNext(@Context HttpServletRequest request, @PathParam("id") String id,
+	public Response listNext(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count) {
 		ActionResult<List<WrapOutPerson>> result = new ActionResult<>();
 		try {
-			result = this.standardListNext(ActionBase.outCopier, id, count, "sequence", null, null, null, null, null,
-					null, null, true, DESC);
+			result = new ActionListNext().execute(id, count);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -134,12 +117,11 @@ public class PersonAction extends StandardJaxrsAction {
 	@Path("list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response standardListPrev(@Context HttpServletRequest request, @PathParam("id") String id,
+	public Response listPrev(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count) {
 		ActionResult<List<WrapOutPerson>> result = new ActionResult<>();
 		try {
-			result = this.standardListPrev(ActionBase.outCopier, id, count, "sequence", null, null, null, null, null,
-					null, null, true, DESC);
+			result = new ActionListPrev().execute(id, count);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -154,11 +136,8 @@ public class PersonAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listSubDirectWithGroup(@Context HttpServletRequest request, @PathParam("groupId") String groupId) {
 		ActionResult<List<WrapOutPerson>> result = new ActionResult<>();
-		List<WrapOutPerson> wraps = new ArrayList<WrapOutPerson>();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			wraps = new ActionListSubDirectWithGroup().execute(business, groupId);
-			result.setData(wraps);
+		try {
+			result = new ActionListSubDirectWithGroup().execute(groupId);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -173,11 +152,8 @@ public class PersonAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listSubNestedWithGroup(@Context HttpServletRequest request, @PathParam("groupId") String groupId) {
 		ActionResult<List<WrapOutPerson>> result = new ActionResult<>();
-		List<WrapOutPerson> wraps = new ArrayList<WrapOutPerson>();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			wraps = new ActionListSubNestedWithGroup().execute(business, groupId);
-			result.setData(wraps);
+		try {
+			result = new ActionListSubNestedWithGroup().execute(groupId);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -192,11 +168,8 @@ public class PersonAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listPinyinInitial(@Context HttpServletRequest request, @PathParam("key") String key) {
 		ActionResult<List<WrapOutPerson>> result = new ActionResult<>();
-		List<WrapOutPerson> wraps = new ArrayList<>();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			wraps = new ActionListPinyinInitial().execute(business, key);
-			result.setData(wraps);
+		try {
+			result = new ActionListPinyinInitial().execute(key);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -211,11 +184,8 @@ public class PersonAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listLike(@Context HttpServletRequest request, @PathParam("key") String key) {
 		ActionResult<List<WrapOutPerson>> result = new ActionResult<>();
-		List<WrapOutPerson> wraps = new ArrayList<>();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			wraps = new ActionListLike().execute(business, key);
-			result.setData(wraps);
+		try {
+			result = new ActionListLike().execute(key);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -230,11 +200,8 @@ public class PersonAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listLikePinyin(@Context HttpServletRequest request, @PathParam("key") String key) {
 		ActionResult<List<WrapOutPerson>> result = new ActionResult<>();
-		List<WrapOutPerson> wraps = new ArrayList<>();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			wraps = new ActionListLikePinyin().execute(business, key);
-			result.setData(wraps);
+		try {
+			result = new ActionListLikePinyin().execute(key);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -250,12 +217,9 @@ public class PersonAction extends StandardJaxrsAction {
 	public Response setPassword(@Context HttpServletRequest request, @PathParam("name") String name,
 			WrapInString wrapIn) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		WrapOutId wrap = null;
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+		try {
 			EffectivePerson effectivePerson = this.effectivePerson(request);
-			Business business = new Business(emc);
-			wrap = new ActionSetPassword().execute(business, effectivePerson, name, wrapIn);
-			result.setData(wrap);
+			result = new ActionSetPassword().execute(effectivePerson, name, wrapIn);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);

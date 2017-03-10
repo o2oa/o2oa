@@ -11,10 +11,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.x.base.core.exception.ExceptionWhen;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.annotation.MethodDescribe;
 import com.x.okr.assemble.control.AbstractFactory;
 import com.x.okr.assemble.control.Business;
@@ -67,9 +66,8 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 	 */
 	@MethodDescribe( "根据用户姓名，列示有权限访问的所有具体工作Id列表" )
 	public List<String> listDistinctWorkIdsByIdentity( String userIdentity, String centerId, List<String> statuses ) throws Exception {
-		
 		if( userIdentity == null || userIdentity.isEmpty() ){
-			logger.error( "userIdentity is null!" );
+			logger.warn( "userIdentity is null!" );
 			return null;
 		}
 		
@@ -102,6 +100,7 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		Predicate p_creator_or_depoloyer = cb.equal( root.get( OkrWorkPerson_.employeeIdentity ), userIdentity );
 		p_creator_or_depoloyer = cb.and( p_creator_or_depoloyer, root.get(OkrWorkPerson_.processIdentity ).in( identityList_1 ) );
 		
+		identityList_2.add( "观察者" );
 		identityList_2.add( "协助者" );
 		identityList_2.add( "责任者" );
 		identityList_2.add( "阅知者" );
@@ -116,14 +115,39 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList();
 	}
 	
+	/**
+	 * 根据用户姓名，列示有权限访问的所有具体工作Id列表
+	 * @param name
+	 * @param statuses 需要显示的信息状态: 正常|已删除
+	 * @return
+	 * @throws Exception
+	 */
+	@MethodDescribe( "根据用户姓名，列示有权限访问的所有具体工作Id列表" )
+	public List<String> listDistinctWorkIdsWithMe( String userIdentity, String centerId ) throws Exception {
+		if( userIdentity == null || userIdentity.isEmpty() ){
+			logger.warn( "userIdentity is null!" );
+			return null;
+		}
+		EntityManager em = this.entityManagerContainer().get( OkrWorkPerson.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<OkrWorkPerson> root = cq.from( OkrWorkPerson.class);
+		cq.distinct(true).select( root.get( OkrWorkPerson_.workId ) );
+		Predicate p =  cb.equal( root.get( OkrWorkPerson_.employeeIdentity ), userIdentity );
+		if( centerId != null && !centerId.isEmpty() ){
+			p = cb.and( p, cb.equal( root.get( OkrWorkPerson_.centerId ), centerId ));
+		}				
+		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList();
+	}
+	
 	@MethodDescribe( "根据用户姓名和处理者身份，列示有权限访问的所有具体工作Id列表" )
 	public List<String> listDistinctWorkIdsByPerson( String name, String processIdentity ) throws Exception {
 		if( name == null || name.isEmpty() ){
-			logger.error( "name is null!" );
+			logger.warn( "name is null!" );
 			return null;
 		}
 		if( processIdentity == null || processIdentity.isEmpty() ){
-			logger.error( "processIdentity is null!" );
+			logger.warn( "processIdentity is null!" );
 			return null;
 		}
 		EntityManager em = this.entityManagerContainer().get( OkrWorkPerson.class );
@@ -138,16 +162,15 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 	}
 	
 	@MethodDescribe( "根据用户姓名和处理者身份，列示有权限访问的所有具体工作Id列表" )
-	public List<String> listDistinctWorkIdsByPersonIndentity( String identity, String processIdentity, List<String> notInCenterIds ) throws Exception {
+	public List<String> listDistinctWorkIdsByPersonIndentity( String centerId, String identity, String processIdentity, List<String> notInCenterIds ) throws Exception {
 		if( identity == null || identity.isEmpty() ){
-			logger.error( "identity is null!" );
+			logger.warn( "identity is null!" );
 			return null;
 		}
 		if( processIdentity == null || processIdentity.isEmpty() ){
-			logger.error( "processIdentity is null!" );
+			logger.warn( "processIdentity is null!" );
 			return null;
 		}
-		
 		EntityManager em = this.entityManagerContainer().get( OkrWorkPerson.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
@@ -159,6 +182,9 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		if( notInCenterIds != null && !notInCenterIds.isEmpty() ){
 			p = cb.and( p, cb.not(root.get(OkrWorkPerson_.centerId).in(notInCenterIds)));
 		}
+		if( centerId != null && !centerId.isEmpty() ){
+			p = cb.and( p, cb.equal( root.get(OkrWorkPerson_.centerId), centerId ));
+		}
 		p = cb.and( p, cb.equal( root.get(OkrWorkPerson_.employeeIdentity), identity ));
 		p = cb.and( p, cb.equal( root.get(OkrWorkPerson_.processIdentity), processIdentity ));
 		p = cb.and( p, cb.equal( root.get(OkrWorkPerson_.status), "正常" ));
@@ -169,7 +195,7 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 	@MethodDescribe( "根据用户姓名，列示有权限访问的所有中心工作Id列表" )
 	public List<String> listDistinctCenterIdsByPerson(String name, List<String> statuses) throws Exception {
 		if( name == null || name.isEmpty() ){
-			logger.error( "name is null!" );
+			logger.warn( "name is null!" );
 			return null;
 		}
 		EntityManager em = this.entityManagerContainer().get( OkrWorkPerson.class );
@@ -187,11 +213,11 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 	@MethodDescribe( "根据用户姓名和处理者身份，列示有权限访问的所有中心工作Id列表" )
 	public List<String> listDistinctCenterIdsByPerson( String name, String processIdentity, List<String> statuses ) throws Exception {
 		if( name == null || name.isEmpty() ){
-			logger.error( "name is null!" );
+			logger.warn( "name is null!" );
 			return null;
 		}
 		if( processIdentity == null || processIdentity.isEmpty() ){
-			logger.error( "processIdentity is null!" );
+			logger.warn( "processIdentity is null!" );
 			return null;
 		}
 		EntityManager em = this.entityManagerContainer().get( OkrWorkPerson.class );
@@ -210,11 +236,11 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 	@MethodDescribe( "根据用户身份和处理者身份，列示有权限访问的所有中心工作Id列表" )
 	public List<String> listDistinctCenterIdsByPersonIdentity( String identity, String processIdentity, List<String> statuses ) throws Exception {
 		if( identity == null || identity.isEmpty() ){
-			logger.error( "identity is null!" );
+			logger.warn( "identity is null!" );
 			return null;
 		}
 		if( processIdentity == null || processIdentity.isEmpty() ){
-			logger.error( "processIdentity is null!" );
+			logger.warn( "processIdentity is null!" );
 			return null;
 		}
 		EntityManager em = this.entityManagerContainer().get( OkrWorkPerson.class );
@@ -233,7 +259,7 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 	@MethodDescribe( "根据部门名称，列示有权限访问的所有中心工作Id列表" )
 	public List<String> listDistinctCenterIdsByOrganizationName( String name, List<String> statuses ) throws Exception {
 		if( name == null || name.isEmpty() ){
-			logger.error( "name is null!" );
+			logger.warn( "name is null!" );
 			return null;
 		}
 		EntityManager em = this.entityManagerContainer().get( OkrWorkPerson.class );
@@ -251,7 +277,7 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 	@MethodDescribe( "根据部门列表，列示有权限访问的所有中心工作Id列表" )
 	public List<String> listDistinctCenterIdsByOrganizationNames( List<String> names, List<String> statuses ) throws Exception {
 		if( names == null || names.size() == 0 ){
-			logger.error( "names is null!" );
+			logger.warn( "names is null!" );
 			return null;
 		}
 		EntityManager em = this.entityManagerContainer().get( OkrWorkPerson.class );
@@ -269,7 +295,7 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 	@MethodDescribe( "根据公司名称，列示有权限访问的所有中心工作Id列表" )
 	public List<String> listDistinctCenterIdsByCompanyName( String name, List<String> statuses ) throws Exception {
 		if( name == null || name.isEmpty() ){
-			logger.error( "name is null!" );
+			logger.warn( "name is null!" );
 			return null;
 		}
 		EntityManager em = this.entityManagerContainer().get( OkrWorkPerson.class );
@@ -293,7 +319,7 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 	@MethodDescribe( "根据中心工作ID，查询所有的干系人身份" )
 	public List<String> listDistinctIdentityNameByCenterId( String centerId, String identity ) throws Exception {
 		if( centerId == null || centerId.isEmpty() ){
-			logger.error( "centerId is null!" );
+			logger.warn( "centerId is null!" );
 			return null;
 		}
 		EntityManager em = this.entityManagerContainer().get( OkrWorkPerson.class );
@@ -311,7 +337,7 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 	@MethodDescribe( "根据公司列表，列示有权限访问的所有中心工作Id列表" )
 	public List<String> listDistinctCenterIdsByCompanyNames( List<String> names, List<String> statuses ) throws Exception {
 		if( names == null || names.size() == 0 ){
-			logger.error( "names is null!" );
+			logger.warn( "names is null!" );
 			return null;
 		}
 		EntityManager em = this.entityManagerContainer().get( OkrWorkPerson.class );
@@ -335,7 +361,7 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 	 */
 	public List<String> getWorkPerson( String workId, String identity, List<String> statuses ) throws Exception {
 		if( workId == null || workId.isEmpty() ){
-			logger.error( "id is null!" );
+			logger.warn( "id is null!" );
 			return null;
 		}
 		EntityManager em = this.entityManagerContainer().get( OkrWorkPerson.class );
@@ -363,7 +389,7 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 	 */
 	public List<String> listWorkByCenterAndIdentity( String centerId, String employeeIdentity, String identity, List<String> statuses ) throws Exception {
 		if( employeeIdentity == null || employeeIdentity.isEmpty() ){
-			logger.error( "employeeIdentity is null!" );
+			logger.warn( "employeeIdentity is null!" );
 			return null;
 		}
 		EntityManager em = this.entityManagerContainer().get( OkrWorkPerson.class );
@@ -395,7 +421,7 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 	 */
 	public List<String> listByWorkAndIdentity( String centerId, String workId, String employeeIdentity, String identity, List<String> statuses ) throws Exception {
 		if( employeeIdentity == null || employeeIdentity.isEmpty() ){
-			logger.error( "employeeIdentity is null!" );
+			logger.warn( "employeeIdentity is null!" );
 			return null;
 		}
 		EntityManager em = this.entityManagerContainer().get( OkrWorkPerson.class );
@@ -404,6 +430,41 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		Root< OkrWorkPerson > root = cq.from( OkrWorkPerson.class);
 		cq.select( root.get( OkrWorkPerson_.id ) );
 		Predicate p = cb.equal( root.get( OkrWorkPerson_.employeeIdentity ), employeeIdentity );
+		if( centerId != null && !centerId.isEmpty()){
+			p = cb.and(p, cb.equal(root.get( OkrWorkPerson_.centerId ), centerId ));
+		}
+		if( workId != null && !workId.isEmpty()){
+			p = cb.and(p, cb.equal(root.get( OkrWorkPerson_.workId ), workId ));
+		}
+		if( identity != null && !identity.isEmpty()){
+			p = cb.and(p, cb.equal( root.get( OkrWorkPerson_.processIdentity ), identity ));
+		}
+		if( statuses != null && statuses.size() > 0 ){
+			p = cb.and( p, root.get( OkrWorkPerson_.status ).in( statuses ) );
+		}
+		return em.createQuery( cq.where(p) ).getResultList();
+	}
+	
+	/**
+	 * 根据中心工作ID，工作ID和员工姓名来查询已经存在的工作干系人信息
+	 * @param centerId
+	 * @param workId
+	 * @param employeeName
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<String> listDistinctWorkIdsByWorkAndIdentity( String centerId, String workId, String employeeIdentity, String identity, List<String> statuses ) throws Exception {
+		if( employeeIdentity == null || employeeIdentity.isEmpty() ){
+			logger.warn( "employeeIdentity is null!" );
+			return null;
+		}
+		EntityManager em = this.entityManagerContainer().get( OkrWorkPerson.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root< OkrWorkPerson > root = cq.from( OkrWorkPerson.class);
+		cq.distinct(true).select( root.get( OkrWorkPerson_.workId ) );
+		Predicate p = cb.equal( root.get( OkrWorkPerson_.employeeIdentity ), employeeIdentity );
+		p = cb.and(p, cb.isNotNull( root.get( OkrWorkPerson_.workId ) ));
 		if( centerId != null && !centerId.isEmpty()){
 			p = cb.and(p, cb.equal(root.get( OkrWorkPerson_.centerId ), centerId ));
 		}
@@ -429,11 +490,11 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 	 */
 	public List<String> listUserIndentityByWorkId( String centerId, String workId, String processIdentity, List<String> statuses ) throws Exception {
 		if( centerId == null || centerId.isEmpty() ){
-			logger.error( "centerId is null!" );
+			logger.warn( "centerId is null!" );
 			return null;
 		}
 		if( workId == null || workId.isEmpty() ){
-			logger.error( "workId is null!" );
+			logger.warn( "workId is null!" );
 			return null;
 		}
 		EntityManager em = this.entityManagerContainer().get( OkrWorkPerson.class );
@@ -478,6 +539,29 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 	}
 	
 	/**
+	 * 根据工作信息ID，和处理身份, 获取工作干系人信息ID列表
+	 * @param workId
+	 * @return
+	 * @throws Exception 
+	 */
+	@MethodDescribe( "根据工作信息ID，和处理身份, 获取工作干系人信息ID列表" )
+	public List<String> listByWorkIdAndProcessIdentity( String workId, String processIdentity, List<String> statuses ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrWorkPerson.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<OkrWorkPerson> root = cq.from( OkrWorkPerson.class);
+		Predicate p = cb.equal( root.get(OkrWorkPerson_.workId), workId );
+		if( processIdentity != null && !processIdentity.isEmpty() ){
+			p = cb.and( p, cb.equal( root.get(OkrWorkPerson_.processIdentity), processIdentity) );
+		}
+		if( statuses != null && statuses.size() > 0 ){
+			p = cb.and( p, root.get(OkrWorkPerson_.status ).in( statuses ) );
+		}
+		cq.select(root.get( OkrWorkPerson_.id) );
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+	
+	/**
 	 * 根据工作信息ID，获取工作干系人信息ID列表
 	 * @param workId
 	 * @return
@@ -497,7 +581,6 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 			p = cb.and( p, root.get(OkrWorkPerson_.status ).in( statuses ) );
 		}
 		cq.select(root.get( OkrWorkPerson_.id) );
-		//System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>"+em.createQuery(cq.where(p)).toString());
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 	
@@ -533,7 +616,7 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 	 * @throws Exception
 	 */
 	@MethodDescribe( "根据中心工作ID，获取该中心工作信息（不包括下级工作信息）所有的干系人信息" )
-	public List<String> listIdsForCenterWorkByCenterId( String centerId, String processIdentity, List<String> statuses ) throws Exception {
+	public List<String> listIdsForCenterWorkByCenterId( String centerId, String employeeIdentity, String processIdentity, List<String> statuses ) throws Exception {
 		if( centerId == null || centerId.isEmpty() ){
 			throw new Exception( "center is null" );
 		}
@@ -545,8 +628,11 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		p = cb.and( p, 
 				cb.or(  cb.isNull( root.get( OkrWorkPerson_.workId ) ), 
 						cb.equal( root.get( OkrWorkPerson_.workId ), "") 
-					 )
-				);
+				)
+		);
+		if( employeeIdentity != null && !employeeIdentity.isEmpty() ){
+			p = cb.and( p, cb.equal( root.get( OkrWorkPerson_.employeeIdentity ), employeeIdentity));
+		}
 		if( processIdentity != null && !processIdentity.isEmpty() ){
 			p = cb.and( p, cb.equal( root.get( OkrWorkPerson_.processIdentity ), processIdentity));
 		}
@@ -613,7 +699,8 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 	}
 
 	
-	public List<OkrWorkPerson> listNextWithFilter(String id, Integer count, Object sequence, WrapInFilter wrapIn) throws Exception {
+	@SuppressWarnings("unchecked")
+	public List<OkrWorkPerson> listNextWithFilter( String id, Integer count, Object sequence, WrapInFilter wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get(OkrWorkPerson.class);
 		String order = wrapIn.getOrder(); // 排序方式
@@ -630,15 +717,15 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 			index++;
 		}
 		//对象类别，是中心工作，还是普通工作，如果是中心工作，那么普通的工作ID应该是为空的
-		if (null != wrapIn.getInfoType() && "CENTERWORK".equals( wrapIn.getInfoType() )) {
-			sql_stringBuffer.append( " and ( o.workId is null or o.workId = '' ) " );
+		if ( null != wrapIn.getInfoType() && "CENTERWORK".equals( wrapIn.getInfoType() ) ) {
+			sql_stringBuffer.append( " and o.recordType = '中心工作' " );
 			if (null != wrapIn.getWorkTitle() && !wrapIn.getWorkTitle().isEmpty() ) {
 				sql_stringBuffer.append( " and o.centerTitle like  ?" + (index) );
 				vs.add( "%"+wrapIn.getWorkTitle()+"%" );
 				index++;
 			}
-		} else if (null != wrapIn.getInfoType() && "WORK".equals( wrapIn.getInfoType() )) {
-			sql_stringBuffer.append( " and o.workId is not null and o.workId <> '' " );
+		} else{
+			sql_stringBuffer.append( " and o.recordType = '具体工作' " );
 			if (null != wrapIn.getWorkTitle() && !wrapIn.getWorkTitle().isEmpty() ) {
 				sql_stringBuffer.append( " and o.workTitle like  ?" + (index) );
 				vs.add( "%"+wrapIn.getWorkTitle()+"%" );
@@ -717,13 +804,16 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		
 		Query query = em.createQuery( sql_stringBuffer.toString(), OkrWorkPerson.class);
 		// 为查询设置所有的参数值
+		//System.out.println( ">>>>>>>>>SQL:[" + sql_stringBuffer.toString() +"]" );
 		for (int i = 0; i < vs.size(); i++) {
 			query.setParameter(i + 1, vs.get(i));
+			//System.out.println( ">>>>>>>>>Parameter_" + (i + 1 )+ ":[" + vs.get(i) + "]" );
 		}
-		return query.setMaxResults(count).getResultList();
+		return query.setMaxResults( count ).getResultList();
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public List<OkrWorkPerson> listPrevWithFilter( String id, Integer count, Object sequence, WrapInFilter wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get(OkrWorkPerson.class);
@@ -741,15 +831,15 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 			index++;
 		}
 		//对象类别，是中心工作，还是普通工作，如果是中心工作，那么普通的工作ID应该是为空的
-		if (null != wrapIn.getInfoType() && "CENTERWORK".equals( wrapIn.getInfoType() )) {
-			sql_stringBuffer.append( " and ( o.workId is null or o.workId = '' ) " );
+		if ( null != wrapIn.getInfoType() && "CENTERWORK".equals( wrapIn.getInfoType() ) ) {
+			sql_stringBuffer.append( " and o.recordType = '中心工作' " );
 			if (null != wrapIn.getWorkTitle() && !wrapIn.getWorkTitle().isEmpty() ) {
 				sql_stringBuffer.append( " and o.centerTitle like  ?" + (index) );
 				vs.add( "%"+wrapIn.getWorkTitle()+"%" );
 				index++;
 			}
-		} else if (null != wrapIn.getInfoType() && "WORK".equals( wrapIn.getInfoType() )) {
-			sql_stringBuffer.append( " and o.workId is not null and o.workId <> '' " );
+		} else{
+			sql_stringBuffer.append( " and o.recordType = '具体工作' " );
 			if (null != wrapIn.getWorkTitle() && !wrapIn.getWorkTitle().isEmpty() ) {
 				sql_stringBuffer.append( " and o.workTitle like  ?" + (index) );
 				vs.add( "%"+wrapIn.getWorkTitle()+"%" );
@@ -849,15 +939,15 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		sql_stringBuffer.append( "SELECT count(o.id) FROM "+ OkrWorkPerson.class.getCanonicalName() + " o where 1=1" );
 		
 		//对象类别，是中心工作，还是普通工作，如果是中心工作，那么普通的工作ID应该是为空的
-		if (null != wrapIn.getInfoType() && "CENTERWORK".equals( wrapIn.getInfoType() )) {
-			sql_stringBuffer.append( " and ( o.workId is null or o.workId = '' ) " );
+		if ( null != wrapIn.getInfoType() && "CENTERWORK".equals( wrapIn.getInfoType() ) ) {
+			sql_stringBuffer.append( " and o.recordType = '中心工作' " );
 			if (null != wrapIn.getWorkTitle() && !wrapIn.getWorkTitle().isEmpty() ) {
 				sql_stringBuffer.append( " and o.centerTitle like  ?" + (index) );
 				vs.add( "%"+wrapIn.getWorkTitle()+"%" );
 				index++;
 			}
-		} else if (null != wrapIn.getInfoType() && "WORK".equals( wrapIn.getInfoType() )) {
-			sql_stringBuffer.append( " and o.workId is not null and o.workId <> '' " );
+		} else{
+			sql_stringBuffer.append( " and o.recordType = '具体工作' " );
 			if (null != wrapIn.getWorkTitle() && !wrapIn.getWorkTitle().isEmpty() ) {
 				sql_stringBuffer.append( " and o.workTitle like  ?" + (index) );
 				vs.add( "%"+wrapIn.getWorkTitle()+"%" );
@@ -930,10 +1020,11 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 			index++;
 		}
 		Query query = em.createQuery( sql_stringBuffer.toString(), OkrWorkPerson.class );
-
+		//System.out.println( ">>>>>>>>>SQL:[" + sql_stringBuffer.toString() +"]" );
 		for (int i = 0; i < vs.size(); i++) {
 			query.setParameter(i + 1, vs.get(i));
-		}		
+			//System.out.println( ">>>>>>>>>Parameter_" + (i + 1 )+ ":[" + vs.get(i) + "]" );
+		}
 		return (Long) query.getSingleResult();
 	}
 
@@ -953,12 +1044,15 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception 
 	 */
-	public List<String> listCenterWorkIdsByWorkType( String workTypeName, String loginIdentity, String processIdentity ) throws Exception {
+	public List<String> listCenterWorkIdsByWorkType( List<String> workTypeNames, String loginIdentity, String processIdentity ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( OkrWorkPerson.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrWorkPerson> root = cq.from( OkrWorkPerson.class);
-		Predicate p = cb.equal( root.get( OkrWorkPerson_.workType ), workTypeName );
+		Predicate p = cb.isNotNull( root.get( OkrWorkPerson_.id ) );
+		if( workTypeNames != null && !workTypeNames.isEmpty() ){
+			p = cb.and( p, root.get( OkrWorkPerson_.workType ).in( workTypeNames ) );
+		}
 		if( loginIdentity != null && !loginIdentity.isEmpty() ){
 			p = cb.and( p, cb.equal( root.get( OkrWorkPerson_.employeeIdentity ), loginIdentity ) );
 		}
@@ -971,7 +1065,7 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 
 	public List<String> listByAuthorizeRecordIds( List<String> authorizeRecordIds, List<String> statuses ) throws Exception {
 		if( authorizeRecordIds == null || authorizeRecordIds.isEmpty() ){
-			logger.error( "authorizeRecordIds is null!" );
+			logger.warn( "authorizeRecordIds is null!" );
 			return null;
 		}
 		EntityManager em = this.entityManagerContainer().get( OkrWorkPerson.class );
@@ -1075,6 +1169,28 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
+	
+	public Long getOvertimenessWorkCountByCenterId( String identity, List<String> status, String processIdentity ) throws Exception {
+		if( identity == null || identity.isEmpty() ){
+			throw new Exception( "identity is null." );
+		}
+		if( status == null || status.isEmpty() ){
+			throw new Exception( "status is null." );
+		}
+		EntityManager em = this.entityManagerContainer().get( OkrWorkPerson.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<OkrWorkPerson> root = cq.from( OkrWorkPerson.class);
+		Predicate p = root.get( OkrWorkPerson_.status ).in( status );
+		p = cb.and( p, cb.equal( root.get( OkrWorkPerson_.employeeIdentity ), identity));
+		p = cb.and( p, cb.isFalse( root.get( OkrWorkPerson_.isOverTime )));
+		if( processIdentity != null && !processIdentity.isEmpty() ){
+			p = cb.and( p, cb.equal( root.get( OkrWorkPerson_.processIdentity ), processIdentity));
+		}
+		//查询总数
+		cq.select( cb.count( root ) );
+		return em.createQuery(cq.where(p)).getSingleResult();
+	}
 
 	public Long getDraftWorkCountByCenterId(String identity, List<String> status, String processIdentity ) throws Exception {
 		if( identity == null || identity.isEmpty() ){
@@ -1096,5 +1212,119 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		//查询总数
 		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
+	}
+
+	public List<OkrWorkPerson> listCenterWorkPerson( String id, WrapInFilter wrapIn ) throws Exception {
+		if( id == null || id.isEmpty() ){
+			throw new Exception( "id is null!" );
+		}
+		EntityManager em = this.entityManagerContainer().get( OkrWorkPerson.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<OkrWorkPerson> cq = cb.createQuery(OkrWorkPerson.class);
+		Root<OkrWorkPerson> root = cq.from( OkrWorkPerson.class);
+		Predicate p = cb.equal( root.get( OkrWorkPerson_.recordType ), "中心工作" );
+		p = cb.and( p, cb.equal( root.get( OkrWorkPerson_.centerId ), id ));		
+		//干系人姓名列表
+		if ( null != wrapIn.getEmployeeNames() && wrapIn.getEmployeeNames().size() > 0 ) {
+			p = cb.and( p, root.get( OkrWorkPerson_.employeeName ).in( wrapIn.getEmployeeNames() ) );
+		}
+		// 干系人姓名列表
+		if ( null != wrapIn.getEmployeeIdentities() && wrapIn.getEmployeeIdentities().size() > 0 ) {
+			p = cb.and( p, root.get( OkrWorkPerson_.employeeIdentity ).in( wrapIn.getEmployeeIdentities() ) );
+		}
+		// 处理身份
+		if ( null != wrapIn.getProcessIdentities() && wrapIn.getProcessIdentities().size() > 0 ) {
+			p = cb.and( p, root.get( OkrWorkPerson_.processIdentity ).in( wrapIn.getProcessIdentities() ) );
+		}
+		// 干系人所属组织名称列表
+		if ( null != wrapIn.getOrganizationNames() && wrapIn.getOrganizationNames().size() > 0 ) {
+			p = cb.and( p, root.get( OkrWorkPerson_.organizationName ).in( wrapIn.getOrganizationNames() ) );
+		}
+		// 干系人所属公司名称列表
+		if ( null != wrapIn.getCompanyNames() && wrapIn.getCompanyNames().size() > 0) {
+			p = cb.and( p, root.get( OkrWorkPerson_.companyName ).in( wrapIn.getCompanyNames() ) );
+		}
+		// 工作类别
+		if (null != wrapIn.getWorkTypes() && wrapIn.getWorkTypes().size() > 0) {
+			p = cb.and( p, root.get( OkrWorkPerson_.workType ).in( wrapIn.getWorkTypes() ) );
+		}
+		// 工作时长类型：短期工作|长期工作
+		if (null != wrapIn.getWorkDateTimeType() && wrapIn.getWorkDateTimeType().isEmpty()) {
+			p = cb.and(p, cb.equal(root.get(OkrWorkPerson_.workDateTimeType), wrapIn.getWorkDateTimeType()));
+		}
+		// 工作处理状态
+		if (null != wrapIn.getWorkProcessStatuses() && wrapIn.getWorkProcessStatuses().size() > 0) {
+			p = cb.and(p, root.get(OkrWorkPerson_.workProcessStatus).in(wrapIn.getWorkProcessStatuses()));
+		}
+		if (null != wrapIn.getInfoStatuses() && wrapIn.getInfoStatuses().size() > 0) {
+			p = cb.and(p, root.get(OkrWorkPerson_.status).in(wrapIn.getInfoStatuses()));
+		}
+		// 部署年份
+		if ( null != wrapIn.getDeployYear() && !wrapIn.getDeployYear().isEmpty() ) {
+			p = cb.and( p, cb.equal( root.get( OkrWorkPerson_.deployYear ), wrapIn.getDeployYear() ) );
+		}
+		// 部署月份
+		if (null != wrapIn.getDeployMonth() && !wrapIn.getDeployMonth().isEmpty()) {
+			p = cb.and( p, cb.equal( root.get( OkrWorkPerson_.deployMonth ), wrapIn.getDeployMonth() ) );
+		}
+		
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+
+	public List<OkrWorkPerson> listDetailWorkPerson( String id, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter wrapIn) throws Exception {
+		if( id == null || id.isEmpty() ){
+			throw new Exception( "id is null!" );
+		}
+		EntityManager em = this.entityManagerContainer().get( OkrWorkPerson.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<OkrWorkPerson> cq = cb.createQuery(OkrWorkPerson.class);
+		Root<OkrWorkPerson> root = cq.from( OkrWorkPerson.class);
+		Predicate p = cb.equal( root.get( OkrWorkPerson_.recordType ), "具体工作" );
+		p = cb.and( p, cb.equal( root.get( OkrWorkPerson_.workId ), id ));		
+		//干系人姓名列表
+		if ( null != wrapIn.getEmployeeNames() && wrapIn.getEmployeeNames().size() > 0 ) {
+			p = cb.and( p, root.get( OkrWorkPerson_.employeeName ).in( wrapIn.getEmployeeNames() ) );
+		}
+		// 干系人姓名列表
+		if ( null != wrapIn.getEmployeeIdentities() && wrapIn.getEmployeeIdentities().size() > 0 ) {
+			p = cb.and( p, root.get( OkrWorkPerson_.employeeIdentity ).in( wrapIn.getEmployeeIdentities() ) );
+		}
+		// 处理身份
+		if ( null != wrapIn.getProcessIdentities() && wrapIn.getProcessIdentities().size() > 0 ) {
+			p = cb.and( p, root.get( OkrWorkPerson_.processIdentity ).in( wrapIn.getProcessIdentities() ) );
+		}
+		// 干系人所属组织名称列表
+		if ( null != wrapIn.getOrganizationNames() && wrapIn.getOrganizationNames().size() > 0 ) {
+			p = cb.and( p, root.get( OkrWorkPerson_.organizationName ).in( wrapIn.getOrganizationNames() ) );
+		}
+		// 干系人所属公司名称列表
+		if ( null != wrapIn.getCompanyNames() && wrapIn.getCompanyNames().size() > 0) {
+			p = cb.and( p, root.get( OkrWorkPerson_.companyName ).in( wrapIn.getCompanyNames() ) );
+		}
+		// 工作类别
+		if (null != wrapIn.getWorkTypes() && wrapIn.getWorkTypes().size() > 0) {
+			p = cb.and( p, root.get( OkrWorkPerson_.workType ).in( wrapIn.getWorkTypes() ) );
+		}
+		// 工作时长类型：短期工作|长期工作
+		if (null != wrapIn.getWorkDateTimeType() && wrapIn.getWorkDateTimeType().isEmpty()) {
+			p = cb.and(p, cb.equal(root.get(OkrWorkPerson_.workDateTimeType), wrapIn.getWorkDateTimeType()));
+		}
+		// 工作处理状态
+		if (null != wrapIn.getWorkProcessStatuses() && wrapIn.getWorkProcessStatuses().size() > 0) {
+			p = cb.and(p, root.get(OkrWorkPerson_.workProcessStatus).in(wrapIn.getWorkProcessStatuses()));
+		}
+		if (null != wrapIn.getInfoStatuses() && wrapIn.getInfoStatuses().size() > 0) {
+			p = cb.and(p, root.get(OkrWorkPerson_.status).in(wrapIn.getInfoStatuses()));
+		}
+		// 部署年份
+		if ( null != wrapIn.getDeployYear() && !wrapIn.getDeployYear().isEmpty() ) {
+			p = cb.and( p, cb.equal( root.get( OkrWorkPerson_.deployYear ), wrapIn.getDeployYear() ) );
+		}
+		// 部署月份
+		if (null != wrapIn.getDeployMonth() && !wrapIn.getDeployMonth().isEmpty()) {
+			p = cb.and( p, cb.equal( root.get( OkrWorkPerson_.deployMonth ), wrapIn.getDeployMonth() ) );
+		}
+		
+		return em.createQuery(cq.where(p)).getResultList();
 	}
 }

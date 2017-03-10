@@ -1,21 +1,29 @@
 <div style="background-color: #FFF; overflow: hidden">
 	<div title="基本" class="MWFTab">
-		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-		  <tr>
-		    <td class="editTableTitle">标识:</td>
-		    <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
-		  </tr>
-		  <tr>
-		    <td class="editTableTitle">名称:</td>
-		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
-		  </tr>
-		  <tr>
-		    <td class="editTableTitle">描述:</td>
-		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
-		  </tr>
-		</table>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">标识:</td>
+                <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">名称:</td>
+                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">描述:</td>
+                <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+            </tr>
+            <!--<tr>-->
+                <!--<td class="editTableTitle">标题字段</td>-->
+                <!--<td class="editTableValue" id="text{$.id}isTitleArea">-->
+                    <!--<input type="radio" name="isTitle" value="true" text{($.isTitle)?'checked':''}/>是-->
+                    <!--<input type="radio" name="isTitle" value="false" text{(!$.isTitle)?'checked':''}/>否-->
+                <!--</td>-->
+            <!--</tr>-->
+        </table>
 		
 		<div class="MWFMaplist" name="styles" title="样式"></div>
+        <div class="MWFMaplist" name="inputStyles" title="Input样式"></div>
 		<div class="MWFMaplist" name="properties" title="属性"></div>
 
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
@@ -31,9 +39,11 @@
 		
 		<div class="MWFScriptArea" name="defaultValue" title="默认值 (S)"></div>
 
-        <div class="MWFScriptArea" name="validation" title="校验 (S)"></div>
+        <div class="MWFValidation" name="validationConfig"></div>
+        <div class="MWFScriptArea" name="validation" title="校验脚本 (S)"></div>
 		
 	</div>
+    
 	<div title="事件"  class="MWFTab">
 		<div class="MWFEventsArea" name="events"></div>
 	</div>

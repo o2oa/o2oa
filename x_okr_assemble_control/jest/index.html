@@ -28,6 +28,8 @@
 		$("#okrconfigsecretaryforadmin").click(function(){ $("#main_content").load("okrconfigsecretary.html"); });
 		$("#okrconfigsystemforadmin").click(function(){ $("#main_content").load("okrconfigsystem.html"); });
 		
+		$("#exportstatistic").click(function(){ $("#main_content").load("exportstatistic.html"); });
+
     });
 </script>
 </head>
@@ -73,6 +75,11 @@
 					<ul>
 						<li><a id="okrconfigsecretary" href="javascript:void(0)">秘书信息配置查询</a></li>
 						<li><a id="okrconfigsecretaryforadmin" href="javascript:void(0)">秘书信息配置管理</a></li>
+					</ul>
+				</li>
+				<li>统计导出
+					<ul>
+						<li><a id="exportstatistic" href="javascript:void(0)">导出</a></li>
 					</ul>
 				</li>
 			</ul>

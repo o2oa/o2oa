@@ -7,7 +7,9 @@ import org.apache.commons.collections4.list.SetUniqueList;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.exception.ExceptionWhen;
+import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.WrapOutId;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
@@ -27,48 +29,59 @@ import com.x.processplatform.service.processing.configurator.ProcessingConfigura
  * @author Rui
  *
  */
-public class ActionRetract {
+class ActionRetract extends ActionBase {
 
-	protected WrapOutId execute(Business business, String id, String workLogId) throws Exception {
-		Work work = null;
-		WorkLog workLog = null;
-		EntityManagerContainer emc = business.entityManagerContainer();
-		work = emc.find(id, Work.class, ExceptionWhen.not_found);
-		workLog = emc.find(workLogId, WorkLog.class, ExceptionWhen.not_found);
-		if (!StringUtils.equals(work.getJob(), workLog.getJob())) {
-			throw new Exception("work{id:" + work.getId() + ", job:" + work.getJob()
-					+ "} not match job with workLog{id:" + workLog.getId() + ", job:" + workLog.getJob() + "}");
-		}
-		List<Work> works = this.listForwardWork(business, workLog);
-		emc.beginTransaction(Work.class);
-		emc.beginTransaction(Task.class);
-		emc.beginTransaction(TaskCompleted.class);
-		emc.beginTransaction(Read.class);
-		emc.beginTransaction(ReadCompleted.class);
-		emc.beginTransaction(Review.class);
-		emc.beginTransaction(WorkLog.class);
-		for (Work o : works) {
-			this.cleanComplex(business, o);
-			if (!StringUtils.equals(work.getId(), o.getId())) {
-				work.getAttachmentList().addAll(o.getAttachmentList());
-				work.setAttachmentList(SetUniqueList.setUniqueList(work.getAttachmentList()));
-				business.entityManagerContainer().remove(o);
+	ActionResult<WrapOutId> execute(String id, String workLogId) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			ActionResult<WrapOutId> result = new ActionResult<>();
+			Business business = new Business(emc);
+			Work work = null;
+			WorkLog workLog = null;
+			work = emc.find(id, Work.class);
+			if (null == work) {
+				throw new WorkNotExistedException(id);
 			}
+			workLog = emc.find(workLogId, WorkLog.class);
+			if (null == workLog) {
+				throw new WorkLogNotExistedException(workLogId);
+			}
+			if (!StringUtils.equals(work.getJob(), workLog.getJob())) {
+				throw new WorkNotMatchWithWorkLogException(work.getTitle(), work.getId(), work.getJob(),
+						workLog.getId(), workLog.getJob());
+			}
+			List<Work> works = this.listForwardWork(business, workLog);
+			emc.beginTransaction(Work.class);
+			emc.beginTransaction(Task.class);
+			emc.beginTransaction(TaskCompleted.class);
+			emc.beginTransaction(Read.class);
+			emc.beginTransaction(ReadCompleted.class);
+			emc.beginTransaction(Review.class);
+			emc.beginTransaction(WorkLog.class);
+			for (Work o : works) {
+				this.cleanComplex(business, o);
+				if (!StringUtils.equals(work.getId(), o.getId())) {
+					work.getAttachmentList().addAll(o.getAttachmentList());
+					work.setAttachmentList(SetUniqueList.setUniqueList(work.getAttachmentList()));
+					business.entityManagerContainer().remove(o);
+				}
+			}
+			this.retractAsWorkLog(work, workLog);
+			emc.delete(WorkLog.class,
+					business.workLog().listWithFromActivityTokenForward(workLog.getFromActivityToken()));
+			emc.commit();
+			Processing processing = new Processing(0, new ProcessingAttributes(), emc);
+			ProcessingConfigurator processingConfigurator = new ProcessingConfigurator();
+			processingConfigurator.setContinueLoop(false);
+			processingConfigurator.setActivityCreateRead(false);
+			processingConfigurator.setActivityCreateReview(false);
+			processingConfigurator.setChangeActivityToken(false);
+			processingConfigurator.setJoinAtExecute(false);
+			processingConfigurator.setActivityStampArrivedWorkLog(false);
+			processing.processing(work.getId(), processingConfigurator);
+			WrapOutId wrap = new WrapOutId(id);
+			result.setData(wrap);
+			return result;
 		}
-		this.retractAsWorkLog(work, workLog);
-		emc.delete(WorkLog.class, business.workLog().listWithFromActivityTokenForward(workLog.getFromActivityToken()));
-		emc.commit();
-		Processing processing = new Processing(0, new ProcessingAttributes(), emc);
-		ProcessingConfigurator processingConfigurator = new ProcessingConfigurator();
-		processingConfigurator.setContinueLoop(false);
-		processingConfigurator.setActivityCreateRead(false);
-		processingConfigurator.setActivityCreateReview(false);
-		processingConfigurator.setChangeActivityToken(false);
-		processingConfigurator.setJoinAtExecute(false);
-		processingConfigurator.setActivityStampArrivedWorkLog(false);
-		processing.processing(work.getId(), processingConfigurator);
-		WrapOutId wrap = new WrapOutId(id);
-		return wrap;
 	}
 
 	private void cleanComplex(Business business, Work work) throws Exception {

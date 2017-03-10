@@ -1,19 +1,18 @@
-MWF.require("MWF.widget.Common", null, false);
-MWF.require("MWF.widget.Panel", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Preview", null, false);
 MWF.xApplication.cms.FormDesigner.Preview = MWF.CMSFCPreview = new Class({
-	Extends: MWF.widget.Common,
+	Extends: MWF.FCPreview,
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-        "previewPath": COMMON.contentPath+"/preview.html",
+        "previewPath": COMMON.contentPath+"/cmspreview.html",
         "size": null
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 
-        this.path = "/x_component_cms_FormDesigner/$Preview/";
-        this.cssPath = "/x_component_cms_FormDesigner/$Preview/"+this.options.style+"/css.wcss";
+        this.path = "/x_component_process_FormDesigner/$Preview/";
+        this.cssPath = "/x_component_process_FormDesigner/$Preview/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 

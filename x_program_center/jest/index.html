@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8" />
-<title>x_propram_center</title>
+<title>x_program_center</title>
 <script src="./common.js"></script>
 <script src="./jquery.js"></script>
 <script src="./adminLogin.js"></script>
@@ -24,7 +24,6 @@
 <script src="./dataMappings.js"></script>
 <script src="./webServer.js"></script>
 <script src="./webServers.js"></script>
-<script src="./resource.js"></script>
 <script>
     $(document).ready(function() {
 	adminLogin_init();
@@ -36,8 +35,7 @@
 	<div id="container" style="width: 1000px; margin: 0 auto;">
 		<div id="header"
 			style="background-color: #4682B4; clear: both; text-align: center;">
-			x_program_center_jest <br /> for <br /> x_program_center
-		</div>
+			x_program_center</div>
 		<div id="menu"
 			style="background-color: #B0E0E6; height: 950px; width: 280px; float: left;">
 			<ul>
@@ -115,23 +113,9 @@
 						</li>
 					</ul>
 				</li>
-				<li>Resource
-					<ul>
-						<li><a onclick="resource_get_administratorDefinition()"
-							href="#">AdministratorDefinition</a></li>
-						<li><a onclick="resource_get_collectDefinition()" href="#">CollectDefinition</a></li>
-						<li><a onclick="resource_get_openMeetingJunctionDefinition()"
-							href="#">OpenMeetingJunctionDefinition</a></li>
-						<li><a onclick="resource_get_passwordDefinition()" href="#">PasswordDefinition</a></li>
-						<li><a onclick="resource_get_personDefinition()" href="#">PersonDefinition</a></li>
-						<li><a onclick="resource_get_ssoDefinition()" href="#">SsoDefinition</a></li>
-						<li><a onclick="resource_get_workTimeDefinition()" href="#">WorkTimeDefinition</a></li>
-					</ul>
-				</li>
 				<li>Collect
 					<ul>
-						<li><a onclick="collect_check_connect_select()" href="#">Check
-								Connect</a></li>
+						<li><a onclick="collect_init()" href="#">Init</a></li>
 					</ul>
 				</li>
 			</ul>

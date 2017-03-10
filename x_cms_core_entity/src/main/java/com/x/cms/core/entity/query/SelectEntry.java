@@ -18,51 +18,47 @@ public class SelectEntry extends GsonPropertyObject {
 	}
 
 	public Boolean available() {
-		if ( null == this.orderType ) {
+		if (null == this.orderType) {
 			return false;
 		}
-		if ( null == this.selectType ) {
+		if (null == this.selectType) {
 			return false;
 		}
-		switch ( this.selectType ) {
+		switch (this.selectType) {
 		case attribute:
-			if ( StringUtils.isEmpty( attribute ) ) {
+			if (StringUtils.isEmpty(attribute)) {
 				return false;
 			}
 			break;
 		case path:
-			if ( StringUtils.isEmpty(path) ) {
+			if (StringUtils.isEmpty(path)) {
 				return false;
 			}
 			break;
 		case padding:
-			if ( StringUtils.isEmpty(column) ) {
+			if (StringUtils.isEmpty(column)) {
 				return false;
 			}
 			break;
 		}
 		return true;
 	}
-	/**
-	 * desc, asc, original
-	 */
+
 	private OrderType orderType;
-	/**
-	 * attribute, path, padding
-	 */
-	private SelectType selectType;
 	private Integer orderRank;
+	private SelectType selectType;
 	private String attribute;
 	private String column;
 	private String displayName;
 	private String path;
 	private String id;
+	private String defaultValue;
 
 	public String getColumn() {
 		if (StringUtils.isNotEmpty(this.column)) {
 			return this.column;
 		}
-		if ( Objects.equals( this.selectType, SelectType.attribute )) {
+		if (Objects.equals(this.selectType, SelectType.attribute)) {
 			return this.attribute;
 		}
 		if (Objects.equals(this.selectType, SelectType.path)) {
@@ -76,7 +72,7 @@ public class SelectEntry extends GsonPropertyObject {
 	}
 
 	public String getDisplayName() {
-		if ( StringUtils.isNotEmpty(this.displayName) ) {
+		if (StringUtils.isNotEmpty(this.displayName)) {
 			return this.displayName;
 		}
 		return this.getColumn();
@@ -136,6 +132,14 @@ public class SelectEntry extends GsonPropertyObject {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getDefaultValue() {
+		return defaultValue;
+	}
+
+	public void setDefaultValue(String defaultValue) {
+		this.defaultValue = defaultValue;
 	}
 
 }

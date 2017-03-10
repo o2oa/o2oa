@@ -10,8 +10,8 @@ import com.x.base.core.utils.ListTools;
 public class WhereEntry extends GsonPropertyObject {
 
 	public WhereEntry() {
-		this.appIdList = new ArrayList<NameIdPair>();
-		this.catagoryIdList = new ArrayList<NameIdPair>();
+		this.appInfoList = new ArrayList<NameIdPair>();
+		this.categoryList = new ArrayList<NameIdPair>();
 		this.docIdList = new ArrayList<NameIdPair>();
 		this.companyList = new ArrayList<NameIdPair>();
 		this.departmentList = new ArrayList<NameIdPair>();
@@ -19,8 +19,8 @@ public class WhereEntry extends GsonPropertyObject {
 		this.personList = new ArrayList<NameIdPair>();
 	}
 
-	private List<NameIdPair> appIdList;
-	private List<NameIdPair> catagoryIdList;
+	private List<NameIdPair> appInfoList;
+	private List<NameIdPair> categoryList;
 	private List<NameIdPair> docIdList;
 	private List<NameIdPair> companyList;
 	private List<NameIdPair> departmentList;
@@ -28,25 +28,30 @@ public class WhereEntry extends GsonPropertyObject {
 	private List<NameIdPair> identityList;
 
 	public Boolean available() {
-		if (ListTools.isEmpty(this.appIdList) && ListTools.isEmpty(this.catagoryIdList)&& ListTools.isEmpty( this.docIdList )
+		if (ListTools.isEmpty(this.appInfoList) && ListTools.isEmpty(this.categoryList)&& ListTools.isEmpty( this.docIdList )
 				&& ListTools.isEmpty(this.companyList) && ListTools.isEmpty(this.departmentList)
 				&& ListTools.isEmpty(this.identityList) && ListTools.isEmpty(this.personList)) {
 			return false;
 		}
 		return true;
 	}
-	public List<NameIdPair> getAppIdList() {
-		return appIdList;
+	
+	public List<NameIdPair> getAppInfoList() {
+		return appInfoList;
 	}
-	public void setAppIdList(List<NameIdPair> appIdList) {
-		this.appIdList = appIdList;
+
+	public List<NameIdPair> getCategoryList() {
+		return categoryList;
 	}
-	public List<NameIdPair> getCatagoryIdList() {
-		return catagoryIdList;
+
+	public void setAppInfoList(List<NameIdPair> appInfoList) {
+		this.appInfoList = appInfoList;
 	}
-	public void setCatagoryIdList(List<NameIdPair> catagoryIdList) {
-		this.catagoryIdList = catagoryIdList;
+
+	public void setCategoryList(List<NameIdPair> categoryList) {
+		this.categoryList = categoryList;
 	}
+
 	public List<NameIdPair> getCompanyList() {
 		return companyList;
 	}

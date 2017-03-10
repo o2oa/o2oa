@@ -46,7 +46,7 @@ public class QueryStat extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.Element.QueryStat.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -59,7 +59,7 @@ public class QueryStat extends SliceJpaObject {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -119,7 +119,7 @@ public class QueryStat extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception{
 
 	}
 
@@ -274,14 +274,14 @@ public class QueryStat extends SliceJpaObject {
 	@Basic(fetch = FetchType.EAGER)
 	@Column(length = JpaObject.length_10M, name = "xcalculate")
 	@CheckPersist(allowEmpty = true)
-	private String calculate;
+	private String data;
 
 	@EntityFieldDescribe("缓存结果.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@Column(length = JpaObject.length_10M, name = "xdata")
 	@CheckPersist(allowEmpty = true)
-	private String data;
+	private String result;
 
 	public String getName() {
 		return name;
@@ -435,20 +435,20 @@ public class QueryStat extends SliceJpaObject {
 		this.layout = layout;
 	}
 
-	public String getCalculate() {
-		return calculate;
-	}
-
-	public void setCalculate(String calculate) {
-		this.calculate = calculate;
-	}
-
 	public String getData() {
 		return data;
 	}
 
 	public void setData(String data) {
 		this.data = data;
+	}
+
+	public String getResult() {
+		return result;
+	}
+
+	public void setResult(String result) {
+		this.result = result;
 	}
 
 	// public Boolean getDataSaveGrid() {

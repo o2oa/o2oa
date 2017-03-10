@@ -58,4 +58,8 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 	public static class Role {
 		public static final String table = "ORG_ROLE";
 	}
+
+	public static class Bind {
+		public static final String table = "ORG_BIND";
+	}
 }

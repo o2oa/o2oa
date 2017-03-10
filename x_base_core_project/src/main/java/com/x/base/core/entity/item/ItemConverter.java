@@ -16,13 +16,20 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.utils.StringTools;
 
 public class ItemConverter<T extends Item> {
 
+	public static final int STRING_VALUE_MAX_LENGTH = JpaObject.length_255B;
+
 	private Class<T> clz;
+
+	// private Class<T> lobClz;
 
 	public ItemConverter(Class<T> clz) {
 		this.clz = clz;
+		// this.clz = lobClz;
 	}
 
 	public List<T> disassemble(JsonElement root, String... prefixPaths) throws Exception {
@@ -51,6 +58,11 @@ public class ItemConverter<T extends Item> {
 				t.value(jsonPrimitive.getAsDouble());
 			} else if (jsonPrimitive.isString()) {
 				t.setItemPrimitiveType(ItemPrimitiveType.s);
+				if (StringTools.utf8Length(jsonPrimitive.getAsString()) > STRING_VALUE_MAX_LENGTH) {
+					t.setItemStringValueType(ItemStringValueType.l);
+				} else {
+					t.setItemStringValueType(ItemStringValueType.s);
+				}
 				t.value(jsonPrimitive.getAsString());
 			}
 		} else if (root.isJsonObject()) {
@@ -211,42 +223,41 @@ public class ItemConverter<T extends Item> {
 		Collections.sort(list, new Comparator<T>() {
 			public int compare(T o1, T o2) {
 				int c = 0;
-				c = comparePath(o1.getPath0(), o2.getPath0());
+				c = comparePathLocation(o1.getPath0Location(), o2.getPath0Location());
 				if (c == 0) {
-					c = comparePathLocation(o1.getPath0Location(), o2.getPath0Location());
+					c = comparePath(o1.getPath0(), o2.getPath0());
 					if (c == 0) {
-						c = comparePath(o1.getPath1(), o2.getPath1());
+						c = comparePathLocation(o1.getPath1Location(), o2.getPath1Location());
 						if (c == 0) {
-							c = comparePathLocation(o1.getPath1Location(), o2.getPath1Location());
+							c = comparePath(o1.getPath1(), o2.getPath1());
 							if (c == 0) {
-								c = comparePath(o1.getPath2(), o2.getPath2());
+								c = comparePathLocation(o1.getPath2Location(), o2.getPath2Location());
 								if (c == 0) {
-									c = comparePathLocation(o1.getPath2Location(), o2.getPath2Location());
+									c = comparePath(o1.getPath2(), o2.getPath2());
 									if (c == 0) {
-										c = comparePath(o1.getPath3(), o2.getPath3());
+										c = comparePathLocation(o1.getPath3Location(), o2.getPath3Location());
 										if (c == 0) {
-											c = comparePathLocation(o1.getPath3Location(), o2.getPath3Location());
+											c = comparePath(o1.getPath3(), o2.getPath3());
 											if (c == 0) {
-												c = comparePath(o1.getPath4(), o2.getPath4());
+												c = comparePathLocation(o1.getPath4Location(), o2.getPath4Location());
 												if (c == 0) {
-													c = comparePathLocation(o1.getPath4Location(),
-															o2.getPath4Location());
+													c = comparePath(o1.getPath4(), o2.getPath4());
 													if (c == 0) {
-														c = comparePath(o1.getPath5(), o2.getPath5());
+														c = comparePathLocation(o1.getPath5Location(),
+																o2.getPath5Location());
 														if (c == 0) {
-															c = comparePathLocation(o1.getPath5Location(),
-																	o2.getPath5Location());
+															c = comparePath(o1.getPath5(), o2.getPath5());
 															if (c == 0) {
-																c = comparePath(o1.getPath6(), o2.getPath6());
+																c = comparePathLocation(o1.getPath6Location(),
+																		o2.getPath6Location());
 																if (c == 0) {
-																	c = comparePathLocation(o1.getPath6Location(),
-																			o2.getPath6Location());
+																	c = comparePath(o1.getPath6(), o2.getPath6());
 																	if (c == 0) {
-																		c = comparePath(o1.getPath7(), o2.getPath7());
+																		c = comparePathLocation(o1.getPath7Location(),
+																				o2.getPath7Location());
 																		if (c == 0) {
-																			c = comparePathLocation(
-																					o1.getPath7Location(),
-																					o2.getPath7Location());
+																			c = comparePath(o1.getPath7(),
+																					o2.getPath7());
 																		}
 																	}
 																}
@@ -266,6 +277,66 @@ public class ItemConverter<T extends Item> {
 			}
 		});
 	}
+
+	// public void sort(List<T> list) {
+	// Collections.sort(list, new Comparator<T>() {
+	// public int compare(T o1, T o2) {
+	// int c = 0;
+	// c = comparePath(o1.getPath0(), o2.getPath0());
+	// if (c == 0) {
+	// c = comparePathLocation(o1.getPath0Location(), o2.getPath0Location());
+	// if (c == 0) {
+	// c = comparePath(o1.getPath1(), o2.getPath1());
+	// if (c == 0) {
+	// c = comparePathLocation(o1.getPath1Location(), o2.getPath1Location());
+	// if (c == 0) {
+	// c = comparePath(o1.getPath2(), o2.getPath2());
+	// if (c == 0) {
+	// c = comparePathLocation(o1.getPath2Location(), o2.getPath2Location());
+	// if (c == 0) {
+	// c = comparePath(o1.getPath3(), o2.getPath3());
+	// if (c == 0) {
+	// c = comparePathLocation(o1.getPath3Location(), o2.getPath3Location());
+	// if (c == 0) {
+	// c = comparePath(o1.getPath4(), o2.getPath4());
+	// if (c == 0) {
+	// c = comparePathLocation(o1.getPath4Location(),
+	// o2.getPath4Location());
+	// if (c == 0) {
+	// c = comparePath(o1.getPath5(), o2.getPath5());
+	// if (c == 0) {
+	// c = comparePathLocation(o1.getPath5Location(),
+	// o2.getPath5Location());
+	// if (c == 0) {
+	// c = comparePath(o1.getPath6(), o2.getPath6());
+	// if (c == 0) {
+	// c = comparePathLocation(o1.getPath6Location(),
+	// o2.getPath6Location());
+	// if (c == 0) {
+	// c = comparePath(o1.getPath7(), o2.getPath7());
+	// if (c == 0) {
+	// c = comparePathLocation(
+	// o1.getPath7Location(),
+	// o2.getPath7Location());
+	// }
+	// }
+	// }
+	// }
+	// }
+	// }
+	// }
+	// }
+	// }
+	// }
+	// }
+	// }
+	// }
+	// }
+	// }
+	// return c;
+	// }
+	// });
+	// }
 
 	private int comparePath(String p1, String p2) {
 		if (StringUtils.isEmpty(p1) && StringUtils.isEmpty(p2)) {

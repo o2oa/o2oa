@@ -2,10 +2,8 @@ package com.x.attendance.assemble.control.service;
 
 import java.util.Date;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.AttendanceAppealInfo;
@@ -138,7 +136,8 @@ public class AttendanceAppealInfoServiceAdv {
 					try{
 						attendanceAppealInfoService.archive( emc, id, datetime );
 					}catch( Exception e ){
-						logger.error( "system archive attendance appeal info got an exception.", e );
+						logger.info( "system archive attendance appeal info got an exception.");
+						logger.error( e );
 					}
 				}
 			}

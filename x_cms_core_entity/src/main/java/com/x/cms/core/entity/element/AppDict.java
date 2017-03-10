@@ -36,7 +36,7 @@ public class AppDict extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.Element.AppDict.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -49,7 +49,7 @@ public class AppDict extends SliceJpaObject {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -108,7 +108,7 @@ public class AppDict extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception{
 	}
 
 	/* 更新运行方法 */
@@ -124,7 +124,7 @@ public class AppDict extends SliceJpaObject {
 	@EntityFieldDescribe("文件名称.")
 	@Column(name = "xname", length = AbstractPersistenceProperties.processPlatform_name_length)
 	@Index(name = TABLE + "_name")
-	@CheckPersist(simplyString = true, citationNotExists =
+	@CheckPersist(citationNotExists =
 	/* 同一个应用下不能有重名 */
 	@CitationNotExist(fields = { "id", "alias", "name" }, type = AppDict.class) , allowEmpty = true)
 	private String name;
@@ -132,7 +132,7 @@ public class AppDict extends SliceJpaObject {
 	@EntityFieldDescribe("别名.")
 	@Column(name = "xalias", length = AbstractPersistenceProperties.processPlatform_name_length)
 	@Index(name = TABLE + "_alias")
-	@CheckPersist(simplyString = true, citationNotExists =
+	@CheckPersist(citationNotExists =
 	/* 同一个应用下不能有重名 */
 	@CitationNotExist(fields = { "id", "alias", "name" }, type = AppDict.class) , allowEmpty = true)
 	private String alias;
@@ -145,7 +145,7 @@ public class AppDict extends SliceJpaObject {
 
 	@EntityFieldDescribe("信息创建人UID")
 	@Column(name = "xcreatorUid", length = JpaObject.length_64B)
-	@CheckPersist(simplyString = true, allowEmpty = true)
+	@CheckPersist(allowEmpty = true)
 	private String creatorUid;
 
 	public String getName() {

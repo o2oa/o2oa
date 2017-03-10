@@ -38,7 +38,7 @@ public class Route extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.Element.Route.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception {
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -51,7 +51,7 @@ public class Route extends SliceJpaObject {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception {
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -111,7 +111,7 @@ public class Route extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception {
 		/* 如果脚本为空，添加默认返回true 的脚本 */
 		if (StringUtils.isEmpty(script) && StringUtils.isEmpty(scriptText)) {
 			this.scriptText = "return true;";
@@ -181,6 +181,16 @@ public class Route extends SliceJpaObject {
 	@Column(length = JpaObject.length_1M, name = "xscriptText")
 	@CheckPersist(allowEmpty = true)
 	private String scriptText;
+
+	@EntityFieldDescribe("如何与前一个环节处理人相同那么自动执行.")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = "xpassSameTarget")
+	private Boolean passSameTarget;
+
+	@EntityFieldDescribe("超时时候的默认路由.")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = "xpassExpired")
+	private Boolean passExpired;
 
 	public String getName() {
 		return name;
@@ -260,6 +270,22 @@ public class Route extends SliceJpaObject {
 
 	public void setScriptText(String scriptText) {
 		this.scriptText = scriptText;
+	}
+
+	public Boolean getPassSameTarget() {
+		return passSameTarget;
+	}
+
+	public void setPassSameTarget(Boolean passSameTarget) {
+		this.passSameTarget = passSameTarget;
+	}
+
+	public Boolean getPassExpired() {
+		return passExpired;
+	}
+
+	public void setPassExpired(Boolean passExpired) {
+		this.passExpired = passExpired;
 	}
 
 }

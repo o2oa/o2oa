@@ -3,9 +3,7 @@ package com.x.cms.assemble.control.jaxrs.document;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WrapOutStatistic implements Comparable<Object> {
-	
-	private static final long serialVersionUID = -5076990764713538973L;
+public class WrapOutStatistic {
 	
 	public static List<String> Excludes = new ArrayList<String>();
 
@@ -40,13 +38,5 @@ public class WrapOutStatistic implements Comparable<Object> {
 	}
 	public void setCount(long count) {
 		this.count = count;
-	}
-
-	/**
-	 * 排序的实现方式
-	 */
-	@Override
-	public int compareTo( Object o ) {	
-		return sequnce.compareTo(((WrapOutStatistic)o).getSequnce());
 	}
 }

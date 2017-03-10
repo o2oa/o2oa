@@ -27,13 +27,9 @@ import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
-import com.x.base.core.entity.annotation.CitationExist;
-import com.x.base.core.entity.annotation.CitationNotExist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.annotation.EntityFieldDescribe;
-import com.x.base.core.entity.annotation.Equal;
 import com.x.base.core.utils.DateTools;
-import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.PersistenceProperties;
 
 
@@ -48,7 +44,7 @@ public class QueryView extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.Element.QueryView.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception {
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -61,7 +57,7 @@ public class QueryView extends SliceJpaObject {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception {
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -121,27 +117,26 @@ public class QueryView extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception {
+
 	}
 
 	/* 更新运行方法 */
-	public static String[] FLAGS = new String[] { "id" };
+
+	public static String[] FLAGS = new String[] { "name", "id" };
 
 	/* flag标志位 */
 	/* Entity 默认字段结束 */
+
 	@EntityFieldDescribe("名称.")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = "xname")
 	@Index(name = TABLE + "_name")
-	@CheckPersist(allowEmpty = false, simplyString = false, citationNotExists =
-	/* 验证不可重名 */
-	@CitationNotExist(fields = { "name", "id", "alias" }, type = QueryView.class, equals = @Equal(field = "application", property = "application")))
+	@CheckPersist(allowEmpty = false, simplyString = false)
 	private String name;
 
 	@EntityFieldDescribe("别名.")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = "xalias")
-	@CheckPersist(allowEmpty = true, simplyString = false, citationNotExists =
-	/* 验证不可重名 */
-	@CitationNotExist(fields = { "name", "id", "alias" }, type = QueryView.class, equals = @Equal(field = "application", property = "application")))
+	@CheckPersist(allowEmpty = true, simplyString = false )
 	private String alias;
 
 	@EntityFieldDescribe("描述.")
@@ -149,11 +144,17 @@ public class QueryView extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String description;
 
-	@EntityFieldDescribe("所属栏目.")
+	@EntityFieldDescribe("所属应用.")
 	@Column(length = JpaObject.length_id, name = "xappId")
 	@Index(name = TABLE + "_appId")
-	@CheckPersist(allowEmpty = false, citationExists = { @CitationExist(type = AppInfo.class) })
+	@CheckPersist(allowEmpty = false )
 	private String appId;
+	
+	@EntityFieldDescribe("所属应用.")
+	@Column(length = JpaObject.length_id, name = "xappName")
+	@Index(name = TABLE + "_appName")
+	@CheckPersist(allowEmpty = false )
+	private String appName;
 
 	@EntityFieldDescribe("是否是定时任务.")
 	@CheckPersist(allowEmpty = true)
@@ -216,7 +217,7 @@ public class QueryView extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String icon;
 
-	@EntityFieldDescribe("管理者。")
+	@EntityFieldDescribe("应用管理者。")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = PersistenceProperties.orderColumn)
 	@ContainerTable(name = TABLE + "_controllerList", joinIndex = @Index(name = TABLE + "_controllerList_join"))
@@ -225,19 +226,19 @@ public class QueryView extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private List<String> controllerList;
 
-	@EntityFieldDescribe("创建者。")
+	@EntityFieldDescribe("应用的创建者。")
 	@CheckPersist(allowEmpty = false)
 	@Column(length = AbstractPersistenceProperties.organization_name_length, name = "xcreatorPerson")
 	@Index(name = TABLE + "_creatorPerson")
 	private String creatorPerson;
 
-	@EntityFieldDescribe("最后修改时间。")
+	@EntityFieldDescribe("应用的最后修改时间。")
 	@CheckPersist(allowEmpty = false)
 	@Column(name = "xlastUpdateTime")
 	@Index(name = TABLE + "_lastUpdateTime")
 	private Date lastUpdateTime;
 
-	@EntityFieldDescribe("最后修改者")
+	@EntityFieldDescribe("应用的最后修改者")
 	@CheckPersist(allowEmpty = false)
 	@Column(length = AbstractPersistenceProperties.organization_name_length, name = "xlastUpdatePerson")
 	@Index(name = TABLE + "_lastUpdatePerson")
@@ -277,6 +278,11 @@ public class QueryView extends SliceJpaObject {
 	@Column(length = JpaObject.length_1M, name = "xafterCalculateGridScriptText")
 	@CheckPersist(allowEmpty = true)
 	private String afterCalculateGridScriptText;
+
+	@EntityFieldDescribe("是否前端可见.")
+	@Column(name = "xDisplay")
+	@Index(name = TABLE + "_display")
+	private Boolean display;
 
 	public String getName() {
 		return name;
@@ -389,7 +395,9 @@ public class QueryView extends SliceJpaObject {
 	public void setAfterCalculateGridScriptText(String afterCalculateGridScriptText) {
 		this.afterCalculateGridScriptText = afterCalculateGridScriptText;
 	}
+
 	
+
 	public String getAppId() {
 		return appId;
 	}
@@ -444,6 +452,22 @@ public class QueryView extends SliceJpaObject {
 
 	public void setData(String data) {
 		this.data = data;
+	}
+
+	public Boolean getDisplay() {
+		return display;
+	}
+
+	public void setDisplay(Boolean display) {
+		this.display = display;
+	}
+
+	public String getAppName() {
+		return appName;
+	}
+
+	public void setAppName(String appName) {
+		this.appName = appName;
 	}
 
 }

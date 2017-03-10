@@ -1,7 +1,6 @@
 package com.x.processplatform.service.processing;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.utils.time.WorkTime;
 import com.x.organization.core.express.Organization;
 import com.x.processplatform.service.processing.factory.AttachmentFactory;
 import com.x.processplatform.service.processing.factory.DataItemFactory;
@@ -135,14 +134,14 @@ public class Business {
 		return organization;
 	}
 
-	private WorkTime workTime;
-
-	public WorkTime workTime() throws Exception {
-		if (null == this.workTime) {
-			this.workTime = new WorkTime();
-		}
-		return workTime;
-	}
+	// private WorkTime workTime;
+	//
+	// public WorkTime workTime() throws Exception {
+	// if (null == this.workTime) {
+	// this.workTime = new WorkTime();
+	// }
+	// return workTime;
+	// }
 
 	public boolean attachmentMultiReferenced(String attachment) throws Exception {
 		Long count = this.work().countWithAttachment(attachment) + this.workCompleted().countWithAttachment(attachment);

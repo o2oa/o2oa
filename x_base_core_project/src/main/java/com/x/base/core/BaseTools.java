@@ -33,7 +33,20 @@ public class BaseTools {
 		String base = BaseTools.getBasePath();
 		File file = new File(base, path);
 		if ((!file.exists()) || file.isDirectory()) {
-			throw new Exception("can not get file with path:" + file.getAbsolutePath());
+			return null;
+		}
+		String json = FileUtils.readFileToString(file, DefaultCharset.charset);
+		return (new Gson()).fromJson(json, cls);
+	}
+
+	public static <T> T readObject(String path, String otherPath, Class<T> cls) throws Exception {
+		String base = BaseTools.getBasePath();
+		File file = new File(base, path);
+		if ((!file.exists()) || file.isDirectory()) {
+			file = new File(base, otherPath);
+		}
+		if ((!file.exists()) || file.isDirectory()) {
+			throw new Exception("can not get file with path:" + path + ", otherPath:" + otherPath + ".");
 		}
 		String json = FileUtils.readFileToString(file, DefaultCharset.charset);
 		return (new Gson()).fromJson(json, cls);
@@ -50,7 +63,7 @@ public class BaseTools {
 		String base = BaseTools.getBasePath();
 		File file = new File(base, path);
 		if ((!file.exists()) || file.isDirectory()) {
-			throw new Exception("can not get file with path:" + file.getAbsolutePath());
+			return null;
 		}
 		String str = FileUtils.readFileToString(file, DefaultCharset.charset);
 		return (StringUtils.trim(str));

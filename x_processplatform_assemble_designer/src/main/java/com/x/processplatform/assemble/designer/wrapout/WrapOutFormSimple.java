@@ -12,11 +12,21 @@ public class WrapOutFormSimple extends WrapOutForm {
 
 	private static final long serialVersionUID = -7495725325510376323L;
 
+	private Long rank;
+
 	public static List<String> Excludes = new ArrayList<>(JpaObject.FieldsInvisible);
 
 	static {
 		Excludes.add("data");
 		Excludes.add("mobileData");
+	}
+
+	public Long getRank() {
+		return rank;
+	}
+
+	public void setRank(Long rank) {
+		this.rank = rank;
 	}
 
 }

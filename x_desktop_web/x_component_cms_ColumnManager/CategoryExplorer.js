@@ -37,6 +37,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
         this.setContentSize();
         this.viewExplorer.reload();
         this.formExplorer.reload();
+        this.categoryProperty.reload();
     },
     loadContentNode: function(){
         this.elementContentNode = new Element("div.elementContentNode", {
@@ -62,7 +63,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
 
         this.loadView();
 
-
+        this.loadProperty();
     },
     loadContentNodes: function(){
         //this.naviContainerNode = new Element("div.naviContainerNode", {
@@ -86,6 +87,14 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
             "styles": this.css.rightContent
         }).inject(this.elementContentListNode);
 
+        this.rightTopContent = new Element("div.rightTopContent", {
+            "styles": this.css.rightTopContent
+        }).inject(this.rightContent);
+
+        this.rightBottomContent = new Element("div.rightBottomContent", {
+            "styles": this.css.rightBottomContent
+        }).inject(this.rightContent);
+
         //this.loadCategoryListResize();
 
         this.createFormNode();
@@ -93,10 +102,11 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
 
         this.rightContentResizeNode = new Element("div.rightContentResizeNode", {
             "styles": this.css.rightContentResizeNode
-        }).inject(this.rightContent);
+        }).inject(this.rightTopContent);
 
         this.createViewNode();
         this.formPercent = 0.5;
+        this.topPercent = 0.5;
         //this.loadRightContentResize();
         //this.setNodeScroll();
     },
@@ -119,14 +129,83 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
     _createElement: function(){
         this.categoryList.newCategory();
     },
+    loadProperty: function(){
+        this.categoryProperty = new MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty(this.app, this.rightBottomContent);
+        this.categoryProperty.load();
+    },
+    createProcessNode : function(){
+        this.processAreaNode = new Element("div.processAreaNode" , {
+            "styles": this.css.processAreaNode
+        }).inject(this.formTitleNode);
+        this.processAreaNode.setStyle("display","none");
+
+        //new Element("div.formTitleSepNode" , {
+        //    "styles": this.css.formTitleSepNode
+        //}).inject(this.formTitleNode);
+
+        //this.processTitleNode = new Elements("div.processTitleNode" , {
+        //    "styles": this.css.processTitleNode,
+        //    "text" : "流程"
+        //}).inject(this.processAreaNode);
+
+        //this.processSelectNode = new Elements("div.processSelectNode" , {
+        //    "styles": this.css.processSelectNode
+        //}).inject(this.processAreaNode);
+
+        this.createProcessSelect();
+    },
+    createProcessSelect : function(){
+        this.processSelect = new Element("select").inject( this.processAreaNode );
+        new Element( "option" ,　{
+            "value" : "",
+            "text" : "选择使用的流程"
+        }).inject( this.processSelect );
+        new Element( "option" ,　{
+            "value" : "",
+            "text" : "无"
+        }).inject( this.processSelect );
+        this.actions.listProcess( "12b13867-282e-428b-8b90-7ad12191569f", function( json ){
+            json.data.each( function( d ){
+                   new Element( "option" ,　{
+                       "value" : d.id,
+                       "text" : d.name
+                   }).inject( this.processSelect )
+            }.bind(this))
+        }.bind(this));
+        this.processSelect.addEvent( "change" , function( ev ){
+            var process = this.getSelectProcess();
+            this.categoryList.currentCategory.saveProcess( process.id, process.name );
+        }.bind(this))
+    },
+    getSelectProcess : function(){
+        this.processSelect.get("option").each( function( option ){
+            if( option.selected ){
+                return { "id" : option.value , "name" : option.text }
+            }
+        }.bind(this))
+    },
+    setProcess : function( value ){
+        var flag = true;
+        this.processSelect.getElements("option").each( function( option ){
+            if( flag ){
+                if( option.value == value ){
+                    option.selected = true;
+                }
+                flag = false;
+            }
+        }.bind(this))
+    },
+
     createFormNode: function(){
         this.formAreaNode = new Element("div.formAreaNode", {
             "styles": this.css.formAreaNode
-        }).inject(this.rightContent);
+        }).inject(this.rightTopContent);
 
         this.formTitleNode = new Element("div.formTitleNode", {
             "styles": this.css.formTitleNode
         }).inject(this.formAreaNode);
+
+        //this.createProcessNode();
 
         this.formCreateNode = new Element("div.formCreateNode", {
             "styles": this.css.formCreateNode
@@ -167,7 +246,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
     createViewNode: function(){
         this.viewAreaNode = new Element("div.viewAreaNode", {
             "styles": this.css.viewAreaNode
-        }).inject(this.rightContent);
+        }).inject(this.rightTopContent);
 
         this.viewTitleNode = new Element("div.viewTitleNode", {
             "styles": this.css.viewTitleNode
@@ -303,7 +382,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
                 if (height<40) height = 40;
                 if (height> size.y-40) height = size.y-40;
 
-                this.formPercent = height/size.y;
+                this.topPercent = height/size.y;
 
                 this.setRightContentResize();
 
@@ -312,20 +391,21 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
     },
     setRightContentResize: function(){
         var size = this.rightContent.getSize();
-        var resizeNodeSize = this.rightContentResizeNode.getSize();
-        var formTitleSize = this.formTitleNode.getSize();
-        var viewTitleSize = this.viewTitleNode.getSize();
-        var height = size.y-resizeNodeSize.y-formTitleSize.y-viewTitleSize.y;
+        var resizeNodeSize = this.rightContentResizeNode ? this.rightContentResizeNode.getSize() : {x:0,y:0};
+        var topTitleSize = 50; //this.rightTopContent.getSize();
+        var bottomTitleSize = 50; //this.rightBottomContent.getSize();
+        var height = size.y-resizeNodeSize.y-topTitleSize-bottomTitleSize;
 
-        var formHeight = this.formPercent*height;
-        var viewHeight = height-formHeight;
+        var topHeight = this.topPercent*height;
+        var bottomHeight = height-topHeight;
 
-        this.formNode.setStyle("height", ""+formHeight+"px");
-        this.viewNode.setStyle("height", ""+viewHeight+"px");
+        this.rightTopContent.setStyle("height", ""+topHeight+"px");
+        this.rightBottomContent.setStyle("height", ""+bottomHeight+"px");
         if( this.formExplorer )this.formExplorer.setContentSize();
         if( this.viewExplorer )this.viewExplorer.setContentSize();
     },
     setContentSize: function(){
+
         //var toolbarSize = this.toolbarNode.getSize();
         var nodeSize = this.node.getSize();
         var pt = this.elementContentNode.getStyle("padding-top").toFloat();
@@ -339,8 +419,15 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
         //this.categoryListResizeNode.setStyle("height", ""+height+"px");
 
         this.rightContent.setStyle("height", ""+height+"px");
-        this.formNode.setStyle("height", ""+(height-30)+"px");
-        this.viewNode.setStyle("height", ""+(height-30)+"px");
+
+        var topHeight = this.topPercent*height;
+        var bottomHeight = height-topHeight;
+
+        this.rightTopContent.setStyle("height", ""+topHeight+"px");
+        this.rightBottomContent.setStyle("height", ""+bottomHeight+"px");
+
+        this.formNode.setStyle("height", ""+(topHeight-30)+"px");
+        this.viewNode.setStyle("height", ""+(topHeight-30)+"px");
 
         //var count = (nodeSize.x/282).toInt();
         //var x = count*282;
@@ -358,9 +445,6 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
         var w = width - resizeNodeSize.x;
         this.formNode.setStyle("width", ""+ w*this.formPercent +"px");
         this.viewNode.setStyle("width", ""+ (w-w*this.formPercent) +"px");
-
-
-
 
 
     }
@@ -433,9 +517,18 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryList = new Class({
             this.currentTimeout = null;
         }.bind(this), 100 );
 
+        //if( !this.category ){
+        //    this.explorer.setProcess("");
+        //}else if( this.category.options.isNew ) {
+        //    this.explorer.setProcess("");
+        //}else{
+        //    this.explorer.setProcess( category.data.processId );
+        //}
+
         this.explorer.formExplorer.refreshByCategory( category );
 
         this.explorer.viewExplorer.refreshByCategory( category );
+        this.explorer.categoryProperty.reload( category );
     },
     setCurrentView : function( view ){
         this.cancelCurrentNode();
@@ -486,7 +579,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryList = new Class({
             if( !category.options.isNew ){
                 var data = category.data;
                 var index = "000" + (itemNodes.length - i);
-                data.catagorySeq = index.substr( index.length-3 ,3);
+                data.categorySeq = index.substr( index.length-3 ,3);
                 actions.saveCategory(  data, null, null, async === false ? false : true );
             }
         })
@@ -656,7 +749,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
     },
     setCategoryView : function(viewId, viewName){
         var data = {
-            "catagoryId" : this.data.id,
+            "categoryId" : this.data.id,
             "viewId" : viewId
         };
         this.app.restActions.addCategoryView(data, function(json){
@@ -674,7 +767,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
         }.bind(this))
     },
     cancelCategoryView : function(viewId, viewName){
-        this.app.restActions.listCategoryViewByCatagory( this.data.id, function(json){
+        this.app.restActions.listCategoryViewByCategory( this.data.id, function(json){
             json.data.each(function( d  ){
                 if(d.viewId == viewId ){
                     this.app.restActions.deleteCategoryView(d.id, function(json){
@@ -688,6 +781,14 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
             }.bind(this));
         }.bind(this),null,false);
 
+    },
+    saveProcess : function( processId, processName ){
+        var d = this.data;
+        d.workflowFlag = processId;
+        d.workflowAppName = processName;
+        this.app.restActions.saveCategory(  d, function( json ){
+            this.app.notice("设置流程成功");
+        }.bind(this))
     },
     setEditForm : function( formId, formName ){
         var d = this.data;
@@ -717,7 +818,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
                 this.app.notice("请输入分类名称","error");
                 return;
             }else{
-                d.catagoryName = value;
+                d.categoryName = value;
                 d.name = value;
             }
         }
@@ -1409,6 +1510,24 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Form = new Class({
             this.setReadAction.setStyles( this.css.setReadAction );
         }
     },
+
+    _open: function(e){
+        layout.desktop.getFormDesignerStyle(function(){
+            var _self = this;
+            var options = {
+                "style": layout.desktop.formDesignerStyle,
+                "onQueryLoad": function(){
+                    this.actions = _self.explorer.actions;
+                    this.category = _self;
+                    this.options.id = _self.data.id;
+                    this.column = _self.explorer.app.options.column;
+                    this.application = _self.explorer.app.options.column;
+                }
+            };
+            this.explorer.app.desktop.openApplication(e, "cms.FormDesigner", options);
+        }.bind(this));
+    },
+
     //deleteItem: function(ev){
     //    var _self = this;
     //    this.explorer.app.confirm("warn", ev.target, this.lp.deleteFormTitle, this.lp.deleteForm, 300, 120, function(){
@@ -1864,5 +1983,205 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.View = new Class({
         }.bind(this));
     }
 });
+
+
+
+MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class({
+    initialize: function(app, node, category){
+        this.app = app;
+        this.node = $(node);
+        this.category = category;
+
+        this.controllerData = [];
+        this.controllerList = [];
+    },
+    load: function(){
+        this.propertyTitleBar = new Element("div", {
+            "styles": this.app.css.propertyTitleBar,
+            "text": "分类属性"  //this.data.name || this.data.appName
+        }).inject(this.node);
+
+        this.contentNode =  new Element("div", {
+            "styles": this.app.css.propertyContentNode
+        }).inject(this.node);
+        this.contentAreaNode =  new Element("div", {
+            "styles": this.app.css.propertyContentAreaNode
+        }).inject(this.contentNode);
+
+        this.setContentHeight();
+        this.setContentHeightFun = this.setContentHeight.bind(this);
+        this.app.addEvent("resize", this.setContentHeightFun);
+        MWF.require("MWF.widget.ScrollBar", function(){
+            new MWF.widget.ScrollBar(this.contentNode, {"indent": false});
+        }.bind(this));
+    },
+    reload: function( category ){
+        if(category)this.category = category;
+        this.contentAreaNode.empty();
+        this.controllerData = [];
+        this.controllerList = [];
+        if(this.category)this.loadContent();
+    },
+    loadContent : function(){
+        this.publisherContainer = new Element( "div").inject( this.contentAreaNode );
+        MWF.xDesktop.requireApp("cms.ColumnManager", "widget.CategoryPublisherSetting", null, false);
+        this.publisherSetting = new MWF.xApplication.cms.ColumnManager.CategoryPublisherSetting( this.app,
+            this.app.lp.application.publisherSetting, this.publisherContainer, {
+                objectId : this.category.data.id,
+                objectType : "CATEGORY",
+                permission : "PUBLISH"
+            }
+        );
+        this.publisherSetting.load();
+
+        this.permissionContainer = new Element( "div").inject( this.contentAreaNode );
+        MWF.xDesktop.requireApp("cms.ColumnManager", "widget.CategoryPermissionSetting", null, false);
+        this.permissionSetting = new MWF.xApplication.cms.ColumnManager.CategoryPermissionSetting( this.app,
+            this.app.lp.application.availableSetting, this.permissionContainer, {
+                objectId : this.category.data.id,
+                objectType : "CATEGORY",
+                permission : "VIEW"
+            }
+        );
+        this.permissionSetting.load();
+
+        this.listController( function(  ){
+            this.createControllerListNode();
+        }.bind(this) );
+    },
+    listController : function( callback ){
+        this.app.restActions.listCategoryController(this.category.data.id, function(json){
+            json.data = json.data || [];
+            this.controllerData = json.data;
+            json.data.each(function( d ){
+                this.controllerList.push( d.adminName );
+            }.bind(this))
+            callback.call(  )
+        }.bind(this), null ,false)
+    },
+    setContentHeight: function(){
+        var size = this.node.getSize();
+        var titleSize = this.propertyTitleBar.getSize();
+        var y = size.y-titleSize.y-10;
+        this.contentNode.setStyle("height", ""+y+"px");
+    },
+
+    createControllerListNode: function(){
+        if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();
+
+        this.controllerListTitleNode = new Element("div", {
+            "styles": this.app.css.controllerListTitleNode,
+            "text": this.app.lp.application.controllerList
+        }).inject(this.contentAreaNode);
+
+        this.controllerListContentNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.contentAreaNode);
+        this.administratorsContentNode = new Element("div", {"styles": this.app.css.administratorsContentNode}).inject(this.controllerListContentNode);
+
+        var changeAdministrators = new Element("div", {
+            "styles": {
+                "margin-left": "40px",
+                "float": "left",
+                "background-color": "#FFF",
+                "padding": "4px 14px",
+                "border": "1px solid #999",
+                "border-radius": "3px",
+                "margin-top": "10px",
+                "margin-bottom": "20px",
+                "font-size": "14px",
+                "color": "#666",
+                "cursor": "pointer"
+            },
+            "text": "设置分类管理者"
+        }).inject(this.contentAreaNode);
+        changeAdministrators.addEvent("click", function(){
+            this.changeAdministrators();
+        }.bind(this));
+
+        if (this.controllerList){
+            var explorer = {
+                "actions": this.personActions,
+                "app": {
+                    "lp": this.app.lp
+                }
+            }
+            this.controllerList.each(function(name){
+                if (name) var admin = new MWF.widget.Person({"name": name}, this.administratorsContentNode, explorer, false, null, {"style": "application"});
+            }.bind(this));
+        }
+    },
+    changeAdministrators: function(){
+        var explorer = {
+            "actions": this.personActions,
+            "app": {
+                "lp": this.app.lp
+            }
+        };
+
+        var options = {
+            "type": "person",
+            "title": "设置分类管理者",
+            "names": this.controllerList || [],
+            "onComplete": function(items){
+
+                this.administratorsContentNode.empty();
+
+                //var controllerList = [];
+                //items.each(function(item){
+                //    controllerList.push(item.data.name);
+                //    var admin = new MWF.widget.Person(item.data, this.administratorsContentNode, explorer, false, null, {"style": "application"});
+                //}.bind(this));
+                //this.controllerList = controllerList;
+                //this.app.restActions.saveApplication(this.data, function(json){
+                //
+                //}.bind(this));
+
+
+                var controllerList = [];
+
+                items.each(function(item){
+                    controllerList.push(item.data.name);
+                    var admin = new MWF.widget.Person(item.data, this.administratorsContentNode, explorer, false, null, {"style": "application"});
+                }.bind(this));
+
+                controllerList.each(function(item){
+                    if( !this.controllerList.contains( item ) ){
+                        var controllerData = {
+                            "objectType": "CATEGORY",
+                            "objectId": this.data.id,
+                            "adminUid": item,
+                            "adminName": item,
+                            "adminLevel": "ADMIN"
+                        }
+                        this.app.restActions.saveController(controllerData, function(json){
+                            controllerData.id = json.data.id;
+                            this.controllerData.push( controllerData );
+                        }.bind(this), null, false);
+                    }
+                }.bind(this))
+
+                this.controllerList.each(function(item){
+                    if( !controllerList.contains( item ) ){
+                        var ad = null;
+                        var id = "";
+                        this.controllerData.each(function(data){
+                            if( data.adminName == item ){
+                                ad = data;
+                                id = data.id;
+                            }
+                        }.bind(this));
+                        this.app.restActions.removeController(id, function(json){
+                            this.controllerData.erase( ad )
+                        }.bind(this), null, false);
+                    }
+                }.bind(this))
+
+                this.controllerList = controllerList;
+                this.app.notice(  MWF.CMSCM.LP.setControllerSuccess  , "success");
+            }.bind(this)
+        };
+
+        var selector = new MWF.OrgSelector(this.app.content, options);
+    }
+})
 
 

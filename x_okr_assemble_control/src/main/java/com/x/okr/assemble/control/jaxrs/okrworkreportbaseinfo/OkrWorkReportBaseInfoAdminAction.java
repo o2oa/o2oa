@@ -14,9 +14,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.EqualsTerms;
 import com.x.base.core.application.jaxrs.InTerms;
 import com.x.base.core.application.jaxrs.LikeTerms;
@@ -31,15 +29,19 @@ import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
+import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
-import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.WrapInAdminFilter;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.WrapInFilterAdminCenterWorkInfo;
 import com.x.okr.assemble.control.jaxrs.okrworkreportprocesslog.WrapOutOkrWorkReportProcessLog;
 import com.x.okr.assemble.control.service.OkrTaskService;
-import com.x.okr.assemble.control.service.OkrWorkBaseInfoService;
+import com.x.okr.assemble.control.service.OkrWorkBaseInfoQueryService;
 import com.x.okr.assemble.control.service.OkrWorkDynamicsService;
-import com.x.okr.assemble.control.service.OkrWorkReportBaseInfoService;
 import com.x.okr.assemble.control.service.OkrWorkReportDetailInfoService;
+import com.x.okr.assemble.control.service.OkrWorkReportOperationService;
 import com.x.okr.assemble.control.service.OkrWorkReportProcessLogService;
+import com.x.okr.assemble.control.service.OkrWorkReportQueryService;
 import com.x.okr.assemble.control.service.OkrWorkReportTaskCollectService;
 import com.x.okr.entity.OkrTask;
 import com.x.okr.entity.OkrWorkBaseInfo;
@@ -52,71 +54,56 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 	private Logger logger = LoggerFactory.getLogger( OkrWorkReportBaseInfoAdminAction.class );
 	private BeanCopyTools<OkrWorkReportBaseInfo, WrapOutOkrWorkReportBaseInfo> wrapout_copier = BeanCopyToolsBuilder.create( OkrWorkReportBaseInfo.class, WrapOutOkrWorkReportBaseInfo.class, null, WrapOutOkrWorkReportBaseInfo.Excludes);
 	private BeanCopyTools<OkrWorkReportProcessLog, WrapOutOkrWorkReportProcessLog> okrWorkReportProcessLog_wrapout_copier = BeanCopyToolsBuilder.create( OkrWorkReportProcessLog.class, WrapOutOkrWorkReportProcessLog.class, null, WrapOutOkrWorkReportProcessLog.Excludes);
-	private OkrWorkReportBaseInfoService okrWorkReportBaseInfoService = new OkrWorkReportBaseInfoService();
+	private OkrWorkReportOperationService okrWorkReportBaseInfoService = new OkrWorkReportOperationService();
+	private OkrWorkReportQueryService okrWorkReportQueryService = new OkrWorkReportQueryService();
 	private OkrWorkReportDetailInfoService okrWorkReportDetailInfoService = new OkrWorkReportDetailInfoService();
 	private OkrWorkReportProcessLogService okrWorkReportProcessLogService = new OkrWorkReportProcessLogService();
-	private OkrWorkBaseInfoService okrWorkBaseInfoService = new OkrWorkBaseInfoService();
+	private OkrWorkBaseInfoQueryService okrWorkBaseInfoService = new OkrWorkBaseInfoQueryService();
 	private OkrWorkDynamicsService okrWorkDynamicsService = new OkrWorkDynamicsService();
 	private OkrTaskService okrTaskService = new OkrTaskService();
 	private OkrWorkReportTaskCollectService okrWorkReportTaskCollectService = new OkrWorkReportTaskCollectService();
 
-	@HttpMethodDescribe(value = "根据ID删除OkrWorkReportBaseInfo数据对象.", response = WrapOutOkrWorkReportBaseInfo.class)
+	@HttpMethodDescribe(value = "根据ID删除OkrWorkReportBaseInfo数据对象.", response = WrapOutId.class)
 	@DELETE
 	@Path( "{id}" )
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response delete( @Context HttpServletRequest request, @PathParam( "id" ) String id ) {
-		ActionResult<WrapOutOkrWorkReportBaseInfo> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		OkrWorkReportBaseInfo okrWorkReportBaseInfo = null;
 		List<OkrTask> taskList = null;
 		List<String> taskTargetName = new ArrayList<String>();
 		Boolean check = true;
 		
 		EffectivePerson currentPerson = this.effectivePerson(request);
-//		Organization organization = new Organization();
-//		Boolean hasPermission = false;
-//		
-//		try {
-//			hasPermission = organization.role().hasAny(currentPerson.getName(),"OkrSystemAdmin" );
-//			if( !hasPermission ){
-//				check = false;
-//				result.error( new Exception("用户未拥有操作权限[OkrSystemAdmin]！") );
-//				result.setUserMessage( "用户未拥有操作权限[OkrSystemAdmin]！" );
-//			}
-//		} catch (Exception e) {
-//			logger.error( "判断用户是否拥有操作权限[OkrSystemAdmin]时发生异常!", e );
-//			check = false;
-//			result.error( e );
-//			result.setUserMessage( "判断用户是否拥有操作权限[OkrSystemAdmin]时发生异常!" );
-//		}
 		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.setUserMessage( "需要删除的工作汇报ID为空，无法进行数据查询。" );
-				result.error( new Exception( "需要删除的工作汇报ID为空，无法进行数据查询！" ) );
-				logger.error( "id is null, system can not delete any object." );
+				Exception exception = new WorkReportIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if( check ){
 			try {
-				okrWorkReportBaseInfo = okrWorkReportBaseInfoService.get( id );
+				okrWorkReportBaseInfo = okrWorkReportQueryService.get( id );
 			} catch (Exception e) {
 				check = false;
-				logger.error( "system get by id got an exception", e );
-				result.setUserMessage( "系统根据ID查询汇报信息时发生异常。" );
-				result.error(e);
+				Exception exception = new WorkReportQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
 			try{
 				okrWorkReportBaseInfoService.delete( id, currentPerson.getName() );
-				result.setUserMessage( "成功删除工作汇报基础信息数据信息。id=" + id );
+				result.setData( new WrapOutId( id ));
 			}catch(Exception e){
-				logger.error( "system delete okrWorkReportBaseInfoService get an exception, {'id':'"+id+"'}", e );
-				result.setUserMessage( "删除工作汇报基础信息数据过程中发生异常。" );
-				result.error( e );
+				Exception exception = new WorkReportDeleteException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -124,9 +111,8 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 				taskList = okrTaskService.listIdsByReportId( id );
 			} catch (Exception e) {
 				check = false;
-				logger.error( "system get task by report id got an exception", e );
-				result.setUserMessage( "系统根据汇报ID查询所有的待办信息时发生异常。" );
-				result.error(e);
+				logger.warn( "system get task by report id got an exception" );
+				logger.error(e);
 			}
 		}
 		if( check ){
@@ -139,7 +125,8 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 							workTypeList.add( task.getWorkType() );
 							okrWorkReportTaskCollectService.checkReportCollectTask( task.getTargetIdentity(), workTypeList );
 						}catch( Exception e ){
-							logger.error( "待办信息删除成功，但对汇报者进行汇报待办汇总发生异常。", e );
+							logger.warn( "待办信息删除成功，但对汇报者进行汇报待办汇总发生异常。");
+							logger.error(e);
 						}
 					}
 				}
@@ -161,9 +148,9 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 							currentPerson.getName(), 
 							"删除中心工作：" + okrWorkReportBaseInfo.getTitle(),
 							"中心工作删除成功！" );
-					result.setUserMessage( id );
 				} catch (Exception e) {
-					logger.error( "okrWorkDynamicsService reportDynamic got an exception", e);
+					logger.warn( "okrWorkDynamicsService reportDynamic got an exception" );
+					logger.error(e);
 				}
 			}
 		}
@@ -177,6 +164,7 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get(@Context HttpServletRequest request, @PathParam( "id" ) String id) {
 		ActionResult<WrapOutOkrWorkReportBaseInfo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapOutOkrWorkReportBaseInfo wrap = null;
 		OkrWorkBaseInfo okrWorkBaseInfo = null;
 		OkrWorkReportBaseInfo okrWorkReportBaseInfo = null;
@@ -185,40 +173,22 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 		List<String> ids = null;
 		Boolean check = true;
 		
-//		EffectivePerson currentPerson = this.effectivePerson(request);
-//		Organization organization = new Organization();
-//		Boolean hasPermission = false;
-//		if( check ){
-//			try {
-//				hasPermission = organization.role().hasAny(currentPerson.getName(),"OkrSystemAdmin" );
-//				if( !hasPermission ){
-//					check = false;
-//					result.error( new Exception("用户未拥有操作权限[OkrSystemAdmin]！") );
-//					result.setUserMessage( "用户未拥有操作权限[OkrSystemAdmin]！" );
-//				}
-//			} catch (Exception e) {
-//				logger.error( "判断用户是否拥有操作权限[OkrSystemAdmin]时发生异常!", e );
-//				check = false;
-//				result.error( e );
-//				result.setUserMessage( "判断用户是否拥有操作权限[OkrSystemAdmin]时发生异常!" );
-//			}
-//		}
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception( "参数传入的id为空。" ));
-				result.setUserMessage( "参数传入的id为空。" );
-				logger.error( "id is null, system can not get any object." );
+				Exception exception = new WorkReportIdEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
 			try {
-				okrWorkReportBaseInfo = okrWorkReportBaseInfoService.get( id );
+				okrWorkReportBaseInfo = okrWorkReportQueryService.get( id );
 			} catch (Exception e) {
 				check = false;
-				logger.error( "system get by id got an exception", e );
-				result.setUserMessage( "系统根据ID查询汇报信息时发生异常。" );
-				result.error(e);
+				Exception exception = new WorkReportQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -227,9 +197,9 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 					wrap = wrapout_copier.copy( okrWorkReportBaseInfo );
 				} catch (Exception e) {
 					check = false;
-					logger.error( "wrapout_copier copy okrWorkReportBaseInfo got an exception", e );
-					result.setUserMessage( "转换汇报信息为输出格式时发生异常。" );
-					result.error(e);
+					Exception exception = new WorkReportWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
@@ -237,15 +207,16 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 			try {
 				okrWorkBaseInfo = okrWorkBaseInfoService.get( wrap.getWorkId() );
 				if( okrWorkBaseInfo == null ){
-					logger.error( "okrWorkBaseInfo{'id':'"+wrap.getWorkId()+"'} is not exsits." );
 					check = false;
-					result.setUserMessage( "汇报所关联的工作信息不存在。" );
+					Exception exception = new WorkNotExistsException( wrap.getWorkId() );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
-				logger.error( "system get okrWorkBaseInfo{'id':'"+wrap.getWorkId()+"'} got an exception.", e );
 				check = false;
-				result.setUserMessage( "系统根据工作ID查询工作信息时发生异常。" );
-				result.error(e);
+				Exception exception = new WorkQueryByIdException( e, wrap.getWorkId() );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);	
 			}
 		}
 		if( check ){
@@ -259,7 +230,8 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 						wrap.setAdminSuperviseInfo( okrWorkReportDetailInfo.getAdminSuperviseInfo() );
 					}
 				} catch (Exception e) {
-					logger.error( "system get okrWorkReportDetailInfo got an exception", e );
+					logger.warn( "system get okrWorkReportDetailInfo got an exception" );
+					logger.error(e);
 				}
 			}
 		}
@@ -274,20 +246,22 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 						}
 					}
 				} catch (Exception e) {
-					logger.error( "system get okrWorkReportDetailInfo got an exception.", e );
+					logger.warn( "system get okrWorkReportDetailInfo got an exception."  );
+					logger.error(e);
 				}
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "列示根据过滤条件查询的WrapOutOkrWorkReportBaseInfo,下一页.", response = WrapOutOkrWorkReportBaseInfo.class, request = WrapInAdminFilter.class)
+	@HttpMethodDescribe(value = "列示根据过滤条件查询的WrapOutOkrWorkReportBaseInfo,下一页.", response = WrapOutOkrWorkReportBaseInfo.class, request = JsonElement.class)
 	@PUT
 	@Path( "filter/list/{id}/next/{count}" )
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response filterListNextWithFilter( @Context HttpServletRequest request, @PathParam( "id" ) String id, @PathParam( "count" ) Integer count, WrapInAdminFilter wrapIn ) {
+	public Response filterListNextWithFilter( @Context HttpServletRequest request, @PathParam( "id" ) String id, @PathParam( "count" ) Integer count, JsonElement jsonElement ) {
 		ActionResult<List<WrapOutOkrWorkReportBaseInfo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		String sequenceField = null;
 		EqualsTerms equalsMap = new EqualsTerms();
 		NotEqualsTerms notEqualsMap = new NotEqualsTerms();
@@ -296,27 +270,19 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 		MemberTerms membersMap = new MemberTerms();
 		NotMemberTerms notMembersMap = new NotMemberTerms();
 		LikeTerms likesMap = new LikeTerms();
-		Boolean check = true;	
-
-//		EffectivePerson currentPerson = this.effectivePerson(request);
-//		Organization organization = new Organization();
-//		Boolean hasPermission = false;
-//		try {
-//			hasPermission = organization.role().hasAny(currentPerson.getName(),"OkrSystemAdmin" );
-//			if( !hasPermission ){
-//				check = false;
-//				result.error( new Exception("用户未拥有操作权限[OkrSystemAdmin]！") );
-//				result.setUserMessage( "用户未拥有操作权限[OkrSystemAdmin]！" );
-//			}
-//		} catch (Exception e) {
-//			logger.error( "判断用户是否拥有操作权限[OkrSystemAdmin]时发生异常!", e );
-//			check = false;
-//			result.error( e );
-//			result.setUserMessage( "判断用户是否拥有操作权限[OkrSystemAdmin]时发生异常!" );
-//		}
+		WrapInFilterAdminCenterWorkInfo wrapIn = null;
+		Boolean check = true;
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilterAdminCenterWorkInfo.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
+		}
 		if( check ){
 			if( wrapIn == null ){
-				wrapIn = new WrapInAdminFilter();
+				wrapIn = new WrapInFilterAdminCenterWorkInfo();
 			}
 		}
 		if( check ){
@@ -335,21 +301,22 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 				result = this.standardListNext( wrapout_copier, id, count, sequenceField,  equalsMap, notEqualsMap, likesMap, insMap, notInsMap, 
 						membersMap, notMembersMap, false, wrapIn.getOrder() );
 			}catch( Exception e ){
-				logger.error( "system pagenate center work query got an exception.", e );
-				result.setUserMessage("系统在分页查询中心工作信息时发生异常。");
-				result.error( e );
+				Exception exception = new WorkReportFilterException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);	
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "列示根据过滤条件查询的WrapOutOkrWorkReportBaseInfo,下一页.", response = WrapOutOkrWorkReportBaseInfo.class, request = WrapInAdminFilter.class)
+	@HttpMethodDescribe(value = "列示根据过滤条件查询的WrapOutOkrWorkReportBaseInfo,下一页.", response = WrapOutOkrWorkReportBaseInfo.class, request = JsonElement.class)
 	@PUT
 	@Path( "filter/list/{id}/prev/{count}" )
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response filterListPrevWithFilter( @Context HttpServletRequest request, @PathParam( "id" ) String id, @PathParam( "count" ) Integer count, WrapInAdminFilter wrapIn ) {
+	public Response filterListPrevWithFilter( @Context HttpServletRequest request, @PathParam( "id" ) String id, @PathParam( "count" ) Integer count, JsonElement jsonElement ) {
 		ActionResult<List<WrapOutOkrWorkReportBaseInfo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		String sequenceField = null;
 		EqualsTerms equalsMap = new EqualsTerms();
 		NotEqualsTerms notEqualsMap = new NotEqualsTerms();
@@ -358,27 +325,20 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 		MemberTerms membersMap = new MemberTerms();
 		NotMemberTerms notMembersMap = new NotMemberTerms();
 		LikeTerms likesMap = new LikeTerms();
-		Boolean check = true;	
+		WrapInFilterAdminCenterWorkInfo wrapIn = null;
+		Boolean check = true;
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilterAdminCenterWorkInfo.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
+		}
 
-//		EffectivePerson currentPerson = this.effectivePerson(request);
-//		Organization organization = new Organization();
-//		Boolean hasPermission = false;
-//		try {
-//			hasPermission = organization.role().hasAny(currentPerson.getName(),"OkrSystemAdmin" );
-//			if( !hasPermission ){
-//				check = false;
-//				result.error( new Exception("用户未拥有操作权限[OkrSystemAdmin]！") );
-//				result.setUserMessage( "用户未拥有操作权限[OkrSystemAdmin]！" );
-//			}
-//		} catch (Exception e) {
-//			logger.error( "判断用户是否拥有操作权限[OkrSystemAdmin]时发生异常!", e );
-//			check = false;
-//			result.error( e );
-//			result.setUserMessage( "判断用户是否拥有操作权限[OkrSystemAdmin]时发生异常!" );
-//		}
 		if( check ){
 			if( wrapIn == null ){
-				wrapIn = new WrapInAdminFilter();
+				wrapIn = new WrapInFilterAdminCenterWorkInfo();
 			}
 		}	
 		if( check ){
@@ -397,9 +357,9 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 				result = this.standardListPrev( wrapout_copier, id, count, sequenceField,  equalsMap, notEqualsMap, likesMap, insMap, notInsMap, 
 						membersMap, notMembersMap, false, wrapIn.getOrder() );
 			}catch( Exception e ){
-				logger.error( "system pagenate center work query got an exception.", e );
-				result.setUserMessage("系统在分页查询中心工作信息时发生异常。");
-				result.error( e );
+				Exception exception = new WorkReportFilterException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);	
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);

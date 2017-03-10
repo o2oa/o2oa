@@ -1,25 +1,33 @@
 package com.x.base.core.project.server;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.gson.GsonPropertyObject;
 
 public class Node extends GsonPropertyObject {
 
+	public static Node defaultInstance() {
+		Node o = new Node();
+		o.enable = true;
+		o.isPrimaryCenter = true;
+		o.application = ApplicationServer.defaultInstance();
+		o.web = WebServer.defaultInstance();
+		o.data = DataServer.defaultInstance();
+		o.storage = StorageServer.	defaultInstance();
+		o.logLevel = "info";
+		return o;
+	}
+
 	private Boolean enable;
-
-	private Boolean isPrimaryCenter = false;
-
+	private Boolean isPrimaryCenter;
 	private ApplicationServer application;
-
 	private WebServer web;
-
 	private DataServer data;
-
+	private StorageServer storage;
 	private String logLevel;
 
-	private StorageServer storage;
-
 	public Boolean getIsPrimaryCenter() {
-		return isPrimaryCenter;
+		return BooleanUtils.isTrue(this.isPrimaryCenter);
 	}
 
 	public void setIsPrimaryCenter(Boolean isPrimaryCenter) {

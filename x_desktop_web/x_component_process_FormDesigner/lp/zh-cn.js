@@ -94,6 +94,7 @@ MWF.xApplication.process.FormDesigner.LP = {
             "delete_text": "您确定要删除此项校验码？"
         },
     "selectIcon": "选择图标",
+    "selectImage": "选择图片",
     "dutyInputTitle": "添加职务参数",
     "dutyInput": "请为职务“{duty}”添加参数",
     "creatorCompany": "拟稿公司",
@@ -109,5 +110,7 @@ MWF.xApplication.process.FormDesigner.LP = {
     "templateDescription": "模板描述",
     "save": "保存",
     "cancel": "取消",
-    "newCategory": "新分类"
-};
+    "newCategory": "新分类",
+
+    "imageClipper" : "图片编辑"
+}

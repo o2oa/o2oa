@@ -99,4 +99,46 @@ public class SortTools {
 			}
 		});
 	}
+
+	public static void asc(List<?> list) {
+		asc(list, false);
+	}
+
+	public static void asc(List<?> list, boolean nullGreater) {
+		Collections.sort(list, new Comparator<Object>() {
+			@SuppressWarnings({ "unchecked", "rawtypes" })
+			public int compare(Object o1, Object o2) {
+				Comparable c1 = null;
+				Comparable c2 = null;
+				if (null != o1) {
+					c1 = (o1 instanceof Comparable) ? (Comparable) o1 : o1.toString();
+				}
+				if (null != o2) {
+					c2 = (o2 instanceof Comparable) ? (Comparable) o2 : o2.toString();
+				}
+				return ObjectUtils.compare(c1, c2, nullGreater);
+			}
+		});
+	}
+
+	public static void desc(List<?> list) {
+		desc(list, false);
+	}
+
+	public static void desc(List<?> list, boolean nullGreater) {
+		Collections.sort(list, new Comparator<Object>() {
+			@SuppressWarnings({ "unchecked", "rawtypes" })
+			public int compare(Object o1, Object o2) {
+				Comparable c1 = null;
+				Comparable c2 = null;
+				if (null != o1) {
+					c1 = (o1 instanceof Comparable) ? (Comparable) o1 : o1.toString();
+				}
+				if (null != o2) {
+					c2 = (o2 instanceof Comparable) ? (Comparable) o2 : o2.toString();
+				}
+				return ObjectUtils.compare(c2, c1, nullGreater);
+			}
+		});
+	}
 }

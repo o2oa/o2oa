@@ -1,7 +1,7 @@
 MWF.APPFD = MWF.xApplication.process.FormDesigner;
 MWF.APPFD.options = {
-	"multitask": true,
-	"executable": false
+    "multitask": true,
+    "executable": false
 };
 MWF.xDesktop.requireApp("process.ProcessManager", "Actions.RestActions", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Package", null, false);
@@ -1143,6 +1143,8 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             if (this.mobileForm){
                 this.mobileForm._getFormData();
                 mobileData = this.mobileForm.data;
+            }else{
+                if (this.formMobileData) mobileData = this.formMobileData;
             }
 
             this.isSave = true;

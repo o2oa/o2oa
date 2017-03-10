@@ -9,12 +9,12 @@ import com.x.base.core.gson.GsonPropertyObject;
 
 public class Row extends GsonPropertyObject {
 
-	private String job;
+	private String categoryId;
 
 	private LinkedHashMap<String, Object> data;
 
-	public Row(String job) {
-		this.job = job;
+	public Row(String categoryId) {
+		this.categoryId = categoryId;
 		data = new LinkedHashMap<String, Object>();
 	}
 
@@ -28,8 +28,16 @@ public class Row extends GsonPropertyObject {
 		}
 	}
 
-	public String getJob() {
-		return job;
+	public String getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
+	}
+
+	public void setData(LinkedHashMap<String, Object> data) {
+		this.data = data;
 	}
 
 	public LinkedHashMap<String, Object> getData() {

@@ -6,8 +6,8 @@ import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.file.assemble.control.Business;
 import com.x.file.assemble.control.wrapout.WrapOutFolder;
-import com.x.file.core.entity.Attachment;
-import com.x.file.core.entity.Folder;
+import com.x.file.core.entity.personal.Attachment;
+import com.x.file.core.entity.personal.Folder;
 
 public class ActionBase {
 
