@@ -1,0 +1,7 @@
+{
+server:"demo.xplatform.tech",
+port:5080,
+host:"demo.xplatform.tech",
+user:"xadmin",
+pass:"xpfadmin"
+}

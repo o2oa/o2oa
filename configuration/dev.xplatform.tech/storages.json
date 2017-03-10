@@ -1,0 +1,50 @@
+{
+  "processPlatform": [
+    {
+      "storageServer": "xs01processplatform",
+      "enable": true,
+      "weight": 100,
+      "order": 0
+    }
+  ],
+  "file": [
+    {
+      "storageServer": "xs01file",
+      "enable": true,
+      "weight": 100,
+      "order": 0
+    }
+  ],
+  "meeting": [
+    {
+      "storageServer": "xs01meeting",
+      "enable": true,
+      "weight": 100,
+      "order": 0
+    }
+  ],
+  "okr": [
+    {
+      "storageServer": "xs01okr",
+      "enable": true,
+      "weight": 100,
+      "order": 0
+    }
+  ],
+  "cms": [
+    {
+      "storageServer": "xs01cms",
+      "enable": true,
+      "weight": 100,
+      "order": 0
+    }
+  ],
+  "bbs": [
+    {
+      "storageServer": "xs01cms",
+      "enable": true,
+      "weight": 100,
+      "order": 0
+    }
+  ]
+}

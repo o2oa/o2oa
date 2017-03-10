@@ -1,0 +1,53 @@
+应用界面打开的各个列表权限如下：-----------------------------------------------------------------
+应用界面的work列表：
+
+      "control": {
+        "allowVisit": true,              //是否可以打开
+        "allowProcessing": true,        //是否可以直接流转work（是管理员，并且没有任何task）
+        "allowSave": true,              //忽略（管理员或者有本人的task）（在这个界面中不会用到）
+        "allowReset": true,             //忽略（这是针对task的权限属性）
+        "allowRetract": false,          //忽略
+        "allowReroute": true,           //是否可调度（管理员 并且 此活动在流程设计中允许调度）
+        "allowDelete": true             //是否可删除（管理员 或者 （此活动在流程设计中允许删除 并且 拟稿人是待办人））
+      },
+
+应用界面的task列表：
+
+      "control": {
+        "allowProcessing": true,        //是否可以直接流转（管理员）
+        "allowReset": true,             //是否可以重置处理人（管理员 或 （本人待办并且活动设置允许重置））
+        "allowDelete": true             //是否可删除（管理员）
+      },
+
+应用界面的taskCompleted列表：
+
+      "control": {
+        "allowDelete": true             //是否可删除（管理员）
+      },
+
+应用界面的read列表：
+
+      "control": {
+        "allowProcessing": false,             //是否允许标志为已阅（管理员 或 待阅人本人）
+        "allowDelete": true             //是否可删除（管理员）
+      },
+
+应用界面的readCompleted列表：
+
+      "control": {
+        "allowDelete": true             //是否可删除（管理员）
+      },
+------------------------------------------------------------------------------------------------------------
+
+打开具体一个work权限如下：
+
+      "control": {
+        "allowVisit": true,              //是否可以打开（管理员 或 有task、taskCompleted、read、readCompleted、review的人）
+        "allowProcessing": true,        //是否可以流转（有task的人）
+	"allowReadProcessing":true,	//是否可以处理待阅(有read的人)
+        "allowSave": true,              //是否可保存（管理员 或者 有本人的task）
+        "allowReset": true,             //是否可重置（有本人待办 并且 活动设置允许重置）
+        "allowRetract": false,          //是否可以撤回（当前人是上一个处理人 并且 还没有其他人处理过）
+        "allowReroute": true,           //是否可调度（管理员 并且 此活动在流程设计中允许调度）
+        "allowDelete": true             //是否可删除（管理员 或者 此活动在流程设计中允许删除且当前待办人是文件的创建者）
+      },

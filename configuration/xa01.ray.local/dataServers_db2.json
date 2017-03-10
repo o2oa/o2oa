@@ -1,0 +1,13 @@
+[
+    {
+        "databaseType": "db2",
+        "database": "X",
+        "host": "xd01.ray.local",
+        "port": 50000,
+        "username": "db2admin",
+        "password": "zone2009",
+        "order": 0,
+        "name": "xd01",
+        "description": ""
+    }
+]

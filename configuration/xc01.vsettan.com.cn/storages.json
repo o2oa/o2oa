@@ -1,0 +1,26 @@
+{
+  "file": [
+    {
+      "storageServer": "xs01file",
+      "enable": true,
+      "weight": 100,
+      "order": 0
+    }
+  ],
+  "processPlatform": [
+    {
+      "storageServer": "xs01processplatform",
+      "enable": true,
+      "weight": 100,
+      "order": 0
+    }
+  ],
+  "meeting": [
+    {
+      "storageServer": "xs01meeting",
+      "enable": true,
+      "weight": 100,
+      "order": 0
+    }
+  ]
+}
