@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+	<Set name="contextPath">/x_okr_assemble_control</Set>
+	<Set name="war">/o2server/store/x_okr_assemble_control.war</Set>
+	<Set name="extraClasspath">/o2server/commons/ext/openjpa-2.4.2-SNAPSHOT.jar;/o2server/commons/ext/slf4j-api-1.7.21.jar;/o2server/commons/ext/ehcache-2.10.1.jar;/o2server/commons/ext/jetty-all-9.3.14.v20161028-uber.jar;/o2server/commons/ext/slf4j-simple-1.7.21.jar;/o2server/store/jars/x_organization_core_express-4.0.0.jar;/o2server/store/jars/x_collaboration_core_message-4.0.0.jar;/o2server/store/jars/x_okr_core_entity-4.0.0.jar;/o2server/store/jars/x_base_core_project-4.0.0.jar;/o2server/store/jars/x_organization_core_entity-4.0.0.jar</Set>
+	<Set name="tempDirectory">/o2server/servers/applicationServer/work/x_okr_assemble_control</Set>
+</Configure>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." name="main" default="default">
+	<basename property="project" file="${basedir}" />
+	<dirname property="root.dir" file="${basedir}../" />
+	<property file="${root.dir}/building/build.properties" />
+	<include file="${root.dir}/building/build_common.xml" as="common" />
+
+
+	<tstamp>
+		<format property="TODAY" pattern="yyyyMMdd" locale="zh-cn" />
+	</tstamp>
+
+	<target name="default">
+		<copy todir="D:/o2server/store">
+			<fileset dir="${root.dir}/store">
+			</fileset>
+		</copy>
+		<copy file="${root.dir}/x_server_console/console.jar" tofile="D:/o2server/console.jar" />
+	</target>
+</project>
