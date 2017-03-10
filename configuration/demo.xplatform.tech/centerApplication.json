@@ -1,8 +1,0 @@
-{
-	"cipher":"xplatform",
-	"host":"",
-	"port":30080,
-	"proxyHost":"",
-	"proxyPort":30080,
-	"context":"/x_program_center"
-}

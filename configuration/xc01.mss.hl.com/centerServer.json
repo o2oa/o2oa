@@ -1,7 +1,0 @@
-{
-  "cipher": "xplatform",
-  "host": "127.0.0.1",
-  "port": 30080,
-  "proxyHost": "dev.xplatform.tech",
-  "proxyPort": 30080
-}

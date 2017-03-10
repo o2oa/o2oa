@@ -1,1 +1,0 @@
-ace.define("ace/snippets/protobuf",["require","exports","module"],function(e,t,o){"use strict";t.snippetText="",t.scope="protobuf"});

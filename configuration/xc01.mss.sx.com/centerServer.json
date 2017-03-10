@@ -1,7 +1,0 @@
-{
-  "cipher": "xplatform",
-  "host": "127.0.0.1",
-  "port": 30080,
-  "proxyHost": "xc01.mss.sx.com",
-  "proxyPort": 30080
-}

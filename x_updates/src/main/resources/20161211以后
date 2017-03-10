@@ -1,6 +1,0 @@
-1.修改webdefault.xml位置
-2.修改initialScriptText.js位置
-3.config/personTemplate.json 改为 config/person.json
-4.mimeType改为使用jetty
-5.OpenMeetingJunction改为Meeting
-6.jvm移动到根目录下
