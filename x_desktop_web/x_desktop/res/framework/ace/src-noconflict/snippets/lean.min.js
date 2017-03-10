@@ -1,1 +1,0 @@
-ace.define("ace/snippets/lean",["require","exports","module"],function(e,n,i){"use strict";n.snippetText=undefined;n.scope="lean"});
