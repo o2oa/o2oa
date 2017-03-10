@@ -100,7 +100,6 @@ public  class Excel2003Reader implements HSSFListener{
 		}
 		factory.processWorkbookEvents(request, fs);
 		//数据读取完成
-		
 	}
 	
 	/**
@@ -122,7 +121,6 @@ public  class Excel2003Reader implements HSSFListener{
 		}
 		factory.processWorkbookEvents(request, fs);
 		//数据读取完成
-		
 	}
 	
 	/**

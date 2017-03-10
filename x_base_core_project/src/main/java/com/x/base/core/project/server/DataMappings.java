@@ -100,11 +100,7 @@ public class DataMappings extends ConcurrentHashMap<String, CopyOnWriteArrayList
 						+ dataServers.firstEntry().getValue().getTcpPort() + "/X";
 				o.setUrl(url);
 				o.setUsername("sa");
-				String password = dataServers.firstEntry().getValue().getCalculatedPassword();
-				if (StringUtils.isEmpty(password)) {
-					password = Config.token().getPassword();
-				}
-				o.setPassword(password);
+				o.setPassword(Config.token().getPassword());
 				this.get(cls.getName()).add(o);
 			}
 		} else {
@@ -126,11 +122,7 @@ public class DataMappings extends ConcurrentHashMap<String, CopyOnWriteArrayList
 					String url = "jdbc:h2:tcp://" + node + ":" + server.getTcpPort() + "/X";
 					o.setUrl(url);
 					o.setUsername("sa");
-					String password = server.getCalculatedPassword();
-					if (StringUtils.isEmpty(password)) {
-						password = Config.token().getPassword();
-					}
-					o.setPassword(password);
+					o.setPassword(Config.token().getPassword());
 					this.get(str).add(o);
 				}
 			}

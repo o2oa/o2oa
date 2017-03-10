@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.utils.SortTools;
@@ -44,10 +43,13 @@ class ActionListWithPersonComplex extends ActionBase {
 			List<String> ids = business.application().listAvailable(effectivePerson, roles, identities, departments,
 					companies);
 			for (String id : ids) {
-				Application o = business.application().pick(id, ExceptionWhen.not_found);
-				WrapOutApplication wrap = applicationOutCopier.copy(o);
-				wrap.setProcessList(this.listProcess(business, effectivePerson, identities, departments, companies, o));
-				wraps.add(wrap);
+				Application o = business.application().pick(id);
+				if (null != o) {
+					WrapOutApplication wrap = applicationOutCopier.copy(o);
+					wrap.setProcessList(
+							this.listProcess(business, effectivePerson, identities, departments, companies, o));
+					wraps.add(wrap);
+				}
 			}
 			result.setData(wraps);
 			return result;

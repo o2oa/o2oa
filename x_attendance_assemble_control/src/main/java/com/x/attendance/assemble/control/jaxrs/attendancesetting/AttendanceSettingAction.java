@@ -14,20 +14,20 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.x.attendance.assemble.control.jaxrs.WrapOutMessage;
+import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.service.AttendanceSettingServiceAdv;
 import com.x.attendance.entity.AttendanceSetting;
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
+import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 
 
 @Path("attendancesetting")
@@ -45,6 +45,7 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listAllAttendanceSetting(@Context HttpServletRequest request ) {
 		ActionResult<List<WrapOutAttendanceSetting>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		List<WrapOutAttendanceSetting> wraps = null;
 		List<AttendanceSetting> attendanceSettingList = null;
 		Boolean check = true;
@@ -54,9 +55,9 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				attendanceSettingList = attendanceSettingServiceAdv.listAll();
 			} catch (Exception e) {
 				check = false;
-				logger.error( "system query all attendance setting got an exception.", e );
-				result.error(e);
-				result.setUserMessage( "系统在查询全部考勤系统配置时发生异常！" );
+				Exception exception = new AttendanceSettingListAllException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -65,9 +66,9 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				result.setData(wraps);
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象时发生异常。");
-				logger.error( "system copy attendance setting list to wrap got an exception.", e);
+				Exception exception = new AttendanceSettingWrapOutException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -80,6 +81,7 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutAttendanceSetting> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapOutAttendanceSetting wrap = null;
 		AttendanceSetting attendanceSetting = null;
 		Boolean check = true;
@@ -87,8 +89,9 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception( "系统未获取到需要查询的数据ID，参数id为空。" ));
-				result.setUserMessage( "系统未获取到需要查询的数据ID，参数id为空。" );
+				Exception exception = new AttendanceSettingIdEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -96,9 +99,9 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				attendanceSetting = attendanceSettingServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				logger.error( "system get attendance setting with id got an exception.id:" + id, e );
-				result.error(e);
-				result.setUserMessage( "系统在根据ID查询考勤系统配置时发生异常！" );
+				Exception exception = new GetAttendanceSettingByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -107,9 +110,9 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				result.setData( wrap );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象时发生异常。");
-				logger.error( "system copy attendance setting to wrap got an exception.", e);
+				Exception exception = new AttendanceSettingWrapOutException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -122,6 +125,7 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getWithCode(@Context HttpServletRequest request, @PathParam("code") String code) {
 		ActionResult<WrapOutAttendanceSetting> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapOutAttendanceSetting wrap = null;
 		AttendanceSetting attendanceSetting = null;
 		Boolean check = true;
@@ -129,8 +133,9 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 		if( check ){
 			if( code == null || code.isEmpty() ){
 				check = false;
-				result.error( new Exception( "系统未获取到需要查询的数据code，参数code为空。" ));
-				result.setUserMessage( "系统未获取到需要查询的数据code，参数code为空。" );
+				Exception exception = new AttendanceSettingCodeEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -138,9 +143,9 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				attendanceSetting = attendanceSettingServiceAdv.listIdsByCode( code );
 			} catch (Exception e) {
 				check = false;
-				logger.error( "system get attendance setting with code got an exception.code:" + code, e );
-				result.error(e);
-				result.setUserMessage( "系统在根据ID查询考勤系统配置时发生异常！" );
+				Exception exception = new AttendanceSettingListByCodeException( e, code );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -149,41 +154,48 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				result.setData( wrap );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象时发生异常。");
-				logger.error( "system copy attendance setting to wrap got an exception.", e);
+				Exception exception = new AttendanceSettingWrapOutException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "新建或者更新AttendanceSetting系统设置对象.", request = WrapInAttendanceSetting.class, response = WrapOutMessage.class)
+	@HttpMethodDescribe(value = "新建或者更新AttendanceSetting系统设置对象.", request = JsonElement.class, response = WrapOutId.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response save(@Context HttpServletRequest request, WrapInAttendanceSetting wrapIn) {
+	public Response save(@Context HttpServletRequest request, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		WrapInAttendanceSetting wrapIn = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapOutId wrapOutId = null;
 		AttendanceSetting attendanceSetting = new AttendanceSetting();
 		Boolean check = true;
 		
-		if( wrapIn == null ){
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInAttendanceSetting.class );
+		} catch (Exception e ) {
 			check = false;
-			result.error( new Exception( "系统未获取到需要保存的数据对象。" ) );
-			result.setUserMessage( "系统未获取到需要保存的数据对象。" );
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
 		}
 		if( check ){
 			if( wrapIn.getConfigCode() == null || wrapIn.getConfigCode().isEmpty() ){
 				check = false;
-				result.error( new Exception( "系统配置编码不允许为空，请检查您的输入。" ) );
-				result.setUserMessage( "系统配置编码不允许为空，请检查您的输入。" );
+				Exception exception = new AttendanceSettingCodeEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
 			if( wrapIn.getConfigName() == null || wrapIn.getConfigName().isEmpty() ){
 				check = false;
-				result.error( new Exception( "系统配置名称不允许为空，请检查您的输入。" ) );
-				result.setUserMessage( "系统配置名称不允许为空，请检查您的输入。" );
+				Exception exception = new AttendanceSettingNameEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -194,9 +206,9 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				}
 			} catch (Exception e) {
 				check = false;
-				logger.error( "system copy wrap in data to attendance setting object got an exception.", e );
-				result.error( e );
-				result.setUserMessage( "系统在将传入的数据格式化为系统配置对象时发生异常。" );
+				Exception exception = new AttendanceSettingWrapInException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -206,21 +218,22 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				result.setData( wrapOutId );
 			} catch (Exception e) {
 				check = false;
-				logger.error( "system save attendance setting got an exception.", e );
-				result.error( e );
-				result.setUserMessage( "系统在保存系统配置到数据库时发生异常。" );
+				Exception exception = new AttendanceSettingSaveException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "根据ID删除AttendanceSetting系统设置对象.", response = WrapOutMessage.class)
+	@HttpMethodDescribe(value = "根据ID删除AttendanceSetting系统设置对象.", response = WrapOutId.class)
 	@DELETE
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response delete(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapOutId wrapOutId = null;
 		AttendanceSetting attendanceSetting = null;
 		Boolean check = true;
@@ -228,8 +241,9 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 		if( check ){
 			if( id != null && !id.isEmpty() ){
 				check = false;
-				result.error( new Exception( "系统未获取到需要删除的数据id，参数id为空。" ));
-				result.setUserMessage( "系统未获取到需要删除的数据id，参数id为空。" );
+				Exception exception = new AttendanceSettingIdEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -237,14 +251,15 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				attendanceSetting = attendanceSettingServiceAdv.get( id );
 				if( attendanceSetting == null ){			
 					check = false;
-					result.error( new Exception("需要删除的数据不存在！") );
-					result.setUserMessage( "需要删除的数据不存在！" );
+					Exception exception = new AttendanceSettingNotExistsException( id );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
-				logger.error( "system get attendance setting with id got an exception.id:" + id, e );
-				result.error(e);
-				result.setUserMessage( "系统在根据ID查询考勤系统配置时发生异常！" );
+				Exception exception = new GetAttendanceSettingByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -254,9 +269,9 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				result.setData( wrapOutId );
 			} catch (Exception e) {
 				check = false;
-				logger.error( "system delete attendance setting with id got an exception.id:" + id, e );
-				result.error(e);
-				result.setUserMessage( "系统在根据ID删除考勤系统配置时发生异常！" );
+				Exception exception = new AttendanceSettingDeleteException( e, id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);

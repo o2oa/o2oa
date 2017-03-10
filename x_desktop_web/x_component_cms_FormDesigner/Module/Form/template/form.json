@@ -7,7 +7,7 @@
       "mode": "PC",
       "description": "",
       "application": "",
-      "applicationName": "",R
+      "applicationName": "",
 
       "styles": {},
       "properties": {},
@@ -39,11 +39,11 @@
           "code": "",
           "html": ""
         },
-        "beforeCms": {
+        "beforePublish": {
           "code": "",
           "html": ""
         },
-        "afterCms": {
+        "afterPublish": {
           "code": "",
           "html": ""
         },
@@ -139,7 +139,7 @@
       "cssLinks": [],
       "scriptSrc": [],
       "jsheader": {
-        "code": "",
+        "code": "if (x=\"s\"){ alert(\"123\");}",
         "html": ""
       },
 

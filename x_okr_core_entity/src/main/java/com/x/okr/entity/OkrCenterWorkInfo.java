@@ -117,7 +117,7 @@ public class OkrCenterWorkInfo extends SliceJpaObject {
 	 * 在执行给定实体的相应 EntityManager 持久操作之前，调用该实体的 @PrePersist 回调方法。
 	 */
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -135,12 +135,12 @@ public class OkrCenterWorkInfo extends SliceJpaObject {
 	 * 在对实体数据进行数据库更新操作之前，调用实体的 @PreUpdate 回调方法。
 	 */
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
 
-	private void onPersist() {
+	private void onPersist() throws Exception{
 	}
 	/* ==================================================================================
 	 *                             以上为 JpaObject 默认字段
@@ -158,13 +158,13 @@ public class OkrCenterWorkInfo extends SliceJpaObject {
 	@EntityFieldDescribe( "工作部署年份" )
 	@Column( name="xdeployYear", length = JpaObject.length_16B )
 	@Index( name = TABLE + "_deployYear" )
-	@CheckPersist( allowEmpty = false)
+	@CheckPersist( allowEmpty = true )
 	private String deployYear = "";
 	
 	@EntityFieldDescribe( "工作部署月份" )
 	@Column(name="xdeployMonth", length = JpaObject.length_16B )
 	@Index( name = TABLE + "_deployMonth" )
-	@CheckPersist( allowEmpty = false)
+	@CheckPersist( allowEmpty = true)
 	private String deployMonth = "";
 	
 	@EntityFieldDescribe( "部署者姓名" )
@@ -231,6 +231,11 @@ public class OkrCenterWorkInfo extends SliceJpaObject {
 	@Column( name="xprocessStatus", length = JpaObject.length_32B )
 	@CheckPersist(allowEmpty = true )
 	private String processStatus = "草稿";
+	
+	@EntityFieldDescribe( "中心工作部署日期-字符串，显示用：yyyy-mm-dd" )
+	@Column(name="xdeployDateStr", length = JpaObject.length_32B )
+	@CheckPersist( allowEmpty = true )
+	private String deployDateStr = "";
 	
 	@EntityFieldDescribe( "中心工作默认完成日期" )
 	@Column( name="xdefaultCompleteDateLimit" )
@@ -690,5 +695,10 @@ public class OkrCenterWorkInfo extends SliceJpaObject {
 	public void setAttachmentList(List<String> attachmentList) {
 		this.attachmentList = attachmentList;
 	}
-	
+	public String getDeployDateStr() {
+		return deployDateStr;
+	}
+	public void setDeployDateStr(String deployDateStr) {
+		this.deployDateStr = deployDateStr;
+	}
 }

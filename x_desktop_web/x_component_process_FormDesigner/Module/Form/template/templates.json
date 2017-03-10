@@ -5,6 +5,11 @@
     "icon": "form.png"
   },
   {
+    "name": "form_common.json",
+    "title": "通用表单模板",
+    "icon": "form_common.png"
+  },
+  {
     "name": "form_tab.json",
     "title": "标准表单样式(蓝色)",
     "icon": "form_tab.png"
@@ -18,5 +23,10 @@
     "name": "form_tab.json",
     "title": "传统表单样式",
     "icon": "form_tab.png"
+  },
+  {
+    "name": "form_project.json",
+    "title": "立项表单模板",
+    "icon": "form_project.png"
   }
 ]

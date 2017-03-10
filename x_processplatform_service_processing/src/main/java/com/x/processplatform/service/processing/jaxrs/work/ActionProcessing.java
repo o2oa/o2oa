@@ -13,9 +13,9 @@ import com.x.processplatform.service.processing.ProcessingAttributes;
  * @author Rui
  *
  */
-public class ActionProcessing {
+class ActionProcessing {
 
-	protected WrapOutId execute(Business business, String id, ProcessingAttributes attributes) throws Exception {
+	WrapOutId execute(Business business, String id, ProcessingAttributes attributes) throws Exception {
 		/** 校验work是否存在 */
 		business.entityManagerContainer().find(id, Work.class, ExceptionWhen.not_found);
 		if (null == attributes) {

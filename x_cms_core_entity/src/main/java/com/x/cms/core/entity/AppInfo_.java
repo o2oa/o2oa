@@ -13,14 +13,14 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.cms.core.entity.AppInfo.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:17:48 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 13:46:13 CST 2017")
 public class AppInfo_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<AppInfo,String> appAlias;
     public static volatile SingularAttribute<AppInfo,String> appIcon;
     public static volatile SingularAttribute<AppInfo,String> appInfoSeq;
     public static volatile SingularAttribute<AppInfo,String> appMemo;
     public static volatile SingularAttribute<AppInfo,String> appName;
-    public static volatile ListAttribute<AppInfo,String> catagoryList;
+    public static volatile ListAttribute<AppInfo,String> categoryList;
     public static volatile SingularAttribute<AppInfo,Date> createTime;
     public static volatile SingularAttribute<AppInfo,String> creatorCompany;
     public static volatile SingularAttribute<AppInfo,String> creatorDepartment;

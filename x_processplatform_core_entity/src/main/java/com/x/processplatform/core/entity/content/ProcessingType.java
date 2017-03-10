@@ -14,6 +14,10 @@ public enum ProcessingType {
 	retract,
 	/* 重置处理人 */
 	reset,
+	/** 智能流转 */
+	passSameTarget,
+	/** 超时流转 */
+	passExpired,
 	/* 管理员流转 */
 	control;
 	public static final int length = JpaObject.length_16B;

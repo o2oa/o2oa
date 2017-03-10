@@ -1,14 +1,70 @@
 package com.x.organization.assemble.control;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
-public class MappingItem {
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.gson.GsonPropertyObject;
+import com.x.organization.core.entity.GenderType;
+
+public class MappingItem extends GsonPropertyObject {
+
+	public static void setValue(Row row, JpaObject jpaObject, MappingItem item) throws Exception {
+		Cell cell = row.getCell(item.getColumn());
+		if (null != cell) {
+			switch (item.getType()) {
+			case string:
+				cell.setCellType(Cell.CELL_TYPE_STRING);
+				String stringValue = cell.getStringCellValue();
+				if (null != stringValue) {
+					PropertyUtils.setProperty(jpaObject, item.getField(), stringValue);
+				}
+				break;
+			case integer:
+				cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+				Double doubeValue = cell.getNumericCellValue();
+				if (null != doubeValue) {
+					PropertyUtils.setProperty(jpaObject, item.getField(), doubeValue.intValue());
+				}
+				break;
+			case date:
+				Date dateValue = cell.getDateCellValue();
+				if (null != dateValue) {
+					PropertyUtils.setProperty(jpaObject, item.getField(), dateValue);
+				}
+				break;
+			case genderType:
+				String genderTypeStringValue = cell.getStringCellValue();
+				if (StringUtils.isNotEmpty(genderTypeStringValue)) {
+					if (StringUtils.equalsIgnoreCase(GenderType.f.toString(), genderTypeStringValue)) {
+						PropertyUtils.setProperty(jpaObject, item.getField(), GenderType.f);
+					} else if (StringUtils.equalsIgnoreCase(GenderType.m.toString(), genderTypeStringValue)) {
+						PropertyUtils.setProperty(jpaObject, item.getField(), GenderType.m);
+					} else {
+						PropertyUtils.setProperty(jpaObject, item.getField(), GenderType.d);
+					}
+				}
+				break;
+			case stringList:
+				String stringListValue = cell.getStringCellValue();
+				if (null != stringListValue) {
+					List<String> list = new ArrayList<>(Arrays.asList(StringUtils.split(stringListValue, ",")));
+					PropertyUtils.setProperty(jpaObject, item.getField(), list);
+				}
+				break;
+			default:
+				break;
+			}
+		}
+	}
 
 	public static List<MappingItem> personMappings() {
 		List<MappingItem> list = new ArrayList<>();
@@ -20,7 +76,7 @@ public class MappingItem {
 		list.add(new MappingItem("密码", "password", MappingItemValueType.string));
 		list.add(new MappingItem("密码到期时间", "passwordExpiredTime", MappingItemValueType.date));
 		list.add(new MappingItem("排序号", "orderNumber", MappingItemValueType.integer));
-		list.add(new MappingItem("标识", "id", MappingItemValueType.string));
+		// list.add(new MappingItem("标识", "id", MappingItemValueType.string));
 		list.add(new MappingItem("邮件", "mail", MappingItemValueType.string));
 		list.add(new MappingItem("手机", "mobile", MappingItemValueType.string));
 		list.add(new MappingItem("固定电话", "officePhone", MappingItemValueType.string));
@@ -242,6 +298,25 @@ public class MappingItem {
 				}
 			}
 		}
+	}
+
+	public static Integer getResultColumnNum(Sheet sheet) {
+		Row row = sheet.getRow(sheet.getFirstRowNum());
+		if (null != row) {
+			Cell cell = null;
+			for (int i = row.getFirstCellNum() + 1; i < row.getLastCellNum(); i++) {
+				cell = row.getCell(i);
+				if (null != cell) {
+					String str = cell.getStringCellValue();
+					if (StringUtils.isEmpty(str) || StringUtils.equals(str, "结果")
+							|| StringUtils.equals(str, "result")) {
+						return i;
+					}
+				}
+			}
+			return (int) row.getLastCellNum();
+		}
+		return null;
 	}
 
 	private String name;

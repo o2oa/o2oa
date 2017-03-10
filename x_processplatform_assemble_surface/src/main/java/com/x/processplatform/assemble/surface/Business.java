@@ -496,8 +496,9 @@ public class Business {
 			}
 		}
 		/* 设置 allowReroute */
-		if (BooleanUtils.isTrue(activity.getAllowReroute())
-				&& this.canManageApplicationOrProcess(effectivePerson, application, process)) {
+		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
+			control.setAllowReroute(true);
+		} else if (BooleanUtils.isTrue(activity.getAllowReroute())) {
 			control.setAllowReroute(true);
 		}
 		/* 设置 allowDelete */
@@ -523,6 +524,7 @@ public class Business {
 		control.setAllowReroute(false);
 		/* 是否可删除(管理员 或者(此活动在流程设计中允许删除 并且 拟稿人是待办人)) */
 		control.setAllowDelete(false);
+		/* 活动节点可能为空 */
 		Activity activity = this.getActivity(work);
 		List<Task> taskList = task().listWithWorkObject(work);
 		Task task = null;
@@ -561,14 +563,17 @@ public class Business {
 		}
 		/* 设置 allowReroute */
 		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
-			if (BooleanUtils.isTrue(activity.getAllowReroute())) {
+			/* 活动节点为空强制可重新路由 */
+			if (activity == null) {
+				control.setAllowReroute(true);
+			} else if (BooleanUtils.isTrue(activity.getAllowReroute())) {
 				control.setAllowReroute(true);
 			}
 		}
 		/* 设置 allowDelete */
 		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
 			control.setAllowDelete(true);
-		} else if (Objects.equals(activity.getActivityType(), ActivityType.manual)
+		} else if ((null != activity) && Objects.equals(activity.getActivityType(), ActivityType.manual)
 				&& BooleanUtils.isTrue(((Manual) activity).getAllowDeleteWork())) {
 			if (null != task && StringUtils.equals(work.getCreatorPerson(), effectivePerson.getName())) {
 				control.setAllowDelete(true);
@@ -748,54 +753,56 @@ public class Business {
 
 	public Activity getActivity(String id, ActivityType activityType) throws Exception {
 		Activity o = null;
-		switch (activityType) {
-		case agent:
-			o = agent().pick(id);
-			break;
-		case begin:
-			o = begin().pick(id);
-			break;
-		case cancel:
-			o = cancel().pick(id);
-			break;
-		case choice:
-			o = choice().pick(id);
-			break;
-		case condition:
-			o = condition().pick(id);
-			break;
-		case delay:
-			o = delay().pick(id);
-			break;
-		case embed:
-			o = embed().pick(id);
-			break;
-		case end:
-			o = end().pick(id);
-			break;
-		case invoke:
-			o = invoke().pick(id);
-			break;
-		case manual:
-			o = manual().pick(id);
-			break;
-		case merge:
-			o = merge().pick(id);
-			break;
-		case message:
-			o = message().pick(id);
-			break;
-		case parallel:
-			o = parallel().pick(id);
-			break;
-		case service:
-			o = service().pick(id);
-			break;
-		case split:
-			o = service().pick(id);
-			break;
-		default:
-			break;
+		if (null != activityType) {
+			switch (activityType) {
+			case agent:
+				o = agent().pick(id);
+				break;
+			case begin:
+				o = begin().pick(id);
+				break;
+			case cancel:
+				o = cancel().pick(id);
+				break;
+			case choice:
+				o = choice().pick(id);
+				break;
+			case condition:
+				o = condition().pick(id);
+				break;
+			case delay:
+				o = delay().pick(id);
+				break;
+			case embed:
+				o = embed().pick(id);
+				break;
+			case end:
+				o = end().pick(id);
+				break;
+			case invoke:
+				o = invoke().pick(id);
+				break;
+			case manual:
+				o = manual().pick(id);
+				break;
+			case merge:
+				o = merge().pick(id);
+				break;
+			case message:
+				o = message().pick(id);
+				break;
+			case parallel:
+				o = parallel().pick(id);
+				break;
+			case service:
+				o = service().pick(id);
+				break;
+			case split:
+				o = service().pick(id);
+				break;
+			default:
+				break;
+			}
 		}
 		return o;
 	}

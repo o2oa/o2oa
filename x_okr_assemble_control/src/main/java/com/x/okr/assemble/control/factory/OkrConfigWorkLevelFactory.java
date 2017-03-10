@@ -39,6 +39,7 @@ public class OkrConfigWorkLevelFactory extends AbstractFactory {
 		EntityManager em = this.entityManagerContainer().get(OkrConfigWorkLevel.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<OkrConfigWorkLevel> cq = cb.createQuery(OkrConfigWorkLevel.class);
+		@SuppressWarnings("unused")
 		Root<OkrConfigWorkLevel> root = cq.from( OkrConfigWorkLevel.class);
 		return em.createQuery(cq).getResultList();
 	}

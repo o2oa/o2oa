@@ -2,16 +2,13 @@ package com.x.processplatform.core.entity.content;
 
 import java.util.Date;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.Lob;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -28,12 +25,23 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.annotation.EntityFieldDescribe;
 import com.x.base.core.entity.item.Item;
+import com.x.base.core.entity.item.ItemConverter;
 import com.x.base.core.entity.item.ItemPrimitiveType;
 import com.x.base.core.entity.item.ItemStringValueType;
 import com.x.base.core.entity.item.ItemType;
 import com.x.base.core.utils.DateTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
+/**
+ * 需要编写级联删除的地方:<br/>
+ * 1.designer 的Applicaiton删除<br/>
+ * 2.designer 的Process删除<br/>
+ * 3.processing中的脚本运行对象中的WorkDataHelper<br/>
+ * 4.processing中的Cancel环节<br/>
+ * 5.processing中的End环节<br/>
+ * 6.surface中的Data的增,删,改<br/>
+ * 7.surface中的管理端Work删除<br/>
+ */
 @Entity
 @ContainerEntity
 @Table(name = PersistenceProperties.Content.DataItem.table)
@@ -44,7 +52,7 @@ public class DataItem extends Item {
 	private static final String TABLE = PersistenceProperties.Content.DataItem.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception {
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -57,7 +65,7 @@ public class DataItem extends Item {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception {
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -117,7 +125,7 @@ public class DataItem extends Item {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception {
 		this.path0 = StringUtils.trimToEmpty(this.path0);
 		this.path1 = StringUtils.trimToEmpty(this.path1);
 		this.path2 = StringUtils.trimToEmpty(this.path2);
@@ -226,14 +234,15 @@ public class DataItem extends Item {
 	@CheckPersist(allowEmpty = false)
 	private ItemStringValueType itemStringValueType;
 
-	@Column(length = StringValueMaxLength, name = "xstringValue")
+	@Column(length = ItemConverter.STRING_VALUE_MAX_LENGTH, name = "xstringValue")
 	@Index(name = TABLE + "_stringValue")
 	private String stringValue;
 
-	@Lob
-	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_10M, name = "xstringLobValue")
-	private String stringLobValue;
+	@EntityFieldDescribe("lobItem连接Id.")
+	@Column(length = JpaObject.length_id, name = "xlobItem")
+	@Index(name = TABLE + "_lobItem")
+	@CheckPersist(allowEmpty = false)
+	private String lobItem;
 
 	@Index(name = TABLE + "_numberValue")
 	@Column(name = "xnumberValue")
@@ -530,14 +539,6 @@ public class DataItem extends Item {
 		this.stringValue = stringValue;
 	}
 
-	public String getStringLobValue() {
-		return stringLobValue;
-	}
-
-	public void setStringLobValue(String stringLobValue) {
-		this.stringLobValue = stringLobValue;
-	}
-
 	public Double getNumberValue() {
 		return numberValue;
 	}
@@ -720,5 +721,13 @@ public class DataItem extends Item {
 
 	public void setProcessAlias(String processAlias) {
 		this.processAlias = processAlias;
+	}
+
+	public String getLobItem() {
+		return lobItem;
+	}
+
+	public void setLobItem(String lobItem) {
+		this.lobItem = lobItem;
 	}
 }

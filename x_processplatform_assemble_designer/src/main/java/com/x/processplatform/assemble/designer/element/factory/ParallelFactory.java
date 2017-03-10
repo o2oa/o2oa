@@ -28,4 +28,15 @@ public class ParallelFactory extends AbstractFactory {
 		cq.select(root.get(Parallel_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
+
+	/** 查找使用表单的parallel */
+	public List<String> listWithForm(String formId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Parallel.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Parallel> root = cq.from(Parallel.class);
+		Predicate p = cb.equal(root.get(Parallel_.form), formId);
+		cq.select(root.get(Parallel_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
 }

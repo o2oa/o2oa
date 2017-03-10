@@ -104,4 +104,5 @@ public class DataMapping extends GsonPropertyObject {
 	public void setJdbcLevel(LogLevel jdbcLevel) {
 		this.jdbcLevel = jdbcLevel;
 	}
+
 }

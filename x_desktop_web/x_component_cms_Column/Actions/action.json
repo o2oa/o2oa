@@ -19,6 +19,6 @@
     "enctype": "formData"
   },
 
-  "listControllerByPerson" : {"uri": "/jaxrs/appcatagoryadmin/list/person/{person}"},
-  "addController" : {"uri":"/jaxrs/appcatagoryadmin", "method":"POST"}
+  "listControllerByPerson" : {"uri": "/jaxrs/appcategoryadmin/list/person/{person}"},
+  "addController" : {"uri":"/jaxrs/appcategoryadmin", "method":"POST"}
 }

@@ -5,10 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.AttendanceDetail;
@@ -102,7 +100,7 @@ public class AttendanceStatisticalCycleService {
 		List<AttendanceStatisticalCycle> departmentCycles = null;
 		Map<String, List<AttendanceStatisticalCycle>> departmentAttendanceStatisticalCycleMap = null;
 		String companyName = null, departmentName = null;
-		logger.debug("[getAttendanceStatisticalCycleFormMap]根据打卡信息明细，周期配置Map,查询适合打卡信息使用的统计周期配置，如果没有则新建一条。");
+		logger.debug("根据打卡信息明细，周期配置Map,查询适合打卡信息使用的统计周期配置，如果没有则新建一条。");
 		//从Map里查询与公司和部门相应的周期配置信息
 		if( companyAttendanceStatisticalCycleMap != null ){
 			//如果总体的Map不为空
@@ -144,14 +142,14 @@ public class AttendanceStatisticalCycleService {
 				if( detail.getCycleYear().equals(attendanceStatisticalCycle.getCycleYear())
 					&& detail.getCycleMonth().equals(attendanceStatisticalCycle.getCycleMonth())
 				){
-					logger.debug( "[getAttendanceStatisticalCycleFormMap]查询到适用的统计周期配置信息，返回查询结果......" );
+					logger.debug( "查询到适用的统计周期配置信息，返回查询结果......" );
 					return attendanceStatisticalCycle;
 				}
 			}
 		}else{
 			logger.debug("根据公司["+companyName+"]和部门["+departmentName+"]未获取到任何周期数据，需要创建新的统计周期数据......");
 		}
-		logger.debug( "[getAttendanceStatisticalCycleFormMap]没有查询到适用的统计周期配置信息......" );
+		logger.debug( "没有查询到适用的统计周期配置信息......" );
 		//如果程序到此仍未返回结果，说明未找到合适的配置记录，那么新建一条
 		//说明没有找到任何相关的配置，那么新创建一条配置
 		DateOperation dateOperation = new DateOperation();
@@ -159,7 +157,7 @@ public class AttendanceStatisticalCycleService {
 		if( Integer.parseInt(cycleMonth) < 10 ){
 			cycleMonth = "0"+Integer.parseInt(cycleMonth);
 		}
-		logger.debug( "[getAttendanceStatisticalCycleFormMap]cycleMonth="+cycleMonth );
+		logger.debug( "cycleMonth="+cycleMonth );
 		AttendanceStatisticalCycle attendanceStatisticalCycle = new AttendanceStatisticalCycle();
 		attendanceStatisticalCycle.setCompanyName(companyName);
 		attendanceStatisticalCycle.setDepartmentName(departmentName);
@@ -185,13 +183,13 @@ public class AttendanceStatisticalCycleService {
 			departmentAttendanceStatisticalCycleMap.put( departmentName, departmentCycles);
 		}
 		putDistinctCycleInList( attendanceStatisticalCycle, departmentCycles );		
-		logger.debug("[getAttendanceStatisticalCycleFormMap]准备保存新创建的统计周期信息......");
+		logger.debug("准备保存新创建的统计周期信息......");
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			emc.beginTransaction(AttendanceStatisticalCycle.class);
 			emc.persist( attendanceStatisticalCycle, CheckPersistType.all);
 			emc.commit();
 		}catch(Exception e){
-			logger.error("[getAttendanceStatisticalCycleFormMap]系统在保存新的统计周期信息时发生异常！");
+			logger.warn("系统在保存新的统计周期信息时发生异常！");
 			throw e;
 		}
 		return attendanceStatisticalCycle;
@@ -275,7 +273,7 @@ public class AttendanceStatisticalCycleService {
 				}
 			}
 		}else{
-			logger.debug("[getAttendanceDetailStatisticCycle]根据公司["+companyName+"]和部门["+departmentName+"]未获取到任何周期数据，需要创建新的统计周期数据......");
+			logger.debug("根据公司["+companyName+"]和部门["+departmentName+"]未获取到任何周期数据，需要创建新的统计周期数据......");
 		}
 		
 		if( !hasConfig ){
@@ -310,13 +308,13 @@ public class AttendanceStatisticalCycleService {
 				departmentAttendanceStatisticalCycleMap.put( departmentName, departmentCycles);
 			}
 			putDistinctCycleInList( attendanceStatisticalCycle, departmentCycles);			
-			logger.debug("[getAttendanceDetailStatisticCycle]准备保存新创建的统计周期信息......");
+			logger.debug("准备保存新创建的统计周期信息......");
 			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 				emc.beginTransaction(AttendanceStatisticalCycle.class);
 				emc.persist( attendanceStatisticalCycle, CheckPersistType.all);
 				emc.commit();
 			}catch(Exception e){
-				logger.error("[getAttendanceDetailStatisticCycle]系统在保存新的统计周期信息时发生异常！");
+				logger.warn("系统在保存新的统计周期信息时发生异常！");
 				throw e;
 			}
 			return attendanceStatisticalCycle;
@@ -363,7 +361,7 @@ public class AttendanceStatisticalCycleService {
 					throw new Exception("can not get identity of person:" + employeeName + ".");
 				}
 			}catch(Exception e){
-				logger.error("[getStatisticCycleByEmployee]系统在查询员工["+employeeName+"]在系统中存在的身份时发生异常！");
+				logger.warn("系统在查询员工["+employeeName+"]在系统中存在的身份时发生异常！");
 				throw e;
 			}
 			
@@ -460,13 +458,13 @@ public class AttendanceStatisticalCycleService {
 				departmentAttendanceStatisticalCycleMap.put( departmentName, departmentCycles);
 			}
 			putDistinctCycleInList( attendanceStatisticalCycle, departmentCycles);			
-			//logger.debug("[getStatisticCycleByEmployee]准备保存新创建的统计周期信息......");
+			//logger.debug("准备保存新创建的统计周期信息......");
 			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 				emc.beginTransaction(AttendanceStatisticalCycle.class);
 				emc.persist( attendanceStatisticalCycle, CheckPersistType.all);
 				emc.commit();
 			}catch(Exception e){
-				logger.error("[getStatisticCycleByEmployee]系统在保存新的统计周期信息时发生异常！");
+				logger.warn("系统在保存新的统计周期信息时发生异常！");
 				throw e;
 			}
 			return attendanceStatisticalCycle;
@@ -487,16 +485,22 @@ public class AttendanceStatisticalCycleService {
 		//logger.debug( "查询：companyName="+cycle.getCompanyName()+", departmentName="+cycle.getDepartmentName()+", cycleYear="+cycle.getCycleYear()+", cycleMonth="+ cycle.getCycleMonth() );
 		for( AttendanceStatisticalCycle attendanceStatisticalCycle : departmentCycles ){
 		//	logger.debug( "遍历：companyName="+attendanceStatisticalCycle.getCompanyName()+", departmentName="+attendanceStatisticalCycle.getDepartmentName()+", cycleYear="+attendanceStatisticalCycle.getCycleYear()+", cycleMonth="+ attendanceStatisticalCycle.getCycleMonth() );
-			if( attendanceStatisticalCycle.getCompanyName().equals(cycle.getCompanyName())
+			if( attendanceStatisticalCycle.getCompanyName() != null 
+					&& attendanceStatisticalCycle.getDepartmentName() != null
+					&& attendanceStatisticalCycle.getCycleYear() != null
+					&& attendanceStatisticalCycle.getCycleMonth() != null ){
+				if( attendanceStatisticalCycle.getCompanyName().equals(cycle.getCompanyName())
 					&& attendanceStatisticalCycle.getDepartmentName().equals(cycle.getDepartmentName())
 					&& attendanceStatisticalCycle.getCycleYear().equals(cycle.getCycleYear())
 					&& attendanceStatisticalCycle.getCycleMonth().equals(cycle.getCycleMonth())
-					
-			){
-				//对象已经存在， 不用添加，直接返回原有List
-			//	logger.debug("查询成功，对象已经存在！");
-				return departmentCycles;
+						
+				){
+					//对象已经存在， 不用添加，直接返回原有List
+				//	logger.debug("查询成功，对象已经存在！");
+					return departmentCycles;
+				}
 			}
+			
 		}
 		//logger.debug( "添加：companyName="+cycle.getCompanyName()+", departmentName="+cycle.getDepartmentName()+", cycleYear="+cycle.getCycleYear()+", cycleMonth="+ cycle.getCycleMonth() );
 		//如果循环完了，证明不存在，要添加一个对象

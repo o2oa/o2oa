@@ -10,7 +10,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
@@ -31,7 +30,10 @@ class ActionReroute extends ActionBase {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<WrapOutId> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Work work = emc.find(id, Work.class, ExceptionWhen.not_found);
+			Work work = emc.find(id, Work.class);
+			if (null == work) {
+				throw new WorkNotExistedException(id);
+			}
 			WrapOutMap complex = this.getComplex(business, effectivePerson, work);
 			Control control = (Control) complex.get("control");
 			if (BooleanUtils.isNotTrue(control.getAllowReroute())) {
@@ -39,7 +41,8 @@ class ActionReroute extends ActionBase {
 			}
 			Activity activity = business.getActivity(work);
 			Activity destinationActivity = business.getActivity(activityId, activityType);
-			if (!BooleanUtils.isTrue(activity.getAllowReroute())) {
+			/* 如果是管理员那么就不判断这里的条件了 */
+			if (effectivePerson.isNotManager() && (!BooleanUtils.isTrue(activity.getAllowReroute()))) {
 				throw new Exception(
 						"activity{name:" + activity.getName() + ", id:" + activity.getId() + "} not allow reroute.");
 			}

@@ -13,7 +13,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.okr.entity.OkrConfigWorkLevel.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:18:45 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:09:40 CST 2017")
 public class OkrConfigWorkLevel_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<OkrConfigWorkLevel,Date> createTime;
     public static volatile SingularAttribute<OkrConfigWorkLevel,String> description;

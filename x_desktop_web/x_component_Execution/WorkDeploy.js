@@ -470,7 +470,7 @@ MWF.xApplication.Execution.WorkDeploy = new Class({
         _self.app.confirm("warn",e,_self.lp.submitWarn.warnTitle,_self.lp.submitWarn.warnDeployContent,300,120,function(){
             _self.actions.deployCenterWork(_self.centerWorkData.id, function(json){
                 if(json.type && json.type=="success"){
-                    _self.app.notice(this.lp.prompt.deployCenterWrk, "success");
+                    _self.app.notice(this.lp.prompt.deployCenterWork, "success");
                     _self.close();
                     _self.fireEvent("reloadView", {"action":"reload"});
                 }

@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -73,7 +72,7 @@ public class OkrWorkReportTaskCollectService {
 		OkrTask okrTask = null;
 		Long taskCount = 0L;
 		Business business = null;
-		WrapPerson person = okrUserManagerService.getUserNameByIdentity( userIdentity );
+		WrapPerson person = okrUserManagerService.getUserByIdentity( userIdentity );
 		
 		if ( person != null ) {
 			
@@ -83,16 +82,15 @@ public class OkrWorkReportTaskCollectService {
 			taskTypeList.add( "工作汇报" );
 			
 			//根据不同的工作类别进行汇总
-			for( String workType : workTypeList ){				
-				taskCount = okrTaskService.getTaskCount( taskTypeList, userIdentity, workType );				
-				//logger.debug( "taskCount=" + taskCount );
+			for( String workType : workTypeList ){			
+				taskCount = okrTaskService.getNotReportConfirmTaskCount( taskTypeList, userIdentity, workType );
 				// 查询汇总待办是否存在，如果不存在，则新增一条汇总待办
 				try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 					business = new Business(emc);
 					//查询该员工是否已经存在工作汇报汇总信息
 					taskTypeList.clear();
 					taskTypeList.add( "工作汇报汇总" );
-					okrTasks = business.okrTaskFactory().listByTaskType( taskTypeList, userIdentity, workType );
+					okrTasks = business.okrTaskFactory().listTaskByTaskType( taskTypeList, userIdentity, workType );
 					emc.beginTransaction( OkrTask.class );
 					if ( taskCount != null && taskCount > 0 ) {
 						if ( okrTasks == null || okrTasks.isEmpty() ) {
@@ -128,7 +126,6 @@ public class OkrWorkReportTaskCollectService {
 									emc.remove( okrTasks.get(i), CheckRemoveType.all );
 								}
 							}
-							
 						}
 					} else {// 删除该用户的汇总待办
 						for( int i=0;  i<okrTasks.size(); i++ ){
@@ -137,7 +134,7 @@ public class OkrWorkReportTaskCollectService {
 					}
 					emc.commit();
 				} catch (Exception e) {
-					logger.error( "OkrWorkReportTaskCollectService : report collect operation got a error!" );
+					logger.warn( "OkrWorkReportTaskCollectService : report collect operation got a error!" );
 					throw e;
 				}
 			}			

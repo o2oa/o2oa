@@ -137,7 +137,7 @@ public class FileInfo extends StorageObject {
 	 * 在执行给定实体的相应 EntityManager 持久操作之前，调用该实体的 @PrePersist 回调方法。
 	 */
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -153,12 +153,12 @@ public class FileInfo extends StorageObject {
 	 * 在对实体数据进行数据库更新操作之前，调用实体的 @PreUpdate 回调方法。
 	 */
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
 
-	private void onPersist() {
+	private void onPersist() throws Exception{
 	}
 
 	@Override
@@ -186,8 +186,8 @@ public class FileInfo extends StorageObject {
 		if (null == this.appId) {
 			throw new Exception("appId can not be null.");
 		}
-		if (null == this.catagoryId) {
-			throw new Exception("catagoryId can not be null.");
+		if (null == this.categoryId) {
+			throw new Exception("categoryId can not be null.");
 		}
 		if (null == this.documentId) {
 			throw new Exception("documentId can not be null.");
@@ -195,11 +195,11 @@ public class FileInfo extends StorageObject {
 		if (StringUtils.isEmpty(id)) {
 			throw new Exception("id can not be empty.");
 		}
-		String str = DateTools.format(this.createTime, DateTools.formatCompact_yyyyMMdd);
+		String str = DateTools.format( this.createTime, DateTools.formatCompact_yyyyMMdd);
 		str += PATHSEPARATOR;
 		str += this.appId;
 		str += PATHSEPARATOR;
-		str += this.catagoryId;
+		str += this.categoryId;
 		str += PATHSEPARATOR;
 		str += this.documentId;
 		str += PATHSEPARATOR;
@@ -233,22 +233,22 @@ public class FileInfo extends StorageObject {
 
 	@EntityFieldDescribe("文件所属应用ID")
 	@Column(name = "xappId", length = JpaObject.length_id)
-	@CheckPersist(simplyString = true, allowEmpty = true)
+	@CheckPersist(allowEmpty = true)
 	private String appId;
 
 	@EntityFieldDescribe("文件所属分类ID")
-	@Column(name = "xcatagoryId", length = JpaObject.length_id)
-	@CheckPersist(simplyString = true, allowEmpty = true)
-	private String catagoryId;
+	@Column(name = "xcategoryId", length = JpaObject.length_id)
+	@CheckPersist(allowEmpty = true)
+	private String categoryId;
 
 	@EntityFieldDescribe("文件所属文档ID")
 	@Column(name = "xdocumentId", length = JpaObject.length_id)
-	@CheckPersist(simplyString = true, allowEmpty = true)
+	@CheckPersist(allowEmpty = true)
 	private String documentId;
 
 	@EntityFieldDescribe("文件类别：文件（FILE） | 附件(ATTACHMENT)")
 	@Column(name = "xfileType", length = JpaObject.length_16B)
-	@CheckPersist(simplyString = true, allowEmpty = true)
+	@CheckPersist(allowEmpty = true)
 	private String fileType;
 
 	@EntityFieldDescribe("文件存储主机名")
@@ -257,14 +257,8 @@ public class FileInfo extends StorageObject {
 
 	@EntityFieldDescribe("文件存储路径")
 	@Column(name = "xfilePath", length = JpaObject.length_255B)
-	@CheckPersist(simplyString = true, allowEmpty = true)
+	@CheckPersist(allowEmpty = true)
 	private String filePath;
-
-	@EntityFieldDescribe("关联类型的名称.")
-	@Column(name = "xstorageName", length = JpaObject.length_64B)
-	@CheckPersist(simplyString = true, allowEmpty = true)
-	@Index(name = TABLE + "_storageName")
-	private String storageName;
 
 	@EntityFieldDescribe("文件说明")
 	@Column(name = "xdescription", length = JpaObject.length_255B)
@@ -273,7 +267,7 @@ public class FileInfo extends StorageObject {
 
 	@EntityFieldDescribe("创建者UID")
 	@Column(name = "xcreatorUid", length = JpaObject.length_64B)
-	@CheckPersist(simplyString = true, allowEmpty = true)
+	@CheckPersist(allowEmpty = true)
 	private String creatorUid;
 
 	@EntityFieldDescribe("扩展名")
@@ -364,17 +358,17 @@ public class FileInfo extends StorageObject {
 	 * 
 	 * @return
 	 */
-	public String getCatagoryId() {
-		return catagoryId;
+	public String getCategoryId() {
+		return categoryId;
 	}
 
 	/**
 	 * 设置文件所属分类ID
 	 * 
-	 * @param catagoryId
+	 * @param categoryId
 	 */
-	public void setCatagoryId(String catagoryId) {
-		this.catagoryId = catagoryId;
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
 	}
 
 	/**
@@ -471,14 +465,6 @@ public class FileInfo extends StorageObject {
 
 	public void setLength(Long length) {
 		this.length = length;
-	}
-
-	public String getStorageName() {
-		return storageName;
-	}
-
-	public void setStorageName(String storageName) {
-		this.storageName = storageName;
 	}
 
 	/**

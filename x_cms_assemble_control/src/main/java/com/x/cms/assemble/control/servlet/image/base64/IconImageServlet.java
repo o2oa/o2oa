@@ -9,7 +9,6 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,22 +18,22 @@ import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.imgscalr.Scalr;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.x.base.core.application.servlet.FileUploadServletTools;
+import com.x.base.core.application.servlet.AbstractServletAction;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.Document;
 
 @WebServlet(urlPatterns="/servlet/appIcon/upload/*")
 @MultipartConfig
-public class IconImageServlet extends HttpServlet {
+public class IconImageServlet extends AbstractServletAction {
 
 	private static final long serialVersionUID = -516827649716075968L;
 	private Logger logger = LoggerFactory.getLogger( IconImageServlet.class );
@@ -44,9 +43,9 @@ public class IconImageServlet extends HttpServlet {
 		ActionResult<String> result = new ActionResult<>();
 		String wrap = null;
 		try {
-			String str = FileUploadServletTools.getURIPart( request.getRequestURI(), "size");
-			EffectivePerson effectivePerson = FileUploadServletTools.effectivePerson(request);
-			String appId = FileUploadServletTools.getURIPart( request.getRequestURI(), "appId" );
+			String str = this.getURIPart( request.getRequestURI(), "size");
+			EffectivePerson effectivePerson = this.effectivePerson(request);
+			String appId = this.getURIPart( request.getRequestURI(), "appId" );
 			AppInfo appInfo = null;
 			Integer size = 0;			
 			if (NumberUtils.isNumber(str)) {
@@ -100,6 +99,6 @@ public class IconImageServlet extends HttpServlet {
 			result.error(e);
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
-		FileUploadServletTools.result(response, result);
+		this.result(response, result);
 	}
 }

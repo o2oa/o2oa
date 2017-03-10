@@ -14,7 +14,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.processplatform.core.entity.element.End.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:19:07 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:10:19 CST 2017")
 public class End_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<End,String> afterArriveScript;
     public static volatile SingularAttribute<End,String> afterArriveScriptText;
@@ -35,12 +35,15 @@ public class End_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<End,String> name;
     public static volatile SingularAttribute<End,String> position;
     public static volatile SingularAttribute<End,String> process;
+    public static volatile ListAttribute<End,String> readDataPathList;
     public static volatile ListAttribute<End,String> readDepartmentList;
     public static volatile SingularAttribute<End,String> readDuty;
     public static volatile ListAttribute<End,String> readIdentityList;
     public static volatile SingularAttribute<End,String> readScript;
     public static volatile SingularAttribute<End,String> readScriptText;
+    public static volatile ListAttribute<End,String> reviewDataPathList;
     public static volatile ListAttribute<End,String> reviewDepartmentList;
+    public static volatile SingularAttribute<End,String> reviewDuty;
     public static volatile ListAttribute<End,String> reviewIdentityList;
     public static volatile SingularAttribute<End,String> reviewScript;
     public static volatile SingularAttribute<End,String> reviewScriptText;

@@ -20,8 +20,8 @@ MWF.xApplication.cms.Index.Actions.RestActions = new Class({
     },
 
 
-    listDocumentAll: function(id, count, catagoryId, success, failure, async){
-        this.action.invoke({"name": "listDocumentAll","async": async, "parameter": {"id": id, "count": count, "catagoryId": catagoryId}, "success": success,	"failure": failure});
+    listDocumentAll: function(id, count, categoryId, success, failure, async){
+        this.action.invoke({"name": "listDocumentAll","async": async, "parameter": {"id": id, "count": count, "categoryId": categoryId}, "success": success,	"failure": failure});
     },
     listDocumentFilterNext: function(id, count, data, success, failure, async){
         this.action.invoke({"name": "listDocumentFilterNext","async": async, "data": data, "parameter": {"id": id, "count": count}, "success": success,	"failure": failure});
@@ -49,13 +49,13 @@ MWF.xApplication.cms.Index.Actions.RestActions = new Class({
     },
 
     listCategoryDraftFilterAttribute: function( categoryId, success, failure, async){
-        this.action.invoke({"name": "listCategoryDraftFilterAttribute","async": async,  "parameter": {"catagoryId": categoryId }, "success": success,	"failure": failure});
+        this.action.invoke({"name": "listCategoryDraftFilterAttribute","async": async,  "parameter": {"categoryId": categoryId }, "success": success,	"failure": failure});
     },
     listCategoryPublishFilterAttribute: function(categoryId, success, failure, async){
-        this.action.invoke({"name": "listCategoryPublishFilterAttribute","async": async,  "parameter": {"catagoryId": categoryId }, "success": success,	"failure": failure});
+        this.action.invoke({"name": "listCategoryPublishFilterAttribute","async": async,  "parameter": {"categoryId": categoryId }, "success": success,	"failure": failure});
     },
     listCategoryArchiveFilterAttribute: function( categoryId, success, failure, async){
-        this.action.invoke({"name": "listCategoryArchiveFilterAttribute","async": async,  "parameter": {"catagoryId": categoryId }, "success": success,	"failure": failure});
+        this.action.invoke({"name": "listCategoryArchiveFilterAttribute","async": async,  "parameter": {"categoryId": categoryId }, "success": success,	"failure": failure});
     },
 
     getDocument: function(docId, data, success, failure){
@@ -97,10 +97,23 @@ MWF.xApplication.cms.Index.Actions.RestActions = new Class({
     listColumn: function( success, failure, async){
         this.action.invoke({"name": "listColumn","async": async, "success": success,	"failure": failure});
     },
+    listColumnByPublish: function( success, failure, async){
+        this.action.invoke({"name": "listColumnByPublish","async": async, "success": success,	"failure": failure});
+    },
+    listColumnByAdmin: function( success, failure, async){
+        this.action.invoke({"name": "listColumnByAdmin","async": async, "success": success,	"failure": failure});
+    },
 
     listCategory: function( columnId, success, failure, async){
         var _self = this;
         this.action.invoke({"name": "listCategory","parameter": {"appId": columnId },"async": async, "success": function(json){
+            _self.transCategoryData(json);
+            success.call(this,json);
+        },"failure": failure});
+    },
+    listCategoryByPublisher: function( columnId, success, failure, async){
+        var _self = this;
+        this.action.invoke({"name": "listCategoryByPublisher","parameter": {"appId": columnId },"async": async, "success": function(json){
             _self.transCategoryData(json);
             success.call(this,json);
         },"failure": failure});
@@ -114,10 +127,10 @@ MWF.xApplication.cms.Index.Actions.RestActions = new Class({
     },
     transCategoryData : function( json ){
         var trans = function(category){
-            if(!category.name)category.name = category.catagoryName;
-            if(!category.alias)category.alias = category.catagoryAlias;
-            if(!category.catagoryName)category.catagoryName = category.name;
-            if(!category.catagoryAlias)category.catagoryAlias = category.alias;
+            if(!category.name)category.name = category.categoryName;
+            if(!category.alias)category.alias = category.categoryAlias;
+            if(!category.categoryName)category.categoryName = category.name;
+            if(!category.categoryAlias)category.categoryAlias = category.alias;
         };
         if( json.data ){
             if( typeOf(json.data) == "array" ){
@@ -145,14 +158,14 @@ MWF.xApplication.cms.Index.Actions.RestActions = new Class({
     //    this.action.invoke({"name": "getScriptByName","async": async, "parameter": {"name": name, "applicationId": application},	"success": success,	"failure": failure});
     //}
 
-    listViewByCategory: function(catagoryId, success, failure, async){
-        this.action.invoke({"name": "listViewByCategory","async": async, "parameter": {"catagoryId": catagoryId}, "success": success,	"failure": failure});
+    listViewByCategory: function(categoryId, success, failure, async){
+        this.action.invoke({"name": "listViewByCategory","async": async, "parameter": {"categoryId": categoryId}, "success": success,	"failure": failure});
     },
     getView: function(id, success, failure){
         this.action.invoke({"name": "getView", "parameter": {"id": id },"success": success,"failure": failure});
     },
-    listCategoryViewByCatagory: function(catagoryId, success, failure, async){
-        this.action.invoke({"name": "listCategoryViewByCatagory","async": async, "parameter": {"catagoryId": catagoryId}, "success": success,	"failure": failure});
+    listCategoryViewByCategory: function(categoryId, success, failure, async){
+        this.action.invoke({"name": "listCategoryViewByCategory","async": async, "parameter": {"categoryId": categoryId}, "success": success,	"failure": failure});
     },
 	
 });

@@ -4,9 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
 import org.eclipse.jetty.deploy.DeploymentManager;
 import org.eclipse.jetty.deploy.PropertiesConfigurationManager;
@@ -30,7 +30,6 @@ import com.x.base.core.Packages;
 import com.x.base.core.project.Assemble;
 import com.x.base.core.project.Service;
 import com.x.base.core.project.server.ApplicationServer;
-import com.x.base.core.project.server.ApplicationServer.NameWeightPair;
 import com.x.base.core.project.server.Config;
 import com.x.base.core.utils.ListTools;
 import com.x.server.console.server.JettySeverTools;
@@ -40,19 +39,22 @@ import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
 
 public class ApplicationServerTools extends JettySeverTools {
 
+	private static String project_class_prefix = "com.x.base.core.project.";
+
 	private static Logger logger = LoggerFactory.getLogger(ApplicationServerTools.class);
 
 	public static Server start(ApplicationServer applicationServer) throws Exception {
 		File configDir = new File(Config.base(), "config");
+		File commonsDir = new File(Config.base(), "commons");
 		File webappsDir = new File(Config.base(), "servers/applicationServer/webapps");
 		File workDir = new File(Config.base(), "servers/applicationServer/work");
 		File extDir = new File(Config.base(), "commons/ext");
 		File storeDir = new File(Config.base(), "store");
 		File jarsDir = new File(Config.base(), "store/jars");
 
-		if (BooleanUtils.isTrue(applicationServer.getForceRedeploy())) {
-			cleanDirectory(webappsDir);
+		if (BooleanUtils.isTrue(applicationServer.getRedeploy())) {
 			cleanDirectory(workDir);
+			cleanDirectory(webappsDir);
 			List<Class<?>> classes = calculateProjectToDepoly();
 			for (Class<?> clz : classes) {
 				/* 创建空tempDirectory目录 */
@@ -81,7 +83,7 @@ public class ApplicationServerTools extends JettySeverTools {
 
 		WebAppProvider webAppProvider = new WebAppProvider();
 		webAppProvider.setMonitoredDirName(webappsDir.getAbsolutePath());
-		webAppProvider.setDefaultsDescriptor(new File(configDir, "webdefault.xml").getAbsolutePath());
+		webAppProvider.setDefaultsDescriptor(new File(commonsDir, "webdefault.xml").getAbsolutePath());
 		webAppProvider.setScanInterval(applicationServer.getScanInterval());
 		webAppProvider.setExtractWars(true);
 		webAppProvider.setConfigurationManager(new PropertiesConfigurationManager());
@@ -106,18 +108,30 @@ public class ApplicationServerTools extends JettySeverTools {
 
 	private static List<Class<?>> calculateProjectToDepoly() throws Exception {
 		ScanResult scanResult = new FastClasspathScanner(Packages.PREFIX).scan();
-		List<String> names = new ArrayList<>();
-		names.addAll(scanResult.getNamesOfSubclassesOf(Assemble.class));
-		names.addAll(scanResult.getNamesOfSubclassesOf(Service.class));
-		if (ListTools.isNotEmpty(Config.currentNode().getApplication().getProjects())) {
-			List<String> appoints = new ArrayList<>();
-			for (NameWeightPair o : Config.currentNode().getApplication().getProjects()) {
-				appoints.add(o.getName());
+		List<String> list = new ArrayList<>();
+		list.addAll(scanResult.getNamesOfSubclassesOf(Assemble.class));
+		list.addAll(scanResult.getNamesOfSubclassesOf(Service.class));
+		List<String> includes = new ArrayList<>();
+		List<String> excludes = new ArrayList<>();
+		if (ListTools.isNotEmpty(Config.currentNode().getApplication().getIncludes())) {
+			for (String str : Config.currentNode().getApplication().getIncludes()) {
+				if (!StringUtils.startsWith(str, project_class_prefix)) {
+					str = project_class_prefix + str;
+				}
+				includes.add(str);
 			}
-			names = ListUtils.intersection(names, appoints);
 		}
+		if (ListTools.isNotEmpty(Config.currentNode().getApplication().getExcludes())) {
+			for (String str : Config.currentNode().getApplication().getExcludes()) {
+				if (!StringUtils.startsWith(str, project_class_prefix)) {
+					str = project_class_prefix + str;
+				}
+				excludes.add(str);
+			}
+		}
+		list = ListTools.includesExcludes(list, includes, excludes);
 		List<Class<?>> clzs = new ArrayList<>();
-		for (String o : names) {
+		for (String o : list) {
 			clzs.add(Class.forName(o));
 		}
 		return clzs;

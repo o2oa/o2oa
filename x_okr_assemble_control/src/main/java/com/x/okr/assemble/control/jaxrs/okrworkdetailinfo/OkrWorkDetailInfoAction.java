@@ -11,9 +11,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
@@ -21,8 +19,11 @@ import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
+import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
-import com.x.okr.assemble.control.service.OkrWorkBaseInfoService;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
+import com.x.okr.assemble.control.service.OkrWorkBaseInfoQueryService;
 import com.x.okr.assemble.control.service.OkrWorkDetailInfoService;
 import com.x.okr.entity.OkrWorkBaseInfo;
 import com.x.okr.entity.OkrWorkDetailInfo;
@@ -33,24 +34,32 @@ public class OkrWorkDetailInfoAction extends StandardJaxrsAction{
 	private Logger logger = LoggerFactory.getLogger( OkrWorkDetailInfoAction.class );
 	private BeanCopyTools<OkrWorkDetailInfo, WrapOutOkrWorkDetailInfo> wrapout_copier = BeanCopyToolsBuilder.create( OkrWorkDetailInfo.class, WrapOutOkrWorkDetailInfo.class, null, WrapOutOkrWorkDetailInfo.Excludes);
 	private OkrWorkDetailInfoService okrWorkDetailInfoService = new OkrWorkDetailInfoService();
-	private OkrWorkBaseInfoService okrWorkBaseInfoService = new OkrWorkBaseInfoService();
+	private OkrWorkBaseInfoQueryService okrWorkBaseInfoService = new OkrWorkBaseInfoQueryService();
 
-	@HttpMethodDescribe(value = "新建或者更新OkrWorkDetailInfo对象.", request = WrapInOkrWorkDetailInfo.class, response = WrapOutOkrWorkDetailInfo.class)
+	@HttpMethodDescribe(value = "新建或者更新OkrWorkDetailInfo对象.", request = JsonElement.class, response = WrapOutId.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response post(@Context HttpServletRequest request, WrapInOkrWorkDetailInfo wrapIn) {
-		ActionResult<WrapOutOkrWorkDetailInfo> result = new ActionResult<>();
-		OkrWorkDetailInfo okrWorkDetailInfo = null;
+	public Response post(@Context HttpServletRequest request, JsonElement jsonElement) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson( request );
 		OkrWorkBaseInfo okrWorkBaseInfo = null;
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		//logger.debug( "user " + currentPerson.getName() + "[proxy:'"+ThisApplication.getLoginIdentity( currentPerson.getName() )+"'] try to save OkrWorkDetailInfo......" );
-		boolean check = true;
-		if( wrapIn != null ){
+		WrapInOkrWorkDetailInfo wrapIn = null;
+		Boolean check = true;
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInOkrWorkDetailInfo.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
+		}
+		if( check ){
 			if( wrapIn.getId() == null ){
 				check = false;
-				result.error( new Exception( "工作详细信息的ID为空，无法继续进行数据保存!" ) );
-				result.setUserMessage( "工作详细信息的ID为空，无法继续进行数据保存!" );
+				Exception exception = new WorkIdEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 			if( check ){
 				//查询工作信息，补充工作详细信息的ID
@@ -58,56 +67,53 @@ public class OkrWorkDetailInfoAction extends StandardJaxrsAction{
 					okrWorkBaseInfo = okrWorkBaseInfoService.get( wrapIn.getId() );
 					if( okrWorkBaseInfo == null ){
 						check = false;
-						result.error( new Exception( "根据工作信息不存在，无法继续进行数据保存!id:" + wrapIn.getId() ) );
-						result.setUserMessage( "根据工作信息不存在，无法继续进行数据保存!id:" + wrapIn.getId() );
+						Exception exception = new WorkNotExistsException( wrapIn.getId() );
+						result.error( exception );
+						logger.error( exception, effectivePerson, request, null);
 					}else{
 						wrapIn.setCenterId( okrWorkBaseInfo.getCenterId() ); //ID需要查询确认一下，数据一定要有效
 					}
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "根据工作详细信息ID获取工作信息数据异常，无法继续进行数据保存!id:" + wrapIn.getId() );
+					Exception exception = new WorkQueryByIdException( e, wrapIn.getId() );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}			
 			try {
-				okrWorkDetailInfo = okrWorkDetailInfoService.save( wrapIn );
-				if( okrWorkDetailInfo != null ){
-					result.setUserMessage( okrWorkDetailInfo.getId() );
-				}else{
-					result.error( new Exception( "系统在保存工作详细信息信息时发生异常!" ) );
-					result.setUserMessage( "系统在保存工作详细信息信息时发生异常!" );
-				}
+				okrWorkDetailInfoService.save( wrapIn );
+				result.setData( new WrapOutId(wrapIn.getId()) );
 			} catch (Exception e) {
-				result.error( e );
-				result.setUserMessage( "系统在保存工作详细信息信息时发生异常!" );
-				logger.error( "OkrWorkDetailInfoService save object got an exception", e );
+				Exception exception = new WorkDetailSaveException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
-		}else{
-			result.error( new Exception( "请求传入的参数为空，无法继续保存工作详细信息!" ) );
-			result.setUserMessage( "请求传入的参数为空，无法继续保存工作详细信息!" );
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "根据ID删除OkrWorkDetailInfo数据对象.", response = WrapOutOkrWorkDetailInfo.class)
+	@HttpMethodDescribe(value = "根据ID删除OkrWorkDetailInfo数据对象.", response = WrapOutId.class)
 	@DELETE
 	@Path( "{id}" )
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response delete(@Context HttpServletRequest request, @PathParam( "id" ) String id) {
-		ActionResult<WrapOutOkrWorkDetailInfo> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		//logger.debug( "user " + currentPerson.getName() + "[proxy:'"+ThisApplication.getLoginIdentity( currentPerson.getName() )+"'] try to delete okrWorkDetailInfo{'id':'"+id+"'}......" );
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not delete any object." );
-		}
-		try{
-			okrWorkDetailInfoService.delete( id );
-			result.setUserMessage( "成功删除工作详细信息数据信息。id=" + id );
-		}catch(Exception e){
-			logger.error( "system delete okrWorkDetailInfoService get an exception, {'id':'"+id+"'}", e );
-			result.setUserMessage( "删除工作详细信息数据过程中发生异常。" );
-			result.error( e );
+			Exception exception = new WorkIdEmptyException();
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
+		}else{
+			try{
+				okrWorkDetailInfoService.delete( id );
+				result.setData( new WrapOutId(id) );
+			}catch(Exception e){
+				Exception exception = new WorkDetailDeleteException( e, id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
+			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -119,12 +125,14 @@ public class OkrWorkDetailInfoAction extends StandardJaxrsAction{
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get(@Context HttpServletRequest request, @PathParam( "id" ) String id) {
 		ActionResult<WrapOutOkrWorkDetailInfo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		
 		WrapOutOkrWorkDetailInfo wrap = null;
 		OkrWorkDetailInfo okrWorkDetailInfo = null;
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		//logger.debug( "user[" + currentPerson.getName() + "][proxy:'"+ThisApplication.getLoginIdentity( currentPerson.getName() )+"'] try to get okrWorkDetailInfo{'id':'"+id+"'}......" );
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not get any object." );
+			Exception exception = new WorkIdEmptyException();
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
 		}
 		try {
 			okrWorkDetailInfo = okrWorkDetailInfoService.get( id );
@@ -132,12 +140,14 @@ public class OkrWorkDetailInfoAction extends StandardJaxrsAction{
 				wrap = wrapout_copier.copy( okrWorkDetailInfo );
 				result.setData(wrap);
 			}else{
-				logger.error( "system can not get any object by {'id':'"+id+"'}. " );
+				Exception exception = new WorkNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		} catch (Throwable th) {
-			logger.error( "system get by id got an exception" );
-			th.printStackTrace();
-			result.error(th);
+			Exception exception = new WorkQueryByIdException( th, id );
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

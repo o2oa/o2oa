@@ -99,7 +99,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
 		"hasTopIcon" : true,
 		"hasTopContent" : true,
 		"hasBottom": false,
-		"title": MWF.LP.authentication.LoginFormTitle,
+		"title": (layout.config && layout.config.systemTitle) ? layout.config.systemTitle : MWF.LP.authentication.LoginFormTitle,
 		"draggable": true,
 		"closeAction": true
 	},
@@ -160,7 +160,18 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
 		};
 		html +=	"<tr><td  styles='formTableValue' item='errorArea'></td></tr>" +
 			"</table>"
+
 		this.formTableArea.set("html", html);
+        new Element("div", {
+            "styles": {
+                "margin-top": "20px",
+                "text-align": "center",
+                "height": "40px",
+                "line-height": "40px"
+            },
+            "text": layout.config.systemName
+        }).inject(this.formTableArea, "after");
+
 
 		this.setCaptchaPic();
 		this.errorArea = this.formTableArea.getElements("[item=errorArea]")[0];

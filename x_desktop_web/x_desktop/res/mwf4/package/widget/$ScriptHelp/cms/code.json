@@ -40,10 +40,10 @@
     ]
   },
   {
-    "name": "queryView",
+    "name": "view",
     "value": [
-      {"name": "lookup", "value": "this.queryView.lookup(\n\t{\n\t\t\"queryView\": (queryViewName), \n\t\t\"CMSApplication\": (CMSApplicationName)\n\t}, \n\tfunction(data){\n\t\t(code)\n\t}\n);"},
-      {"name": "select", "value": "this.queryView.select(\n\t{\n\t\t\"queryView\": (queryViewName), \n\t\t\"CMSApplication\": (CMSApplicationName)\n\t}, \n\tfunction(data){\n\t\t(code)\n\t}\n);"}
+      {"name": "lookup", "value": "this.view.lookup(\n\t{\n\t\t\"view\": (viewName), \n\t\t\"application\": (applicationName)\n\t}, \n\tfunction(data){\n\t\t(code)\n\t}\n);"},
+      {"name": "select", "value": "this.view.select(\n\t{\n\t\t\"view\": (viewName), \n\t\t\"application\": (applicationName)\n\t}, \n\tfunction(data){\n\t\t(code)\n\t}\n);"}
     ]
   },
   {"name": "target", "value": "this.target"},

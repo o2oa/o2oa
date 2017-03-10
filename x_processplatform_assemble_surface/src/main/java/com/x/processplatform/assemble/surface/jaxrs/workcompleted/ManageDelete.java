@@ -3,9 +3,9 @@ package com.x.processplatform.assemble.surface.jaxrs.workcompleted;
 import java.net.URLEncoder;
 import java.util.List;
 
+import com.x.base.core.DefaultCharset;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
@@ -24,13 +24,16 @@ class ManageDelete extends ActionBase {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<WrapOutId>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			WorkCompleted workCompleted = emc.find(id, WorkCompleted.class, ExceptionWhen.not_found);
+			WorkCompleted workCompleted = emc.find(id, WorkCompleted.class);
+			if (null == workCompleted) {
+				throw new WorkCompletedNotExistedException(id);
+			}
 			Process process = business.process().pick(workCompleted.getProcess());
 			if (!business.process().allowControl(effectivePerson, process)) {
-				throw new Exception("person{name:" + effectivePerson.getName() + "} has insufficient permissions.");
+				throw new ProcessAccessDeniedException(effectivePerson.getName(),  workCompleted.getProcess());
 			}
 			List<WrapOutId> wraps = ThisApplication.applications.deleteQuery(x_processplatform_service_processing.class,
-					"job/" + URLEncoder.encode(workCompleted.getJob(), "UTF-8"), WrapOutId.collectionType);
+					"job/" + URLEncoder.encode(workCompleted.getJob(), DefaultCharset.name), WrapOutId.collectionType);
 			result.setData(wraps);
 			return result;
 		}

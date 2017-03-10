@@ -12,8 +12,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
@@ -27,8 +25,6 @@ import com.x.base.core.utils.annotation.MethodDescribe;
  * @author liyi
  */
 public class AttendanceSelfHolidayFactory extends AbstractFactory {
-
-	private Logger logger = LoggerFactory.getLogger( AttendanceSelfHolidayFactory.class );
 	
 	public AttendanceSelfHolidayFactory(Business business) throws Exception {
 		super(business);

@@ -15,9 +15,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
@@ -27,6 +25,8 @@ import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.bbs.assemble.control.service.BBSForumInfoServiceAdv;
 import com.x.bbs.assemble.control.service.BBSOperationRecordService;
 import com.x.bbs.assemble.control.service.BBSPermissionInfoService;
@@ -61,6 +61,7 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listAllSection( @Context HttpServletRequest request ) {
 		ActionResult<List<WrapOutSectionInfo>> result = new ActionResult<>();
+		EffectivePerson currentPerson = this.effectivePerson(request);
 		List<WrapOutSectionInfo> wraps = new ArrayList<>();
 		List<BBSSectionInfo> sectionInfoList = null;
 		Boolean check = true;
@@ -72,9 +73,10 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 					sectionInfoList = new ArrayList<BBSSectionInfo>();
 				}
 			} catch (Exception e) {
-				result.error(e);
-				result.setUserMessage("系统在查询所有主版块信息时发生异常");
-				logger.error("system query all main section info got an exception!", e);
+				check = false;
+				Exception exception = new SectionListAllException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -83,9 +85,9 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 					wraps = wrapout_copier.copy( sectionInfoList );
 					result.setData(wraps);
 				} catch (Exception e) {
-					result.error(e);
-					result.setUserMessage("系统在将版块信息列表转换为输出格式时发生异常");
-					logger.error("system copy section list to wraps got an exception!", e);
+					Exception exception = new SectionWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}		
 			}
 		}
@@ -99,6 +101,7 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listWithForum( @Context HttpServletRequest request, @PathParam("forumId") String forumId ) {
 		ActionResult<List<WrapOutSectionInfo>> result = new ActionResult<>();
+		EffectivePerson currentPerson = this.effectivePerson(request);
 		List<WrapOutSectionInfo> wraps = new ArrayList<>();
 		List<BBSSectionInfo> sectionInfoList = null;
 		BBSForumInfo forumInfo = new BBSForumInfo();
@@ -106,25 +109,27 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 		if( check ){
 			if( forumId == null || forumId.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数ID为空，无法继续进行查询！") );
-				result.setUserMessage( "传入的参数ID为空，无法继续进行查询" );
+				Exception exception = new ForumIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){ //查询论坛信息是否存在
 			try{
-				forumInfo = forumInfoServiceAdv.get(forumId);
+				forumInfo = forumInfoServiceAdv.get( forumId );
 			}catch( Exception e ){
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据ID查询论坛信息时发生异常！" );
-				logger.error( "system query forum info with id got an exception!id:" + forumId, e );
+				Exception exception = new ForumInfoQueryByIdException( e, forumId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
 			if( forumInfo == null ){
 				check = false;
-				result.error( new Exception("论坛信息不存在，无法继续进行查询操作！ID=" + forumId ) );
-				result.setUserMessage( "论坛信息不存在，无法继续进行查询操作！" );
+				Exception exception = new ForumInfoNotExistsException( forumId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -135,9 +140,10 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 					sectionInfoList = new ArrayList<BBSSectionInfo>();
 				}
 			} catch (Exception e) {
-				result.error(e);
-				result.setUserMessage("系统在查询所有主版块信息时发生异常");
-				logger.error("system query all main section info got an exception!", e);
+				check = false;
+				Exception exception = new SectionListByForumException( e, forumId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -146,9 +152,9 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 					wraps = wrapout_copier.copy( sectionInfoList );
 					result.setData(wraps);
 				} catch (Exception e) {
-					result.error(e);
-					result.setUserMessage("系统在将版块信息列表转换为输出格式时发生异常");
-					logger.error("system copy section list to wraps got an exception!", e);
+					Exception exception = new SectionWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}		
 			}
 		}
@@ -162,6 +168,7 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listSubSectionByMainSectionId( @Context HttpServletRequest request, @PathParam("sectionId") String sectionId ) {
 		ActionResult<List<WrapOutSectionInfo>> result = new ActionResult<>();
+		EffectivePerson currentPerson = this.effectivePerson(request);
 		List<WrapOutSectionInfo> wraps = new ArrayList<>();
 		List<BBSSectionInfo> sectionInfoList = null;
 		BBSSectionInfo sectionInfo = new BBSSectionInfo();
@@ -169,8 +176,9 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 		if( check ){
 			if( sectionId == null || sectionId.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数sectionId为空，无法继续进行查询！") );
-				result.setUserMessage( "传入的参数sectionId为空，无法继续进行查询" );
+				Exception exception = new SectionIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if( check ){
@@ -178,16 +186,17 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 				sectionInfo = sectionInfoServiceAdv.get( sectionId );
 			}catch( Exception e ){
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据ID查询版块信息时发生异常！" );
-				logger.error( "system query section info with id got an exception!id:" + sectionId, e );
+				Exception exception = new SectionQueryByIdException( e, sectionId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if( check ){
 			if( sectionInfo == null ){
 				check = false;
-				result.error( new Exception("版块信息不存在，无法继续进行查询操作！ID=" + sectionId ) );
-				result.setUserMessage( "版块信息不存在，无法继续进行查询操作！" );
+				Exception exception = new SectionNotExistsException( sectionId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if( check ){
@@ -197,9 +206,10 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 					sectionInfoList = new ArrayList<BBSSectionInfo>();
 				}
 			} catch (Exception e) {
-				result.error(e);
-				result.setUserMessage("系统在查询所有主版块信息时发生异常");
-				logger.error("system query sub section info with main section id got an exception!", e);
+				check = false;
+				Exception exception = new SectionListByParentException( e, sectionId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if( check ){
@@ -208,9 +218,9 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 					wraps = wrapout_copier.copy( sectionInfoList );
 					result.setData(wraps);
 				} catch (Exception e) {
-					result.error(e);
-					result.setUserMessage("系统在将版块信息列表转换为输出格式时发生异常");
-					logger.error("system copy section list to wraps got an exception!", e);
+					Exception exception = new SectionWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}		
 			}
 		}
@@ -218,17 +228,17 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 		return ResponseFactory.getDefaultActionResultResponse( result );
 	}
 
-	@HttpMethodDescribe(value = "创建新的版块信息或者更新版块信息.", request = WrapInSectionInfo.class, response = WrapOutId.class)
+	@HttpMethodDescribe(value = "创建新的版块信息或者更新版块信息.", request = JsonElement.class, response = WrapOutId.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response post(@Context HttpServletRequest request, WrapInSectionInfo wrapIn) {
+	public Response post(@Context HttpServletRequest request, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		WrapInSectionInfo wrapIn = null;
 		WrapOutId wrap = null;
 		Boolean check = true;
 		String[] names = null;
 		String[] typeCatagory = null;
-		String[] types = null;
 		WrapPerson person = null;
 		BBSForumInfo forumInfo = null;
 		BBSSectionInfo sectionInfo_old = null;
@@ -238,25 +248,31 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 		String hostName = request.getRemoteAddr();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		
-		if( wrapIn == null ){
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInSectionInfo.class );
+		} catch (Exception e ) {
 			check = false;
-			result.error( new Exception("系统传入的对象为空，无法进行数据保存！") );
-			result.setUserMessage( "系统传入的对象为空，无法进行数据保存！" );
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
+		
 		//校验版块名称
 		if( check ){
 			if( wrapIn.getSectionName() == null || wrapIn.getSectionName().isEmpty() ){
 				check = false;
-				result.error( new Exception("系统传入的[版块名称]为空，无法进行数据保存！") );
-				result.setUserMessage( "系统传入的[版块名称]为空，无法进行数据保存！" );
+				Exception exception = new SectionNameEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		//校验论坛信息是否有效，并且补充论坛名称
 		if (check) {
 			if ( wrapIn.getForumId() == null || wrapIn.getForumId().isEmpty() ) {
 				check = false;
-				result.error(new Exception("系统传入的[论坛ID]为空，无法进行数据保存！"));
-				result.setUserMessage("系统传入的[论坛ID]为空，无法进行数据保存！");
+				Exception exception = new ForumIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if (check) {
@@ -264,17 +280,18 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 				forumInfo = forumInfoServiceAdv.get( wrapIn.getForumId() );
 			}catch( Exception e ){
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据论坛ID查询论坛信息时发生异常" );
-				logger.error( "system query forum with forum id got an exception!id:" + wrapIn.getForumId() , e );
+				Exception exception = new ForumInfoQueryByIdException( e, wrapIn.getForumId() );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if (check) {
 			if( forumInfo == null ){
 				//论坛信息不存在
 				check = false;
-				result.error( new Exception("论坛信息不存在，ID="+ wrapIn.getForumId() ) );
-				result.setUserMessage( "论坛信息不存在，ID="+ wrapIn.getForumId() );
+				Exception exception = new ForumInfoNotExistsException( wrapIn.getForumId() );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}else{
 				//补充论坛名称
 				wrapIn.setForumName( forumInfo.getForumName() );
@@ -284,16 +301,34 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 		if (check) {
 			if ( !forumInfo.getSectionCreateAble() ) {
 				check = false;
-				result.error( new Exception("论坛["+forumInfo.getForumName()+"]不允许创建版块。" ) );
-				result.setUserMessage( "论坛["+forumInfo.getForumName()+"]不允许创建版块。" );
+				Exception exception = new ForumCanNotCreateSectionException( forumInfo.getForumName() );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		//判断用户是否是论坛管理员
 		if ( check ) {
-			if( !currentPerson.getName().equals( forumInfo.getForumManagerName() )){
+			if( forumInfo.getForumManagerName() == null || forumInfo.getForumManagerName().isEmpty() ){
 				check = false;
-				result.error( new Exception("操作用户不是论坛["+forumInfo.getForumName()+"]管理员，无法创建版块。" ) );
-				result.setUserMessage( "操作用户不是论坛["+forumInfo.getForumName()+"]管理员，无法创建版块。" );
+				Exception exception = new SectionManagePermissionException( currentPerson.getName(), forumInfo.getForumName() );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
+			}else{
+				String[] array = forumInfo.getForumManagerName().split(",");
+				if( array != null ){
+					Boolean isManager = false;
+					for( String name : array ){
+						if( currentPerson.getName().equals( name )){
+							isManager = true;
+						}
+					}
+					if( !isManager ){
+						check = false;
+						Exception exception = new SectionManagePermissionException( currentPerson.getName(), forumInfo.getForumName() );
+						result.error( exception );
+						logger.error( exception, currentPerson, request, null);
+					}
+				}
 			}
 		}
 		if( check ){
@@ -311,8 +346,9 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 					for( String catagory : typeCatagory ){
 						if( !"信息".equals( catagory ) && !"问题".equals( catagory ) && !"投票".equals( catagory )){
 							check = false;
-							result.error( new Exception("typeCatagory is invalid.catagory:" + catagory ) );
-							result.setUserMessage( "系统传入的[主题分类]不合法，无法进行数据保存！分类:" + catagory );
+							Exception exception = new SectionTypeCatagoryInvalidException( catagory );
+							result.error( exception );
+							logger.error( exception, currentPerson, request, null);
 						}
 					}
 				}
@@ -330,15 +366,16 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 						person = userManagerService.getUserByFlag( name );
 						if( person == null ){
 							check = false;
-							result.error( new Exception( "指定的版主信息不存在，姓名：" + name ) );
-							result.setUserMessage( "指定的版主信息不存在，姓名：" + name );
+							Exception exception = new PersonNotExistsException( name );
+							result.error( exception );
+							logger.error( exception, currentPerson, request, null);
 							break;
 						}
 					} catch (Exception e) {
 						check = false;
-						result.error( e );
-						result.setUserMessage( "系统在根据人员姓名查询人员信息时发生异常！NAME:" + name );
-						logger.error( "system get user by flag got an exception!name:" + name, e );
+						Exception exception = new PersonQueryException( e, name );
+						result.error( exception );
+						logger.error( exception, currentPerson, request, null);
 						break;
 					}
 				}				
@@ -357,9 +394,9 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 				}
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在COPY传入的对象时发生异常！" );
-				logger.error( "system copy wrapIn to sectionInfo got an exception!", e );
+				Exception exception = new SectionWrapInException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -368,9 +405,9 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 				sectionInfo_old = sectionInfoServiceAdv.get( sectionInfo.getId() );
 			}catch( Exception e ){
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据ID查询版块信息时发生异常！" );
-				logger.error( "system query section info with id got an exception!id:" + sectionInfo.getId(), e );
+				Exception exception = new SectionQueryByIdException( e, sectionInfo.getId() );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -384,9 +421,9 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 					sectionInfo_sub = sectionInfoServiceAdv.get( sectionInfo.getMainSectionId() );
 				}catch( Exception e ){
 					check = false;
-					result.error( e );
-					result.setUserMessage( "系统在根据主版块ID查询主版块信息时发生异常！" );
-					logger.error( "system query main section info with id got an exception!id:" + sectionInfo.getId(), e );
+					Exception exception = new SectionListByParentException( e, sectionInfo.getMainSectionId() );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 				if( check ){
 					if( sectionInfo_sub != null ){
@@ -395,9 +432,9 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 						sectionInfo.setSectionLevel( "子版块" );
 					}else{
 						check = false;
-						result.error( new Exception("根据主版块ID未查询到任何版块信息。") );
-						result.setUserMessage( "根据主版块ID未查询到任何版块信息。！" );
-						logger.error( "section info is not exsits! id:" + sectionInfo.getId() );
+						Exception exception = new SectionNotExistsException( sectionInfo.getMainSectionId() );
+						result.error( exception );
+						logger.error( exception, currentPerson, request, null);
 					}
 				}
 			}
@@ -408,7 +445,6 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 				sectionInfo = sectionInfoServiceAdv.save( sectionInfo );
 				wrap = new WrapOutId( sectionInfo.getId() );
 				result.setData( wrap );
-				result.setUserMessage( "版块信息保存成功！" );
 				if( sectionInfo_old != null ){
 					operationRecordService.sectionOperation( currentPerson.getName(), sectionInfo, "MODIFY", hostIp, hostName );
 				}else{
@@ -416,9 +452,9 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 				}
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在保存版块信息时发生异常！" );
-				logger.error( "system save section info got an exception!", e );
+				Exception exception = new SectionSaveException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -429,8 +465,9 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 			} catch (Exception e) {
 				check = false;
 				result.error( e );
-				result.setUserMessage( "系统在创建论坛权限信息时发生异常！" );
-				logger.error( "system create forum permission info got an exception!", e );
+				logger.warn( "system create forum permission info got an exception!" );
+				logger.error(e);
+				
 			}
 		}
 		
@@ -441,8 +478,8 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 			} catch (Exception e) {
 				check = false;
 				result.error( e );
-				result.setUserMessage( "系统在创建论坛角色信息时发生异常！" );
-				logger.error( "system create section role info got an exception!", e );
+				logger.warn( "system create section role info got an exception!" );
+				logger.error(e);
 			}
 		}
 		if( check ){
@@ -453,8 +490,8 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 				} catch (Exception e) {
 					check = false;
 					result.error( e );
-					result.setUserMessage( "系统在创建论坛角色信息时发生异常！" );
-					logger.error( "system create main section role info got an exception!", e );
+					logger.warn( "system create main section role info got an exception!" );
+					logger.error(e);
 				}
 			}
 		}
@@ -465,8 +502,8 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 			} catch (Exception e) {
 				check = false;
 				result.error( e );
-				result.setUserMessage( "系统在创建论坛角色信息时发生异常！" );
-				logger.error( "system create forum role info got an exception!", e );
+				logger.warn( "system create forum role info got an exception!" );
+				logger.error(e);
 			}
 		}
 		if( check ){//检查版主权限的设置
@@ -475,8 +512,8 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 			} catch (Exception e) {
 				check = false;
 				result.error( e );
-				result.setUserMessage( "系统在为版主绑定角色信息时发生异常！" );
-				logger.error( "system bind role for section manager got an exception!", e );
+				logger.warn( "system bind role for section manager got an exception!" );
+				logger.error(e);
 			}
 		}
 		if( check ){
@@ -486,8 +523,8 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 				} catch (Exception e) {
 					check = false;
 					result.error( e );
-					result.setUserMessage( "系统在为版主绑定角色信息时发生异常！" );
-					logger.error( "system bind role for section manager got an exception!", e );
+					logger.warn( "system bind role for section manager got an exception!" );
+					logger.error(e);
 				}
 			}
 		}
@@ -497,8 +534,8 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 			} catch (Exception e) {
 				check = false;
 				result.error( e );
-				result.setUserMessage( "系统在为论坛管理员绑定角色信息时发生异常！" );
-				logger.error( "system bind role for forum manager got an exception!", e );
+				logger.warn( "system bind role for section manager got an exception!" );
+				logger.error(e);
 			}
 		}
 		
@@ -524,8 +561,9 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception( "传入的参数ID为空，无法继续进行删除操作！" ) );
-				result.setUserMessage( "传入的参数ID为空，无法继续进行删除操作" );
+				Exception exception = new SectionIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -535,17 +573,18 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 				sectionInfo = sectionInfoServiceAdv.get(id);
 			}catch( Exception e ){
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据ID查询版块信息时发生异常！" );
-				logger.error( "system query section info with id got an exception!id:" + id, e );
+				Exception exception = new SectionQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if( check ){
 			if( sectionInfo == null ){
 				check = false;
-				result.error( new Exception("版块信息不存在，无法继续进行删除操作！ID：" + id) );
-				result.setUserMessage( "版块信息不存在，无法继续进行删除操作！");
+				Exception exception = new SectionNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -554,9 +593,9 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 				forumInfo = forumInfoServiceAdv.get( sectionInfo.getForumId() );
 			}catch( Exception e ){
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据论坛ID查询论坛信息时发生异常" );
-				logger.error( "system query forum with forum id got an exception!id:" + sectionInfo.getForumId() , e );
+				Exception exception = new ForumInfoQueryByIdException( e, sectionInfo.getForumId() );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
@@ -564,17 +603,36 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 			if( forumInfo == null ){
 				//论坛信息不存在
 				check = false;
-				result.error( new Exception( "论坛信息不存在，ID="+ sectionInfo.getForumId() ) );
-				result.setUserMessage( "论坛信息不存在，ID="+ sectionInfo.getForumId() );
+				Exception exception = new ForumInfoNotExistsException( sectionInfo.getForumId() );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		//判断用户是否是论坛管理员
-		if ( check ) {
-			if ( !currentPerson.getName().equals( forumInfo.getForumManagerName() ) ) {
+		if (check) {
+			if (forumInfo.getForumManagerName() == null || forumInfo.getForumManagerName().isEmpty()) {
 				check = false;
-				result.error( new Exception("操作用户不是论坛[" + forumInfo.getForumName() + "]管理员，无法删除版块。") );
-				result.setUserMessage( "操作用户不是论坛[" + forumInfo.getForumName() + "]管理员，无法删除版块。" );
+				Exception exception = new SectionManagePermissionException(currentPerson.getName(), forumInfo.getForumName());
+				result.error(exception);
+				logger.error(exception, currentPerson, request, null);
+			} else {
+				String[] array = forumInfo.getForumManagerName().split(",");
+				if (array != null) {
+					Boolean isManager = false;
+					for (String name : array) {
+						if (currentPerson.getName().equals(name)) {
+							isManager = true;
+						}
+					}
+					if (!isManager) {
+						check = false;
+						Exception exception = new SectionManagePermissionException(currentPerson.getName(),
+								forumInfo.getForumName());
+						result.error(exception);
+						logger.error(exception, currentPerson, request, null);
+					}
+				}
 			}
 		}
 		
@@ -584,17 +642,18 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 				subjectCount = subjectInfoServiceAdv.countByMainAndSubSectionId( id, true );
 			}catch( Exception e){
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据版块ID查询主题信息数量时发生异常！" );
-				logger.error( "system count subject info with section id got an exception!id:" + id, e );
+				Exception exception = new SubjectCountBySectionException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			if( subjectCount > 0 ){
 				check = false;
-				result.error( new Exception( "版块["+sectionInfo.getSectionName()+"]中仍存在"+ subjectCount +"个主题，无法直接进行版块删除操作！" ) );
-				result.setUserMessage( "版块["+sectionInfo.getSectionName()+"]中仍存在"+ subjectCount +"个主题，无法直接进行版块删除操作！" );
+				Exception exception = new SectionCanNotDeleteException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 				
@@ -603,16 +662,14 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 				sectionInfoServiceAdv.delete( id );
 				wrap = new WrapOutId( id );
 				result.setData( wrap );
-				result.setUserMessage( "版块信息删除成功！" );
 				operationRecordService.sectionOperation( currentPerson.getName(), sectionInfo, "DELETE", hostIp, hostName );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在删除版块信息时发生异常" );
-				logger.error( "system delete section info got an exception!", e );
+				Exception exception = new SectionDeleteException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
-		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -634,8 +691,9 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception( "传入的参数ID为空，无法继续进行删除操作！" ) );
-				result.setUserMessage( "传入的参数ID为空，无法继续进行删除操作" );
+				Exception exception = new SectionIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if( check ){
@@ -643,16 +701,17 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 				sectionInfo = sectionInfoServiceAdv.get(id);
 			}catch( Exception e ){
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据ID查询版块信息时发生异常！" );
-				logger.error( "system query section info with id got an exception!id:" + id, e );
+				Exception exception = new SectionQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if( check ){
 			if( sectionInfo == null ){
 				check = false;
-				result.error( new Exception("版块信息不存在，无法继续进行删除操作！ID：" + id) );
-				result.setUserMessage( "版块信息不存在，无法继续进行删除操作！");
+				Exception exception = new SectionNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
@@ -660,25 +719,43 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 				forumInfo = forumInfoServiceAdv.get( sectionInfo.getForumId() );
 			}catch( Exception e ){
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据论坛ID查询论坛信息时发生异常" );
-				logger.error( "system query forum with forum id got an exception!id:" + sectionInfo.getForumId() , e );
+				Exception exception = new ForumInfoQueryByIdException( e, sectionInfo.getForumId() );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if (check) {
 			if( forumInfo == null ){
 				//论坛信息不存在
 				check = false;
-				result.error( new Exception( "论坛信息不存在，ID="+ sectionInfo.getForumId() ) );
-				result.setUserMessage( "论坛信息不存在，ID="+ sectionInfo.getForumId() );
+				Exception exception = new ForumInfoNotExistsException( sectionInfo.getForumId() );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		//判断用户是否是论坛管理员
-		if ( check ) {
-			if ( !currentPerson.getName().equals( forumInfo.getForumManagerName() ) ) {
+		if (check) {
+			if (forumInfo.getForumManagerName() == null || forumInfo.getForumManagerName().isEmpty()) {
 				check = false;
-				result.error( new Exception("操作用户不是论坛[" + forumInfo.getForumName() + "]管理员，无法删除版块。") );
-				result.setUserMessage( "操作用户不是论坛[" + forumInfo.getForumName() + "]管理员，无法删除版块。" );
+				Exception exception = new SectionManagePermissionException(currentPerson.getName(), forumInfo.getForumName());
+				result.error(exception);
+				logger.error(exception, currentPerson, request, null);
+			} else {
+				String[] array = forumInfo.getForumManagerName().split(",");
+				if (array != null) {
+					Boolean isManager = false;
+					for (String name : array) {
+						if (currentPerson.getName().equals(name)) {
+							isManager = true;
+						}
+					}
+					if (!isManager) {
+						check = false;
+						Exception exception = new SectionManagePermissionException(currentPerson.getName(), forumInfo.getForumName());
+						result.error(exception);
+						logger.error(exception, currentPerson, request, null);
+					}
+				}
 			}
 		}		
 		if( check ){
@@ -686,13 +763,12 @@ public class SectionInfoManagerUserAction extends AbstractJaxrsAction {
 				sectionInfoServiceAdv.delete( id );				
 				wrap = new WrapOutId( id );
 				result.setData( wrap );
-				result.setUserMessage( "版块信息删除成功！" );
 				operationRecordService.sectionOperation( currentPerson.getName(), sectionInfo, "DELETE", hostIp, hostName );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在删除版块信息时发生异常" );
-				logger.error( "system delete section info got an exception!", e );
+				Exception exception = new SectionDeleteException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		return ResponseFactory.getDefaultActionResultResponse(result);

@@ -1,7 +1,5 @@
 package com.x.file.assemble.control.jaxrs.attachment;
 
-import static com.x.base.core.entity.StorageType.file;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -12,7 +10,7 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.project.server.StorageMapping;
 import com.x.file.assemble.control.ThisApplication;
-import com.x.file.core.entity.Attachment;
+import com.x.file.core.entity.personal.Attachment;
 
 public class ActionDelete {
 
@@ -24,7 +22,7 @@ public class ActionDelete {
 				throw new Exception(
 						"person{name:" + effectivePerson.getName() + "} delete attachment{id:" + id + "} denied.");
 			}
-			StorageMapping mapping = ThisApplication.storageMappings.get(file, attachment.getStorage());
+			StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class, attachment.getStorage());
 			attachment.deleteContent(mapping);
 			emc.beginTransaction(Attachment.class);
 			emc.delete(Attachment.class, attachment.getId());

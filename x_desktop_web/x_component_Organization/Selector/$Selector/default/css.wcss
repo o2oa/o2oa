@@ -6,7 +6,7 @@
 	},
 	"containerNode": {
 		"height": "510px",
-		"width": "700px",
+		"width": "900px",
 		"background-color": "#FFF",
 		"overflow": "hidden",
 		"border": "3px solid #666",
@@ -15,9 +15,20 @@
 		"position": "absolute",
 		"z-index":1001
 	},
+  "containerNode_multiple": {
+	"height": "550px",
+	"width": "900px",
+	"background-color": "#FFF",
+	"overflow": "hidden",
+	"border": "3px solid #666",
+	"border-radius": "10px",
+	"box-shadow": "0px 0px 15px #666",
+	"position": "absolute",
+	"z-index":1001
+  },
 	"containerNodeSingle": {
 		"height": "510px",
-		"width": "355px",
+		"width": "455px",
 		"background-color": "#FFF",
 		"overflow": "hidden",
 		"border": "3px solid #666",
@@ -26,6 +37,17 @@
 		"position": "absolute",
 		"z-index":1001
 	},
+  "containerNodeSingle_multiple": {
+	"height": "550px",
+	"width": "455px",
+	"background-color": "#FFF",
+	"overflow": "hidden",
+	"border": "3px solid #666",
+	"border-radius": "10px",
+	"box-shadow": "0px 0px 15px #666",
+	"position": "absolute",
+	"z-index":1001
+  },
 	"containerNodeMobile": {
         "height": "100%",
         "width": "100%",
@@ -98,7 +120,7 @@
 		"overflow": "hidden"
 	},
 	"selectNode": {
-		"width": "331px",
+		"width": "431px",
 		"height": "410px",
 		"float": "left",
 		"margin": "10px 5px 10px 10px",
@@ -106,7 +128,7 @@
 		"border-radius": "6px"
 	},
 	"selectNodeSingle": {
-		"width": "331px",
+		"width": "431px",
 		"height": "410px",
 		"float": "left",
 		"margin": "10px",
@@ -119,16 +141,29 @@
     	"border-radius": "6px"
 	},
 
+
+  "selectedContainerNode": {
+	"width": "431px",
+	"height": "410px",
+	"float": "right",
+	"margin": "10px 10px 10px 5px",
+	"border": "2px solid #999",
+	"border-radius": "6px",
+	"overflow" : "hidden"
+  },
 	"selectedScrollNode": {
-		"width": "331px",
-		"height": "410px",
-		"float": "right",
-		"margin": "10px 10px 10px 5px",
-		"border": "2px solid #999",
-		"border-radius": "6px"
+//		"width": "331px",
+//		"height": "410px",
+//		"float": "right",
+//		"margin": "10px 10px 10px 5px",
+//		"border": "2px solid #999",
+//		"border-radius": "6px",
+	  "width": "421px",
+	  "height": "410px",
+	  	"overflow" : "hidden"
 	},
 	"selectedNode": {
-		"overflow": "hidden"
+		//"overflow": "hidden"
 	},
 	"actionNode": {
 		"height": "40px",
@@ -165,20 +200,20 @@
 		"border-bottom": "1px solid #999"
 	},
 	"searchInput": {
-		"width": "325px",
+		"width": "425px",
 		"height": "24px",
 		"border": "0px",
 		"margin": "3px",
 		"outline": "none"
 	},
 	"searchInputSingle": {
-		"width": "325px",
+		"width": "425px",
 		"height": "24px",
 		"border": "0px",
-		"margin": "3px",
+		"margin": "3px"
 	},
 	"letterAreaNode": {
-		"width": "312px",
+		"width": "412px",
 		"padding": "0px 9px",
 		"height": "40px",
 		"border-bottom": "1px solid #999",

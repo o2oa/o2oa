@@ -20,10 +20,12 @@ MWF.xApplication.Organization.Selector.FormField = new Class({
             this.action.listFormField(this.options.application, function(json){
                 this.fieldData = json.data;
                 if (this.options.fieldType){
-                    json.data[this.options.fieldType].each(function(data){
-                        data.id = data.name;
-                        var item = this._newItem(data, this, this.itemAreaNode);
-                    }.bind(this));
+                    if (json.data[this.options.fieldType]){
+                        json.data[this.options.fieldType].each(function(data){
+                            data.id = data.name;
+                            var item = this._newItem(data, this, this.itemAreaNode);
+                        }.bind(this));
+                    }
                 }else{
                     Object.each(json.data, function(v, k){
                         var category = this._newItemCategory({"name": k, "data": v}, this, this.itemAreaNode);

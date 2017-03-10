@@ -111,7 +111,7 @@ public class OkrWorkPerson extends SliceJpaObject {
 	 * 在执行给定实体的相应 EntityManager 持久操作之前，调用该实体的 @PrePersist 回调方法。
 	 */
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if ( null == this.createTime ) {
 			this.createTime = date;
@@ -126,12 +126,12 @@ public class OkrWorkPerson extends SliceJpaObject {
 	 * 在对实体数据进行数据库更新操作之前，调用实体的 @PreUpdate 回调方法。
 	 */
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
 
-	private void onPersist() {
+	private void onPersist() throws Exception{
 	}
 	/* ==================================================================================
 	 *                             以上为 JpaObject 默认字段
@@ -216,6 +216,26 @@ public class OkrWorkPerson extends SliceJpaObject {
 	@Index(name = TABLE + "_deployMonth" )
 	@CheckPersist( allowEmpty = true)
 	private String deployMonth = "";
+	
+	@EntityFieldDescribe( "工作创建日期-字符串，显示用：yyyy-mm-dd" )
+	@Column(name="xworkCreateDateStr", length = JpaObject.length_32B )
+	@CheckPersist( allowEmpty = true )
+	private String workCreateDateStr = "";
+	
+	@EntityFieldDescribe( "工作部署日期-字符串，显示用：yyyy-mm-dd" )
+	@Column(name="xdeployDateStr", length = JpaObject.length_32B )
+	@CheckPersist( allowEmpty = true )
+	private String deployDateStr = "";
+	
+	@EntityFieldDescribe( "工作完成日期" )
+	@Column(name="xcompleteDateLimit" )
+	@CheckPersist( allowEmpty = true )
+	private Date completeDateLimit = null;
+	
+	@EntityFieldDescribe( "工作完成日期-字符串，显示用：yyyy-mm-dd" )
+	@Column(name="xcompleteDateLimitStr", length = JpaObject.length_32B )
+	@CheckPersist( allowEmpty = true )
+	private String completeDateLimitStr = "";
 
 	@EntityFieldDescribe( "员工姓名" )
 	@Column( name="xemployeeName", length = AbstractPersistenceProperties.organization_name_length  )
@@ -269,6 +289,16 @@ public class OkrWorkPerson extends SliceJpaObject {
 	@Index(name = TABLE + "_status" )
 	@CheckPersist( allowEmpty = true )
 	private String status = "正常";
+	
+	@EntityFieldDescribe( "备注说明" )
+	@Column(name="xdiscription", length = JpaObject.length_255B )
+	@CheckPersist( allowEmpty = true )
+	private String discription = null;
+	
+	@EntityFieldDescribe( "记录的类别：中心工作|具体工作" )
+	@Column(name="xrecordType", length = JpaObject.length_32B )
+	@CheckPersist( allowEmpty = true )
+	private String recordType = "具体工作";
 	
 	/**
 	 * 获取中心工作ID
@@ -562,5 +592,41 @@ public class OkrWorkPerson extends SliceJpaObject {
 	}
 	public void setAuthorizeRecordId(String authorizeRecordId) {
 		this.authorizeRecordId = authorizeRecordId;
-	}	
+	}
+	public String getDiscription() {
+		return discription;
+	}
+	public void setDiscription(String discription) {
+		this.discription = discription;
+	}
+	public String getDeployDateStr() {
+		return deployDateStr;
+	}
+	public Date getCompleteDateLimit() {
+		return completeDateLimit;
+	}
+	public String getCompleteDateLimitStr() {
+		return completeDateLimitStr;
+	}
+	public void setDeployDateStr( String deployDateStr ) {
+		this.deployDateStr = deployDateStr;
+	}
+	public void setCompleteDateLimit( Date completeDateLimit ) {
+		this.completeDateLimit = completeDateLimit;
+	}
+	public void setCompleteDateLimitStr( String completeDateLimitStr ) {
+		this.completeDateLimitStr = completeDateLimitStr;
+	}
+	public String getRecordType() {
+		return recordType;
+	}
+	public void setRecordType(String recordType) {
+		this.recordType = recordType;
+	}
+	public String getWorkCreateDateStr() {
+		return workCreateDateStr;
+	}
+	public void setWorkCreateDateStr(String workCreateDateStr) {
+		this.workCreateDateStr = workCreateDateStr;
+	}
 }

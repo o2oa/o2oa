@@ -3,6 +3,9 @@ package com.x.base.core.entity.item;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+
+import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,7 +16,6 @@ import com.x.base.core.utils.StringTools;
 
 public abstract class Item extends SliceJpaObject {
 
-	public static final int StringValueMaxLength = JpaObject.length_255B;
 	public static final int pathLength = JpaObject.length_64B;
 
 	private static final long serialVersionUID = -759468307352415471L;
@@ -44,6 +46,17 @@ public abstract class Item extends SliceJpaObject {
 	// private Date dateValue;
 	// private Date timeValue;
 	// private Boolean booleanValue;
+
+	@Transient
+	private transient String stringLobValue;
+
+	public String getStringLobValue() {
+		return stringLobValue;
+	}
+
+	public void setStringLobValue(String stringLobValue) {
+		this.stringLobValue = stringLobValue;
+	}
 
 	public abstract ItemType getItemType();
 
@@ -93,9 +106,9 @@ public abstract class Item extends SliceJpaObject {
 
 	public abstract void setStringValue(String stringValue);
 
-	public abstract String getStringLobValue();
+	public abstract String getLobItem();
 
-	public abstract void setStringLobValue(String stringLobValue);
+	public abstract void setLobItem(String lobItem);
 
 	public abstract Double getNumberValue();
 
@@ -151,16 +164,19 @@ public abstract class Item extends SliceJpaObject {
 
 	public void value(Boolean value) {
 		this.setItemPrimitiveType(ItemPrimitiveType.b);
+		this.setItemStringValueType(ItemStringValueType.u);
 		this.setBooleanValue(value);
 	}
 
 	public void value(Double value) {
 		this.setItemPrimitiveType(ItemPrimitiveType.n);
+		this.setItemStringValueType(ItemStringValueType.u);
 		this.setNumberValue(value);
 	}
 
 	public void value(String value) throws Exception {
-		if (StringTools.utf8Length(value) > StringValueMaxLength) {
+		this.setItemPrimitiveType(ItemPrimitiveType.s);
+		if (StringTools.utf8Length(value) > ItemConverter.STRING_VALUE_MAX_LENGTH) {
 			this.setItemStringValueType(ItemStringValueType.l);
 			this.setStringLobValue(value);
 		} else {
@@ -295,12 +311,24 @@ public abstract class Item extends SliceJpaObject {
 		return null;
 	}
 
+	public boolean isLobItem() {
+		if (Objects.equals(this.getItemType(), ItemType.p)
+				&& Objects.equals(this.getItemPrimitiveType(), ItemPrimitiveType.s)
+				&& Objects.equals(this.getItemStringValueType(), ItemStringValueType.l)) {
+			return true;
+		}
+		return false;
+	}
+
 	@Override
 	public String toString() {
-		return "Item [path0=" + getPath0() + ", path1=" + getPath1() + ", path2=" + getPath2() + ", path3=" + getPath3() + ", path4=" + getPath4() + ", path5=" + getPath5()
-				+ ", path6=" + getPath6() + ", path7=" + getPath7() + ", stringValue=" + getStringValue() + ", stringLobValue=" + getStringLobValue() + ", numberValue="
-				+ getNumberValue() + ", dateTimeValue=" + getDateTimeValue() + ", dateValue=" + getDateValue() + ", timeValue=" + getTimeValue() + ", booleanValue="
-				+ getBooleanValue() + ", itemType=" + getItemType() + ", itemPrimitiveType=" + getItemPrimitiveType() + ", itemStringValueType=" + getItemStringValueType() + "]";
+		return "Item [path0=" + getPath0() + ", path1=" + getPath1() + ", path2=" + getPath2() + ", path3=" + getPath3()
+				+ ", path4=" + getPath4() + ", path5=" + getPath5() + ", path6=" + getPath6() + ", path7=" + getPath7()
+				+ ", stringValue=" + getStringValue() + ", stringLobValue=" + getStringLobValue() + ", lobItem="
+				+ getLobItem() + ", numberValue=" + getNumberValue() + ", dateTimeValue=" + getDateTimeValue()
+				+ ", dateValue=" + getDateValue() + ", timeValue=" + getTimeValue() + ", booleanValue="
+				+ getBooleanValue() + ", itemType=" + getItemType() + ", itemPrimitiveType=" + getItemPrimitiveType()
+				+ ", itemStringValueType=" + getItemStringValueType() + "]";
 	}
 
 }

@@ -16,22 +16,31 @@ public class x_cms_assemble_control extends Assemble {
 	public static List<Class<? extends Compilable>> dependents = new ArrayList<>();
 
 	static {
-		containerEntities.add("com.x.cms.core.entity.element.ViewFieldConfig");
-		containerEntities.add("com.x.cms.core.entity.element.ViewCatagory");
-		containerEntities.add("com.x.cms.core.entity.element.View");
-		containerEntities.add("com.x.cms.core.entity.element.Form");
+		containerEntities.add("com.x.cms.core.entity.content.DataItem");
+		containerEntities.add("com.x.cms.core.entity.content.DataLobItem");
+		
 		containerEntities.add("com.x.cms.core.entity.element.AppDict");
 		containerEntities.add("com.x.cms.core.entity.element.AppDictItem");
-		containerEntities.add("com.x.cms.core.entity.element.Script");
-		containerEntities.add("com.x.cms.core.entity.AppCatagoryAdmin");
-		containerEntities.add("com.x.cms.core.entity.AppCatagoryPermission");
-		containerEntities.add("com.x.cms.core.entity.AppInfo");
-		containerEntities.add("com.x.cms.core.entity.CatagoryInfo");
-		containerEntities.add("com.x.cms.core.entity.Document");
-		containerEntities.add("com.x.cms.core.entity.FileInfo");
-		containerEntities.add("com.x.cms.core.entity.Log");
-		containerEntities.add("com.x.cms.core.entity.content.DataItem");
+		containerEntities.add("com.x.cms.core.entity.element.AppDictLobItem");
+		containerEntities.add("com.x.cms.core.entity.element.Form");
 		containerEntities.add("com.x.cms.core.entity.element.QueryView");
+		containerEntities.add("com.x.cms.core.entity.element.Script");
+		containerEntities.add("com.x.cms.core.entity.element.TemplateForm");
+		containerEntities.add("com.x.cms.core.entity.element.View");
+		containerEntities.add("com.x.cms.core.entity.element.ViewCategory");
+		containerEntities.add("com.x.cms.core.entity.element.ViewFieldConfig");
+		
+		containerEntities.add("com.x.cms.core.entity.AppCategoryAdmin");
+		containerEntities.add("com.x.cms.core.entity.AppCategoryPermission");
+		containerEntities.add("com.x.cms.core.entity.AppInfo");
+		containerEntities.add("com.x.cms.core.entity.CategoryInfo");
+		containerEntities.add("com.x.cms.core.entity.Document");
+		containerEntities.add("com.x.cms.core.entity.DocumentPermission"); 
+		containerEntities.add("com.x.cms.core.entity.DocumentPictureInfo");
+		containerEntities.add("com.x.cms.core.entity.DocumentViewRecord");
+		containerEntities.add("com.x.cms.core.entity.FileInfo");
+		containerEntities.add("com.x.cms.core.entity.Log");		
+		
 		dependents.add(x_base_core_project.class);
 		dependents.add(x_organization_core_entity.class);
 		dependents.add(x_organization_core_express.class);

@@ -4,9 +4,9 @@ import java.net.URLEncoder;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.DefaultCharset;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
@@ -23,15 +23,21 @@ class ManageDelete extends ActionBase {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<WrapOutId> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Application application = business.application().pick(applicationFlag, ExceptionWhen.not_found);
-			Review review = emc.find(id, Review.class, ExceptionWhen.not_found);
+			Application application = business.application().pick(applicationFlag);
+			if (null == application) {
+				throw new ApplicationNotExistedException(applicationFlag);
+			}
+			Review review = emc.find(id, Review.class);
+			if (null == review) {
+				throw new ReviewNotExistedException(id);
+			}
 			if (!StringUtils.equals(review.getApplication(), application.getId())) {
-				throw new Exception("application{id:" + applicationFlag + "} not match with review{id:" + id + "}.");
+				throw new ReviewNotMatchApplicationException(id, applicationFlag);
 			}
 			// 需要对这个应用的管理权限
 			business.application().allowControl(effectivePerson, application);
 			ThisApplication.applications.deleteQuery(x_processplatform_service_processing.class,
-					"review/" + URLEncoder.encode(review.getId(), "UTF-8"), null);
+					"review/" + URLEncoder.encode(review.getId(), DefaultCharset.name), null);
 			WrapOutId wrap = new WrapOutId(review.getId());
 			result.setData(wrap);
 			return result;

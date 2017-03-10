@@ -1,0 +1,36 @@
+package com.x.collaboration.assemble.websocket.timer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.TimerTask;
+
+import javax.websocket.Session;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.x.collaboration.assemble.websocket.ThisApplication;
+
+public class CleanupConnectionsTimer extends TimerTask {
+
+	private static Logger logger = LoggerFactory.getLogger(CleanupConnectionsTimer.class);
+
+	public void run() {
+		try {
+			List<String> removes = new ArrayList<>();
+			for (Entry<String, Session> entry : ThisApplication.connections.entrySet()) {
+				if ((null == entry.getValue()) || (!entry.getValue().isOpen())) {
+					removes.add(entry.getKey());
+				}
+			}
+			for (String str : removes) {
+				ThisApplication.connections.remove(str);
+			}
+			logger.info("clean {} websocket session.", removes.size());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}

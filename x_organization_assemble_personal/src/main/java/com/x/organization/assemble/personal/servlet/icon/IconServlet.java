@@ -9,7 +9,6 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,7 +19,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
 import org.imgscalr.Scalr;
 
-import com.x.base.core.application.servlet.FileUploadServletTools;
+import com.x.base.core.application.servlet.AbstractServletAction;
 import com.x.base.core.cache.ApplicationCache;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -35,7 +34,7 @@ import com.x.organization.core.entity.Person;
 
 @WebServlet("/servlet/icon")
 @MultipartConfig
-public class IconServlet extends HttpServlet {
+public class IconServlet extends AbstractServletAction {
 
 	private static final long serialVersionUID = -516827649716075968L;
 
@@ -48,8 +47,8 @@ public class IconServlet extends HttpServlet {
 			if (!ServletFileUpload.isMultipartContent(request)) {
 				throw new Exception("not multi part request.");
 			}
-			EffectivePerson effectivePerson = FileUploadServletTools.effectivePerson(request);
-			if (!StringUtils.equalsIgnoreCase(Config.administrator().getName(), effectivePerson.getName())) {
+			EffectivePerson effectivePerson = this.effectivePerson(request);
+			if (!Config.token().isInitialManager(effectivePerson.getName())) {
 				/* 非静态管理员 */
 				Business business = new Business(emc);
 				String id = business.person().getWithName(effectivePerson.getName());
@@ -78,7 +77,7 @@ public class IconServlet extends HttpServlet {
 				}
 			} else {
 				/* 静态管理员 */
-				wrap = new WrapOutId(Config.administrator().getId());
+				wrap = new WrapOutId(Config.token().initialManagerInstance().getId());
 			}
 			result.setData(wrap);
 		} catch (Exception e) {
@@ -86,6 +85,6 @@ public class IconServlet extends HttpServlet {
 			result.error(e);
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
-		FileUploadServletTools.result(response, result);
+		this.result(response, result);
 	}
 }

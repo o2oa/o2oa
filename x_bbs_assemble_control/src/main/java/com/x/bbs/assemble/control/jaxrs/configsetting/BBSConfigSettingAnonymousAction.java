@@ -7,15 +7,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.cache.ApplicationCache;
 import com.x.base.core.http.ActionResult;
+import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
@@ -41,6 +41,7 @@ public class BBSConfigSettingAnonymousAction extends StandardJaxrsAction{
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getBBSName(@Context HttpServletRequest request ) {
 		ActionResult<WrapOutBBSConfigSetting> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapOutBBSConfigSetting wrap = null;
 		BBSConfigSetting configSetting = null;
 		
@@ -56,17 +57,17 @@ public class BBSConfigSettingAnonymousAction extends StandardJaxrsAction{
 				configSetting = configSettingService.getWithConfigCode( "BBS_LOGO_NAME" );
 				if( configSetting != null ){
 					wrap = wrapout_copier.copy( configSetting );
-					
 					cache.put( new Element( cacheKey, wrap ) );
-					
 					result.setData(wrap);
 				}else{
-					logger.error( "system can not get any object by {'code':'BBS_LOGO_NAME'}. " );
+					Exception exception = new ConfigSettingNotExistsException( "BBS_LOGO_NAME" );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			} catch (Throwable th) {
-				logger.error( "system get by code got an exception" );
-				th.printStackTrace();
-				result.error(th);
+				Exception exception = new ConfigSettingQueryByCodeException( th, "BBS_LOGO_NAME" );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}		
 		return ResponseFactory.getDefaultActionResultResponse(result);

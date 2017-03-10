@@ -6,7 +6,7 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Test;
 
 import com.x.base.core.entity.tools.JpaObjectTools;
-import com.x.file.core.entity.Attachment;
+import com.x.file.core.entity.personal.Attachment;
 
 public class TestClient {
 

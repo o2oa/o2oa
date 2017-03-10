@@ -37,7 +37,7 @@ public class Department extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.Department.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -50,7 +50,7 @@ public class Department extends SliceJpaObject {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception {
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -119,7 +119,7 @@ public class Department extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception {
 		this.pinyin = StringUtils.lowerCase(PinyinHelper.convertToPinyinString(name, "", PinyinFormat.WITHOUT_TONE));
 		this.pinyinInitial = StringUtils.lowerCase(PinyinHelper.getShortPinyin(name));
 		this.superior = StringUtils.trimToEmpty(this.superior);
@@ -133,7 +133,7 @@ public class Department extends SliceJpaObject {
 	@Index(name = TABLE + "_name")
 	@CheckPersist(allowEmpty = false, simplyString = true, citationNotExists =
 	/* 验证不可重名 */
-	@CitationNotExist(fields = { "name", "unique" }, type = Department.class) )
+	@CitationNotExist(fields = { "name", "unique" }, type = Department.class))
 	private String name;
 
 	@EntityFieldDescribe("唯一标识.")
@@ -141,7 +141,7 @@ public class Department extends SliceJpaObject {
 	@Index(name = TABLE + "_unique")
 	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists =
 	/* 验证不可重名 */
-	@CitationNotExist(fields = { "name", "id", "unique" }, type = Department.class) )
+	@CitationNotExist(fields = { "name", "id", "unique" }, type = Department.class))
 	private String unique;
 
 	@EntityFieldDescribe("name拼音.")

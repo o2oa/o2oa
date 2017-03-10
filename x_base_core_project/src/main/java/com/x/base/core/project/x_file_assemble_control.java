@@ -16,8 +16,9 @@ public class x_file_assemble_control extends Assemble {
 	public static List<Class<? extends Compilable>> dependents = new ArrayList<>();
 
 	static {
-		containerEntities.add("com.x.file.core.entity.Folder");
-		containerEntities.add("com.x.file.core.entity.Attachment");
+		containerEntities.add("com.x.file.core.entity.personal.Folder");
+		containerEntities.add("com.x.file.core.entity.personal.Attachment");
+		containerEntities.add("com.x.file.core.entity.open.File");
 		dependents.add(x_base_core_project.class);
 		dependents.add(x_collaboration_core_entity.class);
 		dependents.add(x_collaboration_core_message.class);

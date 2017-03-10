@@ -14,9 +14,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
@@ -25,6 +23,8 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.SortTools;
 import com.x.bbs.assemble.control.service.BBSForumInfoServiceAdv;
 import com.x.bbs.assemble.control.service.BBSSectionInfoServiceAdv;
@@ -49,13 +49,14 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 	private BeanCopyTools< BBSSubjectInfo, WrapOutSubjectInfo > wrapout_copier = BeanCopyToolsBuilder.create( BBSSubjectInfo.class, WrapOutSubjectInfo.class, null, WrapOutSubjectInfo.Excludes);
 	private BeanCopyTools< BBSVoteOption, WrapOutBBSVoteOption > voteOptionWrapout_copier = BeanCopyToolsBuilder.create( BBSVoteOption.class, WrapOutBBSVoteOption.class, null, WrapOutBBSVoteOption.Excludes);
 	
-	@HttpMethodDescribe(value = "列示根据过滤条件的推荐主题列表.", response = WrapOutSubjectInfo.class, request = WrapInFilter.class)
+	@HttpMethodDescribe(value = "列示根据过滤条件的推荐主题列表.", response = WrapOutSubjectInfo.class, request = JsonElement.class)
 	@PUT
 	@Path("recommended/list/page/{page}/count/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listRecommendedSubjectForPage( @Context HttpServletRequest request, @PathParam("page") Integer page, @PathParam("count") Integer count, WrapInFilter wrapIn ) {
+	public Response listRecommendedSubjectForPage( @Context HttpServletRequest request, @PathParam("page") Integer page, @PathParam("count") Integer count, JsonElement jsonElement ) {
 		ActionResult<List<WrapOutSubjectInfo>> result = new ActionResult<>();
+		EffectivePerson currentPerson = this.effectivePerson(request);
 		List<WrapOutSubjectInfo> wraps = new ArrayList<>();
 		List<BBSSubjectInfo> subjectInfoList = null;
 		List<BBSSubjectInfo> subjectInfoList_out = new ArrayList<BBSSubjectInfo>();
@@ -63,12 +64,23 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 		String searchForumId = null;
 		String searchSectionId = null;
 		String searchMainSectionId = null;
+		WrapInFilter wrapIn = null;
 		Boolean check = true;
 		if( check ){
-			if( wrapIn == null ){
+			if( jsonElement == null ){
 				wrapIn = new WrapInFilter();
 			}
+		}else{
+			try {
+				wrapIn = this.convertToWrapIn( jsonElement, WrapInFilter.class );
+			} catch (Exception e ) {
+				check = false;
+				Exception exception = new WrapInConvertException( e, jsonElement );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
+			}
 		}
+		
 		if( check ){
 			if( page == null ){
 				page = 1;
@@ -84,9 +96,10 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 				total = subjectInfoServiceAdv.countRecommendedSubjectInSectionForPage( searchForumId, searchMainSectionId, searchSectionId, wrapIn.getCreatorName() );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "根据论坛ID，主版块ID，版块ID查询精华主题数量时发生异常！" );
-				logger.error( "system query creamed subject count got an exceptin.", e );
+				logger.warn( "system query creamed subject count got an exceptin." );
+				Exception exception = new SubjectFilterException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -95,9 +108,9 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 					subjectInfoList = subjectInfoServiceAdv.listRecommendedSubjectInSectionForPage( searchForumId, searchMainSectionId, searchSectionId, wrapIn.getCreatorName(), page*count );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "根据论坛ID，主版块ID，版块ID查询精华主题时发生异常！" );
-					logger.error( "system query creamed subject list got an exceptin.", e );
+					Exception exception = new SubjectFilterException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -122,9 +135,9 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 					result.setCount( total );
 				} catch (Exception e) {
 					check = false;
-					result.error( new Exception("将精华主题列表转换为输出格式发生异常！" ) );
-					result.setUserMessage( "将精华主题列表转换为输出格式发生异常！" );
-					logger.error( "system copy creamed subject info list to wrapout got an exceptin.", e );
+					Exception exception = new SubjectWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -149,16 +162,16 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 			}
 		}
 		if( check ){
-			viewSectionIds = getViewableSectionIds( result, currentPerson );
+			viewSectionIds = getViewableSectionIds( request, result, currentPerson );
 		}
 		if( check ){
 			try {
 				subjectInfoList = subjectInfoServiceAdv.listRecommendedSubjectForBBSIndex( viewSectionIds, count );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "获取所有推荐到BBS首页的主题列表时发生异常！" );
-				logger.error( "system list recommended subject for BBS index got an exceptin.", e );
+				Exception exception = new SubjectFilterException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -170,9 +183,9 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 					result.setCount( Long.parseLong( wraps.size() + "" ) );
 				} catch (Exception e) {
 					check = false;
-					result.error( new Exception("将主题转换为输出格式发生异常！" ) );
-					result.setUserMessage( "将主题转换为输出格式发生异常！" );
-					logger.error( "system copy subject info list to wrapout got an exceptin.", e );
+					Exception exception = new SubjectWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}	
@@ -197,8 +210,9 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 		if (check) {
 			if ( sectionId == null || sectionId.isEmpty() ) {
 				check = false;
-				result.error(new Exception("传入的参数版块ID为空，无法继续查询主题列表！"));
-				result.setUserMessage("传入的参数版块ID为空，无法继续查询主题列表！");
+				Exception exception = new SectionIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if (check) {// 查询版块信息是否存在
@@ -206,29 +220,30 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 				sectionInfo = sectionInfoServiceAdv.get( sectionId );
 			} catch (Exception e) {
 				check = false;
-				result.error(new Exception("传入的参数版块ID为空，无法继续查询主题列表！"));
-				result.setUserMessage("传入的参数版块ID为空，无法继续查询主题列表！");
-				logger.error("system query section info with id got an exceptin. id:" + sectionId, e);
+				Exception exception = new SectionQueryByIdException( e, sectionId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if (check) {
 			if (sectionInfo == null) {
 				check = false;
-				result.error(new Exception("根据传入的版块ID未能查询到任何版块信息，无法继续查询主题列表！"));
-				result.setUserMessage("根据传入的版块ID未能查询到任何版块信息，无法继续查询主题列表！");
+				Exception exception = new SectionNotExistsException( sectionId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
-			viewSectionIds = getViewableSectionIds( result, currentPerson );
+			viewSectionIds = getViewableSectionIds( request, result, currentPerson );
 		}
 		if (check) {
 			try {
 				subjectInfoList = subjectInfoServiceAdv.listAllTopSubject( sectionInfo, null, viewSectionIds );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("根据ID信息查询版块信息时发生异常！");
-				logger.error("system query all top subject info with section info got an exceptin.", e);
+				Exception exception = new SubjectFilterException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if (check) {
@@ -240,34 +255,39 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 					result.setCount(Long.parseLong(wraps.size() + ""));
 				} catch (Exception e) {
 					check = false;
-					result.error(new Exception("将主题转换为输出格式发生异常！"));
-					result.setUserMessage("将主题转换为输出格式发生异常！");
-					logger.error("system copy subject info list to wrapout got an exceptin.", e);
+					Exception exception = new SubjectWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "列示根据过滤条件的精华主题列表.", response = WrapOutSubjectInfo.class, request = WrapInFilter.class)
+	@HttpMethodDescribe(value = "列示根据过滤条件的精华主题列表.", response = WrapOutSubjectInfo.class, request = JsonElement.class)
 	@PUT
 	@Path("creamed/list/page/{page}/count/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listCreamedSubjectForPage( @Context HttpServletRequest request, @PathParam("page") Integer page, @PathParam("count") Integer count, WrapInFilter wrapIn ) {
+	public Response listCreamedSubjectForPage( @Context HttpServletRequest request, @PathParam("page") Integer page, @PathParam("count") Integer count, JsonElement jsonElement ) {
 		ActionResult<List<WrapOutSubjectInfo>> result = new ActionResult<>();
+		EffectivePerson currentPerson = this.effectivePerson(request);
 		List<WrapOutSubjectInfo> wraps = new ArrayList<>();
 		List<BBSSubjectInfo> subjectInfoList = null;
 		List<BBSSubjectInfo> subjectInfoList_out = new ArrayList<BBSSubjectInfo>();
 		Long total = 0L;
+		WrapInFilter wrapIn = null;
 		Boolean check = true;
-		if( check ){
-			if( wrapIn == null ){
-				check = false;
-				result.error( new Exception("传入的参数为空，无法查询精华主题列表信息！" ) );
-				result.setUserMessage( "传入的参数为空，无法查询精华主题列表信息！" );
-			}
+		
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilter.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
+
 		if( check ){
 			if( page == null ){
 				page = 1;
@@ -283,9 +303,9 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 				total = subjectInfoServiceAdv.countCreamedSubjectInSectionForPage( wrapIn.getForumId(), wrapIn.getMainSectionId(), wrapIn.getSectionId(), wrapIn.getCreatorName() );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "根据论坛ID，主版块ID，版块ID查询精华主题数量时发生异常！" );
-				logger.error( "system query creamed subject count got an exceptin.", e );
+				Exception exception = new SubjectFilterException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -294,9 +314,9 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 					subjectInfoList = subjectInfoServiceAdv.listCreamedSubjectInSectionForPage( wrapIn.getForumId(), wrapIn.getMainSectionId(), wrapIn.getSectionId(), wrapIn.getCreatorName(), page*count );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "根据论坛ID，主版块ID，版块ID查询精华主题时发生异常！" );
-					logger.error( "system query creamed subject list got an exceptin.", e );
+					Exception exception = new SubjectFilterException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -321,21 +341,21 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 					result.setCount( total );
 				} catch (Exception e) {
 					check = false;
-					result.error( new Exception("将精华主题列表转换为输出格式发生异常！" ) );
-					result.setUserMessage( "将精华主题列表转换为输出格式发生异常！" );
-					logger.error( "system copy creamed subject info list to wrapout got an exceptin.", e );
+					Exception exception = new SubjectWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "列示根据过滤条件的SubjectInfo,下一页.", response = WrapOutSubjectInfo.class, request = WrapInFilter.class)
+	@HttpMethodDescribe(value = "列示根据过滤条件的SubjectInfo,下一页.", response = WrapOutSubjectInfo.class, request = JsonElement.class)
 	@PUT
 	@Path("filter/list/page/{page}/count/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listSubjectForPage( @Context HttpServletRequest request, @PathParam("page") Integer page, @PathParam("count") Integer count, WrapInFilter wrapIn ) {
+	public Response listSubjectForPage( @Context HttpServletRequest request, @PathParam("page") Integer page, @PathParam("count") Integer count, JsonElement jsonElement ) {
 		ActionResult<List<WrapOutSubjectInfo>> result = new ActionResult<>();
 		List<WrapOutSubjectInfo> wraps_nonTop = new ArrayList<>();
 		List<WrapOutSubjectInfo> wraps_top = new ArrayList<>();
@@ -350,12 +370,15 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 		Integer topTotal = 0;
 		Boolean check = true;
 		String base64Content = null;
-		if( check ){
-			if( wrapIn == null ){
-				check = false;
-				result.error( new Exception("传入的参数为空，无法查询主题信息！" ) );
-				result.setUserMessage( "传入的参数为空，无法查询主题信息！" );
-			}
+		WrapInFilter wrapIn = null;
+		
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilter.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
 		if( wrapIn.getSectionId() != null && !wrapIn.getSectionId().isEmpty() ){
 			if (check) {
@@ -363,22 +386,23 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 					sectionInfo = sectionInfoServiceAdv.get( wrapIn.getSectionId() );
 				} catch (Exception e) {
 					check = false;
-					result.error(new Exception("传入的参数版块ID为空，无法继续查询主题列表！"));
-					result.setUserMessage("传入的参数版块ID为空，无法继续查询主题列表！");
-					logger.error("system query section info with id got an exceptin. id:" + wrapIn.getSectionId(), e);
+					Exception exception = new SectionQueryByIdException( e, wrapIn.getSectionId() );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 			if (check) {
 				if ( sectionInfo == null ) {
 					check = false;
-					result.error(new Exception("根据传入的版块ID未能查询到任何版块信息，无法继续查询主题列表！"));
-					result.setUserMessage("根据传入的版块ID未能查询到任何版块信息，无法继续查询主题列表！");
+					Exception exception = new SectionNotExistsException( wrapIn.getSectionId() );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
 		
 		if( check ){
-			viewSectionIds = getViewableSectionIds( result, currentPerson );
+			viewSectionIds = getViewableSectionIds( request, result, currentPerson );
 		}
 		if( check ){
 			if( page == null ){
@@ -405,14 +429,16 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 						wraps_top = wrapout_copier.copy( subjectInfoList_top );
 						SortTools.desc( wraps_top, "latestReplyTime" );
 					} catch (Exception e) {
-						logger.error("system sort list got an exceptin.", e);
+						Exception exception = new SubjectWrapOutException( e );
+						result.error( exception );
+						logger.error( exception, currentPerson, request, null);
 					}
 				}
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("根据ID信息查询所有置顶主题时发生异常！");
-				logger.error("system query all top subject info with section info got an exceptin.", e);
+				Exception exception = new SubjectFilterException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( wrapIn.getWithTopSubject() != null && !wrapIn.getWithTopSubject() ){
@@ -434,9 +460,9 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 					total = subjectInfoServiceAdv.countSubjectInSectionForPage( wrapIn.getForumId(), wrapIn.getMainSectionId(), wrapIn.getSectionId(), wrapIn.getCreatorName(), wrapIn.getNeedPicture(), selectTopInSection, viewSectionIds );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "根据ID信息查询版块信息时发生异常！" );
-					logger.error( "system query all top subject info with section info got an exceptin.", e );
+					Exception exception = new SubjectFilterException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -449,14 +475,16 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 							wraps_nonTop = wrapout_copier.copy( subjectInfoList );
 							SortTools.desc( wraps_nonTop, "latestReplyTime" );
 						} catch (Exception e) {
-							logger.error("system sort list got an exceptin.", e);
+							Exception exception = new SubjectWrapOutException( e );
+							result.error( exception );
+							logger.error( exception, currentPerson, request, null);
 						}
 					}
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "根据ID信息查询版块信息时发生异常！" );
-					logger.error( "system query all top subject info with section info got an exceptin.", e );
+					Exception exception = new SubjectFilterException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -491,9 +519,9 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 							}
 						} catch (Exception e) {
 							check = false;
-							result.error( e );
-							result.setUserMessage( "根据ID查询主题的图片信息时发生异常！" );
-							logger.error( "system query picture base64 encode got an exceptin.id:"+ wrapOutSubjectInfo.getId(), e );
+							Exception exception = new SubjectQueryPicBase64Exception( e, wrapOutSubjectInfo.getId() );
+							result.error( exception );
+							logger.error( exception, currentPerson, request, null);
 						}
 					}
 				}
@@ -504,16 +532,16 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 					result.setCount( total + topTotal );
 				} catch (Exception e) {
 					check = false;
-					result.error( new Exception("将主题转换为输出格式发生异常！" ) );
-					result.setUserMessage( "将主题转换为输出格式发生异常！" );
-					logger.error( "system copy subject info list to wrapout got an exceptin.", e );
+					Exception exception = new SubjectWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	private List<String> getViewableSectionIds( ActionResult<List<WrapOutSubjectInfo>> result, EffectivePerson currentPerson ) {
+	private List<String> getViewableSectionIds( HttpServletRequest request, ActionResult<List<WrapOutSubjectInfo>> result, EffectivePerson currentPerson ) {
 		List<BBSSectionInfo> sectionInfoList = null;
 		List<BBSSectionInfo> subSectionInfoList = null;
 		List<BBSPermissionInfo> permissonList = null;
@@ -549,9 +577,7 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 				}
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "获取所有公开的论坛信息时发生异常！" );
-				logger.error( "system query all public forum got an exceptin.", e );
+				logger.warn( "system query all public forum got an exceptin.", e );
 			}
 		}
 		if( check ){
@@ -559,9 +585,10 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 				publicSectionIds = sectionInfoServiceAdv.viewSectionByForumIds( viewforumIds, true );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "根据指定的论坛列表获取所有公开的版块信息时发生异常！" );
-				logger.error( "system query all public section with forumIds got an exceptin.", e );
+				logger.warn( "system query all public section with forumIds got an exceptin." );
+				Exception exception = new PublicSectionFilterException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -586,20 +613,20 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 				}
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "根据指定的版块ID列表获取版块信息时发生异常！" );
-				logger.error( "system query section with sectionIds got an exceptin.", e );
+				Exception exception = new SectionListByIdsException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		return viewSectionIds;
 	}
 
-	@HttpMethodDescribe(value = "列示根据过滤条件的SubjectInfo,下一页.", response = WrapOutSubjectInfo.class, request = WrapInFilter.class)
+	@HttpMethodDescribe(value = "列示根据过滤条件的SubjectInfo,下一页.", response = WrapOutSubjectInfo.class, request = JsonElement.class)
 	@PUT
 	@Path("search/list/page/{page}/count/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response searchSubjectForPage( @Context HttpServletRequest request, @PathParam("page") Integer page, @PathParam("count") Integer count, WrapInFilter wrapIn ) {
+	public Response searchSubjectForPage( @Context HttpServletRequest request, @PathParam("page") Integer page, @PathParam("count") Integer count, JsonElement jsonElement ) {
 		ActionResult<List<WrapOutSubjectInfo>> result = new ActionResult<>();
 		List<WrapOutSubjectInfo> wraps = new ArrayList<>();
 		List<BBSSubjectInfo> subjectInfoList = null;
@@ -607,12 +634,22 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 		EffectivePerson currentPerson = this.effectivePerson( request );
 		List<String> viewSectionIds = new ArrayList<String>();
 		Long total = 0L;
+		WrapInFilter wrapIn = null;
 		Boolean check = true;
-		if( check ){
-			if( wrapIn == null ){
-				wrapIn = new WrapInFilter();
+		
+		if( jsonElement == null ){
+			wrapIn = new WrapInFilter();
+		}else{
+			try {
+				wrapIn = this.convertToWrapIn( jsonElement, WrapInFilter.class );
+			} catch (Exception e ) {
+				check = false;
+				Exception exception = new WrapInConvertException( e, jsonElement );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
+		
 		if( check ){
 			if( page == null ){
 				page = 1;
@@ -624,16 +661,16 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 			}
 		}
 		if( check ){
-			viewSectionIds = getViewableSectionIds( result, currentPerson );
+			viewSectionIds = getViewableSectionIds( request, result, currentPerson );
 		}
 		if( check ){
 			try{
 				total = subjectInfoServiceAdv.countSubjectSearchInSectionForPage( wrapIn.getSearchContent(), viewSectionIds );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "根据ID信息查询版块信息时发生异常！" );
-				logger.error( "system get search subject count with section info got an exceptin.", e );
+				Exception exception = new SubjectFilterException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -642,9 +679,9 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 					subjectInfoList = subjectInfoServiceAdv.listSubjectSearchInSectionForPage( wrapIn.getSearchContent(), viewSectionIds, page*count );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "根据ID信息查询版块信息时发生异常！" );
-					logger.error( "system search subject info with section info got an exceptin.", e );
+					Exception exception = new SubjectFilterException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -669,9 +706,9 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 					result.setCount( total );
 				} catch (Exception e) {
 					check = false;
-					result.error( new Exception("将主题转换为输出格式发生异常！" ) );
-					result.setUserMessage( "将主题转换为输出格式发生异常！" );
-					logger.error( "system copy subject info list to wrapout got an exceptin.", e );
+					Exception exception = new SubjectWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -685,6 +722,7 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response viewSubject( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutNearSubjectInfo> result = new ActionResult<>();
+		EffectivePerson currentPerson = this.effectivePerson(request);
 		List<WrapOutSubjectAttachment> wrapSubjectAttachmentList = null;
 		List<BBSSubjectAttachment> subjectAttachmentList = null;
 		WrapOutNearSubjectInfo wrapOutNearSubjectInfo = new WrapOutNearSubjectInfo();
@@ -701,8 +739,9 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数主题ID为空，无法继续查询主题信息！" ) );
-				result.setUserMessage( "传入的参数主题ID为空，无法继续查询主题信息！" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if (check) {//查询版块信息是否存在
@@ -710,17 +749,18 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.view( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectViewException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		
 		if (check) {
 			if ( subjectInfo == null ) {
 				check = false;
-				result.error( new Exception( "根据传入的主题ID未能查询到任何主题信息！" ) );
-				result.setUserMessage( "根据传入的主题ID未能查询到任何主题信息！" );
+				Exception exception = new SubjectNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}else{//查到了主题信息
 				try {
 					currentSubject = wrapout_copier.copy( subjectInfo );
@@ -735,9 +775,9 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 					wrapOutNearSubjectInfo.setCurrentSubject( currentSubject );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage("系统在转换对象为输出格式时发生异常！");
-					logger.error("system copy subject info to wrap got an exceptin. id:" + id, e);
+					Exception exception = new SubjectWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}			
 		}
@@ -752,9 +792,9 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 					}
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage("系统在根据ID查询主题的内容时发生异常！");
-					logger.error("system query subjec content with id got an exceptin. id:" + id, e);
+					Exception exception = new SubjectContentQueryByIdException( e, id );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -764,9 +804,9 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.getLastSubject( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectFilterException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if (check) {
@@ -783,9 +823,9 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoServiceAdv.getNextSubject( id );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据ID查询主题信息时发生异常！");
-				logger.error("system query subject info with id got an exceptin. id:" + id, e);
+				Exception exception = new SubjectFilterException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if (check) {
@@ -802,9 +842,9 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 					voteOptionList = subjectVoteService.listVoteOption( id );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage("系统在根据主题ID查询主题所有投票选项信息列表时发生异常！");
-					logger.error("system query all vote options for subject with id got an exceptin. id:" + id, e);
+					Exception exception = new VoteOptionListByIdException( e, id );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -814,9 +854,9 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 					wrapOutSubjectVoteOptionList = voteOptionWrapout_copier.copy( voteOptionList );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage("系统转换投票信息列表为输出格式时发生异常！");
-					logger.error("system wrap vote options got an exceptin. id:" + id, e);
+					Exception exception = new SubjectWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -829,9 +869,9 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 						option.setOptionBinary( optionBinaryContent );
 					} catch (Exception e) {
 						check = false;
-						result.error( e );
-						result.setUserMessage("系统在根据选项ID查询选项的二进制内容时发生异常！");
-						logger.error("system query subjec content with id got an exceptin. id:" + id, e);
+						Exception exception = new VoteOptionBinaryQueryByIdException( e, option.getId() );
+						result.error( exception );
+						logger.error( exception, currentPerson, request, null);
 					}
 				}
 			}
@@ -849,9 +889,9 @@ public class SubjectInfoAction extends AbstractJaxrsAction {
 					currentSubject.setVoteResult( subjectVoteResult );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage("系统在根据主题ID查询主题投票结果时发生异常！");
-					logger.error("system query subjec vote result with id got an exceptin. id:" + id, e);
+					Exception exception = new VoteResultQueryByIdException( e, id );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}

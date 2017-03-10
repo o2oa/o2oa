@@ -47,8 +47,9 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		value = this._getBusinessData();
 		if (!value){
 			if (this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
+            value = {"data": value || []};
 		}
-		return value || [];
+		return value || {};
 	},
 	_getDatagridTr: function(){
 		this._getDatagridTitleTr();
@@ -92,20 +93,23 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
         var titleThs = this.titleTr.getElements("th");
         var editorTds = this.editorTr.getElements("td");
 
-        this.gridData.each(function(data, idx){
-            var tr = this.table.insertRow(idx+1);
-            tr.store("data", data);
-            titleThs.each(function(th, index){
-                var cellData = data[th.get("id")];
-                var text = "";
-                for (key in cellData){
-                    var value = cellData[key];
-                    text = this._getValueText(index-1, value);
-                    break;
-                }
-                this._createNewEditTd(tr, index, editorTds[index].get("id"), text, titleThs.length-1);
+        if (this.gridData.data){
+            this.gridData.data.each(function(data, idx){
+                var tr = this.table.insertRow(idx+1);
+                tr.store("data", data);
+                titleThs.each(function(th, index){
+                    var cellData = data[th.get("id")];
+                    var text = "";
+                    for (key in cellData){
+                        var value = cellData[key];
+                        text = this._getValueText(index-1, value);
+                        break;
+                    }
+                    this._createNewEditTd(tr, index, editorTds[index].get("id"), text, titleThs.length-1);
+                }.bind(this));
             }.bind(this));
-        }.bind(this));
+        }
+
 		
 		this.editorTr.setStyle("display", "none");
 	},
@@ -536,27 +540,30 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		var lastTrs = this.table.getElements("tr");
 		var lastTr = lastTrs[lastTrs.length-1];
 		var tds = lastTr.getElements("td");
-		
-		this.gridData.each(function(data, idx){
-			var tr = this.table.insertRow(idx+1);
-            tr.store("data", data);
 
-			titleHeaders.each(function(th, index){
-				var cell = tr.insertCell(index);
-				cell.set("MWFId", tds[index].get("id"));
-				var cellData = data[th.get("id")];
-                if (cellData){
-                    for (key in cellData){
-                        cell.set("text", cellData[key]);
-                        break;
+        if (this.gridData.data){
+            this.gridData.data.each(function(data, idx){
+                var tr = this.table.insertRow(idx+1);
+                tr.store("data", data);
+
+                titleHeaders.each(function(th, index){
+                    var cell = tr.insertCell(index);
+                    cell.set("MWFId", tds[index].get("id"));
+                    var cellData = data[th.get("id")];
+                    if (cellData){
+                        for (key in cellData){
+                            cell.set("text", cellData[key]);
+                            break;
+                        }
+                    }else{ //Sequence
+                        cell.setStyle("text-align", "center");
+                        cell.set("text", tr.rowIndex);
                     }
-                }else{ //Sequence
-                    cell.setStyle("text-align", "center");
-                    cell.set("text", tr.rowIndex);
-                }
 
-			}.bind(this));
-		}.bind(this));
+                }.bind(this));
+            }.bind(this));
+        }
+
 
         lastTr.destroy();
 
@@ -634,6 +641,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
     },
     _loadTotal: function(){
         var data = {};
+        this.totalResaults = {};
         if (this.totalModules.length){
             if (!this.totalTr){
                 this.createTotalTr();
@@ -672,6 +680,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
             }
 
             this.totalModules.each(function(m, i){
+                this.totalResaults[m.module.json.id] = totalResaults[i];
                 var td = totalTds[m.index];
                 td.set("text", totalResaults[i] || "");
             }.bind(this));
@@ -780,6 +789,10 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 
 
     },
+    getTotal: function(){
+        this._loadTotal();
+        return this.totalResaults;
+    },
 	getData: function(){
         if (this.editable!=false){
             var data = [];
@@ -790,12 +803,15 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
                 if (d) data.push(d);
             }
 
-            this.gridData = null;
-            this.gridData = data;
+            this.gridData = {};
+            this.gridData.data = data;
+
+            this._loadTotal();
+            this.gridData.total = this.totalResaults;
 
             this._setBusinessData(data);
 
-            return (this.gridData.length) ? this.gridData : null;
+            return (this.gridData.data.length) ? this.gridData : null;
         }else{
             return this._getBusinessData();
         }

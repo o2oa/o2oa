@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.EqualsTerms;
 import com.x.base.core.application.jaxrs.InTerms;
 import com.x.base.core.application.jaxrs.LikeTerms;
@@ -22,8 +23,9 @@ import com.x.processplatform.core.entity.element.Application;
 class ActionListPrevWithFilter extends ActionBase {
 
 	ActionResult<List<WrapOutWorkCompleted>> execute(EffectivePerson effectivePerson, String id, Integer count,
-			String applicationFlag, WrapInFilter wrapIn) throws Exception {
+			String applicationFlag, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			WrapInFilter wrapIn = this.convertToWrapIn(jsonElement, WrapInFilter.class);
 			Business business = new Business(emc);
 			ActionResult<List<WrapOutWorkCompleted>> result = new ActionResult<>();
 			EqualsTerms equals = new EqualsTerms();

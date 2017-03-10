@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.DefaultCharset;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.exception.ExceptionWhen;
@@ -20,7 +21,7 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 
-class ActionRetract {
+class ActionRetract extends ActionBase {
 
 	ActionResult<WrapOutId> execute(EffectivePerson effectivePerson, String id) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -28,24 +29,27 @@ class ActionRetract {
 			Business business = new Business(emc);
 			TaskCompleted taskCompleted = null;
 			WorkLog workLog = null;
-			Work work = emc.find(id, Work.class, ExceptionWhen.not_found);
+			Work work = emc.find(id, Work.class);
+			if (null == work) {
+				throw new WorkNotExistedException(id);
+			}
 			String taskCompletedId = business.taskCompleted().getAllowRetract(effectivePerson.getName(), work);
 			if (StringUtils.isEmpty(taskCompletedId)) {
-				throw new Exception("person{name:" + effectivePerson.getName() + "} retract work{id:" + work.getId()
-						+ "} was denied.");
+				throw new RetractNoneTaskCompletedException(effectivePerson.getName(), work.getTitle(), work.getId());
 			}
 			taskCompleted = emc.find(taskCompletedId, TaskCompleted.class, ExceptionWhen.not_found);
 			workLog = this.getWorkLog(business, taskCompleted);
 			if (null == workLog) {
-				throw new Exception("can not find workLog for taskCompleted{id:" + taskCompleted.getId() + "}");
+				throw new RetractNoneWorkLogException(effectivePerson.getName(), work.getTitle(), work.getId(),
+						taskCompletedId);
 			}
 			emc.beginTransaction(TaskCompleted.class);
 			taskCompleted.setProcessingType(ProcessingType.retract);
 			taskCompleted.setRetractTime(new Date());
 			emc.commit();
 			ThisApplication.applications.putQuery(x_processplatform_service_processing.class,
-					"work/" + URLEncoder.encode(work.getId(), "UTF-8") + "/retract/worklog/"
-							+ URLEncoder.encode(workLog.getId(), "UTF-8"),
+					"work/" + URLEncoder.encode(work.getId(), DefaultCharset.name) + "/retract/worklog/"
+							+ URLEncoder.encode(workLog.getId(), DefaultCharset.name),
 					null);
 			WrapOutId wrap = new WrapOutId(work.getId());
 			result.setData(wrap);

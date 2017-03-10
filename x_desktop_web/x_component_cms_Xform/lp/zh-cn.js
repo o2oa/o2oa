@@ -1,8 +1,7 @@
-MWF.xApplication.cms.Xform.LP = {
-	"deleteDatagridLineTitle":"删除条目确认",
-    "deleteDatagridLine": "是否确定要删除当前条目？",
-    "browserNotActiveX": "您的浏览器不支持ActiveX控件，不能加载Office控件，请使用IE浏览器",
-
+MWF.xApplication.process = MWF.xApplication.process || {};
+MWF.xApplication.process.Xform = MWF.xApplication.process.Xform || {};
+MWF.xDesktop.requireApp("process.Xform", "lp.zh-cn", null, false);
+MWF.xApplication.cms.Xform.LP = Object.merge( MWF.xApplication.process.Xform.LP, {
     "dataSaved": "数据保存成功",
     "documentPublished" : "发布成功",
 
@@ -31,18 +30,5 @@ MWF.xApplication.cms.Xform.LP = {
 
     "deleteDocumentTitle": "删除文件确认",
     "deleteDocumentText": {"html": "<div style='color: red;'>注意：您正在删除此文档，删除后文档无法找回，请您确认要删除此文件吗？</div>"},
-    "documentDelete": "已经删除文件",
-
-    "archiveDocumentTitle": "归档文件确认",
-    "archiveDocumentText": {"html": "<div style='color: red;'>确定要归档文件吗？</div>"},
-    "documentArchived":"归档成功",
-
-    "redraftDocumentTitle": "取回文件确认",
-    "redraftDocumentText": {"html": "<div style='color: red;'>确定要设置文件为草稿状态吗？</div>"},
-    "documentRedrafted":"成功取回到草稿状态",
-
-    "button":{
-        "ok": "确定",
-        "cancel": "取消"
-    }
-}
+    "documentDelete": "已经删除文件"
+});

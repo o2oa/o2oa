@@ -106,8 +106,32 @@ MWF.xDesktop.Layout = new Class({
         this.getServiceAddress(callback);
     },
     getServiceAddress: function(callback){
-        var host = layout.config.center.host || window.location.hostname;
-        var port = layout.config.center.port;
+        if (typeOf(layout.config.center)=="object"){
+            this.getServiceAddressConfigObject(callback);
+        }else if (typeOf(layout.config.center)=="array"){
+            this.getServiceAddressConfigArray(callback);
+        }
+
+    },
+    getServiceAddressConfigArray: function(callback) {
+        debugger;
+        var requests = [];
+        layout.config.center.each(function(center){
+            requests.push(
+                this.getServiceAddressConfigObject(function(){
+                    requests.each(function(res){
+                        if (res.isRunning()){res.cancel();}
+                    });
+                    if (callback) callback();
+                }.bind(this), center)
+            );
+        }.bind(this));
+    },
+    getServiceAddressConfigObject: function(callback, center){
+        var centerConfig = center;
+        if (!centerConfig) centerConfig = layout.config.center;
+        var host = centerConfig.host || window.location.hostname;
+        var port = centerConfig.port;
         var uri = "";
         if (!port || port=="80"){
             uri = "http://"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
@@ -117,12 +141,12 @@ MWF.xDesktop.Layout = new Class({
         var currenthost = window.location.hostname;
         uri = uri.replace(/{source}/g, currenthost);
         //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
-        MWF.restful("get", uri, null, function(json){
+        return MWF.restful("get", uri, null, function(json){
             this.serviceAddressList = json.data;
+            this.centerServer = center;
             if (callback) callback();
         }.bind(this));
     },
-
     isAuthentication: function(success){
         var returnValue = true;
         //this.authentication.isAuthenticated(function(json){
@@ -180,13 +204,42 @@ MWF.xDesktop.Layout = new Class({
                     window.setTimeout(function(){
                         MWF.xDesktop.notice("error", {"y":"top", "x": "left"}, MWF.LP.desktop.notice.changePassword, this.desktopNode);
                     }.bind(this), 500);
-
                 }
 
+                if (MWF.AC.isAdministrator()){
+                    this.checkO2Collect();
+                }
             }.bind(this));
 
         }.bind(this));
     },
+    checkO2Collect: function(){
+        var action = new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_program_center");
+        action.invoke({"name": "collectConnected", "success": function(json){
+            if (json.data.value){
+                action.invoke({"name": "collectValidate", "success": function(json){
+                    if (!json.data.value){
+                        this.openApplication({"page":{"x": 0, "y": 0}}, "Collect");
+                    }
+                }.bind(this), "failure": function(){
+                    this.openApplication({"page":{"x": 0, "y": 0}}, "Collect");
+                }.bind(this)});
+            }else{
+                this.showMessageNotConnectCollect();
+            }
+        }.bind(this), "failure": function(){
+            this.showMessageNotConnectCollect();
+        }.bind(this)});
+    },
+    showMessageNotConnectCollect: function(){
+        var msg = {
+            "subject": MWF.LP.desktop.collect.collectNotConnected,
+            "content": MWF.LP.desktop.collect.collectNotConnectedText
+        };
+        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        var messageItem = layout.desktop.message.addMessage(msg);
+    },
+
     loadDesktop: function(){
         this.setHeight();
 
@@ -508,6 +561,7 @@ MWF.xDesktop.Layout = new Class({
     },
 
     setEvent: function(){
+        debugger;
         this.node.addEvent("selectstart", function(e){
 
             var select = "text";
@@ -600,6 +654,20 @@ MWF.xDesktop.Layout = new Class({
         //this.recordStatusCookies(status);
     },
 
+    getPageDesignerStyle: function(callback){
+        if (!this.pageDesignerStyle){
+            this.pageDesignerStyle = "default";
+            MWF.UD.getData("pageDesignerStyle", function(json) {
+                if (json.data) {
+                    var styles = JSON.decode(json.data);
+                    this.pageDesignerStyle = styles.style;
+                }
+                if (callback) callback();
+            }.bind(this));
+        }else{
+            if (callback) callback();
+        }
+    },
     getFormDesignerStyle: function(callback){
         if (!this.formDesignerStyle){
             this.formDesignerStyle = "default";
@@ -778,6 +846,10 @@ MWF.xDesktop.Layout = new Class({
         var options = {"id": app.id, "appId": "process.Application"+app.id};
         this.openApplication(e, "process.Application", options);
     },
+    openPortalApp: function(e, app){
+        var options = {"portalId": app.id, "appId": "portal.Portal"+app.id};
+        this.openApplication(e, "portal.Portal", options);
+    },
     openCMSApp: function(e, app){
         var appId = "cms.Module"+app.id;
         if (this.apps[appId]){
@@ -854,7 +926,7 @@ MWF.xDesktop.Layout = new Class({
                 app[key] = value;
             });
         }
-
+        app.taskitem = new MWF.xDesktop.Layout.Taskitem(app, this);
         app.load(true);
 
         var appId = appName;
@@ -864,7 +936,7 @@ MWF.xDesktop.Layout = new Class({
             if (appNamespace.options.multitask) appId = appId+"-"+(new MWF.widget.UUID());
         }
         app.appId = appId;
-        app.taskitem = new MWF.xDesktop.Layout.Taskitem(app, this);
+
 
         this.apps[appId] = app;
     },
@@ -1144,6 +1216,7 @@ MWF.xDesktop.Layout.Top = new Class({
     loadMenu: function(){
         this.createApplicationMenuArea();
         this.getApplicationsCatalogue(function(catalog){
+            debugger;
             var currentName = this.layout.session.user.name;
 
             catalog.each(function(value, key){
@@ -1171,16 +1244,16 @@ MWF.xDesktop.Layout.Top = new Class({
             this.showApplicationMenu();
         }.bind(this));
         this.getProcessApplications(function(json){
-            json.data.each(function(app){
-                if( app.isCMSApp ){
-                    this.createCMSAppMenu(app);
-                }else{
-                    this.createProcessAppMenu(app);
-                }
-            }.bind(this));
+            //json.data.each(function(app){
+            //    if( app.isCMSApp ){
+            //        this.createCMSAppMenu(app);
+            //    }else{
+            //        this.createProcessAppMenu(app);
+            //    }
+            //}.bind(this));
         }.bind(this));
-
     },
+
     showApplicationMenu: function(){
         this.applicationMenuAreaMark.fade(0.8);
         this.applicationMenuArea.fade("in");
@@ -1192,6 +1265,7 @@ MWF.xDesktop.Layout.Top = new Class({
             this.applicationMenuFxScroll = null;
             this.layout.removeEvent("resize", this.resizeApplicationMenuSizeFun);
         }
+        this.currentApplicationMenuContent = "app";
         this.isApplicationMenuScroll = false;
     },
     createCMSAppMenu: function(app){
@@ -1236,6 +1310,43 @@ MWF.xDesktop.Layout.Top = new Class({
         });
 
     },
+    createPortalAppMenu: function(app){
+        var applicationMenuNode = new Element("div", {
+            "styles": this.layout.css.applicationMenuNode,
+            "title": app.name
+        }).inject(this.applicationMenuProcessArea);
+
+        var applicationMenuIconNode = new Element("div", {
+            "styles": this.layout.css.applicationMenuIconNode
+        }).inject(applicationMenuNode);
+        var icon = "";
+        if (app.icon){
+            icon = "url(data:image/png;base64,"+app.icon+")";
+        }else{
+            icon = "url(/x_component_portal_PortalExplorer/$Main/default/icon/application.png)";
+        }
+        applicationMenuIconNode.setStyle("background-image", icon);
+
+        new Element("div", {
+            "styles": this.layout.css.applicationMenuTextNode,
+            "text": app.name
+        }).inject(applicationMenuNode);
+
+        applicationMenuNode.addEvent("click", function(e){
+            this.layout.openPortalApp(e, app);
+            this.closeApplicationMenu();
+        }.bind(this));
+        applicationMenuNode.makeLnk({
+            "par": {"icon": icon, "title": app.name, "par": "portal.Portal#{\"portalId\": \""+app.id+"\", \"appId\": \"portal.Portal"+app.id+"\"}"},
+            "onStart": function(){
+                this.applicationMenuAreaMark.fade("out");
+                this.applicationMenuArea.fade("out");
+            }.bind(this),
+            "onComplete": function(){
+                this.showApplicationMenu();
+            }.bind(this)
+        });
+    },
     createProcessAppMenu: function(app){
         var applicationMenuNode = new Element("div", {
             "styles": this.layout.css.applicationMenuNode,
@@ -1272,7 +1383,6 @@ MWF.xDesktop.Layout.Top = new Class({
                 this.showApplicationMenu();
             }.bind(this)
         });
-
     },
     createApplicationMenu: function(value, key){
         var applicationMenuNode = new Element("div", {
@@ -1309,18 +1419,18 @@ MWF.xDesktop.Layout.Top = new Class({
         });
 
         var appName = value.path;
-        if (value.widgetName){
-            if (!(value.widgetVisible===false)){
-                this.createApplicationWidgetMenu(value.widgetName, value.widgetTitle, value.widgetIconPath, appName);
-            }
-            //Object.each(value.widget, function(value, key){
-            //    this.createApplicationWidgetMenu(value.widgetName, value.widgetTitle, value.widgetIconPath, appName);
-            //}.bind(this));
-            //if (value.widgetStart){
-            //    this.layout.openWidget(null, value.widgetName, appName);
-            //}
-
-        }
+        //if (value.widgetName){
+        //    if (!(value.widgetVisible===false)){
+        //        this.createApplicationWidgetMenu(value.widgetName, value.widgetTitle, value.widgetIconPath, appName);
+        //    }
+        //    //Object.each(value.widget, function(value, key){
+        //    //    this.createApplicationWidgetMenu(value.widgetName, value.widgetTitle, value.widgetIconPath, appName);
+        //    //}.bind(this));
+        //    //if (value.widgetStart){
+        //    //    this.layout.openWidget(null, value.widgetName, appName);
+        //    //}
+        //
+        //}
     },
     createApplicationWidgetMenu: function(name, title, icon, appName){
         var applicationMenuNode = new Element("div", {
@@ -1396,24 +1506,24 @@ MWF.xDesktop.Layout.Top = new Class({
         }).inject(this.applicationMenuAppIconScrollArea);
         //---------------------------------------------
 
-        //widget---------------------------------------
-        this.applicationMemuWidgetContent =  new Element("div", {
-            "styles": this.layout.css.applicationMemuWidgetContent
-        }).inject(this.applicationMenuContentArea);
-
-        this.applicationMenuWidgetTitleArea = new Element("div", {
-            "styles": this.layout.css.applicationMenuWidgetTitleArea,
-            "text": MWF.LP.desktop.widget
-        }).inject(this.applicationMemuWidgetContent);
-
-        this.applicationMenuWidgetScrollArea = new Element("div", {
-            "styles": this.layout.css.applicationMenuWidgetScrollArea
-        }).inject(this.applicationMemuWidgetContent);
-
-        this.applicationMenuWidgetArea = new Element("div", {
-            "styles": this.layout.css.applicationMenuWidgetArea
-        }).inject(this.applicationMenuWidgetScrollArea);
-        //---------------------------------------------
+        ////widget---------------------------------------
+        //this.applicationMemuWidgetContent =  new Element("div", {
+        //    "styles": this.layout.css.applicationMemuWidgetContent
+        //}).inject(this.applicationMenuContentArea);
+        //
+        //this.applicationMenuWidgetTitleArea = new Element("div", {
+        //    "styles": this.layout.css.applicationMenuWidgetTitleArea,
+        //    "text": MWF.LP.desktop.widget
+        //}).inject(this.applicationMemuWidgetContent);
+        //
+        //this.applicationMenuWidgetScrollArea = new Element("div", {
+        //    "styles": this.layout.css.applicationMenuWidgetScrollArea
+        //}).inject(this.applicationMemuWidgetContent);
+        //
+        //this.applicationMenuWidgetArea = new Element("div", {
+        //    "styles": this.layout.css.applicationMenuWidgetArea
+        //}).inject(this.applicationMenuWidgetScrollArea);
+        ////---------------------------------------------
 
         //Process---------------------------------------
         this.applicationMemuProcessContent =  new Element("div", {
@@ -1447,9 +1557,9 @@ MWF.xDesktop.Layout.Top = new Class({
     resizeApplicationMenuSize: function(){
         var wSize = this.applicationMenuScrollArea.getSize();
         this.applicationMemuAppContent.setStyle("width", ""+wSize.x+"px");
-        this.applicationMemuWidgetContent.setStyle("width", ""+wSize.x+"px");
+        //this.applicationMemuWidgetContent.setStyle("width", ""+wSize.x+"px");
         this.applicationMemuProcessContent.setStyle("width", ""+wSize.x+"px");
-        var x = wSize.x*3;
+        var x = wSize.x*2;
         this.applicationMenuContentArea.setStyle("width", ""+x+"px");
 
         var size = this.applicationMenuArea.getSize();
@@ -1461,13 +1571,13 @@ MWF.xDesktop.Layout.Top = new Class({
         var y = size.y - titleSize.y - tmt - tmb - cmt - cmb;
         this.applicationMenuAppIconScrollArea.setStyle("height", ""+y+"px");
 
-        titleSize = this.applicationMenuWidgetTitleArea.getSize();
-        tmt = this.applicationMenuWidgetTitleArea.getStyle("margin-top").toInt();
-        tmb = this.applicationMenuWidgetTitleArea.getStyle("margin-bottom").toInt();
-        cmt = this.applicationMenuWidgetScrollArea.getStyle("margin-top").toInt();
-        cmb = this.applicationMenuWidgetScrollArea.getStyle("margin-bottom").toInt();
-        y = size.y - titleSize.y - tmt - tmb - cmt - cmb;
-        this.applicationMenuWidgetScrollArea.setStyle("height", ""+y+"px");
+        //titleSize = this.applicationMenuWidgetTitleArea.getSize();
+        //tmt = this.applicationMenuWidgetTitleArea.getStyle("margin-top").toInt();
+        //tmb = this.applicationMenuWidgetTitleArea.getStyle("margin-bottom").toInt();
+        //cmt = this.applicationMenuWidgetScrollArea.getStyle("margin-top").toInt();
+        //cmb = this.applicationMenuWidgetScrollArea.getStyle("margin-bottom").toInt();
+        //y = size.y - titleSize.y - tmt - tmb - cmt - cmb;
+        //this.applicationMenuWidgetScrollArea.setStyle("height", ""+y+"px");
 
         titleSize = this.applicationMenuProcessTitleArea.getSize();
         tmt = this.applicationMenuProcessTitleArea.getStyle("margin-top").toInt();
@@ -1486,12 +1596,12 @@ MWF.xDesktop.Layout.Top = new Class({
                     this.isApplicationMenuScroll = true;
                 }.bind(this)
             });
-            new MWF.widget.ScrollBar(this.applicationMenuWidgetScrollArea, {
-                "style":"xDesktop_Menu", "where": "after", "distance": 30, "friction": 4,	"axis": {"x": false, "y": true},
-                "onScrollStart": function(){
-                    this.isApplicationMenuScroll = true;
-                }.bind(this)
-            });
+            //new MWF.widget.ScrollBar(this.applicationMenuWidgetScrollArea, {
+            //    "style":"xDesktop_Menu", "where": "after", "distance": 30, "friction": 4,	"axis": {"x": false, "y": true},
+            //    "onScrollStart": function(){
+            //        this.isApplicationMenuScroll = true;
+            //    }.bind(this)
+            //});
             new MWF.widget.ScrollBar(this.applicationMenuProcessScrollArea, {
                 "style":"xDesktop_Menu", "where": "after", "distance": 30, "friction": 4,	"axis": {"x": false, "y": true},
                 "onScrollStart": function(){
@@ -1501,30 +1611,42 @@ MWF.xDesktop.Layout.Top = new Class({
         }.bind(this));
 
         this.applicationMenuRightAction.addEvent("click", function(e){
-
             if (!this.currentApplicationMenuContent) this.currentApplicationMenuContent = "app";
             var next = "";
             var nextNode = null;
             var currentNode = null;
             if (this.currentApplicationMenuContent == "app"){
-                nextNode = this.applicationMemuWidgetContent;
-                next="widget";
-                currentNode = this.applicationMemuAppContent;
-            }
-            if (this.currentApplicationMenuContent == "widget"){
+                //nextNode = this.applicationMemuWidgetContent;
                 nextNode = this.applicationMemuProcessContent;
                 next="process";
-                currentNode = this.applicationMemuWidgetContent;
+                currentNode = this.applicationMemuAppContent;
             }
+            //if (this.currentApplicationMenuContent == "widget"){
+            //    nextNode = this.applicationMemuProcessContent;
+            //    next="process";
+            //    currentNode = this.applicationMemuWidgetContent;
+            //}
             if (this.currentApplicationMenuContent == "process"){
                 nextNode = this.applicationMemuAppContent;
                 next="app";
                 currentNode = this.applicationMemuProcessContent;
             }
 
-            //nextNode.inject(currentNode, "after");
+            //this.applicationMenuScrollArea.set("scrollLeft", "0px");
+            //if (this.applicationMenuFxScroll){
+            //    this.applicationMenuFxScroll = null;
+            //    delete this.applicationMenuFxScroll
+            //}
+
             if (!this.applicationMenuFxScroll) this.applicationMenuFxScroll = new Fx.Scroll(this.applicationMenuScrollArea, {"wheelStops": false});
-            this.applicationMenuFxScroll.toElement(nextNode, "x");
+            nextNode.inject(currentNode, "after");
+            this.applicationMenuFxScroll.set(0);
+
+            this.applicationMenuFxScroll.toElement(nextNode, "x").chain(function(){
+                //currentNode.inject(nextNode, "after");
+                //this.applicationMenuFxScroll.set(0);
+                //this.applicationMenuFxScroll.toLeft();
+            }.bind(this));
             //this.applicationMenuScrollArea.toElement(nextNode);
             this.currentApplicationMenuContent = next;
             e.stopPropagation();
@@ -1539,19 +1661,22 @@ MWF.xDesktop.Layout.Top = new Class({
                 next="process";
                 currentNode = this.applicationMemuAppContent;
             }
-            if (this.currentApplicationMenuContent == "widget"){
+            //if (this.currentApplicationMenuContent == "widget"){
+            //    nextNode = this.applicationMemuAppContent;
+            //    next="app";
+            //    currentNode = this.applicationMemuWidgetContent;
+            //}
+            if (this.currentApplicationMenuContent == "process"){
+                //nextNode = this.applicationMemuWidgetContent;
                 nextNode = this.applicationMemuAppContent;
                 next="app";
-                currentNode = this.applicationMemuWidgetContent;
-            }
-            if (this.currentApplicationMenuContent == "process"){
-                nextNode = this.applicationMemuWidgetContent;
-                next="widget";
                 currentNode = this.applicationMemuProcessContent;
             }
 
             //nextNode.inject(currentNode, "before");
             if (!this.applicationMenuFxScroll) this.applicationMenuFxScroll = new Fx.Scroll(this.applicationMenuScrollArea, {"wheelStops": false});
+            nextNode.inject(currentNode, "before");
+            this.applicationMenuFxScroll.set(this.applicationMenuScrollArea.getScrollSize().x);
             this.applicationMenuFxScroll.toElement(nextNode);
 
             //this.applicationMenuScrollArea.toElement(nextNode);
@@ -1572,21 +1697,51 @@ MWF.xDesktop.Layout.Top = new Class({
         }.bind(this));
     },
     getProcessApplications: function(callback){
-        var action = new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_processplatform_assemble_surface");
-        action.invoke({"name": "listApplication", "success": function(json){
-            //add by cxy
-            var action_cms = new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_cms_assemble_control");
-            action_cms.invoke({"name": "listCMSApplication", "success": function(json2){
-                var data = json2.data || [];
-                data.each(function(d){
-                    d.isCMSApp = true;
-                    d.name = d.appName;
-                    d.icon = d.appIcon;
-                    json.data.push(d);
-                })
-                if (callback) callback(json)
-            }})
+        var action = new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_portal_assemble_designer");
+        action.invoke({"name": "listPortalApplication", "success": function(json){
+            if (json.data){
+                json.data.each(function(app){
+                    this.createPortalAppMenu(app);
+                }.bind(this));
+            }
         }.bind(this)});
+
+        action = new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_processplatform_assemble_surface");
+        action.invoke({"name": "listApplication", "success": function(json){
+            if (json.data){
+                json.data.each(function(app){
+                    this.createProcessAppMenu(app);
+                }.bind(this));
+            }
+        }.bind(this)});
+
+        action = new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_cms_assemble_control");
+        action.invoke({"name": "listCMSApplication", "success": function(json){
+            if (json.data) {
+                json.data.each(function (app) {
+                    app.name = app.appName;
+                    app.icon = app.appIcon;
+                    this.createCMSAppMenu(app);
+                }.bind(this));
+            }
+        }.bind(this)});
+
+
+        //var action = new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_processplatform_assemble_surface");
+        //action.invoke({"name": "listApplication", "success": function(json){
+        //    //add by cxy
+        //    var action_cms = new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_cms_assemble_control");
+        //    action_cms.invoke({"name": "listCMSApplication", "success": function(json2){
+        //        var data = json2.data || [];
+        //        data.each(function(d){
+        //            d.isCMSApp = true;
+        //            d.name = d.appName;
+        //            d.icon = d.appIcon;
+        //            json.data.push(d);
+        //        })
+        //        if (callback) callback(json)
+        //    }})
+        //}.bind(this)});
     },
     getComponentList: function(callback){
         var action = new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_component_assemble_control");
@@ -1659,6 +1814,8 @@ MWF.xDesktop.Layout.Top = new Class({
             "title": MWF.LP.desktop.userChat
         }).inject(this.node);
         this.userChatNode.addEvent("click", function(e){
+            //this.userConfig();
+            //return false;
             if (!this.socket || this.layout.socket.webSocket.readyState != 1) {
                 this.layout.socket = new MWF.xDesktop.WebSocket();
             }

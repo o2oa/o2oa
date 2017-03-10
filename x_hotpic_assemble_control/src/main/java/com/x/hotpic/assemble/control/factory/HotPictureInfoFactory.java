@@ -22,7 +22,7 @@ import com.x.hotpic.entity.HotPictureInfo_;
  * 实体类：HotPictureInfo<br/>
  * 作   者：Liyi<br/>
  * 单   位：O2 Team<br/>
- * 日   期：2016-11-15 17:17:26
+ * 日   期：2016-11-15 17:17:26 
 **/
 public class HotPictureInfoFactory extends AbstractFactory {
 
@@ -49,6 +49,7 @@ public class HotPictureInfoFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 	
+	@SuppressWarnings("unused")
 	@MethodDescribe( "列示全部的HotPictureInfo实体信息列表" )
 	public List<HotPictureInfo> listAll() throws Exception {
 		EntityManager em = this.entityManagerContainer().get(HotPictureInfo.class);

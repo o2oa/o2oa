@@ -19,6 +19,9 @@ class ActionListNextWithApplication extends ActionBase {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Application application = business.application().pick(applicationFlag, ExceptionWhen.not_found);
+			if (null == application) {
+				throw new ApplicationNotExistedException(applicationFlag);
+			}
 			EqualsTerms equals = new EqualsTerms();
 			equals.put("person", effectivePerson.getName());
 			equals.put("application", application.getId());

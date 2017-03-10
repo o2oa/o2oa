@@ -24,7 +24,3 @@ function joinValue(o, split) {
     }
     return o;
 }
-
-function imageBase64(str) {
-    return '<img src="data:image/png;base64,' + str + '"/>';
-}

@@ -246,7 +246,7 @@ MWF.xApplication.Forum.LP = {
 	"cancelHotLinkSuccess" : "取消热点图片成功",
 	"selectDocPicture" : "选择文档图片",
 	"selectFilePicture" : "选择云文件图片",
-	"hotLinkDescription" : "注：选择的图片将作为本平台移动端APP的顶部图片，图片的最佳高宽比为1:2",
+	"hotLinkDescription" : "注：选择的图片将作为本平台移动端APP的顶部图片，图片的最佳高宽比为1:3",
 	"unselectHotPic" : "请先选择图片",
 	"cancelHotPicComfirmTitle" : "取消热点",
 	"cancelHotPicComfirmContent" : "确定取消该文档的热点？",

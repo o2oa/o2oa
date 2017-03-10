@@ -10,18 +10,19 @@ import com.x.base.core.application.jaxrs.ManagerUserJaxrsFilter;
  * @author liyi *
  */
 @WebFilter(urlPatterns = { 
-		"/jaxrs/appcatagoryadmin/*", 
-		"/jaxrs/appcatagorypermission/*", 
+		"/jaxrs/appcategoryadmin/*", 
+		"/jaxrs/appcategorypermission/*", 
 		"/jaxrs/appinfo/*",
-		"/jaxrs/catagoryinfo/*", 
+		"/jaxrs/categoryinfo/*", 
 		"/jaxrs/data/*", 
 		"/jaxrs/document/*", 
+		"/jaxrs/document/pic/*", 
 		"/jaxrs/fileinfo/*", 
 		"/jaxrs/form/*",
 		"/jaxrs/view/*", 
 		"/jaxrs/queryview/*", 
 		"/jaxrs/queryview/design/*", 
-		"/jaxrs/viewcatagory/*", 
+		"/jaxrs/viewcategory/*", 
 		"/jaxrs/viewfieldconfig/*", 
 		"/jaxrs/image/*", 
 		"/jaxrs/log/*",
@@ -30,7 +31,10 @@ import com.x.base.core.application.jaxrs.ManagerUserJaxrsFilter;
 		"/jaxrs/appdictitem/*", 
 		"/jaxrs/script/*", 
 		"/jaxrs/uuid/*",
+		"/jaxrs/docpermission/*", 
+		"/jaxrs/viewrecord/*", 
 		"/jaxrs/searchfilter/*", 
+		"/jaxrs/templateform/*", 
 		"/servlet/*" 
 		})
 public class CmsJaxrsFilter extends ManagerUserJaxrsFilter {

@@ -21,7 +21,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.StorageType;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
@@ -163,7 +162,7 @@ public class RoomAction extends StandardJaxrsAction {
 			for (Meeting meeting : emc.list(Meeting.class, business.meeting().listWithRoom(room.getId()))) {
 				for (Attachment attachment : emc.list(Attachment.class,
 						business.attachment().listWithMeeting(meeting.getId()))) {
-					StorageMapping mapping = ThisApplication.storageMappings.get(StorageType.meeting,
+					StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class,
 							attachment.getStorage());
 					attachment.deleteContent(mapping);
 					emc.remove(attachment);

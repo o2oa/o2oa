@@ -16,7 +16,7 @@ public abstract class ElementFactory extends AbstractFactory {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <T extends JpaObject> T pick(String flag, Class<T> clz, ExceptionWhen exceptionWhen, String... attributes)
+	protected <T extends JpaObject> T pick( String flag, Class<T> clz, ExceptionWhen exceptionWhen, String... attributes)
 			throws Exception {
 		Ehcache cache = ApplicationCache.instance().getCache(clz);
 		T t = null;
@@ -40,33 +40,6 @@ public abstract class ElementFactory extends AbstractFactory {
 		return t;
 	}
 
-//	/* 取得属于指定Process 的设计元素 */
-//	@SuppressWarnings("unchecked")
-//	protected <T extends JpaObject> List<T> listWithProcess( Class<T> clz, Process process) throws Exception {
-//		List<T> list = new ArrayList<>();
-//		Ehcache cache = ApplicationCache.instance().getCache( clz );
-//		String cacheKey = "listWithProcess#" + process.getId() + "#" + clz.getName();
-//		Element element = cache.get(cacheKey);
-//		if (null != element) {
-//			Object obj = element.getObjectValue();
-//			if (null != obj) {
-//				list = (List<T>) obj;
-//			}
-//		} else {
-//			EntityManager em = this.entityManagerContainer().get(clz);
-//			CriteriaBuilder cb = em.getCriteriaBuilder();
-//			CriteriaQuery<T> cq = cb.createQuery(clz);
-//			Root<T> root = cq.from(clz);
-//			Predicate p = cb.equal(root.get("process"), process.getId());
-//			cq.select(root).where(p);
-//			List<T> os = em.createQuery(cq).getResultList();
-//			for (T t : os) {
-//				em.detach(t);
-//				list.add(t);
-//			}
-//			cache.put( new Element(cacheKey, list) );
-//		}
-//		return list;
-//	}
+	
 
 }

@@ -14,12 +14,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.factory.AttendanceStatisticRequireLogFactory;
-import com.x.attendance.assemble.control.jaxrs.WrapOutMessage;
 import com.x.attendance.entity.AttendanceStatisticRequireLog;
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
@@ -32,7 +29,10 @@ import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
+import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 
 
 @Path("attendancestatisticrequirelog")
@@ -50,8 +50,6 @@ public class AttendanceStatisticRequireLogAction extends StandardJaxrsAction{
 	public Response listAllAttendanceStatisticRequireLog(@Context HttpServletRequest request ) {
 		ActionResult<List<WrapOutAttendanceStatisticRequireLog>> result = new ActionResult<>();
 		List<WrapOutAttendanceStatisticRequireLog> wraps = null;
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		logger.debug("[listAllAttendanceStatisticRequireLog]user[" + currentPerson.getName() + "] try to get all attendanceStatisticRequireLog......" );
 		List<AttendanceStatisticRequireLog> attendanceStatisticRequireLogList = null;
 		Business business = null;
 		AttendanceStatisticRequireLogFactory attendanceStatisticRequireLogFactory = null;
@@ -64,7 +62,6 @@ public class AttendanceStatisticRequireLogAction extends StandardJaxrsAction{
 			wraps = wrapout_copier.copy( attendanceStatisticRequireLogList );
 			//对查询的列表进行排序				
 			result.setData(wraps);
-			
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -82,7 +79,6 @@ public class AttendanceStatisticRequireLogAction extends StandardJaxrsAction{
 		WrapOutAttendanceStatisticRequireLog wrap = null;
 		AttendanceStatisticRequireLog attendanceStatisticRequireLog = null;
 		EffectivePerson currentPerson = this.effectivePerson(request);
-		logger.debug("[get]user[" + currentPerson.getName() + "] try to get attendanceStatisticRequireLog{'id':'"+id+"'}......" );
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {	
 			attendanceStatisticRequireLog = emc.find( id, AttendanceStatisticRequireLog.class );
 			if( attendanceStatisticRequireLog != null ){
@@ -98,25 +94,31 @@ public class AttendanceStatisticRequireLogAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "新建或者更新AttendanceStatisticRequireLog对象.", request = WrapInAttendanceStatisticRequireLog.class, response = WrapOutMessage.class)
+	@HttpMethodDescribe(value = "新建或者更新AttendanceStatisticRequireLog对象.", request = JsonElement.class, response = WrapOutId.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response post(@Context HttpServletRequest request, WrapInAttendanceStatisticRequireLog wrapIn) {
-		ActionResult<WrapOutMessage> result = new ActionResult<>();
-		WrapOutMessage wrapOutMessage = new WrapOutMessage();
+	public Response post(@Context HttpServletRequest request, JsonElement jsonElement) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		WrapInAttendanceStatisticRequireLog wrapIn = null;
+		
 		//获取到当前用户信息
 		EffectivePerson currentPerson = this.effectivePerson(request);
+		
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInAttendanceStatisticRequireLog.class );
+		} catch (Exception e ) {
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
+		}
+		
 		if( wrapIn != null){
-			logger.debug("user " + currentPerson.getName() + "try to save AttendanceStatisticRequireLog......" );
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				AttendanceStatisticRequireLog _attendanceStatisticRequireLog = null;
 				AttendanceStatisticRequireLog attendanceStatisticRequireLog = new AttendanceStatisticRequireLog();
-				logger.debug("System trying to beginTransaction to create/update attendanceStatisticRequireLog......" );
-				/////////////////////////////////////////////////////////////////////////////
 				if( wrapIn.getId() !=null && wrapIn.getId().length() > 10 ){
 					//根据ID查询信息是否存在，如果存在就update，如果不存在就create
-					logger.debug( "查询ID="+wrapIn.getId()+"的考勤员配置项....." );
 					_attendanceStatisticRequireLog = emc.find( wrapIn.getId(), AttendanceStatisticRequireLog.class );
 					if( _attendanceStatisticRequireLog != null ){
 						//更新
@@ -124,14 +126,12 @@ public class AttendanceStatisticRequireLogAction extends StandardJaxrsAction{
 						wrapin_copier.copy( wrapIn, _attendanceStatisticRequireLog );
 						emc.check( _attendanceStatisticRequireLog, CheckPersistType.all);	
 						emc.commit();
-						logger.debug("System update attendanceStatisticRequireLog success！" );
 					}else{
 						emc.beginTransaction( AttendanceStatisticRequireLog.class );
 						wrapin_copier.copy( wrapIn, attendanceStatisticRequireLog );
 						attendanceStatisticRequireLog.setId( wrapIn.getId() );//使用参数传入的ID作为记录的ID
 						emc.persist( attendanceStatisticRequireLog, CheckPersistType.all);	
 						emc.commit();
-						logger.debug("System create attendanceStatisticRequireLog success！" );
 					}
 				}else{
 					//没有传入指定的ID
@@ -139,59 +139,48 @@ public class AttendanceStatisticRequireLogAction extends StandardJaxrsAction{
 					wrapin_copier.copy( wrapIn, attendanceStatisticRequireLog );
 					emc.persist( attendanceStatisticRequireLog, CheckPersistType.all);	
 					emc.commit();
-					logger.debug("System create attendanceStatisticRequireLog success！" );
 				}
-				wrapOutMessage.setStatus( "SUCCESS");
-				wrapOutMessage.setMessage( attendanceStatisticRequireLog.getId() );
+				result.setData( new WrapOutId(attendanceStatisticRequireLog.getId()) );
 			} catch ( Exception e ) {
-				e.printStackTrace();
-				wrapOutMessage.setStatus( "ERROR");
-				wrapOutMessage.setMessage( "保存AttendanceStatisticRequireLog过程中发生异常." );
-				wrapOutMessage.setExceptionMessage( e.getMessage() );
+				Exception exception = new AttendanceStatisticRequireSaveException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
-		}else{
-			wrapOutMessage.setStatus( "ERROR");
-			wrapOutMessage.setMessage( "请求传入的参数wrapIn为空，无法继续保存AttendanceStatisticRequireLog!" );
 		}
-		
-		result.setData( wrapOutMessage );
+//		else{
+//			wrapOutMessage.setStatus( "ERROR");
+//			wrapOutMessage.setMessage( "请求传入的参数wrapIn为空，无法继续保存AttendanceStatisticRequireLog!" );
+//		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "根据ID删除AttendanceStatisticRequireLogAttendanceStatisticRequireLog对象.", response = WrapOutMessage.class)
+	@HttpMethodDescribe(value = "根据ID删除AttendanceStatisticRequireLogAttendanceStatisticRequireLog对象.", response = WrapOutId.class)
 	@DELETE
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response delete(@Context HttpServletRequest request, @PathParam("id") String id) {
-		logger.debug("method delete has been called, try to delete attendanceStatisticRequireLog{'id':'"+id+"'}......" );
-		ActionResult<WrapOutMessage> result = new ActionResult<>();
-		WrapOutMessage wrapOutMessage = new WrapOutMessage();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
-		logger.debug("user " + currentPerson.getName() + "try to delete AttendanceStatisticRequireLog......" );
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			AttendanceStatisticRequireLog attendanceStatisticRequireLog = emc.find(id, AttendanceStatisticRequireLog.class);
-			if (null == attendanceStatisticRequireLog) {
-				wrapOutMessage.setStatus("ERROR");
-				wrapOutMessage.setMessage( "需要删除的AttendanceStatisticRequireLog信息不存在。id=" + id );
+			if ( null == attendanceStatisticRequireLog ) {
+				Exception exception = new AttendanceStatisticRequireNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}else{
-				logger.debug("System trying to beginTransaction to delete attendanceStatisticRequireLog......" );
-				//进行数据库持久化操作
 				emc.beginTransaction( AttendanceStatisticRequireLog.class );
 				emc.remove( attendanceStatisticRequireLog, CheckRemoveType.all );
 				emc.commit();
-				logger.debug("System delete attendanceStatisticRequireLog success......" );
-				wrapOutMessage.setStatus("SUCCESS");
-				wrapOutMessage.setMessage( "成功删除AttendanceStatisticRequireLog信息。id=" + id );
+				result.setData( new WrapOutId( id ) );
 			}			
 		} catch ( Exception e ) {
-			e.printStackTrace();
-			wrapOutMessage.setStatus("ERROR");
-			wrapOutMessage.setMessage( "删除AttendanceStatisticRequireLog过程中发生异常。" );
-			wrapOutMessage.setExceptionMessage( e.getMessage() );
+			Exception exception = new AttendanceStatisticRequireDeleteException( e, id );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
-		result.setData( wrapOutMessage );
+		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 }

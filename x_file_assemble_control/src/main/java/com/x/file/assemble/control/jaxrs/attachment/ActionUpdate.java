@@ -19,7 +19,7 @@ import com.x.collaboration.core.message.Collaboration;
 import com.x.collaboration.core.message.notification.FileModifyMessage;
 import com.x.collaboration.core.message.notification.FileShareMessage;
 import com.x.file.assemble.control.Business;
-import com.x.file.core.entity.Attachment;
+import com.x.file.core.entity.personal.Attachment;
 import com.x.organization.core.express.wrap.WrapPerson;
 
 public class ActionUpdate {

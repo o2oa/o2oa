@@ -12,15 +12,14 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.bbs.assemble.control.service.BBSSectionInfoService;
 import com.x.bbs.assemble.control.service.BBSSubjectInfoService;
 import com.x.bbs.assemble.control.service.UserManagerService;
@@ -54,8 +53,9 @@ public class PermissionInfoAction extends AbstractJaxrsAction {
 		if( check ){
 			if( sectionId == null || sectionId.isEmpty() ){
 				check = false;
-				result.error( new Exception( "sectionId is null!" ));
-				result.setUserMessage( "未获取到需要查询的版块ID。" );
+				Exception exception = new SectionIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -63,16 +63,17 @@ public class PermissionInfoAction extends AbstractJaxrsAction {
 				sectionInfo = sectionInfoService.get( sectionId );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统根据版块ID查询版块信息时发生异常。" );
-				logger.error( "system query section info with section id got an exception.id:"+sectionId, e );
+				Exception exception = new SectionQueryByIdException( e, sectionId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
 			if( sectionInfo == null ){
 				check = false;
-				result.error( new Exception("section is not exists.section id:" + sectionId ) );
-				result.setUserMessage( "指定的版块不存在。" );
+				Exception exception = new SectionNotExistsException( sectionId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -81,9 +82,9 @@ public class PermissionInfoAction extends AbstractJaxrsAction {
 					roleAndPermission = userManagerService.getUserRoleAndPermission( currentPerson.getName() );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "获取用户的论坛访问权限列表时发生异常。" );
-					logger.error( "system get user role and permission for user got an exception", e );
+					Exception exception = new UserRoleAndPermissionGetException( e, currentPerson.getName());
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 			if( roleAndPermission == null ){
@@ -215,8 +216,9 @@ public class PermissionInfoAction extends AbstractJaxrsAction {
 		if( check ){
 			if( subjectId == null || subjectId.isEmpty() ){
 				check = false;
-				result.error( new Exception( "subjectId is null!" ));
-				result.setUserMessage( "系统未获取到需要查询的主题ID。" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -224,16 +226,17 @@ public class PermissionInfoAction extends AbstractJaxrsAction {
 				subjectInfo = subjectInfoService.get( subjectId );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统根据主题ID查询主题信息时发生异常。" );
-				logger.error( "system query subject info with subject id got an exception.id:"+subjectId, e );
+				Exception exception = new SubjectQueryByIdException( e, subjectId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
 			if( subjectInfo == null ){
 				check = false;
-				result.error( new Exception("subject is not exists!subject id:" + subjectId ) );
-				result.setUserMessage( "指定的主题信息不存在。" );
+				Exception exception = new SubjectNotExistsException( subjectId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -241,16 +244,17 @@ public class PermissionInfoAction extends AbstractJaxrsAction {
 				sectionInfo = sectionInfoService.get( subjectInfo.getSectionId() );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统根据版块ID查询版块信息时发生异常。" );
-				logger.error( "system query section info with section id got an exception", e );
+				Exception exception = new SectionQueryByIdException( e, subjectInfo.getSectionId() );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check && publishAble ){
 			if( sectionInfo == null ){
 				check = false;
-				result.error( new Exception("section is not exsits.") );
-				result.setUserMessage( "指定主题所在的版块信息["+ subjectInfo.getSectionName() +"]不存在。" );
+				Exception exception = new SectionNotExistsException( subjectInfo.getSectionId() );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){//获取用户的权限列表
@@ -259,9 +263,9 @@ public class PermissionInfoAction extends AbstractJaxrsAction {
 					roleAndPermission = userManagerService.getUserRoleAndPermission( currentPerson.getName() );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "获取用户的论坛访问权限列表时发生异常。" );
-					logger.error( "system get user role and permission for user got an exception", e );
+					Exception exception = new UserRoleAndPermissionGetException( e, currentPerson.getName());
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -368,8 +372,9 @@ public class PermissionInfoAction extends AbstractJaxrsAction {
 			if( sectionId == null || sectionId.isEmpty() ){
 				check = false;
 				publishAble = false;
-				result.error( new Exception( "需要判断发贴权限的版块ID为空。" ));
-				result.setUserMessage( "需要判断发贴权限的版块ID为空。" );
+				Exception exception = new SectionIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if( check ){//获取用户的权限列表
@@ -381,9 +386,9 @@ public class PermissionInfoAction extends AbstractJaxrsAction {
 				} catch (Exception e) {
 					check = false;
 					publishAble = false;
-					result.error( e );
-					result.setUserMessage( "获取用户的论坛访问权限列表时发生异常。" );
-					logger.error( "system get user role and permission for user got an exception", e );
+					Exception exception = new UserRoleAndPermissionGetException( e, currentPerson.getName());
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}		
@@ -393,26 +398,27 @@ public class PermissionInfoAction extends AbstractJaxrsAction {
 			} catch (Exception e) {
 				check = false;
 				publishAble = false;
-				result.error( e );
-				result.setUserMessage( "系统根据版块ID查询版块信息时发生异常。" );
-				logger.error( "system query section info with section id got an exception", e );
+				Exception exception = new SectionQueryByIdException( e, sectionId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if( check ){
 			if( sectionInfo == null ){
 				check = false;
 				publishAble = false;
-				result.error( new Exception("指定的版块不存在。") );
-				result.setUserMessage( "指定的版块不存在。" );
+				Exception exception = new SectionNotExistsException( sectionId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}else{
 				if( "所有人".equals( sectionInfo.getSubjectPublishAble() ) ){
-					result.setUserMessage( "所有用户都可以在版块["+ sectionInfo.getSectionName() +"]中进行主题发布。" );
+					//result.setUserMessage( "所有用户都可以在版块["+ sectionInfo.getSectionName() +"]中进行主题发布。" );
 				}else{//判断权限
 					checkUserPermission = "SECTION_SUBJECT_PUBLISH_"+ sectionInfo.getId();
 					hasPermission = checkUserPermission( checkUserPermission, roleAndPermission.getPermissionInfoList() );
 					if( !hasPermission ){
 						publishAble = false;
-						result.setUserMessage( "用户没有版块["+ sectionInfo.getSectionName() +"]的主题发布权限" );
+						//result.setUserMessage( "用户没有版块["+ sectionInfo.getSectionName() +"]的主题发布权限" );
 					}
 				}
 			}
@@ -445,8 +451,9 @@ public class PermissionInfoAction extends AbstractJaxrsAction {
 			if( subjectId == null || subjectId.isEmpty() ){
 				check = false;
 				publishAble = false;
-				result.error( new Exception( "需要判断回贴权限的主题ID为空。" ));
-				result.setUserMessage( "需要判断回贴权限的主题ID为空。" );
+				Exception exception = new SubjectIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){//获取用户的权限列表
@@ -458,9 +465,9 @@ public class PermissionInfoAction extends AbstractJaxrsAction {
 				} catch (Exception e) {
 					check = false;
 					publishAble = false;
-					result.error( e );
-					result.setUserMessage( "获取用户的论坛访问权限列表时发生异常。" );
-					logger.error( "system get user role and permission for user got an exception", e );
+					Exception exception = new UserRoleAndPermissionGetException( e, currentPerson.getName());
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -470,25 +477,26 @@ public class PermissionInfoAction extends AbstractJaxrsAction {
 			} catch (Exception e) {
 				check = false;
 				publishAble = false;
-				result.error( e );
-				result.setUserMessage( "系统根据主题ID查询主题信息时发生异常。" );
-				logger.error( "system query subject info with subject id got an exception", e );
+				Exception exception = new SubjectQueryByIdException( e, subjectId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if( check ){
 			if( subjectInfo == null ){
 				check = false;
 				publishAble = false;
-				result.error( new Exception("指定的主题信息不存在。") );
-				result.setUserMessage( "指定的主题信息不存在。" );
+				Exception exception = new SubjectNotExistsException( subjectId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}else{
 				if( subjectInfo.getStopReply() ){
 					publishAble = false;
-					result.setUserMessage( "指定的主题已经置为禁止回复。" );
+					//result.setUserMessage( "指定的主题已经置为禁止回复。" );
 				}
 				if( !"启用".equals( subjectInfo.getSubjectStatus() ) ){
 					publishAble = false;
-					result.setUserMessage( "指定的主题状态为["+ subjectInfo.getSubjectStatus() +"]，禁止用户回复。" );
+					//result.setUserMessage( "指定的主题状态为["+ subjectInfo.getSubjectStatus() +"]，禁止用户回复。" );
 				}
 			}
 		}
@@ -498,26 +506,27 @@ public class PermissionInfoAction extends AbstractJaxrsAction {
 			} catch (Exception e) {
 				check = false;
 				publishAble = false;
-				result.error( e );
-				result.setUserMessage( "系统根据版块ID查询版块信息时发生异常。" );
-				logger.error( "system query section info with section id got an exception", e );
+				Exception exception = new SectionQueryByIdException( e, subjectInfo.getSectionId() );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check && publishAble ){
 			if( sectionInfo == null ){
 				check = false;
 				publishAble = false;
-				result.error( new Exception("指定主题所在的的版块信息["+ subjectInfo.getSectionName() +"]不存在。") );
-				result.setUserMessage( "指定主题所在的版块信息["+ subjectInfo.getSectionName() +"]不存在。" );
+				Exception exception = new SectionNotExistsException( subjectInfo.getSectionId() );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}else{
 				if( "所有人".equals( sectionInfo.getReplyPublishAble() ) ){
-					result.setUserMessage( "所有用户都可以在版块["+ sectionInfo.getSectionName() +"]中进行对主题发表回复。" );
+					//result.setUserMessage( "所有用户都可以在版块["+ sectionInfo.getSectionName() +"]中进行对主题发表回复。" );
 				}else{//判断权限
 					checkUserPermission = "SECTION_REPLY_PUBLISH_"+ sectionInfo.getId();
 					hasPermission = checkUserPermission( checkUserPermission, roleAndPermission.getPermissionInfoList() );
 					if( !hasPermission ){
 						publishAble = false;
-						result.setUserMessage( "用户没有版块["+ sectionInfo.getSectionName() +"]的回复发表权限" );
+						//result.setUserMessage( "用户没有版块["+ sectionInfo.getSectionName() +"]的回复发表权限" );
 					}
 				}
 			}

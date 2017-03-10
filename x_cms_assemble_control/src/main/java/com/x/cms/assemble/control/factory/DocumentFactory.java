@@ -69,23 +69,23 @@ public class DocumentFactory extends AbstractFactory {
 	}
 	
 	@MethodDescribe("根据ID列示指定分类所有Document信息列表")
-	public List<String> listByCatagoryId( String catagoryId ) throws Exception {
+	public List<String> listByCategoryId( String categoryId ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery( String.class );
 		Root<Document> root = cq.from( Document.class );
-		Predicate p = cb.equal(root.get( Document_.catagoryId ), catagoryId );
+		Predicate p = cb.equal(root.get( Document_.categoryId ), categoryId );
 		cq.select(root.get( Document_.id)).where(p);
 		return em.createQuery( cq ).setMaxResults(100).getResultList();
 	}
 	
 	@MethodDescribe("根据ID列示指定分类所有Document信息数量")
-	public Long countByCatagoryId( String catagoryId ) throws Exception {
+	public Long countByCategoryId( String categoryId ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<Document> root = cq.from(Document.class);
-		Predicate p = cb.equal( root.get(Document_.catagoryId), catagoryId );
+		Predicate p = cb.equal( root.get(Document_.categoryId), categoryId );
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
 	}
@@ -105,7 +105,7 @@ public class DocumentFactory extends AbstractFactory {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		DateOperation dateOperation = new DateOperation();
 		Date startDate = null, endDate = null;
-		String order = wrapIn.getOrder();//排序方式
+		String order = wrapIn.getOrderType();//排序方式
 		List<Object> vs = new ArrayList<>();
 		StringBuffer sql_stringBuffer = new StringBuffer();
 		
@@ -122,46 +122,47 @@ public class DocumentFactory extends AbstractFactory {
 			index++;
 		}
 		if ((null != wrapIn.getStatusList()) && (!wrapIn.getStatusList().isEmpty())) {
-			sql_stringBuffer.append(" and o.docStatus = ?" + (index));
-			vs.add( wrapIn.getStatusList().get(0).getValue() );
+			sql_stringBuffer.append(" and o.docStatus in ?" + (index));
+			vs.add( wrapIn.getStatusList() );
 			index++;
 		}
-		if ((null != wrapIn.getTitleList()) && (!wrapIn.getTitleList().isEmpty())) {
+		if ((null != wrapIn.getTitle()) && (!wrapIn.getTitle().isEmpty())) {
 			sql_stringBuffer.append(" and o.title like ?" + (index));
-			vs.add( "%"+wrapIn.getTitleList().get(0).getValue()+"%" );
+			vs.add( "%"+wrapIn.getTitle()+"%" );
 			index++;
 		}
 		if ((null != wrapIn.getAppIdList()) && (!wrapIn.getAppIdList().isEmpty())) {
-			sql_stringBuffer.append(" and o.appId = ?" + (index));
-			vs.add( wrapIn.getAppIdList().get(0).getValue() );
+			sql_stringBuffer.append(" and o.appId in ?" + (index));
+			vs.add( wrapIn.getAppIdList() );
 			index++;
 		}
-		if ((null != wrapIn.getCatagoryIdList()) && (!wrapIn.getCatagoryIdList().isEmpty())) {
-			sql_stringBuffer.append(" and o.catagoryId = ?" + (index));
-			vs.add( wrapIn.getCatagoryIdList().get(0).getValue() );
+		if ((null != wrapIn.getCategoryIdList()) && (!wrapIn.getCategoryIdList().isEmpty())) {
+			sql_stringBuffer.append(" and o.categoryId in ?" + (index));
+			vs.add( wrapIn.getCategoryIdList() );
 			index++;
 		}
 		if ((null != wrapIn.getCreatorList()) && (!wrapIn.getCreatorList().isEmpty())) {
-			sql_stringBuffer.append(" and o.creatorPerson = ?" + (index));
-			vs.add( wrapIn.getCreatorList().get(0).getValue() );
+			sql_stringBuffer.append(" and o.creatorPerson in ?" + (index));
+			vs.add( wrapIn.getCreatorList() );
 			index++;
 		}
 		if ((null != wrapIn.getCreateDateList()) && (!wrapIn.getCreateDateList().isEmpty())) {
 			if( wrapIn.getCreateDateList().size() == 1){
 				//从开始时间（yyyy-MM-DD），到现在
-				startDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(0).getValue().toString() );
+				startDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(0).toString() );
 				endDate = new Date();
 			}else if( wrapIn.getCreateDateList().size() == 2){
 				//从开始时间到结束时间（yyyy-MM-DD）
-				startDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(0).getValue().toString() );
-				endDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(1).getValue().toString() );
+				startDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(0).toString() );
+				endDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(1).toString() );
 			}
 			sql_stringBuffer.append(" and o.createTime between ( ?"+(index)+", ?"+(index+1)+" )");
 			vs.add( startDate );
 			vs.add( endDate );
 		}
-		if( wrapIn.getKey() != null && !wrapIn.getKey().isEmpty()){
-			sql_stringBuffer.append(" order by o."+wrapIn.getKey()+" " + order );
+		
+		if( wrapIn.getTitle() != null && !wrapIn.getTitle().isEmpty()){
+			sql_stringBuffer.append(" order by o."+wrapIn.getTitle()+" " + order );
 		}else{
 			sql_stringBuffer.append(" order by o.sequence " + order );
 		}
@@ -190,7 +191,7 @@ public class DocumentFactory extends AbstractFactory {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		DateOperation dateOperation = new DateOperation();
 		Date startDate = null, endDate = null;
-		String order = wrapIn.getOrder();//排序方式
+		String order = wrapIn.getOrderType();//排序方式
 		List<Object> vs = new ArrayList<>();
 		StringBuffer sql_stringBuffer = new StringBuffer();
 		Integer index = 1;
@@ -206,47 +207,47 @@ public class DocumentFactory extends AbstractFactory {
 			index++;
 		}
 		if ((null != wrapIn.getStatusList()) && (!wrapIn.getStatusList().isEmpty())) {
-			sql_stringBuffer.append(" and o.docStatus = ?" + (index));
-			vs.add( wrapIn.getStatusList().get(0).getValue() );
+			sql_stringBuffer.append(" and o.docStatus in ?" + (index));
+			vs.add( wrapIn.getStatusList() );
 			index++;
 		}
-		if ((null != wrapIn.getTitleList()) && (!wrapIn.getTitleList().isEmpty())) {
+		if ((null != wrapIn.getTitle()) && (!wrapIn.getTitle().isEmpty())) {
 			sql_stringBuffer.append(" and o.title like ?" + (index));
-			vs.add( "%"+wrapIn.getTitleList().get(0).getValue()+"%" );
+			vs.add( "%"+wrapIn.getTitle()+"%" );
 			index++;
 		}
 		if ((null != wrapIn.getAppIdList()) && (!wrapIn.getAppIdList().isEmpty())) {
-			sql_stringBuffer.append(" and o.appId = ?" + (index));
-			vs.add( wrapIn.getAppIdList().get(0).getValue() );
+			sql_stringBuffer.append(" and o.appId in ?" + (index));
+			vs.add( wrapIn.getAppIdList() );
 			index++;
 		}
-		if ((null != wrapIn.getCatagoryIdList()) && (!wrapIn.getCatagoryIdList().isEmpty())) {
-			sql_stringBuffer.append(" and o.catagoryId = ?" + (index));
-			vs.add( wrapIn.getCatagoryIdList().get(0).getValue() );
+		if ((null != wrapIn.getCategoryIdList()) && (!wrapIn.getCategoryIdList().isEmpty())) {
+			sql_stringBuffer.append(" and o.categoryId in ?" + (index));
+			vs.add( wrapIn.getCategoryIdList() );
 			index++;
 		}
 		if ((null != wrapIn.getCreatorList()) && (!wrapIn.getCreatorList().isEmpty())) {
-			sql_stringBuffer.append(" and o.creatorPerson = ?" + (index));
-			vs.add( wrapIn.getCreatorList().get(0).getValue() );
+			sql_stringBuffer.append(" and o.creatorPerson in ?" + (index));
+			vs.add( wrapIn.getCreatorList() );
 			index++;
 		}
 		if ((null != wrapIn.getCreateDateList()) && (!wrapIn.getCreateDateList().isEmpty())) {
 			if( wrapIn.getCreateDateList().size() == 1){
 				//从开始时间（yyyy-MM-DD），到现在
-				startDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(0).getValue().toString() );
+				startDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(0).toString() );
 				endDate = new Date();
 			}else if( wrapIn.getCreateDateList().size() == 2){
 				//从开始时间到结束时间（yyyy-MM-DD）
-				startDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(0).getValue().toString() );
-				endDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(1).getValue().toString() );
+				startDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(0).toString() );
+				endDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(1).toString() );
 			}
 			sql_stringBuffer.append(" and o.createTime between ( ?"+(index)+", ?"+(index+1)+" )");
 			vs.add( startDate );
 			vs.add( endDate );
 		}
 		
-		if( wrapIn.getKey() != null && !wrapIn.getKey().isEmpty()){
-			sql_stringBuffer.append(" order by o."+wrapIn.getKey()+" " + order );
+		if( wrapIn.getTitle() != null && !wrapIn.getTitle().isEmpty()){
+			sql_stringBuffer.append(" order by o."+wrapIn.getTitle()+" " + order );
 		}else{
 			sql_stringBuffer.append(" order by o.sequence " + order );
 		}
@@ -280,39 +281,39 @@ public class DocumentFactory extends AbstractFactory {
 		sql_stringBuffer.append( "SELECT count(o.id) FROM "+Document.class.getCanonicalName()+" o where 1=1" );
 		
 		if ((null != wrapIn.getStatusList()) && (!wrapIn.getStatusList().isEmpty())) {
-			sql_stringBuffer.append(" and o.docStatus = ?" + (index));
-			vs.add( wrapIn.getStatusList().get(0).getValue() );
+			sql_stringBuffer.append(" and o.docStatus in ?" + (index));
+			vs.add( wrapIn.getStatusList() );
 			index++;
 		}
-		if ((null != wrapIn.getTitleList()) && (!wrapIn.getTitleList().isEmpty())) {
+		if ((null != wrapIn.getTitle()) && (!wrapIn.getTitle().isEmpty())) {
 			sql_stringBuffer.append(" and o.title like ?" + (index));
-			vs.add( "%"+wrapIn.getTitleList().get(0).getValue()+"%" );
+			vs.add( "%"+wrapIn.getTitle()+"%" );
 			index++;
 		}
-		if ((null != wrapIn.getAppIdList()) && (!wrapIn.getAppIdList().isEmpty())) {
-			sql_stringBuffer.append(" and o.appId = ?" + (index));
-			vs.add( wrapIn.getAppIdList().get(0).getValue() );
+		if (null != wrapIn.getAppIdList() && !wrapIn.getAppIdList().isEmpty()) {
+			sql_stringBuffer.append(" and o.appId in ?" + (index));
+			vs.add( wrapIn.getAppIdList() );
 			index++;
 		}
-		if ((null != wrapIn.getCatagoryIdList()) && (!wrapIn.getCatagoryIdList().isEmpty())) {
-			sql_stringBuffer.append(" and o.catagoryId = ?" + (index));
-			vs.add( wrapIn.getCatagoryIdList().get(0).getValue() );
+		if ((null != wrapIn.getCategoryIdList()) && (!wrapIn.getCategoryIdList().isEmpty())) {
+			sql_stringBuffer.append(" and o.categoryId in ?" + (index));
+			vs.add( wrapIn.getCategoryIdList() );
 			index++;
 		}
 		if ((null != wrapIn.getCreatorList()) && (!wrapIn.getCreatorList().isEmpty())) {
-			sql_stringBuffer.append(" and o.creatorPerson = ?" + (index));
-			vs.add( wrapIn.getCreatorList().get(0).getValue() );
+			sql_stringBuffer.append(" and o.creatorPerson in ?" + (index));
+			vs.add( wrapIn.getCreatorList() );
 			index++;
 		}
 		if ((null != wrapIn.getCreateDateList()) && (!wrapIn.getCreateDateList().isEmpty())) {
 			if( wrapIn.getCreateDateList().size() == 1){
 				//从开始时间（yyyy-MM-DD），到现在
-				startDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(0).getValue().toString() );
+				startDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(0).toString() );
 				endDate = new Date();
 			}else if( wrapIn.getCreateDateList().size() == 2){
 				//从开始时间到结束时间（yyyy-MM-DD）
-				startDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(0).getValue().toString() );
-				endDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(1).getValue().toString() );
+				startDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(0).toString() );
+				endDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(1).toString() );
 			}
 			sql_stringBuffer.append(" and o.createTime between ( ?"+(index)+", ?"+(8)+" )");
 			vs.add( startDate );
@@ -322,9 +323,209 @@ public class DocumentFactory extends AbstractFactory {
 		Query query = em.createQuery( sql_stringBuffer.toString(), Document.class );
 		//为查询设置所有的参数值
 		for (int i = 0; i < vs.size(); i++) {
-			query.setParameter(i + 1, vs.get(i));
+			query.setParameter( i + 1, vs.get(i));
 		}
 		
 		return (Long) query.getSingleResult();
 	}
+	public Long countWithDocIds(List<String> viewAbleDocIds) throws Exception {
+		if( viewAbleDocIds == null || viewAbleDocIds.isEmpty() ){
+			return 0L;
+		}
+		EntityManager em = this.entityManagerContainer().get( Document.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery( Long.class );
+		Root<Document> root = cq.from( Document.class );
+		
+		Predicate p = root.get( Document_.id ).in( viewAbleDocIds );
+		cq.select( cb.count( root ) );
+		return em.createQuery(cq.where(p)).getSingleResult();
+	}
+	
+	public List<Document> listNextWithDocIds( Integer count, List<String> viewAbleDocIds, Object sequenceFieldValue, String orderField, String order ) throws Exception {
+		if( order == null || order.isEmpty() ){
+			order = "DESC";
+		}
+		EntityManager em = this.entityManagerContainer().get( Document.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Document> cq = cb.createQuery( Document.class );
+		Root<Document> root = cq.from( Document.class );
+
+		Predicate p = root.get( Document_.id ).in( viewAbleDocIds );
+		
+		if( sequenceFieldValue != null ){
+			if( "title".equals( orderField  )){//标题
+				p = cb.and( p, cb.isNotNull( root.get( Document_.title ) ));
+				if( "DESC".equalsIgnoreCase( order )){
+					p = cb.and( p, cb.lessThan( root.get( Document_.title ), sequenceFieldValue.toString() ));
+				}else{
+					p = cb.and( p, cb.greaterThan( root.get( Document_.title ), sequenceFieldValue.toString() ));
+				}
+			}else if( "publishTime".equals( orderField  )){//发布时间
+				p = cb.and( p, cb.isNotNull( root.get( Document_.publishTime ) ));
+				if( "DESC".equalsIgnoreCase( order )){
+					p = cb.and( p, cb.lessThan( root.get( Document_.publishTime ), (Date)sequenceFieldValue ));
+				}else{
+					p = cb.and( p, cb.greaterThan( root.get( Document_.publishTime ), (Date)sequenceFieldValue ));
+				}
+			}else if( "createTime".equals( orderField  )){//创建时间
+				p = cb.and( p, cb.isNotNull( root.get( Document_.createTime ) ));
+				if( "DESC".equalsIgnoreCase( order )){
+					p = cb.and( p, cb.lessThan( root.get( Document_.createTime ), (Date)sequenceFieldValue ));
+				}else{
+					p = cb.and( p, cb.greaterThan( root.get( Document_.createTime ), (Date)sequenceFieldValue ));
+				}
+			}else if( "creatorPerson".equals( orderField  )){//创建人
+				p = cb.and( p, cb.isNotNull( root.get( Document_.creatorPerson ) ));
+				if( "DESC".equalsIgnoreCase( order )){
+					p = cb.and( p, cb.lessThan( root.get( Document_.creatorPerson ), sequenceFieldValue.toString() ));
+				}else{
+					p = cb.and( p, cb.greaterThan( root.get( Document_.creatorPerson ), sequenceFieldValue.toString() ));
+				}
+			}else if( "creatorDepartment".equals( orderField  )){//创建部门
+				p = cb.and( p, cb.isNotNull( root.get( Document_.creatorDepartment ) ));
+				if( "DESC".equalsIgnoreCase( order )){
+					p = cb.and( p, cb.lessThan( root.get( Document_.creatorDepartment ), sequenceFieldValue.toString() ));
+				}else{
+					p = cb.and( p, cb.greaterThan( root.get( Document_.creatorDepartment ), sequenceFieldValue.toString() ));
+				}
+			}else if( "categoryName".equals( orderField  )){//分类
+				p = cb.and( p, cb.isNotNull( root.get( Document_.categoryName ) ));
+				if( "DESC".equalsIgnoreCase( order )){
+					p = cb.and( p, cb.lessThan( root.get( Document_.categoryName ), sequenceFieldValue.toString() ));
+				}else{
+					p = cb.and( p, cb.greaterThan( root.get( Document_.categoryName ), sequenceFieldValue.toString() ));
+				}
+			}
+		}
+		if( "title".equals( orderField  )){//标题
+			if( "DESC".equalsIgnoreCase( order )){
+				cq.orderBy( cb.desc( root.get( Document_.title ) ) );
+			}else{
+				cq.orderBy( cb.asc( root.get( Document_.title ) ) );
+			}
+		}else if( "publishTime".equals( orderField  )){//发布时间
+			if( "DESC".equalsIgnoreCase( order )){
+				cq.orderBy( cb.desc( root.get( Document_.publishTime ) ) );
+			}else{
+				cq.orderBy( cb.asc( root.get( Document_.publishTime ) ) );
+			}
+		}else if( "createTime".equals( orderField  )){//创建时间
+			if( "DESC".equalsIgnoreCase( order )){
+				cq.orderBy( cb.desc( root.get( Document_.createTime ) ) );
+			}else{
+				cq.orderBy( cb.asc( root.get( Document_.createTime ) ) );
+			}
+		}else if( "creatorPerson".equals( orderField  )){//创建人
+			if( "DESC".equalsIgnoreCase( order )){
+				cq.orderBy( cb.desc( root.get( Document_.creatorPerson ) ) );
+			}else{
+				cq.orderBy( cb.asc( root.get( Document_.creatorPerson ) ) );
+			}
+		}else if( "creatorDepartment".equals( orderField  )){//创建部门
+			if( "DESC".equalsIgnoreCase( order )){
+				cq.orderBy( cb.desc( root.get( Document_.creatorDepartment ) ) );
+			}else{
+				cq.orderBy( cb.asc( root.get( Document_.creatorDepartment ) ) );
+			}
+		}else if( "categoryName".equals( orderField  )){//分类
+			if( "DESC".equalsIgnoreCase( order )){
+				cq.orderBy( cb.desc( root.get( Document_.categoryName ) ) );
+			}else{
+				cq.orderBy( cb.asc( root.get( Document_.categoryName ) ) );
+			}
+		}
+		return em.createQuery(cq.where(p)).setMaxResults( count ).getResultList();
+	}
+
+	public List<Document> listMyDraft( String name, List<String> categoryIdList ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( Document.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Document> cq = cb.createQuery( Document.class );
+		Root<Document> root = cq.from( Document.class );
+		Predicate p = cb.equal( root.get( Document_.creatorPerson ), name );
+		p = cb.and( p, cb.equal(root.get( Document_.docStatus ), "draft"));
+		p = cb.and( p, root.get( Document_.categoryId ).in( categoryIdList ));
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+
+	public List<String> lisViewableDocIdsWithFilter( List<String> appIdList, List<String> appAliasList, 
+			List<String> categoryIdList, List<String> categoryAliasList, 
+			List<String> publisherList, String title, List<String> createDateList, List<String> publishDateList,
+			List<String> statusList, Integer maxResultCount ) throws Exception {
+		Date startDate = null;
+		Date endDate = null;
+		List<String> ids = new ArrayList<>();
+		List<Document> documents = null;
+		DateOperation dateOperation = new DateOperation();
+		EntityManager em = this.entityManagerContainer().get( Document.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Document> cq = cb.createQuery( Document.class );
+		Root<Document> root = cq.from( Document.class );
+		
+		Predicate p = cb.isNotNull( root.get( Document_.id ) );
+		if( appIdList != null && !appIdList.isEmpty() ){
+			p = cb.and( p, root.get( Document_.appId ).in( appIdList ));
+		}
+		if( appAliasList != null && !appAliasList.isEmpty() ){
+			p = cb.and( p, root.get( Document_.appName ).in( appAliasList ));
+		}
+		if( categoryIdList != null && !categoryIdList.isEmpty() ){
+			p = cb.and( p, root.get( Document_.categoryId ).in( categoryIdList ));
+		}
+		if( categoryAliasList != null && !categoryAliasList.isEmpty() ){
+			p = cb.and( p, root.get( Document_.categoryName ).in( categoryAliasList ));
+		}
+		if( publisherList != null && !publisherList.isEmpty() ){
+			p = cb.and( p, root.get( Document_.creatorPerson ).in( publisherList ));
+		}
+		if( title != null && !title.isEmpty() ){
+			p = cb.and( p, cb.like( root.get( Document_.title ), "%" + title + "%" ));
+		}
+		if( statusList == null || statusList.isEmpty() ){
+			p = cb.and( p, cb.equal(root.get( Document_.docStatus ), "published"));
+		}else{
+			p = cb.and( p, root.get( Document_.docStatus ).in( statusList ));
+		}
+		if( createDateList != null && !createDateList.isEmpty() ){
+			if ( createDateList.size() == 1 ) {// 从开始时间（yyyy-MM-DD），到现在				
+				startDate = dateOperation.getDateFromString( createDateList.get(0).toString() );
+				endDate = new Date();
+			}else if( createDateList.size() == 2 ){// 从开始时间到结束时间（yyyy-MM-DD）				
+				startDate = dateOperation.getDateFromString( createDateList.get(0).toString());
+				endDate = dateOperation.getDateFromString( createDateList.get(1).toString());
+			}
+			p = cb.and( p, cb.between( root.get( Document_.createTime ), startDate, endDate ) );
+		}
+		if( publishDateList != null && !publishDateList.isEmpty() ){
+			if ( publishDateList.size() == 1 ) {
+				// 从开始时间（yyyy-MM-DD），到现在
+				startDate = dateOperation.getDateFromString( publishDateList.get(0).toString() );
+				endDate = new Date();
+			}else if( publishDateList.size() == 2 ){
+				// 从开始时间到结束时间（yyyy-MM-DD）
+				startDate = dateOperation.getDateFromString( publishDateList.get(0).toString());
+				endDate = dateOperation.getDateFromString( publishDateList.get(1).toString());
+			}
+			p = cb.and( p, cb.between( root.get( Document_.publishTime ), startDate, endDate ) );
+		}
+		
+		cq.orderBy( cb.desc( root.get( Document_.publishTime ) ) );
+		
+		if( maxResultCount == null || maxResultCount == 0 ){
+			maxResultCount = 500;
+		}
+
+		documents = em.createQuery( cq.where( p ) ).setMaxResults( 500 ).getResultList();
+		if( documents != null && !documents.isEmpty() ){
+			for( Document document : documents ){
+				if( !ids.contains( document.getId() )){
+					ids.add( document.getId() );
+				}
+			}
+		}
+		return ids;
+	}
+
+	
 }

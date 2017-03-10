@@ -41,4 +41,5 @@ public class ScriptFactory extends AbstractFactory {
 		List<String> list = em.createQuery(cq).setMaxResults(1).getResultList();
 		return list.isEmpty() ? null : list.get(0);
 	}
+
 }

@@ -56,7 +56,12 @@
     "text": "图片",
     "className": "Image"
   },
-  "image": {
+  "imageClipper": {
+    "icon": "image.png",
+    "text": "图片",
+    "className": "Image"
+  },
+  "attachment": {
     "icon": "attachment.png",
     "text": "附件",
     "className": "Attachment"
@@ -76,6 +81,16 @@
     "text": "数据网格",
     "className": "Datagrid"
   },
+  "ViewSelector": {
+    "icon": "viewSelector.png",
+    "text": "选择视图",
+    "className": "ViewSelector"
+  },
+  "view": {
+    "icon": "view.png",
+    "text": "嵌入视图",
+    "className": "View"
+  },
   "html": {
     "icon": "html.png",
     "text": "HTML",
@@ -92,18 +107,6 @@
     "text": "树",
     "className": "Tree"
   },
-  /*
-  "log": {
-    "icon": "log.png",
-    "text": "流程记录",
-    "className": "Log"
-  },
-  "monitor": {
-    "icon": "monitor.png",
-    "text": "流程监控",
-    "className": "Monitor"
-  },
-  */
   "iframe": {
     "icon": "iframe.png",
     "text": "Iframe",

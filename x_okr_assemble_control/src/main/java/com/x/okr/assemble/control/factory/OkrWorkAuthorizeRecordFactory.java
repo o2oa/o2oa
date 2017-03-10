@@ -136,7 +136,7 @@ public class OkrWorkAuthorizeRecordFactory extends AbstractFactory {
 		cq.orderBy( cb.asc( root.get( OkrWorkAuthorizeRecord_.delegateLevel ) ) );	
 		Predicate p = cb.equal( root.get( OkrWorkAuthorizeRecord_.workId), workId);
 		p = cb.and( p, cb.equal( root.get( OkrWorkAuthorizeRecord_.delegatorIdentity ), authorizeIdentity));
-		
+		p = cb.and( p, cb.equal( root.get( OkrWorkAuthorizeRecord_.status ), "正常"));
 		List<OkrWorkAuthorizeRecord> resultList = em.createQuery(cq.where(p)).getResultList();
 		if( resultList == null || resultList.size() == 0 ){
 			return null;
@@ -152,7 +152,7 @@ public class OkrWorkAuthorizeRecordFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	public OkrWorkAuthorizeRecord getLastAuthorizeRecord( String workId, String identity ) throws Exception {
+	public OkrWorkAuthorizeRecord getLastAuthorizeRecord( String workId, String identity, String status ) throws Exception {
 		if( workId == null || workId.isEmpty() ){
 			throw new Exception( "workId is empty, system can not excute query!" );
 		}
@@ -160,17 +160,19 @@ public class OkrWorkAuthorizeRecordFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();		
 		CriteriaQuery<OkrWorkAuthorizeRecord> cq = cb.createQuery( OkrWorkAuthorizeRecord.class );
 		Root<OkrWorkAuthorizeRecord> root = cq.from( OkrWorkAuthorizeRecord.class);
+		
 		cq.orderBy( cb.desc( root.get( OkrWorkAuthorizeRecord_.delegateLevel ) ) );	
 		
 		Predicate p = cb.equal( root.get( OkrWorkAuthorizeRecord_.workId ), workId );
-		p = cb.and( p, cb.equal( root.get( OkrWorkAuthorizeRecord_.status ), "正常" ));
 		
+		if( status != null && !status.isEmpty() ){
+			p = cb.and( p, cb.equal( root.get( OkrWorkAuthorizeRecord_.status ), status ));
+		}		
 		if( identity != null ){
 			Predicate p1 = cb.equal( root.get( OkrWorkAuthorizeRecord_.targetIdentity), identity);
 			p1 = cb.or( p1, cb.equal( root.get( OkrWorkAuthorizeRecord_.delegatorIdentity ), identity));
 			p = cb.and( p, p1 );
 		}
-		
 		List<OkrWorkAuthorizeRecord> resultList = em.createQuery(cq.where(p)).getResultList();
 		if( resultList == null || resultList.size() == 0 ){
 			return null;
@@ -183,20 +185,18 @@ public class OkrWorkAuthorizeRecordFactory extends AbstractFactory {
 		if( workId == null || workId.isEmpty() ){
 			throw new Exception( "workId is empty, system can not excute query!" );
 		}
-		if( delegatorIdentity == null || delegatorIdentity.isEmpty() ){
-			throw new Exception( "delegatorIdentity is empty, system can not excute query!" );
-		}
-		if( delegateLevel == null || delegateLevel == 0 ){
-			throw new Exception( "delegateLevel is invalid, system can not excute query!" );
-		}
 		EntityManager em = this.entityManagerContainer().get(OkrWorkAuthorizeRecord.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrWorkAuthorizeRecord> root = cq.from( OkrWorkAuthorizeRecord.class);
 		Predicate p = cb.equal( root.get(OkrWorkAuthorizeRecord_.workId), workId );
-		p = cb.and( p, cb.equal( root.get( OkrWorkAuthorizeRecord_.delegatorIdentity ), delegatorIdentity));
-		p = cb.and( p, cb.greaterThanOrEqualTo( root.get( OkrWorkAuthorizeRecord_.delegateLevel ), delegateLevel ));
-		cq.select(root.get( OkrWorkAuthorizeRecord_.id) );
+		if( delegatorIdentity != null && !delegatorIdentity.isEmpty() ){
+			p = cb.and( p, cb.equal( root.get( OkrWorkAuthorizeRecord_.delegatorIdentity ), delegatorIdentity));
+		}
+		if( delegateLevel != null && delegateLevel > 0 ){
+			p = cb.and( p, cb.greaterThanOrEqualTo( root.get( OkrWorkAuthorizeRecord_.delegateLevel ), delegateLevel ));
+		}
+		cq.select( root.get( OkrWorkAuthorizeRecord_.id) );
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 }

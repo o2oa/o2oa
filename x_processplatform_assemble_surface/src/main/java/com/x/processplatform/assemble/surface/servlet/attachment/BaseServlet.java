@@ -1,8 +1,8 @@
 package com.x.processplatform.assemble.surface.servlet.attachment;
 
-import javax.servlet.http.HttpServlet;
+import com.x.base.core.application.servlet.AbstractServletAction;
 
-public abstract class BaseServlet extends HttpServlet {
+public abstract class BaseServlet extends AbstractServletAction {
 
 	private static final long serialVersionUID = 2485087497572022777L;
 

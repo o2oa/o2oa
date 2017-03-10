@@ -21,9 +21,7 @@
 	<classpathentry kind="lib" path="D:/x/lib/cargo/cargo-core-uberjar-1.5.0.jar"/>
 	<classpathentry kind="lib" path="D:/x/store/jars/x_base_core_project-4.0.0.jar" sourcepath="/x_base_core_project"/>
 	<classpathentry kind="lib" path="D:/x/lib/sourceforge/dom4j/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="D:/x/lib/apache/openjpa/openjpa-2.4.2-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="D:/x/lib/ibm/db2/db2jcc_license_cu.jar"/>
-	<classpathentry kind="lib" path="D:/x/lib/ibm/db2/db2jcc4.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/openjpa/openjpa-2.4.3-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="D:/x/lib/ibm/informix/ifxjdbc.jar"/>
 	<classpathentry kind="lib" path="D:/x/lib/ibm/informix/ifxjdbcx.jar"/>
 	<classpathentry kind="lib" path="D:/x/lib/postgresql/postgresql-9.4-1205.jdbc42.jar"/>
@@ -37,5 +35,8 @@
 	<classpathentry kind="lib" path="D:/x/lib/apache/mina/mina-core-2.0.16.jar"/>
 	<classpathentry kind="lib" path="D:/x/lib/h2/h2-1.4.193.jar"/>
 	<classpathentry kind="lib" path="D:/x/lib/eclipse/jetty/jetty-all-9.3.14.v20161028-uber.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/ibm/db2/db2jcc_license_cu-10.1.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/ibm/db2/db2jcc4-10.1.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/slf4j/slf4j-simple-1.7.21.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

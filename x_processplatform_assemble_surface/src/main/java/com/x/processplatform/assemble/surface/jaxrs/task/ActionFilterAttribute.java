@@ -44,7 +44,7 @@ class ActionFilterAttribute extends ActionBase {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Task> root = cq.from(Task.class);
 		Predicate p = cb.equal(root.get(Task_.person), effectivePerson.getName());
-		cq.select(root.get(Task_.process)).where(p).distinct(true);
+		cq.select(root.get(Task_.application)).where(p).distinct(true);
 		List<String> list = em.createQuery(cq).getResultList();
 		List<NameValueCountPair> wraps = new ArrayList<>();
 		for (String str : list) {

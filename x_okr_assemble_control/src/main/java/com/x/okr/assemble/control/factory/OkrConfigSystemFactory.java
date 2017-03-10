@@ -39,6 +39,7 @@ public class OkrConfigSystemFactory extends AbstractFactory {
 		EntityManager em = this.entityManagerContainer().get(OkrConfigSystem.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<OkrConfigSystem> cq = cb.createQuery(OkrConfigSystem.class);
+		@SuppressWarnings("unused")
 		Root<OkrConfigSystem> root = cq.from( OkrConfigSystem.class);
 		return em.createQuery(cq).getResultList();
 	}

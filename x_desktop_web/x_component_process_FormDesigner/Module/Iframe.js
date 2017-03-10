@@ -121,7 +121,7 @@ MWF.xApplication.process.FormDesigner.Module.Iframe = MWF.FCIframe = new Class({
                     "left": p.x-18
                 });
                 this.iconNode.getFirst().setStyles({
-                    "background": "url("+MWF.defaultPath+"/process/FormCustom/Module/Iframe/default/icon/close.png) 5px center no-repeat"
+                    "background": "url("+this.path+this.options.style+"/icon/close.png) 5px center no-repeat"
                 });
 
                 this.iframe = new Element("iframe", {

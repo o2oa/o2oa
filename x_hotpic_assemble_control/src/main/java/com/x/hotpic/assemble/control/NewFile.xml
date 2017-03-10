@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml version="1.0" encoding="UTF-8"?>
-<Configure class="org.eclipse.jetty.webapp.WebAppContext">
-	<Set name="contextPath">/x_hotpic_assemble_control</Set>
-	<Set name="war">D:\o2server\store\x_hotpic_assemble_control.war</Set>
-	<Set name="extraClasspath">D:\o2server\commons\ext\ehcache-2.10.1.jar;D:\o2server\commons\ext\openjpa-2.4.2-SNAPSHOT.jar;D:\o2server\commons\ext\slf4j-api-1.7.21.jar;D:\o2server\commons\ext\slf4j-simple-1.7.21.jar;D:\o2server\store\jars\x_base_core_project-4.0.0.jar;D:\o2server\store\jars\x_bbs_core_entity-4.0.0.jar;D:\o2server\store\jars\x_cms_core_entity-4.0.0.jar;D:\o2server\store\jars\x_collaboration_core_message-4.0.0.jar;D:\o2server\store\jars\x_hotpic_core_entity-4.0.0.jar;D:\o2server\store\jars\x_organization_core_entity-4.0.0.jar;D:\o2server\store\jars\x_organization_core_express-4.0.0.jar</Set>
-	<Set name="tempDirectory">D:\o2server\servers\applicationServer\work\x_hotpic_assemble_control</Set>
-</Configure>

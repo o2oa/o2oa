@@ -17,6 +17,7 @@ public class x_processplatform_service_processing extends Service {
 
 	static {
 		containerEntities.add("com.x.processplatform.core.entity.content.DataItem");
+		containerEntities.add("com.x.processplatform.core.entity.content.DataLobItem");
 		containerEntities.add("com.x.processplatform.core.entity.content.Attachment");
 		containerEntities.add("com.x.processplatform.core.entity.content.TaskCompleted");
 		containerEntities.add("com.x.processplatform.core.entity.content.ReadCompleted");

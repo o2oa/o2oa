@@ -27,62 +27,23 @@ import com.x.program.center.ThisApplication;
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
 
-public class ActionBase {
+class ActionBase {
 
 	private static CopyOnWriteArrayList<Class<? extends Assemble>> assembles;
 
 	private static String HOST_LOCALHOST = "localhost";
 
-	protected WrapOutWebServer getRandomWebServer(HttpServletRequest request, String source) throws Exception {
-		Boolean fromProxy = this.formProxy(request, source);
-		if (fromProxy) {
-			return this.getRandomWebServerProxy(request);
-		} else {
-			return this.getRandomWebServer(request);
-		}
+	private String getHost(HttpServletRequest request) throws Exception {
+		URL url = new URL(request.getRequestURL().toString());
+		return url.getHost();
 	}
 
-	private WrapOutWebServer getRandomWebServer(HttpServletRequest request) throws Exception {
-		WrapOutWebServer wrap = null;
-		Entry<String, WebServer> entry = Config.nodes().webServers().getRandom();
-		if (null == entry) {
-			return null;
+	private boolean isUndefindHost(String host) {
+		if (StringUtils.isEmpty(host) || StringUtils.equalsIgnoreCase(host, HOST_LOCALHOST)
+				|| StringUtils.startsWith(host, "127.0.0.")) {
+			return true;
 		}
-		wrap = new WrapOutWebServer();
-		WebServer webServer = entry.getValue();
-		if (StringUtils.equalsIgnoreCase(entry.getKey(), HOST_LOCALHOST)
-				|| StringUtils.startsWith(entry.getKey(), "127.0.0.")) {
-			URL url = new URL(request.getRequestURL().toString());
-			wrap.setHost(url.getHost());
-		} else {
-			wrap.setHost(entry.getKey());
-		}
-		wrap.setPort(webServer.getPort());
-		wrap.setSslEnable(webServer.getSslEnable());
-		return wrap;
-	}
-
-	private WrapOutWebServer getRandomWebServerProxy(HttpServletRequest request) throws Exception {
-		WrapOutWebServer wrap = null;
-		WebServers webServers = Config.nodes().webServers();
-		if (!webServers.isEmpty()) {
-			wrap = new WrapOutWebServer();
-			Entry<String, WebServer> en = webServers.firstEntry();
-			WebServer webServer = en.getValue();
-			wrap.setHost(webServer.getProxyHost());
-			wrap.setPort(webServer.getProxyPort());
-		}
-		return wrap;
-	}
-
-	protected Map<String, WrapOutAssemble> getRandomAssembles(HttpServletRequest request, String source)
-			throws Exception {
-		Boolean fromProxy = this.formProxy(request, source);
-		if (fromProxy) {
-			return this.getRandomAssemblesProxy(request);
-		} else {
-			return this.getRandomAssembles(request);
-		}
+		return false;
 	}
 
 	private Boolean formProxy(HttpServletRequest request, String source) throws Exception {
@@ -107,6 +68,59 @@ public class ActionBase {
 		return false;
 	}
 
+	WrapOutWebServer getRandomWebServer(HttpServletRequest request, String source) throws Exception {
+		Boolean fromProxy = this.formProxy(request, source);
+		if (fromProxy) {
+			return this.getRandomWebServerProxy(request);
+		} else {
+			return this.getRandomWebServer(request);
+		}
+	}
+
+	private WrapOutWebServer getRandomWebServer(HttpServletRequest request) throws Exception {
+		WrapOutWebServer wrap = null;
+		Entry<String, WebServer> entry = Config.nodes().webServers().getRandom();
+		if (null == entry) {
+			return null;
+		}
+		wrap = new WrapOutWebServer();
+		WebServer webServer = entry.getValue();
+		if (this.isUndefindHost(entry.getKey())) {
+			wrap.setHost(this.getHost(request));
+		} else {
+			wrap.setHost(entry.getKey());
+		}
+		wrap.setPort(webServer.getPort());
+		wrap.setSslEnable(webServer.getSslEnable());
+		return wrap;
+	}
+
+	private WrapOutWebServer getRandomWebServerProxy(HttpServletRequest request) throws Exception {
+		WrapOutWebServer wrap = null;
+		WebServers webServers = Config.nodes().webServers();
+		if (!webServers.isEmpty()) {
+			wrap = new WrapOutWebServer();
+			Entry<String, WebServer> en = webServers.firstEntry();
+			WebServer webServer = en.getValue();
+			if (this.isUndefindHost(webServer.getProxyHost())) {
+				wrap.setHost(this.getHost(request));
+			} else {
+				wrap.setHost(webServer.getProxyHost());
+			}
+			wrap.setPort(webServer.getProxyPort());
+		}
+		return wrap;
+	}
+
+	Map<String, WrapOutAssemble> getRandomAssembles(HttpServletRequest request, String source) throws Exception {
+		Boolean fromProxy = this.formProxy(request, source);
+		if (fromProxy) {
+			return this.getRandomAssemblesProxy(request);
+		} else {
+			return this.getRandomAssembles(request);
+		}
+	}
+
 	private Map<String, WrapOutAssemble> getRandomAssembles(HttpServletRequest request) throws Exception {
 		Map<String, WrapOutAssemble> map = new HashMap<>();
 		for (Class<? extends Assemble> o : listAssemble()) {
@@ -114,11 +128,8 @@ public class ActionBase {
 			Application application = ThisApplication.applications.randomWithWeight(o);
 			if (null != application) {
 				wrap.setContext(application.getContext());
-				if (StringUtils.isEmpty(application.getHost())
-						|| (StringUtils.equalsIgnoreCase(application.getHost(), HOST_LOCALHOST))
-						|| (StringUtils.startsWith(application.getHost(), "127.0.0."))) {
-					URL url = new URL(request.getRequestURL().toString());
-					wrap.setHost(url.getHost());
+				if (this.isUndefindHost(application.getHost())) {
+					wrap.setHost(this.getHost(request));
 				} else {
 					wrap.setHost(application.getHost());
 				}
@@ -136,7 +147,11 @@ public class ActionBase {
 			Application application = ThisApplication.applications.randomWithWeight(o);
 			if (null != application) {
 				wrap.setContext(application.getContext());
-				wrap.setHost(application.getProxyHost());
+				if (this.isUndefindHost(application.getProxyHost())) {
+					wrap.setHost(this.getHost(request));
+				} else {
+					wrap.setHost(application.getProxyHost());
+				}
 				wrap.setPort(application.getProxyPort());
 			}
 			map.put(o.getSimpleName(), wrap);
@@ -167,4 +182,5 @@ public class ActionBase {
 		}
 		return assembles;
 	}
+
 }

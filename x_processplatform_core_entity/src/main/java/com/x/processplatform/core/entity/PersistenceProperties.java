@@ -45,6 +45,10 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static class DataItem {
 			public static final String table = "pp_c_dataItem";
 		}
+		
+		public static class DataLobItem {
+			public static final String table = "pp_c_dataLobItem";
+		}
 
 		public static class SerialNumber {
 			public static final String table = "pp_e_serialNumber";
@@ -129,6 +133,14 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 			public static final String table = "pp_e_form";
 		}
 
+		public static class FormField {
+			public static final String table = "pp_e_formField";
+		}
+
+		public static class TemplateForm {
+			public static final String table = "pp_e_templateForm";
+		}
+
 		public static class Process {
 			public static final String table = "pp_e_process";
 		}
@@ -139,6 +151,10 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 
 		public static class ApplicationDictItem {
 			public static final String table = "pp_e_applicationDictItem";
+		}
+		
+		public static class ApplicationDictLobItem {
+			public static final String table = "pp_e_applicationDictLobItem";
 		}
 
 		public static class QueryView {

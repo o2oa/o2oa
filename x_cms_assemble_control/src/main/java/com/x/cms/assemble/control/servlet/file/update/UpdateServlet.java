@@ -1,7 +1,5 @@
 package com.x.cms.assemble.control.servlet.file.update;
 
-import static com.x.base.core.entity.StorageType.cms;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -12,7 +10,6 @@ import java.util.UUID;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -22,10 +19,8 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.x.base.core.application.servlet.FileUploadServletTools;
+import com.x.base.core.application.servlet.AbstractServletAction;
 import com.x.base.core.cache.ApplicationCache;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -35,200 +30,211 @@ import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.project.server.StorageMapping;
-import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.ThisApplication;
+import com.x.cms.assemble.control.service.DocumentInfoServiceAdv;
+import com.x.cms.assemble.control.service.FileInfoServiceAdv;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
 
 @WebServlet(urlPatterns = "/servlet/update/*")
 @MultipartConfig
-public class UpdateServlet extends HttpServlet {
+public class UpdateServlet extends AbstractServletAction {
 
-	private static final long serialVersionUID = 5628571943877405247L;
 	private Logger logger = LoggerFactory.getLogger( UpdateServlet.class );
+	private static final long serialVersionUID = 5628571943877405247L;
 	private LogService logService = new LogService();
-
+	
 	@HttpMethodDescribe(value = "更新FileInfo对象:/servlet/update/{id}/document/{documentId}", response = WrapOutId.class)
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		FileInfo fileInfo = null;
-		FileInfo fileInfo_new = null;
-		Document document = null;
+		DocumentInfoServiceAdv documentInfoServiceAdv = new DocumentInfoServiceAdv();
+		FileInfoServiceAdv fileInfoServiceAdv = new FileInfoServiceAdv();
+		
+		List<FileItemStream> file_items = new ArrayList<>();
+		EffectivePerson effectivePerson = null;
+		String site = null;
+		Boolean check = true;
 		String documentId = null;
+		Document document = null;
+		ServletFileUpload upload = null;
+		FileItemIterator fileItemIterator = null;
+		FileItemStream item = null;
+		String name = null;
+		InputStream input = null;
 		String id = null;
 		String part = null;
-		StorageMapping mapping = null;
-		EffectivePerson effectivePerson = null;
-		FileItemIterator fileItemIterator = null;
-		ServletFileUpload upload = null;
-		FileItemStream item = null;	
-		InputStream input = null;
-		String site = null;
-		String name = null;
-		List<FileInfo> attachments = new ArrayList<FileInfo>();
-		boolean check = true;
+		FileInfo fileInfo = null;
 		
 		if( check ){
 			try{
-				effectivePerson = FileUploadServletTools.effectivePerson(request);
+				effectivePerson = this.effectivePerson( request );
 				request.setCharacterEncoding("UTF-8");
 				if (!ServletFileUpload.isMultipartContent(request)) {
 					throw new Exception("not multi part request.");
 				}
-				part = FileUploadServletTools.getURIPart(request.getRequestURI(), "update");
+				part = this.getURIPart(request.getRequestURI(), "update");
 				id = StringUtils.substringBefore(part, "/document/");
 				documentId = StringUtils.substringAfter(part, "/document/");
 			}catch(Exception e){
 				check = false;
-				result.error(e);
+				Exception exception = new URLParameterGetException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				result.setUserMessage( "系统在解析传入的URL参数时发生异常！" );
 			}
 		}
 		
 		if( check ){
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);
-
-				logger.debug("系统尝试根据ID查询文档信息是否存在, documentId=" + documentId);
-				document = emc.find(documentId, Document.class);
-				if (null == document) {
-					throw new Exception("document{id:" + documentId + "} not existed.");
+			//判断文档是否已经存在
+			try {
+				document = documentInfoServiceAdv.get( documentId );
+				if ( null == document ) {
+					throw new Exception( "document{id:" + documentId + "} not existed." );
 				}
-				logger.debug("系统尝试文档信息的附件列表信息判断是否包括需要更新的附件信息ID, id=" + id);
-				if (!document.getAttachmentList().contains(id)) {
+				if ( !document.getAttachmentList().contains(id) ) {
 					throw new Exception("document{id:" + documentId + "} not contains fileInfo{id:" + id + "}.");
 				}
-				logger.debug("系统判断用户中否拥有该文档的修改保存权限, person=" + effectivePerson.getName());
-				if (!business.documentAllowSave(request, effectivePerson, document.getId())) {
-					throw new Exception("person access document{id:" + documentId + "} was deined.");
-				}
-				logger.debug("系统尝试从数据库根据ID查询附件文件信息, id=" + id);
-				fileInfo = emc.find(id, FileInfo.class);
-				if (null == fileInfo) {
-					throw new Exception("fileInfo{id:" + id + "} not existed.");
-				}
-			}catch( Exception e ){
+			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				result.setUserMessage( "系统在校验传入的参数合法性时发生异常！" );
+				result.error( e );
+				logger.error( e, effectivePerson, request, null );
+				response.setStatus( HttpServletResponse.SC_INTERNAL_SERVER_ERROR );
 			}
 		}
 		
 		if( check ){
-			try{
+			//判断文档是否已经存在
+			try {
+				fileInfo = fileInfoServiceAdv.get( id );
+				if ( null == fileInfo ) {
+					throw new Exception( "fileInfo{id:" + id + "} not existed." );
+				}
+			} catch (Exception e) {
+				check = false;
+				result.error( e );
+				logger.error( e, effectivePerson, request, null );
+				response.setStatus( HttpServletResponse.SC_INTERNAL_SERVER_ERROR );
+			}
+		}
+		
+		if( check ){
+			try {
 				upload = new ServletFileUpload();
-				fileItemIterator = upload.getItemIterator(request);
-			}catch( Exception e ){
-				check = false;
-				result.error(e);
-				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				result.setUserMessage( "系统在获取传递的文件时发生异常！" );
-			}
-		}
-		
-		if( check ){
-			//先保存新的附件
-			try{
+				fileItemIterator = upload.getItemIterator( request );
 				while ( fileItemIterator.hasNext() ) {
 					item = fileItemIterator.next();
 					name = item.getFieldName();
-					try {
-						input = item.openStream();
-						if ( item.isFormField() ) {
-							String str = Streams.asString(input);
-							if ( StringUtils.equals( name, "site" ) ) {
-								site = str;
-							}
-						} else {
-							mapping = ThisApplication.storageMappings.random( cms );
-							fileInfo_new = this.concreteAttachment( effectivePerson.getName(), document, mapping, FileUploadServletTools.getFileName(item.getName()), site );
-							fileInfo_new.saveContent( mapping, input, item.getName() );
-							attachments.add( fileInfo_new );
+					input = item.openStream();
+					if ( item.isFormField() ) {
+						String str = Streams.asString(input);
+						if ( StringUtils.equals( name, "site" ) ) {
+							site = str;
 						}
-					}finally{
-						input.close();
+					} else {
+						file_items.add( item );
 					}
 				}
-			}catch( Exception e ){
-				check = false;
-				result.error(e);
+				updateAttachmetFile( id, effectivePerson.getName(), document, file_items, site, input );
+			} catch ( Exception e ) {
+				result.error( e );
+				logger.error( e, effectivePerson, request, null );
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				result.setUserMessage( "系统在保存新的文件时发生异常！" );
-			}
-		}
-		
-		if( check ){
-			// 将所有的附件信息存储到数据库里
-			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				emc.beginTransaction(FileInfo.class);
-				emc.beginTransaction(Document.class);
-				document = emc.find( documentId, Document.class );
-				for (FileInfo o : attachments) {
-					emc.persist(o, CheckPersistType.all);
-					document.getAttachmentList().add(o.getId());
+			} finally {
+				if( input != null ){
+					input.close();
 				}
-				emc.commit();
-			} catch (Exception e) {
-				check = false;
-				result.error(e);
-				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				result.setUserMessage( "系统在保存新的文件信息记录时发生异常！" );
 			}
 		}
+		this.result(response, result);
+	}
+
+	private WrapOutId updateAttachmetFile( String fileId, String personName, Document document, List<FileItemStream> file_items, String site, InputStream input ) throws Exception {
+		WrapOutId wrap = null;
+		FileInfo fileInfo = null;
+		FileInfo fileInfo_old = null;
+		EntityManagerContainer emc = null;
+		StorageMapping mapping = null;
 		
-		if( check ){
-			//再删除原来的附件
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				mapping = ThisApplication.storageMappings.random( cms );
-				fileInfo.deleteContent(mapping);
-				Business business = new Business(emc);
+		if( file_items != null && !file_items.isEmpty() ){
+			
+			emc = EntityManagerContainerFactory.instance().create();
+			document = emc.find( document.getId(), Document.class);
+			
+			emc.beginTransaction( FileInfo.class );
+			emc.beginTransaction( Document.class );
+			for (FileItemStream item : file_items ){
 				
-				ApplicationCache.notify( FileInfo.class );
+				mapping = ThisApplication.storageMappings.random( FileInfo.class );
 				
-				emc.beginTransaction( FileInfo.class );
-				emc.beginTransaction( Document.class);
-				if( document != null && document.getAttachmentList() != null ){
-					document.getAttachmentList().remove( fileInfo.getId() );
+				fileInfo = concreteFileInfo( personName, document, mapping, this.getFileName( item.getName() ), site );
+				//先检查对象是否能够被保存，如果能保存，再进行新的文件存储
+				emc.check( fileInfo, CheckPersistType.all);	
+				
+				//将新的文件保存到存储系统
+				fileInfo.saveContent( mapping, input, item.getName() );
+				
+				//将新的附件ID加入到文档的附件列表中
+				if( document.getAttachmentList() == null ){
+					document.setAttachmentList( new ArrayList<>() );
 				}
-				emc.remove( fileInfo, CheckRemoveType.all );
-				emc.commit();
-				//成功删除一个附件信息
-				logService.log( emc, effectivePerson.getName(), "成功更新一个附件信息", fileInfo.getAppId(), fileInfo.getId(), fileInfo.getDocumentId(), fileInfo.getId(), "FILE", "删除" );
-			} catch (Throwable th) {
-				th.printStackTrace();
-				result.error(th);
-				logger.error("系统在根据ID删除文件时发生异常！");
+				if( !document.getAttachmentList().contains( fileInfo.getId() ) ){
+					document.getAttachmentList().add( fileInfo.getId() );
+				}
+				
+				//尝试删除原来的附件记录对象
+				fileInfo_old = emc.find( fileId, FileInfo.class );
+				fileInfo_old.deleteContent( mapping );
+				//从文档附件列表中删除该附件的ID
+				document.getAttachmentList().remove( fileId );
+				emc.remove( fileInfo_old, CheckRemoveType.all );	
+				
+				emc.check( document, CheckPersistType.all);
+				emc.persist( fileInfo, CheckPersistType.all );
+				wrap = new WrapOutId( fileInfo.getId() );
+				logService.log( emc, personName, fileInfo.getName(), fileInfo.getAppId(), fileInfo.getCategoryId(), fileInfo.getDocumentId(), fileInfo.getId(), "FILE", "上传");
 			}
+			emc.commit();
+			ApplicationCache.notify( FileInfo.class );
+			ApplicationCache.notify( Document.class );
 		}
-		FileUploadServletTools.result(response, result);
+		return wrap;
+		
 	}
 	
-	private FileInfo concreteAttachment(String person, Document document, StorageMapping storage, String name, String site )
-			throws Exception {
+	private FileInfo concreteFileInfo( String person, Document document, StorageMapping storage, String name, String site) throws Exception {
 		String fileName = UUID.randomUUID().toString();
-		String extension = FilenameUtils.getExtension(name);
+		String extension = FilenameUtils.getExtension( name );
 		FileInfo attachment = new FileInfo();
-		if (StringUtils.isNotEmpty(extension)) {
+		if ( StringUtils.isEmpty(extension) ) {
+			throw new Exception("file extension is empty.");
+		}else{
 			fileName = fileName + "." + extension;
-			attachment.setExtension(extension);
 		}
-		attachment.setFileHost("");
-		attachment.setFilePath("");
+		if (name.indexOf("\\") > 0) {
+			name = StringUtils.substringAfterLast(name, "\\");
+		}
+		if (name.indexOf("/") > 0) {
+			name = StringUtils.substringAfterLast(name, "/");
+		}
+		attachment.setCreateTime( new Date() );
+		attachment.setLastUpdateTime( new Date() );
+		attachment.setExtension( extension );
+		attachment.setName( name );
+		attachment.setFileName( fileName );
+		attachment.setStorage( storage.getName() );
+		attachment.setAppId( document.getAppId() );
+		attachment.setCategoryId( document.getCategoryId() );
+		attachment.setDocumentId( document.getId() );
+		attachment.setCreatorUid( person );
+		attachment.setSite( site );
+		attachment.setFileHost( "" );
+		attachment.setFilePath( "" );
 		attachment.setFileType("ATTACHMENT");
-		attachment.setName(name);
-		attachment.setFileName(fileName);
-		attachment.setStorageName(storage.getName());
-		attachment.setAppId(document.getAppId());
-		attachment.setCatagoryId(document.getCatagoryId());
-		attachment.setDocumentId(document.getId());
-		attachment.setCreatorUid(person);
-		attachment.setCreateTime(new Date());
-		attachment.setSite(site);
+		
 		return attachment;
 	}
 	

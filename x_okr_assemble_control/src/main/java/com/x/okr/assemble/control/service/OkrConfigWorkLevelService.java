@@ -2,9 +2,8 @@ package com.x.okr.assemble.control.service;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
@@ -66,7 +65,7 @@ public class OkrConfigWorkLevelService{
 					emc.commit();
 				}
 			}catch( Exception e ){
-				logger.error( "OkrConfigWorkLevel update/ got a error!" );
+				logger.warn( "OkrConfigWorkLevel update/ got a error!" );
 				throw e;
 			}
 		}else{//没有传入指定的ID
@@ -77,7 +76,7 @@ public class OkrConfigWorkLevelService{
 				emc.persist( okrConfigWorkLevel, CheckPersistType.all);	
 				emc.commit();
 			}catch( Exception e ){
-				logger.error( "OkrConfigWorkLevel create got a error!", e);
+				logger.warn( "OkrConfigWorkLevel create got a error!", e);
 				throw e;
 			}
 		}
@@ -92,13 +91,13 @@ public class OkrConfigWorkLevelService{
 	public void delete( String id ) throws Exception {
 		OkrConfigWorkLevel okrConfigWorkLevel = null;
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not delete any object." );
+			throw new Exception( "id is null, system can not delete any object." );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			okrConfigWorkLevel = emc.find(id, OkrConfigWorkLevel.class);
 			if (null == okrConfigWorkLevel) {
-				logger.error( "object is not exist {'id':'"+ id +"'}" );
+				throw new Exception( "object is not exist {'id':'"+ id +"'}" );
 			}else{
 				emc.beginTransaction( OkrConfigWorkLevel.class );
 				emc.remove( okrConfigWorkLevel, CheckRemoveType.all );
@@ -112,6 +111,7 @@ public class OkrConfigWorkLevelService{
 	public List<OkrConfigWorkLevel> listAll() throws Exception {
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			business = new Business( emc );
 			return business.okrConfigWorkLevelFactory().listAll();
 		}catch( Exception e ){
 			throw e;

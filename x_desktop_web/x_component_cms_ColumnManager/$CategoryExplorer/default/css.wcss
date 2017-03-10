@@ -89,8 +89,8 @@
   "noElementNode": {
 	"text-align": "center",
 	"padding": "20px",
-	"height": "60px",
-	"line-height": "60px",
+	"height": "30px",
+	"line-height": "30px",
 	"margin-top": "10px",
 	"margin-left": "0px",
 	"color": "#888",
@@ -479,6 +479,14 @@
 	"float" : "left",
 	"border-right" : "1px solid #ccc"
   },
+  "processAreaNode" : {
+	"float" : "right",
+	"margin-right" : "18px",
+	"margin-top" : "14px",
+	"cursor" : "pointer",
+	"height" : "24px",
+	"line-height" : "24px"
+  },
   "formTitleNode" : {
 	"overflow" : "hidden",
 	"background-color" : "#f7f7f7",
@@ -490,7 +498,7 @@
   "formCreateNode" : {
 	"float" : "right",
 	"width" : "24px",
-	"margin-right" : "18px",
+	"margin-right" : "10px",
 	"margin-top" : "14px",
 	"cursor" : "pointer",
 	"height" : "24px",
@@ -501,12 +509,13 @@
 	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/add_blue.png) no-repeat center center"
   },
   "formTitleSepNode" : {
-	"float" : "left",
-	"height" : "50px",
-	"margin-left" : "10px",
-	"line-height" : "50px",
+	"float" : "right",
+	"height" : "40px",
+	"margin-right" : "10px",
+	"margin-top" : "5px",
+	"line-height" : "40px",
 	"width" : "1px",
-	"border-left" : "1px solid #333"
+	"border-left" : "1px solid #999"
   },
   "formTitleTextNode" : {
 	"font-size" : "16px",

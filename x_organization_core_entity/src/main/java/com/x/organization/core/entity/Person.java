@@ -53,7 +53,7 @@ public class Person extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.Person.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception {
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -66,7 +66,7 @@ public class Person extends SliceJpaObject {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception {
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -139,7 +139,7 @@ public class Person extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception {
 		this.pinyin = StringUtils.lowerCase(PinyinHelper.convertToPinyinString(name, "", PinyinFormat.WITHOUT_TONE));
 		this.pinyinInitial = StringUtils.lowerCase(PinyinHelper.getShortPinyin(name));
 		if (StringUtils.isEmpty(this.display)) {
@@ -152,6 +152,12 @@ public class Person extends SliceJpaObject {
 	}
 
 	/* 更新运行方法 */
+
+	public static String[] FLAGS = new String[] { "id", "name", "unique", "employee", "mobile", "mail", "qq", "weixin",
+			"display" };
+
+	/* flag标志位 */
+	/* Entity 默认字段结束 */
 
 	@EntityFieldDescribe("性别.")
 	@Enumerated(EnumType.STRING)
@@ -188,28 +194,34 @@ public class Person extends SliceJpaObject {
 	@Index(name = TABLE + "_name")
 	@CheckPersist(allowEmpty = false, simplyString = true, citationNotExists =
 	/* 验证不可重名 */
-	@CitationNotExist(fields = { "id", "name", "unique", "employee", "mobile", "mail" }, type = Person.class))
+	@CitationNotExist(fields = { "id", "name", "unique", "employee", "mobile", "mail", "qq", "weixin",
+			"display" }, type = Person.class))
 	private String name;
 
 	@EntityFieldDescribe("工号,不为空,不重复.不能与id,name,unique重复")
 	@Column(length = AbstractPersistenceProperties.organization_name_length, name = "xemployee")
 	@Index(name = TABLE + "_employee")
-	@CheckPersist(allowEmpty = false, simplyString = true, citationNotExists =
+	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists =
 	/* 验证不可重名 */
-	@CitationNotExist(fields = { "id", "name", "unique", "employee", "mobile", "mail" }, type = Person.class))
+	@CitationNotExist(fields = { "id", "name", "unique", "employee", "mobile", "mail", "qq", "weixin",
+			"display" }, type = Person.class))
 	private String employee;
 
 	@EntityFieldDescribe("唯一标识.可以为空但不能重名,不能与id,name,employee重复.")
 	@Column(length = PersistenceProperties.length_unique, name = "xunique")
 	@Index(name = TABLE + "_unique")
-	@CheckPersist(allowEmpty = false, simplyString = true, citationNotExists =
+	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists =
 	/* 验证不可重名 */
-	@CitationNotExist(fields = { "id", "name", "unique", "employee", "mobile", "mail" }, type = Person.class))
+	@CitationNotExist(fields = { "id", "name", "unique", "employee", "mobile", "mail", "qq", "weixin",
+			"display" }, type = Person.class))
 	private String unique;
 
 	@EntityFieldDescribe("显示名称,默认为name的值.")
 	@Column(length = AbstractPersistenceProperties.organization_name_length, name = "xdisplay")
-	@CheckPersist(allowEmpty = true, simplyString = true)
+	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists =
+	/* 验证不可重名 */
+	@CitationNotExist(fields = { "id", "name", "unique", "employee", "mobile", "mail", "qq", "weixin",
+			"display" }, type = Person.class))
 	private String display;
 
 	@EntityFieldDescribe("排序号.")
@@ -253,26 +265,28 @@ public class Person extends SliceJpaObject {
 	@EntityFieldDescribe("邮件地址.")
 	@Column(length = JpaObject.length_64B, name = "xmail")
 	@Index(name = TABLE + "_mail")
-	@CheckPersist(allowEmpty = true, citationNotExists = @CitationNotExist(fields = { "id", "name", "unique",
-			"employee", "mobile", "mail" }, type = Person.class))
+	@CheckPersist(allowEmpty = true, mailString = true, citationNotExists = @CitationNotExist(fields = { "id", "name",
+			"unique", "employee", "mobile", "mail", "qq", "weixin", "display" }, type = Person.class))
 	private String mail;
 
 	@EntityFieldDescribe("微信号.")
 	@Column(length = JpaObject.length_64B, name = "xweixin")
-	@CheckPersist(allowEmpty = true)
+	@CheckPersist(allowEmpty = true, citationNotExists = @CitationNotExist(fields = { "id", "name", "unique",
+			"employee", "mobile", "mail", "qq", "weixin", "display" }, type = Person.class))
 	@Index(name = TABLE + "_weixin")
 	private String weixin;
 
 	@EntityFieldDescribe("QQ号.")
 	@Column(length = JpaObject.length_64B, name = "xqq")
-	@CheckPersist(allowEmpty = true)
+	@CheckPersist(allowEmpty = true, citationNotExists = @CitationNotExist(fields = { "id", "name", "unique",
+			"employee", "mobile", "mail", "qq", "weixin", "display" }, type = Person.class))
 	@Index(name = TABLE + "_qq")
 	private String qq;
 
 	@EntityFieldDescribe("手机号.")
 	@Column(length = JpaObject.length_32B, name = "xmobile")
-	@CheckPersist(allowEmpty = true, citationNotExists = @CitationNotExist(fields = { "id", "name", "unique",
-			"employee", "mobile", "mail" }, type = Person.class))
+	@CheckPersist(allowEmpty = false, mobileString = true, citationNotExists = @CitationNotExist(fields = { "id",
+			"name", "unique", "employee", "mobile", "mail", "qq", "weixin", "display" }, type = Person.class))
 	@Index(name = TABLE + "_mobile")
 	private String mobile;
 

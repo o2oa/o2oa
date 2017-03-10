@@ -45,7 +45,7 @@ public class Work extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.Content.Work.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception {
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -58,7 +58,7 @@ public class Work extends SliceJpaObject {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception {
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -118,9 +118,12 @@ public class Work extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception {
 		if (StringUtils.isEmpty(this.startTimeMonth)) {
 			this.startTimeMonth = DateTools.format(this.startTime, DateTools.format_yyyyMM);
+		}
+		if (null == this.serial) {
+			this.serial = "";
 		}
 	}
 

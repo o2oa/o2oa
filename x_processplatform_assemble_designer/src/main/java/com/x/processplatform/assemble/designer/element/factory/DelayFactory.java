@@ -28,4 +28,15 @@ public class DelayFactory extends AbstractFactory {
 		cq.select(root.get(Delay_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
+
+	/** 查找使用表单的delay */
+	public List<String> listWithForm(String formId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Delay.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Delay> root = cq.from(Delay.class);
+		Predicate p = cb.equal(root.get(Delay_.form), formId);
+		cq.select(root.get(Delay_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
 }

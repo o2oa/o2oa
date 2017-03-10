@@ -12,14 +12,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 
 import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
+import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
@@ -44,26 +44,33 @@ public class PermissionInfoAdminAction extends AbstractJaxrsAction {
 		ActionResult<List<WrapOutPermissionInfo>> result = new ActionResult<>();
 		List<WrapOutPermissionInfo> wraps = new ArrayList<>();
 		List<BBSPermissionInfo> permissionInfoList = null;	
-		//从数据库查询论坛列表
-		try {
-			permissionInfoList = permissionInfoService.listAllPermissionInfo();
-			if( permissionInfoList == null ){
-				permissionInfoList = new ArrayList<BBSPermissionInfo>();
-			}
-		} catch (Exception e) {
-			result.error( e );
-			result.setUserMessage( "系统在查询所有论坛信息时发生异常" );
-			logger.error( "system query all forum info got an exception!", e );
-		}			
-		try {
-			wraps = wrapout_copier.copy( permissionInfoList );
-		} catch (Exception e) {
-			result.error( e );
-			result.setUserMessage( "系统在将论坛信息列表转换为输出格式时发生异常" );
-			logger.error( "system copy forum list to wraps got an exception!", e );
-		}
-		result.setData( wraps );
+		EffectivePerson currentPerson = this.effectivePerson(request);
+		Boolean check = true;
 		
+		if( check ){
+			//从数据库查询论坛列表
+			try {
+				permissionInfoList = permissionInfoService.listAllPermissionInfo();
+				if( permissionInfoList == null ){
+					permissionInfoList = new ArrayList<BBSPermissionInfo>();
+				}
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new PermissionListAllException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
+			}
+		}
+		if( check ){
+			try {
+				wraps = wrapout_copier.copy( permissionInfoList );
+				result.setData( wraps );
+			} catch (Exception e) {
+				Exception exception = new PermissionWrapOutException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
+			}
+		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -76,34 +83,40 @@ public class PermissionInfoAdminAction extends AbstractJaxrsAction {
 		ActionResult<List<WrapOutPermissionInfo>> result = new ActionResult<>();
 		List<WrapOutPermissionInfo> wraps = new ArrayList<>();
 		List<BBSPermissionInfo> permissionInfoList = null;
+		EffectivePerson currentPerson = this.effectivePerson(request);
 		Boolean check = true;
 		
 		if( check ){
 			if( roleCode == null || roleCode.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数roleCode为空，无法继续进行查询！") );
-				result.setUserMessage( "传入的参数roleCode为空，无法继续进行查询" );
+				Exception exception = new RoleCodeEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
+			}
+		}
+		if( check ){
+			try {
+				permissionInfoList = permissionInfoService.listPermissionByRoleCode( roleCode );
+				if( permissionInfoList == null ){
+					permissionInfoList = new ArrayList<BBSPermissionInfo>();
+				}
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new PermissionListByRoleCodeException( e, roleCode );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
+			}		
+		}
+		if( check ){
+			try {
+				wraps = wrapout_copier.copy( permissionInfoList );
+				result.setData( wraps );
+			} catch (Exception e) {
+				Exception exception = new PermissionWrapOutException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
-		try {
-			permissionInfoList = permissionInfoService.listPermissionByRoleCode( roleCode );
-			if( permissionInfoList == null ){
-				permissionInfoList = new ArrayList<BBSPermissionInfo>();
-			}
-		} catch (Exception e) {
-			result.error( e );
-			result.setUserMessage( "系统在获取指定的角色Code绑定的所有PermissionInfo的信息列表时发生异常" );
-			logger.error( "system query permission info by role code an exception!", e );
-		}			
-		try {
-			wraps = wrapout_copier.copy( permissionInfoList );
-		} catch (Exception e) {
-			result.error( e );
-			result.setUserMessage( "系统在将论坛信息列表转换为输出格式时发生异常" );
-			logger.error( "system copy forum list to wraps got an exception!", e );
-		}
-		result.setData( wraps );
-		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
@@ -116,33 +129,40 @@ public class PermissionInfoAdminAction extends AbstractJaxrsAction {
 		ActionResult<List<WrapOutPermissionInfo>> result = new ActionResult<>();
 		List<WrapOutPermissionInfo> wraps = new ArrayList<>();
 		List<BBSPermissionInfo> permissionInfoList = null;
+		EffectivePerson currentPerson = this.effectivePerson(request);
 		Boolean check = true;
 		
 		if( check ){
 			if( forumId == null || forumId.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数forumId为空，无法继续进行查询！") );
-				result.setUserMessage( "传入的参数forumId为空，无法继续进行查询" );
+				Exception exception = new ForumIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
-		try {
-			permissionInfoList = permissionInfoService.listPermissionByForumId( forumId );
-			if( permissionInfoList == null ){
-				permissionInfoList = new ArrayList<BBSPermissionInfo>();
+		if( check ){
+			try {
+				permissionInfoList = permissionInfoService.listPermissionByForumId( forumId );
+				if( permissionInfoList == null ){
+					permissionInfoList = new ArrayList<BBSPermissionInfo>();
+				}
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new PermissionListByForumException( e, forumId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
-		} catch (Exception e) {
-			result.error( e );
-			result.setUserMessage( "系统获取指定的论坛绑定的所有PermissionInfo的信息列表时发生异常" );
-			logger.error( "system query permission info by forum id an exception!", e );
-		}			
-		try {
-			wraps = wrapout_copier.copy( permissionInfoList );
-		} catch (Exception e) {
-			result.error( e );
-			result.setUserMessage( "系统在将论坛信息列表转换为输出格式时发生异常" );
-			logger.error( "system copy forum list to wraps got an exception!", e );
 		}
-		result.setData( wraps );
+		if( check ){
+			try {
+				wraps = wrapout_copier.copy( permissionInfoList );
+				result.setData( wraps );
+			} catch (Exception e) {
+				Exception exception = new PermissionWrapOutException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
+			}
+		}
 		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -156,34 +176,40 @@ public class PermissionInfoAdminAction extends AbstractJaxrsAction {
 		ActionResult<List<WrapOutPermissionInfo>> result = new ActionResult<>();
 		List<WrapOutPermissionInfo> wraps = new ArrayList<>();
 		List<BBSPermissionInfo> permissionInfoList = null;
+		EffectivePerson currentPerson = this.effectivePerson(request);
 		Boolean check = true;
 		
 		if( check ){
 			if( sectionId == null || sectionId.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数sectionId为空，无法继续进行查询！") );
-				result.setUserMessage( "传入的参数sectionId为空，无法继续进行查询" );
+				Exception exception = new SectionIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
-		}		
-		try {
-			permissionInfoList = permissionInfoService.listPermissionBySection( sectionId );
-			if( permissionInfoList == null ){
-				permissionInfoList = new ArrayList<BBSPermissionInfo>();
-			}
-		} catch (Exception e) {
-			result.error( e );
-			result.setUserMessage( "系统获取指定的版块绑定的所有PermissionInfo的信息列表时发生异常" );
-			logger.error( "system query permission info by section id an exception!", e );
-		}			
-		try {
-			wraps = wrapout_copier.copy( permissionInfoList );
-		} catch (Exception e) {
-			result.error( e );
-			result.setUserMessage( "系统在将论坛信息列表转换为输出格式时发生异常" );
-			logger.error( "system copy forum list to wraps got an exception!", e );
 		}
-		result.setData( wraps );
-		
+		if( check ){
+			try {
+				permissionInfoList = permissionInfoService.listPermissionBySection( sectionId );
+				if( permissionInfoList == null ){
+					permissionInfoList = new ArrayList<BBSPermissionInfo>();
+				}
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new PermissionListBySectionException( e, sectionId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
+			}	
+		}
+		if( check ){
+			try {
+				wraps = wrapout_copier.copy( permissionInfoList );
+				result.setData( wraps );
+			} catch (Exception e) {
+				Exception exception = new PermissionWrapOutException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
+			}
+		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 }

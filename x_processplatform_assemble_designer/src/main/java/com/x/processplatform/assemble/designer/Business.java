@@ -31,6 +31,7 @@ import com.x.processplatform.assemble.designer.element.factory.DelayFactory;
 import com.x.processplatform.assemble.designer.element.factory.EmbedFactory;
 import com.x.processplatform.assemble.designer.element.factory.EndFactory;
 import com.x.processplatform.assemble.designer.element.factory.FormFactory;
+import com.x.processplatform.assemble.designer.element.factory.FormFieldFactory;
 import com.x.processplatform.assemble.designer.element.factory.InvokeFactory;
 import com.x.processplatform.assemble.designer.element.factory.ManualFactory;
 import com.x.processplatform.assemble.designer.element.factory.MergeFactory;
@@ -43,6 +44,7 @@ import com.x.processplatform.assemble.designer.element.factory.RouteFactory;
 import com.x.processplatform.assemble.designer.element.factory.ScriptFactory;
 import com.x.processplatform.assemble.designer.element.factory.ServiceFactory;
 import com.x.processplatform.assemble.designer.element.factory.SplitFactory;
+import com.x.processplatform.assemble.designer.element.factory.TemplateFormFactory;
 import com.x.processplatform.core.entity.element.Application;
 
 public class Business {
@@ -91,6 +93,24 @@ public class Business {
 			this.form = new FormFactory(this);
 		}
 		return form;
+	}
+
+	private FormFieldFactory formField;
+
+	public FormFieldFactory formField() throws Exception {
+		if (null == this.formField) {
+			this.formField = new FormFieldFactory(this);
+		}
+		return formField;
+	}
+
+	private TemplateFormFactory templateForm;
+
+	public TemplateFormFactory templateForm() throws Exception {
+		if (null == this.templateForm) {
+			this.templateForm = new TemplateFormFactory(this);
+		}
+		return templateForm;
 	}
 
 	private QueryViewFactory queryView;
@@ -379,6 +399,10 @@ public class Business {
 			this.workLog = new WorkLogFactory(this);
 		}
 		return workLog;
+	}
+
+	public boolean applicationEditAvailable(EffectivePerson effectivePerson, Application application) throws Exception {
+		return this.applicationEditAvailable(effectivePerson, application, ExceptionWhen.none);
 	}
 
 	public boolean applicationEditAvailable(EffectivePerson effectivePerson, Application application,

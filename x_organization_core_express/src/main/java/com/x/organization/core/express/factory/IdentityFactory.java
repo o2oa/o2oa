@@ -8,7 +8,10 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.reflect.TypeToken;
-import com.x.base.core.http.WrapInListString;
+import com.x.base.core.exception.RunningException;
+import com.x.base.core.http.WrapInStringList;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.project.AbstractThisApplication;
 import com.x.base.core.project.x_organization_assemble_express;
 import com.x.base.core.utils.ListTools;
@@ -16,7 +19,9 @@ import com.x.organization.core.express.wrap.WrapIdentity;
 
 public class IdentityFactory {
 
-	private Type collectionType = new TypeToken<ArrayList<WrapIdentity>>() {
+	private static Logger logger = LoggerFactory.getLogger(IdentityFactory.class);
+
+	private static Type wrapIdentityCollectionType = new TypeToken<ArrayList<WrapIdentity>>() {
 	}.getType();
 
 	public String check(String name) throws Exception {
@@ -33,19 +38,19 @@ public class IdentityFactory {
 			return list;
 		}
 		try {
-			WrapInListString wrap = new WrapInListString();
+			WrapInStringList wrap = new WrapInStringList();
 			for (String str : names) {
 				if (StringUtils.isNotEmpty(str)) {
 					wrap.getValueList().add(str);
 				}
 			}
-			List<WrapIdentity> wraps = AbstractThisApplication.applications
-					.postQuery(x_organization_assemble_express.class, "identity/list", wrap, collectionType);
+			List<WrapIdentity> wraps = AbstractThisApplication.applications.postQuery(
+					x_organization_assemble_express.class, "identity/list", wrap, wrapIdentityCollectionType);
 			for (WrapIdentity o : wraps) {
 				list.add(o.getName());
 			}
 		} catch (Exception e) {
-			throw new Exception("getWithName identity{names:" + names + "} error.", e);
+			throw new Exception("check identity{names:" + names + "} error.", e);
 		}
 		return list;
 	}
@@ -59,19 +64,28 @@ public class IdentityFactory {
 		}
 	}
 
-	public List<WrapIdentity> listWithPerson(String person) throws Exception {
+	public List<WrapIdentity> listWithPerson(String name) throws Exception {
 		try {
 			return AbstractThisApplication.applications.getQuery(x_organization_assemble_express.class,
-					"identity/list/person/" + URLEncoder.encode(person, "UTF-8"), collectionType);
+					"identity/list/person/" + URLEncoder.encode(name, "UTF-8"), wrapIdentityCollectionType);
 		} catch (Exception e) {
-			throw new Exception("listWithPerson person{name:" + person + "} error.", e);
+			RunningException re = new RunningException(e, "listWithPerson person: {} error.", name);
+			logger.error(re);
+			throw re;
 		}
+	}
+
+	public List<String> ListNameWithPerson(String name) throws Exception {
+		List<WrapIdentity> os = this.listWithPerson(name);
+		List<String> list = ListTools.extractProperty(os, "name", String.class, true, true);
+		return list;
 	}
 
 	public List<WrapIdentity> listWithDepartmentSubDirect(String name) throws Exception {
 		try {
 			return AbstractThisApplication.applications.getQuery(x_organization_assemble_express.class,
-					"identity/list/department/" + URLEncoder.encode(name, "UTF-8") + "/sub/direct", collectionType);
+					"identity/list/department/" + URLEncoder.encode(name, "UTF-8") + "/sub/direct",
+					wrapIdentityCollectionType);
 		} catch (Exception e) {
 			throw new Exception("listWithDepartmentSubDirect person{name:" + name + "} error.", e);
 		}
@@ -80,7 +94,8 @@ public class IdentityFactory {
 	public List<String> listWithDepartmentSubNested(String name) throws Exception {
 		try {
 			return AbstractThisApplication.applications.getQuery(x_organization_assemble_express.class,
-					"identity/list/department/" + URLEncoder.encode(name, "UTF-8") + "/sub/nested", collectionType);
+					"identity/list/department/" + URLEncoder.encode(name, "UTF-8") + "/sub/nested",
+					wrapIdentityCollectionType);
 		} catch (Exception e) {
 			throw new Exception("listWithDepartmentSubNested person{name:" + name + "} error.", e);
 		}
@@ -89,7 +104,8 @@ public class IdentityFactory {
 	public List<String> listWithCompanySubDirect(String name) throws Exception {
 		try {
 			return AbstractThisApplication.applications.getQuery(x_organization_assemble_express.class,
-					"identity/list/company/" + URLEncoder.encode(name, "UTF-8") + "/sub/direct", collectionType);
+					"identity/list/company/" + URLEncoder.encode(name, "UTF-8") + "/sub/direct",
+					wrapIdentityCollectionType);
 		} catch (Exception e) {
 			throw new Exception("listWithCompanySubDirect person{name:" + name + "} error.", e);
 		}
@@ -98,7 +114,8 @@ public class IdentityFactory {
 	public List<String> listWithCompanySubNested(String name) throws Exception {
 		try {
 			return AbstractThisApplication.applications.getQuery(x_organization_assemble_express.class,
-					"identity/list/company/" + URLEncoder.encode(name, "UTF-8") + "/sub/nested", collectionType);
+					"identity/list/company/" + URLEncoder.encode(name, "UTF-8") + "/sub/nested",
+					wrapIdentityCollectionType);
 		} catch (Exception e) {
 			throw new Exception("listWithCompanySubNested person{name:" + name + "} error.", e);
 		}
@@ -108,7 +125,7 @@ public class IdentityFactory {
 		try {
 			return AbstractThisApplication.applications.getQuery(x_organization_assemble_express.class,
 					"identity/list/company/sub/nested/department/sub/nested/like/" + URLEncoder.encode(key, "UTF-8"),
-					collectionType);
+					wrapIdentityCollectionType);
 		} catch (Exception e) {
 			throw new Exception("listLikeWithCompanySubNestedWithDepartmentSubNested person{name:" + key + "} error.",
 					e);
@@ -118,7 +135,7 @@ public class IdentityFactory {
 	public List<WrapIdentity> listPinyinInitial(String key) throws Exception {
 		try {
 			return AbstractThisApplication.applications.getQuery(x_organization_assemble_express.class,
-					"identity/list/pinyininitial/" + URLEncoder.encode(key, "UTF-8"), collectionType);
+					"identity/list/pinyininitial/" + URLEncoder.encode(key, "UTF-8"), wrapIdentityCollectionType);
 		} catch (Exception e) {
 			throw new Exception("listPinyinInitial key:" + key + " error.", e);
 		}
@@ -127,7 +144,7 @@ public class IdentityFactory {
 	public List<WrapIdentity> listLikePinyin(String key) throws Exception {
 		try {
 			return AbstractThisApplication.applications.getQuery(x_organization_assemble_express.class,
-					"identity/list/like/pinyin/" + URLEncoder.encode(key, "UTF-8"), collectionType);
+					"identity/list/like/pinyin/" + URLEncoder.encode(key, "UTF-8"), wrapIdentityCollectionType);
 		} catch (Exception e) {
 			throw new Exception("listLikePinyin key:" + key + " error.", e);
 		}
@@ -136,7 +153,7 @@ public class IdentityFactory {
 	public List<WrapIdentity> listLike(String key) throws Exception {
 		try {
 			return AbstractThisApplication.applications.getQuery(x_organization_assemble_express.class,
-					"identity/list/like/" + URLEncoder.encode(key, "UTF-8"), collectionType);
+					"identity/list/like/" + URLEncoder.encode(key, "UTF-8"), wrapIdentityCollectionType);
 		} catch (Exception e) {
 			throw new Exception("listLike key:" + key + " error.", e);
 		}

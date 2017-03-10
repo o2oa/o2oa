@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.EqualsTerms;
 import com.x.base.core.application.jaxrs.InTerms;
 import com.x.base.core.application.jaxrs.LikeTerms;
@@ -16,8 +17,9 @@ import com.x.processplatform.assemble.surface.wrapout.content.WrapOutReview;
 public class ActionListNextFilter extends ActionBase {
 
 	ActionResult<List<WrapOutReview>> execute(EffectivePerson effectivePerson, String id, Integer count,
-			WrapInFilter wrapIn) throws Exception {
+			JsonElement jsonElement) throws Exception {
 		ActionResult<List<WrapOutReview>> result = new ActionResult<>();
+		WrapInFilter wrapIn = this.convertToWrapIn(jsonElement, WrapInFilter.class);
 		EqualsTerms equals = new EqualsTerms();
 		InTerms ins = new InTerms();
 		LikeTerms likes = new LikeTerms();
@@ -41,6 +43,7 @@ public class ActionListNextFilter extends ActionBase {
 			String key = StringUtils.trim(StringUtils.replace(wrapIn.getKey(), "\u3000", " "));
 			if (StringUtils.isNotEmpty(key)) {
 				likes.put("title", key);
+				likes.put("serial", key);
 			}
 		}
 		result = this.standardListNext(reviewOutCopier, id, count, "sequence", equals, null, likes, ins, null, null,

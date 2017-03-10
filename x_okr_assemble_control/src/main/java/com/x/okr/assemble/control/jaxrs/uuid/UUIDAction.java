@@ -13,9 +13,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
 import com.x.base.core.http.ActionResult;
@@ -49,7 +48,7 @@ public class UUIDAction extends AbstractJaxrsAction {
 		try {
 			proxyIndentity = okrUserInfoService.getLoginIdentity( currentPerson.getName() );
 		} catch (Exception e1) {
-			logger.error( "system get login indentity with person name got an exception", e1 );
+			logger.warn( "system get login indentity with person name got an exception", e1 );
 		}
 		try {
 			uuid = UUID.randomUUID().toString();
@@ -57,7 +56,7 @@ public class UUIDAction extends AbstractJaxrsAction {
 			data.add( uuid );
 			result.setData( data );
 		} catch (Exception e) {
-			logger.error( "user["+ currentPerson.getName() +"][proxy:'"+ proxyIndentity +"'] get a new UUID error！", e );
+			logger.warn( "user["+ currentPerson.getName() +"][proxy:'"+ proxyIndentity +"'] get a new UUID error！", e );
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

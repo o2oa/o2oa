@@ -42,14 +42,16 @@ MWF.xApplication.cms.Module.Main = new Class({
 		if( this.options.columnData ){
 			this.setTitle(this.options.columnData.appName);
 			this.loadController(function(){
-				this.loadTitle();
-				this.loadMenu();
+				this.loadTitle(function(){
+					this.loadMenu();
+				}.bind(this));
 			}.bind(this))
 		}else if( this.status && this.status.columnId ){
 			this.loadColumnData( this.status.columnId, function(){
 				this.loadController(function(){
-					this.loadTitle();
-					this.loadMenu();
+					this.loadTitle(function(){
+						this.loadMenu();
+					}.bind(this));
 				}.bind(this))
 			}.bind(this))
 		}
@@ -71,35 +73,44 @@ MWF.xApplication.cms.Module.Main = new Class({
 			if(callback)callback(json);
 		}.bind(this));
 	},
-	loadTitle : function(){
+	loadTitle : function(callback){
 		this.loadTitleBar();
-		this.loadCreateDocumentActionNode();
-		this.loadTitleIconNode();
-		this.loadTitleTextNode();
-		this.loadRefreshNode();
-		this.loadSearchNode();
+		this.loadCreateDocumentActionNode(
+			function(){
+				this.loadTitleIconNode();
+				this.loadTitleTextNode();
+				this.loadRefreshNode();
+				this.loadSearchNode();
+				if(callback)callback();
+			}.bind(this)
+		);
 	},
 	loadTitleBar: function(){
 		this.titleBar = new Element("div", {
 			"styles": this.css.titleBar
 		}).inject(this.node);
 	},
-	loadCreateDocumentActionNode: function() {
-		this.createDocumentAction = new Element("div", {
-			"styles": this.css.createDocumentAction
-		}).inject(this.titleBar);
-		this.createDocumentAction.addEvents({
-			"click": function(e){
-				if( this.creater ){
-					this.creater.load();
-				}else{
-					MWF.xDesktop.requireApp("cms.Index", "Creater", function(){
-						this.creater = new MWF.xApplication.cms.Index.Creater(this,this.options.columnData,this.view );
-						this.creater.load();
-					}.bind(this));
-				}
-			}.bind(this)
-		});
+	loadCreateDocumentActionNode: function( callback ) {
+		this.restActions.listCategoryByPublisher( this.options.columnData.id, function( json ){
+			if( json.data && json.data.length ){
+				this.createDocumentAction = new Element("div", {
+					"styles": this.css.createDocumentAction
+				}).inject(this.titleBar);
+				this.createDocumentAction.addEvents({
+					"click": function(e){
+						if( this.creater ){
+							this.creater.load();
+						}else{
+							MWF.xDesktop.requireApp("cms.Index", "Creater", function(){
+								this.creater = new MWF.xApplication.cms.Index.Creater(this,this.options.columnData,this.view );
+								this.creater.load();
+							}.bind(this));
+						}
+					}.bind(this)
+				});
+			}
+			if(callback)callback();
+		}.bind(this));
 	},
 	loadTitleIconNode : function(){
 
@@ -432,7 +443,7 @@ MWF.xApplication.cms.Module.Navi = new Class({
 					"styles" : this.app.css.viewNaviListNode
 				}).inject(this.node);
 
-				//this.app.restActions.listCategoryViewByCatagory( categroyData.id, function (data) {
+				//this.app.restActions.listCategoryViewByCategory( categroyData.id, function (data) {
 				//	var index = 0
 				//	for(var i=0;i<data.data.length;i++){
 				//		if(data.data[i].viewId == "default" ){

@@ -13,15 +13,10 @@ public class WrapOutOkrWorkBaseInfo extends OkrWorkBaseInfo  {
 	private static final long serialVersionUID = -5076990764713538973L;
 	
 	public static List<String> Excludes = new ArrayList<String>();
-	
 	private List< WrapOutOkrWorkBaseInfo > subWrapOutOkrWorkBaseInfos = null;
-	
 	private List< WrapOutOkrWorkAuthorizeRecord > okrWorkAuthorizeRecords = null;
-	
-	private String workOutType = "SUBWORK";
-	
 	private WrapOutOkrWorkAuthorizeRecord okrWorkAuthorizeRecord = null;
-	
+	private String workOutType = "SUBWORK";
 	private String workDetail = null;
 	private String dutyDescription = null;
 	private String landmarkDescription = null;

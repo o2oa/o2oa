@@ -4,12 +4,12 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.EqualsTerms;
 import com.x.base.core.application.jaxrs.InTerms;
 import com.x.base.core.application.jaxrs.LikeTerms;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.utils.ListTools;
@@ -23,14 +23,18 @@ import com.x.processplatform.core.entity.element.Application;
 class ManageListPrevWithFilter extends ActionBase {
 
 	ActionResult<List<WrapOutWork>> execute(EffectivePerson effectivePerson, String id, Integer count,
-			String applicationFlag, WrapInFilter wrapIn) throws Exception {
+			String applicationFlag, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<WrapOutWork>> result = new ActionResult<>();
+			WrapInFilter wrapIn = this.convertToWrapIn(jsonElement, WrapInFilter.class);
 			Business business = new Business(emc);
 			EqualsTerms equals = new EqualsTerms();
 			InTerms ins = new InTerms();
 			LikeTerms likes = new LikeTerms();
-			Application application = business.application().pick(applicationFlag, ExceptionWhen.not_found);
+			Application application = business.application().pick(applicationFlag);
+			if (null == application) {
+				throw new ApplicationNotExistedException(applicationFlag);
+			}
 			equals.put("application", application.getId());
 			if (ListTools.isNotEmpty(wrapIn.getProcessList())) {
 				ins.put("process", wrapIn.getProcessList());

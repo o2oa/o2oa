@@ -13,10 +13,10 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.cms.core.entity.FileInfo.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:17:48 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 13:46:13 CST 2017")
 public class FileInfo_ extends StorageObject_  {
     public static volatile SingularAttribute<FileInfo,String> appId;
-    public static volatile SingularAttribute<FileInfo,String> catagoryId;
+    public static volatile SingularAttribute<FileInfo,String> categoryId;
     public static volatile SingularAttribute<FileInfo,Date> createTime;
     public static volatile SingularAttribute<FileInfo,String> creatorUid;
     public static volatile SingularAttribute<FileInfo,String> description;
@@ -33,6 +33,5 @@ public class FileInfo_ extends StorageObject_  {
     public static volatile SingularAttribute<FileInfo,String> sequence;
     public static volatile SingularAttribute<FileInfo,String> site;
     public static volatile SingularAttribute<FileInfo,String> storage;
-    public static volatile SingularAttribute<FileInfo,String> storageName;
     public static volatile SingularAttribute<FileInfo,Date> updateTime;
 }

@@ -325,7 +325,7 @@ MWF.xApplication.cms.QueryViewDesigner.Property = MWF.FVProperty = new Class({
             categoryNodes.each(function(node){
                 new MWF.xApplication.cms.QueryViewDesigner.widget.PersonSelector(node, this.view.designer, {
                     "type": "category",
-                    "names": (this.data.data.restrictWhereEntry) ? this.data.data.restrictWhereEntry.catagoryInfoList : [],
+                    "names": (this.data.data.restrictWhereEntry) ? this.data.data.restrictWhereEntry.categoryInfoList : [],
                     "onChange": function(ids){this.savePersonItem(node, ids);}.bind(this)
                 });
             }.bind(this));

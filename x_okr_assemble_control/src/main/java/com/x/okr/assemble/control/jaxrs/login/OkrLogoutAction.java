@@ -27,14 +27,7 @@ public class OkrLogoutAction extends StandardJaxrsAction{
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response logout(@Context HttpServletRequest request, WrapInOkrLoginInfo wrapIn ) {
 		ActionResult<OkrUserCache> result = new ActionResult<>();
-		//EffectivePerson currentPerson = this.effectivePerson(request);
-		try {
-			//okrUserInfoService.deleteWithPersonName( currentPerson.getName() );
-			result.setUserMessage( "用户成功登出!" );
-		} catch (Exception e) {
-			result.error(e);
-			result.setUserMessage("系统在删除用户登录信息时发生异常！");
-		}
+		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 }

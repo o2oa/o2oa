@@ -69,4 +69,8 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 	public static class StatisticPersonForMonth {
 		public static final String table = "ATDC_STATISTIC_PERSON_FORMONTH";
 	}
+	
+	public static class AttendanceWorkPlace {
+		public static final String table = "ATDC_WORK_PLACE";
+	}
 }

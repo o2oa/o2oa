@@ -14,7 +14,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.processplatform.core.entity.element.Condition.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:19:07 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:10:19 CST 2017")
 public class Condition_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Condition,String> afterArriveScript;
     public static volatile SingularAttribute<Condition,String> afterArriveScriptText;
@@ -39,12 +39,15 @@ public class Condition_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Condition,String> name;
     public static volatile SingularAttribute<Condition,String> position;
     public static volatile SingularAttribute<Condition,String> process;
+    public static volatile ListAttribute<Condition,String> readDataPathList;
     public static volatile ListAttribute<Condition,String> readDepartmentList;
     public static volatile SingularAttribute<Condition,String> readDuty;
     public static volatile ListAttribute<Condition,String> readIdentityList;
     public static volatile SingularAttribute<Condition,String> readScript;
     public static volatile SingularAttribute<Condition,String> readScriptText;
+    public static volatile ListAttribute<Condition,String> reviewDataPathList;
     public static volatile ListAttribute<Condition,String> reviewDepartmentList;
+    public static volatile SingularAttribute<Condition,String> reviewDuty;
     public static volatile ListAttribute<Condition,String> reviewIdentityList;
     public static volatile SingularAttribute<Condition,String> reviewScript;
     public static volatile SingularAttribute<Condition,String> reviewScriptText;

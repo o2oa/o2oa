@@ -11,7 +11,7 @@ import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.project.server.Config;
 import com.x.file.assemble.control.wrapout.WrapOutAttachment;
-import com.x.file.core.entity.Attachment;
+import com.x.file.core.entity.personal.Attachment;
 
 public class ActionGet {
 
@@ -28,7 +28,7 @@ public class ActionGet {
 						"person{name:" + effectivePerson.getName() + "} access attachment{id:" + id + "} denied.");
 			}
 			WrapOutAttachment wrap = copier.copy(attachment);
-			wrap.setContentType(Config.mimeTypes().getContentType(wrap.getName()));
+			wrap.setContentType(Config.mimeTypes().getMimeByExtension("." + wrap.getExtension()));
 			result.setData(wrap);
 			return result;
 		}

@@ -28,4 +28,15 @@ public class CancelFactory extends AbstractFactory {
 		cq.select(root.get(Cancel_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
+	
+	/** 查找使用表单的cancel */
+	public List<String> listWithForm(String formId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Cancel.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Cancel> root = cq.from(Cancel.class);
+		Predicate p = cb.equal(root.get(Cancel_.form), formId);
+		cq.select(root.get(Cancel_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
 }

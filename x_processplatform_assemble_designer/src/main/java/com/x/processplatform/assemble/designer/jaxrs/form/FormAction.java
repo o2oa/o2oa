@@ -15,21 +15,25 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
+import com.x.base.core.http.WrapOutMap;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.processplatform.assemble.designer.wrapin.WrapInForm;
 import com.x.processplatform.assemble.designer.wrapout.WrapOutForm;
 import com.x.processplatform.assemble.designer.wrapout.WrapOutFormSimple;
 
 @Path("form")
 public class FormAction extends StandardJaxrsAction {
+
+	private static Logger logger = LoggerFactory.getLogger(FormAction.class);
 
 	@HttpMethodDescribe(value = "列示Form对象,下一页.", response = WrapOutFormSimple.class)
 	@GET
@@ -39,11 +43,12 @@ public class FormAction extends StandardJaxrsAction {
 	public Response listNext(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count) {
 		ActionResult<List<WrapOutFormSimple>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionListNext().execute(id, count);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -53,14 +58,15 @@ public class FormAction extends StandardJaxrsAction {
 	@Path("list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response standardListPrev(@Context HttpServletRequest request, @PathParam("id") String id,
+	public Response listPrev(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count) {
 		ActionResult<List<WrapOutFormSimple>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionListPrev().execute(id, count);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -72,12 +78,12 @@ public class FormAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutForm> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionGet().execute(effectivePerson, id);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -86,14 +92,14 @@ public class FormAction extends StandardJaxrsAction {
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response create(@Context HttpServletRequest request, WrapInForm wrapIn) {
+	public Response create(@Context HttpServletRequest request, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionCreate().execute(effectivePerson, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ActionCreate().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -103,14 +109,14 @@ public class FormAction extends StandardJaxrsAction {
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response update(@Context HttpServletRequest request, @PathParam("id") String id, WrapInForm wrapIn) {
+	public Response update(@Context HttpServletRequest request, @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionUpdate().execute(effectivePerson, id, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ActionUpdate().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -122,12 +128,12 @@ public class FormAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response delete(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionDelete().execute(effectivePerson, id);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -140,12 +146,47 @@ public class FormAction extends StandardJaxrsAction {
 	public Response listWithApplication(@Context HttpServletRequest request,
 			@PathParam("applicationId") String applicationId) {
 		ActionResult<List<WrapOutFormSimple>> result = new ActionResult<>();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
 			result = new ActionListWithApplication().execute(effectivePerson, applicationId);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+
+	@HttpMethodDescribe(value = "根据指定的应用获取应用下所有表单包含的字段字段信息.", response = WrapOutFormSimple.class)
+	@GET
+	@Path("list/formfield/application/{applicationId}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response listFornFiledWithApplication(@Context HttpServletRequest request,
+			@PathParam("applicationId") String applicationId) {
+		ActionResult<WrapOutMap> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListFormFieldWithApplication().execute(applicationId);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+
+	@HttpMethodDescribe(value = "根据指定的Form获取所有包含的字段信息.", response = WrapOutFormSimple.class)
+	@GET
+	@Path("list/{id}/formfield")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response listFornFiledWithForm(@Context HttpServletRequest request, @PathParam("id") String id) {
+		ActionResult<WrapOutMap> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListFormFieldWithForm().execute(id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

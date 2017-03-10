@@ -13,9 +13,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
@@ -24,6 +21,8 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.bbs.assemble.control.jaxrs.MethodExcuteResult;
 import com.x.bbs.assemble.control.service.BBSForumInfoServiceAdv;
 import com.x.bbs.assemble.control.service.BBSSectionInfoServiceAdv;
@@ -64,8 +63,9 @@ public class SectionInfoAction extends AbstractJaxrsAction {
 		if( check ){
 			if( forumId == null || forumId.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数ID为空，无法继续进行查询！") );
-				result.setUserMessage( "传入的参数ID为空，无法继续进行查询" );
+				Exception exception = new ForumIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){ //查询论坛信息是否存在
@@ -73,16 +73,17 @@ public class SectionInfoAction extends AbstractJaxrsAction {
 				forumInfo = forumInfoServiceAdv.get( forumId );
 			}catch( Exception e ){
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据ID查询论坛信息时发生异常！" );
-				logger.error( "system query forum info with id got an exception!id:" + forumId, e );
+				Exception exception = new ForumInfoQueryByIdException( e, forumId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
 			if( forumInfo == null ){
 				check = false;
-				result.error( new Exception("论坛信息不存在，无法继续进行查询操作！ID=" + forumId ) );
-				result.setUserMessage( "论坛信息不存在，无法继续进行查询操作！" );
+				Exception exception = new ForumInfoNotExistsException( forumId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		//如果不是匿名用户，则查询该用户所有能访问的版块信息
@@ -96,7 +97,7 @@ public class SectionInfoAction extends AbstractJaxrsAction {
 				}
 			}else{
 				result.error( methodExcuteResult.getError() );
-				result.setUserMessage( methodExcuteResult.getMessage() );
+				logger.warn( methodExcuteResult.getMessage() );
 			}
 		}
 		if( check ){//从数据库查询主版块列表
@@ -107,8 +108,9 @@ public class SectionInfoAction extends AbstractJaxrsAction {
 				}
 			} catch (Exception e) {
 				result.error(e);
-				result.setUserMessage("系统在查询所有主版块信息时发生异常");
-				logger.error("system query all main section info got an exception!", e);
+				Exception exception = new SectionListByForumException( e, forumId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -117,9 +119,9 @@ public class SectionInfoAction extends AbstractJaxrsAction {
 					wraps = wrapout_copier.copy( sectionInfoList );
 					result.setData(wraps);
 				} catch (Exception e) {
-					result.error(e);
-					result.setUserMessage("系统在将版块信息列表转换为输出格式时发生异常");
-					logger.error("system copy section list to wraps got an exception!", e);
+					Exception exception = new SectionWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}		
 			}
 		}
@@ -150,8 +152,9 @@ public class SectionInfoAction extends AbstractJaxrsAction {
 		if( check ){
 			if( sectionId == null || sectionId.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数sectionId为空，无法继续进行查询！") );
-				result.setUserMessage( "传入的参数sectionId为空，无法继续进行查询" );
+				Exception exception = new SectionIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if( check ){
@@ -159,16 +162,17 @@ public class SectionInfoAction extends AbstractJaxrsAction {
 				sectionInfo = sectionInfoServiceAdv.get( sectionId );
 			}catch( Exception e ){
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据ID查询版块信息时发生异常！" );
-				logger.error( "system query section info with id got an exception!id:" + sectionId, e );
+				Exception exception = new SectionQueryByIdException( e, sectionId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if( check ){
 			if( sectionInfo == null ){
 				check = false;
-				result.error( new Exception("版块信息不存在，无法继续进行查询操作！ID=" + sectionId ) );
-				result.setUserMessage( "版块信息不存在，无法继续进行查询操作！" );
+				Exception exception = new SectionNotExistsException( sectionId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		//如果不是匿名用户，则查询该用户所有能访问的版块信息
@@ -182,7 +186,7 @@ public class SectionInfoAction extends AbstractJaxrsAction {
 				}
 			} else {
 				result.error(methodExcuteResult.getError());
-				result.setUserMessage(methodExcuteResult.getMessage());
+				logger.warn(methodExcuteResult.getMessage());
 			}
 		}
 		if( check ){
@@ -190,8 +194,9 @@ public class SectionInfoAction extends AbstractJaxrsAction {
 				sectionInfoList = sectionInfoServiceAdv.viewSubSectionByMainSectionId( sectionId, viewableSectionIds );
 			} catch (Exception e) {
 				result.error(e);
-				result.setUserMessage("系统在查询所有主版块信息时发生异常");
-				logger.error("system query sub section info with main section id got an exception!", e);
+				Exception exception = new SectionListByParentException( e, sectionId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}		
 		if( check ){
@@ -200,9 +205,9 @@ public class SectionInfoAction extends AbstractJaxrsAction {
 					wraps = wrapout_copier.copy( sectionInfoList );
 					result.setData(wraps);
 				} catch (Exception e) {
-					result.error(e);
-					result.setUserMessage("系统在将版块信息列表转换为输出格式时发生异常");
-					logger.error("system copy section list to wraps got an exception!", e);
+					Exception exception = new SectionWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}		
 			}
 		}
@@ -216,6 +221,7 @@ public class SectionInfoAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutSectionInfo> result = new ActionResult<>();
+		EffectivePerson currentPerson = this.effectivePerson(request);
 		WrapOutSectionInfo wrap = null;
 		BBSSectionInfo sectionInfo = null;
 		Boolean check = true;
@@ -223,8 +229,9 @@ public class SectionInfoAction extends AbstractJaxrsAction {
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception("传入的参数ID为空，无法继续进行查询！") );
-				result.setUserMessage( "传入的参数ID为空，无法继续进行查询" );
+				Exception exception = new SectionIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -232,9 +239,9 @@ public class SectionInfoAction extends AbstractJaxrsAction {
 				sectionInfo = sectionInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据Id查询论版块息时发生异常" );
-				logger.error( "system query section with id got an exception!", e );
+				Exception exception = new SectionQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -244,13 +251,14 @@ public class SectionInfoAction extends AbstractJaxrsAction {
 					result.setData( wrap );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "系统在将版块信息列表转换为输出格式时发生异常" );
-					logger.error( "system copy section to wrap got an exception!", e );
+					Exception exception = new SectionWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}else{
-				result.error( new Exception("版块信息不存在！") );
-				result.setUserMessage( "版块信息不存在！" );
+				Exception exception = new SectionNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);

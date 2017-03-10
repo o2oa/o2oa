@@ -1,9 +1,12 @@
 package com.x.organization.assemble.control.test;
 
 import java.io.BufferedReader;
-import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.apache.commons.codec.digest.Crypt;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
@@ -40,10 +43,13 @@ public class TestClient {
 
 	@Test
 	public void test1() throws Exception {
-		String str = "1234567890";
-		System.out.println(StringUtils.left(str, 8));
-		System.out.println(Crypto.decrypt("I5m4vNOW00U", "xplatform111111111111111111"));
-		System.out.println(Crypto.encrypt("8", "xplatformo2paltform"));
+		String str = "(person.getEmplyee())";
+		Pattern pattern = Pattern.compile(com.x.base.core.project.server.Person.RegularExpression_Script);
+		Matcher matcher = pattern.matcher(str);
+		if (matcher.matches()) {
+			String eval = matcher.group(1);
+			System.out.println(eval);
+		}
 
 	}
 }

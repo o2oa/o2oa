@@ -171,7 +171,11 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 	public <T extends JpaObject> T find(String id, Class<T> cls, ExceptionWhen exceptionWhen, boolean startTransaction)
 			throws Exception {
 		EntityManager em = startTransaction ? this.beginTransaction(cls) : this.get(cls);
-		T t = em.find(cls, id);
+		T t = null;
+		/* 判断字段长度在定义范围之内否则db2会报错 */
+		if (StringUtils.isNotEmpty(id) && JpaObjectTools.withinDefinedLength(id, cls, "id")) {
+			t = em.find(cls, id);
+		}
 		switch (exceptionWhen) {
 		case not_found:
 			if (null == t) {
@@ -191,7 +195,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 
 	public <T extends JpaObject> T flag(String flag, Class<T> cls, ExceptionWhen exceptionWhen,
 			boolean startTransaction, String... attributes) throws Exception {
-		List<String> list = ListTools.concreteArrayList(null, true, false, attributes);
+		List<String> list = ListTools.trim(null, true, false, attributes);
 		return this.flag(flag, cls, exceptionWhen, startTransaction, list);
 	}
 
@@ -306,6 +310,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		try {
 			for (EntityManager em : entityManagerMap.values()) {
 				if ((null != em) && em.getTransaction().isActive()) {
+					
 					em.getTransaction().commit();
 				}
 			}

@@ -2,7 +2,6 @@ package com.x.processplatform.assemble.surface.jaxrs.workcompleted;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.processplatform.assemble.surface.Business;
@@ -20,10 +19,13 @@ class ManageGet extends ActionBase {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<WrapOutWorkCompleted> result = new ActionResult<>();
 			Business business = new Business(emc);
-			WorkCompleted workCompleted = emc.find(id, WorkCompleted.class, ExceptionWhen.not_found);
+			WorkCompleted workCompleted = emc.find(id, WorkCompleted.class);
+			if (null == workCompleted) {
+				throw new WorkCompletedNotExistedException(id);
+			}
 			Process process = business.process().pick(workCompleted.getProcess());
 			if (!business.process().allowControl(effectivePerson, process)) {
-				throw new Exception("person{name:" + effectivePerson.getName() + "} has insufficient permissions.");
+				throw new ProcessAccessDeniedException(effectivePerson.getName(), workCompleted.getProcess());
 			}
 			WrapOutWorkCompleted wrap = workCompletedOutCopier.copy(workCompleted);
 			/* 添加权限 */

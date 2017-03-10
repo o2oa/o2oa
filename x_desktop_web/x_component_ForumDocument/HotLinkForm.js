@@ -6,7 +6,7 @@ MWF.xApplication.ForumDocument.HotLinkForm = new Class({
     Implements: [Options, Events],
     options: {
         "style": "default",
-        "width": "900",
+        "width": "760",
         "height": "620",
         "hasTop": true,
         "hasIcon": false,
@@ -30,11 +30,11 @@ MWF.xApplication.ForumDocument.HotLinkForm = new Class({
 
             var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
                 "<tr>" +
-                "   <td styles='formTableTitle' lable='hotPicture'></td>" +
+                //"   <td styles='formTableTitle' lable='hotPicture'></td>" +
                 "   <td styles='formTableValue' item='hotPictureArea'></td>" +
                 "</tr>"+
                 "<tr>" +
-                "   <td styles='formTableTitle'></td>" +
+                //"   <td styles='formTableTitle'></td>" +
                 "   <td>"+this.lp.hotLinkDescription+"</td>" +
                 "</tr>"+
                 //"<tr>" +
@@ -68,7 +68,7 @@ MWF.xApplication.ForumDocument.HotLinkForm = new Class({
         //}
         MWF.require("MWF.widget.ImageClipper", function () {
             this.clipper = new MWF.xApplication.ForumDocument.ImageClipper(hotPictureArea, {
-                aspectRatio : 1.5,
+                aspectRatio : 3,
                 formFileEnable : true
             }, this, this.options.documentId );
             this.clipper.load( this.hotPicData.pictureBase64 );
@@ -93,32 +93,32 @@ MWF.xApplication.ForumDocument.HotLinkForm = new Class({
         //}.bind(this));
 
     },
-    selectDocPicture: function(){
-        MWF.xDesktop.requireApp("Forum", "Attachment", null, false);
-        this.actions.listAttachment( this.options.documentId, function( json ){
-            this.selector_doc = new MWF.xApplication.Forum.Attachment(document.body, this, this.actions, this.lp, {
-                //documentId : this.data ? this.data.id : "",
-                isNew : false,
-                isEdited : false,
-                "onUpload" : function( attData ){
-                    this.attachment.attachmentController.addAttachment(attData);
-                    this.attachment.attachmentController.checkActions();
-                }.bind(this)
-            })
-            this.selector_doc.data = json.data || [];
-            this.selector_doc.loadAttachmentSelecter({
-                "style": "cms",
-                "title": "选择本文档图片",
-                "listStyle": "preview",
-                "toBase64" : true,
-                "selectType": "images"
-            }, function (url, data, base64Code) {
-                //if (callback)callback(url, data);
-                this.iconNode.set("src", base64Code || url);
-                this.hotPicData.pictureBase64 = base64Code || url;
-            }.bind(this));
-        }.bind(this) )
-    },
+    //selectDocPicture: function(){
+    //    MWF.xDesktop.requireApp("Forum", "Attachment", null, false);
+    //    this.actions.listAttachment( this.options.documentId, function( json ){
+    //        this.selector_doc = new MWF.xApplication.Forum.Attachment(document.body, this, this.actions, this.lp, {
+    //            //documentId : this.data ? this.data.id : "",
+    //            isNew : false,
+    //            isEdited : false,
+    //            "onUpload" : function( attData ){
+    //                this.attachment.attachmentController.addAttachment(attData);
+    //                this.attachment.attachmentController.checkActions();
+    //            }.bind(this)
+    //        })
+    //        this.selector_doc.data = json.data || [];
+    //        this.selector_doc.loadAttachmentSelecter({
+    //            "style": "cms",
+    //            "title": "选择本文档图片",
+    //            "listStyle": "preview",
+    //            "toBase64" : true,
+    //            "selectType": "images"
+    //        }, function (url, data, base64Code) {
+    //            //if (callback)callback(url, data);
+    //            this.iconNode.set("src", base64Code || url);
+    //            this.hotPicData.pictureBase64 = base64Code || url;
+    //        }.bind(this));
+    //    }.bind(this) )
+    //},
     selectFilePicture: function () {
         var _self = this;
         MWF.xDesktop.requireApp("File", "FileSelector", function(){

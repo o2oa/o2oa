@@ -16,6 +16,7 @@ import com.x.processplatform.assemble.designer.jaxrs.process.demo.DemoSimpleActi
 import com.x.processplatform.assemble.designer.jaxrs.querystat.QueryStatAction;
 import com.x.processplatform.assemble.designer.jaxrs.queryview.QueryViewAction;
 import com.x.processplatform.assemble.designer.jaxrs.script.ScriptAction;
+import com.x.processplatform.assemble.designer.jaxrs.templateform.TemplateFormAction;
 
 @ApplicationPath("jaxrs")
 public class ActionApplication extends AbstractActionApplication {
@@ -26,6 +27,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(ApplicationDictAction.class);
 		classes.add(ProcessAction.class);
 		classes.add(FormAction.class);
+		classes.add(TemplateFormAction.class);
 		classes.add(QueryViewAction.class);
 		classes.add(QueryStatAction.class);
 		classes.add(ScriptAction.class);

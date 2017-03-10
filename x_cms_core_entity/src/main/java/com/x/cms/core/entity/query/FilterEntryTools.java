@@ -18,6 +18,7 @@ import com.x.cms.core.entity.content.DataItem_;
 
 
 public class FilterEntryTools {
+	
 	public static Predicate toPredicate(CriteriaBuilder cb, Root<DataItem> root, List<FilterEntry> filterEntries)
 			throws Exception {
 		Predicate predicate = null;
@@ -145,6 +146,8 @@ public class FilterEntryTools {
 		if (null == predicate) {
 			predicate = cb.conjunction();
 		}
+		
+		System.out.println( ">>>>>>>>>>>>>>>>>>>>toPredicate:" + predicate.toString() );
 		return predicate;
 	}
 }

@@ -1,0 +1,19 @@
+{
+	"application": "",
+	"name": "",
+	"alias": "",
+	"description": "",
+	"allowPersonList": "",
+	"allowIdentityList": "",
+	"allowDepartmentList": "",
+	"allowCompanyList": "",
+	"queryView": "",
+	"calculate": [{
+		"column": "",
+		"displayName": "",
+		"calculateType": "",//sum, average, count, groupSum, groupAverage, groupCount
+		"orderType": "",//desc, asc, original
+		"orderEffectType": "",//key, value
+		"id": ""
+	}]
+}

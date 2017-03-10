@@ -28,5 +28,16 @@ public class AgentFactory extends AbstractFactory {
 		cq.select(root.get(Agent_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
+	
+	/** 查找使用表单的agent */
+	public List<String> listWithForm(String formId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Agent.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Agent> root = cq.from(Agent.class);
+		Predicate p = cb.equal(root.get(Agent_.form), formId);
+		cq.select(root.get(Agent_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
 
 }

@@ -38,7 +38,7 @@ public class SetPersonAttributeAction extends AbstractJaxrsAction {
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		WrapOutId wrap = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			if (!StringUtils.equalsIgnoreCase(Config.administrator().getName(), personName)) {
+			if (!Config.token().isInitialManager(personName)) {
 				Business business = new Business(emc);
 				String personId = business.person().getWithName(personName);
 				if (StringUtils.isEmpty(personId)) {
@@ -60,7 +60,7 @@ public class SetPersonAttributeAction extends AbstractJaxrsAction {
 				ApplicationCache.notify(PersonAttribute.class);
 				wrap = new WrapOutId(personAttribute.getId());
 			} else {
-				wrap = new WrapOutId(Config.administrator().getId());
+				wrap = new WrapOutId(Config.token().initialManagerInstance().getId());
 			}
 			result.setData(wrap);
 		} catch (Throwable th) {

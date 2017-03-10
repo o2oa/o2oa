@@ -33,7 +33,7 @@ public class ViewFieldConfig extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.Element.ViewFieldConfig.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -45,12 +45,12 @@ public class ViewFieldConfig extends SliceJpaObject {
 		this.onPersist();
 	}
 
-	private void onPersist() {
+	private void onPersist() throws Exception{
 		this.editor = StringUtils.trimToEmpty(this.editor);
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -145,7 +145,7 @@ public class ViewFieldConfig extends SliceJpaObject {
 	@EntityFieldDescribe("显示顺序")
 	@CheckPersist(allowEmpty = true)
 	@Column(name = "xshowSequence")
-	private int showSequence;
+	private Integer showSequence = 0;
 
 	@EntityFieldDescribe("描述.")
 	@Column(name = "xdescription", length = JpaObject.length_255B)

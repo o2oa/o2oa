@@ -29,7 +29,14 @@ public class CommandFactory {
 
 	public static final Pattern config_pattern = Pattern.compile("^ {0,}config {0,}$", Pattern.CASE_INSENSITIVE);
 
-	public static final Pattern log_pattern = Pattern.compile("^ {0,}log {0,}$", Pattern.CASE_INSENSITIVE);
+	public static final Pattern setPassword_pattern = Pattern.compile("^ {0,}setPassword (.*) (.*)$",
+			Pattern.CASE_INSENSITIVE);
+
+	// public static final Pattern log_pattern = Pattern.compile("^ {0,}log
+	// {0,}$", Pattern.CASE_INSENSITIVE);
+
+	// public static final Pattern debug_pattern = Pattern
+	// .compile("^ {0,}debug {0,}(on|off|) {0,}$", Pattern.CASE_INSENSITIVE);
 
 	public static void printHelp(String base, String version) {
 		String help = "";
@@ -53,11 +60,13 @@ public class CommandFactory {
 		help += StringUtils.LF;
 		help += " dump data" + "\t\t\t\t" + "dump data from database.";
 		help += StringUtils.LF;
-		help += " dump storage" + "\t\t\t\t" + "dump storage from database and file system.";
+		help += " dump storage" + "\t\t\t\t" + "dump storage from database and file.";
 		help += StringUtils.LF;
 		help += " restore data yyyyMMddHHmmss" + "\t\t" + "restore data to database.";
 		help += StringUtils.LF;
-		help += " restore storage yyyyMMddHHmmss" + "\t\t" + "restore storage to database and file system.";
+		help += " restore storage yyyyMMddHHmmss" + "\t\t" + "restore storage to database and file.";
+		help += StringUtils.LF;
+		help += " setPassword oldPassword newPassword" + "\t" + "set initial manager password.";
 		help += StringUtils.LF;
 		help += " version " + "\t\t\t\t" + "show current server version.";
 		help += StringUtils.LF;

@@ -35,8 +35,10 @@ MWF.xApplication.process.FormDesigner.Module.Div = MWF.FCDiv = new Class({
 
     setTemplateStyles: function(styles){
         if (this.json.templateType){
-            if (styles[this.json.templateType].styles) this.copyStyles(styles[this.json.templateType].styles, "styles");
-            if (styles[this.json.templateType].properties) this.copyStyles(styles[this.json.templateType].properties, "properties");
+            if (styles[this.json.templateType]){
+                if (styles[this.json.templateType].styles) this.copyStyles(styles[this.json.templateType].styles, "styles");
+                if (styles[this.json.templateType].properties) this.copyStyles(styles[this.json.templateType].properties, "properties");
+            }
         }
     },
 	

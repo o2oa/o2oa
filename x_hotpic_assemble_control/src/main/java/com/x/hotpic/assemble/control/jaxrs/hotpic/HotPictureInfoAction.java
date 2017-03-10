@@ -16,19 +16,20 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.cache.ApplicationCache;
 import com.x.base.core.http.ActionResult;
+import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.WrapOutString;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.SortTools;
 import com.x.hotpic.assemble.control.service.HotPictureInfoServiceAdv;
 import com.x.hotpic.entity.HotPictureInfo;
@@ -52,6 +53,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutString> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson( request );
 		WrapOutString wrap = null;
 		HotPictureInfo hotPictureInfo = null;
 		Boolean check = true;
@@ -59,11 +61,11 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 		if (check) {
 			if (id == null || id.isEmpty() || "(0)".equals(id)) {
 				check = false;
-				result.error(new Exception("id can not be null!"));
-				result.setUserMessage("传入的参数id为空。");
+				Exception exception = new InfoIdEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
-		}
-		
+		}		
 		String cacheKey = "base64#" + id;
 		Element element = cache.get(cacheKey);
 		if (check) {
@@ -74,20 +76,19 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 				try {
 					hotPictureInfo = hotPictureInfoService.get(id);
 					if ( hotPictureInfo == null ) {
-						result.error(new Exception("hotPictureInfo is not exists."));
-						result.setUserMessage("指定的图片信息不存在！");
-						logger.error("hotPictureInfo is not exists!id:" + id);
+						Exception exception = new InfoNotExistsException( id );
+						result.error( exception );
+						logger.error( exception, effectivePerson, request, null);
 					}else{
 						wrap = new WrapOutString();
-						wrap.setValue( hotPictureInfo.getPictureBase64() );
 						cache.put(new Element(cacheKey, wrap));
 						result.setData(wrap);
 					}
 				} catch (Exception e) {
 					check = false;
-					result.error(e);
-					result.setUserMessage("系统在根据ID查询热图信息时发生异常！");
-					logger.error("system query hotPictureInfo with id got an exception!id:" + id, e);
+					Exception exception = new InfoQueryByIdException( e, id );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
@@ -102,6 +103,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listByApplicationAndInfoId(@Context HttpServletRequest request, @PathParam("application") String application, @PathParam("infoId") String infoId) {
 		ActionResult<List<WrapOutHotPictureInfo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson( request );
 		List<WrapOutHotPictureInfo> wraps = null;
 		List<HotPictureInfo> hotPictureInfos = null;
 		Boolean check = true;
@@ -109,15 +111,17 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 		if( check ){
 			if( application == null || application.isEmpty()|| "(0)".equals( application ) ){
 				check = false;
-				result.error( new Exception( "application can not be null!" ) );
-				result.setUserMessage( "传入的参数application为空。" );
+				Exception exception = new InfoApplicationEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
 			if( infoId == null || infoId.isEmpty() || "(0)".equals( infoId ) ){
 				check = false;
-				result.error( new Exception( "infoId can not be null!" ) );
-				result.setUserMessage( "传入的参数infoId为空。" );
+				Exception exception = new InfoIdEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		
@@ -134,9 +138,9 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 						hotPictureInfos = hotPictureInfoService.listByApplicationInfoId( application, infoId );
 					}catch( Exception e ){
 						check = false;
-						result.error( e );
-						result.setUserMessage( "系统在根据ID查询热图信息时发生异常！" );
-						logger.error( "system query hotPictureInfo with id got an exception!infoId:" + infoId, e );
+						Exception exception = new InfoListByApplicationException( e, application, infoId );
+						result.error( exception );
+						logger.error( exception, effectivePerson, request, null);
 					}
 				}
 				if( check ){
@@ -147,9 +151,9 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 							result.setData( wraps );
 						} catch (Exception e) {
 							check = false;
-							result.error( e );
-							result.setUserMessage( "系统在将信息列表转换为输出格式时发生异常" );
-							logger.error( "system copy hotpic list to wraps got an exception!", e );
+							Exception exception = new InfoWrapOutException( e );
+							result.error( exception );
+							logger.error( exception, effectivePerson, request, null);
 						}
 					}
 				}
@@ -159,104 +163,118 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@HttpMethodDescribe(value = "列示根据过滤条件的HotPictureInfo,下一页.", response = WrapOutHotPictureInfo.class, request = WrapInFilter.class )
+	@HttpMethodDescribe(value = "列示根据过滤条件的HotPictureInfo,下一页.", response = WrapOutHotPictureInfo.class, request = JsonElement.class )
 	@PUT
 	@Path("filter/list/page/{page}/count/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listForPage( @Context HttpServletRequest request, @PathParam("page") Integer page, @PathParam("count") Integer count, WrapInFilter wrapIn ) {
+	public Response listForPage( @Context HttpServletRequest request, @PathParam("page") Integer page, @PathParam("count") Integer count, JsonElement jsonElement ) {
 		ActionResult<List<WrapOutHotPictureInfo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson( request );
 		List<WrapOutHotPictureInfo> wraps_out = new ArrayList<WrapOutHotPictureInfo>();
 		List<WrapOutHotPictureInfo> wraps = new ArrayList<WrapOutHotPictureInfo>();
 		List<HotPictureInfo> hotPictureInfoList = null;
 		Integer selectTotal = 0;
 		Long total = 0L;
+		WrapInFilter wrapIn = null;
 		Boolean check = true;
-		if( check ){
-			if( wrapIn == null ){
-				wrapIn = new WrapInFilter();
-			}
-		}
-		if( check ){
-			if( page == null ){
-				page = 1;
-			}
-			if( page <= 0 ){
-				page = 1;
-			}
-		}
-		if( check ){
-			if( count == null ){
-				count = 20;
-			}
-			if( count <= 0 ){
-				count = 20;
-			}
-		}		
-		selectTotal = page * count;
 		
-		String cacheKey1 = "filter#" + page + "#" + count+ "#" + wrapIn.getApplication()+ "#" + wrapIn.getInfoId()+ "#" + wrapIn.getTitle();
-		Element element1 = cache.get( cacheKey1 );
-		String cacheKey2 = "total#" + page + "#" + count+ "#" + wrapIn.getApplication()+ "#" + wrapIn.getInfoId()+ "#" + wrapIn.getTitle();
-		Element element2 = cache.get( cacheKey2 );
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilter.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
+		}
+
 		if( check ){
-			if (null != element1 && null != element2 ) {
-				wraps = ( List<WrapOutHotPictureInfo> ) element1.getObjectValue();
-				result.setCount(Long.parseLong( element2.getObjectValue().toString()) );
-				result.setData( wraps );
-			} else {
-				if( check ){
-					if( selectTotal > 0 ){
-						try{
-							total = hotPictureInfoService.count( wrapIn.getApplication(), wrapIn.getInfoId(), wrapIn.getTitle() );
-						} catch (Exception e) {
-							check = false;
-							result.error( e );
-							result.setUserMessage( "查询符合查询条件的信息总数时发生异常！" );
-							logger.error( "system count HotPicture info with condition got an exceptin.", e );
-						}
-					}
-				}
-				if( check ){
-					if( selectTotal > 0 && total > 0 ){
-						try{
-							hotPictureInfoList = hotPictureInfoService.listForPage( wrapIn.getApplication(), wrapIn.getInfoId(), wrapIn.getTitle(), selectTotal );
-							if( hotPictureInfoList != null ){
-								try {
-									wraps_out = wrapout_copier.copy( hotPictureInfoList );
-									SortTools.desc( wraps_out, "sequence" );
-								} catch (Exception e) {
-									check = false;
-									result.error( e );
-									result.setUserMessage( "系统在将信息列表转换为输出格式时发生异常" );
-									logger.error( "system copy hotpic list to wraps got an exception!", e );
-								}
-							}
-						} catch (Exception e) {
-							check = false;
-							result.error( e );
-							result.setUserMessage( "根据ID信息查询版块信息时发生异常！" );
-							logger.error( "system query all top subject info with section info got an exceptin.", e );
-						}
-					}
-				}
-				if( check ){
-					int startIndex = ( page - 1 ) * count;
-					int endIndex = page * count;
-					int i = 0;
-					for( i = 0; i< wraps_out.size(); i++ ){
-						if( i >= startIndex && i < endIndex ){
-							wraps_out.get( i ).setPictureBase64( null );
-							wraps.add( wraps_out.get( i ) );
-						}
-					}
-					cache.put( new Element(cacheKey1, wraps) );
-					cache.put( new Element(cacheKey2, total.toString()) );
-					result.setData( wraps );
-					result.setCount( total );			
+			if( check ){
+				if( wrapIn == null ){
+					wrapIn = new WrapInFilter();
 				}
 			}
-		}		
+			if( check ){
+				if( page == null ){
+					page = 1;
+				}
+				if( page <= 0 ){
+					page = 1;
+				}
+			}
+			if( check ){
+				if( count == null ){
+					count = 20;
+				}
+				if( count <= 0 ){
+					count = 20;
+				}
+			}		
+			selectTotal = page * count;
+			
+			String cacheKey1 = "filter#" + page + "#" + count+ "#" + wrapIn.getApplication()+ "#" + wrapIn.getInfoId()+ "#" + wrapIn.getTitle();
+			Element element1 = cache.get( cacheKey1 );
+			String cacheKey2 = "total#" + page + "#" + count+ "#" + wrapIn.getApplication()+ "#" + wrapIn.getInfoId()+ "#" + wrapIn.getTitle();
+			Element element2 = cache.get( cacheKey2 );
+			if( check ){
+				if (null != element1 && null != element2 ) {
+					wraps = ( List<WrapOutHotPictureInfo> ) element1.getObjectValue();
+					result.setCount(Long.parseLong( element2.getObjectValue().toString()) );
+					result.setData( wraps );
+				} else {
+					if( check ){
+						if( selectTotal > 0 ){
+							try{
+								total = hotPictureInfoService.count( wrapIn.getApplication(), wrapIn.getInfoId(), wrapIn.getTitle() );
+							} catch (Exception e) {
+								check = false;
+								Exception exception = new InfoListByFilterException( e );
+								result.error( exception );
+								logger.error( exception, effectivePerson, request, null);
+							}
+						}
+					}
+					if( check ){
+						if( selectTotal > 0 && total > 0 ){
+							try{
+								hotPictureInfoList = hotPictureInfoService.listForPage( wrapIn.getApplication(), wrapIn.getInfoId(), wrapIn.getTitle(), selectTotal );
+								if( hotPictureInfoList != null ){
+									try {
+										wraps_out = wrapout_copier.copy( hotPictureInfoList );
+										SortTools.desc( wraps_out, "sequence" );
+									} catch (Exception e) {
+										check = false;
+										Exception exception = new InfoWrapOutException( e );
+										result.error( exception );
+										logger.error( exception, effectivePerson, request, null);
+									}
+								}
+							} catch (Exception e) {
+								check = false;
+								Exception exception = new InfoListByFilterException( e );
+								result.error( exception );
+								logger.error( exception, effectivePerson, request, null);
+							}
+						}
+					}
+					if( check ){
+						int startIndex = ( page - 1 ) * count;
+						int endIndex = page * count;
+						int i = 0;
+						for( i = 0; i< wraps_out.size(); i++ ){
+							if( i >= startIndex && i < endIndex ){
+								wraps.add( wraps_out.get( i ) );
+							}
+						}
+						cache.put( new Element(cacheKey1, wraps) );
+						cache.put( new Element(cacheKey2, total.toString()) );
+						result.setData( wraps );
+						result.setCount( total );			
+					}
+				}
+			}	
+		}
+			
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -265,40 +283,40 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 	 * @param request
 	 * @return
 	 */
-	@HttpMethodDescribe(value = "创建新的热图信息或者更新热图信息.", request = WrapInHotPictureInfo.class, response = WrapOutId.class)
+	@HttpMethodDescribe(value = "创建新的热图信息或者更新热图信息.", request = JsonElement.class, response = WrapOutId.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response save( @Context HttpServletRequest request, WrapInHotPictureInfo wrapIn ) {
+	public Response save( @Context HttpServletRequest request, JsonElement jsonElement ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		WrapInHotPictureInfo wrapIn = null;
+		EffectivePerson effectivePerson = this.effectivePerson( request );
 		WrapOutId wrap = null;
 		Boolean check = true;
 		HotPictureInfo hotPictureInfo = null;
 		
-		if( wrapIn == null ){
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInHotPictureInfo.class );
+		} catch (Exception e ) {
 			check = false;
-			result.error( new Exception("wrapIn is null, can not save info！") );
-			result.setUserMessage( "系统传入的对象为空，无法进行数据保存！" );
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
 		}
 		if( check ){
 			if( wrapIn.getTitle() == null || wrapIn.getTitle().isEmpty() ){
 				check = false;
-				result.error( new Exception("title is null!") );
-				result.setUserMessage( "系统传入的[热图标题]为空，无法进行数据保存！" );
+				Exception exception = new InfoTitleEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
 			if( wrapIn.getUrl() == null || wrapIn.getUrl().isEmpty() ){
 				check = false;
-				result.error( new Exception("url is null!") );
-				result.setUserMessage( "系统传入的[热图访问链接]为空，无法进行数据保存！" );
-			}
-		}
-		if( check ){
-			if( wrapIn.getPictureBase64() == null || wrapIn.getPictureBase64().isEmpty() ){
-				check = false;
-				result.error( new Exception("pictureLobValue is null!") );
-				result.setUserMessage( "系统传入的[热图图片编码]为空，无法进行数据保存！" );
+				Exception exception = new InfoUrlEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -306,28 +324,27 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 				hotPictureInfo = wrapin_copier.copy( wrapIn );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在COPY传入的对象时发生异常！" );
-				logger.error( "system copy wrapIn to hotPictureInfo got an exception!", e );
+				Exception exception = new InfoWrapInException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
-			hotPictureInfo.setPicUrl("x_hotpic_assemble_control/jaxrs/user/hotpic/"+ hotPictureInfo.getId() );
 			try {
 				hotPictureInfo = hotPictureInfoService.save( hotPictureInfo );
 				wrap = new WrapOutId( hotPictureInfo.getId() );
 				result.setData( wrap );
-				result.setUserMessage( "热图信息保存成功！" );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在保存热图信息时发生异常！" );
-				logger.error( "system save hotPictureInfo got an exception!", e );
+				Exception exception = new InfoSaveException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 			try {
 				ApplicationCache.notify( HotPictureInfo.class );
 			} catch (Exception e) {
-				logger.error( "system notify application cache got an exception!", e );
+				logger.warn( "system notify application cache got an exception!" );
+				logger.error(e);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -340,6 +357,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response delete(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson( request );
 		WrapOutId wrap = null;
 		HotPictureInfo hotPictureInfo = null;
 		Boolean check = true;
@@ -347,8 +365,9 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 		if( check ){
 			if( id == null || id.isEmpty() || "(0)".equals( id ) ){
 				check = false;
-				result.error( new Exception( "传入的参数ID为空，无法继续进行查询！" ) );
-				result.setUserMessage( "传入的参数ID为空，无法继续进行查询" );
+				Exception exception = new InfoIdEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -356,16 +375,17 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 				hotPictureInfo = hotPictureInfoService.get(id);
 			}catch( Exception e ){
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据ID查询热图信息时发生异常！" );
-				logger.error( "system query hotPictureInfo with id got an exception!id:" + id, e );
+				Exception exception = new InfoQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
 			if( hotPictureInfo == null ){
 				check = false;
-				result.error( new Exception("热图信息不存在，无法继续进行删除操作！ID=" + id ) );
-				result.setUserMessage( "热图信息不存在，无法继续进行删除操作！" );
+				Exception exception = new InfoNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -373,17 +393,17 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 				hotPictureInfoService.delete( id );
 				wrap = new WrapOutId( id );
 				result.setData( wrap );
-				result.setUserMessage( "成功删除热图信息！" );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在删除热图信息时发生异常" );
-				logger.error( "system delete forum info got an exception!", e );
+				Exception exception = new InfoDeleteException( e, id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 			try {
 				ApplicationCache.notify( HotPictureInfo.class );
 			} catch (Exception e) {
-				logger.error( "system notify application cache got an exception!", e );
+				logger.warn( "system notify application cache got an exception!" );
+				logger.error(e);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse( result );
@@ -397,6 +417,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response delete(@Context HttpServletRequest request, @PathParam("application") String application, @PathParam("infoId") String infoId) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson( request );
 		WrapOutId wrap = null;
 		List<HotPictureInfo> hotPictureInfos = null;
 		Boolean check = true;
@@ -404,15 +425,17 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 		if( check ){
 			if( application == null || application.isEmpty()|| "(0)".equals( application ) ){
 				check = false;
-				result.error( new Exception( "application can not be null!" ) );
-				result.setUserMessage( "传入的参数application为空，无法继续进行删除。" );
+				Exception exception = new InfoApplicationEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
 			if( infoId == null || infoId.isEmpty()|| "(0)".equals( infoId ) ){
 				check = false;
-				result.error( new Exception( "infoId can not be null!" ) );
-				result.setUserMessage( "传入的参数infoId为空，无法继续进行删除。" );
+				Exception exception = new InfoIdEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -420,16 +443,17 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 				hotPictureInfos = hotPictureInfoService.listByApplicationInfoId( application, infoId );
 			}catch( Exception e ){
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据ID查询热图信息时发生异常！" );
-				logger.error( "system query hotPictureInfo with id got an exception!infoId:" + infoId, e );
+				Exception exception = new InfoListByApplicationException( e, application, infoId);
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
 			if( hotPictureInfos == null || hotPictureInfos.isEmpty() ){
 				check = false;
-				result.error( new Exception("hot pic info not exists！infoId=" + infoId ) );
-				result.setUserMessage( "热图信息不存在，无法继续进行删除操作！" );
+				Exception exception = new InfoNotExistsException( application, infoId);
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -438,18 +462,17 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 					hotPictureInfoService.delete( hotPictureInfo.getId() );
 					wrap = new WrapOutId( hotPictureInfo.getId() );
 					result.setData( wrap );
-					result.setUserMessage( "成功删除热图信息！" );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "系统在删除热图信息时发生异常" );
-					logger.error( "system delete forum info got an exception!", e );
+					Exception exception = new InfoDeleteException( e, application, infoId);
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 			try {
 				ApplicationCache.notify( HotPictureInfo.class );
 			} catch (Exception e) {
-				logger.error( "system notify application cache got an exception!", e );
+				logger.warn( "system notify application cache got an exception!" );
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse( result );

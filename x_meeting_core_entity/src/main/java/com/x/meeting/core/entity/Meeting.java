@@ -48,7 +48,7 @@ public class Meeting extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.Meeting.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -61,7 +61,7 @@ public class Meeting extends SliceJpaObject {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception {
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -121,7 +121,7 @@ public class Meeting extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception {
 		this.pinyin = StringUtils.lowerCase(PinyinHelper.convertToPinyinString(subject, "", PinyinFormat.WITHOUT_TONE));
 		this.pinyinInitial = StringUtils.lowerCase(PinyinHelper.getShortPinyin(subject));
 	}
@@ -174,7 +174,7 @@ public class Meeting extends SliceJpaObject {
 
 	@EntityFieldDescribe("邀请人员.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + "_invitePersonList", joinIndex = @Index(name = TABLE + "_invitePersonList_join") )
+	@ContainerTable(name = TABLE + "_invitePersonList", joinIndex = @Index(name = TABLE + "_invitePersonList_join"))
 	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
 	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = "xinvitePersonList")
 	@ElementIndex(name = TABLE + "_invitePersonList _element")
@@ -183,7 +183,7 @@ public class Meeting extends SliceJpaObject {
 
 	@EntityFieldDescribe("接受人员.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + "_acceptPersonList", joinIndex = @Index(name = TABLE + "_acceptPersonList_join") )
+	@ContainerTable(name = TABLE + "_acceptPersonList", joinIndex = @Index(name = TABLE + "_acceptPersonList_join"))
 	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
 	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = "xacceptPersonList")
 	@ElementIndex(name = TABLE + "_acceptPersonList _element")
@@ -192,7 +192,7 @@ public class Meeting extends SliceJpaObject {
 
 	@EntityFieldDescribe("拒绝人员.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + "_rejectPersonList", joinIndex = @Index(name = TABLE + "_rejectPersonList_join") )
+	@ContainerTable(name = TABLE + "_rejectPersonList", joinIndex = @Index(name = TABLE + "_rejectPersonList_join"))
 	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
 	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = "xrejectPersonList")
 	@ElementIndex(name = TABLE + "_rejectPersonList _element")

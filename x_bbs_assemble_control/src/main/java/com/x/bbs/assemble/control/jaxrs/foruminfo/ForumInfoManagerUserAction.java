@@ -15,9 +15,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
@@ -27,6 +25,8 @@ import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.bbs.assemble.control.service.BBSForumInfoServiceAdv;
 import com.x.bbs.assemble.control.service.BBSOperationRecordService;
 import com.x.bbs.assemble.control.service.BBSPermissionInfoService;
@@ -63,6 +63,7 @@ public class ForumInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listAll( @Context HttpServletRequest request ) {
 		ActionResult<List<WrapOutForumInfo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		List<WrapOutForumInfo> wraps = new ArrayList<>();
 		List<BBSForumInfo> forumInfoList = null;
 		Boolean check = true;
@@ -72,9 +73,9 @@ public class ForumInfoManagerUserAction extends AbstractJaxrsAction {
 			try {
 				forumInfoList = forumInfoServiceAdv.listAll();
 			} catch (Exception e) {
-				result.error( e );
-				result.setUserMessage( "系统在查询所有论坛信息时发生异常" );
-				logger.error( "system query all forum info got an exception!", e );
+				Exception exception = new ForumInfoListAllException(e);
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}	
 		}
 		if( check ){
@@ -82,9 +83,9 @@ public class ForumInfoManagerUserAction extends AbstractJaxrsAction {
 				try {
 					wraps = wrapout_copier.copy( forumInfoList );
 				} catch (Exception e) {
-					result.error( e );
-					result.setUserMessage( "系统在将论坛信息列表转换为输出格式时发生异常" );
-					logger.error( "system copy forum list to wraps got an exception!", e );
+					Exception exception = new ForumInfoWrapOutException(e);
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 				result.setData( wraps );
 			}
@@ -98,12 +99,13 @@ public class ForumInfoManagerUserAction extends AbstractJaxrsAction {
 	 * @param request
 	 * @return
 	 */
-	@HttpMethodDescribe(value = "创建新的论坛信息或者更新论坛信息.", request = WrapInForumInfo.class, response = WrapOutId.class)
+	@HttpMethodDescribe(value = "创建新的论坛信息或者更新论坛信息.", request = JsonElement.class, response = WrapOutId.class)
 	@POST
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Produces( HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response post( @Context HttpServletRequest request, WrapInForumInfo wrapIn ) {
+	public Response post( @Context HttpServletRequest request, JsonElement jsonElement ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		WrapInForumInfo wrapIn = null;
 		WrapOutId wrap = null;
 		Boolean check = true;
 		String[] names = null;
@@ -115,25 +117,47 @@ public class ForumInfoManagerUserAction extends AbstractJaxrsAction {
 		String hostName = request.getRemoteAddr();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		
-		if( wrapIn == null ){
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInForumInfo.class );
+		} catch (Exception e ) {
 			check = false;
-			result.error( new Exception("系统传入的对象为空，无法进行数据保存！") );
-			result.setUserMessage( "系统传入的对象为空，无法进行数据保存！" );
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
+		
+		if( check ){
+			try {
+				if( !userManagerService.isHasRole( currentPerson.getName(), "BBSSystemAdmin") ){
+					check = false;
+					Exception exception = new InsufficientPermissionsException( currentPerson.getName(), "BBSSystemAdmin" );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
+				}
+			} catch (Exception e1) {
+				check = false;
+				Exception exception = new InsufficientPermissionsException( currentPerson.getName(), "BBSSystemAdmin" );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
+			}
+		}
+		
 		//校验论坛名称
 		if( check ){
 			if( wrapIn.getForumName() == null || wrapIn.getForumName().isEmpty() ){
 				check = false;
-				result.error( new Exception("系统传入的[论坛名称]为空，无法进行数据保存！") );
-				result.setUserMessage( "系统传入的[论坛名称]为空，无法进行数据保存！" );
+				Exception exception = new ForumNameEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		//校验论坛分类:信息|问题|投票,只能是这三类中的
 		if( check ){
 			if( wrapIn.getTypeCatagory() == null || wrapIn.getTypeCatagory().isEmpty() ){
 				check = false;
-				result.error( new Exception("系统传入的[主题分类]为空，无法进行数据保存！") );
-				result.setUserMessage( "系统传入的[主题分类]为空，无法进行数据保存！" );
+				Exception exception = new ForumTypeCatagoryEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -142,8 +166,9 @@ public class ForumInfoManagerUserAction extends AbstractJaxrsAction {
 				for( String catagory : typeCatagory ){
 					if( !"信息".equals( catagory ) && !"问题".equals( catagory ) && !"投票".equals( catagory )){
 						check = false;
-						result.error( new Exception("typeCatagory is invalid.catagory:" + catagory ) );
-						result.setUserMessage( "系统传入的[主题分类]不合法，无法进行数据保存！分类:" + catagory );
+						Exception exception = new ForumTypeCatagoryInvalidException( catagory );
+						result.error( exception );
+						logger.error( exception, currentPerson, request, null);
 					}
 				}
 			}
@@ -162,15 +187,16 @@ public class ForumInfoManagerUserAction extends AbstractJaxrsAction {
 						person = userManagerService.getUserByFlag( name );
 						if( person == null ){
 							check = false;
-							result.error( new Exception( "指定的管理员人员信息不存在，姓名：" + name ) );
-							result.setUserMessage( "指定的管理员人员信息不存在，姓名：" + name );
+							Exception exception = new PersonNotExistsException( name );
+							result.error( exception );
+							logger.error( exception, currentPerson, request, null);
 							break;
 						}
 					} catch (Exception e) {
 						check = false;
-						result.error( e );
-						result.setUserMessage( "系统在根据人员姓名查询人员信息时发生异常！" );
-						logger.error( "system get user by flag got an exception!", e );
+						Exception exception = new PersonQueryException( e, name );
+						result.error( exception );
+						logger.error( exception, currentPerson, request, null);
 						break;
 					}
 				}				
@@ -186,9 +212,9 @@ public class ForumInfoManagerUserAction extends AbstractJaxrsAction {
 				wrapin_copier.copy( wrapIn, forumInfo );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在COPY传入的对象时发生异常！" );
-				logger.error( "system copy wrapIn to forumInfo got an exception!", e );
+				Exception exception = new ForumInfoWrapInException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -197,9 +223,9 @@ public class ForumInfoManagerUserAction extends AbstractJaxrsAction {
 					forumInfo_old = forumInfoServiceAdv.get( forumInfo.getId() );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "系统在根据ID查询论坛信息时发生异常！" );
-					logger.error( "system query forum info with id got an exception!id:" + forumInfo.getId(), e );
+					Exception exception = new ForumInfoQueryByIdException( e, forumInfo.getId() );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -208,7 +234,6 @@ public class ForumInfoManagerUserAction extends AbstractJaxrsAction {
 				forumInfo = forumInfoServiceAdv.save( forumInfo );
 				wrap = new WrapOutId( forumInfo.getId() );
 				result.setData( wrap );
-				result.setUserMessage( "论坛信息保存成功！" );
 				if( forumInfo_old != null ){
 					operationRecordService.forumOperation( currentPerson.getName(), forumInfo, "MODIFY", hostIp, hostName );
 				}else{
@@ -216,9 +241,9 @@ public class ForumInfoManagerUserAction extends AbstractJaxrsAction {
 				}
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在保存论坛信息时发生异常！" );
-				logger.error( "system save forum info got an exception!", e );
+				Exception exception = new ForumInfoSaveException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -227,9 +252,8 @@ public class ForumInfoManagerUserAction extends AbstractJaxrsAction {
 				permissionInfoService.createForumPermission( forumInfo );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在创建论坛权限信息时发生异常！" );
-				logger.error( "system create forum permission info got an exception!", e );
+				logger.warn( "system create forum permission info got an exception!" );
+				logger.error(e);
 			}
 		}
 		if( check ){
@@ -239,18 +263,16 @@ public class ForumInfoManagerUserAction extends AbstractJaxrsAction {
 			} catch (Exception e) {
 				check = false;
 				result.error( e );
-				result.setUserMessage( "系统在创建论坛角色信息时发生异常！" );
-				logger.error( "system create forum role info got an exception!", e );
+				logger.warn( "system create forum role info got an exception!" );
+				logger.error(e);
 			}
 		}
 		if( check ){//检查论坛管理员权限的设置
 			try {
 				forumInfoServiceAdv.checkForumManager( forumInfo );
 			} catch (Exception e) {
-				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在为论坛管理员绑定角色信息时发生异常！" );
-				logger.error( "system bind role for forum manager got an exception!", e );
+				logger.warn( "system bind role for forum manager got an exception!" );
+				logger.error(e);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -277,10 +299,27 @@ public class ForumInfoManagerUserAction extends AbstractJaxrsAction {
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		
 		if( check ){
+			try {
+				if( !userManagerService.isHasRole( currentPerson.getName(), "BBSSystemAdmin") ){
+					check = false;
+					Exception exception = new InsufficientPermissionsException( currentPerson.getName(), "BBSSystemAdmin" );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
+				}
+			} catch (Exception e1) {
+				check = false;
+				Exception exception = new InsufficientPermissionsException( currentPerson.getName(), "BBSSystemAdmin" );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
+			}
+		}
+		
+		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
-				result.error( new Exception( "传入的参数ID为空，无法继续进行查询！" ) );
-				result.setUserMessage( "传入的参数ID为空，无法继续进行查询" );
+				Exception exception = new ForumInfoIdEmptyException();
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -289,16 +328,17 @@ public class ForumInfoManagerUserAction extends AbstractJaxrsAction {
 				forumInfo = forumInfoServiceAdv.get(id);
 			}catch( Exception e ){
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据ID查询论坛信息时发生异常！" );
-				logger.error( "system query forum info with id got an exception!id:" + id, e );
+				Exception exception = new ForumInfoQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
 			if( forumInfo == null ){
 				check = false;
-				result.error( new Exception("论坛信息不存在，无法继续进行删除操作！ID=" + id ) );
-				result.setUserMessage( "论坛信息不存在，无法继续进行删除操作！" );
+				Exception exception = new ForumInfoNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -307,16 +347,18 @@ public class ForumInfoManagerUserAction extends AbstractJaxrsAction {
 				sectionCount = sectionInfoServiceAdv.countMainSectionByForumId( id );
 			}catch( Exception e ){
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据论坛ID查询版块信息数量时发生异常！" );
-				logger.error( "system count section info with forum id got an exception!id:" + id, e );
+				Exception exception = new CountSectionException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
 			if( sectionCount > 0 ){
 				check = false;
-				result.error( new Exception("论坛["+forumInfo.getForumName()+"]中仍存在"+ sectionCount+"个主版块，无法继续进行删除操作！ID=" + id ) );
-				result.setUserMessage( "论坛["+forumInfo.getForumName()+"]中仍存在"+ sectionCount+"个主版块，无法继续进行删除操作！ID=" + id  );
+				logger.warn( "论坛["+forumInfo.getForumName()+"]中仍存在"+ sectionCount+"个主版块，无法继续进行删除操作！ID=" + id  );
+				Exception exception = new ForumCanNotDeleteException( "论坛["+forumInfo.getForumName()+"]中仍存在"+ sectionCount+"个版块，无法继续进行删除操作！" );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -324,13 +366,12 @@ public class ForumInfoManagerUserAction extends AbstractJaxrsAction {
 				forumInfoServiceAdv.delete( id );
 				wrap = new WrapOutId( id );
 				result.setData( wrap );
-				result.setUserMessage( "成功删除论坛信息！" );
 				operationRecordService.forumOperation( currentPerson.getName(), forumInfo, "DELETE", hostIp, hostName );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在删除论坛信息时发生异常" );
-				logger.error( "system delete forum info got an exception!", e );
+				Exception exception = new ForumInfoDeleteException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){//检查论坛管理员权限的设置
@@ -339,8 +380,8 @@ public class ForumInfoManagerUserAction extends AbstractJaxrsAction {
 			} catch (Exception e) {
 				check = false;
 				result.error( e );
-				result.setUserMessage( "系统在删除论坛管理员绑定角色信息时发生异常！" );
-				logger.error( "system delete role for forum manager got an exception!", e );
+				logger.warn( "system delete role for forum manager got an exception!" );
+				logger.error(e);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse( result );

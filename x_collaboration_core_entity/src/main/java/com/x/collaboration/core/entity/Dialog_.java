@@ -13,7 +13,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.collaboration.core.entity.Dialog.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:18:00 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:08:34 CST 2017")
 public class Dialog_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Dialog,Boolean> arrived;
     public static volatile SingularAttribute<Dialog,String> body;

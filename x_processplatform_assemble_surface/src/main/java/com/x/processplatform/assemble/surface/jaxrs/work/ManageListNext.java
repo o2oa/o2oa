@@ -6,7 +6,6 @@ import com.x.base.core.application.jaxrs.EqualsTerms;
 import com.x.base.core.application.jaxrs.InTerms;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.role.RoleDefinition;
@@ -24,7 +23,10 @@ class ManageListNext extends ActionBase {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<WrapOutWork>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Application application = business.application().pick(applicationFlag, ExceptionWhen.not_found);
+			Application application = business.application().pick(applicationFlag);
+			if (null == application) {
+				throw new ApplicationNotExistedException(applicationFlag);
+			}
 			if (effectivePerson.isManager()
 					|| business.organization().role().hasAny(RoleDefinition.PersonManager, RoleDefinition.Manager)
 					|| effectivePerson.isUser(application.getControllerList())) {

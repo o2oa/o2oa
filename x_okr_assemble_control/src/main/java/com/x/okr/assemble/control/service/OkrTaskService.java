@@ -4,18 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.x.base.core.bean.BeanCopyTools;
-import com.x.base.core.bean.BeanCopyToolsBuilder;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.okr.assemble.common.date.DateOperation;
 import com.x.okr.assemble.control.Business;
-import com.x.okr.assemble.control.jaxrs.okrtask.WrapInOkrTask;
 import com.x.okr.entity.OkrCenterWorkInfo;
 import com.x.okr.entity.OkrTask;
 import com.x.okr.entity.OkrTaskHandled;
@@ -36,7 +32,7 @@ public class OkrTaskService{
 	private Logger logger = LoggerFactory.getLogger( OkrTaskService.class );
 	private DateOperation dateOperation = new DateOperation();
 	private OkrUserManagerService okrUserManagerService = new OkrUserManagerService();
-	private BeanCopyTools<WrapInOkrTask, OkrTask> wrapin_copier = BeanCopyToolsBuilder.create( WrapInOkrTask.class, OkrTask.class, null, WrapInOkrTask.Excludes );
+	
 	/**
 	 * 根据传入的ID从数据库查询OkrTask对象
 	 * @param id
@@ -55,48 +51,6 @@ public class OkrTaskService{
 	}
 	
 	/**
-	 * 向数据库保存OkrTask对象
-	 * @param wrapIn
-	 */
-	public OkrTask save( WrapInOkrTask wrapIn ) throws Exception {
-		OkrTask okrTask = null;
-		if( wrapIn.getId() !=null && wrapIn.getId().trim().length() > 20 ){
-		//根据ID查询信息是否存在，如果存在就update，如果不存在就create
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				okrTask =  emc.find( wrapIn.getId(), OkrTask.class );
-				if( okrTask != null ){
-					emc.beginTransaction( OkrTask.class );
-					wrapin_copier.copy( wrapIn, okrTask );
-					emc.check( okrTask, CheckPersistType.all );	
-					emc.commit();
-				}else{
-					okrTask = new OkrTask();
-					emc.beginTransaction( OkrTask.class );
-					wrapin_copier.copy( wrapIn, okrTask );
-					okrTask.setId( wrapIn.getId() );//使用参数传入的ID作为记录的ID
-					emc.persist( okrTask, CheckPersistType.all);	
-					emc.commit();
-				}
-			}catch( Exception e ){
-				logger.error( "OkrTask update/ got a error!" );
-				throw e;
-			}
-		}else{//没有传入指定的ID
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				okrTask = new OkrTask();
-				emc.beginTransaction( OkrTask.class );
-				wrapin_copier.copy( wrapIn, okrTask );
-				emc.persist( okrTask, CheckPersistType.all);	
-				emc.commit();
-			}catch( Exception e ){
-				logger.error( "OkrTask create got a error!", e);
-				throw e;
-			}
-		}
-		return okrTask;
-	}
-	
-	/**
 	 * 根据ID从数据库中删除OkrTask对象
 	 * @param id
 	 * @throws Exception
@@ -104,13 +58,13 @@ public class OkrTaskService{
 	public void delete( String id ) throws Exception {
 		OkrTask okrTask = null;
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not delete any object." );
+			throw new Exception( "id is null, system can not delete any object." );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			okrTask = emc.find(id, OkrTask.class);
 			if (null == okrTask) {
-				logger.error( "object is not exist {'id':'"+ id +"'}" );
+				throw new Exception( "object is not exist {'id':'"+ id +"'}" );
 			}else{
 				emc.beginTransaction( OkrTask.class );
 				emc.remove( okrTask, CheckRemoveType.all );
@@ -223,139 +177,6 @@ public class OkrTaskService{
 		return okrTaskList;
 	}
 	
-	/**
-	 * 为协助者生成待办信息
-	 * @param okrWorkBaseInfo
-	 * @return
-	 * @throws Exception 
-	 */
-	private List<OkrTask> getCooperateTask( OkrWorkBaseInfo okrWorkBaseInfo ) throws Exception {
-		if( okrWorkBaseInfo == null ){
-			throw new Exception( "okrWorkBaseInfo is null, can not create any task!" );
-		}
-		Date now = new Date();
-		List<OkrTask> okrTaskList = new ArrayList<OkrTask>();
-		
-		OkrTask okrTask = null;
-		String splitFlag = ",";
-		String[] targetNameArray = null;
-		String[] targetOrganizationNameArray = null;
-		String[] targetCompanyNameArray = null;
-		String targetName = okrWorkBaseInfo.getCooperateEmployeeName();
-		String targetOrganizationName = okrWorkBaseInfo.getCooperateOrganizationName();
-		String targetCompanyName = okrWorkBaseInfo.getCooperateCompanyName();
-		if( targetName != null ){
-			if( targetOrganizationName == null ){
-				throw new Exception( "CooperateOrganizationName is null, can not create any task!" );
-			}
-			if( targetCompanyName == null ){
-				throw new Exception( "CooperateCompanyName is null, can not create any task!" );
-			}			
-			targetNameArray = targetName.split( splitFlag );
-			targetOrganizationNameArray = targetOrganizationName.split( splitFlag );
-			targetCompanyNameArray = targetCompanyName.split( splitFlag );
-			if( targetNameArray.length == targetOrganizationNameArray.length ){
-				if( targetNameArray.length == targetCompanyNameArray.length ){
-					for( int i=0; i<targetNameArray.length; i++ ){
-						okrTask = new OkrTask();
-						okrTask.setTitle( okrWorkBaseInfo.getTitle() );
-						okrTask.setWorkId( okrWorkBaseInfo.getId() );
-						okrTask.setWorkTitle( okrWorkBaseInfo.getTitle() );
-						okrTask.setWorkType( okrWorkBaseInfo.getWorkType() );
-						okrTask.setCenterId( okrWorkBaseInfo.getCenterId() );
-						okrTask.setCenterTitle( okrWorkBaseInfo.getCenterTitle() );						
-						okrTask.setTargetName( targetNameArray[i] );
-						okrTask.setTargetOrganizationName( targetOrganizationNameArray[i] );
-						okrTask.setTargetCompanyName( targetCompanyNameArray[i] );						
-						okrTask.setActivityName( "工作阅知" );
-						okrTask.setArriveDateTime( now );
-						okrTask.setArriveDateTimeStr( dateOperation.getDateStringFromDate( now, "yyyy-MM-dd HH:mm:ss" ) );						
-						okrTask.setDynamicObjectId( okrWorkBaseInfo.getId() );
-						okrTask.setDynamicObjectTitle( okrWorkBaseInfo.getTitle() );
-						okrTask.setDynamicObjectType( "具体工作" );
-						okrTask.setProcessType( "READ" );
-						okrTask.setStatus( "正常" );	
-						okrTask.setViewUrl( "" );
-						okrTaskList.add( okrTask );
-					}
-				}else{
-					throw new Exception( "Cooperate name( "+targetName+" ), organization( "+targetOrganizationName+" ), company( "+targetOrganizationNameArray+" ) split by ',', array length is not same, can not create tasks!" );
-				}
-			}else{
-				throw new Exception( "Cooperate name( "+targetName+" ), organization( "+targetOrganizationName+" ), company( "+targetOrganizationNameArray+" ) split by ',', array length is not same, can not create tasks!" );
-			}
-		}else{
-			throw new Exception( "CooperateEmployeeName is null, can not create any task!" );
-		}
-		return okrTaskList;
-	}
-	
-	/**
-	 * 为阅知领导生成阅知待办信息
-	 * @param okrWorkBaseInfo
-	 * @return
-	 * @throws Exception
-	 */
-	private List<OkrTask> getLeaderReadTask( OkrWorkBaseInfo okrWorkBaseInfo ) throws Exception {
-		if( okrWorkBaseInfo == null ){
-			throw new Exception( "okrWorkBaseInfo is null, can not create any task!" );
-		}
-		Date now = new Date();
-		List<OkrTask> okrTaskList = new ArrayList<OkrTask>();
-		
-		OkrTask okrTask = null;
-		String splitFlag = ",";
-		String[] targetNameArray = null;
-		String[] targetOrganizationNameArray = null;
-		String[] targetCompanyNameArray = null;
-		String targetName = okrWorkBaseInfo.getReadLeaderName();
-		String targetOrganizationName = okrWorkBaseInfo.getReadLeaderOrganizationName();
-		String targetCompanyName = okrWorkBaseInfo.getReadLeaderCompanyName();
-		if( targetName != null ){
-			if( targetOrganizationName == null ){
-				throw new Exception( "ReadLeaderOrganizationName is null, can not create any task!" );
-			}
-			if( targetCompanyName == null ){
-				throw new Exception( "ReadLeaderCompanyName is null, can not create any task!" );
-			}			
-			targetNameArray = targetName.split( splitFlag );
-			targetOrganizationNameArray = targetOrganizationName.split( splitFlag );
-			targetCompanyNameArray = targetCompanyName.split( splitFlag );
-			if( targetNameArray.length == targetOrganizationNameArray.length ){
-				if( targetNameArray.length == targetCompanyNameArray.length ){
-					for( int i=0; i<targetNameArray.length; i++ ){
-						okrTask = new OkrTask();
-						okrTask.setTitle( okrWorkBaseInfo.getTitle() );
-						okrTask.setWorkId( okrWorkBaseInfo.getId() );
-						okrTask.setWorkTitle( okrWorkBaseInfo.getTitle() );
-						okrTask.setWorkType( okrWorkBaseInfo.getWorkType() );
-						okrTask.setCenterId( okrWorkBaseInfo.getCenterId() );
-						okrTask.setCenterTitle( okrWorkBaseInfo.getCenterTitle() );						
-						okrTask.setTargetName( targetNameArray[i] );
-						okrTask.setTargetOrganizationName( targetOrganizationNameArray[i] );
-						okrTask.setTargetCompanyName( targetCompanyNameArray[i] );						
-						okrTask.setActivityName( "工作阅知" );
-						okrTask.setArriveDateTime( now );
-						okrTask.setArriveDateTimeStr( dateOperation.getDateStringFromDate( now, "yyyy-MM-dd HH:mm:ss" ) );						
-						okrTask.setDynamicObjectId( okrWorkBaseInfo.getId() );
-						okrTask.setDynamicObjectTitle( okrWorkBaseInfo.getTitle() );
-						okrTask.setDynamicObjectType( "具体工作" );
-						okrTask.setProcessType( "READ" );
-						okrTask.setStatus( "正常" );	
-						okrTask.setViewUrl( "" );
-						okrTaskList.add( okrTask );
-					}
-				}else{
-					throw new Exception( "ReadLeader name( "+targetName+" ), organization( "+targetOrganizationName+" ), company( "+targetOrganizationNameArray+" ) split by ',', array length is not same, can not create tasks!" );
-				}
-			}else{
-				throw new Exception( "ReadLeader name( "+targetName+" ), organization( "+targetOrganizationName+" ), company( "+targetOrganizationNameArray+" ) split by ',', array length is not same, can not create tasks!" );
-			}
-		}else{
-			throw new Exception( "ReadLeaderName is null, can not create any task!" );
-		}
-		return okrTaskList;
-	}
 
 	public void deleteTask( OkrCenterWorkInfo okrCenterWorkInfo, String userIdentity ) throws Exception {
 		if( okrCenterWorkInfo == null ){
@@ -371,7 +192,7 @@ public class OkrTaskService{
 		WrapPerson wrapPerson = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			wrapPerson =  okrUserManagerService.getUserNameByIdentity( userIdentity );
+			wrapPerson =  okrUserManagerService.getUserByIdentity( userIdentity );
 			//查询该用户在指定的中心工作中的待办信息
 			ids = business.okrTaskFactory().listIdsByCenterAndPerson( okrCenterWorkInfo.getId(), userIdentity, "中心工作" );
 			emc.beginTransaction( OkrTask.class );
@@ -412,7 +233,7 @@ public class OkrTaskService{
 			}
 			emc.commit();
 		}catch( Exception e ){
-			logger.error( "create task info got a error!", e);
+			logger.warn( "create task info got a error!", e);
 			throw e;
 		}
 	}
@@ -475,7 +296,7 @@ public class OkrTaskService{
 			}
 			emc.commit();
 		}catch( Exception e ){
-			logger.error( "create task info got a error!", e);
+			logger.warn( "create task info got a error!", e);
 			throw e;
 		}
 	}
@@ -538,7 +359,7 @@ public class OkrTaskService{
 			}
 			emc.commit();
 		}catch( Exception e ){
-			logger.error( "create read info got a error!", e);
+			logger.warn( "create read info got a error!", e);
 			throw e;
 		}
 	}
@@ -552,10 +373,10 @@ public class OkrTaskService{
 	 */
 	public List<String> listIdsByCenterAndPerson( String centerId, String identity, String dynamicObjectType ) throws Exception {
 		if( centerId == null || centerId.isEmpty() ){
-			logger.error( "centerId is null, system can not excute query." );
+			throw new Exception( "centerId is null, system can not excute query." );
 		}
 		if( identity == null || identity.isEmpty() ){
-			logger.error( "identity is null, system can not excute query." );
+			throw new Exception( "identity is null, system can not excute query." );
 		}
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -568,15 +389,15 @@ public class OkrTaskService{
 
 	public List<String> listIdsByTargetActivityAndObjId( String dynamicObjectType, String objectId, String activityName, String processorIdentity ) throws Exception {
 		if( dynamicObjectType == null || dynamicObjectType.isEmpty() ){
-			logger.error( "dynamicObjectType is null, system can not excute query." );
+			throw new Exception( "dynamicObjectType is null, system can not excute query." );
 		}
 		if( objectId == null || objectId.isEmpty() ){
-			logger.error( "objectId is null, system can not excute query." );
+			throw new Exception( "objectId is null, system can not excute query." );
 		}
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			return business.okrTaskFactory().listIdsByTargetActivityAndObjId( dynamicObjectType, objectId, activityName, processorIdentity );
+			return business.okrTaskFactory().listIdsByTargetActivityAndObjId( null, dynamicObjectType, objectId, activityName, processorIdentity );
 		} catch ( Exception e ) {
 			throw e;
 		}
@@ -584,7 +405,7 @@ public class OkrTaskService{
 
 	public List<OkrTask> list(List<String> ids) throws Exception {
 		if( ids == null || ids.isEmpty() ){
-			logger.error( "ids is null, system can not excute query." );
+			throw new Exception( "ids is null, system can not excute query." );
 		}
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -628,11 +449,31 @@ public class OkrTaskService{
 		}
 	}
 	
-	public List<OkrTask> listByTaskType(List<String> taskTypeList, String userIdentity, String workTypeName) throws Exception {
+	public Long getNotReportConfirmTaskCount( List<String> taskTypeList, String userIdentity, String workTypeName ) throws Exception {
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			return business.okrTaskFactory().listByTaskType( taskTypeList, userIdentity, workTypeName );
+			return business.okrTaskFactory().getNotReportConfirmTaskCount( taskTypeList, userIdentity, workTypeName );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+	
+	public List<OkrTask> listTaskByTaskType(List<String> taskTypeList, String userIdentity, String workTypeName) throws Exception {
+		Business business = null;
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			return business.okrTaskFactory().listTaskByTaskType( taskTypeList, userIdentity, workTypeName );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+	
+	public List<OkrTask> listReadByTaskType(List<String> taskTypeList, String userIdentity, String workTypeName) throws Exception {
+		Business business = null;
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			return business.okrTaskFactory().listReadByTaskType( taskTypeList, userIdentity, workTypeName );
 		} catch ( Exception e ) {
 			throw e;
 		}
@@ -657,7 +498,6 @@ public class OkrTaskService{
 	}
 
 	private void processWorkReportRead( OkrTask okrTask ) throws Exception {
-		//logger.debug( ">>>>>>>>>>>>>>>>>>>处理工作汇报的阅知信息......" );
 		//1、根据待阅信息生成已阅信息
 		OkrTaskHandled okrTaskHandled = getTaskHandledByTask( okrTask );
 		//2、删除待阅信息，保存已阅信息
@@ -674,7 +514,6 @@ public class OkrTaskService{
 	}
 
 	private void processWorkDeployRead( OkrTask okrTask ) throws Exception {
-		//logger.debug( ">>>>>>>>>>>>>>>>>>>处理工作部署的阅知信息......" );
 		List<String> ids = null;
 		List<String> status = new ArrayList<String>();
 		List<OkrWorkPerson> personList = null;
@@ -753,10 +592,10 @@ public class OkrTaskService{
 	 */
 	public Long getTaskCountByUserName( List<String> taskTypeList, String name ) throws Exception {
 		if( taskTypeList == null || taskTypeList.isEmpty() ){
-			logger.error( "taskTypeList is null, system can not excute query." );
+			throw new Exception( "taskTypeList is null, system can not excute query." );
 		}
 		if( name == null || name.isEmpty() ){
-			logger.error( "name is null, system can not excute query." );
+			throw new Exception( "name is null, system can not excute query." );
 		}
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -769,7 +608,7 @@ public class OkrTaskService{
 
 	public List<OkrTask> listIdsByReportId(String id) throws Exception {
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not excute query." );
+			throw new Exception( "id is null, system can not excute query." );
 		}
 		List<String> ids = null;
 		Business business = null;
@@ -781,4 +620,139 @@ public class OkrTaskService{
 			throw e;
 		}
 	}
+	
+//	/**
+//	 * 为协助者生成待办信息
+//	 * @param okrWorkBaseInfo
+//	 * @return
+//	 * @throws Exception 
+//	 */
+//	private List<OkrTask> getCooperateTask( OkrWorkBaseInfo okrWorkBaseInfo ) throws Exception {
+//		if( okrWorkBaseInfo == null ){
+//			throw new Exception( "okrWorkBaseInfo is null, can not create any task!" );
+//		}
+//		Date now = new Date();
+//		List<OkrTask> okrTaskList = new ArrayList<OkrTask>();
+//		
+//		OkrTask okrTask = null;
+//		String splitFlag = ",";
+//		String[] targetNameArray = null;
+//		String[] targetOrganizationNameArray = null;
+//		String[] targetCompanyNameArray = null;
+//		String targetName = okrWorkBaseInfo.getCooperateEmployeeName();
+//		String targetOrganizationName = okrWorkBaseInfo.getCooperateOrganizationName();
+//		String targetCompanyName = okrWorkBaseInfo.getCooperateCompanyName();
+//		if( targetName != null ){
+//			if( targetOrganizationName == null ){
+//				throw new Exception( "CooperateOrganizationName is null, can not create any task!" );
+//			}
+//			if( targetCompanyName == null ){
+//				throw new Exception( "CooperateCompanyName is null, can not create any task!" );
+//			}			
+//			targetNameArray = targetName.split( splitFlag );
+//			targetOrganizationNameArray = targetOrganizationName.split( splitFlag );
+//			targetCompanyNameArray = targetCompanyName.split( splitFlag );
+//			if( targetNameArray.length == targetOrganizationNameArray.length ){
+//				if( targetNameArray.length == targetCompanyNameArray.length ){
+//					for( int i=0; i<targetNameArray.length; i++ ){
+//						okrTask = new OkrTask();
+//						okrTask.setTitle( okrWorkBaseInfo.getTitle() );
+//						okrTask.setWorkId( okrWorkBaseInfo.getId() );
+//						okrTask.setWorkTitle( okrWorkBaseInfo.getTitle() );
+//						okrTask.setWorkType( okrWorkBaseInfo.getWorkType() );
+//						okrTask.setCenterId( okrWorkBaseInfo.getCenterId() );
+//						okrTask.setCenterTitle( okrWorkBaseInfo.getCenterTitle() );						
+//						okrTask.setTargetName( targetNameArray[i] );
+//						okrTask.setTargetOrganizationName( targetOrganizationNameArray[i] );
+//						okrTask.setTargetCompanyName( targetCompanyNameArray[i] );						
+//						okrTask.setActivityName( "工作阅知" );
+//						okrTask.setArriveDateTime( now );
+//						okrTask.setArriveDateTimeStr( dateOperation.getDateStringFromDate( now, "yyyy-MM-dd HH:mm:ss" ) );						
+//						okrTask.setDynamicObjectId( okrWorkBaseInfo.getId() );
+//						okrTask.setDynamicObjectTitle( okrWorkBaseInfo.getTitle() );
+//						okrTask.setDynamicObjectType( "具体工作" );
+//						okrTask.setProcessType( "READ" );
+//						okrTask.setStatus( "正常" );	
+//						okrTask.setViewUrl( "" );
+//						okrTaskList.add( okrTask );
+//					}
+//				}else{
+//					throw new Exception( "Cooperate name( "+targetName+" ), organization( "+targetOrganizationName+" ), company( "+targetOrganizationNameArray+" ) split by ',', array length is not same, can not create tasks!" );
+//				}
+//			}else{
+//				throw new Exception( "Cooperate name( "+targetName+" ), organization( "+targetOrganizationName+" ), company( "+targetOrganizationNameArray+" ) split by ',', array length is not same, can not create tasks!" );
+//			}
+//		}else{
+//			throw new Exception( "CooperateEmployeeName is null, can not create any task!" );
+//		}
+//		return okrTaskList;
+//	}
+//	
+//	/**
+//	 * 为阅知领导生成阅知待办信息
+//	 * @param okrWorkBaseInfo
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	private List<OkrTask> getLeaderReadTask( OkrWorkBaseInfo okrWorkBaseInfo ) throws Exception {
+//		if( okrWorkBaseInfo == null ){
+//			throw new Exception( "okrWorkBaseInfo is null, can not create any task!" );
+//		}
+//		Date now = new Date();
+//		List<OkrTask> okrTaskList = new ArrayList<OkrTask>();
+//		
+//		OkrTask okrTask = null;
+//		String splitFlag = ",";
+//		String[] targetNameArray = null;
+//		String[] targetOrganizationNameArray = null;
+//		String[] targetCompanyNameArray = null;
+//		String targetName = okrWorkBaseInfo.getReadLeaderName();
+//		String targetOrganizationName = okrWorkBaseInfo.getReadLeaderOrganizationName();
+//		String targetCompanyName = okrWorkBaseInfo.getReadLeaderCompanyName();
+//		if( targetName != null ){
+//			if( targetOrganizationName == null ){
+//				throw new Exception( "ReadLeaderOrganizationName is null, can not create any task!" );
+//			}
+//			if( targetCompanyName == null ){
+//				throw new Exception( "ReadLeaderCompanyName is null, can not create any task!" );
+//			}			
+//			targetNameArray = targetName.split( splitFlag );
+//			targetOrganizationNameArray = targetOrganizationName.split( splitFlag );
+//			targetCompanyNameArray = targetCompanyName.split( splitFlag );
+//			if( targetNameArray.length == targetOrganizationNameArray.length ){
+//				if( targetNameArray.length == targetCompanyNameArray.length ){
+//					for( int i=0; i<targetNameArray.length; i++ ){
+//						okrTask = new OkrTask();
+//						okrTask.setTitle( okrWorkBaseInfo.getTitle() );
+//						okrTask.setWorkId( okrWorkBaseInfo.getId() );
+//						okrTask.setWorkTitle( okrWorkBaseInfo.getTitle() );
+//						okrTask.setWorkType( okrWorkBaseInfo.getWorkType() );
+//						okrTask.setCenterId( okrWorkBaseInfo.getCenterId() );
+//						okrTask.setCenterTitle( okrWorkBaseInfo.getCenterTitle() );						
+//						okrTask.setTargetName( targetNameArray[i] );
+//						okrTask.setTargetOrganizationName( targetOrganizationNameArray[i] );
+//						okrTask.setTargetCompanyName( targetCompanyNameArray[i] );						
+//						okrTask.setActivityName( "工作阅知" );
+//						okrTask.setArriveDateTime( now );
+//						okrTask.setArriveDateTimeStr( dateOperation.getDateStringFromDate( now, "yyyy-MM-dd HH:mm:ss" ) );						
+//						okrTask.setDynamicObjectId( okrWorkBaseInfo.getId() );
+//						okrTask.setDynamicObjectTitle( okrWorkBaseInfo.getTitle() );
+//						okrTask.setDynamicObjectType( "具体工作" );
+//						okrTask.setProcessType( "READ" );
+//						okrTask.setStatus( "正常" );	
+//						okrTask.setViewUrl( "" );
+//						okrTaskList.add( okrTask );
+//					}
+//				}else{
+//					throw new Exception( "ReadLeader name( "+targetName+" ), organization( "+targetOrganizationName+" ), company( "+targetOrganizationNameArray+" ) split by ',', array length is not same, can not create tasks!" );
+//				}
+//			}else{
+//				throw new Exception( "ReadLeader name( "+targetName+" ), organization( "+targetOrganizationName+" ), company( "+targetOrganizationNameArray+" ) split by ',', array length is not same, can not create tasks!" );
+//			}
+//		}else{
+//			throw new Exception( "ReadLeaderName is null, can not create any task!" );
+//		}
+//		return okrTaskList;
+//	}
+
 }

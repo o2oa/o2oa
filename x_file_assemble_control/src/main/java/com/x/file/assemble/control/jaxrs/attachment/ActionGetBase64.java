@@ -1,7 +1,5 @@
 package com.x.file.assemble.control.jaxrs.attachment;
 
-import static com.x.base.core.entity.StorageType.file;
-
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
@@ -13,7 +11,7 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutString;
 import com.x.base.core.project.server.StorageMapping;
 import com.x.file.assemble.control.ThisApplication;
-import com.x.file.core.entity.Attachment;
+import com.x.file.core.entity.personal.Attachment;
 
 public class ActionGetBase64 {
 
@@ -28,7 +26,7 @@ public class ActionGetBase64 {
 				throw new Exception(
 						"person{name:" + effectivePerson.getName() + "} access attachment{id:" + id + "} denied.");
 			}
-			StorageMapping mapping = ThisApplication.storageMappings.get(file, attachment.getStorage());
+			StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class, attachment.getStorage());
 			try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
 				attachment.readContent(mapping, output);
 				String value = Base64.encodeBase64String(output.toByteArray());

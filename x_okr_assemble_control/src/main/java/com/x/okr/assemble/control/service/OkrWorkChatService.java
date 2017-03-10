@@ -4,19 +4,17 @@ import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.HttpAttribute;
 import com.x.okr.assemble.control.Business;
-import com.x.okr.assemble.control.jaxrs.okrworkchat.WrapInFilter;
+import com.x.okr.assemble.control.jaxrs.okrworkchat.WrapInFilterWorkChat;
 import com.x.okr.assemble.control.jaxrs.okrworkchat.WrapInOkrWorkChat;
 import com.x.okr.entity.OkrWorkChat;
 
@@ -83,7 +81,7 @@ public class OkrWorkChatService{
 				emc.persist( okrWorkChat, CheckPersistType.all);	
 				emc.commit();
 			}catch( Exception e ){
-				logger.error( "OkrWorkChat update/ got a error!" );
+				logger.warn( "OkrWorkChat update/ got a error!" );
 				throw e;
 			}
 		}else{//没有传入指定的ID
@@ -94,7 +92,8 @@ public class OkrWorkChatService{
 				emc.persist( okrWorkChat, CheckPersistType.all);	
 				emc.commit();
 			}catch( Exception e ){
-				logger.error( "OkrWorkChat create got a error!", e);
+				logger.warn( "OkrWorkChat create got a error!" );
+				logger.error(e);
 				throw e;
 			}
 		}
@@ -109,13 +108,13 @@ public class OkrWorkChatService{
 	public void delete( String id ) throws Exception {
 		OkrWorkChat okrWorkChat = null;
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not delete any object." );
+			throw new Exception( "id is null, system can not delete any object." );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			okrWorkChat = emc.find(id, OkrWorkChat.class);
 			if (null == okrWorkChat) {
-				logger.error( "object is not exist {'id':'"+ id +"'}" );
+				throw new Exception( "object is not exist {'id':'"+ id +"'}" );
 			}else{
 				emc.beginTransaction( OkrWorkChat.class );
 				emc.remove( okrWorkChat, CheckRemoveType.all );
@@ -135,7 +134,7 @@ public class OkrWorkChatService{
 	 * @return
 	 * @throws Exception
 	 */
-	public List<OkrWorkChat> listChatNextWithFilter( String id, Integer count, WrapInFilter wrapIn ) throws Exception {
+	public List<OkrWorkChat> listChatNextWithFilter( String id, Integer count, WrapInFilterWorkChat wrapIn ) throws Exception {
 		Business business = null;
 		Object sequence = null;
 		if( wrapIn == null ){
@@ -145,7 +144,7 @@ public class OkrWorkChatService{
 			business = new Business(emc);
 			if( id != null && !"(0)".equals(id) && id.trim().length() > 20 ){
 				if (!StringUtils.equalsIgnoreCase( id, HttpAttribute.x_empty_symbol )) {
-					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkChat.class, ExceptionWhen.not_found), "sequence" );
+					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkChat.class ), "sequence" );
 				}
 			}
 			return business.okrWorkChatFactory().listNextWithFilter( id, count, sequence, wrapIn );
@@ -164,7 +163,7 @@ public class OkrWorkChatService{
 	 * @return
 	 * @throws Exception
 	 */
-	public List<OkrWorkChat> listChatPrevWithFilter( String id, Integer count, WrapInFilter wrapIn ) throws Exception {
+	public List<OkrWorkChat> listChatPrevWithFilter( String id, Integer count, WrapInFilterWorkChat wrapIn ) throws Exception {
 		Business business = null;
 		Object sequence = null;
 		if( wrapIn == null ){
@@ -174,7 +173,7 @@ public class OkrWorkChatService{
 			business = new Business(emc);
 			if( id != null && !"(0)".equals(id) && id.trim().length() > 20 ){
 				if (!StringUtils.equalsIgnoreCase( id, HttpAttribute.x_empty_symbol )) {
-					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkChat.class, ExceptionWhen.not_found), "sequence" );
+					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkChat.class ), "sequence" );
 				}
 			}
 			return business.okrWorkChatFactory().listPrevWithFilter( id, count, sequence, wrapIn );
@@ -193,7 +192,7 @@ public class OkrWorkChatService{
 	 * @return
 	 * @throws Exception
 	 */
-	public Long getChatCountWithFilter( WrapInFilter wrapIn ) throws Exception {
+	public Long getChatCountWithFilter( WrapInFilterWorkChat wrapIn ) throws Exception {
 		Business business = null;
 		if( wrapIn == null ){
 			throw new Exception( "wrapIn is null!" );

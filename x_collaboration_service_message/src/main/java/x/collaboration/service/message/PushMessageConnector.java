@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.gson.XGsonBuilder;
 import com.x.base.core.http.connection.HttpConnection;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.project.x_processplatform_assemble_surface;
 import com.x.base.core.project.server.Config;
 import com.x.collaboration.core.message.BaseMessage;
@@ -20,6 +22,8 @@ import com.x.organization.core.express.Organization;
 import com.x.organization.core.express.wrap.WrapPerson;
 
 public class PushMessageConnector {
+
+	private static Logger logger = LoggerFactory.getLogger(PushMessageConnector.class);
 
 	private static LinkedBlockingQueue<Object> Queue = new LinkedBlockingQueue<>();
 
@@ -87,6 +91,7 @@ public class PushMessageConnector {
 					push.setPassword(Config.collect().getPassword());
 					fillNotification(jsonElement, push);
 					if (null != push) {
+						logger.debug("send message:{}.", push);
 						HttpConnection.postAsString(
 								"http://collect.o2server.io:20080/o2_collect_assemble/jaxrs/collect/pushmessage/transfer",
 								null, gson.toJson(push));
@@ -114,18 +119,17 @@ public class PushMessageConnector {
 
 	private static PushMessage fillNotificationTask(TaskMessage message, PushMessage push) throws Exception {
 		JsonElement jsonElement = ThisApplication.applications.getQuery(x_processplatform_assemble_surface.class,
-				"task/" + message.getTask());
+				"work/" + message.getWork());
 		/** 如果无法取到task说明数据已经被删除或者已经失效 */
-		if (null != jsonElement) {
-			String title = XGsonBuilder.extractStringField(jsonElement, "title");
+		if ((null != jsonElement) && (jsonElement.isJsonObject())) {
+			/** title 数据包含在work内部 */
+			String title = XGsonBuilder.extractString(jsonElement, "work.title");
 			push.setTitle("您有新的待办需要处理:" + title);
 			push.setText("您有新的待办需要处理:" + title);
 			push.setTicker("待办提醒.");
 			return push;
-		} else {
-			return null;
 		}
-
+		return null;
 	}
 
 	private static class StopSignal {

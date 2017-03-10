@@ -36,7 +36,8 @@ public class UserManagerService {
 			business = new Business(emc);
 			identities = business.organization().identity().listWithPerson( employeeName );
 			if ( identities.size() == 0 ) {//该员工目前没有分配身份
-				throw new Exception( "can not get identity of person:" + employeeName + "." );
+				//throw new Exception( "can not get identity of person:" + employeeName + "." );
+				return null;
 			} else {
 				return identities.get(0).getDepartment();
 			}
@@ -59,7 +60,8 @@ public class UserManagerService {
 			business = new Business(emc);
 			identities = business.organization().identity().listWithPerson( employeeName );
 			if ( identities.size() == 0 ) {//该员工目前没有分配身份
-				throw new Exception( "can not get identity of person:" + employeeName + "." );
+				//throw new Exception( "can not get identity of person:" + employeeName + "." );
+				return null;
 			}
 			for( WrapIdentity identity : identities ){
 				departmentNames.add( identity.getDepartment() );
@@ -83,7 +85,8 @@ public class UserManagerService {
 			business = new Business(emc);
 			wrapDepartment = business.organization().department().getWithIdentity( identity );
 			if ( wrapDepartment == null ) {//该根据身份无法查询到组织信息
-				throw new Exception( "can not get organization of identity:" + identity + "." );
+				//throw new Exception( "can not get organization of identity:" + identity + "." );
+				return null;
 			} else {
 				return wrapDepartment.getName();
 			}
@@ -105,7 +108,8 @@ public class UserManagerService {
 			business = new Business(emc);
 			wrapCompany = business.organization().company().getWithIdentity( identity );
 			if ( wrapCompany == null ) {//该根据身份无法查询到组织信息
-				throw new Exception( "can not get company of identity:" + identity + "." );
+				//throw new Exception( "can not get company of identity:" + identity + "." );
+				return null;
 			} else {
 				return wrapCompany.getName();
 			}
@@ -129,7 +133,8 @@ public class UserManagerService {
 			business = new Business(emc);
 			identities = business.organization().identity().listWithPerson( employeeName );
 			if ( identities.size() == 0 ) {//该员工目前没有分配身份
-				throw new Exception( "can not get identity of person:" + employeeName + "." );
+				//throw new Exception( "can not get identity of person:" + employeeName + "." );
+				return null;
 			} else {
 				identity = identities.get(0).getName();
 			}
@@ -160,7 +165,8 @@ public class UserManagerService {
 			business = new Business(emc);
 			identities = business.organization().identity().listWithPerson( employeeName );
 			if ( identities.size() == 0 ) {
-				throw new Exception( "can not get identity of person:" + employeeName + "." );
+				//throw new Exception( "can not get identity of person:" + employeeName + "." );
+				return null;
 			}
 			for( WrapIdentity identity : identities ){
 				wrapCompany = business.organization().company().getWithIdentity( identity.getName() );
@@ -209,7 +215,8 @@ public class UserManagerService {
 			business = new Business(emc);
 			identities = business.organization().identity().listWithPerson( personName );
 			if ( identities.size() == 0 ) {//该员工目前没有分配身份
-				throw new Exception( "can not get identity of person:" + personName + "." );
+				//throw new Exception( "can not get identity of person:" + personName + "." );
+				return null;
 			} else {
 				return identities.get(0).getName();
 			}
@@ -515,4 +522,167 @@ public class UserManagerService {
 			throw e;
 		}
 	}
+
+	public List<String> listRoleNamesByPersonName( String name ) throws Exception {
+		Business business = null;
+		List<WrapRole> roleList = null;
+		List<String> nameList = new ArrayList<String>();
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			roleList = business.organization().role().listWithPerson( name );
+			if( roleList != null && roleList.size() > 0 ){
+				for( WrapRole role : roleList ){
+					nameList.add( role.getName() );
+				}
+			}
+		} catch ( Exception e ) {
+			throw e;
+		}
+		return nameList;
+	}
+	
+	public List<String> listGroupNamesByPersonName( String name ) throws Exception {
+		Business business = null;
+		List<WrapGroup>  groupList = null;
+		List<String> nameList = new ArrayList<String>();
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			groupList = business.organization().group().listWithPersonSupNested(name);
+			if( groupList != null && groupList.size() > 0 ){
+				for( WrapGroup group : groupList ){
+					nameList.add( group.getName() );
+				}
+			}
+		} catch ( Exception e ) {
+			throw e;
+		}
+		return nameList;
+	}
+	
+	public List<String> listDepartmentNamesByPersonName( String name, Boolean queryParents, Boolean queryCildren ) throws Exception {
+		Business business = null;
+		List<WrapDepartment> superDepartments = null;
+		List<WrapDepartment> departmentList = null;
+		List<String> nameList = new ArrayList<String>();
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			departmentList = business.organization().department().listWithPerson(name);
+			if( departmentList != null && departmentList.size() > 0 ){
+				for( WrapDepartment department : departmentList ){
+					nameList.add( department.getName() );
+					if( queryParents ){
+						superDepartments = business.organization().department().listSupNested(name);
+						if( superDepartments != null && !superDepartments.isEmpty() ){
+							for( WrapDepartment superDepartment : departmentList ){
+								nameList.add( superDepartment.getName() );
+							}
+						}
+					}
+					if( queryCildren ){
+						composeChildrenDepartmentNames( business, department.getName(), nameList );
+					}
+				}
+			}
+		} catch ( Exception e ) {
+			throw e;
+		}
+		return nameList;
+	}
+
+	private void composeChildrenDepartmentNames(Business business, String name, List<String> nameList) throws Exception {
+		if( nameList == null ){
+			nameList = new ArrayList<>();
+		}
+		List<WrapDepartment> subDepartments = business.organization().department().listSubNested(name);
+		if( subDepartments != null && !subDepartments.isEmpty() ){
+			for( WrapDepartment subDepartment : subDepartments ){
+				nameList.add( subDepartment.getName() );
+				composeChildrenDepartmentNames( business, subDepartment.getName(), nameList );
+			}
+		}
+	}
+	
+	public List<String> listCompanyNamesByPersonName( String name, Boolean queryParents, Boolean queryCildren ) throws Exception {
+		Business business = null;
+		List<WrapCompany> superCompanys = null;
+		List<WrapCompany> companyList = null;
+		List<String> nameList = new ArrayList<String>();
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			companyList = business.organization().company().listWithPerson( name );
+			if( companyList != null && companyList.size() > 0 ){
+				for( WrapCompany company : companyList ){
+					nameList.add( company.getName() );
+					if( queryParents ){
+						superCompanys = business.organization().company().listSupNested(name);
+						if( superCompanys != null && !superCompanys.isEmpty() ){
+							for( WrapCompany superCompany : companyList ){
+								nameList.add( superCompany.getName() );
+							}
+						}
+					}
+					if( queryCildren ){
+						composeChildrenCompanyNames( business, company.getName(), nameList );
+					}
+				}
+			}
+		} catch ( Exception e ) {
+			throw e;
+		}
+		return nameList;
+	}
+
+	private void composeChildrenCompanyNames(Business business, String name, List<String> nameList) throws Exception {
+		if( nameList == null ){
+			nameList = new ArrayList<>();
+		}
+		List<WrapCompany> subCompanys = business.organization().company().listSubNested(name);
+		if( subCompanys != null && !subCompanys.isEmpty() ){
+			for( WrapCompany subCompany : subCompanys ){
+				nameList.add( subCompany.getName() );
+				composeChildrenCompanyNames( business, subCompany.getName(), nameList );
+			}
+		}
+	}
+	
+	
+	public List<String> composeUserPermission( String name ) throws Exception {
+		List<String> permissionObjectCode = new ArrayList<>();
+		List<String> roleNames = null;
+		List<String> groupNames = null;
+		List<String> departmentNames = null;
+		List<String> companyNames = null;
+		permissionObjectCode.add( name );
+		//查询用户所属的角色
+		roleNames = listRoleNamesByPersonName( name );
+		//查询用户所在的群组
+		groupNames = listGroupNamesByPersonName( name );		
+		//查询用户所属的部门名称，上级链以及所有下级部门名称
+		departmentNames = listDepartmentNamesByPersonName( name, true, true );		
+		//查询用户所属的公司名称
+		companyNames = listCompanyNamesByPersonName( name, true, true );
+		//将所有的名称集中在一个List里，作为权限过滤条件
+		if( roleNames != null && !roleNames.isEmpty() ){
+			for( String roleName : roleNames ){
+				permissionObjectCode.add( roleName );
+			}
+		}
+		if( groupNames != null && !groupNames.isEmpty() ){
+			for( String groupName : groupNames ){
+				permissionObjectCode.add( groupName );
+			}
+		}
+		if( departmentNames != null && !departmentNames.isEmpty() ){
+			for( String departmentName : departmentNames ){
+				permissionObjectCode.add( departmentName );
+			}
+		}
+		if( companyNames != null && !companyNames.isEmpty() ){
+			for( String companyName : companyNames ){
+				permissionObjectCode.add( companyName );
+			}
+		}
+		return permissionObjectCode;
+	}
+	
 }

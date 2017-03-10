@@ -38,38 +38,39 @@ import com.x.processplatform.core.entity.element.Service;
 import com.x.processplatform.core.entity.element.Split;
 
 abstract class ActionBase {
-	protected static BeanCopyTools<Process, WrapOutProcess> processCopier = BeanCopyToolsBuilder.create(Process.class,
+	
+	static BeanCopyTools<Process, WrapOutProcess> processCopier = BeanCopyToolsBuilder.create(Process.class,
 			WrapOutProcess.class, null, WrapOutProcess.Excludes);
-	protected static BeanCopyTools<Agent, WrapOutAgent> agentCopier = BeanCopyToolsBuilder.create(Agent.class,
-			WrapOutAgent.class, null, WrapOutAgent.Excludes);
-	protected static BeanCopyTools<Begin, WrapOutBegin> beginCopier = BeanCopyToolsBuilder.create(Begin.class,
-			WrapOutBegin.class, null, WrapOutBegin.Excludes);
-	protected static BeanCopyTools<Cancel, WrapOutCancel> cancelCopier = BeanCopyToolsBuilder.create(Cancel.class,
+	static BeanCopyTools<Agent, WrapOutAgent> agentCopier = BeanCopyToolsBuilder.create(Agent.class, WrapOutAgent.class,
+			null, WrapOutAgent.Excludes);
+	static BeanCopyTools<Begin, WrapOutBegin> beginCopier = BeanCopyToolsBuilder.create(Begin.class, WrapOutBegin.class,
+			null, WrapOutBegin.Excludes);
+	static BeanCopyTools<Cancel, WrapOutCancel> cancelCopier = BeanCopyToolsBuilder.create(Cancel.class,
 			WrapOutCancel.class, null, WrapOutCancel.Excludes);
-	protected static BeanCopyTools<Choice, WrapOutChoice> choiceCopier = BeanCopyToolsBuilder.create(Choice.class,
+	static BeanCopyTools<Choice, WrapOutChoice> choiceCopier = BeanCopyToolsBuilder.create(Choice.class,
 			WrapOutChoice.class, null, WrapOutChoice.Excludes);
-	protected static BeanCopyTools<Condition, WrapOutCondition> conditionCopier = BeanCopyToolsBuilder
-			.create(Condition.class, WrapOutCondition.class, null, WrapOutCondition.Excludes);
-	protected static BeanCopyTools<Delay, WrapOutDelay> delayCopier = BeanCopyToolsBuilder.create(Delay.class,
-			WrapOutDelay.class, null, WrapOutDelay.Excludes);
-	protected static BeanCopyTools<Embed, WrapOutEmbed> embedCopier = BeanCopyToolsBuilder.create(Embed.class,
-			WrapOutEmbed.class, null, WrapOutEmbed.Excludes);
-	protected static BeanCopyTools<End, WrapOutEnd> endCopier = BeanCopyToolsBuilder.create(End.class, WrapOutEnd.class,
-			null, WrapOutEnd.Excludes);
-	protected static BeanCopyTools<Invoke, WrapOutInvoke> invokeCopier = BeanCopyToolsBuilder.create(Invoke.class,
+	static BeanCopyTools<Condition, WrapOutCondition> conditionCopier = BeanCopyToolsBuilder.create(Condition.class,
+			WrapOutCondition.class, null, WrapOutCondition.Excludes);
+	static BeanCopyTools<Delay, WrapOutDelay> delayCopier = BeanCopyToolsBuilder.create(Delay.class, WrapOutDelay.class,
+			null, WrapOutDelay.Excludes);
+	static BeanCopyTools<Embed, WrapOutEmbed> embedCopier = BeanCopyToolsBuilder.create(Embed.class, WrapOutEmbed.class,
+			null, WrapOutEmbed.Excludes);
+	static BeanCopyTools<End, WrapOutEnd> endCopier = BeanCopyToolsBuilder.create(End.class, WrapOutEnd.class, null,
+			WrapOutEnd.Excludes);
+	static BeanCopyTools<Invoke, WrapOutInvoke> invokeCopier = BeanCopyToolsBuilder.create(Invoke.class,
 			WrapOutInvoke.class, null, WrapOutInvoke.Excludes);
-	protected static BeanCopyTools<Manual, WrapOutManual> manualCopier = BeanCopyToolsBuilder.create(Manual.class,
+	static BeanCopyTools<Manual, WrapOutManual> manualCopier = BeanCopyToolsBuilder.create(Manual.class,
 			WrapOutManual.class, null, WrapOutManual.Excludes);
-	protected static BeanCopyTools<Merge, WrapOutMerge> mergeCopier = BeanCopyToolsBuilder.create(Merge.class,
-			WrapOutMerge.class, null, WrapOutMerge.Excludes);
-	protected static BeanCopyTools<Message, WrapOutMessage> messageCopier = BeanCopyToolsBuilder.create(Message.class,
+	static BeanCopyTools<Merge, WrapOutMerge> mergeCopier = BeanCopyToolsBuilder.create(Merge.class, WrapOutMerge.class,
+			null, WrapOutMerge.Excludes);
+	static BeanCopyTools<Message, WrapOutMessage> messageCopier = BeanCopyToolsBuilder.create(Message.class,
 			WrapOutMessage.class, null, WrapOutMessage.Excludes);
-	protected static BeanCopyTools<Parallel, WrapOutParallel> parallelCopier = BeanCopyToolsBuilder.create(Parallel.class,
+	static BeanCopyTools<Parallel, WrapOutParallel> parallelCopier = BeanCopyToolsBuilder.create(Parallel.class,
 			WrapOutParallel.class, null, WrapOutParallel.Excludes);
-	protected static BeanCopyTools<Service, WrapOutService> serviceCopier = BeanCopyToolsBuilder.create(Service.class,
+	static BeanCopyTools<Service, WrapOutService> serviceCopier = BeanCopyToolsBuilder.create(Service.class,
 			WrapOutService.class, null, WrapOutService.Excludes);
-	protected static BeanCopyTools<Split, WrapOutSplit> splitCopier = BeanCopyToolsBuilder.create(Split.class,
-			WrapOutSplit.class, null, WrapOutSplit.Excludes);
-	protected static BeanCopyTools<Route, WrapOutRoute> routeCopier = BeanCopyToolsBuilder.create(Route.class,
-			WrapOutRoute.class, null, WrapOutRoute.Excludes);
+	static BeanCopyTools<Split, WrapOutSplit> splitCopier = BeanCopyToolsBuilder.create(Split.class, WrapOutSplit.class,
+			null, WrapOutSplit.Excludes);
+	static BeanCopyTools<Route, WrapOutRoute> routeCopier = BeanCopyToolsBuilder.create(Route.class, WrapOutRoute.class,
+			null, WrapOutRoute.Excludes);
 }

@@ -35,7 +35,8 @@ public abstract class SliceEntityManagerContainerFactory {
 	// class 与 class 中需要检查 Remove 字段的对应表
 	protected Map<Class<? extends JpaObject>, Map<Field, CheckRemove>> checkRemoveFieldMap = new ConcurrentHashMap<Class<? extends JpaObject>, Map<Field, CheckRemove>>();
 
-	protected SliceEntityManagerContainerFactory(String webApplicationDirectory,DataMappings dataMappings) throws Exception {
+	protected SliceEntityManagerContainerFactory(String webApplicationDirectory, DataMappings dataMappings)
+			throws Exception {
 		Set<Class<? extends JpaObject>> classes = mergePersistenceXml(webApplicationDirectory, dataMappings);
 		for (Class<? extends JpaObject> clz : classes) {
 			checkPersistFieldMap.put(clz, this.loadCheckPersistField(clz));
@@ -47,8 +48,8 @@ public abstract class SliceEntityManagerContainerFactory {
 
 	/* 扫描受管实体,生成 x_perisitence.xml */
 	@SuppressWarnings("unchecked")
-	private Set<Class<? extends JpaObject>> mergePersistenceXml(String webApplicationDirectory, DataMappings dataMappings)
-			throws Exception {
+	private Set<Class<? extends JpaObject>> mergePersistenceXml(String webApplicationDirectory,
+			DataMappings dataMappings) throws Exception {
 		try {
 			Set<Class<? extends JpaObject>> classes = new HashSet<>();
 			File file = new File(webApplicationDirectory + "/WEB-INF/classes/" + persistence_xml_path);
@@ -57,7 +58,7 @@ public abstract class SliceEntityManagerContainerFactory {
 			for (Object o : document.getRootElement().elements("persistence-unit")) {
 				Element unit = (Element) o;
 				String name = unit.attribute("name").getValue();
-				System.out.println("try to load entity class:" + name);
+				// System.out.println("try to load entity class:" + name);
 				Element properties = unit.element("properties");
 				properties.clearContent();
 				for (Entry<String, String> entry : SlicePropertiesBuilder.getPropertiesDBCP(dataMappings.get(name))

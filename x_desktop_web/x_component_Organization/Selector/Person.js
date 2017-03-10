@@ -179,7 +179,8 @@ MWF.xApplication.Organization.Selector.Person = new Class({
 		}.bind(this));
 		this.cancelActionNode.addEvent("click", function(){this.fireEvent("cancel"); this.close();}.bind(this));
 	},
-	loadContent: function(){
+	loadContent: function( contentNode ){
+        if( contentNode )this.contentNode = contentNode;
         if (layout.mobile){
             if (this.options.count.toInt()!=1) this.loadSelectedNodeMobile();
             this.loadSelectNodeMobile();
@@ -427,9 +428,13 @@ MWF.xApplication.Organization.Selector.Person = new Class({
 
 	
 	loadSelectedNode: function(){
+        this.selectedContainerNode = new Element("div", {
+            "styles": this.css.selectedContainerNode
+        }).inject(this.contentNode);
+
 		this.selectedScrollNode = new Element("div", {
 			"styles": this.css.selectedScrollNode
-		}).inject(this.contentNode);
+		}).inject(this.selectedContainerNode);
 		
 		this.selectedNode = new Element("div", {
 			"styles": this.css.selectedNode

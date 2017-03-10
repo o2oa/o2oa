@@ -13,6 +13,7 @@ import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.WrapOutId;
+import com.x.base.core.project.server.Config;
 import com.x.base.core.utils.DateTools;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
@@ -34,7 +35,7 @@ public class ActionProcessing extends ActionBase {
 					.setCompletedTimeMonth(DateTools.format(readCompleted.getCompletedTime(), DateTools.format_yyyyMM));
 			readCompleted.setRead(read.getId());
 			/* 设置duration工作时长 */
-			long duration = business.workTime().betweenMinutes(readCompleted.getStartTime(),
+			long duration = Config.workTime().betweenMinutes(readCompleted.getStartTime(),
 					readCompleted.getCompletedTime());
 			readCompleted.setDuration(duration);
 			emc.persist(readCompleted, CheckPersistType.all);

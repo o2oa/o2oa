@@ -16,8 +16,6 @@ import com.x.bbs.assemble.control.AbstractFactory;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.entity.BBSReplyInfo;
 import com.x.bbs.entity.BBSReplyInfo_;
-import com.x.bbs.entity.BBSSubjectInfo;
-import com.x.bbs.entity.BBSSubjectInfo_;
 
 /**
  * 类   名：BBSReplyInfoFactory<br/>

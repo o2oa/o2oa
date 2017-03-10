@@ -36,8 +36,7 @@ public class StorageServerTools {
 			File keystoreFile = new File(Config.base(), "config/o2.keystore");
 			SslConfigurationFactory ssl = new SslConfigurationFactory();
 			ssl.setKeystoreFile(keystoreFile);
-			ssl.setKeystorePassword(
-					FileUtils.readFileToString(new File(Config.base(), "config/o2.keystore.password"), "UTF-8"));
+			ssl.setKeystorePassword(Config.token().getSsl());
 			factory.setSslConfiguration(ssl.createSslConfiguration());
 			factory.setImplicitSsl(true);
 		}
@@ -46,7 +45,7 @@ public class StorageServerTools {
 		serverFactory.setUserManager(calculateUserManager(storageServer.getCalculatedAccounts()));
 		FtpServer server = serverFactory.createServer();
 		server.start();
-		logger.info("storage server start completed on port:{}.", storageServer.getPort());
+		System.out.println("storage server start on port:" + storageServer.getPort() + ".");
 		return server;
 	}
 

@@ -4,14 +4,13 @@
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/test/resources"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="D:/x/lib/apache/commons/collections4/commons-collections4-4.0.jar"/>
 	<classpathentry kind="lib" path="D:/x/lib/apache/commons/lang3/commons-lang3-3.4.jar"/>
 	<classpathentry kind="lib" path="D:/x/lib/google/gson/gson-2.7.jar"/>
-	
 	<classpathentry kind="lib" path="D:/x/store/jars/x_base_core_project-4.0.0.jar"/>
-	<classpathentry kind="lib" path="D:/x/lib/ehcache/ehcache-2.10.1.jar"/>
-	<classpathentry kind="lib" path="D:/x/lib/apache/openjpa/openjpa-2.4.2-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/ehcache/ehcache-2.10.3.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/openjpa/openjpa-2.4.3-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="D:/x/lib/javax/javaee-api-7.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

@@ -14,6 +14,8 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.role.RoleDefinition;
 import com.x.base.core.utils.ListTools;
 import com.x.base.core.utils.SortTools;
@@ -26,9 +28,11 @@ import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.QueryView;
 import com.x.processplatform.core.entity.element.QueryView_;
 
-public class ActionList extends ActionBase {
+class ActionList extends ActionBase {
 
-	public ActionResult<List<WrapOutQueryView>> execute(EffectivePerson effectivePerson, String applicationFlag)
+	private static Logger logger = LoggerFactory.getLogger(ActionExecute.class);
+
+	ActionResult<List<WrapOutQueryView>> execute(EffectivePerson effectivePerson, String applicationFlag)
 			throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -71,6 +75,8 @@ public class ActionList extends ActionBase {
 			p = cb.or(p, root.get(QueryView_.availableIdentityList)
 					.in(this.listIdentity(business, effectivePerson.getName())));
 		}
+		p = cb.and(p, cb.equal(root.get(QueryView_.application), application.getId()));
+		p = cb.and(p, cb.notEqual(root.get(QueryView_.display), false));
 		cq.select(root.get(QueryView_.id)).where(p).distinct(true);
 		List<String> list = em.createQuery(cq).getResultList();
 		return list;

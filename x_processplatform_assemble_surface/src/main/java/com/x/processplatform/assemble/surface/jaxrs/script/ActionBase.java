@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.script;
 
-public abstract class ActionBase {
+import com.x.base.core.application.jaxrs.StandardJaxrsAction;
+
+abstract class ActionBase extends StandardJaxrsAction {
 
 }

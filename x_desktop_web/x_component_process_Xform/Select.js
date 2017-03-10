@@ -11,8 +11,6 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
         this.form = form;
         this.field = true;
     },
-
-
     _loadNode: function(){
         if (this.readonly){
             this._loadNodeRead();
@@ -42,6 +40,22 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
         }
     },
 
+    _loadEvents: function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
+                if (this.options.moduleEvents.indexOf(key)!=-1){
+                    this.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }else{
+                    this.node.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }
+            }
+        }.bind(this));
+    },
+
     _loadNodeEdit: function(){
 		var select = new Element("select");
 		select.set(this.json.properties);
@@ -63,6 +77,10 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
         }.bind(this));
 
 	},
+    resetOption: function(){
+        this.node.empty();
+        this.setOptions();
+    },
 	getOptions: function(){
 		if (this.json.itemType == "values"){
 			return this.json.itemValues;

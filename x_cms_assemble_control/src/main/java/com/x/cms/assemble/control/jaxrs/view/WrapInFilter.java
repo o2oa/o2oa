@@ -11,7 +11,7 @@ public class WrapInFilter extends GsonPropertyObject {
 
 	private String orderType;
 
-	private String catagoryId;
+	private String categoryId;
 
 	private String viewId;
 	
@@ -33,12 +33,12 @@ public class WrapInFilter extends GsonPropertyObject {
 		this.orderType = orderType;
 	}
 
-	public String getCatagoryId() {
-		return catagoryId;
+	public String getCategoryId() {
+		return categoryId;
 	}
 
-	public void setCatagoryId(String catagoryId) {
-		this.catagoryId = catagoryId;
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
 	}
 
 	public String getViewId() {

@@ -40,7 +40,7 @@ public class Attachment extends StorageObject {
 	private static final String TABLE = PersistenceProperties.Content.Attachment.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -53,7 +53,7 @@ public class Attachment extends StorageObject {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -113,7 +113,7 @@ public class Attachment extends StorageObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception{
 		this.extension = StringUtils.trimToEmpty(this.extension);
 		this.site = StringUtils.trimToEmpty(this.site);
 	}

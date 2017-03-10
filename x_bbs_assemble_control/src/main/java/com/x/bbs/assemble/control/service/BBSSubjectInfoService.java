@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.StorageType;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.project.server.StorageMapping;
 import com.x.bbs.assemble.common.date.DateOperation;
 import com.x.bbs.assemble.control.Business;
@@ -105,7 +103,36 @@ public class BBSSubjectInfoService {
 		emc.beginTransaction( BBSSubjectAttachment.class );
 		emc.beginTransaction( BBSSubjectContent.class );
 		emc.beginTransaction( BBSSubjectPictureBase64.class );
+		if( _subjectContent == null ){
+			_subjectContent = new BBSSubjectContent();
+			_subjectContent.setId( _bBSSubjectInfo.getId() );
+			_subjectContent.setContent( content );
+			emc.persist( _subjectContent, CheckPersistType.all);
+		}else{
+			_subjectContent.setContent( content );
+			emc.check( _sectionInfo_tmp, CheckPersistType.all );
+		}
+		if( _subjectPictureBase64 == null ){
+			if( pictureBase64 != null && !pictureBase64.isEmpty() ){
+				_subjectPictureBase64 = new BBSSubjectPictureBase64();
+				_subjectPictureBase64.setId( _bBSSubjectInfo.getId() );
+				_subjectPictureBase64.setPictureBase64( pictureBase64 );
+				emc.persist( _subjectPictureBase64, CheckPersistType.all);
+			}
+		}else{
+			if( pictureBase64 != null && !pictureBase64.isEmpty() ){
+				_subjectPictureBase64.setPictureBase64( pictureBase64 );
+				emc.check( _subjectPictureBase64, CheckPersistType.all );
+			}else{
+				emc.remove( _subjectPictureBase64, CheckRemoveType.all );
+			}
+		}
 		if( _subjectInfo_tmp == null ){
+			if( pictureBase64 != null && !pictureBase64.isEmpty() ){
+				_bBSSubjectInfo.setPictureUrl( _bBSSubjectInfo.getId() );
+			}else{
+				_bBSSubjectInfo.setPictureUrl( null );
+			}
 			emc.persist( _bBSSubjectInfo, CheckPersistType.all);
 			if( _forumInfo_tmp != null ){
 				_forumInfo_tmp.setSubjectTotalToday( _forumInfo_tmp.getSubjectTotalToday() + 1 );
@@ -119,25 +146,10 @@ public class BBSSubjectInfoService {
 			}
 		}else{
 			_bBSSubjectInfo.copyTo( _subjectInfo_tmp );
+			if( pictureBase64 != null && !pictureBase64.isEmpty() ){
+				_subjectInfo_tmp.setPictureUrl( _bBSSubjectInfo.getId() );
+			}
 			emc.check( _subjectInfo_tmp, CheckPersistType.all );
-		}
-		if( _subjectContent == null ){
-			_subjectContent = new BBSSubjectContent();
-			_subjectContent.setId( _bBSSubjectInfo.getId() );
-			_subjectContent.setContent( content );
-			emc.persist( _subjectContent, CheckPersistType.all);
-		}else{
-			_subjectContent.setContent( content );
-			emc.check( _sectionInfo_tmp, CheckPersistType.all );
-		}
-		if( _subjectPictureBase64 == null ){
-			_subjectPictureBase64 = new BBSSubjectPictureBase64();
-			_subjectPictureBase64.setId( _bBSSubjectInfo.getId() );
-			_subjectPictureBase64.setPictureBase64( pictureBase64 );
-			emc.persist( _subjectPictureBase64, CheckPersistType.all);
-		}else{
-			_subjectPictureBase64.setPictureBase64( pictureBase64 );
-			emc.check( _subjectPictureBase64, CheckPersistType.all );
 		}
 		//检查和绑定附件信息
 		//1、先查询所有的附件绑定信息
@@ -251,13 +263,14 @@ public class BBSSubjectInfoService {
 			for( String attachId : attachmentIds ){
 				try{
 					subjectAttachment = emc.find( attachId, BBSSubjectAttachment.class );
-					mapping = ThisApplication.storageMappings.get( StorageType.bbs, subjectAttachment.getStorage() );
+					mapping = ThisApplication.storageMappings.get( BBSSubjectAttachment.class, subjectAttachment.getStorage() );
 					if( subjectAttachment != null ){
 						subjectAttachment.deleteContent(mapping);
 						emc.remove( subjectAttachment, CheckRemoveType.all );
 					}
 				}catch( Exception e ){
-					logger.error( "delete subject attachment got an exception. id:" + attachId, e );
+					logger.warn( "delete subject attachment got an exception. id:" + attachId );
+					logger.error(e);
 				}
 			}
 		}

@@ -102,12 +102,14 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 		if (this.actionArea){
 			this._setActionAreaPosition();
 			this.actionArea.setStyle("display", "block");
-			
+			debugger;
 			var colspan = this.node.get("colspan").toInt() || 1;
 			var rowspan = this.node.get("rowspan").toInt() || 1;
 			if (colspan<=1 && rowspan<=1){
 				this.actionArea.getLast("div").setStyle("display", "none");
-			}
+			}else{
+                this.actionArea.getLast("div").setStyle("display", "block");
+            }
 		}
 	},
 	

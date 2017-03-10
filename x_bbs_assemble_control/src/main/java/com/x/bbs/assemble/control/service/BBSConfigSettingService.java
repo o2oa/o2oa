@@ -2,9 +2,8 @@ package com.x.bbs.assemble.control.service;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -60,7 +59,7 @@ public class BBSConfigSettingService{
 				emc.commit();
 			}
 		}catch( Exception e ){
-			logger.error( "BBSConfigSetting update/ got a error!" );
+			logger.warn( "BBSConfigSetting update/ got a error!" );
 			throw e;
 		}
 		return bbsConfigSetting;
@@ -85,7 +84,7 @@ public class BBSConfigSettingService{
 				throw new Exception("config setting '"+ bbsConfigSetting.getConfigCode() +"'  not exists");
 			}
 		}catch( Exception e ){
-			logger.error( "BBSConfigSetting update/ got a error!" );
+			logger.warn( "BBSConfigSetting update/ got a error!" );
 			throw e;
 		}
 		return bbsConfigSetting;
@@ -99,13 +98,13 @@ public class BBSConfigSettingService{
 	public void delete( String id ) throws Exception {
 		BBSConfigSetting bbsConfigSetting = null;
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not delete any object." );
+			throw new Exception( "id is null, system can not delete any object." );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			bbsConfigSetting = emc.find(id, BBSConfigSetting.class);
 			if (null == bbsConfigSetting) {
-				logger.error( "object is not exist {'id':'"+ id +"'}" );
+				logger.warn( "object is not exist {'id':'"+ id +"'}" );
 			}else{
 				emc.beginTransaction( BBSConfigSetting.class );
 				emc.remove( bbsConfigSetting, CheckRemoveType.all );
@@ -185,7 +184,8 @@ public class BBSConfigSettingService{
 			business = new Business(emc);
 			bbsConfigSetting = business.configSettingFactory().getWithConfigCode( configCode );
 		}catch( Exception e ){
-			logger.error( "system find system config{'configCode':'"+configCode+"'} got an exception. " , e );
+			logger.warn( "system find system config{'configCode':'"+configCode+"'} got an exception. " );
+			throw e;
 		}
 		//如果配置不存在，则新建一个配置记录
 		if( bbsConfigSetting == null ){
@@ -203,7 +203,8 @@ public class BBSConfigSettingService{
 				emc.persist( bbsConfigSetting, CheckPersistType.all );
 				emc.commit();
 			}catch( Exception e ){
-				logger.error("system persist new system config{'configCode':'"+configCode+"'} got an exception. " , e );
+				logger.warn("system persist new system config{'configCode':'"+configCode+"'} got an exception. " );
+				throw e;
 			}
 		}else{
 			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
@@ -230,7 +231,8 @@ public class BBSConfigSettingService{
 				emc.check( bbsConfigSetting, CheckPersistType.all );
 				emc.commit();
 			}catch( Exception e ){
-				logger.error("system update system config{'configCode':'"+configCode+"'} got an exception. " , e );
+				logger.warn("system update system config{'configCode':'"+configCode+"'} got an exception. "  );
+				throw e;
 			}
 		}
 	}
@@ -251,7 +253,8 @@ public class BBSConfigSettingService{
 		try {
 			checkAndInitSystemConfig("BBS_LOGO_NAME", "论坛系统名称", value, description, type, selectContent, isMultiple,  ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "system init system config 'BBS_LOGO_NAME' got an exception.", e );
+			logger.warn( "system init system config 'BBS_LOGO_NAME' got an exception." );
+			logger.error(e);
 		}
 		
 		value = "信息|问题|投票";
@@ -262,7 +265,8 @@ public class BBSConfigSettingService{
 		try {
 			checkAndInitSystemConfig("BBS_SUBJECT_TYPECATAGORY", "主题类别", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "system init system config 'BBS_SUBJECT_TYPECATAGORY' got an exception.", e );
+			logger.warn( "system init system config 'BBS_SUBJECT_TYPECATAGORY' got an exception." );
+			logger.error(e);
 		}
 	}
 }

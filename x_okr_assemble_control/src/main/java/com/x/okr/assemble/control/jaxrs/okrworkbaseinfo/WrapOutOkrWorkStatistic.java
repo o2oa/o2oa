@@ -12,51 +12,85 @@ public class WrapOutOkrWorkStatistic  {
 	public static List<String> Excludes = new ArrayList<String>();
 	
 	private String name = null;
-	private Long workTotal = 0L;
-	private Long processingWorkCount = 0L;
-	private Long completedWorkCount = 0L;
-	private Long overtimeWorkCount = 0L;
+	private Long responWorkTotal = 0L;
+	private Long responProcessingWorkCount = 0L;
+	private Long responCompletedWorkCount = 0L;
 	private Long draftWorkCount = 0L;
+	private Long overtimeResponWorkCount = 0L;
+	private Long overtimeCooperWorkCount = 0L;
+	private Long overtimeDeployWorkCount = 0L;
+	private Long overtimenessResponWorkCount = 0L;
+	private Long overtimenessCooperWorkCount = 0L;
+	private Long overtimenessDeployWorkCount = 0L;
 	private Double percent = 0.0;
-	
-	public Long getWorkTotal() {
-		return workTotal;
+	public String getName() {
+		return name;
 	}
-	public void setWorkTotal(Long workTotal) {
-		this.workTotal = workTotal;
+	public Long getResponWorkTotal() {
+		return responWorkTotal;
 	}
-	public Long getProcessingWorkCount() {
-		return processingWorkCount;
+	public Long getResponProcessingWorkCount() {
+		return responProcessingWorkCount;
 	}
-	public void setProcessingWorkCount(Long processingWorkCount) {
-		this.processingWorkCount = processingWorkCount;
-	}
-	public Long getCompletedWorkCount() {
-		return completedWorkCount;
-	}
-	public void setCompletedWorkCount(Long completedWorkCount) {
-		this.completedWorkCount = completedWorkCount;
-	}
-	public Long getOvertimeWorkCount() {
-		return overtimeWorkCount;
-	}
-	public void setOvertimeWorkCount(Long overtimeWorkCount) {
-		this.overtimeWorkCount = overtimeWorkCount;
+	public Long getResponCompletedWorkCount() {
+		return responCompletedWorkCount;
 	}
 	public Long getDraftWorkCount() {
 		return draftWorkCount;
 	}
-	public void setDraftWorkCount(Long draftWorkCount) {
-		this.draftWorkCount = draftWorkCount;
+	public Long getOvertimeResponWorkCount() {
+		return overtimeResponWorkCount;
 	}
-	public String getName() {
-		return name;
+	public Long getOvertimeCooperWorkCount() {
+		return overtimeCooperWorkCount;
+	}
+	public Long getOvertimeDeployWorkCount() {
+		return overtimeDeployWorkCount;
+	}
+	public Long getOvertimenessResponWorkCount() {
+		return overtimenessResponWorkCount;
+	}
+	public Long getOvertimenessCooperWorkCount() {
+		return overtimenessCooperWorkCount;
+	}
+	public Long getOvertimenessDeployWorkCount() {
+		return overtimenessDeployWorkCount;
+	}
+	public Double getPercent() {
+		return percent;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Double getPercent() {
-		return percent;
+	public void setResponWorkTotal(Long responWorkTotal) {
+		this.responWorkTotal = responWorkTotal;
+	}
+	public void setResponProcessingWorkCount(Long responProcessingWorkCount) {
+		this.responProcessingWorkCount = responProcessingWorkCount;
+	}
+	public void setResponCompletedWorkCount(Long responCompletedWorkCount) {
+		this.responCompletedWorkCount = responCompletedWorkCount;
+	}
+	public void setDraftWorkCount(Long draftWorkCount) {
+		this.draftWorkCount = draftWorkCount;
+	}
+	public void setOvertimeResponWorkCount(Long overtimeResponWorkCount) {
+		this.overtimeResponWorkCount = overtimeResponWorkCount;
+	}
+	public void setOvertimeCooperWorkCount(Long overtimeCooperWorkCount) {
+		this.overtimeCooperWorkCount = overtimeCooperWorkCount;
+	}
+	public void setOvertimeDeployWorkCount(Long overtimeDeployWorkCount) {
+		this.overtimeDeployWorkCount = overtimeDeployWorkCount;
+	}
+	public void setOvertimenessResponWorkCount(Long overtimenessResponWorkCount) {
+		this.overtimenessResponWorkCount = overtimenessResponWorkCount;
+	}
+	public void setOvertimenessCooperWorkCount(Long overtimenessCooperWorkCount) {
+		this.overtimenessCooperWorkCount = overtimenessCooperWorkCount;
+	}
+	public void setOvertimenessDeployWorkCount(Long overtimenessDeployWorkCount) {
+		this.overtimenessDeployWorkCount = overtimenessDeployWorkCount;
 	}
 	public void setPercent(Double percent) {
 		this.percent = percent;

@@ -1,12 +1,14 @@
 package com.x.processplatform.service.processing.jaxrs.work;
 
+import java.util.List;
+
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.entity.StorageType;
 import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.project.server.StorageMapping;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.DataItem;
+import com.x.processplatform.core.entity.content.DataLobItem;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Review;
@@ -14,7 +16,6 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
-import com.x.processplatform.core.entity.content.tools.DataHelper;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ThisApplication;
 
@@ -24,9 +25,9 @@ import com.x.processplatform.service.processing.ThisApplication;
  * @author Rui
  *
  */
-public class ActionDelete {
+class ActionDelete {
 
-	protected WrapOutId execute(Business business, String id) throws Exception {
+	WrapOutId execute(Business business, String id) throws Exception {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		Work work = emc.find(id, Work.class, ExceptionWhen.not_found);
 		emc.beginTransaction(Task.class);
@@ -37,6 +38,7 @@ public class ActionDelete {
 		emc.beginTransaction(Attachment.class);
 		emc.beginTransaction(WorkLog.class);
 		emc.beginTransaction(DataItem.class);
+		emc.beginTransaction(DataLobItem.class);
 		emc.beginTransaction(Work.class);
 		emc.delete(Task.class, business.task().listWithWork(work.getId()));
 		emc.delete(TaskCompleted.class, business.taskCompleted().listWithWork(work.getId()));
@@ -47,8 +49,7 @@ public class ActionDelete {
 		for (Attachment o : emc.list(Attachment.class, business.attachment().listWithJob(work.getJob()))) {
 			if (!business.attachmentMultiReferenced(o.getId())) {
 				// 删除实际附件
-				StorageMapping mapping = ThisApplication.storageMappings.get(StorageType.processPlatform,
-						o.getStorage());
+				StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class, o.getStorage());
 				// 如果没有附件存储的对象就算了
 				if (null != mapping) {
 					o.deleteContent(mapping);
@@ -59,8 +60,15 @@ public class ActionDelete {
 		emc.delete(WorkLog.class, business.workLog().listWithWork(work.getId()));
 		// 没有其他拆分的work，那么删除Data
 		if (business.work().listWithJob(work.getJob()).size() == 1) {
-			DataHelper dataHelper = new DataHelper(emc, work);
-			dataHelper.remove();
+			List<DataItem> os = business.dataItem().listWithJobWithPath(work.getJob());
+			for (DataItem o : os) {
+				if (o.isLobItem()) {
+					DataLobItem lob = emc.find(o.getLobItem(), DataLobItem.class);
+					if (null != lob) {
+						emc.remove(lob);
+					}
+				}
+			}
 		}
 		emc.remove(work);
 		emc.commit();

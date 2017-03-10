@@ -39,7 +39,7 @@ public class Document extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.Document.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -52,7 +52,7 @@ public class Document extends SliceJpaObject {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -110,7 +110,7 @@ public class Document extends SliceJpaObject {
 	private String sequence;
 
 	/* 以上为 JpaObject 默认字段 */
-	private void onPersist() {
+	private void onPersist() throws Exception{
 		
 	}
 
@@ -126,31 +126,46 @@ public class Document extends SliceJpaObject {
 	@Index(name = TABLE + "_appId")
 	@CheckPersist(allowEmpty = true)
 	private String appId;
+	
+	@EntityFieldDescribe("应用名称")
+	@Column(name="xappName", length = JpaObject.length_96B )
+	@CheckPersist(allowEmpty = true)
+	private String appName;
 
 	@EntityFieldDescribe("分类ID")
-	@Column(name="xcatagoryId", length = AbstractPersistenceProperties.processPlatform_title_length )
-	@Index(name = TABLE + "_catagoryId")
-	@CheckPersist(allowEmpty = true)
-	private String catagoryId;
+	@Column(name="xcategoryId", length = JpaObject.length_id )
+	@Index(name = TABLE + "_categoryId")
+	@CheckPersist( allowEmpty = true )
+	private String categoryId;
 
+	@EntityFieldDescribe( "分类名称" )
+	@Column( name="xcategoryName", length = JpaObject.length_96B  )
+	@CheckPersist( allowEmpty = true )
+	private String categoryName;
+	
+	@EntityFieldDescribe( "分类名称" )
+	@Column( name="xcategoryAlias", length = JpaObject.length_96B  )
+	@CheckPersist( allowEmpty = true )
+	private String categoryAlias;
+	
 	@EntityFieldDescribe( "绑定的表单模板ID" )
 	@Column( name="xform", length = JpaObject.length_id )
-	@CheckPersist( simplyString = true, allowEmpty = true )
+	@CheckPersist( allowEmpty = true )
 	private String form;
 	
 	@EntityFieldDescribe( "绑定的表单模板名称" )
 	@Column( name="xformName", length = JpaObject.length_96B )
-	@CheckPersist( simplyString = true, allowEmpty = true )
+	@CheckPersist( allowEmpty = true )
 	private String formName;
 	
 	@EntityFieldDescribe( "绑定的阅读表单模板ID" )
 	@Column( name="xreadFormId", length = JpaObject.length_id )
-	@CheckPersist( simplyString = true, allowEmpty = true )
+	@CheckPersist( allowEmpty = true )
 	private String readFormId;
 	
 	@EntityFieldDescribe( "绑定的阅读表单模板名称" )
 	@Column( name="xreadFormName", length = JpaObject.length_96B )
-	@CheckPersist( simplyString = true, allowEmpty = true )
+	@CheckPersist( allowEmpty = true )
 	private String readFormName;
 	
 	@EntityFieldDescribe("创建人，可能为空，如果由系统创建。")
@@ -181,7 +196,12 @@ public class Document extends SliceJpaObject {
 	@Column(name="xdocStatus", length = JpaObject.length_16B )
 	@Index(name = TABLE + "_docStatus")
 	@CheckPersist(allowEmpty = true)
-	private String docStatus;
+	private String docStatus = "draft";
+	
+	@EntityFieldDescribe("文档被查看次数")
+	@Column(name="xviewCount" )
+	@CheckPersist( allowEmpty = true )
+	private Long viewCount = 0L;;
 	
 	@EntityFieldDescribe("文档发布时间")
 	@Column(name="xpublishTime" )
@@ -206,12 +226,12 @@ public class Document extends SliceJpaObject {
 		this.appId = appId;
 	}
 
-	public String getCatagoryId() {
-		return catagoryId;
+	public String getCategoryId() {
+		return categoryId;
 	}
 
-	public void setCatagoryId(String catagoryId) {
-		this.catagoryId = catagoryId;
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
 	}
 
 	public String getCreatorPerson() {
@@ -310,4 +330,40 @@ public class Document extends SliceJpaObject {
 		this.publishTime = publishTime;
 	}
 
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
+	public String getAppName() {
+		return appName;
+	}
+
+	public void setAppName(String appName) {
+		this.appName = appName;
+	}
+
+	public Long getViewCount() {
+		return viewCount;
+	}
+
+	public void setViewCount(Long viewCount) {
+		this.viewCount = viewCount;
+	}
+
+	public void addViewCount( Integer count ) {
+		this.viewCount = this.viewCount + count ;
+	}
+
+	public String getCategoryAlias() {
+		return categoryAlias;
+	}
+
+	public void setCategoryAlias(String categoryAlias) {
+		this.categoryAlias = categoryAlias;
+	}
+	
 }

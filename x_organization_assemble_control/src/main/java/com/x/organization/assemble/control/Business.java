@@ -146,7 +146,7 @@ public class Business {
 		}
 		if (StringUtils.isNotEmpty(companyId)) {
 			/* 不是顶级，判断其上层公司的权限 */
-			String personId = this.person().getWithName(effectivePerson.getName());
+			String personId = this.person().getWithName(effectivePerson.getName(), null);
 			List<String> hasControls = this.company().listWithControl(personId);
 			List<String> companies = this.company().listSupNested(companyId);
 			companies.add(companyId);
@@ -213,7 +213,7 @@ public class Business {
 	}
 
 	public boolean personHasRole(String personName, String roleName) throws Exception {
-		String personId = this.person().getWithName(personName);
+		String personId = this.person().getWithName(personName, null);
 		if (StringUtils.isEmpty(personId)) {
 			throw new Exception("person{name:" + personName + "} not existed.");
 		}
@@ -231,8 +231,4 @@ public class Business {
 		return false;
 	}
 
-	public void setPassword(Person person, String password) throws Exception {
-		person.setPassword(Crypto.encrypt(password, Config.token().getKey()));
-		person.setChangePasswordTime(new Date());
-	}
 }

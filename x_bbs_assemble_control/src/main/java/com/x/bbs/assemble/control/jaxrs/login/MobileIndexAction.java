@@ -10,9 +10,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
@@ -100,7 +99,8 @@ public class MobileIndexAction extends StandardJaxrsAction{
 		try {
 			sectionViewPermissionList = permissionInfoService.filterPermissionListByPermissionFunction( "SECTION_VIEW", permissionList );
 		} catch (Exception e) {
-			logger.error( "system filter SECTION_VIEW permission from user permission list got an exception!", e );
+			logger.warn( "system filter SECTION_VIEW permission from user permission list got an exception!" );
+			logger.error(e);
 			sectionViewPermissionList = null;
 		}
 		
@@ -114,14 +114,16 @@ public class MobileIndexAction extends StandardJaxrsAction{
 		try {
 			sectionInfoList = sectionInfoServiceAdv.viewMainSectionByForumId( wrapOutForumInfoForIndex.getId(), sectionIds );
 		} catch (Exception e) {
-			logger.error( "system query all mainSection info got an exception!", e );
+			logger.warn( "system query all mainSection info got an exception!" );
+			logger.error(e);
 		}
 		if( sectionInfoList != null && !sectionInfoList.isEmpty() ){
 			try {
 				wrapSectionInfoList = section_wrapout_copier.copy( sectionInfoList );
 				wrapOutForumInfoForIndex.setSectionInfoList( wrapSectionInfoList );
 			} catch (Exception e) {
-				logger.error( "system copy forum list to wraps got an exception!", e );
+				logger.warn( "system copy forum list to wraps got an exception!" );
+				logger.error(e);
 			}
 		}
 		return wrapOutForumInfoForIndex;
@@ -145,7 +147,8 @@ public class MobileIndexAction extends StandardJaxrsAction{
 		try {
 			forumViewPermissionList = permissionInfoService.filterPermissionListByPermissionFunction( "FORUM_VIEW", permissionList );
 		} catch (Exception e) {
-			logger.error( "system filter FORUM_VIEW permission from user permission list got an exception!", e );
+			logger.warn( "system filter FORUM_VIEW permission from user permission list got an exception!");
+			logger.error(e);
 			forumViewPermissionList = null;
 		}
 		
@@ -161,7 +164,8 @@ public class MobileIndexAction extends StandardJaxrsAction{
 				forumInfoList = new ArrayList<BBSForumInfo>();
 			}
 		} catch (Exception e) {
-			logger.error( "system query all forum info got an exception!", e );
+			logger.warn( "system query all forum info got an exception!" );
+			logger.error(e);
 			return null;
 		}
 		
@@ -169,7 +173,8 @@ public class MobileIndexAction extends StandardJaxrsAction{
 			try {
 				wraps = forum_wrapout_copier.copy( forumInfoList );
 			} catch (Exception e) {
-				logger.error( "system copy forum list to wraps got an exception!", e );
+				logger.warn( "system copy forum list to wraps got an exception!" );
+				logger.error(e);
 				return null;
 			}
 			
@@ -189,7 +194,8 @@ public class MobileIndexAction extends StandardJaxrsAction{
 			try {
 				permissionList = userManagerService.getUserPermissionInfoList( currentPerson.getName() );
 			} catch (Exception e) {
-				logger.error( "system get all user permission list from ThisApplication.userPermissionInfoMap got an exception!", e );
+				logger.warn( "system get all user permission list from ThisApplication.userPermissionInfoMap got an exception!" );
+				logger.error(e);
 				permissionList = null;
 			}
 		}

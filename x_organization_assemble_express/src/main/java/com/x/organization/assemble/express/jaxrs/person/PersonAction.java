@@ -57,9 +57,9 @@ public class PersonAction extends AbstractJaxrsAction {
 		ActionResult<WrapOutPerson> result = new ActionResult<>();
 		WrapOutPerson wrap = null;
 		try {
-			if (StringUtils.equalsIgnoreCase(Config.administrator().getName(), flag)) {
+			if (Config.token().isInitialManager(flag)) {
 				wrap = new WrapOutPerson();
-				Config.administrator().copyTo(wrap);
+				Config.token().initialManagerInstance().copyTo(wrap);
 			} else {
 				String cacheKey = "flag#" + flag;
 				Element element = cache.get(cacheKey);
@@ -93,9 +93,9 @@ public class PersonAction extends AbstractJaxrsAction {
 		ActionResult<WrapOutPerson> result = new ActionResult<>();
 		WrapOutPerson wrap = null;
 		try {
-			if (StringUtils.equalsIgnoreCase(Config.administrator().getName(), name)) {
+			if (Config.token().isInitialManager(name)) {
 				wrap = new WrapOutPerson();
-				Config.administrator().copyTo(wrap);
+				Config.token().initialManagerInstance().copyTo(wrap);
 			} else {
 				String cacheKey = "getWithName#" + name;
 				Element element = cache.get(cacheKey);
@@ -130,9 +130,9 @@ public class PersonAction extends AbstractJaxrsAction {
 		ActionResult<WrapOutPerson> result = new ActionResult<>();
 		WrapOutPerson wrap = null;
 		try {
-			if (StringUtils.equalsIgnoreCase(Config.administrator().getId(), identityName)) {
+			if (Config.token().isInitialManager(identityName)) {
 				wrap = new WrapOutPerson();
-				Config.administrator().copyTo(wrap);
+				Config.token().initialManagerInstance().copyTo(wrap);
 			} else {
 				String cacheKey = "getWithIdentity#" + identityName;
 				Element element = cache.get(cacheKey);
@@ -170,9 +170,9 @@ public class PersonAction extends AbstractJaxrsAction {
 		ActionResult<WrapOutPerson> result = new ActionResult<>();
 		WrapOutPerson wrap = null;
 		try {
-			if (StringUtils.equalsIgnoreCase(Config.administrator().getName(), credential)) {
+			if (Config.token().isInitialManager(credential)) {
 				wrap = new WrapOutPerson();
-				Config.administrator().copyTo(wrap);
+				Config.token().initialManagerInstance().copyTo(wrap);
 			} else {
 				String cacheKey = "getWithCredential#" + credential;
 				Element element = cache.get(cacheKey);
@@ -251,8 +251,8 @@ public class PersonAction extends AbstractJaxrsAction {
 					Business business = new Business(emc);
 					String companyId = business.company().getWithName(companyName);
 					if (StringUtils.isNotEmpty(companyId)) {
-						List<String> companyIds = ListTools
-								.concreteArrayList(business.company().listSubNested(companyId), true, true, companyId);
+						List<String> companyIds = ListTools.trim(business.company().listSubNested(companyId), true,
+								true, companyId);
 						List<String> departmentIds = new ArrayList<>();
 						for (String str : companyIds) {
 							departmentIds.addAll(business.department().listWithCompanySubNested(str));

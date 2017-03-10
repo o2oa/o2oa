@@ -10,21 +10,21 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.QueryView;
+import com.x.processplatform.core.entity.element.QueryStat;
 
 class ActionDelete extends ActionBase {
 	ActionResult<WrapOutId> execute(EffectivePerson effectivePerson, String id) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<WrapOutId> result = new ActionResult<>();
 			Business business = new Business(emc);
-			emc.beginTransaction(QueryView.class);
-			QueryView queryView = emc.find(id, QueryView.class, ExceptionWhen.not_found);
-			Application application = emc.find(queryView.getApplication(), Application.class, ExceptionWhen.not_found);
+			emc.beginTransaction(QueryStat.class);
+			QueryStat queryStat = emc.find(id, QueryStat.class, ExceptionWhen.not_found);
+			Application application = emc.find(queryStat.getApplication(), Application.class, ExceptionWhen.not_found);
 			business.applicationEditAvailable(effectivePerson, application, ExceptionWhen.not_allow);
-			emc.remove(queryView, CheckRemoveType.all);
+			emc.remove(queryStat, CheckRemoveType.all);
 			emc.commit();
-			ApplicationCache.notify(QueryView.class);
-			WrapOutId wrap = new WrapOutId(queryView.getId());
+			ApplicationCache.notify(QueryStat.class);
+			WrapOutId wrap = new WrapOutId(queryStat.getId());
 			result.setData(wrap);
 			return result;
 		}

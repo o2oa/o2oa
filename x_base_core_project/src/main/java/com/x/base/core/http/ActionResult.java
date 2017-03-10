@@ -1,22 +1,29 @@
 package com.x.base.core.http;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.exception.JaxrsBusinessLogicException;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.x.base.core.exception.PromptException;
 import com.x.base.core.gson.XGsonBuilder;
 
 public class ActionResult<T> implements Serializable {
 
 	private static final long serialVersionUID = 1484547449073789817L;
 
+	private static Gson gson = XGsonBuilder.instance();
+
 	private Type type = Type.success;
 
 	public enum Type {
-		success, warn, error
+		success, warn, error, connectFatal
 	}
 
 	private T data;
@@ -32,8 +39,8 @@ public class ActionResult<T> implements Serializable {
 	private Long position = 0L;
 
 	private String message = "";
-	
-	private String userMessage = "";
+
+	private String prompt;
 
 	public void setData(T data) {
 		this.data = data;
@@ -59,6 +66,28 @@ public class ActionResult<T> implements Serializable {
 		return data;
 	}
 
+	public T getData(Class<T> clz) throws Exception {
+		if (Objects.equals(this.type, Type.connectFatal)) {
+			throw new Exception(this.message);
+		}
+		if (null == data) {
+			return null;
+		}
+		return XGsonBuilder.instance().fromJson(gson.toJsonTree(data), clz);
+	}
+
+	public List<T> getListData(Class<T> clz) throws Exception {
+		if (Objects.equals(this.type, Type.connectFatal)) {
+			throw new Exception(this.message);
+		}
+		if (null == data) {
+			return new ArrayList<T>();
+		}
+		java.lang.reflect.Type listType = new TypeToken<ArrayList<T>>() {
+		}.getType();
+		return XGsonBuilder.instance().fromJson(gson.toJsonTree(data), listType);
+	}
+
 	public Type getType() {
 		return type;
 	}
@@ -69,19 +98,15 @@ public class ActionResult<T> implements Serializable {
 		return str;
 	}
 
-	public void error(JaxrsBusinessLogicException e) {
-		this.type = Type.error;
-		this.append(e.getMessage());
-	}
-
-	public void error(Exception e) {
-		this.type = Type.error;
-		this.append(e.toString());
-	}
-
 	public void error(Throwable th) {
-		this.type = Type.error;
-		this.append(th.toString());
+		if (th instanceof PromptException) {
+			this.type = Type.error;
+			this.prompt = th.getClass().getName();
+			this.append(th.getMessage());
+		} else {
+			this.type = Type.error;
+			this.append(th.getMessage());
+		}
 	}
 
 	public void warn(String message) {
@@ -119,12 +144,8 @@ public class ActionResult<T> implements Serializable {
 		this.count = count;
 	}
 
-	public String getUserMessage() {
-		return userMessage;
-	}
-
-	public void setUserMessage(String userMessage) {
-		this.userMessage = userMessage;
+	public String getPrompt() {
+		return prompt;
 	}
 
 }

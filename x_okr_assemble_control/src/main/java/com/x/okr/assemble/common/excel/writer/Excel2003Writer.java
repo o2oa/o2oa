@@ -30,6 +30,7 @@ public class Excel2003Writer {
 	 * @param fileName
 	 * @throws IOException
 	 */
+	@SuppressWarnings("resource")
 	public static void writeExcel(String fileName) throws IOException{
 			
 			// 创建excel2003对象

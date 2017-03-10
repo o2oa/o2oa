@@ -9,7 +9,6 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,7 +18,7 @@ import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.imgscalr.Scalr;
 
-import com.x.base.core.application.servlet.FileUploadServletTools;
+import com.x.base.core.application.servlet.AbstractServletAction;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.exception.ExceptionWhen;
@@ -32,7 +31,7 @@ import com.x.meeting.core.entity.Room;
 
 @WebServlet("/servlet/room/*")
 @MultipartConfig
-public class RoomServlet extends HttpServlet {
+public class RoomServlet extends AbstractServletAction {
 
 	private static final long serialVersionUID = 4202924267632769560L;
 
@@ -42,13 +41,13 @@ public class RoomServlet extends HttpServlet {
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		WrapOutId wrap = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			EffectivePerson effectivePerson = FileUploadServletTools.effectivePerson(request);
+			EffectivePerson effectivePerson = this.effectivePerson(request);
 			Business business = new Business(emc);
 			request.setCharacterEncoding("UTF-8");
 			if (!ServletFileUpload.isMultipartContent(request)) {
 				throw new Exception("not multi part request.");
 			}
-			String id = FileUploadServletTools.getURIPart(request.getRequestURI(), "room", "photo");
+			String id = this.getURIPart(request.getRequestURI(), "room");
 			Room room = emc.find(id, Room.class, ExceptionWhen.not_found);
 			business.roomEditAvailable(effectivePerson, room, ExceptionWhen.not_allow);
 			ServletFileUpload upload = new ServletFileUpload();
@@ -76,6 +75,6 @@ public class RoomServlet extends HttpServlet {
 			result.error(e);
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
-		FileUploadServletTools.result(response, result);
+		this.result(response, result);
 	}
 }

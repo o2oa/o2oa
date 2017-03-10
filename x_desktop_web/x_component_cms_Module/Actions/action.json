@@ -1,11 +1,11 @@
 {
   "getId" : {"uri":"/jaxrs/uuid/random"},
 
-  "listDocumentAll": {"uri" : "/jaxrs/document/list/catagory/{catagoryId}"},
+  "listDocumentAll": {"uri" : "/jaxrs/document/list/category/{categoryId}"},
   /*
   过滤条件：
     private List<NameValueCountPair> appIdList; //一个APPID   [{"appId":""}]
-    private List<NameValueCountPair> catagoryIdList;//一个CATAGORYID       [{"catagoryId":""}]
+    private List<NameValueCountPair> categoryIdList;//一个CATEGORYID       [{"categoryId":""}]
     private List<NameValueCountPair> creatorList;//一个创建人        [{"creatorUid":""}]
     private List<NameValueCountPair> statusList;//一个DOCSTATUS    [{"docStatus":""}]
     private List<NameValueCountPair> titleList;	//一个标题         [{"title":""}]
@@ -21,7 +21,7 @@
   {
       "orderField":"createTime",
       "orderType":"desc",
-      "catagoryId":"86b3a04e-a245-40e9-9580-615abda330b1",
+      "categoryId":"86b3a04e-a245-40e9-9580-615abda330b1",
       "viewId":"6e69d043-d8ae-4887-a8d1-e8fb2c981d7d",
       "searchDocStatus":"published"
   }
@@ -34,9 +34,9 @@
   "listPublishFilterAttribute": {"uri" : "/jaxrs/searchfilter/list/publish/filter"},
   "listArchiveFilterAttribute": {"uri" : "/jaxrs/searchfilter/list/archive/filter"},
 
-  "listCategoryDraftFilterAttribute": {"uri" : "/jaxrs/searchfilter/list/draft/filter/catagory/{catagoryId}"},
-  "listCategoryPublishFilterAttribute": {"uri" : "/jaxrs/searchfilter/list/publish/filter/catagory/{catagoryId}"},
-  "listCategoryArchiveFilterAttribute": {"uri" : "/jaxrs/searchfilter/list/archive/filter/catagory/{catagoryId}"},
+  "listCategoryDraftFilterAttribute": {"uri" : "/jaxrs/searchfilter/list/draft/filter/category/{categoryId}"},
+  "listCategoryPublishFilterAttribute": {"uri" : "/jaxrs/searchfilter/list/publish/filter/category/{categoryId}"},
+  "listCategoryArchiveFilterAttribute": {"uri" : "/jaxrs/searchfilter/list/archive/filter/category/{categoryId}"},
 
   "getDocument" : {"uri" : "/jaxrs/document/{id}"},
   "addDocument": {"uri" : "/jaxrs/document", "method": "POST"},
@@ -47,21 +47,22 @@
   "achiveDocument" : {"uri":"/jaxrs/document/achive/{id}","method":"PUT"}, //归档文档信息
   "redraftDocument" : {"uri":"/jaxrs/document/draft/{id}","method":"PUT"}, //恢复为草稿
 
-  "listColumnController" : {"uri": "/jaxrs/appcatagoryadmin/list/app/{appId}"},
+  "listColumnController" : {"uri": "/jaxrs/appcategoryadmin/list/app/{appId}"},
 
-  "listColumn": {"uri": "/jaxrs/appinfo/list/user" },
+  "listColumn": {"uri": "/jaxrs/appinfo/list/user/view" },
   "getColumn": {"uri": "/jaxrs/appinfo/{id}"},
 
-  "listCategory": {"uri": "/jaxrs/catagoryinfo/list/user/app/{appId}" },
-  "getCategory" : {"uri":"/jaxrs/catagoryinfo/{id}"},
+  "listCategory": {"uri": "/jaxrs/categoryinfo/list/view/app/{appId}" },
+  "listCategoryByPublisher": {"uri": "/jaxrs/categoryinfo/list/publish/app/{appId}" },
+  "getCategory" : {"uri":"/jaxrs/categoryinfo/{id}"},
 
   "getForm": {"uri": "/jaxrs/form/{id}"},
 //  "getDictionary": {"uri": "/jaxrs/appdict/{appDictId}"},
 //  "getScript": {"uri": "/jaxrs/script/{id}"},
 //  "getScriptByName": {"uri": "/jaxrs/script/list/app/{appId}/name/{name}"}
 
-  "listViewByCategory": {"uri" : "/jaxrs/view/list/catagory/{catagoryId}"},
+  "listViewByCategory": {"uri" : "/jaxrs/view/list/category/{categoryId}"},
   "getView" : {"uri" : "/jaxrs/view/{id}"},
-  "listCategoryViewByCatagory": {"uri" : "/jaxrs/viewcatagory/list/catagory/{catagoryId}"}
+  "listCategoryViewByCategory": {"uri" : "/jaxrs/viewcategory/list/category/{categoryId}"}
 
 }

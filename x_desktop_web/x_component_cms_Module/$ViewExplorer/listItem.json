@@ -5,6 +5,7 @@
     "contentStyles" : "titleAreaContentNode",
     "item" : "title",
     "name" : "titleAreaNode",
+    "sortByClickTitle" : "yes",
     "width" : "40%"
   },
   {
@@ -13,14 +14,16 @@
     "contentStyles" : "timeAreaContentNode",
     "item" : "createTime",
     "name" : "timeAreaNode",
+    "sortByClickTitle" : "yes",
     "width" : "18%"
   },
   {
     "title" : "创建人",
     "headStyles" : "personAreaHeadNode",
     "contentStyles" : "personAreaContentNode",
-    "item" : "creatorIdentity",
+    "item" : "creatorPerson",
     "name" : "personAreaNode",
+    "sortByClickTitle" : "yes",
     "width" : "15%"
   },
   {
@@ -29,6 +32,7 @@
     "contentStyles" : "departmentAreaContentNode",
     "item" : "creatorDepartment",
     "name" : "departmentAreaNode",
+    "sortByClickTitle" : "yes",
     "width" : "13%"
   },
   {

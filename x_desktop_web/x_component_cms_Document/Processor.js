@@ -22,7 +22,6 @@ MWF.xApplication.cms.Document.Processor = new Class({
         this.load();
 	},
     load: function(){
-        debugger;
         this.routeSelectorTile = new Element("div", {"styles": this.css.routeSelectorTile, "text": MWF.xApplication.cms.Document.LP.selectRoute}).inject(this.node);
         this.routeSelectorArea = new Element("div", {"styles": this.css.routeSelectorArea}).inject(this.node);
         this.setRouteList();

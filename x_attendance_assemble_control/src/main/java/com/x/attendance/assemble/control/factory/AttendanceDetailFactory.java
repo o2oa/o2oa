@@ -727,8 +727,6 @@ public class AttendanceDetailFactory extends AbstractFactory {
 	public long getCountWithFilter( WrapInFilter wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class );
-		DateOperation dateOperation = new DateOperation();
-		Date startDate = null, endDate = null;
 		List<Object> vs = new ArrayList<>();
 		StringBuffer sql_stringBuffer = new StringBuffer();
 		Integer index = 1;
@@ -877,5 +875,19 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		//一般始终为true, id is not null
 		Predicate p = cb.isNotNull( root.get(AttendanceDetail_.archiveTime) );
 		return em.createQuery(cq.where(p)).setMaxResults(2000).getResultList();
+	}
+
+	public List<String> listAnalysenessDetailsByEmployee( String empName ) throws Exception {
+		List<Integer> statusArray = new ArrayList<Integer>();
+		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<AttendanceDetail> root = cq.from( AttendanceDetail.class);
+		cq.select(root.get(AttendanceDetail_.id));
+		Predicate p = cb.equal( root.get( AttendanceDetail_.empName ), empName );
+		statusArray.add( 0 ); //未分析的
+		statusArray.add( -1 ); //有错误的
+		p = cb.and( p, root.get( AttendanceDetail_.recordStatus).in( statusArray ));
+		return em.createQuery(cq.where(p)).setMaxResults(10000).getResultList();
 	}
 }

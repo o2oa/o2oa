@@ -47,7 +47,7 @@ MWF.xApplication.cms.ColumnManager.ViewExplorer = new Class({
         var selectFormAreaNode = new Element("div", {"styles": this.css.selectFormTemplateAreaNode}).inject(this.app.content);
         selectFormAreaNode.fade("in");
 
-        var selectFormTitleNode = new Element("div",{"styles":this.css.selectFormTitleNode,"text":this.app.lp.view.selectRelativeForm}).inject(selectFormAreaNode);
+        var selectFormTitleNode = new Element("div",{"styles":this.css.createTemplateFormTitleNode,"text":this.app.lp.view.selectRelativeForm}).inject(selectFormAreaNode);
 
         var selectFormScrollNode = new Element("div", {"styles": this.css.selectFormScrollNode}).inject(selectFormAreaNode);
         var selectFormContentNode = new Element("div", {"styles": this.css.selectFormContentNode}).inject(selectFormScrollNode);

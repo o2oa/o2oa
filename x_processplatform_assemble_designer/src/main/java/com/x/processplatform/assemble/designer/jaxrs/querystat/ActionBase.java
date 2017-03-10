@@ -9,10 +9,10 @@ import com.x.processplatform.core.entity.element.QueryStat;
 
 class ActionBase extends StandardJaxrsAction {
 
-	protected BeanCopyTools<QueryStat, WrapOutQueryStat> outCopier = BeanCopyToolsBuilder.create(QueryStat.class,
+	static BeanCopyTools<QueryStat, WrapOutQueryStat> outCopier = BeanCopyToolsBuilder.create(QueryStat.class,
 			WrapOutQueryStat.class, null, WrapOutQueryStat.Excludes);
 
-	protected BeanCopyTools<WrapInQueryStat, QueryStat> inCopier = BeanCopyToolsBuilder.create(WrapInQueryStat.class,
+	static BeanCopyTools<WrapInQueryStat, QueryStat> inCopier = BeanCopyToolsBuilder.create(WrapInQueryStat.class,
 			QueryStat.class, null, WrapInQueryStat.Excludes);
 
 }

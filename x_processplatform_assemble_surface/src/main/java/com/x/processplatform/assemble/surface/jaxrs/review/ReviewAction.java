@@ -15,6 +15,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.NameValueCountPair;
 import com.x.base.core.http.ActionResult;
@@ -25,12 +26,16 @@ import com.x.base.core.http.WrapOutCount;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.WrapOutMap;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.wrapin.content.WrapInFilter;
 import com.x.processplatform.assemble.surface.wrapout.content.WrapOutRead;
 import com.x.processplatform.assemble.surface.wrapout.content.WrapOutReview;
 
 @Path("review")
 public class ReviewAction extends StandardJaxrsAction {
+
+	private static Logger logger = LoggerFactory.getLogger(ReviewAction.class);
 
 	@HttpMethodDescribe(value = "列示当前用户的Review对象,下一页.", response = WrapOutReview.class)
 	@GET
@@ -40,12 +45,12 @@ public class ReviewAction extends StandardJaxrsAction {
 	public Response listNext(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count) {
 		ActionResult<List<WrapOutReview>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListNext().execute(effectivePerson, id, count);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -58,12 +63,12 @@ public class ReviewAction extends StandardJaxrsAction {
 	public Response listPrev(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count) {
 		ActionResult<List<WrapOutReview>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListPrev().execute(effectivePerson, id, count);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -76,12 +81,12 @@ public class ReviewAction extends StandardJaxrsAction {
 	public Response listNextWithApplication(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count, @PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<List<WrapOutReview>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListNextWithApplication().execute(effectivePerson, id, count, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -94,12 +99,12 @@ public class ReviewAction extends StandardJaxrsAction {
 	public Response listPrevWithApplication(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count, @PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<List<WrapOutReview>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListPrevWithApplication().execute(effectivePerson, id, count, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -111,11 +116,12 @@ public class ReviewAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response countWithPerson(@Context HttpServletRequest request, @PathParam("credential") String credential) {
 		ActionResult<WrapOutCount> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCountWithPerson().execute(credential);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -128,12 +134,12 @@ public class ReviewAction extends StandardJaxrsAction {
 	public Response listNextWithProcess(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count, @PathParam("processFlag") String processFlag) {
 		ActionResult<List<WrapOutReview>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListNextWithProcess().execute(effectivePerson, id, count, processFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -146,12 +152,12 @@ public class ReviewAction extends StandardJaxrsAction {
 	public Response listPrevWithProcess(@Context HttpServletRequest request, @PathParam("id") String id,
 			@PathParam("count") Integer count, @PathParam("processFlag") String processFlag) {
 		ActionResult<List<WrapOutReview>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionListPrevWithProcess().execute(effectivePerson, id, count, processFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -163,12 +169,12 @@ public class ReviewAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response countWithApplication(@Context HttpServletRequest request) {
 		ActionResult<List<NameValueCountPair>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionCountWithApplication().execute(effectivePerson);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -181,29 +187,29 @@ public class ReviewAction extends StandardJaxrsAction {
 	public Response countWithProcess(@Context HttpServletRequest request,
 			@PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<List<NameValueCountPair>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionCountWithProcess().execute(effectivePerson, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "获取用于过滤的可选属性值", response = Map.class)
+	@HttpMethodDescribe(value = "获取可用与filter的分类值", response = Map.class)
 	@GET
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("filter/attribute")
 	public Response filterAttribute(@Context HttpServletRequest request) {
 		ActionResult<Map<String, List<NameValueCountPair>>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionFilterAttribute().execute(effectivePerson);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -214,14 +220,14 @@ public class ReviewAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listNextWithFilter(@Context HttpServletRequest request, @PathParam("id") String id,
-			@PathParam("count") Integer count, WrapInFilter wrapIn) {
+			@PathParam("count") Integer count, JsonElement jsonElement) {
 		ActionResult<List<WrapOutReview>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionListNextFilter().execute(effectivePerson, id, count, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ActionListNextFilter().execute(effectivePerson, id, count, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -232,31 +238,31 @@ public class ReviewAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listPrevWithFilter(@Context HttpServletRequest request, @PathParam("id") String id,
-			@PathParam("count") Integer count, WrapInFilter wrapIn) {
+			@PathParam("count") Integer count, JsonElement jsonElement) {
 		ActionResult<List<WrapOutReview>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionListPrevFilter().execute(effectivePerson, id, count, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ActionListPrevFilter().execute(effectivePerson, id, count, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "获取指定readCompleted后续的所有Work和WorkCompleted.", response = WrapOutMap.class)
+	@HttpMethodDescribe(value = "列示指定参考阅后续的所有Work和WorkCompleted.", response = WrapOutMap.class)
 	@GET
 	@Path("{id}/reference")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response reference(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutMap> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionReference().execute(effectivePerson, id);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -269,12 +275,12 @@ public class ReviewAction extends StandardJaxrsAction {
 	public Response manageDelete(@Context HttpServletRequest request,
 			@PathParam("applicationFlag") String applicationFlag, @PathParam("id") String id) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ManageDelete().execute(effectivePerson, id, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

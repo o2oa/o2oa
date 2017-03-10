@@ -29,20 +29,13 @@ public class x_okr_assemble_control extends Assemble {
 		containerEntities.add("com.x.okr.entity.OkrWorkDetailInfo");
 		containerEntities.add("com.x.okr.entity.OkrWorkDynamics");
 		containerEntities.add("com.x.okr.entity.OkrWorkPerson");
-		containerEntities.add("com.x.okr.entity.OkrWorkProblemInfo");
-		containerEntities.add("com.x.okr.entity.OkrWorkProblemPersonLink");
-		containerEntities.add("com.x.okr.entity.OkrWorkProblemProcessLog");
-		containerEntities.add("com.x.okr.entity.OkrWorkProcessLink");
 		containerEntities.add("com.x.okr.entity.OkrWorkReportBaseInfo");
 		containerEntities.add("com.x.okr.entity.OkrWorkReportDetailInfo");
 		containerEntities.add("com.x.okr.entity.OkrWorkReportPersonLink");
 		containerEntities.add("com.x.okr.entity.OkrWorkReportProcessLog");		
-		containerEntities.add("com.x.okr.entity.OkrPermissionInfo");
-		containerEntities.add("com.x.okr.entity.OkrPersonPermission");
-		containerEntities.add("com.x.okr.entity.OkrRoleInfo");
-		containerEntities.add("com.x.okr.entity.OkrRolePermission");
 		containerEntities.add("com.x.okr.entity.OkrWorkChat");
-		containerEntities.add("com.x.okr.entity.OkrCenterWorkReportStatistic");
+		containerEntities.add("com.x.okr.entity.OkrStatisticReportContent");
+		containerEntities.add("com.x.okr.entity.OkrStatisticReportStatus");
 		containerEntities.add("com.x.okr.entity.OkrUserInfo");
 
 		dependents.add(x_base_core_project.class);

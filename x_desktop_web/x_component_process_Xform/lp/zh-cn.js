@@ -71,5 +71,6 @@ MWF.xApplication.process.Xform.LP = {
     "completedEdit": "完成",
     "mobileGridHelp": "长按数据区域可编辑数据<br>向左滑动可以删除数据",
     "item": "▌条目",
-    "all": "全部"
+    "all": "全部",
+    "imageClipper" : "图片编辑"
 }

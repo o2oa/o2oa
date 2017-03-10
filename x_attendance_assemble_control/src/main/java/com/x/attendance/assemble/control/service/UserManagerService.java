@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.exception.PersonHasNoIdentityException;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.organization.core.express.wrap.WrapCompany;
@@ -32,7 +33,7 @@ public class UserManagerService {
 			business = new Business(emc);
 			identities = business.organization().identity().listWithPerson( employeeName );
 			if ( identities.size() == 0 ) {
-				throw new Exception( "can not get identity of person:" + employeeName + "." );
+				throw new PersonHasNoIdentityException( employeeName );
 			} else {
 				return identities.get(0).getDepartment();
 			}
@@ -55,7 +56,7 @@ public class UserManagerService {
 			business = new Business(emc);
 			identities = business.organization().identity().listWithPerson( employeeName );
 			if ( identities.size() == 0 ) {
-				throw new Exception( "can not get identity of person name:" + employeeName + "." );
+				throw new PersonHasNoIdentityException( employeeName );
 			} else {
 				wrapDepartment = business.organization().department().getWithIdentity( identities.get(0).getName() );
 				return wrapDepartment;
@@ -146,7 +147,7 @@ public class UserManagerService {
 			business = new Business(emc);
 			identities = business.organization().identity().listWithPerson( employeeName );
 			if ( identities.size() == 0 ) {//该员工目前没有分配身份
-				throw new Exception( "can not get identity of person:" + employeeName + "." );
+				throw new PersonHasNoIdentityException( employeeName );
 			} else {
 				identity = identities.get(0).getName();
 			}
@@ -177,7 +178,7 @@ public class UserManagerService {
 			business = new Business(emc);
 			identities = business.organization().identity().listWithPerson( employeeName );
 			if ( identities.size() == 0 ) {//该员工目前没有分配身份
-				throw new Exception( "can not get identity of person:" + employeeName + "." );
+				throw new PersonHasNoIdentityException( employeeName );
 			} else {
 				identity = identities.get(0).getName();
 			}

@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.surface.factory.element;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -74,6 +75,8 @@ public abstract class ElementFactory extends AbstractFactory {
 				em.detach(t);
 				list.add(t);
 			}
+			/* 将object改为unmodifiable */
+			list = Collections.unmodifiableList(list);
 			cache.put(new Element(cacheKey, list));
 		}
 		return list;

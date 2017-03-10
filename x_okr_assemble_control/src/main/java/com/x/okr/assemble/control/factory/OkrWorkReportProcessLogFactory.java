@@ -98,6 +98,7 @@ public class OkrWorkReportProcessLogFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<String> listNextWithFilter(String id, Integer count, Object sequence, WrapInFilter wrapIn) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( OkrWorkReportProcessLog.class);
@@ -151,6 +152,7 @@ public class OkrWorkReportProcessLogFactory extends AbstractFactory {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public List<String> listPrevWithFilter( String id, Integer count, Object sequence, WrapInFilter wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( OkrWorkReportProcessLog.class );

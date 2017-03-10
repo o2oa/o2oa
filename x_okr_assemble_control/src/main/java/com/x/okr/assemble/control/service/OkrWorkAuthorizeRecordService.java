@@ -2,9 +2,8 @@ package com.x.okr.assemble.control.service;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
@@ -66,7 +65,7 @@ public class OkrWorkAuthorizeRecordService{
 					emc.commit();
 				}
 			}catch( Exception e ){
-				logger.error( "OkrWorkAuthorizeRecord update/ got a error!" );
+				logger.warn( "OkrWorkAuthorizeRecord update/ got a error!" );
 				throw e;
 			}
 		}else{//没有传入指定的ID
@@ -77,7 +76,7 @@ public class OkrWorkAuthorizeRecordService{
 				emc.persist( okrWorkAuthorizeRecord, CheckPersistType.all);	
 				emc.commit();
 			}catch( Exception e ){
-				logger.error( "OkrWorkAuthorizeRecord create got a error!", e);
+				logger.warn( "OkrWorkAuthorizeRecord create got a error!", e);
 				throw e;
 			}
 		}
@@ -92,13 +91,13 @@ public class OkrWorkAuthorizeRecordService{
 	public void delete( String id ) throws Exception {
 		OkrWorkAuthorizeRecord okrWorkAuthorizeRecord = null;
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not delete any object." );
+			throw new Exception( "id is null, system can not delete any object." );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			okrWorkAuthorizeRecord = emc.find(id, OkrWorkAuthorizeRecord.class);
 			if (null == okrWorkAuthorizeRecord) {
-				logger.error( "object is not exist {'id':'"+ id +"'}" );
+				throw new Exception( "object is not exist {'id':'"+ id +"'}" );
 			}else{
 				emc.beginTransaction( OkrWorkAuthorizeRecord.class );
 				emc.remove( okrWorkAuthorizeRecord, CheckRemoveType.all );
@@ -118,7 +117,7 @@ public class OkrWorkAuthorizeRecordService{
 	public OkrWorkAuthorizeRecord getFirstAuthorizeRecord( String workId, String authorizeIdentity ) throws Exception {
 		Business business = null;
 		if( workId == null || workId.isEmpty() ){
-			logger.error( "workId is null, system can not delete any object." );
+			throw new Exception( "workId is null, system can not delete any object." );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
@@ -134,14 +133,14 @@ public class OkrWorkAuthorizeRecordService{
 	 * @return
 	 * @throws Exception
 	 */
-	public OkrWorkAuthorizeRecord getLastAuthorizeRecord( String workId, String identity ) throws Exception {
+	public OkrWorkAuthorizeRecord getLastAuthorizeRecord( String workId, String identity, String status ) throws Exception {
 		Business business = null;
 		if( workId == null || workId.isEmpty() ){
-			logger.error( "workId is null, system can not delete any object." );
+			throw new Exception( "workId is null, system can not delete any object." );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			return business.okrWorkAuthorizeRecordFactory().getLastAuthorizeRecord( workId, identity );
+			return business.okrWorkAuthorizeRecordFactory().getLastAuthorizeRecord( workId, identity, status );
 		} catch ( Exception e ) {
 			throw e;
 		}
@@ -150,7 +149,7 @@ public class OkrWorkAuthorizeRecordService{
 	public List<String> listByAuthorizor( String workId, String authorizeIdentity, Integer delegateLevel) throws Exception {
 		Business business = null;
 		if( workId == null || workId.isEmpty() ){
-			logger.error( "workId is null, system can not delete any object." );
+			throw new Exception( "workId is null, system can not delete any object." );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
@@ -163,7 +162,7 @@ public class OkrWorkAuthorizeRecordService{
 	public List<String> listByWorkId(String id) throws Exception {
 		Business business = null;
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not delete any object." );
+			throw new Exception( "id is null, system can not delete any object." );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
@@ -176,7 +175,7 @@ public class OkrWorkAuthorizeRecordService{
 	public List<OkrWorkAuthorizeRecord> list(List<String> ids) throws Exception {
 		Business business = null;
 		if( ids == null || ids.isEmpty() ){
-			logger.error( "ids is null, system can not delete any object." );
+			throw new Exception( "ids is null, system can not delete any object." );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);

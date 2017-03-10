@@ -56,6 +56,7 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
 		this.form = form;
         this.container = null;
         this.containerNode = null;
+        this.systemTools = [];
         //this.containers = [];
         //this.elements = [];
 	},
@@ -166,18 +167,27 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
                 "MWFButtonImage": this.path+""+this.options.style+"/tools/"+tool.img,
                 "title": tool.title,
                 "MWFButtonAction": tool.action,
-                "MWFButtonText": tool.text,
+                "MWFButtonText": tool.text
             }).inject(node);
+            this.systemTools.push(actionNode);
             if (tool.sub){
                 var subNode = node.getLast();
                 this.setToolbars(tool.sub, subNode);
             }
         }.bind(this));
     },
-
-
 	_setEditStyle_custom: function(name){
-		
+		if (name=="hideSystemTools"){
+            if (this.json.hideSystemTools){
+                this.systemTools.each(function(tool){
+                    tool.setStyle("display", "none");
+                });
+            }else{
+                this.systemTools.each(function(tool){
+                    tool.setStyle("display", "block");
+                });
+            }
+        }
 	}
 	
 });

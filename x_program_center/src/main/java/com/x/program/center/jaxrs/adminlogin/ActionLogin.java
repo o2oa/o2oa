@@ -13,7 +13,7 @@ import com.x.base.core.project.server.Config;
 public class ActionLogin {
 	public WrapOutAdminLogin execute(HttpServletRequest request, HttpServletResponse response, String credential,
 			String password) throws Exception {
-		if (!StringUtils.equalsIgnoreCase(credential, Config.administrator().getName())) {
+		if (!Config.token().isInitialManager(credential)) {
 			/* 管理员登陆 */
 			throw new Exception("credential not match.");
 		}
@@ -21,11 +21,11 @@ public class ActionLogin {
 			throw new Exception("password not match, credential:" + credential + ".");
 		}
 		HttpToken httpToken = new HttpToken();
-		EffectivePerson effectivePerson = new EffectivePerson(Config.administrator().getName(), TokenType.manager,
-				Config.token().getCipher());
+		EffectivePerson effectivePerson = new EffectivePerson(Config.token().initialManagerInstance().getName(),
+				TokenType.manager, Config.token().getCipher());
 		httpToken.setToken(request, response, effectivePerson);
 		WrapOutAdminLogin wrap = new WrapOutAdminLogin();
-		Config.administrator().copyTo(wrap);
+		Config.token().initialManagerInstance().copyTo(wrap);
 		wrap.setToken(effectivePerson.getToken());
 		wrap.setTokenType(TokenType.manager);
 		return wrap;

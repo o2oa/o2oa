@@ -1,9 +1,10 @@
 package com.x.attendance.assemble.control.task;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.TimerTask;
 
 import com.x.attendance.assemble.control.service.AttendanceStatisticServiceAdv;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 
 /**
  * 定时统计代理，定时对所有的统计需求进行统计
@@ -11,13 +12,13 @@ import com.x.attendance.assemble.control.service.AttendanceStatisticServiceAdv;
  * @author LIYI
  *
  */
-public class AttendanceStatisticTask implements Runnable {
+public class AttendanceStatisticTask extends TimerTask {
 
 	private Logger logger = LoggerFactory.getLogger( AttendanceStatisticTask.class );
 
 	public void run() {
 		AttendanceStatisticServiceAdv attendanceStatisticServiceAdv = new AttendanceStatisticServiceAdv();
 		attendanceStatisticServiceAdv.doStatistic();
-		logger.debug( "Timertask[AttendanceStatisticTask] completed and excute success." );
+		logger.info( "Timertask completed and excute success." );
 	}
 }

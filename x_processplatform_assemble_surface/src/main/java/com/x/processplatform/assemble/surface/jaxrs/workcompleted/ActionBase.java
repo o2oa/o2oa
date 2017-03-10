@@ -9,10 +9,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.entity.item.ItemConverter;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutMap;
 import com.x.base.core.utils.SortTools;
@@ -26,6 +28,10 @@ import com.x.processplatform.assemble.surface.wrapout.content.WrapOutReview;
 import com.x.processplatform.assemble.surface.wrapout.content.WrapOutTaskCompleted;
 import com.x.processplatform.assemble.surface.wrapout.content.WrapOutWorkCompleted;
 import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.Data;
+import com.x.processplatform.core.entity.content.DataItem;
+import com.x.processplatform.core.entity.content.DataItem_;
+import com.x.processplatform.core.entity.content.DataLobItem;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Review;
@@ -33,32 +39,33 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkCompleted_;
 import com.x.processplatform.core.entity.content.WorkLog;
-import com.x.processplatform.core.entity.content.tools.DataHelper;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
 abstract class ActionBase extends StandardJaxrsAction {
 
-	protected static BeanCopyTools<Attachment, WrapOutAttachment> attachmentOutCopier = BeanCopyToolsBuilder
+	static BeanCopyTools<Attachment, WrapOutAttachment> attachmentOutCopier = BeanCopyToolsBuilder
 			.create(Attachment.class, WrapOutAttachment.class, null, WrapOutAttachment.Excludes);
 
-	protected static BeanCopyTools<WorkCompleted, WrapOutWorkCompleted> workCompletedOutCopier = BeanCopyToolsBuilder
+	static BeanCopyTools<WorkCompleted, WrapOutWorkCompleted> workCompletedOutCopier = BeanCopyToolsBuilder
 			.create(WorkCompleted.class, WrapOutWorkCompleted.class, null, WrapOutWorkCompleted.Excludes);
 
-	protected static BeanCopyTools<TaskCompleted, WrapOutTaskCompleted> taskCompletedOutCopier = BeanCopyToolsBuilder
+	static BeanCopyTools<TaskCompleted, WrapOutTaskCompleted> taskCompletedOutCopier = BeanCopyToolsBuilder
 			.create(TaskCompleted.class, WrapOutTaskCompleted.class, null, WrapOutTaskCompleted.Excludes);
 
-	protected static BeanCopyTools<Read, WrapOutRead> readOutCopier = BeanCopyToolsBuilder.create(Read.class,
-			WrapOutRead.class, null, WrapOutRead.Excludes);
+	static BeanCopyTools<Read, WrapOutRead> readOutCopier = BeanCopyToolsBuilder.create(Read.class, WrapOutRead.class,
+			null, WrapOutRead.Excludes);
 
-	protected static BeanCopyTools<ReadCompleted, WrapOutReadCompleted> readCompletedOutCopier = BeanCopyToolsBuilder
+	static BeanCopyTools<ReadCompleted, WrapOutReadCompleted> readCompletedOutCopier = BeanCopyToolsBuilder
 			.create(ReadCompleted.class, WrapOutReadCompleted.class, null, WrapOutReadCompleted.Excludes);
 
-	protected static BeanCopyTools<Review, WrapOutReview> reviewOutCopier = BeanCopyToolsBuilder.create(Review.class,
+	static BeanCopyTools<Review, WrapOutReview> reviewOutCopier = BeanCopyToolsBuilder.create(Review.class,
 			WrapOutReview.class, null, WrapOutReview.Excludes);
 
-	protected WrapOutMap complexWithoutForm(Business business, EffectivePerson effectivePerson,
-			WorkCompleted workCompleted) throws Exception {
+	static ItemConverter<DataItem> itemConverter = new ItemConverter<>(DataItem.class);
+
+	WrapOutMap complexWithoutForm(Business business, EffectivePerson effectivePerson, WorkCompleted workCompleted)
+			throws Exception {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		WrapOutMap wrap = new WrapOutMap();
 		/* 装入WorkCompleted */
@@ -69,15 +76,16 @@ abstract class ActionBase extends StandardJaxrsAction {
 		wrap.put("workLogList", WorkLogBuilder.complex(business,
 				emc.list(WorkLog.class, business.workLog().listWithJob(workCompleted.getJob()))));
 		/* 装入Data */
-		DataHelper dataHelper = new DataHelper(business.entityManagerContainer(), workCompleted);
-		wrap.put("data", dataHelper.get());
+		// WorkCompletedDataHelper workCompletedDataHelper = new
+		// WorkCompletedDataHelper(business.entityManagerContainer(),
+		// workCompleted);
+		wrap.put("data", this.loadData(business, workCompleted));
 		Control control = business.getControlOfWorkCompleted(effectivePerson, workCompleted);
 		wrap.put("control", control);
 		return wrap;
 	}
 
-	protected String getApplicationName(Business business, EffectivePerson effectivePerson, String id)
-			throws Exception {
+	String getApplicationName(Business business, EffectivePerson effectivePerson, String id) throws Exception {
 		Application application = business.application().pick(id);
 		if (null != application) {
 			return application.getName();
@@ -97,7 +105,7 @@ abstract class ActionBase extends StandardJaxrsAction {
 		return null;
 	}
 
-	protected String getProcessName(Business business, EffectivePerson effectivePerson, String id) throws Exception {
+	String getProcessName(Business business, EffectivePerson effectivePerson, String id) throws Exception {
 		Process process = business.process().pick(id);
 		if (null != process) {
 			return process.getName();
@@ -117,8 +125,7 @@ abstract class ActionBase extends StandardJaxrsAction {
 		return null;
 	}
 
-	protected List<WrapOutTaskCompleted> listTaskCompleted(Business business, WorkCompleted workCompleted)
-			throws Exception {
+	List<WrapOutTaskCompleted> listTaskCompleted(Business business, WorkCompleted workCompleted) throws Exception {
 		List<WrapOutTaskCompleted> list = new ArrayList<>();
 		List<String> ids = business.taskCompleted().listWithWorkCompleted(workCompleted.getId());
 		List<TaskCompleted> os = business.entityManagerContainer().list(TaskCompleted.class, ids);
@@ -127,7 +134,7 @@ abstract class ActionBase extends StandardJaxrsAction {
 		return list;
 	}
 
-	protected List<WrapOutRead> listRead(Business business, WorkCompleted workCompleted) throws Exception {
+	List<WrapOutRead> listRead(Business business, WorkCompleted workCompleted) throws Exception {
 		List<WrapOutRead> list = new ArrayList<>();
 		List<String> ids = business.read().listWithWorkCompleted(workCompleted.getId());
 		List<Read> os = business.entityManagerContainer().list(Read.class, ids);
@@ -136,8 +143,7 @@ abstract class ActionBase extends StandardJaxrsAction {
 		return list;
 	}
 
-	protected List<WrapOutReadCompleted> listReadCompleted(Business business, WorkCompleted workCompleted)
-			throws Exception {
+	List<WrapOutReadCompleted> listReadCompleted(Business business, WorkCompleted workCompleted) throws Exception {
 		List<WrapOutReadCompleted> list = new ArrayList<>();
 		List<String> ids = business.readCompleted().listWithWorkCompleted(workCompleted.getId());
 		List<ReadCompleted> os = business.entityManagerContainer().list(ReadCompleted.class, ids);
@@ -146,7 +152,7 @@ abstract class ActionBase extends StandardJaxrsAction {
 		return list;
 	}
 
-	protected List<WrapOutReview> listReview(Business business, WorkCompleted workCompleted) throws Exception {
+	List<WrapOutReview> listReview(Business business, WorkCompleted workCompleted) throws Exception {
 		List<WrapOutReview> list = new ArrayList<>();
 		List<String> ids = business.review().listWithWorkCompleted(workCompleted.getId());
 		List<Review> os = business.entityManagerContainer().list(Review.class, ids);
@@ -155,13 +161,41 @@ abstract class ActionBase extends StandardJaxrsAction {
 		return list;
 	}
 
-	protected List<WrapOutAttachment> listAttachment(Business business, WorkCompleted workCompleted) throws Exception {
+	List<WrapOutAttachment> listAttachment(Business business, WorkCompleted workCompleted) throws Exception {
 		List<WrapOutAttachment> list = new ArrayList<>();
 		List<Attachment> os = business.entityManagerContainer().list(Attachment.class,
 				workCompleted.getAttachmentList());
 		list = attachmentOutCopier.copy(os);
 		SortTools.asc(list, "createTime");
 		return list;
+	}
+
+	Data loadData(Business business, WorkCompleted workCompleted) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(DataItem.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<DataItem> cq = cb.createQuery(DataItem.class);
+		Root<DataItem> root = cq.from(DataItem.class);
+		Predicate p = cb.equal(root.get(DataItem_.job), workCompleted.getJob());
+		List<DataItem> list = em.createQuery(cq.where(p)).getResultList();
+		for (DataItem o : list) {
+			if (o.isLobItem()) {
+				DataLobItem lob = business.entityManagerContainer().find(o.getLobItem(), DataLobItem.class);
+				if (null != lob) {
+					o.setStringLobValue(lob.getData());
+				}
+			}
+		}
+		if (list.isEmpty()) {
+			return new Data();
+		} else {
+			JsonElement jsonElement = itemConverter.assemble(list);
+			if (jsonElement.isJsonObject()) {
+				return gson.fromJson(jsonElement, Data.class);
+			} else {
+				/* 如果不是Object强制返回一个Map对象 */
+				return new Data();
+			}
+		}
 	}
 
 }

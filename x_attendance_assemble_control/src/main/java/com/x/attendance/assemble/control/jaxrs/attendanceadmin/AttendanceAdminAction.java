@@ -14,10 +14,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.x.attendance.assemble.control.jaxrs.WrapOutMessage;
+import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.service.AttendanceAdminServiceAdv;
 import com.x.attendance.assemble.control.service.UserManagerService;
 import com.x.attendance.entity.AttendanceAdmin;
@@ -28,13 +25,17 @@ import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
+import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 
 
 @Path("attendanceadmin")
 public class AttendanceAdminAction extends StandardJaxrsAction{
 	
 	private Logger logger = LoggerFactory.getLogger( AttendanceAdminAction.class );
+	
 	private BeanCopyTools<WrapInAttendanceAdmin, AttendanceAdmin> wrapin_copier = BeanCopyToolsBuilder.create( WrapInAttendanceAdmin.class, AttendanceAdmin.class, null, WrapInAttendanceAdmin.Excludes );
 	private BeanCopyTools<AttendanceAdmin, WrapOutAttendanceAdmin> wrapout_copier = BeanCopyToolsBuilder.create( AttendanceAdmin.class, WrapOutAttendanceAdmin.class, null, WrapOutAttendanceAdmin.Excludes);
 	private AttendanceAdminServiceAdv attendanceAdminServiceAdv = new AttendanceAdminServiceAdv();
@@ -49,17 +50,19 @@ public class AttendanceAdminAction extends StandardJaxrsAction{
 		ActionResult<List<WrapOutAttendanceAdmin>> result = new ActionResult<>();
 		List<WrapOutAttendanceAdmin> wraps = null;
 		List<AttendanceAdmin> attendanceAdminList = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
+		
 		if( check ){
 			try {
 				attendanceAdminList = attendanceAdminServiceAdv.listAll();
 			} catch (Exception e) {
 				check = false;
 				result.error( e );
-				result.setUserMessage("系统在获取所有管理员信息时发生异常！");
-				logger.error( "system list all attendance admin info got an exception.", e );
+				logger.error( new AttendanceAdminListAllException(), effectivePerson, request, null);
 			}
 		}
+		
 		if( check ){
 			if( attendanceAdminList != null && !attendanceAdminList.isEmpty() ){
 				try {
@@ -67,9 +70,9 @@ public class AttendanceAdminAction extends StandardJaxrsAction{
 					result.setData(wraps);
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage("系统在转换所有管理员信息为输出对象时发生异常！");
-					logger.error( "system copy all attendance admin info to wrap out got an exception.", e );
+					Exception exception = new AttendanceAdminWrapCopyException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
@@ -83,6 +86,7 @@ public class AttendanceAdminAction extends StandardJaxrsAction{
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutAttendanceAdmin> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapOutAttendanceAdmin wrap = null;
 		AttendanceAdmin attendanceAdmin = null;
 		Boolean check = true;
@@ -92,8 +96,9 @@ public class AttendanceAdminAction extends StandardJaxrsAction{
 			} catch (Exception e) {
 				check = false;
 				result.error( e );
-				result.setUserMessage("系统在根据ID获取管理员信息时发生异常！");
-				logger.error( "system get attendance admin info by id got an exception.", e );
+				Exception exception = new AttendanceAdminQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -103,43 +108,44 @@ public class AttendanceAdminAction extends StandardJaxrsAction{
 					result.setData(wrap);
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage("系统在转换管理员信息为输出对象时发生异常！");
-					logger.error( "system copy attendance admin info to wrap out got an exception.", e );
+					Exception exception = new AttendanceAdminWrapCopyException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
-				
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "新建或者更新AttendanceAdmin对象.", request = WrapInAttendanceAdmin.class, response = WrapOutMessage.class)
+	@HttpMethodDescribe(value = "新建或者更新AttendanceAdmin对象.", request = JsonElement.class, response = WrapOutId.class)
 	@POST
 	@Produces( HttpMediaType.APPLICATION_JSON_UTF_8 )
 	@Consumes( MediaType.APPLICATION_JSON )
-	public Response post(@Context HttpServletRequest request, WrapInAttendanceAdmin wrapIn) {
-		ActionResult<WrapOutMessage> result = new ActionResult<>();
-		WrapOutMessage wrapOutMessage = new WrapOutMessage();
+	public Response post(@Context HttpServletRequest request, JsonElement jsonElement ) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		WrapInAttendanceAdmin wrapIn = null;
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		AttendanceAdmin attendanceAdmin = null;
 		String companyName = null;
 		Boolean check = true;
 		
-		if( wrapIn == null){
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInAttendanceAdmin.class );
+		} catch (Exception e ) {
 			check = false;
-			result.error( new Exception("系统未获取到传入的参数，无法继续保存信息！") );
-			result.setUserMessage("系统未获取到传入的参数，无法继续保存信息！");
-			logger.error( "wrapIn object is null." );
-		}		
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
+		}
 		if( check ){
 			if( wrapIn.getOrganizationName() == null  || wrapIn.getOrganizationName().isEmpty() ){
 				try {
 					companyName = userManagerService.getCompanyNameByEmployeeName( currentPerson.getName() );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage("系统获取登录用户所属公司时发生异常！");
-					logger.error( "system get company name by user name got an exception{'name':'"+ currentPerson.getName() +"'}." );
+					Exception exception = new GetCurrentPersonCompanyNameException( e, currentPerson.getName() );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 				wrapIn.setOrganizationName( companyName );
 			}
@@ -151,39 +157,35 @@ public class AttendanceAdminAction extends StandardJaxrsAction{
 				if(  wrapIn.getId() != null && !wrapIn.getId().isEmpty() ){
 					attendanceAdmin.setId( wrapIn.getId() );
 				}
-			} catch (Exception e) {
+			} catch ( Exception e ) {
 				check = false;
-				wrapOutMessage.setStatus( "ERROR");
-				wrapOutMessage.setMessage( "系统在COPY传入信息到考勤员对象时发生异常." );
-				wrapOutMessage.setExceptionMessage( e.getMessage() );
-				logger.error( "system copy wrap in to attendance admin object got an exception.", e );
+				Exception exception = new AttendanceAdminWrapCopyException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
 			try {
 				attendanceAdmin = attendanceAdminServiceAdv.save( attendanceAdmin );
-				wrapOutMessage.setStatus( "SUCCESS");
-				wrapOutMessage.setMessage( attendanceAdmin.getId() );
-			} catch (Exception e) {
+				result.setData( new WrapOutId( attendanceAdmin.getId() ) );
+			} catch ( Exception e ) {
 				check = false;
-				wrapOutMessage.setStatus( "ERROR");
-				wrapOutMessage.setMessage( "保存AttendanceAdmin过程中发生异常." );
-				wrapOutMessage.setExceptionMessage( e.getMessage() );
-				logger.error( "system save attendance admin info got an exception.", e );
+				Exception exception = new AttendanceAdminSaveException( e );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
-		result.setData( wrapOutMessage );
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "根据ID删除AttendanceAdminAttendanceAdmin对象.", response = WrapOutMessage.class)
+	@HttpMethodDescribe(value = "根据ID删除AttendanceAdminAttendanceAdmin对象.", response = WrapOutId.class)
 	@DELETE
 	@Path("{id}")
 	@Produces( HttpMediaType.APPLICATION_JSON_UTF_8 )
 	@Consumes( MediaType.APPLICATION_JSON )
 	public Response delete( @Context HttpServletRequest request, @PathParam("id") String id ) {
-		ActionResult<WrapOutMessage> result = new ActionResult<>();
-		WrapOutMessage wrapOutMessage = new WrapOutMessage();
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson currentPerson = this.effectivePerson(request);
 		Boolean check = true;
 		
         if( check ){
@@ -195,16 +197,14 @@ public class AttendanceAdminAction extends StandardJaxrsAction{
         if( check ){
         	try {
         		attendanceAdminServiceAdv.delete( id );
-    			wrapOutMessage.setStatus("SUCCESS");
-    			wrapOutMessage.setMessage( "成功删除AttendanceAdmin信息。id=" + id );
+        		result.setData( new WrapOutId(id) );
     		} catch (Exception e) {
-    			wrapOutMessage.setStatus("ERROR");
-    			wrapOutMessage.setMessage( "删除AttendanceAdmin过程中发生异常。" );
-    			wrapOutMessage.setExceptionMessage( e.getMessage() );
-    			logger.error( "system delete attendance admin info got an exception.", e );
+    			check = false;
+    			Exception exception = new AttendanceAdminDeleteException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
     		}
         }
-        result.setData( wrapOutMessage );
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 }

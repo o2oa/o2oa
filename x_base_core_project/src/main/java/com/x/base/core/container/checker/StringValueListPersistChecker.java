@@ -28,6 +28,7 @@ import com.x.base.core.entity.annotation.Equal;
 import com.x.base.core.entity.annotation.NotEqual;
 import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.utils.ListTools;
+import com.x.base.core.utils.StringTools;
 
 public class StringValueListPersistChecker extends AbstractChecker {
 	public StringValueListPersistChecker(EntityManagerContainerBasic emc) {
@@ -95,8 +96,7 @@ public class StringValueListPersistChecker extends AbstractChecker {
 		if (checkPersist.simplyString()) {
 			for (String str : ListTools.nullToEmpty(values)) {
 				if (StringUtils.isNotEmpty(str)) {
-					Matcher matcher = CheckPattern.simply_pattern.matcher(str);
-					if (!matcher.find()) {
+					if (!StringTools.isSimply(str)) {
 						throw new Exception("check persist stringValueList simply error, class:"
 								+ jpa.getClass().getName() + ", field:" + field.getName() + ", values:"
 								+ StringUtils.join(values, ",") + "value:" + str + ".");
@@ -111,8 +111,7 @@ public class StringValueListPersistChecker extends AbstractChecker {
 		if (checkPersist.fileNameString()) {
 			for (String str : ListTools.nullToEmpty(values)) {
 				if (StringUtils.isNotEmpty(str)) {
-					Matcher matcher = CheckPattern.fileName_pattern.matcher(str);
-					if (!matcher.find()) {
+					if (!StringTools.isFileName(str)) {
 						throw new Exception("check persist stringValueList fileName error, class:"
 								+ jpa.getClass().getName() + ", field:" + field.getName() + ", values:"
 								+ StringUtils.join(values, ",") + "value:" + str + ".");
@@ -127,8 +126,7 @@ public class StringValueListPersistChecker extends AbstractChecker {
 		if (checkPersist.mailString()) {
 			for (String str : ListTools.nullToEmpty(values)) {
 				if (StringUtils.isNotEmpty(str)) {
-					Matcher matcher = CheckPattern.mail_pattern.matcher(str);
-					if (!matcher.find()) {
+					if (!StringTools.isMail(str)) {
 						throw new Exception("check persist stringValueList mail error, class:"
 								+ jpa.getClass().getName() + ", field:" + field.getName() + ", values:"
 								+ StringUtils.join(values, ",") + ", value:" + str + ".");
@@ -158,8 +156,7 @@ public class StringValueListPersistChecker extends AbstractChecker {
 		if (checkPersist.mobileString()) {
 			for (String str : ListTools.nullToEmpty(values)) {
 				if (StringUtils.isNotEmpty(str)) {
-					Matcher matcher = CheckPattern.mobile_pattern.matcher(str);
-					if (!matcher.find()) {
+					if (!StringTools.isMobile(str)) {
 						throw new Exception("check persist stringValueList mobile error, class:"
 								+ jpa.getClass().getName() + ", field:" + field.getName() + ", values:"
 								+ StringUtils.join(values, ",") + "value:" + str + ".");

@@ -6,16 +6,14 @@ import java.net.URLEncoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.application.servlet.FileUploadServletTools;
+import com.x.base.core.application.servlet.AbstractServletAction;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.StorageType;
 import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
@@ -28,7 +26,7 @@ import com.x.meeting.core.entity.Attachment;
 import com.x.meeting.core.entity.Meeting;
 
 @WebServlet(urlPatterns = "/servlet/attachment/download/*")
-public class DownloadServlet extends HttpServlet {
+public class DownloadServlet extends AbstractServletAction {
 
 	private static final long serialVersionUID = -4314532091497625540L;
 
@@ -37,8 +35,8 @@ public class DownloadServlet extends HttpServlet {
 			throws ServletException, IOException {
 		try {
 			request.setCharacterEncoding("UTF-8");
-			EffectivePerson effectivePerson = FileUploadServletTools.effectivePerson(request);
-			String part = FileUploadServletTools.getURIPart(request.getRequestURI(), "download");
+			EffectivePerson effectivePerson = this.effectivePerson(request);
+			String part = this.getURIPart(request.getRequestURI(), "download");
 			String id = part;
 			Boolean stream = false;
 			if (StringUtils.endsWith(part, "/stream")) {
@@ -52,7 +50,7 @@ public class DownloadServlet extends HttpServlet {
 				business.meetingReadAvailable(effectivePerson, meeting, ExceptionWhen.not_allow);
 				OutputStream output = response.getOutputStream();
 				this.setResponseHeader(response, stream, attachment);
-				StorageMapping mapping = ThisApplication.storageMappings.get(StorageType.meeting,
+				StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class,
 						attachment.getStorage());
 				attachment.readContent(mapping, output);
 			}
@@ -61,7 +59,7 @@ public class DownloadServlet extends HttpServlet {
 			ActionResult<Object> result = new ActionResult<>();
 			result.error(e);
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			FileUploadServletTools.result(response, result);
+			this.result(response, result);
 		}
 	}
 
@@ -72,7 +70,7 @@ public class DownloadServlet extends HttpServlet {
 			response.setHeader("Content-Disposition",
 					"attachment; filename=" + URLEncoder.encode(attachment.getName(), "utf-8"));
 		} else {
-			response.setHeader("Content-Type", Config.mimeTypes().getContentType(attachment.getName()));
+			response.setHeader("Content-Type", Config.mimeTypes().getMimeByExtension("." + attachment.getExtension()));
 			response.setHeader("Content-Disposition",
 					"inline; filename=" + URLEncoder.encode(attachment.getName(), "utf-8"));
 		}

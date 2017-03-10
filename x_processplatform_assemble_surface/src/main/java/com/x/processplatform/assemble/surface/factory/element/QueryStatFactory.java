@@ -32,6 +32,10 @@ public class QueryStatFactory extends ElementFactory {
 		super(abstractBusiness);
 	}
 
+	public QueryStat pick(String flag, Application application) throws Exception {
+		return this.pick(flag, application, ExceptionWhen.none);
+	}
+
 	public QueryStat pick(String flag, Application application, ExceptionWhen exceptionWhen) throws Exception {
 		Ehcache cache = ApplicationCache.instance().getCache(QueryStat.class);
 		String cacheKey = flag + "#" + application.getId();

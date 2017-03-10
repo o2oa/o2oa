@@ -16,4 +16,6 @@ public class RoleDefinition {
 
 	public final static String MeetingManager = "MeetingManager";
 
+	public final static String PortalManager = "PortalManager";
+
 }

@@ -12,7 +12,7 @@
 	<classpathentry kind="lib" path="D:/x/lib/javax/javaee-api-7.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="D:/x/store/jars/x_collaboration_core_entity-4.0.0.jar"/>
-	<classpathentry kind="lib" path="D:/x/lib/apache/openjpa/openjpa-2.4.2-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/openjpa/openjpa-2.4.3-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="D:/x/store/jars/x_organization_core_entity-4.0.0.jar"/>
 	<classpathentry kind="lib" path="D:/x/store/jars/x_organization_core_express-4.0.0.jar"/>
 	<classpathentry kind="lib" path="D:/x/store/jars/x_collaboration_core_message-4.0.0.jar"/>

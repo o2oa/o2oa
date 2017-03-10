@@ -8,6 +8,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.entity.Storage;
+import com.x.base.core.entity.StorageObject;
 import com.x.base.core.entity.StorageType;
 import com.x.base.core.project.server.StorageServer.Account;
 import com.x.base.core.utils.ListTools;
@@ -35,7 +37,7 @@ public class StorageMappings extends ConcurrentHashMap<StorageType, CopyOnWriteA
 				o.setEnable(true);
 				o.setHost(node);
 				o.setPassword(account.getPassword());
-				//o.setName(account.getName());
+				// o.setName(account.getName());
 				o.setPort(en.getValue().getPort());
 				o.setUsername(account.getUsername());
 				o.setProtocol(account.getProtocol());
@@ -47,7 +49,25 @@ public class StorageMappings extends ConcurrentHashMap<StorageType, CopyOnWriteA
 		}
 	}
 
-	public StorageMapping get(StorageType storageType, String name) {
+	private <T extends StorageObject> StorageType getStorageType(Class<T> clz) throws Exception {
+		Storage o = clz.getAnnotation(Storage.class);
+		if (null == o) {
+			throw new Exception(
+					"can not find " + Storage.class.getName() + " annotation in class: " + clz.getName() + ".");
+		}
+		StorageType type = o.type();
+		if (null == type) {
+			throw new Exception("can not find storageType in class: " + clz.getName() + ".");
+		}
+		return type;
+	}
+
+	public <T extends StorageObject> StorageMapping get(Class<T> clz, String name) throws Exception {
+		StorageType type = this.getStorageType(clz);
+		return this.get(type, name);
+	}
+
+	private StorageMapping get(StorageType storageType, String name) {
 		StorageMapping storageMapping = null;
 		CopyOnWriteArrayList<StorageMapping> list = this.get(storageType);
 		if (null != list) {
@@ -61,7 +81,12 @@ public class StorageMappings extends ConcurrentHashMap<StorageType, CopyOnWriteA
 		return storageMapping;
 	}
 
-	public StorageMapping random(StorageType type) throws Exception {
+	public <T extends StorageObject> StorageMapping random(Class<T> clz) throws Exception {
+		StorageType type = this.getStorageType(clz);
+		return this.random(type);
+	}
+
+	private StorageMapping random(StorageType type) throws Exception {
 		CopyOnWriteArrayList<StorageMapping> list = this.get(type);
 		if (ListTools.isEmpty(list)) {
 			throw new Exception("can not get storage of " + type);

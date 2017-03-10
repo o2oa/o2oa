@@ -8,6 +8,7 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.WrapOutId;
+import com.x.base.core.project.server.Config;
 import com.x.base.core.utils.DateTools;
 import com.x.processplatform.core.entity.content.ProcessingType;
 import com.x.processplatform.core.entity.content.Task;
@@ -46,7 +47,7 @@ public class ActionBase {
 		taskCompleted.setCompletedTime(date);
 		taskCompleted.setCompletedTimeMonth(DateTools.format(date, DateTools.format_yyyyMM));
 		taskCompleted.setCompleted(false);
-		taskCompleted.setDuration(business.workTime().betweenMinutes(taskCompleted.getStartTime(), date));
+		taskCompleted.setDuration(Config.workTime().betweenMinutes(taskCompleted.getStartTime(), date));
 		if ((null != task.getExpireTime()) && (date.after(task.getExpireTime()))) {
 			taskCompleted.setExpired(true);
 		} else {

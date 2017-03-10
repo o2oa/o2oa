@@ -39,6 +39,8 @@ public class WrapInFilter extends GsonPropertyObject {
 	private String infoType = "CenterWork"; // CenterWork | Work
 	
 	private List<String> infoStatuses = null;
+	
+	private Integer maxCharacterNumber = 30;
 
 	public String getSequenceField() {
 		return sequenceField;
@@ -251,4 +253,12 @@ public class WrapInFilter extends GsonPropertyObject {
 			processIdentities.add(identity);
 		}
 	}
+
+	public Integer getMaxCharacterNumber() {
+		return maxCharacterNumber;
+	}
+
+	public void setMaxCharacterNumber(Integer maxCharacterNumber) {
+		this.maxCharacterNumber = maxCharacterNumber;
+	}	
 }

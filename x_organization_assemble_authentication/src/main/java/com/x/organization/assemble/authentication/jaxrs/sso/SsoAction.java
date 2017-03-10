@@ -16,6 +16,8 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.x.base.core.Crypto;
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
@@ -37,6 +39,8 @@ import com.x.organization.core.entity.Role;
 @Path("sso")
 public class SsoAction extends StandardJaxrsAction {
 
+	private static Logger logger = LoggerFactory.getLogger(SsoAction.class);
+
 	@HttpMethodDescribe(value = "使用token进行Sso登陆。格式加密后的unique#1970年毫秒数", response = WrapOutId.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -51,6 +55,7 @@ public class SsoAction extends StandardJaxrsAction {
 				throw new Exception("token is empty.");
 			}
 			String content = null;
+			logger.debug("decrypt token:{}, sso:{}.", token, Config.token().getSso());
 			try {
 				byte[] bs = Crypto.decrypt(Base64.decodeBase64(token), Config.token().getSso().getBytes());
 				content = new String(bs, "utf-8");
@@ -71,7 +76,7 @@ public class SsoAction extends StandardJaxrsAction {
 			if (Math.abs((now.getTime() - date.getTime())) >= (60000 * 60 * 12)) {
 				throw new Exception("token is long time ago.");
 			}
-			if (StringUtils.equalsIgnoreCase(unique, Config.administrator().getName())) {
+			if (Config.token().isInitialManager(unique)) {
 				throw new Exception("can not sso admin.");
 			}
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

@@ -1,11 +1,17 @@
 package com.x.base.core.gson;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.x.base.core.utils.DateTools;
 import com.x.base.core.utils.temporal.DateTemporal;
 import com.x.base.core.utils.temporal.DateTimeTemporal;
@@ -37,18 +43,79 @@ public class XGsonBuilder {
 		return gson.setPrettyPrinting().create();
 	}
 
-	public static String toJson(Object o) throws Exception {
+	public static String toJson(Object o) {
 		return instance().toJson(o);
 	}
 
-	public static String extractStringField(JsonElement jsonElement, String name) {
-		if ((null != jsonElement) && jsonElement.isJsonObject()) {
-			JsonObject jsonObject = jsonElement.getAsJsonObject();
-			if (jsonObject.has(name)) {
-				return jsonObject.get(name).getAsString();
+	public static String toText(Object o) {
+		return instance().toJsonTree(o).toString();
+	}
+
+	public static String extractString(JsonElement jsonElement, String name) {
+		if ((null != jsonElement) && jsonElement.isJsonObject() && StringUtils.isNotEmpty(name)) {
+			JsonElement element = extract(jsonElement, name);
+			if (null != element && element.isJsonPrimitive()) {
+				JsonPrimitive jsonPrimitive = element.getAsJsonPrimitive();
+				if (jsonPrimitive.isString())
+					return jsonPrimitive.getAsString();
 			}
 		}
 		return null;
 	}
+
+	public static List<String> extractStringList(JsonElement jsonElement, String name) {
+		List<String> list = new ArrayList<>();
+		if ((null != jsonElement) && jsonElement.isJsonObject() && StringUtils.isNotEmpty(name)) {
+			JsonElement element = extract(jsonElement, name);
+			if (null != element) {
+				if (element.isJsonPrimitive()) {
+					JsonPrimitive jsonPrimitive = element.getAsJsonPrimitive();
+					if (jsonPrimitive.isString()) {
+						list.add(jsonPrimitive.getAsString());
+					}
+				} else if (element.isJsonArray()) {
+					JsonArray jsonArray = element.getAsJsonArray();
+					jsonArray.forEach(o -> {
+						if ((null != o) && o.isJsonPrimitive()) {
+							JsonPrimitive jsonPrimitive = o.getAsJsonPrimitive();
+							if (jsonPrimitive.isString()) {
+								list.add(jsonPrimitive.getAsString());
+							}
+						}
+					});
+				}
+			}
+		}
+		return list;
+	}
+
+	public static JsonElement extract(JsonElement jsonElement, String name) {
+		if ((null != jsonElement) && jsonElement.isJsonObject() && StringUtils.isNotEmpty(name)) {
+			JsonObject jsonObject = jsonElement.getAsJsonObject();
+			if (StringUtils.contains(name, ".")) {
+				String prefix = StringUtils.substringBefore(name, ".");
+				String surfix = StringUtils.substringAfter(name, ".");
+				if (jsonObject.has(prefix)) {
+					return extract(jsonObject.get(prefix), surfix);
+				}
+			} else {
+				if (jsonObject.has(name)) {
+					return jsonObject.get(name);
+				}
+			}
+		}
+		return null;
+	}
+
+	// public static String extractStringField(JsonElement jsonElement, String
+	// name) {
+	// if ((null != jsonElement) && jsonElement.isJsonObject()) {
+	// JsonObject jsonObject = jsonElement.getAsJsonObject();
+	// if (jsonObject.has(name)) {
+	// return jsonObject.get(name).getAsString();
+	// }
+	// }
+	// return null;
+	// }
 
 }

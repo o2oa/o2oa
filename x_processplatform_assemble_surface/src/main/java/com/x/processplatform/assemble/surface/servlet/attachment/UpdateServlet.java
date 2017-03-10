@@ -15,7 +15,6 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.application.servlet.FileUploadServletTools;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.Storage;
@@ -24,6 +23,8 @@ import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.project.server.StorageMapping;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
@@ -35,6 +36,8 @@ import com.x.processplatform.core.entity.content.Work;
 @MultipartConfig
 public class UpdateServlet extends BaseServlet {
 
+	private static Logger logger = LoggerFactory.getLogger(UpdateServlet.class);
+
 	private static final long serialVersionUID = 5628571943877405247L;
 
 	@HttpMethodDescribe(value = "更新Attachment对象.", response = WrapOutId.class)
@@ -42,13 +45,14 @@ public class UpdateServlet extends BaseServlet {
 			throws ServletException, IOException {
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		WrapOutId wrap = null;
+		EffectivePerson effectivePerson = null;
 		try {
 			request.setCharacterEncoding("UTF-8");
 			if (!ServletFileUpload.isMultipartContent(request)) {
 				throw new Exception("not multi part request.");
 			}
-			EffectivePerson effectivePerson = FileUploadServletTools.effectivePerson(request);
-			String part = FileUploadServletTools.getURIPart(request.getRequestURI(), "update");
+			effectivePerson = this.effectivePerson(request);
+			String part = this.getURIPart(request.getRequestURI(), "update");
 			String id = StringUtils.substringBefore(part, "/work/");
 			String workId = StringUtils.substringAfter(part, "/work/");
 			Attachment attachment = null;
@@ -75,8 +79,7 @@ public class UpdateServlet extends BaseServlet {
 				FileItemStream item = fileItemIterator.next();
 				try (InputStream input = item.openStream()) {
 					if (!item.isFormField()) {
-						StorageMapping mapping = ThisApplication.storageMappings
-								.random(Attachment.class.getAnnotation(Storage.class).type());
+						StorageMapping mapping = ThisApplication.storageMappings.random(Attachment.class);
 						try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 							emc.beginTransaction(Attachment.class);
 							// emc.beginTransaction(AttachmentLog.class);
@@ -95,11 +98,11 @@ public class UpdateServlet extends BaseServlet {
 				result.setData(wrap);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
-		FileUploadServletTools.result(response, result);
+		this.result(response, result);
 	}
 
 }

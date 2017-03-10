@@ -355,8 +355,8 @@
           "valueType": "script",
           "text": "",
           "script": {
-            "code": "return this.documentContext.getDocument().catagoryName",
-            "html": "return this.documentContext.getDocument().catagoryName"
+            "code": "return this.documentContext.getDocument().categoryName",
+            "html": "return this.documentContext.getDocument().categoryName"
           },
           "events": {
             "click": {

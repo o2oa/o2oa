@@ -7,9 +7,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.http.ActionResult;
@@ -36,7 +35,8 @@ public class LogoutAction extends StandardJaxrsAction{
 		try {
 			userManagerService.logout( currentPerson.getName() );
 		} catch (Exception e) {
-			logger.error( "system logout got an exception", e );
+			logger.warn( "system logout got an exception" );
+			logger.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

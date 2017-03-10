@@ -6,74 +6,70 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.bean.NameIdPair;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.gson.XGsonBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.wrapin.element.WrapInQueryExecute;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.QueryStat;
 import com.x.processplatform.core.entity.element.QueryView;
-import com.x.processplatform.core.entity.query.CalculateEntry;
+import com.x.processplatform.core.entity.query.Calculate;
 import com.x.processplatform.core.entity.query.DateRangeEntry;
 import com.x.processplatform.core.entity.query.FilterEntry;
 import com.x.processplatform.core.entity.query.Query;
 import com.x.processplatform.core.entity.query.SelectEntry;
 import com.x.processplatform.core.entity.query.WhereEntry;
 
-public class ActionExecute extends ActionBase {
+class ActionExecute extends ActionBase {
+
+	private static Logger logger = LoggerFactory.getLogger(ActionExecute.class);
 
 	private static Type filterEntryCollectionType = new TypeToken<List<FilterEntry>>() {
-	}.getType();
-
-	private static Type calculateEntryCollectionType = new TypeToken<List<CalculateEntry>>() {
 	}.getType();
 
 	private static Type stringCollectionType = new TypeToken<List<String>>() {
 	}.getType();
 
-	private Gson gson = XGsonBuilder.instance();
-
-	public ActionResult<Query> execute(EffectivePerson effectivePerson, String flag, String applicationFlag,
-			WrapInQueryExecute wrapIn) throws Exception {
+	ActionResult<Query> execute(EffectivePerson effectivePerson, String flag, String applicationFlag,
+			JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Query> result = new ActionResult<>();
+			WrapInQueryExecute wrapIn = this.convertToWrapIn(jsonElement, WrapInQueryExecute.class);
 			Business business = new Business(emc);
-			Application application = business.application().pick(applicationFlag, ExceptionWhen.not_found);
-			QueryStat queryStat = business.queryStat().pick(flag, application, ExceptionWhen.not_found);
-			QueryView queryView = business.queryView().pick(queryStat.getQueryView(), application,
-					ExceptionWhen.not_found);
+			Application application = business.application().pick(applicationFlag);
+			if (null == application) {
+				throw new ApplicationNotExistedException(applicationFlag);
+			}
+			QueryStat queryStat = business.queryStat().pick(flag, application);
+			if (null == queryStat) {
+				throw new QueryStatNotExistedException(flag, applicationFlag);
+			}
+			QueryView queryView = business.queryView().pick(queryStat.getQueryView(), application);
+			if (null == queryView) {
+				throw new QueryViewNotExistedException(flag, applicationFlag);
+			}
 			if (!business.queryView().allowRead(effectivePerson, queryView, application)) {
-				throw new Exception("insufficient permissions.");
+				throw new QueryViewAccessDeniedException(effectivePerson.getName(), queryView.getId(), applicationFlag);
 			}
 			Query query = gson.fromJson(queryView.getData(), Query.class);
-			/* 从queryStat里面取得calculate注入到query中 */
-			if (StringUtils.isNotBlank(queryStat.getCalculate())) {
-				JsonElement element = gson.fromJson(queryStat.getCalculate(), JsonElement.class);
-				if (null != element) {
-					List<CalculateEntry> list = new ArrayList<>();
-					if (element.isJsonObject()) {
-						CalculateEntry o = gson.fromJson(element, CalculateEntry.class);
-						if ((null != o) && o.available()) {
-							list.add(o);
-						}
-					} else if (element.isJsonArray()) {
-						List<CalculateEntry> os = gson.fromJson(element, calculateEntryCollectionType);
-						for (CalculateEntry o : os) {
-							if ((null != o) && o.available()) {
-								list.add(o);
-							}
-						}
+			/* 从queryStat里面取得data,并从中间分离出calculate注入到query中 */
+			if (StringUtils.isNotBlank(queryStat.getData())) {
+				JsonElement element = gson.fromJson(queryStat.getData(), JsonElement.class);
+				if (null != element && element.isJsonObject()) {
+					JsonObject jsonObject = element.getAsJsonObject();
+					if (jsonObject.has("calculate")) {
+						query.setCalculate(gson.fromJson(jsonObject.get("calculate"), Calculate.class));
 					}
-					query.setCalculateEntryList(list);
 				}
 			}
 			if (null != wrapIn) {
@@ -93,6 +89,14 @@ public class ActionExecute extends ActionBase {
 				}
 			}
 			query.query();
+			/* 整理一下输出值 */
+			if ((null != query.getGroupEntry()) && query.getGroupEntry().available()) {
+				query.setGrid(null);
+			}
+			if ((null != query.getCalculate()) && (query.getCalculate().available())) {
+				query.setGrid(null);
+				query.setGroupGrid(null);
+			}
 			result.setData(query);
 			return result;
 		}

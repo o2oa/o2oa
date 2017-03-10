@@ -11,27 +11,32 @@ import java.util.Set;
 import javax.websocket.Session;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.DefaultCharset;
 import com.x.base.core.application.Application;
-import com.x.base.core.http.WrapInListString;
+import com.x.base.core.http.WrapInStringList;
 import com.x.base.core.http.WrapOutOnline;
 import com.x.base.core.project.x_collaboration_assemble_websocket;
 import com.x.base.core.utils.ListTools;
 import com.x.collaboration.assemble.websocket.ThisApplication;
 
-public class ActionBase {
+abstract class ActionBase {
+
+	private static Logger logger = LoggerFactory.getLogger(ActionBase.class);
+
 
 	private static Type collectionType = new TypeToken<ArrayList<WrapOutOnline>>() {
 	}.getType();
 
-	protected Boolean getOnlineLocal(String person) throws Exception {
+	Boolean getOnlineLocal(String person) throws Exception {
 		Session session = ThisApplication.connections.get(person);
 		return (null == session || (!session.isOpen())) ? false : true;
 	}
 
-	protected Boolean getOnLineRemote(String person) throws Exception {
+	Boolean getOnLineRemote(String person) throws Exception {
 		List<Application> list = ThisApplication.applications.get(x_collaboration_assemble_websocket.class);
 		if (ListTools.isNotEmpty(list)) {
 			for (Application application : list) {
@@ -48,7 +53,7 @@ public class ActionBase {
 		return false;
 	}
 
-	protected List<WrapOutOnline> listOnlineLocal(WrapInListString wrapIn) throws Exception {
+	List<WrapOutOnline> listOnlineLocal(WrapInStringList wrapIn) throws Exception {
 		List<WrapOutOnline> wraps = new ArrayList<>();
 		if (ListTools.isNotEmpty(wrapIn.getValueList())) {
 			for (String str : wrapIn.getValueList()) {
@@ -67,7 +72,7 @@ public class ActionBase {
 		return wraps;
 	}
 
-	protected List<WrapOutOnline> listOnLineRemote(WrapInListString wrapIn) throws Exception {
+	List<WrapOutOnline> listOnLineRemote(WrapInStringList wrapIn) throws Exception {
 		List<WrapOutOnline> wraps = new ArrayList<>();
 		if (ListTools.isNotEmpty(wrapIn.getValueList())) {
 			for (String str : wrapIn.getValueList()) {
@@ -99,7 +104,7 @@ public class ActionBase {
 		return wraps;
 	}
 
-	protected List<WrapOutOnline> listOnlineAllLocal() throws Exception {
+	List<WrapOutOnline> listOnlineAllLocal() throws Exception {
 		List<WrapOutOnline> wraps = new ArrayList<>();
 		for (Entry<String, Session> entry : ThisApplication.connections.entrySet()) {
 			Session session = entry.getValue();
@@ -113,7 +118,7 @@ public class ActionBase {
 		return wraps;
 	}
 
-	protected List<WrapOutOnline> listOnLineAllRemote() throws Exception {
+	List<WrapOutOnline> listOnLineAllRemote() throws Exception {
 		Set<String> set = new HashSet<>();
 		List<Application> list = ThisApplication.applications.get(x_collaboration_assemble_websocket.class);
 		if (ListTools.isEmpty(list)) {

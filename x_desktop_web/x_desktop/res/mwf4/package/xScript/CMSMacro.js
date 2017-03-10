@@ -13,7 +13,7 @@ MWF.xScript.CMSMacro = MWF.CMSMacro = {
         try {
             var f = eval("(function(){\n"+code+"\n})");
             returnValue = f.apply(bind);
-        }catch(e){};
+        }catch(e){}
         //     }catch(e){}
 
 
@@ -45,7 +45,7 @@ MWF.CMSMacro.CMSFormContext = new Class({
             "status": form.businessData.status,
             "target": null,
             "event": null
-        }
+        };
         this.environment = new MWF.xScript.CMSEnvironment(environment);
     },
     setTarget: function(target){
@@ -82,4 +82,4 @@ MWF.CMSMacro.CMSFormContext = new Class({
 
 JSONObject = function(o){
 
-}
+};

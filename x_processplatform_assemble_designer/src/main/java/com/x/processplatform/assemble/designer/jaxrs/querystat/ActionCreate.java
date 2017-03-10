@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.designer.jaxrs.querystat;
 
 import java.util.Date;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.cache.ApplicationCache;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -17,9 +18,10 @@ import com.x.processplatform.core.entity.element.QueryStat;
 import com.x.processplatform.core.entity.element.QueryView;
 
 class ActionCreate extends ActionBase {
-	ActionResult<WrapOutId> execute(EffectivePerson effectivePerson, WrapInQueryStat wrapIn) throws Exception {
+	ActionResult<WrapOutId> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<WrapOutId> result = new ActionResult<>();
+			WrapInQueryStat wrapIn = this.convertToWrapIn(jsonElement, WrapInQueryStat.class);
 			Business business = new Business(emc);
 			Application application = emc.find(wrapIn.getApplication(), Application.class, ExceptionWhen.not_found);
 			business.applicationEditAvailable(effectivePerson, application, ExceptionWhen.not_allow);

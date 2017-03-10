@@ -32,6 +32,10 @@ public class QueryViewFactory extends ElementFactory {
 		super(abstractBusiness);
 	}
 
+	public QueryView pick(String flag, Application application) throws Exception {
+		return this.pick(flag, application, ExceptionWhen.none);
+	}
+
 	public QueryView pick(String flag, Application application, ExceptionWhen exceptionWhen) throws Exception {
 		Ehcache cache = ApplicationCache.instance().getCache(QueryView.class);
 		String cacheKey = flag + "#" + application.getId();

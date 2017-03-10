@@ -141,7 +141,7 @@ public class SlicePropertiesBuilder {
 			Map<String, String> properties = new LinkedHashMap<String, String>();
 			properties.put("openjpa.BrokerFactory", "slice");
 			properties.put("openjpa.jdbc.DBDictionary", determineDBDictionary(list.get(0)));
-			/* 如果是DB2 添加 Schema,mysql 不需要Schema 如果用了Schema H2数据库就会报错说没有Schema*/
+			/* 如果是DB2 添加 Schema,mysql 不需要Schema 如果用了Schema H2数据库就会报错说没有Schema */
 			if (StringUtils.equals(determineDBDictionary(list.get(0)), dictionary_db2)) {
 				properties.put("openjpa.jdbc.Schema", "x");
 			}
@@ -159,6 +159,7 @@ public class SlicePropertiesBuilder {
 			// org.apache.commons.dbcp2.managed.BasicManagedDataSource.class.getCanonicalName());
 			properties.put("openjpa.QueryCompilationCache", "false");
 			properties.put("openjpa.IgnoreChanges", "true");
+			properties.put("openjpa.QueryCache", "false");
 			properties.put("openjpa.jdbc.ResultSetType", "scroll-insensitive");
 			// properties.put("openjpa.DynamicEnhancementAgent", "true");
 			properties.put("openjpa.jdbc.SynchronizeMappings", "buildSchema(ForeignKeys=false)");
@@ -171,6 +172,7 @@ public class SlicePropertiesBuilder {
 			// "jndi(TransactionManagerName=java:/TransactionManager)");
 			/* 锁 */
 			properties.put("openjpa.LockManager", "none");
+			properties.put("openjpa.Log", "DefaultLevel=WARN");
 			for (int i = 0; i < list.size(); i++) {
 				String slice = getName(i);
 				DataMapping dataMapping = list.get(i);
@@ -185,6 +187,7 @@ public class SlicePropertiesBuilder {
 				// org.apache.commons.dbcp2.managed.BasicManagedDataSource.class.getCanonicalName());
 				properties.put("openjpa.slice." + slice + ".Log", getLog(dataMapping));
 				properties.put("openjpa.slice." + slice + ".IgnoreChanges", "true");
+				properties.put("openjpa.slice." + slice + ".QueryCache", "false");
 				properties.put("openjpa.slice." + slice + ".QueryCompilationCache", "false");
 				properties.put("openjpa.slice." + slice + ".LockManager", "none");
 				properties.put("openjpa.slice." + slice + ".ConnectionFactoryProperties",
@@ -327,7 +330,7 @@ public class SlicePropertiesBuilder {
 		}
 	}
 
-	/* 获取日志属性 */
+	/** 获取日志属性 */
 	protected static String getLog(DataMapping dataMapping) throws Exception {
 		try {
 			return "Tool=" + dataMapping.getToolLevel() + ", Enhance=" + dataMapping.getEnhanceLevel() + ", METADATA="

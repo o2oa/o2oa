@@ -8,6 +8,7 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.assemble.control.wrapin.WrapInRole;
+import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Role;
 
 public class ActionUpdate extends ActionBase {
@@ -24,6 +25,7 @@ public class ActionUpdate extends ActionBase {
 		emc.check(o, CheckPersistType.all);
 		emc.commit();
 		ApplicationCache.notify(Role.class);
+		ApplicationCache.notify(Person.class);
 		WrapOutId wrap = new WrapOutId(o.getId());
 		return wrap;
 	}

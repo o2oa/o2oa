@@ -1,7 +1,5 @@
 package com.x.file.assemble.control.jaxrs.attachment;
 
-import static com.x.base.core.entity.StorageType.file;
-
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 
@@ -20,7 +18,7 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutString;
 import com.x.base.core.project.server.StorageMapping;
 import com.x.file.assemble.control.ThisApplication;
-import com.x.file.core.entity.Attachment;
+import com.x.file.core.entity.personal.Attachment;
 
 public class ActionGetImageScaleBase64 extends ActionBase {
 
@@ -36,13 +34,13 @@ public class ActionGetImageScaleBase64 extends ActionBase {
 				throw new Exception(
 						"person{name:" + effectivePerson.getName() + "} access attachment{id:" + id + "} denied.");
 			}
-			if (!ArrayUtils.contains(ImageExtensions, attachment.getExtension())) {
+			if (!ArrayUtils.contains(IMAGE_EXTENSIONS, attachment.getExtension())) {
 				throw new Exception("attachment not image file.");
 			}
 			if (scale < 0 || scale > 100) {
 				throw new Exception("invaild scale:" + scale + ".");
 			}
-			StorageMapping mapping = ThisApplication.storageMappings.get(file, attachment.getStorage());
+			StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class, attachment.getStorage());
 			try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
 				attachment.readContent(mapping, output);
 				try (ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray())) {

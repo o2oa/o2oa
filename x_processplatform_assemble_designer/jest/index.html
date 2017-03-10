@@ -5,11 +5,13 @@
 <title>x_processplatform_front_designer</title>
 <script src="jquery.js"></script>
 <script src="common.js"></script>
+<script src="debug.js"></script>
 <script src="application.js"></script>
 <script src="applicationCategory.js"></script>
 <script src="applicationDict.js"></script>
 <script src="process.js"></script>
 <script src="form.js"></script>
+<script src="templateForm.js"></script>
 <script src="script.js"></script>
 <script src="queryView.js"></script>
 <script src="queryStat.js"></script>
@@ -65,9 +67,15 @@
 				<li>Form
 					<ul>
 						<li><a onclick="form_query()" href="#">Query</a></li>
-						<li><a onclick="form_create()" href="#">Create</a></li>
-						<li><a onclick="form_list_reload()" href="#">List</a></li>
-
+						<li><a onclick="form_create_init()" href="#">Create</a></li>
+						<li><a onclick="form_list_next()" href="#">List</a></li>
+					</ul>
+				</li>
+				<li>TemplateForm
+					<ul>
+						<li><a onclick="templateForm_list()" href="#">List</a></li>
+						<li><a onclick="templateForm_init()" href="#">Get</a></li>
+						<li><a onclick="templateForm_create_init()" href="#">Create</a></li>
 					</ul>
 				</li>
 				<li>Script
@@ -103,6 +111,11 @@
 							href="#">ListWithApplication</a></li>
 						<li><a onclick="queryStat_create()" href="#">Create</a></li>
 						<li><a onclick="queryStat_simulate_init()" href="#">Simulate</a></li>
+					</ul>
+				</li>
+				<li>Debug
+					<ul>
+						<li><a onclick="debug_init()" href="#">Debug</a></li>
 					</ul>
 				</li>
 			</ul>

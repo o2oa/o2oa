@@ -39,6 +39,7 @@ public class OkrUserInfoFactory extends AbstractFactory {
 		EntityManager em = this.entityManagerContainer().get(OkrUserInfo.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<OkrUserInfo> cq = cb.createQuery(OkrUserInfo.class);
+		@SuppressWarnings("unused")
 		Root<OkrUserInfo> root = cq.from( OkrUserInfo.class);
 		return em.createQuery(cq).getResultList();
 	}

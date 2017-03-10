@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.bam.timer;
 
+import java.util.TimerTask;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.processplatform.assemble.bam.ThisApplication;
@@ -16,7 +18,7 @@ import com.x.processplatform.assemble.bam.jaxrs.period.TimerStartTaskCompanyStub
 import com.x.processplatform.assemble.bam.jaxrs.period.TimerStartWorkApplicationStubs;
 import com.x.processplatform.assemble.bam.jaxrs.period.TimerStartWorkCompanyStubs;
 
-public class PeriodTimer implements Runnable {
+public class PeriodTimer extends TimerTask {
 
 	public void run() {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -34,7 +36,8 @@ public class PeriodTimer implements Runnable {
 			ThisApplication.period.setStartWorkApplicationStubs(new TimerStartWorkApplicationStubs().execute(emc));
 			ThisApplication.period.setStartWorkCompanyStubs(new TimerStartWorkCompanyStubs().execute(emc));
 			/* 每月完成工作所需要的ApplicationStub和CompanyStub */
-			ThisApplication.period.setCompletedWorkApplicationStubs(new TimerCompletedWorkApplicationStubs().execute(emc));
+			ThisApplication.period
+					.setCompletedWorkApplicationStubs(new TimerCompletedWorkApplicationStubs().execute(emc));
 			ThisApplication.period.setCompletedWorkCompanyStubs(new TimerCompletedWorkCompanyStubs().execute(emc));
 			/* 每月超时工作所需要的ApplicationStub和CompanyStub */
 			ThisApplication.period.setExpiredWorkApplicationStubs(new TimerExpiredWorkApplicationStubs().execute(emc));

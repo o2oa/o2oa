@@ -5,6 +5,7 @@
 package com.x.processplatform.core.entity.element;
 
 import com.x.base.core.entity.SliceJpaObject_;
+import java.lang.Boolean;
 import java.lang.String;
 import java.util.Date;
 import javax.persistence.metamodel.SingularAttribute;
@@ -12,7 +13,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.processplatform.core.entity.element.Route.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:19:07 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:10:19 CST 2017")
 public class Route_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Route,String> activity;
     public static volatile SingularAttribute<Route,ActivityType> activityType;
@@ -21,6 +22,8 @@ public class Route_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Route,String> description;
     public static volatile SingularAttribute<Route,String> id;
     public static volatile SingularAttribute<Route,String> name;
+    public static volatile SingularAttribute<Route,Boolean> passExpired;
+    public static volatile SingularAttribute<Route,Boolean> passSameTarget;
     public static volatile SingularAttribute<Route,String> position;
     public static volatile SingularAttribute<Route,String> process;
     public static volatile SingularAttribute<Route,String> script;

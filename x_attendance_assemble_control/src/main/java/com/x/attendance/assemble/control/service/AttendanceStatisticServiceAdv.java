@@ -1,11 +1,10 @@
 package com.x.attendance.assemble.control.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.attendance.entity.AttendanceStatisticRequireLog;
 import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.attendance.entity.AttendanceWorkDayConfig;
@@ -29,44 +28,69 @@ public class AttendanceStatisticServiceAdv {
 	 * 根据统计年份月份列表来对每个月的数据进行统计
 	 */
 	public void doStatistic() {
+		//logger.info( ">>>>>>>>>>>>>>>>>>>>>系统正准备开始进行数据统计......" );
 		AttendanceStatisticalCycle attendanceStatisticalCycle  = null;
 		List<AttendanceWorkDayConfig> workDayConfigList = null;
 		List<AttendanceStatisticRequireLog> attendanceStatisticRequireLogList = null;
 		Map<String, Map<String, List<AttendanceStatisticalCycle>>> companyAttendanceStatisticalCycleMap = null;
 		
 		try {//先查询所有的法定节假日和工作日配置列表
+			//logger.info( ">>>>>>>>>>>>>>>>>>>>>准备所有的法定节假日和工作日配置列表......" );
 			workDayConfigList = attendanceWorkDayConfigService.listAll();
 		} catch ( Exception e ) {
-			logger.error("【统计】系统在查询当月有打卡记录的员工姓名列表时发生异常！", e );
+			logger.warn("【统计】系统在查询当月有打卡记录的员工姓名列表时发生异常！" );
+			logger.error(e);
 		}
 		
 		try{//查询所有的考勤统计周期信息，并且组织成MAP
+			//logger.info( ">>>>>>>>>>>>>>>>>>>>>准备所有的考勤统计周期信息......" );
 			companyAttendanceStatisticalCycleMap = attendanceStatisticalCycleService.getCycleMapFormAllCycles();
 		}catch(Exception e){
-			logger.error( "【统计】系统在查询并且组织所有的考勤统计周期信息时发生异常。", e );
+			logger.warn( "【统计】系统在查询并且组织所有的考勤统计周期信息时发生异常。" );
+			logger.error(e);
 		}
+		
+		//先处理所有的统计错误
+		try {
+			//logger.info( ">>>>>>>>>>>>>>>>>>>>>准备处理恢复的统计错误信息, 所有错误统计将会重新计算......" );
+			attendanceStatisticRequireLogService.resetStatisticError();
+		} catch (Exception e) {
+			logger.warn("【统计】系统在重置统计错误信息时发生异常！" );
+			logger.error(e);
+		}
+		
 		
 		//统计类型:PERSON_PER_MONTH|DEPARTMENT_PER_MONTH|COMPANY_PER_MONTH|DEPARTMENT_PER_DAY|COMPANY_PER_DAY
 		//统计处理状态：WAITING|PROCESSING|COMPLETE|ERROR
 		//1  员工每月统计
 		//  1.1  先查询需要员工月度统计的统计需求有多少  AttendanceStatisticRequireLog
+		//logger.info( ">>>>>>>>>>>>>>>>>>>>>系统准备统计[员工每月统计]......" );
 		try {
 			attendanceStatisticRequireLogList = attendanceStatisticRequireLogService.listByStatisticTypeAndStatus( "PERSON_PER_MONTH", "WAITING" );
 		} catch (Exception e) {
-			logger.error("【统计】系统在查询员工月度统计需求列表时发生异常！", e);
+			logger.warn("【统计】系统在查询员工月度统计需求列表时发生异常！" );
+			logger.error(e);
 		}
+		
+		if( attendanceStatisticRequireLogList == null ){
+			attendanceStatisticRequireLogList = new ArrayList<AttendanceStatisticRequireLog>();
+		}		
+		
 		if( attendanceStatisticRequireLogList != null && !attendanceStatisticRequireLogList.isEmpty() ){
 			for( AttendanceStatisticRequireLog attendanceStatisticRequireLog : attendanceStatisticRequireLogList ){
+				//logger.info( ">>>>>>>>>>>>>>>>>>>>>系统准备统计[员工每月统计]， 员工：" + attendanceStatisticRequireLog.getStatisticKey() + ", 统计月份:" + attendanceStatisticRequireLog.getStatisticYear() + "-" +attendanceStatisticRequireLog.getStatisticMonth() );
 				try {
 					attendanceStatisticalCycle = attendanceStatisticalCycleService.getStatisticCycleByEmployee( attendanceStatisticRequireLog, companyAttendanceStatisticalCycleMap );
 				} catch (Exception e) {
-					logger.error("【统计】系统在根据统计需求记录信息查询统计周期信息时发生异常！", e);
+					logger.warn("【统计】系统在根据统计需求记录信息查询统计周期信息时发生异常！" );
+					logger.error(e);
 				}
 				if( attendanceStatisticalCycle != null ){
 					try{
 						attendanceStatisticService.statisticEmployeeAttendanceForMonth( attendanceStatisticRequireLog, attendanceStatisticalCycle, workDayConfigList, companyAttendanceStatisticalCycleMap);
 					}catch(Exception e){
-						logger.error( "【统计】系统在根据需求进行员工月度打卡记录分析结果统计时发生异常。", e );
+						logger.warn( "【统计】系统在根据需求进行员工月度打卡记录分析结果统计时发生异常。" );
+						logger.error(e);
 					}
 				}
 			}
@@ -75,71 +99,88 @@ public class AttendanceStatisticServiceAdv {
 		
 		//2  部门每月统计
 		//  2.1 先查询需要部门月度统计的统计需求有多少  AttendanceStatisticRequireLog
+		//logger.info( ">>>>>>>>>>>>>>>>>>>>>系统准备统计[部门每月统计]......" );
 		try {
 			attendanceStatisticRequireLogList = attendanceStatisticRequireLogService.listByStatisticTypeAndStatus( "DEPARTMENT_PER_MONTH", "WAITING" );
 		} catch (Exception e) {
-			logger.error("【统计】系统在查询部门月度统计需求列表时发生异常！", e);
+			logger.warn("【统计】系统在查询部门月度统计需求列表时发生异常！" );
+			logger.error(e);
 		}
 		if( attendanceStatisticRequireLogList != null && !attendanceStatisticRequireLogList.isEmpty() ){
 			for( AttendanceStatisticRequireLog attendanceStatisticRequireLog : attendanceStatisticRequireLogList ){
+				//logger.info( ">>>>>>>>>>>>>>>>>>>>>系统准备统计[部门每月统计]， 部门：" + attendanceStatisticRequireLog.getStatisticKey() + ", 统计月份:" + attendanceStatisticRequireLog.getStatisticYear() + "-" +attendanceStatisticRequireLog.getStatisticMonth() );
 				try{
 					attendanceStatisticService.statisticDepartmentAttendanceForMonth( attendanceStatisticRequireLog, workDayConfigList, companyAttendanceStatisticalCycleMap );
 				}catch(Exception e){
-					logger.error( "【统计】系统在根据需求进行员工月度打卡记录分析结果统计时发生异常。", e );
+					logger.warn( "【统计】系统在根据需求进行员工月度打卡记录分析结果统计时发生异常。" );
+					logger.error(e);
 				}
 			}
 		}		
 		
 		//3  公司每月统计
 		//  3.1 先查询需要公司月度统计的统计需求有多少  AttendanceStatisticRequireLog
+		//logger.info( ">>>>>>>>>>>>>>>>>>>>>系统准备统计[公司每月统计]......" );
 		try {
 			attendanceStatisticRequireLogList = attendanceStatisticRequireLogService.listByStatisticTypeAndStatus( "COMPANY_PER_MONTH", "WAITING" );
 		} catch (Exception e) {
-			logger.error("【统计】系统在查询公司月度统计需求列表时发生异常！", e);
+			logger.warn("【统计】系统在查询公司月度统计需求列表时发生异常！" );
+			logger.error(e);
 		}
 		if( attendanceStatisticRequireLogList != null && !attendanceStatisticRequireLogList.isEmpty() ){
 			for( AttendanceStatisticRequireLog attendanceStatisticRequireLog : attendanceStatisticRequireLogList ){
+				//logger.info( ">>>>>>>>>>>>>>>>>>>>>系统准备统计[公司每月统计]， 公司：" + attendanceStatisticRequireLog.getStatisticKey() + ", 统计月份:" + attendanceStatisticRequireLog.getStatisticYear() + "-" +attendanceStatisticRequireLog.getStatisticMonth() );
 				try{
 					attendanceStatisticService.statisticCompanyAttendanceForMonth( attendanceStatisticRequireLog, workDayConfigList, companyAttendanceStatisticalCycleMap);
 				}catch(Exception e){
-					logger.error( "【统计】系统在根据需求进行员工月度打卡记录分析结果统计时发生异常。", e );
+					logger.warn( "【统计】系统在根据需求进行员工月度打卡记录分析结果统计时发生异常。" );
+					logger.error(e);
 				}
 			}
 		}		
 		
 		//4  部门每日统计
 		//  4.1 先查询需要部门每日统计的统计需求有多少  AttendanceStatisticRequireLog
+		//logger.info( ">>>>>>>>>>>>>>>>>>>>>系统准备统计[部门每日统计]......" );
 		try {
 			attendanceStatisticRequireLogList = attendanceStatisticRequireLogService.listByStatisticTypeAndStatus( "DEPARTMENT_PER_DAY", "WAITING" );
 		} catch (Exception e) {
-			logger.error("【统计】系统在查询部门每日统计需求列表时发生异常！", e);
+			logger.warn("【统计】系统在查询部门每日统计需求列表时发生异常！" );
+			logger.error(e);
 		}
 		if( attendanceStatisticRequireLogList != null && !attendanceStatisticRequireLogList.isEmpty() ){
 			for( AttendanceStatisticRequireLog attendanceStatisticRequireLog : attendanceStatisticRequireLogList ){
+				//logger.info( ">>>>>>>>>>>>>>>>>>>>>系统准备统计[部门每月统计]， 部门：" + attendanceStatisticRequireLog.getStatisticKey() + ", 统计日期:" + attendanceStatisticRequireLog.getStatisticDay() );
 				try{
 					attendanceStatisticService.statisticDepartmentAttendanceForDay( attendanceStatisticRequireLog, workDayConfigList, companyAttendanceStatisticalCycleMap );
 				}catch(Exception e){
-					logger.error( "【统计】系统在根据需求进行部门每日打卡记录分析结果统计时发生异常。", e );
+					logger.warn( "【统计】系统在根据需求进行部门每日打卡记录分析结果统计时发生异常。" );
+					logger.error(e);
 				}
 			}
 		}
 		
 		//5  公司每日统计
 		//  5.1 先查询需要公司每日统计的统计需求有多少  AttendanceStatisticRequireLog
+		//logger.info( ">>>>>>>>>>>>>>>>>>>>>系统准备统计[公司每日统计]......" );
 		try {
 			attendanceStatisticRequireLogList = attendanceStatisticRequireLogService.listByStatisticTypeAndStatus( "COMPANY_PER_DAY", "WAITING" );
 		} catch (Exception e) {
-			logger.error("【统计】系统在查询公司每日统计需求列表时发生异常！", e);
+			logger.warn("【统计】系统在查询公司每日统计需求列表时发生异常！" );
+			logger.error(e);
 		}
 		if( attendanceStatisticRequireLogList != null && !attendanceStatisticRequireLogList.isEmpty() ){
 			for( AttendanceStatisticRequireLog attendanceStatisticRequireLog : attendanceStatisticRequireLogList ){
+				//logger.info( ">>>>>>>>>>>>>>>>>>>>>系统准备统计[公司每月统计]， 公司：" + attendanceStatisticRequireLog.getStatisticKey() + ", 统计日期:" + attendanceStatisticRequireLog.getStatisticDay() );
 				try{
 					attendanceStatisticService.statisticCompanyAttendanceForDay( attendanceStatisticRequireLog, workDayConfigList, companyAttendanceStatisticalCycleMap );
 				}catch(Exception e){
-					logger.error( "【统计】系统在根据需求进行公司每日打卡记录分析结果统计时发生异常。", e );
+					logger.warn( "【统计】系统在根据需求进行公司每日打卡记录分析结果统计时发生异常。" );
+					logger.error(e);
 				}
 			}
 		}
+		//logger.info( ">>>>>>>>>>>>>>>>>>>>>系统数据统计运行完成." );
 	}
 
 	public List<String> listPersonForMonthByUserYearAndMonth(String name, String year, String month) throws Exception {

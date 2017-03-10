@@ -2,7 +2,6 @@ package com.x.cms.assemble.control.jaxrs.fileinfo;
 
 import java.util.List;
 
-import com.x.base.core.bean.NameValueCountPair;
 import com.x.base.core.gson.GsonPropertyObject;
 import com.x.base.core.http.annotation.Wrap;
 import com.x.cms.core.entity.FileInfo;
@@ -10,55 +9,56 @@ import com.x.cms.core.entity.FileInfo;
 @Wrap(FileInfo.class)
 public class WrapInFilter extends GsonPropertyObject {
 
-	private List<NameValueCountPair> appIdList;
+	private List<String> appIdList;
 
-	private List<NameValueCountPair> catagoryIdList;
+	private List<String> categoryIdList;
 
-	private List<NameValueCountPair> creatorList;
+	private List<String> creatorList;
 
-	private List<NameValueCountPair> statusList;
+	private List<String> statusList;
 
-	private List<NameValueCountPair> titleList;
+	private List<String> titleList;
 
 	private String key;	
 
-	public List<NameValueCountPair> getAppIdList() {
+
+	public List<String> getAppIdList() {
 		return appIdList;
 	}
 
-	public void setAppIdList(List<NameValueCountPair> appIdList) {
+	public void setAppIdList(List<String> appIdList) {
 		this.appIdList = appIdList;
 	}
 
-	public List<NameValueCountPair> getCatagoryIdList() {
-		return catagoryIdList;
+	public List<String> getCategoryIdList() {
+		return categoryIdList;
 	}
 
-	public void setCatagoryIdList(List<NameValueCountPair> catagoryIdList) {
-		this.catagoryIdList = catagoryIdList;
+	public void setCategoryIdList(List<String> categoryIdList) {
+		this.categoryIdList = categoryIdList;
 	}
 
-	public List<NameValueCountPair> getCreatorList() {
+	public List<String> getCreatorList() {
 		return creatorList;
 	}
 
-	public void setCreatorList(List<NameValueCountPair> creatorList) {
+	public void setCreatorList(List<String> creatorList) {
 		this.creatorList = creatorList;
 	}
 
-	public List<NameValueCountPair> getStatusList() {
+	public List<String> getStatusList() {
 		return statusList;
 	}
 
-	public void setStatusList(List<NameValueCountPair> statusList) {
+	public void setStatusList(List<String> statusList) {
 		this.statusList = statusList;
 	}
 
-	public List<NameValueCountPair> getTitleList() {
+	public List<String> getTitleList() {
 		return titleList;
 	}
 
-	public void setTitleList(List<NameValueCountPair> titleList) {
+	public void setTitleList(List<String> titleList) {
 		this.titleList = titleList;
 	}
 

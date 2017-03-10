@@ -13,9 +13,13 @@ MWF.xApplication.File.FileSelector = new Class({
 		"style": "default",
 		"listStyle" : "icon",
 		"selectType" : "all",
-		"toBase64" : false,
-		"base64Width" : 800,
-		"base64Height" : 0,
+		"copyToPublic" : true,
+		"scale" : 800,
+		"reference" : "",
+		"referenceType" : "",
+		//"toBase64" : false,
+		//"base64Width" : 800,
+		//"base64Height" : 0,
 		"images": ["bmp", "gif", "png", "jpeg", "jpg", "jpe", "ico"],
 		"audios": ["mp3", "wav", "wma", "wmv"],
 		"videos": ["avi", "mkv", "mov", "ogg", "mp4", "mpa", "mpe", "mpeg", "mpg", "rmvb"]
@@ -202,13 +206,19 @@ MWF.xApplication.File.FileSelector = new Class({
     openAttachment: function(e, node, attachment){
 		var id = attachment[0].data.id;
         this.restActions.getFileUrl( id, function(url){
-            if( this.options.toBase64 ){
-				this.restActions.getBase64Code(function(json){
-					var data = json.data ? "data:image/png;base64,"+json.data.value : null;
-					this.fireEvent("postSelectAttachment",[url, data ]);
-				}.bind(this), null, id, this.options.base64Width, this.options.base64Height )
+            //if( this.options.toBase64 ){
+			//	this.restActions.getBase64Code(function(json){
+			//		var data = json.data ? "data:image/png;base64,"+json.data.value : null;
+			//		this.fireEvent("postSelectAttachment",[url, data ]);
+			//	}.bind(this), null, id, this.options.base64Width, this.options.base64Height )
+			//}else{
+			if( this.options.copyToPublic && this.options.reference && this.options.referenceType ) {
+				MWF.xDesktop.copyImage( this.options.reference, this.options.referenceType, id, this.options.scale, function( json ){
+					var url = MWF.xDesktop.getImageSrc( json.data.id );
+					this.fireEvent("postSelectAttachment",[url, json.data.id, attachment[0].data ]);
+				}.bind(this))
 			}else{
-				this.fireEvent("postSelectAttachment",[url]);
+				this.fireEvent("postSelectAttachment",[url, "", attachment[0].data ]);
 			}
 			this.close();
 		}.bind(this));

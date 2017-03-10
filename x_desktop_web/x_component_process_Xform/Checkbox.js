@@ -47,7 +47,25 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
 		});
 		this.setOptions();
 	},
-	
+    _loadEvents: function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
+                if (this.options.moduleEvents.indexOf(key)!=-1){
+                    this.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }else{
+                    //this.node.addEvent(key, function(event){
+                    //    return this.form.Macro.fire(e.code, this, event);
+                    //}.bind(this));
+                }
+            }
+        }.bind(this));
+    },
+    resetOption: function(){
+        this.node.empty();
+        this.setOptions();
+    },
 	getOptions: function(){
 		if (this.json.itemType == "values"){
 			return this.json.itemValues;
@@ -64,9 +82,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
 			var tmps = item.split("|");
 			var text = tmps[0];
 			var value = tmps[1] || text;
-			
 
-			
 			var radio = new Element("input", {
 				"type": "checkbox",
 				"name": this.json.id,
@@ -79,6 +95,17 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
             radio.addEvent("click", function(){
                 this.validationMode();
                 if (this.validation()) this._setBusinessData(this.getInputData("change"));
+            }.bind(this));
+
+            Object.each(this.json.events, function(e, key){
+                if (e.code){
+                    if (this.options.moduleEvents.indexOf(key)!=-1){
+                    }else{
+                        radio.addEvent(key, function(event){
+                            return this.form.Macro.fire(e.code, this, event);
+                        }.bind(this));
+                    }
+                }
             }.bind(this));
 
 		}.bind(this));

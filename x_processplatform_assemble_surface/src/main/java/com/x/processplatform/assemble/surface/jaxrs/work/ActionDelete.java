@@ -4,9 +4,9 @@ import java.net.URLEncoder;
 
 import org.apache.commons.lang3.BooleanUtils;
 
+import com.x.base.core.DefaultCharset;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
@@ -22,14 +22,16 @@ class ActionDelete extends ActionBase {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<WrapOutId> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Work work = emc.find(id, Work.class, ExceptionWhen.not_found);
+			Work work = emc.find(id, Work.class);
+			if (null == work) {
+				throw new WorkNotExistedException(id);
+			}
 			Control control = business.getControlOfWorkComplex(effectivePerson, work);
 			if (BooleanUtils.isNotTrue(control.getAllowDelete())) {
-				throw new Exception(
-						"person{name:" + effectivePerson.getName() + "} delete work{id:" + id + "} was denied.");
+				throw new WorkAccessDeniedException(effectivePerson.getName(), id);
 			}
 			WrapOutId wrap = ThisApplication.applications.deleteQuery(x_processplatform_service_processing.class,
-					"work/" + URLEncoder.encode(work.getId(), "UTF-8"), WrapOutId.class);
+					"work/" + URLEncoder.encode(work.getId(), DefaultCharset.name), WrapOutId.class);
 			result.setData(wrap);
 			return result;
 		}

@@ -1,14 +1,14 @@
 package com.x.okr.assemble.control.timertask;
 
 import java.util.List;
+import java.util.TimerTask;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.common.date.DateOperation;
 import com.x.okr.assemble.control.ThisApplication;
 import com.x.okr.assemble.control.service.OkrConfigSystemService;
-import com.x.okr.assemble.control.service.OkrWorkBaseInfoService;
+import com.x.okr.assemble.control.service.OkrWorkBaseInfoQueryService;
 
 /**
  * 定时代理，定时分析所有未完成的工作的完成进度，将分析结果更新到工作信息里，每天运行一次
@@ -21,11 +21,11 @@ import com.x.okr.assemble.control.service.OkrWorkBaseInfoService;
  * @author LIYI
  *
  */
-public class WorkProgressConfirm implements Runnable {
+public class WorkProgressConfirm extends TimerTask {
 
 	private Logger logger = LoggerFactory.getLogger( WorkProgressConfirm.class );
 	private OkrConfigSystemService okrConfigSystemService = new OkrConfigSystemService();	
-	private OkrWorkBaseInfoService okrWorkBaseInfoService = new OkrWorkBaseInfoService();
+	private OkrWorkBaseInfoQueryService okrWorkBaseInfoService = new OkrWorkBaseInfoQueryService();
 	private DateOperation dateOperation = new DateOperation();
 
 	public void run() {
@@ -49,7 +49,8 @@ public class WorkProgressConfirm implements Runnable {
 			}
 		} catch (Exception e) {
 			report_progress = "CLOSE";
-			logger.error( "system get config got an exception.", e );
+			logger.warn( "system get config got an exception." );
+			logger.error(e);
 		}
 		
 		//查询所有未完成工作的ID列表, isCompleted = false, progressAnalyseTime不是当前的时间缀
@@ -57,7 +58,8 @@ public class WorkProgressConfirm implements Runnable {
 			ids = okrWorkBaseInfoService.listIdsForNeedProgressAnalyse( nowDateTime, 500 );
 		} catch (Exception e) {
 			check = true;
-			logger.error( "system list ids for need progress analyse got an exceptin.", e );
+			logger.warn( "system list ids for need progress analyse got an exceptin." );
+			logger.error(e);
 		}
 		
 		if( check ){
@@ -72,14 +74,16 @@ public class WorkProgressConfirm implements Runnable {
 					try {
 						okrWorkBaseInfoService.analyseWorkProgress( id, report_progress, nowDateTime );
 					} catch (Exception e) {
-						logger.error( "system analyse work progres got an exceptin.", e);
+						logger.warn( "system analyse work progres got an exceptin." );
+						logger.error(e);
 					}
 				}
 				try {
 					ids = okrWorkBaseInfoService.listIdsForNeedProgressAnalyse( nowDateTime, 500 );
 				} catch (Exception e) {
 					check = true;
-					logger.error( "system list ids for need progress analyse got an exceptin.", e );
+					logger.warn( "system list ids for need progress analyse got an exceptin." );
+					logger.error(e);
 					break;
 				}
 			}

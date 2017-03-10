@@ -1,7 +1,5 @@
 package com.x.base.core.entity;
 
-import java.util.Random;
-
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
@@ -14,7 +12,7 @@ public abstract class SliceJpaObject extends JpaObject {
 
 	@EntityFieldDescribe("分布式存储标识位.")
 	@Column(name = "xdistributeFactor")
-	protected Integer distributeFactor = (new Random()).nextInt(1000);
+	protected Integer distributeFactor;
 
 	public Integer getDistributeFactor() {
 		return distributeFactor;
@@ -23,5 +21,11 @@ public abstract class SliceJpaObject extends JpaObject {
 	public void setDistributeFactor(Integer distributeFactor) {
 		this.distributeFactor = distributeFactor;
 	}
+
+	// protected void concreteDistributeFactor() {
+	// if (null == this.distributeFactor) {
+	// this.distributeFactor = (new Random()).nextInt(1000);
+	// }
+	// }
 
 }

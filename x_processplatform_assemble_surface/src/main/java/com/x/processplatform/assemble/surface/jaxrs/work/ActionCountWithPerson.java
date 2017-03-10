@@ -7,7 +7,7 @@ import com.x.base.core.http.WrapOutMap;
 import com.x.organization.core.express.wrap.WrapPerson;
 import com.x.processplatform.assemble.surface.Business;
 
-class ActionCountWithPerson {
+class ActionCountWithPerson extends ActionBase {
 
 	ActionResult<WrapOutMap> execute(String credential) throws Exception {
 		ActionResult<WrapOutMap> result = new ActionResult<>();

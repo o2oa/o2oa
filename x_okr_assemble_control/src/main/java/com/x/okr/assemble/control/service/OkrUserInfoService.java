@@ -2,9 +2,8 @@ package com.x.okr.assemble.control.service;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.google.gson.Gson;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -99,7 +98,7 @@ public class OkrUserInfoService{
 				}
 				emc.commit();
 			}catch( Exception e ){
-				logger.error( "OkrUserInfo update/ got a error!" );
+				logger.warn( "OkrUserInfo update/ got a error!" );
 				throw e;
 			}
 		}
@@ -114,13 +113,13 @@ public class OkrUserInfoService{
 	public void delete( String id ) throws Exception {
 		OkrUserInfo okrUserInfo = null;
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not delete any object." );
+			throw new Exception( "id is null, system can not delete any object." );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			okrUserInfo = emc.find(id, OkrUserInfo.class);
 			if (null == okrUserInfo) {
-				logger.error( "object is not exist {'id':'"+ id +"'}" );
+				throw new Exception( "object is not exist {'id':'"+ id +"'}" );
 			}else{
 				emc.beginTransaction( OkrUserInfo.class );
 				emc.remove( okrUserInfo, CheckRemoveType.all );
@@ -167,7 +166,7 @@ public class OkrUserInfoService{
 		if( okrUserInfo !=null && okrUserInfo.getCustomContent() != null && !okrUserInfo.getCustomContent().isEmpty() ){
 			return gson.fromJson( okrUserInfo.getCustomContent(), OkrUserCache.class );
 		}else{
-			logger.error( "getWithPersonName can not find okr user info:" + name );
+			//logger.error( "getWithPersonName can not find okr user info:" + name );
 			return null;
 		}
 	}

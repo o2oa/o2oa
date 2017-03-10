@@ -38,15 +38,17 @@ public class AttendanceAppealInfoService {
 		AttendanceAppealInfo attendanceAppealInfo_temp = null;
 		emc.beginTransaction(AttendanceAppealInfo.class);
 		emc.beginTransaction(AttendanceDetail.class);
-		attendanceAppealInfo_temp = emc.find(attendanceAppealInfo.getId(), AttendanceAppealInfo.class);
+		attendanceAppealInfo_temp = emc.find( attendanceAppealInfo.getId(), AttendanceAppealInfo.class);
 		attendanceDetail = emc.find( attendanceAppealInfo.getDetailId(), AttendanceDetail.class);
 		if( attendanceDetail == null ){
 			throw new Exception("attendance detail info not exists.");
 		}else{
 			if ( attendanceAppealInfo_temp != null ) {
-				emc.remove( attendanceAppealInfo_temp, CheckRemoveType.all );				
+				attendanceAppealInfo.copyTo( attendanceAppealInfo_temp );
+				emc.check( attendanceAppealInfo_temp, CheckPersistType.all );				
+			}else{
+				emc.persist( attendanceAppealInfo, CheckPersistType.all);
 			}
-			emc.persist(attendanceAppealInfo, CheckPersistType.all);
 			//将打卡记录表里的打卡数据置为正在申诉中
 			attendanceDetail.setAppealStatus(1);
 			attendanceDetail.setAppealReason( attendanceAppealInfo.getAppealReason());

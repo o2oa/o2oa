@@ -125,6 +125,7 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<OkrWorkReportBaseInfo> listNextWithFilter(String id, Integer count, Object sequence, WrapInFilter wrapIn) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( OkrWorkReportBaseInfo.class);
@@ -178,6 +179,7 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public List<OkrWorkReportBaseInfo> listPrevWithFilter( String id, Integer count, Object sequence, WrapInFilter wrapIn ) throws Exception {
 		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
 		EntityManager em = this.entityManagerContainer().get( OkrWorkReportBaseInfo.class );
@@ -362,5 +364,20 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 		}else{
 			return resultList.get(0);
 		}
+	}
+
+	public List<String> listProcessingReportIdsByWorkId(String workId) throws Exception {
+		if( workId == null || workId.isEmpty() ){
+			throw new Exception( " workId is null!" );
+		}
+		EntityManager em = this.entityManagerContainer().get(OkrWorkReportBaseInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<OkrWorkReportBaseInfo> root = cq.from(OkrWorkReportBaseInfo.class);
+		Predicate p = cb.equal( root.get( OkrWorkReportBaseInfo_.workId ), workId );
+		p = cb.and( p, cb.notEqual( root.get( OkrWorkReportBaseInfo_.activityName ), "已完成" ));
+		p = cb.and( p, cb.equal( root.get( OkrWorkReportBaseInfo_.status ), "正常" ));
+		cq.select(root.get( OkrWorkReportBaseInfo_.id));
+		return em.createQuery(cq.where(p)).getResultList();
 	}
 }

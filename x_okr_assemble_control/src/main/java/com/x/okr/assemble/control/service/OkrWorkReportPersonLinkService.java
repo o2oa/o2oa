@@ -5,16 +5,14 @@ import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.HttpAttribute;
 import com.x.okr.assemble.control.Business;
 import com.x.okr.assemble.control.jaxrs.okrworkreportpersonlink.WrapInFilter;
@@ -72,7 +70,7 @@ public class OkrWorkReportPersonLinkService{
 					emc.commit();
 				}
 			}catch( Exception e ){
-				logger.error( "OkrWorkReportPersonLink update/ got a error!" );
+				logger.warn( "OkrWorkReportPersonLink update/ got a error!" );
 				throw e;
 			}
 		}else{//没有传入指定的ID
@@ -83,7 +81,7 @@ public class OkrWorkReportPersonLinkService{
 				emc.persist( okrWorkReportPersonLink, CheckPersistType.all);	
 				emc.commit();
 			}catch( Exception e ){
-				logger.error( "OkrWorkReportPersonLink create got a error!", e);
+				logger.warn( "OkrWorkReportPersonLink create got a error!" );
 				throw e;
 			}
 		}
@@ -98,13 +96,13 @@ public class OkrWorkReportPersonLinkService{
 	public void delete( String id ) throws Exception {
 		OkrWorkReportPersonLink okrWorkReportPersonLink = null;
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not delete any object." );
+			throw new Exception( "id is null, system can not delete any object." );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			okrWorkReportPersonLink = emc.find(id, OkrWorkReportPersonLink.class);
 			if (null == okrWorkReportPersonLink) {
-				logger.error( "object is not exist {'id':'"+ id +"'}" );
+				throw new Exception( "object is not exist {'id':'"+ id +"'}" );
 			}else{
 				emc.beginTransaction( OkrWorkReportPersonLink.class );
 				emc.remove( okrWorkReportPersonLink, CheckRemoveType.all );
@@ -122,7 +120,7 @@ public class OkrWorkReportPersonLinkService{
 	 */
 	public Integer getMaxProcessLevel( String reportId ) throws Exception {
 		if( reportId == null || reportId.isEmpty() ){
-			logger.error( "reportId is null, system can not get maxProcessLevel for report." );
+			throw new Exception( "reportId is null, system can not get maxProcessLevel for report." );
 		}
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -141,7 +139,7 @@ public class OkrWorkReportPersonLinkService{
 	 */
 	public List<OkrWorkReportPersonLink> list( List<String> ids ) throws Exception {
 		if( ids == null || ids.isEmpty() ){
-			logger.error( "ids is null." );
+			throw new Exception( "ids is null." );
 		}
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -161,10 +159,10 @@ public class OkrWorkReportPersonLinkService{
 	 */
 	public List<String> getProcessPersonLinkInfoByReportAndLevel(String reportId, Integer processLevel, String processorIdentity, String processStatus, String status ) throws Exception {
 		if( reportId == null || reportId.isEmpty() ){
-			logger.error( "reportId is null." );
+			throw new Exception( "reportId is null." );
 		}
 		if( processLevel == null || processLevel < 0 ){
-			logger.error( "processLevel is invalid, processLevel = "+ processLevel );
+			throw new Exception( "processLevel is invalid, processLevel = "+ processLevel );
 		}
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -197,7 +195,7 @@ public class OkrWorkReportPersonLinkService{
 			business = new Business(emc);
 			if( id != null && !"(0)".equals(id) && id.trim().length() > 20 ){
 				if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
-					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkReportPersonLink.class, ExceptionWhen.not_found), "sequence" );
+					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkReportPersonLink.class ), "sequence" );
 				}
 			}
 			okrWorkReportPersonLinkList = business.okrWorkReportPersonLinkFactory().listNextWithFilter( id, count, sequence, wrapIn );
@@ -229,7 +227,7 @@ public class OkrWorkReportPersonLinkService{
 			business = new Business(emc);
 			if( id != null && !"(0)".equals(id) && id.trim().length() > 20 ){
 				if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
-					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkReportPersonLink.class, ExceptionWhen.not_found), "sequence" );
+					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkReportPersonLink.class ), "sequence" );
 				}
 			}
 			okrWorkReportPersonLinkList = business.okrWorkReportPersonLinkFactory().listPrevWithFilter( id, count, sequence, wrapIn );

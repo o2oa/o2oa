@@ -9,16 +9,15 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.x.attendance.assemble.control.jaxrs.WrapOutMessage;
 import com.x.attendance.assemble.control.service.AttendanceStatisticServiceAdv;
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
+import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 
 
 @Path("statistic")
@@ -28,17 +27,15 @@ public class AttendanceStatisticAction extends StandardJaxrsAction{
 	private AttendanceStatisticServiceAdv attendanceStatisticServiceAdv = new AttendanceStatisticServiceAdv();
 	
 	
-	@HttpMethodDescribe(value = "驱动系统进行数据统计", response = WrapOutMessage.class)
+	@HttpMethodDescribe(value = "驱动系统主动进行一次数据统计", response = WrapOutId.class)
 	@GET
 	@Path("do")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response doStatistic(@Context HttpServletRequest request ) {
-		ActionResult<WrapOutMessage> result = new ActionResult<>();
-		WrapOutMessage wrapOutMessage = new WrapOutMessage();
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		attendanceStatisticServiceAdv.doStatistic();
-		logger.debug( "system do attendance statistic completed for user！" );
-		result.setData( wrapOutMessage );
+		logger.info( "system do attendance statistic completed for user！" );
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 }

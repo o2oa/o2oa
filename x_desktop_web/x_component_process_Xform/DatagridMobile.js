@@ -84,6 +84,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
 		value = this._getBusinessData();
 		if (!value){
 			if (this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
+            value = {"data": value || []};
 		}
 		return value || [];
 	},
@@ -140,35 +141,38 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         var titleHeaders = this.table.getElements("th");
         var tds = this.table.getElements("td");
 
-        this.gridData.each(function(data, idx){
-            var dataDiv = new Element("div", {"styles": {"overflow": "hidden", "margin-bottom": "10px"}}).inject(this.node);
-            var tableDiv = new Element("div", {"styles": {"overflow": "hidden"}}).inject(dataDiv);
-            var table = new Element("table").inject(tableDiv);
-            table.set(this.json.properties);
-            table.store("data", data);
-            //table.setStyle("margin-bottom", "10px");
-            titleHeaders.each(function(th, index){
-                var tr = table.insertRow(index);
-                var datath = new Element("th").inject(tr);
-                datath.set("text", th.get("text"));
-                datath.setStyle("width", "30%");
+        if (this.gridData.data){
+            this.gridData.data.each(function(data, idx){
+                var dataDiv = new Element("div", {"styles": {"overflow": "hidden", "margin-bottom": "10px"}}).inject(this.node);
+                var tableDiv = new Element("div", {"styles": {"overflow": "hidden"}}).inject(dataDiv);
+                var table = new Element("table").inject(tableDiv);
+                table.set(this.json.properties);
+                table.store("data", data);
+                //table.setStyle("margin-bottom", "10px");
+                titleHeaders.each(function(th, index){
+                    var tr = table.insertRow(index);
+                    var datath = new Element("th").inject(tr);
+                    datath.set("text", th.get("text"));
+                    datath.setStyle("width", "30%");
 
-                var cell = tr.insertCell(1);
-                cell.set("MWFId", tds[index].get("id"));
+                    var cell = tr.insertCell(1);
+                    cell.set("MWFId", tds[index].get("id"));
 
-                var cellData = data[th.get("id")];
-                if (cellData){
-                    for (key in cellData){
-                        cell.set("text", cellData[key]);
-                        break;
+                    var cellData = data[th.get("id")];
+                    if (cellData){
+                        for (key in cellData){
+                            cell.set("text", cellData[key]);
+                            break;
+                        }
+                    }else{ //Sequence
+                        cell.setStyle("text-align", "left");
+                        cell.set("text", idx+1);
                     }
-                }else{ //Sequence
-                    cell.setStyle("text-align", "left");
-                    cell.set("text", idx+1);
-                }
 
+                }.bind(this));
             }.bind(this));
-        }.bind(this));
+        }
+
         //this._loadTotal();
 	},
     _loadEditDatagrid: function(){
@@ -181,8 +185,8 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
 
         var _self = this;
 
-        if (this.gridData.length){
-            this.gridData.each(function(data, idx){
+        if (this.gridData.data.length){
+            this.gridData.data.each(function(data, idx){
                 var dataDiv = new Element("div", {"styles": {"overflow": "hidden", "margin-bottom": "10px"}}).inject(this.node);
                 this._createItemTitleNode(dataDiv, idx);
 
@@ -270,6 +274,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
     _createItemTitleNode: function(node, idx){
         var n = idx+1;
         var titleDiv = new Element("div", {"styles": this.json.itemTitleStyles}).inject(node);
+        titleDiv.setStyle("overflow", "hidden");
         var textNode = new Element("div", {
             "styles": {"float": "left"},
             "text": MWF.xApplication.process.Xform.LP.item+n
@@ -651,7 +656,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                 datagrid._loadTotal();
                 datagrid.getData();
 
-                if (!_self.gridData.length) if (_self.addAction) _self.addAction.setStyle("display", "block");
+                if (!_self.gridData.data.length) if (_self.addAction) _self.addAction.setStyle("display", "block");
                 this.close();
 
                 _self.fireEvent("afterDeleteLine");
@@ -779,6 +784,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
 
     _loadTotal: function(){
         var data = {};
+        this.totalResaults = {};
         if (this.totalModules.length){
             if (!this.totalDiv){
                 this.createTotalDiv();
@@ -823,12 +829,13 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                 }else{
                     tr.getElement("td").set("text", totalResaults[i] || "");
                 }
+                this.totalResaults[m.module.json.id] = totalResaults[i];
             }.bind(this));
             if (this.totalTable){
                 var ths = this.totalTable.getElements("th");
                 ths.setStyles(this.json.titleStyles);
-                if (this.json.border) this._loadTableBorderStyle(this.totalTable);
-                if (this.json.zebraColor || this.json.backgroundColor) this._loadTableZebraStyle(this.totalTable);
+                //if (this.json.border) this._loadTableBorderStyle(this.totalTable);
+                //if (this.json.zebraColor || this.json.backgroundColor) this._loadTableZebraStyle(this.totalTable);
             }
         }
         return data;
@@ -954,6 +961,10 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
 
 
     },
+    getTotal: function(){
+        this._loadTotal();
+        return this.totalResaults;
+    },
 	getData: function(){
         if (this.editable!=false){
             var data = [];
@@ -964,12 +975,15 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                 var d = table.retrieve("data");
                 if (d) data.push(d);
             }
-            this.gridData = null;
-            this.gridData = data;
+            this.gridData = {};
+            this.gridData.data = data;
+
+            this._loadTotal();
+            this.gridData.total = this.totalResaults;
 
             this._setBusinessData(data);
 
-            return (this.gridData.length) ? this.gridData : null;
+            return (this.gridData.data.length) ? this.gridData : null;
         }else{
             return this._getBusinessData();
         }

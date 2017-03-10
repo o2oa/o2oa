@@ -101,40 +101,84 @@ public class Processing extends BaseProcessing {
 			if (null == work) {
 				return null;
 			}
+			String id = null;
 			switch (work.getDestinationActivityType()) {
 			case agent:
-				return this.agent().arrive(workId, processingConfigurator, attributes);
+				// return this.agent().arrive(workId, processingConfigurator,
+				// attributes);
+				id = this.agent().arrive(workId, processingConfigurator, attributes);
+				break;
 			case begin:
-				return this.begin().arrive(workId, processingConfigurator, attributes);
+				// return this.begin().arrive(workId, processingConfigurator,
+				// attributes);
+				id = this.begin().arrive(workId, processingConfigurator, attributes);
+				break;
 			case cancel:
-				return this.cancel().arrive(workId, processingConfigurator, attributes);
+				// return this.cancel().arrive(workId, processingConfigurator,
+				// attributes);
+				id = this.cancel().arrive(workId, processingConfigurator, attributes);
+				break;
 			case condition:
-				return this.condition().arrive(workId, processingConfigurator, attributes);
+				// return this.condition().arrive(workId,
+				// processingConfigurator, attributes);
+				id = this.condition().arrive(workId, processingConfigurator, attributes);
+				break;
 			case choice:
-				return this.choice().arrive(workId, processingConfigurator, attributes);
+				// return this.choice().arrive(workId, processingConfigurator,
+				// attributes);
+				id = this.choice().arrive(workId, processingConfigurator, attributes);
+				break;
 			case delay:
-				return this.delay().arrive(workId, processingConfigurator, attributes);
+				// return this.delay().arrive(workId, processingConfigurator,
+				// attributes);
+				id = this.delay().arrive(workId, processingConfigurator, attributes);
+				break;
 			case embed:
-				return this.embed().arrive(workId, processingConfigurator, attributes);
+				// return this.embed().arrive(workId, processingConfigurator,
+				// attributes);
+				id = this.embed().arrive(workId, processingConfigurator, attributes);
+				break;
 			case end:
-				return this.end().arrive(workId, processingConfigurator, attributes);
+				// return this.end().arrive(workId, processingConfigurator,
+				// attributes);
+				id = this.end().arrive(workId, processingConfigurator, attributes);
+				break;
 			case invoke:
-				return this.invoke().arrive(workId, processingConfigurator, attributes);
+				// return this.invoke().arrive(workId, processingConfigurator,
+				// attributes);
+				id = this.invoke().arrive(workId, processingConfigurator, attributes);
+				break;
 			case manual:
-				return this.manual().arrive(workId, processingConfigurator, attributes);
+				// return this.manual().arrive(workId, processingConfigurator,
+				// attributes);
+				id = this.manual().arrive(workId, processingConfigurator, attributes);
+				break;
 			case merge:
-				return this.merge().arrive(workId, processingConfigurator, attributes);
+				// return this.merge().arrive(workId, processingConfigurator,
+				// attributes);
+				id = this.merge().arrive(workId, processingConfigurator, attributes);
+				break;
 			case message:
-				return this.message().arrive(workId, processingConfigurator, attributes);
+				// return this.message().arrive(workId, processingConfigurator,
+				// attributes);
+				id = this.message().arrive(workId, processingConfigurator, attributes);
 			case parallel:
-				return this.parallel().arrive(workId, processingConfigurator, attributes);
+				// return this.parallel().arrive(workId, processingConfigurator,
+				// attributes);
+				id = this.parallel().arrive(workId, processingConfigurator, attributes);
 			case service:
-				return this.service().arrive(workId, processingConfigurator, attributes);
+				// return this.service().arrive(workId, processingConfigurator,
+				// attributes);
+				id = this.service().arrive(workId, processingConfigurator, attributes);
 			case split:
-				return this.split().arrive(workId, processingConfigurator, attributes);
+				// return this.split().arrive(workId, processingConfigurator,
+				// attributes);
+				id = this.split().arrive(workId, processingConfigurator, attributes);
 			default:
-				return null;
+				break;
 			}
+			this.entityManagerContainer.commit();
+			return id;
 		} catch (Exception e) {
 			throw new Exception("reach failure.", e);
 		}
@@ -178,6 +222,7 @@ public class Processing extends BaseProcessing {
 				break;
 			case manual:
 				executed.addAll(this.manual().execute(workId, processingConfigurator, attributes));
+				// this.entityManagerContainer.commit();
 				break;
 			case merge:
 				executed.addAll(this.merge().execute(workId, processingConfigurator, attributes));
@@ -197,6 +242,7 @@ public class Processing extends BaseProcessing {
 			default:
 				break;
 			}
+			this.entityManagerContainer.commit();
 			return executed;
 		} catch (Exception e) {
 			throw new Exception("processing inquery failure.", e);
@@ -258,6 +304,7 @@ public class Processing extends BaseProcessing {
 			default:
 				break;
 			}
+			this.entityManagerContainer.commit();
 			return inquired;
 		} catch (Exception e) {
 			throw new Exception("processing inquery failure.", e);

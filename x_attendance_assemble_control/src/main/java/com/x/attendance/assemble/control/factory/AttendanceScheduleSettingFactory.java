@@ -9,9 +9,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.AttendanceScheduleSetting;
@@ -23,8 +20,6 @@ import com.x.base.core.utils.annotation.MethodDescribe;
  * @author liyi
  */
 public class AttendanceScheduleSettingFactory extends AbstractFactory {
-
-	private Logger logger = LoggerFactory.getLogger( AttendanceScheduleSettingFactory.class );
 	
 	public AttendanceScheduleSettingFactory(Business business) throws Exception {
 		super(business);

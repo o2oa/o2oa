@@ -10,7 +10,7 @@ import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.processplatform.assemble.surface.Business;
 
-public class ActionListCountWithApplication extends ActionBase {
+class ActionListCountWithApplication extends ActionBase {
 
 	ActionResult<List<NameValueCountPair>> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

@@ -2,9 +2,8 @@ package com.x.attendance.assemble.control.service;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.AttendanceSetting;
 import com.x.base.core.container.EntityManagerContainer;
@@ -28,7 +27,7 @@ public class AttendanceSettingService {
 	public void delete( EntityManagerContainer emc, String id ) throws Exception {
 		AttendanceSetting attendanceSetting = null;
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not delete any object." );
+			throw new Exception( "id is null, system can not delete any object." );
 		}
 		attendanceSetting = emc.find( id, AttendanceSetting.class );
 		if ( null == attendanceSetting ) {
@@ -46,7 +45,7 @@ public class AttendanceSettingService {
 		List<String> ids = null;
 		Business business = new Business( emc );
 		if( code == null || code.isEmpty() ){
-			logger.error( "code is null, system can not query any object." );
+			throw new Exception( "code is null, system can not query any object." );
 		}
 		
 		ids = business.getAttendanceSettingFactory().listIdsByCode(code);
@@ -122,21 +121,23 @@ public class AttendanceSettingService {
 		try {
 			checkAndInitSystemConfig("APPEALABLE", "员工申诉及申诉审批", value, description, type, selectContent, isMultiple,  ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "attendance system init system config 'APPEALABLE' got an exception.", e );
+			logger.warn( "attendance system init system config 'APPEALABLE' got an exception." );
+			logger.error(e);
 		}
 		
 		value = "人员属性";
 		type = "select";
-		selectContent = "所属部门职位|所属部门属性|人员属性|指定人|指定角色";
+		selectContent = "所属部门职位|人员属性|指定人";
 		isMultiple = false;
-		description = "考勤结果申诉审核人确定方式：可选值：所属部门职位|所属部门属性|人员属性|指定人|指定角色。此配置控制考勤结果申诉审核人的确定方式。";
+		description = "考勤结果申诉审核人确定方式：可选值：所属部门职位|人员属性|指定人。此配置控制考勤结果申诉审核人的确定方式。";
 		try {
 			checkAndInitSystemConfig("APPEAL_AUDITOR_TYPE", "考勤结果申诉审核人确定方式", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "attendance system init system config 'APPEAL_AUDITOR_TYPE' got an exception.", e );
+			logger.warn( "attendance system init system config 'APPEAL_AUDITOR_TYPE' got an exception." );
+			logger.error(e);
 		}
 		
-		value = "直属领导";
+		value = "直接主管";
 		type = "text";
 		selectContent = null;
 		isMultiple = false;
@@ -144,7 +145,8 @@ public class AttendanceSettingService {
 		try {
 			checkAndInitSystemConfig("APPEAL_AUDITOR_VALUE", "考勤结果申诉审核人确定内容", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "system init system config 'APPEAL_AUDITOR_VALUE' got an exception.", e );
+			logger.warn( "system init system config 'APPEAL_AUDITOR_VALUE' got an exception." );
+			logger.error(e);
 		}
 		
 		value = "人员属性";
@@ -155,7 +157,8 @@ public class AttendanceSettingService {
 		try {
 			checkAndInitSystemConfig("APPEAL_CHECKER_TYPE", "考勤结果申诉复核人确定方式", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "attendance system init system config 'APPEAL_CHECKER_TYPE' got an exception.", e );
+			logger.warn( "attendance system init system config 'APPEAL_CHECKER_TYPE' got an exception." );
+			logger.error(e);
 		}
 		
 		value = "直属领导";
@@ -166,7 +169,8 @@ public class AttendanceSettingService {
 		try {
 			checkAndInitSystemConfig("APPEAL_CHECKER_VALUE", "考勤结果申诉复核人确定内容", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
-			logger.error( "system init system config 'APPEAL_CHECKER_VALUE' got an exception.", e );
+			logger.warn( "system init system config 'APPEAL_CHECKER_VALUE' got an exception." );
+			logger.error(e);
 		}
 	}
 	
@@ -191,7 +195,8 @@ public class AttendanceSettingService {
 			business = new Business(emc);
 			attendanceSetting = business.getAttendanceSettingFactory().getWithConfigCode( configCode );
 		}catch( Exception e ){
-			logger.error( "system find system config{'configCode':'"+configCode+"'} got an exception. " , e );
+			logger.warn( "system find system config{'configCode':'"+configCode+"'} got an exception. " );
+			logger.error(e);
 		}
 		//如果配置不存在，则新建一个配置记录
 		if( attendanceSetting == null ){
@@ -210,7 +215,8 @@ public class AttendanceSettingService {
 				//logger.info("attendance system config has been add：" + attendanceSetting.getConfigCode() + "[" + attendanceSetting.getConfigName()+ "].");
 				emc.commit();
 			}catch( Exception e ){
-				logger.error("attendance system persist new system config{'configCode':'"+configCode+"'} got an exception. " , e );
+				logger.warn("attendance system persist new system config{'configCode':'"+configCode+"'} got an exception. " );
+				logger.error(e);
 			}
 		}else{
 			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
@@ -236,9 +242,9 @@ public class AttendanceSettingService {
 				}
 				emc.check( attendanceSetting, CheckPersistType.all );
 				emc.commit();
-				//logger.info("attendance system config has been update：" + attendanceSetting.getConfigCode() + "[" + attendanceSetting.getConfigName()+ "].");
 			}catch( Exception e ){
-				logger.error("attendance system update system config{'configCode':'"+configCode+"'} got an exception. " , e );
+				logger.warn("attendance system update system config{'configCode':'"+configCode+"'} got an exception. " );
+				logger.error(e);
 			}
 		}
 	}

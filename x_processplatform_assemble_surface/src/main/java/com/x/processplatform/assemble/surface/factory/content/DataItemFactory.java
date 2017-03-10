@@ -9,10 +9,12 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.container.EntityManagerContainer;
 import com.x.processplatform.assemble.surface.AbstractFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.DataItem;
 import com.x.processplatform.core.entity.content.DataItem_;
+import com.x.processplatform.core.entity.content.DataLobItem;
 
 public class DataItemFactory extends AbstractFactory {
 
@@ -44,6 +46,7 @@ public class DataItemFactory extends AbstractFactory {
 		}
 		cq.select(root).where(p);
 		List<DataItem> list = em.createQuery(cq).getResultList();
+		this.fillLobItem(this.entityManagerContainer(), list);
 		return list;
 	}
 
@@ -68,7 +71,9 @@ public class DataItemFactory extends AbstractFactory {
 			return null;
 		}
 		if (list.size() == 1) {
-			return list.get(0);
+			DataItem o = list.get(0);
+			this.fillLobItem(this.entityManagerContainer(), o);
+			return o;
 		}
 		throw new Exception("error mulit dataItem{job:" + job + ", path0:" + path0 + ", path1:" + path1 + ", path2:"
 				+ path2 + ", path3:" + path3 + ", path4:" + path4 + ", path5:" + path5 + ", path6:" + path6 + ", path7:"
@@ -110,6 +115,22 @@ public class DataItemFactory extends AbstractFactory {
 		p = cb.and(p, cb.greaterThan(locationPath, index));
 		cq.select(root).where(p);
 		List<DataItem> list = em.createQuery(cq).getResultList();
+		this.fillLobItem(this.entityManagerContainer(), list);
 		return list;
+	}
+
+	private void fillLobItem(EntityManagerContainer emc, DataItem o) throws Exception {
+		if (o.isLobItem()) {
+			DataLobItem dataLobItem = emc.find(o.getLobItem(), DataLobItem.class);
+			if (null != dataLobItem) {
+				o.setStringLobValue(dataLobItem.getData());
+			}
+		}
+	}
+
+	private void fillLobItem(EntityManagerContainer emc, List<DataItem> list) throws Exception {
+		for (DataItem o : list) {
+			this.fillLobItem(emc, o);
+		}
 	}
 }

@@ -28,4 +28,15 @@ public class MessageFactory extends AbstractFactory {
 		cq.select(root.get(Message_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
+	
+	/** 查找使用表单的message */
+	public List<String> listWithForm(String formId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Message.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Message> root = cq.from(Message.class);
+		Predicate p = cb.equal(root.get(Message_.form), formId);
+		cq.select(root.get(Message_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
 }

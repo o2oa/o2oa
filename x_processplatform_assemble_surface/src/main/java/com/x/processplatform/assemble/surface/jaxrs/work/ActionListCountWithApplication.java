@@ -19,7 +19,7 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.Work_;
 
-class ActionListCountWithApplication {
+class ActionListCountWithApplication extends ActionBase {
 
 	ActionResult<List<NameValueCountPair>> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

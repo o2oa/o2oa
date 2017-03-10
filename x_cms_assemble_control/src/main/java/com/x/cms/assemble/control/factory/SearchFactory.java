@@ -21,7 +21,7 @@ public class SearchFactory extends AbstractFactory {
 	}
 
 	@MethodDescribe("查询用户可见的指定状态下的文件涉及的部门名称列表")
-	public List<String> listDistinctDepartmentyFromDocument( List<String> appids, String docStatus, String catagoryId ) throws Exception {
+	public List<String> listDistinctDepartmentyFromDocument( List<String> appids, String docStatus, String categoryId ) throws Exception {
 		if( appids == null ){
 			return null;
 		}				
@@ -29,17 +29,18 @@ public class SearchFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery( String.class );
 		Root<Document> root = cq.from( Document.class );
-		Predicate p = root.get( Document_.appId ).in( appids );
-		p = cb.and(p, cb.equal( root.get( Document_.docStatus), docStatus ));
-		if( catagoryId != null && !catagoryId.isEmpty() ){
-			p = cb.and(p, cb.equal( root.get( Document_.catagoryId), catagoryId ));
+		Predicate p = cb.equal( root.get( Document_.docStatus), docStatus );
+		if( categoryId != null && !categoryId.isEmpty() ){
+			p = cb.and(p, cb.equal( root.get( Document_.categoryId), categoryId ));
+		}else{
+			p = cb.and(p, root.get( Document_.appId ).in( appids ));
 		}
 		cq.distinct(true).select(root.get( Document_.creatorDepartment ) );
 		return em.createQuery( cq.where( p )).setMaxResults(500).getResultList();
 	}
 	
 	@MethodDescribe("查询用户可见的指定状态下的文件涉及的公司列表量")
-	public List<String> listDistinctCompanyFromDocument( List<String> appids, String docStatus, String catagoryId ) throws Exception {
+	public List<String> listDistinctCompanyFromDocument( List<String> appids, String docStatus, String categoryId ) throws Exception {
 		if( appids == null ){
 			return null;
 		}				
@@ -47,35 +48,37 @@ public class SearchFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery( String.class );
 		Root<Document> root = cq.from( Document.class );
-		Predicate p = root.get( Document_.appId ).in( appids );
-		p = cb.and(p, cb.equal( root.get( Document_.docStatus), docStatus ));
-		if( catagoryId != null && !catagoryId.isEmpty() ){
-			p = cb.and(p, cb.equal( root.get( Document_.catagoryId), catagoryId ));
+		Predicate p = cb.equal( root.get( Document_.docStatus), docStatus );
+		if( categoryId != null && !categoryId.isEmpty() ){
+			p = cb.and(p, cb.equal( root.get( Document_.categoryId), categoryId ));
+		}else{
+			p = cb.and(p, root.get( Document_.appId ).in( appids ));
 		}
 		cq.distinct(true).select(root.get( Document_.creatorCompany ) );
 		return em.createQuery( cq.where( p )).setMaxResults(500).getResultList();
 	}
 	
 	@MethodDescribe("查询用户可见的指定状态下的文件涉及的栏目ID列表量")
-	public List<String> listDistinctAppInfoFromDocument( List<String> appids, String docStatus, String catagoryId ) throws Exception {
+	public List<String> listDistinctAppInfoFromDocument( List<String> appids, String docStatus, String categoryId ) throws Exception {
 		if( appids == null ){
 			return null;
-		}				
+		}
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery( String.class );
 		Root<Document> root = cq.from( Document.class );
-		Predicate p = root.get( Document_.appId ).in( appids );
-		p = cb.and(p, cb.equal( root.get( Document_.docStatus), docStatus ));
-		if( catagoryId != null && !catagoryId.isEmpty() ){
-			p = cb.and(p, cb.equal( root.get( Document_.catagoryId), catagoryId ));
+		Predicate p = cb.equal( root.get( Document_.docStatus), docStatus );
+		if( categoryId != null && !categoryId.isEmpty() ){
+			p = cb.and(p, cb.equal( root.get( Document_.categoryId), categoryId ));
+		}else{
+			p = cb.and(p, root.get( Document_.appId ).in( appids ));
 		}
 		cq.distinct(true).select(root.get( Document_.appId ) );
 		return em.createQuery( cq.where( p )).setMaxResults(500).getResultList();
 	}
 	
 	@MethodDescribe("查询用户可见的指定状态下的文件涉及的分类ID列表")
-	public List<String> listDistinctCatagoryFromDocument( List<String> appids, String docStatus, String catagoryId ) throws Exception {
+	public List<String> listDistinctCategoryFromDocument( List<String> appids, String docStatus, String categoryId ) throws Exception {
 		if( appids == null ){
 			return null;
 		}				
@@ -83,17 +86,18 @@ public class SearchFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery( String.class );
 		Root<Document> root = cq.from( Document.class );
-		Predicate p = root.get( Document_.appId ).in( appids );
-		p = cb.and(p, cb.equal( root.get( Document_.docStatus), docStatus ));
-		if( catagoryId != null && !catagoryId.isEmpty() ){
-			p = cb.and(p, cb.equal( root.get( Document_.catagoryId), catagoryId ));
+		Predicate p = cb.equal( root.get( Document_.docStatus), docStatus );
+		if( categoryId != null && !categoryId.isEmpty() ){
+			p = cb.and(p, cb.equal( root.get( Document_.categoryId), categoryId ));
+		}else{
+			p = cb.and(p, root.get( Document_.appId ).in( appids ));
 		}
-		cq.distinct(true).select(root.get( Document_.catagoryId ) );
+		cq.distinct(true).select(root.get( Document_.categoryId ) );
 		return em.createQuery( cq.where( p )).setMaxResults(500).getResultList();
 	}
 	
-	@MethodDescribe("根据catagoryId查询该应用栏目下的所有文档数量")
-	public Long getDeparmentyDocumentCount( List<String> appids, String creatorCompany, String docStatus, String targetCatagoryId) throws Exception {
+	@MethodDescribe("根据categoryId查询该应用栏目下的所有文档数量")
+	public Long getDeparmentyDocumentCount( List<String> appids, String creatorCompany, String docStatus, String targetCategoryId) throws Exception {
 		if( creatorCompany == null ){
 			return null;
 		}				
@@ -103,16 +107,17 @@ public class SearchFactory extends AbstractFactory {
 		Root<Document> root = cq.from( Document.class );
 		Predicate p = cb.equal( root.get( Document_.creatorDepartment), creatorCompany );
 		p = cb.and(p, cb.equal( root.get( Document_.docStatus), docStatus ));
-		if( targetCatagoryId != null && !targetCatagoryId.isEmpty()){
-			p = cb.and(p, cb.equal( root.get( Document_.catagoryId), targetCatagoryId ));
+		if( targetCategoryId != null && !targetCategoryId.isEmpty()){
+			p = cb.and(p, cb.equal( root.get( Document_.categoryId), targetCategoryId ));
+		}else{
+			p = cb.and(p, root.get( Document_.appId).in(appids));
 		}
-		p = cb.and(p, root.get( Document_.appId).in(appids));
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
 	}
 	
-	@MethodDescribe("根据catagoryId查询该应用栏目下的所有文档数量")
-	public Long getCompanyDocumentCount( List<String> appids, String creatorCompany, String docStatus, String targetCatagoryId) throws Exception {
+	@MethodDescribe("根据categoryId查询该应用栏目下的所有文档数量")
+	public Long getCompanyDocumentCount( List<String> appids, String creatorCompany, String docStatus, String targetCategoryId) throws Exception {
 		if( creatorCompany == null ){
 			return null;
 		}				
@@ -122,45 +127,48 @@ public class SearchFactory extends AbstractFactory {
 		Root<Document> root = cq.from( Document.class );
 		Predicate p = cb.equal( root.get( Document_.creatorCompany), creatorCompany );
 		p = cb.and(p, cb.equal( root.get( Document_.docStatus), docStatus ));
-		if( targetCatagoryId != null && !targetCatagoryId.isEmpty()){
-			p = cb.and(p, cb.equal( root.get( Document_.catagoryId), targetCatagoryId ));
+		if( targetCategoryId != null && !targetCategoryId.isEmpty()){
+			p = cb.and(p, cb.equal( root.get( Document_.categoryId), targetCategoryId ));
+		}else{
+			p = cb.and(p, root.get( Document_.appId).in(appids));
 		}
-		p = cb.and(p, root.get( Document_.appId).in(appids));
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
 	}
 	
 	@MethodDescribe("根据appId查询该应用栏目下的所有文档数量")
-	public Long getAppInfoDocumentCount( List<String> appids, String appId, String docStatus, String targetCatagoryId) throws Exception {
+	public Long getAppInfoDocumentCount( String appId, String docStatus, String targetCategoryId) throws Exception {
 		if( appId == null ){
 			return null;
-		}				
+		}
+		if( docStatus == null || docStatus.isEmpty() ){
+			docStatus = "published";
+		}
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery( Long.class );
 		Root<Document> root = cq.from( Document.class );
-		Predicate p = cb.equal( root.get( Document_.appId), appId);
-		p = cb.and(p, cb.equal( root.get( Document_.docStatus), docStatus ));
-		if( targetCatagoryId != null && !targetCatagoryId.isEmpty()){
-			p = cb.and(p, cb.equal( root.get( Document_.catagoryId), targetCatagoryId ));
+		Predicate p = cb.equal( root.get( Document_.docStatus), docStatus );
+		if( targetCategoryId != null && !targetCategoryId.isEmpty()){
+			p = cb.and(p, cb.equal( root.get( Document_.categoryId), targetCategoryId ));
+		}else{
+			p = cb.and(p, cb.equal( root.get( Document_.appId), appId));
 		}
-		p = cb.and(p, root.get( Document_.appId).in(appids));
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
 	}
 	
-	@MethodDescribe("根据catagoryId查询该应用栏目下的所有文档数量")
-	public Long getCatagoryInfoDocumentCount( List<String> appids, String catagoryId, String docStatus ) throws Exception {
-		if( catagoryId == null ){
+	@MethodDescribe("根据categoryId查询该应用栏目下的所有文档数量")
+	public Long getCategoryInfoDocumentCount( List<String> appids, String categoryId, String docStatus ) throws Exception {
+		if( categoryId == null ){
 			return null;
 		}				
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery( Long.class );
 		Root<Document> root = cq.from( Document.class );
-		Predicate p = cb.equal( root.get( Document_.catagoryId), catagoryId);
+		Predicate p = cb.equal( root.get( Document_.categoryId), categoryId);
 		p = cb.and(p, cb.equal( root.get( Document_.docStatus), docStatus ));
-		p = cb.and(p, root.get( Document_.appId).in(appids));
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
 	}

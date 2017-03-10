@@ -44,7 +44,7 @@ public class View extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.Element.View.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -56,12 +56,12 @@ public class View extends SliceJpaObject {
 		this.onPersist();
 	}
 
-	private void onPersist() {
+	private void onPersist() throws Exception{
 		this.editor = StringUtils.trimToEmpty(this.editor);
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -174,7 +174,7 @@ public class View extends SliceJpaObject {
 	@EntityFieldDescribe("每页显示行数")
 	@CheckPersist(allowEmpty = true)
 	@Column(name = "xpageSize")
-	private int pageSize = 12;
+	private Integer pageSize = 12;
 
 	@EntityFieldDescribe("代码内容.")
 	@Lob

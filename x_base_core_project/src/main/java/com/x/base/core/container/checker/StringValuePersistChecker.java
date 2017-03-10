@@ -27,6 +27,7 @@ import com.x.base.core.entity.annotation.CitationNotExist;
 import com.x.base.core.entity.annotation.Equal;
 import com.x.base.core.entity.annotation.NotEqual;
 import com.x.base.core.entity.tools.JpaObjectTools;
+import com.x.base.core.utils.StringTools;
 
 public class StringValuePersistChecker extends AbstractChecker {
 
@@ -74,8 +75,7 @@ public class StringValuePersistChecker extends AbstractChecker {
 	private void simply(Field field, String value, JpaObject jpa, CheckPersist checkPersist,
 			CheckPersistType checkPersistType) throws Exception {
 		if (checkPersist.simplyString() && StringUtils.isNotEmpty(value)) {
-			Matcher matcher = CheckPattern.simply_pattern.matcher(value);
-			if (!matcher.find()) {
+			if (!StringTools.isSimply(value)) {
 				throw new Exception("check persist stirngValue simply error, class:" + jpa.getClass().getName()
 						+ ", field:" + field.getName() + ", value:" + value + ".");
 			}
@@ -85,8 +85,7 @@ public class StringValuePersistChecker extends AbstractChecker {
 	private void fileName(Field field, String value, JpaObject jpa, CheckPersist checkPersist,
 			CheckPersistType checkPersistType) throws Exception {
 		if (checkPersist.fileNameString() && StringUtils.isNotEmpty(value)) {
-			Matcher matcher = CheckPattern.fileName_pattern.matcher(value);
-			if (!matcher.find()) {
+			if (!StringTools.isFileName(value)) {
 				throw new Exception("check persist stirngValue fileName error, class:" + jpa.getClass().getName()
 						+ ", field:" + field.getName() + ", value:" + value + ".");
 			}
@@ -96,8 +95,7 @@ public class StringValuePersistChecker extends AbstractChecker {
 	private void mail(Field field, String value, JpaObject jpa, CheckPersist checkPersist,
 			CheckPersistType checkPersistType) throws Exception {
 		if (checkPersist.mailString() && StringUtils.isNotEmpty(value)) {
-			Matcher matcher = CheckPattern.mail_pattern.matcher(value);
-			if (!matcher.find()) {
+			if (!StringTools.isMail(value)) {
 				throw new Exception("check persist stirngValue mail error, class:" + jpa.getClass().getName()
 						+ ", field:" + field.getName() + ", value:" + value + ".");
 			}
@@ -107,11 +105,11 @@ public class StringValuePersistChecker extends AbstractChecker {
 	private void mobile(Field field, String value, JpaObject jpa, CheckPersist checkPersist,
 			CheckPersistType checkPersistType) throws Exception {
 		if (checkPersist.mobileString() && StringUtils.isNotEmpty(value)) {
-			Matcher matcher = CheckPattern.mobile_pattern.matcher(value);
-			if (!matcher.find()) {
+			if (!StringTools.isMobile(value)) {
 				throw new Exception("check persist stirngValue mobile error, class:" + jpa.getClass().getName()
 						+ ", field:" + field.getName() + ", value:" + value + ".");
 			}
+
 		}
 	}
 

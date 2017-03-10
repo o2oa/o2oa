@@ -16,9 +16,8 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.service.AttendanceStatisticServiceAdv;
 import com.x.attendance.assemble.control.service.UserManagerService;
@@ -32,13 +31,14 @@ import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpAttribute;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.organization.core.express.wrap.WrapCompany;
 import com.x.organization.core.express.wrap.WrapDepartment;
 
@@ -67,6 +67,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 	public Response showPersonStatistic(@Context HttpServletRequest request, @PathParam("name") String name,
 			@PathParam("year") String year, @PathParam("month") String month) {
 		ActionResult<List<WrapOutAttendanceStatisticPersonForMonth>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		List<WrapOutAttendanceStatisticPersonForMonth> wraps = null;
 		List<String> ids = null;
 		List<StatisticPersonForMonth> statisticPersonForMonth_list = null;
@@ -79,13 +80,21 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 			month = null;
 		}
 		if( check ){
+			if( name == null || name.isEmpty() ){
+				check = false;
+				Exception exception = new QueryStatisticPersonNameEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
+			}
+		}
+		if( check ){
 			try {
 				ids = attendanceStatisticServiceAdv.listPersonForMonthByUserYearAndMonth(name, year, month);
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统根据人员姓名，年份和月份查询统计数据信息ID列表时发生异常。" );
-				logger.error( "system list attendance statistic ids by user, year and month got an exception.", e );
+				Exception exception = new PersonStatisticForMonthListByUserException( e, name, year, month );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -94,9 +103,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					statisticPersonForMonth_list = attendanceStatisticServiceAdv.listPersonForMonth(ids);
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "系统根据ID列表查询统计数据信息时发生异常。" );
-					logger.error( "system list attendance statistic ids by ids got an exception.", e );
+					Exception exception = new PersonStatisticForMonthListByIdsException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
@@ -107,9 +116,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					result.setData( wraps );
 				} catch (Exception e) {
 					check = false;
-					result.error( new Exception( "系统转换数据库对象列表为输出列表时发生异常！" ) );
-					result.setUserMessage( "系统转换数据库对象列表为输出列表时发生异常！" );
-					logger.error( "system copy attendance statistic list to wrap got an exception.", e );
+					Exception exception = new PersonStatisticForMonthWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
@@ -123,6 +132,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response showPersonsInDepartmentStatistic( @Context HttpServletRequest request, @PathParam("name") String name, @PathParam("year") String year, @PathParam("month") String month) {
 		ActionResult<List<WrapOutAttendanceStatisticPersonForMonth>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		List<WrapOutAttendanceStatisticPersonForMonth> wraps = null;
 		List<String> ids = null;
 		List<StatisticPersonForMonth> statisticPersonForMonth_list = null;
@@ -137,8 +147,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 		if( check ){
 			if( name == null || name.isEmpty() ){
 				check = false;
-				result.error( new Exception("系统未获取到传入的部门名称参数 name.") );
-				result.setUserMessage( "系统未获取到传入的部门名称参数 name。" );
+				Exception exception = new QueryStatisticDepartmentNameEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}else{
 				departmentNameList.add( name );
 			}
@@ -148,9 +159,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				ids = attendanceStatisticServiceAdv.listPersonForMonthByDepartmentYearAndMonth( departmentNameList, year, month);
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统根据部门列表，年份和月份查询统计数据信息ID列表时发生异常。" );
-				logger.error( "system list attendance statistic ids by departmentNames, year and month got an exception.", e );
+				Exception exception = new PersonStatisticForMonthListByDepartmentsException(e, departmentNameList, year, month);
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -159,9 +170,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					statisticPersonForMonth_list = attendanceStatisticServiceAdv.listPersonForMonth(ids);
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "系统根据ID列表查询统计数据信息时发生异常。" );
-					logger.error( "system list attendance statistic ids by ids got an exception.", e );
+					Exception exception = new PersonStatisticForMonthListByIdsException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
@@ -172,9 +183,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					result.setData(wraps);
 				} catch ( Exception e ) {
 					check = false;
-					result.error( new Exception( "系统转换数据库对象列表为输出列表时发生异常！" ) );
-					result.setUserMessage( "系统转换数据库对象列表为输出列表时发生异常！" );
-					logger.error( "system copy attendance statistic list to wrap got an exception.", e );
+					Exception exception = new PersonStatisticForMonthWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
@@ -188,6 +199,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response showPersonsInDepartmentAndSubNested( @Context HttpServletRequest request, @PathParam("name") String name, @PathParam("year") String year, @PathParam("month") String month) {
 		ActionResult<List<WrapOutAttendanceStatisticPersonForMonth>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		List<WrapOutAttendanceStatisticPersonForMonth> wraps = null;
 		List<String> ids = null;
 		List<String> departmentNameList = new ArrayList<String>();
@@ -202,8 +214,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 		if( check ){
 			if( name == null || name.isEmpty() ){
 				check = false;
-				result.error( new Exception("系统未获取到传入的部门名称参数 name.") );
-				result.setUserMessage( "系统未获取到传入的部门名称参数 name。" );
+				Exception exception = new QueryStatisticDepartmentNameEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -211,9 +224,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				departmentNameList = userManagerService.listSubOrganizationNameList( name );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在获取部门的所有下级部门时发生异常。" );
-				logger.error( "system query sub organization for department:"+ name +" got an exception." , e);
+				Exception exception = new ListDepartmentNameByParentNameException( e, name );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -227,9 +240,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				ids = attendanceStatisticServiceAdv.listPersonForMonthByDepartmentYearAndMonth( departmentNameList, year, month);
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统根据部门列表，年份和月份查询统计数据信息ID列表时发生异常。" );
-				logger.error( "system list attendance statistic ids by departmentNames, year and month got an exception.", e );
+				Exception exception = new PersonStatisticForMonthListByDepartmentsException(e, departmentNameList, year, month);
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -238,9 +251,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					statisticPersonForMonth_list = attendanceStatisticServiceAdv.listPersonForMonth( ids );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "系统根据ID列表查询统计数据信息时发生异常。" );
-					logger.error( "system list attendance statistic ids by ids got an exception.", e );
+					Exception exception = new PersonStatisticForMonthListByIdsException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
@@ -251,9 +264,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					result.setData(wraps);
 				} catch (Exception e) {
 					check = false;
-					result.error( new Exception( "系统转换数据库对象列表为输出列表时发生异常！" ) );
-					result.setUserMessage( "系统转换数据库对象列表为输出列表时发生异常！" );
-					logger.error( "system copy attendance statistic list to wrap got an exception.", e );
+					Exception exception = new PersonStatisticForMonthWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
@@ -267,6 +280,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response showDepartmentAndSubnestedStatistic(@Context HttpServletRequest request, @PathParam("name") String name, @PathParam("year") String year, @PathParam("month") String month) {
 		ActionResult<List<WrapOutAttendanceStatisticDepartmentForMonth>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		List<WrapOutAttendanceStatisticDepartmentForMonth> wraps = null;
 		List<String> ids = null;
 		List<StatisticDepartmentForMonth> statisticDepartmentForMonth_list = null;
@@ -282,8 +296,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 		if( check ){
 			if( name == null || name.isEmpty() ){
 				check = false;
-				result.error( new Exception("系统未获取到传入的部门名称参数 name.") );
-				result.setUserMessage( "系统未获取到传入的部门名称参数 name。" );
+				Exception exception = new QueryStatisticDepartmentNameEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -291,9 +306,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				departmentNameList = userManagerService.listSubOrganizationNameList( name );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在获取部门的所有下级部门时发生异常。" );
-				logger.error( "system query sub organization for department:"+ name +" got an exception." , e);
+				Exception exception = new ListDepartmentNameByParentNameException( e, name );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -307,9 +322,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				ids = attendanceStatisticServiceAdv.listDepartmentForMonthByDepartmentYearAndMonth( departmentNameList, year, month);
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统根据部门列表，年份和月份查询统计数据信息ID列表时发生异常。" );
-				logger.error( "system list attendance statistic ids by departmentNames, year and month got an exception.", e );
+				Exception exception = new DepartmentStatisticForMonthListByDepartmentsException(e, departmentNameList, year, month);
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -318,9 +333,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					statisticDepartmentForMonth_list = attendanceStatisticServiceAdv.listDepartmentForMonth( ids );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "系统根据ID列表查询统计数据信息时发生异常。" );
-					logger.error( "system list attendance statistic ids by ids got an exception.", e );
+					Exception exception = new DepartmentStatisticForMonthListByIdsException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
@@ -331,16 +346,16 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					result.setData(wraps);
 				} catch (Exception e) {
 					check = false;
-					result.error( new Exception( "系统转换数据库对象列表为输出列表时发生异常！" ) );
-					result.setUserMessage( "系统转换数据库对象列表为输出列表时发生异常！" );
-					logger.error( "system copy attendance department statistic list to wrap got an exception.", e );
+					Exception exception = new DepartmentStatisticForMonthWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse( result );
 	}
 	
-	@HttpMethodDescribe(value = "查询部门指定月份的统计数据", response = WrapOutAttendanceStatisticDepartmentForMonth.class)
+	@HttpMethodDescribe(value = "查询公司指定月份的统计数据", response = WrapOutAttendanceStatisticDepartmentForMonth.class)
 	@GET
 	@Path( "department/company/{name}/{year}/{month}" )
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -348,6 +363,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 	public Response showDepartmentStatisticWithCompanyName(@Context HttpServletRequest request, @PathParam("name") String name,
 			@PathParam("year") String year, @PathParam("month") String month) {
 		ActionResult<List<WrapOutAttendanceStatisticDepartmentForMonth>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		List<WrapOutAttendanceStatisticDepartmentForMonth> wraps = null;
 		List<String> ids = null;
 		List<StatisticDepartmentForMonth> statisticDepartmentForMonth_list = null;
@@ -363,18 +379,20 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 		if( check ){
 			if( name == null || name.isEmpty() ){
 				check = false;
-				result.error( new Exception("系统未获取到传入的公司名称参数 name.") );
-				result.setUserMessage( "系统未获取到传入的公司名称参数 name。" );
+				Exception exception = new QueryStatisticCompanyNameEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
 			try {
+				//根据公司递归查询下级公司经及公司的顶级部门
 				departmentNames = getTopDepartmentNameList( name, departmentNames );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在获取部门的所有下级部门时发生异常。" );
-				logger.error( "system query sub organization for department:"+ name +" got an exception." , e);
+				Exception exception = new GetTopDepartmentNamesByOrganNameException( e, name, departmentNames );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -388,9 +406,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				ids = attendanceStatisticServiceAdv.listDepartmentForMonthByDepartmentYearAndMonth( departmentNames, year, month);
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统根据部门列表，年份和月份查询统计数据信息ID列表时发生异常。" );
-				logger.error( "system list attendance statistic ids by departmentNames, year and month got an exception.", e );
+				Exception exception = new DepartmentStatisticForMonthListByDepartmentsException(e, departmentNames, year, month);
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -399,9 +417,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					statisticDepartmentForMonth_list = attendanceStatisticServiceAdv.listDepartmentForMonth( ids );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "系统根据ID列表查询统计数据信息时发生异常。" );
-					logger.error( "system list attendance statistic ids by ids got an exception.", e );
+					Exception exception = new DepartmentStatisticForMonthListByIdsException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
@@ -412,9 +430,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					result.setData(wraps);
 				} catch (Exception e) {
 					check = false;
-					result.error( new Exception( "系统转换数据库对象列表为输出列表时发生异常！" ) );
-					result.setUserMessage( "系统转换数据库对象列表为输出列表时发生异常！" );
-					logger.error( "system copy attendance department statistic list to wrap got an exception.", e );
+					Exception exception = new DepartmentStatisticForMonthWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
@@ -428,6 +446,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response showDepartmentStatistic(@Context HttpServletRequest request, @PathParam("name") String name, @PathParam("year") String year, @PathParam("month") String month) {
 		ActionResult<List<WrapOutAttendanceStatisticDepartmentForMonth>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		List<WrapOutAttendanceStatisticDepartmentForMonth> wraps = null;
 		List<String> ids = null;
 		List<StatisticDepartmentForMonth> statisticDepartmentForMonth_list = null;
@@ -443,8 +462,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 		if( check ){
 			if( name == null || name.isEmpty() ){
 				check = false;
-				result.error( new Exception("系统未获取到传入的公司名称参数 name.") );
-				result.setUserMessage( "系统未获取到传入的公司名称参数 name。" );
+				Exception exception = new QueryStatisticDepartmentNameEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -453,8 +473,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				check = false;
 				result.error( e );
-				result.setUserMessage( "系统根据部门名称，年份和月份查询指定部门的统计数据信息ID列表时发生异常。" );
-				logger.error( "system list attendance statistic ids by departmentName, year and month got an exception.", e );
+				Exception exception = new DepartmentStatisticForMonthListByDepartmentsException(e, name, year, month);
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -463,9 +484,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					statisticDepartmentForMonth_list = attendanceStatisticServiceAdv.listDepartmentForMonth( ids );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "系统根据ID列表查询统计数据信息时发生异常。" );
-					logger.error( "system list attendance statistic ids by ids got an exception.", e );
+					Exception exception = new DepartmentStatisticForMonthListByIdsException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
@@ -476,9 +497,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					result.setData(wraps);
 				} catch (Exception e) {
 					check = false;
-					result.error( new Exception( "系统转换数据库对象列表为输出列表时发生异常！" ) );
-					result.setUserMessage( "系统转换数据库对象列表为输出列表时发生异常！" );
-					logger.error( "system copy attendance department statistic list to wrap got an exception.", e );
+					Exception exception = new DepartmentStatisticForMonthWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
@@ -492,6 +513,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response sumDepartmentStatistic( @Context HttpServletRequest request, @PathParam("name") String name, @PathParam("year") String year, @PathParam("month") String month) {
 		ActionResult<WrapOutAttendanceStatisticDepartmentForMonth> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapOutAttendanceStatisticDepartmentForMonth wraps = null;
 		StatisticDepartmentForMonth statisticDepartmentForMonth = null;
 		List<String> departmentNameList = new ArrayList<String>();
@@ -516,8 +538,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 		if( check ){
 			if( name == null || name.isEmpty() ){
 				check = false;
-				result.error( new Exception("系统未获取到传入的公司名称参数 name.") );
-				result.setUserMessage( "系统未获取到传入的公司名称参数 name。" );
+				Exception exception = new QueryStatisticDepartmentNameEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -525,9 +548,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				departmentNameList = userManagerService.listSubOrganizationNameList( name );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在获取部门的所有下级部门时发生异常。" );
-				logger.error( "system query sub organization for department:"+ name +" got an exception." , e);
+				Exception exception = new ListDepartmentNameByParentNameException( e, name );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -541,9 +564,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				absenceDayCount = attendanceStatisticServiceAdv.sumDepartmentForMonth_AbsenceDayCount_ByDepartmentYearAndMonth( departmentNameList, year, month);
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在获取统计数据'缺勤天数'时发生异常。" );
-				logger.error( "system query absenceDayCount got an exception." , e);
+				Exception exception = new DepartmentStatisticForMonthSumAbsenceDayException( e, departmentNameList, year, month );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -551,9 +574,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				onSelfHolidayCount = attendanceStatisticServiceAdv.sumDepartmentForMonth_OnSelfHolidayCount_ByDepartmentYearAndMonth( departmentNameList, year, month);
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在获取统计数据'请休假天数'时发生异常。" );
-				logger.error( "system query onSelfHolidayCount got an exception." , e);
+				Exception exception = new DepartmentStatisticForMonthSumSelfHolidayException( e, departmentNameList, year, month );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -561,9 +584,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				lateCount = attendanceStatisticServiceAdv.sumDepartmentForMonth_LateCount_ByDepartmentYearAndMonth( departmentNameList, year, month);
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在获取统计数据'迟到天数'时发生异常。" );
-				logger.error( "system query lateCount got an exception." , e);
+				Exception exception = new DepartmentStatisticForMonthSumLateCountException( e, departmentNameList, year, month );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -571,9 +594,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				leaveEarlyCount = attendanceStatisticServiceAdv.sumDepartmentForMonth_LeaveEarlyCount_ByDepartmentYearAndMonth( departmentNameList, year, month);
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在获取统计数据'早退天数'时发生异常。" );
-				logger.error( "system query leaveEarlyCount got an exception." , e);
+				Exception exception = new DepartmentStatisticForMonthSumLeaveEarlyDayException( e, departmentNameList, year, month );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -581,9 +604,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				onDutyCount = attendanceStatisticServiceAdv.sumDepartmentForMonth_OnDutyCount_ByDepartmentYearAndMonth( departmentNameList, year, month);
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在获取统计数据'签到天数'时发生异常。" );
-				logger.error( "system query onDutyCount got an exception." , e);
+				Exception exception = new DepartmentStatisticForMonthSumOnDutyException( e, departmentNameList, year, month );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -591,9 +614,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				offDutyCount = attendanceStatisticServiceAdv.sumDepartmentForMonth_OffDutyCount_ByDepartmentYearAndMonth( departmentNameList, year, month);
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在获取统计数据'签退天数'时发生异常。" );
-				logger.error( "system query offDutyCount got an exception." , e);
+				Exception exception = new DepartmentStatisticForMonthSumOffDutyException( e, departmentNameList, year, month );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -601,9 +624,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				abNormalDutyCount = attendanceStatisticServiceAdv.sumDepartmentForMonth_AbNormalDutyCount_ByDepartmentYearAndMonth( departmentNameList, year, month);
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在获取统计数据'异常打卡天数'时发生异常。" );
-				logger.error( "system query abNormalDutyCount got an exception." , e);
+				Exception exception = new DepartmentStatisticForMonthSumAbsenceDayException( e, departmentNameList, year, month );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -611,9 +634,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				lackOfTimeCount = attendanceStatisticServiceAdv.sumDepartmentForMonth_LackOfTimeCount_ByDepartmentYearAndMonth( departmentNameList, year, month);
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在获取统计数据'工时不足天数'时发生异常。" );
-				logger.error( "system query lackOfTimeCount got an exception." , e);
+				Exception exception = new DepartmentStatisticForMonthSumLackOfTimeException( e, departmentNameList, year, month );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}		
 		}
 		if( check ){
@@ -621,9 +644,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				onDutyEmployeeCount = attendanceStatisticServiceAdv.sumDepartmentForMonth_AttendanceDayCount_ByDepartmentYearAndMonth( departmentNameList, year, month );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在获取统计数据'人员出勤人天总和'时发生异常。" );
-				logger.error( "system query onDutyEmployeeCount got an exception." , e);
+				Exception exception = new DepartmentStatisticForMonthSumAbsenceDayException( e, departmentNameList, year, month );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -655,9 +678,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				result.setData(wraps);
 			} catch (Exception e) {
 				check = false;
-				result.error( new Exception( "系统转换数据库对象列表为输出列表时发生异常！" ) );
-				result.setUserMessage( "系统转换数据库对象列表为输出列表时发生异常！" );
-				logger.error( "system copy attendance department statistic list to wrap got an exception.", e );
+				Exception exception = new DepartmentStatisticForMonthWrapOutException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -670,6 +693,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response showCompanyStatistic(@Context HttpServletRequest request, @PathParam("name") String name, @PathParam("year") String year, @PathParam("month") String month) {
 		ActionResult<List<WrapOutAttendanceStatisticCompanyForMonth>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		List<WrapOutAttendanceStatisticCompanyForMonth> wraps = null;
 		List<String> ids = null;
 		List<StatisticCompanyForMonth> statisticCompanyForMonth_list = null;
@@ -684,8 +708,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 		if( check ){
 			if( name == null || name.isEmpty() ){
 				check = false;
-				result.error( new Exception("系统未获取到传入的公司名称参数 name.") );
-				result.setUserMessage( "系统未获取到传入的公司名称参数 name。" );
+				Exception exception = new QueryStatisticCompanyNameEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -693,9 +718,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				ids = attendanceStatisticServiceAdv.listStatisticCompanyForMonth_ByCompanyYearAndMonth( name, year, month );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据公司名称，年份以及月份查询公司每月统计ID列表时发生异常。" );
-				logger.error( "system query statistic company for month by name, year and month got an exception." , e);
+				Exception exception = new CompanyStatisticForMonthListByCompanyException( e, name, year, month );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -704,9 +729,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					statisticCompanyForMonth_list = attendanceStatisticServiceAdv.listCompanyForMonth( ids );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "系统根据ID列表查询统计数据信息时发生异常。" );
-					logger.error( "system list attendance statistic ids by ids got an exception.", e );
+					Exception exception = new CompanyStatisticForMonthListByIdsException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
@@ -717,9 +742,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					result.setData(wraps);
 				} catch (Exception e) {
 					check = false;
-					result.error( new Exception( "系统转换数据库对象列表为输出列表时发生异常！" ) );
-					result.setUserMessage( "系统转换数据库对象列表为输出列表时发生异常！" );
-					logger.error( "system copy attendance department statistic list to wrap got an exception.", e );
+					Exception exception = new CompanyStatisticForMonthWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
@@ -733,6 +758,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response showDepartmentDayStatistic(@Context HttpServletRequest request, @PathParam("name") String name, @PathParam("year") String year, @PathParam("month") String month) {
 		ActionResult<List<WrapOutAttendanceStatisticDepartmentForDay>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		List<WrapOutAttendanceStatisticDepartmentForDay> wraps = null;
 		List<String> ids = null;
 		List<StatisticDepartmentForDay> statisticDepartmentForDay_list = null;
@@ -748,8 +774,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 		if( check ){
 			if( name == null || name.isEmpty() ){
 				check = false;
-				result.error( new Exception("系统未获取到传入的部门名称参数 name.") );
-				result.setUserMessage( "系统未获取到传入的部门名称参数 name。" );
+				Exception exception = new QueryStatisticDepartmentNameEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -757,9 +784,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				departmentNames = userManagerService.listSubOrganizationNameList( name );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在获取部门的所有下级部门时发生异常。" );
-				logger.error( "system query sub organization for department:"+ name +" got an exception." , e);
+				Exception exception = new ListDepartmentNameByParentNameException( e, name );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -773,9 +800,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				ids = attendanceStatisticServiceAdv.listStatisticDepartmentForDay_ByDepartmentDayYearAndMonth( departmentNames, year, month );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据部门名称列表，年份以及月份查询公司每月统计ID列表时发生异常。" );
-				logger.error( "system query statistic department for day by department names, year and month got an exception." , e);
+				Exception exception = new DepartmentStatisticForDayListByDepartmentsException( e, departmentNames, year, month );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -784,9 +811,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					statisticDepartmentForDay_list = attendanceStatisticServiceAdv.listDepartmentForDay( ids );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "系统根据ID列表查询统计数据信息时发生异常。" );
-					logger.error( "system list attendance statistic ids by ids got an exception.", e );
+					Exception exception = new DepartmentStatisticForDayListByIdsException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
@@ -797,9 +824,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					result.setData(wraps);
 				} catch (Exception e) {
 					check = false;
-					result.error( new Exception( "系统转换数据库对象列表为输出列表时发生异常！" ) );
-					result.setUserMessage( "系统转换数据库对象列表为输出列表时发生异常！" );
-					logger.error( "system copy attendance department statistic list to wrap got an exception.", e );
+					Exception exception = new DepartmentStatisticForDayWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
@@ -813,6 +840,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response showCompanyDayStatistic(@Context HttpServletRequest request, @PathParam("name") String name, @PathParam("year") String year, @PathParam("month") String month) {
 		ActionResult<List<WrapOutAttendanceStatisticCompanyForDay>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		List<WrapOutAttendanceStatisticCompanyForDay> wraps = null;
 		List<String> ids = null;
 		List<StatisticCompanyForDay> statisticCompanyForDay_list = null;
@@ -827,8 +855,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 		if( check ){
 			if( name == null || name.isEmpty() ){
 				check = false;
-				result.error( new Exception("系统未获取到传入的公司名称参数 name.") );
-				result.setUserMessage( "系统未获取到传入的公司名称参数 name。" );
+				Exception exception = new QueryStatisticCompanyNameEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -836,9 +865,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				ids = attendanceStatisticServiceAdv.listStatisticCompanyForDay_ByNameYearAndMonth( name, year, month );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据公司名称，年份以及月份查询公司每月统计ID列表时发生异常。" );
-				logger.error( "system query statistic company for day by department names, year and month got an exception." , e);
+				Exception exception = new CompanyStatisticForDayListByCompanyException( e, name, year, month );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -847,9 +876,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					statisticCompanyForDay_list = attendanceStatisticServiceAdv.listCompanyForDay( ids );
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "系统根据ID列表查询统计数据信息时发生异常。" );
-					logger.error( "system list attendance statistic ids by ids got an exception.", e );
+					Exception exception = new CompanyStatisticForDayListByIdsException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
@@ -860,9 +889,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					result.setData(wraps);
 				} catch (Exception e) {
 					check = false;
-					result.error( new Exception( "系统转换数据库对象列表为输出列表时发生异常！" ) );
-					result.setUserMessage( "系统转换数据库对象列表为输出列表时发生异常！" );
-					logger.error( "system copy attendance company statistic list to wrap got an exception.", e );
+					Exception exception = new CompanyStatisticForDayWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null );
 				}
 			}
 		}
@@ -876,6 +905,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response showDepartmentStatisticForDay(@Context HttpServletRequest request, @PathParam("name") String name, @PathParam("date") String date) {
 		ActionResult<List<WrapOutAttendanceStatisticDepartmentForDay>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		List<WrapOutAttendanceStatisticDepartmentForDay> wraps = null;
 		Business business = null;
 		List<String> ids = null;
@@ -891,13 +921,13 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			
 			if( name != null && !name.isEmpty()){
 				departmentNames.add(name);
 				try{
 					departments = business.organization().department().listSubNested( name );
 				}catch(Exception e){
-					logger.error("系统在根据部门名称查询下级部门的时候发生异常。", e);
+					Exception exception = new ListDepartmentNameByParentNameException( e, name );
+					logger.error( exception, effectivePerson, request, null);
 				}
 				if( departments != null && departments.size() > 0 ){
 					for( WrapDepartment department : departments){
@@ -905,12 +935,31 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					}
 				}
 			}
-			ids = business.getStatisticDepartmentForDayFactory().listByDepartmentDayDate( departmentNames, date);
-			statisticDepartmentForDay_list = business.getStatisticDepartmentForDayFactory().list(ids);
-			wraps = wrapout_copier_department_forDay.copy(statisticDepartmentForDay_list);
-			result.setData(wraps);
+			try{
+				ids = business.getStatisticDepartmentForDayFactory().listByDepartmentDayDate( departmentNames, date );
+			}catch(Exception e){
+				Exception exception = new DepartmentStatisticForDayListByDateException( e, departmentNames, date );
+				logger.error( exception, effectivePerson, request, null);
+			}
+			try{
+				if( ids != null && !ids.isEmpty() ){
+					statisticDepartmentForDay_list = business.getStatisticDepartmentForDayFactory().list(ids);
+				}
+			}catch(Exception e){
+				Exception exception = new DepartmentStatisticForDayListByIdsException( e );
+				logger.error( exception, effectivePerson, request, null);
+			}
+			try{
+				if( statisticDepartmentForDay_list != null && !statisticDepartmentForDay_list.isEmpty() ){
+					wraps = wrapout_copier_department_forDay.copy(statisticDepartmentForDay_list);
+					result.setData(wraps);
+				}
+			}catch(Exception e){
+				Exception exception = new DepartmentStatisticForDayWrapOutException( e );
+				logger.error( exception, effectivePerson, request, null);
+			}		
 		} catch (Exception e) {
-			logger.error("用户查询部门每日统计发生异常！", e);
+			result.error( e );
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -923,11 +972,11 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 	public Response showDepartmentStatisticForDayWithCompanyName(@Context HttpServletRequest request,
 			@PathParam("name") String name, @PathParam("date") String date) {
 		ActionResult<List<WrapOutAttendanceStatisticDepartmentForDay>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		List<WrapOutAttendanceStatisticDepartmentForDay> wraps = null;
 		Business business = null;
 		List<String> ids = null;
 		List<StatisticDepartmentForDay> statisticDepartmentForDay_list = null;
-		EffectivePerson currentPerson = this.effectivePerson(request);
 		List<String> departmentNames = new ArrayList<String>();
 		
 		if ("(0)".equals(name)) {
@@ -936,8 +985,6 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 		if ("(0)".equals(date)) {
 			date = null;
 		}
-		logger.debug("[showDepartmentDayStatisticForDay]user[" + currentPerson.getName()
-				+ "] try to get statistic{'name':'" + name + "','date':'" + date + "'}......");
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			
@@ -945,550 +992,691 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				getTopDepartmentNameList( name, departmentNames);
 			}
 			
-			ids = business.getStatisticDepartmentForDayFactory().listByDepartmentDayDate( departmentNames, date);
-			statisticDepartmentForDay_list = business.getStatisticDepartmentForDayFactory().list(ids);
-			wraps = wrapout_copier_department_forDay.copy(statisticDepartmentForDay_list);
-			result.setData(wraps);
+			try{
+				ids = business.getStatisticDepartmentForDayFactory().listByDepartmentDayDate( departmentNames, date );
+			}catch(Exception e){
+				Exception exception = new DepartmentStatisticForDayListByDateException( e, departmentNames, date );
+				logger.error( exception, effectivePerson, request, null);
+			}
+			try{
+				if( ids != null && !ids.isEmpty() ){
+					statisticDepartmentForDay_list = business.getStatisticDepartmentForDayFactory().list(ids);
+				}
+			}catch(Exception e){
+				Exception exception = new DepartmentStatisticForDayListByIdsException( e );
+				logger.error( exception, effectivePerson, request, null);
+			}
+			try{
+				if( statisticDepartmentForDay_list != null && !statisticDepartmentForDay_list.isEmpty() ){
+					wraps = wrapout_copier_department_forDay.copy(statisticDepartmentForDay_list);
+					result.setData(wraps);
+				}
+			}catch(Exception e){
+				Exception exception = new DepartmentStatisticForDayWrapOutException( e );
+				logger.error( exception, effectivePerson, request, null);
+			}
 		} catch (Exception e) {
-			logger.error("用户查询部门每日统计发生异常！", e);
+			result.error( e );
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "列示根据过滤条件的StatisticPersonForMonth,下一页.", response = WrapOutAttendanceStatisticPersonForMonth.class, request = WrapInFilterStatisticPersonForMonth.class)
+	@HttpMethodDescribe(value = "列示根据过滤条件的StatisticPersonForMonth,下一页.", response = WrapOutAttendanceStatisticPersonForMonth.class, request = JsonElement.class)
 	@PUT
 	@Path("filter/personMonth/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listStatisticPersonForMonthNextPageWithFilter(@Context HttpServletRequest request,
-			@PathParam("id") String id, @PathParam("count") Integer count, WrapInFilterStatisticPersonForMonth wrapIn) {
+			@PathParam("id") String id, @PathParam("count") Integer count, JsonElement jsonElement) {
 		ActionResult<List<WrapOutAttendanceStatisticPersonForMonth>> result = new ActionResult<>();
 		List<WrapOutAttendanceStatisticPersonForMonth> wraps = null;
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		long total = 0;
 		List<StatisticPersonForMonth> statisticList = null;
-		logger.debug("user[" + currentPerson.getName() + "] try to list statisticPersonForMonth for nextpage, last id="
-				+ id);
+		WrapInFilterStatisticPersonForMonth wrapIn = null;
+		Boolean check = true;
+		
 		try {
-			EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
-			Business business = new Business(emc);
-
-			// 查询出ID对应的记录的sequence
-			Object sequence = null;
-			if (id == null || "(0)".equals(id) || id.isEmpty()) {
-				// logger.debug( "第一页查询，没有id传入" );
-			} else {
-				if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
-					sequence = PropertyUtils.getProperty(
-							emc.find(id, StatisticPersonForMonth.class, ExceptionWhen.not_found), "sequence");
-				}
-			}
-
-			//将下级组织的数据纳入组织统计数据查询范围
-			List<String> organizationNameList = getDepartmentNameList(wrapIn.getCompanyName(), wrapIn.getOrganizationName());			
-			wrapIn.setOrganizationName(organizationNameList);
-			// 从数据库中查询符合条件的一页数据对象
-			statisticList = business.getStatisticPersonForMonthFactory().listIdsNextWithFilter(id, count, sequence,
-					wrapIn);
-
-			// 从数据库中查询符合条件的对象总数
-			total = business.getStatisticPersonForMonthFactory().getCountWithFilter(wrapIn);
-
-			// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
-			wraps = wrapout_copier_person_forMonth.copy(statisticList);
-
-			// 对查询的列表进行排序
-			result.setCount(total);
-			result.setData(wraps);
-
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilterStatisticPersonForMonth.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
+		if(check ){
+			try {
+				EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
+				Business business = new Business(emc);
+
+				// 查询出ID对应的记录的sequence
+				Object sequence = null;
+				if (id == null || "(0)".equals(id) || id.isEmpty()) {
+					// logger.debug( "第一页查询，没有id传入" );
+				} else {
+					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+						sequence = PropertyUtils.getProperty(
+								emc.find(id, StatisticPersonForMonth.class ), "sequence");
+					}
+				}
+
+				//将下级组织的数据纳入组织统计数据查询范围
+				List<String> organizationNameList = getDepartmentNameList(wrapIn.getCompanyName(), wrapIn.getOrganizationName());			
+				wrapIn.setOrganizationName(organizationNameList);
+				// 从数据库中查询符合条件的一页数据对象
+				statisticList = business.getStatisticPersonForMonthFactory().listIdsNextWithFilter(id, count, sequence, wrapIn);
+
+				// 从数据库中查询符合条件的对象总数
+				total = business.getStatisticPersonForMonthFactory().getCountWithFilter(wrapIn);
+
+				// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
+				wraps = wrapout_copier_person_forMonth.copy(statisticList);
+
+				// 对查询的列表进行排序
+				result.setCount(total);
+				result.setData(wraps);
+
+			} catch (Throwable th) {
+				th.printStackTrace();
+				result.error(th);
+			}
+		}
+		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "列示根据过滤条件的StatisticPersonForMonth,上一页.", response = WrapOutAttendanceStatisticPersonForMonth.class, request = WrapInFilterStatisticPersonForMonth.class)
+	@HttpMethodDescribe(value = "列示根据过滤条件的StatisticPersonForMonth,上一页.", response = WrapOutAttendanceStatisticPersonForMonth.class, request = JsonElement.class)
 	@PUT
 	@Path("filter/personMonth/list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listStatisticPersonForMonthPrevPageWithFilter(@Context HttpServletRequest request,
-			@PathParam("id") String id, @PathParam("count") Integer count, WrapInFilterStatisticPersonForMonth wrapIn) {
+			@PathParam("id") String id, @PathParam("count") Integer count, JsonElement jsonElement) {
 		ActionResult<List<WrapOutAttendanceStatisticPersonForMonth>> result = new ActionResult<>();
 		List<WrapOutAttendanceStatisticPersonForMonth> wraps = null;
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		long total = 0;
 		List<StatisticPersonForMonth> statisticList = null;
-		logger.debug("user[" + currentPerson.getName() + "] try to list statisticPersonForMonth for nextpage, last id="
-				+ id);
+		WrapInFilterStatisticPersonForMonth wrapIn = null;
+		Boolean check = true;
+		
 		try {
-			EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
-			Business business = new Business(emc);
-
-			// 查询出ID对应的记录的sequence
-			Object sequence = null;
-			logger.debug("传入的ID=" + id);
-			if (id == null || "(0)".equals(id) || id.isEmpty()) {
-				logger.debug("第一页查询，没有id传入");
-			} else {
-				if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
-					sequence = PropertyUtils.getProperty(
-							emc.find(id, StatisticPersonForMonth.class, ExceptionWhen.not_found), "sequence");
-				}
-			}
-
-			//将下级组织的数据纳入组织统计数据查询范围
-			List<String> organizationNameList = getDepartmentNameList(wrapIn.getCompanyName(), wrapIn.getOrganizationName());			
-			wrapIn.setOrganizationName(organizationNameList);
-			// 从数据库中查询符合条件的一页数据对象
-			statisticList = business.getStatisticPersonForMonthFactory().listIdsPrevWithFilter(id, count, sequence,
-					wrapIn);
-
-			// 从数据库中查询符合条件的对象总数
-			total = business.getStatisticPersonForMonthFactory().getCountWithFilter(wrapIn);
-
-			// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
-			wraps = wrapout_copier_person_forMonth.copy(statisticList);
-
-			result.setCount(total);
-			result.setData(wraps);
-
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilterStatisticPersonForMonth.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
+		if(check ){
+			try {
+				EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
+				Business business = new Business(emc);
+
+				// 查询出ID对应的记录的sequence
+				Object sequence = null;
+				logger.debug("传入的ID=" + id);
+				if (id == null || "(0)".equals(id) || id.isEmpty()) {
+					logger.debug("第一页查询，没有id传入");
+				} else {
+					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+						sequence = PropertyUtils.getProperty(
+								emc.find(id, StatisticPersonForMonth.class ), "sequence");
+					}
+				}
+
+				//将下级组织的数据纳入组织统计数据查询范围
+				List<String> organizationNameList = getDepartmentNameList(wrapIn.getCompanyName(), wrapIn.getOrganizationName());			
+				wrapIn.setOrganizationName(organizationNameList);
+				// 从数据库中查询符合条件的一页数据对象
+				statisticList = business.getStatisticPersonForMonthFactory().listIdsPrevWithFilter(id, count, sequence,
+						wrapIn);
+
+				// 从数据库中查询符合条件的对象总数
+				total = business.getStatisticPersonForMonthFactory().getCountWithFilter(wrapIn);
+
+				// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
+				wraps = wrapout_copier_person_forMonth.copy(statisticList);
+
+				result.setCount(total);
+				result.setData(wraps);
+
+			} catch (Throwable th) {
+				th.printStackTrace();
+				result.error(th);
+			}
+		}
+		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "列示根据过滤条件的StatisticDepartmentForMonth,下一页.", response = WrapOutAttendanceStatisticDepartmentForMonth.class, request = WrapInFilterStatisticDepartmentForMonth.class)
+	@HttpMethodDescribe(value = "列示根据过滤条件的StatisticDepartmentForMonth,下一页.", response = WrapOutAttendanceStatisticDepartmentForMonth.class, request = JsonElement.class)
 	@PUT
 	@Path("filter/departmentMonth/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listStatisticDepartmentForMonthNextPageWithFilter(@Context HttpServletRequest request,
 			@PathParam("id") String id, @PathParam("count") Integer count,
-			WrapInFilterStatisticDepartmentForMonth wrapIn) {
+			JsonElement jsonElement) {
 		ActionResult<List<WrapOutAttendanceStatisticDepartmentForMonth>> result = new ActionResult<>();
 		List<WrapOutAttendanceStatisticDepartmentForMonth> wraps = null;
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		long total = 0;
 		List<StatisticDepartmentForMonth> statisticList = null;
-		logger.debug("user[" + currentPerson.getName()
-				+ "] try to list statisticDepartmentForMonth for nextpage, last id=" + id);
+		WrapInFilterStatisticDepartmentForMonth wrapIn = null;
+		Boolean check = true;
+		
 		try {
-			EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
-			Business business = new Business(emc);
-
-			// 查询出ID对应的记录的sequence
-			Object sequence = null;
-			if (id == null || "(0)".equals(id) || id.isEmpty()) {
-				// logger.debug( "第一页查询，没有id传入" );
-			} else {
-				if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
-					sequence = PropertyUtils.getProperty(
-							emc.find(id, StatisticDepartmentForMonth.class, ExceptionWhen.not_found), "sequence");
-				}
-			}
-
-			//将下级组织的数据纳入组织统计数据查询范围
-			List<String> organizationNameList = getDepartmentNameList(wrapIn.getCompanyName(), wrapIn.getOrganizationName());			
-			wrapIn.setOrganizationName(organizationNameList);
-			// 从数据库中查询符合条件的一页数据对象
-			statisticList = business.getStatisticDepartmentForMonthFactory().listIdsNextWithFilter(id, count, sequence,
-					wrapIn);
-
-			// 从数据库中查询符合条件的对象总数
-			total = business.getStatisticDepartmentForMonthFactory().getCountWithFilter(wrapIn);
-
-			// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
-			wraps = wrapout_copier_department_forMonth.copy(statisticList);
-
-			// 对查询的列表进行排序
-			result.setCount(total);
-			result.setData(wraps);
-
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilterStatisticDepartmentForMonth.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
+		if(check ){
+			try {
+				EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
+				Business business = new Business(emc);
+
+				// 查询出ID对应的记录的sequence
+				Object sequence = null;
+				if (id == null || "(0)".equals(id) || id.isEmpty()) {
+					// logger.debug( "第一页查询，没有id传入" );
+				} else {
+					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+						sequence = PropertyUtils.getProperty(
+								emc.find(id, StatisticDepartmentForMonth.class ), "sequence");
+					}
+				}
+
+				//将下级组织的数据纳入组织统计数据查询范围
+				List<String> organizationNameList = getDepartmentNameList(wrapIn.getCompanyName(), wrapIn.getOrganizationName());			
+				wrapIn.setOrganizationName(organizationNameList);
+				// 从数据库中查询符合条件的一页数据对象
+				statisticList = business.getStatisticDepartmentForMonthFactory().listIdsNextWithFilter(id, count, sequence,
+						wrapIn);
+
+				// 从数据库中查询符合条件的对象总数
+				total = business.getStatisticDepartmentForMonthFactory().getCountWithFilter(wrapIn);
+
+				// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
+				wraps = wrapout_copier_department_forMonth.copy(statisticList);
+
+				// 对查询的列表进行排序
+				result.setCount(total);
+				result.setData(wraps);
+
+			} catch (Throwable th) {
+				th.printStackTrace();
+				result.error(th);
+			}
+		}
+		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "列示根据过滤条件的StatisticDepartmentForMonth,上一页.", response = WrapOutAttendanceStatisticDepartmentForMonth.class, request = WrapInFilterStatisticDepartmentForMonth.class)
+	@HttpMethodDescribe(value = "列示根据过滤条件的StatisticDepartmentForMonth,上一页.", response = WrapOutAttendanceStatisticDepartmentForMonth.class, request = JsonElement.class)
 	@PUT
 	@Path("filter/departmentMonth/list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listStatisticDepartmentForMonthPrevPageWithFilter(@Context HttpServletRequest request,
 			@PathParam("id") String id, @PathParam("count") Integer count,
-			WrapInFilterStatisticDepartmentForMonth wrapIn) {
+			JsonElement jsonElement) {
 		ActionResult<List<WrapOutAttendanceStatisticDepartmentForMonth>> result = new ActionResult<>();
 		List<WrapOutAttendanceStatisticDepartmentForMonth> wraps = null;
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		long total = 0;
 		List<StatisticDepartmentForMonth> statisticList = null;
-		logger.debug("user[" + currentPerson.getName()
-				+ "] try to list statisticDepartmentForMonth for nextpage, last id=" + id);
+		WrapInFilterStatisticDepartmentForMonth wrapIn = null;
+		Boolean check = true;
+		
 		try {
-			EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
-			Business business = new Business(emc);
-
-			// 查询出ID对应的记录的sequence
-			Object sequence = null;
-			logger.debug("传入的ID=" + id);
-			if (id == null || "(0)".equals(id) || id.isEmpty()) {
-				logger.debug("第一页查询，没有id传入");
-			} else {
-				if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
-					sequence = PropertyUtils.getProperty(
-							emc.find(id, StatisticDepartmentForMonth.class, ExceptionWhen.not_found), "sequence");
-				}
-			}
-
-			//将下级组织的数据纳入组织统计数据查询范围
-			List<String> organizationNameList = getDepartmentNameList(wrapIn.getCompanyName(), wrapIn.getOrganizationName());			
-			wrapIn.setOrganizationName(organizationNameList);
-			// 从数据库中查询符合条件的一页数据对象
-			statisticList = business.getStatisticDepartmentForMonthFactory().listIdsPrevWithFilter(id, count, sequence,
-					wrapIn);
-
-			// 从数据库中查询符合条件的对象总数
-			total = business.getStatisticDepartmentForMonthFactory().getCountWithFilter(wrapIn);
-
-			// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
-			wraps = wrapout_copier_department_forMonth.copy(statisticList);
-
-			result.setCount(total);
-			result.setData(wraps);
-
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilterStatisticDepartmentForMonth.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
+		if(check ){
+			try {
+				EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
+				Business business = new Business(emc);
+
+				// 查询出ID对应的记录的sequence
+				Object sequence = null;
+				logger.debug("传入的ID=" + id);
+				if (id == null || "(0)".equals(id) || id.isEmpty()) {
+					logger.debug("第一页查询，没有id传入");
+				} else {
+					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+						sequence = PropertyUtils.getProperty(
+								emc.find(id, StatisticDepartmentForMonth.class ), "sequence");
+					}
+				}
+
+				//将下级组织的数据纳入组织统计数据查询范围
+				List<String> organizationNameList = getDepartmentNameList(wrapIn.getCompanyName(), wrapIn.getOrganizationName());			
+				wrapIn.setOrganizationName(organizationNameList);
+				// 从数据库中查询符合条件的一页数据对象
+				statisticList = business.getStatisticDepartmentForMonthFactory().listIdsPrevWithFilter(id, count, sequence,
+						wrapIn);
+
+				// 从数据库中查询符合条件的对象总数
+				total = business.getStatisticDepartmentForMonthFactory().getCountWithFilter(wrapIn);
+
+				// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
+				wraps = wrapout_copier_department_forMonth.copy(statisticList);
+
+				result.setCount(total);
+				result.setData(wraps);
+
+			} catch (Throwable th) {
+				th.printStackTrace();
+				result.error(th);
+			}
+		}
+		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "列示根据过滤条件的StatisticCompanyForMonth,下一页.", response = WrapOutAttendanceStatisticCompanyForMonth.class, request = WrapInFilterStatisticCompanyForMonth.class)
+	@HttpMethodDescribe(value = "列示根据过滤条件的StatisticCompanyForMonth,下一页.", response = WrapOutAttendanceStatisticCompanyForMonth.class, request = JsonElement.class)
 	@PUT
 	@Path("filter/companyMonth/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listStatisticCompanyForMonthNextPageWithFilter(@Context HttpServletRequest request,
 			@PathParam("id") String id, @PathParam("count") Integer count,
-			WrapInFilterStatisticCompanyForMonth wrapIn) {
+			JsonElement jsonElement) {
 		ActionResult<List<WrapOutAttendanceStatisticCompanyForMonth>> result = new ActionResult<>();
 		List<WrapOutAttendanceStatisticCompanyForMonth> wraps = null;
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		long total = 0;
 		List<StatisticCompanyForMonth> statisticList = null;
-		logger.debug("user[" + currentPerson.getName() + "] try to list statisticCompanyForMonth for nextpage, last id="
-				+ id);
+		WrapInFilterStatisticCompanyForMonth wrapIn = null;
+		Boolean check = true;
+		
 		try {
-			EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
-			Business business = new Business(emc);
-
-			// 查询出ID对应的记录的sequence
-			Object sequence = null;
-			if (id == null || "(0)".equals(id) || id.isEmpty()) {
-				// logger.debug( "第一页查询，没有id传入" );
-			} else {
-				if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
-					sequence = PropertyUtils.getProperty(
-							emc.find(id, StatisticCompanyForMonth.class, ExceptionWhen.not_found), "sequence");
-				}
-			}
-
-			//将下级组织的数据纳入组织统计数据查询范围
-			List<String> organizationNameList = getDepartmentNameList(wrapIn.getCompanyName(), wrapIn.getOrganizationName());			
-			wrapIn.setOrganizationName(organizationNameList);
-			// 从数据库中查询符合条件的一页数据对象
-			statisticList = business.getStatisticCompanyForMonthFactory().listIdsNextWithFilter(id, count, sequence,
-					wrapIn);
-
-			// 从数据库中查询符合条件的对象总数
-			total = business.getStatisticCompanyForMonthFactory().getCountWithFilter(wrapIn);
-
-			// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
-			wraps = wrapout_copier_company_forMonth.copy(statisticList);
-
-			// 对查询的列表进行排序
-			result.setCount(total);
-			result.setData(wraps);
-
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilterStatisticCompanyForMonth.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
+		if(check ){
+			try {
+				EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
+				Business business = new Business(emc);
+
+				// 查询出ID对应的记录的sequence
+				Object sequence = null;
+				if (id == null || "(0)".equals(id) || id.isEmpty()) {
+					// logger.debug( "第一页查询，没有id传入" );
+				} else {
+					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+						sequence = PropertyUtils.getProperty(
+								emc.find(id, StatisticCompanyForMonth.class ), "sequence");
+					}
+				}
+
+				//将下级组织的数据纳入组织统计数据查询范围
+				List<String> organizationNameList = getDepartmentNameList(wrapIn.getCompanyName(), wrapIn.getOrganizationName());			
+				wrapIn.setOrganizationName(organizationNameList);
+				// 从数据库中查询符合条件的一页数据对象
+				statisticList = business.getStatisticCompanyForMonthFactory().listIdsNextWithFilter(id, count, sequence,
+						wrapIn);
+
+				// 从数据库中查询符合条件的对象总数
+				total = business.getStatisticCompanyForMonthFactory().getCountWithFilter(wrapIn);
+
+				// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
+				wraps = wrapout_copier_company_forMonth.copy(statisticList);
+
+				// 对查询的列表进行排序
+				result.setCount(total);
+				result.setData(wraps);
+
+			} catch (Throwable th) {
+				th.printStackTrace();
+				result.error(th);
+			}
+		}
+		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "列示根据过滤条件的StatisticCompanyForMonth,上一页.", response = WrapOutAttendanceStatisticCompanyForMonth.class, request = WrapInFilterStatisticCompanyForMonth.class)
+	@HttpMethodDescribe(value = "列示根据过滤条件的StatisticCompanyForMonth,上一页.", response = WrapOutAttendanceStatisticCompanyForMonth.class, request = JsonElement.class)
 	@PUT
 	@Path( "filter/companyMonth/list/{id}/prev/{count}" )
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listStatisticCompanyForMonthPrevPageWithFilter(@Context HttpServletRequest request,
-			@PathParam("id") String id, @PathParam("count") Integer count, WrapInFilterStatisticCompanyForMonth wrapIn) {
+			@PathParam("id") String id, @PathParam("count") Integer count, JsonElement jsonElement) {
 		ActionResult<List<WrapOutAttendanceStatisticCompanyForMonth>> result = new ActionResult<>();
+		EffectivePerson currentPerson = this.effectivePerson(request);
 		List<WrapOutAttendanceStatisticCompanyForMonth> wraps = null;
 		long total = 0;
 		List<StatisticCompanyForMonth> statisticList = null;
+		WrapInFilterStatisticCompanyForMonth wrapIn = null;
+		Boolean check = true;
+		
 		try {
-			EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
-			Business business = new Business(emc);
-
-			// 查询出ID对应的记录的sequence
-			Object sequence = null;
-			logger.debug("传入的ID=" + id);
-			if (id == null || "(0)".equals(id) || id.isEmpty()) {
-				logger.debug("第一页查询，没有id传入");
-			} else {
-				if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
-					sequence = PropertyUtils.getProperty(
-							emc.find(id, StatisticCompanyForMonth.class, ExceptionWhen.not_found), "sequence");
-				}
-			}
-
-			//将下级组织的数据纳入组织统计数据查询范围
-			List<String> organizationNameList = getDepartmentNameList(wrapIn.getCompanyName(), wrapIn.getOrganizationName());			
-			wrapIn.setOrganizationName(organizationNameList);
-			// 从数据库中查询符合条件的一页数据对象
-			statisticList = business.getStatisticCompanyForMonthFactory().listIdsPrevWithFilter(id, count, sequence,
-					wrapIn);
-
-			// 从数据库中查询符合条件的对象总数
-			total = business.getStatisticCompanyForMonthFactory().getCountWithFilter(wrapIn);
-
-			// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
-			wraps = wrapout_copier_company_forMonth.copy(statisticList);
-
-			result.setCount(total);
-			result.setData(wraps);
-
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilterStatisticCompanyForMonth.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
+		if(check ){
+			try {
+				EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
+				Business business = new Business(emc);
+
+				// 查询出ID对应的记录的sequence
+				Object sequence = null;
+
+				if (id == null || "(0)".equals(id) || id.isEmpty()) {
+					logger.debug("第一页查询，没有id传入");
+				} else {
+					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+						sequence = PropertyUtils.getProperty(
+								emc.find(id, StatisticCompanyForMonth.class ), "sequence");
+					}
+				}
+
+				//将下级组织的数据纳入组织统计数据查询范围
+				List<String> organizationNameList = getDepartmentNameList(wrapIn.getCompanyName(), wrapIn.getOrganizationName());			
+				wrapIn.setOrganizationName(organizationNameList);
+				// 从数据库中查询符合条件的一页数据对象
+				statisticList = business.getStatisticCompanyForMonthFactory().listIdsPrevWithFilter(id, count, sequence,
+						wrapIn);
+
+				// 从数据库中查询符合条件的对象总数
+				total = business.getStatisticCompanyForMonthFactory().getCountWithFilter(wrapIn);
+
+				// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
+				wraps = wrapout_copier_company_forMonth.copy(statisticList);
+
+				result.setCount(total);
+				result.setData(wraps);
+
+			} catch (Throwable th) {
+				th.printStackTrace();
+				result.error(th);
+			}
+		}
+		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "列示根据过滤条件的StatisticDepartmentForDay,下一页.", response = WrapOutAttendanceStatisticDepartmentForDay.class, request = WrapInFilterStatisticDepartmentForDay.class)
+	@HttpMethodDescribe(value = "列示根据过滤条件的StatisticDepartmentForDay,下一页.", response = WrapOutAttendanceStatisticDepartmentForDay.class, request = JsonElement.class)
 	@PUT
 	@Path("filter/departmentDay/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listStatisticDepartmentForDayNextPageWithFilter(@Context HttpServletRequest request,
 			@PathParam("id") String id, @PathParam("count") Integer count,
-			WrapInFilterStatisticDepartmentForDay wrapIn) {
+			JsonElement jsonElement) {
 		ActionResult<List<WrapOutAttendanceStatisticDepartmentForDay>> result = new ActionResult<>();
 		List<WrapOutAttendanceStatisticDepartmentForDay> wraps = null;
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		long total = 0;
 		List<StatisticDepartmentForDay> statisticList = null;
-		logger.debug("user[" + currentPerson.getName()
-				+ "] try to list statisticDepartmentForDay for nextpage, last id=" + id);
+		WrapInFilterStatisticDepartmentForDay wrapIn = null;
+		Boolean check = true;
+		
 		try {
-			EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
-			Business business = new Business(emc);
-
-			// 查询出ID对应的记录的sequence
-			Object sequence = null;
-			if (id == null || "(0)".equals(id) || id.isEmpty()) {
-				// logger.debug( "第一页查询，没有id传入" );
-			} else {
-				if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
-					sequence = PropertyUtils.getProperty(
-							emc.find(id, StatisticDepartmentForDay.class, ExceptionWhen.not_found), "sequence");
-				}
-			}
-
-			//将下级组织的数据纳入组织统计数据查询范围
-			List<String> organizationNameList = getDepartmentNameList(wrapIn.getCompanyName(), wrapIn.getOrganizationName());			
-			wrapIn.setOrganizationName(organizationNameList);
-			// 从数据库中查询符合条件的一页数据对象
-			statisticList = business.getStatisticDepartmentForDayFactory().listIdsNextWithFilter(id, count, sequence,
-					wrapIn);
-
-			// 从数据库中查询符合条件的对象总数
-			total = business.getStatisticDepartmentForDayFactory().getCountWithFilter(wrapIn);
-
-			// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
-			wraps = wrapout_copier_department_forDay.copy(statisticList);
-
-			// 对查询的列表进行排序
-			result.setCount(total);
-			result.setData(wraps);
-
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilterStatisticDepartmentForDay.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
+		if(check ){
+			try {
+				EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
+				Business business = new Business(emc);
+
+				// 查询出ID对应的记录的sequence
+				Object sequence = null;
+				if (id == null || "(0)".equals(id) || id.isEmpty()) {
+					// logger.debug( "第一页查询，没有id传入" );
+				} else {
+					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+						sequence = PropertyUtils.getProperty(
+								emc.find(id, StatisticDepartmentForDay.class ), "sequence");
+					}
+				}
+
+				//将下级组织的数据纳入组织统计数据查询范围
+				List<String> organizationNameList = getDepartmentNameList(wrapIn.getCompanyName(), wrapIn.getOrganizationName());			
+				wrapIn.setOrganizationName(organizationNameList);
+				// 从数据库中查询符合条件的一页数据对象
+				statisticList = business.getStatisticDepartmentForDayFactory().listIdsNextWithFilter(id, count, sequence,
+						wrapIn);
+
+				// 从数据库中查询符合条件的对象总数
+				total = business.getStatisticDepartmentForDayFactory().getCountWithFilter(wrapIn);
+
+				// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
+				wraps = wrapout_copier_department_forDay.copy(statisticList);
+
+				// 对查询的列表进行排序
+				result.setCount(total);
+				result.setData(wraps);
+
+			} catch (Throwable th) {
+				th.printStackTrace();
+				result.error(th);
+			}
+		}
+		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "列示根据过滤条件的StatisticDepartmentForDay,上一页.", response = WrapOutAttendanceStatisticDepartmentForDay.class, request = WrapInFilterStatisticDepartmentForDay.class)
+	@HttpMethodDescribe(value = "列示根据过滤条件的StatisticDepartmentForDay,上一页.", response = WrapOutAttendanceStatisticDepartmentForDay.class, request = JsonElement.class)
 	@PUT
 	@Path("filter/departmentDay/list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listStatisticDepartmentForDayPrevPageWithFilter(@Context HttpServletRequest request,
 			@PathParam("id") String id, @PathParam("count") Integer count,
-			WrapInFilterStatisticDepartmentForDay wrapIn) {
+			JsonElement jsonElement) {
 		ActionResult<List<WrapOutAttendanceStatisticDepartmentForDay>> result = new ActionResult<>();
 		List<WrapOutAttendanceStatisticDepartmentForDay> wraps = null;
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		long total = 0;
 		List<StatisticDepartmentForDay> statisticList = null;
-		logger.debug("user[" + currentPerson.getName()
-				+ "] try to list statisticDepartmentForDay for nextpage, last id=" + id);
+		WrapInFilterStatisticDepartmentForDay wrapIn = null;
+		Boolean check = true;
+		
 		try {
-			EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
-			Business business = new Business(emc);
-
-			// 查询出ID对应的记录的sequence
-			Object sequence = null;
-			logger.debug("传入的ID=" + id);
-			if (id == null || "(0)".equals(id) || id.isEmpty()) {
-				logger.debug("第一页查询，没有id传入");
-			} else {
-				if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
-					sequence = PropertyUtils.getProperty(
-							emc.find(id, StatisticDepartmentForDay.class, ExceptionWhen.not_found), "sequence");
-				}
-			}
-
-			//将下级组织的数据纳入组织统计数据查询范围
-			List<String> organizationNameList = getDepartmentNameList(wrapIn.getCompanyName(), wrapIn.getOrganizationName());			
-			wrapIn.setOrganizationName(organizationNameList);
-			// 从数据库中查询符合条件的一页数据对象
-			statisticList = business.getStatisticDepartmentForDayFactory().listIdsPrevWithFilter(id, count, sequence,
-					wrapIn);
-
-			// 从数据库中查询符合条件的对象总数
-			total = business.getStatisticDepartmentForDayFactory().getCountWithFilter(wrapIn);
-
-			// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
-			wraps = wrapout_copier_department_forDay.copy(statisticList);
-
-			result.setCount(total);
-			result.setData(wraps);
-
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilterStatisticDepartmentForDay.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
+		if(check ){
+			try {
+				EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
+				Business business = new Business(emc);
+
+				// 查询出ID对应的记录的sequence
+				Object sequence = null;
+
+				if (id == null || "(0)".equals(id) || id.isEmpty()) {
+					logger.debug("第一页查询，没有id传入");
+				} else {
+					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+						sequence = PropertyUtils.getProperty(
+								emc.find(id, StatisticDepartmentForDay.class ), "sequence");
+					}
+				}
+
+				//将下级组织的数据纳入组织统计数据查询范围
+				List<String> organizationNameList = getDepartmentNameList(wrapIn.getCompanyName(), wrapIn.getOrganizationName());			
+				wrapIn.setOrganizationName(organizationNameList);
+				// 从数据库中查询符合条件的一页数据对象
+				statisticList = business.getStatisticDepartmentForDayFactory().listIdsPrevWithFilter(id, count, sequence,
+						wrapIn);
+
+				// 从数据库中查询符合条件的对象总数
+				total = business.getStatisticDepartmentForDayFactory().getCountWithFilter(wrapIn);
+
+				// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
+				wraps = wrapout_copier_department_forDay.copy(statisticList);
+
+				result.setCount(total);
+				result.setData(wraps);
+
+			} catch (Throwable th) {
+				th.printStackTrace();
+				result.error(th);
+			}
+		}
+		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "列示根据过滤条件的StatisticCompanyForDay,下一页.", response = WrapOutAttendanceStatisticCompanyForDay.class, request = WrapInFilterStatisticCompanyForDay.class)
+	@HttpMethodDescribe(value = "列示根据过滤条件的StatisticCompanyForDay,下一页.", response = WrapOutAttendanceStatisticCompanyForDay.class, request = JsonElement.class)
 	@PUT
 	@Path("filter/companyDay/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listStatisticCompanyForDayNextPageWithFilter(@Context HttpServletRequest request,
-			@PathParam("id") String id, @PathParam("count") Integer count, WrapInFilterStatisticCompanyForDay wrapIn) {
+			@PathParam("id") String id, @PathParam("count") Integer count, JsonElement jsonElement) {
 		ActionResult<List<WrapOutAttendanceStatisticCompanyForDay>> result = new ActionResult<>();
 		List<WrapOutAttendanceStatisticCompanyForDay> wraps = null;
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		long total = 0;
 		List<StatisticCompanyForDay> statisticList = null;
-		logger.debug(
-				"user[" + currentPerson.getName() + "] try to list statisticCompanyForDay for nextpage, last id=" + id);
+		WrapInFilterStatisticCompanyForDay wrapIn = null;
+		Boolean check = true;
+		
 		try {
-			EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
-			Business business = new Business(emc);
-
-			// 查询出ID对应的记录的sequence
-			Object sequence = null;
-			if (id == null || "(0)".equals(id) || id.isEmpty()) {
-				// logger.debug( "第一页查询，没有id传入" );
-			} else {
-				if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
-					sequence = PropertyUtils.getProperty(
-							emc.find(id, StatisticCompanyForDay.class, ExceptionWhen.not_found), "sequence");
-				}
-			}
-
-			//将下级组织的数据纳入组织统计数据查询范围
-			List<String> organizationNameList = getDepartmentNameList(wrapIn.getCompanyName(), wrapIn.getOrganizationName());			
-			wrapIn.setOrganizationName(organizationNameList);
-			// 从数据库中查询符合条件的一页数据对象
-			statisticList = business.getStatisticCompanyForDayFactory().listIdsNextWithFilter(id, count, sequence,
-					wrapIn);
-
-			// 从数据库中查询符合条件的对象总数
-			total = business.getStatisticCompanyForDayFactory().getCountWithFilter(wrapIn);
-
-			// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
-			wraps = wrapout_copier_company_forDay.copy(statisticList);
-
-			// 对查询的列表进行排序
-			result.setCount(total);
-			result.setData(wraps);
-
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilterStatisticCompanyForDay.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
+		if(check ){
+			try {
+				EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
+				Business business = new Business(emc);
+
+				// 查询出ID对应的记录的sequence
+				Object sequence = null;
+				if (id == null || "(0)".equals(id) || id.isEmpty()) {
+					// logger.debug( "第一页查询，没有id传入" );
+				} else {
+					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+						sequence = PropertyUtils.getProperty(
+								emc.find(id, StatisticCompanyForDay.class ), "sequence");
+					}
+				}
+
+				//将下级组织的数据纳入组织统计数据查询范围
+				List<String> organizationNameList = getDepartmentNameList(wrapIn.getCompanyName(), wrapIn.getOrganizationName());			
+				wrapIn.setOrganizationName(organizationNameList);
+				// 从数据库中查询符合条件的一页数据对象
+				statisticList = business.getStatisticCompanyForDayFactory().listIdsNextWithFilter(id, count, sequence,
+						wrapIn);
+
+				// 从数据库中查询符合条件的对象总数
+				total = business.getStatisticCompanyForDayFactory().getCountWithFilter(wrapIn);
+
+				// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
+				wraps = wrapout_copier_company_forDay.copy(statisticList);
+
+				// 对查询的列表进行排序
+				result.setCount(total);
+				result.setData(wraps);
+
+			} catch (Throwable th) {
+				th.printStackTrace();
+				result.error(th);
+			}
+		}
+		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "列示根据过滤条件的StatisticCompanyForDay,上一页.", response = WrapOutAttendanceStatisticCompanyForDay.class, request = WrapInFilterStatisticCompanyForDay.class)
+	@HttpMethodDescribe(value = "列示根据过滤条件的StatisticCompanyForDay,上一页.", response = WrapInFilterStatisticCompanyForDay.class, request = JsonElement.class)
 	@PUT
 	@Path("filter/companyDay/list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listStatisticCompanyForDayPrevPageWithFilter(@Context HttpServletRequest request,
-			@PathParam("id") String id, @PathParam("count") Integer count, WrapInFilterStatisticCompanyForDay wrapIn) {
+			@PathParam("id") String id, @PathParam("count") Integer count, JsonElement jsonElement) {
 		ActionResult<List<WrapOutAttendanceStatisticCompanyForDay>> result = new ActionResult<>();
 		List<WrapOutAttendanceStatisticCompanyForDay> wraps = null;
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		long total = 0;
 		List<StatisticCompanyForDay> statisticList = null;
-		logger.debug(
-				"user[" + currentPerson.getName() + "] try to list statisticCompanyForDay for nextpage, last id=" + id);
+		WrapInFilterStatisticCompanyForDay wrapIn = null;
+		Boolean check = true;
+		
 		try {
-			EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
-			Business business = new Business(emc);
-
-			// 查询出ID对应的记录的sequence
-			Object sequence = null;
-			logger.debug("传入的ID=" + id);
-			if (id == null || "(0)".equals(id) || id.isEmpty()) {
-				logger.debug("第一页查询，没有id传入");
-			} else {
-				if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
-					sequence = PropertyUtils.getProperty(
-							emc.find(id, StatisticCompanyForDay.class, ExceptionWhen.not_found), "sequence");
-				}
-			}
-			
-			//将下级组织的数据纳入组织统计数据查询范围
-			List<String> organizationNameList = getDepartmentNameList(wrapIn.getCompanyName(), wrapIn.getOrganizationName());			
-			wrapIn.setOrganizationName(organizationNameList);
-			
-			// 从数据库中查询符合条件的一页数据对象
-			statisticList = business.getStatisticCompanyForDayFactory().listIdsPrevWithFilter(id, count, sequence, wrapIn);
-
-			// 从数据库中查询符合条件的对象总数
-			total = business.getStatisticCompanyForDayFactory().getCountWithFilter(wrapIn);
-
-			// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
-			wraps = wrapout_copier_company_forDay.copy(statisticList);
-
-			result.setCount(total);
-			result.setData(wraps);
-
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilterStatisticCompanyForDay.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
+		if(check ){
+			try {
+				EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
+				Business business = new Business(emc);
+
+				// 查询出ID对应的记录的sequence
+				Object sequence = null;
+				logger.debug("传入的ID=" + id);
+				if (id == null || "(0)".equals(id) || id.isEmpty()) {
+					logger.debug("第一页查询，没有id传入");
+				} else {
+					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+						sequence = PropertyUtils.getProperty(
+								emc.find(id, StatisticCompanyForDay.class ), "sequence");
+					}
+				}
+				
+				//将下级组织的数据纳入组织统计数据查询范围
+				List<String> organizationNameList = getDepartmentNameList(wrapIn.getCompanyName(), wrapIn.getOrganizationName());			
+				wrapIn.setOrganizationName(organizationNameList);
+				
+				// 从数据库中查询符合条件的一页数据对象
+				statisticList = business.getStatisticCompanyForDayFactory().listIdsPrevWithFilter(id, count, sequence, wrapIn);
+
+				// 从数据库中查询符合条件的对象总数
+				total = business.getStatisticCompanyForDayFactory().getCountWithFilter(wrapIn);
+
+				// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
+				wraps = wrapout_copier_company_forDay.copy(statisticList);
+
+				result.setCount(total);
+				result.setData(wraps);
+
+			} catch (Throwable th) {
+				th.printStackTrace();
+				result.error(th);
+			}
+		}
+		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
 	// 根据部门递归查询下级部门
-	private List<String> getDepartmentNameList(String departmentName, List<String> organizationNameList) {
+	private List<String> getDepartmentNameList(String departmentName, List<String> organizationNameList) throws Exception {
 		if (organizationNameList == null) {
 			organizationNameList = new ArrayList<String>();
 		}
@@ -1508,14 +1696,14 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					}
 				}
 			} catch (Exception e) {
-				logger.error("系统在查询部门的下级部门列表时发生异常", e);
+				throw e;
 			}
 		}		
 		return organizationNameList;
 	}
 
 	// 根据公司递归查询下级公司经及公司的顶级部门
-	private List<String> getTopDepartmentNameList( String companyName, List<String> organizationNameList ) {
+	private List<String> getTopDepartmentNameList( String companyName, List<String> organizationNameList ) throws Exception {
 		if (organizationNameList == null) {
 			organizationNameList = new ArrayList<String>();
 		}
@@ -1556,7 +1744,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					//logger.debug("根据公司名称["+companyName+"]未查询到任何子公司。");
 				}
 			} catch (Exception e) {
-				logger.error("系统在查询部门的下级部门列表时发生异常", e);
+				throw e;
 			}
 		}
 		return organizationNameList;
@@ -1568,8 +1756,9 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 	 * @param companyNameList
 	 * @param organizationNameList
 	 * @return
+	 * @throws Exception 
 	 */
-	private List<String> getDepartmentNameList( List<String> companyNameList, List<String> organizationNameList ){
+	private List<String> getDepartmentNameList( List<String> companyNameList, List<String> organizationNameList ) throws Exception{
 		
 		if( organizationNameList == null ){
 			organizationNameList = new ArrayList<String>();

@@ -15,7 +15,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.processplatform.core.entity.element.QueryStat.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:19:07 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:10:19 CST 2017")
 public class QueryStat_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<QueryStat,String> alias;
     public static volatile SingularAttribute<QueryStat,String> application;
@@ -23,7 +23,6 @@ public class QueryStat_ extends SliceJpaObject_  {
     public static volatile ListAttribute<QueryStat,String> availableDepartmentList;
     public static volatile ListAttribute<QueryStat,String> availableIdentityList;
     public static volatile ListAttribute<QueryStat,String> availablePersonList;
-    public static volatile SingularAttribute<QueryStat,String> calculate;
     public static volatile ListAttribute<QueryStat,String> controllerList;
     public static volatile SingularAttribute<QueryStat,Date> createTime;
     public static volatile SingularAttribute<QueryStat,String> creatorPerson;
@@ -38,6 +37,7 @@ public class QueryStat_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<QueryStat,String> queryView;
     public static volatile SingularAttribute<QueryStat,String> queryViewAlias;
     public static volatile SingularAttribute<QueryStat,String> queryViewName;
+    public static volatile SingularAttribute<QueryStat,String> result;
     public static volatile SingularAttribute<QueryStat,String> sequence;
     public static volatile SingularAttribute<QueryStat,Boolean> timingEnable;
     public static volatile SingularAttribute<QueryStat,Integer> timingInterval;

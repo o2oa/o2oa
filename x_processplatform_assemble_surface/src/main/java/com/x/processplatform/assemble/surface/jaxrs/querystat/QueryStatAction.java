@@ -13,18 +13,22 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
-import com.x.processplatform.assemble.surface.wrapin.element.WrapInQueryExecute;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.wrapout.element.WrapOutQueryStat;
 import com.x.processplatform.assemble.surface.wrapout.element.WrapOutQueryView;
 import com.x.processplatform.core.entity.query.Query;
 
 @Path("querystat")
 public class QueryStatAction extends ActionBase {
+
+	private static Logger logger = LoggerFactory.getLogger(QueryStatAction.class);
 
 	@HttpMethodDescribe(value = "列示所有当前用户可见的QueryStat.", response = WrapOutQueryStat.class)
 	@GET
@@ -33,12 +37,12 @@ public class QueryStatAction extends ActionBase {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response list(@Context HttpServletRequest request, @PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<List<WrapOutQueryStat>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionList().execute(effectivePerson, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -51,12 +55,12 @@ public class QueryStatAction extends ActionBase {
 	public Response flag(@Context HttpServletRequest request, @PathParam("flag") String flag,
 			@PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<WrapOutQueryStat> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
 			result = new ActionFlag().execute(effectivePerson, flag, applicationFlag);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -67,14 +71,14 @@ public class QueryStatAction extends ActionBase {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response execute(@Context HttpServletRequest request, @PathParam("flag") String flag,
-			@PathParam("applicationFlag") String applicationFlag, WrapInQueryExecute wrapIn) {
+			@PathParam("applicationFlag") String applicationFlag, JsonElement jsonElement) {
 		ActionResult<Query> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionExecute().execute(effectivePerson, flag, applicationFlag, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			result = new ActionExecute().execute(effectivePerson, flag, applicationFlag, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

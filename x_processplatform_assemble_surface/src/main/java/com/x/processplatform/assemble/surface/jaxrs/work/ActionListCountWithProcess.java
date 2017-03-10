@@ -20,7 +20,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.Work_;
 import com.x.processplatform.core.entity.element.Application;
 
-class ActionListCountWithProcess {
+class ActionListCountWithProcess extends ActionBase {
 
 	ActionResult<List<NameValueCountPair>> execute(EffectivePerson effectivePerson, String applicationFlag)
 			throws Exception {
@@ -30,7 +30,7 @@ class ActionListCountWithProcess {
 			List<NameValueCountPair> wraps = new ArrayList<>();
 			Application application = business.application().pick(applicationFlag);
 			if (null == application) {
-				throw new Exception("application not existed:" + applicationFlag + ".");
+				throw new ApplicationNotExistedException(applicationFlag);
 			}
 			EntityManager em = business.entityManagerContainer().get(Work.class);
 			CriteriaBuilder cb = em.getCriteriaBuilder();

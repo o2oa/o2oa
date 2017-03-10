@@ -177,16 +177,17 @@ function queryStat_create() {
     str += '<tr><td>name:</td><td><input type="text" id="name"  style="width:95%"/></td></tr>';
     str += '<tr><td>alias:</td><td><input type="text" id="alias"  style="width:95%"/></td></tr>';
     str += '<tr><td>description:</td><td><input type="text" id="description"  style="width:95%"/></td></tr>';
-    str += '<tr><td>allowPersonList:</td><td><textarea  id="allowPersonList" style="width:95%"/></td></tr>';
-    str += '<tr><td>allowIdentityList:</td><td><textarea  id="allowIdentityList" style="width:95%"/></td></tr>';
-    str += '<tr><td>allowDepartmentList:</td><td><textarea  id="allowDepartmentList" style="width:95%"/></td></tr>';
-    str += '<tr><td>allowCompanyList:</td><td><textarea  id="allowCompanyList" style="width:95%"/></td></tr>';
+    str += '<tr><td>availablePersonList:</td><td><textarea  id="availablePersonList" style="width:95%"/></td></tr>';
+    str += '<tr><td>availableIdentityList:</td><td><textarea  id="availableIdentityList" style="width:95%"/></td></tr>';
+    str += '<tr><td>availableDepartmentList:</td><td><textarea  id="availableDepartmentList" style="width:95%"/></td></tr>';
+    str += '<tr><td>availableCompanyList:</td><td><textarea  id="availableCompanyList" style="width:95%"/></td></tr>';
     str += '<tr><td>queryView:</td><td><input  id="queryView" style="width:95%"/></td></tr>';
-    str += '<tr><td colspan="2">calculate:</td></tr>';
-    str += '<tr><td colspan="2"><textarea id="calculate" style="width:95%;height:500px"/></td></tr>';
+    str += '<tr><td colspan="2">data:</td></tr>';
+    str += '<tr><td colspan="2"><textarea id="data" style="width:95%;height:500px"/></td></tr>';
     str += '<tr><td colspan="2">sample</td></tr>';
     str += '<tr><td colspan="2">';
-    str += '[<br/>';
+    str += '{<br/>';
+    str += '"calculate":[<br/>';
     str += '{<br/>';
     str += '"column":"",<br/>';
     str += '"displayName":"",<br/>';
@@ -196,6 +197,7 @@ function queryStat_create() {
     str += '"id":""<br/>';
     str += '}<br>';
     str += ']';
+    str += '}';
     str += '</td></tr>';
     str += '</table>';
     $('#content').html(str);
@@ -210,13 +212,13 @@ function queryStat_post() {
     data.name = $('#name').val();
     data.alias = $('#alias').val();
     data.description = $('#description').val();
-    data.allowPersonList = splitValue($('#allowPersonList').val());
-    data.allowIdentityList = splitValue($('#allowIdentityList').val());
-    data.allowDepartmentList = splitValue($('#allowDepartmentList').val());
-    data.allowCompanyList = splitValue($('#allowCompanyList').val());
+    data.availablePersonList = splitValue($('#availablePersonList').val());
+    data.availableIdentityList = splitValue($('#availableIdentityList').val());
+    data.availableDepartmentList = splitValue($('#availableDepartmentList').val());
+    data.availableCompanyList = splitValue($('#availableCompanyList').val());
     data.queryView = $('#queryView').val();
-    if ($('#calculate').val() != '') {
-	data.calculate = $('#calculate').val();
+    if ($('#data').val() != '') {
+	data.data = $('#data').val();
     }
     $.ajax({
 	type : 'post',
@@ -248,18 +250,19 @@ function queryStat_edit(id) {
     str += '<tr><td>name:</td><td><input type="text" id="name"  style="width:95%"/></td></tr>';
     str += '<tr><td>alias:</td><td><input type="text" id="alias"  style="width:95%"/></td></tr>';
     str += '<tr><td>description:</td><td><input type="text" id="description"  style="width:95%"/></td></tr>';
-    str += '<tr><td>allowPersonList:</td><td><textarea  id="allowPersonList" style="width:95%"/></td></tr>';
-    str += '<tr><td>allowIdentityList:</td><td><textarea  id="allowIdentityList" style="width:95%"/></td></tr>';
-    str += '<tr><td>allowDepartmentList:</td><td><textarea  id="allowDepartmentList" style="width:95%"/></td></tr>';
-    str += '<tr><td>allowCompanyList:</td><td><textarea  id="allowCompanyList" style="width:95%"/></td></tr>';
+    str += '<tr><td>availablePersonList:</td><td><textarea  id="availablePersonList" style="width:95%"/></td></tr>';
+    str += '<tr><td>availableIdentityList:</td><td><textarea  id="availableIdentityList" style="width:95%"/></td></tr>';
+    str += '<tr><td>availableDepartmentList:</td><td><textarea  id="availableDepartmentList" style="width:95%"/></td></tr>';
+    str += '<tr><td>availableCompanyList:</td><td><textarea  id="availableCompanyList" style="width:95%"/></td></tr>';
     str += '<tr><td>queryView:</td><td><input  id="queryView" style="width:95%"/></td></tr>';
     str += '<tr><td>queryViewName:</td><td id="queryViewName">&nbsp;</td></tr>';
     str += '<tr><td>queryViewAlias:</td><td id="queryViewAlias">&nbsp;</td></tr>';
-    str += '<tr><td colspan="2">calculate:</td></tr>';
-    str += '<tr><td colspan="2"><textarea id="calculate" style="width:95%;height:500px"/></td></tr>';
+    str += '<tr><td colspan="2">data:</td></tr>';
+    str += '<tr><td colspan="2"><textarea id="data" style="width:95%;height:500px"/></td></tr>';
     str += '<tr><td colspan="2">sample</td></tr>';
     str += '<tr><td colspan="2">';
-    str += '[<br/>';
+    str += '{<br/>';
+    str += '"calculate":[<br/>';
     str += '{<br/>';
     str += '"column":"",<br/>';
     str += '"displayName":"",<br/>';
@@ -267,8 +270,9 @@ function queryStat_edit(id) {
     str += '"orderType":"",//desc, asc, original<br/>';
     str += '"orderEffectType":"",//key, value<br/>';
     str += '"id":""<br/>';
-    str += '}<br/>';
+    str += '}<br>';
     str += ']';
+    str += '}';
     str += '</td></tr>';
     str += '</table>';
     $('#content').html(str);
@@ -295,11 +299,11 @@ function queryStat_edit(id) {
 	    $('#name').val(json.data.name);
 	    $('#application').val(json.data.application);
 	    $('#description').val(json.data.description);
-	    $('#allowPersonList').val(joinValue(json.data.allowPersonList));
-	    $('#allowIdentityList').val(joinValue(json.data.allowIdentityList));
-	    $('#allowDepartmentList').val(joinValue(json.data.allowDepartmentList));
-	    $('#allowCompanyList').val(joinValue(json.data.allowCompanyList));
-	    $('#calculate').val(json.data.calculate);
+	    $('#availablePersonList').val(joinValue(json.data.availablePersonList));
+	    $('#availableIdentityList').val(joinValue(json.data.availableIdentityList));
+	    $('#availableDepartmentList').val(joinValue(json.data.availableDepartmentList));
+	    $('#availableCompanyList').val(joinValue(json.data.availableCompanyList));
+	    $('#data').val(json.data.data);
 	    $('#queryView').val(json.data.queryView);
 	    $('#queryViewName').html(json.data.queryViewName);
 	    $('#queryViewAlias').html(json.data.queryViewAlias);
@@ -315,13 +319,13 @@ function queryStat_put(id) {
     data.name = $('#name').val();
     data.alias = $('#alias').val();
     data.description = $('#description').val();
-    data.allowPersonList = splitValue($('#allowPersonList').val());
-    data.allowIdentityList = splitValue($('#allowIdentityList').val());
-    data.allowDepartmentList = splitValue($('#allowDepartmentList').val());
-    data.allowCompanyList = splitValue($('#allowCompanyList').val());
+    data.availablePersonList = splitValue($('#availablePersonList').val());
+    data.availableIdentityList = splitValue($('#availableIdentityList').val());
+    data.availableDepartmentList = splitValue($('#availableDepartmentList').val());
+    data.availableCompanyList = splitValue($('#availableCompanyList').val());
     data.queryView = $('#queryView').val();
-    if ($('#calculate').val() != '') {
-	data.calculate = $('#calculate').val();
+    if ($('#data').val() != '') {
+	data.data = $('#data').val();
     }
     $.ajax({
 	type : 'put',

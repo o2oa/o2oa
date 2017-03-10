@@ -3,9 +3,9 @@ package com.x.processplatform.assemble.surface.jaxrs.work;
 import java.net.URLEncoder;
 import java.util.List;
 
+import com.x.base.core.DefaultCharset;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
@@ -22,15 +22,18 @@ class ManageDeleteRelativeWork extends ActionBase {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<WrapOutId>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Work work = emc.find(id, Work.class, ExceptionWhen.not_found);
+			Work work = emc.find(id, Work.class);
+			if (null == work) {
+				throw new WorkNotExistedException(id);
+			}
 			/* Process 也可能为空 */
 			Process process = business.process().pick(work.getProcess());
 			// 需要对这个应用的管理权限
 			if (!business.process().allowControl(effectivePerson, process)) {
-				throw new Exception("person{name:" + effectivePerson.getName() + "} has insufficient permissions.");
+				throw new ProcessAccessDeniedException(effectivePerson.getName(), process.getId());
 			}
 			List<WrapOutId> wraps = ThisApplication.applications.deleteQuery(x_processplatform_service_processing.class,
-					"job/" + URLEncoder.encode(work.getJob(), "UTF-8"), wrapOutIdCollectionType);
+					"job/" + URLEncoder.encode(work.getJob(), DefaultCharset.name), wrapOutIdCollectionType);
 			result.setData(wraps);
 			return result;
 		}

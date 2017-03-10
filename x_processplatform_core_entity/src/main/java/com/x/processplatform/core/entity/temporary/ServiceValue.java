@@ -37,7 +37,7 @@ public class ServiceValue extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.Temporary.ServiceValue.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception { 
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -50,7 +50,7 @@ public class ServiceValue extends SliceJpaObject {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception{
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -110,7 +110,7 @@ public class ServiceValue extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception{
 
 	}
 

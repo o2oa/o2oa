@@ -4,6 +4,8 @@ MWF.xApplication.cms.ColumnManager.LP = {
 	"description": "描述",
     "deleteItems": "删除选中的内容",
 
+    "setting" : "设置",
+
     "edit": "编辑",
     "save": "保存",
     "cancel": "取消",
@@ -15,10 +17,11 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "deleteElement": "是否确定要删除选中的设计元素？",
 
     "setControllerSuccess" : "设置管理者成功",
-    "setAvailableIdentitySuccess" : "设置可用人员成功",
-    "setAvailableDepartmentSuccess" : "设置可用部门成功",
-    "setAvailableCompanySuccess" : "设置可用公司成功",
     "noAdministratorAccess" : "您没有此栏目的管理权限",
+
+    "createSelectTemplate": "新建：选择模板",
+    "templateCategory": "模板分类：",
+    "all": "全部",
 
 	"category": {
         "create": "新建分类",
@@ -70,7 +73,10 @@ MWF.xApplication.cms.ColumnManager.LP = {
 		"noFormNoticeText": "此栏目现在还没有表单，您可以点击此处创建一个新表单",
 		"loaded": "表单加载完毕",
 		"deleteFormTitle": "删除表单确认",
-		"deleteForm": "删除表单同时将删除此表单的关联列表，是否确定要删除当前表单？"
+		"deleteForm": "删除表单同时将删除此表单的关联列表，是否确定要删除当前表单？",
+
+        "deleteFormTemplateTitle": "删除表单模板确认",
+        "deleteFormTemplate": "是否确定要删除当前表单模板吗？"
 		
 	},
     "view": {
@@ -116,7 +122,24 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "type": "栏目类型",
         "icon": "栏目图标",
         "controllerList": "管理者",
-        "available": "可用范围"
+        availableSetting : {
+            title : "可用范围",
+            setPerson: "设置可用人员",
+            setDepartment: "设置可用部门",
+            setCompany: "设置可用公司",
+            setIdentitySuccess : "设置可用人员成功",
+            setDepartmentSuccess : "设置可用部门成功",
+            setCompanySuccess : "设置可用公司成功"
+        },
+        publisherSetting : {
+            title : "发布者",
+            setPerson: "设置可发布人员",
+            setDepartment: "设置可发布部门",
+            setCompany: "设置可发布公司",
+            setIdentitySuccess : "设置可发布人员成功",
+            setDepartmentSuccess : "设置可发布部门成功",
+            setCompanySuccess : "设置可发布公司成功"
+        }
     },
     "queryView": {
         "create": "新建数据视图",

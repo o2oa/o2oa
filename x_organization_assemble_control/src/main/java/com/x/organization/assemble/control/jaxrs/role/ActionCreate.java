@@ -7,6 +7,7 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.assemble.control.wrapin.WrapInRole;
+import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Role;
 
 public class ActionCreate extends ActionBase {
@@ -22,6 +23,7 @@ public class ActionCreate extends ActionBase {
 		emc.persist(role, CheckPersistType.all);
 		emc.commit();
 		ApplicationCache.notify(Role.class);
+		ApplicationCache.notify(Person.class);
 		WrapOutId wrap = new WrapOutId(role.getId());
 		return wrap;
 	}

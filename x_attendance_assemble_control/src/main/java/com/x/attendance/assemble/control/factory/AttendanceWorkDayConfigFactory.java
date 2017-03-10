@@ -10,9 +10,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
@@ -27,7 +24,6 @@ import com.x.base.core.utils.annotation.MethodDescribe;
  */
 public class AttendanceWorkDayConfigFactory extends AbstractFactory {
 
-	private Logger logger = LoggerFactory.getLogger( AttendanceWorkDayConfigFactory.class );
 	private DateOperation dateOperation = new DateOperation();
 	
 	public AttendanceWorkDayConfigFactory(Business business) throws Exception {
@@ -158,7 +154,6 @@ public class AttendanceWorkDayConfigFactory extends AbstractFactory {
 						if( workDayConfig.getConfigDate().trim().equals( dateString ) && "Workday".equalsIgnoreCase( workDayConfig.getConfigType() )
 						){
 							isHoliday = false; //是配置的调休工作日
-							logger.debug( dateString + ", 判断应该是工作日。" );
 							break;
 						}
 					}
@@ -217,7 +212,6 @@ public class AttendanceWorkDayConfigFactory extends AbstractFactory {
 							if( workDayConfig.getConfigDate().trim().equals( dateString ) && "Workday".equalsIgnoreCase( workDayConfig.getConfigType() )
 							){
 								isHoliday = false; //是配置的调休工作日
-								logger.debug( dateString + ", 判断应该是工作日。" );
 								break;
 							}
 						}

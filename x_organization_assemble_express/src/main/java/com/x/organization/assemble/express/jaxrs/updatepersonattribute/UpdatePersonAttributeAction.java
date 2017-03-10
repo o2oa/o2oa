@@ -62,7 +62,7 @@ public class UpdatePersonAttributeAction extends AbstractJaxrsAction {
 				ApplicationCache.notify(PersonAttribute.class);
 				wrap = new WrapOutId(personAttribute.getId());
 			} else {
-				wrap = new WrapOutId(Config.administrator().getId());
+				wrap = new WrapOutId(Config.token().initialManagerInstance().getId());
 			}
 			result.setData(wrap);
 		} catch (Throwable th) {

@@ -2,9 +2,6 @@ package com.x.attendance.assemble.control.service;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.x.attendance.entity.AttendanceEmployeeConfig;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -14,7 +11,6 @@ public class AttendanceEmployeeConfigServiceAdv {
 	
 	private UserManagerService userManagerService = new UserManagerService();
 	private AttendanceEmployeeConfigService attendanceEmployeeConfigService = new AttendanceEmployeeConfigService();
-	private Logger logger = LoggerFactory.getLogger( AttendanceEmployeeConfigServiceAdv.class );
 
 	public AttendanceEmployeeConfig get( String id ) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -60,7 +56,7 @@ public class AttendanceEmployeeConfigServiceAdv {
 			attendanceEmployeeConfig.setOrganizationName( wrapDepartment.getName() );
 			attendanceEmployeeConfig.setCompanyName( wrapDepartment.getCompany() );
 		}else{
-			logger.error( "system can not find user department with username:"+ attendanceEmployeeConfig.getEmployeeName() +"." );
+			throw new Exception( "system can not find user department with username:"+ attendanceEmployeeConfig.getEmployeeName() +"." );
 		}
 		return attendanceEmployeeConfig;
 	}

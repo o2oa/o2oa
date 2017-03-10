@@ -9,7 +9,6 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,15 +18,12 @@ import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
 import org.imgscalr.Scalr;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.x.base.core.application.servlet.FileUploadServletTools;
+import com.x.base.core.application.servlet.AbstractServletAction;
 import com.x.base.core.cache.ApplicationCache;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
-import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.cms.core.entity.AppInfo;
@@ -37,10 +33,9 @@ import net.sf.ehcache.Element;
 
 @WebServlet(urlPatterns="/servlet/appinfo/*")
 @MultipartConfig
-public class AppInfoIconServlet extends HttpServlet {
+public class AppInfoIconServlet extends AbstractServletAction {
 
 	private static final long serialVersionUID = -516827649716075968L;
-	private Logger logger = LoggerFactory.getLogger( AppInfoIconServlet.class );
 	private Ehcache cache = ApplicationCache.instance().getCache( AppInfo.class );
 	
 	@HttpMethodDescribe(value = "更新AppInfo中的icon图标: /servlet/appinfo/{id}/icon", response = WrapOutId.class)
@@ -52,8 +47,7 @@ public class AppInfoIconServlet extends HttpServlet {
 			if (!ServletFileUpload.isMultipartContent(request)) {
 				throw new Exception("not mulit part request.");
 			}
-			EffectivePerson effectivePerson = FileUploadServletTools.effectivePerson(request);
-			String part = FileUploadServletTools.getURIPart( request.getRequestURI(), "appinfo" );
+			String part = this.getURIPart( request.getRequestURI(), "appinfo" );
 			String appId = StringUtils.substringBefore( part, "/icon" );
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				AppInfo appInfo = emc.find( appId, AppInfo.class );
@@ -91,6 +85,6 @@ public class AppInfoIconServlet extends HttpServlet {
 			result.error(e);
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
-		FileUploadServletTools.result(response, result);
+		this.result(response, result);
 	}
 }

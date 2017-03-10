@@ -12,7 +12,7 @@ import com.x.cms.core.entity.element.QueryView;
 
 
 class ActionDelete extends ActionBase {
-	ActionResult<WrapOutId> execute(EffectivePerson effectivePerson, String id) throws Exception {
+	ActionResult<WrapOutId> execute( EffectivePerson effectivePerson, String id) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<WrapOutId> result = new ActionResult<>();
 			//Business business = new Business(emc);

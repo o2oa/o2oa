@@ -2,6 +2,7 @@ package com.x.base.core.cache;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
@@ -38,7 +39,16 @@ public class ApplicationCache extends AbstractApplicationCache {
 	private static Integer defaultTimeToIdle = MINUTES_20;
 	private static Integer defaultTimeToLive = MINUTES_30;
 
-	private static String SPLIT = ",";
+	private static String SPLIT = "#";
+
+	public static String concreteCacheKey(Object... os) {
+		return StringUtils.join(os, SPLIT);
+	}
+
+	public <T extends JpaObject> Ehcache getCache(Class<T> clz, Integer cacheSize, Integer timeToIdle,
+			Integer timeToLive) {
+		return this.getCache(clz.getName(), cacheSize, timeToIdle, timeToLive);
+	}
 
 	public <T extends JpaObject> Ehcache getCache(Class<T> clz) {
 		return this.getCache(clz.getName(), defaultSize, defaultTimeToIdle, defaultTimeToLive);
@@ -210,13 +220,26 @@ public class ApplicationCache extends AbstractApplicationCache {
 							if (StringUtils.equalsIgnoreCase(str, clearCacheRequest.getClassName())) {
 								Ehcache cache = INSTANCE.getCache(str);
 								List<Object> keys = clearCacheRequest.getKeys();
-								if (!ListTools.isEmpty(clearCacheRequest.getKeys())) {
-									cache.removeAll(keys);
+								if (!ListTools.isEmpty(keys)) {
+									/** 根据给定的关键字进行删除 */
+									List<Object> removes = new ArrayList<>();
+									for (Object key : keys) {
+										for (Object o : cache.getKeys()) {
+											if (Objects.equals(o, key)) {
+												removes.add(o);
+											}
+											if (StringUtils.startsWith(o.toString(), key + SPLIT)) {
+												removes.add(o);
+											}
+										}
+									}
+									if (!removes.isEmpty()) {
+										cache.removeAll(removes);
+									}
 								} else {
 									cache.removeAll();
 								}
 							}
-
 						}
 					}
 				} catch (Exception e) {
@@ -225,6 +248,7 @@ public class ApplicationCache extends AbstractApplicationCache {
 			}
 			System.out.println("ApplicationCache ReceiveThread stoped!");
 		}
+
 	}
 
 	public String generateKey(Object... objects) {

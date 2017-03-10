@@ -396,15 +396,15 @@ MWF.xApplication.cms.Index.Column = new Class({
 	},
 	loadCategory : function(){
 		var _self = this;
-		if( typeOf(this.data.wrapOutCatagoryList) != "array" )return;
-		var tmpArray = this.data.wrapOutCatagoryList;
+		if( typeOf(this.data.wrapOutCategoryList) != "array" )return;
+		var tmpArray = this.data.wrapOutCategoryList;
 		tmpArray.sort(function( a, b ){
-			return parseFloat(a.catagorySeq) - parseFloat(b.catagorySeq)
+			return parseFloat(a.categorySeq) - parseFloat(b.categorySeq)
 		});
-		this.data.wrapOutCatagoryList = tmpArray;
-		this.data.wrapOutCatagoryList.each(function(category){
+		this.data.wrapOutCategoryList = tmpArray;
+		this.data.wrapOutCategoryList.each(function(category){
 			var categoryNode = new Element("div.categoryItem",{
-				"text" : category.catagoryName,
+				"text" : category.categoryName,
 				"styles" : this.app.css.categoryItem
 			}).inject( this.categoryList );
 

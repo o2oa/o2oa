@@ -29,4 +29,16 @@ public class BeginFactory extends AbstractFactory {
 		List<String> list = em.createQuery(cq).setMaxResults(1).getResultList();
 		return list.isEmpty() ? null : list.get(0);
 	}
+
+	/** 查找使用表单的begin */
+	public List<String> listWithForm(String formId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Begin.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Begin> root = cq.from(Begin.class);
+		Predicate p = cb.equal(root.get(Begin_.form), formId);
+		cq.select(root.get(Begin_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
 }

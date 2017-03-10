@@ -10,8 +10,8 @@ import javax.persistence.criteria.Root;
 
 import com.x.file.assemble.control.AbstractFactory;
 import com.x.file.assemble.control.Business;
-import com.x.file.core.entity.Attachment;
-import com.x.file.core.entity.Attachment_;
+import com.x.file.core.entity.personal.Attachment;
+import com.x.file.core.entity.personal.Attachment_;
 
 public class AttachmentFactory extends AbstractFactory {
 

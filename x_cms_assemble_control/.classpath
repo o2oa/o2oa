@@ -9,18 +9,18 @@
 	<classpathentry kind="lib" path="D:/x/lib/apache/commons/lang3/commons-lang3-3.4.jar"/>
 	<classpathentry kind="lib" path="D:/x/lib/google/gson/gson-2.7.jar"/>
 	<classpathentry kind="lib" path="D:/x/lib/javax/javaee-api-7.0.jar"/>
-	<classpathentry kind="lib" path="D:/x/lib/apache/commons/net/commons-net-3.3.jar"/>
 	<classpathentry kind="lib" path="D:/x/lib/apache/commons/fileupload/commons-fileupload-1.3.1.jar"/>
 	<classpathentry kind="lib" path="D:/x/lib/apache/commons/io/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="D:/x/lib/imgscalr/imgscalr-lib-4.2.jar"/>
 	<classpathentry kind="lib" path="D:/x/lib/apache/commons/codec/commons-codec-1.8.jar"/>
-	<classpathentry kind="lib" path="D:/x/store/jars/x_base_core_project-4.0.0.jar"/>
-	<classpathentry kind="lib" path="D:/x/lib/apache/openjpa/openjpa-2.4.2-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="D:/x/store/jars/x_base_core_project-4.0.0.jar" sourcepath="/o2_base_core/src"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/openjpa/openjpa-2.4.3-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="D:/x/store/jars/x_cms_core_entity-4.0.0.jar" sourcepath="/x_cms_core_entity"/>
-	<classpathentry kind="lib" path="D:/x/lib/ehcache/ehcache-2.10.1.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/ehcache/ehcache-2.10.3.jar"/>
 	<classpathentry kind="lib" path="D:/x/lib/apache/commons/beanutils/commons-beanutils-1.8.3.jar"/>
-	<classpathentry kind="lib" path="D:/x/lib/slf4j/slf4j-api-1.7.21.jar"/>
 	<classpathentry kind="lib" path="D:/x/store/jars/x_organization_core_entity-4.0.0.jar"/>
 	<classpathentry kind="lib" path="D:/x/store/jars/x_organization_core_express-4.0.0.jar" sourcepath="/x_organization_core_express"/>
+	<classpathentry kind="lib" path="D:/x/lib/eclipse/jetty/jetty-all-9.3.14.v20161028-uber.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/commons/net/commons-net-3.6.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

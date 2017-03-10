@@ -11,7 +11,7 @@ import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.exception.ExceptionWhen;
-import com.x.base.core.http.WrapInListString;
+import com.x.base.core.http.WrapInStringList;
 import com.x.base.core.http.WrapOutOnline;
 import com.x.base.core.project.x_collaboration_assemble_websocket;
 import com.x.base.core.utils.ListTools;
@@ -78,7 +78,7 @@ public class ActionGetDepartmentSubDirectDepartmentSubDirectIdentity {
 			o.setOnlineStatus(WrapOutOnline.status_offline);
 		}
 		List<String> personNames = ListTools.extractProperty(wraps, "personName", String.class, true, true);
-		WrapInListString parameters = new WrapInListString();
+		WrapInStringList parameters = new WrapInStringList();
 		parameters.setValueList(personNames);
 		List<WrapOutOnline> onlines = ThisApplication.applications.putQuery(x_collaboration_assemble_websocket.class,
 				"online/list", parameters, collectionType);

@@ -46,7 +46,7 @@ public class QueryView extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.Element.QueryView.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception {
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -59,7 +59,7 @@ public class QueryView extends SliceJpaObject {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception {
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -119,7 +119,7 @@ public class QueryView extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception {
 
 	}
 
@@ -285,67 +285,10 @@ public class QueryView extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String afterCalculateGridScriptText;
 
-	// @EntityFieldDescribe("是否要输入application.")
-	// @Enumerated(EnumType.STRING)
-	// @Column(length = EnterType.length, name = "xapplicationEnterType")
-	// @CheckPersist(allowEmpty = true)
-	// private EnterType applicationEnterType;
-	//
-	// @EntityFieldDescribe("是否要输入process.")
-	// @Enumerated(EnumType.STRING)
-	// @Column(length = EnterType.length, name = "xprocessEnterType")
-	// private EnterType processEnterType;
-	//
-	// @EntityFieldDescribe("是否要输入company.")
-	// @Enumerated(EnumType.STRING)
-	// @Column(length = EnterType.length, name = "xcompanyEnterType")
-	// private EnterType companyEnterType;
-	//
-	// @EntityFieldDescribe("是否要输入department.")
-	// @Enumerated(EnumType.STRING)
-	// @Column(length = EnterType.length, name = "xdepartmentEnterType")
-	// private EnterType departmentEnterType;
-	//
-	// @EntityFieldDescribe("是否要输入person.")
-	// @Enumerated(EnumType.STRING)
-	// @Column(length = EnterType.length, name = "xpersonEnterType")
-	// private EnterType personEnterType;
-	//
-	// @EntityFieldDescribe("是否要输入identity.")
-	// @Enumerated(EnumType.STRING)
-	// @Column(length = EnterType.length, name = "xidentityEnterType")
-	// private EnterType identityEnterType;
-	//
-	// @EntityFieldDescribe("是否要输入dateRange.")
-	// @Enumerated(EnumType.STRING)
-	// @Column(length = EnterType.length, name = "xdateRangeEnterType")
-	// private EnterType dateRangeEnterType;
-	//
-	// @EntityFieldDescribe("是否要输入filterEnter.")
-	// @Enumerated(EnumType.STRING)
-	// @Column(length = EnterType.length, name = "xfilterEnterType")
-	// private EnterType filterEnterType;
-
-	// @EntityFieldDescribe("DateRangeEntry限制.")
-	// @Lob
-	// @Basic(fetch = FetchType.EAGER)
-	// @Column(length = JpaObject.length_10M, name = "xrestrictDateRangeEntry")
-	// @CheckPersist(allowEmpty = true)
-	// private String restrictDateRangeEntry;
-	//
-	// @EntityFieldDescribe("FilterEntry限制.")
-	// @Lob
-	// @Basic(fetch = FetchType.EAGER)
-	// @Column(length = JpaObject.length_10M, name = "xrestrictFilterEntry")
-	// @CheckPersist(allowEmpty = true)
-	// private String restrictFilterEntry;
-	//
-	// @EntityFieldDescribe("WhereEntry限制.")
-	// @Lob
-	// @Basic(fetch = FetchType.EAGER)
-	// @Column(length = JpaObject.length_10M, name = "xrestrictWhereEntry")
-	// @CheckPersist(allowEmpty = true)
-	// private String restrictWhereEntry;
+	@EntityFieldDescribe("是否前端可见.")
+	@Column(name = "xDisplay")
+	@Index(name = TABLE + "_display")
+	private Boolean display;
 
 	public String getName() {
 		return name;
@@ -513,6 +456,14 @@ public class QueryView extends SliceJpaObject {
 
 	public void setData(String data) {
 		this.data = data;
+	}
+
+	public Boolean getDisplay() {
+		return display;
+	}
+
+	public void setDisplay(Boolean display) {
+		this.display = display;
 	}
 
 }

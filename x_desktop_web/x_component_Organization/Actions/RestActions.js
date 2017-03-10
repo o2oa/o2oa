@@ -350,5 +350,8 @@ MWF.xApplication.Organization.Actions.RestActions = new Class({
 	},
 	listCMSCategory: function(success, failure, appId, async){
 		this.cmsAction.invoke({"name": "listCMSCategory","async": async, "parameter": {"appId": appId},	"success": success,	"failure": failure});
+	},
+	getCMSForm: function(id, success, failure, async){
+		this.cmsAction.invoke({"name": "getCMSForm","async": async, "parameter": {"id": id },	"success": success,	"failure": failure});
 	}
 });

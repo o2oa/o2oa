@@ -10,17 +10,17 @@ import com.x.base.core.http.annotation.Wrap;
 @Wrap( AttendanceAppealInfo.class)
 public class WrapInFilter extends GsonPropertyObject {
 
-	private List<NameValueCountPair> appIdList;
+	private List<String> appIdList;
 	
 	private List<NameValueCountPair> orAtrribute;
 
 	private String key;	
 
-	public List<NameValueCountPair> getAppIdList() {
+	public List<String> getAppIdList() {
 		return appIdList;
 	}
 
-	public void setAppIdList(List<NameValueCountPair> appIdList) {
+	public void setAppIdList(List<String> appIdList) {
 		this.appIdList = appIdList;
 	}
 

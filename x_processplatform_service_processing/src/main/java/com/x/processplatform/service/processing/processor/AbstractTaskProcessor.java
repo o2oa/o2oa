@@ -1,7 +1,9 @@
 package com.x.processplatform.service.processing.processor;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -9,6 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.gson.XGsonBuilder;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.NumberTools;
 import com.x.base.core.utils.time.WorkTime;
 import com.x.collaboration.core.message.Collaboration;
@@ -25,20 +29,24 @@ import com.x.processplatform.service.processing.ScriptHelperFactory;
 
 public abstract class AbstractTaskProcessor extends AbstractReadProcessor {
 
+	private List<TaskMessage> queue = new ArrayList<>();
+
+	private static Logger logger = LoggerFactory.getLogger(AbstractTaskProcessor.class);
+
 	protected AbstractTaskProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
 	}
 
-	protected void sendTaskMessage(Task task) {
-		try {
-			TaskMessage message = new TaskMessage(task.getPerson(), task.getWork(), task.getId());
-			Collaboration.send(message);
-			// Collaboration.notification(task.getPerson(), "您有新的待办内容.",
-			// task.getTitle(),
-			// "应用:" + task.getApplicationName() + ", 流程:" +
-			// task.getProcessName() + ".", "task");
-		} catch (Exception e) {
-			e.printStackTrace();
+	protected void concreteTaskMessageToQueue(Task task) {
+		TaskMessage o = new TaskMessage(task.getPerson(), task.getWork(), task.getId());
+		logger.debug("concrete task message:{}.", XGsonBuilder.toText(o));
+		queue.add(o);
+	}
+
+	protected void sendTaskMessageInQueue() throws Exception {
+		for (TaskMessage o : queue) {
+			logger.debug("send task message in queue:{}.", o);
+			Collaboration.send(o);
 		}
 	}
 
@@ -53,6 +61,7 @@ public abstract class AbstractTaskProcessor extends AbstractReadProcessor {
 			task.setPerson(person);
 			task.setManualMode(manual.getManualMode());
 			task.setTitle(work.getTitle());
+			task.setSerial(work.getSerial());
 			task.setActivity(work.getActivity());
 			task.setActivityName(work.getActivityName());
 			task.setActivityToken(work.getActivityToken());

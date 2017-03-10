@@ -18,6 +18,7 @@ public class x_processplatform_assemble_surface extends Assemble {
 	static {
 		containerEntities.add("com.x.processplatform.core.entity.content.Attachment");
 		containerEntities.add("com.x.processplatform.core.entity.content.DataItem");
+		containerEntities.add("com.x.processplatform.core.entity.content.DataLobItem");
 		containerEntities.add("com.x.processplatform.core.entity.content.Read");
 		containerEntities.add("com.x.processplatform.core.entity.content.ReadCompleted");
 		containerEntities.add("com.x.processplatform.core.entity.content.Review");

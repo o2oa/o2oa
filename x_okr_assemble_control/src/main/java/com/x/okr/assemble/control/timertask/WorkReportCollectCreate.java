@@ -1,8 +1,9 @@
 package com.x.okr.assemble.control.timertask;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.TimerTask;
 
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.ThisApplication;
 import com.x.okr.assemble.control.service.OkrWorkReportTaskCollectService;
 
@@ -12,7 +13,7 @@ import com.x.okr.assemble.control.service.OkrWorkReportTaskCollectService;
  * @author LIYI
  *
  */
-public class WorkReportCollectCreate implements Runnable {
+public class WorkReportCollectCreate extends TimerTask {
 
 	private Logger logger = LoggerFactory.getLogger( WorkReportCollectCreate.class );
 	private OkrWorkReportTaskCollectService okrWorkReportTaskCollectService = new OkrWorkReportTaskCollectService();
@@ -28,7 +29,8 @@ public class WorkReportCollectCreate implements Runnable {
 		try {
 			okrWorkReportTaskCollectService.checkAllReportCollectTask();
 		} catch (Exception e) {
-			logger.error( "系统核对工作汇报待办汇总发生异常。", e );
+			logger.warn( "系统核对工作汇报待办汇总发生异常。" );
+			logger.error(e);
 		}		
 		
 		ThisApplication.setWorkReportCollectCreateTaskRunning( false );

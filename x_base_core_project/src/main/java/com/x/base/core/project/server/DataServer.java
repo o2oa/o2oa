@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.gson.GsonPropertyObject;
 
@@ -13,31 +12,37 @@ public class DataServer extends GsonPropertyObject {
 	private static final Integer default_tcpPort = 20050;
 	private static final Integer default_webPort = 20051;
 
-	private Boolean enable = false;
-
-	private Integer tcpPort = default_tcpPort;
-
-	private Integer webPort = default_webPort;
-
-	private String password = "";
-
-	private List<String> includes = new ArrayList<>();
-
-	private List<String> excludes = new ArrayList<>();
-
-	/**
-	 * 
-	 * @return
-	 * @throws Exception
-	 *             计算后的密码，如果没有设置那么使用Administrator的密码
-	 * 
-	 */
-	public String getCalculatedPassword() throws Exception {
-		if (StringUtils.isEmpty(password)) {
-			return Config.token().getPassword();
-		}
-		return password;
+	public static DataServer defaultInstance() {
+		return new DataServer();
 	}
+
+	public DataServer() {
+		this.enable = true;
+		this.tcpPort = default_tcpPort;
+		this.webPort = default_webPort;
+		this.includes = new ArrayList<>();
+		this.excludes = new ArrayList<>();
+	}
+
+	private Boolean enable;
+	private Integer tcpPort;
+	private Integer webPort;
+	private List<String> includes;
+	private List<String> excludes;
+
+	// /**
+	// *
+	// * @return
+	// * @throws Exception
+	// * 计算后的密码，如果没有设置那么使用Administrator的密码
+	// *
+	// */
+	// public String getCalculatedPassword() throws Exception {
+	// if (StringUtils.isEmpty(password)) {
+	// return Config.token().getPassword();
+	// }
+	// return password;
+	// }
 
 	public Integer getTcpPort() {
 		if (null != this.tcpPort && this.tcpPort > 0) {
@@ -71,20 +76,12 @@ public class DataServer extends GsonPropertyObject {
 		return new ArrayList<String>();
 	}
 
-	public String getPassword() {
-		return password;
-	}
-
 	public void setTcpPort(Integer tcpPort) {
 		this.tcpPort = tcpPort;
 	}
 
 	public void setWebPort(Integer webPort) {
 		this.webPort = webPort;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public void setEnable(Boolean enable) {

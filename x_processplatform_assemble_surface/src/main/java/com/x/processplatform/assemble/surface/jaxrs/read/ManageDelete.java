@@ -4,7 +4,6 @@ import java.net.URLEncoder;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
@@ -20,11 +19,14 @@ class ManageDelete extends ActionBase {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<WrapOutId> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Read read = emc.find(id, Read.class, ExceptionWhen.not_found);
+			Read read = emc.find(id, Read.class);
+			if (null == read) {
+				throw new ReadNotExistedException(id);
+			}
 			Process process = business.process().pick(read.getProcess());
 			// 需要对这个应用的管理权限
 			if (!business.process().allowControl(effectivePerson, process)) {
-				throw new Exception("person{name:" + effectivePerson.getName() + "} has insufficient permissions.");
+				throw new ReadAccessDeniedException(effectivePerson.getName(), read.getId());
 			}
 			ThisApplication.applications.deleteQuery(x_processplatform_service_processing.class,
 					"read/" + URLEncoder.encode(read.getId(), "UTF-8"), null);

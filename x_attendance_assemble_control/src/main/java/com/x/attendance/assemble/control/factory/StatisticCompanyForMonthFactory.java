@@ -11,8 +11,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
@@ -20,6 +18,8 @@ import com.x.attendance.assemble.control.jaxrs.attendancestatistic.WrapInFilterS
 import com.x.attendance.entity.StatisticCompanyForMonth;
 import com.x.attendance.entity.StatisticCompanyForMonth_;
 import com.x.base.core.exception.ExceptionWhen;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.annotation.MethodDescribe;
 
 public class StatisticCompanyForMonthFactory extends AbstractFactory {
@@ -60,7 +60,7 @@ public class StatisticCompanyForMonthFactory extends AbstractFactory {
 
 	public List<String> listByCompanyYearAndMonth(String companyName, String sYear, String sMonth) throws Exception {
 		if( companyName == null || companyName.isEmpty() ){
-			logger.error("organizationName is null!");
+			logger.error( new CompanyNamesEmptyException() );
 			return null;
 		}		
 		EntityManager em = this.entityManagerContainer().get( StatisticCompanyForMonth.class);
@@ -69,12 +69,12 @@ public class StatisticCompanyForMonthFactory extends AbstractFactory {
 		Root<StatisticCompanyForMonth> root = cq.from( StatisticCompanyForMonth.class);
 		Predicate p = cb.equal( root.get(StatisticCompanyForMonth_.companyName), companyName);
 		if( sYear == null || sYear.isEmpty() ){
-			logger.error("sYear is null!");
+			logger.error( new StatisticYearEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticCompanyForMonth_.statisticYear), sYear));
 		}
 		if( sMonth == null || sMonth.isEmpty() ){
-			logger.error("sMonth is null!");
+			logger.error( new StatisticMonthEmptyException() );
 		}else{
 			p = cb.and( p, cb.equal( root.get(StatisticCompanyForMonth_.statisticMonth), sMonth));
 		}

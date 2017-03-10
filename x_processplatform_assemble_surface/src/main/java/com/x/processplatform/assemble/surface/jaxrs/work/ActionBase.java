@@ -12,11 +12,13 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.entity.item.ItemConverter;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.WrapOutMap;
@@ -33,6 +35,10 @@ import com.x.processplatform.assemble.surface.wrapout.content.WrapOutWork;
 import com.x.processplatform.assemble.surface.wrapout.content.WrapOutWorkLog;
 import com.x.processplatform.assemble.surface.wrapout.element.WrapOutActivity;
 import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.Data;
+import com.x.processplatform.core.entity.content.DataItem;
+import com.x.processplatform.core.entity.content.DataItem_;
+import com.x.processplatform.core.entity.content.DataLobItem;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Review;
@@ -41,38 +47,37 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.content.Work_;
-import com.x.processplatform.core.entity.content.tools.DataHelper;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
 abstract class ActionBase extends StandardJaxrsAction {
 
-	protected static Type wrapOutIdCollectionType = new TypeToken<ArrayList<WrapOutId>>() {
+	static Type wrapOutIdCollectionType = new TypeToken<ArrayList<WrapOutId>>() {
 	}.getType();
 
-	protected static BeanCopyTools<Work, WrapOutWork> workOutCopier = BeanCopyToolsBuilder.create(Work.class,
-			WrapOutWork.class, null, WrapOutWork.Excludes);
+	static BeanCopyTools<Work, WrapOutWork> workOutCopier = BeanCopyToolsBuilder.create(Work.class, WrapOutWork.class,
+			null, WrapOutWork.Excludes);
 
-	protected static BeanCopyTools<Task, WrapOutTask> taskOutCopier = BeanCopyToolsBuilder.create(Task.class,
-			WrapOutTask.class);
+	static BeanCopyTools<Task, WrapOutTask> taskOutCopier = BeanCopyToolsBuilder.create(Task.class, WrapOutTask.class);
 
-	protected static BeanCopyTools<TaskCompleted, WrapOutTaskCompleted> taskCompletedOutCopier = BeanCopyToolsBuilder
+	static BeanCopyTools<TaskCompleted, WrapOutTaskCompleted> taskCompletedOutCopier = BeanCopyToolsBuilder
 			.create(TaskCompleted.class, WrapOutTaskCompleted.class, null, WrapOutTaskCompleted.Excludes);
 
-	protected static BeanCopyTools<Read, WrapOutRead> readOutCopier = BeanCopyToolsBuilder.create(Read.class,
-			WrapOutRead.class);
+	static BeanCopyTools<Read, WrapOutRead> readOutCopier = BeanCopyToolsBuilder.create(Read.class, WrapOutRead.class);
 
-	protected static BeanCopyTools<ReadCompleted, WrapOutReadCompleted> readCompletedOutCopier = BeanCopyToolsBuilder
+	static BeanCopyTools<ReadCompleted, WrapOutReadCompleted> readCompletedOutCopier = BeanCopyToolsBuilder
 			.create(ReadCompleted.class, WrapOutReadCompleted.class, null, WrapOutReadCompleted.Excludes);
 
-	protected static BeanCopyTools<Review, WrapOutReview> reviewOutCopier = BeanCopyToolsBuilder.create(Review.class,
+	static BeanCopyTools<Review, WrapOutReview> reviewOutCopier = BeanCopyToolsBuilder.create(Review.class,
 			WrapOutReview.class, null, WrapOutReview.Excludes);
 
-	protected static BeanCopyTools<Attachment, WrapOutAttachment> attachmentOutCopier = BeanCopyToolsBuilder
+	static BeanCopyTools<Attachment, WrapOutAttachment> attachmentOutCopier = BeanCopyToolsBuilder
 			.create(Attachment.class, WrapOutAttachment.class, null, WrapOutAttachment.Excludes);
 
-	protected List<WrapOutAttachment> listAttachment(Business business, Work work) throws Exception {
+	static ItemConverter<DataItem> itemConverter = new ItemConverter<>(DataItem.class);
+
+	List<WrapOutAttachment> listAttachment(Business business, Work work) throws Exception {
 		List<WrapOutAttachment> list = new ArrayList<>();
 		List<Attachment> attachments = business.entityManagerContainer().list(Attachment.class,
 				work.getAttachmentList());
@@ -84,7 +89,7 @@ abstract class ActionBase extends StandardJaxrsAction {
 		return list;
 	}
 
-	protected List<WrapOutWorkLog> listWorkLog(Business business, Work work) throws Exception {
+	List<WrapOutWorkLog> listWorkLog(Business business, Work work) throws Exception {
 		List<WorkLog> workLogs = business.workLog().listWithJobObject(work.getJob());
 		List<WrapOutWorkLog> results = new ArrayList<>();
 		for (WorkLog o : workLogs) {
@@ -94,7 +99,7 @@ abstract class ActionBase extends StandardJaxrsAction {
 		return results;
 	}
 
-	protected WrapOutMap getComplex(Business business, EffectivePerson effectivePerson, Work work) throws Exception {
+	WrapOutMap getComplex(Business business, EffectivePerson effectivePerson, Work work) throws Exception {
 		WrapOutMap wrap = new WrapOutMap();
 		/* 拼装Activity节点信息 */
 		Activity activity = business.getActivity(work);
@@ -103,8 +108,9 @@ abstract class ActionBase extends StandardJaxrsAction {
 		wrap.put("activity", wrapOutActivity);
 		wrap.put("work", workOutCopier.copy(work));
 		wrap.put("workLogList", this.listWorkLog(business, work));
-		DataHelper dataHelper = new DataHelper(business.entityManagerContainer(), work);
-		wrap.put("data", dataHelper.get());
+		// WorkDataHelper workDataHelper = new
+		// WorkDataHelper(business.entityManagerContainer(), work);
+		wrap.put("data", this.loadData(business, work));
 		wrap.put("attachmentList", this.listAttachment(business, work));
 		List<Task> taskList = business.task().listWithWorkObject(work);
 		SortTools.asc(taskList, "startTime");
@@ -133,8 +139,7 @@ abstract class ActionBase extends StandardJaxrsAction {
 		return wrap;
 	}
 
-	protected String getApplicationName(Business business, EffectivePerson effectivePerson, String id)
-			throws Exception {
+	String getApplicationName(Business business, EffectivePerson effectivePerson, String id) throws Exception {
 		Application application = business.application().pick(id);
 		if (null != application) {
 			return application.getName();
@@ -154,7 +159,7 @@ abstract class ActionBase extends StandardJaxrsAction {
 		return null;
 	}
 
-	protected String getProcessName(Business business, EffectivePerson effectivePerson, String id) throws Exception {
+	String getProcessName(Business business, EffectivePerson effectivePerson, String id) throws Exception {
 		Process process = business.process().pick(id);
 		if (null != process) {
 			return process.getName();
@@ -172,5 +177,33 @@ abstract class ActionBase extends StandardJaxrsAction {
 			return list.get(0);
 		}
 		return null;
+	}
+
+	Data loadData(Business business, Work work) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(DataItem.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<DataItem> cq = cb.createQuery(DataItem.class);
+		Root<DataItem> root = cq.from(DataItem.class);
+		Predicate p = cb.equal(root.get(DataItem_.job), work.getJob());
+		List<DataItem> list = em.createQuery(cq.where(p)).getResultList();
+		for (DataItem o : list) {
+			if (o.isLobItem()) {
+				DataLobItem lob = business.entityManagerContainer().find(o.getLobItem(), DataLobItem.class);
+				if (null != lob) {
+					o.setStringLobValue(lob.getData());
+				}
+			}
+		}
+		if (list.isEmpty()) {
+			return new Data();
+		} else {
+			JsonElement jsonElement = itemConverter.assemble(list);
+			if (jsonElement.isJsonObject()) {
+				return gson.fromJson(jsonElement, Data.class);
+			} else {
+				/* 如果不是Object强制返回一个Map对象 */
+				return new Data();
+			}
+		}
 	}
 }

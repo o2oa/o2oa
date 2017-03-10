@@ -5,12 +5,12 @@ import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.utils.SortTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.wrapout.element.WrapOutApplicationDict;
 import com.x.processplatform.core.entity.element.Application;
+import com.x.processplatform.core.entity.element.ApplicationDict;
 
 class ActionListWithApplication extends ActionBase {
 
@@ -19,11 +19,12 @@ class ActionListWithApplication extends ActionBase {
 			Business business = new Business(emc);
 			ActionResult<List<WrapOutApplicationDict>> result = new ActionResult<>();
 			List<WrapOutApplicationDict> wraps = new ArrayList<>();
-			Application application = business.application().pick(applicationFlag, ExceptionWhen.not_found);
-			List<String> ids = business.applicationDict().listWithApplication(application);
-			for (String id : ids) {
-				wraps.add(copier.copy(business.applicationDict().pick(id)));
+			Application application = business.application().pick(applicationFlag);
+			if (null == application) {
+				throw new ApplicationNotExistException(applicationFlag);
 			}
+			List<String> ids = business.applicationDict().listWithApplication(application);
+			wraps = copier.copy(emc.list(ApplicationDict.class, ids));
 			SortTools.asc(wraps, false, "name");
 			result.setData(wraps);
 			return result;

@@ -1,7 +1,5 @@
 package com.x.file.assemble.control.jaxrs.folder;
 
-import static com.x.base.core.entity.StorageType.file;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +14,8 @@ import com.x.base.core.http.WrapOutId;
 import com.x.base.core.project.server.StorageMapping;
 import com.x.file.assemble.control.Business;
 import com.x.file.assemble.control.ThisApplication;
-import com.x.file.core.entity.Attachment;
-import com.x.file.core.entity.Folder;
+import com.x.file.core.entity.personal.Attachment;
+import com.x.file.core.entity.personal.Folder;
 
 public class ActionDelete {
 
@@ -34,7 +32,7 @@ public class ActionDelete {
 		for (int i = ids.size() - 1; i >= 0; i--) {
 			List<Attachment> attachments = emc.list(Attachment.class, business.attachment().listWithFolder(ids.get(i)));
 			for (Attachment att : attachments) {
-				StorageMapping mapping = ThisApplication.storageMappings.get(file, att.getStorage());
+				StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class, att.getStorage());
 				att.deleteContent(mapping);
 				EntityManager em = emc.beginTransaction(Attachment.class);
 				em.remove(att);

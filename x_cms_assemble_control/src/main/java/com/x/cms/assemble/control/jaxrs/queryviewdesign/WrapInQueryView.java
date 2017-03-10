@@ -7,7 +7,7 @@ import com.x.base.core.http.annotation.Wrap;
 import com.x.cms.core.entity.element.QueryView;
 
 
-@Wrap(QueryView.class)
+@Wrap( QueryView.class )
 public class WrapInQueryView extends QueryView {
 
 	private static final long serialVersionUID = -5237741099036357033L;

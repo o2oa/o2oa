@@ -37,7 +37,7 @@ MWF.xApplication.cms.Index.Creater = new Class({
         this.createStartDocumentScrollNode();
         if( this.columnData ){
             if(!this.columnData.name)this.columnData.name = this.columnData.appName;
-            new MWF.xApplication.cms.Index.Creater.Column(this.columnData, this.app, this, this.startDocumentContentNode);
+            new MWF.xApplication.cms.Index.Creater.Column(this.columnData, this.app, this, this.startDocumentContentNode, true );
         }else{
             this.listColumns();
         }
@@ -70,7 +70,7 @@ MWF.xApplication.cms.Index.Creater = new Class({
     },
     listColumns: function(){
         this.getAction(function(){
-            this.action.listColumn(function(json){
+            this.action.listColumnByPublish(function(json){
                 json.data.each(function(column){
                     if(!column.name)column.name = column.appName;
                     new MWF.xApplication.cms.Index.Creater.Column(column, this.app, this, this.startDocumentContentNode);
@@ -106,13 +106,14 @@ MWF.xApplication.cms.Index.Creater = new Class({
 
 MWF.xApplication.cms.Index.Creater.Column = new Class({
 
-    initialize: function(data, app, creater, container){
+    initialize: function(data, app, creater, container, needGetCategorys ){
         this.bgColors = ["#30afdc", "#e9573e", "#8dc153", "#9d4a9c", "#ab8465", "#959801", "#434343", "#ffb400", "#9e7698", "#00a489"];
         this.data = data;
         this.app = app;
         this.creater = creater;
         this.container = container;
         this.css = this.creater.css;
+        this.needGetCategorys = needGetCategorys;
 
         this.load();
     },
@@ -147,17 +148,27 @@ MWF.xApplication.cms.Index.Creater.Column = new Class({
         this.loadChild();
     },
     loadChild: function(){
-        this.creater.getAction(function(){
-            this.creater.action.listCategory(this.data.id,function(json){
-                if (json.data.length){
-                    json.data.each(function(category){
-                        new MWF.xApplication.cms.Index.Creater.Category(category, this, this.childNode);
-                    }.bind(this));
-                }else{
-                    this.node.setStyle("display", "none");
-                }
-            }.bind(this), null, this.data.id)
-        }.bind(this))
+        if( this.needGetCategorys ){
+            this.creater.getAction(function(){
+                this.creater.action.listCategoryByPublisher(this.data.id,function(json){
+                    if (json.data.length){
+                        json.data.each(function(category){
+                            new MWF.xApplication.cms.Index.Creater.Category(category, this, this.childNode);
+                        }.bind(this));
+                    }else{
+                        this.node.setStyle("display", "none");
+                    }
+                }.bind(this), null, this.data.id)
+            }.bind(this))
+        }else{
+            if( this.data.wrapOutCategoryList && this.data.wrapOutCategoryList.length ){
+                this.data.wrapOutCategoryList.each(function(category){
+                    new MWF.xApplication.cms.Index.Creater.Category(category, this, this.childNode);
+                }.bind(this));
+            }else{
+                this.node.setStyle("display", "none");
+            }
+        }
     }
 });
 
@@ -173,14 +184,14 @@ MWF.xApplication.cms.Index.Creater.Category = new Class({
         this.load();
     },
     load: function(){
+        if( !this.data.name )this.data.name = this.data.categoryName;
         this.node = new Element("div.categoryItem", {"styles": this.css.startCategoryNode}).inject(this.container);
 
         this.iconNode = new Element("div", {"styles": this.css.categoryIconNode}).inject(this.node);
         this.textNode = new Element("div", {"styles": this.css.categoryTextNode}).inject(this.node);
 
         this.textNode.set({
-            "text": this.data.name,
-            "title": this.data.name+"-"+this.data.description
+            "text": this.data.categoryName
         });
         var _self = this;
         this.node.addEvents({
@@ -194,7 +205,7 @@ MWF.xApplication.cms.Index.Creater.Category = new Class({
 
     createDocument: function( e ){
         var fielter = {
-            "catagoryIdList": [this.data.id ],
+            "categoryIdList": [this.data.id ],
             "creatorList": [layout.desktop.session.user.name]
         }
         this.creater.getAction(function(){
@@ -230,6 +241,7 @@ MWF.xApplication.cms.Index.Creater.Category = new Class({
             _self.app.desktop.apps[appId].setCurrent();
         }else {
             var options = {
+                "readonly" :false,
                 "documentId": id,
                 "appId": appId,
                 "postPublish" : function(){
@@ -246,6 +258,7 @@ MWF.xApplication.cms.Index.Creater.Category = new Class({
             _self.app.desktop.apps[appId].setCurrent();
         }else {
             var options = {
+                "readonly" :false,
                 "documentId": data.id,
                 "appId": appId,
                 "postPublish" : function(){

@@ -14,13 +14,15 @@ MWF.xApplication.cms.Document.Main = new Class({
 		"title": MWF.xApplication.cms.Document.LP.title,
         "documentId": "",
         "isControl": false,
-        "readonly": false,
+        "readonly": true,
         "autoSave" : false,
         "saveOnClose" : false,
-        "postPublish" : null
+        "postPublish" : null,
+        "postDelete" : null
 	},
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.cms.Document.LP;
+        debugger;
         if (this.status){
             this.options.documentId = this.status.documentId;
             this.options.readonly = (this.status.readonly=="true" || this.status.readonly==true) ? true : false;
@@ -90,15 +92,32 @@ MWF.xApplication.cms.Document.Main = new Class({
         this.parseData(data);
         this.openDocument();
     },
-    loadDocument: function(){
+    getDocument : function( callback ){
         var id = this.options.documentId;
-        this.action.getDocument(id, function(json){
+        if( this.options.readonly ){
+            this.action.viewDocument(id, function(json){
+                callback(json)
+            }.bind(this), function( error ){
+                this.notice(  this.lp.documentGettedError + ":" + error.responseText , "error");
+                this.close();
+            }.bind(this));
+        }else{
+            this.action.getDocument(id, function(json){
+                callback(json)
+            }.bind(this), function( error ){
+                this.notice(  this.lp.documentGettedError + ":" + error.responseText , "error");
+                this.close();
+            }.bind(this));
+        }
+    },
+    loadDocument: function(){
+        this.getDocument( function(json){
             //if (this.mask) this.mask.hide();
             //this.openDocument();
-            this.loadController( json.data.document.appId, function(){
+            this.loadController( json.data.document, function(){
                 json.data = json.data || [];
                 this.parseData(json.data);
-                this.action.getCategory( json.data.document.catagoryId, function( js ){
+                this.action.getCategory( json.data.document.categoryId, function( js ){
                     this.categoryData = js.data;
                     var formId = this.categoryData.formId || this.categoryData.readFormId;
                     if( this.readonly == true && this.categoryData.readFormId && this.categoryData.readFormId != "" ){
@@ -111,20 +130,22 @@ MWF.xApplication.cms.Document.Main = new Class({
                     }
                 }.bind(this))
             }.bind(this))
-        }.bind(this), function( error ){
-            //debugger;
-            this.notice(  this.lp.documentGettedError + ":" + error.responseText , "error");
-            this.close();
-        }.bind(this));
+        }.bind(this) );
     },
-    loadController: function(appId, callback){
+    loadController: function(document, callback){
         this.controllers =[];
-        this.action.listColumnController(appId, function( json ){
+        this.action.listColumnController(document.appId, function( json ){
             json.data = json.data || [];
             json.data.each(function(item){
                 this.controllers.push(item.adminUid);
-            }.bind(this))
-            if(callback)callback(json);
+            }.bind(this));
+            this.action.listCategoryController( document.categoryId, function( j ){
+                j.data = j.data || [];
+                j.data.each(function(item){
+                    this.controllers.push(item.adminUid);
+                }.bind(this));
+                if(callback)callback(json);
+            }.bind(this) )
         }.bind(this), function(error){
             this.notice(  this.lp.controllerGettedError + ":" + error.responseText , "error");
             this.close();
@@ -205,7 +226,6 @@ MWF.xApplication.cms.Document.Main = new Class({
         if( this.desktop.session.user.name==this.document.creatorPerson ){
             this.options.isControl = true;
         }
-
         if( this.options.readonly ){ //强制只读
             this.readonly = true;
         }else{
@@ -246,8 +266,8 @@ MWF.xApplication.cms.Document.Main = new Class({
             }.bind(this)
         },{
             app : this, lp : this.lp, css : this.css, actions : this.action
-        })
-        form.create()
+        });
+        form.create();
     },
     openDocument: function(){
         if (this.form){
@@ -256,7 +276,8 @@ MWF.xApplication.cms.Document.Main = new Class({
                     "readonly": this.readonly,
                     "autoSave" : this.options.autoSave,
                     "saveOnClose" : this.options.saveOnClose,
-                    "onPostPublish" : this.options.postPublish
+                    "onPostPublish" : this.options.postPublish,
+                    "onPostDelete" : this.options.postDelete
                 });
                 this.appForm.businessData = {
                     "data": this.data,

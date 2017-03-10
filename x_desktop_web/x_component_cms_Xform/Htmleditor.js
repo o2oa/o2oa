@@ -1,24 +1,21 @@
-MWF.xDesktop.requireApp("cms.Xform", "$Module", null, false);
+MWF.xDesktop.requireApp("process.Xform", "Htmleditor", null, false);
 MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
-	Extends: MWF.CMS$Module,
-
-    initialize: function(node, json, form, options){
-        this.node = $(node);
-        this.node.store("module", this);
-        this.json = json;
-        this.form = form;
-        this.field = true;
-    },
+	Extends: MWF.APPHtmleditor,
 
 	_loadUserInterface: function(){
 		this.node.empty();
         if (this.readonly){
             this.node.set("html", this._getBusinessData());
             this.node.setStyles({
-                "overflow" : "hidden",
                 "-webkit-user-select": "text",
                 "-moz-user-select": "text"
             });
+            if( layout.mobile ){
+                this.node.getElements("img").each( function( img ){
+                    //if( img.height )img.erase("height");
+                    img.setStyle("height","auto");
+                }.bind(this))
+            }
         }else{
             var config = Object.clone(this.json.editorProperties);
             if (this.json.config){
@@ -36,7 +33,7 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
 	},
     loadCkeditor: function(config){
         _self = this;
-        COMMON.AjaxModule.load("ckeditor", function(){
+        COMMON.AjaxModule.loadDom("ckeditor", function(){
             var editorDiv = new Element("div").inject(this.node);
             var htmlData = this._getBusinessData();
             if (htmlData){
@@ -56,18 +53,27 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
                     ];
                 }
             }
+            // CKEDITOR.basePath = COMMON.contentPath+"/res/framework/htmleditor/ckeditor/";
+            // CKEDITOR.plugins.basePath = COMMON.contentPath+"/res/framework/htmleditor/ckeditor/plugins/";
 
-            editorConfig.filebrowserCurrentDocumentImage = function( e, callback ){
-                _self.selectCurrentDocumentImage( e, callback );
-            }
+            //editorConfig.filebrowserCurrentDocumentImage = function( e, callback ){
+            //    _self.selectCurrentDocumentImage( e, callback );
+            //};
 
             editorConfig.filebrowserFilesImage = function( e, callback ){
                 _self.selectCloudFilesImage( e, callback );
-            }
+            };
 
-            // CKEDITOR.basePath = COMMON.contentPath+"/res/framework/htmleditor/ckeditor/";
-            // CKEDITOR.plugins.basePath = COMMON.contentPath+"/res/framework/htmleditor/ckeditor/plugins/";
+            editorConfig.localImageMaxWidth = 800;
+            editorConfig.reference = this.form.businessData.document.id;
+            editorConfig.referenceType = "cmsDocument";
+
             this.editor = CKEDITOR.replace(editorDiv, editorConfig);
+            this._loadEvents();
+
+            //this.editor.on("loaded", function(){
+            //    this._loadEvents();
+            //}.bind(this));
 
             //this.setData(data)
 
@@ -77,114 +83,98 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
             //    this._loadEvents();
         }.bind(this));
     },
-    _loadEvents: function(editorConfig){
-        Object.each(this.json.events, function(e, key){
-            if (e.code){
-                this.editor.on(key, function(event){
-                    return this.form.CMSMacro.fire(e.code, this, event);
-                }.bind(this), this);
+    //selectCurrentDocumentImage : function( e, callback ){
+    //    var _self = this;
+    //    MWF.xDesktop.requireApp("cms.Xform", "Attachment", function(){
+    //        //_self.form.app.content
+    //        _self.selector_doc = new MWF.xApplication.cms.Xform.Attachment( document.body , {}, _self.form, {})
+    //        _self.selector_doc.loadAttachmentSelecter({
+    //            "style" : "cms",
+    //            "title": "选择本文档图片",
+    //            "listStyle": "preview",
+    //            "toBase64" : true,
+    //            "selectType" : "images"
+    //        }, function(url, data, base64Code){
+    //            if(callback)callback(url, base64Code, data);
+    //        });
+    //
+    //    }, true);
+    //
+    //},
+    //selectCloudFilesImage : function( e, callback ){
+    //    var _self = this;
+    //    MWF.xDesktop.requireApp("File", "FileSelector", function(){
+    //        //_self.form.app.content
+    //        _self.selector_cloud = new MWF.xApplication.File.FileSelector( document.body ,{
+    //            "style" : "default",
+    //            "title": "选择云文件图片",
+    //            "toBase64" : true,
+    //            "listStyle": "preview",
+    //            "selectType" : "images",
+    //            "onPostSelectAttachment" : function(url, base64Code){
+    //                if(callback)callback(url, base64Code);
+    //            }
+    //        });
+    //        _self.selector_cloud.load();
+    //    }, true);
+    //
+    //},
+    validationConfigItem: function(routeName, data){
+        var flag = (data.status=="all") ? true: (routeName == "publish");
+        if (flag){
+            var n = this.getData();
+            var v = (data.valueType=="value") ? n : n.length;
+            switch (data.operateor){
+                case "isnull":
+                    if (!v){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+                case "notnull":
+                    if (v){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+                case "gt":
+                    if (v>data.value){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+                case "lt":
+                    if (v<data.value){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+                case "equal":
+                    if (v==data.value){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+                case "neq":
+                    if (v!=data.value){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+                case "contain":
+                    if (v.indexOf(data.value)!=-1){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+                case "notcontain":
+                    if (v.indexOf(data.value)==-1){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
             }
-        }.bind(this));
-
-    },
-    _loadValue: function(){
-        var data = this._getBusinessData();
-    },
-    resetData: function(){
-        this.setData(this._getBusinessData());
-    },
-    getData: function(){
-        return this.editor.getData();
-    },
-    setData: function(data){
-        this._setBusinessData(data);
-        if (this.editor) this.editor.setData(data);
-    },
-    createErrorNode: function(text){
-        var node = new Element("div");
-        var iconNode = new Element("div", {
-            "styles": {
-                "width": "20px",
-                "height": "20px",
-                "float": "left",
-                "background": "url("+"/x_component_cms_Xform/$Form/default/icon/error.png) center center no-repeat"
-            }
-        }).inject(node);
-        var textNode = new Element("div", {
-            "styles": {
-                "line-height": "20px",
-                "margin-left": "20px",
-                "color": "red"
-            },
-            "text": text
-        }).inject(node);
-        return node;
-    },
-    notValidationMode: function(text){
-        if (!this.isNotValidationMode){
-            this.isNotValidationMode = true;
-            this.node.store("borderStyle", this.node.getStyles("border-left", "border-right", "border-top", "border-bottom"));
-            this.node.setStyle("border", "1px solid red");
-
-            this.errNode = this.createErrorNode(text).inject(this.node, "after");
-        }
-    },
-    validationMode: function(){
-        if (this.isNotValidationMode){
-            this.isNotValidationMode = false;
-            this.node.setStyles(this.node.retrieve("borderStyle"));
-            if (this.errNode){
-                this.errNode.destroy();
-                this.errNode = null;
-            }
-        }
-    },
-    validation: function(){
-        if (!this.json.validation) return true;
-        if (!this.json.validation.code) return true;
-        var flag = this.form.CMSMacro.exec(this.json.validation.code, this);
-        if (!flag) flag = MWF.xApplication.cms.Xform.LP.notValidation;
-        if (flag.toString()!="true"){
-            this.notValidationMode(flag);
-            return false;
         }
         return true;
-    },
-    selectCurrentDocumentImage : function( e, callback ){
-        var _self = this;
-        MWF.xDesktop.requireApp("cms.Xform", "Attachment", function(){
-            //_self.form.app.content
-            _self.selector_doc = new MWF.xApplication.cms.Xform.Attachment( document.body , {}, _self.form, {})
-            _self.selector_doc.loadAttachmentSelecter({
-                "style" : "cms",
-                "title": "选择本文档图片",
-                "listStyle": "preview",
-                "toBase64" : true,
-                "selectType" : "images"
-            }, function(url, data, base64Code){
-                if(callback)callback(url, base64Code, data);
-            });
-
-        }, true);
-
-    },
-    selectCloudFilesImage : function( e, callback ){
-        var _self = this;
-        MWF.xDesktop.requireApp("File", "FileSelector", function(){
-            //_self.form.app.content
-            _self.selector_cloud = new MWF.xApplication.File.FileSelector( document.body ,{
-                "style" : "default",
-                "title": "选择云文件图片",
-                "toBase64" : true,
-                "listStyle": "preview",
-                "selectType" : "images",
-                "onPostSelectAttachment" : function(url, base64Code){
-                    if(callback)callback(url, base64Code);
-                }
-            });
-            _self.selector_cloud.load();
-        }, true);
-
     }
-});
-
+}); 

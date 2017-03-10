@@ -6,7 +6,6 @@ import java.io.InputStream;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,10 +15,9 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.application.servlet.FileUploadServletTools;
+import com.x.base.core.application.servlet.AbstractServletAction;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.StorageType;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
@@ -34,7 +32,7 @@ import com.x.meeting.core.entity.Meeting;
 
 @WebServlet(urlPatterns = "/servlet/attachment/upload/meeting/*")
 @MultipartConfig
-public class UploadServlet extends HttpServlet {
+public class UploadServlet extends AbstractServletAction {
 
 	private static final long serialVersionUID = 5628571943877405247L;
 
@@ -48,8 +46,8 @@ public class UploadServlet extends HttpServlet {
 			if (!ServletFileUpload.isMultipartContent(request)) {
 				throw new Exception("not mulit part request.");
 			}
-			EffectivePerson effectivePerson = FileUploadServletTools.effectivePerson(request);
-			String part = FileUploadServletTools.getURIPart(request.getRequestURI(), "meeting");
+			EffectivePerson effectivePerson = this.effectivePerson(request);
+			String part = this.getURIPart(request.getRequestURI(), "meeting");
 			String meetingId = part;
 			Boolean summary = false;
 			if (part.endsWith("/summary")) {
@@ -66,7 +64,7 @@ public class UploadServlet extends HttpServlet {
 					FileItemStream item = fileItemIterator.next();
 					if (!item.isFormField()) {
 						try (InputStream input = item.openStream()) {
-							StorageMapping mapping = ThisApplication.storageMappings.random(StorageType.meeting);
+							StorageMapping mapping = ThisApplication.storageMappings.random(Attachment.class);
 							emc.beginTransaction(Attachment.class);
 							Attachment attachment = this.concreteAttachment(meeting, summary);
 							attachment.saveContent(mapping, input, FilenameUtils.getName(item.getName()));
@@ -83,7 +81,7 @@ public class UploadServlet extends HttpServlet {
 			result.error(e);
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
-		FileUploadServletTools.result(response, result);
+		this.result(response, result);
 	}
 
 	private Attachment concreteAttachment(Meeting meeting, Boolean summary) throws Exception {

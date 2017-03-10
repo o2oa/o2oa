@@ -12,19 +12,21 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.cache.ApplicationCache;
 import com.x.base.core.http.ActionResult;
+import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.SortTools;
 import com.x.bbs.assemble.control.service.BBSConfigSettingService;
+import com.x.bbs.assemble.control.service.UserManagerService;
 import com.x.bbs.entity.BBSConfigSetting;
 
 import net.sf.ehcache.Ehcache;
@@ -38,36 +40,58 @@ public class BBSConfigSettingAction extends StandardJaxrsAction{
 	private BBSConfigSettingService configSettingService = new BBSConfigSettingService();
 	private Ehcache cache = ApplicationCache.instance().getCache( BBSConfigSetting.class );
 	private String catchNamePrefix = this.getClass().getName();
+	private UserManagerService userManagerService = new UserManagerService();
 	
-	@HttpMethodDescribe(value = "更新BBSConfigSetting对象, 配置信息不允许新建和删除操作.", request = WrapInBBSConfigSetting.class, response = WrapOutBBSConfigSetting.class)
+	@HttpMethodDescribe(value = "更新BBSConfigSetting对象, 配置信息不允许新建和删除操作.", request = JsonElement.class, response = WrapOutBBSConfigSetting.class)
 	@PUT
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response update(@Context HttpServletRequest request, WrapInBBSConfigSetting wrapIn) {
+	public Response update(@Context HttpServletRequest request, JsonElement jsonElement) {
 		ActionResult<WrapOutBBSConfigSetting> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapOutBBSConfigSetting wrap = null;
 		BBSConfigSetting configSetting = null;
-		Boolean check = true;		
+		WrapInBBSConfigSetting wrapIn = null;
+		Boolean check = true;
 		
-		if( wrapIn == null ){
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInBBSConfigSetting.class );
+		} catch (Exception e ) {
 			check = false;
-			result.error( new Exception( "system can not get any parameter." ) );
-			result.setUserMessage( "请求传入的参数为空，无法继续保存系统配置!" );
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
 		}
-		
+		if( check ){
+			try {
+				if( !userManagerService.isHasRole( effectivePerson.getName(), "BBSSystemAdmin") ){
+					check = false;
+					Exception exception = new InsufficientPermissionsException( effectivePerson.getName(), "BBSSystemAdmin" );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
+				}
+			} catch (Exception e1) {
+				check = false;
+				Exception exception = new InsufficientPermissionsException( effectivePerson.getName(), "BBSSystemAdmin" );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
+			}
+		}
 		if( check ){
 			if( wrapIn.getConfigCode() == null || wrapIn.getConfigCode().isEmpty() ){
 				check = false;
-				result.error( new Exception( "config code can not null." ) );
-				result.setUserMessage( "数据校验错误,[配置编码]为空，无法查询系统配置!" );
+				Exception exception = new ConfigSettingCodeEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		
 		if( check ){
 			if( wrapIn.getConfigValue() == null || wrapIn.getConfigValue().isEmpty() ){
 				check = false;
-				result.error( new Exception( "config value can not null." ) );
-				result.setUserMessage( "数据校验错误,[配置值]为空，无法查询系统配置!" );
+				Exception exception = new ConfigSettingValueEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -75,14 +99,15 @@ public class BBSConfigSettingAction extends StandardJaxrsAction{
 				configSetting = configSettingService.getWithConfigCode( wrapIn.getConfigCode() );
 				if( configSetting == null ){
 					check = false;
-					result.error( new Exception( "config setting["+ wrapIn.getConfigCode() +"] not exists." ) );
-					result.setUserMessage( "系统设置["+ wrapIn.getConfigCode() +"]不存在,无法继续更新配置信息!" );
+					Exception exception = new ConfigSettingNotExistsException( wrapIn.getConfigCode() );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统查询配置信息["+ wrapIn.getConfigCode() +"]时发生异常!" );
-				logger.error( "system query config setting ["+ wrapIn.getConfigCode() +"] got an excetipn.", e );
+				Exception exception = new ConfigSettingQueryByCodeException( e, wrapIn.getConfigCode() );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -91,9 +116,9 @@ public class BBSConfigSettingAction extends StandardJaxrsAction{
 				configSetting = configSettingService.update( configSetting );
 				ApplicationCache.notify( BBSConfigSetting.class );
 			} catch (Exception e) {
-				result.error( e );
-				result.setUserMessage( "系统在保存系统配置信息时发生异常!" );
-				logger.error( "BBSConfigSettingService save object got an exception", e );
+				Exception exception = new ConfigSettingUpdateException( e, wrapIn.getId() );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -102,9 +127,9 @@ public class BBSConfigSettingAction extends StandardJaxrsAction{
 					wrap = wrapout_copier.copy( configSetting );
 					result.setData( wrap );
 				} catch (Exception e) {
-					result.error( e );
-					result.setUserMessage( "系统转换对象为输出格式时发生异常!" );
-					logger.error( "system copy object to wrap out got an exception", e );
+					Exception exception = new ConfigSettingWrapOutException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 		}
@@ -118,37 +143,39 @@ public class BBSConfigSettingAction extends StandardJaxrsAction{
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get(@Context HttpServletRequest request, @PathParam( "id" ) String id) {
 		ActionResult<WrapOutBBSConfigSetting> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapOutBBSConfigSetting wrap = null;
 		BBSConfigSetting configSetting = null;
 		if( id == null || id.isEmpty() ){
-			logger.error( "id is null, system can not get any object." );
-		}
-		
-		String cacheKey = catchNamePrefix + "#id#" + id;
-		Element element = null;
-		
-		element = cache.get( cacheKey );
-		if( element != null ){
-			wrap = (WrapOutBBSConfigSetting) element.getObjectValue();
-			result.setData( wrap );
+			Exception exception = new ConfigSettingIdEmptyException();
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
 		}else{
-			try {
-				configSetting = configSettingService.get( id );
-				if( configSetting != null ){
-					wrap = wrapout_copier.copy( configSetting );
-					
-					cache.put( new Element( cacheKey, wrap ) );
-					
-					result.setData(wrap);
-				}else{
-					logger.error( "system can not get any object by {'id':'"+id+"'}. " );
+			String cacheKey = catchNamePrefix + "#id#" + id;
+			Element element = null;
+			element = cache.get( cacheKey );
+			if( element != null ){
+				wrap = (WrapOutBBSConfigSetting) element.getObjectValue();
+				result.setData( wrap );
+			}else{
+				try {
+					configSetting = configSettingService.get( id );
+					if( configSetting != null ){
+						wrap = wrapout_copier.copy( configSetting );
+						cache.put( new Element( cacheKey, wrap ) );
+						result.setData(wrap);
+					}else{
+						Exception exception = new ConfigSettingNotExistsException( id );
+						result.error( exception );
+						logger.error( exception, effectivePerson, request, null);
+					}
+				} catch (Throwable th) {
+					Exception exception = new ConfigSettingQueryByIdException( th, id );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
-			} catch (Throwable th) {
-				logger.error( "system get by id got an exception" );
-				th.printStackTrace();
-				result.error(th);
-			}
-		}		
+			}	
+		}			
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -160,6 +187,7 @@ public class BBSConfigSettingAction extends StandardJaxrsAction{
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listAll(@Context HttpServletRequest request ) {
 		ActionResult<List<WrapOutBBSConfigSetting>> result = new ActionResult<List<WrapOutBBSConfigSetting>>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		List<WrapOutBBSConfigSetting> wraps = null;
 		List<BBSConfigSetting> configSettingList = null;
 		String cacheKey = catchNamePrefix + "#all";
@@ -179,52 +207,68 @@ public class BBSConfigSettingAction extends StandardJaxrsAction{
 					result.setData( wraps );
 				}
 			} catch (Throwable th) {
-				logger.error( "system get by id got an exception" );
-				th.printStackTrace();
-				result.error(th);
+				Exception exception = new ConfigSettingListAllException( th );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
 	@Path( "code" )
-	@HttpMethodDescribe( value = "根据CODE获取BBSConfigSetting对象.", request = WrapInBBSConfigSetting.class, response = WrapOutBBSConfigSetting.class)
+	@HttpMethodDescribe( value = "根据CODE获取BBSConfigSetting对象.", request = JsonElement.class, response = WrapOutBBSConfigSetting.class)
 	@PUT
 	@Produces( HttpMediaType.APPLICATION_JSON_UTF_8 )
 	@Consumes( MediaType.APPLICATION_JSON )
-	public Response getByCode( @Context HttpServletRequest request, WrapInBBSConfigSetting wrapIn ) {
+	public Response getByCode( @Context HttpServletRequest request, JsonElement jsonElement ) {
 		ActionResult<WrapOutBBSConfigSetting> result = new ActionResult<WrapOutBBSConfigSetting>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapOutBBSConfigSetting wrap = null;
 		BBSConfigSetting configSetting = null;
-		if( wrapIn == null ){
-			logger.error( "wrapIn is null, system can not get any object." );
-		}
-		if( wrapIn.getConfigCode() == null || wrapIn.getConfigCode().isEmpty() ){
-			logger.error( "config code is null, system can not get any object." );
-		}
+		WrapInBBSConfigSetting wrapIn = null;
+		Boolean check = true;
 		
-		String cacheKey = catchNamePrefix + "#code#" + wrapIn.getConfigCode();
-		Element element = null;
-		element = cache.get( cacheKey );
-		if( element != null ){
-			wrap = ( WrapOutBBSConfigSetting ) element.getObjectValue();
-			result.setData( wrap );
-		}else{
-			try {
-				configSetting = configSettingService.getWithConfigCode( wrapIn.getConfigCode() );
-				if( configSetting != null ){
-					wrap = wrapout_copier.copy( configSetting );
-					cache.put( new Element( cacheKey, wrap ) );
-					result.setData(wrap);
-				}else{
-					logger.error( "system can not get any object by {'configCode':'"+wrapIn.getConfigCode()+"'}. " );
-				}
-			} catch (Throwable th) {
-				logger.error( "system get by id got an exception" );
-				th.printStackTrace();
-				result.error(th);
-			}
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInBBSConfigSetting.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
 		}
+		if( check ){
+			if( wrapIn.getConfigCode() == null || wrapIn.getConfigCode().isEmpty() ){
+				Exception exception = new ConfigSettingCodeEmptyException();
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
+			}else{
+				String cacheKey = catchNamePrefix + "#code#" + wrapIn.getConfigCode();
+				Element element = null;
+				element = cache.get( cacheKey );
+				if( element != null ){
+					wrap = ( WrapOutBBSConfigSetting ) element.getObjectValue();
+					result.setData( wrap );
+				}else{
+					try {
+						configSetting = configSettingService.getWithConfigCode( wrapIn.getConfigCode() );
+						if( configSetting != null ){
+							wrap = wrapout_copier.copy( configSetting );
+							cache.put( new Element( cacheKey, wrap ) );
+							result.setData(wrap);
+						}else{
+							Exception exception = new ConfigSettingNotExistsException( wrapIn.getConfigCode() );
+							result.error( exception );
+							logger.error( exception, effectivePerson, request, null);
+						}
+					} catch (Throwable th) {
+						Exception exception = new ConfigSettingQueryByCodeException( th, wrapIn.getConfigCode() );
+						result.error( exception );
+						logger.error( exception, effectivePerson, request, null);
+					}
+				}
+			}	
+		}
+			
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 }

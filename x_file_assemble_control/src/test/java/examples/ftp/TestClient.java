@@ -5,22 +5,9 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.net.ftp.FTPClient;
 import org.junit.Test;
 
-import com.sun.tools.javac.util.StringUtils;
-
 public class TestClient {
-
-	@Test
-	public void test() {
-		try {
-			String name = "aaaa";
-			System.out.println(StringUtils.toLowerCase(FilenameUtils.getExtension(name)));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	@Test
 	public void test2() {

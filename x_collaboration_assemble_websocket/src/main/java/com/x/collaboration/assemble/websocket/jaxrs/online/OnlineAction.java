@@ -18,7 +18,7 @@ import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
-import com.x.base.core.http.WrapInListString;
+import com.x.base.core.http.WrapInStringList;
 import com.x.base.core.http.WrapOutOnline;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 
@@ -66,7 +66,7 @@ public class OnlineAction extends AbstractJaxrsAction {
 	@Path("list")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listOnline(@Context HttpServletRequest request, WrapInListString wrapIn) {
+	public Response listOnline(@Context HttpServletRequest request, WrapInStringList wrapIn) {
 		ActionResult<List<WrapOutOnline>> result = new ActionResult<>();
 		List<WrapOutOnline> wraps = null;
 		try {
@@ -84,7 +84,7 @@ public class OnlineAction extends AbstractJaxrsAction {
 	@Path("list/local")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listOnlineLocal(@Context HttpServletRequest request, WrapInListString wrapIn) {
+	public Response listOnlineLocal(@Context HttpServletRequest request, WrapInStringList wrapIn) {
 		ActionResult<List<WrapOutOnline>> result = new ActionResult<>();
 		List<WrapOutOnline> wraps = null;
 		try {

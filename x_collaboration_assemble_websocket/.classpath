@@ -16,6 +16,6 @@
 	<classpathentry kind="lib" path="D:/x/store/jars/x_organization_core_express-4.0.0.jar"/>
 	<classpathentry kind="lib" path="D:/x/lib/slf4j/slf4j-api-1.7.21.jar"/>
 	<classpathentry kind="lib" path="D:/x/lib/slf4j/slf4j-simple-1.7.21.jar"/>
-	<classpathentry kind="lib" path="D:/x/lib/apache/openjpa/openjpa-2.4.2-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="D:/x/lib/apache/openjpa/openjpa-2.4.3-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

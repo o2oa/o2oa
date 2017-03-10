@@ -26,7 +26,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
-import com.x.base.core.http.WrapInListString;
+import com.x.base.core.http.WrapInStringList;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.utils.SortTools;
 import com.x.organization.assemble.express.Business;
@@ -79,7 +79,7 @@ public class IdentityAction extends AbstractJaxrsAction {
 	@Path("list")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listWithName(WrapInListString wrapIn) {
+	public Response listWithName(WrapInStringList wrapIn) {
 		ActionResult<List<WrapOutIdentity>> result = new ActionResult<>();
 		List<WrapOutIdentity> wraps = new ArrayList<>();
 		try {

@@ -519,10 +519,10 @@ MWF.xApplication.cms.Column.Column = new Class({
             "<td style=\"; text-align: right;\"><input type=\"text\" id=\"createColumnName\" " +
             "style=\"width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
             "height: 26px;\" value=\"" + columnName + "\"/></td></tr>" +
-            "<tr><td style=\"height: 30px; line-height: 30px; text-align: left\">" + this.app.options.tooltip.column.aliasLabel + ":</td>" +
-            "<td style=\"; text-align: right;\"><input type=\"text\" id=\"createColumnAlias\" " +
-            "style=\"width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
-            "height: 26px;\" value=\"" + alias + "\"/></td></tr>" +
+            //"<tr><td style=\"height: 30px; line-height: 30px; text-align: left\">" + this.app.options.tooltip.column.aliasLabel + ":</td>" +
+            //"<td style=\"; text-align: right;\"><input type=\"text\" id=\"createColumnAlias\" " +
+            //"style=\"width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
+            //"height: 26px;\" value=\"" + alias + "\"/></td></tr>" +
             "<tr><td style=\"height: 30px; line-height: 30px;  text-align: left\">" + this.app.options.tooltip.column.descriptionLabel + ":</td>" +
             "<td style=\"; text-align: right;\"><input type=\"text\" id=\"createColumnDescription\" " +
             "style=\"width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
@@ -650,25 +650,24 @@ MWF.xApplication.cms.Column.Column = new Class({
             "id": (this.data && this.data.id) ? this.data.id : this.app.restActions.getUUID(),
             "isNewColumn": this.isNew,
             "appName": $("createColumnName").get("value"),
-            "appAlias": $("createColumnAlias").get("value"),
+            //"appAlias": $("createColumnAlias").get("value"),
             "description": $("createColumnDescription").get("value"),
             "appInfoSeq": $("createColumnSort").get("value")
         };
-        if( this.data.appIcon )data.appIcon = this.data.appIcon;
+        if( this.data && this.data.appIcon )data.appIcon = this.data.appIcon;
         if (data.appName) {
 
-            var callback = function () {
-                this.app.restActions.getColumn(data, function (json) {
-
+            var callback = function ( id ) {
+                this.app.restActions.getColumn( {id: id}, function (json) {
                     //保存当前用户为管理员
                     if (this.isNew) {
                         var controllerData = {
                             "objectType": "APPINFO",
-                            "objectId": data.id,
+                            "objectId": json.data.id,
                             "adminUid": layout.desktop.session.user.name,
                             "adminName": layout.desktop.session.user.name,
                             "adminLevel": "ADMIN"
-                        }
+                        };
                         this.app.restActions.addController(controllerData);
                     }
 
@@ -689,9 +688,9 @@ MWF.xApplication.cms.Column.Column = new Class({
                     this.columnCreateAreaNode.destroy();
                     if (!this.isNew)this.node.destroy();
                     if (this.formData) {
-                        this.saveIcon(data.id, callback);
+                        this.saveIcon(json.data.id, callback);
                     } else {
-                        callback();
+                        callback( json.data.id );
                     }
                 }
                 //    this.app.processConfig();
@@ -750,7 +749,8 @@ MWF.xApplication.cms.Column.Column = new Class({
     },
     saveIcon: function (id, callback) {
         this.app.restActions.updataColumnIcon(id, function () {
-            if (callback)callback();
+            this.formData = null;
+            if (callback)callback( id );
             //this.app.restActions.getColumnIcon(this.data.id, function(json){
             //	if (json.data){
             //		this.data = json.data;

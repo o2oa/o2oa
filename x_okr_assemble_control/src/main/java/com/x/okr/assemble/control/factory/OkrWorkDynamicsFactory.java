@@ -165,9 +165,8 @@ public class OkrWorkDynamicsFactory extends AbstractFactory {
 
 		for (int i = 0; i < vs.size(); i++) {
 			query.setParameter(i + 1, vs.get(i));
-			//logger.debug( ">>>>>>>>>>>PARAM("+i+"):" + vs.get(i).toString() );
 		}
-		//logger.debug( ">>>>>>>>>>>SQL:" + query.setMaxResults(count).toString() );
+
 		return query.setMaxResults(count).getResultList();
 	}	
 	

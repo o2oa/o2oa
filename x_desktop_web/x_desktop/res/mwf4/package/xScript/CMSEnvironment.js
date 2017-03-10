@@ -285,15 +285,15 @@ MWF.xScript.CMSEnvironment = function(ev){
         "jaxrsClient":{}
     };
 
-    var lookupAction = null
+    var lookupAction = null;
     var getLookupAction = function(callback){
         if (!lookupAction){
             MWF.require("MWF.xDesktop.Actions.RestActions", function(){
                 lookupAction = new MWF.xDesktop.Actions.RestActions("", "x_cms_assemble_control", "");
                 lookupAction.getActions = function(actionCallback){
                     this.actions = {
-                        "lookup": {"uri": "/jaxrs/queryview/flag/{queryview}/application/flag/{CMSApplication}/execute", "method":"PUT"},
-                        "getQueryView": {"uri": "/jaxrs/queryview/flag/{queryview}/application/flag/{CMSApplication}"}
+                        "lookup": {"uri": "/jaxrs/queryview/flag/{view}/application/flag/{application}/execute", "method":"PUT"},
+                        "getView": {"uri": "/jaxrs/queryview/flag/{view}/application/flag/{application}"}
                     };
                     if (actionCallback) actionCallback();
                 }
@@ -304,10 +304,10 @@ MWF.xScript.CMSEnvironment = function(ev){
         }
     };
 
-    this.queryView = {
-        "lookup": function(queryView, callback){
+    this.view = {
+        "lookup": function(view, callback){
             getLookupAction(function(){
-                lookupAction.invoke({"name": "lookup","async": true, "parameter": {"queryview": queryView.queryView, "CMSApplication": queryView.CMSApplication},"success": function(json){
+                lookupAction.invoke({"name": "lookup","async": true, "parameter": {"view": view.view, "application": view.application},"success": function(json){
                     var data = {
                         "grid": json.data.grid,
                         "groupGrid": json.data.groupGrid
@@ -316,13 +316,13 @@ MWF.xScript.CMSEnvironment = function(ev){
                 }.bind(this)});
             }.bind(this));
         },
-        "select": function(queryView, callback, options){
-            if (queryView.queryView){
+        "select": function(view, callback, options){
+            if (view.view){
                 var viewJson = {
-                    "application": queryView.CMSApplication || "",
-                    "queryviewName": queryView.queryView || "",
-                    "isTitle": queryView.isTitle || "yes",
-                    "select": queryView.select || "multi"
+                    "application": view.application || "",
+                    "viewName": view.view || "",
+                    "isTitle": view.isTitle || "yes",
+                    "select": view.select || "multi"
                 };
                 if (!options) options = {};
                 var width = options.width || "700";
@@ -350,7 +350,7 @@ MWF.xScript.CMSEnvironment = function(ev){
                 var _self = this;
                 MWF.require("MWF.xDesktop.Dialog", function(){
                     var dlg = new MWF.xDesktop.Dialog({
-                        "title": options.title || "select queryView",
+                        "title": options.title || "select View",
                         "style": options.style || "view",
                         "top": y,
                         "left": x-20,
@@ -365,8 +365,8 @@ MWF.xScript.CMSEnvironment = function(ev){
                             {
                                 "text": MWF.LP.process.button.ok,
                                 "action": function(){
-                                    //if (callback) callback(_self.queryView.selectedItems);
-                                    if (callback) callback(_self.queryView.getData());
+                                    //if (callback) callback(_self.view.selectedItems);
+                                    if (callback) callback(_self.view.getData());
                                     this.close();
                                 }
                             },
@@ -384,14 +384,14 @@ MWF.xScript.CMSEnvironment = function(ev){
                             dlg.close();
                         }.bind(this));
                         if (okAction) okAction.addEvent("click", function(e){
-                            //if (callback) callback(this.queryView.selectedItems);
-                            if (callback) callback(this.queryView.getData());
+                            //if (callback) callback(this.view.selectedItems);
+                            if (callback) callback(this.view.getData());
                             dlg.close();
                         }.bind(this));
                     }
 
-                    MWF.xDesktop.requireApp("cms.Xform", "widget.QueryView", function(){
-                        this.queryView = new MWF.xApplication.cms.Xform.widget.QueryView(dlg.content.getFirst(), viewJson, {"style": "select"});
+                    MWF.xDesktop.requireApp("cms.Xform", "widget.View", function(){
+                        this.view = new MWF.xApplication.cms.Xform.widget.View(dlg.content.getFirst(), viewJson, {"style": "select"});
                     }.bind(this));
                 }.bind(this));
             }

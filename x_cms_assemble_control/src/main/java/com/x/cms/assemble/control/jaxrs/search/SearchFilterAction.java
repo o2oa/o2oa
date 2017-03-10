@@ -12,15 +12,14 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.cms.assemble.control.service.AppInfoServiceAdv;
 import com.x.cms.assemble.control.service.SearchServiceAdv;
 import com.x.cms.assemble.control.service.UserManagerService;
@@ -35,31 +34,31 @@ public class SearchFilterAction extends StandardJaxrsAction{
 	
 	@HttpMethodDescribe(value = "获取用户有权限访问的所有已发布文档分类列表", response = WrapOutSearchFilter.class)
 	@GET
-	@Path("list/publish/filter/catagory/{catagoryId}")
+	@Path("list/publish/filter/category/{categoryId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listPublishAppSearchFilter( @Context HttpServletRequest request, @PathParam("catagoryId") String catagoryId ) {		
-		ActionResult<WrapOutSearchFilter> result = listAppSearchFilterForDocStatus( request, "published", catagoryId);
+	public Response listPublishAppSearchFilter( @Context HttpServletRequest request, @PathParam("categoryId") String categoryId ) {		
+		ActionResult<WrapOutSearchFilter> result = listAppSearchFilterForDocStatus( request, "published", categoryId);
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
 	@HttpMethodDescribe(value = "获取用户有权限访问的所有草稿文档分类列表", response = WrapOutSearchFilter.class)
 	@GET
-	@Path("list/draft/filter/catagory/{catagoryId}")
+	@Path("list/draft/filter/category/{categoryId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listDraftAppSearchFilter( @Context HttpServletRequest request, @PathParam("catagoryId") String catagoryId ) {		
-		ActionResult<WrapOutSearchFilter> result = listAppSearchFilterForDocStatus( request, "draft", catagoryId);
+	public Response listDraftAppSearchFilter( @Context HttpServletRequest request, @PathParam("categoryId") String categoryId ) {		
+		ActionResult<WrapOutSearchFilter> result = listAppSearchFilterForDocStatus( request, "draft", categoryId);
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
 	@HttpMethodDescribe(value = "获取用户有权限访问的所有已归档文档分类列表", response = WrapOutSearchFilter.class)
 	@GET
-	@Path("list/archive/filter/catagory/{catagoryId}")
+	@Path("list/archive/filter/category/{categoryId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listArchivedAppSearchFilter( @Context HttpServletRequest request, @PathParam("catagoryId") String catagoryId ) {		
-		ActionResult<WrapOutSearchFilter> result = listAppSearchFilterForDocStatus( request, "archived", catagoryId );
+	public Response listArchivedAppSearchFilter( @Context HttpServletRequest request, @PathParam("categoryId") String categoryId ) {		
+		ActionResult<WrapOutSearchFilter> result = listAppSearchFilterForDocStatus( request, "archived", categoryId );
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -67,15 +66,15 @@ public class SearchFilterAction extends StandardJaxrsAction{
 	 * 从文档信息中查询出涉及的所有栏目信息，分类信息，以及部门和公司信息列表
 	 * @param request
 	 * @param docStatus
-	 * @param catagoryId
+	 * @param categoryId
 	 * @return
 	 */
-	private ActionResult<WrapOutSearchFilter> listAppSearchFilterForDocStatus( HttpServletRequest request, String docStatus, String catagoryId ){
+	private ActionResult<WrapOutSearchFilter> listAppSearchFilterForDocStatus( HttpServletRequest request, String docStatus, String categoryId ){
 		ActionResult<WrapOutSearchFilter> result = new ActionResult<>();
 		WrapOutSearchFilter wrap = new WrapOutSearchFilter();
 		List<String> app_ids = null;
 		List<AppFilter> appFilterList = null;
-		List<CatagoryFilter> catagoryFilterList = null;
+		List<CategoryFilter> categoryFilterList = null;
 		List<CompanyFilter> companyFilterList = null;
 		List<DepartmentFilter> departmentFilterList = null;
 		Boolean isXAdmin = false;
@@ -87,30 +86,29 @@ public class SearchFilterAction extends StandardJaxrsAction{
 				isXAdmin = userManagerService.isXAdmin( request, currentPerson );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在检查用户是否为平台管理员时发生异常。");
-				logger.error( "system check user is xadmin got an exception", e );
+				Exception exception = new UserManagerCheckException( e, currentPerson.getName() );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
-			//查询用户可以访问的所有栏目ID列表
 			if( isXAdmin ){
 				try {
 					app_ids = appInfoServiceAdv.listAllIds();
 				} catch (Exception e) {
 					check = false;
-					result.error(e);
-					result.setUserMessage("系统在查询所有栏目信息ID列表时发生异常。");
-					logger.error( "system query all appinfo ids got an exception", e );
+					Exception exception = new AppInfoIdsListAllException( e );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}else{
 				try {
-					app_ids = appInfoServiceAdv.listAppInfoByUserPermission( currentPerson.getName() );
+					app_ids = appInfoServiceAdv.listViewableAppInfoByUserPermission( currentPerson.getName() );
 				} catch (Exception e) {
 					check = false;
-					result.error(e);
-					result.setUserMessage("系统在根据用户权限查询用户可访问的所有栏目信息ID列表时发生异常。");
-					logger.error( "system query app info ids with uer permission got an exception", e );
+					Exception exception = new AppInfoListViewableInPermissionException( e, currentPerson.getName() );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}
 		}
@@ -118,48 +116,48 @@ public class SearchFilterAction extends StandardJaxrsAction{
 		if( check ){
 			//查询用户可访问的文档涉及到的所有栏目信息以及各栏目内文档数量
 			try {
-				appFilterList = searchServiceAdv.listAppInfoSearchFilter( app_ids, docStatus, catagoryId );
+				appFilterList = searchServiceAdv.listAppInfoSearchFilter( app_ids, docStatus, categoryId );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据可访问栏目ID列表，文档状态以及可访问分类ID统计涉及到的所有栏目名称列表时发生异常。");
-				logger.error( "system qeury appNames with appids, docstatus and catagoryid got an exception", e );
+				Exception exception = new AppInfoFilterListException( e, app_ids, docStatus, categoryId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		//2、获取分类统计列表
 		if( check ){
 			try {
-				catagoryFilterList = searchServiceAdv.listCatagorySearchFilter( app_ids, docStatus, catagoryId );
+				categoryFilterList = searchServiceAdv.listCategorySearchFilter( app_ids, docStatus, categoryId );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据可访问栏目ID列表，文档状态以及可访问分类ID统计涉及到的所有分类名称列表时发生异常。");
-				logger.error( "system qeury catagoryNames with appids, docstatus and catagoryid got an exception", e );
+				Exception exception = new CategoryInfoFilterListException( e, app_ids, docStatus, categoryId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
 			try {
-				companyFilterList = searchServiceAdv.listCompanySearchFilter( app_ids, docStatus, catagoryId );
+				companyFilterList = searchServiceAdv.listCompanySearchFilter( app_ids, docStatus, categoryId );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据可访问栏目ID列表，文档状态以及可访问分类ID统计涉及到的所有公司名称列表时发生异常。");
-				logger.error( "system qeury companyNames with appids, docstatus and catagoryid got an exception", e );
+				Exception exception = new CompanyNameFilterListException( e, app_ids, docStatus, categoryId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
 			try {
-				departmentFilterList = searchServiceAdv.listDepartmentSearchFilter( app_ids, docStatus, catagoryId );
+				departmentFilterList = searchServiceAdv.listDepartmentSearchFilter( app_ids, docStatus, categoryId );
 			} catch (Exception e) {
 				check = false;
-				result.error(e);
-				result.setUserMessage("系统在根据可访问栏目ID列表，文档状态以及可访问分类ID统计涉及到的所有部门名称列表时发生异常。");
-				logger.error( "system qeury departmentNames with appids, docstatus and catagoryid got an exception", e );
+				Exception exception = new DepartmentNameFilterListException( e, app_ids, docStatus, categoryId );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
 			wrap.setAppfileter_list( appFilterList );
-			wrap.setCatagoryfileter_list( catagoryFilterList );
+			wrap.setCategoryfileter_list( categoryFilterList );
 			wrap.setCompanyfileter_list( companyFilterList );
 			wrap.setDepartmentfileter_list( departmentFilterList );
 			result.setData(wrap);

@@ -228,7 +228,23 @@ MWF.xApplication.cms.Module.ViewExplorer.DefaultView = new Class({
         this.createListHead();
         this.loadElementList();
     },
+    resort : function(th){
+        this.orderField = th.retrieve("field");
+        var orderType = th.retrieve("orderType");
+        //th.eliminate(orderType);
+        if( orderType == "" ){
+            this.orderType = "asc";
+        }else if( this.orderType == "asc" ){
+            this.orderType = "desc";
+        }else{
+            this.orderField = ""; //this.data.orderField ? this.data.orderField : "";
+            this.orderType = ""; //this.data.orderType ? this.data.orderType : "";
+        }
+        this.reload();
+    },
+
     createListHead : function(){
+        var _self = this;
         var headNode = new Element("tr", {"styles": this.css.listHeadNode}).inject(this.table);
         var listItemUrl = this.explorer.path+"listItem.json";
         MWF.getJSON(listItemUrl, function(json){
@@ -241,15 +257,32 @@ MWF.xApplication.cms.Module.ViewExplorer.DefaultView = new Class({
                     }
                 }
                 if(isShow) {
-                    new Element("th", {
+                    var th = new Element("th", {
                         "styles": this.css[cell.headStyles],
                         "text": cell.title,
                         "width": cell.width
                     }).inject(headNode)
+                    if( cell.sortByClickTitle == "yes" ){
+                        th.store("field",cell.item);
+                        if( this.orderField  == cell.item && this.orderType!="" ){
+                            th.store("orderType",this.orderType);
+                            this.sortIconNode = new Element("div",{
+                                "styles": this.orderType == "asc" ? this.css.sortIconNode_asc : this.css.sortIconNode_desc
+                            }).inject( th, "top" );
+                        }else{
+                            th.store("orderType","");
+                            this.sortIconNode = new Element("div",{"styles":this.css.sortIconNode}).inject( th, "top" );
+                        }
+                        th.setStyle("cursor","pointer");
+                        th.addEvent("click",function(){
+                            _self.resort( this );
+                        })
+                    }
                 }
             }.bind(this));
         }.bind(this),false);
     },
+
 
     loadElementList: function(count){
         if (!this.isItemsLoaded){
@@ -289,11 +322,13 @@ MWF.xApplication.cms.Module.ViewExplorer.DefaultView = new Class({
         if(!count)count=20;
         var id = (this.items.length) ? this.items[this.items.length-1].data.id : "(0)";
         var data = {
-            "catagoryIdList": [this.explorer.categoryData.id ],
-            "statusList": [this.explorer.options.status]
-        }
+            "categoryIdList": [this.explorer.categoryData.id ],
+            "statusList": [this.explorer.options.status],
+            "orderField" : this.orderField || null,
+            "orderType" : this.orderType || null
+        };
         if( this.searchKey && this.searchKey!="" ){
-            data.titleList = [this.searchKey]
+            data.titleList = [this.searchKey];
         }
         if (this.filter && this.filter.filter ){
             var filterResult = this.filter.getFilterResult();
@@ -326,7 +361,7 @@ MWF.xApplication.cms.Module.ViewExplorer.DefaultView = new Class({
     _createItem: function(data){
         return new MWF.xApplication.cms.Module.ViewExplorer.DefaultDocument(this.table, data, this.explorer, this);
     }
-})
+});
 
 
 MWF.xApplication.cms.Module.ViewExplorer.ViewForALL = new Class({
@@ -334,6 +369,7 @@ MWF.xApplication.cms.Module.ViewExplorer.ViewForALL = new Class({
 
 
     createListHead : function(){
+        var _self = this;
         var headNode = new Element("tr", {"styles": this.css.listHeadNode}).inject(this.table);
         var listItemUrl = this.explorer.path+"listItemForAll.json";
         MWF.getJSON(listItemUrl, function(json){
@@ -346,11 +382,27 @@ MWF.xApplication.cms.Module.ViewExplorer.ViewForALL = new Class({
                     }
                 }
                 if(isShow) {
-                    new Element("th", {
+                    var th = new Element("th", {
                         "styles": this.css[cell.headStyles],
                         "text": cell.title,
                         "width": cell.width
                     }).inject(headNode)
+                }
+                if( cell.sortByClickTitle == "yes" ){
+                    th.store("field",cell.item);
+                    if( this.orderField  == cell.item && this.orderType!="" ){
+                        th.store("orderType",this.orderType);
+                        this.sortIconNode = new Element("div",{
+                            "styles": this.orderType == "asc" ? this.css.sortIconNode_asc : this.css.sortIconNode_desc
+                        }).inject( th, "top" );
+                    }else{
+                        th.store("orderType","");
+                        this.sortIconNode = new Element("div",{"styles":this.css.sortIconNode}).inject( th, "top" );
+                    }
+                    th.setStyle("cursor","pointer");
+                    th.addEvent("click",function(){
+                        _self.resort( this );
+                    })
                 }
             }.bind(this));
         }.bind(this),false);
@@ -360,8 +412,10 @@ MWF.xApplication.cms.Module.ViewExplorer.ViewForALL = new Class({
         var id = (this.items.length) ? this.items[this.items.length-1].data.id : "(0)";
         var data = {
             "appIdList": [ this.explorer.columnData.id ],
-            "statusList": [ this.explorer.options.status ]
-        }
+            "statusList": [ this.explorer.options.status ],
+            "orderField" : this.orderField || null,
+            "orderType" : this.orderType || null
+        };
         if( this.searchKey && this.searchKey!="" ){
             data.titleList = [this.searchKey]
         }
@@ -380,7 +434,7 @@ MWF.xApplication.cms.Module.ViewExplorer.ViewForALL = new Class({
         }
     }
 
-})
+});
 
 MWF.xApplication.cms.Module.ViewExplorer.View = new Class({
     Extends: MWF.xApplication.cms.Module.ViewExplorer.DefaultView,
@@ -389,7 +443,7 @@ MWF.xApplication.cms.Module.ViewExplorer.View = new Class({
         this.orderField = this.data.orderField ? this.data.orderField : "";
         this.orderType = this.data.orderType ? this.data.orderType : "";
         this.viewId = this.data.id;
-        this.catagoryId = this.explorer.categoryData.id;
+        this.categoryId = this.explorer.categoryData.id;
         this.status = this.explorer.options.status;
     },
     createListHead : function(){
@@ -442,7 +496,7 @@ MWF.xApplication.cms.Module.ViewExplorer.View = new Class({
         var data = {
             "orderField":this.orderField,
             "orderType":this.orderType,
-            "catagoryId":this.catagoryId,
+            "categoryId":this.categoryId,
             "viewId":this.viewId,
             "searchDocStatus":this.status
         }
@@ -972,8 +1026,11 @@ MWF.xApplication.cms.Module.ViewExplorer.DefaultDocument = new Class({
             var options = {
                 "documentId": this.data.id,
                 "appId": appId,
-                "readonly" : !isEdited
-            }//this.explorer.app.options.application.allowControl};
+                "readonly" : !isEdited,
+                "postDelete" : function(){
+                    this.view.reload();
+                }.bind(this)
+            };
             this.explorer.app.desktop.openApplication(e, "cms.Document", options);
         }
     },
@@ -1063,4 +1120,4 @@ MWF.xApplication.cms.Module.ViewExplorer.Document = new Class({
         //this.setActions();
         this.setEvents();
     }
-})
+});

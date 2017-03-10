@@ -9,12 +9,12 @@ import com.x.base.core.http.WrapOutId;
 import com.x.base.core.utils.StringTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkStatus;
-import com.x.processplatform.core.entity.content.tools.DataHelper;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Begin;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.WorkDataHelper;
 
 /**
  * 创建处于start状态的work
@@ -22,7 +22,7 @@ import com.x.processplatform.service.processing.Business;
  * @author Rui
  *
  */
-public class ActionCreate {
+class ActionCreate {
 
 	WrapOutId execute(Business business, String processId, JsonElement jsonElement) throws Exception {
 
@@ -34,8 +34,8 @@ public class ActionCreate {
 		emc.beginTransaction(Work.class);
 		emc.persist(work, CheckPersistType.all);
 		if ((null != jsonElement) && jsonElement.isJsonObject()) {
-			DataHelper dataHelper = new DataHelper(emc, work);
-			dataHelper.update(jsonElement);
+			WorkDataHelper workDataHelper = new WorkDataHelper(emc, work);
+			workDataHelper.update(jsonElement);
 		}
 		emc.commit();
 		return new WrapOutId(work.getId());

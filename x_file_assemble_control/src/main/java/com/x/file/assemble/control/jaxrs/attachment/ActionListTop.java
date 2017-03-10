@@ -9,7 +9,7 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.utils.SortTools;
 import com.x.file.assemble.control.Business;
 import com.x.file.assemble.control.wrapout.WrapOutAttachment;
-import com.x.file.core.entity.Attachment;
+import com.x.file.core.entity.personal.Attachment;
 
 public class ActionListTop extends ActionBase {
 

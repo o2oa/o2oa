@@ -1,10 +1,11 @@
 package x_organization_assemble_authentication.test;
 
+import java.io.File;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,12 +13,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 
-import com.x.base.core.utils.DateTools;
+import com.x.base.core.Crypto;
+import com.x.base.core.utils.StringTools;
 import com.x.organization.core.entity.Person;
 
 public class TestClient {
@@ -59,12 +62,40 @@ public class TestClient {
 
 	@Test
 	public void test4() throws Exception {
-		Date date = new Date();
-		Calendar cal = DateUtils.toCalendar(date);
-System.out.println(DateTools.format(date));	
-System.out.println(date.toGMTString());
-		
-		
-		System.out.println(cal);
+		File file = new File("e:/qrcode_logo-64px.png");
+		byte[] bs = FileUtils.readFileToByteArray(file);
+		// System.out.println(bs.length);
+		for (byte o : bs) {
+			System.out.print(o);
+			System.out.print(",");
+		}
+
 	}
+
+	@Test
+	public void test5() throws Exception {
+		String str = "U2FsdGVkX1+lbxz80FLX7HDXIAN0jp2/n+YW9WO2erE=";
+		String sso = "xplatform";
+		str = new String(Base64.encodeBase64(str.getBytes("utf-8")), "utf-8");
+		System.out.println(str);
+		System.out.println(Crypto.decrypt(str, sso));
+		// System.out.println(Base64.decodeBase64(str));
+		// String val = new String(Base64.decodeBase64(str),"utf-8");
+		// System.out.println(val);
+		// System.out.println(Crypto.decrypt(val, sso));
+
+	}
+
+	@Test
+	public void test6() throws Exception {
+		String str = "zhenglong#1001";
+		String sso = "xplatform";
+		System.out.println(Crypto.encrypt(str, sso));
+		// System.out.println(Base64.decodeBase64(str));
+		// String val = new String(Base64.decodeBase64(str),"utf-8");
+		// System.out.println(val);
+		// System.out.println(Crypto.decrypt(val, sso));
+
+	}
+
 }

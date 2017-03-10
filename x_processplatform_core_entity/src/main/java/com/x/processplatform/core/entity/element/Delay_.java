@@ -14,7 +14,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.processplatform.core.entity.element.Delay.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:19:07 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:10:19 CST 2017")
 public class Delay_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Delay,String> afterArriveScript;
     public static volatile SingularAttribute<Delay,String> afterArriveScriptText;
@@ -39,12 +39,15 @@ public class Delay_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Delay,String> name;
     public static volatile SingularAttribute<Delay,String> position;
     public static volatile SingularAttribute<Delay,String> process;
+    public static volatile ListAttribute<Delay,String> readDataPathList;
     public static volatile ListAttribute<Delay,String> readDepartmentList;
     public static volatile SingularAttribute<Delay,String> readDuty;
     public static volatile ListAttribute<Delay,String> readIdentityList;
     public static volatile SingularAttribute<Delay,String> readScript;
     public static volatile SingularAttribute<Delay,String> readScriptText;
+    public static volatile ListAttribute<Delay,String> reviewDataPathList;
     public static volatile ListAttribute<Delay,String> reviewDepartmentList;
+    public static volatile SingularAttribute<Delay,String> reviewDuty;
     public static volatile ListAttribute<Delay,String> reviewIdentityList;
     public static volatile SingularAttribute<Delay,String> reviewScript;
     public static volatile SingularAttribute<Delay,String> reviewScriptText;

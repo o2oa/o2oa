@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.x.base.core.http.annotation.Wrap;
 import com.x.okr.entity.OkrAttachmentFileInfo;
+
 @Wrap( OkrAttachmentFileInfo.class)
 public class WrapOutOkrAttachmentFileInfo extends OkrAttachmentFileInfo{
 

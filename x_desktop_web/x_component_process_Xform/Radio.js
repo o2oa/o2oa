@@ -49,7 +49,25 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
 		});
 		this.setOptions();
 	},
-	
+    _loadEvents: function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
+                if (this.options.moduleEvents.indexOf(key)!=-1){
+                    this.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }else{
+                    //this.node.addEvent(key, function(event){
+                    //    return this.form.Macro.fire(e.code, this, event);
+                    //}.bind(this));
+                }
+            }
+        }.bind(this));
+    },
+    resetOption: function(){
+        this.node.empty();
+        this.setOptions();
+    },
 	getOptions: function(){
 		if (this.json.itemType == "values"){
 			return this.json.itemValues;
@@ -66,9 +84,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
 			var tmps = item.split("|");
 			var text = tmps[0];
 			var value = tmps[1] || text;
-			
 
-			
 			var radio = new Element("input", {
 				"type": "radio",
 				"name": this.json.id,
@@ -82,6 +98,18 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
                 if (this.validation()) this._setBusinessData(this.getInputData("change"));
                 //this._setBusinessData(this.getInputData());
             }.bind(this));
+
+            Object.each(this.json.events, function(e, key){
+                if (e.code){
+                    if (this.options.moduleEvents.indexOf(key)!=-1){
+                    }else{
+                        radio.addEvent(key, function(event){
+                            return this.form.Macro.fire(e.code, this, event);
+                        }.bind(this));
+                    }
+                }
+            }.bind(this));
+
 
 		}.bind(this));
 	},

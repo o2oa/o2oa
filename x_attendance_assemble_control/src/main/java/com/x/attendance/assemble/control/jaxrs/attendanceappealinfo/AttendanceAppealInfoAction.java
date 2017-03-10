@@ -17,12 +17,10 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import com.google.gson.JsonElement;
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.Business;
-import com.x.attendance.assemble.control.jaxrs.WrapOutMessage;
 import com.x.attendance.assemble.control.service.AttendanceAppealInfoServiceAdv;
 import com.x.attendance.assemble.control.service.AttendanceDetailServiceAdv;
 import com.x.attendance.assemble.control.service.AttendanceNoticeService;
@@ -34,13 +32,15 @@ import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpAttribute;
 import com.x.base.core.http.HttpMediaType;
 import com.x.base.core.http.ResponseFactory;
+import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.organization.core.express.wrap.WrapDepartment;
 import com.x.organization.core.express.wrap.WrapPerson;
 
@@ -61,6 +61,7 @@ public class AttendanceAppealInfoAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutAttendanceAppealInfo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapOutAttendanceAppealInfo wrap = null;
 		AttendanceAppealInfo attendanceAppealInfo = null;
         Boolean check = true;	
@@ -74,10 +75,10 @@ public class AttendanceAppealInfoAction extends StandardJaxrsAction {
         	try {
 				attendanceAppealInfo = attendanceAppealInfoServiceAdv.get( id );
 			} catch (Exception e) {
-				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据Id查询申诉信息时发生异常！" );
-				logger.error( "system get appeal info by id got an exception.", e );
+				check = false;				
+				Exception exception = new AttendanceAppealQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
         }
         if( check ){
@@ -87,22 +88,23 @@ public class AttendanceAppealInfoAction extends StandardJaxrsAction {
 					result.setData(wrap);
 				} catch (Exception e) {
 					check = false;
-					result.error( e );
-					result.setUserMessage( "系统转换申诉对象为输出格式时发生异常！" );
-					logger.error( "system copy appeal info to wrap out got an exception.", e );
+					Exception exception = new AttendanceAppealWrapCopyException( e );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
         	}
         }
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "根据ID删除AttendanceAppealInfo申诉信息对象.", response = WrapOutMessage.class)
+	@HttpMethodDescribe(value = "根据ID删除AttendanceAppealInfo申诉信息对象.", response = WrapOutId.class)
 	@DELETE
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response delete(@Context HttpServletRequest request, @PathParam("id") String id) {
-		ActionResult<WrapOutMessage> result = new ActionResult<>();
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 		
         if( check ){
@@ -114,12 +116,12 @@ public class AttendanceAppealInfoAction extends StandardJaxrsAction {
 		if( check ){
 			try {
 				attendanceAppealInfoServiceAdv.delete( id );
-				result.setUserMessage( "成功删除申诉信息信息。id=" + id );
+				result.setData( new WrapOutId(id) );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "删除申诉信息过程中发生异常！" );
-				logger.error( "system delete appeal info by id got an exception.", e );
+				Exception exception = new AttendanceAppealDeleteException( e, id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -133,29 +135,38 @@ public class AttendanceAppealInfoAction extends StandardJaxrsAction {
 	 * @param wrapIn
 	 * @return
 	 */
-	@HttpMethodDescribe(value = "对某条打卡记录进行申诉", request = WrapInAttendanceAppealInfo.class, response = WrapOutMessage.class)
+	@HttpMethodDescribe(value = "对某条打卡记录进行申诉", request = JsonElement.class, response = WrapOutId.class)
 	@PUT
 	@Path("appeal/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response appealAttendanceDetail(@Context HttpServletRequest request, @PathParam("id") String id, WrapInAttendanceAppealInfo wrapIn) {
-		ActionResult<WrapOutMessage> result = new ActionResult<>();
-		WrapOutMessage wrapOutMessage = new WrapOutMessage();
+	public Response appealAttendanceDetail(@Context HttpServletRequest request, @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		DateOperation dateOperation = new DateOperation();
 		AttendanceAppealInfo attendanceAppealInfo = null;
 		AttendanceDetail attendanceDetail = null;
 		WrapDepartment department = null;
 		WrapPerson person = null;
+		WrapInAttendanceAppealInfo wrapIn = null;
 		Boolean check = true;
 		
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInAttendanceAppealInfo.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
+		}
 		if( check ){
 			try {
 				attendanceDetail = attendanceDetailServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				logger.error("system get attendance detail with id got an exception.", e );
-				result.error( e );
-				result.setUserMessage( "系统根据ID查询打卡明细时发生异常。" );
+				Exception exception = new AttendanceDetailQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}		
 		if( check ){
@@ -186,9 +197,9 @@ public class AttendanceAppealInfoAction extends StandardJaxrsAction {
 				attendanceAppealInfo.setCurrentProcessor( attendanceAppealInfo.getProcessPerson1() );
 			}else{// 打卡记录不存在
 				check = false;
-				result.error( new Exception("打卡信息不存在，无法继续进行申诉") );
-				result.setUserMessage( "打卡信息不存在，无法继续进行申诉！" );
-				logger.error( "attendanceDetailInfo{'id':'" + id + "'} not exists, system can not appeal attendance detail." );
+				Exception exception = new AttendanceDetailNotExistsException( id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -217,21 +228,21 @@ public class AttendanceAppealInfoAction extends StandardJaxrsAction {
 									attendanceAppealInfo.setProcessPersonCompany1( department.getCompany() );
 								}else{
 									check = false;
-									result.error( new Exception("系统无法根据员工身份查询到审核人信息!身份：" + wrapIn.getProcessPerson1() ) );
-									result.setUserMessage( "系统无法根据员工身份查询到审核人信息!" );
-									logger.error("system can not find any person by employee identity for processor1:" + wrapIn.getProcessPerson1() );
+									Exception exception = new PersonHasNoIdenitityException( wrapIn.getProcessPerson1() );
+									result.error( exception );
+									logger.error( exception, effectivePerson, request, null);
 								}
 							}else{
 								check = false;
-								result.error( new Exception("系统无法根据员工姓名以及身份查询到部门信息，请检查该审核人的部门信息!KEY："+ wrapIn.getProcessPerson1() ) );
-								result.setUserMessage( "系统无法根据员工姓名以及身份查询到部门信息，请检查该审核人的部门信息!" );
-								logger.error("system can not find any department by employee name for processor1:" + wrapIn.getProcessPerson1() );
+								Exception exception = new PersonHasNoDepartmentException( wrapIn.getProcessPerson1() );
+								result.error( exception );
+								logger.error( exception, effectivePerson, request, null);
 							}
-						} catch (Exception e) {
+						} catch ( Exception e) {
 							check = false;
-							result.error( e );
-							result.setUserMessage( "系统根据员工姓名查询部门信息时发生异常!" );
-							logger.error("system query department by employee name got an exception", e );
+							Exception exception = new QeuryDepartmentWithPersonException( e, wrapIn.getProcessPerson1() );
+							result.error( exception );
+							logger.error( exception, effectivePerson, request, null);
 						}
 					}
 				}
@@ -263,21 +274,21 @@ public class AttendanceAppealInfoAction extends StandardJaxrsAction {
 									attendanceAppealInfo.setProcessPersonCompany2( department.getCompany() );
 								}else{
 									check = false;
-									result.error( new Exception("系统无法根据员工身份查询到人员信息!" ) );
-									result.setUserMessage( "系统无法根据员工身份查询到人员信息!" );
-									logger.error("system can not find any department by employee identity for processor2:" + wrapIn.getProcessPerson2() );
+									Exception exception = new PersonHasNoIdenitityException( wrapIn.getProcessPerson2() );
+									result.error( exception );
+									logger.error( exception, effectivePerson, request, null);
 								}
 							}else{
 								check = false;
-								result.error( new Exception("系统无法根据员工姓名查询到部门信息，请检查该员工的部门信息!" ) );
-								result.setUserMessage( "系统无法根据员工姓名查询到部门信息，请检查该员工的部门信息!" );
-								logger.error("system can not find any department by employee name for processor2:" + wrapIn.getProcessPerson2() );
+								Exception exception = new PersonHasNoDepartmentException( wrapIn.getProcessPerson2() );
+								result.error( exception );
+								logger.error( exception, effectivePerson, request, null);
 							}
 						} catch (Exception e) {
 							check = false;
-							result.error( e );
-							result.setUserMessage( "系统根据员工姓名查询部门信息时发生异常!" );
-							logger.error("system query department by employee name got an exception", e );
+							Exception exception = new QeuryDepartmentWithPersonException( e, wrapIn.getProcessPerson2() );
+							result.error( exception );
+							logger.error( exception, effectivePerson, request, null);
 						}
 					}
 				}	
@@ -286,11 +297,12 @@ public class AttendanceAppealInfoAction extends StandardJaxrsAction {
 		if( check ){
 			try {
 				attendanceAppealInfo = attendanceAppealInfoServiceAdv.saveNewAppeal( attendanceAppealInfo );
+				result.setData( new WrapOutId( id ) );
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在保存申诉信息时发生异常!" );
-				logger.error("system save appeal info got an exception", e );
+				Exception exception = new AttendanceAppealSaveException( e );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -299,110 +311,130 @@ public class AttendanceAppealInfoAction extends StandardJaxrsAction {
 				attendanceNoticeService.notifyAttendanceAppealProcessness1Message( attendanceAppealInfo);
 			} catch (Exception e) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "申诉信息提交成功，向申诉当前处理人发送通知消息发生异常!" );
-				logger.error("system send notice to current processor got an exception.name:" + wrapIn.getProcessPerson1(), e );
+				Exception exception = new NotifyAttendanceAppealException( e, attendanceAppealInfo.getProcessPerson1() );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
-		result.setData( wrapOutMessage );
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "审核人处理申诉记录", request = WrapInAttendanceAppealInfo.class, response = WrapOutMessage.class)
+	@HttpMethodDescribe(value = "审核人处理申诉记录", request = JsonElement.class, response = WrapOutId.class)
 	@PUT
 	@Path("process/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response firstProcessAttendanceAppeal( @Context HttpServletRequest request, @PathParam("id") String id,
-			WrapInAttendanceAppealInfo wrapIn ) {
-		ActionResult<WrapOutMessage> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson( request );
+			JsonElement jsonElement ) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapDepartment department = null;
 		AttendanceAppealInfo attendanceAppealInfo = null;
 		String departmentName = null, companyName = null;
+		WrapInAttendanceAppealInfo wrapIn = null;
 		Boolean check = true;
+		
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInAttendanceAppealInfo.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, effectivePerson, request, null);
+		}
 		
 		if( check ){
 			try{
 				attendanceAppealInfo = attendanceAppealInfoServiceAdv.get( id );
 				if( attendanceAppealInfo == null ){
 					check = false;
-					result.error( new Exception( "申诉信息不存在，申诉处理不成功!" ) );
-					result.setUserMessage( "申诉信息不存在，申诉处理不成功!" );
-					logger.error("attendanceAppealInfo{'id':'" + id + "'} not exists, system can not process appeal info." );
+					Exception exception = new AttendanceAppealNotExistsException( id );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			} catch ( Exception e ) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据ID查询申诉信息对象时发生异常!" );
-				logger.error("system get appeal info with id got an exception.id:" + id, e );
+				Exception exception = new AttendanceAppealQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
 			try{
-				department = userManagerService.getDepartmentByEmployeeName( currentPerson.getName() );
+				department = userManagerService.getDepartmentByEmployeeName( effectivePerson.getName() );
 				if (department != null) {
 					departmentName = department.getName();
 					companyName = department.getCompany();
 				}else{
 					check = false;
-					result.error( new Exception( "抱歉，未能在系统中查询到您所在的部门信息，申诉信息暂时无法处理，请联系管理员。") );
-					result.setUserMessage( "抱歉，未能在系统中查询到您所在的部门信息，申诉信息暂时无法处理，请联系管理员。" );
+					Exception exception = new PersonHasNoDepartmentException( effectivePerson.getName() );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			}catch( Exception e ){
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据登录用户姓名查询用户所在的部门时发生异常!" );
-				logger.error("system get department with user name got an exception.id:" + id, e );
+				Exception exception = new QeuryDepartmentWithPersonException( e, effectivePerson.getName() );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
 			try{
 				attendanceAppealInfo = attendanceAppealInfoServiceAdv.firstProcessAttendanceAppeal(
-						id, departmentName, companyName, currentPerson.getName(), //processorName
+						id, departmentName, companyName, effectivePerson.getName(), //processorName
 						new Date(), //processTime
 						wrapIn.getOpinion1(),  //opinion
 						wrapIn.getStatus() //status审批状态:0-待处理，1-审批通过，-1-审批不能过，2-需要下一次审批
 				);
-				result.setUserMessage( "申诉信息审核处理成功!" );
+				result.setData( new WrapOutId(id) );
 			} catch ( Exception e ) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在更新申诉处理信息对象时发生异常!" );
-				logger.error("system update appeal first process info got an exception.id:" + id, e );
+				Exception exception = new AttendanceAppealProcessException( e, id );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "复核人处理申诉记录", request = WrapInAttendanceAppealInfo.class, response = WrapOutMessage.class)
+	@HttpMethodDescribe(value = "复核人处理申诉记录", request = JsonElement.class, response = WrapOutId.class)
 	@PUT
 	@Path("process2/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response secondProcessAttendanceAppeal( @Context HttpServletRequest request, @PathParam("id") String id,
-			WrapInAttendanceAppealInfo wrapIn) {
-		ActionResult<WrapOutMessage> result = new ActionResult<>();
+			JsonElement jsonElement) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		WrapDepartment department = null;
 		AttendanceAppealInfo attendanceAppealInfo = null;
 		String departmentName = null, companyName = null;
+		WrapInAttendanceAppealInfo wrapIn = null;
 		Boolean check = true;
+		
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInAttendanceAppealInfo.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
+		}
 		
 		if( check ){
 			try{
 				attendanceAppealInfo = attendanceAppealInfoServiceAdv.get( id );
 				if( attendanceAppealInfo == null ){
 					check = false;
-					result.error( new Exception( "申诉信息不存在，申诉处理不成功!" ) );
-					result.setUserMessage( "申诉信息不存在，申诉处理不成功!" );
-					logger.error("attendanceAppealInfo{'id':'" + id + "'} not exists, system can not process appeal info." );
+					Exception exception = new AttendanceAppealNotExistsException( id );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			} catch ( Exception e ) {
 				check = false;
-				result.error( e );
-				result.setUserMessage( "系统在根据ID查询申诉信息对象时发生异常!" );
-				logger.error("system get appeal info with id got an exception.id:" + id, e );
+				Exception exception = new AttendanceAppealQueryByIdException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -413,14 +445,16 @@ public class AttendanceAppealInfoAction extends StandardJaxrsAction {
 					companyName = department.getCompany();
 				}else{
 					check = false;
-					result.error( new Exception( "抱歉，未能在系统中查询到您所在的部门信息，申诉信息暂时无法处理，请联系管理员。") );
-					result.setUserMessage( "抱歉，未能在系统中查询到您所在的部门信息，申诉信息暂时无法处理，请联系管理员。" );
+					Exception exception = new PersonHasNoDepartmentException( currentPerson.getName() );
+					result.error( exception );
+					logger.error( exception, currentPerson, request, null);
 				}
 			}catch( Exception e ){
 				check = false;
 				result.error( e );
-				result.setUserMessage( "系统在根据登录用户姓名查询用户所在的部门时发生异常!" );
-				logger.error("system get department with user name got an exception.id:" + id, e );
+				Exception exception = new QeuryDepartmentWithPersonException( e, currentPerson.getName() );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -431,126 +465,156 @@ public class AttendanceAppealInfoAction extends StandardJaxrsAction {
 						wrapIn.getOpinion2(),  //opinion
 						wrapIn.getStatus() //status
 				);
-				result.setUserMessage( "申诉信息复核处理成功!" );
+				result.setData( new WrapOutId(id) );
 			} catch ( Exception e ) {
 				check = false;
 				result.error( e );
-				result.setUserMessage( "系统在更新申诉处理信息对象时发生异常!" );
-				logger.error("system update appeal first process info got an exception.id:" + id, e );
+				Exception exception = new AttendanceAppealProcessException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "列示根据过滤条件的AttendanceAppealInfo,下一页.", response = WrapOutAttendanceAppealInfo.class, request = WrapInFilterAppeal.class)
+	@HttpMethodDescribe(value = "列示根据过滤条件的AttendanceAppealInfo,下一页.", response = WrapOutAttendanceAppealInfo.class, request = JsonElement.class)
 	@PUT
 	@Path("filter/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listNextWithFilter(@Context HttpServletRequest request, @PathParam("id") String id,
-			@PathParam("count") Integer count, WrapInFilterAppeal wrapIn) {
+			@PathParam("count") Integer count, JsonElement jsonElement) {
 		ActionResult<List<WrapOutAttendanceAppealInfo>> result = new ActionResult<>();
+		EffectivePerson currentPerson = this.effectivePerson(request);
 		List<WrapOutAttendanceAppealInfo> wraps = null;
 		Long total = 0L;
 		List<AttendanceAppealInfo> detailList = null;
+		WrapInFilterAppeal wrapIn = null;
+		Boolean check = true;
 		
 		try {
-			EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
-			Business business = new Business(emc);
-
-			// 查询出ID对应的记录的sequence
-			Object sequence = null;
-			if (id == null || "(0)".equals(id) || id.isEmpty()) {
-				logger.debug("第一页查询，没有id传入");
-			} else {
-				if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
-					sequence = PropertyUtils.getProperty( emc.find(id, AttendanceAppealInfo.class, ExceptionWhen.not_found), "sequence");
-				}
-			}
-			// 从数据库中查询符合条件的一页数据对象
-			detailList = business.getAttendanceAppealInfoFactory().listIdsNextWithFilter(id, count, sequence, wrapIn);
-			// 从数据库中查询符合条件的对象总数
-			total = business.getAttendanceAppealInfoFactory().getCountWithFilter(wrapIn);
-			// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
-			wraps = wrapout_copier.copy(detailList);
-
-			// 对查询的列表进行排序
-			result.setCount(total);
-			result.setData(wraps);
-
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilterAppeal.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
+		if( check ){
+			try {
+				EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
+				Business business = new Business(emc);
+
+				// 查询出ID对应的记录的sequence
+				Object sequence = null;
+				if (id == null || "(0)".equals(id) || id.isEmpty()) {
+					logger.debug("第一页查询，没有id传入");
+				} else {
+					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+						sequence = PropertyUtils.getProperty( emc.find(id, AttendanceAppealInfo.class ), "sequence");
+					}
+				}
+				// 从数据库中查询符合条件的一页数据对象
+				detailList = business.getAttendanceAppealInfoFactory().listIdsNextWithFilter(id, count, sequence, wrapIn);
+				// 从数据库中查询符合条件的对象总数
+				total = business.getAttendanceAppealInfoFactory().getCountWithFilter(wrapIn);
+				// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
+				wraps = wrapout_copier.copy(detailList);
+
+				// 对查询的列表进行排序
+				result.setCount(total);
+				result.setData(wraps);
+
+			} catch (Throwable th) {
+				th.printStackTrace();
+				result.error(th);
+			}
+		}
+		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "列示根据过滤条件的AttendanceAppealInfo,上一页.", response = WrapOutAttendanceAppealInfo.class, request = WrapInFilterAppeal.class)
+	@HttpMethodDescribe(value = "列示根据过滤条件的AttendanceAppealInfo,上一页.", response = WrapOutAttendanceAppealInfo.class, request = JsonElement.class)
 	@PUT
 	@Path("filter/list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listPrevWithFilter(@Context HttpServletRequest request, @PathParam("id") String id,
-			@PathParam("count") Integer count, WrapInFilterAppeal wrapIn) {
+			@PathParam("count") Integer count, JsonElement jsonElement) {
 		ActionResult<List<WrapOutAttendanceAppealInfo>> result = new ActionResult<>();
+		EffectivePerson currentPerson = this.effectivePerson(request);
 		List<WrapOutAttendanceAppealInfo> wraps = null;
 		Long total = 0L;
 		List<AttendanceAppealInfo> detailList = null;
+		WrapInFilterAppeal wrapIn = null;
+		Boolean check = true;
+		
 		try {
-			EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
-			Business business = new Business(emc);
-
-			// 查询出ID对应的记录的sequence
-			Object sequence = null;
-			logger.debug("传入的ID=" + id);
-			if (id == null || "(0)".equals(id) || id.isEmpty()) {
-				logger.debug("第一页查询，没有id传入");
-			} else {
-				if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
-					sequence = PropertyUtils
-							.getProperty(emc.find(id, AttendanceAppealInfo.class, ExceptionWhen.not_found), "sequence");
-				}
-			}
-			// 从数据库中查询符合条件的一页数据对象
-			detailList = business.getAttendanceAppealInfoFactory().listIdsPrevWithFilter(id, count, sequence, wrapIn);
-			// 从数据库中查询符合条件的对象总数
-			total = business.getAttendanceAppealInfoFactory().getCountWithFilter(wrapIn);
-			// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
-			wraps = wrapout_copier.copy(detailList);
-			result.setCount(total);
-			result.setData(wraps);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilterAppeal.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( exception, currentPerson, request, null);
 		}
+		if( check ){
+			try {
+				EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
+				Business business = new Business(emc);
+
+				// 查询出ID对应的记录的sequence
+				Object sequence = null;
+
+				if (id == null || "(0)".equals(id) || id.isEmpty()) {
+					logger.debug("第一页查询，没有id传入");
+				} else {
+					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+						sequence = PropertyUtils
+								.getProperty(emc.find(id, AttendanceAppealInfo.class ), "sequence");
+					}
+				}
+				// 从数据库中查询符合条件的一页数据对象
+				detailList = business.getAttendanceAppealInfoFactory().listIdsPrevWithFilter(id, count, sequence, wrapIn);
+				// 从数据库中查询符合条件的对象总数
+				total = business.getAttendanceAppealInfoFactory().getCountWithFilter(wrapIn);
+				// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
+				wraps = wrapout_copier.copy(detailList);
+				result.setCount(total);
+				result.setData(wraps);
+			} catch (Throwable th) {
+				th.printStackTrace();
+				result.error(th);
+			}
+		}
+		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "将指定的申诉信息记录归档", response = WrapOutMessage.class)
+	@HttpMethodDescribe(value = "将指定的申诉信息记录归档", response = WrapOutId.class)
 	@GET
 	@Path("archive/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response archiveAttendanceAppeal(@Context HttpServletRequest request, @PathParam("id") String id) {
-		ActionResult<WrapOutMessage> result = new ActionResult<>();
-		
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		EffectivePerson currentPerson = this.effectivePerson(request);
 		if ( id != null && !id.isEmpty() ) { //归档指定的考勤申诉记录
 			try{
 				attendanceAppealInfoServiceAdv.archive( id );
-				result.setUserMessage( "对指定申诉信息进行归档操作成功完成！" );
+				result.setData( new WrapOutId(id) );
 			}catch( Exception e ){
 				result.error( e );
-				result.setUserMessage( "系统在根据ID对申诉信息进行归档操作时发生异常!" );
-				logger.error("system archive appeal info with id{'"+ id +"'} got an exception.id:" + id, e );
+				Exception exception = new AttendanceAppealArchiveException( e, id );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}else{ //归档所有的考勤申诉记录
 			try{
 				attendanceAppealInfoServiceAdv.archiveAll();
-				result.setUserMessage( "对所有申诉信息进行归档操作成功完成！" );
 			}catch( Exception e ){
-				result.error( e );
-				result.setUserMessage( "系统在对所有申诉信息进行归档操作时发生异常!" );
-				logger.error("system archive all appeal info got an exception.id:" + id, e );
+				Exception exception = new AttendanceAppealArchiveException( e, null );
+				result.error( exception );
+				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);

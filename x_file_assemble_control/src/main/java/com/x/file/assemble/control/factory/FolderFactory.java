@@ -12,8 +12,8 @@ import org.apache.commons.collections4.set.ListOrderedSet;
 
 import com.x.file.assemble.control.AbstractFactory;
 import com.x.file.assemble.control.Business;
-import com.x.file.core.entity.Folder;
-import com.x.file.core.entity.Folder_;
+import com.x.file.core.entity.personal.Folder;
+import com.x.file.core.entity.personal.Folder_;
 
 public class FolderFactory extends AbstractFactory {
 

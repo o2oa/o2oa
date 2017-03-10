@@ -43,7 +43,7 @@ public class Application extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.Element.Application.table;
 
 	@PrePersist
-	public void prePersist() {
+	public void prePersist() throws Exception {
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -56,7 +56,7 @@ public class Application extends SliceJpaObject {
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	public void preUpdate() throws Exception {
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -116,7 +116,7 @@ public class Application extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() {
+	private void onPersist() throws Exception {
 		this.applicationCategory = StringUtils.trim(this.applicationCategory);
 	}
 
@@ -134,7 +134,7 @@ public class Application extends SliceJpaObject {
 	@CitationNotExist(type = Application.class, fields = { "id", "name", "alias" }))
 	private String name;
 
-	@EntityFieldDescribe("代理节点别名,如果有必须唯一.")
+	@EntityFieldDescribe("应用别名,如果有必须唯一.")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = "xalias")
 	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists =
 	/* 检查不重名 */

@@ -3,7 +3,6 @@ package com.x.server.console.server.data;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.h2.tools.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,19 +19,17 @@ public class DataServerTools {
 		FileUtils.forceMkdir(dataBaseDir);
 		Server tcpServer = null;
 		Server webServer = null;
-		String password = dataServer.getPassword();
-		if (StringUtils.isEmpty(password)) {
-			password = Config.token().getPassword();
-		}
+		String password = Config.token().getPassword();
 		String[] tcps = new String[8];
 		tcps[0] = "-tcp";
 		tcps[1] = "-tcpAllowOthers";
 		tcps[2] = "-tcpPort";
 		tcps[3] = dataServer.getTcpPort().toString();
-		tcps[4] = "-tcpPassword";
-		tcps[5] = password;
-		tcps[6] = "-baseDir";
-		tcps[7] = dataBaseDir.getAbsolutePath();
+		tcps[4] = "-baseDir";
+		tcps[5] = dataBaseDir.getAbsolutePath();
+		tcps[6] = "-tcpPassword";
+		tcps[7] = password;
+
 		tcpServer = Server.createTcpServer(tcps).start();
 		Integer webPort = dataServer.getWebPort();
 		if ((null != webPort) && (webPort > 0)) {
@@ -43,8 +40,8 @@ public class DataServerTools {
 			webs[3] = webPort.toString();
 			webServer = Server.createWebServer(webs).start();
 		}
-		logger.info("data server start on port:{}, web console on port:{}.", dataServer.getTcpPort(),
-				dataServer.getWebPort());
+		System.out.println("data server start on port:" + dataServer.getTcpPort() + ", web console on port:"
+				+ dataServer.getWebPort() + ".");
 		return new DataTcpWebServer(tcpServer, webServer);
 	}
 }

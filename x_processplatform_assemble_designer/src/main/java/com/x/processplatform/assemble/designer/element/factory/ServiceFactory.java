@@ -28,4 +28,15 @@ public class ServiceFactory extends AbstractFactory {
 		cq.select(root.get(Service_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
+
+	/** 查找使用表单的service */
+	public List<String> listWithForm(String formId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Service.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Service> root = cq.from(Service.class);
+		Predicate p = cb.equal(root.get(Service_.form), formId);
+		cq.select(root.get(Service_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
 }

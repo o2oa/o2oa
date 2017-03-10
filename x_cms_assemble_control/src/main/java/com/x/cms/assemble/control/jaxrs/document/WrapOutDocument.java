@@ -13,29 +13,7 @@ public class WrapOutDocument extends Document implements Comparable<Object> {
 	private static final long serialVersionUID = -5076990764713538973L;
 	
 	public static List<String> Excludes = new ArrayList<String>();
-
-	private String catagoryName = null;
 	
-	private String catagoryAlias = null;	
-	
-	public String getCatagoryName() {
-		return catagoryName;
-	}
-	public void setCatagoryName(String catagoryName) {
-		this.catagoryName = catagoryName;
-	}
-	public String getCatagoryAlias() {
-		return catagoryAlias;
-	}
-
-
-
-	public void setCatagoryAlias(String catagoryAlias) {
-		this.catagoryAlias = catagoryAlias;
-	}
-
-
-
 	/**
 	 * 排序的实现方式
 	 */

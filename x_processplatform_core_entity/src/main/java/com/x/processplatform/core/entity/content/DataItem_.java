@@ -18,7 +18,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.processplatform.core.entity.content.DataItem.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:19:07 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:10:19 CST 2017")
 public class DataItem_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<DataItem,String> application;
     public static volatile SingularAttribute<DataItem,String> applicationAlias;
@@ -39,6 +39,7 @@ public class DataItem_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<DataItem,ItemStringValueType> itemStringValueType;
     public static volatile SingularAttribute<DataItem,ItemType> itemType;
     public static volatile SingularAttribute<DataItem,String> job;
+    public static volatile SingularAttribute<DataItem,String> lobItem;
     public static volatile SingularAttribute<DataItem,Double> numberValue;
     public static volatile SingularAttribute<DataItem,String> path0;
     public static volatile SingularAttribute<DataItem,Integer> path0Location;
@@ -63,7 +64,6 @@ public class DataItem_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<DataItem,String> serial;
     public static volatile SingularAttribute<DataItem,Date> startTime;
     public static volatile SingularAttribute<DataItem,String> startTimeMonth;
-    public static volatile SingularAttribute<DataItem,String> stringLobValue;
     public static volatile SingularAttribute<DataItem,String> stringValue;
     public static volatile SingularAttribute<DataItem,Date> timeValue;
     public static volatile SingularAttribute<DataItem,String> title;

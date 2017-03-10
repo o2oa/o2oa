@@ -2,64 +2,36 @@ package com.x.cms.assemble.control.jaxrs.appinfo;
 
 import java.util.List;
 
-import com.x.base.core.bean.NameValueCountPair;
-import com.x.base.core.gson.GsonPropertyObject;
+import com.x.base.core.entity.annotation.EntityFieldDescribe;
 import com.x.base.core.http.annotation.Wrap;
-import com.x.cms.core.entity.AppInfo;
+import com.x.cms.core.entity.CategoryInfo;
 
-@Wrap(AppInfo.class)
-public class WrapInFilter extends GsonPropertyObject {
+@Wrap( CategoryInfo.class )
+public class WrapInFilter {
+	
+	@EntityFieldDescribe( "作为过滤条件的CMS应用ID, 可多个, String数组." )
+	private List<String> appIdList;
 
-	private List<NameValueCountPair> appIdList;
+	@EntityFieldDescribe( "作为过滤条件的创建者姓名, 可多个, String数组." )
+	private List<String> creatorList;
 
-	private List<NameValueCountPair> catagoryIdList;
+	@EntityFieldDescribe( "作为过滤条件的CMS应用关键字, 通常是应用名称, String, 模糊查询." )
+	private String key;		
 
-	private List<NameValueCountPair> creatorList;
-
-	private List<NameValueCountPair> statusList;
-
-	private List<NameValueCountPair> titleList;
-
-	private String key;	
-
-	public List<NameValueCountPair> getAppIdList() {
+	public List<String> getAppIdList() {
 		return appIdList;
 	}
 
-	public void setAppIdList(List<NameValueCountPair> appIdList) {
+	public void setAppIdList(List<String> appIdList) {
 		this.appIdList = appIdList;
 	}
 
-	public List<NameValueCountPair> getCatagoryIdList() {
-		return catagoryIdList;
-	}
-
-	public void setCatagoryIdList(List<NameValueCountPair> catagoryIdList) {
-		this.catagoryIdList = catagoryIdList;
-	}
-
-	public List<NameValueCountPair> getCreatorList() {
+	public List<String> getCreatorList() {
 		return creatorList;
 	}
 
-	public void setCreatorList(List<NameValueCountPair> creatorList) {
+	public void setCreatorList(List<String> creatorList) {
 		this.creatorList = creatorList;
-	}
-
-	public List<NameValueCountPair> getStatusList() {
-		return statusList;
-	}
-
-	public void setStatusList(List<NameValueCountPair> statusList) {
-		this.statusList = statusList;
-	}
-
-	public List<NameValueCountPair> getTitleList() {
-		return titleList;
-	}
-
-	public void setTitleList(List<NameValueCountPair> titleList) {
-		this.titleList = titleList;
 	}
 
 	public String getKey() {
@@ -69,5 +41,4 @@ public class WrapInFilter extends GsonPropertyObject {
 	public void setKey(String key) {
 		this.key = key;
 	}
-
 }

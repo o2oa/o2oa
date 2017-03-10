@@ -88,6 +88,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
 	_loadHtml: function(){
 		this.container.set("html", this.html);
 		this.node = this.container.getFirst();
+        this.node.setStyle("overflow", "hidden");
         this.node.addEvent("selectstart", function(e){
             var select = "text";
             if (e.target.getStyle("-webkit-user-select")){
@@ -848,10 +849,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
 
                 _self.doRetractWork(function(){
                     _self.workAction.getJobByWork(function(workJson){
-                        _self.app.notice(MWF.xApplication.process.Xform.LP.workRetract, "success");f
+                        _self.app.notice(MWF.xApplication.process.Xform.LP.workRetract, "success");
                         _self.app.content.unmask();
                         _self.app.reload(workJson.data);
-                    }, _self.businessData.work.id)
+                    }, null, _self.businessData.work.id);
                     this.close();
                     if (_self.mask) {_self.mask.hide(); _self.mask = null;}
                 }.bind(this));
@@ -868,6 +869,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
         });
     },
     doRetractWork: function(success, failure){
+        debugger;
         if (this.businessData.control["allowRetract"]){
             this.workAction.retractWork(function(json){
                 if (success) success();
@@ -1172,8 +1174,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
             if (this.json.printForm) form = this.json.printForm;
         }
         window.open("/x_desktop/printWork.html?workid="+this.businessData.work.id+"&app="+this.businessData.work.application+"&form="+form);
+    },
+    openWindow: function(form, app){
+        var application = app || this.businessData.work.application;
+        var form = form;
+        if (!form){
+            form = this.json.id;
+            //if (this.json.printForm) form = this.json.printForm;
+        }
+        window.open("/x_desktop/printWork.html?workid="+this.businessData.work.id+"&app="+this.businessData.work.application+"&form="+form);
     }
-
-
 	
 });

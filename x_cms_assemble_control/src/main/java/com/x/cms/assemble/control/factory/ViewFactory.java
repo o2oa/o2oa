@@ -5,13 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.utils.annotation.MethodDescribe;
 import com.x.cms.assemble.control.AbstractFactory;
@@ -19,9 +17,10 @@ import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.Document_;
 import com.x.cms.core.entity.content.DataItem;
+import com.x.cms.core.entity.content.DataItem_;
 import com.x.cms.core.entity.element.View;
-import com.x.cms.core.entity.element.ViewCatagory;
-import com.x.cms.core.entity.element.ViewCatagory_;
+import com.x.cms.core.entity.element.ViewCategory;
+import com.x.cms.core.entity.element.ViewCategory_;
 import com.x.cms.core.entity.element.View_;
 
 /**
@@ -84,16 +83,16 @@ public class ViewFactory extends AbstractFactory {
 	 * @throws Exception 
 	 */
 	@MethodDescribe("列示指定分类的所有视图配置信息ID列表")
-	public List<String> listByCatagoryId( String id ) throws Exception {		
+	public List<String> listByCategoryId( String id ) throws Exception {		
 		if( id == null || id.isEmpty() ){
-			throw new Exception("内容管理listByCatagoryId方法不接受id为空的查询操作！");
+			throw new Exception("内容管理listByCategoryId方法不接受id为空的查询操作！");
 		}
-		EntityManager em = this.entityManagerContainer().get( ViewCatagory.class );
+		EntityManager em = this.entityManagerContainer().get( ViewCategory.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<ViewCatagory> root = cq.from( ViewCatagory.class );
-		cq.select(root.get(ViewCatagory_.viewId));
-		Predicate p = cb.equal(root.get( ViewCatagory_.catagoryId ), id);
+		Root<ViewCategory> root = cq.from( ViewCategory.class );
+		cq.select(root.get(ViewCategory_.viewId));
+		Predicate p = cb.equal(root.get( ViewCategory_.categoryId ), id);
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 	
@@ -137,50 +136,42 @@ public class ViewFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 
-
-	public List<Document> nextPageDocuemntView( String id, Integer count, Map<String, Object> condition ) throws Exception {
-		String orderField = condition.get("orderField") == null ? null: condition.get("orderField").toString();
-		List<Document> docs = null;		
-		//有一部分信息是文档自身的信息，直接去文档信息里排序获取
-		if( "title".equalsIgnoreCase(orderField) 
-				|| "catagoryName".equalsIgnoreCase(orderField) 
-				||"createTime".equalsIgnoreCase(orderField) 
-				||"updateTime".equalsIgnoreCase(orderField) 
-				||"creatorPerson".equalsIgnoreCase(orderField) 
-				|| "creatorDepartment".equalsIgnoreCase(orderField) 
-				|| "creatorCompany".equalsIgnoreCase(orderField)){
-			//按文档属性排序
-			docs = nextPageViewFromDocProperty( id, count, condition );
-		}else{
-			//按表单属性排序 
-			docs = nextPageViewFromDataitem( id, count, condition );
-		}				
-		return docs;
+	public DataItem getDataItemSequenceFromDocInfo( String docId, String path0 ) throws Exception {
+		List<DataItem> dataitemList = null;
+		EntityManager em = this.entityManagerContainer().get( DataItem.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<DataItem> cq = cb.createQuery(DataItem.class);
+		Root<DataItem> root_doc = cq.from( DataItem.class );
+		
+		Predicate p = cb.equal( root_doc.get( DataItem_.docId ), docId );
+		p = cb.and( p , cb.equal( root_doc.get( DataItem_.path0 ), path0 ) );
+		dataitemList = em.createQuery( cq.where(p)).getResultList();
+		if( dataitemList != null && !dataitemList.isEmpty() ){
+			return dataitemList.get( 0 );
+		}
+		return null;
 	}
 	
-	/**
-	 * 从文档的实际属性信息里选择属性进行排序分页
-	 * @param pagination
-	 * @param condition
-	 * @return
-	 * @throws Exception
-	 */
-	public List<Document> nextPageViewFromDataitem( String id, Integer count, Map<String, Object> condition ) throws Exception {
-		List<Document> documentList = new ArrayList<Document>();
-		Document document = null;
-		String viewId = condition.get("viewId") == null ? null: condition.get("viewId").toString();
-		String catagoryId = condition.get("catagoryId") == null ? null: condition.get("catagoryId").toString();
+	public List<String> getDocumentIdsWithDocStatus( String categoryId, String docStatus ) throws Exception {
+		//查询出该分类中所有的已经发布的文档ID
+		EntityManager em = this.entityManagerContainer().get( Document.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Document> root_doc = cq.from( Document.class );
+		cq.select(root_doc.get(Document_.id));
+		Predicate p = cb.equal(root_doc.get( Document_.categoryId ), categoryId );
+		if( docStatus != null && docStatus.length() > 0 ){
+			p = cb.and( p , cb.equal( root_doc.get( Document_.docStatus ), docStatus ) );
+		}
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+
+	public List<Document> nextPageDocuemntView( String id, Integer count, List<String> viewAbleDocIds, Map<String, Object> condition ) throws Exception {
 		String orderField = condition.get("orderField") == null ? null: condition.get("orderField").toString();
 		String orderType = condition.get("orderType") == null ? null: condition.get("orderType").toString();
 		String orderFieldType = condition.get("orderFieldType") == null ? null: condition.get("orderFieldType").toString();
-		String searchDocStatus = condition.get("searchDocStatus") == null ? null: condition.get("searchDocStatus").toString();
+		List<Document> docs = null;
 		
-		if( viewId == null ){
-			throw new Exception("[pagenationDocsFromDataitem]传入的参数，视图Id为空, 无法继续进行查询操作！");
-		}
-		if( catagoryId == null ){
-			throw new Exception("[pagenationDocsFromDataitem]传入的参数，分类Id为空, 无法继续进行查询操作！");
-		}
 		if( orderField == null ){
 			orderField = "createTime"; // 默认按创建时间排序
 		}
@@ -191,323 +182,148 @@ public class ViewFactory extends AbstractFactory {
 			orderFieldType = "string"; //列数据类型(string|datetime)，涉及到需要查询的值存储在哪一列里xstringvalue | xtimevalue
 		}
 		
-		View view = get( viewId );		
-		//1、查询视图信息
-		if( view == null ){
-			throw new Exception("[pagenationDocsFromDataitem]视图 view{'id':'"+viewId+"'}不存在, 无法继续进行查询操作！");
-		}
-		
-		//查询出该分类中所有的已经发布的文档ID
-		List<String> allDocIdInStatus = getDocumentIdsWithDocStatus( catagoryId, searchDocStatus );
-		
-		if( allDocIdInStatus != null && allDocIdInStatus.size() > 0 ){
-			EntityManager em = this.entityManagerContainer().get( DataItem.class );
-			List<Object> vs = new ArrayList<>();
-			StringBuffer sql_stringBuffer = new StringBuffer();
-			Integer index = 1;
-			String orderTypeEx = (StringUtils.equalsIgnoreCase(orderType, "desc") ? "<" : ">");
-			
-			sql_stringBuffer.append( "SELECT distinct o FROM "+DataItem.class.getCanonicalName()+" o where 1 = 1" );
-			sql_stringBuffer.append( " and o.catagoryId = " +  (" ?" + (index)) );
-			vs.add( catagoryId );
-			index++;
-			
-			sql_stringBuffer.append( " and o.path0 = " +  (" ?" + (index)) );
-			vs.add( orderField );
-			index++;
-			
-			sql_stringBuffer.append( " and o.docId in "+  (" ?" + (index))  );
-			vs.add( allDocIdInStatus );
-			index++;
-			
-			if( id == null || "(0)".equals(id) || "".equals(id)){
-				//说明是取第一页
-			}else{
-				//根据ID查询文档的信息
-				document =  this.entityManagerContainer().find( id, Document.class );
-				DataItem dataItem  = null;
-				if( document != null ){
-					//进一步查询文档相应的属性在DataItem里的具体信息
-					dataItem = getDataItemSequenceFromDocInfo( document.getId(), orderField );
-				}
-				if( dataItem != null ){
-					//要根据上一页最后一条的ID来取下一页
-					if( "datetime".equalsIgnoreCase(orderFieldType) && dataItem.getDateTimeValue() != null ){
-						sql_stringBuffer.append( " and ( o.dateTimeValue "+ orderTypeEx + (" ?" + (index)) );
-						vs.add( dataItem.getTimeValue() );
-						index++;
-					}else if( dataItem.getStringValue() != null ){
-						sql_stringBuffer.append( " and ( o.stringValue "+ orderTypeEx  + (" ?" + (index)) );
-						vs.add( dataItem.getStringValue() );
-						index++;
-					}else if( dataItem.getStringValue() != null ){
-						sql_stringBuffer.append( " and ( o.stringValue "+ orderTypeEx  + (" ?" + (index)) );
-						vs.add( dataItem.getStringValue() );
-						index++;
-					}
-					
-					if( "datetime".equalsIgnoreCase(orderFieldType) && dataItem.getDateTimeValue() != null ){
-						sql_stringBuffer.append( " or ( o.dateTimeValue =" + (" ?" + (index)) );
-						vs.add( dataItem.getTimeValue() );
-						index++;
-					}else if( dataItem.getStringValue() != null ){
-						sql_stringBuffer.append( " or ( o.stringValue =" + (" ?" + (index)) );
-						vs.add( dataItem.getStringValue() );
-						index++;
-					}
-					
-					if( "datetime".equalsIgnoreCase(orderFieldType) && dataItem.getDateTimeValue() != null ){
-						sql_stringBuffer.append( " and o.sequence " + orderTypeEx + (" ?" + (index)) + ") ) ");
-						vs.add( dataItem.getSequence() );
-						index++;
-					}else if( dataItem.getStringValue() != null ){
-						sql_stringBuffer.append( " and o.sequence " + orderTypeEx + (" ?" + (index)) + ") ) ");
-						vs.add( dataItem.getSequence() );
-						index++;
-					}
-				}
-			}			
-			
-			if( "datetime".equalsIgnoreCase(orderFieldType)){
-				if( "asc".equalsIgnoreCase( orderType ) ){
-					sql_stringBuffer.append( " order by o.dateTimeValue");
-				}else{
-					sql_stringBuffer.append( " order by o.dateTimeValue desc");
-				}
-			}else{
-				if( "asc".equalsIgnoreCase( orderType ) ){
-					sql_stringBuffer.append( " order by o.stringValue");
-				}else{
-					sql_stringBuffer.append( " order by o.stringValue desc");
-				}
-			}
-			
-			List<DataItem> dataItemList = null;
-			
-			Query query = em.createQuery( sql_stringBuffer.toString(), DataItem.class );
-			//为查询设置所有的参数值
-			for (int i = 0; i < vs.size(); i++) {
-				query.setParameter(i + 1, vs.get(i));
-			}
-			dataItemList = query.setMaxResults( count ).getResultList();
-
-			if( dataItemList != null && dataItemList.size() > 0 ){
-				//根据每个DataItem的DocId查询所有需要展示 的文档对象信息，放到List里进行返回
-				for( DataItem dataItem : dataItemList ){
-					document = this.entityManagerContainer().find( dataItem.getDocId(), Document.class );
-					if( document != null ){
-						documentList.add(document);
-					}
-				}
-			}
-		}
-		
-		return documentList;
+		//有一部分信息是文档自身的信息，直接去文档信息里排序获取
+		if( "title".equals(orderField) || "categoryName".equals(orderField) 
+		  ||"createTime".equals(orderField) ||"updateTime".equals(orderField) 
+		  ||"creatorPerson".equals(orderField) || "creatorDepartment".equals(orderField) 
+		  || "creatorCompany".equals(orderField)){
+			//按文档属性排序
+			docs = nextPageViewFromDocProperty( id, count, viewAbleDocIds, orderField, orderType );
+		}else{
+			//按表单属性属性排序 
+			docs = nextPageViewFromDataitem( id, count, viewAbleDocIds, orderField, orderType, orderFieldType  );
+		}				
+		return docs;
 	}
-	
-	public DataItem getDataItemSequenceFromDocInfo( String docId, String path0 ) throws Exception {
-		EntityManager em = this.entityManagerContainer().get( DataItem.class );
-		List<Object> vs = new ArrayList<>();
-		List<DataItem> dataitemList = null;
-		StringBuffer sql_stringBuffer = new StringBuffer();
-		Integer index = 1;
-		
-		sql_stringBuffer.append( "SELECT o FROM "+DataItem.class.getCanonicalName()+" o where 1=1" );
-		sql_stringBuffer.append( " and o.docId = " +  (" ?" + (index)) );
-		vs.add( docId );
-		index++;
-		
-		sql_stringBuffer.append( " and o.path0 = " +  (" ?" + (index)) );
-		vs.add( path0 );
-		index++;
-		
-		Query query = em.createQuery( sql_stringBuffer.toString(), Document.class );
-		//为查询设置所有的参数值
-		for (int i = 0; i < vs.size(); i++) {
-			query.setParameter(i + 1, vs.get(i));
-		}
-		dataitemList = query.setMaxResults( 1 ).getResultList();
-		if( dataitemList != null && dataitemList.size() > 0 ){
-			return dataitemList.get( 0 );
-		}
-		return null;
-	}
-	
-	public List<String> getDocumentIdsWithDocStatus( String catagoryId, String docStatus ) throws Exception {
-		//查询出该分类中所有的已经发布的文档ID
-		EntityManager em = this.entityManagerContainer().get( Document.class );
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Document> root_doc = cq.from( Document.class );
-		cq.select(root_doc.get(Document_.id));
-		Predicate p = cb.equal(root_doc.get( Document_.catagoryId ), catagoryId );
-		if( docStatus != null && docStatus.length() > 0 ){
-			p = cb.and( p , cb.equal( root_doc.get( Document_.docStatus ), docStatus ) );
-		}
-		return em.createQuery(cq.where(p)).getResultList();
-	}
-	
 	
 	/**
-	 * 根据文档自身的属性进行排序和分页，文档自身属性：
-	 *  title
-		catagoryName
-		createTime
-		updateTime
-		creatorPerson
-		creatorDepartment
-		creatorCompany
+	 * 从文档的实际属性信息里选择属性进行排序分页
+	 * @param viewAbleDocIds 
 	 * @param pagination
 	 * @param condition
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Document> nextPageViewFromDocProperty( String id, Integer count,  Map<String, Object> condition ) throws Exception {
-		String viewId = condition.get("viewId") == null ? null: condition.get("viewId").toString();
-		String catagoryId = condition.get("catagoryId") == null ? null: condition.get("catagoryId").toString();
-		String orderField = condition.get("orderField") == null ? null: condition.get("orderField").toString();
-		String orderType = condition.get("orderType") == null ? null: condition.get("orderType").toString();
-		String searchDocStatus = condition.get("searchDocStatus") == null ? null: condition.get("searchDocStatus").toString();
-
-		if( viewId == null ){
-			throw new Exception("传入的参数，视图Id为空, 无法继续进行查询操作！");
-		}
-		if( catagoryId == null ){
-			throw new Exception("传入的参数，分类Id为空, 无法继续进行查询操作！");
-		}
-		if( orderField == null ){
-			orderField = "createTime"; // 默认按创建时间排序
-		}
-		if( orderType == null ){
-			orderType = "desc"; //默认倒序
-		}
-
-		View view = get( viewId );
-		//1、查询视图信息
-		if( view == null ){
-			throw new Exception("[pagenationDocsFromDocProperty]视图 view{'id':'"+viewId+"'}不存在, 无法继续进行查询操作！");
-		}
+	public List<Document> nextPageViewFromDataitem( String id, Integer count, List<String> viewAbleDocIds, 
+			String orderField, String orderType, String orderFieldType ) throws Exception {
+		List<Document> documentList = new ArrayList<Document>();
+		List<DataItem> dataItemList = null;
+		Document document = null;
+		DataItem dataItem = null;
+		EntityManager em = this.entityManagerContainer().get( DataItem.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<DataItem> cq = cb.createQuery(DataItem.class);
+		Root<DataItem> root_doc = cq.from( DataItem.class );
 		
-		//检查传入的文档的ID是否合法，并且查找相应的属性值
-		Document document = this.entityManagerContainer().find( id, Document.class );
-				
-		EntityManager em = this.entityManagerContainer().get( Document.class );
-		List<Object> vs = new ArrayList<>();
-		StringBuffer sql_stringBuffer = new StringBuffer();
-		Integer index = 1;
-		String orderTypeEx = (StringUtils.equalsIgnoreCase(orderType, "desc") ? "<" : ">");
+		Predicate orderFieldWhere = null;
+		Predicate sequenceWhere = null;
 		
-		sql_stringBuffer.append( "SELECT o FROM "+Document.class.getCanonicalName()+" o where 1=1" );
-		
-		if( searchDocStatus != null && searchDocStatus.length() > 0 ){
-			sql_stringBuffer.append( " and o.docStatus = " + (" ?" + (index)) );
-			vs.add( searchDocStatus );
-			index++;
-		}
-		
-		sql_stringBuffer.append( " and o.catagoryId = " + (" ?" + (index)) );
-		vs.add( catagoryId );
-		index++;
-		
-		if( id == null || "(0)".equals(id) || "".equals(id)){
-			//说明是取第一页
-		}else{
+		if( id != null && !"(0)".equals(id) && !id.isEmpty() ){
+			document = this.entityManagerContainer().find( id, Document.class );
 			if( document != null ){
-				Object orderFieldValue = null;
-				if( "title".equalsIgnoreCase(orderField)){
-					orderFieldValue = document.getTitle();
-				}else if( "id".equalsIgnoreCase(orderField)){
-					orderFieldValue = document.getId();
-				}else if("catagoryName".equalsIgnoreCase(orderField)){
-					orderFieldValue = document.getCatagoryId();
-				}else if("createTime".equalsIgnoreCase(orderField)){
-					orderFieldValue = document.getCreateTime();
-				}else if("updateTime".equalsIgnoreCase(orderField)){
-					orderFieldValue = document.getUpdateTime();
-				}else if("creatorPerson".equalsIgnoreCase(orderField)){
-					orderFieldValue = document.getCreatorPerson();
-				}else if("creatorDepartment".equalsIgnoreCase(orderField)){
-					orderFieldValue = document.getCreatorDepartment();
-				}else if("creatorCompany".equalsIgnoreCase(orderField)){
-					orderFieldValue = document.getCreatorCompany();
+				dataItem = getDataItemSequenceFromDocInfo( document.getId(), orderField );
+				if( dataItem != null ){
+					//排序值大于或者小于当前文档的值 ，或者与当前文档值相等但是序列号大于或者小于当前文档的序列号
+					if( "datetime".equalsIgnoreCase(orderFieldType) && dataItem.getDateTimeValue() != null ){
+						if( "desc".equalsIgnoreCase( orderType )){
+							orderFieldWhere = cb.lessThan( root_doc.get( DataItem_.dateTimeValue ), dataItem.getTimeValue() );
+						}else if("asc".equalsIgnoreCase( orderType )){
+							orderFieldWhere = cb.greaterThan( root_doc.get( DataItem_.dateTimeValue ), dataItem.getTimeValue() );
+						}
+					}else if( dataItem.getStringValue() != null ){
+						if( "desc".equalsIgnoreCase( orderType )){
+							orderFieldWhere = cb.lessThan( root_doc.get( DataItem_.stringValue ), dataItem.getStringValue() );
+						}else if("asc".equalsIgnoreCase( orderType )){
+							orderFieldWhere = cb.greaterThan( root_doc.get( DataItem_.stringValue ), dataItem.getStringValue() );
+						}
+					}
+					
+					if( "datetime".equalsIgnoreCase(orderFieldType) && dataItem.getDateTimeValue() != null ){
+						sequenceWhere = cb.equal( root_doc.get( DataItem_.dateTimeValue ), dataItem.getTimeValue() );
+						sequenceWhere = cb.and( sequenceWhere, cb.lessThan( root_doc.get( DataItem_.sequence ), dataItem.getSequence()) );
+					}else if( dataItem.getStringValue() != null ){
+						sequenceWhere = cb.equal( root_doc.get( DataItem_.dateTimeValue ), dataItem.getTimeValue() );
+						sequenceWhere = cb.and( sequenceWhere, cb.greaterThan( root_doc.get( DataItem_.sequence ), dataItem.getSequence()) );
+					}
+					orderFieldWhere = cb.or( orderFieldWhere, sequenceWhere );
+				}
+			}
+		}
+		
+		Predicate p = root_doc.get( DataItem_.docId ).in( viewAbleDocIds );
+		p = cb.and( p, cb.equal( root_doc.get( DataItem_.path0 ), orderField));
+		if( orderFieldWhere != null ){
+			p = cb.and( p, orderFieldWhere );
+		}
+		if( "datetime".equalsIgnoreCase(orderFieldType)){
+			if( "asc".equalsIgnoreCase( orderType ) ){
+				cq.orderBy( cb.asc( root_doc.get( DataItem_.dateTimeValue ) ));	
+			}else{
+				cq.orderBy( cb.desc( root_doc.get( DataItem_.dateTimeValue ) ));	
+			}
+		}else{
+			if( "asc".equalsIgnoreCase( orderType ) ){
+				cq.orderBy( cb.asc( root_doc.get( DataItem_.stringValue ) ));	
+			}else{
+				cq.orderBy( cb.desc( root_doc.get( DataItem_.stringValue ) ));	
+			}
+		}
+		dataItemList = em.createQuery( cq.where(p) ).setMaxResults(count).getResultList();
+		
+		if( dataItemList != null && !dataItemList.isEmpty() ){
+			//根据每个DataItem的DocId查询所有需要展示 的文档对象信息，放到List里进行返回
+			for( DataItem tmp_dataItem : dataItemList ){
+				document = this.entityManagerContainer().find( tmp_dataItem.getDocId(), Document.class );
+				if( document != null ){
+					documentList.add(document);
+				}
+			}
+		}
+		return documentList;
+	}
+	
+	/**
+	 * 根据文档自身的属性进行排序和分页，文档自身属性：
+	 * **/
+	public List<Document> nextPageViewFromDocProperty( String id, Integer count,  List<String> viewAbleDocIds,  String orderField, String orderType	) throws Exception {
+		Document document = null;
+		EntityManager em = this.entityManagerContainer().get( Document.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Document> cq = cb.createQuery(Document.class);
+		Root<Document> root_doc = cq.from( Document.class );
+		Predicate orderFieldWhere = null;
+		Predicate sequenceWhere = null;
+		
+		if( id != null && !"(0)".equals(id) && !id.isEmpty() ){
+			document = this.entityManagerContainer().find( id, Document.class );
+			if( document != null ){
+				//排序值大于或者小于当前文档的值 ，或者与当前文档值相等但是序列号大于或者小于当前文档的序列号
+				orderFieldWhere = getOrderFieldValueFromDocument(cb, root_doc, orderType, document, orderField );
+				
+				sequenceWhere = getOrderFieldValueFromDocument(cb, root_doc, "equal", document, orderField );
+				if( "desc".equalsIgnoreCase( orderType )){
+					sequenceWhere = cb.and( sequenceWhere, cb.lessThan( root_doc.get(Document_.sequence), document.getSequence() ));
+				}else if( "asc".equalsIgnoreCase( orderType ) ){
+					sequenceWhere = cb.and( sequenceWhere, cb.greaterThan( root_doc.get(Document_.sequence), document.getSequence() ));
 				}
 				
-				//要根据上一页最后一条的ID来取下一页
-				sql_stringBuffer.append( " and ( o."+ orderField + orderTypeEx + (" ?" + (index)) );
-				vs.add( orderFieldValue );
-				index++;
-				
-				sql_stringBuffer.append( " or ( o."+ orderField + " = " + (" ?" + (index))  );
-				vs.add( orderFieldValue );
-				index++;
-				
-				sql_stringBuffer.append( " and o.sequence " + orderTypeEx + (" ?" + (index)) + ") ) ");
-				vs.add( document.getSequence() );
-				index++;
+				orderFieldWhere = cb.or( orderFieldWhere, sequenceWhere );
 			}
 		}
+		Predicate p = root_doc.get( Document_.id ).in( viewAbleDocIds );
+		if( orderFieldWhere != null ){
+			p = cb.and( p, orderFieldWhere );
+		}
+		cq.orderBy( getOrderExpression(cb, root_doc, orderType, document, orderField ));
 		
-		if( "title".equalsIgnoreCase(orderField)){
-			if( "asc".equalsIgnoreCase( orderType ) ){
-				sql_stringBuffer.append( " order by o.title ");
-			}else{
-				sql_stringBuffer.append( " order by o.title desc");
-			}
-		}else if( "id".equalsIgnoreCase(orderField)){
-			if( "asc".equalsIgnoreCase( orderType ) ){
-				sql_stringBuffer.append( " order by o.id");
-			}else{
-				sql_stringBuffer.append( " order by o.id desc");
-			}
-		}else if("catagoryName".equalsIgnoreCase(orderField)){
-			if( "asc".equalsIgnoreCase( orderType ) ){
-				sql_stringBuffer.append( " order by o.catagoryName");
-			}else{
-				sql_stringBuffer.append( " order by o.catagoryName desc");
-			}
-		}else if("createTime".equalsIgnoreCase(orderField)){
-			if( "asc".equalsIgnoreCase( orderType ) ){
-				sql_stringBuffer.append( " order by o.createTime");
-			}else{
-				sql_stringBuffer.append( " order by o.createTime desc");
-			}
-		}else if("updateTime".equalsIgnoreCase(orderField)){
-			if( "asc".equalsIgnoreCase( orderType ) ){
-				sql_stringBuffer.append( " order by o.updateTime");
-			}else{
-				sql_stringBuffer.append( " order by o.updateTime desc");
-			}
-		}else if("creatorPerson".equalsIgnoreCase(orderField)){
-			if( "asc".equalsIgnoreCase( orderType ) ){
-				sql_stringBuffer.append( " order by o.creatorPerson");
-			}else{
-				sql_stringBuffer.append( " order by o.creatorPerson desc");
-			}
-		}else if("creatorDepartment".equalsIgnoreCase(orderField)){
-			if( "asc".equalsIgnoreCase( orderType ) ){
-				sql_stringBuffer.append( " order by o.creatorDepartment");
-			}else{
-				sql_stringBuffer.append( " order by o.creatorDepartment desc");
-			}
-		}else if("creatorCompany".equalsIgnoreCase(orderField)){
-			if( "asc".equalsIgnoreCase( orderType ) ){
-				sql_stringBuffer.append( " order by o.creatorCompany");
-			}else{
-				sql_stringBuffer.append( " order by o.creatorCompany desc");
-			}
-		}
-		Query query = em.createQuery( sql_stringBuffer.toString(), Document.class );
-		//为查询设置所有的参数值
-		for (int i = 0; i < vs.size(); i++) {
-			query.setParameter(i + 1, vs.get(i));
-		}
-		return query.setMaxResults( count ).getResultList();
+		System.out.println( "=============SQL:" + em.createQuery(cq.where(p)).setMaxResults(count).toString() );
+		return em.createQuery(cq.where(p)).setMaxResults(count).getResultList();
 	}
 	
 	public Long getDocIdsCount( Map<String, Object> condition ) throws Exception {
-		String catagoryId = condition.get("catagoryId") == null ? null: condition.get("catagoryId").toString();
+		String categoryId = condition.get("categoryId") == null ? null: condition.get("categoryId").toString();
 		String searchDocStatus = condition.get("searchDocStatus") == null ? null: condition.get("searchDocStatus").toString();
-		if( catagoryId == null ){
+		if( categoryId == null ){
 			throw new Exception("[getDocIdsCount]传入的参数，分类Id为空, 无法继续进行查询操作！");
 		}		
 		EntityManager em = this.entityManagerContainer().get( Document.class );
@@ -515,10 +331,132 @@ public class ViewFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<Document> root = cq.from( Document.class );
 		cq.select( cb.count(root));
-		Predicate p = cb.equal(root.get( Document_.catagoryId ), catagoryId );
+		Predicate p = cb.equal(root.get( Document_.categoryId ), categoryId );
 		if( searchDocStatus != null && searchDocStatus.length() > 0 ){
 			p = cb.and( p, cb.equal( root.get( Document_.docStatus ), searchDocStatus));
 		}
 		return em.createQuery(cq).getSingleResult().longValue();
+	}
+	
+	public Order getOrderExpression( CriteriaBuilder cb, Root<Document> root_doc, String order, Document document, String orderFieldName ){
+		if( "title".equalsIgnoreCase( orderFieldName)){
+			if( "asc".equalsIgnoreCase( order ) ){
+				return cb.asc( root_doc.get( Document_.title ) );
+			}else{
+				return cb.desc( root_doc.get( Document_.title ) );
+			}
+		}else if( "id".equalsIgnoreCase(orderFieldName)){
+			if( "asc".equalsIgnoreCase( order ) ){
+				return cb.asc( root_doc.get( Document_.id ) );
+			}else{
+				return cb.desc( root_doc.get( Document_.id ) );
+			}
+		}else if("categoryName".equalsIgnoreCase(orderFieldName)){
+			if( "asc".equalsIgnoreCase( order ) ){
+				return cb.asc( root_doc.get( Document_.categoryName ) );
+			}else{
+				return cb.desc( root_doc.get( Document_.categoryName ) );
+			}
+		}else if("createTime".equalsIgnoreCase(orderFieldName)){
+			if( "asc".equalsIgnoreCase( order ) ){
+				return cb.asc( root_doc.get( Document_.createTime ) );
+			}else{
+				return cb.desc( root_doc.get( Document_.createTime ) );
+			}
+		}else if("updateTime".equalsIgnoreCase(orderFieldName)){
+			if( "asc".equalsIgnoreCase( order ) ){
+				return cb.asc( root_doc.get( Document_.updateTime ) );
+			}else{
+				return cb.desc( root_doc.get( Document_.updateTime ) );
+			}
+		}else if("creatorPerson".equalsIgnoreCase(orderFieldName)){
+			if( "asc".equalsIgnoreCase( order ) ){
+				return cb.asc( root_doc.get( Document_.creatorPerson ) );
+			}else{
+				return cb.desc( root_doc.get( Document_.creatorPerson ) );
+			}
+		}else if("creatorDepartment".equalsIgnoreCase(orderFieldName)){
+			if( "asc".equalsIgnoreCase( order ) ){
+				return cb.asc( root_doc.get( Document_.creatorDepartment ) );
+			}else{
+				return cb.desc( root_doc.get( Document_.creatorDepartment ) );
+			}
+		}else if("creatorCompany".equalsIgnoreCase(orderFieldName)){
+			if( "asc".equalsIgnoreCase( order ) ){
+				return cb.asc( root_doc.get( Document_.creatorCompany ) );
+			}else{
+				return cb.desc( root_doc.get( Document_.creatorCompany ) );
+			}
+		}
+		return null;
+	}
+	
+	public Predicate getOrderFieldValueFromDocument( CriteriaBuilder cb, Root<Document> root_doc, String order, Document document, String orderFieldName ){
+		if( "title".equalsIgnoreCase( orderFieldName )){
+			if( "desc".equalsIgnoreCase( order )){
+				return cb.lessThan( root_doc.get(Document_.title), document.getTitle() );
+			}else if( "asc".equalsIgnoreCase( order ) ){
+				return cb.greaterThan( root_doc.get(Document_.title), document.getTitle() );
+			}else if( "equal".equalsIgnoreCase( order ) ){
+				return cb.equal( root_doc.get(Document_.title), document.getTitle() );
+			}
+		}else if( "id".equalsIgnoreCase( orderFieldName )){
+			if( "desc".equalsIgnoreCase( order )){
+				return cb.lessThan( root_doc.get(Document_.id), document.getId() );
+			}else if( "asc".equalsIgnoreCase( order ) ){
+				return cb.greaterThan( root_doc.get(Document_.id), document.getId() );
+			}else if( "equal".equalsIgnoreCase( order ) ){
+				return cb.equal( root_doc.get(Document_.id), document.getId() );
+			}
+		}else if("categoryName".equalsIgnoreCase( orderFieldName )){
+			if( "desc".equalsIgnoreCase( order )){
+				return cb.lessThan( root_doc.get(Document_.categoryName), document.getCategoryName() );
+			}else if( "asc".equalsIgnoreCase( order ) ){
+				return cb.greaterThan( root_doc.get(Document_.categoryName), document.getCategoryName() );
+			}else if( "equal".equalsIgnoreCase( order ) ){
+				return cb.equal( root_doc.get(Document_.categoryName), document.getCategoryName() );
+			}
+		}else if("createTime".equalsIgnoreCase( orderFieldName )){
+			if( "desc".equalsIgnoreCase( order )){
+				return cb.lessThan( root_doc.get(Document_.createTime), document.getCreateTime() );
+			}else if( "asc".equalsIgnoreCase( order ) ){
+				return cb.greaterThan( root_doc.get(Document_.createTime), document.getCreateTime() );
+			}else if( "equal".equalsIgnoreCase( order ) ){
+				return cb.equal( root_doc.get(Document_.createTime), document.getCreateTime() );
+			}
+		}else if("updateTime".equalsIgnoreCase( orderFieldName )){
+			if( "desc".equalsIgnoreCase( order )){
+				return cb.lessThan( root_doc.get(Document_.updateTime), document.getUpdateTime() );
+			}else if( "asc".equalsIgnoreCase( order ) ){
+				return cb.greaterThan( root_doc.get(Document_.updateTime), document.getUpdateTime() );
+			}else if( "equal".equalsIgnoreCase( order ) ){
+				return cb.equal( root_doc.get(Document_.updateTime), document.getUpdateTime() );
+			}
+		}else if("creatorPerson".equalsIgnoreCase( orderFieldName )){
+			if( "desc".equalsIgnoreCase( order )){
+				return cb.lessThan( root_doc.get(Document_.creatorPerson), document.getCreatorPerson() );
+			}else if( "asc".equalsIgnoreCase( order ) ){
+				return cb.greaterThan( root_doc.get(Document_.creatorPerson), document.getCreatorPerson() );
+			}else if( "equal".equalsIgnoreCase( order ) ){
+				return cb.equal( root_doc.get(Document_.creatorPerson), document.getCreatorPerson() );
+			}
+		}else if("creatorDepartment".equalsIgnoreCase( orderFieldName )){
+			if( "desc".equalsIgnoreCase( order )){
+				return cb.lessThan( root_doc.get(Document_.creatorDepartment), document.getCreatorDepartment() );
+			}else if( "asc".equalsIgnoreCase( order ) ){
+				return cb.greaterThan( root_doc.get(Document_.creatorDepartment), document.getCreatorDepartment() );
+			}else if( "equal".equalsIgnoreCase( order ) ){
+				return cb.equal( root_doc.get(Document_.creatorDepartment), document.getCreatorDepartment() );
+			}
+		}else if("creatorCompany".equalsIgnoreCase( orderFieldName )){
+			if( "desc".equalsIgnoreCase( order )){
+				return cb.lessThan( root_doc.get(Document_.creatorCompany), document.getCreatorCompany() );
+			}else if( "asc".equalsIgnoreCase( order ) ){
+				return cb.greaterThan( root_doc.get(Document_.creatorCompany), document.getCreatorCompany() );
+			}else if( "equal".equalsIgnoreCase( order ) ){
+				return cb.equal( root_doc.get(Document_.creatorCompany), document.getCreatorCompany() );
+			}
+		}
+		return null;
 	}
 }

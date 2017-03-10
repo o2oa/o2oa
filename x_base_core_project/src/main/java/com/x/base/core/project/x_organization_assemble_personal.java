@@ -19,6 +19,7 @@ public class x_organization_assemble_personal extends Assemble {
 		containerEntities.add("com.x.organization.core.entity.Person");
 		dependents.add(x_base_core_project.class);
 		dependents.add(x_organization_core_entity.class);
+		dependents.add(x_instrument_core_express.class);
 	}
 
 	protected void custom(File lib, String xLib) throws Exception {

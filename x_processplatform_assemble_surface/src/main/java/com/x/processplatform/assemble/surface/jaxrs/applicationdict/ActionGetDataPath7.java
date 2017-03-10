@@ -5,7 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Application;
@@ -18,15 +17,17 @@ class ActionGetDataPath7 extends ActionBase {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<JsonElement> result = new ActionResult<>();
 			Business business = new Business(emc);
-			ApplicationDict applicationDict = business.applicationDict().pick(applicationDictFlag,
-					ExceptionWhen.not_found);
-			Application application = business.application().pick(applicationFlag, ExceptionWhen.not_found);
-			if (!StringUtils.equals(application.getId(), applicationDict.getApplication())) {
-				throw new Exception("applicationDict{flag:" + applicationDictFlag + "} not in application{flag:"
-						+ applicationFlag + "}.");
+			Application application = business.application().pick(applicationFlag);
+			if (null == application) {
+				throw new ApplicationNotExistException(applicationFlag);
 			}
-			JsonElement wrap = this.get(business, applicationDict, path0, path1, path2, path3, path4, path5, path6,
-					path7);
+			String id = business.applicationDict().getWithApplicationWithUniqueName(application.getId(),
+					applicationDictFlag);
+			if (StringUtils.isEmpty(id)) {
+				throw new ApplicationDictNotExistException(applicationFlag);
+			}
+			ApplicationDict dict = emc.find(id, ApplicationDict.class);
+			JsonElement wrap = this.get(business, dict, path0, path1, path2, path3, path4, path5, path6, path7);
 			result.setData(wrap);
 			return result;
 		}

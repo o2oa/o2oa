@@ -21,10 +21,8 @@ import javax.ws.rs.core.Response;
 import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.StorageType;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.exception.ExceptionWhen;
-import com.x.base.core.exception.JaxrsBusinessLogicException;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
@@ -177,7 +175,7 @@ public class MeetingAction extends StandardJaxrsAction {
 			emc.beginTransaction(Attachment.class);
 			List<String> ids = business.attachment().listWithMeeting(meeting.getId());
 			for (Attachment o : emc.list(Attachment.class, ids)) {
-				StorageMapping mapping = ThisApplication.storageMappings.get(StorageType.meeting, o.getStorage());
+				StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class, o.getStorage());
 				o.deleteContent(mapping);
 				emc.remove(o);
 			}
@@ -823,8 +821,7 @@ public class MeetingAction extends StandardJaxrsAction {
 			Room room = business.entityManagerContainer().find(meeting.getRoom(), Room.class, ExceptionWhen.not_found);
 			Building building = business.entityManagerContainer().find(room.getBuilding(), Building.class,
 					ExceptionWhen.not_found);
-			for (String str : ListTools.concreteArrayList(meeting.getInvitePersonList(), true, true,
-					meeting.getApplicant())) {
+			for (String str : ListTools.trim(meeting.getInvitePersonList(), true, true, meeting.getApplicant())) {
 				// Collaboration.notification(str, "会议取消提醒.", "会议已经取消:" +
 				// meeting.getSubject(),
 				// "会议室:" + room.getName() + ",会议地点:" + building.getName() +
@@ -841,8 +838,7 @@ public class MeetingAction extends StandardJaxrsAction {
 		Room room = business.entityManagerContainer().find(meeting.getRoom(), Room.class, ExceptionWhen.not_found);
 		Building building = business.entityManagerContainer().find(room.getBuilding(), Building.class,
 				ExceptionWhen.not_found);
-		for (String str : ListTools.concreteArrayList(meeting.getInvitePersonList(), true, true,
-				meeting.getApplicant())) {
+		for (String str : ListTools.trim(meeting.getInvitePersonList(), true, true, meeting.getApplicant())) {
 			// Collaboration.notification(str, "会议接受提醒.", person + "接受会议邀请:" +
 			// meeting.getSubject(),
 			// "会议室:" + room.getName() + ",会议地点:" + building.getName() +
@@ -859,8 +855,7 @@ public class MeetingAction extends StandardJaxrsAction {
 		Room room = business.entityManagerContainer().find(meeting.getRoom(), Room.class, ExceptionWhen.not_found);
 		Building building = business.entityManagerContainer().find(room.getBuilding(), Building.class,
 				ExceptionWhen.not_found);
-		for (String str : ListTools.concreteArrayList(meeting.getInvitePersonList(), true, true,
-				meeting.getApplicant())) {
+		for (String str : ListTools.trim(meeting.getInvitePersonList(), true, true, meeting.getApplicant())) {
 			// Collaboration.notification(str, "会议拒绝提醒.", person + "拒绝会议邀请:" +
 			// meeting.getSubject(),
 			// "会议室:" + room.getName() + ",会议地点:" + building.getName() +

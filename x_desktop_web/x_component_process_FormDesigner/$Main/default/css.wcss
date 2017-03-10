@@ -8,7 +8,7 @@
 	//	"background-color": "#cfebaa"
 	},
 	"propertyNode": {
-		"width": "340px",
+		"width": "350px",
 		"overflow": "hidden",
 		"float": "right",
 		"-webkit-user-select": "text",

@@ -795,7 +795,7 @@ MWF.xApplication.Execution.WorkStat = new Class({
             }
 
             this.actions.getStatDate(filterData,function(json){
-                    if(json.type == "success"){alert(11)
+                    if(json.type == "success"){
                         this.dateStatData = json.data
                         this.displayDateStatTable()
                     }

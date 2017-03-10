@@ -8,11 +8,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.bean.NameIdPair;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.gson.XGsonBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
@@ -20,7 +20,7 @@ import com.x.base.core.utils.ListTools;
 import com.x.processplatform.assemble.designer.wrapin.WrapInQueryViewExecute;
 import com.x.processplatform.core.entity.element.QueryStat;
 import com.x.processplatform.core.entity.element.QueryView;
-import com.x.processplatform.core.entity.query.CalculateEntry;
+import com.x.processplatform.core.entity.query.Calculate;
 import com.x.processplatform.core.entity.query.DateRangeEntry;
 import com.x.processplatform.core.entity.query.FilterEntry;
 import com.x.processplatform.core.entity.query.Query;
@@ -32,25 +32,35 @@ class ActionSimulate extends ActionBase {
 	private static Type filterEntryCollectionType = new TypeToken<List<FilterEntry>>() {
 	}.getType();
 
-	private static Type calculateEntryCollectionType = new TypeToken<List<CalculateEntry>>() {
-	}.getType();
-
 	private static Type stringCollectionType = new TypeToken<List<String>>() {
 	}.getType();
 
 	private Gson gson = XGsonBuilder.instance();
 
-	public ActionResult<Query> execute(EffectivePerson effectivePerson, String id, WrapInQueryViewExecute wrapIn)
+	public ActionResult<Query> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement)
 			throws Exception {
 		/* 前台通过wrapIn将Query的可选择部分FilterEntryList和WhereEntry进行输入 */
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			QueryStat queryStat = emc.find(id, QueryStat.class, ExceptionWhen.not_found);
-			QueryView queryView = emc.find(queryStat.getQueryView(), QueryView.class, ExceptionWhen.not_found);
+			WrapInQueryViewExecute wrapIn = this.convertToWrapIn(jsonElement, WrapInQueryViewExecute.class);
+			QueryStat queryStat = emc.find(id, QueryStat.class);
+			if (null == queryStat) {
+				throw new QueryStatNotExistedException(id);
+			}
+			QueryView queryView = emc.find(queryStat.getQueryView(), QueryView.class);
+			if (null == queryView) {
+				throw new QueryViewNotExistedException(queryStat.getQueryView());
+			}
 			ActionResult<Query> result = new ActionResult<>();
 			Query query = gson.fromJson(queryView.getData(), Query.class);
-			/* 写入统计条件 */
-			if (StringUtils.isNotBlank(queryStat.getCalculate())) {
-				query.setCalculateEntryList(this.readCalculateEntryList(queryStat.getCalculate()));
+			/* 写入统计条件,统计条件和一些其他前端值都放在data中,先将calculate分离出来 */
+			if (StringUtils.isNotBlank(queryStat.getData())) {
+				JsonElement element = gson.fromJson(queryStat.getData(), JsonElement.class);
+				if (element.isJsonObject()) {
+					JsonObject jsonObject = element.getAsJsonObject();
+					if (jsonObject.has("calculate")) {
+						query.setCalculate(gson.fromJson(jsonObject.get("calculate"), Calculate.class));
+					}
+				}
 			}
 			/* 写入动态条件值 */
 			if (null != wrapIn) {
@@ -70,28 +80,17 @@ class ActionSimulate extends ActionBase {
 				}
 			}
 			query.query();
+			/* 整理一下输出值 */
+			if ((null != query.getGroupEntry()) && query.getGroupEntry().available()) {
+				query.setGrid(null);
+			}
+			if ((null != query.getCalculate()) && (query.getCalculate().available())) {
+				query.setGrid(null);
+				query.setGroupGrid(null);
+			}
 			result.setData(query);
 			return result;
 		}
-	}
-
-	private List<CalculateEntry> readCalculateEntryList(String json) {
-		List<CalculateEntry> list = new ArrayList<>();
-		JsonElement element = gson.fromJson(json, JsonElement.class);
-		if (element.isJsonObject()) {
-			CalculateEntry o = gson.fromJson(element, CalculateEntry.class);
-			if (o.available()) {
-				list.add(o);
-			}
-		} else if (element.isJsonArray()) {
-			List<CalculateEntry> os = gson.fromJson(element, calculateEntryCollectionType);
-			for (CalculateEntry o : os) {
-				if (o.available()) {
-					list.add(o);
-				}
-			}
-		}
-		return list;
 	}
 
 	private WhereEntry readWhereEntry(JsonElement application, JsonElement process, JsonElement company,

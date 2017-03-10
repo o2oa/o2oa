@@ -12,7 +12,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.bbs.entity.BBSOperationRecord.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 02 16:17:30 CST 2016")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:08:02 CST 2017")
 public class BBSOperationRecord_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<BBSOperationRecord,Date> createTime;
     public static volatile SingularAttribute<BBSOperationRecord,String> forumId;

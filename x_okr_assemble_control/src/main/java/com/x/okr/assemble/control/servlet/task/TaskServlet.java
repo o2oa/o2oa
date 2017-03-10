@@ -7,22 +7,22 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.application.servlet.AbstractServletAction;
 import com.x.base.core.http.ActionResult;
+import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.jaxrs.okrtask.WrapOutOkrTaskCollect;
 import com.x.okr.assemble.control.service.OkrTaskService;
 import com.x.okr.assemble.control.service.OkrUserManagerService;
 import com.x.organization.core.express.wrap.WrapPerson;
 
 @WebServlet(urlPatterns = "/task/count")
-public class TaskServlet extends HttpServlet {
+public class TaskServlet extends AbstractServletAction {
 
 	private static final long serialVersionUID = -4314532091497625540L;
 	private Logger logger = LoggerFactory.getLogger( TaskServlet.class );
@@ -33,6 +33,7 @@ public class TaskServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		ActionResult<WrapOutOkrTaskCollect> result = new ActionResult<>();
+		EffectivePerson effectivePerson = null;
 		List<String> taskTypeList = new ArrayList<String>();
 		WrapPerson person = null;
 		Long taskCount = 0L;
@@ -44,20 +45,31 @@ public class TaskServlet extends HttpServlet {
 				flag = request.getParameter("flag");
 			} catch (Exception e) {
 				check = false;
-				result.setUserMessage("系统URL信息获取传入的flag时发生异常。");
 				result.error(e);
-				logger.error("system get flag from request url got an exception.", e);
+				logger.warn("system get flag from request url got an exception." );
+				logger.error(e);
 			}
 		}
 
 		if (check) {
 			try {
-				person = okrUserManagerService.getUserByUserNumber(flag);
+				effectivePerson = this.effectivePerson(request);
 			} catch (Exception e) {
 				check = false;
 				result.error(e);
-				result.setUserMessage("系统在根据根据人员唯一标识查询人员信息时发生异常。");
-				logger.error("system get person by user flag got an exception.", e);
+				logger.warn("system get effectivePerson from request got an exception." );
+				logger.error(e);
+			}
+		}
+		
+		if (check) {
+			try {
+				person = okrUserManagerService.getUserByUserNumber(flag);
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new PersonQueryException( e, flag );
+				result.error( exception );
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 
@@ -70,15 +82,15 @@ public class TaskServlet extends HttpServlet {
 					taskCount = okrTaskService.getTaskCountByUserName( taskTypeList, person.getName());
 				} catch (Exception e) {
 					check = false;
-					result.error(e);
-					result.setUserMessage("系统在根据用户姓名获取待办总数时发生异常。");
-					logger.error("system get task count by user name got an exception.", e);
+					Exception exception = new TaskCountQueryException( e, person.getName() );
+					result.error( exception );
+					logger.error( exception, effectivePerson, request, null);
 				}
 			} else {
 				check = false;
-				result.error(new Exception("person{'flag':'" + flag + "'} is not exists."));
-				result.setUserMessage("用户帐号'" + flag + "'不存在。");
-				logger.error("person{'flag':'" + flag + "'} is not exists.");
+				Exception exception = new PersonNotExistsException( flag );
+				result.error( exception );
+				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 

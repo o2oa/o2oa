@@ -1,24 +1,5 @@
 package com.x.okr.assemble.common.excel.writer;
-public class Excel2007WriterImpl extends AbstractExcel2007Writer{
-
-	
-	/**
-	 * @param args
-	 * @throws Exception
-	 */
-	public static void main(String[] args) throws Exception {
-		// TODO Auto-generated method stub
-		//System.out.println( "............................" );
-		long start = System.currentTimeMillis();
-		//构建excel2007写入器
-		AbstractExcel2007Writer excel07Writer = new Excel2007WriterImpl();
-		//调用处理方法
-		excel07Writer.process( "F://test07.xlsx" );
-		long end = System.currentTimeMillis();
-		//System.out.println( "....................."+(end-start)/1000);
-	}
-
-	
+public class Excel2007WriterImpl extends AbstractExcel2007Writer{	
 	/* 
 	 * 可根据需求重写此方法，对于单元格的小数或者日期格式，会出现精度问题或者日期格式转化问题，建议使用字符串插入方法
 	 * @see com.excel.ver2.AbstractExcel2007Writer#generate()

@@ -1,10 +1,8 @@
 package com.x.attendance.assemble.control.service;
 
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.AttendanceDetail;
@@ -39,11 +37,11 @@ public class AttendanceDetailService {
 			return;
 		}
 		if( attendanceEmployeeConfig == null){//不要补录入职以前的数据
-			logger.error( "员工信息配置信息为空，无法补录数据。" );
+			logger.warn( "员工信息配置信息为空，无法补录数据。" );
 			return;
 		}
 		if( attendanceEmployeeConfig.getEmpInCompanyTime() == null || attendanceEmployeeConfig.getEmpInCompanyTime().isEmpty() ){
-			logger.error( "员工["+attendanceEmployeeConfig.getEmployeeName()+"]的人员配置信息里入职时间为空，无法补录数据。" );
+			logger.warn( "员工["+attendanceEmployeeConfig.getEmployeeName()+"]的人员配置信息里入职时间为空，无法补录数据。" );
 			return;
 		}
 		DateOperation dateOperation = new DateOperation();
@@ -53,7 +51,7 @@ public class AttendanceDetailService {
 		for( String day : dayList ){
 			try {
 				if( dateOperation.getDateFromString(day).before( dateOperation.getDateFromString( attendanceEmployeeConfig.getEmpInCompanyTime() )) ){
-					logger.error( "不需要补录员工["+attendanceEmployeeConfig.getEmployeeName()+"]入职前的打卡数据。" );
+					logger.warn( "不需要补录员工["+attendanceEmployeeConfig.getEmployeeName()+"]入职前的打卡数据。" );
 					continue;
 				}
 				if( dateOperation.getDateFromString( day ).before(dateOperation.getDateFromString(dateOperation.getNowDate()))){
@@ -77,7 +75,8 @@ public class AttendanceDetailService {
 					}
 				}
 			} catch (Exception e) {
-				logger.error("系统在核对以及补充员工["+attendanceEmployeeConfig.getEmployeeName()+"]在["+day+"]不存在打卡数据时发生异常！", e);
+				logger.warn("系统在核对以及补充员工["+attendanceEmployeeConfig.getEmployeeName()+"]在["+day+"]不存在打卡数据时发生异常！" );
+				logger.error(e);
 			}
 		}
 	}

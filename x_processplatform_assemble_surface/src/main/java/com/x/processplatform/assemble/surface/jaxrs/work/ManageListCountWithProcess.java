@@ -12,7 +12,6 @@ import javax.persistence.criteria.Root;
 import com.x.base.core.bean.NameValueCountPair;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.utils.SortTools;
@@ -22,7 +21,7 @@ import com.x.processplatform.core.entity.content.Work_;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
-class ManageListCountWithProcess {
+class ManageListCountWithProcess extends ActionBase {
 
 	ActionResult<List<NameValueCountPair>> execute(EffectivePerson effectivePerson, String applicationFlag)
 			throws Exception {
@@ -30,7 +29,10 @@ class ManageListCountWithProcess {
 			ActionResult<List<NameValueCountPair>> result = new ActionResult<>();
 			Business business = new Business(emc);
 			List<NameValueCountPair> wraps = new ArrayList<>();
-			Application application = business.application().pick(applicationFlag, ExceptionWhen.not_found);
+			Application application = business.application().pick(applicationFlag);
+			if (null == application) {
+				throw new ApplicationNotExistedException(applicationFlag);
+			}
 			EntityManager em = business.entityManagerContainer().get(Work.class);
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<String> cq = cb.createQuery(String.class);

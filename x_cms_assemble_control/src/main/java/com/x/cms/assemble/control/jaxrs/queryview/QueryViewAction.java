@@ -13,6 +13,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
@@ -33,7 +34,7 @@ public class QueryViewAction extends ActionBase {
 		ActionResult<List<WrapOutQueryView>> result = new ActionResult<>();
 		try {
 			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionList().execute(effectivePerson);
+			result = new ActionList().execute( request, effectivePerson);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
@@ -50,29 +51,43 @@ public class QueryViewAction extends ActionBase {
 		ActionResult<WrapOutQueryView> result = new ActionResult<>();
 		try {
 			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionFlag().execute(effectivePerson, flag);
+			result = new ActionFlag().execute( request, effectivePerson, flag);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
-
-	@HttpMethodDescribe(value = "列示所有当前用户可见的QueryView.", response = Query.class)
+	
+	@HttpMethodDescribe(value = "执行QueryView查询.", response = Query.class)
 	@PUT
-	@Path("flag/{flag}/execute/application/flag/{applicationFlag}")
+	@Path("flag/{flag}/application/flag/{appId}/execute")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response execute(@Context HttpServletRequest request, @PathParam("flag") String flag,
-			WrapInQueryViewExecute wrapIn) {
+	public Response execute(@Context HttpServletRequest request, @PathParam("flag") String flag, @PathParam("appId") String appId, JsonElement jsonElement) {
 		ActionResult<Query> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		WrapInQueryExecute wrapIn = null;
+		Boolean check = true;
+		
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			result = new ActionExecute().execute(effectivePerson, flag, wrapIn);
-		} catch (Throwable th) {
-			th.printStackTrace();
-			result.error(th);
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInQueryExecute.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			e.printStackTrace();
 		}
+
+		if( check ){
+			try {
+				result = new ActionExecute().execute( request, effectivePerson, flag, appId, wrapIn);
+			} catch (Throwable th) {
+				th.printStackTrace();
+				result.error(th);
+			}
+		}
+		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 

@@ -50,7 +50,17 @@ public abstract class Activity extends SliceJpaObject {
 
 	public abstract String getReadDuty();
 
-	public abstract void setReadDuty(String readDuty);
+	public abstract List<String> getReadDataPathList();
+
+	public abstract void setReadDataPathList(List<String> readDataPathList);
+
+	public abstract String getReviewDuty();
+
+	public abstract void setReviewDuty(String reviewDuty);
+
+	public abstract List<String> getReviewDataPathList();
+
+	public abstract void setReviewDataPathList(List<String> reviewDataPathList);
 
 	public abstract List<String> getReviewIdentityList();
 
