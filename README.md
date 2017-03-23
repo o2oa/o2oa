@@ -10,12 +10,12 @@ O2OA 是一套办公平台。她有以下特点：  
 
 更多的产品介绍、下载、在线体验、API及讨论请移步至[http://o2oa.io/](http://www.o2oa.io/)
 
-## 安装  
+## 安装
 建议 `fork` 本仓库后进行二次开发   
 `fork` 操作完成后，会在您的 github 账户下创建一个 o2oa 的副本。接下来可以克隆到本地。  
 ```bash  
 cd {YOUR_WORKING_DIRECTORY}  
 git clone https://github.com/{YOUR_GITHUB_USERNAME}/o2oa.git  
 ```
-## 前台开发
-在前台开发前，请先了解mootools, 我们基于 `mootools`[https://mootools.net/](https://mootools.net/) 架构建了产品的js类库。
+## 前台开发
+在前台开发前，请先了解`mootools`, 我们基于 `mootools`[https://mootools.net/](https://mootools.net/) 架构建了产品的js类库。
