@@ -23,4 +23,12 @@ git clone https://github.com/{YOUR_GITHUB_USERNAME}/o2oa.git
 ### 目录
   前台程序位于github的x_desktop_web目录
 ####  目录规范
-  
+*   每个应用都是以 `x_component_{APPLICATION_NAME}`方式来命名，如x_component_Attendance表示考勤的目录
+*   应用中至少包括下列文件及目录
+```bash
+    Main.js
+    $Main
+        appicon.png
+        default
+          css.wcss
+    lp
