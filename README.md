@@ -9,3 +9,11 @@ O2OA 是一套办公平台。她有以下特点：  
 5. 高可扩展性，用户通过简单的学习后，可以自定义配置门户、流程应用、内容管理应用  
 
 更多的产品介绍、下载、在线体验、API及讨论请移步至[http://o2oa.io/](http://www.o2oa.io/)
+
+## 二次开发  
+建议 `fork` 本仓库后进行二次开发   
+`fork` 操作完成后，会在您的 github 账户下创建一个 o2oa 的副本。接下来可以克隆到本地。  
+```bash  
+cd {YOUR_WORKING_DIRECTORY}  
+git clone https://github.com/{YOUR_GITHUB_USERNAME}/o2oa.git  
+```
