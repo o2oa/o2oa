@@ -18,4 +18,9 @@ cd {YOUR_WORKING_DIRECTORY}
 git clone https://github.com/{YOUR_GITHUB_USERNAME}/o2oa.git  
 ```
 ## 前台开发
-在前台开发前，请先了解`mootools`, 我们基于 `mootools`[https://mootools.net/](https://mootools.net/) 架构建了产品的js类库。
+在前台开发前，请先了解`mootools`, 我们基于 `mootools`[https://mootools.net/](https://mootools.net/) 架构创建了产品的js类库。
+
+### 目录
+  前台程序位于github的x_desktop_web目录
+####  目录规范
+  
