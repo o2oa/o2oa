@@ -2,11 +2,11 @@ O2OA
 ==========
 ## 简介
 O2OA 是一套办公平台。她有以下特点\:    
-1. 核心代码开源  
-2. 全功能免费  
-3. 私有化部署，下载软件后可以安装在自己的服务器上  
-4. 随时随地办公，平台支持兼容HTML5的浏览器，并且开发了源生的IOS/Android应用  
-5. 高可扩展性，用户通过简单的学习后，可以自定义配置门户、流程应用、内容管理应用  
+1. 核心代码开源    
+2. 全功能免费    
+3. 私有化部署，下载软件后可以安装在自己的服务器上    
+4. 随时随地办公，平台支持兼容HTML5的浏览器，并且开发了源生的IOS/Android应用    
+5. 高可扩展性，用户通过简单的学习后，可以自定义配置门户、流程应用、内容管理应用    
 
 更多的产品介绍、下载、在线体验、API及讨论请移步至[http://o2oa.io/](http://www.o2oa.io/)
 
@@ -21,11 +21,11 @@ git clone https://github.com/{YOUR_GITHUB_USERNAME}/o2oa.git  
 在前台开发前，请先了解`mootools`, 我们基于 `mootools`[https://mootools.net/](https://mootools.net/) 架构创建了产品的js类库。
 
 ### 目录
-  前台程序位于github的x_desktop_web目录
-####  目录规范
-*   每个应用都是以 `x_component_{APPLICATION_NAME}`方式来命名，如x_component_Attendance表示考勤的目录
+  前台程序位于github的x_desktop_web目录  
+  
+#### 目录规范
+*   每个应用都是以 `x_component_{APPLICATION_NAME}`方式来命名，如x_component_Attendance表示考勤的目录    
 *   应用中至少包括下列文件及目录
-*   
 ```bash
     Main.js             //应用主程序  
     $Main                //主程序用到的资源包  
