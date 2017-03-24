@@ -1,3 +1,4 @@
+
 O2OA
 ==========
 ## 简介
@@ -27,11 +28,14 @@ git clone https://github.com/{YOUR_GITHUB_USERNAME}/o2oa.git  
 *   每个应用都是以 `x_component_{APPLICATION_NAME}`方式来命名，如x_component_Attendance表示考勤的目录    
 *   应用中至少包括下列文件及目录
 ```bash
-    Main.js             //应用主程序  
-    $Main                //主程序用到的资源包  
-        appicon.png        //应用图标，在桌面上显示  
-        default            //样式包，可以创建其他名称的样式包，并在options传入到Main.js以改变页面风格  
-          css.wcss        //样式文件，以json格式编写  
-    lp                    //语言包，目前支持中文  
+    Main.js                 //应用主程序  
+    $Main                   //主程序用到的资源包  
+        appicon.png         //应用图标，在桌面上显示  
+        default             //样式包，可以创建其他名称的样式包，并在options传入到Main.js以改变页面风格  
+          css.wcss          //样式文件，以json格式编写  
+    lp                      //语言包，目前支持中文  
         zh-cn.js        
+    Actions                 
+        action.json         //后台服务的url和方法，本系统使用JAX-RS 方式的 RESTful Web Service
+        RestAction.js       //应用程序中直接使用此类的方法进行后台交互
 ```
