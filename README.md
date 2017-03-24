@@ -16,7 +16,7 @@ O2OA 是一套现代企业级的办公平台。她有以下特点\:
 更多的产品介绍、下载、在线体验、API及讨论请移步至[http://o2oa.io/](http://www.o2oa.io/)
 
 ## 安装
-建议您在[http://o2oa.io/](http://www.o2oa.io/)中下载最新版本的O2 Server进行安装使用
+建议您在[http://o2oa.io/](http://www.o2oa.io/)中下载最新版本的O2 Server进行安装使用    
 如果您要使用github的程序自行打包，可以`fork` 本仓库。  
 `fork` 操作完成后，会在您的 github 账户下创建一个 o2oa 的副本。接下来可以克隆到本地。  
 ```bash  
