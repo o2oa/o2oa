@@ -107,20 +107,58 @@ x_component_Profile                        //用户个�
 x_component_Template                    //列式、弹出页接口类
 ```
 
- 
-#### 应用目录规范
-*  每个应用都是以 `x_component_{APPLICATION_NAME}`方式来命名，如x_component_Attendance表示考勤的目录。       
-*  应用中至少包括下列文件及目录\:
+### 创建Hello World
+
+### 规范：
+*  每个应用都是以 `x_component_{APPLICATION_NAME}`方式来命名，如x_component_Attendance表示考勤的目录。       
+*  应用中至少包括下列文件及目录\:
 ```bash
-x_component_{APPLICATION_NAME}
+x_component_{APPLICATION_NAME}  //x_component_HelloWorld
     Main.js                 //应用主程序  
     $Main                   //主程序用到的资源包  
-        appicon.png         //应用图标，在桌面上显示  
-        default             //样式包，可以创建其他名称的样式包，并在options传入到Main.js以改变页面风格  
-          css.wcss          //样式文件，以json格式编写  
+        appicon.png         //应用图标，在桌面上显示  
+        default             //样式包，可以创建其他名称的样式包，并在options传入到Main.js以改变页面风格  
+          css.wcss          //样式文件，以json格式编写
+          icon                //要用到的图片目录
+              icon.png        //打开应用时，桌面标签页的图标
     lp                      //语言包，目前支持中文  
         zh-cn.js        
-    Actions                 
-        action.json         //后台服务的url和方法，本系统使用JAX-RS 方式的 RESTful Web Service
-        RestAction.js       //应用程序中直接使用此类的方法进行后台交互
+    Actions                  //如果没有后台交互，您可以忽略此目录           
+        action.json         //后台服务的url和方法，本系统使用JAX-RS 方式的 RESTful Web Service
+        RestAction.js       //应用程序中直接使用此类的方法进行后台交互
+```
+
+### 编写Main.js：
+```bash
+
+//所有的应用类都扩展在MWF.xApplication对象下
+//应用名称HelloWorld要和目录x_component_HelloWorld最后一段一致
+//在执行时，平台会自动创建MWF.xApplication.HelloWorld类和MWF.xApplication.HelloWorld.options
+
+MWF.xApplication.HelloWorld.options.multitask = true; //multitask表示应用可以在一个浏览器窗口重复打开
+MWF.xApplication.HelloWorld.Main = new Class({          //应用入口类
+    Extends: MWF.xApplication.Common.Main,              //MWF.xApplication.Common.Main类提供了平台桌面窗口创建和其他基本功能，比如展现、最大化、最小化等
+    Implements: [Options, Events],                      //使用mootools的Options和Events类，请参考mootools的文档
+
+    options: {                                          //应用选项
+        "style": "default",                              //样式，和 目录$Main/default对应。应用初始化的时候会自动加载$Main/default/css.wcss文件，可以在this.css中使用定义的样式      
+        "name": "HelloWorld",
+        "icon": "icon.png",                              //打开应用时，桌面标签页的图标
+        "width": "400",                                  //应用窗口宽度
+        "height": "500",                              //应用窗口高度
+        "isResize": false,                              //应用窗口是否允许拖动改变大小
+        "isMax": false,                                  //应用窗口是否允许最大化
+        "title": MWF.xApplication.HelloWorld.LP.title      //应用窗口标题，MWF.xApplication.HelloWorld.LP在 lp/zh-cn.js中定义
+    },
+    onQueryLoad: function(){                            //在应用加载前执行的程序
+        this.lp = MWF.xApplication.HelloWorld.LP;        //设置应用的语言包
+    },
+    loadApplication: function(callback){
+        this.restActions = new MWF.xApplication.HelloWorld.Actions.RestActions();  //和Actions/RestAction.js对应，如果没有后台交互可以忽略此代码
+        var div = new Element("div", {                    //创建一个div
+            styles : this.css.content,                    //样式为content
+            text : this.lp.contentText                    //文本内容是zh-cn.js里定义的contentText
+        }).inject( this.content )                        //插入到窗口内容中。this.content是应用窗口的内容DOM容器，您创建的DOM对象都是this.content的子对象
+    }
+});
 ```
