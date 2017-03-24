@@ -1,4 +1,5 @@
 
+
 O2OA
 ==========
 ## 简介
@@ -28,6 +29,7 @@ git clone https://github.com/{YOUR_GITHUB_USERNAME}/o2oa.git  
 *   每个应用都是以 `x_component_{APPLICATION_NAME}`方式来命名，如x_component_Attendance表示考勤的目录    
 *   应用中至少包括下列文件及目录
 ```bash
+x_component_{APPLICATION_NAME}
     Main.js                 //应用主程序  
     $Main                   //主程序用到的资源包  
         appicon.png         //应用图标，在桌面上显示  
