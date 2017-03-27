@@ -106,9 +106,6 @@ x_component_process_Xfrom                //流程表单的实现
 x_component_Profile                        //用户个人设置界面
 x_component_Template                    //列式、弹出页接口类
 ```
-
-### 创建Hello World
-
 ### 规范：
 *  每个应用都是以 `x_component_{APPLICATION_NAME}`方式来命名，如x_component_Attendance表示考勤的目录。       
 *  应用中至少包括下列文件及目录\:
@@ -116,19 +113,48 @@ x_component_Template                    //列式、弹出页
 x_component_{APPLICATION_NAME}  //x_component_HelloWorld
     Main.js                 //应用主程序  
     $Main                   //主程序用到的资源包  
-        appicon.png         //应用图标，在桌面上显示  
+        appicon.png         //应用图标，在桌面上显示，尺寸为72*72
         default             //样式包，可以创建其他名称的样式包，并在options传入到Main.js以改变页面风格  
           css.wcss          //样式文件，以json格式编写
           icon                //要用到的图片目录
-              icon.png        //打开应用时，桌面标签页的图标
+              icon.png        //打开应用时，桌面标签页的图标，图片尺寸为24*24
     lp                      //语言包，目前支持中文  
         zh-cn.js        
     Actions                  //如果没有后台交互，您可以忽略此目录           
         action.json         //后台服务的url和方法，本系统使用JAX-RS 方式的 RESTful Web Service
         RestAction.js       //应用程序中直接使用此类的方法进行后台交互
 ```
+ 
+### 创建Hello World
+本样例中，我们创建一个名为HelloWorld的应用，在应用窗口中显示“您好，这是我的第一个O2应用！”。
 
-### 编写Main.js：
+#### 创建目录：
+在x_desktop_web目录下创建x_component_HelloWorld目录，并按照规范第2点创建目录和文件。
+
+#### 编写css.wcss：
+1. 打开$Main\default\css.wcss。
+2. 输入json格式的样式文本。
+```bash
+{
+    "contentStyle" : {
+        "font-size" : "14px", 
+        "line-height" : "20px",
+        "width" : "100px",
+        "margin" : "20px",
+        "padding" : "10px
+    }
+}
+```
+
+#### 编写lp\zh-cn.js：
+```bash
+MWF.xApplication.HelloWorld.LP = {
+    "title": "HelloWorld",
+    "contentText": "您好，这是我的第一个O2应用！"
+};
+```
+
+#### 编写Main.js：
 ```bash
 
 //所有的应用类都扩展在MWF.xApplication对象下
@@ -154,11 +180,18 @@ MWF.xApplication.HelloWorld.Main = new Class({          //应用入口
         this.lp = MWF.xApplication.HelloWorld.LP;        //设置应用的语言包
     },
     loadApplication: function(callback){
-        this.restActions = new MWF.xApplication.HelloWorld.Actions.RestActions();  //和Actions/RestAction.js对应，如果没有后台交互可以忽略此代码
+        //this.restActions = new MWF.xApplication.HelloWorld.Actions.RestActions();  //后台交互对象。和Actions/RestAction.js对应，如果没有后台交互可以忽略此代码
         var div = new Element("div", {                    //创建一个div
-            styles : this.css.content,                    //样式为content
+            styles : this.css.contentStyle,                    //样式为content。应用初始化的时候会自动加载$Main/default/css.wcss文件，可以在this.css中使用定义的样式
             text : this.lp.contentText                    //文本内容是zh-cn.js里定义的contentText
         }).inject( this.content )                        //插入到窗口内容中。this.content是应用窗口的内容DOM容器，您创建的DOM对象都是this.content的子对象
     }
 });
 ```
+
+#### 部署应用
+1. 在web端进入系统  
+2. 点击左上角的图标打开应用菜单，切换到“组件”界面。  
+3. 打开“部署管理”，在打开的界面最下方找到“部署组件”并点击。  
+4. 部署组件界面中，“组件名称”、“组件标题”、“组件路径”都填写"HelloWorld",然后点击“部署组件”，部署完成。  
+5. 已部署的应用可以在“组件”界面找到，您可以拖动到桌面创建快捷方式。  
