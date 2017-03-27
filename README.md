@@ -13,7 +13,7 @@ O2OA 是一套现代企业级的办公平台。她有以下特点\:
 
 5. 高可扩展性，用户通过简单的学习后，可以自定义配置门户、流程应用、内容管理应用
 
-更多的产品介绍、下载、在线体验、API及讨论请移步至[http://o2oa.io/](http://www.o2oa.io/)
+更多的产品介绍、使用说明、下载、在线体验、API及讨论请移步至[http://o2oa.io/](http://www.o2oa.io/)
 
 ## 安装
 建议您在[http://o2oa.io/](http://www.o2oa.io/)中下载最新版本的O2 Server进行安装使用    
@@ -107,7 +107,7 @@ x_component_Profile                        //用户个�
 x_component_Template                    //列式、弹出页接口类
 ```
 ### 规范：
-*  每个应用都是以 `x_component_{APPLICATION_NAME}`方式来命名，如x_component_Attendance表示考勤的目录。         
+*  每个应用都是以 `x_component_{APPLICATION_NAME}`方式来命名，如x_component_Attendance表示考勤的目录。       
 *  应用中至少包括下列文件及目录\:
 ```bash
 x_component_{APPLICATION_NAME}  //x_component_HelloWorld
