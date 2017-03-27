@@ -23,7 +23,7 @@ O2OA 是一套现代企业级的办公平台。她有以下特点\:
 cd {YOUR_WORKING_DIRECTORY}
 git clone https://github.com/{YOUR_GITHUB_USERNAME}/o2oa.git  
 ```
-## 扩展开发
+## 扩展开发
 在开发前，请先了解`mootools`, 我们基于 `mootools`[https://mootools.net/](https://mootools.net/) 架构创建了产品的js类库。
 
 ### 目录
@@ -107,7 +107,7 @@ x_component_Profile                        //用户个�
 x_component_Template                    //列式、弹出页接口类
 ```
 ### 规范：
-*  每个应用都是以 `x_component_{APPLICATION_NAME}`方式来命名，如x_component_Attendance表示考勤的目录。       
+*  每个应用都是以 `x_component_{APPLICATION_NAME}`方式来命名，如x_component_Attendance表示考勤的目录。         
 *  应用中至少包括下列文件及目录\:
 ```bash
 x_component_{APPLICATION_NAME}  //x_component_HelloWorld
