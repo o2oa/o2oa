@@ -116,8 +116,7 @@ x_component_{APPLICATION_NAME}  //x_component_HelloWorld
         appicon.png         //应用图标，在桌面上显示，尺寸为72*72
         default             //样式包，可以创建其他名称的样式包，并在options传入到Main.js以改变页面风格  
           css.wcss          //样式文件，以json格式编写
-          icon                //要用到的图片目录
-              icon.png        //打开应用时，桌面标签页的图标，图片尺寸为24*24
+          icon.png          //打开应用时，桌面标签页的图标，图片尺寸为24*24
     lp                      //语言包，目前支持中文  
         zh-cn.js        
     Actions                  //如果没有后台交互，您可以忽略此目录           
@@ -139,7 +138,6 @@ x_component_{APPLICATION_NAME}  //x_component_HelloWorld
     "contentStyle" : {
         "font-size" : "14px", 
         "line-height" : "20px",
-        "width" : "100px",
         "margin" : "20px",
         "padding" : "10px"
     }
