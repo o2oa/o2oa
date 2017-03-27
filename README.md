@@ -107,7 +107,7 @@ x_component_Profile                        //用户个�
 x_component_Template                    //列式、弹出页接口类
 ```
 ### 规范：
-*  每个应用都是以 `x_component_{APPLICATION_NAME}`方式来命名，如x_component_Attendance表示考勤的目录。       
+*  每个应用都是以 `x_component_{APPLICATION_NAME}`方式来命名，如x_component_Attendance表示考勤的目录  
 *  应用中至少包括下列文件及目录\:
 ```bash
 x_component_{APPLICATION_NAME}  //x_component_HelloWorld
@@ -131,8 +131,7 @@ x_component_{APPLICATION_NAME}  //x_component_HelloWorld
 在x_desktop_web目录下创建x_component_HelloWorld目录，并按照规范第2点创建目录和文件。
 
 #### 编写css.wcss：
-1. 打开$Main\default\css.wcss。
-2. 输入json格式的样式文本。
+打开$Main\default\css.wcss输入json格式的样式文本。
 ```bash
 {
     "contentStyle" : {
