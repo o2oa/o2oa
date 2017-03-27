@@ -141,7 +141,7 @@ x_component_{APPLICATION_NAME}  //x_component_HelloWorld
         "line-height" : "20px",
         "width" : "100px",
         "margin" : "20px",
-        "padding" : "10px
+        "padding" : "10px"
     }
 }
 ```
