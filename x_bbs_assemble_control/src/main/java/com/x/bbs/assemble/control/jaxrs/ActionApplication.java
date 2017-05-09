@@ -24,11 +24,13 @@ import com.x.bbs.assemble.control.jaxrs.subjectinfo.SubjectAttachmentAction;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.SubjectInfoAction;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.SubjectInfoManagerUserAction;
 import com.x.bbs.assemble.control.jaxrs.userinfo.UserInfoAction;
+import com.x.bbs.assemble.control.jaxrs.uuid.UUIDAction;
 
 @ApplicationPath("jaxrs")
 public class ActionApplication extends AbstractActionApplication {
 
 	public Set<Class<?>> getClasses() {
+		this.classes.add(UUIDAction.class);
 		this.classes.add(LoginAction.class);
 		this.classes.add(LogoutAction.class);
 		this.classes.add(ForumInfoAction.class);

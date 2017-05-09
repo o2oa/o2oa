@@ -30,8 +30,10 @@ class ActionDelete extends ActionBase {
 			if (BooleanUtils.isNotTrue(control.getAllowDelete())) {
 				throw new WorkAccessDeniedException(effectivePerson.getName(), id);
 			}
-			WrapOutId wrap = ThisApplication.applications.deleteQuery(x_processplatform_service_processing.class,
-					"work/" + URLEncoder.encode(work.getId(), DefaultCharset.name), WrapOutId.class);
+			WrapOutId wrap = ThisApplication.context().applications()
+					.deleteQuery(x_processplatform_service_processing.class,
+							"work/" + URLEncoder.encode(work.getId(), DefaultCharset.name))
+					.getData(WrapOutId.class);
 			result.setData(wrap);
 			return result;
 		}

@@ -26,19 +26,18 @@ import com.x.attendance.entity.StatisticCompanyForMonth;
 import com.x.attendance.entity.StatisticDepartmentForDay;
 import com.x.attendance.entity.StatisticDepartmentForMonth;
 import com.x.attendance.entity.StatisticPersonForMonth;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
-import com.x.base.core.http.HttpAttribute;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.organization.core.express.wrap.WrapCompany;
 import com.x.organization.core.express.wrap.WrapDepartment;
 
@@ -84,7 +83,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new QueryStatisticPersonNameEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -94,7 +93,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new PersonStatisticForMonthListByUserException( e, name, year, month );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -105,7 +104,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					check = false;
 					Exception exception = new PersonStatisticForMonthListByIdsException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -118,7 +117,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					check = false;
 					Exception exception = new PersonStatisticForMonthWrapOutException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -149,7 +148,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new QueryStatisticDepartmentNameEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}else{
 				departmentNameList.add( name );
 			}
@@ -161,7 +160,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new PersonStatisticForMonthListByDepartmentsException(e, departmentNameList, year, month);
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -172,7 +171,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					check = false;
 					Exception exception = new PersonStatisticForMonthListByIdsException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -185,7 +184,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					check = false;
 					Exception exception = new PersonStatisticForMonthWrapOutException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -216,7 +215,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new QueryStatisticDepartmentNameEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -226,7 +225,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new ListDepartmentNameByParentNameException( e, name );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -242,7 +241,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new PersonStatisticForMonthListByDepartmentsException(e, departmentNameList, year, month);
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -253,7 +252,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					check = false;
 					Exception exception = new PersonStatisticForMonthListByIdsException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -266,7 +265,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					check = false;
 					Exception exception = new PersonStatisticForMonthWrapOutException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -298,7 +297,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new QueryStatisticDepartmentNameEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -308,7 +307,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new ListDepartmentNameByParentNameException( e, name );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -324,7 +323,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new DepartmentStatisticForMonthListByDepartmentsException(e, departmentNameList, year, month);
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -335,7 +334,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					check = false;
 					Exception exception = new DepartmentStatisticForMonthListByIdsException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -348,7 +347,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					check = false;
 					Exception exception = new DepartmentStatisticForMonthWrapOutException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -381,7 +380,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new QueryStatisticCompanyNameEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -392,7 +391,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new GetTopDepartmentNamesByOrganNameException( e, name, departmentNames );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -408,7 +407,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new DepartmentStatisticForMonthListByDepartmentsException(e, departmentNames, year, month);
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -419,7 +418,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					check = false;
 					Exception exception = new DepartmentStatisticForMonthListByIdsException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -432,7 +431,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					check = false;
 					Exception exception = new DepartmentStatisticForMonthWrapOutException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -464,7 +463,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new QueryStatisticDepartmentNameEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -475,7 +474,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				result.error( e );
 				Exception exception = new DepartmentStatisticForMonthListByDepartmentsException(e, name, year, month);
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -486,7 +485,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					check = false;
 					Exception exception = new DepartmentStatisticForMonthListByIdsException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -499,7 +498,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					check = false;
 					Exception exception = new DepartmentStatisticForMonthWrapOutException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -540,7 +539,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new QueryStatisticDepartmentNameEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -550,7 +549,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new ListDepartmentNameByParentNameException( e, name );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -566,7 +565,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new DepartmentStatisticForMonthSumAbsenceDayException( e, departmentNameList, year, month );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -576,7 +575,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new DepartmentStatisticForMonthSumSelfHolidayException( e, departmentNameList, year, month );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -586,7 +585,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new DepartmentStatisticForMonthSumLateCountException( e, departmentNameList, year, month );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -596,7 +595,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new DepartmentStatisticForMonthSumLeaveEarlyDayException( e, departmentNameList, year, month );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -606,7 +605,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new DepartmentStatisticForMonthSumOnDutyException( e, departmentNameList, year, month );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -616,7 +615,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new DepartmentStatisticForMonthSumOffDutyException( e, departmentNameList, year, month );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -626,7 +625,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new DepartmentStatisticForMonthSumAbsenceDayException( e, departmentNameList, year, month );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -636,7 +635,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new DepartmentStatisticForMonthSumLackOfTimeException( e, departmentNameList, year, month );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}		
 		}
 		if( check ){
@@ -646,7 +645,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new DepartmentStatisticForMonthSumAbsenceDayException( e, departmentNameList, year, month );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -680,7 +679,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new DepartmentStatisticForMonthWrapOutException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -710,7 +709,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new QueryStatisticCompanyNameEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -720,7 +719,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new CompanyStatisticForMonthListByCompanyException( e, name, year, month );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -731,7 +730,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					check = false;
 					Exception exception = new CompanyStatisticForMonthListByIdsException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -744,7 +743,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					check = false;
 					Exception exception = new CompanyStatisticForMonthWrapOutException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -776,7 +775,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new QueryStatisticDepartmentNameEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -786,7 +785,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new ListDepartmentNameByParentNameException( e, name );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -802,7 +801,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new DepartmentStatisticForDayListByDepartmentsException( e, departmentNames, year, month );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -813,7 +812,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					check = false;
 					Exception exception = new DepartmentStatisticForDayListByIdsException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -826,7 +825,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					check = false;
 					Exception exception = new DepartmentStatisticForDayWrapOutException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -857,7 +856,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new QueryStatisticCompanyNameEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -867,7 +866,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				check = false;
 				Exception exception = new CompanyStatisticForDayListByCompanyException( e, name, year, month );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -878,7 +877,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					check = false;
 					Exception exception = new CompanyStatisticForDayListByIdsException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -891,7 +890,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					check = false;
 					Exception exception = new CompanyStatisticForDayWrapOutException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null );
+					logger.error( e, effectivePerson, request, null );
 				}
 			}
 		}
@@ -927,7 +926,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 					departments = business.organization().department().listSubNested( name );
 				}catch(Exception e){
 					Exception exception = new ListDepartmentNameByParentNameException( e, name );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 				if( departments != null && departments.size() > 0 ){
 					for( WrapDepartment department : departments){
@@ -939,7 +938,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				ids = business.getStatisticDepartmentForDayFactory().listByDepartmentDayDate( departmentNames, date );
 			}catch(Exception e){
 				Exception exception = new DepartmentStatisticForDayListByDateException( e, departmentNames, date );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 			try{
 				if( ids != null && !ids.isEmpty() ){
@@ -947,7 +946,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				}
 			}catch(Exception e){
 				Exception exception = new DepartmentStatisticForDayListByIdsException( e );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 			try{
 				if( statisticDepartmentForDay_list != null && !statisticDepartmentForDay_list.isEmpty() ){
@@ -956,7 +955,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				}
 			}catch(Exception e){
 				Exception exception = new DepartmentStatisticForDayWrapOutException( e );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}		
 		} catch (Exception e) {
 			result.error( e );
@@ -996,7 +995,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				ids = business.getStatisticDepartmentForDayFactory().listByDepartmentDayDate( departmentNames, date );
 			}catch(Exception e){
 				Exception exception = new DepartmentStatisticForDayListByDateException( e, departmentNames, date );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 			try{
 				if( ids != null && !ids.isEmpty() ){
@@ -1004,7 +1003,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				}
 			}catch(Exception e){
 				Exception exception = new DepartmentStatisticForDayListByIdsException( e );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 			try{
 				if( statisticDepartmentForDay_list != null && !statisticDepartmentForDay_list.isEmpty() ){
@@ -1013,7 +1012,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				}
 			}catch(Exception e){
 				Exception exception = new DepartmentStatisticForDayWrapOutException( e );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		} catch (Exception e) {
 			result.error( e );
@@ -1042,7 +1041,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if(check ){
 			try {
@@ -1054,7 +1053,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				if (id == null || "(0)".equals(id) || id.isEmpty()) {
 					// logger.debug( "第一页查询，没有id传入" );
 				} else {
-					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+					if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
 						sequence = PropertyUtils.getProperty(
 								emc.find(id, StatisticPersonForMonth.class ), "sequence");
 					}
@@ -1106,7 +1105,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if(check ){
 			try {
@@ -1119,7 +1118,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				if (id == null || "(0)".equals(id) || id.isEmpty()) {
 					logger.debug("第一页查询，没有id传入");
 				} else {
-					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+					if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
 						sequence = PropertyUtils.getProperty(
 								emc.find(id, StatisticPersonForMonth.class ), "sequence");
 					}
@@ -1172,7 +1171,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if(check ){
 			try {
@@ -1184,7 +1183,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				if (id == null || "(0)".equals(id) || id.isEmpty()) {
 					// logger.debug( "第一页查询，没有id传入" );
 				} else {
-					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+					if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
 						sequence = PropertyUtils.getProperty(
 								emc.find(id, StatisticDepartmentForMonth.class ), "sequence");
 					}
@@ -1238,7 +1237,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if(check ){
 			try {
@@ -1251,7 +1250,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				if (id == null || "(0)".equals(id) || id.isEmpty()) {
 					logger.debug("第一页查询，没有id传入");
 				} else {
-					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+					if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
 						sequence = PropertyUtils.getProperty(
 								emc.find(id, StatisticDepartmentForMonth.class ), "sequence");
 					}
@@ -1304,7 +1303,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if(check ){
 			try {
@@ -1316,7 +1315,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				if (id == null || "(0)".equals(id) || id.isEmpty()) {
 					// logger.debug( "第一页查询，没有id传入" );
 				} else {
-					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+					if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
 						sequence = PropertyUtils.getProperty(
 								emc.find(id, StatisticCompanyForMonth.class ), "sequence");
 					}
@@ -1369,7 +1368,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if(check ){
 			try {
@@ -1382,7 +1381,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				if (id == null || "(0)".equals(id) || id.isEmpty()) {
 					logger.debug("第一页查询，没有id传入");
 				} else {
-					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+					if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
 						sequence = PropertyUtils.getProperty(
 								emc.find(id, StatisticCompanyForMonth.class ), "sequence");
 					}
@@ -1435,7 +1434,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if(check ){
 			try {
@@ -1447,7 +1446,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				if (id == null || "(0)".equals(id) || id.isEmpty()) {
 					// logger.debug( "第一页查询，没有id传入" );
 				} else {
-					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+					if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
 						sequence = PropertyUtils.getProperty(
 								emc.find(id, StatisticDepartmentForDay.class ), "sequence");
 					}
@@ -1501,7 +1500,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if(check ){
 			try {
@@ -1514,7 +1513,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				if (id == null || "(0)".equals(id) || id.isEmpty()) {
 					logger.debug("第一页查询，没有id传入");
 				} else {
-					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+					if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
 						sequence = PropertyUtils.getProperty(
 								emc.find(id, StatisticDepartmentForDay.class ), "sequence");
 					}
@@ -1566,7 +1565,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if(check ){
 			try {
@@ -1578,7 +1577,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				if (id == null || "(0)".equals(id) || id.isEmpty()) {
 					// logger.debug( "第一页查询，没有id传入" );
 				} else {
-					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+					if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
 						sequence = PropertyUtils.getProperty(
 								emc.find(id, StatisticCompanyForDay.class ), "sequence");
 					}
@@ -1631,7 +1630,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if(check ){
 			try {
@@ -1644,7 +1643,7 @@ public class AttendanceStatisticShowAction extends StandardJaxrsAction {
 				if (id == null || "(0)".equals(id) || id.isEmpty()) {
 					logger.debug("第一页查询，没有id传入");
 				} else {
-					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+					if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
 						sequence = PropertyUtils.getProperty(
 								emc.find(id, StatisticCompanyForDay.class ), "sequence");
 					}

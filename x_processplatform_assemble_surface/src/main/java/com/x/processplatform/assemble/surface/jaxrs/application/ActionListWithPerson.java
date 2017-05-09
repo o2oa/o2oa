@@ -40,10 +40,13 @@ class ActionListWithPerson extends ActionBase {
 			Business business = new Business(emc);
 			ActionResult<List<WrapOutApplication>> result = new ActionResult<>();
 			List<WrapOutApplication> wraps = new ArrayList<>();
-			List<String> identities = business.organization().identity().ListNameWithPerson(effectivePerson.getName());
+			List<String> identities = business.organization().identity().listNameWithPerson(effectivePerson.getName());
+			/** 去除部门以及上级部门,如果设置了一级部门可用,那么一级部门下属的二级部门也可用 */
 			List<String> departments = business.organization().department()
-					.ListNameWithPerson(effectivePerson.getName());
-			List<String> companies = business.organization().company().ListNameWithPerson(effectivePerson.getName());
+					.listNameWithPersonSupNested(effectivePerson.getName());
+			/** 去除部门以及上级公司,如果设置了一级公司可用,那么一级公司下属的二级公司也可用 */
+			List<String> companies = business.organization().company()
+					.listNameWithPersonSupNested(effectivePerson.getName());
 			List<String> roles = business.organization().role().listNameWithPerson(effectivePerson.getName());
 			List<String> ids = this.list(business, effectivePerson, roles, identities, departments, companies);
 			for (String id : ids) {

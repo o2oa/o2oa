@@ -6,7 +6,7 @@ import com.x.base.core.http.annotation.Wrap;
 import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.WrapOutOkrWorkReportBaseInfo;
 import com.x.okr.entity.OkrTask;
 
-@Wrap( OkrTask.class)
+@Wrap
 public class WrapOutOkrTaskReportEntity extends OkrTask{
 
 	private static final long serialVersionUID = -5076990764713538973L;

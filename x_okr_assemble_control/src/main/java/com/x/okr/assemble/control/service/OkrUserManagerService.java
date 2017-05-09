@@ -383,4 +383,23 @@ public class OkrUserManagerService {
 		}
 		return false;
 	}
+
+	public Boolean isUserIdentityExsits( String identity ) throws Exception {
+		if( identity == null || identity.isEmpty() ){
+			throw new Exception( "identity is null!" );
+		}
+		Business business = null;
+		String result = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			result = business.organization().identity().check( identity );
+			if( result == null || result.isEmpty() ){
+				return false;
+			}else{
+				return true;
+			}
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
 }

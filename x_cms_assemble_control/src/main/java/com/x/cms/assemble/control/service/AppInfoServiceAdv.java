@@ -34,9 +34,10 @@ public class AppInfoServiceAdv {
 		List<String> appInfoIds = null;
 		List<String> departmentNames = null;
 		List<String> companyNames = null;
+		List<String> groupNames = null;
 		//1、所有未设置访问权限的（全员可以访问的AppInfo）
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			appInfoIds = appInfoService.listNoViewPermissionAppInfoIds( emc );
+			appInfoIds = appInfoService.listNoPermissionAppInfoIds( emc );
 			if( appInfoIds != null && !appInfoIds.isEmpty() ){
 				for( String id : appInfoIds ){
 					if( !viewAbleAppInfoIds.contains( id )){
@@ -63,8 +64,10 @@ public class AppInfoServiceAdv {
 		//3、该用户自己以及用户所在的部门，公司有权限访问的所有AppInfo
 		departmentNames = userManagerService.listDepartmentNameByEmployeeName( name );
 		companyNames = userManagerService.listCompanyNameByEmployeeName( name );
+		groupNames = userManagerService.listGroupNamesByPersonName( name );
+		
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-			appInfoIds = appCategoryPermissionService.listAppInfoIdsByPermission( emc, name, departmentNames, companyNames, null );
+			appInfoIds = appCategoryPermissionService.listAppInfoIdsByPermission( emc, name, departmentNames, companyNames, groupNames, null );
 			if( appInfoIds != null && !appInfoIds.isEmpty() ){
 				for( String id : appInfoIds ){
 					if( !viewAbleAppInfoIds.contains( id )){
@@ -100,7 +103,61 @@ public class AppInfoServiceAdv {
 	}
 	
 	/**
-	 * 获取自己可以管理的栏目ID列表
+	 * TODO:查询所有未设置阅读权限的栏目ID列表，栏目没设置也没有分类设置阅读权限 （全员可以阅读的AppInfo）
+	 * 未设置阅读权限的栏目，意味着所有人都要在该栏目下任何分类中阅读信息
+	 * 
+	 * @param name
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listNoPermissionAppInfoIds() throws Exception {
+		List<String> appInfoIds = null;
+		//1、所有未设置访问权限的（全员可以访问的AppInfo）
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			appInfoIds = appInfoService.listNoPermissionAppInfoIds( emc );
+		} catch ( Exception e ) {
+			throw e;
+		}
+		return appInfoIds;
+	}
+	
+	/**
+	 * TODO:查询所有未设置阅读权限的栏目ID列表<br/>
+	 * 所有未设置访问权限的栏目下，所有未设置可见范围的分类，全员可以访问
+	 * @param name
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listNoViewPermissionOnlyAppIds() throws Exception {
+		List<String> appInfoIds = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			appInfoIds = appInfoService.listNoViewPermissionOnlyAppInfoIds( emc );
+		} catch ( Exception e ) {
+			throw e;
+		}
+		return appInfoIds;
+	}
+	
+	/**
+	 * TODO:查询所有未设置发布权限的栏目ID列表
+	 * 
+	 * @param name
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listNoPublishPermissionOnlyAppIds() throws Exception {
+		List<String> appInfoIds = null;
+		//1、所有未设置访问权限的（全员可以访问的AppInfo）
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			appInfoIds = appInfoService.listNoPublishPermissionOnlyAppInfoIds( emc );
+		} catch ( Exception e ) {
+			throw e;
+		}
+		return appInfoIds;
+	}
+	
+	/**
+	 * TODO:获取自己可以管理的栏目ID列表
 	 * @param name
 	 * @return
 	 * @throws Exception
@@ -116,15 +173,15 @@ public class AppInfoServiceAdv {
 	}
 	
 	/**
-	 * 获取自己可以发布的栏目ID列表（下面所有的分类均可以发布）
+	 * TODO:获取自己可以发布的栏目ID列表（下面所有的分类均可以发布）
 	 * @param name
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String> listPublishableAppIds( String name, List<String> departmentNames, List<String> companyNames ) throws Exception {
+	public List<String> listPublishableAppIds( String name, List<String> departmentNames, List<String> companyNames, List<String> groupNames ) throws Exception {
 		List<String> appInfoIds = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			appInfoIds = appCategoryPermissionService.listAppInfoIdsByPermission(emc, name, departmentNames, companyNames, "PUBLISH");
+			appInfoIds = appCategoryPermissionService.listAppInfoIdsByPermission(emc, name, departmentNames, companyNames, groupNames, "PUBLISH");
 		} catch ( Exception e ) {
 			throw e;
 		}
@@ -132,15 +189,47 @@ public class AppInfoServiceAdv {
 	}
 	
 	/**
-	 * 获取自己可以发布的栏目ID列表（下面所有的分类均可以发布）
+	 * TODO:获取自己可以阅读的栏目ID列表（下面所有的分类均可以阅读）
 	 * @param name
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String> listPublishableCategoryIds( String name, List<String> departmentNames, List<String> companyNames, String appId ) throws Exception {
+	public List<String> listViewableAppIds( String name, List<String> departmentNames, List<String> companyNames, List<String> groupNames ) throws Exception {
+		List<String> appInfoIds = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			appInfoIds = appCategoryPermissionService.listAppInfoIdsByPermission( emc, name, departmentNames, companyNames, groupNames, null );
+		} catch ( Exception e ) {
+			throw e;
+		}
+		return appInfoIds;
+	}
+	
+	/**
+	 * TODO:获取自己可以发布的栏目ID列表（下面所有的分类均可以发布）
+	 * @param name
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listPublishableCategoryIds( String name, List<String> departmentNames, List<String> companyNames, List<String> groupNames, String appId ) throws Exception {
 		List<String> categoryIds = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			categoryIds = appCategoryPermissionService.listCategoryIdsByPermission( emc, name, departmentNames, companyNames, appId, "PUBLISH" );
+			categoryIds = appCategoryPermissionService.listCategoryIdsByPermission( emc, name, departmentNames, companyNames, groupNames, appId, "PUBLISH" );
+		} catch ( Exception e ) {
+			throw e;
+		}
+		return categoryIds;
+	}
+	
+	/**
+	 * TODO:获取自己可见或者可以发布文档的分类ID列表
+	 * @param name
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listViewableCategoryIds( String name, List<String> departmentNames, List<String> companyNames, List<String> groupNames, String appId ) throws Exception {
+		List<String> categoryIds = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			categoryIds = appCategoryPermissionService.listCategoryIdsByPermission( emc, name, departmentNames, companyNames, groupNames, appId, null );
 		} catch ( Exception e ) {
 			throw e;
 		}
@@ -255,6 +344,18 @@ public class AppInfoServiceAdv {
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return appInfoService.listByAppName( emc, appName );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+
+	public List<String> getWithAlias(String appAlias) throws Exception {
+		if( appAlias == null || appAlias.isEmpty() ){
+			return null;
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return appInfoService.listByAppAlias( emc, appAlias );
 		} catch ( Exception e ) {
 			throw e;
 		}

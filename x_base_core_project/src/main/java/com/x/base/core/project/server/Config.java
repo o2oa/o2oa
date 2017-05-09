@@ -16,8 +16,10 @@ import org.eclipse.jetty.http.MimeTypes;
 import com.x.base.core.BaseTools;
 import com.x.base.core.Packages;
 import com.x.base.core.entity.annotation.ContainerEntity;
+import com.x.base.core.project.x_program_center;
 import com.x.base.core.utils.Host;
 import com.x.base.core.utils.ListTools;
+import com.x.base.core.utils.NumberTools;
 
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
@@ -502,6 +504,25 @@ public class Config {
 
 	public static Node currentNode() throws Exception {
 		return nodes().get(node());
+	}
+
+	public static String x_program_centerUrlRoot() throws Exception {
+		String primary = nodes().primaryCenterNode();
+		StringBuffer buffer = new StringBuffer();
+		if (centerServer().getSslEnable()) {
+			buffer.append("https://").append(primary);
+			if (!NumberTools.valueEuqals(Config.centerServer().getPort(), 443)) {
+				buffer.append(":").append(Config.centerServer().getPort());
+			}
+		} else {
+			buffer.append("http://").append(primary);
+			if (!NumberTools.valueEuqals(Config.centerServer().getPort(), 80)) {
+				buffer.append(":").append(Config.centerServer().getPort());
+			}
+		}
+		buffer.append("/").append(x_program_center.class.getSimpleName());
+		buffer.append("/jaxrs/");
+		return buffer.toString();
 	}
 
 }

@@ -6,8 +6,7 @@
 		"-moz-background-size": "cover",
 		"-webkit-background-size": "cover",
 		"-o-background-size": "cover",
-		"background-size": "cover",
-		"background-image": "url("+MWF.defaultPath+"/xDesktop/$Layout/star/desktop.jpg)"
+		"background-size": "cover"
 	},
 	layoutTopShimNode: {
         "height": "40px",

@@ -1,0 +1,239 @@
+{
+  //返回公司的所有服务--------------------------------------------
+  //增删改查服务
+  "addCompany": {"uri": "/jaxrs/company","method": "POST"},
+  "getCompany": {"uri": "/jaxrs/company/{id}"},
+  "updateCompany": {"uri": "/jaxrs/company/{id}", "method": "PUT"},
+  "removeCompany": {"uri": "/jaxrs/company/{id}", "method": "DELETE"},
+
+  //列出顶层公司
+  "listTopCompany": {"uri": "/jaxrs/company/list/top"},
+
+  //列出下级公司（直接下级 和 所有下级）
+  "listSubCompanyDirect": {"uri": "/jaxrs/company/list/{id}/sub/direct"},
+  "listSubCompanyNested": {"uri": "/jaxrs/company/list/{id}/sub/nested"},
+
+  //列出上级公司（直接下级 和 所有下级）
+  "getSupCompanyDirect": {"uri": "/jaxrs/company/{id}/sup/direct"},
+  "listSupCompanyNested": {"uri": "/jaxrs/company/list/company/{id}/sup/nested"},
+
+  //按拼音搜索 （全拼 首字母）
+  "listCompanyByPinyin": {"uri": "/jaxrs/company/list/like/pinyin/{key}"},
+  "listCompanyByPinyininitial": {"uri": "/jaxrs/company/list/pinyininitial/{key}"},
+  //关键字搜索
+  "listCompanyByKey": {"uri": "/jaxrs/company/list/like/{key}"},
+  //-------------------------------------------------------------
+
+
+
+  //返回公司属性的所有服务------------------------------------------
+  //公司属性增删改查
+  "addCompanyAttribute": {"uri": "/jaxrs/companyattribute", "method": "POST"},
+  "getCompanyAttribute": {"uri": "/jaxrs/companyattribute/{id}"},
+  "updateCompanyAttribute": {"uri": "/jaxrs/companyattribute/{id}", "method": "PUT"},
+  "removeCompanyAttribute": {"uri": "/jaxrs/companyattribute/{id}", "method": "DELETE"},
+
+  //列出公司属性
+  "listCompanyAttribute": {"uri": "/jaxrs/companyattribute/list/company/{id}"},
+  //-------------------------------------------------------------
+
+
+
+  //返回公司职务的所有服务------------------------------------------
+  //公司职务增删改查
+  "addCompanyDuty": {"uri": "/jaxrs/companyduty", "method": "POST"},
+  "getCompanyDuty": {"uri": "/jaxrs/companyduty/{id}"},
+  "updateCompanyDuty": {"uri": "/jaxrs/companyduty/{id}", "method": "PUT"},
+  "removeCompanyDuty": {"uri": "/jaxrs/companyduty/{id}", "method": "DELETE"},
+
+  //列出所有公司职务
+  "listCompanyDuty": {"uri": "/jaxrs/companyduty/list/company/{id}"},
+  //列出指定身份担任的公司职务
+  "listCompanyDutyByIdentity": {"uri": "/jaxrs/companyduty/list/identity/{id}"},
+
+  //列出公司职务名称
+  "listCompanyDutyName": {"uri": "/jaxrs/companyduty/distinct/name"},
+  //-------------------------------------------------------------
+
+
+
+  //列出指定公司的直接下级公司和部门
+  //"listSubComplexDirect": {"uri": "/jaxrs/complex/list/company/{id}/sub/direct/company/sub/direct/department"},
+  "listSubComplexDirect": {"uri": "/jaxrs/complex/company/{id}"},
+
+
+  //返回部门的所有服务--------------------------------------------
+  //部门增删改查
+  "addDepartment": {"uri": "/jaxrs/department", "method": "POST"},
+  "getDepartment": {"uri": "/jaxrs/department/{id}"},
+  "updateDepartment": {"uri": "/jaxrs/department/{id}", "method": "PUT"},
+  "removeDepartment": {"uri": "/jaxrs/department/{id}", "method": "DELETE"},
+
+  //列出指定公司的下级部门（直接下级 和 所有下级）
+  "listDepartmentDirect": {"uri": "/jaxrs/department/list/company/{id}/sub/direct"},
+  "listDepartmentNested": {"uri": "/jaxrs/department/list/company/{id}/sub/nested"},
+
+  //列出指定部门的下级部门（直接下级 和 所有下级）
+  "listSubDepartmentDirect": {"uri": "/jaxrs/department/list/{id}/sub/direct"},
+  "listSubDepartmentNested": {"uri": "/jaxrs/department/list/{id}/sub/nested"},
+
+  //按拼音搜索 （全拼 首字母）
+  "listDepartmentByPinyin": {"uri": "/jaxrs/department/list/like/pinyin/{key}"},
+  "listDepartmentByPinyininitial": {"uri": "/jaxrs/department/list/pinyininitial/{key}"},
+  //关键字搜索
+  "listDepartmentByKey": {"uri": "/jaxrs/department/list/like/{key}"},
+  //-------------------------------------------------------------
+
+
+
+  //返回部门属性的所有服务------------------------------------------
+  //部门属性增删改查
+  "addDepartmentAttribute": {"uri": "/jaxrs/departmentattribute", "method": "POST"},
+  "getDepartmentAttribute": {"uri": "/jaxrs/departmentattribute/{id}"},
+  "updateDepartmentAttribute": {"uri": "/jaxrs/departmentattribute/{id}", "method": "PUT"},
+  "removeDepartmentAttribute": {"uri": "/jaxrs/departmentattribute/{id}", "method": "DELETE"},
+
+  //列出指定部门的所有属性
+  "listDepartmentAttribute": {"uri": "/jaxrs/departmentattribute/list/department/{id}"},
+  //-------------------------------------------------------------
+
+
+
+
+  //返回部门职务的所有服务------------------------------------------
+  //部门职务增删改查
+  "addDepartmentDuty": {"uri": "/jaxrs/departmentduty", "method": "POST"},
+  "getDepartmentDuty": {"uri": "/jaxrs/departmentduty/{id}"},
+  "updateDepartmentDuty": {"uri": "/jaxrs/departmentduty/{id}", "method": "PUT"},
+  "removeDepartmentDuty": {"uri": "/jaxrs/departmentduty/{id}", "method": "DELETE"},
+
+  //列出指定部门的所有职务
+  "listDepartmentDuty": {"uri": "/jaxrs/departmentduty/list/department/{id}"},
+
+  //列出指定身份担任的部门职务
+  "listDepartmentDutyByIdentity": {"uri": "/jaxrs/departmentduty/list/identity/{id}"},
+
+  //列出部门职务名称
+  "listDepartmentDutyName": {"uri": "/jaxrs/departmentduty/distinct/name"},
+  //-------------------------------------------------------------
+
+
+
+
+  //返回身份的所有服务---------------------------------------------
+  //身份增删改查
+  "addIdentity": {"uri": "/jaxrs/identity", "method": "POST"},
+  "getIdentity": {"uri": "/jaxrs/identity/{id}"},
+  "updateIdentity": {"uri": "/jaxrs/identity/{id}", "method": "PUT"},
+  "removeIdentity": {"uri": "/jaxrs/identity/{id}", "method": "DELETE"},
+
+  //列出指定部门的所有身份
+  "listIdentity": {"uri": "/jaxrs/identity/list/department/{id}"},
+
+  //按拼音搜索（全拼 首字母）
+  "listIdentityByPinyin": {"uri": "/jaxrs/identity/list/like/pinyin/{key}"},
+  "listIdentityByPinyininitial": {"uri": "/jaxrs/identity/list/pinyininitial/{key}"},
+  //按关键字搜索
+  "listIdentityByKey": {"uri": "/jaxrs/identity/list/like/{key}"},
+
+  //列出指定人的所有身份
+  "listIdentityByPerson": {"uri": "/jaxrs/identity/list/person/{id}"},
+  //-------------------------------------------------------------
+
+
+
+
+  //返回群组的所有服务---------------------------------------------
+  //群组增删改查
+  "addGroup": {"uri": "/jaxrs/group", "method": "POST"},
+  "getGroup": {"uri": "/jaxrs/group/{id}"},
+  "updateGroup": {"uri": "/jaxrs/group/{id}", "method": "PUT"},
+  "removeGroup": {"uri": "/jaxrs/group/{id}", "method": "DELETE"},
+
+  //根据拼音搜索（全拼 首字母）
+  "listGroupByPinyin": {"uri": "/jaxrs/group/list/like/pinyin/{key}"},
+  "listGroupByPinyininitial": {"uri": "/jaxrs/group/list/pinyininitial/{key}"},
+  //根据关键字搜索
+  "listGroupByKey": {"uri": "/jaxrs/group/list/like/{key}"},
+
+  //列出人员所在群组（直接包含群组  嵌套群组）
+  "listGroupDirectByPerson": {"uri": "/jaxrs/group/list/person/{id}/sup/direct"},
+  "listGroupNestedByPerson": {"uri": "/jaxrs/group/list/person/{id}/sup/nested"},
+
+  //列出指定群组的上级和下级群组（直接 和 所有）
+  "listSubGroupDirect": {"uri": "/jaxrs/group/list/{id}/sub/direct"},
+  "listSubGroupNested": {"uri": "/jaxrs/group/list/{id}/sub/nested"},
+  "listSupGroupDirect": {"uri": "/jaxrs/group/list/{id}/sup/direct"},
+  "listSupGroupNested": {"uri": "/jaxrs/group/list/{id}/sup/nested"},
+
+  //列出所有群组
+  "listGroupNext": {"uri": "/jaxrs/group/list/{id}/next/{count}"},
+  "listGroupPrev": {"uri": "/jaxrs/group/list/{id}/prev/{count}"},
+  //-------------------------------------------------------------
+
+
+
+  //返回人员的所有服务---------------------------------------------
+  //人员增删改查
+  "addPerson": {"uri": "/jaxrs/person", "method": "POST"},
+  "getPerson": {"uri": "/jaxrs/person/{id}"},
+  "updatePerson": {"uri": "/jaxrs/person/{id}", "method": "PUT"},
+  "removePerson": {"uri": "/jaxrs/person/{id}", "method": "DELETE"},
+
+  //列出指定群组所包含的人员（直接包含 嵌套包含）
+  "listPersonDirect": {"uri": "/jaxrs/person/list/group/{id}/sub/direct"},
+  "listPersonNested": {"uri": "/jaxrs/person/list/group/{id}/sub/nested"},
+
+  //按拼音搜索（全拼 首字母）
+  "listPersonByPinyin": {"uri": "/jaxrs/person/list/like/pinyin/{key}"},
+  "listPersonByPinyininitial": {"uri": "/jaxrs/person/list/pinyininitial/{key}"},
+  //按关键字搜索
+  "listPersonByKey": {"uri": "/jaxrs/person/list/like/{key}"},
+
+  "changePersonIcon": {"uri": "/servlet/person/{id}/icon", "method": "POST", "enctype": "formData"},
+
+  //列出所有人员
+  "listPersonNext": {"uri": "/jaxrs/person/list/{id}/next/{count}"},
+  "listPersonPrev": {"uri": "/jaxrs/person/list/{id}/prev/{count}"},
+  //-------------------------------------------------------------
+
+
+
+  //返回人员属性的所有服务------------------------------------------
+  //人员属性增删改查
+  "addPersonAttribute": {"uri": "/jaxrs/personattribute", "method": "POST"},
+  "getPersonAttribute": {"uri": "/jaxrs/personattribute/{id}"},
+  "updatePersonAttribute": {"uri": "/jaxrs/personattribute/{id}", "method": "PUT"},
+  "removePersonAttribute": {"uri": "/jaxrs/personattribute/{id}", "method": "DELETE"},
+
+  //列出指定人员的所有属性
+  "listPersonAttribute": {"uri": "/jaxrs/personattribute/list/person/{id}"},
+
+  //-------------------------------------------------------------
+
+
+
+  //返回角色的所有服务---------------------------------------------
+  "addRole": {"uri": "/jaxrs/role", "method": "POST"},
+  "getRole": {"uri": "/jaxrs/role/{id}"},
+  "updateRole": {"uri": "/jaxrs/role/{id}", "method": "PUT"},
+  "removeRole": {"uri": "/jaxrs/role/{id}", "method": "DELETE" },
+
+  //按拼音搜索（全拼 首字母）
+  "listRoleByPinyin": {"uri": "/jaxrs/role/list/like/pinyin/{key}"},
+  "listRoleByPinyininitial": {"uri": "/jaxrs/role/list/pinyininitial/{key}"},
+  //按关键字搜索
+  "listRoleByKey": {"uri": "/jaxrs/role/list/like/{key}"},
+
+  //列出指定群组拥有的角色
+  "listRoleByGroup": {"uri": "/jaxrs/role/list/group/{id}"},
+  //列出指定人员拥有的角色
+  "listRoleByPerson": {"uri": "/jaxrs/role/list/person/{id}"},
+
+  //列出所有角色
+  "listRoleNext": {"uri": "/jaxrs/role/list/{id}/next/{count}"},
+  "listRolePrev": {"uri": "/jaxrs/role/list/{id}/prev/{count}"},
+//-------------------------------------------------------------
+
+  "getCompanyAccess": {"uri": "/jaxrs/access/list/person/{id}/control/company"}
+}

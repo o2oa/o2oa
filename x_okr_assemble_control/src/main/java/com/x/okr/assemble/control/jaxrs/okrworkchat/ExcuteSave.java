@@ -1,14 +1,19 @@
 package com.x.okr.assemble.control.jaxrs.okrworkchat;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
-
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrworkchat.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrworkchat.exception.UserNoLoginException;
+import com.x.okr.assemble.control.jaxrs.okrworkchat.exception.WorkChatSaveException;
+import com.x.okr.assemble.control.jaxrs.okrworkchat.exception.WorkIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrworkchat.exception.WorkNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrworkchat.exception.WorkQueryByIdException;
 import com.x.okr.entity.OkrWorkBaseInfo;
 import com.x.okr.entity.OkrWorkChat;
 
@@ -29,14 +34,14 @@ public class ExcuteSave extends ExcuteBase {
 			check = false;
 			Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName()  );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check && ( okrUserCache == null || okrUserCache.getLoginIdentityName() == null ) ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName()  );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		
 //		if( wrapIn == null ){
@@ -51,7 +56,7 @@ public class ExcuteSave extends ExcuteBase {
 				check = false;
 				Exception exception = new UserNoLoginException( effectivePerson.getName()  );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}		
 		
@@ -61,7 +66,7 @@ public class ExcuteSave extends ExcuteBase {
 				check = false;
 				Exception exception = new WorkIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -72,13 +77,13 @@ public class ExcuteSave extends ExcuteBase {
 					check = false;
 					Exception exception = new WorkNotExistsException( wrapIn.getWorkId() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new WorkQueryByIdException( e, wrapIn.getWorkId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -107,7 +112,7 @@ public class ExcuteSave extends ExcuteBase {
 				result.error( e );
 				Exception exception = new WorkChatSaveException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

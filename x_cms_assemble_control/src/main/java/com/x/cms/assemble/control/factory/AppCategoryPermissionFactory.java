@@ -117,6 +117,7 @@ public class AppCategoryPermissionFactory extends AbstractFactory {
 			p = cb.and(p, cb.equal( root.get( AppCategoryPermission_.permission ), permission ) );
 		}
 		cq.distinct(true).select( root.get( AppCategoryPermission_.appId ) );
+		
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 	
@@ -140,18 +141,43 @@ public class AppCategoryPermissionFactory extends AbstractFactory {
 		cq.distinct(true).select( root.get( AppCategoryPermission_.objectId ) );
 		return em.createQuery(cq.where(p)).getResultList();
 	}
+	
+	/**
+	 * 根据权限类别查询涉及权限的所有分类ID列表
+	 * 
+	 * @param permission
+	 * @return
+	 * @throws Exception
+	 */
+	@MethodDescribe("根据权限类别查询涉及权限的所有分类ID列表")
+	public List<String> listAllCategoryInfoIds( String appId, String permission ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( AppCategoryPermission.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<AppCategoryPermission> root = cq.from(AppCategoryPermission.class);
+		Predicate p = cb.equal(root.get( AppCategoryPermission_.objectType ), "CATEGORY");
+		if( appId != null && !appId.isEmpty() ){
+			p = cb.and(p, cb.equal( root.get( AppCategoryPermission_.appId ),appId ) );
+		}
+		if( permission != null && !permission.isEmpty() ){
+			p = cb.and(p, cb.equal( root.get( AppCategoryPermission_.permission ),permission ) );
+		}
+		cq.distinct(true).select( root.get( AppCategoryPermission_.objectId ) );
+		return em.createQuery(cq.where(p)).getResultList();
+	}
 
 	/**
 	 * 根据用户姓名以及用户所在的公司和部门列表以及权限类别查询该用户可以访问到的所有应用栏目ID列表
 	 * @param name
 	 * @param departmentNames
 	 * @param companyNames
+	 * @param groupNames 
 	 * @param permission
 	 * @return
 	 * @throws Exception
 	 */
 	@MethodDescribe("根据用户姓名以及用户所在的公司和部门列表以及权限类别查询该用户可以访问到的所有应用栏目ID列表")
-	public List<String> listAppInfoIdsByPermission( String name, List<String> departmentNames, List<String> companyNames, String permission ) throws Exception {
+	public List<String> listAppInfoIdsByPermission( String name, List<String> departmentNames, List<String> companyNames, List<String> groupNames, String appId, String permission ) throws Exception {
 		if( ( name == null || name.isEmpty() )
 			&& ( departmentNames == null || departmentNames.isEmpty() ) 
 			&& ( companyNames == null || companyNames.isEmpty() ) ){
@@ -166,65 +192,7 @@ public class AppCategoryPermissionFactory extends AbstractFactory {
 		Predicate p_or_user  = null;
 		Predicate p_or_dept  = null;
 		Predicate p_or_comp  = null;
-		
-		if( permission != null && !permission.isEmpty() ){
-			p = cb.and( p, cb.equal( root.get( AppCategoryPermission_.permission ), permission) );
-		}
-		if( name != null && !name.isEmpty() ){
-			p_or_user = cb.equal(root.get( AppCategoryPermission_.usedObjectType ), "USER");
-			p_or_user = cb.and( p_or_user, cb.equal(root.get( AppCategoryPermission_.usedObjectName ), name ) );
-			p_or = p_or_user;
-		}
-		if( departmentNames != null && !departmentNames.isEmpty() ){
-			p_or_dept = cb.equal(root.get( AppCategoryPermission_.usedObjectType ), "DEPARTMENT");
-			p_or_dept = cb.and( p_or_dept, root.get( AppCategoryPermission_.usedObjectName ).in( departmentNames ) );
-			if( p_or == null ){
-				p_or = p_or_dept;
-			}else{
-				p_or = cb.or( p_or, p_or_dept );
-			}
-		}
-		if( companyNames != null && !companyNames.isEmpty() ){
-			p_or_comp = cb.equal(root.get( AppCategoryPermission_.usedObjectType ), "COMPANY");
-			p_or_comp = cb.and( p_or_comp, root.get( AppCategoryPermission_.usedObjectName ).in( companyNames ) );
-			if( p_or == null ){
-				p_or = p_or_comp;
-			}else{
-				p_or = cb.or( p_or, p_or_comp );
-			}
-		}
-		p = cb.and( p, p_or );
-		cq.distinct(true).select( root.get( AppCategoryPermission_.objectId ) );
-		
-		return em.createQuery(cq.where(p)).getResultList();
-	}
-	
-	/**
-	 * 根据用户姓名以及用户所在的公司和部门列表以及权限类别查询该用户可以访问到的所有分类ID列表
-	 * @param name
-	 * @param departmentNames
-	 * @param companyNames
-	 * @param appId
-	 * @param permission
-	 * @return
-	 * @throws Exception
-	 */
-	@MethodDescribe("根据用户姓名以及用户所在的公司和部门列表以及权限类别查询该用户可以访问到的所有分类ID列表")
-	public List<String> listCategoryIdsByPermission( String name, List<String> departmentNames, List<String> companyNames, String appId, String permission ) throws Exception {
-		if( ( name == null || name.isEmpty() )
-			&& ( departmentNames == null || departmentNames.isEmpty() ) 
-			&& ( companyNames == null || companyNames.isEmpty() ) ){
-			throw new Exception( "name, departmentNames and companyNames can not be all null, query needs one condition." );
-		}
-		EntityManager em = this.entityManagerContainer().get( AppCategoryPermission.class );
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<AppCategoryPermission> root = cq.from(AppCategoryPermission.class);
-		Predicate p = cb.equal(root.get( AppCategoryPermission_.objectType ), "CATEGORY");
-		Predicate p_or  = null;
-		Predicate p_or_user  = null;
-		Predicate p_or_dept  = null;
-		Predicate p_or_comp  = null;
+		Predicate p_or_grop  = null;
 		if( appId != null && !appId.isEmpty() ){
 			p = cb.and( p, cb.equal( root.get( AppCategoryPermission_.appId ), appId) );
 		}
@@ -254,6 +222,90 @@ public class AppCategoryPermissionFactory extends AbstractFactory {
 				p_or = cb.or( p_or, p_or_comp );
 			}
 		}
+		
+		if( groupNames != null && !groupNames.isEmpty() ){
+			p_or_grop = cb.equal(root.get( AppCategoryPermission_.usedObjectType ), "GROUP");
+			p_or_grop = cb.and( p_or_grop, root.get( AppCategoryPermission_.usedObjectName ).in( groupNames ) );
+			if( p_or == null ){
+				p_or = p_or_grop;
+			}else{
+				p_or = cb.or( p_or, p_or_grop );
+			}
+		}
+		
+		p = cb.and( p, p_or );
+		cq.distinct(true).select( root.get( AppCategoryPermission_.objectId ) );
+		
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+	
+	/**
+	 * 根据用户姓名以及用户所在的公司和部门列表以及权限类别查询该用户可以访问到的所有分类ID列表
+	 * @param name
+	 * @param departmentNames
+	 * @param companyNames
+	 * @param groupNames 
+	 * @param appId
+	 * @param permission
+	 * @return
+	 * @throws Exception
+	 */
+	@MethodDescribe("根据用户姓名以及用户所在的公司和部门列表以及权限类别查询该用户可以访问到的所有分类ID列表")
+	public List<String> listCategoryIdsByPermission( String name, List<String> departmentNames, List<String> companyNames, List<String> groupNames, String appId, String permission ) throws Exception {
+		if( ( name == null || name.isEmpty() )
+			&& ( departmentNames == null || departmentNames.isEmpty() ) 
+			&& ( companyNames == null || companyNames.isEmpty() ) ){
+			throw new Exception( "name, departmentNames and companyNames can not be all null, query needs one condition." );
+		}
+		EntityManager em = this.entityManagerContainer().get( AppCategoryPermission.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<AppCategoryPermission> root = cq.from(AppCategoryPermission.class);
+		Predicate p = cb.equal(root.get( AppCategoryPermission_.objectType ), "CATEGORY");
+		Predicate p_or  = null;
+		Predicate p_or_user  = null;
+		Predicate p_or_dept  = null;
+		Predicate p_or_comp  = null;
+		Predicate p_or_grop  = null;
+		if( appId != null && !appId.isEmpty() ){
+			p = cb.and( p, cb.equal( root.get( AppCategoryPermission_.appId ), appId) );
+		}
+		if( permission != null && !permission.isEmpty() ){
+			p = cb.and( p, cb.equal( root.get( AppCategoryPermission_.permission ), permission) );
+		}
+		if( name != null && !name.isEmpty() ){
+			p_or_user = cb.equal(root.get( AppCategoryPermission_.usedObjectType ), "USER");
+			p_or_user = cb.and( p_or_user, cb.equal(root.get( AppCategoryPermission_.usedObjectName ), name ) );
+			p_or = p_or_user;
+		}
+		if( departmentNames != null && !departmentNames.isEmpty() ){
+			p_or_dept = cb.equal(root.get( AppCategoryPermission_.usedObjectType ), "DEPARTMENT");
+			p_or_dept = cb.and( p_or_dept, root.get( AppCategoryPermission_.usedObjectName ).in( departmentNames ) );
+			if( p_or == null ){
+				p_or = p_or_dept;
+			}else{
+				p_or = cb.or( p_or, p_or_dept );
+			}
+		}
+		if( companyNames != null && !companyNames.isEmpty() ){
+			p_or_comp = cb.equal(root.get( AppCategoryPermission_.usedObjectType ), "COMPANY");
+			p_or_comp = cb.and( p_or_comp, root.get( AppCategoryPermission_.usedObjectName ).in( companyNames ) );
+			if( p_or == null ){
+				p_or = p_or_comp;
+			}else{
+				p_or = cb.or( p_or, p_or_comp );
+			}
+		}
+		if( groupNames != null && !groupNames.isEmpty() ){
+			p_or_grop = cb.equal(root.get( AppCategoryPermission_.usedObjectType ), "GROUP");
+			p_or_grop = cb.and( p_or_grop, root.get( AppCategoryPermission_.usedObjectName ).in( groupNames ) );
+			if( p_or == null ){
+				p_or = p_or_grop;
+			}else{
+				p_or = cb.or( p_or, p_or_grop );
+			}
+		}
+		
 		p = cb.and( p, p_or );
 		cq.distinct(true).select( root.get( AppCategoryPermission_.objectId ) );
 		return em.createQuery(cq.where(p)).getResultList();

@@ -4,11 +4,11 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
-
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
+import com.x.okr.assemble.control.jaxrs.okrconfigsercretary.exception.SercretaryConfigListByIdsException;
 import com.x.okr.entity.OkrConfigSecretary;
 
 import net.sf.ehcache.Element;
@@ -40,13 +40,11 @@ public class ExcuteListMySercretary extends ExcuteBase {
 					wraps = wrapout_copier.copy( okrConfigSecretaryList );
 					cache.put( new Element( cacheKey, wraps ) );
 					result.setData( wraps );
-				}else{
-					logger.warn( "system can not get any object by {'user':'"+ effectivePerson.getName() +"'}. " );
 				}
-			} catch (Throwable th) {
-				Exception exception = new SercretaryConfigListByIdsException( th );
+			} catch (Exception e) {
+				Exception exception = new SercretaryConfigListByIdsException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

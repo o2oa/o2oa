@@ -14,13 +14,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutBoolean;
 import com.x.base.core.http.WrapOutString;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.project.jaxrs.AbstractJaxrsAction;
+import com.x.base.core.project.jaxrs.ResponseFactory;
 
 @Path("message")
 public class MessageAction extends AbstractJaxrsAction {

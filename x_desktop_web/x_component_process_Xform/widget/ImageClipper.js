@@ -7,6 +7,8 @@ MWF.xApplication.process.Xform.widget.ImageClipper = new Class({
         "reference" : "",
         "referenceType" : "",
         "imageUrl" : "",
+        "resultMaxSize" : 800,
+        "description" : "",
         "title": "Select Image",
 		"style": "default",
         "aspectRatio": 1
@@ -24,8 +26,8 @@ MWF.xApplication.process.Xform.widget.ImageClipper = new Class({
 		this.data = data;
 
         var options = {};
-        var width = "770";
-        var height = "580";
+        var width = "668";
+        var height = "510";
         width = width.toInt();
         height = height.toInt();
 
@@ -57,12 +59,19 @@ MWF.xApplication.process.Xform.widget.ImageClipper = new Class({
                     {
                         "text": MWF.LP.process.button.ok,
                         "action": function () {
-                             _self.image.uploadImage( function( json ){
-                                 _self.imageSrc = MWF.xDesktop.getImageSrc( json.id );
-                                 _self.imageId = json.id;
-                                 _self.fireEvent("change");
+                            if( _self.image.getResizedImage() ){
+                                _self.image.uploadImage( function( json ){
+                                    _self.imageSrc = MWF.xDesktop.getImageSrc( json.id );
+                                    _self.imageId = json.id;
+                                    _self.fireEvent("change");
+                                    this.close();
+                                }.bind(this));
+                            }else{
+                                _self.imageSrc = "";
+                                _self.imageId = "";
+                                _self.fireEvent("change");
                                 this.close();
-                            }.bind(this));
+                            }
                         }
                     },
                     {
@@ -77,7 +86,9 @@ MWF.xApplication.process.Xform.widget.ImageClipper = new Class({
 
             this.image = new MWF.widget.ImageClipper(dlg.content.getFirst(), {
                 "aspectRatio": this.options.aspectRatio,
+                "description" : this.options.description,
                 "imageUrl" : this.options.imageUrl,
+                "resultMaxSize" : this.options.resultMaxSize,
                 "reference" : this.options.reference,
                 "referenceType": this.options.referenceType,
                 "resetEnable" : true

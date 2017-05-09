@@ -17,17 +17,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.NameValueCountPair;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.WrapOutMap;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.processplatform.assemble.surface.wrapin.content.WrapInFilter;
 import com.x.processplatform.assemble.surface.wrapin.content.WrapInWork;
 import com.x.processplatform.assemble.surface.wrapout.content.WrapOutWork;
@@ -110,11 +110,11 @@ public class WorkAction extends StandardJaxrsAction {
 
 	@HttpMethodDescribe(value = "根据Work Id获取组装的Work内容.", response = WrapOutMap.class)
 	@GET
-	@Path("{id}/complex/appoint//form/{formTag}/mobile")
+	@Path("{id}/complex/appoint/form/{formFlag}/mobile")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response complexAppointFormMobile(@Context HttpServletRequest request, @PathParam("id") String id,
-			@PathParam("applicationFlag") String applicationFlag, @PathParam("formFlag") String formFlag) {
+			@PathParam("formFlag") String formFlag) {
 		ActionResult<WrapOutMap> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -540,7 +540,7 @@ public class WorkAction extends StandardJaxrsAction {
 			@PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<Map<String, List<NameValueCountPair>>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try  {
+		try {
 			result = new ManageFilterAttribute().execute(effectivePerson, applicationFlag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);

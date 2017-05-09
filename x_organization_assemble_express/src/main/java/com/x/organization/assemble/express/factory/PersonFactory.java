@@ -34,7 +34,7 @@ public class PersonFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Person> root = cq.from(Person.class);
 		Predicate p = cb.equal(root.get(Person_.name), name);
-		cq.select(root.get(Person_.id)).where(p);
+		cq.select(root.get(Person_.id)).where(p).distinct(true);
 		List<String> list = em.createQuery(cq).setMaxResults(1).getResultList();
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -64,7 +64,7 @@ public class PersonFactory extends AbstractFactory {
 		p = cb.or(p, cb.equal(root.get(Person_.id), credential));
 		p = cb.or(p, cb.equal(root.get(Person_.employee), credential));
 		p = cb.or(p, cb.equal(root.get(Person_.unique), credential));
-		cq.select(root.get(Person_.id)).where(p);
+		cq.select(root.get(Person_.id)).where(p).distinct(true);
 		List<String> list = em.createQuery(cq).setMaxResults(1).getResultList();
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -83,7 +83,7 @@ public class PersonFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Person> root = cq.from(Person.class);
 		Predicate p = cb.like(root.get(Person_.pinyinInitial), str + "%", '\\');
-		cq.select(root.get(Person_.id)).where(p);
+		cq.select(root.get(Person_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -99,7 +99,7 @@ public class PersonFactory extends AbstractFactory {
 		Predicate p = cb.like(root.get(Person_.name), "%" + str + "%", '\\');
 		p = cb.or(p, cb.like(root.get(Person_.pinyin), str + "%", '\\'));
 		p = cb.or(p, cb.like(root.get(Person_.pinyinInitial), str + "%", '\\'));
-		cq.select(root.get(Person_.id)).where(p);
+		cq.select(root.get(Person_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -114,7 +114,7 @@ public class PersonFactory extends AbstractFactory {
 		Root<Person> root = cq.from(Person.class);
 		Predicate p = cb.like(root.get(Person_.pinyin), str + "%");
 		p = cb.or(p, cb.like(root.get(Person_.pinyinInitial), str + "%"));
-		cq.select(root.get(Person_.id)).where(p);
+		cq.select(root.get(Person_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 

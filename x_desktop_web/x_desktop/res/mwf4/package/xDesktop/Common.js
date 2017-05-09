@@ -117,6 +117,7 @@ MWF.xDesktop.setImageSrc = function(){
     if( !event )return;
     var obj = event.srcElement ? event.srcElement : event.target;
     if( !obj )return;
+    obj.onerror = null;
     var id = obj.get("data-id");
     if( id )obj.set("src" , MWF.xDesktop.getImageSrc(id) );
 };
@@ -150,4 +151,62 @@ MWF.xDesktop.copyImage = function( reference, referencetype, attachmentId, scale
         "success": success,
         "failure": failure
     });
+};
+MWF.xDesktop.getServiceAddress = function(config, callback){
+    if (typeOf(config.center)=="object"){
+        MWF.xDesktop.getServiceAddressConfigObject(callback);
+    }else if (typeOf(config.center)=="array"){
+        var center = MWF.xDesktop.chooseCenter(config);
+        if (center){
+            MWF.xDesktop.getServiceAddressConfigObject(callback, center);
+        }else{
+            MWF.xDesktop.getServiceAddressConfigArray(config, callback);
+        }
+    }
+};
+MWF.xDesktop.chooseCenter = function(config){
+    var host = window.location.host;
+    var center = null;
+    for (var i=0; i<config.center.length; i++){
+        var ct = config.center[i];
+        if (ct.webHost==host){
+            center = ct;
+            break;
+        }
+    }
+    return center;
+};
+MWF.xDesktop.getServiceAddressConfigArray = function(config, callback) {
+    var requests = [];
+    config.center.each(function(center){
+        requests.push(
+            MWF.xDesktop.getServiceAddressConfigObject(function(serviceAddressList, center){
+                requests.each(function(res){
+                    if (res.isRunning()){res.cancel();}
+                });
+                if (callback) callback(serviceAddressList, center);
+            }.bind(this), center)
+        );
+    }.bind(this));
+};
+MWF.xDesktop.getServiceAddressConfigObject = function(callback, center){
+    var centerConfig = center;
+    if (!centerConfig) centerConfig = layout.config.center;
+    var host = centerConfig.host || window.location.hostname;
+    var port = centerConfig.port;
+    var uri = "";
+    if (!port || port=="80"){
+        uri = "http://"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+    }else{
+        uri = "http://"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+    }
+    var currenthost = window.location.hostname;
+    uri = uri.replace(/{source}/g, currenthost);
+    //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
+    debugger;
+    return MWF.restful("get", uri, null, function(json){
+        //this.serviceAddressList = json.data;
+        //this.centerServer = center;
+        if (callback) callback(json.data, center);
+    }.bind(this));
 };

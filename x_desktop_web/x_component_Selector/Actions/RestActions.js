@@ -4,7 +4,10 @@ MWF.xApplication.Selector.Actions = MWF.xApplication.Selector.Actions || {};
 MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
 MWF.xApplication.Selector.Actions.RestActions = new Class({
 	initialize: function(){
-        this.action = new MWF.xDesktop.Actions.RestActions("/Actions/action.json", "x_organization_assemble_control", MWF.xApplication.Selector.contextRoot);
+        //this.action = new MWF.xDesktop.Actions.RestActions("/Actions/action.json", "x_organization_assemble_control", MWF.xApplication.Selector.contextRoot);
+        this.action = new MWF.xDesktop.Actions.RestActions("/Actions/action.json", "x_organization_assemble_express", MWF.xApplication.Selector.contextRoot);
+
+
         this.appAction = new MWF.xDesktop.Actions.RestActions("/Actions/appAction.json", "x_processplatform_assemble_surface", MWF.xApplication.Selector.contextRoot);
 	},
     //公司---------------------------------------------------------------

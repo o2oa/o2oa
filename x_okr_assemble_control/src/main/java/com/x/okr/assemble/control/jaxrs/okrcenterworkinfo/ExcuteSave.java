@@ -12,6 +12,12 @@ import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.CenterWorkAuditLeaderEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.CenterWorkSaveException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.CenterWorkTitleEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.CompleteDateLimitFormatException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.UserNoLoginException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.UserOrganizationQueryException;
 import com.x.okr.assemble.control.service.OkrCenterWorkOperationService;
 import com.x.okr.entity.OkrCenterWorkInfo;
 
@@ -35,7 +41,7 @@ public class ExcuteSave extends ExcuteBase {
 				check = false;
 				Exception exception = new UserNoLoginException( effectivePerson.getName() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 //		
@@ -50,7 +56,7 @@ public class ExcuteSave extends ExcuteBase {
 				check = false;
 				Exception exception = new CenterWorkTitleEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -59,7 +65,7 @@ public class ExcuteSave extends ExcuteBase {
 				check = false;
 				Exception exception = new CenterWorkTitleEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -86,7 +92,7 @@ public class ExcuteSave extends ExcuteBase {
 					check = false;
 					Exception exception = new UserOrganizationQueryException( e, effectivePerson.getName() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -115,7 +121,7 @@ public class ExcuteSave extends ExcuteBase {
 					check = false;
 					Exception exception = new CompleteDateLimitFormatException( e, okrCenterWorkInfo.getDefaultCompleteDateLimitStr() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -126,7 +132,7 @@ public class ExcuteSave extends ExcuteBase {
 				check = false;
 				Exception exception = new CenterWorkAuditLeaderEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		//开始保存中心工作信息
@@ -144,7 +150,7 @@ public class ExcuteSave extends ExcuteBase {
 			} catch (Exception e) {
 				Exception exception = new CenterWorkSaveException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

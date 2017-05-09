@@ -40,21 +40,98 @@ MWF.xDesktop.Window = new Class({
 		this.isMax = false;
 	},
 	changeStyle: function(){
-		var obj = this.getNodeStyleStatus();
+        var obj = this.getNodeStyleStatus();
 		this.cssPath = MWF.defaultPath+"/widget/$Dialog/"+this.options.style+"/css.wcss";
 		this._loadCss();
-		this.setNodeStyleStatus(obj);
-		
-		this.node.setStyles(this.css.to);
-		this.spacer.setStyles(this.css.spacerTo);
-		
-		if (this.app == this.app.desktop.currentApp){
-			this.node.setStyles(this.css.current);
-			this.spacer.setStyles(this.css.spacerCurrent);
-		}else{
-			this.node.setStyles(this.css.uncurrent);
-			this.spacer.setStyles(this.css.spacerUncurrent);
-		}
+
+        this.getContentUrl();
+        var request = new Request.HTML({
+            url: this.contentUrl,
+            method: "GET",
+            async: false,
+            onSuccess: function(responseTree){
+                var node = responseTree[0];
+                var title = node.getElement(".MWF_dialod_title");
+                var titleCenter = node.getElement(".MWF_dialod_title_center");
+                var titleRefresh = node.getElement(".MWF_dialod_title_refresh");
+                var titleText = node.getElement(".MWF_dialod_title_text");
+                var titleAction = node.getElement(".MWF_dialod_title_action");
+                var under = node.getElement(".MWF_dialod_under");
+                var content = node.getElement(".MWF_dialod_content");
+                var bottom = node.getElement(".MWF_dialod_bottom");
+                var resizeNode = node.getElement(".MWF_dialod_bottom_resize");
+                var button = node.getElement(".MWF_dialod_button");
+
+                debugger;
+                if (this.title && title){
+                	this.title.clearStyles();
+                	this.title.set("style", title.get("style"));
+				}
+                if (this.titleCenter && titleCenter){
+                    this.titleCenter.clearStyles();
+                    this.titleCenter.set("style", titleCenter.get("style"));
+                }
+                if (this.titleRefresh && titleRefresh){
+                    this.titleRefresh.clearStyles();
+                    this.titleRefresh.set("style", titleRefresh.get("style"));
+                }
+                if (this.titleText && titleText){
+                    this.titleText.clearStyles();
+                    this.titleText.set("style", titleText.get("style"));
+                }
+                if (this.titleAction && titleAction){
+                    this.titleAction.clearStyles();
+                    this.titleAction.set("style", titleAction.get("style"));
+                }
+                if (this.under && under){
+                    this.under.clearStyles();
+                    this.under.set("style", under.get("style"));
+                }
+                if (this.content && content){
+                    this.content.clearStyles();
+                    this.content.set("style", content.get("style"));
+                }
+                if (this.bottom && bottom){
+                    this.bottom.clearStyles();
+                    this.bottom.set("style", bottom.get("style"));
+                }
+                if (this.resizeNode && resizeNode){
+                    this.resizeNode.clearStyles();
+                    this.resizeNode.set("style", resizeNode.get("style"));
+                }
+                if (this.button && button){
+                    this.button.clearStyles();
+                    this.button.set("style", button.get("style"));
+                }
+
+
+                this.setNodeStyleStatus(obj);
+
+                this.node.setStyles(this.css.to);
+                this.spacer.setStyles(this.css.spacerTo);
+
+                if (this.closeActionNode) this.closeActionNode.setStyles(this.css.closeActionNode);
+                if (this.maxActionNode) this.maxActionNode.setStyles(this.css.maxActionNode);
+                if (this.minActionNode) this.minActionNode.setStyles(this.css.minActionNode);
+                if (this.restoreActionNode) this.restoreActionNode.setStyles(this.css.restoreActionNode);
+
+                if (this.app == this.app.desktop.currentApp){
+                    this.node.setStyles(this.css.current);
+                    this.spacer.setStyles(this.css.spacerCurrent);
+                }else{
+                    this.node.setStyles(this.css.uncurrent);
+                    this.spacer.setStyles(this.css.spacerUncurrent);
+                }
+
+                this.setContentSize();
+
+
+            }.bind(this)
+        });
+        request.send();
+
+
+
 	},
 	setNodeStyleStatus: function(obj){
 		this.css.to.height = obj.nodeTo.height;
@@ -211,7 +288,7 @@ MWF.xDesktop.Window = new Class({
                         this.spacer.fade("out");
                     }.bind(this),
                     "onDrop": function(dragging, inObj, e){
-                        debugger;
+                        
                         this.node.fade("in");
                         this.spacer.fade(this.css.spacerTo.opacity);
                         this.node.position({
@@ -265,7 +342,7 @@ MWF.xDesktop.Window = new Class({
 		
 		if (this.options.isResize){
 			this.node.makeResizable({
-				"handle": this.bottom,
+				"handle": this.resizeNode || this.bottom,
 				"limit": {x:[200, null], y:[200, null]},
 				"onDrag": function(){
 					var size = this.node.getComputedSize();
@@ -332,6 +409,7 @@ MWF.xDesktop.Window = new Class({
         }
     },
     showMaxIm: function(callback){
+        this.querySetMaxStyle();
         this.getSpacer();
         this.spacer.setStyle("display", "block");
         this.node.setStyle("display", "block");
@@ -355,6 +433,7 @@ MWF.xDesktop.Window = new Class({
         contentTo = size.contentSize;
 
         if (this.fireEvent("queryShow")){
+            this.fireEvent("queryMax");
             this.node.setStyles(to);
             this.spacer.setStyles(spacerTo);
             this.content.setStyles(contentTo);
@@ -363,9 +442,12 @@ MWF.xDesktop.Window = new Class({
             this.isMax = true;
             this.isHide = false;
             if (this.containerDrag) this.containerDrag.detach();
+
+            this.postSetMaxStyle();
+
             if (callback) callback();
             this.fireEvent("postShow");
-
+            this.fireEvent("postMax");
             if (this.maxActionNode) this.maxActionNode.setStyles(this.css.restoreActionNode);
         }
     },
@@ -446,6 +528,7 @@ MWF.xDesktop.Window = new Class({
 		}
 	},
 	restore: function(callback){
+		this.querySetRestoreStyle();
 		if (this.options.mark) this._markShow();
 		if (!this.morph){
 			this.morph = new Fx.Morph(this.node, {duration: 100, link: "chain"});
@@ -493,6 +576,7 @@ MWF.xDesktop.Window = new Class({
 					this.isHide = false;
 					this.isMax = false;
 					if (this.containerDrag) this.containerDrag.attach();
+                    this.postSetRestoreStyle();
 					if (callback) callback();
 					this.fireEvent("resize");
 					this.fireEvent("postRestore");
@@ -501,7 +585,28 @@ MWF.xDesktop.Window = new Class({
 			if (this.maxActionNode) this.maxActionNode.setStyles(this.css.maxActionNode);
 		}
 	},
+
+    querySetRestoreStyle: function(){
+        if (this.css.windowTitleRestore) this.title.setStyles(this.css.windowTitleRestore);
+        if (this.css.titleRefresh) this.titleRefresh.setStyles(this.css.titleRefresh);
+        if (this.css.windowTitleTextRestore) this.titleText.setStyles(this.css.windowTitleTextRestore);
+        if (this.css.windowTitleActionRestore) this.titleAction.setStyles(this.css.windowTitleActionRestore);
+
+        if (this.closeActionNode){
+            if (this.css.closeActionNode) this.closeActionNode.setStyles(this.css.closeActionNode);
+        }
+        if (this.maxActionNode){
+            if (this.css.maxActionNode) this.maxActionNode.setStyles(this.css.maxActionNode);
+        }
+        if (this.minActionNode){
+            if (this.css.minActionNode) this.minActionNode.setStyles(this.css.minActionNode);
+        }
+    },
+    postSetRestoreStyle: function(){
+        if (this.css.windowNodeRestore) this.node.setStyles(this.css.windowNodeRestore);
+    },
 	restoreIm: function(callback){
+        this.querySetRestoreStyle();
 		this.getSpacer();
 	
 		this.spacer.setStyle("display", "block");
@@ -517,6 +622,7 @@ MWF.xDesktop.Window = new Class({
 			this.isHide = false;
 			this.isMax = false;
 			if (this.containerDrag) this.containerDrag.attach();
+			this.postSetRestoreStyle();
 			if (callback) callback();
 			this.fireEvent("resize");
 			this.fireEvent("postRestore");
@@ -685,7 +791,9 @@ MWF.xDesktop.Window = new Class({
 				}
 			}).inject(this.titleAction);
 		}
-		this.title.addEvent("dblclick", this.app.maxOrRestoreSize.bind(this.app));
+		if (this.options.isResize){
+            this.title.addEvent("dblclick", this.app.maxOrRestoreSize.bind(this.app));
+		}
 		
 		this.minActionNode = new Element("div", {
 			"styles": this.css.minActionNode,
@@ -726,6 +834,8 @@ MWF.xDesktop.Window = new Class({
 		this.restore(callback);
 	},
 	maxSize: function(callback){
+        this.querySetMaxStyle();
+
 		if (!this.morph){
 			this.morph = new Fx.Morph(this.node, {duration: 50, link: "chain"});
 		}
@@ -762,8 +872,7 @@ MWF.xDesktop.Window = new Class({
 		to.height = size.node.y;
 		
 		contentTo = size.contentSize;
-		
-		
+
 		if (this.fireEvent("queryMax")){
 			var nodeFinish = false;
 			var spacerFinish = false;
@@ -791,6 +900,9 @@ MWF.xDesktop.Window = new Class({
 					this.isMax = true;
 					this.isHide = false;
 					if (this.containerDrag) this.containerDrag.detach();
+
+                    this.postSetMaxStyle();
+
 					if (callback) callback();
 					this.fireEvent("resize");
 					this.fireEvent("postMax");
@@ -800,7 +912,28 @@ MWF.xDesktop.Window = new Class({
 			if (this.maxActionNode) this.maxActionNode.setStyles(this.css.restoreActionNode);
 		}
 	},
+    querySetMaxStyle: function(){
+	    if (this.css.windowTitleMax) this.title.setStyles(this.css.windowTitleMax);
+        if (this.css.windowTitleRefreshMax) this.titleRefresh.setStyles(this.css.windowTitleRefreshMax);
+        if (this.css.windowTitleTextMax) this.titleText.setStyles(this.css.windowTitleTextMax);
+        if (this.css.windowTitleActionMax) this.titleAction.setStyles(this.css.windowTitleActionMax);
+
+        if (this.closeActionNode){
+            if (this.css.windowActionNodeMax) this.closeActionNode.setStyles(this.css.windowActionNodeMax);
+        }
+        if (this.maxActionNode){
+            if (this.css.windowActionNodeMax) this.maxActionNode.setStyles(this.css.windowActionNodeMax);
+        }
+        if (this.minActionNode){
+            if (this.css.windowActionNodeMax) this.minActionNode.setStyles(this.css.windowActionNodeMax);
+        }
+	},
+    postSetMaxStyle: function(){
+        if (this.css.windowNodeMax) this.node.setStyles(this.css.windowNodeMax);
+    },
 	maxSizeIm: function(callback){
+        this.querySetMaxStyle();
+
 		this.getSpacer();
 		this.spacer.setStyle("display", "block");
 		this.node.setStyle("display", "block");
@@ -822,7 +955,7 @@ MWF.xDesktop.Window = new Class({
 		to.height = size.node.y;
 		
 		contentTo = size.contentSize;
-		
+
 		if (this.fireEvent("queryMax")){
 			this.node.setStyles(to);
 			this.spacer.setStyles(spacerTo);
@@ -832,6 +965,9 @@ MWF.xDesktop.Window = new Class({
 			this.isMax = true;
 			this.isHide = false;
 			if (this.containerDrag) this.containerDrag.detach();
+
+            this.postSetMaxStyle();
+
 			if (callback) callback();
 			this.fireEvent("resize");
 			this.fireEvent("postMax");
@@ -867,7 +1003,8 @@ MWF.xDesktop.WindowTransparent = new Class({
     options: {
         "style": "default"
     },
-    initialize: function(app){
+    initialize: function(app, options){
+        this.setOptions(options);
         var position = layout.desktop.desktopNode.getPosition();
         this.app = app;
 
@@ -889,7 +1026,7 @@ MWF.xDesktop.WindowTransparent = new Class({
                 "position": "absolute",
                 "z-index": (index)? index : 100
             }
-        }).inject($(document.body));
+        }).inject(this.options.container || $(document.body));
         this.content = new Element("div", {
             "styles": {"width": "100%", "height": "100%"}
         }).inject(this.node);
@@ -966,5 +1103,5 @@ MWF.xDesktop.WindowTransparent = new Class({
     },
     setUncurrent: function(){},
     reStyle: function(){},
-    changeStyle: function(){}
+    //changeStyle: function(){}
 });

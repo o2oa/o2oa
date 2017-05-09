@@ -10,6 +10,8 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.cms.assemble.control.WrapTools;
+import com.x.cms.assemble.control.jaxrs.document.exception.DocumentCategoryIdEmptyException;
+import com.x.cms.assemble.control.jaxrs.document.exception.DocumentInfoProcessException;
 import com.x.cms.core.entity.Document;
 
 import net.sf.ehcache.Element;
@@ -37,7 +39,6 @@ public class ExcuteListDraftNextWithFilter extends ExcuteBase {
 					check = false;
 					Exception exception = new DocumentCategoryIdEmptyException();
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 			
@@ -46,9 +47,9 @@ public class ExcuteListDraftNextWithFilter extends ExcuteBase {
 					documentList = documentServiceAdv.listMyDraft( effectivePerson.getName(), wrapIn.getCategoryIdList() );
 				} catch (Exception e) {
 					check = false;
-					Exception exception = new ServiceLogicException( e, "系统在查询用户草稿信息列表时发生异常。" );
+					Exception exception = new DocumentInfoProcessException( e, "系统在查询用户草稿信息列表时发生异常。" );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 			
@@ -60,9 +61,9 @@ public class ExcuteListDraftNextWithFilter extends ExcuteBase {
 						cache.put(new Element( cacheKey, wraps ));
 						result.setData(wraps);
 					} catch (Exception e) {
-						Exception exception = new ServiceLogicException( e, "系统在将分页查询结果转换为可输出的数据信息时发生异常。" );
+						Exception exception = new DocumentInfoProcessException( e, "系统在将分页查询结果转换为可输出的数据信息时发生异常。" );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 				}
 			}	
@@ -96,7 +97,6 @@ public class ExcuteListDraftNextWithFilter extends ExcuteBase {
 				cacheKey = ApplicationCache.concreteCacheKey( cacheKey, key );
 			}
 		}
-		
 		if( wrapIn.getPublishDateList() != null && !wrapIn.getPublishDateList().isEmpty() ){
 			for( String key : wrapIn.getPublishDateList() ){
 				cacheKey = ApplicationCache.concreteCacheKey( cacheKey, key );

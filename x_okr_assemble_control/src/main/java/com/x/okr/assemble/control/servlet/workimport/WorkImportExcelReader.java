@@ -181,8 +181,9 @@ public class WorkImportExcelReader implements IRowReader{
 					cacheImportRowDetail.setDescription( "事项分解及描述不能为空！" );
 				}
 				if( checkSuccess && ( progressAction == null || progressAction.isEmpty() ) ){
-					checkSuccess = false;
-					cacheImportRowDetail.setDescription( "具体行动举措不能为空！" );
+					//checkSuccess = false;
+					//cacheImportRowDetail.setDescription( "具体行动举措不能为空！" );
+					progressAction = "暂无具体行动举措。";
 				}
 				
 				//检查部分参数的有效性

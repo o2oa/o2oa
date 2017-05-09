@@ -7,10 +7,10 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 		"path": MWF.defaultPath+"/widget/$ImageClipper/",
 		"imageUrl" : "",
 
-		"editorSize" : 400, //图形容器
+		"editorSize" : 340, //图形容器
 		"aspectRatio" : 1, //生成图片的宽高比, 0 表示不限制
 		"frameMinSize" : 30, //选择框的最小宽度
-		"previewerSize" : 300, //预览区域大小
+		"previewerSize" : 260, //预览区域大小
 		"resultMaxSize" : 800, //生成图片的最大宽或高
 
 		"reference": "",
@@ -19,7 +19,8 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 		"showPreviewer" : true,
 		"formLocalEnable" : true,  //本地图片
 		"formFileEnable" : true, //云文件图片
-		"resetEnable" : false
+		"resetEnable" : false,
+		"description" : ""
 	},
 	initialize: function(node, options){
 		this.node = node;
@@ -53,6 +54,10 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 		this.loadEditorNode();
 		this.loadResultNode();
 
+		if( this.options.description ){
+			this.loadDescriptionNode();
+		}
+
 		if( this.options.imageUrl ){
 			this.loadImageAsUrl( this.options.imageUrl );
 		}
@@ -65,7 +70,7 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 			MWF.xDesktop.uploadImageByScale(
 				this.options.reference,
 				this.options.referenceType,
-				800,
+				this.options.resultMaxSize,
 				this.getFormData(),
 				this.resizedImage,
 				success,
@@ -361,6 +366,12 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 		this.docBody.addEvent("touchend", this.bodyMouseEndFun);
 		this.docBody.addEvent("mouseup", this.bodyMouseEndFun);
 	},
+	loadDescriptionNode: function(){
+		new Element("div",{
+			"styles": this.css.descriptionNode,
+			"text": this.options.description
+		}).inject( this.container )
+	},
 	bodyMouseMove: function(ev){
 		if(!this.lastPoint)return;
 		if( this.resizeMode ){
@@ -423,7 +434,7 @@ MWF.widget.ImageClipper = MWF.ImageClipper = new Class({
 
 		this.resizedImage = new Blob([ia], {type: this.fileType });
 
-		var min = Math.min(this.options.previewerSize, nh, nw);
+		var min = Math.min(this.options.previewerSize, nh, nw, this.options.resultMaxSize);
 		size = this.getRatioMaxSize(min, min, ratio);
 		canvas.setStyles({
 			width : size.width + "px",

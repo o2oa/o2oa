@@ -74,7 +74,19 @@
                     this.setValue(c)
                 }
             }, t, q = function () {
+                debugger;
                 var a = this.originalElement, b = CKEDITOR.document.getById(m);
+
+                //var imageNode = a.$;
+                //var nh=imageNode.naturalHeight,
+                //    nw=imageNode.naturalWidth;
+                //if( isNaN(nh) || isNaN(nw) || nh == 0 || nw == 0 ){
+                //    setTimeout( function(){
+                //        q;
+                //    }, 100 );
+                //    return;
+                //}
+
                 a.setCustomData("isReady", "true");
                 a.removeListener("load", q);
                 a.removeListener("error", h);
@@ -88,6 +100,7 @@
                 this.dontResetSize = this.firstLoad = !1;
                 g(this)
             }, h = function () {
+                debugger;
                 var a = this.originalElement, b = CKEDITOR.document.getById(m);
                 a.removeListener("load", q);
                 a.removeListener("error", h);
@@ -133,7 +146,9 @@
                 if (this.customImageElement)this.imageEditMode = "img", this.imageElement = this.customImageElement, delete this.customImageElement; else if (b && "img" == b.getName() && !b.data("cke-realelement") || b && "input" == b.getName() && "image" == b.getAttribute("type"))this.imageEditMode = b.getName(), this.imageElement = b;
                 this.imageEditMode ? (this.cleanImageElement = this.imageElement, this.imageElement = this.cleanImageElement.clone(!0, !0), this.setupContent(f, this.imageElement)) : this.imageElement = a.document.createElement("img");
                 l(this, !0);
-                CKEDITOR.tools.trim(this.getValueOf("info", "txtUrl")) || (this.preview.removeAttribute("src"), this.preview.setStyle("display", "none"))
+                CKEDITOR.tools.trim(this.getValueOf("info", "txtUrl")) || (this.preview.removeAttribute("src"), this.preview.setStyle("display", "none"));
+
+                CKEDITOR.currentImageDialog = this; //._.element.$;
             },
             onOk: function () {
                 if (this.imageEditMode) {
@@ -178,6 +193,14 @@
                                 var a = this.getDialog(), b = this.getValue();
                                 if (0 < b.length) {
                                     var a = this.getDialog(), d = a.originalElement;
+                                    if( !d ){
+                                        debugger;
+                                        d = a.originalElement = a.getParentEditor().document.createElement("img");
+                                        d.setAttribute("alt", "");
+                                    }
+                                    if( !a.preview ) {
+                                        a.preview = CKEDITOR.document.getById(z);
+                                    }
                                     a.preview && a.preview.removeStyle("display");
                                     d.setCustomData("isReady", "false");
                                     var c = CKEDITOR.document.getById(m);
@@ -226,7 +249,6 @@
                             fileNode.click();
                         },
                         onLoad: function () {
-                            var txtUrlElement = this.getDialog().getContentElement("info", "txtUrl");
                             //var onImageLoad = function( imageNode ){
                             //    var nh= imageNode.naturalHeight,
                             //        nw= imageNode.naturalWidth;
@@ -272,9 +294,9 @@
                             //    }
                             //};
                             var fileNode = document.getElementById("fckLocalFileUpload");
-                            var imageNode = document.getElementById("fckLocalFileImage");
+                            //var imageNode = document.getElementById("fckLocalFileImage");
                             if( !fileNode ){
-                                imageNode = new Element("img", { "id" : "fckLocalFileImage", "styles" : {"display":"none"} }).inject(document.body);
+                                //imageNode = new Element("img", { "id" : "fckLocalFileImage", "styles" : {"display":"none"} }).inject(document.body);
                                 fileNode = new Element("input", {
                                     "id" : "fckLocalFileUpload",
                                     "type" : "file",
@@ -288,8 +310,9 @@
                                     MWF.xDesktop.uploadImageByScale( c.config.reference, c.config.referenceType, 800, formData, file, function( json ){
                                         var src = MWF.xDesktop.getImageSrc( json.id );
                                         MWF.xDesktop.uploadedImageId = json.id;
+                                        var txtUrlElement = CKEDITOR.currentImageDialog.getContentElement("info", "txtUrl");
                                         txtUrlElement.setValue( src );
-                                    }, function( error ){
+                                    }.bind(this), function( error ){
                                         MWF.xDesktop.notice("图片上传失败，请联系管理员"+ error.responseText ,"error");
                                     });
                                     //var reader=new FileReader();
@@ -299,7 +322,7 @@
                                     //    onImageLoad( this.imageNode );
                                     //}.bind(this);
                                     //reader.readAsDataURL(file);
-                                }.bind({ imageNode : imageNode }));
+                                }.bind( this ));
                             }
                         }
                     }, {
@@ -310,7 +333,6 @@
                         label: "选择云文件图片",//c.lang.common.browseServer,
                         hidden: !( c.config.reference && c.config.referenceType ), //c.config.filebrowserFilesImage ? !1 : !0, //!0,
                         onClick: function (e) {
-                            var txtUrlElement = this.getDialog().getContentElement("info", "txtUrl");
                             //c.config.filebrowserFilesImage(e, function (url, base64Code) {
                             //    txtUrlElement.setValue( base64Code || url );
                             //});
@@ -324,10 +346,12 @@
                                     "selectType" : "images",
                                     "onPostSelectAttachment" : function( url, id ){
                                         MWF.xDesktop.uploadedImageId = id;
+                                        //var txtUrlElement = this.getDialog().getContentElement("info", "txtUrl");
+                                        var txtUrlElement = CKEDITOR.currentImageDialog.getContentElement("info", "txtUrl");
                                         txtUrlElement.setValue( url );
-                                    }
+                                    }.bind(this)
                                 })).load();
-                            }, true);
+                            }.bind(this), true);
                         }
                     },{
                         type: "button",
@@ -345,6 +369,7 @@
                     }]
                 }, {
                     id: "txtAlt",
+                    hidden: !0,
                     type: "text",
                     label: c.lang.image.alt,
                     accessKey: "T",
@@ -469,6 +494,7 @@
                                 }
                             }, {
                                 type: "text",
+                                hidden: !0,
                                 id: "txtHSpace",
                                 requiredContent: "img{margin-left,margin-right}",
                                 width: "60px",
@@ -503,6 +529,7 @@
                                 }
                             }, {
                                 type: "text",
+                                hidden: !0,
                                 id: "txtVSpace",
                                 requiredContent: "img{margin-top,margin-bottom}",
                                 width: "60px",

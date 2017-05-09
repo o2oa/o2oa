@@ -693,7 +693,7 @@ MWF.xApplication.process.Application.WorkExplorer.Work = new Class({
         //这是一段测试----------------------
 
         if (!this.data.control.allowVisit){
-            this.node.setStyles(this.css.workItemNode_noread)
+            this.node.setStyles(this.css.workItemNode_noread);
             this.checkAreaNode.setStyles(this.css.actionStopWorkNode);
             this.actionAreaNode.setStyles(this.css.actionStopWorkActionNode);
         }

@@ -5,8 +5,8 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
     iconStyle: "numberIcon",
 
     getInputData: function(){
-        debugger;
         var n = this.node.getElement("input").get("value").toFloat();
+        if ((isNaN(n))) {this.setData('0')};
         return (isNaN(n)) ? 0 : n;
     },
     validationFormat: function(){
@@ -42,7 +42,7 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
             var v = (data.valueType=="value") ? n : n.length;
             switch (data.operateor){
                 case "isnull":
-                    if (!v){
+                    if (!v && v.toString()!=='0'){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
@@ -161,5 +161,10 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         this.node.getFirst().addEvent("keyup", function(){
             this.validationMode();
         }.bind(this));
+    },
+    getValue: function(){
+        var value = this._getBusinessData();
+        if (!value) value = this._computeValue();
+        return value || "0";
     }
 });

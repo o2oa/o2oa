@@ -5,9 +5,10 @@ import com.x.base.core.http.annotation.Wrap;
 public class WrapInFilterOkrStatisticReportStatus {
 	
 	private String startDate = null;
+	private String centerTitle = null;
 	private String endDate = null;
 	private String workId = null;
-	private String workType = null;
+	private String workTypeName = null;
 	private String organization = null;
 	private String centerId = "";
 	private String cycleType = "每周汇报";
@@ -31,11 +32,12 @@ public class WrapInFilterOkrStatisticReportStatus {
 	public void setWorkId(String workId) {
 		this.workId = workId;
 	}
-	public String getWorkType() {
-		return workType;
+	
+	public String getWorkTypeName() {
+		return workTypeName;
 	}
-	public void setWorkType(String workType) {
-		this.workType = workType;
+	public void setWorkTypeName(String workTypeName) {
+		this.workTypeName = workTypeName;
 	}
 	public String getOrganization() {
 		return organization;
@@ -54,6 +56,12 @@ public class WrapInFilterOkrStatisticReportStatus {
 	}
 	public void setCycleType(String cycleType) {
 		this.cycleType = cycleType;
+	}
+	public String getCenterTitle() {
+		return centerTitle;
+	}
+	public void setCenterTitle(String centerTitle) {
+		this.centerTitle = centerTitle;
 	}
 	
 }

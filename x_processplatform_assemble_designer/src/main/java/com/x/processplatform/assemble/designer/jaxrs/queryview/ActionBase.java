@@ -1,10 +1,10 @@
 package com.x.processplatform.assemble.designer.jaxrs.queryview;
 
 import com.google.gson.Gson;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.gson.XGsonBuilder;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.processplatform.assemble.designer.wrapin.WrapInQueryView;
 import com.x.processplatform.assemble.designer.wrapout.WrapOutQueryView;
 import com.x.processplatform.core.entity.element.QueryView;

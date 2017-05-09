@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 
 import com.x.base.core.application.jaxrs.AbstractActionApplication;
+import com.x.okr.assemble.control.jaxrs.identity.OkrSystemErrorIdentityProcessAction;
 import com.x.okr.assemble.control.jaxrs.login.OkrLoginAction;
 import com.x.okr.assemble.control.jaxrs.login.OkrLogoutAction;
 import com.x.okr.assemble.control.jaxrs.mind.OkrWorkMindAction;
@@ -27,11 +28,12 @@ import com.x.okr.assemble.control.jaxrs.okrworkchat.OkrWorkChatAction;
 import com.x.okr.assemble.control.jaxrs.okrworkdetailinfo.OkrWorkDetailInfoAction;
 import com.x.okr.assemble.control.jaxrs.okrworkdynamics.OkrWorkDynamicsAction;
 import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.OkrWorkReportBaseInfoAction;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.OkrWorkReportBaseInfoAdminAction;
 import com.x.okr.assemble.control.jaxrs.okrworkreportdetailinfo.OkrWorkReportDetailInfoAction;
 import com.x.okr.assemble.control.jaxrs.okrworkreportpersonlink.OkrWorkReportPersonLinkAction;
 import com.x.okr.assemble.control.jaxrs.okrworkreportprocesslog.OkrWorkReportProcessLogAction;
-import com.x.okr.assemble.control.jaxrs.statistic.OkrStatisticReportStatusAction;
 import com.x.okr.assemble.control.jaxrs.statistic.OkrStatisticReportContentAction;
+import com.x.okr.assemble.control.jaxrs.statistic.OkrStatisticReportStatusAction;
 import com.x.okr.assemble.control.jaxrs.uuid.UUIDAction;
 
 @ApplicationPath("jaxrs")
@@ -52,18 +54,21 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add(OkrWorkAuthorizeRecordAction.class);
 		this.classes.add(OkrWorkDetailInfoAction.class);
 		this.classes.add(OkrWorkDynamicsAction.class);
+		this.classes.add(OkrSystemErrorIdentityProcessAction.class);
 		this.classes.add(OkrWorkReportBaseInfoAction.class);
 		this.classes.add(OkrWorkReportDetailInfoAction.class);
 		this.classes.add(OkrWorkReportPersonLinkAction.class);
 		this.classes.add(OkrWorkReportProcessLogAction.class);
 		this.classes.add(OkrLoginAction.class);
 		this.classes.add(OkrLogoutAction.class);
-		this.classes.add(OkrWorkChatAction.class);
-		this.classes.add(OkrCenterWorkInfoAdminAction.class);
-		this.classes.add(OkrTaskAdminAction.class);
-		this.classes.add(OkrWorkBaseInfoAdminAction.class);
+		this.classes.add(OkrWorkChatAction.class);		
 		this.classes.add(UUIDAction.class);
 		this.classes.add(OkrWorkMindAction.class);
+		
+		this.classes.add(OkrCenterWorkInfoAdminAction.class);
+		this.classes.add(OkrWorkBaseInfoAdminAction.class);
+		this.classes.add(OkrTaskAdminAction.class);
+		this.classes.add(OkrWorkReportBaseInfoAdminAction.class);
 		
 		this.classes.add(OkrStatisticReportContentAction.class);
 		this.classes.add(OkrStatisticReportStatusAction.class);

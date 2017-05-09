@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.cache.ApplicationCache;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -20,9 +21,10 @@ class ActionUpdate extends ActionBase {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionUpdate.class);
 
-	ActionResult<WrapOutId> execute(EffectivePerson effectivePerson, WrapInPerson wrapIn) throws Exception {
+	ActionResult<WrapOutId> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
+			WrapInPerson wrapIn = this.convertToWrapIn(jsonElement, WrapInPerson.class);
 			ActionResult<WrapOutId> result = new ActionResult<>();
 			WrapOutId wrap = new WrapOutId();
 			if (!Config.token().isInitialManager(effectivePerson.getName())) {
@@ -32,12 +34,12 @@ class ActionUpdate extends ActionBase {
 				}
 				Person person = emc.find(id, Person.class, ExceptionWhen.not_found);
 				emc.beginTransaction(Person.class);
-				inCopier.copy(wrapIn, person);
+				personInCopier.copy(wrapIn, person);
 				emc.check(person, CheckPersistType.all);
 				emc.commit();
 				ApplicationCache.notify(Person.class);
 				/* 通知x_collect_service_transmit同步数据到collect */
-				this.collectTransmit();
+				business.instrument().collect().person();
 				wrap = new WrapOutId(person.getId());
 			} else {
 				/* 静态管理员不可修改 */

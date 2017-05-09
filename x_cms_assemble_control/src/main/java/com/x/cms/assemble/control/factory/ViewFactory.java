@@ -83,16 +83,16 @@ public class ViewFactory extends AbstractFactory {
 	 * @throws Exception 
 	 */
 	@MethodDescribe("列示指定分类的所有视图配置信息ID列表")
-	public List<String> listByCategoryId( String id ) throws Exception {		
-		if( id == null || id.isEmpty() ){
-			throw new Exception("内容管理listByCategoryId方法不接受id为空的查询操作！");
+	public List<String> listByCategoryId( String categoryId ) throws Exception {		
+		if( categoryId == null || categoryId.isEmpty() ){
+			throw new Exception("内容管理listByCategoryId方法不接受categoryId为空的查询操作！");
 		}
 		EntityManager em = this.entityManagerContainer().get( ViewCategory.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<ViewCategory> root = cq.from( ViewCategory.class );
-		cq.select(root.get(ViewCategory_.viewId));
-		Predicate p = cb.equal(root.get( ViewCategory_.categoryId ), id);
+		cq.select( root.get(ViewCategory_.viewId ));
+		Predicate p = cb.equal(root.get( ViewCategory_.categoryId ), categoryId );
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 	
@@ -315,8 +315,7 @@ public class ViewFactory extends AbstractFactory {
 			p = cb.and( p, orderFieldWhere );
 		}
 		cq.orderBy( getOrderExpression(cb, root_doc, orderType, document, orderField ));
-		
-		System.out.println( "=============SQL:" + em.createQuery(cq.where(p)).setMaxResults(count).toString() );
+
 		return em.createQuery(cq.where(p)).setMaxResults(count).getResultList();
 	}
 	

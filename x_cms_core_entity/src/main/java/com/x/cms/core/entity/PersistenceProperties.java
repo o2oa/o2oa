@@ -62,10 +62,6 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static final String table = "CMS_DOCUMENT_PERMISSION";
 	}
 	
-	public static class DocumentPictureInfo {
-		public static final String table = "CMS_DOCUMENT_PICTUREINFO";
-	}
-	
 	public static class FileInfo {
 		public static final String table = "CMS_FILEINFO";
 	}

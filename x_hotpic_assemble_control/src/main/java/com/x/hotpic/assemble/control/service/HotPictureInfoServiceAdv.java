@@ -5,10 +5,18 @@ import java.util.List;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.utils.SortTools;
+import com.x.hotpic.assemble.control.ThisApplication;
+import com.x.hotpic.assemble.control.jaxrs.hotpic.WrapOutHotPictureInfo;
+import com.x.hotpic.assemble.control.queueTask.queue.DocumentCheckQueue;
+import com.x.hotpic.assemble.control.timertask.InfoExistsCheckTask;
 import com.x.hotpic.entity.HotPictureInfo;
 
 public class HotPictureInfoServiceAdv {
 	
+	private Logger logger = LoggerFactory.getLogger( HotPictureInfoServiceAdv.class );
 	private HotPictureInfoService hotPictureInfoService = new HotPictureInfoService();
 	
 	/**
@@ -139,6 +147,27 @@ public class HotPictureInfoServiceAdv {
 		}catch( Exception e ){
 			throw e;
 		}
+	}
+	
+	public void documentExistsCheck() {
+		List<HotPictureInfo> allHotPictureInfoList = null;
+		// 1、先查询出所有的信息列表，按照排序号和更新时间倒排序
+		try {
+			allHotPictureInfoList = listAll();
+		} catch (Exception e) {
+			logger.error( e );
+		}
+		if ( allHotPictureInfoList != null && !allHotPictureInfoList.isEmpty() ) {
+			int[] idx = { 0 };
+			allHotPictureInfoList.forEach(e -> {
+				try {
+					ThisApplication.queueLoginRecord.send( new DocumentCheckQueue( ++idx[0], e.getInfoId(), e.getApplication(), e.getTitle() ) );
+				} catch ( Exception e1 ) {
+					e1.printStackTrace();
+				}
+			} );
+		}
+		logger.info("Hotpicture document exists check excute completed.");
 	}
 
 }

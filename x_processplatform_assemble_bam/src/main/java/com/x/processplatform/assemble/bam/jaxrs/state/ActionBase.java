@@ -3,7 +3,7 @@ package com.x.processplatform.assemble.bam.jaxrs.state;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 
 public class ActionBase extends StandardJaxrsAction {
 

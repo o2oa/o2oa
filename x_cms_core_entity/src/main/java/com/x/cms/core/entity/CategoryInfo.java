@@ -172,13 +172,23 @@ public class CategoryInfo extends SliceJpaObject {
 	@CheckPersist( allowEmpty = true )
 	private String workflowType = "禁用审批流";
 	
-	@EntityFieldDescribe( "流程应用" )
+	@EntityFieldDescribe( "流程应用ID" )
+	@Column( name="xworkflowAppId", length = JpaObject.length_id )
+	@CheckPersist( allowEmpty = true )
+	private String workflowAppId;
+	
+	@EntityFieldDescribe( "流程应用名称" )
 	@Column( name="xworkflowAppName", length = JpaObject.length_128B )
 	@CheckPersist( allowEmpty = true )
 	private String workflowAppName;
 	
-	@EntityFieldDescribe( "流程唯一标识" )
-	@Column( name="xworkflowFlag", length = JpaObject.length_32B )
+	@EntityFieldDescribe( "流程名称" )
+	@Column( name="xworkflowName", length = JpaObject.length_128B )
+	@CheckPersist( allowEmpty = true )
+	private String workflowName;
+	
+	@EntityFieldDescribe( "流程ID" )
+	@Column( name="xworkflowFlag", length = JpaObject.length_id )
 	@CheckPersist( allowEmpty = true )
 	private String workflowFlag;
 	
@@ -459,6 +469,18 @@ public class CategoryInfo extends SliceJpaObject {
 	}
 	public void setAppName(String appName) {
 		this.appName = appName;
+	}
+	public String getWorkflowAppId() {
+		return workflowAppId;
+	}
+	public String getWorkflowName() {
+		return workflowName;
+	}
+	public void setWorkflowAppId(String workflowAppId) {
+		this.workflowAppId = workflowAppId;
+	}
+	public void setWorkflowName(String workflowName) {
+		this.workflowName = workflowName;
 	}
 	
 	

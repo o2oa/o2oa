@@ -10,7 +10,7 @@ public class CmsInfoChecker implements InfoCheckerInf {
 	@Override
 	public Boolean check( String infoId ) throws Exception {
 		if( infoId  == null || infoId.isEmpty() ){
-			throw new Exception( "infoId is null!" );
+			throw new Exception( "cms infoId is null!" );
 		}
 		Document document = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {

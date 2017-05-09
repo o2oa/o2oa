@@ -73,5 +73,20 @@ MWF.xScript.Actions.OrgActions = new Class({
     },
     listDepartmentByPerson: function(name, success, failure, async){
         this.action.invoke({"name": "listDepartmentByPerson","async": async, "parameter": {"name": name},	"success": success,	"failure": failure});
+    },
+    listTopCompanyByCompany:function(name, success, failure, async){
+        this.action.invoke({"name": "listTopCompanyByCompany","async": async, "parameter": {"name": name},	"success": success,	"failure": failure});
+    },
+    listCompanyByAttribute:function(name, success, failure, async){
+        this.action.invoke({"name": "listCompanyByAttribute","async": async, "parameter": {"name": name},	"success": success,	"failure": failure});
+    },
+    listTopCompany:function(success, failure, async){
+        this.action.invoke({"name": "listTopCompany","async": async,	"success": success,	"failure": failure});
+    },
+    listSubCompanyNest:function(name, success, failure, async){
+        this.action.invoke({"name": "listSubCompanyNest","async": async, "parameter": {"name": name},	"success": success,	"failure": failure});
+    },
+    listSubCompanyDirect:function(name, success, failure, async){
+        this.action.invoke({"name": "listSubCompanyDirect","async": async, "parameter": {"name": name},	"success": success,	"failure": failure});
     }
 });

@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.collaboration.assemble.websocket.ThisApplication;
 import com.x.collaboration.core.message.dialog.DialogMessage;
 import com.x.collaboration.core.message.notification.NotificationMessage;

@@ -1,12 +1,14 @@
 package com.x.okr.assemble.control.jaxrs.okrtaskhandled;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
-
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
+import com.x.okr.assemble.control.jaxrs.okrtaskhandled.exception.TaskHandledIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrtaskhandled.exception.TaskHandledNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrtaskhandled.exception.TaskHandledQueryByIdException;
 import com.x.okr.entity.OkrTaskHandled;
 
 public class ExcuteGet extends ExcuteBase {
@@ -23,7 +25,7 @@ public class ExcuteGet extends ExcuteBase {
 				check = false;
 				Exception exception = new TaskHandledIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -35,12 +37,12 @@ public class ExcuteGet extends ExcuteBase {
 				}else{
 					Exception exception = new TaskHandledNotExistsException( id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
-			} catch (Throwable th) {
-				Exception exception = new TaskHandledQueryByIdException( th, id );
+			} catch (Exception e) {
+				Exception exception = new TaskHandledQueryByIdException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

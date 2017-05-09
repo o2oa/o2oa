@@ -11,10 +11,9 @@ import com.x.cms.assemble.control.jaxrs.appinfo.WrapOutAppInfo;
 import com.x.cms.assemble.control.jaxrs.categoryinfo.WrapInCategoryInfo;
 import com.x.cms.assemble.control.jaxrs.categoryinfo.WrapOutCategoryInfo;
 import com.x.cms.assemble.control.jaxrs.document.WrapInDocument;
-import com.x.cms.assemble.control.jaxrs.document.WrapInDocumentPictureInfo;
 import com.x.cms.assemble.control.jaxrs.document.WrapOutDocument;
 import com.x.cms.assemble.control.jaxrs.document.WrapOutDocumentComplexFile;
-import com.x.cms.assemble.control.jaxrs.document.WrapOutDocumentPictureInfo;
+import com.x.cms.assemble.control.jaxrs.document.WrapOutDocumentSimple;
 import com.x.cms.assemble.control.jaxrs.documentpermission.WrapInDocumentPermission;
 import com.x.cms.assemble.control.jaxrs.documentpermission.WrapOutDocumentPermission;
 import com.x.cms.assemble.control.jaxrs.documentviewrecord.WrapOutDocumentViewRecord;
@@ -34,7 +33,6 @@ import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.DocumentPermission;
-import com.x.cms.core.entity.DocumentPictureInfo;
 import com.x.cms.core.entity.DocumentViewRecord;
 import com.x.cms.core.entity.FileInfo;
 import com.x.cms.core.entity.element.Form;
@@ -46,10 +44,8 @@ import com.x.cms.core.entity.element.ViewFieldConfig;
 public class WrapTools {
 	
 	public static BeanCopyTools<Document, WrapOutDocument> document_wrapout_copier = BeanCopyToolsBuilder.create(Document.class, WrapOutDocument.class, null, WrapOutDocument.Excludes);
+	public static BeanCopyTools<Document, WrapOutDocumentSimple> documentSimple_wrapout_copier = BeanCopyToolsBuilder.create(Document.class, WrapOutDocumentSimple.class, null, WrapOutDocumentSimple.Excludes);
 	public static BeanCopyTools<WrapInDocument, Document> document_wrapin_copier = BeanCopyToolsBuilder.create( WrapInDocument.class, Document.class, null, WrapInDocument.Excludes );
-	
-	public static BeanCopyTools<WrapInDocumentPictureInfo, DocumentPictureInfo> picture_wrapin_copier = BeanCopyToolsBuilder.create( WrapInDocumentPictureInfo.class, DocumentPictureInfo.class, null, WrapInDocumentPictureInfo.Excludes );
-	public static BeanCopyTools<DocumentPictureInfo, WrapOutDocumentPictureInfo> picture_wrapout_copier = BeanCopyToolsBuilder.create(DocumentPictureInfo.class, WrapOutDocumentPictureInfo.class, null, WrapOutDocumentPictureInfo.Excludes);
 	
 	public static BeanCopyTools<FileInfo, WrapOutDocumentComplexFile> fileForDoc_wrapout_copier = BeanCopyToolsBuilder.create(FileInfo.class, WrapOutDocumentComplexFile.class, null, WrapOutDocumentComplexFile.Excludes);
 	public static BeanCopyTools<FileInfo, WrapOutFileInfo> file_wrapout_copier = BeanCopyToolsBuilder.create( FileInfo.class, WrapOutFileInfo.class, null, WrapOutFileInfo.Excludes);

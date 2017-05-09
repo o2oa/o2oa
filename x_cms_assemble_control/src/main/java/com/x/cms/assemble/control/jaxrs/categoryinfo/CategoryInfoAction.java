@@ -20,17 +20,19 @@ import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.EqualsTerms;
 import com.x.base.core.application.jaxrs.InTerms;
 import com.x.base.core.application.jaxrs.LikeTerms;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.cms.assemble.control.jaxrs.appinfo.exception.AppInfoProcessException;
+import com.x.cms.assemble.control.jaxrs.categoryinfo.exception.CategoryInfoProcessException;
 import com.x.cms.core.entity.CategoryInfo;
 
 
@@ -53,9 +55,9 @@ public class CategoryInfoAction extends StandardJaxrsAction{
 			wrapIn = this.convertToWrapIn( jsonElement, WrapInCategoryInfo.class );
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new CategoryInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check ){
@@ -63,9 +65,9 @@ public class CategoryInfoAction extends StandardJaxrsAction{
 				result = new ExcuteSave().execute( request, effectivePerson, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new CategoryInfoSaveException( e );
+				Exception exception = new CategoryInfoProcessException( e, "分类信息在保存时发生异常." );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -84,9 +86,9 @@ public class CategoryInfoAction extends StandardJaxrsAction{
 			result = new ExcuteDelete().execute( request, id, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new CategoryInfoDeleteException( e, id );
+			Exception exception = new AppInfoProcessException( e, "分类信息在删除时发生异常。ID:" + id );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -103,7 +105,7 @@ public class CategoryInfoAction extends StandardJaxrsAction{
 			result = new ExcuteListWhatICanView().execute( request, appId, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new CategoryInfoListByAppIdException( e, appId );
+			Exception exception = new CategoryInfoProcessException( e, "根据指定应用栏目ID查询分类信息列表时发生异常。ID:" + appId );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
@@ -122,7 +124,7 @@ public class CategoryInfoAction extends StandardJaxrsAction{
 			result = new ExcuteListWhatICanPublish().execute( request, appId, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new CategoryInfoListByAppIdException( e, appId );
+			Exception exception = new CategoryInfoProcessException( e, "根据应用栏目ID查询分类信息对象时发生异常。AppId:" + appId );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
@@ -141,9 +143,9 @@ public class CategoryInfoAction extends StandardJaxrsAction{
 			result = new ExcuteListAll().execute( request, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new CategoryInfoListAllException( e );
+			Exception exception = new CategoryInfoProcessException( e, "查询所有分类信息对象时发生异常。" );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse( result );
 	}
@@ -160,7 +162,26 @@ public class CategoryInfoAction extends StandardJaxrsAction{
 			result = new ExcuteGet().execute( request, id, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new CategoryInfoQueryByIdException( e, id );
+			Exception exception = new CategoryInfoProcessException( e, "根据ID查询分类信息对象时发生异常。ID:" + id );
+			result.error( exception );
+			logger.error( e, effectivePerson, request, null);
+		}
+		return ResponseFactory.getDefaultActionResultResponse( result );
+	}
+	
+	@HttpMethodDescribe(value = "根据ID获取分类对象.", response = WrapOutCategoryInfo.class)
+	@GET
+	@Path("alias/{alias}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response getByAlias(@Context HttpServletRequest request, @PathParam("alias") String alias ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<WrapOutCategoryInfo> result = null;
+		try {
+			result = new ExcuteGetByAlias().execute( request, alias, effectivePerson );
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			Exception exception = new CategoryInfoProcessException( e, "根据标识查询分类信息对象时发生异常。ALIAS:"+ alias );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}

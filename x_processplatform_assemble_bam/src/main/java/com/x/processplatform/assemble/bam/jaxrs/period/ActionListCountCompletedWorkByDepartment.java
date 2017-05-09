@@ -8,8 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
-import com.x.base.core.http.HttpAttribute;
 import com.x.base.core.http.WrapOutMap;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.utils.DateRange;
 import com.x.base.core.utils.DateTools;
 import com.x.processplatform.assemble.bam.Business;
@@ -38,13 +38,13 @@ class ActionListCountCompletedWorkByDepartment extends ActionListCountCompletedW
 					pair.put("companyValue", stub.getCompanyValue());
 					pair.put("companyLevel", stub.getCompanyLevel());
 					Long count = this.count(business, o, applicationId, processId, companyName, stub.getValue(),
-							HttpAttribute.x_empty_symbol);
+							StandardJaxrsAction.EMPTY_SYMBOL);
 					pair.put("count", count);
 					Long duration = this.duration(business, o, applicationId, processId, companyName, stub.getValue(),
-							HttpAttribute.x_empty_symbol);
+							StandardJaxrsAction.EMPTY_SYMBOL);
 					pair.put("duration", duration);
 					Long times = this.times(business, o, applicationId, processId, companyName, stub.getValue(),
-							HttpAttribute.x_empty_symbol);
+							StandardJaxrsAction.EMPTY_SYMBOL);
 					pair.put("times", times);
 					list.add(pair);
 				}
@@ -58,7 +58,7 @@ class ActionListCountCompletedWorkByDepartment extends ActionListCountCompletedW
 		List<DepartmentStub> list = new ArrayList<>();
 		for (CompanyStub o : ThisApplication.period.getCompletedWorkCompanyStubs()) {
 			if (StringUtils.equals(o.getValue(), companyName)
-					|| StringUtils.equals(companyName, HttpAttribute.x_empty_symbol)) {
+					|| StringUtils.equals(companyName, StandardJaxrsAction.EMPTY_SYMBOL)) {
 				list.addAll(o.getDepartmentStubs());
 			}
 		}

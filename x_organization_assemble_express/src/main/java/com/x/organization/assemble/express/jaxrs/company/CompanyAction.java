@@ -13,14 +13,14 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
 import com.x.base.core.cache.ApplicationCache;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.project.jaxrs.AbstractJaxrsAction;
+import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.organization.assemble.express.Business;
 import com.x.organization.assemble.express.jaxrs.wrapout.WrapOutCompany;
 import com.x.organization.core.entity.Company;
@@ -114,6 +114,22 @@ public class CompanyAction extends AbstractJaxrsAction {
 				}
 			}
 			result.setData(wraps);
+		} catch (Throwable th) {
+			th.printStackTrace();
+			result.error(th);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+
+	@HttpMethodDescribe(value = "根据名称查询人员所在的公司.并递归查找上级公司", response = WrapOutCompany.class)
+	@GET
+	@Path("list/person/{name}/sup/nested")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response listWithPersonSupNested(@PathParam("name") String name) {
+		ActionResult<List<WrapOutCompany>> result = new ActionResult<>();
+		try {
+			result = new ActionListWithPersonSupNested().execute(name);
 		} catch (Throwable th) {
 			th.printStackTrace();
 			result.error(th);

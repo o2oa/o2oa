@@ -9,7 +9,6 @@
 		<antcall target="common.clean" />
 		<antcall target="common.compile" />
 		<antcall target="common.metamodel" />
-		<antcall target="common.compile" />
 		<antcall target="common.createEnhancePersistenceXml" />
 		<antcall target="common.enhance" />
 		<antcall target="common.jar" />

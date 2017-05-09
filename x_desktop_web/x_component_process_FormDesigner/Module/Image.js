@@ -46,24 +46,25 @@ MWF.xApplication.process.FormDesigner.Module.Image = MWF.FCImage = new Class({
 	_setEditStyle_custom: function(name){
 		if (name=="src"){
 			if (this.json.src){
-				this.node.src = this.json.src;
+                var src = this.json.src.imageSrc;
+				this.node.src = src;
                 this.setPropertiesOrStyles("styles");
-                if (!this.json.styles.width || !this.json.styles.height){
-                    var tmpImg = new Element("img",{
-                        "src": this.json.src
-                    }).inject(this.form.node);
-                    var size = tmpImg.getSize();
-                    if (!this.json.styles.width){
-                        this.node.setStyles({"width": ""+size.x+"px"});
-                        this.json.styles.width = ""+size.x+"px";
-                    }
-                    if (!this.json.styles.height){
-                        this.node.setStyles({"height": ""+size.y+"px"});
-                        this.json.styles.height = ""+size.y+"px";
-                    }
-                    this.property.maplists["styles"].reload(this.json.styles);
-                    tmpImg.destroy();
-                }
+                //if (!this.json.styles.width || !this.json.styles.height){
+                //    var tmpImg = new Element("img",{
+                //        "src": src
+                //    }).inject(this.form.node);
+                //    var size = tmpImg.getSize();
+                //    if (!this.json.styles.width){
+                //        this.node.setStyles({"width": ""+size.x+"px"});
+                //        this.json.styles.width = ""+size.x+"px";
+                //    }
+                //    if (!this.json.styles.height){
+                //        this.node.setStyles({"height": ""+size.y+"px"});
+                //        this.json.styles.height = ""+size.y+"px";
+                //    }
+                //    this.property.maplists["styles"].reload(this.json.styles);
+                //    tmpImg.destroy();
+                //}
 			}
 		}
 	}

@@ -16,15 +16,16 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.WrapInConvertException;
 
 @Path( "okrcenterworkinfo" )
 public class OkrCenterWorkInfoAction extends StandardJaxrsAction{
@@ -46,7 +47,7 @@ public class OkrCenterWorkInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			try {
@@ -164,16 +165,30 @@ public class OkrCenterWorkInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
+			
 		} catch (Exception e ) {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListDraftNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.setWorkProcessStatuses( null );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.addQueryInfoStatus( "正常" );	
+				wrapIn.addQueryWorkProcessStatus( "草稿" );
+				wrapIn.addQueryProcessIdentity( "部署者" );
+				result = new ExcuteListByProcessIdentityNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -197,16 +212,30 @@ public class OkrCenterWorkInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
+			
 		} catch (Exception e ) {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListDraftPrevWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.setWorkProcessStatuses( null );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.addQueryInfoStatus( "正常" );	
+				wrapIn.addQueryWorkProcessStatus( "草稿" );
+				wrapIn.addQueryProcessIdentity( "部署者" );
+				result = new ExcuteListByProcessIdentityNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -230,16 +259,35 @@ public class OkrCenterWorkInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
+			
 		} catch (Exception e ) {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListDeployNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.addQueryInfoStatus( "正常" );	
+				if( wrapIn.getWorkProcessStatuses() == null ){
+					wrapIn.addQueryWorkProcessStatus( "待审核" );
+					wrapIn.addQueryWorkProcessStatus( "待确认" );
+					wrapIn.addQueryWorkProcessStatus( "执行中" );
+					wrapIn.addQueryWorkProcessStatus( "已完成" );
+					wrapIn.addQueryWorkProcessStatus( "已撤消" );
+				}
+				wrapIn.addQueryProcessIdentity( "观察者" );
+				result = new ExcuteListByProcessIdentityNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -263,16 +311,35 @@ public class OkrCenterWorkInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
+			
 		} catch (Exception e ) {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListDeployPrevWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.addQueryInfoStatus( "正常" );	
+				if( wrapIn.getWorkProcessStatuses() == null ){
+					wrapIn.addQueryWorkProcessStatus( "待审核" );
+					wrapIn.addQueryWorkProcessStatus( "待确认" );
+					wrapIn.addQueryWorkProcessStatus( "执行中" );
+					wrapIn.addQueryWorkProcessStatus( "已完成" );
+					wrapIn.addQueryWorkProcessStatus( "已撤消" );
+				}
+				wrapIn.addQueryProcessIdentity( "观察者" );
+				result = new ExcuteListByProcessIdentityNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -296,16 +363,35 @@ public class OkrCenterWorkInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
+			
 		} catch (Exception e ) {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListReadNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.addQueryInfoStatus( "正常" );	
+				if( wrapIn.getWorkProcessStatuses() == null ){
+					wrapIn.addQueryWorkProcessStatus( "待审核" );
+					wrapIn.addQueryWorkProcessStatus( "待确认" );
+					wrapIn.addQueryWorkProcessStatus( "执行中" );
+					wrapIn.addQueryWorkProcessStatus( "已完成" );
+					wrapIn.addQueryWorkProcessStatus( "已撤消" );
+				}
+				wrapIn.addQueryProcessIdentity( "观察者" );
+				result = new ExcuteListByProcessIdentityNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -329,16 +415,35 @@ public class OkrCenterWorkInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
+			
 		} catch (Exception e ) {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListReadPrevWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.addQueryInfoStatus( "正常" );	
+				if( wrapIn.getWorkProcessStatuses() == null ){
+					wrapIn.addQueryWorkProcessStatus( "待审核" );
+					wrapIn.addQueryWorkProcessStatus( "待确认" );
+					wrapIn.addQueryWorkProcessStatus( "执行中" );
+					wrapIn.addQueryWorkProcessStatus( "已完成" );
+					wrapIn.addQueryWorkProcessStatus( "已撤消" );
+				}
+				wrapIn.addQueryProcessIdentity( "观察者" );
+				result = new ExcuteListByProcessIdentityNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -362,16 +467,28 @@ public class OkrCenterWorkInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
+			
 		} catch (Exception e ) {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListArchiveNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.addQueryInfoStatus( "已归档" );
+				wrapIn.addQueryProcessIdentity( "观察者" );
+				result = new ExcuteListByProcessIdentityNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -395,16 +512,28 @@ public class OkrCenterWorkInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
+			
 		} catch (Exception e ) {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListArchivePrevWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.addQueryInfoStatus( "已归档" );
+				wrapIn.addQueryProcessIdentity( "观察者" );
+				result = new ExcuteListByProcessIdentityPrevWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -432,7 +561,7 @@ public class OkrCenterWorkInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
@@ -465,7 +594,7 @@ public class OkrCenterWorkInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){

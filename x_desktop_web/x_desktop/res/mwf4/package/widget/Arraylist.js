@@ -99,7 +99,6 @@ MWF.widget.Arraylist = new Class({
 		this.fireEvent("change");
 	},
 	toArray: function(){
-        debugger;
         var itemNodes = this.contentItemsNode.getChildren("div");
 		var arr = [];
 		itemNodes.each(function(itemNode){

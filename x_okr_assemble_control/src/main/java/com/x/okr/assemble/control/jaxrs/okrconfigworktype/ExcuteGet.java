@@ -6,6 +6,9 @@ import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.okr.assemble.control.jaxrs.okrconfigworktype.exception.WorkTypeConfigIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrconfigworktype.exception.WorkTypeConfigNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrconfigworktype.exception.WorkTypeConfigQueryByIdException;
 import com.x.okr.entity.OkrConfigWorkType;
 
 import net.sf.ehcache.Element;
@@ -22,7 +25,7 @@ public class ExcuteGet extends ExcuteBase {
 		if( id == null || id.isEmpty() ){
 			Exception exception = new WorkTypeConfigIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+		//	logger.error( e, effectivePerson, request, null);
 		}else{
 			String cacheKey = catchNamePrefix + "." + id;
 			Element element = null;
@@ -41,12 +44,12 @@ public class ExcuteGet extends ExcuteBase {
 					}else{
 						Exception exception = new WorkTypeConfigNotExistsException( id );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						//logger.error( e, effectivePerson, request, null);
 					}
-				} catch (Throwable th) {
-					Exception exception = new WorkTypeConfigQueryByIdException( th, id );
+				} catch (Exception e) {
+					Exception exception = new WorkTypeConfigQueryByIdException( e, id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}		

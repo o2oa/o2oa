@@ -20,6 +20,11 @@
   "listIdentity": {"uri": "/jaxrs/identity/list/department/{name}/sub/direct"},
   "listIdentityNested": {"uri": "/jaxrs/identity/list/department/{name}/sub/nested"},
   "getSupDepartmentDirect": {"uri": "/jaxrs/department/{name}/sup/direct"},
-  "listDepartmentByPerson": {"uri": "/jaxrs/department/list/person/{name}"}
+  "listDepartmentByPerson": {"uri": "/jaxrs/department/list/person/{name}"},
+  "listTopCompanyByCompany": {"uri": "/jaxrs/company/list/{name}/sup/nested"},
+  "listCompanyByAttribute": {"uri": "/jaxrs/company/list/companyattribute/{attributeName}/{attributeValue}"},
+  "listTopCompany": {"uri": "/jaxrs/company/list/top"},
+  "listSubCompanyNest": {"uri": "/jaxrs/company/list/{name}/sub/nested"},
+  "listSubCompanyDirect": {"uri": "/jaxrs/company/list/{name}/sub/direct"}
 
 }

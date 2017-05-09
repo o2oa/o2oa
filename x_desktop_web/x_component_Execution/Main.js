@@ -5,7 +5,7 @@ MWF.xDesktop.requireApp("Template", "Explorer", null, false);
 MWF.xApplication.Execution.options = {
 	multitask: false,
 	executable: true
-}
+};
 MWF.xApplication.Execution.Main = new Class({
 	Extends: MWF.xApplication.Common.Main,
 	Implements: [Options, Events],
@@ -13,7 +13,7 @@ MWF.xApplication.Execution.Main = new Class({
 	options: {
 		"style": "default",
 		"name": "Execution",
-		"icon": "icon.png",
+		"icon": "appicon.png",
 		"width": "1270",
 		"height": "700",
 		"isResize": false,
@@ -31,7 +31,7 @@ MWF.xApplication.Execution.Main = new Class({
 		this.loginUser = layout.desktop.session.user.name;
 		this.userGender = layout.desktop.session.user.genderType;
 		this.department="";
-		this.trueUserName = this.user
+		this.trueUserName = this.user;
 		this.restActions = new MWF.xApplication.Execution.Actions.RestActions();
 		this.okrSystemAdmin = false;
 
@@ -93,7 +93,7 @@ MWF.xApplication.Execution.Main = new Class({
 				selector.load();
 			}else if( this.identites.length = 1 ){
 				this.restActions.login( { "loginIdentity" : this.identites[0] },function(json){
-					if(json.data) this.okrSystemAdmin = json.data.okrSystemAdmin
+					if(json.data) this.okrSystemAdmin = json.data.okrSystemAdmin;
 					this._loadApplication( null, this.identites[0] );
 				}.bind(this), null, false);
 			}else{
@@ -101,6 +101,9 @@ MWF.xApplication.Execution.Main = new Class({
 				this.close();
 			}
 		}
+		this.addEvent("resize", function(){
+			this.resizeContent();
+		}.bind(this));
 	},
 	_loadApplication: function(callback, identity ){
 		this.identity = identity;
@@ -109,7 +112,7 @@ MWF.xApplication.Execution.Main = new Class({
 				if(json.data && json.data.name){
 					this.department = json.data.name
 				}
-			}.bind(this),null,this.identity,false)
+			}.bind(this),null,this.identity,false);
 
 			this.orgAction.getPersonByIdentity(function(json){
 				if(json.data &&　json.data.name){
@@ -117,7 +120,7 @@ MWF.xApplication.Execution.Main = new Class({
 					this.user = json.data.name;
 				}
 			}.bind(this),null,this.identity,false)
-		}.bind(this))
+		}.bind(this));
 
 		this.createContainer();
 		this.createTopBarVersion();
@@ -143,7 +146,8 @@ MWF.xApplication.Execution.Main = new Class({
 			var size = this.middleContent.getSize();
 			var y = size.y-300;
 			var x = size.x-450;
-			if(this.todoList)this.todoList.setStyles({"height":y+"px"});
+			if(this.todoListContent)this.todoListContent.setStyles({"height":y+"px"});
+			if(this.workListContent)this.workListContent.setStyles({"height":y+"px"});
 			if(this.workConditionContentDiv)this.workConditionContentDiv.setStyles({"height":y+"px"});
 			if(this.leftContent)this.leftContent.setStyles({"width":x+"px"});
 		}.bind(this));
@@ -170,21 +174,22 @@ MWF.xApplication.Execution.Main = new Class({
 					identites.push( d.name );
 				})
 			}.bind(this), null, this.user,false)
-		}.bind(this))
+		}.bind(this));
 		this.restActions.listMyRelief(function(json){
 			if( json.data ){
 				json.data.each(function(d){
 					identites.push( d.leaderIdentity );
 				})
 			}
-		}.bind(this),null, false)
+		}.bind(this),null, false);
 		return identites;
 	},
 	resizeContent : function(){
 		var size = this.middleContent.getSize();
 		var y = size.y-300;
 		var x = size.x-450;
-		if(this.todoList)this.todoList.setStyles({"height":y+"px"});
+		if(this.todoListContent){this.todoListContent.setStyles({"height":y+"px"});this.todoListContentY = y}
+		if(this.workListContent){this.workListContent.setStyles({"height":y+"px"});this.todoListContentY = y}
 		if(this.workConditionContentDiv)this.workConditionContentDiv.setStyles({"height":y+"px"});
 		if(this.leftContent)this.leftContent.setStyles({"width":x+"px"});
 	},
@@ -233,14 +238,14 @@ MWF.xApplication.Execution.Main = new Class({
 	openContent : function( str ){
 		if( str == "xmind" ){
 			this.currentTopBarTab = "xmind";
-			this.loadTopBarTab(this.currentTopBarTab)
+			this.loadTopBarTab(this.currentTopBarTab);
 			this.middleContent.empty();
 			MWF.xDesktop.requireApp("Execution", "MinderExplorer", null, false);
-			var explorer = new MWF.xApplication.Execution.MinderExplorer(this.middleContent, this, this.restActions, {});
+			var explorer =this.mindExplorer = new MWF.xApplication.Execution.MinderExplorer(this.middleContent, this, this.restActions, {});
 			explorer.load();
 		}else if( str == "setting" ){
 			this.currentTopBarTab = "setting";
-			this.loadTopBarTab(this.currentTopBarTab)
+			this.loadTopBarTab(this.currentTopBarTab);
 			this.middleContent.empty();
 			MWF.xDesktop.requireApp("Execution", "SettingExplorer", function(){
 				var explorer = new MWF.xApplication.Execution.SettingExplorer(this.middleContent, this, this.restActions, {});
@@ -248,7 +253,7 @@ MWF.xApplication.Execution.Main = new Class({
 			}.bind(this), false);
 		}else{
 			this.currentTopBarTab = "work";
-			this.loadTopBarTab(this.currentTopBarTab)
+			this.loadTopBarTab(this.currentTopBarTab);
 			this.middleContent.empty();
 			this.createLayout();
 		}
@@ -267,7 +272,7 @@ MWF.xApplication.Execution.Main = new Class({
 			this.workList = new MWF.xApplication.Execution.WorkList(this.middleContent,this,this.restActions,{
 				"workNavi1" : workNavi1 || "",
 				"workNavi2" : workNavi2 || ""
-			})
+			});
 			this.workList.load();
 		}.bind(this))
 	},
@@ -277,20 +282,20 @@ MWF.xApplication.Execution.Main = new Class({
 		MWF.xDesktop.requireApp("Execution", "WorkReportList", function(){
 			this.workReportList = new MWF.xApplication.Execution.WorkReportList(this.middleContent,this,this.restActions,{
 				"workNavi1" : workNavi1 || ""
-			})
+			});
 			this.workReportList.load();
 		}.bind(this))
 	},
 	openStat: function(){
-		this.navi2 = "stat"
+		this.navi2 = "stat";
 		this.middleContent.empty();
 
 		MWF.xDesktop.requireApp("Execution", "WorkStat", function(){
 			this.workStat = new MWF.xApplication.Execution.WorkStat(this.middleContent,this,this.restActions,{
 
-			})
+			});
 			this.workStat.load();
-		}.bind(this))
+		}.bind(this));
 	},
 	//**********************************************************common-function END******************************************************************************
 
@@ -299,7 +304,7 @@ MWF.xApplication.Execution.Main = new Class({
 		createContainer: function(){
 			if( !this.container ){
 				this.content.setStyle("overflow", "hidden");
-				this.container = new Element("div", {
+				this.container = new Element("div.container", {
 					"styles": this.css.container
 				}).inject(this.content);
 			}
@@ -357,7 +362,7 @@ MWF.xApplication.Execution.Main = new Class({
 			this.topBarLog = new Element("img",{"styles": this.css.topBarLog,"src": this.path+"default/icon/okr.png"}).inject(this.topBarTitleLi);
 			this.topBarTitleSpan = new Element("span",{	"styles": this.css.topBarTitleSpan,"text":MWF.xApplication.Execution.LP.topBar.title}).inject(this.topBarTitleLi);
 			//top我的工作台
-			this.topBarWorkLi = new Element("li.topBarWorkLi",{"styles": this.css.topBarCurrentLi}).inject(this.topBarContent)
+			this.topBarWorkLi = new Element("li.topBarWorkLi",{"styles": this.css.topBarCurrentLi}).inject(this.topBarContent);
 			this.topBarWorkLi.addEvents({
 				"mouseover":function(){
 					if(this.currentTopBarTab!="work")this.topBarWorkLi.setStyles({"background-color":"#124c93"})
@@ -368,7 +373,7 @@ MWF.xApplication.Execution.Main = new Class({
 				"click" : function(){
 					this.openContent( "work" );
 				}.bind(this)
-			})
+			});
 			this.topBarWorkImg = new Element("img",{"styles": this.css.topBarWorkImg,"src": this.path+"default/icon/Outline-104.png"}).inject(this.topBarWorkLi);
 			this.topBarWorkSpan = new Element("span",{"styles": this.css.topBarWorkSpan,"text":MWF.xApplication.Execution.LP.topBar.work}).inject(this.topBarWorkLi);
 			//top脑图展示
@@ -401,7 +406,7 @@ MWF.xApplication.Execution.Main = new Class({
 					this.openContent( "setting" );
 				}.bind(this)
 			});
-			if(!this.okrSystemAdmin) this.topBarSettingLi.setStyle("display","none")
+			if(!this.okrSystemAdmin) this.topBarSettingLi.setStyle("display","none");
 
 			//top-right
 			this.topBarRight = new Element("div.toBarRight",{"styles":this.css.topBarRight}).inject(this.topBar);
@@ -410,8 +415,8 @@ MWF.xApplication.Execution.Main = new Class({
 			this.topBarRightDeptImg = new Element("img",{"styles":this.css.topBarRightDeptImg,"src":this.path+"default/icon/Home-96.png"}).inject(this.topBarRightDeptLi);
 			this.topBarRightDeptSpan = new Element("span",{"styles":this.css.topBarRightDeptSpan,"text":this.department}).inject(this.topBarRightDeptLi);
 			//用户
-			if(this.userGender=="f") this.userFace = this.path+"default/icon/UserFemale-104.png"
-			else this.userFace = this.path+"default/icon/UserMale-104.png"
+			if(this.userGender=="f") this.userFace = this.path+"default/icon/UserFemale-104.png";
+			else this.userFace = this.path+"default/icon/UserMale-104.png";
 			this.topBarRightPersonLi = new Element("li",{"styles":this.css.topBarRightPersonLi}).inject(this.topBarRight);
 			this.topBarRightPersonImg = new Element("img",{"styles":this.css.topBarRightPersonImg,"src":this.userFace}).inject(this.topBarRightPersonLi);
 			this.topBarRightPersonSpan = new Element("span",{"styles":this.css.topBarRightPersonSpan,"text":this.trueUserName}).inject(this.topBarRightPersonLi);
@@ -484,34 +489,15 @@ MWF.xApplication.Execution.Main = new Class({
 				this.todoMenuWorkCount = new Element("span.todoMenuWorkCount",{"styles":this.css.todoMenuWorkCount}).inject(this.todoMenuWork);
 			}
 
-			this.todoList = new Element("div.todoList",{"styles": this.css.todoList}).inject(this.leftBottomContent);
-			this.todoListDiv = new Element("div.todoListDiv",{"styles": this.css.todoListDiv}).inject(this.todoList);
-			MWF.require("MWF.widget.ScrollBar", function () {
-				new MWF.widget.ScrollBar(this.todoListDiv, {
-					"indent": false,
-					"style": "xApp_TaskList",
-					"where": "before",
-					"distance": 30,
-					"friction": 4,
-					"axis": {"x": false, "y": true},
-					"onScroll": function (y) {
-						var scrollSize = this.todoListDiv.getScrollSize();
-						var clientSize = this.todoListDiv.getSize();
-						var scrollHeight = scrollSize.y - clientSize.y;
-						var view = this.todoView || this.workView;
-						if (y + 200 > scrollHeight && view && view.loadElementList) {
-							if (! view.isItemsLoaded) view.loadElementList();
-						}
-					}.bind(this)
-				});
-			}.bind(this));
+			this.todoListContent = new Element("div.todoListContent",{"styles": this.css.todoList}).inject(this.leftBottomContent);
+			this.todoListDiv = new Element("div.todoListDiv",{"styles": this.css.todoListDiv}).inject(this.todoListContent);
 
-			_selfToDo = this
+			_selfToDo = this;
 			this.todoMenuRightDiv.getElements("li").addEvents({
 				"click":function(e){
 					_selfToDo.changeTodoTab(this)
 				}
-			})
+			});
 			this.getTodoCount();
 			this.createTodoList();
 		},
@@ -532,27 +518,27 @@ MWF.xApplication.Execution.Main = new Class({
 			this.todoList = new Element("div.todoList",{"styles": this.css.todoList}).inject(this.leftBottomContent);
 			this.todoListDiv = new Element("div.todoListDiv",{"styles": this.css.todoListDiv}).inject(this.todoList);
 
-			MWF.require("MWF.widget.ScrollBar", function () {
-				new MWF.widget.ScrollBar(this.todoListDiv, {
-					"indent": false,
-					"style": "xApp_TaskList",
-					"where": "before",
-					"distance": 30,
-					"friction": 4,
-					"axis": {"x": false, "y": true},
-					"onScroll": function (y) {
-						var scrollSize = this.todoListDiv.getScrollSize();
-						var clientSize = this.todoListDiv.getSize();
-						var scrollHeight = scrollSize.y - clientSize.y;
-						//var view = this.todoView;
-						var view = this.todoView;
-
-						if (y + 200 > scrollHeight && view && view.loadElementList) {
-							if (! view.isItemsLoaded) view.loadElementList();
-						}
-					}.bind(this)
-				});
-			}.bind(this));
+			//MWF.require("MWF.widget.ScrollBar", function () {
+			//	new MWF.widget.ScrollBar(this.todoListDiv, {
+			//		"indent": false,
+			//		"style": "xApp_TaskList",
+			//		"where": "before",
+			//		"distance": 30,
+			//		"friction": 4,
+			//		"axis": {"x": false, "y": true},
+			//		"onScroll": function (y) {
+			//			var scrollSize = this.todoListDiv.getScrollSize();
+			//			var clientSize = this.todoListDiv.getSize();
+			//			var scrollHeight = scrollSize.y - clientSize.y;
+			//			//var view = this.todoView;
+			//			var view = this.todoView;
+            //
+			//			if (y + 200 > scrollHeight && view && view.loadElementList) {
+			//				if (! view.isItemsLoaded) view.loadElementList();
+			//			}
+			//		}.bind(this)
+			//	});
+			//}.bind(this));
 
 			this.createTodoList();
 		},
@@ -573,11 +559,11 @@ MWF.xApplication.Execution.Main = new Class({
 			var processCount = 0;
 			var overtimeCount = 0;
 			var completedCount = 0;
-			var percentNum = "100%"
+			var percentNum = "100%";
 			this.restActions.getMyStat(function(json){
-				if(json.data && json.data.responProcessingWorkCount) processCount = json.data.responProcessingWorkCount
-				if(json.data && json.data.overtimeResponWorkCount) overtimeCount = json.data.overtimeResponWorkCount
-				if(json.data && json.data.responCompletedWorkCount) completedCount = json.data.responCompletedWorkCount
+				if(json.data && json.data.responProcessingWorkCount) processCount = json.data.responProcessingWorkCount;
+				if(json.data && json.data.overtimeResponWorkCount) overtimeCount = json.data.overtimeResponWorkCount;
+				if(json.data && json.data.responCompletedWorkCount) completedCount = json.data.responCompletedWorkCount;
 				if(json.data && json.data.percent) percentNum = (parseInt(json.data.percent)*100)
 			}.bind(this),null,false)
 
@@ -700,7 +686,7 @@ MWF.xApplication.Execution.Main = new Class({
 					this.openStat();
 				}
 			}.bind(this)
-		})
+		});
 		var categoryIconsImg = new Element("img.categoryIconsImg",{
 			"styles": this.css.categoryIconsImg,
 			"src":img
@@ -734,22 +720,35 @@ MWF.xApplication.Execution.Main = new Class({
 		},
 		createTodoList: function(category){
 			if( this.workView )delete this.workView;
+			if(this.workListContent) this.workListContent.destroy();
+			if(this.todoListContent) this.todoListContent.destroy();
+
+			this.todoListContent = new Element("div.todoListContent",{"styles": this.css.todoList}).inject(this.leftBottomContent);
+			if(this.todoListContentY) this.todoListContent.setStyles({"height":this.todoListContentY+"px"});
+			this.todoListDiv = new Element("div.todoListDiv",{"styles": this.css.todoListDiv}).inject(this.todoListContent);
 			if( this.todoListDiv ){
 				this.todoListDiv.empty();
-				var filter = {}
+				var filter = {};
 				this.todoView =  new  MWF.xApplication.Execution.TodoView(this.todoListDiv, this, this, { templateUrl : this.path+"todoList.json",category:category,filterData:filter } )
 				this.todoView.load();
+				this.setScrollBar(this.todoListDiv,this.todoView)
 			}
 		},
 		createWorkList : function(category){
 			if( this.todoView )delete this.todoView;
+			if(this.todoListContent) this.todoListContent.destroy();
+			if(this.workListContent) this.workListContent.destroy();
 
-			if(this.todoListDiv){
-				this.todoListDiv.empty();
+			this.workListContent = new Element("div.workListContent",{"styles": this.css.todoList}).inject(this.leftBottomContent);
+			if(this.todoListContentY) this.workListContent.setStyles({"height":this.todoListContentY+"px"});
+			this.workListDiv = new Element("div.workListDiv",{"styles": this.css.todoListDiv}).inject(this.workListContent);
+			if(this.workListDiv){
+				this.workListDiv.empty();
 				var filter = {};
 
-				this.workView =  new  MWF.xApplication.Execution.WorkView(this.todoListDiv, this, this, { templateUrl : this.path+"workList.json",category:category,filterData:filter } )
+				this.workView =  new  MWF.xApplication.Execution.WorkView(this.workListDiv, this, this, { templateUrl : this.path+"workList.json",category:category,filterData:filter } )
 				this.workView.load();
+				this.setScrollBar(this.workListDiv,this.workView)
 			}
 		},
 	//****************************left-bottom function END***********************
@@ -764,35 +763,110 @@ MWF.xApplication.Execution.Main = new Class({
 			this.workConditionContentDiv = new Element("div",{"styles": this.css.workConditionContentDiv}).inject(this.rightBottomContent);
 			this.workConditionListDiv = new Element("div.workConditionListDiv",{"styles":this.css.workConditionListDiv}).inject(this.workConditionContentDiv);
 
-			MWF.require("MWF.widget.ScrollBar", function () {
-				new MWF.widget.ScrollBar(this.workConditionListDiv, {
-					"indent": false,
-					"style": "xApp_TaskList",
-					"where": "before",
-					"distance": 30,
-					"friction": 4,
-					"axis": {"x": false, "y": true},
-					"onScroll": function (y) {
-						var scrollSize = this.workConditionListDiv.getScrollSize();
-						var clientSize = this.workConditionListDiv.getSize();
-						var scrollHeight = scrollSize.y - clientSize.y;
-						var view = this.workConditionView;
-
-						if (y + 200 > scrollHeight && view && view.loadElementList) {
-							if (! view.isItemsLoaded) {view.loadElementList();}
-						}
-					}.bind(this)
-				});
-			}.bind(this));
-
 			if(this.workConditionListDiv)this.workConditionListDiv.empty();
 			this.workConditionView =  new  MWF.xApplication.Execution.WorkConditionView(this.workConditionListDiv, this, this, { templateUrl : this.path+"workConditionList.json" } )
 			this.workConditionView.load();
-		}
+			this.setScrollBar(this.workConditionListDiv,this.workConditionView)
+		},
 
 	//****************************right-bottom function END***********************
 
 	//*************************************************************************section function END*******************************************************************************
+
+	createShade: function(obj,txt){
+		var defaultObj = this.content;
+		var obj = obj || defaultObj;
+		var txt = txt || "loading...";
+		if(this.shadeDiv){ this.shadeDiv.destroy()}
+		if(this.shadeTxtDiv)  this.shadeTxtDiv.destroy();
+		this.shadeDiv = new Element("div.shadeDiv").inject(obj);
+		this.inforDiv = new Element("div.inforDiv",{
+			styles:{"height":"16px","display":"inline-block","position":"absolute","background-color":"#000000","border-radius":"3px","padding":"5px 10px"}
+		}).inject(this.shadeDiv);
+		this.loadImg = new Element("img.loadImg",{
+			styles:{"width":"16px","height":"16px","float":"left"},
+			src:"/x_component_Execution/$Main/default/icon/loading.gif"
+		}).inject(this.inforDiv);
+
+		this.shadeTxtSpan = new Element("span.shadeTxtSpan").inject(this.inforDiv);
+		this.shadeTxtSpan.set("text",txt);
+		this.shadeDiv.setStyles({
+			"width":"100%","height":"100%","position":"absolute","opacity":"0.6","background-color":"#cccccc","z-index":"999"
+		});
+		this.shadeTxtSpan.setStyles({"color":"#ffffff","font-size":"12px","display":"inline-block","line-height":"16px","padding-left":"5px"});
+
+		var x = obj.getSize().x;
+		var y = obj.getSize().y;
+		this.shadeDiv.setStyles({
+			"left":(obj.getLeft()-defaultObj.getLeft())+"px",
+			"top":(obj.getTop()-defaultObj.getTop())+"px",
+			"width":x+"px",
+			"height":y+"px"
+		});
+		if(obj.getStyle("position")=="absolute"){
+			this.shadeDiv.setStyles({
+				"left":"0px",
+				"top":"0px"
+			})
+		}
+		this.inforDiv.setStyles({
+			"left":(x/2)+"px",
+			"top":(y/2)+"px"
+		})
+	},
+	setScrollBar: function(node, view, style, offset, callback){
+		if (!style) style = "default";
+		if (!offset){
+			offset = {
+				"V": {"x": 0, "y": 0},
+				"H": {"x": 0, "y": 0}
+			};
+		}
+		MWF.require("MWF.widget.ScrollBar", function(){
+			if(this.scrollbar && this.scrollbar.scrollVAreaNode){
+				this.scrollbar.scrollVAreaNode.destroy();
+				delete this.scrollbar;
+			}
+			this.scrollbar = new MWF.widget.ScrollBar(node, {
+				"style": style,
+				"offset": offset,
+				"where": "before",
+				"indent": false,
+				"distance": 100,
+				"friction": 4,
+				"onScroll": function (y) {
+					var scrollSize = node.getScrollSize();
+					var clientSize = node.getSize();
+					var scrollHeight = scrollSize.y - clientSize.y;
+					if (y + 200 > scrollHeight && view && view.loadElementList) {
+						if (! view.isItemsLoaded) view.loadElementList()
+					}
+				}.bind(this)
+			});
+			if (callback) callback();
+		}.bind(this));
+		return false;
+	},
+	destroyShade : function(){
+		if(this.shadeDiv) this.shadeDiv.destroy();
+		//if(this.shadeDiv) this.shadeDiv.destroy()
+	},
+	showErrorMessage:function(xhr,text,error){
+		var errorText = error;
+		if (xhr) errorMessage = xhr.responseText;
+		if(errorMessage!=""){
+			var e = JSON.parse(errorMessage);
+			if(e.message){
+				this.notice( e.message,"error");
+			}else{
+				this.notice( errorText,"error");
+			}
+		}else{
+			this.notice(errorText,"error");
+		}
+
+	}
+
 });
 
 
@@ -841,7 +915,7 @@ MWF.xApplication.Execution.IdenitySelector = new Class({
 			this.formTopTextNode = new Element("div", {
 				"styles": this.css.formTopTextNode,
 				"text": this.options.title
-			}).inject(this.formTopNode)
+			}).inject(this.formTopNode);
 
 			if (this.options.closeAction) {
 				this.formTopCloseActionNode = new Element("div", {"styles": this.css.formTopCloseActionNode}).inject(this.formTopNode);
@@ -852,7 +926,7 @@ MWF.xApplication.Execution.IdenitySelector = new Class({
 
 			this.formTopContentNode = new Element("div", {
 				"styles": this.css.formTopContentNode
-			}).inject(this.formTopNode)
+			}).inject(this.formTopNode);
 
 			this._createTopContent();
 
@@ -955,7 +1029,7 @@ MWF.xApplication.Execution.TodoView = new Class({
 		var filter = this.options.filterData || {};
 
 		this.actions.getTaskListNext(id, count, filter, function (json) {
-			if(this.explorer.todoMenuDoCount && json.count) this.explorer.todoMenuDoCount.set("text","("+json.count+")")
+			if(this.explorer.todoMenuDoCount && json.count) this.explorer.todoMenuDoCount.set("text","("+json.count+")");
 			if (callback)callback(json);
 		}.bind(this),function(xhr,error,text){}.bind(this))
 
@@ -966,7 +1040,7 @@ MWF.xApplication.Execution.TodoView = new Class({
 				var data = {
 					workReportId : documentData.dynamicObjectId,
 					workId : documentData.workId
-				}
+				};
 
 				this.workReport = new MWF.xApplication.Execution.WorkReport(this, this.actions,data,{
 					"isEdited":false,
@@ -1000,7 +1074,7 @@ MWF.xApplication.Execution.TodoView = new Class({
 				var data = {
 					gatherId: documentData.id,
 					title: documentData.dynamicObjectTitle
-				}
+				};
 				this.workGather = new MWF.xApplication.Execution.WorkGather(this, this.actions,data,{
 					onReloadView : function( data ){
 						this.explorer.createTodoList();
@@ -1018,7 +1092,7 @@ MWF.xApplication.Execution.TodoView = new Class({
 					todoId : documentData.id,
 					workReportId : documentData.dynamicObjectId,
 					workId : documentData.workId
-				}
+				};
 
 				this.workReport = new MWF.xApplication.Execution.WorkReport(this, this.actions,data,{
 					"isEdited":false,
@@ -1038,7 +1112,7 @@ MWF.xApplication.Execution.TodoView = new Class({
 					todoId : documentData.id,
 					workReportId : documentData.dynamicObjectId,
 					workId : documentData.workId
-				}
+				};
 
 				this.workReport = new MWF.xApplication.Execution.WorkReport(this, this.actions,data,{
 					"isEdited":false,
@@ -1054,11 +1128,11 @@ MWF.xApplication.Execution.TodoView = new Class({
 		}
 	}
 
-})
+});
 
 MWF.xApplication.Execution.TodoDocument = new Class({
 	Extends: MWF.xApplication.Template.Explorer.ComplexDocument
-})
+});
 
 MWF.xApplication.Execution.WorkView = new Class({
 	Extends: MWF.xApplication.Template.Explorer.ComplexView,
@@ -1074,7 +1148,7 @@ MWF.xApplication.Execution.WorkView = new Class({
 		var filter = this.options.filterData || {};
 
 		this.actions.getBaseWorkListMyDoNext(id, count, filter, function (json) {
-			if(this.explorer.todoMenuWorkCount && json.count) this.explorer.todoMenuWorkCount.set("text","("+json.count+")")
+			if(this.explorer.todoMenuWorkCount && json.count) this.explorer.todoMenuWorkCount.set("text","("+json.count+")");
 			if (callback)callback(json);
 		}.bind(this))
 
@@ -1102,12 +1176,12 @@ MWF.xApplication.Execution.WorkDocument = new Class({
 				_width = _width.toFixed(2);
 				var bgcolor = "#0099ff";
 				if(itemData.isOverTime) bgcolor = "#f00";
-				obj.setStyles({"width":_width+"%","background-color":bgcolor})
+				obj.setStyles({"width":_width+"%","background-color":bgcolor});
 				itemNode.set("title",_width+"%")
 			}
 		}
 	}
-})
+});
 
 
 MWF.xApplication.Execution.WorkConditionView = new Class({
@@ -1155,24 +1229,24 @@ MWF.xApplication.Execution.WorkConditionView = new Class({
 	_getCurrentPageData: function(callback, count){
 		var category = this.options.category;
 
-		if (!count)count = 15;
+		if (!count)count = 20;
 		var id = (this.items.length) ? this.items[this.items.length - 1].data.id : "(0)";
 		var filter = this.options.filterData || {};
 
 		this.actions.getWorkConditionListNext(id, count, filter, function (json) { //alert(JSON.stringify(json))
 			json.data.each(function( d ){
 				this.parseEmotion( d );
-			}.bind(this))
+			}.bind(this));
 			if (callback)callback(json);
 		}.bind(this))
 
 	}
 
-})
+});
 
 
 MWF.xApplication.Execution.WorkConditionDocument = new Class({
 	Extends: MWF.xApplication.Template.Explorer.ComplexDocument
-})
+});
 
 //**************************Class*******************************************

@@ -5,15 +5,16 @@ import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
+
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
-import com.x.base.core.http.HttpAttribute;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.okr.assemble.control.Business;
 import com.x.okr.assemble.control.jaxrs.okrworkreportpersonlink.WrapInFilter;
 import com.x.okr.assemble.control.jaxrs.okrworkreportpersonlink.WrapInOkrWorkReportPersonLink;
@@ -194,7 +195,7 @@ public class OkrWorkReportPersonLinkService{
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			if( id != null && !"(0)".equals(id) && id.trim().length() > 20 ){
-				if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+				if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
 					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkReportPersonLink.class ), "sequence" );
 				}
 			}
@@ -226,7 +227,7 @@ public class OkrWorkReportPersonLinkService{
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			if( id != null && !"(0)".equals(id) && id.trim().length() > 20 ){
-				if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+				if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
 					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkReportPersonLink.class ), "sequence" );
 				}
 			}

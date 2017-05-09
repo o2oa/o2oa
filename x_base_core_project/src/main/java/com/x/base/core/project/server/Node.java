@@ -14,7 +14,7 @@ public class Node extends GsonPropertyObject {
 		o.web = WebServer.defaultInstance();
 		o.data = DataServer.defaultInstance();
 		o.storage = StorageServer.	defaultInstance();
-		o.logLevel = "info";
+		o.logLevel = "warn";
 		return o;
 	}
 

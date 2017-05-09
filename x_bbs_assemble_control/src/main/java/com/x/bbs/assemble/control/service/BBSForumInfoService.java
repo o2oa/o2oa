@@ -1,8 +1,7 @@
 package com.x.bbs.assemble.control.service;
 
 import java.util.List;
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
@@ -21,14 +20,15 @@ import com.x.organization.core.express.wrap.WrapDepartment;
  */
 public class BBSForumInfoService {
 	
-	private Logger logger = LoggerFactory.getLogger( BBSForumInfoService.class );
-	
 	/**
 	 * 向数据库保存BBSForumInfo对象
 	 * @param wrapIn
 	 */
 	public BBSForumInfo save( EntityManagerContainer emc, BBSForumInfo _bBSForumInfo ) throws Exception {
 		BBSForumInfo _bBSForumInfo_tmp = null;
+		if( _bBSForumInfo == null ){
+			throw new Exception("forum info is null!");
+		}
 		if( _bBSForumInfo.getId() == null ){
 			_bBSForumInfo.setId( BBSForumInfo.createId() );
 		}

@@ -8,13 +8,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.http.HttpAttribute;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.WrapTools;
 import com.x.cms.assemble.control.jaxrs.document.WrapInDocument;
-import com.x.cms.assemble.control.jaxrs.document.WrapInDocumentPictureInfo;
 import com.x.cms.core.entity.Document;
-import com.x.cms.core.entity.DocumentPictureInfo;
 import com.x.cms.core.entity.Log;
 import com.x.cms.core.entity.content.DataItem;
 
@@ -146,7 +144,7 @@ public class DocumentInfoService {
 		Object sequenceFieldValue = null;
 		//查询出ID对应的记录的sequence
 		if( id != null && !"(0)".equals(id) && !id.isEmpty() ){
-			if ( !StringUtils.equalsIgnoreCase( id, HttpAttribute.x_empty_symbol ) ) {
+			if ( !StringUtils.equalsIgnoreCase( id, StandardJaxrsAction.EMPTY_SYMBOL ) ) {
 				document = emc.find( id, Document.class );
 				if( document != null ){
 					sequenceFieldValue = PropertyUtils.getProperty( document, orderField );
@@ -166,38 +164,6 @@ public class DocumentInfoService {
 		return business.getDataItemFactory().getWithDocIdWithPath( document, path0, path1, path2, path3, path4, path5, path6, path7);
 	}
 
-	public DocumentPictureInfo saveMainPicture(EntityManagerContainer emc, WrapInDocumentPictureInfo wrapIn ) throws Exception {
-		if( wrapIn == null ){
-			throw new Exception("wrapIn is null!");
-		}
-		DocumentPictureInfo picture = null;
-		
-		picture = emc.find( wrapIn.getId(), DocumentPictureInfo.class );
-		
-		emc.beginTransaction( DocumentPictureInfo.class );
-		emc.beginTransaction(Log.class);
-		if( picture == null ){
-			picture = new DocumentPictureInfo();
-			WrapTools.picture_wrapin_copier.copy( wrapIn, picture );
-			emc.persist( picture, CheckPersistType.all );
-		}else{
-			WrapTools.picture_wrapin_copier.copy( wrapIn, picture );
-			picture.copyTo( picture );
-			emc.check( picture, CheckPersistType.all );
-		}
-		emc.commit();
-		return picture;
-	}
-
-	public List<DocumentPictureInfo> listMainPictureByDocId(EntityManagerContainer emc, String docId) throws Exception {
-		Business business = new Business(emc);	
-		List<String> ids = business.documentPictureInfoFactory().listByDocId( docId );
-		if( ids != null && !ids.isEmpty() ){
-			return business.documentPictureInfoFactory().list(ids);
-		}
-		return null;
-	}
-
 	public List<String> lisViewableDocIdsWithFilter(EntityManagerContainer emc, List<String> appIdList, 
 			List<String> appAliasList, List<String> categoryIdList, List<String> categoryAliasList, 
 			List<String> publisherList, String title, List<String> createDateList,
@@ -206,11 +172,6 @@ public class DocumentInfoService {
 		return business.getDocumentFactory().lisViewableDocIdsWithFilter( appIdList, appAliasList,
 				 categoryIdList, categoryAliasList , publisherList,  title, createDateList,
 				 publishDateList, statusList, maxResultCount);
-	}
-
-	public DocumentPictureInfo getDocumentPictureById(EntityManagerContainer emc, String id) throws Exception {
-		Business business = new Business( emc );	
-		return business.documentPictureInfoFactory().get( id );
 	}
 
 }

@@ -2,18 +2,32 @@ package com.x.cms.assemble.control.jaxrs.document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.cache.ApplicationCache;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.gson.XGsonBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.assemble.control.jaxrs.document.exception.AppInfoNotExistsException;
+import com.x.cms.assemble.control.jaxrs.document.exception.CategoryFormIdEmptyException;
+import com.x.cms.assemble.control.jaxrs.document.exception.CategoryInfoNotExistsException;
+import com.x.cms.assemble.control.jaxrs.document.exception.DocumentCategoryIdEmptyException;
+import com.x.cms.assemble.control.jaxrs.document.exception.DocumentInfoProcessException;
+import com.x.cms.assemble.control.jaxrs.document.exception.DocumentTitleEmptyException;
+import com.x.cms.assemble.control.jaxrs.document.exception.FormForEditNotExistsException;
+import com.x.cms.assemble.control.jaxrs.document.exception.FormForReadNotExistsException;
+import com.x.cms.assemble.control.jaxrs.document.exception.PersonHasNoIdentityException;
+import com.x.cms.assemble.control.jaxrs.document.exception.PersonIdentityInvalidException;
+import com.x.cms.assemble.control.jaxrs.document.exception.PersonIdentityQueryException;
 import com.x.cms.assemble.control.jaxrs.documentpermission.element.PermissionInfo;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
@@ -48,7 +62,6 @@ public class ExcuteSave extends ExcuteBase {
 						check = false;
 						Exception exception = new PersonHasNoIdentityException( effectivePerson.getName() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
 					} else if (identities.size() == 1) {
 						wrapIdentity = identities.get(0);
 					} else {
@@ -57,7 +70,6 @@ public class ExcuteSave extends ExcuteBase {
 							check = false;
 							Exception exception = new PersonIdentityInvalidException( identity );
 							result.error( exception );
-							logger.error( exception, effectivePerson, request, null);
 						}
 					}
 				}			
@@ -65,7 +77,7 @@ public class ExcuteSave extends ExcuteBase {
 				check = false;
 				Exception exception = new PersonIdentityQueryException( e, identity );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -74,7 +86,6 @@ public class ExcuteSave extends ExcuteBase {
 				check = false;
 				Exception exception = new DocumentTitleEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		
@@ -83,7 +94,6 @@ public class ExcuteSave extends ExcuteBase {
 				check = false;
 				Exception exception = new DocumentCategoryIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		
@@ -92,15 +102,14 @@ public class ExcuteSave extends ExcuteBase {
 				appInfo = appInfoServiceAdv.get( wrapIn.getAppId() );
 				if( appInfo == null ){
 					check = false;
-					Exception exception = new ServiceLogicException( "应用栏目信息不存在！ID：" + wrapIn.getAppId() );
+					Exception exception = new AppInfoNotExistsException( wrapIn.getAppId() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
 				}
 			}catch(Exception e){
 				check = false;
-				Exception exception = new ServiceLogicException( e, "系统在根据ID查询应用栏目信息时发生异常！ID：" + wrapIn.getAppId() );
+				Exception exception = new DocumentInfoProcessException( e, "系统在根据ID查询应用栏目信息时发生异常！ID：" + wrapIn.getAppId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -109,15 +118,14 @@ public class ExcuteSave extends ExcuteBase {
 				categoryInfo = categoryInfoServiceAdv.get( wrapIn.getCategoryId() );
 				if( categoryInfo == null ){
 					check = false;
-					Exception exception = new ServiceLogicException( "分类信息不存在！ID:" + wrapIn.getCategoryId() );
+					Exception exception = new CategoryInfoNotExistsException(  wrapIn.getCategoryId() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
 				}
 			}catch(Exception e){
 				check = false;
-				Exception exception = new ServiceLogicException( e, "系统在根据ID查询分类信息时发生异常！ID：" + wrapIn.getCategoryId() );
+				Exception exception = new DocumentInfoProcessException( e, "系统在根据ID查询分类信息时发生异常！ID：" + wrapIn.getCategoryId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -127,7 +135,6 @@ public class ExcuteSave extends ExcuteBase {
 				check = false;
 				Exception exception = new CategoryFormIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		
@@ -136,18 +143,17 @@ public class ExcuteSave extends ExcuteBase {
 				form = formServiceAdv.get( categoryInfo.getFormId() );
 				if( form == null ){
 					check = false;
-					Exception exception = new ServiceLogicException( "分类设置的文档编辑表单不存在！ID：" + categoryInfo.getFormId() );
+					Exception exception = new FormForEditNotExistsException( categoryInfo.getFormId() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
 				}else{
 					wrapIn.setForm( form.getId() );
 					wrapIn.setFormName( form.getName() );
 				}
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ServiceLogicException( e, "系统在根据ID查询编辑表单时发生异常！ID：" + categoryInfo.getFormId() );
+				Exception exception = new DocumentInfoProcessException( e, "系统在根据ID查询编辑表单时发生异常！ID：" + categoryInfo.getFormId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -157,18 +163,17 @@ public class ExcuteSave extends ExcuteBase {
 					form = formServiceAdv.get( categoryInfo.getReadFormId() );
 					if( form == null ){
 						check = false;
-						Exception exception = new ServiceLogicException( "文档阅读表单不存在！ID：" + categoryInfo.getReadFormId() );
+						Exception exception = new FormForReadNotExistsException( categoryInfo.getReadFormId() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
 					}else{
 						wrapIn.setReadFormId( form.getId() );
 						wrapIn.setReadFormName( form.getName() );
 					}
 				} catch (Exception e) {
 					check = false;
-					Exception exception = new ServiceLogicException( e, "系统在根据ID查询阅读表单时发生异常！ID：" + categoryInfo.getReadFormId() );
+					Exception exception = new DocumentInfoProcessException( e, "系统在根据ID查询阅读表单时发生异常！ID：" + categoryInfo.getReadFormId() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -179,6 +184,9 @@ public class ExcuteSave extends ExcuteBase {
 			wrapIn.setCategoryName( categoryInfo.getCategoryName() );
 			wrapIn.setCategoryId( categoryInfo.getId() );
 			wrapIn.setCategoryAlias( categoryInfo.getCategoryAlias() );
+			if( wrapIn.getPictureList() != null && !wrapIn.getPictureList().isEmpty() ){
+				wrapIn.setHasIndexPic( true );
+			}
 		}
 		
 		if( check ){
@@ -198,7 +206,6 @@ public class ExcuteSave extends ExcuteBase {
 					}else{
 						Exception exception = new PersonHasNoIdentityException( effectivePerson.getName() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
 					}
 				}
 			} catch (Throwable th) {
@@ -210,21 +217,48 @@ public class ExcuteSave extends ExcuteBase {
 		if( check ){
 			try{
 				document = documentServiceAdv.save( wrapIn );
-				
 				ApplicationCache.notify( Document.class );
-				
 				result.setData( new WrapOutId( document.getId() ) );
 			}catch(Exception e){
 				check = false;
-				Exception exception = new ServiceLogicException( e, "系统在创建文档信息时发生异常！" );
+				Exception exception = new DocumentInfoProcessException( e, "系统在创建文档信息时发生异常！" );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
+		//文档保存成功，再保存一下文档的数据信息
 		if( check ){
+			Map<?, ?> data = null;
+			String[] paths = wrapIn.getDataPaths();
+			if( wrapIn.getDocData() != null ){
+				data = documentServiceAdv.getDocumentData( document );
+				JsonElement json = XGsonBuilder.instance().toJsonTree( wrapIn.getDocData(), Map.class);	
+				if( data != null && !data.isEmpty() ){
+					try{
+						documentServiceAdv.updateDataItem( paths, json, document );
+					}catch(Exception e){
+						check = false;
+						Exception exception = new DocumentInfoProcessException( e, "系统在更新文档数据信息时发生异常！" );
+						result.error( exception );
+						logger.error( e, effectivePerson, request, null);
+					}
+				}else{
+					try{
+						documentServiceAdv.saveDataItem( paths, json, document );
+					}catch(Exception e){
+						check = false;
+						Exception exception = new DocumentInfoProcessException( e, "系统在保存文档数据信息时发生异常！" );
+						result.error( exception );
+						logger.error( e, effectivePerson, request, null);
+					}
+				}
+			}
+		}
+		
+		//如果是已经发布的文档，需要限时再计算一次文档权限
+		if( check ){			
 			if( "published".equals( document.getDocStatus() ) ){
-				
 				if( wrapIn.getPermissionList() == null ){
 					permissionList = new ArrayList<>();
 					permissionInfo = new PermissionInfo();
@@ -241,9 +275,9 @@ public class ExcuteSave extends ExcuteBase {
 					documentPermissionServiceAdv.refreshDocumentPermission( document, permissionList );
 				}catch(Exception e){
 					check = false;
-					Exception exception = new ServiceLogicException( e, "系统在核对文档访问管理权限信息时发生异常！" );
+					Exception exception = new DocumentInfoProcessException( e, "系统在核对文档访问管理权限信息时发生异常！" );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}

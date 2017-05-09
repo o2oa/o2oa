@@ -16,15 +16,16 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.cms.assemble.control.jaxrs.viewfieldconfig.exception.WrapInConvertException;
 
 
 @Path("viewfieldconfig")
@@ -103,7 +104,7 @@ public class ViewFieldConfigAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check ){
@@ -137,7 +138,7 @@ public class ViewFieldConfigAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check ){

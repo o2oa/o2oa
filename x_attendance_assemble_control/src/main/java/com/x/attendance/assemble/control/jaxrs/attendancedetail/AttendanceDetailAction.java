@@ -24,7 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.Business;
-import com.x.attendance.assemble.control.jaxrs.attendanceappealinfo.WrapInFilterAppeal;
 import com.x.attendance.assemble.control.service.AttendanceDetailAnalyseServiceAdv;
 import com.x.attendance.assemble.control.service.AttendanceDetailServiceAdv;
 import com.x.attendance.assemble.control.service.AttendanceEmployeeConfigServiceAdv;
@@ -35,7 +34,6 @@ import com.x.attendance.entity.AttendanceDetail;
 import com.x.attendance.entity.AttendanceEmployeeConfig;
 import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.attendance.entity.AttendanceWorkDayConfig;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
@@ -43,13 +41,13 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
-import com.x.base.core.http.HttpAttribute;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.organization.core.express.wrap.WrapCompany;
 import com.x.organization.core.express.wrap.WrapDepartment;
 
@@ -83,7 +81,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
 			}
 		}		
 		if( check ){
@@ -93,7 +91,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailQueryByIdException( e, id );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}		
 		if( check ){
@@ -101,7 +99,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailNotExistsException( id );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
 			}
 		}		
 		if( check ){
@@ -112,7 +110,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailWrapCopyException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -136,7 +134,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailImportFileIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -146,7 +144,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailListByImportFileIdException( e, file_id );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		
@@ -158,7 +156,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailListByIdsException( e );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}
 		}
@@ -170,7 +168,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailWrapCopyException( e );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}
 		}
@@ -204,7 +202,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		
 		if( check ){
@@ -223,7 +221,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetAttendanceDetailMaxRecordDateException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -241,7 +239,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailListByNameYearMonthException( e, q_empName, q_year, q_month );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -252,7 +250,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailListByIdsException( e );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}
 		}
@@ -265,7 +263,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailWrapCopyException( e );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}
 		}
@@ -300,7 +298,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		
 		if( check ){
@@ -324,7 +322,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetAttendanceDetailMaxRecordDateException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -343,7 +341,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailListByNameYearMonthException( e, q_empName, cycleYear, cycleMonth );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}else if( q_year != null && q_month != null && !q_year.isEmpty() && !q_month.isEmpty()){
 				try {
@@ -352,7 +350,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailListByNameYearMonthException( e, q_empName, cycleYear, cycleMonth );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}
 		}
@@ -364,7 +362,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailListByIdsException( e );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}
 		}
@@ -377,7 +375,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailWrapCopyException( e );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}	
 			}
 		}
@@ -411,7 +409,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 
 		if( check ){
@@ -430,7 +428,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetAttendanceDetailMaxRecordDateException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -447,7 +445,8 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					companyNames = userManagerService.listSubCompanyNameList( q_companyName );
 				}catch(Exception e){
 					Exception exception = new ListCompanyNameByParentNameException( e, q_companyName );
-					logger.error( exception, currentPerson, request, null);
+					result.error( exception );
+					logger.error( e, currentPerson, request, null);
 				}
 				if( !companyNames.contains( q_companyName )){
 					companyNames.add( q_companyName );
@@ -461,7 +460,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailListByCompanyYearMonthException( e, companyNames, q_year, q_month );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}	
 		}
 		if( check ){
@@ -471,7 +470,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailListByIdsException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -483,7 +482,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailWrapCopyException( e );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}	
 			}
 		}		
@@ -517,7 +516,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		
 		if( check ){
@@ -536,7 +535,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetAttendanceDetailMaxRecordDateException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -551,13 +550,15 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 			if( q_departmentName != null && !q_departmentName.isEmpty()){
 				try{
 					departmentNames = userManagerService.listSubOrganizationNameList( q_departmentName );
+					if( !departmentNames.contains( q_departmentName )){
+						departmentNames.add( q_departmentName );
+					}
 				}catch(Exception e){
 					Exception exception = new ListDepartmentNameByParentNameException( e, q_departmentName );
-					logger.error( exception, currentPerson, request, null);
+					result.error( exception );
+					logger.error( e, currentPerson, request, null);
 				}
-				if( !departmentNames.contains( q_departmentName )){
-					departmentNames.add( q_departmentName );
-				}
+				
 			}
 		}
 		if( check ){
@@ -567,7 +568,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailListByDepartmentYearMonthException( e, departmentNames, q_year, q_month );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}	
 		}
 		if( check ){
@@ -577,7 +578,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailListByIdsException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -589,7 +590,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailWrapCopyException( e );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}	
 			}
 		}		
@@ -615,7 +616,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailCycleYearEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -623,7 +624,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailCycleMonthEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -633,7 +634,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new RequiredAttendanceEmployeeListException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -644,7 +645,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceEmployeeConfigListByIdsException( e );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}
 		}
@@ -656,7 +657,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new GetCycleMapFromAllCyclesException( e );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}
 			if( check ){
@@ -674,7 +675,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 						globalCheck = subCheck = false;
 						Exception exception = new CheckAttendanceWithEmployeeConfigException( e );
 						result.error( exception );
-						logger.error( exception, currentPerson, request, null);
+						logger.error( e, currentPerson, request, null);
 					}
 					if( subCheck ){
 						try {//根据公司部门，年月获取到一个适合的统计周期，如果没有则新建一个新的配置
@@ -683,7 +684,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 							globalCheck = subCheck = false;
 							Exception exception = new GetAttendanceDetailStatisticCycleException( e, attendanceEmployeeConfig.getCompanyName(), attendanceEmployeeConfig.getOrganizationName(), cycleYear, cycleMonth );
 							result.error( exception );
-							logger.error( exception, currentPerson, request, null);
+							logger.error( e, currentPerson, request, null);
 						}
 					}
 					if( subCheck ){
@@ -694,7 +695,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 								globalCheck = subCheck = false;
 								Exception exception = new AttendanceDetailCheckAndReplenishException( e, attendanceStatisticalCycle.getCycleStartDate(), attendanceStatisticalCycle.getCycleEndDate() );
 								result.error( exception );
-								logger.error( exception, currentPerson, request, null);
+								logger.error( e, currentPerson, request, null);
 							}
 						}
 					}
@@ -731,7 +732,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailListNeedAnalyseException( e, startDate, endDate );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check && ids != null && !ids.isEmpty() ){
@@ -741,7 +742,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceWorkDayConfigListAllException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}	
 		}
 		if( check && ids != null && !ids.isEmpty() ){
@@ -751,7 +752,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetCycleMapFromAllCyclesException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -769,21 +770,20 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 						}else{
 							Exception exception = new AttendanceDetailNotExistsException( ids.get(i) );
 							result.error( exception );
-							logger.error( exception, currentPerson, request, null);
 						}						
 					}catch(Exception e){
 						check = false;
 						Exception exception = new AttendanceDetailAnalyseException( e, ids.get(i) );
 						result.error( exception );
-						logger.error( exception, currentPerson, request, null);
+						logger.error( e, currentPerson, request, null);
 					}
 				}
-				logger.info( ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>所有需要分析的考勤数据已经全部分析完成." );
+				logger.info( "所有需要分析的考勤数据已经全部分析完成." );
 			}else{
-				logger.info( ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>没有需要分析的员工打卡信息！" );
+				logger.info( "没有需要分析的员工打卡信息！" );
 			}
 		}
-		logger.info( ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>数据分析过程退出!" );
+		logger.info( "数据分析过程退出!" );
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -805,7 +805,6 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -815,13 +814,13 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailNotExistsException( id );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					//logger.error( e, currentPerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new AttendanceDetailQueryByIdException( e, id );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -831,7 +830,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceWorkDayConfigListAllException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -841,7 +840,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetCycleMapFromAllCyclesException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -853,7 +852,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailAnalyseException( e, id );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		logger.info( ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>数据分析过程退出!" );
@@ -879,7 +878,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailArchiveException( e, id );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}else{
 				try{
@@ -889,7 +888,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailArchiveException( e, id );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}
 		}		
@@ -920,7 +919,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if(check ){
 			try {		
@@ -932,7 +931,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				if( id == null || "(0)".equals(id) || id.isEmpty() ){
 					//logger.debug( "第一页查询，没有id传入" );
 				}else{
-					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+					if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
 						sequence = PropertyUtils.getProperty(emc.find( id, AttendanceDetail.class ), "sequence");
 					}
 				}
@@ -945,7 +944,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					}catch(Exception e){
 						Exception exception = new ListCompanyNameByParentNameException( e, wrapIn.getQ_companyName() );
 						result.error( exception );
-						logger.error( exception, currentPerson, request, null);
+						logger.error( e, currentPerson, request, null);
 					}
 					if( companyList != null && companyList.size() > 0 ){
 						for( WrapCompany company : companyList){
@@ -963,7 +962,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					}catch(Exception e){
 						Exception exception = new ListDepartmentNameByParentNameException( e, wrapIn.getQ_departmentName() );
 						result.error( exception );
-						logger.error( exception, currentPerson, request, null);
+						logger.error( e, currentPerson, request, null);
 					}
 					if( departments != null && departments.size() > 0 ){
 						for( WrapDepartment department : departments){
@@ -1016,7 +1015,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if(check ){
 			try {		
@@ -1029,7 +1028,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				if( id == null || "(0)".equals(id) || id.isEmpty() ){
 					//logger.debug( "第一页查询，没有id传入" );
 				}else{
-					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+					if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
 						sequence = PropertyUtils.getProperty(emc.find(id, AttendanceDetail.class ), "sequence");
 					}
 				}		
@@ -1042,7 +1041,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					}catch(Exception e){
 						Exception exception = new ListCompanyNameByParentNameException( e, wrapIn.getQ_companyName() );
 						result.error( exception );
-						logger.error( exception, currentPerson, request, null);
+						logger.error( e, currentPerson, request, null);
 					}
 					if( companyList != null && companyList.size() > 0 ){
 						for( WrapCompany company : companyList){
@@ -1060,7 +1059,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					}catch(Exception e){
 						Exception exception = new ListDepartmentNameByParentNameException( e, wrapIn.getQ_departmentName() );
 						result.error( exception );
-						logger.error( exception, currentPerson, request, null);
+						logger.error( e, currentPerson, request, null);
 					}
 					if( departments != null && departments.size() > 0 ){
 						for( WrapDepartment department : departments){
@@ -1119,14 +1118,14 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if( check ){
 			if( wrapIn.getRecordDateString() == null || wrapIn.getRecordDateString().isEmpty() ){
 				check = false;
 				Exception exception = new AttendanceDetailRecordDateEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -1134,7 +1133,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailEmployeeNameEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -1148,7 +1147,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailRecordDateFormatException( e, wrapIn.getRecordDateString() );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -1160,7 +1159,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailOnDutyTimeFormatException( e, wrapIn.getOnDutyTime() );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}
 		}
@@ -1173,7 +1172,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailOffDutyTimeFormatException( e, wrapIn.getOffDutyTime() );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}
 		}
@@ -1186,7 +1185,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailSaveException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -1196,7 +1195,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceWorkDayConfigListAllException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -1206,7 +1205,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetCycleMapFromAllCyclesException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -1217,7 +1216,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailAnalyseException( e, attendanceDetail.getId() );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -1238,7 +1237,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 			if ( null == attendanceDetail ) {
 				Exception exception = new AttendanceDetailNotExistsException( id );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
 			}else{
 				//进行数据库持久化操作				
 				emc.beginTransaction( AttendanceDetail.class );
@@ -1250,7 +1249,7 @@ public class AttendanceDetailAction extends StandardJaxrsAction{
 		} catch ( Exception e ) {
 			Exception exception = new AttendanceDetailDeleteException( e, id );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

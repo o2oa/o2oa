@@ -20,7 +20,6 @@ import com.x.bbs.entity.BBSSectionInfo;
 import com.x.bbs.entity.BBSSubjectAttachment;
 import com.x.bbs.entity.BBSSubjectContent;
 import com.x.bbs.entity.BBSSubjectInfo;
-import com.x.bbs.entity.BBSSubjectPictureBase64;
 import com.x.bbs.entity.BBSSubjectVoteResult;
 import com.x.bbs.entity.BBSVoteOption;
 import com.x.bbs.entity.BBSVoteOptionBinary;
@@ -78,14 +77,13 @@ public class BBSSubjectInfoService {
 	 * 向数据库保存BBSSubjectInfo对象
 	 * @param wrapIn
 	 */
-	public BBSSubjectInfo save( EntityManagerContainer emc, BBSSubjectInfo _bBSSubjectInfo, String content, String pictureBase64 ) throws Exception {
+	public BBSSubjectInfo save( EntityManagerContainer emc, BBSSubjectInfo _bBSSubjectInfo, String content ) throws Exception {
 		List<BBSSubjectAttachment> attachList = null;
 		BBSSubjectAttachment _subjectAttachment = null;
 		BBSSubjectInfo _subjectInfo_tmp = null;
 		BBSForumInfo _forumInfo_tmp = null;
 		BBSSectionInfo _sectionInfo_tmp = null;
 		BBSSubjectContent _subjectContent = null;
-		BBSSubjectPictureBase64 _subjectPictureBase64 = null;
 		Boolean exists = false;
 		if( _bBSSubjectInfo.getId() == null ){
 			_bBSSubjectInfo.setId( BBSSubjectInfo.createId() );
@@ -96,13 +94,11 @@ public class BBSSubjectInfoService {
 		_forumInfo_tmp = emc.find( _bBSSubjectInfo.getForumId(), BBSForumInfo.class );
 		_sectionInfo_tmp = emc.find( _bBSSubjectInfo.getSectionId(), BBSSectionInfo.class );
 		_subjectContent = emc.find( _bBSSubjectInfo.getId(), BBSSubjectContent.class );
-		_subjectPictureBase64 = emc.find( _bBSSubjectInfo.getId(), BBSSubjectPictureBase64.class );
 		emc.beginTransaction( BBSSubjectInfo.class );
 		emc.beginTransaction( BBSForumInfo.class );
 		emc.beginTransaction( BBSSectionInfo.class );
 		emc.beginTransaction( BBSSubjectAttachment.class );
 		emc.beginTransaction( BBSSubjectContent.class );
-		emc.beginTransaction( BBSSubjectPictureBase64.class );
 		if( _subjectContent == null ){
 			_subjectContent = new BBSSubjectContent();
 			_subjectContent.setId( _bBSSubjectInfo.getId() );
@@ -112,27 +108,7 @@ public class BBSSubjectInfoService {
 			_subjectContent.setContent( content );
 			emc.check( _sectionInfo_tmp, CheckPersistType.all );
 		}
-		if( _subjectPictureBase64 == null ){
-			if( pictureBase64 != null && !pictureBase64.isEmpty() ){
-				_subjectPictureBase64 = new BBSSubjectPictureBase64();
-				_subjectPictureBase64.setId( _bBSSubjectInfo.getId() );
-				_subjectPictureBase64.setPictureBase64( pictureBase64 );
-				emc.persist( _subjectPictureBase64, CheckPersistType.all);
-			}
-		}else{
-			if( pictureBase64 != null && !pictureBase64.isEmpty() ){
-				_subjectPictureBase64.setPictureBase64( pictureBase64 );
-				emc.check( _subjectPictureBase64, CheckPersistType.all );
-			}else{
-				emc.remove( _subjectPictureBase64, CheckRemoveType.all );
-			}
-		}
 		if( _subjectInfo_tmp == null ){
-			if( pictureBase64 != null && !pictureBase64.isEmpty() ){
-				_bBSSubjectInfo.setPictureUrl( _bBSSubjectInfo.getId() );
-			}else{
-				_bBSSubjectInfo.setPictureUrl( null );
-			}
 			emc.persist( _bBSSubjectInfo, CheckPersistType.all);
 			if( _forumInfo_tmp != null ){
 				_forumInfo_tmp.setSubjectTotalToday( _forumInfo_tmp.getSubjectTotalToday() + 1 );
@@ -146,9 +122,6 @@ public class BBSSubjectInfoService {
 			}
 		}else{
 			_bBSSubjectInfo.copyTo( _subjectInfo_tmp );
-			if( pictureBase64 != null && !pictureBase64.isEmpty() ){
-				_subjectInfo_tmp.setPictureUrl( _bBSSubjectInfo.getId() );
-			}
 			emc.check( _subjectInfo_tmp, CheckPersistType.all );
 		}
 		//检查和绑定附件信息
@@ -208,7 +181,6 @@ public class BBSSubjectInfoService {
 		BBSSectionInfo sectionInfo = null;
 		BBSForumInfo forumInfo = null;
 		BBSSubjectContent subjectContent = null;
-		BBSSubjectPictureBase64 subjectPictureBase64 = null;
 		BBSVoteOptionBinary voteOptionBinary = null;
 		BBSSubjectVoteResult subjectVoteResult = null;
 		BBSSubjectAttachment subjectAttachment = null;
@@ -226,7 +198,6 @@ public class BBSSubjectInfoService {
 		emc.beginTransaction( BBSSectionInfo.class );
 		emc.beginTransaction( BBSSubjectInfo.class );
 		emc.beginTransaction( BBSSubjectContent.class );
-		emc.beginTransaction( BBSSubjectPictureBase64.class );
 		emc.beginTransaction( BBSVoteOption.class );
 		emc.beginTransaction( BBSVoteOptionBinary.class );
 		emc.beginTransaction( BBSVoteRecord.class );
@@ -237,7 +208,6 @@ public class BBSSubjectInfoService {
 		//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 		subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );
 		subjectContent = emc.find( subjectId, BBSSubjectContent.class );
-		subjectPictureBase64 = emc.find( subjectId, BBSSubjectPictureBase64.class );
 		replyInfoList = business.replyInfoFactory().listWithSubjectForPage( subjectId, null );
 		voteOptionList = business.voteOptionFactory().listVoteOptionBySubject( subjectId );
 		voteRecordList = business.voteRecordFactory().listVoteRecordBySubject( subjectId );
@@ -253,9 +223,6 @@ public class BBSSubjectInfoService {
 		if( subjectContent != null ){
 			emc.remove( subjectContent, CheckRemoveType.all );
 		}
-		if( subjectPictureBase64 != null ){
-			emc.remove( subjectPictureBase64, CheckRemoveType.all );
-		}
 		if( subjectVoteResult != null ){
 			emc.remove( subjectVoteResult, CheckRemoveType.all );
 		}
@@ -263,7 +230,7 @@ public class BBSSubjectInfoService {
 			for( String attachId : attachmentIds ){
 				try{
 					subjectAttachment = emc.find( attachId, BBSSubjectAttachment.class );
-					mapping = ThisApplication.storageMappings.get( BBSSubjectAttachment.class, subjectAttachment.getStorage() );
+					mapping = ThisApplication.context().storageMappings().get( BBSSubjectAttachment.class, subjectAttachment.getStorage() );
 					if( subjectAttachment != null ){
 						subjectAttachment.deleteContent(mapping);
 						emc.remove( subjectAttachment, CheckRemoveType.all );
@@ -956,29 +923,6 @@ public class BBSSubjectInfoService {
 		}
 	}
 
-	public String getPictureBase64( String id ) throws Exception {
-		if( id == null || id.isEmpty() ){
-			throw new Exception( "id can not null." );
-		}
-		List<BBSSubjectPictureBase64> encodeList = null;
-		BBSSubjectPictureBase64 subjectPictureBase64 = null;
-		Business business = null;
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-			business = new Business( emc );
-			encodeList = business.subjectInfoFactory().getPictureBase64( id );
-			if( encodeList != null && encodeList.size() > 0 ){
-				subjectPictureBase64 = encodeList.get( 0 );
-			}
-			if( subjectPictureBase64 != null ){
-				return subjectPictureBase64.getPictureBase64();
-			}else{
-				return "";
-			}
-		}catch( Exception e ){
-			throw e;
-		}
-	}
-	
 	public String getSubjectContent( String id ) throws Exception {
 		if( id == null || id.isEmpty() ){
 			throw new Exception( "id can not null." );

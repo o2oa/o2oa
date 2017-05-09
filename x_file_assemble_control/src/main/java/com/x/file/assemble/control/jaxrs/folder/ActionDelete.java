@@ -32,7 +32,7 @@ public class ActionDelete {
 		for (int i = ids.size() - 1; i >= 0; i--) {
 			List<Attachment> attachments = emc.list(Attachment.class, business.attachment().listWithFolder(ids.get(i)));
 			for (Attachment att : attachments) {
-				StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class, att.getStorage());
+				StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class, att.getStorage());
 				att.deleteContent(mapping);
 				EntityManager em = emc.beginTransaction(Attachment.class);
 				em.remove(att);

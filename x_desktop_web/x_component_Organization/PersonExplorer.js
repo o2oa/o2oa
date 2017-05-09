@@ -378,7 +378,7 @@ MWF.xApplication.Organization.PersonExplorer.Person = new Class({
 			this.explorer.app.notice(this.explorer.app.lp.inputPersonInfor, "error", this.explorer.propertyContentNode);
 			return false;
 		}
-		if (this.personDisplayInput.input.get("value")) this.data.display = this.personNameInput.input.get("value");
+		if (!this.personDisplayInput.input.get("value")) this.data.display = this.personNameInput.input.get("value");
 		this.propertyBaseNode.mask({
 			"style": {
 				"opacity": 0.7,

@@ -41,7 +41,7 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
 
                                     this.fireEvent("started", [json.data, data.title, this.data.name]);
 
-                                    this.app.refreshAll();
+                                    if (this.app.refreshAll) this.app.refreshAll();
                                     this.app.notice(this.lp.processStarted, "success");
                                     //    this.app.processConfig();
                                 }.bind(this), null, this.data.id, data);
@@ -59,9 +59,11 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
                             this.setStartNodeSize();
                             this.setStartNodeSizeFun = this.setStartNodeSize.bind(this);
                             this.app.addEvent("resize", this.setStartNodeSizeFun);
+
+                            this.fireEvent("selectId");
                         }
                     }
-                }.bind(this), null, this.app.desktop.session.user.id)
+                }.bind(this), null, this.app.desktop.session.user.name)
             }
         }.bind(this));
     },
@@ -225,10 +227,16 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
 
     getOrgAction: function(callback){
         if (!this.orgAction){
-            MWF.xDesktop.requireApp("Organization", "Actions.RestActions", function(){
-                this.orgAction = new MWF.xApplication.Organization.Actions.RestActions();
+            //MWF.xDesktop.requireApp("Organization", "Actions.RestActions", function(){
+            //    this.orgAction = new MWF.xApplication.Organization.Actions.RestActions();
+            //    if (callback) callback();
+            //}.bind(this));
+            MWF.xDesktop.requireApp("Selector", "Actions.RestActions", function(){
+                this.orgAction = new MWF.xApplication.Selector.Actions.RestActions();
                 if (callback) callback();
             }.bind(this));
+
+
 
             //MWF.require("MWF.xAction.org.express.RestActions", function(){
             //    this.orgAction = new MWF.xAction.org.express.RestActions();

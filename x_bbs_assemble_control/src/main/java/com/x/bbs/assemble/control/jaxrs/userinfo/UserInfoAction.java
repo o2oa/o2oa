@@ -10,16 +10,19 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
-import com.x.base.core.bean.BeanCopyTools;
-import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.AbstractJaxrsAction;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.bbs.assemble.control.WrapTools;
+import com.x.bbs.assemble.control.jaxrs.userinfo.exception.PropertyEmptyException;
+import com.x.bbs.assemble.control.jaxrs.userinfo.exception.UserInfoQueryByNameException;
+import com.x.bbs.assemble.control.jaxrs.userinfo.exception.UserInfoWrapOutException;
+import com.x.bbs.assemble.control.jaxrs.userinfo.exception.WrapInConvertException;
 import com.x.bbs.assemble.control.service.BBSUserInfoService;
 import com.x.bbs.assemble.control.service.UserManagerService;
 import com.x.bbs.entity.BBSUserInfo;
@@ -29,7 +32,6 @@ public class UserInfoAction extends AbstractJaxrsAction {
 	private Logger logger = LoggerFactory.getLogger( UserInfoAction.class );
 	private BBSUserInfoService userInfoService = new BBSUserInfoService();
 	private UserManagerService userManagerService = new UserManagerService();
-	private BeanCopyTools< BBSUserInfo, WrapOutUserInfo > wrapout_copier = BeanCopyToolsBuilder.create( BBSUserInfo.class, WrapOutUserInfo.class, null, WrapOutUserInfo.Excludes);
 
 	@HttpMethodDescribe(value = "列示根据过滤条件的UserInfo", response = WrapOutUserInfo.class, request = JsonElement.class)
 	@PUT
@@ -49,7 +51,7 @@ public class UserInfoAction extends AbstractJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 
 		if( check ){
@@ -57,7 +59,6 @@ public class UserInfoAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new PropertyEmptyException( "用户姓名(userName)" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}
 		//查询版块信息是否存在
@@ -68,7 +69,7 @@ public class UserInfoAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new UserInfoQueryByNameException( e, wrapIn.getUserName() );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if (check) {
@@ -79,19 +80,19 @@ public class UserInfoAction extends AbstractJaxrsAction {
 					check = false;
 					Exception exception = new UserInfoQueryByNameException( e, wrapIn.getUserName() );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}
 		}
 		if (check) {
 			try {
-				wrap = wrapout_copier.copy( userInfo );
+				wrap = WrapTools.userInfo_wrapout_copier.copy( userInfo );
 				result.setData( wrap );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new UserInfoWrapOutException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}		
 		}
 		

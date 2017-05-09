@@ -77,7 +77,7 @@ public class Business {
 
 	public Organization organization() throws Exception {
 		if (null == this.organization) {
-			this.organization = new Organization();
+			this.organization = new Organization(ThisApplication.context());
 		}
 		return organization;
 	}
@@ -496,10 +496,21 @@ public class Business {
 			}
 		}
 		/* 设置 allowReroute */
-		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
+		if (effectivePerson.isManager()) {
+			/** 管理员可以调度 */
+			control.setAllowReroute(true);
+		} else if (organization().role().hasAny(effectivePerson.getName(), RoleDefinition.ProcessPlatformManager)) {
+			/** 有流程管理角色的可以 */
 			control.setAllowReroute(true);
 		} else if (BooleanUtils.isTrue(activity.getAllowReroute())) {
-			control.setAllowReroute(true);
+			/** 如果活动设置了可以调度 */
+			if ((null != process) && effectivePerson.isUser(process.getControllerList())) {
+				/** 如果是流程的管理员那么可以调度 */
+				control.setAllowReroute(true);
+			} else if ((null != application) && effectivePerson.isUser(application.getControllerList())) {
+				/** 如果是应用的管理员那么可以调度 */
+				control.setAllowReroute(true);
+			}
 		}
 		/* 设置 allowDelete */
 		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
@@ -562,11 +573,19 @@ public class Business {
 			}
 		}
 		/* 设置 allowReroute */
-		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
-			/* 活动节点为空强制可重新路由 */
-			if (activity == null) {
+		if (effectivePerson.isManager()) {
+			/** 管理员可以调度 */
+			control.setAllowReroute(true);
+		} else if (organization().role().hasAny(effectivePerson.getName(), RoleDefinition.ProcessPlatformManager)) {
+			/** 有流程管理角色的可以 */
+			control.setAllowReroute(true);
+		} else if (BooleanUtils.isTrue(activity.getAllowReroute())) {
+			/** 如果活动设置了可以调度 */
+			if ((null != process) && effectivePerson.isUser(process.getControllerList())) {
+				/** 如果是流程的管理员那么可以调度 */
 				control.setAllowReroute(true);
-			} else if (BooleanUtils.isTrue(activity.getAllowReroute())) {
+			} else if ((null != application) && effectivePerson.isUser(application.getControllerList())) {
+				/** 如果是应用的管理员那么可以调度 */
 				control.setAllowReroute(true);
 			}
 		}

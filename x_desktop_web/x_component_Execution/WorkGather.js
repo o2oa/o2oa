@@ -206,7 +206,7 @@ MWF.xApplication.Execution.WorkGather = new Class({
         }).inject(this.formBottomNode);
         var _self = this;
         this.submitActionNode.addEvent("click", function (e) {
-                this.app.confirm("warn",e,this.lp.submitWarn.warnTitle,this.lp.submitWarn.warnContent,300,120,function(){
+                this.app.confirm("warn",e,this.lp.submitWarn.warnTitle,this.lp.submitWarn.warnGatherSubmit,300,150,function(){
                     _self.submitGather()
                     this.close();
                 },function(){
@@ -224,7 +224,7 @@ MWF.xApplication.Execution.WorkGather = new Class({
         }.bind(this));
 
     },
-    submit:function(workReportData){
+    submit:function(workReportData,e){
         var progressText = this.gatherDiv.getElementById("progress"+workReportData.id);
         var progressValue = "";
         if(progressText) progressValue = progressText.get("value");
@@ -237,6 +237,12 @@ MWF.xApplication.Execution.WorkGather = new Class({
         var opinionValue = ""
         var opinionText = this.gatherDiv.getElementById("opinion"+workReportData.id);
         if(opinionText) opinionValue = opinionText.get("value");
+        var isWorkCompletedText = this.gatherDiv.getElementById("completeSelect"+workReportData.id);
+        var isWorkCompletedValue = "";
+        if(isWorkCompletedText) isWorkCompletedValue = isWorkCompletedText.get("value");
+        var progressPercentText = this.gatherDiv.getElementById("completePercentSelect"+workReportData.id);
+        var progressPercentValue = "";
+        if(progressPercentText) progressPercentValue = parseInt(progressPercentText.get("value"));
 
         if(progressText && progressValue==""){
             this.app.notice(this.lp.viewProgressDescription+this.lp.notEmpty,"error")
@@ -253,40 +259,123 @@ MWF.xApplication.Execution.WorkGather = new Class({
             workPlan : planValue,
             adminSuperviseInfo : adminValue,
             opinion :  opinionValue
-        }
-        this.actions.submitWorkReport( submitData, function(json){
-            if(json.type == "success"){
-                this.app.notice(this.lp.prompt.submitWorkReport,"success");
-                this.actions.getDepartmentGather(this.data.gatherId,function(json){
-                    if(json.data && json.data.length==0){
-                        this.fireEvent("reloadView");
-                        this.close()
-                    }else{
-                        if(this.gatherJson[this.curTabIndex].count == 1){
-                            this.curTabIndex = 0;
-                            this.curTabName = "";
-                        }
-                        this.loadGather();
-                    }
-                }.bind(this),null,false)
 
-            }
-        }.bind(this),function(xhr,text,error){
-            var errorText = error;
-            if (xhr) errorMessage = xhr.responseText;
-            var e = JSON.parse(errorMessage);
-            if(e.message){
-                this.app.notice( e.message,"error");
-            }else{
-                this.app.notice( errorText,"error");
-            }
-        }.bind(this));
+        }
+        if(isWorkCompletedText){
+            submitData.isWorkCompleted = isWorkCompletedValue=="yes"?true:false
+        }
+        if(progressPercentText){
+            submitData.progressPercent = progressPercentValue
+        }
+
+        if(isWorkCompletedText && isWorkCompletedText.get("value")=="yes"){
+            var _self = this;
+            this.app.confirm("warn",e,_self.lp.submitWarn.warnTitle,_self.lp.submitWarn.warnWorkCompleted,300,150,function(){
+                _self.app.createShade();
+                _self.actions.submitWorkReport( submitData, function(json){
+                    _self.app.destroyShade();
+                    if(json.type == "success"){
+                        _self.app.notice(_self.lp.prompt.submitWorkReport,"success");
+                        _self.actions.getDepartmentGather(_self.data.gatherId,function(json){
+                            if(json.data && json.data.length==0){
+                                _self.fireEvent("reloadView");
+                                _self.close()
+                            }else{
+                                if(_self.gatherJson[this.curTabIndex].count == 1){
+                                    _self.curTabIndex = 0;
+                                    _self.curTabName = "";
+                                }
+                                _self.loadGather();
+                            }
+                        }.bind(_self),null,false)
+                    }
+
+                }.bind(_self),function(xhr,text,error){
+                    _self.app.destroyShade();
+                    var errorText = error;
+                    if (xhr) errorMessage = xhr.responseText;
+                    var e = JSON.parse(errorMessage);
+                    if(e.message){
+                        _self.app.notice( e.message,"error");
+                    }else{
+                        _self.app.notice( errorText,"error");
+                    }
+                }.bind(_self));
+
+                this.close();
+            },function(){
+                this.close();
+            })
+        }else{
+            this.app.createShade();
+            this.actions.submitWorkReport( submitData, function(json){
+                this.app.destroyShade();
+                if(json.type == "success"){
+                    this.app.notice(this.lp.prompt.submitWorkReport,"success");
+                    this.actions.getDepartmentGather(this.data.gatherId,function(json){
+                        if(json.data && json.data.length==0){
+                            this.fireEvent("reloadView");
+                            this.close()
+                        }else{
+                            if(this.gatherJson[this.curTabIndex].count == 1){
+                                this.curTabIndex = 0;
+                                this.curTabName = "";
+                            }
+                            this.loadGather();
+                        }
+                    }.bind(this),null,false)
+                }
+            }.bind(this),function(xhr,text,error){
+                var errorText = error;
+                if (xhr) errorMessage = xhr.responseText;
+                var e = JSON.parse(errorMessage);
+                if(e.message){
+                    this.app.notice( e.message,"error");
+                }else{
+                    this.app.notice( errorText,"error");
+                }
+                this.app.destroyShade();
+            }.bind(this));
+        }
+
+
+
+
+
+        //this.actions.submitWorkReport( submitData, function(json){
+        //    if(json.type == "success"){
+        //        this.app.notice(this.lp.prompt.submitWorkReport,"success");
+        //        this.actions.getDepartmentGather(this.data.gatherId,function(json){
+        //            if(json.data && json.data.length==0){
+        //                this.fireEvent("reloadView");
+        //                this.close()
+        //            }else{
+        //                if(this.gatherJson[this.curTabIndex].count == 1){
+        //                    this.curTabIndex = 0;
+        //                    this.curTabName = "";
+        //                }
+        //                this.loadGather();
+        //            }
+        //        }.bind(this),null,false)
+        //
+        //    }
+        //}.bind(this),function(xhr,text,error){
+        //    var errorText = error;
+        //    if (xhr) errorMessage = xhr.responseText;
+        //    var e = JSON.parse(errorMessage);
+        //    if(e.message){
+        //        this.app.notice( e.message,"error");
+        //    }else{
+        //        this.app.notice( errorText,"error");
+        //    }
+        //}.bind(this));
 
     },
     submitGather:function(){
         this.submitStatus = true;
         this.submitError = "";
         if(this.reportDataArr){
+            this.app.createShade();
             for(var i=0;i<this.reportDataArr.length;i++){
                 this.currentReportData = this.reportDataArr[i]
                 if(this.submitStatus){
@@ -302,7 +391,12 @@ MWF.xApplication.Execution.WorkGather = new Class({
                     var opinionValue = ""
                     var opinionText = this.gatherDiv.getElementById("opinion"+this.currentReportData.id);
                     if(opinionText) opinionValue = opinionText.get("value");
-
+                    var isWorkCompletedText = this.gatherDiv.getElementById("completeSelect"+this.currentReportData.id);
+                    var isWorkCompletedValue = "";
+                    if(isWorkCompletedText) isWorkCompletedValue = isWorkCompletedText.get("value");
+                    var progressPercentText = this.gatherDiv.getElementById("completePercentSelect"+this.currentReportData.id);
+                    var progressPercentValue = "";
+                    if(progressPercentText) progressPercentValue = parseInt(progressPercentText.get("value"));
 
                     var submitData = {
                         workId : this.currentReportData.workId,
@@ -311,6 +405,12 @@ MWF.xApplication.Execution.WorkGather = new Class({
                         workPlan : planValue,
                         adminSuperviseInfo : adminValue,
                         opinion :  opinionValue
+                    }
+                    if(isWorkCompletedText){
+                        submitData.isWorkCompleted = isWorkCompletedValue=="yes"?true:false
+                    }
+                    if(progressPercentText){
+                        submitData.progressPercent = progressPercentValue
                     }
                     //if(i==0){
                     //    submitData.workId = "fefwfwfwfewfwfewfe";
@@ -331,6 +431,7 @@ MWF.xApplication.Execution.WorkGather = new Class({
 
         if(!this.submitStatus){
             this.app.notice(this.submitError, "error");
+
             this.loadGather();
         }else{
             //alert(this.gatherJsonLen)
@@ -345,6 +446,7 @@ MWF.xApplication.Execution.WorkGather = new Class({
             }
 
         }
+        this.app.destroyShade();
     }
 
 })
@@ -448,14 +550,14 @@ MWF.xApplication.Execution.WorkGather.WorkReportDocument = new Class({
         //alert(JSON.stringify(itemData))
         //alert(itemNode.get("html"))
         if(itemData.tabName ==this.view.lp.gatherName.drafter){
-            cols = 4
-        }else if(itemData.tabName ==this.view.lp.gatherName.manager){
             cols = 5
-        }else if(itemData.tabName ==this.view.lp.gatherName.leader){
+        }else if(itemData.tabName ==this.view.lp.gatherName.manager){
             cols = 6
+        }else if(itemData.tabName ==this.view.lp.gatherName.leader){
+            cols = 7
         }
         if( itemData.reports ){
-            itemData.reports.each(function(d){
+            itemData.reports.each(function(d,ii){
                 this.view.explorer.reportDataArr.push(d);
                 var trNode = new Element("tr.trNodeTitle",{"styles":this.view.css.trNodeTitle}).inject(this.view.viewNode);
                 var tdNode = new Element("td.tdNodeTitle",{
@@ -498,6 +600,53 @@ MWF.xApplication.Execution.WorkGather.WorkReportDocument = new Class({
                         "value": d.workPlan
                     }).inject(tdNode); //下一步
 
+                    tdNode = new Element("td.tdNodeContent",{
+                        "styles":this.view.css.tdNodeContent
+                    }).inject(trNode);
+
+                    var tmpDiv = new Element("div.completeSelectDiv",{
+                        styles:this.css.completeSelectDiv
+                    }).inject(tdNode);
+
+                    var completeSelect = new Element("select.completeSelect",{
+                        styles:this.css.completeSelect,
+                        id:"completeSelect"+ d.id,
+                        position:ii
+                    }).inject(tmpDiv)
+                    var completeSelectOption = new Element("option.completeSelectOption",{"text":this.lp.isCompletedNoOption,"value":"no"}).inject(completeSelect)
+                    completeSelectOption = new Element("option.completeSelectOption",{"text":this.lp.isCompletedYesOption,"value":"yes"}).inject(completeSelect)
+                    var _self = this
+                    completeSelect.addEvents({
+                        "change":function(){
+                            if(this.get("value")=="yes"){
+                                var po = this.get("position");
+                                _self.view.explorer.gatherContentDiv.getElements(".completePercentSelect[position="+po+"]").set("value","100")
+                            }
+                        }
+                    })
+                    completeSelect.set("value", d.isWorkCompleted?"yes":"no")
+                    tmpDiv = new Element("div.completeSelectDiv",{
+                        styles:this.css.completeSelectDiv
+                    }).inject(tdNode)
+                    var completePercentSelect = new Element("select.completePercentSelect",{
+                        styles:this.css.completeSelect,
+                        id:"completePercentSelect"+ d.id,
+                        position:ii
+                    }).inject(tmpDiv)
+                    var completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"0%","value":"0"}).inject(completePercentSelect)
+                    completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"10%","value":"10"}).inject(completePercentSelect)
+                    completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"20%","value":"20"}).inject(completePercentSelect)
+                    completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"30%","value":"30"}).inject(completePercentSelect)
+                    completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"40%","value":"40"}).inject(completePercentSelect)
+                    completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"50%","value":"50"}).inject(completePercentSelect)
+                    completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"60%","value":"60"}).inject(completePercentSelect)
+                    completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"70%","value":"70"}).inject(completePercentSelect)
+                    completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"80%","value":"80"}).inject(completePercentSelect)
+                    completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"90%","value":"90"}).inject(completePercentSelect)
+                    completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"100%","value":"100"}).inject(completePercentSelect)
+                    //是否办结
+
+                    completePercentSelect.set("value",parseInt(d.progressPercent))
 
                 }else if(itemData.tabName ==this.view.lp.gatherName.manager){//管理员
                     tdNode = new Element("td.tdNodeContent",{
@@ -516,6 +665,56 @@ MWF.xApplication.Execution.WorkGather.WorkReportDocument = new Class({
                         "text": d.workPlan,
                         "title": d.workPlan
                     }).inject(tdNode); //下一步要点
+
+
+                    tdNode = new Element("td.tdNodeContent",{
+                        "styles":this.view.css.tdNodeContent
+                    }).inject(trNode);
+
+                    var tmpDiv = new Element("div.completeSelectDiv",{
+                        styles:this.css.completeSelectDiv
+                    }).inject(tdNode);
+
+                    var completeSelect = new Element("select.completeSelect",{
+                        styles:this.css.completeSelect,
+                        id:"completeSelect"+ d.id,
+                        position:ii
+                    }).inject(tmpDiv)
+                    var completeSelectOption = new Element("option.completeSelectOption",{"text":this.lp.isCompletedNoOption,"value":"no"}).inject(completeSelect)
+                    completeSelectOption = new Element("option.completeSelectOption",{"text":this.lp.isCompletedYesOption,"value":"yes"}).inject(completeSelect)
+                    var _self = this
+                    completeSelect.addEvents({
+                        "change":function(){
+                            if(this.get("value")=="yes"){
+                                var po = this.get("position");
+                                _self.view.explorer.gatherContentDiv.getElements(".completePercentSelect[position="+po+"]").set("value","100")
+                            }
+                        }
+                    })
+                    completeSelect.set("value", d.isWorkCompleted?"yes":"no")
+                    tmpDiv = new Element("div.completeSelectDiv",{
+                        styles:this.css.completeSelectDiv
+                    }).inject(tdNode)
+                    var completePercentSelect = new Element("select.completePercentSelect",{
+                        styles:this.css.completeSelect,
+                        id:"completePercentSelect"+ d.id,
+                        position:ii
+                    }).inject(tmpDiv)
+                    var completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"0%","value":"0"}).inject(completePercentSelect)
+                    completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"10%","value":"10"}).inject(completePercentSelect)
+                    completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"20%","value":"20"}).inject(completePercentSelect)
+                    completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"30%","value":"30"}).inject(completePercentSelect)
+                    completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"40%","value":"40"}).inject(completePercentSelect)
+                    completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"50%","value":"50"}).inject(completePercentSelect)
+                    completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"60%","value":"60"}).inject(completePercentSelect)
+                    completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"70%","value":"70"}).inject(completePercentSelect)
+                    completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"80%","value":"80"}).inject(completePercentSelect)
+                    completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"90%","value":"90"}).inject(completePercentSelect)
+                    completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"100%","value":"100"}).inject(completePercentSelect)
+                    //是否办结
+
+                    completePercentSelect.set("value",parseInt(d.progressPercent))
+
                     tdNode = new Element("td.tdNodeContent",{
                         "styles":this.view.css.tdNodeContent
                     }).inject(trNode);
@@ -523,7 +722,10 @@ MWF.xApplication.Execution.WorkGather.WorkReportDocument = new Class({
                         "styles":this.view.css.textareaNode,
                         "id":"admin"+ d.id,
                         value: d.adminSuperviseInfo
-                    }).inject(tdNode); //管理员
+                    }).inject(tdNode);
+
+
+                     //管理员
 
                 }else if(itemData.tabName ==this.view.lp.gatherName.leader){ //领导
                     tdNode = new Element("td.tdNodeContent",{
@@ -542,6 +744,22 @@ MWF.xApplication.Execution.WorkGather.WorkReportDocument = new Class({
                         "text": d.workPlan,
                         "title": d.workPlan
                     }).inject(tdNode); //下一步要点
+
+                    tdNode = new Element("td.tdNodeContent",{
+                        "styles":this.view.css.tdNodeContent
+                    }).inject(trNode);
+                    divNode = new Element("div.divNode", {
+                        "styles": this.view.css.divNode,
+                        "text": d.isWorkCompleted?"是":"否"
+                    }).inject(tdNode);
+                    var percentComplete = new Element("div.percentComplete",{
+                        "text":"完成率:"+ d.progressPercent+"%"
+                    }).inject(divNode)
+
+
+                    //是否办结
+
+
                     tdNode = new Element("td.tdNodeContent",{
                         "styles":this.view.css.tdNodeContent
                     }).inject(trNode);
@@ -555,8 +773,10 @@ MWF.xApplication.Execution.WorkGather.WorkReportDocument = new Class({
                     }).inject(trNode);
                     var teextareaNode = new Element("textarea.tetareaNode",{
                         "styles":this.view.css.textareaNode,
-                        "id":"opinion"+ d.id
-                    }).inject(tdNode); //管理员
+                        "id":"opinion"+ d.id,
+                        "value":this.lp.leaderDefaultOpinion
+                    }).inject(tdNode); //领导
+
                 }
 
 
@@ -568,8 +788,8 @@ MWF.xApplication.Execution.WorkGather.WorkReportDocument = new Class({
                     "text":this.view.lp.viewSubmit
                 }).inject(tdNodeAction)
                     .addEvents({
-                        "click":function(){
-                            this.view.explorer.submit(d)
+                        "click":function(e){
+                            this.view.explorer.submit(d,e)
                         }.bind(this)
                     }) // 操作
 

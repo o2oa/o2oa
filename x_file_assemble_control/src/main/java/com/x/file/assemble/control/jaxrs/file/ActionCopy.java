@@ -26,6 +26,7 @@ import com.x.file.core.entity.open.ReferenceType;
 import com.x.file.core.entity.personal.Attachment;
 
 class ActionCopy extends ActionBase {
+
 	ActionResult<WrapOutId> execute(EffectivePerson effectivePerson, String attachmentId, String referenceTypeString,
 			String reference, Integer scale) throws Exception {
 		ActionResult<WrapOutId> result = new ActionResult<>();
@@ -54,9 +55,15 @@ class ActionCopy extends ActionBase {
 
 	private String copy(EffectivePerson effectivePerson, Business business, ReferenceType referenceType,
 			String reference, Attachment attachment, Integer scale) throws Exception {
-		StorageMapping attachmentMapping = ThisApplication.storageMappings.get(Attachment.class,
+		StorageMapping attachmentMapping = ThisApplication.context().storageMappings().get(Attachment.class,
 				attachment.getStorage());
-		StorageMapping fileMapping = ThisApplication.storageMappings.random(File.class);
+		if (null == attachmentMapping) {
+			throw new StorageMappingNotExistedException(attachment.getStorage());
+		}
+		StorageMapping fileMapping = ThisApplication.context().storageMappings().random(File.class);
+		if (null == fileMapping) {
+			throw new AllocateStorageMaapingException();
+		}
 		/** 由于这里需要根据craeteTime创建path,先进行赋值,再进行校验,最后保存 */
 		/** 禁止不带扩展名的文件上传 */
 		if (StringUtils.isEmpty(FilenameUtils.getExtension(attachment.getName()))) {

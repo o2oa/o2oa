@@ -188,6 +188,11 @@ public class BBSReplyInfo extends SliceJpaObject {
 	@CheckPersist( allowEmpty = true )
 	private String parentId = "";
 	
+	@EntityFieldDescribe( "主版块ID" )
+	@Column(name="xpicId", length = JpaObject.length_id )
+	@CheckPersist( allowEmpty = true )
+	private String picId = "";
+	
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@EntityFieldDescribe( "内容" )
@@ -331,4 +336,11 @@ public class BBSReplyInfo extends SliceJpaObject {
 	public void setHostIp(String hostIp) {
 		this.hostIp = hostIp;
 	}
+	public String getPicId() {
+		return picId;
+	}
+	public void setPicId(String picId) {
+		this.picId = picId;
+	}
+	
 }

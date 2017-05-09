@@ -8,6 +8,10 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.cms.assemble.control.jaxrs.categoryinfo.exception.CategoryInfoEditNotAllowedException;
+import com.x.cms.assemble.control.jaxrs.categoryinfo.exception.CategoryInfoIdEmptyException;
+import com.x.cms.assemble.control.jaxrs.categoryinfo.exception.CategoryInfoNotExistsException;
+import com.x.cms.assemble.control.jaxrs.categoryinfo.exception.CategoryInfoProcessException;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.AppCategoryAdmin;
 import com.x.cms.core.entity.AppCategoryPermission;
@@ -30,14 +34,14 @@ public class ExcuteDelete extends ExcuteBase {
 			check = false;
 			Exception exception = new CategoryInfoIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			try {
 				categoryInfo = categoryInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new CategoryInfoQueryByIdException( e, id );
+				Exception exception = new CategoryInfoProcessException( e, "根据ID查询分类信息对象时发生异常。ID:" + id );
 				result.error( exception );
 				logger.error( e, effectivePerson, request, null);
 			}
@@ -74,7 +78,7 @@ public class ExcuteDelete extends ExcuteBase {
 				result.setData(wrap);
 			} catch ( Exception e ) {
 				check = false;
-				Exception exception = new CategoryInfoDeleteException( e, id );
+				Exception exception = new CategoryInfoProcessException( e, "分类信息在删除时发生异常。ID:" + id );
 				result.error( exception );
 				logger.error( e, effectivePerson, request, null);
 			}

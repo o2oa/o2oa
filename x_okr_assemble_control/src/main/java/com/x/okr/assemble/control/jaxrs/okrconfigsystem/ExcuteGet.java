@@ -1,12 +1,14 @@
 package com.x.okr.assemble.control.jaxrs.okrconfigsystem;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
-
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
+import com.x.okr.assemble.control.jaxrs.okrconfigsystem.exception.SystemConfigIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrconfigsystem.exception.SystemConfigNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrconfigsystem.exception.SystemConfigQueryByIdException;
 import com.x.okr.entity.OkrConfigSystem;
 
 import net.sf.ehcache.Element;
@@ -22,7 +24,7 @@ public class ExcuteGet extends ExcuteBase {
 		if( id == null || id.isEmpty() ){
 			Exception exception = new SystemConfigIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+		//	logger.error( e, effectivePerson, request, null);
 		}else{
 			String cacheKey = catchNamePrefix + "." + id;
 			Element element = null;
@@ -40,12 +42,12 @@ public class ExcuteGet extends ExcuteBase {
 					}else{
 						Exception exception = new SystemConfigNotExistsException( id );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						//logger.error( e, effectivePerson, request, null);
 					}
-				} catch (Throwable th) {
-					Exception exception = new SystemConfigQueryByIdException( th, id );
+				} catch (Exception e) {
+					Exception exception = new SystemConfigQueryByIdException( e, id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}

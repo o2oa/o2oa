@@ -125,6 +125,7 @@ var wrapWorkContext = {
     "getWork": function(){return library.JSONDecode(workContext.getWork());},
     "getActivity": function(){return library.JSONDecode(workContext.getActivity());},
     "getTaskList": function(){return library.JSONDecode(workContext.getTaskList());},
+    "getTaskCompletedList": function(){return library.JSONDecode(workContext.getTaskCompletedList());},
     "getWorkLogList": function(){return library.JSONDecode(workContext.getWorkLogList());},
     "getAttachmentList": function(){return library.JSONDecode(workContext.getAttachmentList());},
     "getRouteList": function(){return library.JSONDecode(workContext.getRouteList());},
@@ -177,6 +178,57 @@ var Dict =  function(name){
         }
     };
 };
+if ((typeof JSON) == 'undefined'){
+    JSON = {};
+}
+JSON.validate = function(string){
+    string = string.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@').replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').replace(/(?:^|:|,)(?:\s*\[)+/g, '');
+    return (/^[\],:{}\s]*$/).test(string);
+};
+JSON.encode = JSON.stringify ? function(obj){
+    return JSON.stringify(obj);
+} : function(obj){
+    if (obj && obj.toJSON) obj = obj.toJSON();
+    switch (typeof obj){
+        case 'string':
+            return '"' + obj.replace(/[\x00-\x1f\\"]/g, escape) + '"';
+        case 'array':
+            var string = [];
+            for (var i=0; i<obj.length; i++){
+                var json = JSON.encode(obj[i]);
+                if (json) string.push(json);
+            }
+            return '[' + string + ']';
+        case 'object': case 'hash':
+        var string = [];
+        for (key in obj){
+            var json = JSON.encode(obj[key]);
+            if (json) string.push(JSON.encode(key) + ':' + json);
+        }
+        return '{' + string + '}';
+        case 'number': case 'boolean': return '' + obj;
+        case 'null': return 'null';
+    }
+    return null;
+};
+JSON.decode = function(string, secure){
+    if (!string || (typeof string) !== 'string') return null;
+
+    if (secure || JSON.secure){
+        if (JSON.parse) return JSON.parse(string);
+        if (!JSON.validate(string)) throw new Error('JSON could not decode the input; security is enabled and the value is not secure.');
+    }
+    return eval('(' + string + ')');
+};
+var body = {
+    set: function(data){
+        if ((typeof data)=="string"){
+            if (jaxrsBody) jaxrsBody.set(data);
+        }else{
+            if (jaxrsBody) jaxrsBody.set(JSON.encode(data));
+        }
+    }
+};
 
 bind.library = library;
 bind.data = this.data;
@@ -187,3 +239,16 @@ bind.include = include;
 bind.define = define;
 bind.Dict = Dict;
 bind.form = null;
+bind.body = body || null;
+bind.parameters = this.parameters || null;
+bind.response = (function(){
+    if (this.jaxrsResponse){
+        res = this.jaxrsResponse.toString();
+        if (JSON.validate(res)){
+            return JSON.decode(res);
+        }else{
+            return {"data": res}
+        }
+    }
+    return null;
+}).apply(this);

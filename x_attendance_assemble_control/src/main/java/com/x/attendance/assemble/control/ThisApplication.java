@@ -3,28 +3,30 @@ package com.x.attendance.assemble.control;
 import com.x.attendance.assemble.control.service.AttendanceSettingService;
 import com.x.attendance.assemble.control.task.AttendanceStatisticTask;
 import com.x.attendance.assemble.control.task.MobileRecordAnalyseTask;
-import com.x.base.core.project.AbstractThisApplication;
-import com.x.base.core.project.ReportTask;
-import com.x.collaboration.core.message.Collaboration;
+import com.x.base.core.project.Context;
 
-public class ThisApplication extends AbstractThisApplication {
+public class ThisApplication{
+	
+	protected static Context context;
+	
+	public static Context context() {
+		return context;
+	}
 	
 	public static void init() throws Exception {
-		/* 启动报告任务 */
-		timerWithFixedDelay(new ReportTask(), 1, 20);
-		initDatasFromCenters();
-		initStoragesFromCenters();
-		timerWithFixedDelay(new AttendanceStatisticTask(), 60 * 20, 60 * 60 * 12 );
-		timerWithFixedDelay( new MobileRecordAnalyseTask(), 60 * 30, 60 * 60 * 10 );
-		Collaboration.start();
-		initAllSystemConfig();
-	}
-
-	public static void destroy() throws Exception {
-		Collaboration.stop();
+		try {
+			new AttendanceSettingService().initAllSystemConfig();
+			context().schedule( AttendanceStatisticTask.class, "0 0 0/4 * * ?");
+			context().schedule( MobileRecordAnalyseTask.class, "0 0 1/4 * * ?");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
-	private static void initAllSystemConfig() {
-		new AttendanceSettingService().initAllSystemConfig();
+	public static void destroy() {
+		try {
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

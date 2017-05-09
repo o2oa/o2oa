@@ -188,7 +188,7 @@ MWF.xDesktop.LnkMaker = new Class({
 		} 
 	},
 	addLnk: function(node){
-        debugger;
+
 		if (this.lnkMarkNode){
 			var par = this.options.par;
 			var lnk = new MWF.xDesktop.Lnk(par.icon, par.title, par.par);
@@ -391,7 +391,6 @@ MWF.xDesktop.Lnk = new Class({
 		this.node.inject(node, where);
 	},
 	open: function(e){
-
 		if (!this.isSwing){
 			var parList = this.par.split("#");
 			var appName = parList[0];

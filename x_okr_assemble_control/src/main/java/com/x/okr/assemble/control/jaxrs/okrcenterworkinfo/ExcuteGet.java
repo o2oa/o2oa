@@ -11,6 +11,9 @@ import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.SortTools;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.CenterWorkQueryByIdException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.UserNoLoginException;
 import com.x.okr.entity.OkrCenterWorkInfo;
 import com.x.okr.entity.OkrConfigWorkType;
 
@@ -32,10 +35,10 @@ public class ExcuteGet extends ExcuteBase {
 		if( id != null && !id.isEmpty() ){
 			try {
 				okrCenterWorkInfo = okrCenterWorkQueryService.get( id );
-			} catch (Throwable th) {
-				Exception exception = new CenterWorkIdEmptyException();
+			} catch (Exception e) {
+				Exception exception = new CenterWorkQueryByIdException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -45,20 +48,20 @@ public class ExcuteGet extends ExcuteBase {
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}	
 		}		
 		if( check && ( okrUserCache == null || okrUserCache.getLoginIdentityName() == null ) ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		if( check && okrUserCache.getLoginUserName() == null ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			if( okrCenterWorkInfo != null ){				

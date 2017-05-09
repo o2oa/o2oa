@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.servlet.attachment;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -11,13 +12,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.application.servlet.AbstractServletAction;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.Storage;
 import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
@@ -32,9 +33,10 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 
+@Deprecated
 @WebServlet(urlPatterns = "/servlet/attachment/update/*")
 @MultipartConfig
-public class UpdateServlet extends BaseServlet {
+public class UpdateServlet extends AbstractServletAction {
 
 	private static Logger logger = LoggerFactory.getLogger(UpdateServlet.class);
 
@@ -47,14 +49,13 @@ public class UpdateServlet extends BaseServlet {
 		WrapOutId wrap = null;
 		EffectivePerson effectivePerson = null;
 		try {
-			request.setCharacterEncoding("UTF-8");
-			if (!ServletFileUpload.isMultipartContent(request)) {
-				throw new Exception("not multi part request.");
+			this.setCharacterEncoding(request, response);
+			if (!this.isMultipartContent(request)) {
+				throw new Exception("not mulit part request.");
 			}
 			effectivePerson = this.effectivePerson(request);
-			String part = this.getURIPart(request.getRequestURI(), "update");
-			String id = StringUtils.substringBefore(part, "/work/");
-			String workId = StringUtils.substringAfter(part, "/work/");
+			String id = this.getURIPart(request.getRequestURI(), "update");
+			String workId = this.getURIPart(request.getRequestURI(), "work");
 			Attachment attachment = null;
 			Work work = null;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -73,17 +74,25 @@ public class UpdateServlet extends BaseServlet {
 							"attachment{id:" + attachment.getId() + "} referenced by multi work, can not update.");
 				}
 			}
-			ServletFileUpload upload = new ServletFileUpload();
-			FileItemIterator fileItemIterator = upload.getItemIterator(request);
+			FileItemIterator fileItemIterator = this.getItemIterator(request);
 			while (fileItemIterator.hasNext()) {
 				FileItemStream item = fileItemIterator.next();
 				try (InputStream input = item.openStream()) {
 					if (!item.isFormField()) {
-						StorageMapping mapping = ThisApplication.storageMappings.random(Attachment.class);
+						StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
 						try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 							emc.beginTransaction(Attachment.class);
 							// emc.beginTransaction(AttachmentLog.class);
 							attachment = emc.find(id, Attachment.class);
+							/** 禁止不带扩展名的文件上传 */
+							if (StringUtils.isEmpty(FilenameUtils.getExtension(item.getName()))) {
+								throw new EmptyExtensionException(item.getName());
+							}
+							/** 禁止不同的扩展名上传 */
+							if (!Objects.equals(StringUtils.lowerCase(FilenameUtils.getExtension(item.getName())),
+									attachment.getExtension())) {
+								throw new ExtensionNotMatchException(item.getName(), attachment.getExtension());
+							}
 							attachment.updateContent(mapping, input);
 							attachment.setLastUpdatePerson(effectivePerson.getName());
 							// AttachmentLog attachmentLog =

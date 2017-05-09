@@ -80,7 +80,7 @@
 //          "accessed": { "value" : "function(d){ return 333 }" },
 //          "experience": { "value" : "function(d){ return 9 }" },
 //          "prime": { "value" : "function(d){ return 6 }" },
-          "createTime" : {"value" : "function( d ){ return this.app.getDateDiff( d.createTime )}" , "title" : "function( d ){ return d.createTime }" },
+          "createTime" : {"value" : "function( d ){ return this.app.getDateDiff( d.createTime || d.updateTime )}" , "title" : "function( d ){ return d.createTime || d.updateTime }" },
           "quoteContent" : {
             "value": "",
             "show": "function( d ){ return ( d.parentId && d.parentId!='' ) ? true : false }"

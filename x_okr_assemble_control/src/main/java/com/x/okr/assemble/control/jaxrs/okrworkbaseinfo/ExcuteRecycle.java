@@ -1,12 +1,13 @@
 package com.x.okr.assemble.control.jaxrs.okrworkbaseinfo;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
-
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkBaseInfoProcessException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkIdEmptyException;
 import com.x.okr.assemble.control.service.OkrWorkBaseInfoOperationService;
 
 public class ExcuteRecycle extends ExcuteBase {
@@ -19,14 +20,13 @@ public class ExcuteRecycle extends ExcuteBase {
 		if( id == null || id.isEmpty() ){
 			Exception exception = new WorkIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
 		}else{
 			try{
 				okrWorkBaseInfoOperationService.recycleWork( id );
 			}catch(Exception e){
-				Exception exception = new WorkRecycleException( e, id );
+				Exception exception = new WorkBaseInfoProcessException( e, "将指定ID的具体工作撤回时发生异常。ID：" + id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

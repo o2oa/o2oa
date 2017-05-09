@@ -45,7 +45,7 @@ public class Company extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.Company.table;
 
 	@PrePersist
-	public void prePersist() throws Exception { 
+	public void prePersist() throws Exception {
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -53,7 +53,7 @@ public class Company extends SliceJpaObject {
 		this.updateTime = date;
 		if (null == this.sequence) {
 			this.sequence = StringUtils.join(DateTools.compact(this.getCreateTime()), this.getId());
-		}		
+		}
 		if (null == this.distributeFactor) {
 			this.distributeFactor = (new Random()).nextInt(1000);
 		}
@@ -140,6 +140,11 @@ public class Company extends SliceJpaObject {
 	}
 
 	/* 更新运行方法 */
+
+	public static String[] FLAGS = new String[] { "id", "name" };
+
+	/** flag标志位 */
+	/** 默认内容结束 */
 
 	@EntityFieldDescribe("name拼音.")
 	@Index(name = TABLE + "_pinyin")

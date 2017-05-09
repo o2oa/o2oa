@@ -131,6 +131,11 @@
     "icon": "htmleditor.png",
     "text": "HTML编辑器",
     "className": "Htmleditor"
+  },
+  "log": {
+    "icon": "log.png",
+    "text": "阅读记录",
+    "className": "Log"
   }
 //  "office": {
 //    "icon": "office.png",

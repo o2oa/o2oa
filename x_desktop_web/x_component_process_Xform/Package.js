@@ -5,6 +5,7 @@ MWF.xDesktop.requireApp("process.Xform", "Label", null, false);
 MWF.xDesktop.requireApp("process.Xform", "Textfield", null, false);
 MWF.xDesktop.requireApp("process.Xform", "Number", null, false);
 MWF.xDesktop.requireApp("process.Xform", "Personfield", null, false);
+MWF.xDesktop.requireApp("process.Xform", "Orgfield", null, false);
 MWF.xDesktop.requireApp("process.Xform", "Calendar", null, false);
 MWF.xDesktop.requireApp("process.Xform", "Textarea", null, false);
 MWF.xDesktop.requireApp("process.Xform", "Select", null, false);
@@ -15,8 +16,17 @@ MWF.xDesktop.requireApp("process.Xform", "Button", null, false);
 MWF.xApplication.process.Xform.Div = MWF.APPDiv =  new Class({
 	Extends: MWF.APP$Module
 });
+//MWF.xApplication.process.Xform.Image = MWF.APPImage =  new Class({
+//	Extends: MWF.APP$Module
+//});
 MWF.xApplication.process.Xform.Image = MWF.APPImage =  new Class({
-	Extends: MWF.APP$Module
+    Extends: MWF.APP$Module,
+    _loadUserInterface: function(){
+        if (typeOf(this.json.src)=="object"){
+            var src = MWF.xDesktop.getImageSrc( this.json.src.imageId );
+            this.node.set("src", src);
+        }
+    }
 });
 
 MWF.xDesktop.requireApp("process.Xform", "Table", null, false);
@@ -51,7 +61,15 @@ MWF.xDesktop.requireApp("process.Xform", "Monitor", null, false);
 MWF.xDesktop.requireApp("process.Xform", "View", null, false);
 MWF.xDesktop.requireApp("process.Xform", "ViewSelector", null, false);
 MWF.xDesktop.requireApp("process.Xform", "ImageClipper", null, false);
-MWF.xDesktop.requireApp("process.Xform", "View", null, false);
-MWF.xDesktop.requireApp("process.Xform", "View", null, false);
-MWF.xDesktop.requireApp("process.Xform", "ViewSelector", null, false);
-MWF.xDesktop.requireApp("process.Xform", "ImageClipper", null, false);
+
+MWF.xDesktop.requireApp("process.Xform", "Source", null, false);
+MWF.xDesktop.requireApp("process.Xform", "SourceText", null, false);
+MWF.xDesktop.requireApp("process.Xform", "SubSource", null, false);
+
+MWF.xApplication.process.Xform.SubSourceItem = MWF.APPSubSourceItem =  new Class({
+    Extends: MWF.APP$Module,
+    _loadUserInterface: function(){
+        this.loopNodes = [];
+        this.subSourceItems = [];
+    }
+});

@@ -306,7 +306,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
 		var msg = {
 			"subject": MWF.LP.desktop.action.uploadTitle,
 			//"content": MWF.LP.desktop.action.uploadTitle+" : "+file.name+"<br/>"+contentHTML
-            "content": file.name+"<br/>"+contentHTML
+            "content": ( file.name ? (file.name+"<br/>") : "" )+contentHTML
 		};
         var messageItem = layout.desktop.message.addMessage(msg);
 
@@ -314,9 +314,8 @@ MWF.xDesktop.Actions.RestActions = new Class({
         messageItem.close = function(callback, e){
             if (this.status=="progress"){
                 flag = false;
-                var text = MWF.LP.desktop.action.cancelUpload.replace(/{name}/g, file.name);
+                var text = MWF.LP.desktop.action.cancelUpload.replace(/{name}/g, (file.name||""));
                 MWF.xDesktop.confirm("wram", e, MWF.LP.desktop.action.cancelUploadTitle, text, "400", "140", function(){
-                    debugger;
                     xhr.abort();
                     //xhr.upload.timeout = 1;
                     this.close();

@@ -20,7 +20,6 @@ import javax.ws.rs.core.Response;
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.service.AttendanceDetailServiceAdv;
 import com.x.attendance.entity.AttendanceDetailMobile;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
@@ -29,11 +28,12 @@ import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 
 
 @Path("attendancedetail/mobile")
@@ -60,7 +60,7 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailMobileIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
 			}
 		}		
 		if( check ){
@@ -70,7 +70,7 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailMobileQueryByIdException( e, id);
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}		
 		if( check ){
@@ -78,7 +78,7 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetaillMobileNotExistsException( id);
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
 			}
 		}		
 		if( check ){
@@ -89,7 +89,7 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailMobileWrapCopyException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -151,7 +151,7 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailMobileQueryParameterEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -163,7 +163,7 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailMobileEndDateFormatException( e, wrapIn.getEndDate() );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 				if( wrapIn.getEndDate() == null || wrapIn.getEndDate().isEmpty() ){
 					wrapIn.setEndDate( wrapIn.getStartDate() );
@@ -177,7 +177,7 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailMobileStartDateFormatException( e, wrapIn.getEndDate() );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}
 		}
@@ -191,7 +191,7 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailMobileCountException( e, wrapIn.getEmpNo(), wrapIn.getEmpName(), wrapIn.getSignDescription(), wrapIn.getStartDate(), wrapIn.getEndDate() );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}
 		}
@@ -203,7 +203,7 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailMobileListByParameterException( e, wrapIn.getEmpNo(), wrapIn.getEmpName(), wrapIn.getSignDescription(), wrapIn.getStartDate(), wrapIn.getEndDate() );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}
 		}
@@ -215,7 +215,7 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailMobileWrapCopyException( e );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}
 		}
@@ -268,7 +268,7 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailMobileRecordAddressEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
 			}else{
 				attendanceDetailMobile.setRecordAddress( wrapIn.getRecordAddress() );
 			}
@@ -278,7 +278,7 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailMobileLatitudeEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
 			}else{
 				attendanceDetailMobile.setLatitude( wrapIn.getLatitude() );
 			}
@@ -288,7 +288,7 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailMobileLongitudeEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
 			}else{
 				attendanceDetailMobile.setLongitude( wrapIn.getLongitude() );
 			}
@@ -305,7 +305,7 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailMobileSignTimeFormatException( e, wrapIn.getSignTime() );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}else{//打卡时间没有填写就填写为当前时间
 				attendanceDetailMobile.setSignTime( dateOperation.getNowTime() ); //打卡时间
@@ -320,7 +320,7 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceDetailMobileRecordDateFormatException( e, wrapIn.getRecordDateString() );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}				
 			}else{
 				attendanceDetailMobile.setRecordDateString( dateOperation.getNowDate() ); //打卡日期
@@ -339,7 +339,7 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceDetailMobileSaveException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -359,7 +359,7 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 			if ( null == attendanceDetailMobile ) {
 				Exception exception = new AttendanceDetaillMobileNotExistsException( id );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
 			}else{
 				//进行数据库持久化操作				
 				emc.beginTransaction( AttendanceDetailMobile.class );
@@ -371,7 +371,7 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction{
 		} catch ( Exception e ) {
 			Exception exception = new AttendanceDetaillMobileNotExistsException( id );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

@@ -104,5 +104,54 @@ public class OkrConfigSecretaryFactory extends AbstractFactory {
 		p = cb.and( p, cb.equal( root.get( OkrConfigSecretary_.leaderIdentity ), leaderIdentity ));
 		//logger.debug( em.createQuery(cq.where(p)).toString() );
 		return em.createQuery( cq.where(p) ).getResultList();
-	}	
+	}
+	/**
+	 * 查询秘书代理领导身份列表（去重复）
+	 * @param identities_ok 排除身份
+	 * @param identities_error 排除身份
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<String> listAllDistinctLeaderIdentity(List<String> identities_ok, List<String> identities_error) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrConfigSecretary.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<OkrConfigSecretary> root = cq.from(OkrConfigSecretary.class);
+		
+		Predicate p = cb.isNotNull( root.get( OkrConfigSecretary_.id ) );
+		if( identities_ok != null && identities_ok.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrConfigSecretary_.leaderIdentity ).in( identities_ok )) );
+		}
+		if( identities_error != null && identities_error.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrConfigSecretary_.leaderIdentity ).in( identities_error )) );
+		}
+		cq.distinct(true).select(root.get( OkrConfigSecretary_.leaderIdentity ));
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+	/**
+	 * 根据身份名称，从领导秘书配置信息中查询与该身份有关的所有信息列表
+	 * @param identity
+	 * @param recordId 
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<OkrConfigSecretary> listErrorIdentitiesInConfigSecretary(String identity, String recordId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrConfigSecretary.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<OkrConfigSecretary> cq = cb.createQuery( OkrConfigSecretary.class );
+		Root<OkrConfigSecretary> root = cq.from( OkrConfigSecretary.class );
+		Predicate p = cb.isNotNull(root.get( OkrConfigSecretary_.id ));
+		
+		if( recordId != null && !recordId.isEmpty() && !"all".equals( recordId ) ){
+			p = cb.and( p, cb.equal( root.get( OkrConfigSecretary_.id ), recordId ) );
+		}
+		
+		Predicate p_leaderIdentity = cb.isNotNull(root.get( OkrConfigSecretary_.leaderIdentity ));
+		p_leaderIdentity = cb.and( p_leaderIdentity, cb.equal( root.get( OkrConfigSecretary_.leaderIdentity ), identity ) );
+		Predicate p_secretaryIdentity = cb.isNotNull(root.get( OkrConfigSecretary_.secretaryIdentity ));
+		p_secretaryIdentity = cb.and( p_secretaryIdentity, cb.equal( root.get( OkrConfigSecretary_.secretaryIdentity ), identity ) );
+		Predicate p_identity = cb.or( p_leaderIdentity, p_secretaryIdentity );
+		p = cb.and( p, p_identity );
+		return em.createQuery(cq.where(p)).getResultList();
+	}
 }

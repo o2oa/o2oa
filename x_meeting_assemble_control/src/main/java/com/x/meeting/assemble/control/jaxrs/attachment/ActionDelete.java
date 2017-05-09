@@ -22,7 +22,8 @@ class ActionDelete {
 			Meeting meeting = emc.find(attachment.getMeeting(), Meeting.class, ExceptionWhen.not_found);
 			business.meetingReadAvailable(effectivePerson, meeting, ExceptionWhen.not_allow);
 			emc.beginTransaction(Attachment.class);
-			StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class, attachment.getStorage());
+			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+					attachment.getStorage());
 			attachment.deleteContent(mapping);
 			emc.remove(attachment);
 			emc.commit();

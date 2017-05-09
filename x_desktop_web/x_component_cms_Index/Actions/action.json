@@ -65,6 +65,11 @@
 
   "listViewByCategory": {"uri" : "/jaxrs/view/list/category/{categoryId}"},
   "getView" : {"uri" : "/jaxrs/view/{id}"},
-  "listCategoryViewByCategory": {"uri" : "/jaxrs/viewcategory/list/category/{categoryId}"}
+  "listCategoryViewByCategory": {"uri" : "/jaxrs/viewcategory/list/category/{categoryId}"},
+
+  "listWorkFilter": {"uri": "/jaxrs/work/list/{id}/next/{count}/application/{applicationId}/filter", "method": "POST"},
+  "startWork": {"uri": "/jaxrs/work/process/{processId}", "method": "POST"},
+  "saveWorkData": {"uri": "/jaxrs/data/work/{id}", "method": "PUT"}
+
 
 }

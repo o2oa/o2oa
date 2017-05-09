@@ -79,7 +79,7 @@ public class AppInfoFactory extends AbstractFactory {
 		Root<AppInfo> root = cq.from(AppInfo.class);
 		cq.select(root.get( AppInfo_.id ));
 		if( permissionedAppInfoIds != null && !permissionedAppInfoIds.isEmpty() ){
-			Predicate p = cb.not( root.get(AppInfo_.id).in( permissionedAppInfoIds ));
+			Predicate p = cb.not( root.get(AppInfo_.id ).in( permissionedAppInfoIds ));
 			return em.createQuery(cq.where( p )).getResultList();
 		}
 		return em.createQuery(cq).getResultList();
@@ -92,6 +92,16 @@ public class AppInfoFactory extends AbstractFactory {
 		Root<AppInfo> root = cq.from(AppInfo.class);
 		Predicate p = cb.equal( root.get(AppInfo_.appName ), appName );
 		cq.select(root.get( AppInfo_.id ));
+		return em.createQuery(cq.where( p )).getResultList();
+	}
+
+	public List<String> listByAppAlias(String appAlias) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(AppInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<AppInfo> root = cq.from(AppInfo.class);
+		Predicate p = cb.equal( root.get(AppInfo_.appAlias ), appAlias );
+		cq.select(root.get( AppInfo_.id ));		
 		return em.createQuery(cq.where( p )).getResultList();
 	}	
 }

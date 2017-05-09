@@ -17,16 +17,16 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
 import com.x.base.core.cache.ApplicationCache;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutOnline;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.project.x_collaboration_assemble_websocket;
+import com.x.base.core.project.jaxrs.AbstractJaxrsAction;
+import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.organization.assemble.express.Business;
 import com.x.organization.assemble.express.ThisApplication;
 import com.x.organization.assemble.express.jaxrs.wrapout.WrapOutCompany;
@@ -179,8 +179,10 @@ public class ComplexAction extends AbstractJaxrsAction {
 				}
 			}
 			if (null != wrap) {
-				WrapOutOnline online = ThisApplication.applications.getQuery(x_collaboration_assemble_websocket.class,
-						"online/person/" + URLEncoder.encode(wrap.getName(), "UTF-8"), WrapOutOnline.class);
+				WrapOutOnline online = ThisApplication.context().applications()
+						.getQuery(x_collaboration_assemble_websocket.class,
+								"online/person/" + URLEncoder.encode(wrap.getName(), "UTF-8"))
+						.getData(WrapOutOnline.class);
 				wrap.setOnlineStatus(online.getOnlineStatus());
 			}
 			result.setData(wrap);

@@ -5,13 +5,14 @@ import java.util.List;
 
 import com.x.organization.core.express.Organization;
 import com.x.organization.core.express.wrap.WrapPerson;
+import com.x.processplatform.assemble.bam.ThisApplication;
 import com.x.processplatform.assemble.bam.stub.PersonStub;
 import com.x.processplatform.assemble.bam.stub.PersonStubs;
 
 public class TimerPersonStubs extends ActionBase {
 
 	public PersonStubs execute() throws Exception {
-		Organization organization = new Organization();
+		Organization organization =new Organization(ThisApplication.context());
 		List<WrapPerson> os = organization.person().listLoginRecent(100);
 		PersonStubs stubs = new PersonStubs();
 		List<PersonStub> list = new ArrayList<>();

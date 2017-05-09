@@ -262,6 +262,18 @@ public class Person extends SliceJpaObject {
 	@Index(name = TABLE + "_lastLoginTime")
 	private Date lastLoginTime;
 
+	@EntityFieldDescribe("最后登录地址.")
+	@Index(name = TABLE + "_lastLoginAddress")
+	@Column(length = JpaObject.length_64B, name = "xlastLoginAddress")
+	@CheckPersist(allowEmpty = true)
+	private String lastLoginAddress;
+
+	@EntityFieldDescribe("最后登录客户端.")
+	@Index(name = TABLE + "_lastLoginClient")
+	@Column(length = JpaObject.length_32B, name = "xlastLoginClient")
+	@CheckPersist(allowEmpty = true)
+	private String lastLoginClient;
+
 	@EntityFieldDescribe("邮件地址.")
 	@Column(length = JpaObject.length_64B, name = "xmail")
 	@Index(name = TABLE + "_mail")
@@ -494,6 +506,22 @@ public class Person extends SliceJpaObject {
 
 	public void setLastLoginTime(Date lastLoginTime) {
 		this.lastLoginTime = lastLoginTime;
+	}
+
+	public String getLastLoginAddress() {
+		return lastLoginAddress;
+	}
+
+	public void setLastLoginAddress(String lastLoginAddress) {
+		this.lastLoginAddress = lastLoginAddress;
+	}
+
+	public String getLastLoginClient() {
+		return lastLoginClient;
+	}
+
+	public void setLastLoginClient(String lastLoginClient) {
+		this.lastLoginClient = lastLoginClient;
 	}
 
 }

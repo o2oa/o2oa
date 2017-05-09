@@ -2,11 +2,11 @@ package com.x.meeting.assemble.control.jaxrs.attachment;
 
 import java.util.List;
 
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.role.RoleDefinition;
 import com.x.meeting.assemble.control.Business;
 import com.x.meeting.assemble.control.WrapTools;

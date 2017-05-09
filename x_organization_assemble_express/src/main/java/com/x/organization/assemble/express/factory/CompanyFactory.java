@@ -38,7 +38,7 @@ public class CompanyFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Company> root = cq.from(Company.class);
 		Predicate p = cb.equal(root.get(Company_.name), name);
-		cq.select(root.get(Company_.id)).where(p);
+		cq.select(root.get(Company_.id)).where(p).distinct(true);
 		List<String> list = em.createQuery(cq).setMaxResults(1).getResultList();
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -54,7 +54,7 @@ public class CompanyFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Department> root = cq.from(Department.class);
 		Predicate p = cb.equal(root.get(Department_.id), id);
-		cq.select(root.get(Department_.company)).where(p);
+		cq.select(root.get(Department_.company)).where(p).distinct(true);
 		List<String> list = em.createQuery(cq).setMaxResults(1).getResultList();
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -70,7 +70,7 @@ public class CompanyFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<Company> root = cq.from(Company.class);
 		Predicate p = cb.equal(root.get(Company_.superior), id);
-		cq.select(cb.count(root)).where(p);
+		cq.select(cb.count(root)).where(p).distinct(true);
 		return em.createQuery(cq).getSingleResult();
 	}
 
@@ -81,7 +81,7 @@ public class CompanyFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Company> root = cq.from(Company.class);
 		Predicate p = cb.equal(root.get(Company_.level), 1);
-		cq.select(root.get(Company_.id)).where(p);
+		cq.select(root.get(Company_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -91,7 +91,7 @@ public class CompanyFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Company> root = cq.from(Company.class);
-		cq.select(root.get(Company_.id));
+		cq.select(root.get(Company_.id)).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -103,7 +103,7 @@ public class CompanyFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Company> root = cq.from(Company.class);
 		Predicate p = cb.equal(root.get(Company_.id), id);
-		cq.select(root.get(Company_.superior)).where(p);
+		cq.select(root.get(Company_.superior)).where(p).distinct(true);
 		List<String> list = em.createQuery(cq).setMaxResults(1).getResultList();
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -142,7 +142,7 @@ public class CompanyFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Company> root = cq.from(Company.class);
 		Predicate p = cb.equal(root.get(Company_.superior), id);
-		cq.select(root.get(Company_.id)).where(p);
+		cq.select(root.get(Company_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -170,7 +170,7 @@ public class CompanyFactory extends AbstractFactory {
 		Root<CompanyAttribute> root = cq.from(CompanyAttribute.class);
 		Predicate p = cb.equal(root.get(CompanyAttribute_.name), name);
 		p = cb.and(p, cb.isMember(attribute, root.get(CompanyAttribute_.attributeList)));
-		cq.select(root.get(CompanyAttribute_.company)).where(p);
+		cq.select(root.get(CompanyAttribute_.company)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -184,7 +184,7 @@ public class CompanyFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Company> root = cq.from(Company.class);
 		Predicate p = cb.like(root.get(Company_.pinyinInitial), str + "%", '\\');
-		cq.select(root.get(Company_.id)).where(p);
+		cq.select(root.get(Company_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -200,7 +200,7 @@ public class CompanyFactory extends AbstractFactory {
 		Predicate p = cb.like(root.get(Company_.name), "%" + str + "%", '\\');
 		p = cb.or(p, cb.like(root.get(Company_.pinyin), str + "%", '\\'));
 		p = cb.or(p, cb.like(root.get(Company_.pinyinInitial), str + "%", '\\'));
-		cq.select(root.get(Company_.id)).where(p);
+		cq.select(root.get(Company_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -216,7 +216,7 @@ public class CompanyFactory extends AbstractFactory {
 		Predicate p = cb.like(root.get(Company_.pinyin), str + "%");
 		p = cb.or(p, cb.like(root.get(Company_.pinyinInitial), str + "%"));
 		cq.orderBy(cb.asc(root.get(Company_.pinyinInitial)), cb.asc(root.get(Company_.pinyin)));
-		cq.select(root.get(Company_.id)).where(p);
+		cq.select(root.get(Company_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 

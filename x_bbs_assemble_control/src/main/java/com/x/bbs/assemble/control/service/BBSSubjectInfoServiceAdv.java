@@ -3,17 +3,17 @@ package com.x.bbs.assemble.control.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.entity.BBSSectionInfo;
 import com.x.bbs.entity.BBSSubjectAttachment;
 import com.x.bbs.entity.BBSSubjectContent;
 import com.x.bbs.entity.BBSSubjectInfo;
-import com.x.bbs.entity.BBSSubjectPictureBase64;
 
 /**
  * 论坛信息管理服务类
@@ -63,7 +63,7 @@ public class BBSSubjectInfoServiceAdv {
 	 * 向数据库保存BBSSubjectInfo对象
 	 * @param wrapIn
 	 */
-	public BBSSubjectInfo save( BBSSubjectInfo _bBSSubjectInfo, String content, String pictureBase64 ) throws Exception {
+	public BBSSubjectInfo save( BBSSubjectInfo _bBSSubjectInfo, String content ) throws Exception {
 		if( _bBSSubjectInfo  == null ){
 			throw new Exception( "_bBSSubjectInfo is null!" );
 		}
@@ -71,7 +71,7 @@ public class BBSSubjectInfoServiceAdv {
 			throw new Exception( "content is null!" );
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-			return subjectInfoService.save( emc, _bBSSubjectInfo, content, pictureBase64 );
+			return subjectInfoService.save( emc, _bBSSubjectInfo, content );
 		}catch( Exception e ){
 			throw e;
 		}
@@ -634,29 +634,6 @@ public class BBSSubjectInfoServiceAdv {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business( emc );
 			return business.subjectInfoFactory().listRecommendedSubjectInSectionForPage( searchForumId, searchMainSectionId, searchSectionId, creatorName, count );
-		}catch( Exception e ){
-			throw e;
-		}
-	}
-
-	public String getPictureBase64( String id ) throws Exception {
-		if( id == null || id.isEmpty() ){
-			throw new Exception( "id can not null." );
-		}
-		List<BBSSubjectPictureBase64> encodeList = null;
-		BBSSubjectPictureBase64 subjectPictureBase64 = null;
-		Business business = null;
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-			business = new Business( emc );
-			encodeList = business.subjectInfoFactory().getPictureBase64( id );
-			if( encodeList != null && encodeList.size() > 0 ){
-				subjectPictureBase64 = encodeList.get( 0 );
-			}
-			if( subjectPictureBase64 != null ){
-				return subjectPictureBase64.getPictureBase64();
-			}else{
-				return "";
-			}
 		}catch( Exception e ){
 			throw e;
 		}

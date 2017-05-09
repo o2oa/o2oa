@@ -271,7 +271,6 @@ public class AppCategoryAdminFactory extends AbstractFactory {
 		if( objectId != null && !objectId.isEmpty() ){
 			p = cb.and( p, cb.equal( root.get(AppCategoryAdmin_.objectId ), objectId ) );
 		}
-		
 		cq.select(root.get(AppCategoryAdmin_.objectId ));
 		return em.createQuery(cq.where(p)).getResultList();
 	}

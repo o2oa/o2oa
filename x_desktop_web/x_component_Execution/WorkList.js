@@ -56,7 +56,10 @@ MWF.xApplication.Execution.WorkList = new Class({
         if( this.naviDiv)this.naviDiv.setStyles({"height":(size.y-60)+"px"});
         if(this.naviContentDiv)this.naviContentDiv.setStyles({"height":(size.y-180)+"px"});
         if(this.contentDiv)this.contentDiv.setStyles({"height":(size.y-60)+"px"});
-        if(this.rightContentDiv)this.rightContentDiv.setStyles({"height":(size.y-40-140)+"px"});
+        if(this.rightContentDiv)this.rightContentDiv.setStyles({
+            "height":(size.y-40-140)+"px",
+            "width":(size.x-this.naviDiv.getSize().x-6)+"px"
+        });
     },
     createNaviContent: function(){
         this.naviDiv = new Element("div.naviDiv",{
@@ -406,6 +409,9 @@ MWF.xApplication.Execution.WorkList = new Class({
         this.rightContentDiv = new Element("div.rightContentDiv",{
             "styles":this.css.rightContentDiv
         }).inject(this.contentDiv);
+        this.rightContentDiv.setStyles({
+            "width":(this.app.middleContent.getSize().x-this.naviDiv.getSize().x-6)+"px"
+        });
     },
     createRightContentDiv: function(workNavi1 , workNavi2 ){
         //alert(this.app.middleContent.getSize()-40-140+"px")
@@ -431,33 +437,36 @@ MWF.xApplication.Execution.WorkList = new Class({
         this.reloadRightContentDiv();
         this.rightContentDiv.setStyles({"height":this.app.middleContent.getSize().y-40-140+"px"});
 
-        if(this.scrollBar && this.scrollBar.scrollVAreaNode){
-            this.scrollBar.scrollVAreaNode.destroy()
-        }
-        MWF.require("MWF.widget.ScrollBar", function () {
-            this.scrollBar =  new MWF.widget.ScrollBar(this.rightContentDiv, {
-                "indent": false,
-                "style": "xApp_TaskList",
-                "where": "before",
-                "distance": 100,
-                "friction": 4,
-                "axis": {"x": false, "y": true},
-                "onScroll": function (y) {
-                    var scrollSize = this.rightContentDiv.getScrollSize();
-                    var clientSize = this.rightContentDiv.getSize();
-                    var scrollHeight = scrollSize.y - clientSize.y;
-                    var view = this.baseView || this.centerView;
-                    if (y + 200 > scrollHeight && view && view.loadElementList) {
-                        if (! view.isItemsLoaded) view.loadElementList()
-                    }
-                }.bind(this)
-            });
-        }.bind(this),false);
+        //if(this.scrollBar && this.scrollBar.scrollVAreaNode){
+        //    this.scrollBar.scrollVAreaNode.destroy()
+        //}
+
+
+        //MWF.require("MWF.widget.ScrollBar", function () {
+        //    this.scrollBar =  new MWF.widget.ScrollBar(this.rightContentDiv, {
+        //        "indent": false,
+        //        "style": "default",
+        //        "where": "before",
+        //        "distance": 100,
+        //        "friction": 4,
+        //        "axis": {"x": false, "y": true},
+        //        "onScroll": function (y) {
+        //            var scrollSize = this.rightContentDiv.getScrollSize();
+        //            var clientSize = this.rightContentDiv.getSize();
+        //            var scrollHeight = scrollSize.y - clientSize.y;
+        //            var view = this.baseView || this.centerView;
+        //            if (y + 200 > scrollHeight && view && view.loadElementList) {
+        //                if (! view.isItemsLoaded) view.loadElementList()
+        //            }
+        //        }.bind(this)
+        //    });
+        //}.bind(this),false);
 
         templateUrl = this.path+"centerWorkAll.json";
 
         this.centerView =  new  MWF.xApplication.Execution.WorkList.CenterWorkView(this.rightContentDiv, this.app, {explorer:this,lp : this.app.lp.centerWorkView, css : this.css, actions : this.actions }, { templateUrl : templateUrl,category:str,filterData:filter } )
         this.centerView.load();
+        this.app.setScrollBar(this.rightContentDiv,this.centerView);
 
     },
     loadBaseWorkList: function (str,filter) {
@@ -471,31 +480,33 @@ MWF.xApplication.Execution.WorkList = new Class({
         if(this.scrollBar && this.scrollBar.scrollVAreaNode){
             this.scrollBar.scrollVAreaNode.destroy()
         }
-        MWF.require("MWF.widget.ScrollBar", function () {
-            if(this.scrollBar) delete this.scrollBar
-            this.scrollBar =  new MWF.widget.ScrollBar(this.rightContentDiv, {
-                "indent": false,
-                "style": "xApp_TaskList",
-                "where": "before",
-                "distance": 100,
-                "friction": 4,
-                "axis": {"x": false, "y": true},
-                "onScroll": function (y) {
-                    var scrollSize = this.rightContentDiv.getScrollSize();
-                    var clientSize = this.rightContentDiv.getSize();
-                    var scrollHeight = scrollSize.y - clientSize.y;
-                    var view = this.baseView || this.centerView;
-                    if (y+200 > scrollHeight && view && view.loadElementList) {
-                        if (! view.isItemsLoaded) view.loadElementList();
-                    }
-                }.bind(this)
-            });
-
-        }.bind(this),false);
+        //this.app.setScrollBar(this.rightContentDiv,this.baseView);
+        //MWF.require("MWF.widget.ScrollBar", function () {
+        //    if(this.scrollBar) delete this.scrollBar
+        //    this.scrollBar =  new MWF.widget.ScrollBar(this.rightContentDiv, {
+        //        "indent": false,
+        //        "style": "xApp_TaskList",
+        //        "where": "before",
+        //        "distance": 100,
+        //        "friction": 4,
+        //        "axis": {"x": false, "y": true},
+        //        "onScroll": function (y) {
+        //            var scrollSize = this.rightContentDiv.getScrollSize();
+        //            var clientSize = this.rightContentDiv.getSize();
+        //            var scrollHeight = scrollSize.y - clientSize.y;
+        //            var view = this.baseView || this.centerView;
+        //            if (y+200 > scrollHeight && view && view.loadElementList) {
+        //                if (! view.isItemsLoaded) view.loadElementList();
+        //            }
+        //        }.bind(this)
+        //    });
+        //
+        //}.bind(this),false);
 
         this.baseView =  new  MWF.xApplication.Execution.WorkList.BaseWorkView(this.rightContentDiv, this.app, {lp : this.app.lp.baseWorkView, css : this.css, actions : this.actions }, { templateUrl : templateUrl,category:str,filterData:filter} )
         //this.baseView.options.templateUrl =
         this.baseView.load();
+        this.app.setScrollBar(this.rightContentDiv,this.baseView);
     },
 
     //切换具体工作tab页
@@ -571,9 +582,6 @@ MWF.xApplication.Execution.WorkList.WorkForm = new Class({
 
 
 
-
-
-
 })
 
 
@@ -591,6 +599,7 @@ MWF.xApplication.Execution.WorkList.CenterWorkView = new Class({
 
         if (!count)count = 15;
         var id = (this.items.length) ? this.items[this.items.length - 1].data.id : "(0)";
+        if(id=="(0)")this.app.createShade();
         //alert("this.items.length="+this.items.length)
 
         //alert("id="+id)
@@ -601,21 +610,25 @@ MWF.xApplication.Execution.WorkList.CenterWorkView = new Class({
             this.tabLocation = "centerDeploy"
             this.actions.getCenterWorkDeployListNext(id, count, filter, function (json) {
                 if (callback)callback(json);
+                this.app.destroyShade();
             }.bind(this))
         }else if(category=="drafter"){
             this.tabLocation = "centerDrafter"
             this.actions.getCenterWorkDrafterListNext(id, count, filter, function (json) {
                 if (callback)callback(json);
+                this.app.destroyShade();
             }.bind(this))
         }else if(category=="archive"){
             this.tabLocation = "centerArchive"
             this.actions.getCenterWorkArchiveListNext(id,count,filter,function(json){
-                if(callback)callback(json)
+                if(callback)callback(json);
+                this.app.destroyShade();
             }.bind(this))
         }else{
             this.tabLocation = "centerDeploy"
             this.actions.getCenterWorkDeployListNext(id, count, filter, function (json) {
                 if (callback)callback(json);
+                this.app.destroyShade();
             }.bind(this),null,false)
         }
         //this.app.workList.tabLocation = this.tabLocation;
@@ -711,7 +724,7 @@ MWF.xApplication.Execution.WorkList.CenterWorkDocument = new Class({
 
         }.bind(this))
     },
-    action_delete:function(e){
+    action_delete:function(){
         var _self = this;
         _self.view.app.confirm("warn",e,_self.view.app.lp.workList.submitWarn.warnTitle,_self.view.app.lp.workList.submitWarn.warnContent.delete,300,120,function(){
             _self.actions.deleteCenterWork(_self.data.id, function(json){
@@ -770,13 +783,12 @@ MWF.xApplication.Execution.WorkList.BaseWorkView = new Class({
         return new MWF.xApplication.Execution.WorkList.BaseWorkDocument(this.viewNode, data, this.explorer, this);
     },
 
-
     _getCurrentPageData: function(callback, count){
         var category = this.category = this.options.category;
 
         if (!count)count = 20;
         var id = (this.items.length) ? this.items[this.items.length - 1].data.id : "(0)";
-
+        if(id=="(0)")this.app.createShade()
         var filter = this.options.filterData || {};
         filter.maxCharacterNumber = "-1"
 
@@ -784,46 +796,53 @@ MWF.xApplication.Execution.WorkList.BaseWorkView = new Class({
             this.tabLocation = "baseDrafter"
             this.actions.getBaseWorkListMyDrafterNext(id, count, filter, function (json) {
                 if (callback)callback(json);
+                this.app.destroyShade();
             }.bind(this))
         }else if(category=="myDeploy"){  //我部署的
             this.tabLocation = "baseDeploy"
             this.actions.getBaseWorkListMyDeployNext(id, count, filter, function (json) {
                 if (callback)callback(json);
+                this.app.destroyShade();
             }.bind(this))
         }else if(category=="myDo"){ //我负责的
             this.tabLocation = "baseDo"
             this.actions.getBaseWorkListMyDoNext(id, count, filter, function (json) {
                 if (callback)callback(json);
+                this.app.destroyShade();
             }.bind(this))
         }else if(category=="myAssist"){ //我协助的
             this.tabLocation = "baseAssist"
             this.actions.getBaseWorkListMyAssistNext(id, count, filter, function (json) {
                 if (callback)callback(json);
+                this.app.destroyShade();
             }.bind(this))
         }else if(category=="myRead"){ //我阅知的
             this.tabLocation = "baseRead"
             this.actions.getBaseWorkListMyReadNext(id, count, filter, function (json) {
                 if (callback)callback(json);
+                this.app.destroyShade();
             }.bind(this))
         }else if(category=="myAppoint"){   //我委托的
             this.tabLocation = "baseAppoint"
             this.actions.getBaseWorkListMyAppointNext(id, count,filter,function(json){
                 if (callback)callback(json)
+                this.app.destroyShade();
             }.bind(this))
         }else if(category=="myArchive"){
             this.tabLocation = "baseArchive"
             this.actions.getBaseWorkListMyArchiveNext(id, count,filter,function(json){
                 if (callback)callback(json)
+                this.app.destroyShade();
             }.bind(this))
         }else if(category=="myAll"){
             this.tabLocation = "baseAll";
             this.actions.getBaseWorkListAllNext(id, count,filter,function(json){
                 if (callback)callback(json)
+                this.app.destroyShade();
             }.bind(this))
         }
 
         this.app.workList.tabLocation = this.tabLocation;
-
 
     },
     _removeDocument: function(documentData, all){
@@ -933,7 +952,16 @@ MWF.xApplication.Execution.WorkList.BaseWorkDocument = new Class({
         if (d.operation && d.operation.indexOf("DELETE")>-1)ret = true;
         return ret;
     },
-
+    archiveActionReturn:function(d){
+        var ret = false;
+        if (d.operation && d.operation.indexOf("ARCHIVE")>-1)ret = true;
+        return ret;
+    },
+    progressActionReturn:function(d){
+        var ret = false;
+        if (d.operation && d.operation.indexOf("PROGRESS")>-1)ret = true;
+        return ret;
+    },
     action_view:function(){
         if( this.data.workProcessStatus == this.lp.workProcessStatus.drafter ){
             MWF.xDesktop.requireApp("Execution", "WorkForm", function(){
@@ -969,29 +997,6 @@ MWF.xApplication.Execution.WorkList.BaseWorkDocument = new Class({
     },
     action_split:function(){
         MWF.xDesktop.requireApp("Execution", "WorkForm", function(){
-            //var data = {
-            //    title : this.data.title,
-            //    centerId : this.data.centerId,
-            //    //centerTitle: this.data.centerTitle,
-            //    parentWorkId : this.data.id,
-            //    //parentWorkTitle : this.data.title,
-            //    workType : this.data.workType,
-            //    workLevel : this.data.workLevel,
-            //    completeDateLimitStr : this.data.completeDateLimitStr,
-            //    completeDateLimit : this.data.completeDateLimit,
-            //    reportCycle: this.data.reportCycle,
-            //    reportDayInCycle: this.data.reportDayInCycle,
-            //    workSplitAndDescription : this.data.workDetail
-            //}
-            //if(this.data.id){
-            //    this.actions.getBaseWorkDetails(this.data.id, function (json) {
-            //        //data.workSplitAndDescription = json.data.workDetail
-            //        //data.specificActionInitiatives = json.data.progressAction
-            //        //data.cityCompanyDuty = json.data.dutyDescription
-            //        //data.milestoneMark = json.data.landmarkDescription
-            //        //data.importantMatters = json.data.majorIssuesDescription
-            //    }.bind(this),null,false)
-            //}
 
             var workform = new MWF.xApplication.Execution.WorkForm(this, this.app.restActions,{},{
                 "isNew": true,
@@ -1076,6 +1081,44 @@ MWF.xApplication.Execution.WorkList.BaseWorkDocument = new Class({
         },function(){
             this.close();
         })
+
+    },
+    action_archive:function(e){
+        var _self = this;
+        _self.view.app.confirm("warn",e,_self.view.app.lp.workList.submitWarn.warnTitle,_self.view.app.lp.workList.submitWarn.warnContent.archive,300,120,function(){
+            _self.actions.archiveBaseWork(_self.data.id, function(json){
+                if(json.type && json.type=="success"){
+                    this.app.notice(_self.view.app.lp.workList.prompt.deleteBaseWork, "success");
+                    _self.app.workList.clickBaseWorkTaskNavi(_self.app.workList.workNavi2)
+                }
+            }.bind(_self),function(xhr,text,error){
+                _self.app.WorkList.showErrorMessage(xhr,text,error)
+            }.bind(_self));
+
+            this.close()
+
+
+        },function(){
+            this.close();
+        })
+    },
+    action_progress:function(e){
+
+        data = {
+            title : this.data.title,
+            workId : this.data.id,
+            isCompleted : this.data.isCompleted,
+            overallProgress : this.data.overallProgress
+        };
+        var progressForm =  new MWF.xApplication.Execution.WorkList.Progress(this.view.app,this.view.app.restActions,data,this.view.css,{
+            "ieEdited": true,
+            "onReloadView" : function( data ){
+                //this.view.app.workList.createRightContentDiv("base","myAppoint");
+                this.view.app.workList.clickBaseWorkTaskNavi(this.app.workList.workNavi2 || "")
+            }.bind(this)
+        });
+        progressForm.load();
+
 
     },
     _queryCreateDocumentNode:function( itemData ){
@@ -1290,6 +1333,134 @@ MWF.xApplication.Execution.WorkList.Appoint = new Class({
         };
 
         var selector = new MWF.OrgSelector(this.app.content, options);
+    }
+
+});
+
+
+MWF.xApplication.Execution.WorkList.Progress = new Class({
+    Extends: MWF.xApplication.Template.Explorer.PopupForm,
+    Implements: [Options, Events],
+    options: {
+        "style": "default",
+        "width": "400",
+        "height": "200",
+        "hasTop": true,
+        "hasIcon": false,
+        "hasBottom": true,
+        "title": "",
+        "draggable": true,
+        "closeAction": true,
+        "closeText" : "",
+        "needLogout" : false,
+        "isNew": true
+    },
+    initialize: function (app, actions, data, css, options) {
+        this.setOptions(options);
+        this.app = app;
+        this.actions = this.app.restActions;
+        this.css = css;
+
+        //this.options.title = this.app.lp.idenitySelectTitle;
+        //
+        //this.identities = identities;
+        this.data = data || {};
+        this.actions = actions;
+    },
+    load: function () {
+        this.create();
+    },
+    createTopNode: function () {
+        if (!this.formTopNode) {
+            this.formTopNode = new Element("div.formTopNode", {
+                "styles": this.css.formTopNode
+            }).inject(this.formNode);
+
+            this.formTopIconNode = new Element("div.formTopIconNode", {
+                "styles": this.css.formTopIconNode
+            }).inject(this.formTopNode)
+
+            this.formTopTextNode = new Element("div.formTopTextNode", {
+                "styles": this.css.formTopTextNode,
+                "text": this.app.lp.workList.progress.progressTitle
+            }).inject(this.formTopNode)
+
+            if (this.options.closeAction) {
+                this.formTopCloseActionNode = new Element("div.formTopCloseActionNode", {"styles": this.css.formTopCloseActionNode}).inject(this.formTopNode);
+                this.formTopCloseActionNode.addEvent("click", function () {
+                    this.close()
+                }.bind(this))
+            }
+
+            this.formTopContentNode = new Element("div.formTopContentNode", {
+                "styles": this.css.formTopContentNode
+            }).inject(this.formTopNode)
+
+            //this._createTopContent();
+
+        }
+
+    },
+    _createTableContent: function () {
+        this.formTableArea.setStyles({"margin-top":"40px"})
+        var table = new Element("table",{"width":"100%",border:"0",cellpadding:"5",cellspacing:"0"}).inject(this.formTableArea);
+        table.setStyles({"margin-top":"10px"});
+        tr = new Element("tr").inject(table);
+        tr = new Element("tr").inject(table);
+        td = new Element("td",{
+            "text" : this.app.lp.workList.progress.completedPercent,
+            align:"center",
+            "width":"40%"
+        }).inject(tr);
+
+        td = new Element("td").inject(tr);
+
+        this.completePercentSelect = new Element("select.completePercentSelect").inject(td)
+        var completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"0%","value":"0"}).inject(this.completePercentSelect)
+        completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"10%","value":"10"}).inject(this.completePercentSelect)
+        completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"20%","value":"20"}).inject(this.completePercentSelect)
+        completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"30%","value":"30"}).inject(this.completePercentSelect)
+        completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"40%","value":"40"}).inject(this.completePercentSelect)
+        completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"50%","value":"50"}).inject(this.completePercentSelect)
+        completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"60%","value":"60"}).inject(this.completePercentSelect)
+        completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"70%","value":"70"}).inject(this.completePercentSelect)
+        completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"80%","value":"80"}).inject(this.completePercentSelect)
+        completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"90%","value":"90"}).inject(this.completePercentSelect)
+        completePercentSelectOption = new Element("option.completePercentSelectOption",{"text":"100%","value":"100"}).inject(this.completePercentSelect)
+
+        this.completePercentSelect.set("value",parseInt(this.data.overallProgress))
+    },
+
+    _createBottomContent: function () {
+        this.cancelActionNode = new Element("div.formCancelActionNode", {
+            "styles": this.css.formCancelActionNode,
+            "text": this.app.lp.workTask.appoint.appointCancel
+        }).inject(this.formBottomNode);
+
+        this.cancelActionNode.addEvent("click", function (e) {
+            this.close();
+        }.bind(this));
+
+        this.okActionNode = new Element("div.formOkActionNode", {
+            "styles": this.css.formOkActionNode,
+            "text": this.app.lp.workTask.appoint.appointOK
+        }).inject(this.formBottomNode);
+
+        this.okActionNode.addEvent("click", function (e) {
+            this.ok(e);
+        }.bind(this));
+    },
+    ok:function(){
+        var percent = this.completePercentSelect.get("value");
+        this.actions.progressBaseWork(this.data.workId,parseInt(percent),
+            function(json){
+                this.close();
+                this.fireEvent("reloadView");
+            }.bind(this),
+            function(xhr,text,error){
+                this.app.showErrorMessage(xhr,text,error)
+            }.bind(this)
+        )
     }
 
 });

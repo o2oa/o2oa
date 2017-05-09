@@ -38,7 +38,7 @@ MWF.widget.AttachmentController = MWF.widget.ATTER  = new Class({
 		this.container = $(container);
 	},
     load: function(){
-        if (this.options.size=="min"){
+        if (this.options.size==="min"){
             this.loadMin();
         }else{
             this.loadMax();
@@ -440,7 +440,6 @@ MWF.widget.AttachmentController = MWF.widget.ATTER  = new Class({
         }
     },
     replaceAttachment: function(e, node){
-        debugger;
         if (this.selectedAttachments.length && this.selectedAttachments.length==1){
             if (this.module) this.module.replaceAttachment(e, node, this.selectedAttachments[0]);
         }
@@ -564,18 +563,20 @@ MWF.widget.AttachmentController.Attachment = new Class({
                 break;
             case "icon":
                 this.loadIcon();
-                break
+                break;
             case "preview":
                 this.loadPreview();
                 break;
         }
         this.createInforNode(function(){
-            this.tooltip = new mBox.Tooltip({
-                content: this.inforNode,
-                setStyles: {content: {padding: 15, lineHeight: 20}},
-                attach: this.node,
-                transition: 'flyin'
-            });
+            if (!Browser.Platform.ios){
+                this.tooltip = new mBox.Tooltip({
+                    content: this.inforNode,
+                    setStyles: {content: {padding: 15, lineHeight: 20}},
+                    attach: this.node,
+                    transition: 'flyin'
+                });
+            }
         }.bind(this));
 
         this.setEvent();
@@ -719,7 +720,6 @@ MWF.widget.AttachmentController.Attachment = new Class({
                 this.iconAudioNode.addEvent("dblclick", function(e){e.stopPropagation();});
             }.bind(this));
         }else if (this.controller.options.videos.indexOf(this.data.extension.toLowerCase())!=-1){
-            debugger;
             this.controller.module.getAttachmentUrl(this, function(url){
                 this.iconNode.empty();
                 this.iconVideoNode = new Element("div", {

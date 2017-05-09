@@ -35,7 +35,7 @@ public class IdentityFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = cb.equal(root.get(Identity_.name), name);
-		cq.select(root.get(Identity_.id)).where(p);
+		cq.select(root.get(Identity_.id)).where(p).distinct(true);
 		List<String> list = em.createQuery(cq).setMaxResults(1).getResultList();
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -51,7 +51,7 @@ public class IdentityFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = root.get(Identity_.name).in(names);
-		cq.select(root.get(Identity_.id)).where(p);
+		cq.select(root.get(Identity_.id)).where(p).distinct(true);
 		List<String> list = em.createQuery(cq).getResultList();
 		return list;
 	}
@@ -63,7 +63,7 @@ public class IdentityFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = cb.equal(root.get(Identity_.person), id);
-		cq.select(root.get(Identity_.id)).where(p);
+		cq.select(root.get(Identity_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -74,7 +74,7 @@ public class IdentityFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = cb.equal(root.get(Identity_.department), id);
-		cq.select(root.get(Identity_.id)).where(p);
+		cq.select(root.get(Identity_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -85,7 +85,7 @@ public class IdentityFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = root.get(Identity_.department).in(ids);
-		cq.select(root.get(Identity_.id)).where(p);
+		cq.select(root.get(Identity_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -99,7 +99,7 @@ public class IdentityFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = cb.like(root.get(Identity_.pinyinInitial), str + "%", '\\');
-		cq.select(root.get(Identity_.id)).where(p);
+		cq.select(root.get(Identity_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -115,7 +115,7 @@ public class IdentityFactory extends AbstractFactory {
 		Predicate p = cb.like(root.get(Identity_.name), "%" + str + "%", '\\');
 		p = cb.or(p, cb.like(root.get(Identity_.pinyin), str + "%", '\\'));
 		p = cb.or(p, cb.like(root.get(Identity_.pinyinInitial), str + "%", '\\'));
-		cq.select(root.get(Identity_.id)).where(p);
+		cq.select(root.get(Identity_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -130,7 +130,7 @@ public class IdentityFactory extends AbstractFactory {
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = cb.like(root.get(Identity_.pinyin), str + "%");
 		p = cb.or(p, cb.like(root.get(Identity_.pinyinInitial), str + "%"));
-		cq.select(root.get(Identity_.id)).where(p);
+		cq.select(root.get(Identity_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -141,7 +141,7 @@ public class IdentityFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = cb.equal(root.get(Identity_.department), id);
-		cq.select(cb.count(root)).where(p);
+		cq.select(cb.count(root)).where(p).distinct(true);
 		return em.createQuery(cq).getSingleResult();
 	}
 
@@ -161,7 +161,7 @@ public class IdentityFactory extends AbstractFactory {
 		Predicate pb = cb.like(root.get(Identity_.name), "%" + str + "%", '\\');
 		pb = cb.or(pb, cb.like(root.get(Identity_.pinyin), str + "%", '\\'));
 		pb = cb.or(pb, cb.like(root.get(Identity_.pinyinInitial), str + "%", '\\'));
-		cq.select(root.get(Identity_.id)).where(cb.and(pa, pb));
+		cq.select(root.get(Identity_.id)).where(cb.and(pa, pb)).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 

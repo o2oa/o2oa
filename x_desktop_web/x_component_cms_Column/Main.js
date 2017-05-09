@@ -11,50 +11,9 @@ MWF.xApplication.cms.Column.Main = new Class({
         "icon": "icon.png",
         "width": "1000",
         "height": "600",
-        "isResize": false,
+        "isResize": true,
         "isMax": true,
-        "title": MWF.xApplication.cms.Column.LP.title,
-        "tooltip": {
-            "description": MWF.xApplication.cms.Column.LP.description,
-            "column": {
-                "title": MWF.xApplication.cms.Column.LP.column.title,
-                "create": MWF.xApplication.cms.Column.LP.column.create,
-                "nameLabel": MWF.xApplication.cms.Column.LP.column.nameLabel,
-                "aliasLabel": MWF.xApplication.cms.Column.LP.column.aliasLabel,
-                "descriptionLabel": MWF.xApplication.cms.Column.LP.column.descriptionLabel,
-                "sortLabel": MWF.xApplication.cms.Column.LP.column.sortLabel,
-                "iconLabel": MWF.xApplication.cms.Column.LP.column.iconLabel,
-                "cancel": MWF.xApplication.cms.Column.LP.column.cancel,
-                "ok": MWF.xApplication.cms.Column.LP.column.ok,
-                "inputName": MWF.xApplication.cms.Column.LP.column.inputName,
-                "create_cancel_title": MWF.xApplication.cms.Column.LP.column.create_cancel_title,
-                "create_cancel": MWF.xApplication.cms.Column.LP.column.create_cancel,
-                "noDescription": MWF.xApplication.cms.Column.LP.column.noDescription,
-                "delete": MWF.xApplication.cms.Column.LP.column.delete,
-                "edit": MWF.xApplication.cms.Column.LP.column.edit,
-                "delete_confirm_content": MWF.xApplication.cms.Column.LP.column.delete_confirm_content,
-                "delete_confirm_title": MWF.xApplication.cms.Column.LP.column.delete_confirm_title,
-                "createColumnSuccess": MWF.xApplication.cms.Column.LP.column.createColumnSuccess,
-                "updateColumnSuccess": MWF.xApplication.cms.Column.LP.column.updateColumnSuccess
-            },
-            "category": {
-                "title": MWF.xApplication.cms.Column.LP.category.title,
-                "create": MWF.xApplication.cms.Column.LP.category.create,
-                "nameLabel": MWF.xApplication.cms.Column.LP.category.nameLabel,
-                "aliasLabel": MWF.xApplication.cms.Column.LP.category.aliasLabel,
-                "descriptionLabel": MWF.xApplication.cms.Column.LP.category.descriptionLabel,
-                "sortLabel": MWF.xApplication.cms.Column.LP.category.sortLabel,
-                "iconLabel": MWF.xApplication.cms.Column.LP.category.iconLabel,
-                "columnLabel": MWF.xApplication.cms.Column.LP.category.columnLabel,
-                "cancel": MWF.xApplication.cms.Column.LP.category.cancel,
-                "ok": MWF.xApplication.cms.Column.LP.category.ok,
-                "inputName": MWF.xApplication.cms.Column.LP.category.inputName,
-                "create_cancel_title": MWF.xApplication.cms.Column.LP.category.create_cancel_title,
-                "create_cancel": MWF.xApplication.cms.Column.LP.category.create_cancel,
-                "noDescription": MWF.xApplication.cms.Column.LP.category.noDescription,
-                "edit": MWF.xApplication.cms.Column.LP.category.edit
-            }
-        }
+        "title": MWF.xApplication.cms.Column.LP.title
     },
     onQueryLoad: function () {
         this.lp = MWF.xApplication.cms.Column.LP;
@@ -71,115 +30,142 @@ MWF.xApplication.cms.Column.Main = new Class({
         this.loadApplicationContent();
         if (callback) callback();
     },
-    loadApplicationContent: function () {
-        //this.loadToolbar();
-        this.loadColumnArea();
-        //this.loadCategoryArea();
-    },
     createNode: function () {
         this.content.setStyle("overflow", "hidden");
         this.node = new Element("div", {
-            "styles": {"width": "100%", "height": "100%", "overflow": "hidden"}
+            "styles": this.css.container
         }).inject(this.content);
     },
-    loadToolbar: function () {
-        this.toolbarAreaNode = new Element("div", {
-            "styles": this.css.toolbarAreaNode,
-            "text": this.options.tooltip.description
-        }).inject(this.node);
-        //this.createCreateAction();
-        //this.createSearchAction();
+    reload: function(){
+        this.columnContentAreaNode.empty();
+        this.createColumnNodes();
     },
-    createCreateAction: function () {
-        //if (MWF.AC.isProcessPlatformCreator()){
-        this.createCategoryNode = new Element("div", {
-            "styles": this.css.createCategoryNode,
-            "title": this.options.tooltip.category.create
-        }).inject(this.toolbarAreaNode);
-        this.createCategoryNode.addEvent("click", function () {
-            this.createCategory();
-        }.bind(this));
-        //}
-    },
-    loadColumnArea: function () {
-        this.columnAreaNode = new Element("div", {
-            "styles": this.css.columnAreaNode
-        }).inject(this.node);
+    loadApplicationContent: function () {
+        //this.columnAreaNode = new Element("div", {
+        //    "styles": this.css.columnAreaNode
+        //}).inject(this.node);
 
+        this.loadTopNode();
+
+
+        //this.setColumnAreaSize();
+        //this.addEvent("resize", this.setColumnAreaSize);
+
+        this.loadColumnContentArea();
+
+        //this.setColumnContentSize();
+        this.setContentSize();
+
+        this.addEvent("resize", function(){
+            this.setContentSize();
+        }.bind(this));
+    },
+    loadTopNode: function(){
         this.columnToolbarAreaNode = new Element("div", {
             "styles": this.css.columnToolbarAreaNode
-        }).inject(this.columnAreaNode);
+        }).inject(this.node);
 
         if (MWF.AC.isProcessPlatformCreator()) {
             if (MWF.AC.isAdministrator()) {
-                this.createColumnNode = new Element("button", {
+                this.createColumnNode = new Element("div", {
                     "styles": this.css.createColumnNode,
-                    "text": this.options.tooltip.column.create
+                    "text": this.lp.column.create
                 }).inject(this.columnToolbarAreaNode);
-                this.createColumnNode.addEvent("click", function () {
-                    this.createColumn();
-                }.bind(this));
+                this.createColumnNode.addEvents({
+                    "mouseover" : function(){
+                        this.createColumnNode.setStyles( this.css.createColumnNode_over );
+                    }.bind(this),
+                    "mouseout" : function(){
+                        this.createColumnNode.setStyles( this.css.createColumnNode );
+                    }.bind(this),
+                    "click": function () {
+                        this.createColumn();
+                    }.bind(this)
+                });
             }
         }
 
         this.columnToolbarTextNode = new Element("div", {
             "styles": this.css.columnToolbarTextNode,
-            "text": this.options.tooltip.column.title
+            "text": this.lp.column.title
         }).inject(this.columnToolbarAreaNode);
-
-
-        this.setColumnAreaSize();
-        this.addEvent("resize", this.setColumnAreaSize);
-
-        this.loadColumnContentArea();
-
-        this.setColumnContentSize();
     },
-    setColumnAreaSize: function () {
+    setContentSize: function(){
         var nodeSize = this.node.getSize();
-        var toolbarSize = this.columnToolbarAreaNode.getSize();
-        var y = nodeSize.y - toolbarSize.y;
+        var titlebarSize = this.columnToolbarAreaNode ? this.columnToolbarAreaNode.getSize() : {"x":0,"y":0};
 
-        this.columnAreaNode.setStyle("height", "" + y + "px");
+        this.scrollNode.setStyle("height", ""+(nodeSize.y-titlebarSize.y)+"px");
 
-        if (this.columnContentAreaNode) {
-            var count = (nodeSize.x / 282).toInt();
-            var x = 282 * count;
-            var m = (nodeSize.x - x) / 2 - 10;
-            this.columnContentAreaNode.setStyles({
-                //"width": ""+x+"px",
-                "margin-left": "" + m + "px"
+        if (this.contentWarpNode){
+            var count = (nodeSize.x/287).toInt();
+            var x = 287 * count;
+            var m = (nodeSize.x-x)/2-10;
+            this.contentWarpNode.setStyles({
+                "width": ""+x+"px",
+                "margin-left": ""+m+"px"
             });
+            //this.titleBar.setStyles({
+            //    "margin-left": ""+(m+10)+"px",
+            //    "margin-right": ""+(m+10)+"px"
+            //})
         }
     },
-    setColumnContentSize: function () {
-        var nodeSize = this.node.getSize();
-        if (this.columnContentAreaNode) {
-            var count = (nodeSize.x / 282).toInt();
-            var x = 282 * count;
-            var m = (nodeSize.x - x) / 2 - 10;
-            this.columnContentAreaNode.setStyles({
-                //"width": ""+x+"px",
-                "margin-left": "" + m + "px"
-            });
-        }
-    },
+    //setColumnAreaSize: function () {
+    //    var nodeSize = this.node.getSize();
+    //    var toolbarSize = this.columnToolbarAreaNode.getSize();
+    //    var y = nodeSize.y - toolbarSize.y;
+    //
+    //    this.columnAreaNode.setStyle("height", "" + y + "px");
+    //
+    //    if (this.columnContentAreaNode) {
+    //        var count = (nodeSize.x / 282).toInt();
+    //        var x = 282 * count;
+    //        var m = (nodeSize.x - x) / 2 - 10;
+    //        this.columnContentAreaNode.setStyles({
+    //            //"width": ""+x+"px",
+    //            "margin-left": "" + m + "px"
+    //        });
+    //    }
+    //},
+    //setColumnContentSize: function () {
+    //    var nodeSize = this.node.getSize();
+    //    if (this.columnContentAreaNode) {
+    //        var count = (nodeSize.x / 282).toInt();
+    //        var x = 282 * count;
+    //        var m = (nodeSize.x - x) / 2 - 10;
+    //        this.columnContentAreaNode.setStyles({
+    //            //"width": ""+x+"px",
+    //            "margin-left": "" + m + "px"
+    //        });
+    //    }
+    //},
     loadColumnContentArea: function () {
+
+        this.scrollNode = new Element("div", {
+            "styles": this.css.scrollNode
+        }).inject(this.node);
+        this.contentWarpNode = new Element("div", {
+            "styles": this.css.contentWarpNode
+        }).inject(this.scrollNode);
+
+        this.contentContainerNode = new Element("div",{
+            "styles" : this.css.contentContainerNode
+        }).inject(this.contentWarpNode);
 
         this.columnContentAreaNode = new Element("div", {
             "styles": this.css.columnContentAreaNode
-        }).inject(this.columnAreaNode);
+        }).inject(this.contentContainerNode);
 
         this.loadController(function () {
             this.createColumnNodes()
-        }.bind(this))
+        }.bind(this));
 
         //MWF.require("MWF.widget.DragScroll", function(){
         //	new MWF.widget.DragScroll(this.columnContentAreaNode);
         //}.bind(this));
-        MWF.require("MWF.widget.ScrollBar", function () {
-            new MWF.widget.ScrollBar(this.columnContentAreaNode);
-        }.bind(this));
+        //MWF.require("MWF.widget.ScrollBar", function () {
+        //    new MWF.widget.ScrollBar(this.columnContentAreaNode);
+        //}.bind(this));
     },
     loadController: function (callback) {
         this.availableApp = [];
@@ -187,7 +173,7 @@ MWF.xApplication.cms.Column.Main = new Class({
             if (json && json.data && json.data.length) {
                 json.data.each(function (d) {
                     //if( d.objectType == "APPINFO"){
-                    this.availableApp.push(d.objectId)
+                    this.availableApp.push(d.objectId);
                     //}
                 }.bind(this))
             }
@@ -206,9 +192,10 @@ MWF.xApplication.cms.Column.Main = new Class({
                     return parseFloat( a.appInfoSeq ) - parseFloat(b.appInfoSeq);
                 })
                 json.data = tmpArr;
-                json.data.each(function (column) {
+                json.data.each(function (column, index) {
                     if (this.hasPermision(column.id)) {
-                        var column = new MWF.xApplication.cms.Column.Column(this, column);
+                        this.index = index;
+                        var column = new MWF.xApplication.cms.Column.Column(this, column, {index : index});
                         column.load();
                         this.columns.push(column);
                     }
@@ -223,15 +210,25 @@ MWF.xApplication.cms.Column.Main = new Class({
             }
         }.bind(this));
     },
-    createColumn: function (text, alias, memo, icon, creator) {
-        var column = new MWF.xApplication.cms.Column.Column(this);
-        column.createColumn(this.node);
-    },
+    createColumn: function () {
+        //var column = new MWF.xApplication.cms.Column.Column(this, null, { index: ++this.index });
+        //column.createColumn(this.node);
+        var form = new MWF.xApplication.cms.Column.PopupForm(this, {}, {
+            title : this.lp.column.create
+        }, {
+            app : this,
+            container :  this.content,
+            lp : this.lp.column,
+            css : {},
+            actions : this.restActions
+        });
+        form.create();
+    }
     /*
      createLoadding: function(){
      this.loaddingNode = new Element("div", {
      "styles": this.css.noApplicationNode,
-     "text": this.options.tooltip.loadding
+     "text": this.lp.loadding
      }).inject(this.applicationContentNode);
      },
      removeLoadding: function(){
@@ -244,7 +241,8 @@ MWF.xApplication.cms.Column.Main = new Class({
 MWF.xApplication.cms.Column.Column = new Class({
     Implements: [Options, Events],
     options: {
-        "where": "bottom"
+        "where": "bottom",
+        "index" : 1
     },
 
     initialize: function (app, data, options) {
@@ -253,6 +251,7 @@ MWF.xApplication.cms.Column.Column = new Class({
         this.container = this.app.columnContentAreaNode;
         this.data = data;
         this.isNew = false;
+        this.lp = this.app.lp.column;
     },
     load: function () {
 
@@ -273,6 +272,26 @@ MWF.xApplication.cms.Column.Column = new Class({
         itemNode.store("columnName", columnName);
         //itemNode.setStyle("background-color", this.options.bgColor[(Math.random()*10).toInt()]);
 
+        var topNode = new Element("div", {
+            "styles": this.app.css.columnItemTopNode
+        }).inject(itemNode);
+        if( this.data.iconColor ){
+            topNode.setStyle("background-color" , "rgba("+ this.data.iconColor +",1)" )
+        }
+
+        var titleNode = new Element("div", {
+            "styles": this.app.css.columnItemTitleNode,
+            "text": columnName,
+            "title": (alias) ? columnName + " (" + alias + ") " : columnName
+        }).inject(topNode);
+
+        var iconAreaNode = new Element("div",{
+            "styles": this.app.css.columnItemIconAreaNode
+        }).inject(itemNode);
+        if( this.data.iconColor ){
+            iconAreaNode.setStyle("border-color" , "rgba("+ this.data.iconColor +",1)" )
+        }
+
         var iconNode = this.iconNode = new Element("div", {
             "styles": this.app.css.columnItemIconNode
         }).inject(itemNode);
@@ -282,25 +301,21 @@ MWF.xApplication.cms.Column.Column = new Class({
         if (this.data.appIcon) {
             this.iconNode.setStyle("background-image", "url(data:image/png;base64," + this.data.appIcon + ")");
         } else {
-            this.iconNode.setStyle("background-image", "url(" + this.app.defaultColumnIcon + ")")
+            this.iconNode.setStyle("background-image", "url(" + this.app.defaultColumnIcon + ")");
         }
 
-        var textNode = new Element("div", {
-            "styles": this.app.css.columnItemTextNode
-        }).inject(itemNode)
+        var middleNode = new Element("div", {
+            "styles": this.app.css.columnItemMiddleNode
+        }).inject(itemNode);
 
-        var titleNode = new Element("div", {
-            "styles": this.app.css.columnItemTitleNode,
-            "text": columnName,
-            "title": (alias) ? columnName + " (" + alias + ") " : columnName
-        }).inject(textNode)
 
-        var description = ( memo && memo != "") ? memo : this.app.options.tooltip.column.noDescription;
+
+        var description = ( memo && memo != "") ? memo : this.lp.noDescription;
         var descriptionNode = new Element("div", {
             "styles": this.app.css.columnItemDescriptionNode,
             "text": description,
             "title": description
-        }).inject(textNode)
+        }).inject(middleNode);
 
         var _self = this;
         itemNode.addEvents({
@@ -315,19 +330,81 @@ MWF.xApplication.cms.Column.Column = new Class({
             }
         });
 
+        var bottomNode = new Element("div", {
+            "styles": this.app.css.columnItemBottomNode
+        }).inject(itemNode);
+
+        var bottomTitleNode = new Element("div", {
+            "styles": this.app.css.columnItemCategoryTitleNode,
+            "text" : this.lp.category
+        }).inject(bottomNode);
+        var bottomContentNode_category = new Element("div", {
+            "styles": this.app.css.columnItemCategoryContentNode
+        }).inject(bottomNode);
+        this.app.restActions.listCategory( this.data.id, function ( json ) {
+            var data = json.data || [];
+            data.each( function( category ){
+                var bottomItemNode = new Element("div",{
+                    styles : this.app.css.columnItemBottomItemNode,
+                    text : category.name
+                }).inject(bottomContentNode_category);
+                bottomItemNode.addEvents( {
+                    "click": function( ev ){
+                        this.obj.clickColumnNode(this.obj, ev.target, ev, this.data.id);
+                        ev.stopPropagation();
+                    }.bind({ obj : this, data : category }),
+                    "mouseover" : function(){
+                        this.node.setStyles( this.obj.app.css.columnItemBottomItemNode_over );
+                    }.bind({ obj : this, node : bottomItemNode }),
+                    "mouseout" : function(){
+                        this.node.setStyles( this.obj.app.css.columnItemBottomItemNode );
+                    }.bind({ obj : this, node : bottomItemNode })
+                })
+            }.bind(this))
+        }.bind(this) );
+
+        var bottomTitleNode = new Element("div", {
+            "styles": this.app.css.columnItemFormTitleNode,
+            "text" : this.lp.form
+        }).inject(bottomNode);
+        var bottomContentNode_form = new Element("div", {
+            "styles": this.app.css.columnItemFormContentNode
+        }).inject(bottomNode);
+        this.app.restActions.listForm( this.data.id, function ( json ) {
+            var data = json.data || [];
+            data.each( function( form ){
+                var bottomItemNode = new Element("div",{
+                    styles : this.app.css.columnItemBottomItemNode,
+                    text : form.name
+                }).inject(bottomContentNode_form);
+                bottomItemNode.addEvents( {
+                    "click": function( ev ){
+                        this.obj.openForm( this.data );
+                        ev.stopPropagation();
+                    }.bind({ obj : this, data : form }),
+                    "mouseover" : function(){
+                        this.node.setStyles( this.obj.app.css.columnItemBottomItemNode_over );
+                    }.bind({ obj : this, node : bottomItemNode }),
+                    "mouseout" : function(){
+                        this.node.setStyles( this.obj.app.css.columnItemBottomItemNode );
+                    }.bind({ obj : this, node : bottomItemNode })
+                })
+            }.bind(this))
+        }.bind(this) );
+
         if (MWF.AC.isProcessPlatformCreator()) {
             if ((creator == layout.desktop.session.user.name) || MWF.AC.isAdministrator()) {
                 this.delAdctionNode = new Element("div.delNode", {
                     "styles": this.app.css.columnItemDelActionNode,
-                    "title": this.app.options.tooltip.column.delete
+                    "title": this.lp.delete
                 }).inject(itemNode);
 
                 itemNode.addEvents({
                     "mouseover": function () {
-                        this.delAdctionNode.fade("in");
+                        this.delAdctionNode.setStyle("display","");
                     }.bind(this),
                     "mouseout": function () {
-                        this.delAdctionNode.fade("out");
+                        this.delAdctionNode.setStyle("display","none");
                     }.bind(this)
                 });
                 this.delAdctionNode.addEvent("click", function (e) {
@@ -341,15 +418,15 @@ MWF.xApplication.cms.Column.Column = new Class({
             if ((creator == layout.desktop.session.user.name) || MWF.AC.isAdministrator()) {
                 this.editAdctionNode = new Element("div.editNode", {
                     "styles": this.app.css.columnItemEditActionNode,
-                    "title": this.app.options.tooltip.column.edit
+                    "title": this.lp.edit
                 }).inject(itemNode);
 
                 itemNode.addEvents({
                     "mouseover": function () {
-                        this.editAdctionNode.fade("in");
+                        this.editAdctionNode.setStyle("display","");
                     }.bind(this),
                     "mouseout": function () {
-                        this.editAdctionNode.fade("out");
+                        this.editAdctionNode.setStyle("display","none");
                     }.bind(this)
                 });
                 this.editAdctionNode.addEvent("click", function (e) {
@@ -359,7 +436,35 @@ MWF.xApplication.cms.Column.Column = new Class({
             }
         }
     },
-    clickColumnNode: function (_self, el, e) {
+    edit : function(){
+        var form = new MWF.xApplication.cms.Column.PopupForm(this.app, this.data, {
+            title : this.lp.edit
+        }, {
+            app : this.app,
+            container :  this.app.content,
+            lp : this.lp,
+            css : {},
+            actions : this.app.restActions
+        });
+        form.edit();
+    },
+    openForm: function( form ){
+        layout.desktop.getFormDesignerStyle(function(){
+            var _self = this;
+            var options = {
+                "style": layout.desktop.formDesignerStyle,
+                "onQueryLoad": function(){
+                    //this.actions = _self.explorer.actions;
+                    this.category = _self;
+                    this.options.id = form.id;
+                    this.column = _self.data;
+                    this.application = _self.data;
+                }
+            };
+            this.app.desktop.openApplication(null, "cms.FormDesigner", options);
+        }.bind(this));
+    },
+    clickColumnNode: function (_self, el, e, currentCategoryId) {
         /*
          _self.app.columns.each(function( column ){
          if( column.selected ){
@@ -371,9 +476,12 @@ MWF.xApplication.cms.Column.Column = new Class({
          */
         var appId = "cms.ColumnManager" + this.data.id;
         if (this.app.desktop.apps[appId]) {
-            this.app.desktop.apps[appId].setCurrent();
+            var app = this.app.desktop.apps[appId];
+            app.setCurrent();
+            if( currentCategoryId )app.setCategory( currentCategoryId );
         } else {
             this.app.desktop.openApplication(e, "cms.ColumnManager", {
+                "currentCategoryId" : currentCategoryId,
                 "column": this.data,
                 "appId": appId,
                 "onQueryLoad": function () {
@@ -387,7 +495,7 @@ MWF.xApplication.cms.Column.Column = new Class({
             if (!this.deleteElementsNode) {
                 this.deleteElementsNode = new Element("div", {
                     "styles": this.app.css.deleteElementsNode,
-                    "text": this.app.lp.column.deleteElements
+                    "text": this.lp.deleteElements
                 }).inject(this.node);
                 this.deleteElementsNode.position({
                     relativeTo: this.container,
@@ -408,8 +516,8 @@ MWF.xApplication.cms.Column.Column = new Class({
     },
     deleteColumn: function (e) {
         var _self = this;
-        this.app.confirm("warn", e, this.app.options.tooltip.column.delete_confirm_title,
-            this.app.options.tooltip.column.delete_confirm_content, "320px", "100px", function () {
+        this.app.confirm("warn", e, this.lp.delete_confirm_title,
+            this.lp.delete_confirm_content, 320, 100, function () {
                 _self._deleteElement();
                 this.close();
             }, function( ) {
@@ -431,56 +539,28 @@ MWF.xApplication.cms.Column.Column = new Class({
         this.node.destroy();
         MWF.release(this);
         delete this;
-    },
-    edit: function () {
-        this.isNew = false;
-        this.createContainer = this.app.node;
-        this.createColumnCreateMarkNode();
-        this.createColumnCreateAreaNode();
-        this.createColumnCreateNode();
+    }
 
-        this.columnCreateAreaNode.inject(this.columnCreateMarkNode, "after");
-        this.columnCreateAreaNode.fade("in");
-        $("createColumnName").focus();
+});
 
-        this.setColumnCreateNodeSize();
-        this.setColumnCreateNodeSizeFun = this.setColumnCreateNodeSize.bind(this);
-        this.addEvent("resize", this.setColumnCreateNodeSizeFun);
-    },
-    createColumn: function (container) {
-        this.isNew = true;
-        this.createContainer = container;
-        this.createColumnCreateMarkNode();
-        this.createColumnCreateAreaNode();
-        this.createColumnCreateNode();
 
-        this.columnCreateAreaNode.inject(this.columnCreateMarkNode, "after");
-        this.columnCreateAreaNode.fade("in");
-        $("createColumnName").focus();
 
-        this.setColumnCreateNodeSize();
-        this.setColumnCreateNodeSizeFun = this.setColumnCreateNodeSize.bind(this);
-        this.addEvent("resize", this.setColumnCreateNodeSizeFun);
+MWF.xApplication.cms.Column.PopupForm = new Class({
+    Extends: MWF.xApplication.Template.Explorer.PopupForm,
+    Implements: [Options, Events],
+    options: {
+        "style": "blue",
+        "width": "650",
+        "height": "400",
+        "hasTop": true,
+        "hasIcon": false,
+        "hasTopContent" : true,
+        "hasBottom": true,
+        //"title": MWF.xApplication.cms.Index.LP.createDocument,
+        "draggable": true,
+        "closeAction": true
     },
-    createColumnCreateMarkNode: function () {
-        this.columnCreateMarkNode = new Element("div", {
-            "styles": this.app.css.columnCreateMarkNode,
-            "events": {
-                "mouseover": function (e) {
-                    e.stopPropagation();
-                },
-                "mouseout": function (e) {
-                    e.stopPropagation();
-                }
-            }
-        }).inject(this.createContainer, "after");
-    },
-    createColumnCreateAreaNode: function () {
-        this.columnCreateAreaNode = new Element("div", {
-            "styles": this.app.css.columnCreateAreaNode
-        });
-    },
-    createColumnCreateNode: function () {
+    _createTableContent: function () {
 
         if (!this.isNew) {
             var columnName = this.data.appName;
@@ -501,67 +581,54 @@ MWF.xApplication.cms.Column.Column = new Class({
             var createTime = "";
         }
 
-        this.columnCreateNode = new Element("div", {
-            "styles": this.app.css.columnCreateNode
-        }).inject(this.columnCreateAreaNode);
-
-        this.columnCreateNewNode = new Element("div", {
-            "styles": ( this.isNew ? this.app.css.columnCreateNewNode : this.app.css.columnCreateEditNode )
-        }).inject(this.columnCreateNode);
-
-        this.columnCreateFormNode = new Element("div", {
-            "styles": this.app.css.columnCreateFormNode
-        }).inject(this.columnCreateNode);
 
         var html = "<table width=\"100%\" height=\"90%\" border=\"0\" cellPadding=\"0\" cellSpacing=\"0\">" +
-            "<tr><td style=\"height: 30px; line-height: 30px; text-align: left; min-width: 80px; width:25%\">" +
-            this.app.options.tooltip.column.nameLabel + ":</td>" +
+            "<tr><td style=\"font-size:16px; height: 40px; line-height: 40px; text-align: left; min-width: 60px; width:20%\">" +
+            this.lp.nameLabel + "：</td>" +
             "<td style=\"; text-align: right;\"><input type=\"text\" id=\"createColumnName\" " +
-            "style=\"width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
+            "style=\"width: 95%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
             "height: 26px;\" value=\"" + columnName + "\"/></td></tr>" +
-            //"<tr><td style=\"height: 30px; line-height: 30px; text-align: left\">" + this.app.options.tooltip.column.aliasLabel + ":</td>" +
-            //"<td style=\"; text-align: right;\"><input type=\"text\" id=\"createColumnAlias\" " +
-            //"style=\"width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
-            //"height: 26px;\" value=\"" + alias + "\"/></td></tr>" +
-            "<tr><td style=\"height: 30px; line-height: 30px;  text-align: left\">" + this.app.options.tooltip.column.descriptionLabel + ":</td>" +
+            "<tr><td style=\"font-size:16px; height: 40px; line-height: 40px;  text-align: left\">" + this.lp.descriptionLabel + "：</td>" +
             "<td style=\"; text-align: right;\"><input type=\"text\" id=\"createColumnDescription\" " +
-            "style=\"width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
+            "style=\"width: 95%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
             "height: 26px;\" value=\"" + memo + "\"/></td></tr>" +
-            "<tr><td style=\"height: 30px; line-height: 30px;  text-align: left\">" + this.app.options.tooltip.column.sortLabel + ":</td>" +
+            "<tr><td style=\"font-size:16px; height: 40px; line-height: 40px;  text-align: left\">" + this.lp.sortLabel + "：</td>" +
             "<td style=\"; text-align: right;\"><input type=\"text\" id=\"createColumnSort\" " +
-            "style=\"width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
+            "style=\"width: 95%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
             "height: 26px;\" value=\"" + order + "\"/></td></tr>" +
-            "<tr><td style=\"height: 30px; line-height: 30px;  text-align: left\">" + this.app.options.tooltip.column.iconLabel + ":</td>" +
+            "<tr><td style=\"font-size:16px; height: 40px; line-height: 40px;  text-align: left\">" + this.lp.iconLabel + "：</td>" +
             "<td style=\"; text-align: right;\"><div id='formIconPreview'></div><div id='formChangeIconAction'></div></td></tr>" +
-                //"<tr><td style=\"height: 30px; line-height: 30px;  text-align: left\">"+this.options.tooltip.column.iconLabel+":</td>" +
-                //"<td style=\"; text-align: right;\"><div " +
-                //"style=\"height:72px; width:72px;background:url(/x_component_cms_Column/$Main/default/icon/column.png) center center no-repeat \"></div></td></tr>" +
-                //"<tr><td style=\"height: 30px; line-height: 30px;  text-align: left\">"+this.options.tooltip.iconLabel+":</td>" +
-                //"<td style=\"; text-align: right;\"><input type=\"text\" id=\"createColumnType\" " +
-                //"style=\"width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC; " +
-                //"height: 26px;\"/></td></tr>" +
+
             "</table>";
-        this.columnCreateFormNode.set("html", html);
+        this.formTableArea.set("html", html);
 
-        this.columnCancelActionNode = new Element("div", {
-            "styles": this.app.css.columnCreateCancelActionNode,
-            "text": this.app.options.tooltip.column.cancel
-        }).inject(this.columnCreateFormNode);
-        this.columnCreateOkActionNode = new Element("div", {
-            "styles": this.app.css.columnCreateOkActionNode,
-            "text": this.app.options.tooltip.column.ok
-        }).inject(this.columnCreateFormNode);
+        this.setContent();
+        this.setIconContent();
 
-        this.columnCancelActionNode.addEvent("click", function (e) {
-            this.cancelCreateColumn(e);
-        }.bind(this));
-        this.columnCreateOkActionNode.addEvent("click", function (e) {
-            this.okCreateColumn(e);
-        }.bind(this));
+    },
+    _setCustom: function(){
+        this.formTableContainer.setStyles({
+            "padding-top" : "15px",
+            "width" : "470px"
+        });
 
-        this.iconPreviewNode = this.columnCreateFormNode.getElement("div#formIconPreview");
-        this.iconActionNode = this.columnCreateFormNode.getElement("div#formChangeIconAction");
+        this.formBottomNode.setStyles({
+            "padding-right" : "170px",
+            "padding-bottom" : "50px"
+        });
+
+    },
+    setContent: function(){
+        this.nameInput = this.formTableArea.getElementById("createColumnName");
+        this.descriptionInput = this.formTableArea.getElementById("createColumnDescription");
+        this.sortInput = this.formTableArea.getElementById("createColumnSort");
+    },
+    setIconContent: function(){
+        this.iconPreviewNode = this.formTableArea.getElement("div#formIconPreview");
+        this.iconActionNode = this.formTableArea.getElement("div#formChangeIconAction");
         this.iconPreviewNode.setStyles({
+            "margin-left" : "20px",
+            "margin-top" : "10px",
             "height": "72px",
             "width": "72px",
             "float": "left"
@@ -579,7 +646,7 @@ MWF.xApplication.cms.Column.Column = new Class({
                 "padding": "4px 14px",
                 "border": "1px solid #999",
                 "border-radius": "3px",
-                "margin-top": "10px",
+                "margin-top": "25px",
                 "font-size": "14px",
                 "color": "#666",
                 "cursor": "pointer"
@@ -591,71 +658,43 @@ MWF.xApplication.cms.Column.Column = new Class({
         }.bind(this));
     },
 
-    setColumnCreateNodeSize: function () {
-        var size = this.createContainer.getSize();
-        var allSize = this.app.content.getSize();
-        this.columnCreateMarkNode.setStyles({
-            "width": "" + allSize.x + "px",
-            "height": "" + allSize.y + "px"
-        });
-        this.columnCreateAreaNode.setStyles({
-            "width": "" + size.x + "px",
-            "height": "" + size.y + "px"
-        });
-        var hY = size.y * 0.8;
-        var mY = size.y * 0.2 / 2;
-        this.columnCreateNode.setStyles({
-            "height": "" + hY + "px",
-            "margin-top": "" + mY + "px"
-        });
-
-        var iconSize = this.columnCreateNewNode.getSize();
-        var formHeight = hY * 0.7;
-        if (formHeight > 250) formHeight = 250;
-        var formMargin = hY * 0.3 / 2 - iconSize.y;
-        this.columnCreateFormNode.setStyles({
-            "height": "" + formHeight + "px",
-            "margin-top": "" + formMargin + "px"
-        });
-    },
-    cancelCreateColumn: function (e) {
+    cancel: function (e) {
+        this.fireEvent("queryCancel");
         if (this.isNew) {
             this.cancelNewColumn(e)
         } else {
-            this.cancelEditColumn(e)
+            this.close();
         }
+        this.fireEvent("postCancel");
     },
     cancelNewColumn: function (e) {
         var _self = this;
-        if ($("createColumnName").get("value") || $("createColumnAlias").get("value") || $("createColumnDescription").get("value")) {
-            this.app.confirm("warn", e, this.app.options.tooltip.column.create_cancel_title,
-                this.app.options.tooltip.column.create_cancel, "320px", "100px", function () {
-                    _self.columnCreateMarkNode.destroy();
-                    _self.columnCreateAreaNode.destroy();
+        if (this.nameInput.get("value") || this.descriptionInput.get("value")) {
+            this.app.confirm("warn", e, this.lp.create_cancel_title,
+                this.lp.create_cancel, 320, 100, function () {
+                    _self.close();
                     this.close();
                 }, function () {
                     this.close();
                 });
         } else {
-            this.columnCreateMarkNode.destroy();
-            this.columnCreateAreaNode.destroy();
+            _self.close();
         }
     },
-    cancelEditColumn: function (e) {
-        this.columnCreateMarkNode.destroy();
-        this.columnCreateAreaNode.destroy();
-    },
-    okCreateColumn: function (e) {
+    ok: function (e) {
+        this.fireEvent("queryOk");
         var data = {
             "id": (this.data && this.data.id) ? this.data.id : this.app.restActions.getUUID(),
             "isNewColumn": this.isNew,
-            "appName": $("createColumnName").get("value"),
-            //"appAlias": $("createColumnAlias").get("value"),
-            "description": $("createColumnDescription").get("value"),
-            "appInfoSeq": $("createColumnSort").get("value")
+            "appName": this.nameInput.get("value"),
+            "description": this.descriptionInput.get("value"),
+            "appInfoSeq": this.sortInput.get("value")
         };
         if( this.data && this.data.appIcon )data.appIcon = this.data.appIcon;
-        if (data.appName) {
+        if (!data.appName) {
+            this.app.notice( this.lp.inputName );
+            return;
+        }else{
 
             var callback = function ( id ) {
                 this.app.restActions.getColumn( {id: id}, function (json) {
@@ -673,20 +712,25 @@ MWF.xApplication.cms.Column.Column = new Class({
 
                     if (this.app.noElementNode)this.app.noElementNode.destroy();
 
-                    var column = new MWF.xApplication.cms.Column.Column(this.app, json.data, {"where": "top"});
-                    column.load();
-                    this.app.columns.push(column);
-                }.bind(this));
-            }.bind(this)
+                    if( this.formMarkNode )this.formMarkNode.destroy();
+                    this.formAreaNode.destroy();
+                    if( this.app )this.app.notice(this.isNew ? this.lp.createColumnSuccess : this.lp.updateColumnSuccess, "success");
+                    if( this.isNew ){
+                        var column = new MWF.xApplication.cms.Column.Column(this.app, json.data, {"where": "top"});
+                        column.load();
+                        this.app.columns.push(column);
+                    }else{
+                        this.app.reload();
+                    }
 
-            this.app.notice(this.isNew ? this.app.options.tooltip.column.createColumnSuccess : this.app.options.tooltip.column.updateColumnSuccess, "success");
+                    this.fireEvent("postOk");
+                }.bind(this));
+            }.bind(this);
+
             this.app.restActions.saveColumn(data, function (json) {
                 if (json.type == "error") {
                     this.app.notice(json.message, "error");
                 } else {
-                    this.columnCreateMarkNode.destroy();
-                    this.columnCreateAreaNode.destroy();
-                    if (!this.isNew)this.node.destroy();
                     if (this.formData) {
                         this.saveIcon(json.data.id, callback);
                     } else {
@@ -698,10 +742,6 @@ MWF.xApplication.cms.Column.Column = new Class({
                 var error = JSON.parse( errorObj.responseText );
                 this.app.notice( error.message || json.userMessage, "error" );
             }.bind(this));
-        } else {
-            $("createColumnName").setStyle("border-color", "red");
-            $("createColumnName").focus();
-            this.app.notice(this.app.options.tooltip.column.inputName, "error");
         }
     },
     changeIcon: function () {
@@ -751,17 +791,7 @@ MWF.xApplication.cms.Column.Column = new Class({
         this.app.restActions.updataColumnIcon(id, function () {
             this.formData = null;
             if (callback)callback( id );
-            //this.app.restActions.getColumnIcon(this.data.id, function(json){
-            //	if (json.data){
-            //		this.data = json.data;
-            //		if (this.data.icon){
-            //			this.iconPreviewNode.setStyle("background", "url(data:image/png;base64,"+this.data.icon+") center center no-repeat");
-            //		}else{
-            //			this.iconPreviewNode.setStyle("background", "url("+"/x_component_cms_Column/$Main/default/icon/category2.png) center center no-repeat")
-            //		}
-            //	}
-            //}.bind(this), false)
         }.bind(this), null, this.formData, this.file);
     }
 
-})
+});

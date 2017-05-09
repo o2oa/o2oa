@@ -1,24 +1,20 @@
 package com.x.organization.core.express;
 
-import com.x.organization.core.express.factory.CompanyAttributeFactory;
-import com.x.organization.core.express.factory.CompanyDutyFactory;
-import com.x.organization.core.express.factory.CompanyFactory;
-import com.x.organization.core.express.factory.DepartmentAttributeFactory;
-import com.x.organization.core.express.factory.DepartmentDutyFactory;
-import com.x.organization.core.express.factory.DepartmentFactory;
-import com.x.organization.core.express.factory.GroupFactory;
-import com.x.organization.core.express.factory.IdentityFactory;
-import com.x.organization.core.express.factory.PersonAttributeFactory;
-import com.x.organization.core.express.factory.PersonFactory;
-import com.x.organization.core.express.factory.RoleFactory;
+import com.x.base.core.project.Context;
 
 public class Organization {
+
+	private Context context;
+
+	public Organization(Context context) {
+		this.context = context;
+	}
 
 	private CompanyAttributeFactory companyAttribute;
 
 	public CompanyAttributeFactory companyAttribute() throws Exception {
 		if (null == this.companyAttribute) {
-			this.companyAttribute = new CompanyAttributeFactory();
+			this.companyAttribute = new CompanyAttributeFactory(context);
 		}
 		return companyAttribute;
 	}
@@ -27,7 +23,7 @@ public class Organization {
 
 	public CompanyDutyFactory companyDuty() throws Exception {
 		if (null == this.companyDuty) {
-			this.companyDuty = new CompanyDutyFactory();
+			this.companyDuty = new CompanyDutyFactory(context);
 		}
 		return companyDuty;
 	}
@@ -36,7 +32,7 @@ public class Organization {
 
 	public CompanyFactory company() throws Exception {
 		if (null == this.company) {
-			this.company = new CompanyFactory();
+			this.company = new CompanyFactory(context);
 		}
 		return company;
 	}
@@ -45,7 +41,7 @@ public class Organization {
 
 	public DepartmentAttributeFactory departmentAttribute() throws Exception {
 		if (null == this.departmentAttribute) {
-			this.departmentAttribute = new DepartmentAttributeFactory();
+			this.departmentAttribute = new DepartmentAttributeFactory(context);
 		}
 		return departmentAttribute;
 	}
@@ -54,7 +50,7 @@ public class Organization {
 
 	public DepartmentDutyFactory departmentDuty() throws Exception {
 		if (null == this.departmentDuty) {
-			this.departmentDuty = new DepartmentDutyFactory();
+			this.departmentDuty = new DepartmentDutyFactory(context);
 		}
 		return departmentDuty;
 	}
@@ -63,7 +59,7 @@ public class Organization {
 
 	public DepartmentFactory department() throws Exception {
 		if (null == this.department) {
-			this.department = new DepartmentFactory();
+			this.department = new DepartmentFactory(context);
 		}
 		return department;
 	}
@@ -72,7 +68,7 @@ public class Organization {
 
 	public GroupFactory group() throws Exception {
 		if (null == this.group) {
-			this.group = new GroupFactory();
+			this.group = new GroupFactory(context);
 		}
 		return group;
 	}
@@ -81,7 +77,7 @@ public class Organization {
 
 	public IdentityFactory identity() throws Exception {
 		if (null == this.identity) {
-			this.identity = new IdentityFactory();
+			this.identity = new IdentityFactory(context);
 		}
 		return identity;
 	}
@@ -90,7 +86,7 @@ public class Organization {
 
 	public PersonAttributeFactory personAttribute() throws Exception {
 		if (null == this.personAttribute) {
-			this.personAttribute = new PersonAttributeFactory();
+			this.personAttribute = new PersonAttributeFactory(context);
 		}
 		return personAttribute;
 	}
@@ -99,7 +95,7 @@ public class Organization {
 
 	public PersonFactory person() throws Exception {
 		if (null == this.person) {
-			this.person = new PersonFactory();
+			this.person = new PersonFactory(context);
 		}
 		return person;
 	}
@@ -108,7 +104,7 @@ public class Organization {
 
 	public RoleFactory role() throws Exception {
 		if (null == this.role) {
-			this.role = new RoleFactory();
+			this.role = new RoleFactory(context);
 		}
 		return role;
 	}

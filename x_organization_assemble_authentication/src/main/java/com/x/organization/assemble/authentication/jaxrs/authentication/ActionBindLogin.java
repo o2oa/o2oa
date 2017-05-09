@@ -14,7 +14,7 @@ import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.project.server.Config;
 import com.x.organization.assemble.authentication.Business;
-import com.x.organization.assemble.authentication.wrap.out.WrapOutAuthentication;
+import com.x.organization.assemble.authentication.wrapout.WrapOutAuthentication;
 import com.x.organization.core.entity.Bind;
 import com.x.organization.core.entity.Person;
 

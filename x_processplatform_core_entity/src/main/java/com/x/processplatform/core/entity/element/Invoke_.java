@@ -14,7 +14,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.processplatform.core.entity.element.Invoke.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:10:19 CST 2017")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sat May 06 19:36:06 CST 2017")
 public class Invoke_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Invoke,String> afterArriveScript;
     public static volatile SingularAttribute<Invoke,String> afterArriveScriptText;
@@ -36,6 +36,8 @@ public class Invoke_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Invoke,String> extension;
     public static volatile SingularAttribute<Invoke,String> form;
     public static volatile SingularAttribute<Invoke,String> id;
+    public static volatile SingularAttribute<Invoke,Boolean> internal;
+    public static volatile SingularAttribute<Invoke,String> internalProject;
     public static volatile SingularAttribute<Invoke,InvokeMode> invokeMode;
     public static volatile SingularAttribute<Invoke,String> jaxrsAddress;
     public static volatile SingularAttribute<Invoke,String> jaxrsBodyScript;

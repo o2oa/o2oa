@@ -69,6 +69,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadValidation();
                     this.loadIconSelect();
                     this.loadImageClipper();
+                    this.loadParameterEditor();
+                    this.loadContextRoot();
+                    this.testRestful();
 //			this.loadScriptInput();
                     //MWF.process.widget.EventsEditor
                 }
@@ -143,6 +146,16 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 						"onShow": function(){
 							var copy = this.module.node.clone(true, true);
 							copy.clearStyles(true);
+
+                            //MWF.require("MWF.widget.HtmlEditor", function(){
+                            //    debugger;
+                            //    var editor = new MWF.widget.HtmlEditor(htmlNode);
+                            //    editor.load(function(){
+                            //        editor.editor.setValue(copy.outerHTML)
+                            //    }.bind(this));
+                            //}.bind(this));
+
+
 							htmlNode.set("text", copy.outerHTML);
 							copy.destroy();
 						}.bind(this)
@@ -323,22 +336,70 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             }.bind(this));
         }
     },
-    selectImage: function(node, name){
-        MWF.xDesktop.requireApp("process.FormDesigner", "widget.ImageClipper", function(){
-            var size = this.module.node.getSize();
-            var image = new MWF.xApplication.process.FormDesigner.widget.ImageClipper(this.designer, {
-                "title": this.form.designer.lp.selectImage,
-                "width": (this.data.styles.width) ? size.x : 0,
-                "height": (this.data.styles.height) ? size.y : 0,
-                "onChange": function(){
-                    debugger;
-                    var data = image.data;
-                    this.changeJsonDate(name, data);
-                    this.changeData(name, node, null);
-                }.bind(this)
-            });
-            image.load(this.data[name])
+    createUploadFileAreaNode: function(node, name){
+        this.uploadFileAreaNode = new Element("div");
+        var html = "<input name=\"file\" multiple type=\"file\" accept=\"images/*\" />";
+        this.uploadFileAreaNode.set("html", html);
+
+        this.fileUploadNode = this.uploadFileAreaNode.getFirst();
+        this.fileUploadNode.addEvent("change", function(){
+            //var fileId = attachment.data.id;
+
+            var files = this.fileUploadNode.files;
+            if (files.length){
+                var count = files.length;
+                for (var i = 0; i < files.length; i++) {
+                    var file = files.item(i);
+
+                    var formData = new FormData();
+                    formData.append('file', file);
+
+                    MWF.xDesktop.uploadImage(
+                        this.form.json.id,
+                        (this.module.form.moduleType=="page") ? "portalPage" : "processPlatformForm",
+                        formData,
+                        file,
+                        function(json){
+                            debugger;
+                            var id = json.id;
+                            var src = MWF.xDesktop.getImageSrc(id);
+                            var data = {"imageSrc": src, "imageId": id};
+                            this.changeJsonDate(name, data);
+                            this.changeData(name, node, null);
+                        }.bind(this)
+                    );
+                }
+            }
         }.bind(this));
+    },
+    selectImage: function(node, name){
+        if (!this.uploadFileAreaNode){
+            this.createUploadFileAreaNode(node, name);
+        }
+        this.fileUploadNode.set("accept", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        this.fileUploadNode.set("multiple", false);
+
+        var fileNode = this.uploadFileAreaNode.getFirst();
+        fileNode.set("accept", "images/*");
+        fileNode.click();
+
+        //MWF.xDesktop.requireApp("process.FormDesigner", "widget.ImageClipper", function(){
+        //    var size = this.module.node.getSize();
+        //    var image = new MWF.xApplication.process.FormDesigner.widget.ImageClipper(this.designer, {
+        //        "title": this.form.designer.lp.selectImage,
+        //        "width": (this.data.styles.width) ? size.x : 0,
+        //        "height": (this.data.styles.height) ? size.y : 0,
+        //        "imageUrl" : this.data.imageSrc,
+        //        "reference" : this.form.json.id,
+        //        "referenceType": (this.module.form.moduleType=="page") ? "portalPage" : "processPlatformForm",
+        //        "onChange": function(){
+        //            var data = {"imageSrc": image.imageSrc, "imageId": image.imageId};
+        //            this.changeJsonDate(name, data);
+        //            this.changeData(name, node, null);
+        //        }.bind(this)
+        //    });
+        //    image.load(this.data[name])
+        //}.bind(this));
     },
 	
 	loadEventsEditor: function(){
@@ -349,12 +410,57 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.EventsEditor", function(){
 				var eventsEditor = new MWF.xApplication.process.FormDesigner.widget.EventsEditor(events, this.designer, {
 					//"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
-                    "maxObj": this.designer.formContentNode
+                    "maxObj": this.designer.formContentNode  || this.designer.pageContentNode
 				});
 				eventsEditor.load(eventsObj);
 			}.bind(this));
 		}
 	},
+    testRestful: function(){
+        var node = this.propertyContent.getElements(".MWFTestRestful");
+        if (node){
+            var resultNode = node.getLast();
+            node.getFirst().addEvent("click", function(){
+
+            }.bind(this));
+        }
+    },
+    loadContextRoot: function(){
+        var nodes = this.propertyContent.getElements(".MWFContextRoot");
+        if (nodes){
+            nodes.each(function(node){
+                var name = node.get("name");
+                var value = this.data[name];
+                var select = new Element("select").inject(node);
+                Object.each(layout.desktop.serviceAddressList, function(v, key){
+                    var option = new Element("option", {"value": key, "text": key, "selected": (value==key)}).inject(select);
+                }.bind(this));
+                select.addEvent("change", function(){
+                    var data = select.options[select.selectedIndex].value;
+                    this.changeJsonDate(name, data);
+                    this.changeData(name, node, value);
+                }.bind(this));
+            }.bind(this));
+        }
+    },
+    loadParameterEditor: function(){
+        var pars = this.propertyContent.getElements(".MWFParameterArea");
+        if (pars){
+            pars.each(function(par){
+                var name = par.get("name");
+                if (!this.data[name]) this.data[name] = {};
+                var parObj = this.data[name];
+                MWF.xDesktop.requireApp("process.FormDesigner", "widget.ParameterEditor", function(){
+                    var parameterEditor = new MWF.xApplication.process.FormDesigner.widget.ParameterEditor(par, this.designer, {
+                        //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                        "maxObj": this.designer.formContentNode
+                    });
+                    parameterEditor.load(parObj);
+                }.bind(this));
+            }.bind(this));
+
+        }
+    },
 	
 	loadArrayList: function(){
 		var arrays = this.propertyContent.getElements(".MWFArraylist");
@@ -565,7 +671,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 var scriptArea = new MWF.widget.ScriptArea(node, {
                     "title": title,
                     //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
-                    "maxObj": this.designer.formContentNode,
+                    "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
                     "onChange": function(){
                         this.data[name] = scriptArea.toJson();
                     }.bind(this),

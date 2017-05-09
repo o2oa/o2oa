@@ -9,8 +9,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import com.x.base.core.http.ActionResult;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.project.jaxrs.ResponseFactory;
 
 @Path("echo")
 public class EchoAction {

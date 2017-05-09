@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>x_portal_assemble_designer</title>
+<script src="./jquery.js"></script>
+<script src="./common.js"></script>
+<script src="./debug.js"></script>
+<script src="./portal.js"></script>
+<script src="./portalCategory.js"></script>
+<script src="./page.js"></script>
+<script src="./menu.js"></script>
+<script src="./source.js"></script>
+<script src="./script.js"></script>
+<script src="./templatePage.js"></script>
+<script>
+    $(document).ready(function() {
+	portalCategory_list();
+    });
+</script>
+</head>
+
+<body style="margin: 0; font-size: 1.0em; font-family: Microsoft Yahei">
+	<div id="container" style="width: 1000px; margin: 0 auto;">
+		<div id="header"
+			style="background-color: #4682B4; clear: both; text-align: center;">
+			x_portal_assemble_designer</div>
+		<div id="menu"
+			style="background-color: #B0E0E6; height: 950px; width: 280px; float: left;">
+			<ul>
+				<li>PortalCategory
+					<ul>
+						<li><a onclick="portalCategory_list()" href="#">List</a></li>
+					</ul>
+				</li>
+				<li>Portal
+					<ul>
+						<li><a onclick="portal_list()" href="#">List</a></li>
+						<li><a onclick="portal_list_portalSummary()" href="#">List
+								Summary</a></li>
+						<li><a onclick="portal_list_portalWithCategory_init()"
+							href="#">List With Category</a></li>
+						<li><a onclick="portal_create_init()" href="#">Create</a></li>
+						<li><a onclick="portal_icon_init()" href="#">Icon</a></li>
+					</ul>
+				</li>
+				<li>Menu
+					<ul>
+						<li><a onclick="menu_list_init()" href="#">List</a></li>
+						<li><a onclick="menu_create_init()" href="#">Create</a></li>
+					</ul>
+				</li>
+				<li>Page
+					<ul>
+						<li><a onclick="page_list_init()" href="#">List</a></li>
+						<li><a onclick="page_create_init()" href="#">Create</a></li>
+					</ul>
+				</li>
+				<li>Source
+					<ul>
+						<li><a onclick="source_list_init()" href="#">List</a></li>
+						<li><a onclick="source_create_init()" href="#">Create</a></li>
+					</ul>
+				</li>
+				<li>Script
+					<ul>
+						<li><a onclick="script_list_init()" href="#">List</a></li>
+						<li><a onclick="script_create_init()" href="#">Create</a></li>
+					</ul>
+				</li>
+				<li>TemplatePage
+					<ul>
+						<li><a onclick="templatePage_list()" href="#">List</a></li>
+						<li><a onclick="templatePage_listCategory()" href="#">ListCategory</a></li>
+						<li><a onclick="templatePage_listWithCategory_init()"
+							href="#">listWithCategory</a></li>
+						<li><a onclick="templatePage_create_init()" href="#">Create</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div style="float: left; width: 720px;">
+			<div id="content" style="width: 100%;">&nbsp;</div>
+			<div id="result"
+				style="width: 100%; white-space: pre; font-size: 10px; word-break: break-all; word-wrap: break-word;">
+				&nbsp;</div>
+		</div>
+		<div id="footer"
+			style="background-color: #4682B4; clear: both; text-align: center; display: none">
+			Copyright © x</div>
+	</div>
+</body>
+</html>

@@ -75,7 +75,7 @@ class ActionCreate extends ActionBase {
 			/* 刷新缓存 */
 			this.cacheNotify();
 			/* 通知x_collect_service_transmit同步数据到collect */
-			this.collectTransmit();
+			business.instrument().collect().person();
 			wrap = new WrapOutId(person.getId());
 			result.setData(wrap);
 			return result;

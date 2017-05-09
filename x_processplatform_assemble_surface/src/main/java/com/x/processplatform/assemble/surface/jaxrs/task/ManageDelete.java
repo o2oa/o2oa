@@ -38,8 +38,8 @@ class ManageDelete extends ActionBase {
 			if (!business.application().allowControl(effectivePerson, application)) {
 				throw new ApplicationAccessDeniedException(effectivePerson.getName(), application.getId());
 			}
-			ThisApplication.applications.deleteQuery(x_processplatform_service_processing.class,
-					"task/" + URLEncoder.encode(task.getId(), DefaultCharset.name), null);
+			ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
+					"task/" + URLEncoder.encode(task.getId(), DefaultCharset.name));
 			WrapOutId wrap = new WrapOutId(task.getId());
 			result.setData(wrap);
 			return result;

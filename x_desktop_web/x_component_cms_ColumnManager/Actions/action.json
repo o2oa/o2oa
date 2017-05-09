@@ -104,5 +104,7 @@
   "getQueryViewContent": {"uri": "/jaxrs/queryview/design/flag/{flag}"}, //获取QueryView内容.
   "loadQueryView": {"uri": "/jaxrs/queryview/design/flag/{flag}/simulate","method": "PUT"},
 
+  "listApplication": {"uri": "/jaxrs/application/list"},
+  "listApplicationByCategory": {"uri": "/jaxrs/application/list/applicationcategory/{applicationCategory}"},
   "listProcess": {"uri": "/jaxrs/process/application/{id}"}
 }

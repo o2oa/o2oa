@@ -8,6 +8,8 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.okr.assemble.control.jaxrs.okrconfigworktype.exception.WorkTypeConfigDeleteException;
+import com.x.okr.assemble.control.jaxrs.okrconfigworktype.exception.WorkTypeConfigIdEmptyException;
 import com.x.okr.entity.OkrConfigWorkType;
 
 public class ExcuteDelete extends ExcuteBase {
@@ -20,7 +22,7 @@ public class ExcuteDelete extends ExcuteBase {
 		if( id == null || id.isEmpty() ){
 			Exception exception = new WorkTypeConfigIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}else{
 			try{
 				okrConfigWorkTypeService.delete( id );
@@ -29,7 +31,7 @@ public class ExcuteDelete extends ExcuteBase {
 			}catch(Exception e){
 				Exception exception = new WorkTypeConfigDeleteException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

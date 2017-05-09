@@ -336,7 +336,6 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                 var module = this.editModules[idx];
                 if (module){
                     if (module.json.type=="sequence"){
-                        debugger;
                         module.node.set("text", this.currentEditLine.getElement("table").getElements("tr")[idx].getElement("td").get("text"));
                     }else {
                         if (data[id]) {
@@ -910,11 +909,11 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         if (this.table) this.table.setStyle("display", "none");
 	},
     resetData: function(){
-        this.setData();
+        this.setData(this._getValue());
     },
     setData: function(data){
-        this._setBusinessData(data);
         if (data){
+            this._setBusinessData(data);
             this.gridData = data;
         }else{
             this.gridData = this._getValue();
@@ -981,7 +980,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             this._loadTotal();
             this.gridData.total = this.totalResaults;
 
-            this._setBusinessData(data);
+            this._setBusinessData(this.gridData);
 
             return (this.gridData.data.length) ? this.gridData : null;
         }else{
@@ -1108,7 +1107,6 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         return true;
     },
     validationConfig: function(routeName, opinion){
-        debugger;
         if (this.json.validationConfig){
             if (this.json.validationConfig.length){
                 for (var i=0; i<this.json.validationConfig.length; i++) {

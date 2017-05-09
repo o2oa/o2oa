@@ -198,11 +198,6 @@ public class OkrWorkDynamics extends SliceJpaObject {
 	@CheckPersist( allowEmpty = true)
 	private String operatorName = null;
 	
-	@EntityFieldDescribe( "操作者身份" )
-	@Column(name="xoperatorIdentity", length = AbstractPersistenceProperties.organization_name_length )
-	@CheckPersist( allowEmpty = true)
-	private String operatorIdentity = null;
-	
 	@EntityFieldDescribe( "目标者姓名" )
 	@Column(name="xtargetName", length = AbstractPersistenceProperties.organization_name_length )
 	@CheckPersist( allowEmpty = true)
@@ -457,12 +452,7 @@ public class OkrWorkDynamics extends SliceJpaObject {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public String getOperatorIdentity() {
-		return operatorIdentity;
-	}
-	public void setOperatorIdentity(String operatorIdentity) {
-		this.operatorIdentity = operatorIdentity;
-	}
+
 	public String getTargetIdentity() {
 		return targetIdentity;
 	}

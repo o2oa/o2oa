@@ -7,7 +7,7 @@ import com.x.base.core.http.annotation.Wrap;
 import com.x.bbs.assemble.control.jaxrs.sectioninfo.WrapOutSectionInfo;
 import com.x.bbs.entity.BBSForumInfo;
 
-@Wrap( BBSForumInfo.class)
+@Wrap( WrapOutForumInfo.class)
 public class WrapOutForumInfo extends BBSForumInfo{
 	private static final long serialVersionUID = -5076990764713538973L;
 	public static List<String> Excludes = new ArrayList<String>();
@@ -22,6 +22,5 @@ public class WrapOutForumInfo extends BBSForumInfo{
 	public void setSections(List<WrapOutSectionInfo> sections) {
 		this.sections = sections;
 	}
-	
 	
 }

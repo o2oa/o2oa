@@ -64,7 +64,6 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
             this.json.companyValue.each(function(v){ if (v) values.push(v)});
         }
         if (this.json.dutyValue) {
-            debugger;
             var dutys = JSON.decode(this.json.dutyValue);
             var par;
             if (dutys.length){
@@ -181,7 +180,6 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         //if (this.json.count==1){
         //    return this.node.get("value");
         //}
-        debugger;
         var v = this.node.getElement("input").get("value");
         return (v) ? v.split(/,\s*/g) : "";
     }

@@ -13,6 +13,7 @@
   "cancelPublishDocument" : {"uri":"/jaxrs/document/publish/{id}/cancel","method":"PUT"}, //取消发布文档信息
   "archiveDocument" : {"uri":"/jaxrs/document/achive/{id}","method":"PUT"}, //归档文档信息
   "redraftDocument" : {"uri":"/jaxrs/document/draft/{id}","method":"PUT"}, //恢复为草稿
+  "publishDocumentComplex" : {  "uri":"/jaxrs/document/publish/content","method":"PUT" },  //直接一次性发布
 
   "getCategory" : {"uri":"/jaxrs/categoryinfo/{id}"},
 
@@ -63,5 +64,8 @@
   "listImage" :{"uri":"/jaxrs/document/pic/doc/{documentid}"},
   "removeImage" : {"uri":"/jaxrs/document/pic/{id}","method": "DELETE"},
   //4、获取指定文档的ID获取文档大图的base64编码，如果有多个则获取第一个，如果没有则返回“0”
-  "getImageByDocument" : {"uri":"/servlet/document/{documentid}/mainpic", "method": "PUT"}
+  "getImageByDocument" : {"uri":"/servlet/document/{documentid}/mainpic", "method": "PUT"},
+
+  "getReadedCount" : {"uri":"/jaxrs/document/{id}/view/count"},
+  "listReadedLog" : {"uri":"/jaxrs/viewrecord/document/{docId}/filter/list/{id}/next/{count}","method":"GET"}
 }

@@ -1,15 +1,18 @@
 package com.x.okr.assemble.control.jaxrs.okrconfigsystem;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
-
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.cache.ApplicationCache;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrconfigsystem.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrconfigsystem.exception.SystemConfigDeleteException;
+import com.x.okr.assemble.control.jaxrs.okrconfigsystem.exception.SystemConfigIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrconfigsystem.exception.UserNoLoginException;
 import com.x.okr.entity.OkrConfigSystem;
 
 public class ExcuteDelete extends ExcuteBase {
@@ -27,21 +30,21 @@ public class ExcuteDelete extends ExcuteBase {
 			check = false;
 			Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}		
 		
 		if( check && ( okrUserCache == null || okrUserCache.getLoginIdentityName() == null ) ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( id == null || id.isEmpty() ){
 			check = false;
 			Exception exception = new SystemConfigIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			try{
@@ -64,7 +67,7 @@ public class ExcuteDelete extends ExcuteBase {
 			}catch(Exception e){
 				Exception exception = new SystemConfigDeleteException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

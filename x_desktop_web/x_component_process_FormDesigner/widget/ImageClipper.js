@@ -7,7 +7,10 @@ MWF.xApplication.process.FormDesigner.widget.ImageClipper = new Class({
         "title": "Select Image",
 		"style": "default",
         "width": "92",
-        "height": "73"
+        "height": "73",
+        "referenceType": "",
+        "reference": "",
+        "imageUrl":""
 	},
 	initialize: function(designer, options){
         debugger;
@@ -55,8 +58,16 @@ MWF.xApplication.process.FormDesigner.widget.ImageClipper = new Class({
                     {
                         "text": MWF.LP.process.button.ok,
                         "action": function () {
-                            _self.data = _self.image.getBase64Image();
-                            _self.fireEvent("change");
+                            _self.image.uploadImage( function( json ){
+                                _self.imageSrc = MWF.xDesktop.getImageSrc( json.id );
+                                _self.imageId = json.id;
+                                _self.fireEvent("change");
+                                this.close();
+                            }.bind(this));
+
+                            //_self.uploadImage();
+                            //_self.data = _self.image.getBase64Image();
+                            //_self.fireEvent("change");
                             this.close();
                         }
                     },
@@ -71,11 +82,18 @@ MWF.xApplication.process.FormDesigner.widget.ImageClipper = new Class({
             dlg.show();
 
             this.image = new MWF.widget.ImageClipper(dlg.content.getFirst(), {
-                "aspectRatio": this.options.width.toInt()/this.options.height.toInt()
+                "aspectRatio": this.options.width.toInt()/this.options.height.toInt(),
+                "imageUrl" : this.options.imageUrl,
+                "reference" : this.options.reference,
+                "referenceType": this.options.referenceType,
+                "resetEnable" : true
             });
             this.image.load(this.data);
         }.bind(this))
-	}
+	},
+    uploadImage: function(){
+
+    }
 	
 });
 

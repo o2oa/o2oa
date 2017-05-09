@@ -14,15 +14,19 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.cms.assemble.control.jaxrs.appdictitem.exception.AppDictItemDeleteException;
+import com.x.cms.assemble.control.jaxrs.appdictitem.exception.AppDictItemGetException;
+import com.x.cms.assemble.control.jaxrs.appdictitem.exception.AppDictItemSaveException;
+import com.x.cms.assemble.control.jaxrs.appdictitem.exception.AppDictItemUpdateException;
 
 @Path("appdictitem")
 public class AppDictItemAction extends StandardJaxrsAction {
@@ -43,7 +47,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemGetException( e, appDictId );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -63,7 +67,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemGetException( e, appDictId, path0 );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -83,7 +87,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemGetException( e, appDictId, path0, path1 );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -103,7 +107,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemGetException( e, appDictId, path0, path1, path2 );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -124,7 +128,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemGetException( e, appDictId, path0, path1, path2, path3 );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -145,7 +149,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemGetException( e, appDictId, path0, path1, path2, path3, path4 );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -166,7 +170,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemGetException( e, appDictId, path0, path1, path2, path3, path4, path5 );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -187,7 +191,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemGetException( e, appDictId, path0, path1, path2, path3, path4, path5, path6 );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -209,7 +213,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemGetException( e, appDictId, path0, path1, path2, path3, path4, path5, path6, path7 );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -229,7 +233,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemUpdateException( e, appDictId, path0 );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -249,7 +253,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemUpdateException( e, appDictId, path0, path1);
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -270,7 +274,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemUpdateException( e, appDictId, path0, path1, path2);
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -291,7 +295,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemUpdateException( e, appDictId, path0, path1, path2, path3);
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -312,7 +316,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemUpdateException( e, appDictId, path0, path1, path2, path3, path4);
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -333,7 +337,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemUpdateException( e, appDictId, path0, path1, path2, path3, path4, path5);
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -354,7 +358,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemUpdateException( e, appDictId, path0, path1, path2, path3, path4, path5, path6);
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -376,7 +380,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemUpdateException( e, appDictId, path0, path1, path2, path3, path4, path5, path6, path7);
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -396,7 +400,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemSaveException( e, appDictId, path0 );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -416,7 +420,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemSaveException( e, appDictId, path0, path1);
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -437,7 +441,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemSaveException( e, appDictId, path0, path1, path2);
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -458,7 +462,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemSaveException( e, appDictId, path0, path1, path2, path3);
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -479,7 +483,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemSaveException( e, appDictId, path0, path1, path2, path3, path4);
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -500,7 +504,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemSaveException( e, appDictId, path0, path1, path2, path3, path4, path5);
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -521,7 +525,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemSaveException( e, appDictId, path0, path1, path2, path3, path4, path5, path6);
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -543,7 +547,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemSaveException( e, appDictId, path0, path1, path2, path3, path4, path5, path6, path7);
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -563,7 +567,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemDeleteException( e, appDictId, path0 );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -583,7 +587,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemDeleteException( e, appDictId, path0, path1);
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -604,7 +608,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemDeleteException( e, appDictId, path0, path1, path2);
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -625,7 +629,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemDeleteException( e, appDictId, path0, path1, path2, path3);
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -646,7 +650,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemDeleteException( e, appDictId, path0, path1, path2, path3, path4);
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -667,7 +671,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemDeleteException( e, appDictId, path0, path1, path2, path3, path4, path5);
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -688,7 +692,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemDeleteException( e, appDictId, path0, path1, path2, path3, path4, path5, path6);
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -710,7 +714,7 @@ public class AppDictItemAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictItemDeleteException( e, appDictId, path0, path1, path2, path3, path4, path5, path6, path7);
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

@@ -12,8 +12,11 @@ MWF.xApplication.cms.Xform.LP = Object.merge( MWF.xApplication.process.Xform.LP,
     "end": "止",
     "none": "无",
 
-    "person": "处理人",
+    "person": "人员名称",
     "department": "部门",
+    "firstDate": "首次阅读时间",
+    "readDate": "最近阅读时间",
+    "readCount" : "阅读次数",
     "startTime": "收到时间",
     "completedTime": "处理时间",
     "opinion": "意见",
@@ -29,6 +32,14 @@ MWF.xApplication.cms.Xform.LP = Object.merge( MWF.xApplication.process.Xform.LP,
     "notValidation": "数据校验未通过",
 
     "deleteDocumentTitle": "删除文件确认",
-    "deleteDocumentText": {"html": "<div style='color: red;'>注意：您正在删除此文档，删除后文档无法找回，请您确认要删除此文件吗？</div>"},
-    "documentDelete": "已经删除文件"
+    "deleteDocumentText": {"html": "<div style='color: red;'>注意：您正在删除此文档，删除后文档无法找回，您确认要删除此文件？</div>"},
+    "documentDelete": "已经删除文件",
+
+    "readedLogTitle" : "阅读记录",
+    "readedCountText" : "共{person}人、{count}次阅读",
+    "defaultReadedLogText" : "<font style='color:#00F;'>{person}</font>（{department}） 阅于<font style='color:#00F'>{date}</font>，共<font style='color:#00F'>{count}</font>次",
+    //"at" : "阅于",
+    //"readdDocument" : "，",
+    //"historyRead" : "共",
+    //"times" : "次"
 });

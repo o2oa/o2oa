@@ -6,7 +6,8 @@ MWF.xApplication.process.FormDesigner.Preview = MWF.FCPreview = new Class({
 	options: {
 		"style": "default",
         "previewPath": COMMON.contentPath+"/preview.html",
-        "size": null
+        "size": null,
+        "mode": "pc"
 	},
 	
 	initialize: function(form, options){
@@ -124,7 +125,7 @@ MWF.xApplication.process.FormDesigner.Preview = MWF.FCPreview = new Class({
     loadForm: function(){
         this.formFrameNode.store("preview",this);
 
-        this.formFrameNode.set("src", this.options.previewPath);
+        this.formFrameNode.set("src", this.options.previewPath+"?mode="+this.options.mode);
         //window.open(this.options.previewPath);
         //this.formDocument = this.formFrameNode.contentDocument;
         //this.formWindow = this.formFrameNode.contentWindow;

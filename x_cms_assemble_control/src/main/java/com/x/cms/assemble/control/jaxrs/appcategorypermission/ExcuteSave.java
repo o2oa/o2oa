@@ -8,6 +8,14 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.cms.assemble.control.jaxrs.appcategorypermission.exception.AppCategoryPermissionObjectIdEmptyException;
+import com.x.cms.assemble.control.jaxrs.appcategorypermission.exception.AppCategoryPermissionObjectTypeEmptyException;
+import com.x.cms.assemble.control.jaxrs.appcategorypermission.exception.AppCategoryPermissionProcessException;
+import com.x.cms.assemble.control.jaxrs.appcategorypermission.exception.AppCategoryPermissionUserObjectNameEmptyException;
+import com.x.cms.assemble.control.jaxrs.appcategorypermission.exception.AppCategoryPermissionUserObjectTypeEmptyException;
+import com.x.cms.assemble.control.jaxrs.appcategorypermission.exception.AppCategoryPermissionUserObjectTypeInvalidException;
+import com.x.cms.assemble.control.jaxrs.appcategorypermission.exception.AppInfoNotExistsException;
+import com.x.cms.assemble.control.jaxrs.appcategorypermission.exception.CategoryInfoNotExistsException;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.AppCategoryPermission;
 import com.x.cms.core.entity.AppInfo;
@@ -30,7 +38,6 @@ public class ExcuteSave extends ExcuteBase {
 				check = false;
 				Exception exception = new AppCategoryPermissionObjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -38,7 +45,6 @@ public class ExcuteSave extends ExcuteBase {
 				check = false;
 				Exception exception = new AppCategoryPermissionObjectTypeEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -46,7 +52,6 @@ public class ExcuteSave extends ExcuteBase {
 				check = false;
 				Exception exception = new AppCategoryPermissionUserObjectTypeEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -54,7 +59,6 @@ public class ExcuteSave extends ExcuteBase {
 				check = false;
 				Exception exception = new AppCategoryPermissionUserObjectNameEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -70,7 +74,7 @@ public class ExcuteSave extends ExcuteBase {
 					}
 				}catch( Exception e ){
 					check = false;
-					Exception exception = new AppInfoQueryByIdException( e, wrapIn.getObjectId() );
+					Exception exception = new AppCategoryPermissionProcessException( e, "根据指定ID查询应用栏目信息对象时发生异常。ID:" + wrapIn.getObjectId() );
 					result.error( exception );
 					logger.error( e, effectivePerson, request, null);
 				}
@@ -86,7 +90,7 @@ public class ExcuteSave extends ExcuteBase {
 					}
 				}catch( Exception e ){
 					check = false;
-					Exception exception = new CategoryInfoQueryByIdException( e, wrapIn.getObjectId() );
+					Exception exception = new AppCategoryPermissionProcessException( e, "根据ID查询分类信息对象时发生异常。ID:" + wrapIn.getObjectId() );
 					result.error( exception );
 					logger.error( e, effectivePerson, request, null);
 				}
@@ -117,9 +121,9 @@ public class ExcuteSave extends ExcuteBase {
 				result.setData( new WrapOutId( appCategoryPermission.getId() ) );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new AppCategoryPermissionSaveException( e );
+				Exception exception = new AppCategoryPermissionProcessException( e, "应用栏目分类权限配置信息保存时发生异常。" );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

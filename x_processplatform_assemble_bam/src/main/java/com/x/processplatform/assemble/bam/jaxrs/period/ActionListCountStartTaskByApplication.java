@@ -6,8 +6,8 @@ import java.util.List;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
-import com.x.base.core.http.HttpAttribute;
 import com.x.base.core.http.WrapOutMap;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.utils.DateRange;
 import com.x.base.core.utils.DateTools;
 import com.x.processplatform.assemble.bam.Business;
@@ -31,8 +31,8 @@ class ActionListCountStartTaskByApplication extends ActionListCountStartTask {
 					p.put("category", stub.getCategory());
 					p.put("name", stub.getName());
 					p.put("value", stub.getValue());
-					p.put("count", this.count(business, o, stub.getValue(), HttpAttribute.x_empty_symbol,
-							HttpAttribute.x_empty_symbol, companyName, departmentName, personName));
+					p.put("count", this.count(business, o, stub.getValue(), StandardJaxrsAction.EMPTY_SYMBOL,
+							StandardJaxrsAction.EMPTY_SYMBOL, companyName, departmentName, personName));
 					list.add(p);
 				}
 			}

@@ -312,9 +312,11 @@ MWF.xApplication.Execution.MinderExplorer.WorkView = new Class({
     _getCurrentPageData: function(callback, count){
         if (!count)count = 20;
         var id = (this.items.length) ? this.items[this.items.length - 1].data.id : "(0)";
+        if(id=="(0)")this.app.createShade()
         var filter = this.filterData || {};
         this.actions.getCenterWorkListNext(id, count, filter, function (json) {
             if (callback)callback(json);
+            this.app.destroyShade();
         }.bind(this))
     },
     _removeDocument: function(documentData, all){

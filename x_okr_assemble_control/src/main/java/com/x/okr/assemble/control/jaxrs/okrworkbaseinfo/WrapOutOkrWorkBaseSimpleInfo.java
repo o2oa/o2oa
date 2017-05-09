@@ -85,7 +85,7 @@ public class WrapOutOkrWorkBaseSimpleInfo  {
 	private String workLevel = null;
 	
 	@EntityFieldDescribe( "工作进度" )
-	private Double overallProgress = 0.0;
+	private Integer overallProgress = 0;
 	
 	@EntityFieldDescribe( "工作处理状态：草稿|待确认|执行中|已超期|已完成|已撤消" )
 	private String workProcessStatus = "草稿";
@@ -293,12 +293,12 @@ public class WrapOutOkrWorkBaseSimpleInfo  {
 	public void setWorkLevel(String workLevel) {
 		this.workLevel = workLevel;
 	}
-
-	public Double getOverallProgress() {
+	
+	public Integer getOverallProgress() {
 		return overallProgress;
 	}
 
-	public void setOverallProgress(Double overallProgress) {
+	public void setOverallProgress(Integer overallProgress) {
 		this.overallProgress = overallProgress;
 	}
 

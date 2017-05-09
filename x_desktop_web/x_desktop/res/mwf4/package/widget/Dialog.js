@@ -112,6 +112,7 @@ MWF.widget.Dialog = MWF.DL = new Class({
         this.titleRefresh = this.node.getElement(".MWF_dialod_title_refresh");
 		this.titleText = this.node.getElement(".MWF_dialod_title_text");
 		this.titleAction = this.node.getElement(".MWF_dialod_title_action");
+        this.under = this.node.getElement(".MWF_dialod_under");
 		this.content = this.node.getElement(".MWF_dialod_content");
 		this.bottom = this.node.getElement(".MWF_dialod_bottom");
 		this.resizeNode = this.node.getElement(".MWF_dialod_bottom_resize");
@@ -210,6 +211,7 @@ MWF.widget.Dialog = MWF.DL = new Class({
 		var mtop4 = this.content.getStyle("margin-top").toFloat();
 		var mbottom4 = this.content.getStyle("margin-bottom").toFloat();
 		height = height - ptop4 - pbottom4 - mtop4 - mbottom4;
+
         //if (this.content.getParent().getStyle("overflow-x")!="hidden" ) height = height-18;
 		
 		var pleft = this.content.getStyle("padding-left").toFloat();
@@ -219,6 +221,15 @@ MWF.widget.Dialog = MWF.DL = new Class({
 		width = width-pleft-pright-mleft-mright;
         //if (this.content.getParent().getStyle("overflow-y")!="hidden" ) width = width-18;
 
+        if (!height || height<0){
+            this.content.setStyles({"overflow": "hidden", "height": "auto", "width": ""+width+"px"});
+            height = this.content.getSize().y;
+            var h = height + h1 + ptop1 + pbottom1 + mtop1 + mbottom1;
+            h = h + h2 + ptop2 + pbottom2 + mtop2 + mbottom2;
+            h = h + h3 + ptop3 + pbottom3 + mtop3 + mbottom3;
+            h = h + ptop4 + pbottom4 + mtop4 + mbottom4;
+            this.css.to.height = h;
+        }
 
 //		var ptop5 = this.node.getStyle("padding-top").toFloat();
 //		var pbottom5 = this.node.getStyle("padding-bottom").toFloat();
@@ -228,8 +239,15 @@ MWF.widget.Dialog = MWF.DL = new Class({
 	},
 	setContentSize: function(height, width){
 		//this.content.setStyle("height", this.getContentSize(height));
-		this.content.setStyles(this.getContentSize(height, width));
-        this.content.setStyle("width", "auto");
+		// if (!this.options.height && !height){
+         //    this.content.setStyle("height", "auto");
+         //    this.content.setStyle("overflow", "hidden");
+         //    this.content.setStyle("width", "auto");
+		// }else{
+            this.content.setStyles(this.getContentSize(height, width));
+            this.content.setStyle("width", "auto");
+		//}
+
 	},
 	getTitle: function(){
 		this.titleText.set("text", this.options.title);

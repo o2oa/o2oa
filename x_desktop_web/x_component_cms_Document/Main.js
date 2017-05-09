@@ -10,7 +10,7 @@ MWF.xApplication.cms.Document.Main = new Class({
 		"name": "cms.Document",
 		"icon": "icon.png",
 		"width": "1200",
-		"height": "800",
+		"height": "680",
 		"title": MWF.xApplication.cms.Document.LP.title,
         "documentId": "",
         "isControl": false,
@@ -22,7 +22,6 @@ MWF.xApplication.cms.Document.Main = new Class({
 	},
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.cms.Document.LP;
-        debugger;
         if (this.status){
             this.options.documentId = this.status.documentId;
             this.options.readonly = (this.status.readonly=="true" || this.status.readonly==true) ? true : false;
@@ -35,7 +34,7 @@ MWF.xApplication.cms.Document.Main = new Class({
 	},
 	loadApplication: function(callback){
 
-        this.node = new Element("div", {"styles": this.css.content}).inject(this.content)
+        this.node = new Element("div", {"styles": this.css.content}).inject(this.content);
 
         MWF.require("MWF.widget.Mask", function(){
             this.mask = new MWF.widget.Mask({"style": "desktop"});
@@ -114,43 +113,44 @@ MWF.xApplication.cms.Document.Main = new Class({
         this.getDocument( function(json){
             //if (this.mask) this.mask.hide();
             //this.openDocument();
-            this.loadController( json.data.document, function(){
-                json.data = json.data || [];
-                this.parseData(json.data);
-                this.action.getCategory( json.data.document.categoryId, function( js ){
-                    this.categoryData = js.data;
-                    var formId = this.categoryData.formId || this.categoryData.readFormId;
-                    if( this.readonly == true && this.categoryData.readFormId && this.categoryData.readFormId != "" ){
-                        formId = this.categoryData.readFormId
-                    }
-                    if( !formId || formId=="" ){
-                        this.notice(  json.data.document.categoryName + this.lp.formNotSetted , "error");
-                    }else{
-                        this.loadForm( formId );
-                    }
-                }.bind(this))
-            }.bind(this))
+            //this.loadController( json.data.document, function(){
+            json.data = json.data || [];
+            this.parseData(json.data);
+            this.loadForm( this.formId );
+                //this.action.getCategory( json.data.document.categoryId, function( js ){
+                //    this.categoryData = js.data;
+                //    var formId = this.categoryData.formId || this.categoryData.readFormId;
+                //    if( this.readonly == true && this.categoryData.readFormId && this.categoryData.readFormId != "" ){
+                //        formId = this.categoryData.readFormId
+                //    }
+                //    if( !formId || formId=="" ){
+                //        this.notice(  json.data.document.categoryName + this.lp.formNotSetted , "error");
+                //    }else{
+                //        this.loadForm( formId );
+                //    }
+                //}.bind(this))
+            //}.bind(this))
         }.bind(this) );
     },
-    loadController: function(document, callback){
-        this.controllers =[];
-        this.action.listColumnController(document.appId, function( json ){
-            json.data = json.data || [];
-            json.data.each(function(item){
-                this.controllers.push(item.adminUid);
-            }.bind(this));
-            this.action.listCategoryController( document.categoryId, function( j ){
-                j.data = j.data || [];
-                j.data.each(function(item){
-                    this.controllers.push(item.adminUid);
-                }.bind(this));
-                if(callback)callback(json);
-            }.bind(this) )
-        }.bind(this), function(error){
-            this.notice(  this.lp.controllerGettedError + ":" + error.responseText , "error");
-            this.close();
-        }.bind(this));
-    },
+    //loadController: function(document, callback){
+    //    this.controllers =[];
+    //    this.action.listColumnController(document.appId, function( json ){
+    //        json.data = json.data || [];
+    //        json.data.each(function(item){
+    //            this.controllers.push(item.adminUid);
+    //        }.bind(this));
+    //        this.action.listCategoryController( document.categoryId, function( j ){
+    //            j.data = j.data || [];
+    //            j.data.each(function(item){
+    //                this.controllers.push(item.adminUid);
+    //            }.bind(this));
+    //            if(callback)callback(json);
+    //        }.bind(this) )
+    //    }.bind(this), function(error){
+    //        this.notice(  this.lp.controllerGettedError + ":" + error.responseText , "error");
+    //        this.close();
+    //    }.bind(this));
+    //},
     errorDocument: function(){
         if (this.mask) this.mask.hide();
         this.node.set("text", "openError");
@@ -159,32 +159,34 @@ MWF.xApplication.cms.Document.Main = new Class({
         this.action.getForm(formId, function( json ){
             //if (this.mask) this.mask.hide();
             this.form = (json.data.data) ? JSON.decode(MWF.decodeJsonString(json.data.data)): null;
-            this.listAttachment();
+            //this.listAttachment();
+            this.openDocument();
+            if (this.mask) this.mask.hide();
         }.bind(this), function(error){
             this.notice(  this.lp.formGettedError + ":" + error.responseText , "error");
             this.close();
         }.bind(this));
     },
-    listAttachment: function(){
-        if( this.document.attachmentList && this.document.attachmentList.length > 0 ){
-            this.action.listAttachment(this.options.documentId, function( json ){
-                if (this.mask) this.mask.hide();
-                this.attachmentList = json.data;
-                this.attachmentList.each(function(att){
-                    att.lastUpdateTime = att.updateTime;
-                    att.person = att.creatorUid;
-                })
-                this.openDocument();
-            }.bind(this), function(error){
-                this.notice(  this.lp.attachmentGettedError  + ":" + error.responseText, "error");
-                this.close();
-            }.bind(this));
-        }else{
-            if (this.mask) this.mask.hide();
-            this.attachmentList = [];
-            this.openDocument();
-        }
-    },
+    //listAttachment: function(){
+    //    if( this.document.attachmentList && this.document.attachmentList.length > 0 ){
+    //        this.action.listAttachment(this.options.documentId, function( json ){
+    //            if (this.mask) this.mask.hide();
+    //            this.attachmentList = json.data;
+    //            this.attachmentList.each(function(att){
+    //                att.lastUpdateTime = att.updateTime;
+    //                att.person = att.creatorUid;
+    //            })
+    //            this.openDocument();
+    //        }.bind(this), function(error){
+    //            this.notice(  this.lp.attachmentGettedError  + ":" + error.responseText, "error");
+    //            this.close();
+    //        }.bind(this));
+    //    }else{
+    //        if (this.mask) this.mask.hide();
+    //        this.attachmentList = [];
+    //        this.openDocument();
+    //    }
+    //},
     isEmptyObject: function( obj ) {
         var name;
         for ( name in obj ) {
@@ -203,6 +205,12 @@ MWF.xApplication.cms.Document.Main = new Class({
 
         this.data =  data.data;
 
+        this.attachmentList = data.attachmentList || [];
+        this.attachmentList.each(function(att){
+            att.lastUpdateTime = att.updateTime;
+            att.person = att.creatorUid;
+        });
+
         if( this.isEmptyObject(this.data) ){
             this.data.isNew = true;
         }else{
@@ -210,22 +218,36 @@ MWF.xApplication.cms.Document.Main = new Class({
         }
 
         this.document = data.document;
+
         var isAdmin = false;
 
-        //系统管理员
-        if( MWF.AC.isAdministrator() ){
+        if( data.isAppAdmin ){
             this.options.isControl = true;
             isAdmin = true;
         }
-        //栏目管理员
-        if(this.controllers && this.controllers.contains(this.desktop.session.user.name) ){
+        if( data.isCategoryAdmin ){
             this.options.isControl = true;
             isAdmin = true;
         }
+        if( data.isManager ){
+            this.options.isControl = true;
+            isAdmin = true;
+        }
+        ////系统管理员
+        //if( MWF.AC.isAdministrator() ){
+        //    this.options.isControl = true;
+        //    isAdmin = true;
+        //}
+        ////栏目管理员
+        //if(this.controllers && this.controllers.contains(this.desktop.session.user.name) ){
+        //    this.options.isControl = true;
+        //    isAdmin = true;
+        //}
         //文档创建人
         if( this.desktop.session.user.name==this.document.creatorPerson ){
             this.options.isControl = true;
         }
+
         if( this.options.readonly ){ //强制只读
             this.readonly = true;
         }else{
@@ -233,6 +255,11 @@ MWF.xApplication.cms.Document.Main = new Class({
             if(this.options.isControl && this.document.docStatus != "archived"){
                 this.readonly = false;
             }
+        }
+
+        this.formId = this.document.form || this.document.readFormId;
+        if( this.readonly == true && this.document.readFormId && this.document.readFormId != "" ){
+            this.formId  = this.document.readFormId;
         }
 
         if(!this.readonly){
@@ -251,8 +278,8 @@ MWF.xApplication.cms.Document.Main = new Class({
                 "allowRedraftDocument" : isControl && this.document.docStatus == "published",
                 "allowSave": isControl && this.document.docStatus == "published",
                 "allowPopularDocument": isAdmin && this.document.docStatus == "published",
-                "allowEditDocument":  isControl,
-                "allowDeleteDocument":  isControl
+                "allowEditDocument":  isControl && !this.document.workId,
+                "allowDeleteDocument":  isControl && !this.document.workId
             };
        // this.form = (data.form) ? JSON.decode(MWF.decodeJsonString(data.form.data)): null;
     },

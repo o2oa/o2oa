@@ -107,4 +107,51 @@ public class OkrTaskHandledFactory extends AbstractFactory {
 		cq.select(root.get( OkrTaskHandled_.id));
 		return em.createQuery(cq.where(p)).setMaxResults(5000).getResultList();
 	}
+	/**
+	 * 查询已办处理者身份列表（去重复）
+	 * @param identities_ok 排除身份
+	 * @param identities_error 排除身份
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<String> listAllDistinctTargetIdentity(List<String> identities_ok, List<String> identities_error) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrTaskHandled.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<OkrTaskHandled> root = cq.from(OkrTaskHandled.class);
+		
+		Predicate p = cb.isNotNull( root.get( OkrTaskHandled_.id ) );
+		if( identities_ok != null && identities_ok.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrTaskHandled_.targetIdentity ).in( identities_ok )) );
+		}
+		if( identities_error != null && identities_error.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrTaskHandled_.targetIdentity ).in( identities_error )) );
+		}
+		cq.distinct(true).select(root.get( OkrTaskHandled_.targetIdentity ));
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+	/**
+	 * 根据身份名称，从具体工作已办已阅信息中查询与该身份有关的所有信息列表
+	 * @param identity
+	 * @param recordId 
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<OkrTaskHandled> listErrorIdentitiesInTaskhandled(String identity, String recordId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( OkrTaskHandled.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<OkrTaskHandled> cq = cb.createQuery( OkrTaskHandled.class );
+		Root<OkrTaskHandled> root = cq.from( OkrTaskHandled.class );
+		Predicate p = cb.isNotNull(root.get( OkrTaskHandled_.id ));		
+		
+		if( recordId != null && !recordId.isEmpty() && !"all".equals( recordId ) ){
+			p = cb.and( p, cb.equal( root.get( OkrTaskHandled_.id ), recordId ) );
+		}
+		
+		Predicate p_targetIdentity = cb.isNotNull(root.get( OkrTaskHandled_.targetIdentity ));
+		p_targetIdentity = cb.and( p_targetIdentity, cb.equal( root.get( OkrTaskHandled_.targetIdentity ), identity ) );		
+		p = cb.and( p, p_targetIdentity );
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+	
 }

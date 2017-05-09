@@ -20,7 +20,6 @@ import com.x.attendance.assemble.control.service.AttendanceDetailAnalyseServiceA
 import com.x.attendance.assemble.control.service.AttendanceStatisticalCycleServiceAdv;
 import com.x.attendance.entity.AttendanceSelfHoliday;
 import com.x.attendance.entity.AttendanceStatisticalCycle;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
@@ -30,11 +29,12 @@ import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.organization.core.express.wrap.WrapCompany;
 
 
@@ -65,7 +65,7 @@ public class AttendanceSelfHolidaySimpleAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		
 		if( check ){
@@ -119,7 +119,7 @@ public class AttendanceSelfHolidaySimpleAction extends StandardJaxrsAction{
 						} catch (Exception e) {
 							Exception exception = new GetCycleMapFromAllCyclesException( e );
 							result.error( exception );
-							logger.error( exception, currentPerson, request, null);
+							logger.error( e, currentPerson, request, null);
 						}
 						attendanceDetailAnalyseServiceAdv.analyseAttendanceDetails( attendanceSelfHoliday.getEmployeeName(), attendanceSelfHoliday.getStartTime(), attendanceSelfHoliday.getEndTime(), companyAttendanceStatisticalCycleMap );
 					}
@@ -127,7 +127,7 @@ public class AttendanceSelfHolidaySimpleAction extends StandardJaxrsAction{
 			} catch ( Exception e ) {
 				Exception exception = new AttendanceSelfHolidaySaveException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		
@@ -174,7 +174,7 @@ public class AttendanceSelfHolidaySimpleAction extends StandardJaxrsAction{
 							} catch (Exception e) {
 								Exception exception = new GetCycleMapFromAllCyclesException( e );
 								result.error( exception );
-								logger.error( exception, currentPerson, request, null);
+								logger.error( e, currentPerson, request, null);
 							}
 							attendanceDetailAnalyseServiceAdv.analyseAttendanceDetails( attendanceSelfHoliday.getEmployeeName(), attendanceSelfHoliday.getStartTime(), attendanceSelfHoliday.getEndTime(), companyAttendanceStatisticalCycleMap );
 						}
@@ -184,7 +184,7 @@ public class AttendanceSelfHolidaySimpleAction extends StandardJaxrsAction{
 		} catch ( Exception e ) {
 			Exception exception = new AttendanceSelfHolidayDeleteByDocIdException( e, docId );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		result.setData( wrapOutMessage );
 		return ResponseFactory.getDefaultActionResultResponse(result);

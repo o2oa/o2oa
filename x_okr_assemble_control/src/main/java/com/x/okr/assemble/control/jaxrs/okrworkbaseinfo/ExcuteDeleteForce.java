@@ -1,14 +1,16 @@
 package com.x.okr.assemble.control.jaxrs.okrworkbaseinfo;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
-
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkBaseInfoProcessException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkIdEmptyException;
 import com.x.okr.assemble.control.service.OkrWorkBaseInfoOperationService;
 import com.x.okr.entity.OkrWorkBaseInfo;
 
@@ -29,7 +31,7 @@ public class ExcuteDeleteForce extends ExcuteBase {
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName()  );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}	
 		}
 		if( check ){
@@ -37,7 +39,6 @@ public class ExcuteDeleteForce extends ExcuteBase {
 				check = false;
 				Exception exception = new WorkIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -45,9 +46,9 @@ public class ExcuteDeleteForce extends ExcuteBase {
 				okrWorkBaseInfo = okrWorkBaseInfoService.get( id );
 			}catch(Exception e){
 				check = false;
-				Exception exception = new WorkQueryByIdException( e, id );
+				Exception exception = new WorkBaseInfoProcessException( e, "查询指定ID的具体工作信息时发生异常。ID：" + id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -55,9 +56,9 @@ public class ExcuteDeleteForce extends ExcuteBase {
 				okrWorkBaseInfoOperationService.deleteForce( id );
 			}catch(Exception e){
 				check = false;
-				Exception exception = new WorkDeleteException( e, id );
+				Exception exception = new WorkBaseInfoProcessException( e, "工作删除过程中发生异常。"+id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){

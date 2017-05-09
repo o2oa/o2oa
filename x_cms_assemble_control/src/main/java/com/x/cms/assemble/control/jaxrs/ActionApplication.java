@@ -13,7 +13,7 @@ import com.x.cms.assemble.control.jaxrs.appinfo.AppInfoAction;
 import com.x.cms.assemble.control.jaxrs.categoryinfo.CategoryInfoAction;
 import com.x.cms.assemble.control.jaxrs.data.DataAction;
 import com.x.cms.assemble.control.jaxrs.document.DocumentAction;
-import com.x.cms.assemble.control.jaxrs.document.DocumentPictureInfoAction;
+import com.x.cms.assemble.control.jaxrs.document.DocumentCipherAction;
 import com.x.cms.assemble.control.jaxrs.documentpermission.DocumentPermissionAction;
 import com.x.cms.assemble.control.jaxrs.documentviewrecord.DocumentViewRecordAction;
 import com.x.cms.assemble.control.jaxrs.fileinfo.FileInfoAction;
@@ -42,7 +42,7 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add(CategoryInfoAction.class);
 		this.classes.add(DataAction.class);
 		this.classes.add(DocumentAction.class);
-		this.classes.add(DocumentPictureInfoAction.class);
+		this.classes.add(DocumentCipherAction.class);
 		this.classes.add(DocumentPermissionAction.class);
 		this.classes.add(DocumentViewRecordAction.class);
 		this.classes.add(FileInfoAction.class);

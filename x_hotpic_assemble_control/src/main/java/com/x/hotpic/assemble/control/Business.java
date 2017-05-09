@@ -20,7 +20,7 @@ public class Business {
 	
 	public Organization organization() throws Exception {
 		if (null == this.organization) {
-			this.organization = new Organization();
+			this.organization = new Organization(ThisApplication.context());
 		}
 		return organization;
 	}

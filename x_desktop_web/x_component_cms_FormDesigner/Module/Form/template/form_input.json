@@ -360,9 +360,9 @@
             "font-weight": "bold",
             "color": "#3c76b7",
             "font-size": "24px",
-            "line-height": "60px",
             "text-shadow": "0px 0px 3px #fff",
-            "height": "60px"
+            "padding-top" : "30px",
+            "min-height": "32px"
           },
           "container": ""
         },
@@ -2601,7 +2601,7 @@
             "color": "#fb4747",
             "font-size": "24px",
             "text-shadow": "0px 0px 3px #fff",
-            "height": "50px",
+            "min-height": "50px",
             "margin-bottom": "20px"
           },
           "container": ""

@@ -41,7 +41,7 @@ public class ManageCompleted extends ActionBase {
 				read.setOpinion(wrapIn.getOpinion());
 			}
 			emc.commit();
-			ThisApplication.applications.putQuery(x_processplatform_service_processing.class,
+			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 					"read/" + URLEncoder.encode(read.getId(), "UTF-8") + "/completed", null);
 			WrapOutId wrap = new WrapOutId(read.getId());
 			result.setData(wrap);

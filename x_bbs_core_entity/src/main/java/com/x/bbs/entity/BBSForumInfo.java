@@ -182,8 +182,8 @@ public class BBSForumInfo extends SliceJpaObject {
 	private String subjectType = "讨论|新闻";
 	
 	@EntityFieldDescribe( "论坛版块支持的主题类别名称,以|分隔,默认:信息|问题|投票" )
-	@Column(name="xtypeCatagory", length = JpaObject.length_255B )
-	private String typeCatagory = "信息|问题|投票";
+	@Column(name="xtypeCategory", length = JpaObject.length_255B )
+	private String typeCategory = "信息|问题|投票";
 	
 	@EntityFieldDescribe( "允许推荐到首页：true|false" )
 	@Column(name="xindexRecommendable" )
@@ -369,10 +369,10 @@ public class BBSForumInfo extends SliceJpaObject {
 	public void setSubjectType(String subjectType) {
 		this.subjectType = subjectType;
 	}
-	public String getTypeCatagory() {
-		return typeCatagory;
+	public String getTypeCategory() {
+		return typeCategory;
 	}
-	public void setTypeCatagory(String typeCatagory) {
-		this.typeCatagory = typeCatagory;
+	public void setTypeCategory(String typeCategory) {
+		this.typeCategory = typeCategory;
 	}
 }

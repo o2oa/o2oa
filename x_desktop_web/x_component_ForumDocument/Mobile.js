@@ -57,9 +57,12 @@ MWF.xApplication.ForumDocument.Mobile = new Class({
         this.subjectView = new MWF.xApplication.ForumDocument.Mobile.SubjectView( this.subjectConainer, this.app, this, {
             templateUrl : this.path + "listItemSubject.json",
             scrollEnable : false
-        } )
+        } );
         this.subjectView.data = this.data;
         this.subjectView.load();
+    },
+    showReply : function( id ){
+        this.replyView.showReply( id );
     },
     createReplyView : function(){
         new Element("div.itemReplyTitle", {
@@ -88,12 +91,13 @@ MWF.xApplication.ForumDocument.Mobile = new Class({
                     }
                 }.bind(this)
             }
-        } )
+        } );
         this.replyView.data = this.data;
         this.replyView.filterData = { "subjectId" : this.data.id };
         this.replyView.load();
     },
     getDateDiff: function (publishTime) {
+        if(!publishTime)return "";
         var dateTimeStamp = Date.parse(publishTime.replace(/-/gi, "/"));
         var minute = 1000 * 60;
         var hour = minute * 60;
@@ -191,7 +195,7 @@ MWF.xApplication.ForumDocument.Mobile.SubjectView = new Class({
     _postCreateViewHead: function( headNode ){
     }
 
-})
+});
 
 MWF.xApplication.ForumDocument.Mobile.SubjectDocument = new Class({
     Extends: MWF.xApplication.Template.Explorer.ComplexDocument,
@@ -202,6 +206,13 @@ MWF.xApplication.ForumDocument.Mobile.SubjectDocument = new Class({
     _queryCreateDocumentNode:function( itemData ){
     },
     _postCreateDocumentNode: function( itemNode, itemData ){
+        var content = itemNode.getElements( "[item='content']" )[0];
+        content.getElements("img").each( function( img ){
+            img.setStyles({
+                "height": "auto",
+                "max-width" : "100%"
+            });
+        }.bind(this))
     },
     createReply : function(itemNode, ev ){
         var form = new MWF.xApplication.ForumDocument.ReplyForm(this, {}, {
@@ -209,16 +220,21 @@ MWF.xApplication.ForumDocument.Mobile.SubjectDocument = new Class({
             onPostOk : function( id ){
                 this.app.postCreateReply( id )
             }.bind(this)
-        })
+        });
         form.mainData = this.data;
         form.create()
     }
-})
+});
 
 
 
 MWF.xApplication.ForumDocument.Mobile.ReplyView = new Class({
     Extends: MWF.xApplication.Template.Explorer.ComplexView,
+    showReply: function( id ){
+      this.actions.getReply( id, function( json ){
+          new MWF.xApplication.ForumDocument.Mobile.ReplyDocument(this.viewNode, json.data, this.explorer, this, null, null );
+      }.bind(this) )
+    },
     _createDocument: function(data, index){
         data.index = index;
         return  new MWF.xApplication.ForumDocument.Mobile.ReplyDocument(this.viewNode, data, this.explorer, this, null, data.index );
@@ -257,7 +273,7 @@ MWF.xApplication.ForumDocument.Mobile.ReplyView = new Class({
     _postCreateViewHead: function( headNode ){
     }
 
-})
+});
 
 MWF.xApplication.ForumDocument.Mobile.ReplyDocument = new Class({
     Extends: MWF.xApplication.Template.Explorer.ComplexDocument,
@@ -273,11 +289,18 @@ MWF.xApplication.ForumDocument.Mobile.ReplyDocument = new Class({
     _queryCreateDocumentNode:function( itemData ){
     },
     _postCreateDocumentNode: function( itemNode, itemData ){
+        var content = itemNode.getElements( "[item='content']" )[0];
+        content.getElements("img").each( function( img ){
+            img.setStyles({
+                "height": "auto",
+                "max-width" : "100%"
+            });
+        }.bind(this));
         if( itemData.parentId && itemData.parentId != "" ){
             var quoteContainer = itemNode.getElements( "[item='quoteContent']" )[0];
             this.actions.getReply( itemData.parentId, function( json ){
                     var data = this.parentData =  json.data;
-                    var quoteContent = new Element("div", {  "styles" : this.css.itemQuote }).inject(quoteContainer)
+                    var quoteContent = new Element("div", {  "styles" : this.css.itemQuote }).inject(quoteContainer);
                     var content = quoteContent.set("html", data.content).get("text");
                     quoteContent.empty();
                     data.contentText = content;

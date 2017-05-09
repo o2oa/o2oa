@@ -5,6 +5,8 @@ MWF.xDesktop.requireApp("Forum", "Actions.RestActions", null, false);
 MWF.xDesktop.requireApp("Forum", "lp."+MWF.language, null, false);
 MWF.xDesktop.requireApp("Template", "Explorer", null, false);
 MWF.xDesktop.requireApp("Forum", "Access", null, false);
+MWF.xDesktop.requireApp("Forum", "ColumnTemplate", null, false);
+MWF.xDesktop.requireApp("Forum", "TopNode", null, false);
 MWF.xApplication.ForumCategory.options = {
     multitask: false,
     executable: true
@@ -68,7 +70,7 @@ MWF.xApplication.ForumCategory.Main = new Class({
 
         this.restActions.getCategory( this.options.categoryId, function (json) {
             this.data = json.data;
-            this.setTitle( this.data.forumName )
+            this.setTitle( this.data.forumName );
             this.createTopNode();
 
             this.middleNode = new Element("div.middleNode", {
@@ -81,28 +83,22 @@ MWF.xApplication.ForumCategory.Main = new Class({
 
     },
     createTopNode: function () {
+        var node = new MWF.xApplication.Forum.TopNode(this.contentContainerNode, this, this, {
+            type: this.options.style
+        });
+        node.load();
+
         var forumColor = MWF.xApplication.Forum.ForumSetting[this.options.categoryId].forumColor;
 
         var topNode = this.topNode = new Element("div.topNode", {
             "styles": this.css.topNode
         }).inject(this.contentContainerNode);
-        topNode.setStyle( "border-bottom" , "1px solid "+forumColor );
-
-        var topTitleLeftNode = new Element("div.topTitleLeftNode", {
-            "styles": this.css.topTitleLeftNode
-        }).inject(topNode);
-        topTitleLeftNode.setStyle( "background-color" , forumColor )
+        //topNode.setStyle( "border-bottom" , "1px solid "+forumColor );
 
         var topTitleMiddleNode = new Element("div.topTitleMiddleNode", {
             "styles": this.css.topTitleMiddleNode
         }).inject(topNode);
-        topTitleMiddleNode.setStyle( "background-color" , forumColor )
-
-        var topTitleRightNode = new Element("div.topTitleRightNode", {
-            "styles": this.css.topTitleRightNode
-        }).inject(topNode);
-        topTitleRightNode.setStyle( "background-color" , forumColor )
-
+        //topTitleMiddleNode.setStyle( "background-color" , forumColor )
 
         var topItemTitleNode = new Element("div.topItemTitleNode", {
             "styles": this.css.topItemTitleNode,
@@ -110,8 +106,10 @@ MWF.xApplication.ForumCategory.Main = new Class({
         }).inject(topTitleMiddleNode);
 
         var topItemSepNode = new Element("div.topItemSepNode", {
-            "styles": this.css.topItemSepNode
+            "styles": this.css.topItemSepNode,
+            "text" : ">"
         }).inject(topTitleMiddleNode);
+
         topItemTitleNode.addEvent("click", function(){
             var appId = "Forum";
             if (this.desktop.apps[appId]){
@@ -125,7 +123,7 @@ MWF.xApplication.ForumCategory.Main = new Class({
         }.bind(this))
 
         var topItemTitleNode = new Element("div.topItemTitleNode", {
-            "styles": this.css.topItemTitleNode,
+            "styles": this.css.topItemTitleLastNode,
             "text": this.data.forumName
         }).inject(topTitleMiddleNode);
 
@@ -159,78 +157,7 @@ MWF.xApplication.ForumCategory.Main = new Class({
 
         }
 
-        this.searchDiv = new Element("div.searchDiv",{
-            "styles" : this.css.searchDiv
-        }).inject(this.topNode)
-        this.searchInput = new Element("input.searchInput",{
-            "styles" : this.css.searchInput,
-            "value" : this.lp.searchKey,
-            "title" : this.lp.searchTitle
-        }).inject(this.searchDiv)
-        this.searchInput.setStyles({
-            "border-left" : "1px solid " + forumColor,
-            "border-top" : "1px solid " + forumColor,
-            "border-bottom" : "1px solid "  + forumColor,
-            "border-right" : "0px"
-        })
-        var _self = this;
-        this.searchInput.addEvents({
-            "focus": function(){
-                if (this.value==_self.lp.searchKey) this.set("value", "");
-            },
-            "blur": function(){if (!this.value) this.set("value", _self.lp.searchKey);},
-            "keydown": function(e){
-                if (e.code==13){
-                    this.search();
-                    e.preventDefault();
-                }
-            }.bind(this)
-        });
-        this.searchAction = new Element("div.searchAction",{
-            "styles" : this.css.searchAction
-        }).inject(this.searchDiv);
-        this.searchAction.setStyles({
-            "border-right" : "1px solid " + forumColor,
-            "border-top" : "1px solid " + forumColor,
-            "border-bottom" : "1px solid "  + forumColor,
-            "border-left" : "0px"
-        })
-        this.searchAction.addEvents({
-            "click": function(){ this.search(); }.bind(this),
-            "mouseover": function(e){
-                this.searchAction.setStyles( this.css.searchAction_over2 );
-                e.stopPropagation();
-            }.bind(this),
-            "mouseout": function(){ this.searchAction.setStyles( this.css.searchAction ) }.bind(this)
-        });
-        this.searchDiv.addEvents( {
-            "mouseover" : function(){
-                this.searchInput.setStyles( this.css.searchInput_over )
-                this.searchAction.setStyles( this.css.searchAction_over )
-            }.bind(this),
-            "mouseout" : function(){
-                this.searchInput.setStyles( this.css.searchInput )
-                this.searchAction.setStyles( this.css.searchAction )
-            }.bind(this)
-        } )
-
-
         this._createTopContent();
-    },
-    search : function(){
-        var val = this.searchInput.get("value");
-        if( val == "" || val == this.lp.searchKey ){
-            this.notice( this.lp.noSearchContentNotice, "error" );
-            return;
-        }
-        var appId = "ForumSearch";
-        if (this.desktop.apps[appId] && !this.inBrowser ){
-            this.desktop.apps[appId].close();
-        };
-        this.desktop.openApplication(null, "ForumSearch", {
-            "appId": appId,
-            "searchContent" : val
-        });
     },
     _createTopContent: function () {
 
@@ -307,50 +234,72 @@ MWF.xApplication.ForumCategory.Main = new Class({
         this.contentContainerNode.setStyle("height", "" + height + "px");
     },
     _createCategory: function (d) {
+        //var categoryNode = new Element("div.categoryNode", {
+        //    "styles": this.css.categoryNode
+        //}).inject(this.contentNode);
+
         var categoryNode = new Element("div.categoryNode", {
             "styles": this.css.categoryNode
         }).inject(this.contentNode);
 
-        //var categoryTopNode = new Element("div.categoryTopNode", {
-        //    "styles": this.css.categoryTopNode
-        //}).inject(categoryNode);
+        var categoryTopNode = new Element("div.categoryTopNode", {
+            "styles": this.css.categoryTopNode
+        }).inject(categoryNode);
         //categoryTopNode.setStyle( "border-bottom" , "1px solid "+ d.forumColor || this.lp.defaultForumColor );
+
+        var categoryTopTitleNode = new Element("div.categoryTopTitleNode", {
+            "styles": this.css.categoryTopTitleNode,
+            "text": d.forumName
+        }).inject(categoryTopNode);
+        categoryTopTitleNode.addEvents({
+            click : function(el){ this.obj.openCategory( this.data ) }.bind({ obj : this, data : d })
+        });
+        categoryTopTitleNode.setStyle( "color" , d.forumColor || this.lp.defaultForumColor );
+
+
+        var categoryTopRightNode = new Element("div.categoryTopRightNode", {
+            "styles": this.css.categoryTopRightNode2
+        }).inject(categoryTopNode);
+        this.createPersonNode(categoryTopRightNode,d.forumManagerName );
+
+        new Element("div.categoryTopRightNode", {
+            "styles": this.css.categoryTopRightNode,
+            "text": this.lp.categoryManager + "：" //+ d.forumManagerName
+        }).inject(categoryTopNode);
+
+
+        var view = new MWF.xApplication.Forum.ColumnTemplate(categoryNode, this, this, {
+            type: d.indexListStyle || "type_1_0",
+            categoryId: d.id
+        });
+        view.load();
+
         //
-        //var categoryTopTitleNode = new Element("div.categoryTopTitleNode", {
-        //    "styles": this.css.categoryTopTitleNode,
-        //    "text": d.forumName
-        //}).inject(categoryTopNode);
-        //categoryTopTitleNode.setStyle( "background-color" , d.forumColor || this.lp.defaultForumColor );
-        //
-        //var categoryTopRightNode = new Element("div.categoryTopRightNode", {
-        //    "styles": this.css.categoryTopRightNode,
-        //    "text": this.lp.categoryManager + "：" + d.forumManagerName
-        //}).inject(categoryTopNode);
-        if (d.indexListStyle == "经典") {
-            var view = new MWF.xApplication.ForumCategory.Main.ListView(categoryNode, this, this, {
-                templateUrl: this.path + "listItemList.json",
-                categoryId: d.id
-            }, {
-                lp: this.lp
-            })
-            view.load();
-        } else if (d.indexListStyle == "图片矩形") {
-            var view = new MWF.xApplication.ForumCategory.Main.ImageView(categoryNode, this, this, {
-                templateUrl: this.path + "listItemImage.json",
-                categoryId: d.id
-            }, {
-                lp: this.lp
-            })
-            view.load();
-        } else {
-            var view = new MWF.xApplication.ForumCategory.Main.TileView(categoryNode, this, this, {
-                templateUrl: this.path + "listItemTile.json",
-                categoryId: d.id
-            }, {
-                lp: this.lp
-            })
-            view.load();
-        }
+        //if (d.indexListStyle == "经典") {
+        //    var view = new MWF.xApplication.ForumCategory.Main.ListView(categoryNode, this, this, {
+        //        templateUrl: this.path + "listItemList.json",
+        //        categoryId: d.id
+        //    }, {
+        //        lp: this.lp
+        //    })
+        //    view.load();
+        //} else if (d.indexListStyle == "图片矩形") {
+        //    var view = new MWF.xApplication.ForumCategory.Main.ImageView(categoryNode, this, this, {
+        //        templateUrl: this.path + "listItemImage.json",
+        //        categoryId: d.id
+        //    }, {
+        //        lp: this.lp
+        //    })
+        //    view.load();
+        //} else {
+        //    var view = new MWF.xApplication.ForumCategory.Main.TileView(categoryNode, this, this, {
+        //        templateUrl: this.path + "listItemTile.json",
+        //        categoryId: d.id
+        //    }, {
+        //        lp: this.lp
+        //    })
+        //    view.load();
+        //}
     },
     clearContent: function () {
         if (this.explorer)this.explorer.destroy();
@@ -406,492 +355,5 @@ MWF.xApplication.ForumCategory.Main = new Class({
     }
 });
 
-
-
-MWF.xApplication.ForumCategory.Main.TileView = new Class({
-    Extends: MWF.xApplication.Template.Explorer.ComplexView,
-    _createDocument: function (data, index) {
-        return new MWF.xApplication.ForumCategory.Main.TileDocument(this.viewNode, data, this.explorer, this, null, index);
-    },
-
-    _getCurrentPageData: function (callback, count) {
-        if (!count)count = 20;
-        var id = (this.items.length) ? this.items[this.items.length - 1].data.id : "(0)";
-        var filter = this.filterData || {};
-        this.actions.listSection(this.options.categoryId, function (json) {
-            if( !json.data )json.data = [];
-            if (callback)callback(json);
-        }.bind(this))
-    },
-    _removeDocument: function (documentData, all) {
-        //this.actions.deleteSchedule(documentData.id, function(json){
-        //    this.reload();
-        //    this.app.notice(this.app.lp.deleteDocumentOK, "success");
-        //}.bind(this));
-    },
-    _create: function () {
-
-    },
-    _openDocument: function (documentData) {
-
-    },
-    _queryCreateViewNode: function () {
-
-    },
-    _postCreateViewNode: function (viewNode) {
-
-    },
-    _queryCreateViewHead: function () {
-
-    },
-    _postCreateViewHead: function (headNode) {
-
-    }
-
-})
-
-MWF.xApplication.ForumCategory.Main.TileDocument = new Class({
-    Extends: MWF.xApplication.Template.Explorer.ComplexDocument,
-    mouseoverDocument: function () {
-        //this.node.getElements("[styles='documentItemTitleNode']").setStyles(this.css["documentItemTitleNode_over"]);
-        //this.node.getElements("[styles='documentItemIconNode']").setStyles(this.css["documentItemIconNode_over"]);
-        //this.node.getElements("[styles='documentItemStatNode']").setStyles(this.css["documentItemStatNode_over"]);
-    },
-    mouseoutDocument: function () {
-        //this.node.getElements("[styles='documentItemTitleNode']").setStyles(this.css["documentItemTitleNode"]);
-        //this.node.getElements("[styles='documentItemIconNode']").setStyles(this.css["documentItemIconNode"]);
-        //this.node.getElements("[styles='documentItemStatNode']").setStyles(this.css["documentItemStatNode"]);
-    },
-    _queryCreateDocumentNode: function (itemData) {
-    },
-    _postCreateDocumentNode: function (itemNode, itemData) {
-        var personNode = itemNode.getElements("[item='moderatorNames']")[0];
-        this.app.createPersonNode( personNode, itemData.moderatorNames )
-
-        if( (this.index + 1) % 4 == 0 ){
-            itemNode.setStyle("margin-right" , "0px" );
-        }
-        var listNode = itemNode.getElements("[styles='documentItemListNode']")[0];
-        if (listNode) {
-            this._getListData(function (json) {
-                json.data.each(function (d,i) {
-                    var div = new Element("div", {
-                        "styles": this.css.documentItemListItemNode,
-                        "text": d.title,
-                        "title": d.title
-                    }).inject(listNode)
-                    div.addEvents({
-                        "mouseover": function () {
-                            this.node.setStyles(this.obj.css.documentItemListItemNode_over)
-                        }.bind({node: div, obj: this}),
-                        "mouseout": function () {
-                            this.node.setStyles(this.obj.css.documentItemListItemNode)
-                        }.bind({node: div, obj: this}),
-                        "click" : function(){
-                            var appId = "ForumDocument"+this.da.id;
-                            if (this.obj.app.desktop.apps[appId]){
-                                this.obj.app.desktop.apps[appId].setCurrent();
-                            }else {
-                                this.obj.app.desktop.openApplication(null, "ForumDocument", {
-                                    "sectionId" : this.da.sectionId,
-                                    "id" : this.da.id,
-                                    "appId": appId,
-                                    "isEdited" : false,
-                                    "isNew" : false,
-                                    "index" : i
-                                });
-                            }
-                        }.bind({da: d, obj: this})
-                    })
-                }.bind(this))
-            }.bind(this), 6)
-        }
-    },
-    _getListData: function (callback, count) {
-        if (!count)count = 6;
-        var filterData = {
-            "sectionId": this.data.id
-        }
-        this.actions.listSubjectFilterPage(1, count, filterData, function (json) {
-            if (!json.data)json.data = [];
-            if (callback)callback(json);
-        }.bind(this))
-    },
-    removeCenterWork: function (itemData) {
-        //if(isAdmin){
-        //    return true;
-        //}
-        return false;
-    },
-    openSection : function( el ){
-        var appId = "ForumSection"+ this.data.id;
-        if (this.app.desktop.apps[appId]){
-            this.app.desktop.apps[appId].setCurrent();
-        }else {
-            this.app.desktop.openApplication(el, "ForumSection", {
-                "sectionId": this.data.id,
-                "appId": appId
-            });
-        }
-    }
-})
-
-
-MWF.xApplication.ForumCategory.Main.ListView = new Class({
-    Extends: MWF.xApplication.Template.Explorer.ComplexView,
-    _createDocument: function (data, index) {
-        return new MWF.xApplication.ForumCategory.Main.ListDocument(this.viewNode, data, this.explorer, this, null, index);
-    },
-
-    _getCurrentPageData: function (callback, count) {
-        if (!count)count = 20;
-        var id = (this.items.length) ? this.items[this.items.length - 1].data.id : "(0)";
-        var filter = this.filterData || {};
-        this.actions.listSection(this.options.categoryId, function (json) {
-            if( !json.data )json.data = [];
-            if (callback)callback(json);
-        }.bind(this))
-    },
-    _removeDocument: function (documentData, all) {
-        //this.actions.deleteSchedule(documentData.id, function(json){
-        //    this.reload();
-        //    this.app.notice(this.app.lp.deleteDocumentOK, "success");
-        //}.bind(this));
-    },
-    _create: function () {
-
-    },
-    _openDocument: function (documentData) {
-    },
-    _queryCreateViewNode: function () {
-
-    },
-    _postCreateViewNode: function (viewNode) {
-
-    },
-    _queryCreateViewHead: function () {
-
-    },
-    _postCreateViewHead: function (headNode) {
-
-    }
-
-})
-
-MWF.xApplication.ForumCategory.Main.ListDocument = new Class({
-    Extends: MWF.xApplication.Template.Explorer.ComplexDocument,
-    mouseoverDocument: function () {
-        //this.node.getElements("[styles='documentItemTitleNode']").setStyles(this.css["documentItemTitleNode_over"]);
-        //this.node.getElements("[styles='documentItemIconNode']").setStyles(this.css["documentItemIconNode_over"]);
-        //this.node.getElements("[styles='documentItemStatNode']").setStyles(this.css["documentItemStatNode_over"]);
-    },
-    mouseoutDocument: function () {
-        //this.node.getElements("[styles='documentItemTitleNode']").setStyles(this.css["documentItemTitleNode"]);
-        //this.node.getElements("[styles='documentItemIconNode']").setStyles(this.css["documentItemIconNode"]);
-        //this.node.getElements("[styles='documentItemStatNode']").setStyles(this.css["documentItemStatNode"]);
-    },
-    _queryCreateDocumentNode: function (itemData) {
-    },
-    _postCreateDocumentNode: function (itemNode, itemData) {
-        var personNode = itemNode.getElements("[item='moderatorNames']")[0];
-        this.app.createPersonNode( personNode, itemData.moderatorNames )
-
-        var listNode = itemNode.getElements("[styles='documentItemListNode_list']")[0];
-        var replyListNode = itemNode.getElements("[styles='documentItemReplyListNode_list']")[0];
-        if (listNode) {
-            this._getListData(function (json) {
-                json.data.each(function (d,i) {
-                    var div = new Element("div", {
-                        "styles": this.css.documentItemListItemNode_list,
-                        "text": d.title,
-                        "title": d.title
-                    }).inject(listNode)
-                    div.addEvents({
-                        "mouseover": function () {
-                            this.node.setStyles(this.obj.css.documentItemListItemNode_list_over)
-                        }.bind({node: div, obj: this}),
-                        "mouseout": function () {
-                            this.node.setStyles(this.obj.css.documentItemListItemNode_list)
-                        }.bind({node: div, obj: this}),
-                        "click" : function(){
-                            var appId = "ForumDocument"+this.da.id;
-                            if (this.obj.app.desktop.apps[appId]){
-                                this.obj.app.desktop.apps[appId].setCurrent();
-                            }else {
-                                this.obj.app.desktop.openApplication(null, "ForumDocument", {
-                                    "sectionId" : this.da.sectionId,
-                                    "id" : this.da.id,
-                                    "appId": appId,
-                                    "isEdited" : false,
-                                    "isNew" : false,
-                                    "index" : i
-                                });
-                            }
-                        }.bind({da: d, obj: this})
-                    })
-
-                    var replyNode = new Element("div", {
-                        "styles": this.css.documentItemReplyListItemNode_list
-                    }).inject(replyListNode)
-
-                    var div = new Element("div", {
-                        "styles": this.css.documentItemReplyTimeNode_list,
-                        "text": this.getDateDiff(d.updateTime),
-                        "title": d.updateTime
-                    }).inject(replyNode)
-
-                    var div = new Element("div", {
-                        "styles": this.css.documentItemReplyPersonNode_list,
-                        "text": d.creatorName
-                    }).inject(replyNode)
-                    div.addEvents({
-                        "mouseover": function () {
-                            this.node.setStyles(this.obj.css.documentItemReplyPersonNode_list_over)
-                        }.bind({node: div, obj: this}),
-                        "mouseout": function () {
-                            this.node.setStyles(this.obj.css.documentItemReplyPersonNode_list)
-                        }.bind({node: div, obj: this}),
-                        "click" : function(){
-                            this.obj.app.openPerson( this.userName );
-                        }.bind( {userName : d.creatorName, obj:this} )
-                    })
-                }.bind(this))
-            }.bind(this), 6)
-        }
-
-
-    },
-    _getListData: function (callback, count) {
-        if (!count)count = 6;
-        var filterData = {
-            "sectionId": this.data.id
-        }
-        this.actions.listSubjectFilterPage(1, count, filterData, function (json) {
-            if (!json.data)json.data = [];
-            if (callback)callback(json);
-        }.bind(this))
-    },
-    getDateDiff: function (publishTime) {
-        var dateTimeStamp = Date.parse(publishTime.replace(/-/gi, "/"));
-        var minute = 1000 * 60;
-        var hour = minute * 60;
-        var day = hour * 24;
-        var halfamonth = day * 15;
-        var month = day * 30;
-        var year = month * 12;
-        var now = new Date().getTime();
-        var diffValue = now - dateTimeStamp;
-        if (diffValue < 0) {
-            //若日期不符则弹出窗口告之
-            //alert("结束日期不能小于开始日期！");
-        }
-        var yesterday = new Date().decrement('day', 1);
-        var beforYesterday = new Date().decrement('day', 2);
-        var yearC = diffValue / year;
-        var monthC = diffValue / month;
-        var weekC = diffValue / (7 * day);
-        var dayC = diffValue / day;
-        var hourC = diffValue / hour;
-        var minC = diffValue / minute;
-        if (yesterday.getFullYear() == dateTimeStamp.getFullYear() && yesterday.getMonth() == dateTimeStamp.getMonth() && yesterday.getDate() == dateTimeStamp.getDate()) {
-            result = "昨天 " + dateTimeStamp.getHours() + ":" + dateTimeStamp.getMinutes();
-        } else if (beforYesterday.getFullYear() == dateTimeStamp.getFullYear() && beforYesterday.getMonth() == dateTimeStamp.getMonth() && beforYesterday.getDate() == dateTimeStamp.getDate()) {
-            result = "前天 " + dateTimeStamp.getHours() + ":" + dateTimeStamp.getMinutes();
-        } else if (yearC > 1) {
-            result = dateTimeStamp.getFullYear() + "年" + (dateTimeStamp.getMonth() + 1) + "月" + dateTimeStamp.getDate() + "日";
-        } else if (monthC >= 1) {
-            //result= parseInt(monthC) + "个月前";
-            // s.getFullYear()+"年";
-            result = (dateTimeStamp.getMonth() + 1) + "月" + dateTimeStamp.getDate() + "日";
-        } else if (weekC >= 1) {
-            result = parseInt(weekC) + "周前";
-        } else if (dayC >= 1) {
-            result = parseInt(dayC) + "天前";
-        } else if (hourC >= 1) {
-            result = parseInt(hourC) + "小时前";
-        } else if (minC >= 1) {
-            result = parseInt(minC) + "分钟前";
-        } else
-            result = "刚刚发表";
-        return result;
-    },
-    removeCenterWork: function (itemData) {
-        //if(isAdmin){
-        //    return true;
-        //}
-        return false;
-    },
-    openSection : function( el ){
-        var appId = "ForumSection"+ this.data.id;
-        if (this.app.desktop.apps[appId]){
-            this.app.desktop.apps[appId].setCurrent();
-        }else {
-            this.app.desktop.openApplication(el, "ForumSection", {
-                "sectionId": this.data.id,
-                "appId": appId
-            });
-        }
-    }
-})
-
-
-MWF.xApplication.ForumCategory.Main.ImageView = new Class({
-    Extends: MWF.xApplication.Template.Explorer.ComplexView,
-    _createDocument: function (data, index) {
-        return new MWF.xApplication.ForumCategory.Main.ImageDocument(this.viewNode, data, this.explorer, this, null, index);
-    },
-
-    _getCurrentPageData: function (callback, count) {
-        if (!count)count = 20;
-        var id = (this.items.length) ? this.items[this.items.length - 1].data.id : "(0)";
-        var filter = this.filterData || {};
-        this.actions.listSection(this.options.categoryId, function (json) {
-            if( !json.data )json.data = [];
-            if (callback)callback(json);
-        }.bind(this))
-    },
-    _removeDocument: function (documentData, all) {
-        //this.actions.deleteSchedule(documentData.id, function(json){
-        //    this.reload();
-        //    this.app.notice(this.app.lp.deleteDocumentOK, "success");
-        //}.bind(this));
-    },
-    _create: function () {
-
-    },
-    _openDocument: function (documentData) {
-    },
-    _queryCreateViewNode: function () {
-
-    },
-    _postCreateViewNode: function (viewNode) {
-    },
-    _queryCreateViewHead: function () {
-
-    },
-    _postCreateViewHead: function (headNode) {
-
-    }
-
-})
-
-MWF.xApplication.ForumCategory.Main.ImageDocument = new Class({
-    Extends: MWF.xApplication.Template.Explorer.ComplexDocument,
-    mouseoverDocument: function () {
-        //this.node.getElements("[styles='documentItemTitleNode']").setStyles(this.css["documentItemTitleNode_over"]);
-        //this.node.getElements("[styles='documentItemIconNode']").setStyles(this.css["documentItemIconNode_over"]);
-        //this.node.getElements("[styles='documentItemStatNode']").setStyles(this.css["documentItemStatNode_over"]);
-    },
-    mouseoutDocument: function () {
-        //this.node.getElements("[styles='documentItemTitleNode']").setStyles(this.css["documentItemTitleNode"]);
-        //this.node.getElements("[styles='documentItemIconNode']").setStyles(this.css["documentItemIconNode"]);
-        //this.node.getElements("[styles='documentItemStatNode']").setStyles(this.css["documentItemStatNode"]);
-    },
-    _queryCreateDocumentNode: function (itemData) {
-    },
-    _postCreateDocumentNode: function (itemNode, itemData) {
-        var personNode = itemNode.getElements("[item='moderatorNames']")[0];
-        this.app.createPersonNode( personNode, itemData.moderatorNames )
-
-        var _self = this;
-        if( (this.index + 1) % 2 == 0 ){
-            itemNode.setStyle("margin-right" , "0px" );
-        }
-
-        var imageNode = itemNode.getElements("[styles='documentItemLeftImage']")[0];
-        var filterData = {
-            "sectionId": this.data.id,
-            "needPicture" : true
-        }
-        this.actions.listSubjectFilterPage(1, 1,  filterData, function( json ){
-            if( json.data ){
-                var d = json.data[0];
-                this.node.set("title", d.title);
-                this.node.set("src", d.pictureBase64 );
-                this.node.addEvents({
-                    "click": function () {
-                        var appId = "ForumDocument" + this.da.id;
-                        if (_self.app.desktop.apps[appId]) {
-                            _self.app.desktop.apps[appId].setCurrent();
-                        } else {
-                            _self.app.desktop.openApplication(null, "ForumDocument", {
-                                "sectionId": this.da.sectionId,
-                                "id": this.da.id,
-                                "appId": appId,
-                                "isEdited": false,
-                                "isNew": false
-                            });
-                        }
-                    }.bind({da: d})
-                })
-            }
-        }.bind({ node : imageNode }))
-
-        var listNode = itemNode.getElements("[styles='documentItemListNode']")[0];
-        if (listNode) {
-            this._getListData(function (json) {
-                json.data.each(function (d,i) {
-                    var div = new Element("div", {
-                        "styles": this.css.documentItemListItemNode,
-                        "text": d.title,
-                        "title": d.title
-                    }).inject(listNode)
-                    div.addEvents({
-                        "mouseover": function () {
-                            this.node.setStyles(this.obj.css.documentItemListItemNode_over)
-                        }.bind({node: div, obj: this}),
-                        "mouseout": function () {
-                            this.node.setStyles(this.obj.css.documentItemListItemNode)
-                        }.bind({node: div, obj: this}),
-                        "click" : function(){
-                            var appId = "ForumDocument"+this.da.id;
-                            if (this.obj.app.desktop.apps[appId]){
-                                this.obj.app.desktop.apps[appId].setCurrent();
-                            }else {
-                                this.obj.app.desktop.openApplication(null, "ForumDocument", {
-                                    "sectionId" : this.da.sectionId,
-                                    "id" : this.da.id,
-                                    "appId": appId,
-                                    "isEdited" : false,
-                                    "isNew" : false,
-                                    "index" : i
-                                });
-                            }
-                        }.bind({da: d, obj: this})
-                    })
-                }.bind(this))
-            }.bind(this), 6)
-        }
-
-
-    },
-    _getListData: function (callback, count) {
-        if (!count)count = 6;
-        var filterData = {
-            "sectionId": this.data.id
-        }
-        this.actions.listSubjectFilterPage(1, count, filterData, function (json) {
-            if (!json.data)json.data = [];
-            if (callback)callback(json);
-        }.bind(this))
-    },
-    removeCenterWork: function (itemData) {
-        //if(isAdmin){
-        //    return true;
-        //}
-        return false;
-    },
-    openSection : function( el ){
-        var appId = "ForumSection"+ this.data.id;
-        if (this.app.desktop.apps[appId]){
-            this.app.desktop.apps[appId].setCurrent();
-        }else {
-            this.app.desktop.openApplication(el, "ForumSection", {
-                "sectionId": this.data.id,
-                "appId": appId
-            });
-        }
-    }
-})
 
 

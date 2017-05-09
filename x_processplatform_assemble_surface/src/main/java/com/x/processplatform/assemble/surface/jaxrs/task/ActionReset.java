@@ -52,7 +52,7 @@ public class ActionReset extends ActionBase {
 				}
 				emc.commit();
 				wrapIn.setIdentityList(identites);
-				ThisApplication.applications.putQuery(x_processplatform_service_processing.class,
+				ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 						"task/" + URLEncoder.encode(task.getId(), DefaultCharset.name) + "/reset", wrapIn);
 			}
 			WrapOutId wrap = new WrapOutId(task.getWork());

@@ -149,6 +149,11 @@ public class AppCategoryAdmin extends SliceJpaObject {
 	@CheckPersist( allowEmpty = true )
 	private String objectId;
 	
+	@EntityFieldDescribe( "对象名称" )
+	@Column( name="xobjectName",length = JpaObject.length_255B  )
+	@CheckPersist( allowEmpty = true )
+	private String objectName;
+	
 	@EntityFieldDescribe( "管理员UID" )
 	@Column( name="xadminUid",length = JpaObject.length_64B  )
 	@CheckPersist( allowEmpty = true )
@@ -271,6 +276,12 @@ public class AppCategoryAdmin extends SliceJpaObject {
 	 */
 	public void setAdminLevel(String adminLevel) {
 		this.adminLevel = adminLevel;
+	}
+	public String getObjectName() {
+		return objectName;
+	}
+	public void setObjectName(String objectName) {
+		this.objectName = objectName;
 	}
 	
 }

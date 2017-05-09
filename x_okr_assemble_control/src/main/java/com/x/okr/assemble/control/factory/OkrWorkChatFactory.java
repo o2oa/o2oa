@@ -123,7 +123,7 @@ public class OkrWorkChatFactory extends AbstractFactory {
 		sql_stringBuffer.append( "SELECT o FROM "+OkrWorkChat.class.getCanonicalName()+" o where 1=1" );
 
 		if ((null != sequence) ) {
-			sql_stringBuffer.append( " and o."+wrapIn.getSequenceField()+" " + (StringUtils.equalsIgnoreCase(order, "DESC" ) ? "<" : ">" ) + ( " ?" + (index)));
+			sql_stringBuffer.append( " and o."+ wrapIn.getSequenceField() +" " + (StringUtils.equalsIgnoreCase(order, "DESC" ) ? "<" : ">" ) + ( " ?" + (index)));
 			vs.add(sequence);
 			index++;
 		}
@@ -165,10 +165,10 @@ public class OkrWorkChatFactory extends AbstractFactory {
 			order = "DESC";
 		}
 		
-		sql_stringBuffer.append( "SELECT o FROM "+OkrWorkChat.class.getCanonicalName()+" o where 1=1" );
+		sql_stringBuffer.append( "SELECT o FROM "+ OkrWorkChat.class.getCanonicalName() +" o where 1=1" );
 
 		if ((null != sequence) ) {
-			sql_stringBuffer.append( " and o."+wrapIn.getSequenceField()+" " + (StringUtils.equalsIgnoreCase(order, "DESC" ) ? "<" : ">" ) + ( " ?" + (index)));
+			sql_stringBuffer.append( " and o."+wrapIn.getSequenceField()+" " + (StringUtils.equalsIgnoreCase(order, "DESC" ) ? ">" : "<" ) + ( " ?" + (index)));
 			vs.add(sequence);
 			index++;
 		}
@@ -218,5 +218,81 @@ public class OkrWorkChatFactory extends AbstractFactory {
 			query.setParameter(i + 1, vs.get(i));
 		}		
 		return (Long) query.getSingleResult();
+	}
+	/**
+	 * 查询工作交流信息发送者身份列表（去重复）
+	 * @param identities_ok 排除身份
+	 * @param identities_error 排除身份
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<String> listAllDistinctSenderIdentity(List<String> identities_ok, List<String> identities_error) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrWorkChat.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<OkrWorkChat> root = cq.from(OkrWorkChat.class);
+		
+		Predicate p = cb.isNotNull( root.get( OkrWorkChat_.id ) );
+		if( identities_ok != null && identities_ok.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkChat_.senderIdentity ).in( identities_ok )) );
+		}
+		if( identities_error != null && identities_error.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkChat_.senderIdentity ).in( identities_error )) );
+		}
+		cq.distinct(true).select(root.get( OkrWorkChat_.senderIdentity ));
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+	/**
+	 * 查询工作交流信息接收者身份列表（去重复）
+	 * @param identities_ok 排除身份
+	 * @param identities_error 排除身份
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<String> listAllDistinctTargetIdentity(List<String> identities_ok, List<String> identities_error) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrWorkChat.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<OkrWorkChat> root = cq.from(OkrWorkChat.class);
+		
+		Predicate p = cb.isNotNull( root.get( OkrWorkChat_.id ) );
+		if( identities_ok != null && identities_ok.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkChat_.targetIdentity ).in( identities_ok )) );
+		}
+		if( identities_error != null && identities_error.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkChat_.targetIdentity ).in( identities_error )) );
+		}
+		cq.distinct(true).select(root.get( OkrWorkChat_.targetIdentity ));
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+	/**
+	 * 根据身份名称，从具体工作交流信息中查询与该身份有关的所有信息列表
+	 * @param identity
+	 * @param recordId 
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<OkrWorkChat> listErrorIdentitiesInWorkChat(String identity, String recordId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrWorkChat.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<OkrWorkChat> cq = cb.createQuery( OkrWorkChat.class );
+		Root<OkrWorkChat> root = cq.from( OkrWorkChat.class );
+		Predicate p = cb.isNotNull(root.get( OkrWorkChat_.id ));
+		
+		if( recordId != null && !recordId.isEmpty() && !"all".equals( recordId ) ){
+			p = cb.and( p, cb.equal( root.get( OkrWorkChat_.id ), recordId ) );
+		}
+		
+		Predicate p_targetIdentity = cb.isNotNull(root.get( OkrWorkChat_.targetIdentity ));
+		p_targetIdentity = cb.and( p_targetIdentity, cb.equal( root.get( OkrWorkChat_.targetIdentity ), identity ) );
+		
+		Predicate p_senderIdentity = cb.isNotNull(root.get( OkrWorkChat_.senderIdentity ));
+		p_senderIdentity = cb.and( p_senderIdentity, cb.equal( root.get( OkrWorkChat_.senderIdentity ), identity ) );
+		
+		Predicate p_identity = cb.or( p_targetIdentity, p_senderIdentity );
+		
+		p = cb.and( p, p_identity );
+		
+		return em.createQuery(cq.where(p)).getResultList();
 	}
 }

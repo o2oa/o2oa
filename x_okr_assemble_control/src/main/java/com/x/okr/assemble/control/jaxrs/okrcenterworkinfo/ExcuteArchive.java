@@ -9,6 +9,10 @@ import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.CenterWorkArchiveException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.CenterWorkIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.CenterWorkQueryByIdException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.UserNoLoginException;
 import com.x.okr.assemble.control.service.OkrCenterWorkOperationService;
 import com.x.okr.entity.OkrCenterWorkInfo;
 
@@ -26,7 +30,7 @@ public class ExcuteArchive extends ExcuteBase {
 			check = false;
 			Exception exception = new CenterWorkIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			okrUserCache = checkUserLogin( effectivePerson.getName() );
@@ -34,17 +38,17 @@ public class ExcuteArchive extends ExcuteBase {
 				check = false;
 				Exception exception = new UserNoLoginException( effectivePerson.getName() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
 			try {
 				okrCenterWorkInfo = okrCenterWorkQueryService.get( id );
-			} catch (Throwable th) {
+			} catch (Exception e) {
 				check = false;
-				Exception exception = new CenterWorkQueryByIdException( th, id );
+				Exception exception = new CenterWorkQueryByIdException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -79,7 +83,7 @@ public class ExcuteArchive extends ExcuteBase {
 			}catch(Exception e){
 				Exception exception = new CenterWorkArchiveException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

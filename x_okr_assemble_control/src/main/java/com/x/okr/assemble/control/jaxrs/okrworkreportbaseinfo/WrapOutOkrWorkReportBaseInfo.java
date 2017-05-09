@@ -21,6 +21,8 @@ public class WrapOutOkrWorkReportBaseInfo extends OkrWorkReportBaseInfo{
 	
 	private Boolean isCreator = false;
 	
+	private Boolean needReportProgress = false;
+	
 	/**
 	 * 管理员督办信息
 	 */
@@ -135,6 +137,14 @@ public class WrapOutOkrWorkReportBaseInfo extends OkrWorkReportBaseInfo{
 
 	public void setWorkInfo(WrapOutOkrWorkBaseInfo workInfo) {
 		this.workInfo = workInfo;
+	}
+
+	public Boolean getNeedReportProgress() {
+		return needReportProgress;
+	}
+
+	public void setNeedReportProgress(Boolean needReportProgress) {
+		this.needReportProgress = needReportProgress;
 	}
 	
 }

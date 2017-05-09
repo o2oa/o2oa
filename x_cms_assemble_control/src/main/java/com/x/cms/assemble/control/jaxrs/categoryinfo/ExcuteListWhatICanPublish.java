@@ -1,6 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.categoryinfo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +11,8 @@ import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.SortTools;
 import com.x.cms.assemble.control.WrapTools;
+import com.x.cms.assemble.control.jaxrs.categoryinfo.exception.CategoryInfoAppIdEmptyException;
+import com.x.cms.assemble.control.jaxrs.categoryinfo.exception.CategoryInfoProcessException;
 import com.x.cms.core.entity.CategoryInfo;
 
 import net.sf.ehcache.Element;
@@ -43,7 +44,7 @@ public class ExcuteListWhatICanPublish extends ExcuteBase {
 				isXAdmin = effectivePerson.isManager();
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new UserManagerCheckException( e, effectivePerson.getName() );
+				Exception exception = new CategoryInfoProcessException( e, "系统在检查用户是否是平台管理员时发生异常。Name:" + effectivePerson.getName() );
 				result.error( exception );
 				logger.error( e, effectivePerson, request, null);
 			}
@@ -57,7 +58,7 @@ public class ExcuteListWhatICanPublish extends ExcuteBase {
 				}
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new UserManagerCheckException( e, effectivePerson.getName() );
+				Exception exception = new CategoryInfoProcessException( e, "系统在检查用户是否是平台管理员时发生异常。Name:" + effectivePerson.getName() );
 				result.error( exception );
 				logger.error( e, effectivePerson, request, null);
 			}
@@ -71,13 +72,13 @@ public class ExcuteListWhatICanPublish extends ExcuteBase {
 				}
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new UserManagerCheckException( e, effectivePerson.getName() );
+				Exception exception = new CategoryInfoProcessException( e, "系统在检查用户是否是平台管理员时发生异常。Name:" + effectivePerson.getName() );
 				result.error( exception );
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
-		String cacheKey = ApplicationCache.concreteCacheKey( "publish", effectivePerson.getName(), appId, isXAdmin, appManager, appPublisher );
+		String cacheKey = ApplicationCache.concreteCacheKey( effectivePerson.getName(), appId, "publish", isXAdmin, appManager, appPublisher );
 		Element element = cache.get(cacheKey);
 		
 		if ((null != element) && ( null != element.getObjectValue()) ) {
@@ -90,60 +91,20 @@ public class ExcuteListWhatICanPublish extends ExcuteBase {
 						ids = categoryInfoServiceAdv.listByAppId( appId );
 					} catch (Exception e) {
 						check = false;
-						Exception exception = new CategoryInfoListByAppIdException( e, appId );
+						Exception exception = new CategoryInfoProcessException( e, "根据应用栏目ID查询分类信息对象时发生异常。AppId:" + appId );
 						result.error( exception );
 						logger.error( e, effectivePerson, request, null);
 					}
 				}else{
-					ids = new ArrayList<>();
-					
-					//登录者可以管理的分类
-					if( check ){//判断用户是否该栏目的管理者
+					if( check ){
 						try {
-							ids_tmp = appCategoryAdminServiceAdv.listAppCategoryIdByCondition( "CATEGORY" , null, effectivePerson.getName() );
-							for( String id : ids_tmp ){
-								if( !ids.contains( id ) ){
-									ids.add( id );
-								}
-							}
+							ids = categoryInfoServiceAdv.listPublishByAppIdAndUserPermission( appId, effectivePerson.getName(), "PUBLISH" );
 						} catch (Exception e) {
 							check = false;
-							Exception exception = new UserManagerCheckException( e, effectivePerson.getName() );
+							Exception exception = new CategoryInfoProcessException( e, "系统在检查用户是否是平台管理员时发生异常。Name:" + effectivePerson.getName() );
 							result.error( exception );
 							logger.error( e, effectivePerson, request, null);
 						}
-					}
-					
-					//登录者可以发布的分类
-					if( check ){//判断用户是否该栏目的发布者
-						try {
-							ids_tmp = appCategoryPermissionServiceAdv.listAppCategoryIdByCondition( "CATEGORY", null, effectivePerson.getName(), "PUBLISH" );
-							for( String id : ids_tmp ){
-								if( !ids.contains( id ) ){
-									ids.add( id );
-								}
-							}
-						} catch (Exception e) {
-							check = false;
-							Exception exception = new UserManagerCheckException( e, effectivePerson.getName() );
-							result.error( exception );
-							logger.error( e, effectivePerson, request, null);
-						}
-					}
-					
-					//登录者可以发布的分类, 需要按部门角色等进行搜索
-					try {
-						ids_tmp = categoryInfoServiceAdv.listViewableByAppIdAndUserPermission( appId, effectivePerson.getName(), "PUBLISH" );
-						for( String id : ids_tmp ){
-							if( !ids.contains( id ) ){
-								ids.add( id );
-							}
-						}
-					} catch (Exception e) {
-						check = false;
-						Exception exception = new CategoryInfoListViewableInPermissionException( e, effectivePerson.getName() );
-						result.error( exception );
-						logger.error( e, effectivePerson, request, null);
 					}
 				}
 			}
@@ -154,7 +115,7 @@ public class ExcuteListWhatICanPublish extends ExcuteBase {
 						categoryInfoList = categoryInfoServiceAdv.list( ids );
 					} catch (Exception e) {
 						check = false;
-						Exception exception = new CategoryInfoListByIdsException( e );
+						Exception exception = new CategoryInfoProcessException( e, "根据ID列表查询分类信息对象时发生异常。" );
 						result.error( exception );
 						logger.error( e, effectivePerson, request, null);
 					}
@@ -169,7 +130,7 @@ public class ExcuteListWhatICanPublish extends ExcuteBase {
 						result.setData(wraps);		
 					} catch (Exception e) {
 						check = false;
-						Exception exception = new CategoryInfoWrapOutException( e );
+						Exception exception = new CategoryInfoProcessException( e, "将查询出来的分类信息对象转换为可输出的数据信息时发生异常。" );
 						result.error( exception );
 						logger.error( e, effectivePerson, request, null);
 					}

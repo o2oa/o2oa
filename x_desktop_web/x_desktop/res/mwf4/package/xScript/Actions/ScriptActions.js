@@ -16,7 +16,7 @@ MWF.xScript.Actions.ScriptActions = new Class({
     },
     getScript: function(id, success, failure, async){
         this.action.invoke({"name": "getScript","async": async, "parameter": {"id": id},	"success": success,	"failure": failure});
-    },
+    }
 
     //getScriptTextDepend: function(id, text, included, success, failure){
     //    if (included.indexOf(id)==-1){

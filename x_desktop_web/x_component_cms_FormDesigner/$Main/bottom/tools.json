@@ -117,9 +117,14 @@
     "text": "HTML编辑器",
     "className": "Htmleditor"
   },
-  "office": {
-    "icon": "office.png",
-    "text": "Office控件",
-    "className": "Office"
+  "log": {
+    "icon": "log.png",
+    "text": "阅读记录",
+    "className": "Log"
   }
+//  "office": {
+//    "icon": "office.png",
+//    "text": "Office控件",
+//    "className": "Office"
+//  }
 }

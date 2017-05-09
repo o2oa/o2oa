@@ -50,7 +50,7 @@ public class DownloadServlet extends AbstractServletAction {
 				business.meetingReadAvailable(effectivePerson, meeting, ExceptionWhen.not_allow);
 				OutputStream output = response.getOutputStream();
 				this.setResponseHeader(response, stream, attachment);
-				StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class,
+				StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 						attachment.getStorage());
 				attachment.readContent(mapping, output);
 			}

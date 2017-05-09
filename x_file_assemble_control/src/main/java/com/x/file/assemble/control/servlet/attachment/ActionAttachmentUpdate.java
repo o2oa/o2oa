@@ -42,7 +42,7 @@ public class ActionAttachmentUpdate extends AbstractServletAction {
 		WrapOutId wrap = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			this.setCharacterEncoding(request, response);
-			if (this.isMultipartContent(request)) {
+			if (!this.isMultipartContent(request)) {
 				throw new Exception("not multi part request.");
 			}
 			EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -61,16 +61,20 @@ public class ActionAttachmentUpdate extends AbstractServletAction {
 					if (item.isFormField()) {
 						/* ignore */
 					} else {
-						StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class,
+						StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 								attachment.getStorage());
+						if (null == mapping) {
+							throw new StorageMappingNotExistedException(attachment.getStorage());
+						}
 						attachment.setLastUpdatePerson(effectivePerson.getName());
-						String extension = FilenameUtils.getExtension(item.getName());
 						/** 禁止不带扩展名的文件上传 */
 						if (StringUtils.isEmpty(FilenameUtils.getExtension(item.getName()))) {
 							throw new EmptyExtensionException(item.getName());
 						}
-						if (!Objects.equals(StringUtils.lowerCase(extension), attachment.getExtension())) {
-							throw new ExtensionNotMatchException(item.getName());
+						/** 不允许不同的扩展名上传 */
+						if (!Objects.equals(StringUtils.lowerCase(FilenameUtils.getExtension(item.getName())),
+								attachment.getExtension())) {
+							throw new ExtensionNotMatchException(item.getName(), attachment.getExtension());
 						}
 						emc.beginTransaction(Attachment.class);
 						attachment.updateContent(mapping, input);

@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.x.base.core.http.annotation.Wrap;
-import com.x.cms.core.entity.DocumentPermission;
 import com.x.cms.core.entity.DocumentViewRecord;
 
 @Wrap( DocumentViewRecord.class )
-public class WrapOutDocumentViewRecord extends DocumentPermission{
+public class WrapOutDocumentViewRecord extends DocumentViewRecord{
 	
 	private static final long serialVersionUID = -5076990764713538973L;
 	

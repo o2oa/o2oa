@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.utils.DateRange;
 import com.x.base.core.utils.DateTools;
 

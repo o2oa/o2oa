@@ -8,6 +8,12 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.cms.assemble.control.jaxrs.appcategoryadmin.exception.AppCategoryAdminLevelEmptyException;
+import com.x.cms.assemble.control.jaxrs.appcategoryadmin.exception.AppCategoryAdminNameEmptyException;
+import com.x.cms.assemble.control.jaxrs.appcategoryadmin.exception.AppCategoryAdminObjectIdEmptyException;
+import com.x.cms.assemble.control.jaxrs.appcategoryadmin.exception.AppCategoryAdminObjectTypeNotInvalidException;
+import com.x.cms.assemble.control.jaxrs.appcategoryadmin.exception.AppCategoryAdminProcessException;
+import com.x.cms.assemble.control.jaxrs.appcategoryadmin.exception.AppInfoNotExistsException;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.AppCategoryAdmin;
 import com.x.cms.core.entity.AppInfo;
@@ -27,7 +33,6 @@ public class ExcuteSave extends ExcuteBase {
 				check = false;
 				Exception exception = new AppCategoryAdminObjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -35,7 +40,12 @@ public class ExcuteSave extends ExcuteBase {
 				check = false;
 				Exception exception = new AppCategoryAdminObjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+			}else{
+				if( !"APPINFO".equals( wrapIn.getObjectType()) && !"CATEGORY".equals( wrapIn.getObjectType()) ){
+					check = false;
+					Exception exception = new AppCategoryAdminObjectTypeNotInvalidException( wrapIn.getObjectType() );
+					result.error( exception );
+				}
 			}
 		}
 		if( check ){
@@ -43,7 +53,6 @@ public class ExcuteSave extends ExcuteBase {
 				check = false;
 				Exception exception = new AppCategoryAdminNameEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -51,21 +60,36 @@ public class ExcuteSave extends ExcuteBase {
 				check = false;
 				Exception exception = new AppCategoryAdminLevelEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
 			try {
+				String description = null;
 				wrapIn.setCreatorUid( effectivePerson.getName() );
-				wrapIn.setDescription( "管理员主动修改管理者" );
-				appCategoryAdmin = appCategoryAdminServiceAdv.save( wrapIn, effectivePerson );
 				
-				String description = appCategoryAdmin.getObjectType() + "-" + appCategoryAdmin.getObjectId() + "-" + appCategoryAdmin.getAdminName();
-				if( "APPINFO".equals( appCategoryAdmin.getObjectType() ) ){
-					new LogService().log( null,  effectivePerson.getName(), description, appCategoryAdmin.getObjectId(), "", "", appCategoryAdmin.getId(), "APPCATEGORYADMIN", "保存" );
-				}else{
-					new LogService().log( null,  effectivePerson.getName(), description, "", appCategoryAdmin.getObjectId(), "", appCategoryAdmin.getId(), "APPCATEGORYADMIN", "保存" );
+				if( "APPINFO".equals( wrapIn.getObjectType() ) ){
+					//检查appInfo对象是否存在
+					AppInfo appInfo = appInfoServiceAdv.get( wrapIn.getObjectId() );
+					if( appInfo != null ){
+						wrapIn.setObjectName( appInfo.getAppName() );
+					}else{
+						check = false;
+						Exception exception = new AppInfoNotExistsException( wrapIn.getObjectId() );
+						result.error( exception );
+					}
+				}else if( "CATEGORY".equals( wrapIn.getObjectType() ) ){
+					CategoryInfo category = categoryInfoServiceAdv.get( wrapIn.getObjectId() );
+					if( category != null ){
+						wrapIn.setObjectName( category.getAppName() );
+					}else{
+						check = false;
+						Exception exception = new AppInfoNotExistsException( wrapIn.getObjectId() );
+						result.error( exception );
+					}
 				}
+				appCategoryAdmin = appCategoryAdminServiceAdv.save( wrapIn, effectivePerson );
+				description = appCategoryAdmin.getObjectType() + "-" + appCategoryAdmin.getObjectId() + "-" + appCategoryAdmin.getAdminName();
+				new LogService().log( null,  effectivePerson.getName(), description, appCategoryAdmin.getObjectId(), "", "", appCategoryAdmin.getId(), "APPCATEGORYADMIN", "保存" );
 				
 				ApplicationCache.notify( AppInfo.class );
 				ApplicationCache.notify( CategoryInfo.class );
@@ -73,9 +97,9 @@ public class ExcuteSave extends ExcuteBase {
 				result.setData( new WrapOutId( appCategoryAdmin.getId() ) );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new AppCategoryAdminSaveException( e );
+				Exception exception = new AppCategoryAdminProcessException( e, "应用栏目分类管理员配置信息保存时发生异常。" );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

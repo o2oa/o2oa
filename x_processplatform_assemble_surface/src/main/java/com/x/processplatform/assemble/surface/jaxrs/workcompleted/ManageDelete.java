@@ -30,10 +30,12 @@ class ManageDelete extends ActionBase {
 			}
 			Process process = business.process().pick(workCompleted.getProcess());
 			if (!business.process().allowControl(effectivePerson, process)) {
-				throw new ProcessAccessDeniedException(effectivePerson.getName(),  workCompleted.getProcess());
+				throw new ProcessAccessDeniedException(effectivePerson.getName(), workCompleted.getProcess());
 			}
-			List<WrapOutId> wraps = ThisApplication.applications.deleteQuery(x_processplatform_service_processing.class,
-					"job/" + URLEncoder.encode(workCompleted.getJob(), DefaultCharset.name), WrapOutId.collectionType);
+			List<WrapOutId> wraps = ThisApplication.context().applications()
+					.deleteQuery(x_processplatform_service_processing.class,
+							"job/" + URLEncoder.encode(workCompleted.getJob(), DefaultCharset.name))
+					.getDataAsList(WrapOutId.class);
 			result.setData(wraps);
 			return result;
 		}

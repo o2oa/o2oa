@@ -15,7 +15,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -23,10 +22,11 @@ import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.project.x_processplatform_service_processing;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Service;
@@ -66,7 +66,7 @@ public class ServiceAction extends StandardJaxrsAction {
 				emc.persist(serviceValue, CheckPersistType.all);
 				emc.commit();
 			}
-			ThisApplication.applications.putQuery(x_processplatform_service_processing.class,
+			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 					"work/" + URLEncoder.encode(workId, "UTF-8") + "/processing", null);
 			wrap = new WrapOutId(workId);
 			result.setData(wrap);
@@ -107,7 +107,7 @@ public class ServiceAction extends StandardJaxrsAction {
 				emc.persist(serviceValue, CheckPersistType.all);
 				emc.commit();
 			}
-			ThisApplication.applications.putQuery(x_processplatform_service_processing.class,
+			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 					"work/" + URLEncoder.encode(workId, "UTF-8") + "/processing", null);
 			wrap = new WrapOutId(workId);
 			result.setData(wrap);

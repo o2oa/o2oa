@@ -1,14 +1,20 @@
 package com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
-
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.SystemConfigQueryByCodeException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.UserNoLoginException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkQueryByIdException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkReportQueryByIdException;
 import com.x.okr.entity.OkrWorkBaseInfo;
 import com.x.okr.entity.OkrWorkReportBaseInfo;
 
@@ -30,14 +36,13 @@ public class ExcuteSave extends ExcuteBase {
 			check = false;
 			Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check && okrUserCache == null ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
 		}
 		if( check &&  wrapIn == null ){
 			check = false;
@@ -51,7 +56,7 @@ public class ExcuteSave extends ExcuteBase {
 				check = false;
 				Exception exception = new SystemConfigQueryByCodeException( e, "REPORT_SUPERVISOR" );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -62,19 +67,17 @@ public class ExcuteSave extends ExcuteBase {
 						check = false;
 						Exception exception = new WorkNotExistsException( wrapIn.getWorkId() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
 					}
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new WorkQueryByIdException( e, wrapIn.getWorkId() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}else{
 				check = false;
 				Exception exception = new WorkIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);	
 			}
 		}
 		//对wrapIn里的信息进行校验		
@@ -86,7 +89,7 @@ public class ExcuteSave extends ExcuteBase {
 				check = false;
 				Exception exception = new WorkReportQueryByIdException( e, wrapIn.getId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){

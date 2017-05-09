@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>x_organization_assemble_control_jest</title>
+<script src="./jquery.js"></script>
+<script src="./common.js"></script>
+<script src="./output.js"></script>
+<script src="./inputPerson.js"></script>
+<script src="./person.js"></script>
+<script src="./company.js"></script>
+<script src="./identity.js"></script>
+<script src="./complex.js"></script>
+<script src="./loginRecord.js"></script>
+<script>
+    $(document).ready(function() {
+	//	company_list_reload();
+    });
+</script>
+</head>
+
+<body style="font-size: 12px; font-family: Microsoft Yahei; margin: 0px">
+	<table style="width: 1800px; margin: 0 auto">
+		<tr>
+			<td style="width: 350px;" valign="top">
+				<fieldset>
+					<legend>Menu</legend>
+					<ul>
+						<li>Company
+							<ul>
+								<li><a onclick="company_list_next('(0)')" href="#">List</a></li>
+								<li><a onclick="company_create()" href="#">Create</a></li>
+								<li><a onclick="company_list_top()" href="#">List Top</a></li>
+								<li><a onclick="company_query_init()" href="#">Query</a></li>
+								<li>Company Attribute
+									<ul>
+										<li><a onclick="companyAttribute_list_next('(0)')"
+											href="#">List</a></li>
+										<li><a onclick="companyAttribute_create()" href="#">Create</a>
+										</li>
+										<li><a onclick="companyAttribute_query_init()" href="#">Query</a>
+										</li>
+									</ul>
+								</li>
+								<li>Company Duty
+									<ul>
+										<li><a onclick="companyDuty_list_next('(0)')" href="#">List</a>
+										</li>
+										<li><a onclick="companyDuty_create()" href="#">Create</a></li>
+										<li><a onclick="companyDuty_query_init()" href="#">Query</a>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+						<li>Department
+							<ul>
+								<li><a onclick="department_list_next('(0)')" href="#">List</a>
+								</li>
+								<li><a onclick="department_create()" href="#">Create</a></li>
+								<li><a onclick="department_query_init()" href="#">Query</a></li>
+								<li>Department Attribute
+									<ul>
+										<li><a onclick="departmentAttribute_list_next('(0)')"
+											href="#">List</a></li>
+										<li><a onclick="departmentAttribute_create()" href="#">Create</a>
+										</li>
+										<li><a onclick="departmentAttribute_query_init()"
+											href="#">Query</a></li>
+									</ul>
+								</li>
+								<li>Department Duty
+									<ul>
+										<li><a onclick="departmentDuty_list_next('(0)')" href="#">List</a>
+										</li>
+										<li><a onclick="departmentDuty_create()" href="#">Create</a>
+										</li>
+										<li><a onclick="departmentDuty_query_init()" href="#">Query</a>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+						<li>Person
+							<ul>
+								<li><a onclick="person_list_next('(0)')" href="#">List</a></li>
+								<li><a onclick="person_create()" href="#">Create</a></li>
+								<li><a onclick="person_icon_init()" href="#">Icon</a></li>
+								<li><a onclick="person_query_init()" href="#">Query</a></li>
+								<li><a onclick="person_setPassword_select()" href="#">Set
+										Password</a></li>
+								<li>Person Attribute
+									<ul>
+										<li><a onclick="personAttribute_list_next('(0)')"
+											href="#">List</a></li>
+										<li><a onclick="personAttribute_create()" href="#">Create</a>
+										</li>
+										<li><a onclick="personAttribute_query_init()" href="#">Query</a>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+
+						<li>Identity
+							<ul>
+								<li><a onclick="identity_list_next('(0)')" href="#">List</a>
+								</li>
+								<li><a onclick="identity_create()" href="#">Create</a></li>
+								<li><a onclick="identity_query_init()" href="#">Query</a></li>
+								<li><a
+									onclick="identity_query_likeWithSubCompanySubDepartment_init()"
+									href="#">Like In Range</a></li>
+							</ul>
+						</li>
+						<li>Group
+							<ul>
+								<li><a onclick="group_list_next('(0)')" href="#">List</a></li>
+								<li><a onclick="group_create()" href="#">Create</a></li>
+								<li><a onclick="group_query_init()" href="#">Query</a></li>
+							</ul>
+						</li>
+						<li>Role
+							<ul>
+								<li><a onclick="role_list_next('(0)')" href="#">List</a></li>
+								<li><a onclick="role_create()" href="#">Create</a></li>
+								<li><a onclick="role_query_init()" href="#">Query</a></li>
+							</ul>
+						</li>
+						<li>LoginRecord
+							<ul>
+								<li><a onclick="loginRecord_init()" href="#">Init</a></li>
+							</ul>
+						</li>
+						<li>Complex
+							<ul>
+								<li><a onclick="complex_query_init ()" href="#">Query</a></li>
+							</ul>
+						</li>
+						<li>Output
+							<ul>
+								<li><a onclick="output_get()" href="#">Get</a></li>
+							</ul>
+						</li>
+						<li>InputPerson
+							<ul>
+								<li><a onclick="inputPerson_init()" href="#">Init</a></li>
+								<li><a onclick="inputPerson_template()" href="#">Template</a></li>
+							</ul>
+						</li>
+						<li>Logger
+							<ul>
+								<li><a onclick="logger_init()" href="#">Logger</a></li>
+							</ul>
+						</li>
+					</ul>
+				</fieldset>
+			</td>
+			<td valign="top">
+				<fieldset>
+					<legend>Content</legend>
+					<div id="content"
+						style="white-space: pre; font-size: 12px; word-break: break-all; word-wrap: break-word">&nbsp;</div>
+				</fieldset>
+				<fieldset>
+					<legend>Result</legend>
+					<div id="result"
+						style="white-space: pre; font-size: 12px; word-break: break-all; word-wrap: break-word">&nbsp;</div>
+				</fieldset>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

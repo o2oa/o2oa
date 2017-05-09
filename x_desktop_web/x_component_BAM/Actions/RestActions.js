@@ -287,7 +287,6 @@ MWF.xApplication.BAM.Actions.RestActions = new Class({
         //var departmentName = depat || "(0)";
         //var personName = person || "(0)";
         var parameter;
-        debugger;
         if (sort.type=="activity" || sort.type=="application" || sort.type=="process"){
             parameter = {
                 "companyName": filter.company || "(0)",

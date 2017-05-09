@@ -10,6 +10,9 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.CenterWorkWrapOutException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.UserNoLoginException;
 import com.x.okr.entity.OkrCenterWorkInfo;
 
 public class ExcuteListPrevWithFilter extends ExcuteBase {
@@ -31,14 +34,14 @@ public class ExcuteListPrevWithFilter extends ExcuteBase {
 			check = false;
 			Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}		
 		
 		if( check && ( okrUserCache == null || okrUserCache.getLoginIdentityName() == null ) ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		// 对wrapIn里的信息进行校验
 		if (check && okrUserCache.getLoginUserOrganizationName() == null) {
@@ -81,10 +84,10 @@ public class ExcuteListPrevWithFilter extends ExcuteBase {
 			if( okrCenterWorkInfoList != null && !okrCenterWorkInfoList.isEmpty() ){
 				try{
 					wraps = wrapout_view_copier.copy( okrCenterWorkInfoList );
-				}catch(Throwable th){
-					Exception exception = new CenterWorkWrapOutException( th );
+				}catch(Exception e){
+					Exception exception = new CenterWorkWrapOutException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}	

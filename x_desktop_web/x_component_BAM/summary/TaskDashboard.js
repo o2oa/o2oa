@@ -86,7 +86,6 @@ MWF.xApplication.BAM.summary.TaskDashboard.TaskChart = new Class({
         }.bind(this));
     },
     proportion: function(){
-        debugger;
         switch (this.status){
             case "dashboard":
                 this.status = "proportion";

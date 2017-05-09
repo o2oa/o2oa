@@ -1,17 +1,17 @@
 package com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.LeaderOpinionSubmitException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.UserNoLoginException;
 import com.x.okr.entity.OkrWorkReportBaseInfo;
-import com.x.organization.core.express.wrap.WrapPerson;
 
 public class ExcuteSubmitLeaderOpinion extends ExcuteBase {
 
@@ -19,29 +19,24 @@ public class ExcuteSubmitLeaderOpinion extends ExcuteBase {
 
 	protected ActionResult<WrapOutId> execute( HttpServletRequest request,EffectivePerson effectivePerson, OkrWorkReportBaseInfo okrWorkReportBaseInfo, String opinion ) throws Exception {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		List<String> ids = null;
-		String reportor_audit_notice = null;
-		WrapPerson report_supervisor = null;
-		String report_supervisorIdentity = null; //督办员身份
-		String report_supervisorName = null; //督办员身份
-		String report_supervisorOrgName = null; //督办员身份
-		String report_supervisorCompanyName = null; //督办员身份
-		boolean check = true;
+		Boolean check = true;
 		OkrUserCache  okrUserCache  = null;
+		String report_progress = "CLOSE";
+		
 		try {
 			okrUserCache = okrUserInfoService.getOkrUserCacheWithPersonName( effectivePerson.getName() );
 		}catch(Exception e){
 			check = false;
 			Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check && okrUserCache == null ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		
 		if ( check ) {
@@ -52,73 +47,35 @@ public class ExcuteSubmitLeaderOpinion extends ExcuteBase {
 		
 		if( check ){
 			try {
-				reportor_audit_notice = okrConfigSystemService.getValueWithConfigCode( "REPORTOR_AUDIT_NOTICE" );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SystemConfigQueryByCodeException( e, "REPORTOR_AUDIT_NOTICE" );
-				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
-			}
-		}
-		
-		if( check ){
-			try {
-				report_supervisorIdentity = okrConfigSystemService.getValueWithConfigCode( "REPORT_SUPERVISOR" );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SystemConfigQueryByCodeException( e, "REPORT_SUPERVISOR" );
-				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
-			}
-		}
-		
-		if( check ){
-			try {
 				okrWorkReportFlowService.leaderProcess( okrWorkReportBaseInfo, opinion, okrUserCache.getLoginIdentityName() );
 				result.setData( new WrapOutId( okrWorkReportBaseInfo.getId() ) );
-				//是否每个环节都通知汇报人阅知
-				if( "OPEN".equalsIgnoreCase( reportor_audit_notice )){
-					//1、查询汇报人是否存在该汇报的待阅信息，如果有则不需要发送， 如果汇报都暂无该汇报的待阅信息，那么，发送一条待阅信息
-					ids = okrTaskService.listIdsByTargetActivityAndObjId( "汇报确认", okrWorkReportBaseInfo.getId(), "汇报确认", okrWorkReportBaseInfo.getReporterIdentity() );
-					if( ids == null || ids.isEmpty() ){
-						okrWorkReportFlowService.addReportConfirmReader(  okrWorkReportBaseInfo, 
-								okrWorkReportBaseInfo.getReporterIdentity() ,
-								okrWorkReportBaseInfo.getReporterName(), 
-								okrWorkReportBaseInfo.getReporterOrganizationName(), 
-								okrWorkReportBaseInfo.getReporterCompanyName());
-					}
-					
-					//看看流程是否过督办员审核
-					if( okrWorkReportBaseInfo.getReportWorkflowType() != null && "ADMIN_AND_ALLLEADER".equalsIgnoreCase( okrWorkReportBaseInfo.getReportWorkflowType())){
-						if( report_supervisorIdentity != null && !report_supervisorIdentity.isEmpty() ){
-							ids = okrTaskService.listIdsByTargetActivityAndObjId( "汇报确认", okrWorkReportBaseInfo.getId(), "汇报确认", report_supervisorIdentity );
-							//如果督办员没有该汇报的待办待阅，则给督办员发送待阅
-							if( ids == null || ids.isEmpty() ){
-								report_supervisor = okrUserManagerService.getUserByIdentity( report_supervisorIdentity );
-								if( report_supervisor != null ){
-									report_supervisorName = report_supervisor.getName();
-									report_supervisorOrgName = okrUserManagerService.getDepartmentNameByIdentity( report_supervisorIdentity );
-									report_supervisorCompanyName = okrUserManagerService.getCompanyNameByIdentity( report_supervisorIdentity );
-									
-									ids = okrTaskService.listIdsByTargetActivityAndObjId( "汇报确认", okrWorkReportBaseInfo.getId(), "汇报确认", report_supervisorIdentity );
-									if( ids == null || ids.isEmpty() ){
-										okrWorkReportFlowService.addReportConfirmReader(  okrWorkReportBaseInfo, 
-												report_supervisorIdentity ,
-												report_supervisorName, 
-												report_supervisorOrgName, 
-												report_supervisorCompanyName
-										);
-									}
-								}
-							}
-						}
-					}
-				}
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new LeaderOpinionSubmitException( e, okrWorkReportBaseInfo.getId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		if( check ){
+			try {
+				//是否汇报工作的进展进度数字
+				report_progress = okrConfigSystemService.getValueWithConfigCode( "REPORT_PROGRESS" );
+				if( report_progress == null || report_progress.isEmpty() ){
+					report_progress = "CLOSE";
+				}
+			} catch (Exception e) {
+				report_progress = "CLOSE";
+				logger.warn( "system get config got an exception." );
+				logger.error(e);
+			}
+		}
+		if( check ){
+			try {
+				okrWorkBaseInfoService.analyseWorkProgress( okrWorkReportBaseInfo.getWorkId(), report_progress, dateOperation.getNowDateTime() );
+			} catch (Exception e ) {
+				logger.warn( "system analyse work progres got an exceptin.", e );
+				result.error( e );
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

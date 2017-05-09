@@ -2,17 +2,11 @@ package com.x.bbs.assemble.control.service;
 
 import java.util.List;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.entity.annotation.CheckRemoveType;
-import com.x.bbs.assemble.control.Business;
-import com.x.bbs.entity.BBSRoleInfo;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.bbs.entity.BBSSectionInfo;
-import com.x.bbs.entity.BBSUserRole;
-import com.x.organization.core.express.wrap.WrapDepartment;
 
 /**
  * 论坛信息管理服务类

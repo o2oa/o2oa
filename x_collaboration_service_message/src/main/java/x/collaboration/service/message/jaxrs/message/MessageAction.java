@@ -10,18 +10,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutString;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 
-import x.collaboration.service.message.PushMessageConnector;
-import x.collaboration.service.message.WsConnector;
+import x.collaboration.service.message.ThisApplication;
 
 @Path("message")
 public class MessageAction extends StandardJaxrsAction {
@@ -38,8 +37,8 @@ public class MessageAction extends StandardJaxrsAction {
 		WrapOutString wrap = null;
 		try {
 			logger.debug("receive message:{}.", jsonElement);
-			WsConnector.send(jsonElement);
-			PushMessageConnector.send(jsonElement);
+			ThisApplication.wsQueue.send(jsonElement);
+			ThisApplication.pushMessageQueue.send(jsonElement);
 			result.setData(wrap);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);

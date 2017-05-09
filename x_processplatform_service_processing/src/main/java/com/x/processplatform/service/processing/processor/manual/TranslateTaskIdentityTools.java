@@ -70,13 +70,14 @@ class TranslateTaskIdentityTools {
 				String str = scriptHelper.evalAsString(work.getApplication(), null, o.get("code").getAsString());
 				if (StringUtils.isNotEmpty(str)) {
 					/* 先尝试去取公司职务 */
-					WrapCompanyDuty wrapCompanyDuty = business.organization().companyDuty().getWithName(name, str);
+					WrapCompanyDuty wrapCompanyDuty = business.organization().companyDuty().getWithNameWithCompany(name,
+							str);
 					if (null != wrapCompanyDuty) {
 						list.addAll(wrapCompanyDuty.getIdentityList());
 					} else {
 						/* 再尝试取部门职务 */
 						WrapDepartmentDuty wrapDepartmentDuty = business.organization().departmentDuty()
-								.getWithName(name, str);
+								.getWithNameWithDepartment(name, str);
 						if (null != wrapDepartmentDuty) {
 							list.addAll(wrapDepartmentDuty.getIdentityList());
 						}

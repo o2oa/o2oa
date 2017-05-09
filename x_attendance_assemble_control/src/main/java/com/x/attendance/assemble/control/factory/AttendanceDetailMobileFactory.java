@@ -10,10 +10,8 @@ import javax.persistence.criteria.Root;
 
 import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
-import com.x.attendance.entity.AttendanceDetail;
 import com.x.attendance.entity.AttendanceDetailMobile;
 import com.x.attendance.entity.AttendanceDetailMobile_;
-import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.utils.annotation.MethodDescribe;
 /**
  * 系统配置信息表基础功能服务类

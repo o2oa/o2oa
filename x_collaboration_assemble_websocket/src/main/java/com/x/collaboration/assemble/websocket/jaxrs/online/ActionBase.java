@@ -1,7 +1,5 @@
 package com.x.collaboration.assemble.websocket.jaxrs.online;
 
-import java.lang.reflect.Type;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -14,12 +12,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.reflect.TypeToken;
-import com.x.base.core.DefaultCharset;
-import com.x.base.core.application.Application;
 import com.x.base.core.http.WrapInStringList;
 import com.x.base.core.http.WrapOutOnline;
+import com.x.base.core.project.Application;
 import com.x.base.core.project.x_collaboration_assemble_websocket;
+import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.utils.ListTools;
 import com.x.collaboration.assemble.websocket.ThisApplication;
 
@@ -27,23 +24,18 @@ abstract class ActionBase {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionBase.class);
 
-
-	private static Type collectionType = new TypeToken<ArrayList<WrapOutOnline>>() {
-	}.getType();
-
 	Boolean getOnlineLocal(String person) throws Exception {
 		Session session = ThisApplication.connections.get(person);
 		return (null == session || (!session.isOpen())) ? false : true;
 	}
 
 	Boolean getOnLineRemote(String person) throws Exception {
-		List<Application> list = ThisApplication.applications.get(x_collaboration_assemble_websocket.class);
+		List<Application> list = ThisApplication.context().applications().get(x_collaboration_assemble_websocket.class);
 		if (ListTools.isNotEmpty(list)) {
 			for (Application application : list) {
-				if (!StringUtils.equals(application.getToken(), ThisApplication.token)) {
-					WrapOutOnline wrap = ThisApplication.applications.getQuery(application,
-							"online/person/" + URLEncoder.encode(person, DefaultCharset.name) + "/local",
-							WrapOutOnline.class);
+				if (!StringUtils.equals(application.getToken(), ThisApplication.context().token())) {
+					WrapOutOnline wrap = CipherConnectionAction.get(application, "online", "person", person, "local")
+							.getData(WrapOutOnline.class);
 					if (StringUtils.equals(wrap.getOnlineStatus(), WrapOutOnline.status_online)) {
 						return true;
 					}
@@ -81,12 +73,13 @@ abstract class ActionBase {
 				o.setOnlineStatus(WrapOutOnline.status_offline);
 				wraps.add(o);
 			}
-			List<Application> list = ThisApplication.applications.get(x_collaboration_assemble_websocket.class);
+			List<Application> list = ThisApplication.context().applications()
+					.get(x_collaboration_assemble_websocket.class);
 			if (ListTools.isEmpty(list)) {
 				for (Application application : list) {
-					if (!StringUtils.equals(application.getToken(), ThisApplication.token)) {
-						List<WrapOutOnline> results = ThisApplication.applications.getQuery(application,
-								"online/list/local", collectionType);
+					if (!StringUtils.equals(application.getToken(), ThisApplication.context().token())) {
+						List<WrapOutOnline> results = CipherConnectionAction.get(application, "online", "list", "local")
+								.getDataAsList(WrapOutOnline.class);
 						for (WrapOutOnline o : results) {
 							if (StringUtils.equals(WrapOutOnline.status_online, o.getOnlineStatus())) {
 								for (WrapOutOnline wrap : wraps) {
@@ -120,12 +113,12 @@ abstract class ActionBase {
 
 	List<WrapOutOnline> listOnLineAllRemote() throws Exception {
 		Set<String> set = new HashSet<>();
-		List<Application> list = ThisApplication.applications.get(x_collaboration_assemble_websocket.class);
+		List<Application> list = ThisApplication.context().applications().get(x_collaboration_assemble_websocket.class);
 		if (ListTools.isEmpty(list)) {
 			for (Application application : list) {
-				if (!StringUtils.equals(application.getToken(), ThisApplication.token)) {
-					List<WrapOutOnline> results = ThisApplication.applications.getQuery(application,
-							"online/list/all/local", collectionType);
+				if (!StringUtils.equals(application.getToken(), ThisApplication.context().token())) {
+					List<WrapOutOnline> results = CipherConnectionAction
+							.get(application, "online", "list", "all", "local").getDataAsList(WrapOutOnline.class);
 					for (WrapOutOnline o : results) {
 						set.add(o.getPerson());
 					}

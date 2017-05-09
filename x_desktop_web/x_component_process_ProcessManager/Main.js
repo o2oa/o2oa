@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("process.ProcessManager", "package", null, false);
 MWF.xDesktop.requireApp("process.ProcessManager", "Actions.RestActions", null, false);
+MWF.xDesktop.requireApp("process.ProcessManager", "lp."+MWF.language, null, false);
 MWF.xDesktop.requireApp("Organization", "Selector.package", null, false);
 MWF.require("MWF.xAction.org.express.RestActions", null,false);
 MWF.require("MWF.widget.Identity", null,false);
@@ -19,9 +20,9 @@ MWF.xApplication.process.ProcessManager.Main = new Class({
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.process.ProcessManager.LP;
 		this.currentContentNode = null;
+        this.restActions = new MWF.xApplication.process.ProcessManager.Actions.RestActions();
 	},
     loadApplication: function(callback){
-        this.restActions = new MWF.xApplication.process.ProcessManager.Actions.RestActions();
         //if (this.status){
         //    if (!this.options.application){
         //        if (this.status.application){
@@ -111,7 +112,6 @@ MWF.xApplication.process.ProcessManager.Main = new Class({
         }.bind(this));
     },
     clearContent: function(){
-        debugger;
         if (this.processConfiguratorContent){
             if (this.processConfigurator) delete this.processConfigurator;
             this.processConfiguratorContent.destroy();
@@ -167,7 +167,6 @@ MWF.xApplication.process.ProcessManager.Main = new Class({
         this.loadProcessConfig();
     },
     loadProcessConfig: function(){
-        debugger;
         MWF.xDesktop.requireApp("process.ProcessManager", "ProcessExplorer", function(){
             MWF.xDesktop.requireApp("process.ProcessManager", "Actions.RestActions", function(){
                 if (!this.restActions) this.restActions = new MWF.xApplication.process.ProcessManager.Actions.RestActions();
@@ -462,46 +461,48 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
         this.data = this.app.options.application;
     },
     load: function(){
-        this.propertyTitleBar = new Element("div", {
-            "styles": this.app.css.propertyTitleBar,
-            "text": this.data.name
-        }).inject(this.node);
+        this.app.restActions.getApplication(this.app.options.application.id, function(json){
+            this.data = json.data;
+            this.propertyTitleBar = new Element("div", {
+                "styles": this.app.css.propertyTitleBar,
+                "text": this.data.name
+            }).inject(this.node);
 
-        this.contentNode =  new Element("div", {
-            "styles": this.app.css.propertyContentNode
-        }).inject(this.node);
-        this.contentAreaNode =  new Element("div", {
-            "styles": this.app.css.propertyContentAreaNode
-        }).inject(this.contentNode);
+            this.contentNode =  new Element("div", {
+                "styles": this.app.css.propertyContentNode
+            }).inject(this.node);
+            this.contentAreaNode =  new Element("div", {
+                "styles": this.app.css.propertyContentAreaNode
+            }).inject(this.contentNode);
 
-        this.setContentHeight();
-        this.setContentHeightFun = this.setContentHeight.bind(this);
-        this.app.addEvent("resize", this.setContentHeightFun);
-        MWF.require("MWF.widget.ScrollBar", function(){
-            new MWF.widget.ScrollBar(this.contentNode, {"indent": false});
+            this.setContentHeight();
+            this.setContentHeightFun = this.setContentHeight.bind(this);
+            this.app.addEvent("resize", this.setContentHeightFun);
+            MWF.require("MWF.widget.ScrollBar", function(){
+                new MWF.widget.ScrollBar(this.contentNode, {"indent": false});
+            }.bind(this));
+
+            this.baseActionAreaNode = new Element("div", {
+                "styles": this.app.css.baseActionAreaNode
+            }).inject(this.contentAreaNode);
+
+            this.baseActionNode = new Element("div", {
+                "styles": this.app.css.propertyInforActionNode
+            }).inject(this.baseActionAreaNode);
+            this.baseTextNode = new Element("div", {
+                "styles": this.app.css.baseTextNode,
+                "text": this.app.lp.application.property
+            }).inject(this.baseActionAreaNode);
+
+            this.createEditBaseNode();
+
+            this.createPropertyContentNode();
+
+            this.createIconContentNode();
+
+            this.createAvailableNode();
+            this.createControllerListNode();
         }.bind(this));
-
-        this.baseActionAreaNode = new Element("div", {
-            "styles": this.app.css.baseActionAreaNode
-        }).inject(this.contentAreaNode);
-
-        this.baseActionNode = new Element("div", {
-            "styles": this.app.css.propertyInforActionNode
-        }).inject(this.baseActionAreaNode);
-        this.baseTextNode = new Element("div", {
-            "styles": this.app.css.baseTextNode,
-            "text": this.app.lp.application.property
-        }).inject(this.baseActionAreaNode);
-
-        this.createEditBaseNode();
-
-        this.createPropertyContentNode();
-
-        this.createIconContentNode();
-
-        this.createAvailableNode();
-        this.createControllerListNode();
-
     },
     setContentHeight: function(){
         var size = this.app.content.getSize();
@@ -533,7 +534,8 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
         if (this.data.icon){
             this.iconPreviewNode.setStyle("background", "url(data:image/png;base64,"+this.data.icon+") center center no-repeat");
         }else{
-            this.iconPreviewNode.setStyle("background", "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/application.png) center center no-repeat")
+            //this.iconPreviewNode.setStyle("background", "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/application.png) center center no-repeat")
+            this.iconPreviewNode.setStyle("background", "url("+this.app.path+this.app.options.style+"/icon/application.png) center center no-repeat")
         }
         var changeIconAction = new Element("div", {
             "styles": {

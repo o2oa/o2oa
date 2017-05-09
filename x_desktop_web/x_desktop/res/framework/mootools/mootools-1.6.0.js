@@ -6449,6 +6449,10 @@ var Request = this.Request = new Class({
 		if (this.getThenableState() !== 'pending'){
 			this.resetThenable({reason: 'send'});
 		}
+        if (url.indexOf("v=4.0")!=-1){
+            debugger;
+        }
+
 		this.fireEvent('request');
 		xhr.send(data);
 		if (!this.options.async) this.onStateChange();

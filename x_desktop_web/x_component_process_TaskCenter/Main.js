@@ -641,7 +641,7 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
         }.bind(this));
 
         if (currentTask.length==1){
-            var options = {"workId": currentTask[0]};
+            var options = {"workId": currentTask[0], "appId": currentTask[0]};
             this.app.desktop.openApplication(null, "process.Work", options);
 
             this.createStartWorkResault(workInfors, title, processName, false);
@@ -684,7 +684,7 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
         node.setStyles(this.app.css.dealStartedWorkAction);
         var _self = this;
         node.addEvent("click", function(e){
-            var options = {"taskId": this.get("value")};
+            var options = {"taskId": this.get("value"), "appId": this.get("value")};
             _self.app.desktop.openApplication(e, "process.Work", options);nbyc
         });
     }
@@ -1660,7 +1660,7 @@ MWF.xApplication.process.TaskCenter.List.Item = new Class({
     openTask: function(e){
 
    //     this._getJobByTask(function(data){
-            var options = {"workId": this.data.work};
+            var options = {"workId": this.data.work, "appId": this.data.work};
             this.list.app.desktop.openApplication(e, "process.Work", options);
    //     }.bind(this));
     },
@@ -2219,7 +2219,7 @@ MWF.xApplication.process.TaskCenter.TaskCompletedList.Item = new Class({
                     "html": html
                 }).inject(this.workInforNode);
                 var table = taskCompletedWorkInforNode.getElement("table");
-                table
+                //table
 
                 var openNode = taskCompletedWorkInforNode.getElement("div");
                 if (openNode) {
@@ -2261,11 +2261,11 @@ MWF.xApplication.process.TaskCenter.TaskCompletedList.Item = new Class({
         }.bind(this));
     },
     openWorkByTaskCompleted: function(e, id){
-        var options = {"workId": id, "readonly": true};
+        var options = {"workId": id, "readonly": true, "appId": id};
         this.list.app.desktop.openApplication(e, "process.Work", options);
     },
     openWorkCompleteedByTaskCompleted: function(e, id){
-        var options = {"workCompletedId": id, "readonly": true};
+        var options = {"workCompletedId": id, "readonly": true, "appId": id};
         this.list.app.desktop.openApplication(e, "process.Work", options);
     },
 
@@ -2318,7 +2318,7 @@ MWF.xApplication.process.TaskCenter.TaskCompletedList.Item = new Class({
             }.bind(this)
         });
         morph.start(this.list.css.itemNode_edit_from);
-    },
+    }
 });
 
 MWF.xApplication.process.TaskCenter.ReadList.Item = new Class({

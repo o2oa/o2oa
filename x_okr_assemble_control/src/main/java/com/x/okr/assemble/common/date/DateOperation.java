@@ -928,7 +928,7 @@ public class DateOperation {
 		return null;
 	}
 	
-	public List<MonthOfYear> getMonthsOfYear(Date startDate, Date endDate) {
+	public List<MonthOfYear> getMonthsOfYear( Date startDate, Date endDate ) {
 		List<MonthOfYear> monthOfYearList =  new ArrayList<>();
 		MonthOfYear monthOfYear = null;
 		String monthStartDateString = null;
@@ -943,6 +943,10 @@ public class DateOperation {
 			month = cal.get( Calendar.MONTH );
 			cal.set( year, month, 1 );
 			do{	
+				cal.set( Calendar.HOUR_OF_DAY, 0 );
+				cal.set( Calendar.MINUTE, 0 );
+				cal.set( Calendar.SECOND, 0 );
+				cal.set( Calendar.MILLISECOND, 0 );
 				monthOfYear = new MonthOfYear();
 				monthOfYear.setMonth( month + 1 );
 				monthOfYear.setYear( year );
@@ -954,6 +958,10 @@ public class DateOperation {
 				cal.add( Calendar.MONTH, 1 );
 				cal.add( Calendar.DAY_OF_MONTH, -1 );
 				
+				cal.set( Calendar.HOUR_OF_DAY, 23 );
+				cal.set( Calendar.MINUTE, 59 );
+				cal.set( Calendar.SECOND, 59 );
+				cal.set( Calendar.MILLISECOND, 0 );
 				monthEndDateString = getDateStringFromDate( cal.getTime(), "yyyy-MM-dd" );
 				monthOfYear.setEndDate( cal.getTime() );
 				monthOfYear.setEndDateString( monthEndDateString );
@@ -996,6 +1004,10 @@ public class DateOperation {
 				day_of_week = cal.get( Calendar.DAY_OF_WEEK ) - 1;
 			}
 			do{
+				cal.set( Calendar.HOUR_OF_DAY, 0 );
+				cal.set( Calendar.MINUTE, 0 );
+				cal.set( Calendar.SECOND, 0 );
+				cal.set( Calendar.MILLISECOND, 0 );
 				weekOfYear = new WeekOfYear();
 				year = cal.get( Calendar.YEAR );
 				weekNo = getWeekNumOfYear( cal.getTime() );
@@ -1014,6 +1026,11 @@ public class DateOperation {
 						weekOfYear.setYear( year );
 					}
 				}
+				
+				cal.set( Calendar.HOUR_OF_DAY, 23 );
+				cal.set( Calendar.MINUTE, 59 );
+				cal.set( Calendar.SECOND, 59 );
+				cal.set( Calendar.MILLISECOND, 0 );
 				weekOfYear.setEndDate( cal.getTime() );
 				weekOfYear.setEndDateString( weekEndDateString );
 				weekOfYearList.add( weekOfYear );

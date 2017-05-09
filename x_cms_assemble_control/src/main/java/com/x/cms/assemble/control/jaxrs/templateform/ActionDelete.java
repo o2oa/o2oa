@@ -10,6 +10,7 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.role.RoleDefinition;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.assemble.control.jaxrs.templateform.exception.InsufficientPermissionException;
 import com.x.cms.core.entity.element.TemplateForm;
 
 class ActionDelete extends ActionBase {

@@ -13,7 +13,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.processplatform.core.entity.element.Application.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:10:19 CST 2017")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sat May 06 19:36:06 CST 2017")
 public class Application_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Application,String> alias;
     public static volatile SingularAttribute<Application,String> applicationCategory;

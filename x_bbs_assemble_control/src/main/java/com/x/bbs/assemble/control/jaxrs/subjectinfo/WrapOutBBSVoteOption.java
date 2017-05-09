@@ -7,7 +7,7 @@ import com.x.base.core.entity.annotation.EntityFieldDescribe;
 import com.x.base.core.http.annotation.Wrap;
 import com.x.bbs.entity.BBSVoteOption;
 
-@Wrap( BBSVoteOption.class)
+@Wrap( WrapOutBBSVoteOption.class)
 public class WrapOutBBSVoteOption extends BBSVoteOption{
 	
 	private static final long serialVersionUID = -5076990764713538973L;

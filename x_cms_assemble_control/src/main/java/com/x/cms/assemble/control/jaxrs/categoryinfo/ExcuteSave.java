@@ -10,6 +10,8 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.cms.assemble.control.jaxrs.categoryinfo.exception.CategoryInfoProcessException;
+import com.x.cms.assemble.control.jaxrs.categoryinfo.exception.QueryViewNotExistsException;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.AppCategoryAdmin;
 import com.x.cms.core.entity.AppCategoryPermission;
@@ -41,7 +43,7 @@ public class ExcuteSave extends ExcuteBase {
 						identityName = userManagerService.getFistIdentityNameByPerson( effectivePerson.getName() );
 					} catch (Exception e) {
 						check = false;
-						Exception exception = new UserManagerQueryUserIdentityException( e, effectivePerson.getName() );
+						Exception exception = new CategoryInfoProcessException( e, "系统在查询用户身份信息时发生异常。Name:" + effectivePerson.getName() );
 						result.error( exception );
 						logger.error( e, effectivePerson, request, null);
 					}
@@ -57,7 +59,7 @@ public class ExcuteSave extends ExcuteBase {
 				departmentName = userManagerService.getDepartmentNameByIdentity( identityName );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new GetDepartmentNameByIdentityException( e, identityName );
+				Exception exception = new CategoryInfoProcessException( e, "系统在根据用户身份信息查询所属部门名称时发生异常。Identity:" + identityName );
 				result.error( exception );
 				logger.error( e, effectivePerson, request, null);
 			}
@@ -67,7 +69,7 @@ public class ExcuteSave extends ExcuteBase {
 				companyName = userManagerService.getCompanyNameByIdentity( identityName );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new GetCompanyNameByIdentityException( e, identityName );
+				Exception exception = new CategoryInfoProcessException( e, "系统在根据用户身份信息查询所属公司名称时发生异常。Identity:" + identityName );
 				result.error( exception );
 				logger.error( e, effectivePerson, request, null);
 			}
@@ -108,7 +110,7 @@ public class ExcuteSave extends ExcuteBase {
 				result.setData(wrap);
 			} catch ( Exception e ) {
 				check = false;
-				Exception exception = new CategoryInfoSaveException( e );
+				Exception exception = new CategoryInfoProcessException( e, "分类信息在保存时发生异常." );
 				result.error( exception );
 				logger.error( e, effectivePerson, request, null);
 			}

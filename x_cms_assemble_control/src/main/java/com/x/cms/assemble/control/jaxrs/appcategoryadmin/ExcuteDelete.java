@@ -8,6 +8,9 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.cms.assemble.control.jaxrs.appcategoryadmin.exception.AppCategoryAdminIdEmptyException;
+import com.x.cms.assemble.control.jaxrs.appcategoryadmin.exception.AppCategoryAdminNotExistsException;
+import com.x.cms.assemble.control.jaxrs.appcategoryadmin.exception.AppCategoryAdminProcessException;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.AppCategoryAdmin;
 import com.x.cms.core.entity.AppInfo;
@@ -26,7 +29,6 @@ public class ExcuteDelete extends ExcuteBase {
 				check = false;
 				Exception exception = new AppCategoryAdminIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -34,9 +36,9 @@ public class ExcuteDelete extends ExcuteBase {
 				appCategoryAdmin = appCategoryAdminServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new AppCategoryAdminQueryByIdException( e, id );
+				Exception exception = new AppCategoryAdminProcessException( e, "根据ID查询应用栏目分类管理员配置信息时发生异常。ID:" + id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -44,7 +46,6 @@ public class ExcuteDelete extends ExcuteBase {
 				check = false;
 				Exception exception = new AppCategoryAdminNotExistsException( id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -52,11 +53,12 @@ public class ExcuteDelete extends ExcuteBase {
 				String description = appCategoryAdmin.getObjectType() + "-" + appCategoryAdmin.getObjectId() + "-" + appCategoryAdmin.getAdminName();
 				
 				appCategoryAdminServiceAdv.delete( appCategoryAdmin, effectivePerson );
+				
 				ApplicationCache.notify( AppInfo.class );
 				ApplicationCache.notify( CategoryInfo.class );
 				ApplicationCache.notify( AppCategoryAdmin.class );
-				result.setData( new WrapOutId(id) );
 				
+				result.setData( new WrapOutId(id) );
 				
 				if( "APPINFO".equals( appCategoryAdmin.getObjectType() ) ){
 					new LogService().log( null,  effectivePerson.getName(), description, appCategoryAdmin.getObjectId(), "", "", appCategoryAdmin.getId(), "APPCATEGORYADMIN", "删除" );
@@ -64,11 +66,11 @@ public class ExcuteDelete extends ExcuteBase {
 					new LogService().log( null,  effectivePerson.getName(), description, "", appCategoryAdmin.getObjectId(), "", appCategoryAdmin.getId(), "APPCATEGORYADMIN", "删除" );
 				}	
 				
-			} catch (Exception e) {
+			} catch ( Exception e ) {
 				check = false;
-				Exception exception = new AppCategoryAdminDeleteException( e, id );
+				Exception exception = new AppCategoryAdminProcessException( e, "根据ID删除应用栏目分类管理员配置信息时发生异常。ID:" + id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

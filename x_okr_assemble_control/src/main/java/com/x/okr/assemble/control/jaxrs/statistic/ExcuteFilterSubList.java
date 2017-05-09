@@ -15,6 +15,10 @@ import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.SortTools;
 import com.x.okr.assemble.common.date.DateOperation;
+import com.x.okr.assemble.control.jaxrs.statistic.exception.QueryParentIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.statistic.exception.QueryWithConditionException;
+import com.x.okr.assemble.control.jaxrs.statistic.exception.ReportStatisitcListWithIdsException;
+import com.x.okr.assemble.control.jaxrs.statistic.exception.StatisticTimeInvalidException;
 import com.x.okr.assemble.control.timertask.entity.WorkReportProcessOpinionEntity;
 import com.x.okr.entity.OkrStatisticReportContent;
 import com.x.okr.entity.OkrWorkDetailInfo;
@@ -56,7 +60,7 @@ public class ExcuteFilterSubList extends ExcuteBase {
 			check = false;
 			Exception exception = new QueryParentIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check ){
@@ -74,19 +78,19 @@ public class ExcuteFilterSubList extends ExcuteBase {
 					check = false;
 					Exception exception = new StatisticTimeInvalidException( e, statisticTimeFlag );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
 		
 		if( check ){
 			try {
-				ids = okrCenterWorkReportStatisticService.list( centerId, null, statisticTimeFlag, reportCycle, year, month, week, "正常" );
+				ids = okrCenterWorkReportStatisticService.list( centerId, wrapIn.getCenterTitle(), null, wrapIn.getWorkTypeName(), statisticTimeFlag, reportCycle, year, month, week, "正常" );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new QueryWithConditionException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -97,7 +101,7 @@ public class ExcuteFilterSubList extends ExcuteBase {
 				check = false;
 				Exception exception = new ReportStatisitcListWithIdsException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		

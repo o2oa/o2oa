@@ -761,7 +761,7 @@ public class DateOperation {
 	 * @throws Exception 
 	 */
 	public Date getLastDateInMonth(Date recordDate) throws Exception {
-		Date lastDate = getLastDayOfMonth(recordDate);
+		Date lastDate = getLastDayOfMonth( recordDate );
 		return getDateFromString( getDateStringFromDate( lastDate, "yyyy-MM-dd") );
 	}
 	

@@ -10,6 +10,7 @@ import com.x.cms.core.entity.AppCategoryPermission;
 
 public class AppCategoryPermissionServiceAdv {
 
+	private UserManagerService userManagerService = new UserManagerService();
 	private AppCategoryPermissionService appCategoryPermissionService = new AppCategoryPermissionService();
 
 	public AppCategoryPermission get( String id ) throws Exception {
@@ -73,6 +74,32 @@ public class AppCategoryPermissionServiceAdv {
 			return appCategoryPermissionService.listAppCategoryIdByCondition(emc, objectType, objectId, personName, permission);
 		} catch ( Exception e ) {
 			throw e;
+		}
+	}
+	
+	public List<String> listAppCategoryIdByPermission( String objectType, String objectId, String personName, String permission ) throws Exception {
+		List<String> departmentNames = null;
+		List<String> companyNames = null;
+		List<String> groupNames = null;
+		
+		if( personName != null && !personName.isEmpty() ){
+			departmentNames = userManagerService.listDepartmentNameByEmployeeName( personName );
+			companyNames = userManagerService.listCompanyNameByEmployeeName( personName );
+			groupNames = userManagerService.listGroupNamesByPersonName( personName );
+		}		
+		
+		if( "CATEGORY".equals( objectType )){
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				return appCategoryPermissionService.listCategoryIdsByPermission( emc, personName, departmentNames, companyNames, groupNames, objectId, permission );
+			} catch ( Exception e ) {
+				throw e;
+			}
+		}else{
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				return appCategoryPermissionService.listAppInfoIdsByPermission( emc, personName, departmentNames, companyNames, groupNames, objectId, permission );
+			} catch ( Exception e ) {
+				throw e;
+			}
 		}
 	}
 

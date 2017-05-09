@@ -129,10 +129,10 @@ MWF.xApplication.cms.Module.ViewExplorer = new Class({
     setContentSize: function(){
         var toolbarSize = this.toolbarNode ? this.toolbarNode.getSize() : {"x":0,"y":0};
         var titlebarSize = this.app.titleBar ? this.app.titleBar.getSize() : {"x":0,"y":0};
-        var nodeSize = this.node.getSize();
-        var pt = this.elementContentNode.getStyle("padding-top").toFloat();
-        var pb = this.elementContentNode.getStyle("padding-bottom").toFloat();
-        //var filterSize = this.filterNode.getSize();
+        var nodeSize = this.app.node.getSize();
+        var pt = 0; //this.elementContentNode.getStyle("padding-top").toFloat();
+        var pb = 0; // this.elementContentNode.getStyle("padding-bottom").toFloat();
+
         var filterConditionSize = this.filterConditionNode ? this.filterConditionNode.getSize() : {"x":0,"y":0};
 
         var height = nodeSize.y-toolbarSize.y-pt-pb-filterConditionSize.y-titlebarSize.y;
@@ -259,19 +259,23 @@ MWF.xApplication.cms.Module.ViewExplorer.DefaultView = new Class({
                 if(isShow) {
                     var th = new Element("th", {
                         "styles": this.css[cell.headStyles],
-                        "text": cell.title,
-                        "width": cell.width
-                    }).inject(headNode)
+                        "width": cell.width,
+                        "text": cell.title
+                    }).inject(headNode);
+                    //var thText = new Element("div",{
+                    //    "styles" : this.css.thTextNode,
+                    //    "text": cell.title
+                    //}).inject(th);
                     if( cell.sortByClickTitle == "yes" ){
                         th.store("field",cell.item);
                         if( this.orderField  == cell.item && this.orderType!="" ){
                             th.store("orderType",this.orderType);
                             this.sortIconNode = new Element("div",{
                                 "styles": this.orderType == "asc" ? this.css.sortIconNode_asc : this.css.sortIconNode_desc
-                            }).inject( th, "top" );
+                            }).inject( th, "bottom" );
                         }else{
                             th.store("orderType","");
-                            this.sortIconNode = new Element("div",{"styles":this.css.sortIconNode}).inject( th, "top" );
+                            this.sortIconNode = new Element("div",{"styles":this.css.sortIconNode}).inject( th, "bottom" );
                         }
                         th.setStyle("cursor","pointer");
                         th.addEvent("click",function(){
@@ -328,7 +332,7 @@ MWF.xApplication.cms.Module.ViewExplorer.DefaultView = new Class({
             "orderType" : this.orderType || null
         };
         if( this.searchKey && this.searchKey!="" ){
-            data.titleList = [this.searchKey];
+            data.title = this.searchKey;
         }
         if (this.filter && this.filter.filter ){
             var filterResult = this.filter.getFilterResult();
@@ -384,20 +388,24 @@ MWF.xApplication.cms.Module.ViewExplorer.ViewForALL = new Class({
                 if(isShow) {
                     var th = new Element("th", {
                         "styles": this.css[cell.headStyles],
-                        "text": cell.title,
-                        "width": cell.width
+                        "width": cell.width,
+                        "text": cell.title
                     }).inject(headNode)
                 }
+                //var thText = new Element("div",{
+                //    "styles" : this.css.thTextNode,
+                //    "text": cell.title
+                //}).inject(th);
                 if( cell.sortByClickTitle == "yes" ){
                     th.store("field",cell.item);
                     if( this.orderField  == cell.item && this.orderType!="" ){
                         th.store("orderType",this.orderType);
                         this.sortIconNode = new Element("div",{
                             "styles": this.orderType == "asc" ? this.css.sortIconNode_asc : this.css.sortIconNode_desc
-                        }).inject( th, "top" );
+                        }).inject( th, "bottom" );
                     }else{
                         th.store("orderType","");
-                        this.sortIconNode = new Element("div",{"styles":this.css.sortIconNode}).inject( th, "top" );
+                        this.sortIconNode = new Element("div",{"styles":this.css.sortIconNode}).inject( th, "bottom" );
                     }
                     th.setStyle("cursor","pointer");
                     th.addEvent("click",function(){
@@ -417,7 +425,7 @@ MWF.xApplication.cms.Module.ViewExplorer.ViewForALL = new Class({
             "orderType" : this.orderType || null
         };
         if( this.searchKey && this.searchKey!="" ){
-            data.titleList = [this.searchKey]
+            data.title = this.searchKey
         }
         if (this.filter && this.filter.filter ){
             var filterResult = this.filter.getFilterResult();
@@ -454,19 +462,23 @@ MWF.xApplication.cms.Module.ViewExplorer.View = new Class({
             var width = (column.widthType == "px" ? (column.width+"px") : (column.widthPer+"%"));
             var th = new Element("th",{
                 "styles":this.css.normalThNode,
-                "text" : column.title ? column.title : "",
-                "width" : width
+                "width" : width,
+                "text" : column.title ? column.title : ""
             }).inject(headNode);
+            //var thText = new Element("div",{
+            //    "styles" : this.css.thTextNode,
+            //    "text" : column.title ? column.title : ""
+            //}).inject(th);
             if( column.sortByClickTitle == "yes" ){
                 th.store("field",column.value);
                 if( this.orderField  == column.value && this.orderType!="" ){
                     th.store("orderType",this.orderType);
                     this.sortIconNode = new Element("div",{
-                        "styles": this.orderType == "asc" ? this.css.sortIconNode_asc : this.css.sortIconNode_desc
-                    }).inject( th, "top" );
+                        "styles": this.orderType.toLowerCase() == "asc" ? this.css.sortIconNode_asc : this.css.sortIconNode_desc
+                    }).inject( th, "bottom" );
                 }else{
                     th.store("orderType","");
-                    this.sortIconNode = new Element("div",{"styles":this.css.sortIconNode}).inject( th, "top" );
+                    this.sortIconNode = new Element("div",{"styles":this.css.sortIconNode}).inject( th, "bottom" );
                 }
                 th.setStyle("cursor","pointer");
                 th.addEvent("click",function(){
@@ -478,9 +490,9 @@ MWF.xApplication.cms.Module.ViewExplorer.View = new Class({
     },
     resort : function(th){
         this.orderField = th.retrieve("field");
-        var orderType = th.retrieve("orderType");
+        this.orderType = ( th.retrieve("orderType") || "" ).toLowerCase();
         //th.eliminate(orderType);
-        if( orderType == "" ){
+        if( this.orderType == "" ){
             this.orderType = "asc";
         }else if( this.orderType == "asc" ){
             this.orderType = "desc";

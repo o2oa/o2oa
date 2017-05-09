@@ -17,7 +17,7 @@
   "getWorkcompletedAttachmentData": {"uri": "/servlet/attachment/download/{id}/workcompleted/{workCompletedId}", "method": "GET"},
 
   "getAttachmentStream": {"uri": "/servlet/attachment/download/{id}/work/{workid}/stream", "method": "GET"},
-  "getWorkcompletedAttachmentStream": {"uri": "/servlet/attachment/download/{id}/workcompleted/(workcompletedId}/stream", "method": "GET"},
+  "getWorkcompletedAttachmentStream": {"uri": "/servlet/attachment/download/{id}/workcompleted/{workCompletedId}/stream", "method": "GET"},
 
   "getAttachment": {"uri": "/jaxrs/attachment/{id}/work/{workid}"},
   "getAttachmentWorkcompleted": {"uri": "/jaxrs/attachment/{id}/workCompletedId/{workCompletedId}"},
@@ -31,9 +31,12 @@
 
   "getJobByWorkAssignForm": {"uri": "/jaxrs/work/{id}/complex/appoint/form/{formTag}"},
   "getJobByWorkAssignFormMobile": {"uri": "/jaxrs/work/{id}/complex/appoint/form/{formTag}/mobile"},
+  "getJobByWorkCompletedAssignForm": {"uri": "/jaxrs/workcompleted/{id}/complex/appoint/form/{formTag}"},
+  "getJobByWorkCompletedAssignFormMobile": {"uri": "/jaxrs/workcompleted/{id}/complex/appoint//form/{formTag}/mobile"},
 
   "lookupView": {"uri": "/jaxrs/view/{id}"},
   "getView": {"uri": "/jaxrs/view/{id}"},
+  "getForm": {"uri": "/jaxrs/form/{id}"},
 
   "getRerouteTo": {"uri": "/jaxrs/process/{flag}/allowrerouteto"}
 

@@ -6,13 +6,14 @@ import java.util.List;
 import com.x.base.core.utils.SortTools;
 import com.x.organization.core.express.Organization;
 import com.x.organization.core.express.wrap.WrapDepartment;
+import com.x.processplatform.assemble.bam.ThisApplication;
 import com.x.processplatform.assemble.bam.stub.DepartmentStub;
 import com.x.processplatform.assemble.bam.stub.DepartmentStubs;
 
 public class TimerDepartmentStubs extends ActionBase {
 
 	public DepartmentStubs execute() throws Exception {
-		Organization organization = new Organization();
+		Organization organization = new Organization(ThisApplication.context());
 		List<WrapDepartment> os = organization.department().listAll();
 		DepartmentStubs stubs = new DepartmentStubs();
 		List<DepartmentStub> list = new ArrayList<>();

@@ -11,7 +11,7 @@ public class FilterTools {
 	public static final String Access_Control_Allow_Methods = "Access-Control-Allow-Methods";
 	public static final String Access_Control_Allow_Methods_Value = "GET, POST, OPTIONS, PUT, DELETE, HEAD, TRACE";
 	public static final String Access_Control_Allow_Headers = "Access-Control-Allow-Headers";
-	public static final String Access_Control_Allow_Headers_Value = "x-requested-with, x-request, x-token,Content-Type, x-cipher";
+	public static final String Access_Control_Allow_Headers_Value = "x-requested-with, x-request, x-token,Content-Type, x-cipher, x-client";
 	public static final String Access_Control_Allow_Credentials = "Access-Control-Allow-Credentials";
 
 	public static void allow(HttpServletRequest request, HttpServletResponse response) throws Exception {

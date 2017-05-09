@@ -7,6 +7,8 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.okr.assemble.control.jaxrs.okrconfigworklevel.exception.WorkLevelConfigDeleteException;
+import com.x.okr.assemble.control.jaxrs.okrconfigworklevel.exception.WorkLevelConfigIdEmptyException;
 
 public class ExcuteDelete extends ExcuteBase {
 
@@ -17,7 +19,7 @@ public class ExcuteDelete extends ExcuteBase {
 		if( id == null || id.isEmpty() ){
 			Exception exception = new WorkLevelConfigIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}else{
 			try{
 				okrConfigWorkLevelService.delete( id );
@@ -25,7 +27,7 @@ public class ExcuteDelete extends ExcuteBase {
 			}catch(Exception e){
 				Exception exception = new WorkLevelConfigDeleteException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

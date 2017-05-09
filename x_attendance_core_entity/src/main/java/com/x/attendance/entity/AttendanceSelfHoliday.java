@@ -134,7 +134,7 @@ public class AttendanceSelfHoliday extends SliceJpaObject {
 	/* ==================================================================================
 	 *                             以下为具体不同的业务及数据表字段要求
 	 * ================================================================================== */
-	@EntityFieldDescribe("公司名称")
+	@EntityFieldDescribe("流程WorkId")
 	@Column(name="xdocId", length = JpaObject.length_id)
 	@CheckPersist( allowEmpty = true)
 	private String docId;
@@ -187,7 +187,7 @@ public class AttendanceSelfHoliday extends SliceJpaObject {
 	@EntityFieldDescribe("请假天数")
 	@Column(name="xleaveDayNumber" )
 	@CheckPersist( allowEmpty = true )
-	private Double leaveDayNumber;
+	private Double leaveDayNumber = 0.0;
 	
 	@EntityFieldDescribe("请假说明")
 	@Column(name="xdescription", length = JpaObject.length_255B )

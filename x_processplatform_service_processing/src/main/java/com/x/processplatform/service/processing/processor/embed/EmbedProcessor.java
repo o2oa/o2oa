@@ -56,8 +56,8 @@ public class EmbedProcessor extends AbstractProcessor {
 		if (BooleanUtils.isTrue(embed.getInheritData())) {
 			pushData = data;
 		}
-		WrapOutId wrapOutId = ThisApplication.applications.postQuery(x_processplatform_service_processing.class, uri,
-				pushData, WrapOutId.class);
+		WrapOutId wrapOutId = ThisApplication.context().applications()
+				.postQuery(x_processplatform_service_processing.class, uri, pushData).getData(WrapOutId.class);
 		/* 创建处于新建状态的work之后暂时不推动，由下个环节进行推动 */
 		this.updateTarget(wrapOutId.getId(), attributes, work, pushData, embed);
 		work.setEmbedTargetWork(wrapOutId.getId());
@@ -70,7 +70,7 @@ public class EmbedProcessor extends AbstractProcessor {
 	protected List<Route> inquireProcessing(ProcessingConfigurator configurator, ProcessingAttributes attributes,
 			Work work, Data data, Activity activity, List<Route> routes) throws Exception {
 		/* 驱动上个环节新产生的work */
-		ThisApplication.applications.putQuery(x_processplatform_service_processing.class,
+		ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 				"work/" + URLEncoder.encode(work.getEmbedTargetWork(), "UTF-8") + "/processing", null);
 		List<Route> results = new ArrayList<>();
 		results.add(routes.get(0));

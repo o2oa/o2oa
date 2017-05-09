@@ -9,7 +9,7 @@ import net.sf.ehcache.Ehcache;
 
 public class ExcuteBase {
 	
-	protected static Ehcache cache = ApplicationCache.instance().getCache( FileInfo.class);
+	protected Ehcache cache = ApplicationCache.instance().getCache( FileInfo.class);
 	
 	protected LogService logService = new LogService();
 	protected FileInfoServiceAdv fileInfoServiceAdv = new FileInfoServiceAdv();

@@ -1,13 +1,13 @@
 package com.x.bbs.assemble.control.timertask;
 
 import java.util.List;
-import java.util.TimerTask;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
 import com.google.gson.Gson;
 import com.x.base.core.gson.XGsonBuilder;
-import com.x.bbs.assemble.control.ThisApplication;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.Context;
+import com.x.base.core.project.clock.ClockScheduleTask;
 import com.x.bbs.assemble.control.service.BBSOperationRecordService;
 import com.x.bbs.assemble.control.service.BBSPermissionInfoService;
 import com.x.bbs.assemble.control.service.BBSReplyInfoService;
@@ -22,7 +22,7 @@ import com.x.bbs.assemble.control.service.bean.RoleAndPermission;
  * @author LIYI
  *
  */
-public class UserSubjectReplyPermissionStatisticTask extends TimerTask {
+public class UserSubjectReplyPermissionStatisticTask extends ClockScheduleTask {
 
 	private Logger logger = LoggerFactory.getLogger(UserSubjectReplyPermissionStatisticTask.class);
 
@@ -33,14 +33,12 @@ public class UserSubjectReplyPermissionStatisticTask extends TimerTask {
 	private BBSPermissionInfoService permissionInfoService = new BBSPermissionInfoService();
 	private BBSRoleInfoService roleInfoService = new BBSRoleInfoService();
 
-	public void run() {
-		if (ThisApplication.getUserSubjectReplyStatisticTaskRunning()) {
-			logger.info("Timertask[UserSubjectReplyStatisticTask] service is running, wait for next time......");
-			return;
-		}
-		ThisApplication.setUserSubjectReplyStatisticTaskRunning(true);
+	public UserSubjectReplyPermissionStatisticTask(Context context) {
+		super(context);
+	}
+	
+	public void execute() {
 		process();
-		ThisApplication.setUserSubjectReplyStatisticTaskRunning(false);
 		logger.info("Timertask[UserSubjectReplyStatisticTask] completed and excute success.");
 	}
 
@@ -58,14 +56,14 @@ public class UserSubjectReplyPermissionStatisticTask extends TimerTask {
 		}
 		if (operationUserNames != null && !operationUserNames.isEmpty()) {
 			// 2、遍历所有的人员，分别进行统计
-			for (String userName : operationUserNames) {
-				statisticSubjectReplyCountForUser(userName);
-			}
+			operationUserNames.forEach( u -> {
+				statisticSubjectReplyCountForUser( u );
+			});
 		}
 	}
 
-	private void statisticSubjectReplyCountForUser(String userName) {
-		if (userName == null || userName.isEmpty()) {
+	private void statisticSubjectReplyCountForUser( String userName ) {
+		if ( userName == null || userName.isEmpty() ) {
 			return;
 		}
 		Gson gson = null;
@@ -162,8 +160,7 @@ public class UserSubjectReplyPermissionStatisticTask extends TimerTask {
 		}
 		// 从数据库中查询出人员信息，进行信息更新
 		try {
-			userInfoService.save(userName, subjectCount, replyCount, subjectCountToday, replyCountToday, creamCount,
-					originalCount, fansCount, popularity, credit, permissionContent);
+			userInfoService.save(userName, subjectCount, replyCount, subjectCountToday, replyCountToday, creamCount, originalCount, fansCount, popularity, credit, permissionContent);
 		} catch (Exception e) {
 			logger.warn("system save user info got an exception. username:" + userName);
 			logger.error(e);

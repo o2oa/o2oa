@@ -218,8 +218,3 @@ MWF.widget.ScriptHelp.Menu = new Class({
     }
 
 });
-
-
-
-
-

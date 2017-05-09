@@ -1,18 +1,32 @@
 package com.x.processplatform.assemble.designer;
 
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-import com.x.base.core.project.AbstractApplicationServletContextListener;
-import com.x.base.core.project.ThisApplicationClass;
-import com.x.base.core.project.x_processplatform_assemble_designer;
+import com.x.base.core.project.Context;
 
 @WebListener
-@ThisApplicationClass(ThisApplication.class)
-public class ApplicationServletContextListener extends AbstractApplicationServletContextListener {
+public class ApplicationServletContextListener implements ServletContextListener {
 
 	@Override
-	public Class<?> getThis() {
-		return x_processplatform_assemble_designer.class;
+	public void contextInitialized(ServletContextEvent servletContextEvent) {
+		try {
+			ThisApplication.context = Context.concrete(servletContextEvent);
+			ThisApplication.init();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void contextDestroyed(ServletContextEvent servletContextEvent) {
+		try {
+			ThisApplication.destroy();
+			ThisApplication.context.destrory(servletContextEvent);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

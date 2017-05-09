@@ -2,8 +2,12 @@ package com.x.cms.assemble.control.service;
 
 import java.util.List;
 
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.DocumentViewRecord;
 
@@ -48,6 +52,26 @@ public class DocumentViewRecordService {
 				emc.commit();
 			}
 		}
+	}
+
+	public List<DocumentViewRecord> listNextWithDocIds( EntityManagerContainer emc, String id, String docId, Integer count, String order ) throws Exception {
+		Business business = new Business(emc);
+		DocumentViewRecord documentViewRecord = null;
+		Object sequenceFieldValue = null;
+		if( id != null && !"(0)".equals(id) && !id.isEmpty() ){
+			if ( !StringUtils.equalsIgnoreCase( id, StandardJaxrsAction.EMPTY_SYMBOL ) ) {
+				documentViewRecord = emc.find( id, DocumentViewRecord.class );
+				if( documentViewRecord != null ){
+					sequenceFieldValue = PropertyUtils.getProperty( documentViewRecord, "lastViewTime" );
+				}
+			}
+		}		
+		return business.documentViewRecordFactory().listNextWithDocIds( docId, count, sequenceFieldValue, order );
+	}
+
+	public Long countWithDocIds(EntityManagerContainer emc, String docId) throws Exception {
+		Business business = new Business(emc);	
+		return business.documentViewRecordFactory().countWithDocIds( docId );
 	}
 	
 }

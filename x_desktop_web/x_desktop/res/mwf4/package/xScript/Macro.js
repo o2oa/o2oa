@@ -1,5 +1,6 @@
 MWF.xScript = MWF.xScript || {};
 MWF.require("MWF.xScript.Environment", null, false);
+MWF.require("MWF.xScript.PageEnvironment", null, false);
 MWF.xScript.Macro = MWF.Macro = {
 	"swapSpace": {},
 	
@@ -50,7 +51,7 @@ MWF.Macro.FormContext = new Class({
             "status": form.businessData.status,
             "target": null,
             "event": null
-        }
+        };
         this.environment = new MWF.xScript.Environment(environment);
     },
     setTarget: function(target){
@@ -81,10 +82,52 @@ MWF.Macro.FormContext = new Class({
         this.setEvent(event);
         return MWF.Macro.exec(code, this.environment);
     }
+});
+MWF.Macro.PageContext = new Class({
+    macroFunction: null,
+    environment: {},
+    initialize: function(page){
+        this.form = page;
+        var environment = {
+            "form": page,
+            "forms": page.forms,
+            "all": page.all,
+            "data": page.businessData.data,
+            "status": page.businessData.status,
+            "target": null,
+            "event": null
+        };
+        this.environment = new MWF.xScript.PageEnvironment(environment);
+    },
+    setTarget: function(target){
+        if (target){
+            this.environment.target = target;
+        }else{
+            this.environment.target = null;
+        }
+    },
+    setEvent: function(event){
+        if (event){
+            this.environment.event = event;
+        }else{
+            this.environment.event = null;
+        }
+    },
+    exec: function(code, target){
+        this.setTarget(target);
+        var returnValue = MWF.Macro.exec(code, this.environment);
+        //this.form.businessData.data = Object.merge(this.form.businessData.data, this.environment.data);
 
+        return returnValue;
+        //this.environment.data
 
+    },
+    fire: function(code, target, event){
+        this.setTarget(target);
+        this.setEvent(event);
+        return MWF.Macro.exec(code, this.environment);
+    }
 });
 
 JSONObject = function(o){
-
-}
+};

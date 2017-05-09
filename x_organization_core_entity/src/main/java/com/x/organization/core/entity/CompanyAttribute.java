@@ -44,7 +44,7 @@ public class CompanyAttribute extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.CompanyAttribute.table;
 
 	@PrePersist
-	public void prePersist() throws Exception { 
+	public void prePersist() throws Exception {
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -123,6 +123,11 @@ public class CompanyAttribute extends SliceJpaObject {
 	}
 
 	/* 更新运行方法 */
+
+	public static String[] FLAGS = new String[] { "id" };
+
+	/** flag标志位 */
+	/** 默认内容结束 */
 
 	@EntityFieldDescribe("name拼音.")
 	@Index(name = TABLE + "_pinyin")

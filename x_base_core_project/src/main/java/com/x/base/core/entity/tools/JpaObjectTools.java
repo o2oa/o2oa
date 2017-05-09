@@ -1,20 +1,15 @@
 package com.x.base.core.entity.tools;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
-import javax.persistence.EntityManager;
 import javax.persistence.criteria.Path;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
-import org.junit.Test;
 
-import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.utils.StringTools;
 

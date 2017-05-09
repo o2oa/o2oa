@@ -62,4 +62,16 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 	public static class Bind {
 		public static final String table = "ORG_BIND";
 	}
+
+	public static class Unit {
+		public static final String table = "ORG_UNIT";
+	}
+
+	public static class UnitAttribute {
+		public static final String table = "ORG_UNITATTRIBUTE";
+	}
+
+	public static class UnitDuty {
+		public static final String table = "ORG_UNITDUTY";
+	}
 }

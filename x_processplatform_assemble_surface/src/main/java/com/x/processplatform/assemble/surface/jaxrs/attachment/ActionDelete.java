@@ -6,9 +6,9 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
-import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.IdWo;
 import com.x.base.core.project.server.StorageMapping;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
@@ -20,9 +20,9 @@ class ActionDelete extends ActionBase {
 
 	Logger logger = LoggerFactory.getLogger(ActionDelete.class);
 
-	ActionResult<WrapOutId> execute(EffectivePerson effectivePerson, String id, String workId) throws Exception {
+	ActionResult<IdWo> execute(EffectivePerson effectivePerson, String id, String workId) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<WrapOutId> result = new ActionResult<>();
+			ActionResult<IdWo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			Work work = emc.find(workId, Work.class);
 			if (null == work) {
@@ -41,9 +41,10 @@ class ActionDelete extends ActionBase {
 				throw new WorkAccessDeniedException(effectivePerson.getName(), work.getTitle(), work.getId());
 			}
 			if (business.attachment().multiReferenced(attachment)) {
-				throw new MultiReferencedException(attachment.getName(), attachment.getId());
+				throw new WorkNotContainsAttachmentException(work.getTitle(), work.getId(), attachment.getName(),
+						attachment.getId());
 			}
-			StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class,
+			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 					attachment.getStorage());
 			if (null != mapping) {
 				attachment.deleteContent(mapping);
@@ -55,8 +56,7 @@ class ActionDelete extends ActionBase {
 			emc.delete(Attachment.class, id);
 			work.getAttachmentList().remove(id);
 			emc.commit();
-			WrapOutId wrap = new WrapOutId(attachment.getId());
-			result.setData(wrap);
+			result.setData(new IdWo(attachment.getId()));
 			return result;
 		}
 	}

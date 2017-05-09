@@ -12,7 +12,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.cms.core.entity.CategoryInfo.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 13:46:13 CST 2017")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sat May 06 19:34:34 CST 2017")
 public class CategoryInfo_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<CategoryInfo,String> appId;
     public static volatile SingularAttribute<CategoryInfo,String> appName;
@@ -37,7 +37,9 @@ public class CategoryInfo_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<CategoryInfo,String> readFormName;
     public static volatile SingularAttribute<CategoryInfo,String> sequence;
     public static volatile SingularAttribute<CategoryInfo,Date> updateTime;
+    public static volatile SingularAttribute<CategoryInfo,String> workflowAppId;
     public static volatile SingularAttribute<CategoryInfo,String> workflowAppName;
     public static volatile SingularAttribute<CategoryInfo,String> workflowFlag;
+    public static volatile SingularAttribute<CategoryInfo,String> workflowName;
     public static volatile SingularAttribute<CategoryInfo,String> workflowType;
 }

@@ -115,11 +115,9 @@ MWF.xApplication.Chat.Main = new Class({
     //    }
     //},
     sendMessage: function(){
-        debugger;
         if (this.current){
             var text = this.chatTextAreaNode.get("value");
             if (text){
-                debugger;
                 //message = {
                 //    "messageType": "chat",
                 //    "personList": this.current.toNames,

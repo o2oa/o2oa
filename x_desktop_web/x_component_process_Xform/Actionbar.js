@@ -95,7 +95,6 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
         }.bind(this));
     },
     setToolbars: function(tools, node, readonly){
-        debugger;
         tools.each(function(tool){
             var flag = true;
             if (tool.control){

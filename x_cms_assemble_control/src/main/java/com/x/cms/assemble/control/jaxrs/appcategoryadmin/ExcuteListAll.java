@@ -11,6 +11,7 @@ import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.SortTools;
 import com.x.cms.assemble.control.WrapTools;
+import com.x.cms.assemble.control.jaxrs.appcategoryadmin.exception.AppCategoryAdminProcessException;
 import com.x.cms.core.entity.AppCategoryAdmin;
 
 import net.sf.ehcache.Element;
@@ -38,9 +39,9 @@ public class ExcuteListAll extends ExcuteBase {
 					appCategoryAdminList = appCategoryAdminServiceAdv.listAll();
 				} catch (Exception e) {
 					check = false;
-					Exception exception = new AppCategoryAdminListAllException( e );
+					Exception exception = new AppCategoryAdminProcessException( e, "查询所有应用栏目分类管理员配置信息时发生异常。" );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 			if( check ){
@@ -51,15 +52,13 @@ public class ExcuteListAll extends ExcuteBase {
 						cache.put(new Element( cacheKey, wraps ));
 						result.setData(wraps);
 					} catch (Exception e) {
-						Exception exception = new AppCategoryAdminWrapOutException( e );
+						Exception exception = new AppCategoryAdminProcessException( e, "系统将查询出来的应用栏目分类管理员信息转换为输出格式时发生异常。" );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 				}
 			}
 		}
-			
-		
 		
 		return result;
 	}

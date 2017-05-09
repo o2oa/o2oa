@@ -274,6 +274,7 @@
         "font-family": "微软雅黑",
         "font-weight": "bold",
         "line-height": "40px",
+        "overflow": "hidden",
         "color": "#FFF"
     },
     "applicationItemTypeNode": {

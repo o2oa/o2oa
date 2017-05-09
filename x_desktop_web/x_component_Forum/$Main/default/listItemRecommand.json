@@ -12,26 +12,32 @@
       "name": "work",
       "content": {
         "html": "<div styles='documentItemNode_rcm'>"+
+          "<div item='index' styles='documentItemNode_rcm_index'></div>"+
           "<div item='sectionName' styles='documentItemNode_rcm_section'></div>"+
+          "<div styles='documentItemNode_rcm_arrow'>＞</div>"+
           "<div item='title' styles='documentItemNode_rcm_title'></div>"+
           "<div styles='documentItemNode_rcm_right'>"+
-          " <div item='createTime' styles='documentItemNode_rcm_time'></div>"+
           " <div item='creatorName' styles='documentItemNode_rcm_person'></div>"+
+          " <div item='createTime' styles='documentItemNode_rcm_time'></div>"+
           "</div>"+
         "</div>",
         "items": {
+          "index" : {"value" : "function(d){ return this.index + 1 }",
+            "styles" : "function(d){ return { 'background-color' : MWF.xApplication.Forum.ForumSetting[ d.forumId ].forumColor } }"
+          },
           "title" : {
             "event" : "click^^function( node, ev ){ this.open() }##mouseover^^function( node, ev ){ node.setStyles( this.css.documentItemNode_rcm_title_over ) }##mouseout^^function( node, ev ){ node.setStyles( this.css.documentItemNode_rcm_title ) }"
           },
           "createTime" : {
-            "value" : "function(d){ return getDateDiff( d.createTime ) }"
+            "value" : "function(d){ return getDateDiff( d.createTime ) }",
+            "attr" : "title^^function(d){ return d.createTime }"
           },
           "creatorName" : {
             "event" : "mouseover^^function( node, ev ){ node.setStyles( this.css.documentItemNode_rcm_person_over ) }##mouseout^^function( node, ev ){ node.setStyles( this.css.documentItemNode_rcm_person )}##click^^function(){this.app.openPerson( this.data.creatorName ) }"
           },
           "sectionName": {
             "value" : "function(d){ return d.sectionName.length > 8 ? d.sectionName.substr(0,8)+'...' : d.sectionName }",
-            "styles" : "function(d){ return { 'background-color' : MWF.xApplication.Forum.ForumSetting[ d.forumId ].forumColor } }",
+            "styles" : "function(d){ return { 'color' : MWF.xApplication.Forum.ForumSetting[ d.forumId ].forumColor } }",
             "event" : "click^^function( node, ev ){ this.openSection( ev ) }"
           }
         }

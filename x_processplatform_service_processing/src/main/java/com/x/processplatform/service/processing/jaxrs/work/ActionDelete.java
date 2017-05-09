@@ -49,7 +49,8 @@ class ActionDelete {
 		for (Attachment o : emc.list(Attachment.class, business.attachment().listWithJob(work.getJob()))) {
 			if (!business.attachmentMultiReferenced(o.getId())) {
 				// 删除实际附件
-				StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class, o.getStorage());
+				StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+						o.getStorage());
 				// 如果没有附件存储的对象就算了
 				if (null != mapping) {
 					o.deleteContent(mapping);

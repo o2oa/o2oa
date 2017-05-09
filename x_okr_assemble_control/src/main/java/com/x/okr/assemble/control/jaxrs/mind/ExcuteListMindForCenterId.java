@@ -39,11 +39,11 @@ public class ExcuteListMindForCenterId extends ExcuteBase {
 		if( check ){
 			try {
 				okrUserCache = okrUserInfoService.getOkrUserCacheWithPersonName( effectivePerson.getName() );
-			} catch (Exception e1) {
+			} catch (Exception e) {
 				check = false;
-				Exception exception = new GetOkrUserCacheException( e1, effectivePerson.getName() );
+				Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}	
 		}
 		
@@ -51,7 +51,7 @@ public class ExcuteListMindForCenterId extends ExcuteBase {
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check ){//查询中心工作信息是否存在
@@ -60,7 +60,7 @@ public class ExcuteListMindForCenterId extends ExcuteBase {
 				check = false;
 				Exception exception = new CenterWorkNotExistsException( effectivePerson.getName() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -85,7 +85,7 @@ public class ExcuteListMindForCenterId extends ExcuteBase {
 					result.error( e );
 					Exception exception = new ViewableWorkListException( e, okrUserCache.getLoginIdentityName(), centerId );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}else{
 				try{
@@ -94,7 +94,7 @@ public class ExcuteListMindForCenterId extends ExcuteBase {
 					result.error( e );
 					Exception exception = new DeployedWorkListAllException( e, centerId );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}				
 			}				
 		}

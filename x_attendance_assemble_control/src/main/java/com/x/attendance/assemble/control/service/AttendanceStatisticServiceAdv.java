@@ -3,8 +3,7 @@ package com.x.attendance.assemble.control.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
+
 import com.x.attendance.entity.AttendanceStatisticRequireLog;
 import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.attendance.entity.AttendanceWorkDayConfig;
@@ -15,6 +14,8 @@ import com.x.attendance.entity.StatisticDepartmentForMonth;
 import com.x.attendance.entity.StatisticPersonForMonth;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 
 public class AttendanceStatisticServiceAdv {
 	

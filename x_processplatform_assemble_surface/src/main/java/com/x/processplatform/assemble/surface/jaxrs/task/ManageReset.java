@@ -62,7 +62,7 @@ class ManageReset extends ActionBase {
 				task.setOpinion(wrapIn.getOpinion());
 			}
 			emc.commit();
-			ThisApplication.applications.putQuery(x_processplatform_service_processing.class,
+			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 					"task/" + URLEncoder.encode(task.getId(), DefaultCharset.name) + "/reset", wrapIn);
 			WrapOutId wrap = new WrapOutId(task.getId());
 			result.setData(wrap);

@@ -298,4 +298,44 @@ public class OkrWorkReportProcessLogFactory extends AbstractFactory {
 		cq.select(root.get( OkrWorkReportProcessLog_.id));
 		return em.createQuery(cq.where(p)).getResultList();
 	}
+
+	/**
+	 * 查询工作汇报处理者身份列表（去重复）
+	 * @param identities_ok 排除身份
+	 * @param identities_error 排除身份
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<String> listAllDistinctProcessorIdentity(List<String> identities_ok, List<String> identities_error) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrWorkReportProcessLog.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<OkrWorkReportProcessLog> root = cq.from(OkrWorkReportProcessLog.class);
+		Predicate p = cb.isNotNull( root.get( OkrWorkReportProcessLog_.id ) );
+		if( identities_ok != null && identities_ok.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkReportProcessLog_.processorIdentity ).in( identities_ok )) );
+		}
+		if( identities_error != null && identities_error.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkReportProcessLog_.processorIdentity ).in( identities_error )) );
+		}
+		cq.distinct(true).select(root.get( OkrWorkReportProcessLog_.processorIdentity ));
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+	/**
+	 * 根据身份名称，从工作汇报处理日志信息中查询与该身份有关的所有信息列表
+	 * @param identity
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<OkrWorkReportProcessLog> listErrorIdentitiesInReportProcessLog(String identity) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrWorkReportProcessLog.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<OkrWorkReportProcessLog> cq = cb.createQuery( OkrWorkReportProcessLog.class );
+		Root<OkrWorkReportProcessLog> root = cq.from( OkrWorkReportProcessLog.class );
+		Predicate p = cb.isNotNull(root.get( OkrWorkReportProcessLog_.id ));		
+		Predicate p_processorIdentity = cb.isNotNull(root.get( OkrWorkReportProcessLog_.processorIdentity ));
+		p_processorIdentity = cb.and( p_processorIdentity, cb.equal( root.get( OkrWorkReportProcessLog_.processorIdentity ), identity ) );		
+		p = cb.and( p, p_processorIdentity );
+		return em.createQuery(cq.where(p)).getResultList();
+	}
 }

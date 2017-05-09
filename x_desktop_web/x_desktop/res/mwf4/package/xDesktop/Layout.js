@@ -48,24 +48,37 @@ MWF.xDesktop.Layout = new Class({
             });
             this.authentication.isAuthenticated(function(json){
                 this.session.user = json.data;
-                MWF.UD.getData("layout", function(json) {
-                    if (json.data) {
-                        this.status = JSON.decode(json.data);
-                        if (this.status.style) this.options.style = this.status.style;
+                MWF.UD.getPublicData("forceLayout", function(json) {
+                    var forceStatus = null;
+                    if (json){
+                        forceStatus = json;
+                    }
 
-                        this.initNode(node);
-                        this.load();
-                    }else{
-                        MWF.UD.getPublicData("defaultLayout", function(json) {
-                            if (json){
-                                this.status = json;
-                                if (this.status.style) this.options.style = this.status.style;
-                            }
+                    MWF.UD.getData("layout", function(json) {
+                        if (json.data) {
+                            this.status = JSON.decode(json.data);
+
+                            if (forceStatus) this.status.apps = Object.merge(this.status.apps, forceStatus.apps);
+
+                            if (this.status.style) this.options.style = this.status.style;
                             this.initNode(node);
                             this.load();
-                        }.bind(this));
-                    }
+                        }else{
+                            MWF.UD.getPublicData("defaultLayout", function(json) {
+                                if (json){
+                                    this.status = json;
+
+                                    if (forceStatus) this.status.apps = Object.merge(this.status.apps, forceStatus.apps);
+
+                                    if (this.status.style) this.options.style = this.status.style;
+                                }
+                                this.initNode(node);
+                                this.load();
+                            }.bind(this));
+                        }
+                    }.bind(this));
                 }.bind(this));
+
             }.bind(this), function(){
                 this.initNode(node);
                 this.load();
@@ -91,6 +104,17 @@ MWF.xDesktop.Layout = new Class({
         if (this.desktopNode) this.desktopNode.setStyles(this.css.desktopNode);
         if (this.contentNode) this.contentNode.setStyles(this.css.contentNode);
         if (this.naviNode) this.naviNode.setStyles(this.css.naviNode);
+
+        var dskImg = MWF.defaultPath+"/xDesktop/$Layout/"+this.options.style+"/desktop.jpg";
+        this.node.setStyle("background-image", "url("+dskImg+")");
+        //MWF.UD.getDataJson("layoutDesktop", function(json){
+        //    var dskImg = MWF.defaultPath+"/xDesktop/$Layout/"+this.options.style+"/desktop.jpg";
+        //    if (json){
+        //        currentSrc = json.src;
+        //        dskImg = MWF.defaultPath+"/xDesktop/$Layout/"+currentSrc+"/desktop.jpg";
+        //    }
+        //     this.node.setStyle("background-image", "url("+dskImg+")");
+        //}.bind(this), false);
     },
     initData: function(callback){
         this.apps = {};
@@ -103,50 +127,82 @@ MWF.xDesktop.Layout = new Class({
         this.session = {};
         this.serviceAddressList = null;
 
-        this.getServiceAddress(callback);
-    },
-    getServiceAddress: function(callback){
-        if (typeOf(layout.config.center)=="object"){
-            this.getServiceAddressConfigObject(callback);
-        }else if (typeOf(layout.config.center)=="array"){
-            this.getServiceAddressConfigArray(callback);
-        }
-
-    },
-    getServiceAddressConfigArray: function(callback) {
-        debugger;
-        var requests = [];
-        layout.config.center.each(function(center){
-            requests.push(
-                this.getServiceAddressConfigObject(function(){
-                    requests.each(function(res){
-                        if (res.isRunning()){res.cancel();}
-                    });
-                    if (callback) callback();
-                }.bind(this), center)
-            );
-        }.bind(this));
-    },
-    getServiceAddressConfigObject: function(callback, center){
-        var centerConfig = center;
-        if (!centerConfig) centerConfig = layout.config.center;
-        var host = centerConfig.host || window.location.hostname;
-        var port = centerConfig.port;
-        var uri = "";
-        if (!port || port=="80"){
-            uri = "http://"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
-        }else{
-            uri = "http://"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
-        }
-        var currenthost = window.location.hostname;
-        uri = uri.replace(/{source}/g, currenthost);
-        //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
-        return MWF.restful("get", uri, null, function(json){
-            this.serviceAddressList = json.data;
+        MWF.xDesktop.getServiceAddress(layout.config, function(service, center){
+            this.serviceAddressList = service;
             this.centerServer = center;
             if (callback) callback();
         }.bind(this));
+        //this.getServiceAddress(callback);
     },
+    //getServiceAddress: function(callback){
+    //    if (typeOf(layout.config.center)=="object"){
+    //        this.getServiceAddressConfigObject(callback);
+    //    }else if (typeOf(layout.config.center)=="array"){
+    //        var center = this.chooseCenter();
+    //        if (center){
+    //            this.getServiceAddressConfigObject(callback, center);
+    //        }else{
+    //            this.getServiceAddressConfigArray(callback);
+    //        }
+    //        //this.getServiceAddressConfigArray(callback);
+    //    }
+    //},
+    //chooseCenter: function(){
+    //    var host = window.location.host;
+    //    var center = null;
+    //    for (var i=0; i<layout.config.center.length; i++){
+    //        var ct = layout.config.center[i];
+    //        if (ct.webHost==host){
+    //            center = ct;
+    //            break;
+    //        }
+    //    }
+    //    return center;
+    //},
+    //getServiceAddressConfigArray: function(callback) {
+    //    //var firstCenter = layout.config.center[this.chooseCenter()];
+    //    //
+    //    //this.getServiceAddressConfigObject({
+    //    //    "onSuccess": function(){
+    //    //        if (callback) callback();
+    //    //    },
+    //    //    "onRequestFailure": function(){
+    //    //
+    //    //    }
+    //    //}, firstCenter);
+    //
+    //    var requests = [];
+    //    layout.config.center.each(function(center){
+    //        requests.push(
+    //            this.getServiceAddressConfigObject(function(){
+    //                requests.each(function(res){
+    //                    if (res.isRunning()){res.cancel();}
+    //                });
+    //                if (callback) callback();
+    //            }.bind(this), center)
+    //        );
+    //    }.bind(this));
+    //},
+    //getServiceAddressConfigObject: function(callback, center){
+    //    var centerConfig = center;
+    //    if (!centerConfig) centerConfig = layout.config.center;
+    //    var host = centerConfig.host || window.location.hostname;
+    //    var port = centerConfig.port;
+    //    var uri = "";
+    //    if (!port || port=="80"){
+    //        uri = "http://"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+    //    }else{
+    //        uri = "http://"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+    //    }
+    //    var currenthost = window.location.hostname;
+    //    uri = uri.replace(/{source}/g, currenthost);
+    //    //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
+    //    return MWF.restful("get", uri, null, function(json){
+    //        this.serviceAddressList = json.data;
+    //        this.centerServer = center;
+    //        if (callback) callback();
+    //    }.bind(this));
+    //},
     isAuthentication: function(success){
         var returnValue = true;
         //this.authentication.isAuthenticated(function(json){
@@ -161,6 +217,7 @@ MWF.xDesktop.Layout = new Class({
             if (success) success();
         }else{
             this.authentication.loadLogin(this.node);
+            this.fireEvent("login");
             returnValue = false;
         }
         return returnValue;
@@ -175,41 +232,51 @@ MWF.xDesktop.Layout = new Class({
         }
 
         this.isAuthentication(function(){
-            MWF.UD.getData("layout", function(json){
-                if (json.data){
-                    this.status = JSON.decode(json.data);
-                    if (this.status.style){
-                        if (this.options.style != this.status.style){
-                            this.changStyle(this.status.style);
-                        }
+            if (this.status){
+                if (this.status.style){
+                    if (this.options.style !== this.status.style){
+                        this.changStyle(this.status.style);
                     }
-                    this.loadDesktop();
-                }else{
-                    MWF.UD.getPublicData("defaultLayout", function(json) {
-                        if (json) {
-                            this.status = json;
-                            if (this.status.style) {
-                                if (this.options.style != this.status.style) {
-                                    this.changStyle(this.status.style);
-                                }
-                            }
-                        }
-                        this.loadDesktop();
-                    }.bind(this));
                 }
+            }
 
-                if (this.session.user.passwordExpired){
-                    this.openApplication({"page":{"x": 0, "y": 0}}, "Profile", {"tab": "passwordConfigPage"});
-                    //alert(MWF.LP.desktop.notice.changePassword);
-                    window.setTimeout(function(){
-                        MWF.xDesktop.notice("error", {"y":"top", "x": "left"}, MWF.LP.desktop.notice.changePassword, this.desktopNode);
-                    }.bind(this), 500);
-                }
+            this.loadDesktop();
 
-                if (MWF.AC.isAdministrator()){
-                    this.checkO2Collect();
-                }
-            }.bind(this));
+            if (this.session.user.passwordExpired){
+                this.openApplication({"page":{"x": 0, "y": 0}}, "Profile", {"tab": "passwordConfigPage"});
+                //alert(MWF.LP.desktop.notice.changePassword);
+                window.setTimeout(function(){
+                    MWF.xDesktop.notice("error", {"y":"top", "x": "left"}, MWF.LP.desktop.notice.changePassword, this.desktopNode);
+                }.bind(this), 500);
+            }
+
+            if (MWF.AC.isAdministrator()){
+                this.checkO2Collect();
+            }
+            //MWF.UD.getData("layout", function(json){
+            //    if (json.data){
+            //        this.status = JSON.decode(json.data);
+            //        if (this.status.style){
+            //            if (this.options.style != this.status.style){
+            //                this.changStyle(this.status.style);
+            //            }
+            //        }
+            //        this.loadDesktop();
+            //    }else{
+            //        MWF.UD.getPublicData("defaultLayout", function(json) {
+            //            if (json) {
+            //                this.status = json;
+            //                if (this.status.style) {
+            //                    if (this.options.style != this.status.style) {
+            //                        this.changStyle(this.status.style);
+            //                    }
+            //                }
+            //            }
+            //            this.loadDesktop();
+            //        }.bind(this));
+            //    }
+            //}.bind(this));
+            this.fireEvent("load");
 
         }.bind(this));
     },
@@ -375,9 +442,10 @@ MWF.xDesktop.Layout = new Class({
     refreshApp:function(app){
         if (app.window){
             var appStatus ={
-                "id": app.id,
+                "id": app.appId,
                 "name": app.options.name,
                 "style": app.options.style,
+                "appId": app.appId,
                 "window": {
                     "size": {"x": app.window.css.to.width.toFloat(), "y": app.window.css.to.height.toFloat()},
                     "position": {"x": app.window.css.to.left.toFloat(), "y": app.window.css.to.top.toFloat()},
@@ -433,7 +501,6 @@ MWF.xDesktop.Layout = new Class({
             this.apps[appStatus.id] = app;
             app.status = appStatus.app;
             this.appCurrentList.push(app);
-            debugger;
             app.loadNoAnimation(true, appStatus.window.isMax, appStatus.window.isHide);
 
         }.bind(this));
@@ -480,7 +547,6 @@ MWF.xDesktop.Layout = new Class({
                         this.apps[id] = app;
                         app.status = appStatus.app;
                         this.appCurrentList.push(app);
-                        debugger;
                         app.loadNoAnimation((this.status.currentApp==id), appStatus.window.isMax, appStatus.window.isHide);
 
                     }.bind(this));
@@ -544,8 +610,8 @@ MWF.xDesktop.Layout = new Class({
             var currentName = this.session.user.name;
             json.data.each(function(value, key){
                 if (value.visible){
-                    var isAllow = (value.allowList.length) ? (value.allowList.indexOf(currentName)!=-1) : true;
-                    var isDeny = (value.denyList.length) ? (value.denyList.indexOf(currentName)!=-1) : false;
+                    var isAllow = (value.allowList.length) ? (value.allowList.indexOf(currentName) !== -1) : true;
+                    var isDeny = (value.denyList.length) ? (value.denyList.indexOf(currentName) !== -1) : false;
                     if ((!isDeny && isAllow) || MWF.AC.isAdministrator()){
                         if (value.widgetName){
                             if (value.widgetStart){
@@ -561,7 +627,6 @@ MWF.xDesktop.Layout = new Class({
     },
 
     setEvent: function(){
-        debugger;
         this.node.addEvent("selectstart", function(e){
 
             var select = "text";
@@ -569,7 +634,7 @@ MWF.xDesktop.Layout = new Class({
                 select = e.target.getStyle("-webkit-user-select").toString().toLowerCase();
             }
 
-            if (select!="text" && select!="auto") e.preventDefault();
+            if (select.toString()!=="text" && select.toString()!=="auto") e.preventDefault();
         });
         window.onunload = function(e){
             if (this.socket){
@@ -580,6 +645,9 @@ MWF.xDesktop.Layout = new Class({
         window.onbeforeunload = function(e){
             if (!this.isLogout){
                 if (!this.notRecordStatus) this.recordDesktopStatus();
+                if (this.socket && this.socket.webSocket &&  this.socket.webSocket.readyState.toInt() === 1) {
+                    this.socket.webSocket.close();
+                }
                 this.fireEvent("unload");
                 e = e || window.event;
                 e.returnValue = MWF.LP.desktop.notice.unload;
@@ -804,6 +872,16 @@ MWF.xDesktop.Layout = new Class({
             this.navi.load();
         }
     },
+    getNodeBackground: function(){
+        MWF.UD.getDataJson("layoutDesktop", function(json){
+            var dskImg = MWF.defaultPath+"/xDesktop/$Layout/"+this.options.style+"/desktop.jpg";
+            if (json){
+                currentSrc = json.src;
+                dskImg = MWF.defaultPath+"/xDesktop/$Layout/"+currentSrc+"/desktop.jpg";
+            }
+            this.node.setStyle("background-image", "url("+dskImg+")");
+        }.bind(this), false);
+    },
     changStyle: function(style){
         this.options.style = style;
         this.cssPath = MWF.defaultPath+"/xDesktop/$Layout/"+this.options.style+"/css.wcss";
@@ -820,6 +898,15 @@ MWF.xDesktop.Layout = new Class({
                 if (this.desktopNode) this.desktopNode.setStyles(this.css.desktopNode);
                 if (this.contentNode) this.contentNode.setStyles(this.css.contentNode);
                 if (this.naviNode) this.naviNode.setStyles(this.css.naviNode);
+
+                if (this.message){
+                    if (this.message.unreadNode){
+                        this.message.unreadNode.clearStyles();
+                        this.message.unreadNode.setStyles(this.css.messageUnreadCountNode);
+                    }
+                }
+
+                this.getNodeBackground();
 
                 this.changeAppsStyle();
 
@@ -1008,7 +1095,7 @@ MWF.xDesktop.Layout.Taskitem = new Class({
         this.app = app;
         this.node = new Element("div", {
             "styles": this.layout.css.taskItemNode,
-            "title": this.app.options.title+"-"+this.app.appId
+            "title": this.app.options.title+((this.app.appId) ? "-"+this.app.appId : "")
         }).inject(this.layout.top.taskbar);
 
         this.iconNode = new Element("div", {
@@ -1122,10 +1209,12 @@ MWF.xDesktop.Layout.Taskitem = new Class({
 
         this.node.addEvents({
             "mouseover": function(){
-                this.closeNode.fade("in");
+                //if (this.layout.currentApp!==this.app)
+                    this.closeNode.fade("in");
             }.bind(this),
             "mouseout": function(){
-                this.closeNode.fade("out");
+                //if (this.layout.currentApp!==this.app)
+                    this.closeNode.fade("out");
             }.bind(this)
         });
         this.closeNode.addEvent("click", function(){
@@ -1134,15 +1223,18 @@ MWF.xDesktop.Layout.Taskitem = new Class({
     },
     selected: function(){
         this.node.setStyles(this.layout.css.taskItemNode_current);
+        //this.closeNode.setStyles(this.layout.css.taskItemCloseNode_current);
     },
     unSelected: function(){
         this.node.setStyles(this.layout.css.taskItemNode);
+        //this.closeNode.setStyles(this.layout.css.taskItemCloseNode);
     },
     changStyle: function(){
         if (this.node){
             if (!this.layout.currentApp || this.layout.currentApp.taskitem!=this){
                 this.node.setStyles(this.layout.css.taskItemNode);
             }else{
+                this.node.setStyles(this.layout.css.taskItemNode);
                 this.node.setStyles(this.layout.css.taskItemNode_current);
             }
         }
@@ -1216,7 +1308,6 @@ MWF.xDesktop.Layout.Top = new Class({
     loadMenu: function(){
         this.createApplicationMenuArea();
         this.getApplicationsCatalogue(function(catalog){
-            debugger;
             var currentName = this.layout.session.user.name;
 
             catalog.each(function(value, key){
@@ -1265,7 +1356,7 @@ MWF.xDesktop.Layout.Top = new Class({
             this.applicationMenuFxScroll = null;
             this.layout.removeEvent("resize", this.resizeApplicationMenuSizeFun);
         }
-        this.currentApplicationMenuContent = "app";
+        this.currentApplicationMenuContent = "process";
         this.isApplicationMenuScroll = false;
     },
     createCMSAppMenu: function(app){
@@ -1487,25 +1578,6 @@ MWF.xDesktop.Layout.Top = new Class({
             "styles": this.layout.css.applicationMenuContentArea
         }).inject(this.applicationMenuScrollArea);
 
-        //application----------------------------------
-        this.applicationMemuAppContent =  new Element("div", {
-            "styles": this.layout.css.applicationMemuAppContent
-        }).inject(this.applicationMenuContentArea);
-
-        this.applicationMenuAppTitleArea = new Element("div", {
-            "styles": this.layout.css.applicationMenuAppTitleArea,
-            "text": MWF.LP.desktop.application
-        }).inject(this.applicationMemuAppContent);
-
-        this.applicationMenuAppIconScrollArea = new Element("div", {
-            "styles": this.layout.css.applicationMenuAppIconScrollArea
-        }).inject(this.applicationMemuAppContent);
-
-        this.applicationMenuAppIconArea = new Element("div", {
-            "styles": this.layout.css.applicationMenuAppIconArea
-        }).inject(this.applicationMenuAppIconScrollArea);
-        //---------------------------------------------
-
         ////widget---------------------------------------
         //this.applicationMemuWidgetContent =  new Element("div", {
         //    "styles": this.layout.css.applicationMemuWidgetContent
@@ -1542,6 +1614,25 @@ MWF.xDesktop.Layout.Top = new Class({
         this.applicationMenuProcessArea = new Element("div", {
             "styles": this.layout.css.applicationMenuProcessArea
         }).inject(this.applicationMenuProcessScrollArea);
+        //---------------------------------------------
+
+        //application----------------------------------
+        this.applicationMemuAppContent =  new Element("div", {
+            "styles": this.layout.css.applicationMemuAppContent
+        }).inject(this.applicationMenuContentArea);
+
+        this.applicationMenuAppTitleArea = new Element("div", {
+            "styles": this.layout.css.applicationMenuAppTitleArea,
+            "text": MWF.LP.desktop.application
+        }).inject(this.applicationMemuAppContent);
+
+        this.applicationMenuAppIconScrollArea = new Element("div", {
+            "styles": this.layout.css.applicationMenuAppIconScrollArea
+        }).inject(this.applicationMemuAppContent);
+
+        this.applicationMenuAppIconArea = new Element("div", {
+            "styles": this.layout.css.applicationMenuAppIconArea
+        }).inject(this.applicationMenuAppIconScrollArea);
         //---------------------------------------------
 
 
@@ -1611,7 +1702,7 @@ MWF.xDesktop.Layout.Top = new Class({
         }.bind(this));
 
         this.applicationMenuRightAction.addEvent("click", function(e){
-            if (!this.currentApplicationMenuContent) this.currentApplicationMenuContent = "app";
+            if (!this.currentApplicationMenuContent) this.currentApplicationMenuContent = "process";
             var next = "";
             var nextNode = null;
             var currentNode = null;
@@ -1652,7 +1743,7 @@ MWF.xDesktop.Layout.Top = new Class({
             e.stopPropagation();
         }.bind(this));
         this.applicationMenuLeftAction.addEvent("click", function(e){
-            if (!this.currentApplicationMenuContent) this.currentApplicationMenuContent = "app";
+            if (!this.currentApplicationMenuContent) this.currentApplicationMenuContent = "process";
             var next = "";
             var nextNode = null;
             var currentNode = null;
@@ -1697,7 +1788,7 @@ MWF.xDesktop.Layout.Top = new Class({
         }.bind(this));
     },
     getProcessApplications: function(callback){
-        var action = new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_portal_assemble_designer");
+        var action = new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_portal_assemble_surface");
         action.invoke({"name": "listPortalApplication", "success": function(json){
             if (json.data){
                 json.data.each(function(app){
@@ -1813,9 +1904,17 @@ MWF.xDesktop.Layout.Top = new Class({
             "styles": this.layout.css.userChatNode,
             "title": MWF.LP.desktop.userChat
         }).inject(this.node);
+
+        this.userChatNode.addEvents({
+            "mouseover": function(){if (this.layout.css.userChatNode_over) this.userChatNode.setStyles(this.layout.css.userChatNode_over);}.bind(this),
+            "mouseout": function(){this.userChatNode.setStyles(this.layout.css.userChatNode);}.bind(this)
+        });
+
+
         this.userChatNode.addEvent("click", function(e){
-            //this.userConfig();
-            //return false;
+            this.userConfig();
+            return false;
+
             if (!this.socket || this.layout.socket.webSocket.readyState != 1) {
                 this.layout.socket = new MWF.xDesktop.WebSocket();
             }
@@ -1912,6 +2011,11 @@ MWF.xDesktop.Layout.Top = new Class({
             "styles": this.layout.css.styleActionNode,
             "title": MWF.LP.desktop.styleAction
         }).inject(this.node);
+        this.styleActionNode.addEvents({
+            "mouseover": function(){if (this.layout.css.styleActionNode_over) this.styleActionNode.setStyles(this.layout.css.styleActionNode_over);}.bind(this),
+            "mouseout": function(){this.styleActionNode.setStyles(this.layout.css.styleActionNode);}.bind(this)
+        });
+
         this.setChangeStyle();
     },
     setChangeStyle: function(){
@@ -1980,13 +2084,20 @@ MWF.xDesktop.Layout.Top = new Class({
         }
     },
     changeLayoutStyle: function(style){
-        this.layout.changStyle(style);
+        MWF.UD.deleteData("layoutDesktop", function(){
+            this.layout.changStyle(style);
+        }.bind(this));
     },
     loadMessageAction: function(){
         this.messageActionNode = new Element("div", {
             "styles": this.layout.css.messageActionNode,
             "title": MWF.LP.desktop.showMessage
         }).inject(this.node);
+
+        this.messageActionNode.addEvents({
+            "mouseover": function(){if (this.layout.css.messageActionNode_over) this.messageActionNode.setStyles(this.layout.css.messageActionNode_over);}.bind(this),
+            "mouseout": function(){this.messageActionNode.setStyles(this.layout.css.messageActionNode);}.bind(this)
+        });
 
         this.layout.message = new MWF.xDesktop.Message(this.layout);
         this.layout.message.load();
@@ -1997,10 +2108,10 @@ MWF.xDesktop.Layout.Top = new Class({
     },
     showDesktopMessage: function(){
         if (!this.layout.message.isShow){
-//			this.layout.message.addMessage({
-//				"subject": "测试消息",
-//				"content": "这是一个测试消息，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果"
-//			});
+			// this.layout.message.addMessage({
+			// 	"subject": "测试消息",
+			// 	"content": "这是一个测试消息，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果，看看效果"
+			// });
             this.layout.message.show();
         }
     },
@@ -2009,6 +2120,10 @@ MWF.xDesktop.Layout.Top = new Class({
             "styles": this.layout.css.userMenuNode,
             "title": MWF.LP.desktop.userMenu
         }).inject(this.node);
+        this.userMenuNode.addEvents({
+            "mouseover": function(){if (this.layout.css.userMenuNode_over) this.userMenuNode.setStyles(this.layout.css.userMenuNode_over);}.bind(this),
+            "mouseout": function(){this.userMenuNode.setStyles(this.layout.css.userMenuNode);}.bind(this)
+        });
 
         this.userMenu = new MWF.xDesktop.Menu(this.userMenuNode, {
             "event": "click",

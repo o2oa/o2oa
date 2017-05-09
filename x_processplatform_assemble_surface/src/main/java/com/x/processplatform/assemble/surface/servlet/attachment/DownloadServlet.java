@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.application.servlet.AbstractServletAction;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.exception.ExceptionWhen;
@@ -27,26 +28,32 @@ import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
+@Deprecated
 @WebServlet(urlPatterns = "/servlet/attachment/download/*")
-public class DownloadServlet extends BaseServlet {
+public class DownloadServlet extends AbstractServletAction {
 
 	private static Logger logger = LoggerFactory.getLogger(DownloadServlet.class);
 	private static final long serialVersionUID = -4314532091497625540L;
 
-	@HttpMethodDescribe(value = "下载附件 servlet/download/{id}/work/{workId}/stream , servlet/download/{id}/workcompleted/(workcompletedId}/stream 流文件 servlet/download/{id}/work/{workId} servlet/download/{id}/workcompleted/{workcompletedId} 输出contentType", response = WrapOutAttachment.class)
+	@HttpMethodDescribe(value = "下载附件 servlet/attachment/download/{id}/work/{workId}/stream, servlet/attachment/download/{id}/workcompleted/(workcompletedId}/stream 流文件 servlet/attachment/download/{id}/work/{workId}, servlet/attachment/download/{id}/workcompleted/{workcompletedId} 输出contentType", response = WrapOutAttachment.class)
 	// servlet/download/{id}/work/workId/stream
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		EffectivePerson effectivePerson = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			this.setCharacterEncoding(request, response);
 			effectivePerson = this.effectivePerson(request);
-			request.setCharacterEncoding("UTF-8");
-			String part = this.getURIPart(request.getRequestURI(), "download");
-			String id = StringUtils.substringBefore(part, "/");
-			part = StringUtils.substringAfter(part, "/");
-			String type = StringUtils.substringBefore(part, "/");
-			part = StringUtils.substringAfter(part, "/");
-			String refercenceId = StringUtils.substringBefore(part, "/");
+			String part = StringUtils.substringAfter(request.getRequestURI(), "/servlet");
+			String id = this.getURIPart(part, "download");
+			String type = "";
+			String refercenceId = "";
+			if (StringUtils.contains(part, "/workcompleted/")) {
+				type = "workcompleted";
+				refercenceId = this.getURIPart(part, "workcompleted");
+			} else {
+				type = "work";
+				refercenceId = this.getURIPart(part, "work");
+			}
 			/* 确定是否要用application/octet-stream输出 */
 			boolean streamContentType = StringUtils.endsWith(part, "/stream");
 			Business business = new Business(emc);
@@ -75,7 +82,8 @@ public class DownloadServlet extends BaseServlet {
 				throw new Exception("unknown url:" + part + ".");
 			}
 			Attachment attachment = emc.find(id, Attachment.class, ExceptionWhen.not_found);
-			StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class, attachment.getStorage());
+			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+					attachment.getStorage());
 			this.setResponseHeader(response, attachment, streamContentType);
 			attachment.readContent(mapping, response.getOutputStream());
 		} catch (Exception e) {

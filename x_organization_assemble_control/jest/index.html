@@ -11,6 +11,7 @@
 <script src="./company.js"></script>
 <script src="./identity.js"></script>
 <script src="./complex.js"></script>
+<script src="./loginRecord.js"></script>
 <script>
     $(document).ready(function() {
 	//	company_list_reload();
@@ -128,6 +129,11 @@
 						<li><a onclick="role_query_init()" href="#">Query</a></li>
 					</ul>
 				</li>
+				<li>LoginRecord
+					<ul>
+						<li><a onclick="loginRecord_get()" href="#">Get</a></li>
+					</ul>
+				</li>
 				<li>Complex
 					<ul>
 						<li><a onclick="complex_query_init ()" href="#">Query</a></li>
@@ -141,6 +147,11 @@
 				<li>Input
 					<ul>
 						<li><a onclick="input_person_init()" href="#">Person</a></li>
+					</ul>
+				</li>
+				<li>Logger
+					<ul>
+						<li><a onclick="logger_init()" href="#">Logger</a></li>
 					</ul>
 				</li>
 			</ul>

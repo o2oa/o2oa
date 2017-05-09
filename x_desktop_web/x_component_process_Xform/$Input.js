@@ -29,7 +29,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
                         return this.form.Macro.fire(e.code, this, event);
                     }.bind(this));
                 }else{
-                    this.node.getFirst().addEvent(key, function(event){
+                    (this.node.getFirst() || this.node).addEvent(key, function(event){
                         return this.form.Macro.fire(e.code, this, event);
                     }.bind(this));
                 }
@@ -333,7 +333,6 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         return true;
     },
     validationConfig: function(routeName, opinion){
-        debugger;
         if (this.json.validationConfig){
             if (this.json.validationConfig.length){
                 for (var i=0; i<this.json.validationConfig.length; i++) {

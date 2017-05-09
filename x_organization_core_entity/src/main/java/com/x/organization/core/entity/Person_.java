@@ -14,7 +14,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.organization.core.entity.Person.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:09:49 CST 2017")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sat May 06 19:35:40 CST 2017")
 public class Person_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Person,Integer> age;
     public static volatile SingularAttribute<Person,Date> birthday;
@@ -27,6 +27,8 @@ public class Person_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Person,GenderType> genderType;
     public static volatile SingularAttribute<Person,String> icon;
     public static volatile SingularAttribute<Person,String> id;
+    public static volatile SingularAttribute<Person,String> lastLoginAddress;
+    public static volatile SingularAttribute<Person,String> lastLoginClient;
     public static volatile SingularAttribute<Person,Date> lastLoginTime;
     public static volatile SingularAttribute<Person,String> mail;
     public static volatile SingularAttribute<Person,String> mobile;

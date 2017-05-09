@@ -4,7 +4,7 @@ import javax.servlet.annotation.WebFilter;
 
 import com.x.base.core.application.jaxrs.CipherManagerUserJaxrsFilter;
 
-@WebFilter(urlPatterns = "/jaxrs/applicationdict/*")
+@WebFilter(urlPatterns = "/jaxrs/applicationdict/*", asyncSupported = true)
 public class ApplicationDictJaxrsFilter extends CipherManagerUserJaxrsFilter {
 
 }

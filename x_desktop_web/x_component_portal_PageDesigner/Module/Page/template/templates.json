@@ -1,0 +1,32 @@
+[
+  {
+    "name": "page.json",
+    "title": "空白页面",
+    "icon": "page.png"
+  },
+  {
+    "name": "page_common.json",
+    "title": "通用表单模板",
+    "icon": "page_common.png"
+  },
+  {
+    "name": "page_tab.json",
+    "title": "标准表单样式(蓝色)",
+    "icon": "page_tab.png"
+  },
+  {
+    "name": "page_tab_red.json",
+    "title": "标准表单样式(红色)",
+    "icon": "page_tab_red.png"
+  },
+  {
+    "name": "page_tab.json",
+    "title": "传统表单样式",
+    "icon": "page_tab.png"
+  },
+  {
+    "name": "page_project.json",
+    "title": "立项表单模板",
+    "icon": "page_project.png"
+  }
+]

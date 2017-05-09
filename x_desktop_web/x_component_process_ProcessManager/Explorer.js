@@ -1,49 +1,48 @@
 MWF.xApplication.process = MWF.xApplication.process || {};
-MWF.xApplication.process.ProcessManager = MWF.xApplication.process.ProcessManager || {};
+MWF.APPPM = MWF.xApplication.process.ProcessManager = MWF.xApplication.process.ProcessManager || {};
 
 MWF.xDesktop.requireApp("process.ProcessManager", "lp."+MWF.language, null, false);
-MWF.xDesktop.requireApp("process.ProcessManager", "package", null, false);
 MWF.xApplication.process.ProcessManager.Explorer = new Class({
-	Extends: MWF.widget.Common,
-	Implements: [Options, Events],
-	options: {
-		"style": "default",
-		"tooltip": {
+    Extends: MWF.widget.Common,
+    Implements: [Options, Events],
+    options: {
+        "style": "default",
+        "tooltip": {
             "create": MWF.APPPM.LP.process.create,
             "search": MWF.APPPM.LP.process.search,
             "searchText": MWF.APPPM.LP.process.searchText,
             "noElement": MWF.APPPM.LP.process.noProcessNoticeText
-		}
-	},
-	
-	initialize: function(node, actions, options){
-		this.setOptions(options);
-		this.setTooltip();
-		
-		this.path = "/x_component_process_ProcessManager/$Explorer/";
-		this.cssPath = "/x_component_process_ProcessManager/$Explorer/"+this.options.style+"/css.wcss";
+        }
+    },
 
-		this._loadCss();
-		
-		this.actions = actions;
-		this.node = $(node);
-		this.initData();
-	},
-	setTooltip: function(tooltip){
-		if (tooltip) this.options.tooltip = Object.merge(this.options.tooltip, tooltip);
-	},
-	initData: function(){
-		//this.categoryLoadFirst = true;
-		//this.isLoaddingCategory = false;
-		//this.categoryLoaded = false;
-		//this.categorys = [];
-		//this.dragItem = false;
-		//this.dragCategory = false;
-		//this.currentCategory = null;
-		//this.loadCategoryQueue = 0;
+    initialize: function(node, actions, options){
+        this.setOptions(options);
+        this.setTooltip();
+
+        this.path = "/x_component_process_ProcessManager/$Explorer/";
+        this.cssPath = "/x_component_process_ProcessManager/$Explorer/"+this.options.style+"/css.wcss";
+
+        this._loadCss();
+
+        this.actions = actions;
+        this.node = $(node);
+        this.initData();
+    },
+    setTooltip: function(tooltip){
+        if (tooltip) this.options.tooltip = Object.merge(this.options.tooltip, tooltip);
+    },
+    initData: function(){
+        //this.categoryLoadFirst = true;
+        //this.isLoaddingCategory = false;
+        //this.categoryLoaded = false;
+        //this.categorys = [];
+        //this.dragItem = false;
+        //this.dragCategory = false;
+        //this.currentCategory = null;
+        //this.loadCategoryQueue = 0;
 
         this.deleteMarkItems = [];
-	},
+    },
     reload: function(){
         this.node.empty();
         this.load();
@@ -100,39 +99,39 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
         //@todo
         return false;
 
-        this.searchElementButtonNode = new Element("div", {"styles": this.css.searchElementButtonNode,"title": this.options.tooltip.search}).inject(this.searchElementNode);
-
-        this.searchElementInputAreaNode = new Element("div", {
-            "styles": this.css.searchElementInputAreaNode
-        }).inject(this.searchElementNode);
-
-        this.searchElementInputBoxNode = new Element("div", {
-            "styles": this.css.searchElementInputBoxNode
-        }).inject(this.searchElementInputAreaNode);
-
-        this.searchElementInputNode = new Element("input", {
-            "type": "text",
-            "value": this.options.tooltip.searchText,
-            "styles": this.css.searchElementInputNode,
-            "x-webkit-speech": "1"
-        }).inject(this.searchElementInputBoxNode);
-        var _self = this;
-        this.searchElementInputNode.addEvents({
-            "focus": function(){
-                if (this.value==_self.options.tooltip.searchText) this.set("value", "");
-            },
-            "blur": function(){if (!this.value) this.set("value", _self.options.tooltip.searchText);},
-            "keydown": function(e){
-                if (e.code==13){
-                    this.searchElement();
-                    e.preventDefault();
-                }
-            }.bind(this),
-            "selectstart": function(e){
-                e.preventDefault();
-            }
-        });
-        this.searchElementButtonNode.addEvent("click", function(){this.searchElement();}.bind(this));
+        //this.searchElementButtonNode = new Element("div", {"styles": this.css.searchElementButtonNode,"title": this.options.tooltip.search}).inject(this.searchElementNode);
+        //
+        //this.searchElementInputAreaNode = new Element("div", {
+        //    "styles": this.css.searchElementInputAreaNode
+        //}).inject(this.searchElementNode);
+        //
+        //this.searchElementInputBoxNode = new Element("div", {
+        //    "styles": this.css.searchElementInputBoxNode
+        //}).inject(this.searchElementInputAreaNode);
+        //
+        //this.searchElementInputNode = new Element("input", {
+        //    "type": "text",
+        //    "value": this.options.tooltip.searchText,
+        //    "styles": this.css.searchElementInputNode,
+        //    "x-webkit-speech": "1"
+        //}).inject(this.searchElementInputBoxNode);
+        //var _self = this;
+        //this.searchElementInputNode.addEvents({
+        //    "focus": function(){
+        //        if (this.value==_self.options.tooltip.searchText) this.set("value", "");
+        //    },
+        //    "blur": function(){if (!this.value) this.set("value", _self.options.tooltip.searchText);},
+        //    "keydown": function(e){
+        //        if (e.code==13){
+        //            this.searchElement();
+        //            e.preventDefault();
+        //        }
+        //    }.bind(this),
+        //    "selectstart": function(e){
+        //        e.preventDefault();
+        //    }
+        //});
+        //this.searchElementButtonNode.addEvent("click", function(){this.searchElement();}.bind(this));
     },
     searchElement: function(){
         //-----------------------------------------

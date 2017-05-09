@@ -96,7 +96,6 @@ MWF.widget.Tree = new Class({
 	},
 	
 	appendChild: function(obj){
-        debugger;
 		var treeNode = new this.$constructor.Node(this, obj);
 		
 		if (this.children.length){

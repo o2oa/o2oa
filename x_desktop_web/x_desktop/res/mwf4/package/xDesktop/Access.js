@@ -7,20 +7,20 @@ MWF.xDesktop.Access = MWF.AC = {
     "action": null,
 
     isAdministrator: function(){
-        return (layout.desktop.session.user.name.toLowerCase() == "xadmin") || (layout.desktop.session.user.roleList.indexOf("Manager")!=-1);
+        return (layout.desktop.session.user.name.toLowerCase() === "xadmin") || (layout.desktop.session.user.roleList.indexOf("Manager")!==-1);
     },
     isGroupCreator: function(){
         if (!layout.desktop.session.user.roleList) return false;
-        return (layout.desktop.session.user.roleList.indexOf("GroupCreator")!=-1);
+        return (layout.desktop.session.user.roleList.indexOf("GroupCreator")!==-1);
     },
     isCompanyCreator: function(){
         if (!layout.desktop.session.user.roleList) return false;
-        return (layout.desktop.session.user.roleList.indexOf("CompanyCreator")!=-1);
+        return (layout.desktop.session.user.roleList.indexOf("CompanyCreator")!==-1);
     },
     isProcessPlatformCreator: function(){
         if (this.isAdministrator()) return true;
         if (!layout.desktop.session.user.roleList) return false;
-        return (layout.desktop.session.user.roleList.indexOf("ProcessPlatformCreator")!=-1);
+        return (layout.desktop.session.user.roleList.indexOf("ProcessPlatformCreator")!==-1);
     },
     isApplicationManager: function(option){
         if (this.isAdministrator()) {
@@ -30,19 +30,19 @@ MWF.xDesktop.Access = MWF.AC = {
         }
     },
     isMeetingAdministrator: function(){
-        return this.isAdministrator() || (layout.desktop.session.user.roleList.indexOf("MeetingManager")!=-1);
+        return this.isAdministrator() || (layout.desktop.session.user.roleList.indexOf("MeetingManager")!==-1);
     },
 
     isPersonManager: function(){
         if (!layout.desktop.session.user.roleList) return false;
-        return (layout.desktop.session.user.roleList.indexOf("PersonManager")!=-1);
+        return this.isAdministrator() || (layout.desktop.session.user.roleList.indexOf("PersonManager")!==-1);
     },
     isPersonEditor: function(option){
         //{list: "idlist", "yes": trueFunction, "no": falseFunction}
         if (this.isAdministrator()) return true;
         if (this.isPersonManager()) return true;
         if (option.list && option.list.length){
-            if (option.list.indexOf(layout.desktop.session.user.id)!=-1) return true;
+            if (option.list.indexOf(layout.desktop.session.user.id)!==-1) return true;
         }
         return false;
     },
@@ -55,7 +55,7 @@ MWF.xDesktop.Access = MWF.AC = {
         }else{
             this.getCompanyList(function(){
                 if (option.id){
-                    if (this.companyList.indexOf(option.id)!=-1){
+                    if (this.companyList.indexOf(option.id)!==-1){
                         if (option.yes) option.yes();
                     }else{
                         if (option.no) option.no();
@@ -79,7 +79,7 @@ MWF.xDesktop.Access = MWF.AC = {
         }else{
             this.getCompanyList(function(){
                 if (option.id){
-                    if (this.companyList.indexOf(option.id)!=-1){
+                    if (this.companyList.indexOf(option.id)!==-1){
                         if (option.yes) option.yes();
                     }else{
                         if (option.no) option.no();

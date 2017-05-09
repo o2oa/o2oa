@@ -7,6 +7,7 @@ import com.x.okr.assemble.control.factory.OkrConfigSecretaryFactory;
 import com.x.okr.assemble.control.factory.OkrConfigSystemFactory;
 import com.x.okr.assemble.control.factory.OkrConfigWorkLevelFactory;
 import com.x.okr.assemble.control.factory.OkrConfigWorkTypeFactory;
+import com.x.okr.assemble.control.factory.OkrErrorSystemIdentityInfoFactory;
 import com.x.okr.assemble.control.factory.OkrStatisticReportContentFactory;
 import com.x.okr.assemble.control.factory.OkrStatisticReportStatusFactory;
 import com.x.okr.assemble.control.factory.OkrTaskFactory;
@@ -59,7 +60,7 @@ public class Business {
 	private OkrWorkReportDetailInfoFactory okrWorkReportDetailInfoFactory;
 	private OkrWorkReportPersonLinkFactory okrWorkReportPersonLinkFactory;
 	private OkrWorkReportProcessLogFactory okrWorkReportProcessLogFactory;
-	
+	private OkrErrorSystemIdentityInfoFactory okrErrorSystemIdentityInfoFactory;
 	private OkrUserInfoFactory okrUserInfoFactory;
 	
 	
@@ -68,9 +69,15 @@ public class Business {
 	
 	public Organization organization() throws Exception {
 		if (null == this.organization) {
-			this.organization = new Organization();
+			this.organization = new Organization(ThisApplication.context());
 		}
 		return organization;
+	}
+	public OkrErrorSystemIdentityInfoFactory okrErrorSystemIdentityInfoFactory() throws Exception {
+		if (null == this.okrErrorSystemIdentityInfoFactory) {
+			this.okrErrorSystemIdentityInfoFactory = new OkrErrorSystemIdentityInfoFactory( this );
+		}
+		return okrErrorSystemIdentityInfoFactory;
 	}
 	public OkrStatisticReportStatusFactory okrStatisticReportStatusFactory() throws Exception {
 		if (null == this.okrStatisticReportStatusFactory) {

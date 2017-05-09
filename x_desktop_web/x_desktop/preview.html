@@ -4,7 +4,7 @@
     <link rel="stylesheet" type="text/css" href="/x_desktop/res/css/style.css" charset="UTF-8" />
     <link rel="stylesheet" href="/x_desktop/res/css/mBoxNotice.css" charset="UTF-8" />
     <link rel="stylesheet" href="/x_desktop/res/css/mBoxTooltip.css" charset="UTF-8" />
-    <script src="/x_desktop/res/common.js?v=0.3.19"></script>
+    <script src="/x_desktop/res/common.js?v=0.3.25"></script>
     <!--<script src="/x_desktop/res/framework/mootools/mootools-core-1.4.5-full-nocompat.js"></script>-->
     <!--<script src="/x_desktop/res/framework/mootools/mootools-more-1.4.0.1-all_2.js"></script>-->
     <script src="res/framework/mootools/mootools-1.6.0.min.js"></script>
@@ -15,6 +15,12 @@
 
     <script>
         layout = window.layout || {};
+        var href = window.location.href;
+        if (href.indexOf("debugger")!=-1) layout["debugger"] = true;
+        var mode = (new URI(href)).get("data").mode;
+        if (mode){
+            if (mode=="mobile") layout.mobile = true;
+        }
         //layout.desktop = layout;
         COMMON.DOM.addReady(function(){
             COMMON.AjaxModule.load("/x_desktop/res/framework/mootools/plugin/mBox.Notice.js", null, false);

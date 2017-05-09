@@ -11,6 +11,7 @@ import com.x.base.core.gson.XGsonBuilder;
 
 public class x_portal_assemble_surface extends Assemble {
 
+	public static final String name = "门户";
 	public static List<String> containerEntities = new ArrayList<>();
 	public static List<StorageType> usedStorageTypes = new ArrayList<>();
 	public static List<Class<? extends Compilable>> dependents = new ArrayList<>();
@@ -24,7 +25,6 @@ public class x_portal_assemble_surface extends Assemble {
 		dependents.add(x_base_core_project.class);
 		dependents.add(x_organization_core_entity.class);
 		dependents.add(x_organization_core_express.class);
-		dependents.add(x_instrument_core_express.class);
 		dependents.add(x_portal_core_entity.class);
 	}
 

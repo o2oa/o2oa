@@ -28,5 +28,10 @@
     "name": "form_project.json",
     "title": "立项表单模板",
     "icon": "form_project.png"
+  },
+  {
+    "name": "form_cms_publish.json",
+    "title": "发布类审批表单",
+    "icon": "form_cms_publish.png"
   }
 ]

@@ -93,7 +93,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
 		"style": "default",
 		"popupStyle" : "o2platform",
 		"width": "650",
-		"height": "480",
+		"height": "490",
 		"hasTop": true,
 		"hasIcon": false,
 		"hasTopIcon" : true,
@@ -104,6 +104,11 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
 		"closeAction": true
 	},
 	_createTableContent: function () {
+
+		this.formTopIconNode.setStyle("cursor","pointer");
+		this.formTopIconNode.addEvent("click", function(){
+			window.open("http://www.o2oa.io","_blank");
+		});
 
 		this.loginType = "captcha";
 		this.codeLogin=false;
@@ -157,14 +162,15 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
 			"<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>";
 		if( this.signUpMode && this.signUpMode != "disable" ){
 			html += "<tr><td><div item='signUpAction'></div><div item='forgetPassword'></div></td></tr>";
-		};
+		}else{
+			html += "<tr><td><div styles='signUpAction'></div><div item='forgetPassword'></div></td></tr>";
+		}
 		html +=	"<tr><td  styles='formTableValue' item='errorArea'></td></tr>" +
 			"</table>"
 
 		this.formTableArea.set("html", html);
         new Element("div", {
             "styles": {
-                "margin-top": "20px",
                 "text-align": "center",
                 "height": "40px",
                 "line-height": "40px"

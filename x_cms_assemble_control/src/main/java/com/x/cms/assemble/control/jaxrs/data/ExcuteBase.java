@@ -10,7 +10,7 @@ import net.sf.ehcache.Ehcache;
 
 public class ExcuteBase {
 	
-	protected static Ehcache cache = ApplicationCache.instance().getCache( DataItem.class);
+	protected Ehcache cache = ApplicationCache.instance().getCache( DataItem.class);
 	
 	protected UserManagerService userManagerService = new UserManagerService();
 	protected CategoryInfoServiceAdv categoryInfoServiceAdv = new CategoryInfoServiceAdv();

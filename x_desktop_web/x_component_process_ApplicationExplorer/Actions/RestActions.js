@@ -77,17 +77,11 @@ MWF.xApplication.process.ApplicationExplorer.Actions.RestActions = new Class({
 
 
 
-    listFormCategory: function(lastId, count, success, failure, async){
-        this.action.invoke({"name": "listFormCategory","async": async, "parameter": {"id": lastId || "(0)", "count": count || "20"},	"success": success,	"failure": failure});
-    },
-    listProcessCategory: function(lastId, count, success, failure, async){
-        this.action.invoke({"name": "listProcessCategory","async": async, "parameter": {"id": lastId || "(0)", "count": count || "20"},	"success": success,	"failure": failure});
-    },
-    //listForm: function(category, last, count, success, failure, async){
-    //	this.action.invoke({"name": "listForm","async": async, "parameter": {"cid": category, "id": last || "(0)", "count": count || "20"},	"success": success,	"failure": failure});
+    //listFormCategory: function(lastId, count, success, failure, async){
+    //    this.action.invoke({"name": "listFormCategory","async": async, "parameter": {"id": lastId || "(0)", "count": count || "20"},	"success": success,	"failure": failure});
     //},
-    //listProcess: function(category, last, count, success, failure, async){
-    //	this.action.invoke({"name": "listProcess","async": async, "parameter": {"cid": category, "id": last || "(0)", "count": count || "20"},	"success": success,	"failure": failure});
+    //listProcessCategory: function(lastId, count, success, failure, async){
+    //    this.action.invoke({"name": "listProcessCategory","async": async, "parameter": {"id": lastId || "(0)", "count": count || "20"},	"success": success,	"failure": failure});
     //},
     getDictionary: function(id, success, failure, async){
         this.action.invoke({"name": "getDictionary","async": async, "parameter": {"id": id},	"success": success,	"failure": failure});
@@ -217,5 +211,5 @@ MWF.xApplication.process.ApplicationExplorer.Actions.RestActions = new Class({
         //    }.bind(this));
         //}
     }
-	
+
 });

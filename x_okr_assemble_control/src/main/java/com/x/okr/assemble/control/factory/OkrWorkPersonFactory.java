@@ -11,6 +11,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
@@ -799,9 +800,6 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 		}
 		sql_stringBuffer.append( " order by o." + wrapIn.getSequenceField() + " " + (StringUtils.equalsIgnoreCase(order, "DESC" ) ? "DESC" : "ASC" ));
 		
-		//logger.debug( sql_stringBuffer.toString() );
-		//logger.debug( vs );
-		
 		Query query = em.createQuery( sql_stringBuffer.toString(), OkrWorkPerson.class);
 		// 为查询设置所有的参数值
 		//System.out.println( ">>>>>>>>>SQL:[" + sql_stringBuffer.toString() +"]" );
@@ -1325,6 +1323,55 @@ public class OkrWorkPersonFactory extends AbstractFactory {
 			p = cb.and( p, cb.equal( root.get( OkrWorkPerson_.deployMonth ), wrapIn.getDeployMonth() ) );
 		}
 		
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+	
+	/**
+	 * 查询工作干系人身份列表（去重复）
+	 * @param identities_ok 排除身份
+	 * @param identities_error 排除身份
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<String> listAllDistinctEmployeeIdentity(List<String> identities_ok, List<String> identities_error) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrWorkPerson.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<OkrWorkPerson> root = cq.from(OkrWorkPerson.class);
+		
+		Predicate p = cb.isNotNull( root.get( OkrWorkPerson_.id ) );
+		if( identities_ok != null && identities_ok.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkPerson_.employeeIdentity ).in( identities_ok )) );
+		}
+		if( identities_error != null && identities_error.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkPerson_.employeeIdentity ).in( identities_error )) );
+		}
+		cq.distinct(true).select(root.get( OkrWorkPerson_.employeeIdentity ));
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+	/**
+	 * 根据身份名称，从工作干系人信息中查询与该身份有关的所有信息列表
+	 * @param identity
+	 * @param recordId  
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<OkrWorkPerson> listErrorIdentitiesInWorkPerson(String identity, String recordId ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrWorkPerson.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<OkrWorkPerson> cq = cb.createQuery( OkrWorkPerson.class );
+		Root<OkrWorkPerson> root = cq.from( OkrWorkPerson.class );
+		Predicate p = cb.isNotNull(root.get( OkrWorkPerson_.id ));
+		
+		if( recordId != null && !recordId.isEmpty() && !"all".equals( recordId ) ){
+			p = cb.and( p, cb.equal( root.get( OkrWorkPerson_.id ), recordId ) );
+		}
+		
+		Predicate p_employeeIdentity = cb.isNotNull(root.get( OkrWorkPerson_.employeeIdentity ));
+		p_employeeIdentity = cb.and( p_employeeIdentity, cb.equal( root.get( OkrWorkPerson_.employeeIdentity ), identity ) );
+			
+		p = cb.and( p, p_employeeIdentity );
+
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 }

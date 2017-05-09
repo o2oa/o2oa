@@ -9,12 +9,16 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.SortTools;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.CompanyWorkManagerCheckException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.UserNoLoginException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkBaseInfoProcessException;
 import com.x.okr.entity.OkrCenterWorkInfo;
 import com.x.okr.entity.OkrWorkAuthorizeRecord;
 import com.x.okr.entity.OkrWorkBaseInfo;
@@ -49,6 +53,9 @@ public class ExcuteListDeployWorkInCenterForForm extends ExcuteBase {
 		Boolean authorizeAble = false; //是否允许进行授权
 		Boolean tackbackAble = false; //是否允许被收回
 		Boolean deleteAble = false; //是否允许删除工作
+		Boolean archiveAble = false; //是否允许归档工作
+		Boolean isCompanyWorkAdmin = false; //是否是公司工作管理员
+		
 		String work_dismantling = "CLOSE";
 		String work_authorize = "CLOSE";
 		String report_usercreate = "CLOSE";
@@ -65,23 +72,23 @@ public class ExcuteListDeployWorkInCenterForForm extends ExcuteBase {
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName()  );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}		
 		if( check && ( okrUserCache == null || okrUserCache.getLoginIdentityName() == null ) ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName()  );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			try {
 				work_dismantling = okrConfigSystemService.getValueWithConfigCode( "WORK_DISMANTLING" );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new SystemConfigQueryByCodeException( e, "WORK_DISMANTLING" );
+				Exception exception = new WorkBaseInfoProcessException( e, "根据指定的Code查询系统配置时发生异常。Code:" + "WORK_DISMANTLING" );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}	
 		}
 		if( check ){
@@ -89,9 +96,9 @@ public class ExcuteListDeployWorkInCenterForForm extends ExcuteBase {
 				work_authorize = okrConfigSystemService.getValueWithConfigCode( "WORK_AUTHORIZE" );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new SystemConfigQueryByCodeException( e, "WORK_AUTHORIZE" );
+				Exception exception = new WorkBaseInfoProcessException( e, "根据指定的Code查询系统配置时发生异常。Code:" + "WORK_AUTHORIZE" );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}	
 		}
 		if( check ){
@@ -99,19 +106,30 @@ public class ExcuteListDeployWorkInCenterForForm extends ExcuteBase {
 				report_usercreate = okrConfigSystemService.getValueWithConfigCode( "REPORT_USERCREATE" );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new SystemConfigQueryByCodeException( e, "REPORT_USERCREATE" );
+				Exception exception = new WorkBaseInfoProcessException( e, "根据指定的Code查询系统配置时发生异常。Code:" + "REPORT_USERCREATE" );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}	
+		}
+		if( check ){
+			try {
+				if( okrUserManagerService.isCompanyWorkManager( okrUserCache.getLoginIdentityName() )){
+					isCompanyWorkAdmin = true;
+				}
+			} catch (Exception e ) {
+				Exception exception = new CompanyWorkManagerCheckException( e, okrUserCache.getLoginIdentityName() );
+				result.error( exception );
+				logger.error( e, effectivePerson, request, null);
+			}
 		}
 		if( check ){
 			try{
 				okrCenterWorkInfo = okrCenterWorkInfoService.get( id );
 			}catch(Exception e){
 				check = false;
-				Exception exception = new CenterWorkQueryByIdException( e, id );
+				Exception exception = new WorkBaseInfoProcessException( e, "查询指定ID的中心工作信息时发生异常。ID：" + id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -174,6 +192,12 @@ public class ExcuteListDeployWorkInCenterForForm extends ExcuteBase {
 							workProcessIndentity.add("DEPLOY");//判断工作是否由我部署
 							if( "草稿".equals(  info.getWorkProcessStatus() )){
 								editAble = true; //工作的部署者可以进行工作信息编辑， 草稿状态下可编辑，部署下去了就不能编辑了
+							}else{
+								if( !"已归档".equals( info.getStatus() )){
+									if( okrUserCache.isOkrSystemAdmin() || isCompanyWorkAdmin ){//如果用户是管理,或者是部署者
+										archiveAble = true;
+									}
+								}
 							}
 							try{
 								//部署者在该工作没有部署下级工作（被下级拆解）的情况下,可以删除
@@ -198,10 +222,13 @@ public class ExcuteListDeployWorkInCenterForForm extends ExcuteBase {
 							workProcessIndentity.add("RESPONSIBILITY");//判断工作是否由我负责
 							//如果该工作未归档 ，正常执行中，那么责任者可以进行工作授权
 							if( !"已归档".equalsIgnoreCase( info.getStatus() ) ){
-								if( !tackbackAble ){
-									authorizeAble = true;
+								if( !info.getIsCompleted() ){
+									//未完成的工作
+									if( !tackbackAble ){
+										authorizeAble = true;
+									}
+									splitAble = true;
 								}
-								splitAble = true;
 							}
 						}
 						
@@ -225,6 +252,9 @@ public class ExcuteListDeployWorkInCenterForForm extends ExcuteBase {
 							if( "OPEN".equalsIgnoreCase( work_authorize )){
 								workOperation.add( "TACKBACK" );
 							}
+						}
+						if( archiveAble ){
+							workOperation.add( "ARCHIVE" );
 						}
 						if( deleteAble ){
 							workOperation.add( "DELETE" );

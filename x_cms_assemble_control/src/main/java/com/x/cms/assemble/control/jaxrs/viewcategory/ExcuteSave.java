@@ -12,6 +12,7 @@ import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.core.entity.element.View;
 import com.x.cms.core.entity.element.ViewCategory;
 
 public class ExcuteSave extends ExcuteBase {
@@ -44,6 +45,8 @@ public class ExcuteSave extends ExcuteBase {
 				}
 				wrap = new WrapOutId( viewCategory.getId() );
 				result.setData(wrap);
+				
+				ApplicationCache.notify( View.class );
 				ApplicationCache.notify( ViewCategory.class );
 			} catch (Throwable th) {
 				th.printStackTrace();

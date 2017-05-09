@@ -4,16 +4,16 @@
   <persistence-unit name="com.x.file.core.entity.open.File" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>com.x.file.core.entity.open.File</class>
-    <class>com.x.base.core.entity.StorageObject</class>
     <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.base.core.entity.StorageObject</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.file.core.entity.personal.Attachment" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.file.core.entity.personal.Attachment</class>
     <class>com.x.base.core.entity.StorageObject</class>
-    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>

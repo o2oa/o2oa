@@ -5,6 +5,7 @@ function department_init() {
     str += '<tr><td>function:</td><td id="id"><select id="function">';
     str += '<option value="getWithName">getWithName</option>';
     str += '<option value="listWithPerson">listWithPerson</option>';
+    str += '<option value="listWithPersonSupNested">listWithPersonSupNested</option>';
     str += '<option value="getWithIdentity">getWithIdentity</option>';
     str += '<option value="getSupDirect">getSupDirect</option>';
     str += '<option value="listSupNested">listSupNested</option>';
@@ -55,6 +56,9 @@ function department_getUrl() {
 	break;
     case 'listWithPerson':
 	url += 'list/person/' + $('#argumentOne').val();
+	break;
+    case 'listWithPersonSupNested':
+	url += 'list/person/' + $('#argumentOne').val() + '/sup/nested';
 	break;
     case 'getWithIdentity':
 	url += 'identity/' + $('#argumentOne').val();

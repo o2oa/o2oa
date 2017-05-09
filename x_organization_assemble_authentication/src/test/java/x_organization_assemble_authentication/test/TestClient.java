@@ -3,8 +3,6 @@ package x_organization_assemble_authentication.test;
 import java.io.File;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,7 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import com.x.base.core.Crypto;
-import com.x.base.core.utils.StringTools;
 import com.x.organization.core.entity.Person;
 
 public class TestClient {

@@ -44,7 +44,7 @@ public class Role extends SliceJpaObject {
 	private static final String TABLE = PersistenceProperties.Role.table;
 
 	@PrePersist
-	public void prePersist() throws Exception { 
+	public void prePersist() throws Exception {
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -57,7 +57,7 @@ public class Role extends SliceJpaObject {
 	}
 
 	@PreUpdate
-	public void preUpdate() throws Exception{
+	public void preUpdate() throws Exception {
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -117,7 +117,7 @@ public class Role extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() throws Exception{
+	private void onPersist() throws Exception {
 		this.pinyin = StringUtils.lowerCase(PinyinHelper.convertToPinyinString(name, "", PinyinFormat.WITHOUT_TONE));
 		this.pinyinInitial = StringUtils.lowerCase(PinyinHelper.getShortPinyin(name));
 		if (StringUtils.isEmpty(this.display)) {
@@ -125,7 +125,12 @@ public class Role extends SliceJpaObject {
 		}
 	}
 
-	/* 更新运行方法 */
+	/** 更新运行方法 */
+
+	public static String[] FLAGS = new String[] { "id", "name" };
+
+	/** flag标志位 */
+	/** 默认内容结束 */
 
 	@EntityFieldDescribe("name拼音.")
 	@Index(name = TABLE + "_pinyin")
@@ -142,7 +147,7 @@ public class Role extends SliceJpaObject {
 	@Index(name = TABLE + "_name")
 	@CheckPersist(allowEmpty = false, simplyString = true, citationNotExists =
 	/* 验证不可重名 */
-	@CitationNotExist(fields = { "name", "unique" }, type = Role.class) )
+	@CitationNotExist(fields = { "name", "unique" }, type = Role.class))
 	private String name;
 
 	@EntityFieldDescribe("唯一标识.")
@@ -150,7 +155,7 @@ public class Role extends SliceJpaObject {
 	@Index(name = TABLE + "_unique")
 	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists =
 	/* 验证不可重名 */
-	@CitationNotExist(fields = { "name", "id", "unique" }, type = Role.class) )
+	@CitationNotExist(fields = { "name", "id", "unique" }, type = Role.class))
 	private String unique;
 
 	@CheckPersist(allowEmpty = true, simplyString = true)
@@ -165,7 +170,7 @@ public class Role extends SliceJpaObject {
 
 	@EntityFieldDescribe("角色个人成员,多值,存储 Person ID.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + "_personList", joinIndex = @Index(name = TABLE + "_personList_join") )
+	@ContainerTable(name = TABLE + "_personList", joinIndex = @Index(name = TABLE + "_personList_join"))
 	@ElementIndex(name = TABLE + "_personList_element")
 	@CheckPersist(allowEmpty = true, citationExists = { @CitationExist(type = Person.class) })
 	@ElementColumn(length = JpaObject.length_id, name = "xpersonList")
@@ -174,7 +179,7 @@ public class Role extends SliceJpaObject {
 
 	@EntityFieldDescribe("角色群组成员,多值,存储 Group ID.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + "_groupList", joinIndex = @Index(name = TABLE + "_groupList_join") )
+	@ContainerTable(name = TABLE + "_groupList", joinIndex = @Index(name = TABLE + "_groupList_join"))
 	@ElementIndex(name = TABLE + "_groupList_element")
 	@ElementColumn(length = JpaObject.length_id, name = "xgroupList")
 	@OrderColumn(name = PersistenceProperties.orderColumn)

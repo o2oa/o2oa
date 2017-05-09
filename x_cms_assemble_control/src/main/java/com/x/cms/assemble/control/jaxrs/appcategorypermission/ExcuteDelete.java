@@ -8,6 +8,9 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.cms.assemble.control.jaxrs.appcategorypermission.exception.AppCategoryPermissionIdEmptyException;
+import com.x.cms.assemble.control.jaxrs.appcategorypermission.exception.AppCategoryPermissionNotExistsException;
+import com.x.cms.assemble.control.jaxrs.appcategorypermission.exception.AppCategoryPermissionProcessException;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.AppCategoryPermission;
 import com.x.cms.core.entity.AppInfo;
@@ -29,7 +32,6 @@ public class ExcuteDelete extends ExcuteBase {
 				check = false;
 				Exception exception = new AppCategoryPermissionIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -37,9 +39,9 @@ public class ExcuteDelete extends ExcuteBase {
 				appCategoryPermission = appCategoryPermissionServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new AppCategoryPermissionQueryByIdException( e, id );
+				Exception exception = new AppCategoryPermissionProcessException( e, "根据ID查询应用栏目分类权限配置信息时发生异常。ID:" + id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -47,7 +49,6 @@ public class ExcuteDelete extends ExcuteBase {
 				check = false;
 				Exception exception = new AppCategoryPermissionNotExistsException( id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -70,9 +71,9 @@ public class ExcuteDelete extends ExcuteBase {
 				result.setData(wrap);
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new AppCategoryPermissionDeleteException( e, id );
+				Exception exception = new AppCategoryPermissionProcessException( e, "根据ID删除应用栏目分类权限配置信息时发生异常。ID:" + id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

@@ -2,10 +2,12 @@ package com.x.collaboration.core.message;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.x.base.core.project.AbstractThisApplication;
+import com.x.base.core.project.Context;
 import com.x.base.core.project.x_collaboration_service_message;
 
 public class Collaboration {
+
+	private static Context context;
 
 	private static LinkedBlockingQueue<BaseMessage> SendQueue = new LinkedBlockingQueue<>();
 
@@ -13,7 +15,8 @@ public class Collaboration {
 		SendQueue.put(message);
 	}
 
-	public static void start() {
+	public static void start(Context context) {
+		Collaboration.context = context;
 		SendThread thread = new SendThread();
 		thread.start();
 	}
@@ -34,7 +37,7 @@ public class Collaboration {
 					if (o instanceof StopSignal) {
 						break;
 					}
-					AbstractThisApplication.applications.postQuery(x_collaboration_service_message.class, "message", o);
+					context.applications().postQuery(x_collaboration_service_message.class, "message", o);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

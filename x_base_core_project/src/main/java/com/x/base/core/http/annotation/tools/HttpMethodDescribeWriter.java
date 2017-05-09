@@ -56,7 +56,7 @@ public class HttpMethodDescribeWriter {
 		httpMethodDescribeWriter.write(args[0], args[1]);
 	}
 
-	public void write(String directory, String name) {
+	public void write( String directory, String name ) {
 		try {
 			List<Class<?>> classes = this.scanHttpServiceClass(name);
 			if (!classes.isEmpty()) {
@@ -67,18 +67,17 @@ public class HttpMethodDescribeWriter {
 					if (clz.isAnnotationPresent(Path.class)) {
 						List<Method> methods = this.scanJaxrsMethod(clz);
 						Path typePath = clz.getAnnotation(Path.class);
-						for (Method method : methods) {
+						for ( Method method : methods ) {
 							addRow(sheet, style, typePath, method);
 						}
-					} else if (clz.isAnnotationPresent(ServerEndpoint.class)) {
+					} else if ( clz.isAnnotationPresent(ServerEndpoint.class) ) {
 						ServerEndpoint serverEndpoint = clz.getAnnotation(ServerEndpoint.class);
 						addRow(sheet, style, serverEndpoint.value(), "", "");
-					} else if (clz.isAnnotationPresent(WebServlet.class)) {
+					} else if ( clz.isAnnotationPresent(WebServlet.class) ) {
 						WebServlet webServlet = clz.getAnnotation(WebServlet.class);
-						for (Method m : MethodUtils.getMethodsWithAnnotation(clz, HttpMethodDescribe.class)) {
-							if (webServletMethods.contains(m.getName())) {
-								addRow(sheet, style, StringUtils.join(webServlet.value()), m.getName(),
-										webServlet.description());
+						for ( Method m : MethodUtils.getMethodsWithAnnotation( clz, HttpMethodDescribe.class) ) {
+							if ( webServletMethods.contains(m.getName()) ) {
+								addRow(sheet, style, StringUtils.join(webServlet.value()), m.getName(), webServlet.description());
 							}
 						}
 					}
@@ -88,13 +87,13 @@ public class HttpMethodDescribeWriter {
 				wb.write(fileOut);
 				wb.close();
 				fileOut.close();
-				System.out.println("create:" + filePath);
-				for (Class<?> clz : this.scanWrapClass(name)) {
-					createWrapDescribe(clz, directory);
+				int i = 0;
+				int total = this.scanWrapClass( name ).size();
+				for ( Class<?> clz : this.scanWrapClass( name ) ) {
+					i++;
+					System.out.println( "creating("+i+"/"+total+"):" + clz.getName() );
+					createWrapDescribe( clz, directory );
 				}
-				// for (Class<?> clz : this.scanWrapOutClass(name)) {
-				// createWrapOutDescribe(clz, directory);
-				// }
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -119,7 +118,7 @@ public class HttpMethodDescribeWriter {
 		}
 	}
 
-	private List<Class<?>> scanHttpServiceClass(String name) throws Exception {
+	private List<Class<?>> scanHttpServiceClass( String name ) throws Exception {
 		String pack = "com." + name.replaceAll("_", ".");
 		ScanResult scanResult = new FastClasspathScanner(pack).scan();
 		SetUniqueList<String> list = SetUniqueList.setUniqueList(new ArrayList<String>());
@@ -353,12 +352,13 @@ public class HttpMethodDescribeWriter {
 			cell.setCellValue(describe);
 			cell.setCellStyle(style);
 		}
+		
 		String filePath = directory + "/" + clz.getSimpleName() + ".xls";
 		FileOutputStream fileOut = new FileOutputStream(filePath);
 		wb.write(fileOut);
 		wb.close();
 		fileOut.close();
-		System.out.println("create:" + filePath);
+		System.out.println( "file created:" + filePath );
 	}
 
 	// private void createWrapOutDescribe(Class<?> clz, String directory) throws

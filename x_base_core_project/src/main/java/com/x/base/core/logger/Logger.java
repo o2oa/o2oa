@@ -15,9 +15,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.exception.PromptException;
 import com.x.base.core.gson.XGsonBuilder;
 import com.x.base.core.http.EffectivePerson;
-import com.x.base.core.http.WrapOutBoolean;
-import com.x.base.core.project.AbstractThisApplication;
-import com.x.base.core.project.x_instrument_service_express;
+import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.server.Config;
 import com.x.base.core.utils.DateTools;
 
@@ -99,8 +97,8 @@ public class Logger {
 						parameters.put(PARAMETER_OCCURTIME, DateTools.now());
 						parameters.put(PARAMETER_LOGGERNAME, loggerName);
 						parameters.put(PARAMETER_MESSAGE, str);
-						AbstractThisApplication.applications.postQuery(x_instrument_service_express.class, "warnlog",
-								parameters, WrapOutBoolean.class);
+						String url = Config.x_program_centerUrlRoot() + "warnlog";
+						CipherConnectionAction.post(url, parameters);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -131,11 +129,11 @@ public class Logger {
 					parameters.put(PARAMETER_MESSAGE, e.getMessage());
 					parameters.put(PARAMETER_STACKTRACE, stackTraceString);
 					if (e instanceof PromptException) {
-						AbstractThisApplication.applications.postQuery(x_instrument_service_express.class,
-								"prompterrorlog", parameters, WrapOutBoolean.class);
+						String url = Config.x_program_centerUrlRoot() + "prompterrorlogs";
+						CipherConnectionAction.post(url, parameters);
 					} else {
-						AbstractThisApplication.applications.postQuery(x_instrument_service_express.class,
-								"unexpectederrorlog", parameters, WrapOutBoolean.class);
+						String url = Config.x_program_centerUrlRoot() + "unexpectederrorlog";
+						CipherConnectionAction.post(url, parameters);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -180,11 +178,11 @@ public class Logger {
 					parameters.put(PARAMETER_REQUESTBODY, bodyString);
 					parameters.put(PARAMETER_REQUESTBODYLENGTH, bodyString.length());
 					if (e instanceof PromptException) {
-						AbstractThisApplication.applications.postQuery(x_instrument_service_express.class,
-								"prompterrorlog", parameters, WrapOutBoolean.class);
+						String url = Config.x_program_centerUrlRoot() + "prompterrorlog";
+						CipherConnectionAction.post(url, parameters);
 					} else {
-						AbstractThisApplication.applications.postQuery(x_instrument_service_express.class,
-								"unexpectederrorlog", parameters, WrapOutBoolean.class);
+						String url = Config.x_program_centerUrlRoot() + "unexpectederrorlog";
+						CipherConnectionAction.post(url, parameters);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

@@ -2,12 +2,12 @@ package com.x.okr.assemble.control.service;
 
 import java.util.List;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.Business;
 import com.x.okr.entity.OkrStatisticReportStatus;
 
@@ -112,11 +112,11 @@ public class OkrStatisticReportStatusService{
 		}
 	}
 
-	public List<OkrStatisticReportStatus> list(String centerId, String workId, String organization, String cycleType, String status ) throws Exception {
+	public List<OkrStatisticReportStatus> list(String centerId, String centerTitle, String workId, String workType, String organization, String cycleType, String status ) throws Exception {
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business( emc );
-			return business.okrStatisticReportStatusFactory().list( centerId, workId, organization, cycleType, status );
+			return business.okrStatisticReportStatusFactory().list( centerId, centerTitle, workId, workType, organization, cycleType, status );
 		}catch( Exception e ){
 			throw e;
 		}

@@ -13,16 +13,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.application.servlet.AbstractServletAction;
 import com.x.base.core.cache.ApplicationCache;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.Storage;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
@@ -38,9 +37,10 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 
+@Deprecated
 @WebServlet(urlPatterns = "/servlet/attachment/upload/work/*")
 @MultipartConfig
-public class UploadServlet extends BaseServlet {
+public class UploadServlet extends AbstractServletAction {
 
 	private static Logger logger = LoggerFactory.getLogger(UploadServlet.class);
 
@@ -53,8 +53,8 @@ public class UploadServlet extends BaseServlet {
 		List<WrapOutId> wraps = new ArrayList<>();
 		EffectivePerson effectivePerson = null;
 		try {
-			request.setCharacterEncoding("UTF-8");
-			if (!ServletFileUpload.isMultipartContent(request)) {
+			this.setCharacterEncoding(request, response);
+			if (!this.isMultipartContent(request)) {
 				throw new Exception("not mulit part request.");
 			}
 			effectivePerson = this.effectivePerson(request);
@@ -73,8 +73,7 @@ public class UploadServlet extends BaseServlet {
 			}
 			/* 附件分类信息 */
 			String site = null;
-			ServletFileUpload upload = new ServletFileUpload();
-			FileItemIterator fileItemIterator = upload.getItemIterator(request);
+			FileItemIterator fileItemIterator = this.getItemIterator(request);
 			List<Attachment> attachments = new ArrayList<>();
 			// List<AttachmentLog> attachmentLogs = new ArrayList<>();
 			while (fileItemIterator.hasNext()) {
@@ -87,8 +86,12 @@ public class UploadServlet extends BaseServlet {
 							site = str;
 						}
 					} else {
-						StorageMapping mapping = ThisApplication.storageMappings.random(Attachment.class);
+						StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
 						Attachment attachment = this.concreteAttachment(work, effectivePerson, site);
+						/** 禁止不带扩展名的文件上传 */
+						if (StringUtils.isEmpty(FilenameUtils.getExtension(item.getName()))) {
+							throw new EmptyExtensionException(item.getName());
+						}
 						attachment.saveContent(mapping, input, FilenameUtils.getName(item.getName()));
 						attachments.add(attachment);
 						// AttachmentLog attachmentLog =

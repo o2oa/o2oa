@@ -22,7 +22,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.gson.GsonPropertyObject;
-import com.x.base.core.gson.XGsonBuilder;
 import com.x.base.core.http.annotation.Wrap;
 import com.x.base.core.utils.DateTools;
 import com.x.base.core.utils.ListTools;

@@ -11,7 +11,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.utils.SortTools;
-import com.x.organization.assemble.authentication.wrap.out.WrapOutBind;
+import com.x.organization.assemble.authentication.wrapout.WrapOutBind;
 import com.x.organization.core.entity.Bind;
 import com.x.organization.core.entity.Bind_;
 

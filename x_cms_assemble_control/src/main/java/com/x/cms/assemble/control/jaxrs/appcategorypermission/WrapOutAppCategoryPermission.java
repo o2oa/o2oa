@@ -8,9 +8,7 @@ import com.x.cms.core.entity.AppCategoryPermission;
 
 @Wrap( AppCategoryPermission.class )
 public class WrapOutAppCategoryPermission extends AppCategoryPermission implements Comparable<Object> {
-	
 	private static final long serialVersionUID = -5076990764713538973L;
-	
 	public static List<String> Excludes = new ArrayList<String>();
 
 	/**

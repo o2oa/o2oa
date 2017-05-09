@@ -4,15 +4,15 @@
   <persistence-unit name="com.x.processplatform.core.entity.content.Work" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>com.x.processplatform.core.entity.content.Work</class>
-    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.processplatform.core.entity.temporary.ServiceValue" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>com.x.processplatform.core.entity.temporary.ServiceValue</class>
-    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
     <properties/>
   </persistence-unit>
 </persistence>

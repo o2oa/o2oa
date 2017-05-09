@@ -7,9 +7,9 @@ import java.util.List;
 
 import org.apache.commons.lang3.ObjectUtils;
 
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.assemble.designer.wrapin.WrapInApplication;
 import com.x.processplatform.assemble.designer.wrapout.WrapOutApplication;

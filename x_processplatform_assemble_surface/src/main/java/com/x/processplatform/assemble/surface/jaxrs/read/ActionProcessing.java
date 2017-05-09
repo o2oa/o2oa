@@ -38,8 +38,10 @@ class ActionProcessing extends ActionBase {
 			}
 			emc.commit();
 			/* processing read */
-			WrapOutId wrap = ThisApplication.applications.putQuery(x_processplatform_service_processing.class,
-					"read/" + URLEncoder.encode(read.getId(), "UTF-8") + "/processing", null, WrapOutId.class);
+			WrapOutId wrap = ThisApplication.context().applications()
+					.putQuery(x_processplatform_service_processing.class,
+							"read/" + URLEncoder.encode(read.getId(), "UTF-8") + "/processing", null)
+					.getData(WrapOutId.class);
 			result.setData(wrap);
 			return result;
 		}

@@ -21,18 +21,19 @@ public class DataItemFactory extends AbstractFactory {
 		super(abstractBusiness);
 	}
 
-	public List<DataItem> listWithDocIdWithPath(String docId, String... paths) throws Exception {
+	public List<DataItem> listWithDocIdWithPath( String docId, String... paths ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(DataItem.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<DataItem> cq = cb.createQuery(DataItem.class);
 		Root<DataItem> root = cq.from(DataItem.class);
 		Predicate p = cb.equal(root.get(DataItem_.docId), docId);
-		for (int i = 0; (i < paths.length && i < 8); i++) {
-			p = cb.and(p, cb.equal(root.get(("path" + i)), paths[i]));
+		if( paths != null && paths.length > 0 ){
+			for (int i = 0; (i < paths.length && i < 8); i++) {
+				p = cb.and( p, cb.equal(root.get(("path" + i) ), paths[i]) );
+			}
 		}
-		cq.select(root).where(p);
-		List<DataItem> list = em.createQuery(cq).getResultList();
-		return list;
+		cq.select( root ).where(p);
+		return em.createQuery(cq).getResultList();
 	}
 
 	public DataItem getWithDocIdWithPath(Document document, String path0, String path1, String path2, String path3, String path4, String path5, String path6, String path7)
@@ -83,11 +84,13 @@ public class DataItemFactory extends AbstractFactory {
 		CriteriaQuery<DataItem> cq = cb.createQuery(DataItem.class);
 		Root<DataItem> root = cq.from(DataItem.class);
 		Predicate p = cb.equal(root.get(DataItem_.docId), docId);
-		for (int i = 0; ((i < paths.length) && (i < 8)); i++) {
-			p = cb.and(p, cb.equal(root.get("path" + i), paths[i]));
-		}
-		for (int i = paths.length + 1; (i < 8); i++) {
-			p = cb.and(p, cb.equal(root.get("path" + i), ""));
+		if( paths != null && paths.length > 0 ){
+			for (int i = 0; ((i < paths.length) && (i < 8)); i++) {
+				p = cb.and(p, cb.equal(root.get("path" + i), paths[i]));
+			}
+			for (int i = paths.length + 1; (i < 8); i++) {
+				p = cb.and(p, cb.equal(root.get("path" + i), ""));
+			}
 		}
 		cq.select(root).where(p).orderBy(cb.desc(root.get("path" + paths.length + "Location")));
 		List<DataItem> list = em.createQuery(cq).setMaxResults(1).getResultList();
@@ -104,13 +107,14 @@ public class DataItemFactory extends AbstractFactory {
 		CriteriaQuery<DataItem> cq = cb.createQuery(DataItem.class);
 		Root<DataItem> root = cq.from(DataItem.class);
 		Predicate p = cb.equal(root.get(DataItem_.docId), docId);
-		for (int i = 0; ((i < (paths.length - 1)) && (i < 8)); i++) {
-			p = cb.and(p, cb.equal(root.get("path" + i), paths[i]));
-		}
+		if( paths != null && paths.length > 0 ){
+			for (int i = 0; ((i < (paths.length - 1)) && (i < 8)); i++) {
+				p = cb.and(p, cb.equal(root.get("path" + i), paths[i]));
+			}
+		}		
 		Path<Integer> locationPath = root.get("path" + (paths.length - 1) + "Location");
 		p = cb.and(p, cb.greaterThan(locationPath, index));
 		cq.select(root).where(p);
-		List<DataItem> list = em.createQuery(cq).getResultList();
-		return list;
+		return em.createQuery(cq).getResultList();
 	}
 }

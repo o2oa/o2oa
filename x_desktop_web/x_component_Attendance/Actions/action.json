@@ -61,7 +61,7 @@
   "importAttachment" : {"uri":"/jaxrs/fileimport/import/{file_id}"},
   "checkAttachment" : {"uri":"/jaxrs/fileimport/check/{file_id}"},
 
-  "exportAbnormalAttachment" : {"uri":"/servlet/export/abnormaldetails/{year}/{month}/stream", "method": "GET"},
+  "exportAbnormalAttachment" : {"uri":"/servlet/export/abnormaldetails/year/{year}/month/{month}", "method": "GET"},
 
   "listDetail" : {"uri":"/jaxrs/attendancedetail/list/all"},
   "getDetail" : {"uri":"/jaxrs/attendancedetail/{id}"},

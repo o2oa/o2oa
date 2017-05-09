@@ -12,6 +12,8 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.SortTools;
+import com.x.okr.assemble.control.jaxrs.statistic.exception.ReportStatisitcListException;
+import com.x.okr.assemble.control.jaxrs.statistic.exception.ReportStatisitcListWithIdsException;
 import com.x.okr.assemble.control.timertask.entity.WorkReportProcessOpinionEntity;
 import com.x.okr.entity.OkrStatisticReportContent;
 import com.x.okr.entity.OkrWorkDetailInfo;
@@ -20,7 +22,7 @@ public class ExcuteFilterExport extends ExcuteBase {
 
 	private Logger logger = LoggerFactory.getLogger( ExcuteFilterExport.class );
 	
-	public List<WrapOutOkrStatisticReportContentCenter> execute( HttpServletRequest request, EffectivePerson effectivePerson, String reportCycle, String centerId, String statisticTimeFlag ) {
+	public List<WrapOutOkrStatisticReportContentCenter> execute( HttpServletRequest request, EffectivePerson effectivePerson, String reportCycle, String centerId, String centerTitle, String workType, String statisticTimeFlag ) {
 		List<String> ids = null;
 		List<WrapOutOkrStatisticReportContentCenter> wraps_centers = new ArrayList<>();
 		List<WorkReportProcessOpinionEntity> opinions = null;
@@ -38,11 +40,11 @@ public class ExcuteFilterExport extends ExcuteBase {
 		
 		if( check ){
 			try {
-				ids = okrCenterWorkReportStatisticService.listFirstLayer( centerId, null, statisticTimeFlag, reportCycle, year, month, week, "正常" );
+				ids = okrCenterWorkReportStatisticService.listFirstLayer( centerId, centerTitle, null, workType, statisticTimeFlag, reportCycle, year, month, week, "正常" );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ReportStatisitcListException( e );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -52,7 +54,7 @@ public class ExcuteFilterExport extends ExcuteBase {
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ReportStatisitcListWithIdsException( e );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -124,7 +126,7 @@ public class ExcuteFilterExport extends ExcuteBase {
 						}
 					}
 				}
-				wraps_centers = composeWorkInCenter( wraps_centers, statisticTimeFlag, reportCycle, year, month, week, "正常" );
+				wraps_centers = composeWorkInCenter( wraps_centers, centerTitle, workType,statisticTimeFlag, reportCycle, year, month, week, "正常" );
 			}
 		}
 		return wraps_centers;

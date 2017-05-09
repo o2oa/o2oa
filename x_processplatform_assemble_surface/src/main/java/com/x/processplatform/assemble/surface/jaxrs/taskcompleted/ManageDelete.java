@@ -27,8 +27,8 @@ class ManageDelete extends ActionBase {
 			Process process = business.process().pick(taskCompleted.getProcess());
 			// 需要对这个应用的管理权限
 			business.process().allowControl(effectivePerson, process);
-			ThisApplication.applications.deleteQuery(x_processplatform_service_processing.class,
-					"taskcompleted/" + URLEncoder.encode(taskCompleted.getId(), DefaultCharset.name), null);
+			ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
+					"taskcompleted/" + URLEncoder.encode(taskCompleted.getId(), DefaultCharset.name));
 			WrapOutId wrap = new WrapOutId(taskCompleted.getId());
 			result.setData(wrap);
 			return result;

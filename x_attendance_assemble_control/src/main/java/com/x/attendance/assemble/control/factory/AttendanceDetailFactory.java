@@ -147,7 +147,7 @@ public class AttendanceDetailFactory extends AbstractFactory {
 				p = cb.and( p, root.get( AttendanceDetail_.recordStatus).in( statusArray ));
 			}
 		}
-		return em.createQuery(cq.where(p)).setMaxResults(10000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
 	}
 	
 	@MethodDescribe("按指定的开始时间，结束时间列示未被分析的AttendanceDetail信息列表")
@@ -191,7 +191,7 @@ public class AttendanceDetailFactory extends AbstractFactory {
 				p = cb.and( p, root.get( AttendanceDetail_.recordStatus).in( statusArray ));
 			}
 		}
-		return em.createQuery(cq.where(p)).setMaxResults(10000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
 	}
 	
 	@MethodDescribe("按指定的年份，月份列示AttendanceDetail信息列表")
@@ -239,7 +239,7 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		Predicate p = cb.equal( root.get(AttendanceDetail_.recordStatus), 1 );
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.yearString), year ));
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.monthString), month ));
-		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
 	}
 	
 	/**
@@ -288,7 +288,7 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		Predicate p = cb.equal( root.get(AttendanceDetail_.recordStatus), 1 );
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleYear), cycleYear ));
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleMonth), cycleMonth ));
-		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
 	}
 	
 	@MethodDescribe("按指定的统计周期年份，月份列示AttendanceDetail信息中涉及的公司名称列表")
@@ -320,7 +320,7 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		Predicate p = cb.equal( root.get(AttendanceDetail_.recordStatus), 1 );
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleYear), cycleYear ));
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleMonth), cycleMonth ));
-		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
 	}
 	
 	@MethodDescribe("按指定的统计周期年份，月份列示AttendanceDetail信息中涉及的公司名称列表")
@@ -336,7 +336,7 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		Predicate p = cb.equal( root.get(AttendanceDetail_.recordStatus), 1 );
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleYear), cycleYear ));
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleMonth), cycleMonth ));
-		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
 	}
 	
 	@MethodDescribe("按指定的统计周期年份，月份列示AttendanceDetail信息中涉及的部门名称列表")
@@ -352,7 +352,7 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		Predicate p = cb.equal( root.get(AttendanceDetail_.recordStatus), 1 );
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleYear), cycleYear ));
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleMonth), cycleMonth ));
-		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
 	}
 	
 	@MethodDescribe("按指定的统计周期年份，月份列示AttendanceDetail信息中涉及的部门名称列表")
@@ -369,7 +369,7 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleYear), cycleYear ));
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleMonth), cycleMonth ));
 		p = cb.and(p, cb.equal( root.get(AttendanceDetail_.empName), employeeName ));
-		return em.createQuery(cq.where(p)).setMaxResults(1000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
 	}
 
 
@@ -703,9 +703,6 @@ public class AttendanceDetailFactory extends AbstractFactory {
 			sql_stringBuffer.append(" order by o.sequence " + order );
 		}
 		
-		//logger.debug("listIdsPrevWithFilter:["+sql_stringBuffer.toString()+"]");
-		//logger.debug( vs );
-		
 		Query query = em.createQuery( sql_stringBuffer.toString(), AttendanceDetail.class );
 		//为查询设置所有的参数值
 		for (int i = 0; i < vs.size(); i++) {
@@ -802,8 +799,6 @@ public class AttendanceDetailFactory extends AbstractFactory {
 			vs.add( wrapIn.getIsLeaveEarlier() );
 			index++;
 		}
-		//logger.debug("listIdsPrevWithFilter:["+sql_stringBuffer.toString()+"]");
-		//logger.debug( vs );
 		
 		Query query = em.createQuery( sql_stringBuffer.toString(), AttendanceDetail.class );
 		//为查询设置所有的参数值
@@ -874,7 +869,7 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		cq.select( root.get(AttendanceDetail_.id ));
 		//一般始终为true, id is not null
 		Predicate p = cb.isNotNull( root.get(AttendanceDetail_.archiveTime) );
-		return em.createQuery(cq.where(p)).setMaxResults(2000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
 	}
 
 	public List<String> listAnalysenessDetailsByEmployee( String empName ) throws Exception {
@@ -888,6 +883,6 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		statusArray.add( 0 ); //未分析的
 		statusArray.add( -1 ); //有错误的
 		p = cb.and( p, root.get( AttendanceDetail_.recordStatus).in( statusArray ));
-		return em.createQuery(cq.where(p)).setMaxResults(10000).getResultList();
+		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
 	}
 }

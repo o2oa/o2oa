@@ -22,7 +22,11 @@ public class ActionDelete {
 				throw new Exception(
 						"person{name:" + effectivePerson.getName() + "} delete attachment{id:" + id + "} denied.");
 			}
-			StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class, attachment.getStorage());
+			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+					attachment.getStorage());
+			if (null == mapping) {
+				throw new StorageMappingNotExistedException(attachment.getStorage());
+			}
 			attachment.deleteContent(mapping);
 			emc.beginTransaction(Attachment.class);
 			emc.delete(Attachment.class, attachment.getId());

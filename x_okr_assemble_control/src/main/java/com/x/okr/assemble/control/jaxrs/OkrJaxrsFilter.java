@@ -39,6 +39,7 @@ import com.x.base.core.application.jaxrs.ManagerUserJaxrsFilter;
 		"/jaxrs/admin/okrworkreportbaseinfo/*",
 		"/jaxrs/streportcontent/*",
 		"/jaxrs/streportstatus/*",
+		"/jaxrs/error/identity/*",
 		"/servlet/*"
 })
 public class OkrJaxrsFilter extends ManagerUserJaxrsFilter {

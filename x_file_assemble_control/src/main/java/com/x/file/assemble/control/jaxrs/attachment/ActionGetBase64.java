@@ -26,7 +26,8 @@ public class ActionGetBase64 {
 				throw new Exception(
 						"person{name:" + effectivePerson.getName() + "} access attachment{id:" + id + "} denied.");
 			}
-			StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class, attachment.getStorage());
+			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+					attachment.getStorage());
 			try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
 				attachment.readContent(mapping, output);
 				String value = Base64.encodeBase64String(output.toByteArray());

@@ -78,19 +78,19 @@ public class WorkAttachmentDownloadServlet extends AbstractServletAction {
 					check = false;
 					Exception exception = new AttachmentNotExistsException( attachId );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new AttachmentQueryByIdException( e, attachId );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		//文件下载		
 		if (check) {
 			try {
-			mapping = ThisApplication.storageMappings.get( OkrAttachmentFileInfo.class, okrAttachmentFileInfo.getStorage() );
+			mapping = ThisApplication.context().storageMappings().get( OkrAttachmentFileInfo.class, okrAttachmentFileInfo.getStorage() );
 				this.setResponseHeader( response, streamContentType, okrAttachmentFileInfo );
 			} catch (Exception e) {
 				check = false;

@@ -21,6 +21,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.application.servlet.AbstractServletAction;
+import com.x.base.core.cache.ApplicationCache;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -51,10 +52,10 @@ public class ReportAttachmentUploadServlet extends AbstractServletAction {
 	@HttpMethodDescribe(value = "上传附件 servlet/upload/report/{id}", response = WrapOutId.class)
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		ActionResult<WrapOutId> result = new ActionResult<>();
-
-		List<OkrAttachmentFileInfo> attachments = new ArrayList<OkrAttachmentFileInfo>();
+		ActionResult<List<WrapOutId>> result = new ActionResult< List<WrapOutId> >();
+		List<WrapOutId> wraps = new ArrayList<>();
 		OkrAttachmentFileInfo okrAttachmentFileInfo = null;
+		WrapOutId wrap = null;
 		OkrWorkReportBaseInfo okrWorkReportBaseInfo = null;
 		EffectivePerson effectivePerson = null;
 		ServletFileUpload upload = null;
@@ -105,13 +106,12 @@ public class ReportAttachmentUploadServlet extends AbstractServletAction {
 					check = false;
 					Exception exception = new WorkReportNotExistsException( reportId );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new WorkReportQueryByIdException( e, reportId );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 
@@ -130,78 +130,104 @@ public class ReportAttachmentUploadServlet extends AbstractServletAction {
 								site = str;
 							}
 						} else {
-							StorageMapping mapping = ThisApplication.storageMappings.random(OkrAttachmentFileInfo.class);
-							okrAttachmentFileInfo = concreteAttachment(effectivePerson.getName(), okrWorkReportBaseInfo, mapping, this.getFileName(item.getName()), site);
-							okrAttachmentFileInfo.saveContent(mapping, input, item.getName());
-							attachments.add(okrAttachmentFileInfo);
+							wrap = saveAttachmetFile( effectivePerson.getName(), okrWorkReportBaseInfo, item, site, input );
+							wraps.add( wrap );
 						}
 					} finally {
 						input.close();
 					}
 				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ReportAttachmentUploadException( e );
-				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
-			}
-		}
-
-		if (check) {
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				okrWorkReportBaseInfo = emc.find( reportId, OkrWorkReportBaseInfo.class);
-				if( okrWorkReportBaseInfo != null ){
-					if( okrWorkReportBaseInfo.getAttachmentList() == null ) {
-						okrWorkReportBaseInfo.setAttachmentList( new ArrayList<String>());
+				if( wraps != null && !wraps.isEmpty() && site!=null && !site.isEmpty() ){
+					for( WrapOutId _wrap : wraps ){
+						try( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();){
+							okrAttachmentFileInfo = emc.find( _wrap.getId(), OkrAttachmentFileInfo.class);
+							emc.beginTransaction( OkrAttachmentFileInfo.class );
+							okrAttachmentFileInfo.setSite( site );
+							emc.check( okrAttachmentFileInfo, CheckPersistType.all);
+							emc.commit();
+						}
 					}
-					emc.beginTransaction(OkrAttachmentFileInfo.class);
-					emc.beginTransaction(OkrWorkReportBaseInfo.class);
-					emc.persist(okrAttachmentFileInfo, CheckPersistType.all);
-					okrWorkReportBaseInfo.getAttachmentList().add(okrAttachmentFileInfo.getId());
-					emc.check( okrWorkReportBaseInfo, CheckPersistType.all );
-					emc.commit();
 				}
-				result.setData( new WrapOutId(okrAttachmentFileInfo.getId()));
+				result.setData(wraps);
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ReportAttachmentUploadException( e );
 				result.error( exception );
-				logger.warn("system try to save okrAttachmentFileInfo to database got an exception." );
-				logger.error( exception, effectivePerson, request, null);
-				
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		this.result(response, result);
 	}
 
-	private OkrAttachmentFileInfo concreteAttachment(String person, OkrWorkReportBaseInfo okrWorkReportBaseInfo,
-			StorageMapping storage, String name, String site) throws Exception {
+	private WrapOutId saveAttachmetFile( String personName, OkrWorkReportBaseInfo okrWorkReportBaseInfo, FileItemStream item, String site, InputStream input ) throws Exception {
+		WrapOutId wrap = null;
+		String name = null;
+		OkrAttachmentFileInfo fileInfo = null;
+		EntityManagerContainer emc = null;
+		StorageMapping mapping = null;
+	
+		if( item != null ){
+			
+			emc = EntityManagerContainerFactory.instance().create();			
+			okrWorkReportBaseInfo = emc.find( okrWorkReportBaseInfo.getId(), OkrWorkReportBaseInfo.class);
+
+			emc.beginTransaction( OkrAttachmentFileInfo.class );
+			emc.beginTransaction( OkrWorkReportBaseInfo.class );
+			mapping = ThisApplication.context().storageMappings().random( OkrAttachmentFileInfo.class );
+			
+			fileInfo = concreteAttachment( personName, okrWorkReportBaseInfo, mapping, this.getFileName( item.getName() ), site );
+			name = fileInfo.getName();
+			
+			//先检查对象是否能够被保存，如果能保存，再进行文件存储
+			emc.check( fileInfo, CheckPersistType.all);
+			
+			fileInfo.saveContent( mapping, input, item.getName() );					
+			
+			if( okrWorkReportBaseInfo.getAttachmentList() == null ){
+				okrWorkReportBaseInfo.setAttachmentList( new ArrayList<>() );
+			}
+			if( !okrWorkReportBaseInfo.getAttachmentList().contains( fileInfo.getId() ) ){
+				okrWorkReportBaseInfo.getAttachmentList().add( fileInfo.getId() );
+			}
+			emc.check( okrWorkReportBaseInfo, CheckPersistType.all);
+			fileInfo.setName( name );
+			emc.persist( fileInfo, CheckPersistType.all );
+			wrap = new WrapOutId( fileInfo.getId());
+			
+			emc.commit();
+			ApplicationCache.notify( OkrAttachmentFileInfo.class );
+			ApplicationCache.notify( OkrWorkReportBaseInfo.class );
+		}
+		return wrap;
+	}
+	
+	private OkrAttachmentFileInfo concreteAttachment( String person, OkrWorkReportBaseInfo okrWorkReportBaseInfo, StorageMapping storage, String name, String site ) throws Exception {
 		String fileName = UUID.randomUUID().toString();
-		String extension = FilenameUtils.getExtension(name);
+		String extension = FilenameUtils.getExtension( name );
 		OkrAttachmentFileInfo attachment = new OkrAttachmentFileInfo();
-		if (StringUtils.isNotEmpty(extension)) {
+		
+		if ( StringUtils.isEmpty(extension) ) {
+			throw new Exception("file extension is empty.");
+		}else{
 			fileName = fileName + "." + extension;
-			attachment.setExtension(extension);
 		}
-		attachment.setFileHost(storage.getHost());
-		attachment.setFilePath("");
-		if( name.indexOf( "\\" ) >0 ){
-			name = StringUtils.substringAfterLast( name, "\\");
-		}
-		if( name.indexOf( "/" ) >0 ){
-			name = StringUtils.substringAfterLast( name, "/");
-		}
+		
+		attachment.setCreateTime( new Date() );
+		attachment.setLastUpdateTime( new Date() );
+		attachment.setExtension( extension );
 		attachment.setName( name );
 		attachment.setFileName( fileName );
-		attachment.setStorageName(storage.getName());
-		attachment.setWorkInfoId(okrWorkReportBaseInfo.getWorkId());
-		attachment.setCenterId(okrWorkReportBaseInfo.getCenterId());
-		attachment.setStatus("正常");
+		attachment.setStorage( storage.getName() );
+		attachment.setWorkInfoId( okrWorkReportBaseInfo.getId() );
+		attachment.setCenterId( okrWorkReportBaseInfo.getCenterId() );
+		attachment.setStatus( "正常" );
 		attachment.setParentType("工作汇报");
-		attachment.setKey(okrWorkReportBaseInfo.getId());
-		attachment.setCreatorUid(person);
-		attachment.setCreateTime(new Date());
-		attachment.setSite(site);
+		attachment.setCreatorUid( person );
+		attachment.setSite( site );
+		attachment.setFileHost( "" );
+		attachment.setFilePath( "" );
+		attachment.setKey( okrWorkReportBaseInfo.getId() );
+		
 		return attachment;
 	}
 }

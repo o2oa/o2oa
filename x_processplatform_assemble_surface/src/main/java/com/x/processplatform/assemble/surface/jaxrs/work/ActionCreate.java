@@ -45,12 +45,20 @@ class ActionCreate extends ActionBase {
 				throw new ProcessNotExistedException(processFlag);
 			}
 			Application application = business.application().pick(process.getApplication());
-			if (!business.application().allowRead(effectivePerson, application)) {
+			List<String> roles = business.organization().role().listNameWithPerson(effectivePerson.getName());
+			List<String> identities = business.organization().identity().listNameWithPerson(effectivePerson.getName());
+			List<String> departments = business.organization().department()
+					.listNameWithPersonSupNested(effectivePerson.getName());
+			List<String> companies = business.organization().company()
+					.listNameWithPersonSupNested(effectivePerson.getName());
+			if (!business.application().allowRead(effectivePerson, roles, identities, departments, companies,
+					application)) {
 				throw new ApplicationAccessDeniedException(effectivePerson.getName(), application.getId());
 			}
-			WrapOutId wrapOutId = ThisApplication.applications.postQuery(x_processplatform_service_processing.class,
-					"work/process/" + URLEncoder.encode(process.getId(), DefaultCharset.name), wrapIn.getData(),
-					WrapOutId.class);
+			WrapOutId wrapOutId = ThisApplication.context().applications()
+					.postQuery(x_processplatform_service_processing.class,
+							"work/process/" + URLEncoder.encode(process.getId(), DefaultCharset.name), wrapIn.getData())
+					.getData(WrapOutId.class);
 			workId = wrapOutId.getId();
 		}
 		/* 设置Work信息 并返回job信息 */
@@ -75,7 +83,7 @@ class ActionCreate extends ActionBase {
 			emc.commit();
 		}
 		/* 驱动工作 */
-		ThisApplication.applications.putQuery(x_processplatform_service_processing.class,
+		ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 				"work/" + URLEncoder.encode(workId, DefaultCharset.name) + "/processing", null);
 		/* 拼装返回结果 */
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

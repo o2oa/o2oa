@@ -130,6 +130,12 @@ MWF.xApplication.Common.Main = new Class({
                 }
 
             }.bind(this)
+			// "onQueryMax": function(){
+            	// if (this.window.css.windowTitleMax) this.window.title.setStyles(this.window.css.windowTitleMax);
+             //    if (this.window.css.windowTitleRefreshMax) this.window.titleRefresh.setStyles(this.window.css.windowTitleRefreshMax);
+             //    if (this.window.css.windowTitleTextMax) this.window.titleText.setStyles(this.window.css.windowTitleTextMax);
+             //    if (this.window.css.windowTitleActionMax) this.window.titleAction.setStyles(this.window.css.windowTitleActionMax);
+			// }.bind(this)
 		};
 		
 		if (this.options.event){
@@ -308,7 +314,7 @@ MWF.xApplication.Common.Main = new Class({
 		this.window.titleText.set("text", str);
         if (this.taskitem){
             this.taskitem.textNode.set("text", str);
-            this.taskitem.node.set("title", str+"-"+this.appId);
+            this.taskitem.node.set("title", str+((this.appId) ? "-"+this.appId : ""));
         }
 	},
 	
@@ -365,7 +371,7 @@ MWF.xApplication.Common.Main = new Class({
 			var size = this.content.getSize();
             var x = 0;
             var y = 0;
-            debugger;
+
             if (typeOf(e)=="element"){
                 var position = e.getPosition(this.content);
                 x = position.x;
@@ -404,9 +410,17 @@ MWF.xApplication.Common.Main = new Class({
             }else{
                 ctext = text;
             }
+
+            // var tmp = new Element("div", {"overflow": "hidden","padding": "10px", "padding-left": "60px", "width": ""+width+"px"}).inject(document.body);
+            // if (chtml) tmp.set("html", chtml);
+            // if (ctext) tmp.set("text", ctext);
+            // height = tmp.getSize().y;
+            // tmp.destroy();
+
+
 			var dlg = new MWF.xDesktop.Dialog({
 				"title": title,
-				"style": style || "flat",
+				"style": style || "o2",
 				"top": y,
 				"left": x-20,
 				"fromTop":y,

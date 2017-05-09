@@ -17,8 +17,9 @@ import com.google.gson.JsonElement;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.cms.assemble.control.jaxrs.queryview.exception.WrapInConvertException;
 import com.x.cms.core.entity.query.Query;
 
 

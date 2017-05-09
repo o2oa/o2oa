@@ -24,7 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.cache.ApplicationCache;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -33,13 +32,15 @@ import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.WrapTools;
+import com.x.cms.assemble.control.jaxrs.script.exception.WrapInConvertException;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.Log;
@@ -108,7 +109,7 @@ public class ScriptAction extends StandardJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if( check ){
 			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
@@ -165,7 +166,7 @@ public class ScriptAction extends StandardJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 
 		if( check ){
@@ -386,7 +387,7 @@ public class ScriptAction extends StandardJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if( check ){
 			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {

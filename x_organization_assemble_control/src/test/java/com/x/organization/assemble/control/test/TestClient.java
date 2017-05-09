@@ -4,13 +4,7 @@ import java.io.BufferedReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
-
-import com.x.base.core.Crypto;
 
 public class TestClient {
 	@Test

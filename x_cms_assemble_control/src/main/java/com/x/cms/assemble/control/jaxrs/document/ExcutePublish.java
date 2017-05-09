@@ -14,6 +14,8 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.cms.assemble.control.jaxrs.document.exception.DocumentInfoProcessException;
+import com.x.cms.assemble.control.jaxrs.document.exception.DocumentNotExistsException;
 import com.x.cms.assemble.control.jaxrs.documentpermission.element.PermissionInfo;
 import com.x.cms.core.entity.Document;
 
@@ -32,16 +34,17 @@ public class ExcutePublish extends ExcuteBase {
 			try {
 				document = documentServiceAdv.get( id );
 				if ( null == document ) {
+					check = false;
 					Exception exception = new DocumentNotExistsException( id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 					throw exception;
 				}
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new DocumentViewByIdException( e, id, effectivePerson.getName() );
+				Exception exception = new DocumentInfoProcessException( e, "文档信息获取操作时发生异常。Id:" + id + ", Name:" + effectivePerson.getName() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -50,13 +53,11 @@ public class ExcutePublish extends ExcuteBase {
 				modifyDocStatus( id, "published", effectivePerson.getName() );
 				document.setDocStatus( "published" );
 				document.setPublishTime( new Date() );
-				
-				ApplicationCache.notify( Document.class );
 				result.setData(new WrapOutId( document.getId() ));
 			} catch (Exception e) {
-				Exception exception = new DocumentPuhlishException( e, id );
+				Exception exception = new DocumentInfoProcessException( e, "系统将文档状态修改为发布状态时发生异常。Id:" + id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 				throw exception;
 			}			
 		}
@@ -86,11 +87,14 @@ public class ExcutePublish extends ExcuteBase {
 				documentPermissionServiceAdv.refreshDocumentPermission( document, permissionList );
 			}catch(Exception e){
 				check = false;
-				Exception exception = new ServiceLogicException( e, "系统在核对文档访问管理权限信息时发生异常！" );
+				Exception exception = new DocumentInfoProcessException( e, "系统在核对文档访问管理权限信息时发生异常！" );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e , effectivePerson, request, null);
 			}
 		}
+		
+		ApplicationCache.notify( Document.class );
+
 		return result;
 	}
 

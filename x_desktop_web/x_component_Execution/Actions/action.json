@@ -162,7 +162,10 @@
   "getMyDeployWork" : {"uri":"/jaxrs/okrworkbaseinfo/deploy/form/center/{id}","method":"GET"},
   //在部署界面获取全部自己相关的工作
   "getMyRelativeWork" : {"uri":"/jaxrs/okrworkbaseinfo/process/form/center/{id}","method":"GET"},
-
+  //具体工作归档
+  "archiveBaseWork" : {"uri":"/jaxrs/okrworkbaseinfo/archive/{id}","method":"GET"},
+  //修改具体工作进展
+  "progressBaseWork":{"uri":"/jaxrs/okrworkbaseinfo/progress/{id}/{percent}","method":"GET"},
   //*******************具体工作*******************
   //*******************工作汇报*******************
 
@@ -180,6 +183,8 @@
   "getStatDate" : {"uri" : "/jaxrs/streportcontent/filter/list", "method": "PUT"},
   //导出单个时间得EXCEL
   "exportByCenterWork" : {"uri" : "/jaxrs/streportcontent/export", "method": "PUT"},
+  //导出按部门
+  "exportByDeptWork" : {"uri" : "/jaxrs/streportstatus/export", "method": "PUT"},
   //*******************统计*******************
   //*******************脑图*******************
   "getUserMind" : {"uri" : "/jaxrs/mind/center/{id}","method": "GET"}

@@ -15,19 +15,19 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
-import com.x.okr.assemble.common.excel.writer.WorkReportStatisticExportExcelWriter;
-import com.x.okr.assemble.control.ThisApplication;
-import com.x.okr.assemble.control.service.OkrWorkBaseInfoQueryService;
-import com.x.okr.assemble.control.timertask.St_WorkReportContent;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.okr.assemble.common.excel.writer.WorkReportContentExportExcelWriter;
+import com.x.okr.assemble.control.jaxrs.okrtask.WrapOutOkrTask;
+import com.x.okr.assemble.control.jaxrs.statistic.exception.WrapInConvertException;
+import com.x.okr.assemble.control.service.ExcuteSt_WorkReportContentService;
 
 
 @Path( "streportcontent" )
@@ -35,6 +35,44 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction{
 	
 	private Logger logger = LoggerFactory.getLogger( OkrStatisticReportContentAction.class );
 
+	@HttpMethodDescribe(value = "测试定时代理，对工作的汇报情况进行统计分析.", response = WrapOutOkrTask.class)
+	@GET
+	@Path( "excute" )
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response excute(@Context HttpServletRequest request ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<WrapOutOkrTask> result = new ActionResult<>();
+		try {
+			new ExcuteSt_WorkReportContentService().execute();
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			result.error( e );
+			logger.warn( "OKR_St_WorkReportContent completed and excute got an exception." );
+			logger.error( e, effectivePerson, request, null);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
+	@HttpMethodDescribe(value = "测试定时代理，对工作的汇报提交情况进行统计分析.", response = WrapOutOkrTask.class)
+	@GET
+	@Path( "excute/all" )
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response excuteAll(@Context HttpServletRequest request ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<WrapOutOkrTask> result = new ActionResult<>();
+		try {
+			new ExcuteSt_WorkReportContentService().executeAll();
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			result.error( e );
+			logger.warn( "OKR_St_WorkReportContent completed and excute got an exception." );
+			logger.error( e, effectivePerson, request, null);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
 	@Path( "filter/list" )
 	@HttpMethodDescribe( value = "根据条件获取OkrStatisticReportContent部分信息对象.", request = JsonElement.class, response = WrapOutOkrStatisticReportContentCenter.class)
 	@PUT
@@ -51,7 +89,7 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null );
 		}
 
 		if( check ){
@@ -84,7 +122,7 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
@@ -117,7 +155,7 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
@@ -150,7 +188,7 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
@@ -164,31 +202,6 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction{
 			}
 		}
 		
-		return ResponseFactory.getDefaultActionResultResponse(result);
-	}
-	
-	@HttpMethodDescribe(value = "测试工作汇报状态统计.", response = WrapOutOkrStatisticReportContent.class)
-	@GET
-	@Path( "process" )
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response process( @Context HttpServletRequest request ) {
-		ActionResult<WrapOutOkrStatisticReportContent> result = new ActionResult<>();
-		OkrWorkBaseInfoQueryService okrWorkBaseInfoService = new OkrWorkBaseInfoQueryService();
-		List<String> workIds = null;
-		String status = "正常";// 如果不需要在统计里展示 ，就应该为已归档
-		try {
-			workIds = okrWorkBaseInfoService.listAllDeployedWorkIds( null, status );
-		} catch (Exception e) {
-			logger.error( e );
-		}
-		if (workIds != null && !workIds.isEmpty()) {
-			new St_WorkReportContent().analyseWorksReportContent( workIds );
-		}
-
-		ThisApplication.setWorkReportStatisticTaskRunning(false);
-		logger.debug("Timertask[WorkReportStatistic] completed and excute success.");
-
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -211,7 +224,7 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
@@ -235,21 +248,21 @@ public class OkrStatisticReportContentAction extends StandardJaxrsAction{
 			}
 		}
 		try {
-			exportDataList = new ExcuteFilterExport().execute( request, effectivePerson, wrapIn.getReportCycle(), wrapIn.getCenterId(), wrapIn.getStatisticTimeFlag()  );
+			exportDataList = new ExcuteFilterExport().execute( request, effectivePerson, wrapIn.getReportCycle(), wrapIn.getCenterId(), wrapIn.getCenterTitle(), wrapIn.getWorkTypeName(), wrapIn.getStatisticTimeFlag()  );
 		} catch (Exception e ) {
 			logger.warn( "system query data for export got an exception. " );
 			logger.error( e );
 		}
 		if ( check ) {
 			try {
-				flag = new WorkReportStatisticExportExcelWriter().writeExcel( exportDataList );
+				flag = new WorkReportContentExportExcelWriter().writeExcel( exportDataList );
 				result.setData( new WrapOutId(flag) );
 			} catch ( Exception e ) {
 				logger.warn( "system write export data to excel file got an exception. " );
 				logger.error( e );
 			}
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		return ResponseFactory.getDefaultActionResultResponse( result );
 	}
 
 }

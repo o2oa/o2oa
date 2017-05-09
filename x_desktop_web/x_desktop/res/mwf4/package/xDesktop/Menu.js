@@ -82,6 +82,10 @@ MWF.xDesktop.Menu = new Class({
 		var left = position.x-0;
 		if (this.options.offsetY) top = top+this.options.offsetY;
 		if (this.options.offsetX) left = left+this.options.offsetX;
+
+        var bodySize = $(document.body).getSize();
+        var borderSize = this.borderNode.getSize();
+        if (left+borderSize.x>bodySize.x) left = bodySize.x-borderSize.x-10;
 		
 		this.borderNode.setStyle("top", top);
 		this.borderNode.setStyle("left", left);

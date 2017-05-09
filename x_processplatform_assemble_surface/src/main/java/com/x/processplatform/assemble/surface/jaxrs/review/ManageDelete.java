@@ -36,8 +36,8 @@ class ManageDelete extends ActionBase {
 			}
 			// 需要对这个应用的管理权限
 			business.application().allowControl(effectivePerson, application);
-			ThisApplication.applications.deleteQuery(x_processplatform_service_processing.class,
-					"review/" + URLEncoder.encode(review.getId(), DefaultCharset.name), null);
+			ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
+					"review/" + URLEncoder.encode(review.getId(), DefaultCharset.name));
 			WrapOutId wrap = new WrapOutId(review.getId());
 			result.setData(wrap);
 			return result;

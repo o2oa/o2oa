@@ -8,6 +8,7 @@
 {
   "getId" : {"uri":"/jaxrs/uuid/random"},
   "listColumn": {"uri": "/jaxrs/appinfo/list/all" }, //"/jaxrs/appinfo/list/user"},
+  "listColumnByAdmin": {"uri": "/jaxrs/appinfo/list/admin" },
   "getColumn": {"uri": "/jaxrs/appinfo/{id}"},
   "addColumn": {"uri": "/jaxrs/appinfo","method": "POST"},
   "removeColumn": {"uri": "/jaxrs/appinfo/{id}","method": "DELETE"},
@@ -18,6 +19,9 @@
     "method": "POST",
     "enctype": "formData"
   },
+
+  "listCategory": {"uri": "/jaxrs/categoryinfo/list/view/app/{appId}" },
+  "listForm": {"uri": "/jaxrs/form/list/app/{appId}"},
 
   "listControllerByPerson" : {"uri": "/jaxrs/appcategoryadmin/list/person/{person}"},
   "addController" : {"uri":"/jaxrs/appcategoryadmin", "method":"POST"}

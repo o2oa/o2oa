@@ -333,8 +333,8 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
             "<tr>" +
             "   <td styles='formTableTitle' lable='forumName' width='10%'></td>" +
             "   <td styles='formTableValue' item='forumName' width='40%'></td>" +
-            "   <td styles='formTableTitle' lable='indexListStyle' width='10%'></td>" +
-            "   <td styles='formTableValue' item='indexListStyle' width='40%'></td>" +
+            "   <td styles='formTableTitle' width='10%'></td>" +
+            "   <td styles='formTableValue' width='40%'></td>" +
             "</tr><tr>" +
             "   <td styles='formTableTitle' lable='forumStatus'></td>" +
             "   <td styles='formTableValue' item='forumStatus'></td>" +
@@ -374,6 +374,9 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
                 //"   <td styles='formTableTitle' lable=''></td>" +
                 //"   <td styles='formTableValue' item=''></td>" +
             "</tr><tr>" +
+            "   <td styles='formTableTitle' lable='indexListStyleLable'></td>" +
+            "   <td styles='formTableValue' colspan='3'><div item='indexListStyleShow'></div><div item='indexListStyleButton'></div></td>" +
+            "</tr><tr>" +
             "   <td styles='formTableTitle' lable='forumNotice'></td>" +
             "   <td styles='formTableValue' item='forumNotice' colspan='3'></td>" +
             "</tr>"
@@ -385,6 +388,17 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
         var formVisiableButtonStyle = (( !this.isEdited && !this.isNew ) || !this.data.forumVisiable ||(this.data.forumVisiable == this.lp.allPerson )) ? { display:"none"} : { display:""};
         var formVisiableStyle = ( !this.data.forumVisiable ||(this.data.forumVisiable == this.lp.allPerson )) ? { display:"none"} : { display:""};
         var selectColorButtonStyle = (!this.isEdited && !this.isNew) ? { display : "none" } : {};
+
+        this.indexListStyleShow = this.formTableArea.getElements("[item='indexListStyleShow']")[0];
+        if( this.data.indexListStyle ){
+            this.getDefaultTypeTemplateList( function(){
+                new Element("img", {
+                    src : this.defalutTypeTemplateList[this.data.indexListStyle].preview,
+                    styles : this.css.indexListStylePreview
+                }).inject(this.indexListStyleShow);
+            }.bind(this));
+        }
+
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.form = new MForm(this.formTableArea, this.data, {
                 style: "forum",
@@ -416,7 +430,10 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
                     forumVisiableCompany : { type : "innerText", value : function(){ return this.getRoleMemberByCode("FORUM_GUEST_")["company"].join(",") }.bind(this), style : formVisiableStyle },
                     forumVisiableDepartment : { type : "innerText", value : function(){ return this.getRoleMemberByCode("FORUM_GUEST_")["department"].join(",") }.bind(this), style : formVisiableStyle },
                     forumVisiablePerson : { type : "innerText", value : function(){ return this.getRoleMemberByCode("FORUM_GUEST_")["person"].join(",") }.bind(this), style : formVisiableStyle },
-                    indexListStyle: {text: this.lp.indexListStyle, type : "select", selectValue : this.lp.indexListStyleValue.split(",") },
+                    indexListStyleLable: {text: this.lp.indexListStyle }, //selectValue : this.lp.indexListStyleValue.split(",")
+                    indexListStyleButton: { type : "button", value: this.lp.indexListStyleButton, event : {
+                        click : function( it, ev ){ this.selectIndexType() }.bind(this)
+                    } },
                     forumIndexStyle: {text: this.lp.forumIndexStyle, type : "select", selectValue : this.lp.forumIndexStyleValue.split(",") },
                     indexRecommendable: {text: this.lp.indexRecommendable, type : "select", selectValue : ["true","false"], selectText : this.lp.yesOrNo.split(",") },
                     subjectNeedAudit: {text: this.lp.subjectNeedAudit, type : "select", selectValue : ["true","false"], selectText : this.lp.yesOrNo.split(","), defaultValue : "false" },
@@ -534,6 +551,135 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
             }, function(){}, false );
         }
         return r;
+    },
+    selectIndexType : function(){
+        this.getDefaultTypeTemplateList( function(){
+            this.selectTypeTemplate();
+        }.bind(this))
+    },
+    getDefaultTypeTemplateList : function(callback){
+        if (this.defalutTypeTemplateList){
+            if (callback) callback();
+        }else{
+            var url = "/x_component_Forum/$ColumnTemplate/template/setting.json";
+            MWF.getJSON(url, function(json){
+                this.defalutTypeTemplateList = json;
+                if (callback) callback();
+            }.bind(this));
+        }
+    },
+    selectTypeTemplate: function(e){
+        this.typeTemplateList = null;
+        var _self = this;
+
+        var createTemplateMaskNode = new Element("div", {"styles": this.css.createTemplateMaskNode}).inject(this.app.content);
+        var createTemplateAreaNode = new Element("div", {"styles": this.css.createTypeTemplateAreaNode}).inject(this.app.content);
+        createTemplateAreaNode.fade("in");
+
+        var createTemplateTitleNode = new Element("div", {"styles": this.css.createTemplateFormTitleNode, "text": this.app.lp.selectIndexType }).inject(createTemplateAreaNode);
+        var createTemplateCategoryNode = new Element("div", {"styles": this.css.createTemplateFormCategoryNode}).inject(createTemplateAreaNode);
+        var createTemplateCategoryTitleNode = new Element("div", {"styles": this.css.createTemplateFormCategoryTitleNode, "text": this.app.lp.typeColumn}).inject(createTemplateCategoryNode);
+
+        var createTemplateContentNode = new Element("div", {"styles": this.css.createTemplateFormContentNode}).inject(createTemplateAreaNode);
+
+        var createTemplateCategoryAllNode = new Element("div", {"styles": this.css.createTemplateFormCategoryItemNode, "text": this.app.lp.all}).inject(createTemplateCategoryNode);
+        createTemplateCategoryAllNode.addEvent("click", function(){
+            loadAllTemplates();
+        });
+
+        var columnCountList = [];
+        this.getDefaultTypeTemplateList( function(){
+            for( var key in this.defalutTypeTemplateList ) {
+                var template = this.defalutTypeTemplateList[key];
+                if( !columnCountList.contains( template.column ) )columnCountList.push( template.column )
+            }
+        }.bind(this));
+        columnCountList.each(function( columnCount ){
+            var createTemplateCategoryItemNode = new Element("div", {"styles": this.css.createTemplateFormCategoryItemNode, "text":  columnCount+"列", "value": columnCount}).inject(createTemplateCategoryNode);
+            createTemplateCategoryItemNode.addEvent("click", function(){
+                createTemplateContentNode.empty();
+                createTemplateCategoryNode.getElements("div").each(function(node, i){
+                    if (i>0) node.setStyles(_self.css.createTemplateFormCategoryItemNode);
+                });
+                this.setStyles(_self.css.createTemplateFormCategoryItemNode_current);
+                loadDefaultTemplate(this.get("value"));
+            });
+        }.bind(this));
+
+        var resize = function(){
+            var size = this.app.content.getSize();
+            var y = (size.y*0.1)/2;
+            var x = (size.x*0.1)/2;
+            if (y<0) y=0;
+            if (x<0) x=0;
+            createTemplateAreaNode.setStyles({
+                "top": ""+y+"px",
+                "left": ""+x+"px"
+            });
+            y = size.y*0.9-createTemplateCategoryNode.getSize().y-70;
+            createTemplateContentNode.setStyle("height", ""+y+"px");
+        }.bind(this);
+        resize();
+        this.app.addEvent("resize", resize);
+
+
+        var loadDefaultTemplate = function( columnCount ){
+            this.getDefaultTypeTemplateList(function(){
+                for( var key in this.defalutTypeTemplateList ){
+                    var template = this.defalutTypeTemplateList[key];
+                    if( columnCount && template.column != parseInt( columnCount ) ){
+                        continue;
+                    }
+                    template.key = key;
+                    var templateNode = new Element("div", {"styles": this.css.typeTemplateNode}).inject(createTemplateContentNode);
+                    var templateIconNode = new Element("div", {"styles": this.css.typeTemplateIconNode}).inject(templateNode);
+                    //var templateTitleNode = new Element("div", {"styles": this.css.typeTemplateTitleNode, "text": template.title}).inject(templateNode);
+                    templateNode.store("template", template.key);
+
+                    var templateIconImgNode = new Element("img", {"styles": this.css.typeTemplateIconImgNode}).inject(templateIconNode);
+                    templateIconImgNode.set("src", template.preview);
+
+                    templateNode.addEvents({
+                        "mouseover": function(){this.setStyles(_self.css.typeTemplateNode_over)},
+                        "mouseout": function(){this.setStyles(_self.css.typeTemplateNode)},
+                        "mousedown": function(){this.setStyles(_self.css.typeTemplateNode_down)},
+                        "mouseup": function(){this.setStyles(_self.css.typeTemplateNode_over)},
+                        "click": function(e){
+                            selectType(e, this.retrieve("template"));
+                            _self.app.removeEvent("resize", resize);
+                            createTemplateAreaNode.destroy();
+                            createTemplateMaskNode.destroy();
+                        }
+                    });
+                }
+            }.bind(this));
+        }.bind(this);
+
+        var selectType = function( e, type ){
+            this.data.indexListStyle = type;
+            this.indexListStyleShow.empty();
+            new Element("img", {
+                src : this.defalutTypeTemplateList[type].preview,
+                styles : this.css.indexListStylePreview
+            }).inject(this.indexListStyleShow);
+        }.bind(this);
+
+        var loadAllTemplates = function(){
+            createTemplateContentNode.empty();
+            createTemplateCategoryNode.getElements("div").each(function(node, i){
+                if (i>0) node.setStyles(_self.css.createTemplateFormCategoryItemNode);
+            });
+            createTemplateCategoryAllNode.setStyles(_self.css.createTemplateFormCategoryItemNode_current);
+            loadDefaultTemplate();
+        };
+        loadAllTemplates();
+
+        createTemplateMaskNode.addEvent("click", function(){
+            this.app.removeEvent("resize", resize);
+            createTemplateAreaNode.destroy();
+            createTemplateMaskNode.destroy();
+        }.bind(this));
+
     }
 });
 

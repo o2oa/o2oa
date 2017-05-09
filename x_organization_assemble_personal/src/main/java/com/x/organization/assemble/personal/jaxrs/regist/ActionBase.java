@@ -9,8 +9,8 @@ import javax.persistence.criteria.Root;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Person_;
 

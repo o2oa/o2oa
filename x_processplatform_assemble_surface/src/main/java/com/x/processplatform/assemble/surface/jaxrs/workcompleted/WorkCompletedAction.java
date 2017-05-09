@@ -21,12 +21,12 @@ import com.x.base.core.bean.NameValueCountPair;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.WrapOutMap;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.processplatform.assemble.surface.wrapin.content.WrapInFilter;
 import com.x.processplatform.assemble.surface.wrapout.content.WrapOutTaskCompleted;
 import com.x.processplatform.assemble.surface.wrapout.content.WrapOutWorkCompleted;
@@ -133,6 +133,42 @@ public class WorkCompletedAction extends ActionBase {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionComplexSnapForm().execute(id, effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+
+	@HttpMethodDescribe(value = "根据WorkCompleted Id获取组装的WorkCompleted内容同时返回指定的Form.", response = WrapOutMap.class)
+	@GET
+	@Path("{id}/complex/appoint/form/{formFlag}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response getComplexAppointForm(@Context HttpServletRequest request, @PathParam("id") String id,
+			@PathParam("formFlag") String formFlag) {
+		ActionResult<WrapOutMap> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionComplexAppointForm().execute(effectivePerson, id, formFlag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+
+	@HttpMethodDescribe(value = "根据WorkCompleted Id获取组装的WorkCompleted内容.", response = WrapOutMap.class)
+	@GET
+	@Path("{id}/complex/appoint/form/{formFlag}/mobile")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response getComplexAppointFormMobile(@Context HttpServletRequest request, @PathParam("id") String id,
+			@PathParam("formFlag") String formFlag) {
+		ActionResult<WrapOutMap> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionComplexAppointFormMobile().execute(effectivePerson, id, formFlag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -390,7 +426,7 @@ public class WorkCompletedAction extends ActionBase {
 			JsonElement jsonElement) {
 		ActionResult<List<WrapOutWorkCompleted>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try  {
+		try {
 			result = new ManageListPrevFilter().execute(effectivePerson, id, count, applicationFlag, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);

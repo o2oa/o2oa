@@ -13,7 +13,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.bbs.entity.BBSReplyInfo.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:08:02 CST 2017")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sat May 06 19:34:23 CST 2017")
 public class BBSReplyInfo_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<BBSReplyInfo,String> auditorName;
     public static volatile SingularAttribute<BBSReplyInfo,String> content;
@@ -28,6 +28,7 @@ public class BBSReplyInfo_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<BBSReplyInfo,String> mainSectionName;
     public static volatile SingularAttribute<BBSReplyInfo,Integer> orderNumber;
     public static volatile SingularAttribute<BBSReplyInfo,String> parentId;
+    public static volatile SingularAttribute<BBSReplyInfo,String> picId;
     public static volatile SingularAttribute<BBSReplyInfo,String> replyAuditStatus;
     public static volatile SingularAttribute<BBSReplyInfo,String> sectionId;
     public static volatile SingularAttribute<BBSReplyInfo,String> sectionName;

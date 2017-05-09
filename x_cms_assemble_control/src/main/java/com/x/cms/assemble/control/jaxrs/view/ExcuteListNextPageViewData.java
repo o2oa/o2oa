@@ -16,6 +16,10 @@ import com.x.base.core.logger.LoggerFactory;
 import com.x.cms.assemble.control.WrapTools;
 import com.x.cms.assemble.control.jaxrs.document.WrapOutDocumentComplex;
 import com.x.cms.assemble.control.jaxrs.documentpermission.WrapInDocumentSearchFilter;
+import com.x.cms.assemble.control.jaxrs.view.exception.CategoryIdEmptyException;
+import com.x.cms.assemble.control.jaxrs.view.exception.ServiceLogicException;
+import com.x.cms.assemble.control.jaxrs.view.exception.ViewIdEmptyException;
+import com.x.cms.assemble.control.jaxrs.view.exception.ViewNotExistsException;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.element.View;
 
@@ -71,7 +75,7 @@ public class ExcuteListNextPageViewData extends ExcuteBase {
 				check = false;
 				Exception exception = new ViewIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}		
 		if( check ){
@@ -82,7 +86,7 @@ public class ExcuteListNextPageViewData extends ExcuteBase {
 				check = false;
 				Exception exception = new CategoryIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -92,13 +96,13 @@ public class ExcuteListNextPageViewData extends ExcuteBase {
 					check = false;
 					Exception exception = new ViewNotExistsException( wrapIn.getViewId() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			}catch( Exception e ){
 				check = false;
 				Exception exception = new ServiceLogicException( e, "系统在根据ID查询列表视图信息时发生异常。" );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -109,7 +113,7 @@ public class ExcuteListNextPageViewData extends ExcuteBase {
 				check = false;
 				Exception exception = new ServiceLogicException( e, "系统在根据登录用户姓名获取用户拥有的所有组织，角色，群组信息列表时发生异常。" );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -132,7 +136,7 @@ public class ExcuteListNextPageViewData extends ExcuteBase {
 					check = false;
 					Exception exception = new ServiceLogicException( e, "系统在根据登录人员获取能管理的分类信息ID列表时发生异常。" );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 			//然后到documentPermission表里根据要求进行条件查询并且排序后，输出下一页的ID列表
@@ -145,7 +149,7 @@ public class ExcuteListNextPageViewData extends ExcuteBase {
 				check = false;
 				Exception exception = new ServiceLogicException( e, "系统在根据过滤条件查询用户可访问的文档ID列表时发生异常。" );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -161,7 +165,7 @@ public class ExcuteListNextPageViewData extends ExcuteBase {
 					check = false;
 					Exception exception = new ServiceLogicException( e, "系统在根据条件查询列表数据时发生异常。" );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -174,13 +178,13 @@ public class ExcuteListNextPageViewData extends ExcuteBase {
 						wrap.setDocument( WrapTools.document_wrapout_copier.copy( document ) );
 					} catch (Exception e) {
 						Exception exception = new ServiceLogicException( e, "系统在将文档信息转换为可输出的数据信息时发生异常。" );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 					try {
 						wrap.setData( documentInfoServiceAdv.getDocumentData(document) );
 					} catch (Exception e) {
 						Exception exception = new ServiceLogicException( e, "系统在根据文档信息获取文档数据信息时发生异常。" );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 					wraps.add( wrap );
 				}

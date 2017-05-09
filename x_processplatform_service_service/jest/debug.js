@@ -1,29 +1,35 @@
-debug_parameter = {};
+logger_parameter = {};
 
-function debug_init() {
+function logger_init() {
     $('#result').html('');
     $('#content').html('');
     var str = '<table border="1" width="100%">';
-    str += '<tr><td colspan="2"><a href="#" id="get">get</a>&nbsp<a href="#" id="on">on</a>&nbsp;<a href="#" id="off">off</a></td></tr>';
-    str += '<tr><td>debug:</td><td id="status">&nbsp;</td></tr>';
+    str += '<tr><td colspan="2"><a href="#" id="get">get</a>&nbsp<a href="#" id="trace">trace</a>&nbsp;<a href="#" id="debug">debug</a>&nbsp;<a href="#" id="info">info</a>&nbsp;<a href="#" id="warn">warn</a></td></tr>';
+    str += '<tr><td>debug:</td><td id="level">&nbsp;</td></tr>';
     str += '</table>';
     $('#content').html(str);
     $('#get').click(function() {
-	debug_get();
+	logger_get();
     });
-    $('#on').click(function() {
-	debug_on();
+    $('#trace').click(function() {
+	logger_trace();
     });
-    $('#off').click(function() {
-	debug_off();
+    $('#debug').click(function() {
+	logger_debug();
+    });
+    $('#info').click(function() {
+	logger_info();
+    });
+    $('#warn').click(function() {
+	logger_warn();
     });
 }
 
-function debug_get() {
+function logger_get() {
     $.ajax({
 	type : 'get',
 	dataType : 'json',
-	url : '../jaxrs/debug',
+	url : '../jaxrs/logger',
 	contentType : 'application/json; charset=utf-8',
 	xhrFields : {
 	    'withCredentials' : true
@@ -31,46 +37,68 @@ function debug_get() {
 	crossDomain : true
     }).done(function(json) {
 	if (json.type == 'success') {
-	    $('#status').html(json.data.value + '');
+	    $('#level').html(json.data.value);
 	}
     }).always(function(json) {
 	$('#result').html(JSON.stringify(json, null, 4));
     });
 }
 
-function debug_on() {
+function debug_trace() {
     $.ajax({
 	type : 'get',
 	dataType : 'json',
-	url : '../jaxrs/debug/true',
+	url : '../jaxrs/logger/trace',
 	contentType : 'application/json; charset=utf-8',
 	xhrFields : {
 	    'withCredentials' : true
 	},
 	crossDomain : true
-    }).done(function(json) {
-	if (json.type == 'success') {
-	    $('#status').html(json.data.value + '');
-	}
     }).always(function(json) {
 	$('#result').html(JSON.stringify(json, null, 4));
     });
 }
 
-function debug_off() {
+function debug_debug() {
     $.ajax({
 	type : 'get',
 	dataType : 'json',
-	url : '../jaxrs/debug/false',
+	url : '../jaxrs/logger/debug',
 	contentType : 'application/json; charset=utf-8',
 	xhrFields : {
 	    'withCredentials' : true
 	},
 	crossDomain : true
-    }).done(function(json) {
-	if (json.type == 'success') {
-	    $('#status').html(json.data.value + '');
-	}
+    }).always(function(json) {
+	$('#result').html(JSON.stringify(json, null, 4));
+    });
+}
+
+function debug_info() {
+    $.ajax({
+	type : 'get',
+	dataType : 'json',
+	url : '../jaxrs/logger/info',
+	contentType : 'application/json; charset=utf-8',
+	xhrFields : {
+	    'withCredentials' : true
+	},
+	crossDomain : true
+    }).always(function(json) {
+	$('#result').html(JSON.stringify(json, null, 4));
+    });
+}
+
+function debug_warn() {
+    $.ajax({
+	type : 'get',
+	dataType : 'json',
+	url : '../jaxrs/logger/warn',
+	contentType : 'application/json; charset=utf-8',
+	xhrFields : {
+	    'withCredentials' : true
+	},
+	crossDomain : true
     }).always(function(json) {
 	$('#result').html(JSON.stringify(json, null, 4));
     });

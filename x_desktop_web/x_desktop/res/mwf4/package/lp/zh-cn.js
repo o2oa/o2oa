@@ -129,9 +129,9 @@ MWF.LP.desktop = {
     "showMessage": "消息",
 	"logout": "注销",
     "userConfig": "个人设置",
-    "application": "应用",
+    "application": "组件",
     "widget": "小工具",
-    "process": "流程",
+    "process": "应用",
     "nosign": "未编辑个性签名",
     "searchUser": "搜索：用户名",
     "say": "说",
@@ -220,7 +220,10 @@ MWF.LP.desktop = {
         "personQQ": "QQ号码",
         "personWeixin": "微信",
         "duty": "职务"
-
+    },
+    "collect": {
+        "collectNotConnected": "连接O2云失败",
+        "collectNotConnectedText": "无法连接到O2云，请检查服务器网络！"
     }
 };
 MWF.LP.widget = {
@@ -250,6 +253,9 @@ MWF.LP.widget = {
     "uploadActivity": "活动",
     "attCount": "文件",
     "folderCount": "文件夹",
+
+	"pictureSize" : "图片显示宽{width}像素,高{height}像素",
+	"pictureRatio" : "图片宽高比为{ratio}",
 
 	"ok": "确定",
 	"cancel": "取消",

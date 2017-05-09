@@ -203,22 +203,22 @@ MWF.xApplication.cms.Index.Creater.Category = new Class({
         });
     },
 
-    createDocument: function( e ){
-        var fielter = {
-            "categoryIdList": [this.data.id ],
-            "creatorList": [layout.desktop.session.user.name]
-        }
-        this.creater.getAction(function(){
-            this.creater.action.listDraftNext("(0)", 1, fielter, function(json){
-                if( json.data.length > 0 ){
-                    this._openDocument(json.data[0].id);
-                }else{
-                    this._createDocument();
-                }
-            }.bind(this));
-        }.bind(this))
-    },
-    _createDocument : function(){
+    //createDocument: function( e ){
+    //    var fielter = {
+    //        "categoryIdList": [this.data.id ],
+    //        "creatorList": [layout.desktop.session.user.name]
+    //    };
+    //    this.creater.getAction(function(){
+    //        this.creater.action.listDraftNext("(0)", 1, fielter, function(json){
+    //            if( json.data.length > 0 ){
+    //                this._openDocument(json.data[0].id);
+    //            }else{
+    //                this._createDocument();
+    //            }
+    //        }.bind(this));
+    //    }.bind(this))
+    //},
+    createDocument : function(){
         this.creater.closeStartDocumentArea();
         if( !this.data.formId || this.data.formId=="" ){
             this.app.notice(this.creater.lp.noFormSelected, "error");
@@ -226,47 +226,50 @@ MWF.xApplication.cms.Index.Creater.Category = new Class({
         }
         MWF.xDesktop.requireApp("cms.Index", "Starter", function(){
             var starter = new MWF.xApplication.cms.Index.Starter(this.column.data, this.data, this.app, {
-                "onStarted": function(data, title, categoryName){
-                    this.afterStart(data, title, categoryName);
+                //"onStarted": function(data, title, categoryName){
+                //    this.afterStart(data, title, categoryName);
+                //}.bind(this)
+                onPostPublish : function(){
+                    if(this.creater.view )this.creater.view.reload();
                 }.bind(this)
             });
             starter.load();
         }.bind(this));
-    },
-    _openDocument: function(id,el){
-        var _self = this;
-
-        var appId = "cms.Document"+id;
-        if (_self.app.desktop.apps[appId]){
-            _self.app.desktop.apps[appId].setCurrent();
-        }else {
-            var options = {
-                "readonly" :false,
-                "documentId": id,
-                "appId": appId,
-                "postPublish" : function(){
-                    if(_self.creater.view )_self.creater.view.reload();
-                }
-            };
-            this.app.desktop.openApplication(el, "cms.Document", options);
-        }
-    },
-    afterStart : function(data, title, categoryName){
-        var _self = this;
-        var appId = "cms.Document"+data.id;
-        if (_self.app.desktop.apps[appId]){
-            _self.app.desktop.apps[appId].setCurrent();
-        }else {
-            var options = {
-                "readonly" :false,
-                "documentId": data.id,
-                "appId": appId,
-                "postPublish" : function(){
-                    if(_self.creater.view )_self.creater.view.reload();
-                }
-            };
-            this.app.desktop.openApplication(null, "cms.Document", options);
-        }
     }
+    //_openDocument: function(id,el){
+    //    var _self = this;
+    //
+    //    var appId = "cms.Document"+id;
+    //    if (_self.app.desktop.apps[appId]){
+    //        _self.app.desktop.apps[appId].setCurrent();
+    //    }else {
+    //        var options = {
+    //            "readonly" :false,
+    //            "documentId": id,
+    //            "appId": appId,
+    //            "postPublish" : function(){
+    //                if(_self.creater.view )_self.creater.view.reload();
+    //            }
+    //        };
+    //        this.app.desktop.openApplication(el, "cms.Document", options);
+    //    }
+    //},
+    //afterStart : function(data, title, categoryName){
+    //    var _self = this;
+    //    var appId = "cms.Document"+data.id;
+    //    if (_self.app.desktop.apps[appId]){
+    //        _self.app.desktop.apps[appId].setCurrent();
+    //    }else {
+    //        var options = {
+    //            "readonly" :false,
+    //            "documentId": data.id,
+    //            "appId": appId,
+    //            "postPublish" : function(){
+    //                if(_self.creater.view )_self.creater.view.reload();
+    //            }
+    //        };
+    //        this.app.desktop.openApplication(null, "cms.Document", options);
+    //    }
+    //}
 
 });

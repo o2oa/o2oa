@@ -6,7 +6,6 @@ package com.x.okr.entity;
 
 import com.x.base.core.entity.SliceJpaObject_;
 import java.lang.Boolean;
-import java.lang.Double;
 import java.lang.Integer;
 import java.lang.String;
 import java.util.Date;
@@ -16,13 +15,15 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.okr.entity.OkrWorkBaseInfo.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:09:40 CST 2017")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sat May 06 19:35:29 CST 2017")
 public class OkrWorkBaseInfo_ extends SliceJpaObject_  {
+    public static volatile SingularAttribute<OkrWorkBaseInfo,Date> archiveDate;
     public static volatile ListAttribute<OkrWorkBaseInfo,String> attachmentList;
     public static volatile SingularAttribute<OkrWorkBaseInfo,String> centerId;
     public static volatile SingularAttribute<OkrWorkBaseInfo,String> centerTitle;
     public static volatile SingularAttribute<OkrWorkBaseInfo,Date> completeDateLimit;
     public static volatile SingularAttribute<OkrWorkBaseInfo,String> completeDateLimitStr;
+    public static volatile SingularAttribute<OkrWorkBaseInfo,Date> completeTime;
     public static volatile SingularAttribute<OkrWorkBaseInfo,String> confirmDateStr;
     public static volatile SingularAttribute<OkrWorkBaseInfo,String> cooperateCompanyName;
     public static volatile SingularAttribute<OkrWorkBaseInfo,String> cooperateEmployeeName;
@@ -46,7 +47,7 @@ public class OkrWorkBaseInfo_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<OkrWorkBaseInfo,Boolean> isOverTime;
     public static volatile SingularAttribute<OkrWorkBaseInfo,Date> lastReportTime;
     public static volatile SingularAttribute<OkrWorkBaseInfo,Date> nextReportTime;
-    public static volatile SingularAttribute<OkrWorkBaseInfo,Double> overallProgress;
+    public static volatile SingularAttribute<OkrWorkBaseInfo,Integer> overallProgress;
     public static volatile SingularAttribute<OkrWorkBaseInfo,String> parentWorkId;
     public static volatile SingularAttribute<OkrWorkBaseInfo,String> parentWorkTitle;
     public static volatile SingularAttribute<OkrWorkBaseInfo,String> progressAnalyseTime;

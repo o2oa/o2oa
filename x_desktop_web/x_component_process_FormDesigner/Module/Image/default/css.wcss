@@ -40,10 +40,8 @@
 		"position": "static",
 		"top": "auto",
 		"left": "auto",
-		"width": "92px",
 		"opacity": 1, 
-		"display": "inline-block",
-		"height": "73px"
+		"display": "inline-block"
 	},
 	"textfieldIcon": {
 		"background": "url("+"/x_component_process_FormDesigner/Module/Textfield/default/icon/inputtext.png) center center no-repeat",

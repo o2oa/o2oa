@@ -8,6 +8,7 @@ import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.okr.assemble.control.jaxrs.okrconfigworktype.exception.WorkTypeConfigListAllException;
 import com.x.okr.entity.OkrConfigWorkType;
 
 import net.sf.ehcache.Element;
@@ -40,7 +41,7 @@ public class ExcuteListAll extends ExcuteBase {
 			} catch ( Exception e) {
 				Exception exception = new WorkTypeConfigListAllException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

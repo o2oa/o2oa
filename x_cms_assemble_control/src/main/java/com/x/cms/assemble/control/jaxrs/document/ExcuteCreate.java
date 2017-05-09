@@ -15,6 +15,14 @@ import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.WrapTools;
+import com.x.cms.assemble.control.jaxrs.document.exception.CategoryInfoNotExistsException;
+import com.x.cms.assemble.control.jaxrs.document.exception.CategoryInfoProcessException;
+import com.x.cms.assemble.control.jaxrs.document.exception.DocumentCategoryIdEmptyException;
+import com.x.cms.assemble.control.jaxrs.document.exception.DocumentInfoProcessException;
+import com.x.cms.assemble.control.jaxrs.document.exception.DocumentTitleEmptyException;
+import com.x.cms.assemble.control.jaxrs.document.exception.PersonHasNoIdentityException;
+import com.x.cms.assemble.control.jaxrs.document.exception.PersonIdentityInvalidException;
+import com.x.cms.assemble.control.jaxrs.document.exception.PersonIdentityQueryException;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.organization.core.express.wrap.WrapIdentity;
@@ -43,7 +51,7 @@ public class ExcuteCreate extends ExcuteBase {
 						check = false;
 						Exception exception = new PersonHasNoIdentityException( effectivePerson.getName() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						//logger.error( e, effectivePerson, request, null);
 					} else if ( identities.size() == 1 ) {
 						wrapIdentity = identities.get(0);
 					} else {
@@ -52,7 +60,7 @@ public class ExcuteCreate extends ExcuteBase {
 							check = false;
 							Exception exception = new PersonIdentityInvalidException( identity );
 							result.error( exception );
-							logger.error( exception, effectivePerson, request, null);
+							//logger.error( e, effectivePerson, request, null);
 						}
 					}
 				}			
@@ -60,7 +68,7 @@ public class ExcuteCreate extends ExcuteBase {
 				check = false;
 				Exception exception = new PersonIdentityQueryException( e, identity );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -69,7 +77,7 @@ public class ExcuteCreate extends ExcuteBase {
 				check = false;
 				Exception exception = new DocumentTitleEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -78,7 +86,7 @@ public class ExcuteCreate extends ExcuteBase {
 				check = false;
 				Exception exception = new DocumentCategoryIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -88,13 +96,13 @@ public class ExcuteCreate extends ExcuteBase {
 					check = false;
 					Exception exception = new CategoryInfoNotExistsException( wrapIn.getCategoryId() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			}catch(Exception e){
 				check = false;
-				Exception exception = new CategoryInfoQueryByIdException( e, wrapIn.getCategoryId() );
+				Exception exception = new CategoryInfoProcessException( e, "根据ID查询分类信息对象时发生异常。ID:"+wrapIn.getCategoryId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 
@@ -103,9 +111,9 @@ public class ExcuteCreate extends ExcuteBase {
 				document = WrapTools.document_wrapin_copier.copy( wrapIn );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new DocumentWrapInException( e );
+				Exception exception = new DocumentInfoProcessException( e, "系统将用户传入的数据转换为一个文档信息对象时发生异常。" );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -135,7 +143,7 @@ public class ExcuteCreate extends ExcuteBase {
 					}else{
 						Exception exception = new PersonHasNoIdentityException( effectivePerson.getName() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						//logger.error( e, effectivePerson, request, null);
 					}
 				}			
 				emc.beginTransaction( Document.class );

@@ -21,6 +21,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.application.servlet.AbstractServletAction;
+import com.x.base.core.cache.ApplicationCache;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -34,7 +35,6 @@ import com.x.base.core.project.server.StorageMapping;
 import com.x.okr.assemble.control.ThisApplication;
 import com.x.okr.entity.OkrAttachmentFileInfo;
 import com.x.okr.entity.OkrCenterWorkInfo;
-import com.x.okr.entity.OkrWorkBaseInfo;
 
 /**
  * 附件上传服务
@@ -50,9 +50,10 @@ public class CenterWorkAttachmentUploadServlet extends AbstractServletAction {
 	
 	@HttpMethodDescribe(value = "上传附件 servlet/upload/center/{id}", response = WrapOutId.class)
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ActionResult<WrapOutId> result = new ActionResult<>();
-		List<OkrAttachmentFileInfo> attachments = new ArrayList<OkrAttachmentFileInfo>();
+		ActionResult<List<WrapOutId>> result = new ActionResult< List<WrapOutId> >();
+		List<WrapOutId> wraps = new ArrayList<>();
 		OkrAttachmentFileInfo okrAttachmentFileInfo = null;
+		WrapOutId wrap = null;
 		OkrCenterWorkInfo okrCenterWorkInfo = null;
 		EffectivePerson effectivePerson = null;
 		ServletFileUpload upload = null;
@@ -98,14 +99,14 @@ public class CenterWorkAttachmentUploadServlet extends AbstractServletAction {
 						check = false;
 						Exception exception = new CenterWorkNotExistsException( centerId );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						//logger.error( e, effectivePerson, request, null);
 					}
 				}
 			}catch(Exception e){
 				check = false;
 				Exception exception = new CenterWorkQueryByIdException( e, centerId );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}				
 		if( check ){
@@ -123,76 +124,109 @@ public class CenterWorkAttachmentUploadServlet extends AbstractServletAction {
 								site = str;
 							}
 						} else {
-							StorageMapping mapping = ThisApplication.storageMappings.random( OkrAttachmentFileInfo.class );
-							okrAttachmentFileInfo = concreteAttachment( effectivePerson.getName(), okrCenterWorkInfo, mapping, this.getFileName( item.getName() ), site );
-							okrAttachmentFileInfo.saveContent( mapping, input, item.getName() );
-							attachments.add( okrAttachmentFileInfo );
+							
+							wrap = saveAttachmetFile( effectivePerson.getName(), okrCenterWorkInfo, item, site, input );
+							wraps.add( wrap );
 						}
 					}finally{
 						input.close();
 					}
 				}
+				if( wraps != null && !wraps.isEmpty() && site!=null && !site.isEmpty() ){
+					for( WrapOutId _wrap : wraps ){
+						try( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();){
+							okrAttachmentFileInfo = emc.find( _wrap.getId(), OkrAttachmentFileInfo.class);
+							emc.beginTransaction( OkrAttachmentFileInfo.class );
+							okrAttachmentFileInfo.setSite(site);
+							emc.check( okrAttachmentFileInfo, CheckPersistType.all);
+							emc.commit();
+						}
+					}
+				}
+				result.setData(wraps);
 			}catch(Exception e){
 				check = false;
 				result.error( e );
 				logger.warn( "[UploadServlet]system try to save okrAttachmentFileInfo to Storage got an exception." );
 				logger.error(e);
 			}
-		}		
-		if( check ){
-			if( okrAttachmentFileInfo != null ){
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					okrCenterWorkInfo = emc.find( centerId, OkrCenterWorkInfo.class );
-					if( okrCenterWorkInfo != null ){
-						if( okrCenterWorkInfo.getAttachmentList() == null ) {
-							okrCenterWorkInfo.setAttachmentList( new ArrayList<String>());
-						}
-						emc.beginTransaction( OkrAttachmentFileInfo.class );
-						emc.beginTransaction( OkrWorkBaseInfo.class );
-						emc.persist( okrAttachmentFileInfo, CheckPersistType.all );
-						okrCenterWorkInfo.getAttachmentList().add( okrAttachmentFileInfo.getId() );
-						emc.check( okrCenterWorkInfo, CheckPersistType.all );
-						emc.commit();
-					}
-					result.setData( new WrapOutId( okrAttachmentFileInfo.getId()));
-				}catch( Exception e ){
-					check = false;
-					result.error( e );
-					logger.warn( "[UploadServlet]system try to save okrAttachmentFileInfo to database got an exception." );
-					logger.error(e);
-				}
-			}
 		}
 		this.result( response, result );
+	}
+	
+	private WrapOutId saveAttachmetFile( String personName, OkrCenterWorkInfo okrCenterWorkInfo, FileItemStream item, String site, InputStream input ) throws Exception {
+		WrapOutId wrap = null;
+		OkrAttachmentFileInfo fileInfo = null;
+		EntityManagerContainer emc = null;
+		StorageMapping mapping = null;
+	
+		if( item != null ){
+			
+			emc = EntityManagerContainerFactory.instance().create();
+			
+			okrCenterWorkInfo = emc.find( okrCenterWorkInfo.getId(), OkrCenterWorkInfo.class);
+
+			emc.beginTransaction( OkrAttachmentFileInfo.class );
+			emc.beginTransaction( OkrCenterWorkInfo.class );
+			mapping = ThisApplication.context().storageMappings().random( OkrAttachmentFileInfo.class );
+			
+			fileInfo = concreteAttachment( personName, okrCenterWorkInfo, mapping, this.getFileName( item.getName() ), site );
+			
+			//先检查对象是否能够被保存，如果能保存，再进行文件存储
+			emc.check( fileInfo, CheckPersistType.all);
+			
+			fileInfo.saveContent( mapping, input, item.getName() );					
+			
+			if( okrCenterWorkInfo.getAttachmentList() == null ){
+				okrCenterWorkInfo.setAttachmentList( new ArrayList<>() );
+			}
+			if( !okrCenterWorkInfo.getAttachmentList().contains( fileInfo.getId() ) ){
+				okrCenterWorkInfo.getAttachmentList().add( fileInfo.getId() );
+			}
+			emc.check( okrCenterWorkInfo, CheckPersistType.all);
+			emc.persist( fileInfo, CheckPersistType.all );
+			
+			wrap = new WrapOutId( fileInfo.getId());
+			
+			emc.commit();
+			ApplicationCache.notify( OkrAttachmentFileInfo.class );
+			ApplicationCache.notify( OkrCenterWorkInfo.class );
+		}
+		return wrap;
 	}
 	
 	private OkrAttachmentFileInfo concreteAttachment( String person, OkrCenterWorkInfo okrCenterWorkInfo, StorageMapping storage, String name, String site ) throws Exception {
 		String fileName = UUID.randomUUID().toString();
 		String extension = FilenameUtils.getExtension( name );
 		OkrAttachmentFileInfo attachment = new OkrAttachmentFileInfo();
-		if (StringUtils.isNotEmpty(extension)) {
+		if ( StringUtils.isEmpty(extension) ) {
+			throw new Exception("file extension is empty.");
+		}else{
 			fileName = fileName + "." + extension;
-			attachment.setExtension(extension);
 		}
-		attachment.setFileHost( storage.getHost() );
-		attachment.setFilePath( "" );
-		if( name.indexOf( "\\" ) >0 ){
-			name = StringUtils.substringAfterLast( name, "\\");
+		if (name.indexOf("\\") > 0) {
+			name = StringUtils.substringAfterLast(name, "\\");
 		}
-		if( name.indexOf( "/" ) >0 ){
-			name = StringUtils.substringAfterLast( name, "/");
+		if (name.indexOf("/") > 0) {
+			name = StringUtils.substringAfterLast(name, "/");
 		}
+		attachment.setCreateTime( new Date() );
+		attachment.setLastUpdateTime( new Date() );
+		attachment.setExtension( extension );
 		attachment.setName( name );
 		attachment.setFileName( fileName );
-		attachment.setStorageName( storage.getName() );
+		attachment.setStorage( storage.getName() );
 		attachment.setWorkInfoId( null );
 		attachment.setCenterId( okrCenterWorkInfo.getId() );
 		attachment.setStatus( "正常" );
 		attachment.setParentType( "中心工作" );
+		attachment.setCreatorUid( person );
+		attachment.setSite( site );
+		attachment.setFileHost( "" );
+		attachment.setFilePath( "" );
 		attachment.setKey( okrCenterWorkInfo.getId() );
-		attachment.setCreatorUid(person);
-		attachment.setCreateTime( new Date() );
-		attachment.setSite(site);
+		
 		return attachment;
 	}
+	
 }

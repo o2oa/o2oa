@@ -7,7 +7,7 @@ import com.x.base.core.entity.annotation.EntityFieldDescribe;
 import com.x.base.core.http.annotation.Wrap;
 import com.x.bbs.entity.BBSSubjectInfo;
 
-@Wrap( BBSSubjectInfo.class)
+@Wrap( WrapOutSubjectInfo.class)
 public class WrapOutSubjectInfo extends BBSSubjectInfo{
 	
 	private static final long serialVersionUID = -5076990764713538973L;

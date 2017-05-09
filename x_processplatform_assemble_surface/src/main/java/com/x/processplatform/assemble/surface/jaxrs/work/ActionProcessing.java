@@ -21,7 +21,7 @@ class ActionProcessing extends ActionBase {
 			if (null == work) {
 				throw new WorkNotExistedException(id);
 			}
-			ThisApplication.applications.putQuery(x_processplatform_service_processing.class,
+			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 					"work/" + URLEncoder.encode(work.getId(), DefaultCharset.name) + "/processing", null);
 			WrapOutId wrap = new WrapOutId(work.getId());
 			result.setData(wrap);

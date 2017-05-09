@@ -6,7 +6,7 @@ MWF.xDesktop.requireApp("Forum", "Attachment", null, false);
 MWF.xDesktop.requireApp("Forum", "lp."+MWF.language, null, false);
 MWF.xDesktop.requireApp("Forum", "Access", null, false);
 MWF.xDesktop.requireApp("Template", "Explorer", null, false);
-MWF.require("MWF.widget.ImageClipper", null, false);
+MWF.xDesktop.requireApp("Forum", "TopNode", null, false);
 
 MWF.xApplication.ForumDocument.options = {
 	multitask: true,
@@ -22,9 +22,9 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		"icon": "icon.png",
 		"width": "1210",
 		"height": "700",
-		"isResize": false,
+		"isResize": true,
 		"isMax": true,
-		"isNew" : true,
+		"isNew" : false,
 		"isEdited" : true,
 		"index" : 1,
 		"replyIndex" : null,
@@ -35,9 +35,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		this.lp = MWF.xApplication.Forum.LP;
 	},
 	onQueryClose: function(){
-		if( this.clipper ){
-			this.clipper.close();
-		}
+
 	},
 	loadApplication: function(callback){
 		this.userData = layout.desktop.session.user;
@@ -45,8 +43,16 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		this.restActions = this.actions = new MWF.xApplication.Forum.Actions.RestActions();
 
 		this.path = "/x_component_ForumDocument/$Main/"+this.options.style+"/";
-		this.createNode();
-		this.loadApplicationContent();
+		if( this.options.isNew && !this.options.id ){
+			 this.actions.getUUID( function( id ){
+				 this.advanceId = id;
+				 this.createNode();
+				 this.loadApplicationContent();
+			 }.bind(this))
+		}else{
+			this.createNode();
+			this.loadApplicationContent();
+		}
 	},
 	loadController: function(callback){
 		this.access = new MWF.xApplication.Forum.Access( this.restActions, this.lp );
@@ -318,6 +324,8 @@ MWF.xApplication.ForumDocument.Main = new Class({
 					portalImage: {text: this.lp.portalImage },
 					content: {text: this.lp.content, type : "rtf", notEmpty : true, RTFConfig : {
 						isSetImageMaxWidth : true,
+						reference : this.advanceId || this.data.id,
+						referenceType: "forumDocument",
 						skin : "bootstrapck" //,
 						//filebrowserCurrentDocumentImage: function (e, callback) {
 						//	_self.selectDocImage( callback );
@@ -364,23 +372,23 @@ MWF.xApplication.ForumDocument.Main = new Class({
 	//		if (callback)callback(url, base64Code, data);
 	//	}.bind(this));
 	//},
-	selectCloudImage : function( callback, width ){
-		var _self = this;
-		MWF.xDesktop.requireApp("File", "FileSelector", function(){
-			_self.selector_cloud = new MWF.xApplication.File.FileSelector( document.body ,{
-				"style" : "default",
-				"title": "选择云文件图片",
-				"listStyle": "preview",
-				"toBase64" : true,
-				"base64Width" : width || 800,
-				"selectType" : "images",
-				"onPostSelectAttachment" : function(url, base64Code){
-					if(callback)callback(url, base64Code);
-				}
-			});
-			_self.selector_cloud.load();
-		}, true);
-	},
+	//selectCloudImage : function( callback, width ){
+	//	var _self = this;
+	//	MWF.xDesktop.requireApp("File", "FileSelector", function(){
+	//		_self.selector_cloud = new MWF.xApplication.File.FileSelector( document.body ,{
+	//			"style" : "default",
+	//			"title": "选择云文件图片",
+	//			"listStyle": "preview",
+	//			"toBase64" : true,
+	//			"base64Width" : width || 800,
+	//			"selectType" : "images",
+	//			"onPostSelectAttachment" : function(url, base64Code){
+	//				if(callback)callback(url, base64Code);
+	//			}
+	//		});
+	//		_self.selector_cloud.load();
+	//	}, true);
+	//},
 	//insertImage : function( callback ){
 	//	var form = new MWF.xApplication.ForumDocument.ImageLinkForm(this, this.data, {
 	//		onPostOk : function( data ){
@@ -394,67 +402,39 @@ MWF.xApplication.ForumDocument.Main = new Class({
 	createIconNode: function(){
 		var sectionIconArea = this.contentDiv.getElements("[item='portalImageAre']")[0];
 
-		var pictureBase64 =  (this.data && this.data.pictureBase64) ? this.data.pictureBase64 : null;
-		this.clipper = new MWF.xApplication.ForumDocument.ImageClipper(sectionIconArea, {
-			aspectRatio : 1,
-			editorSize : 300,
-			previewerSize : 230,
-			resultMaxSize : 500,
-			resetEnable : true
-		}, this,  this.data ? this.data.id : "" );
-		this.clipper.load( pictureBase64 );
-
-		//this.iconNode = new Element("img",{
-		//	"styles" : this.css.iconNode
-		//}).inject(sectionIconArea);
-		//if ( this.data && this.data.pictureBase64){
-		//	this.iconNode.set("src", this.data.pictureBase64)
-		//}else{
-		//	this.iconNode.setStyle("display","none");
-		//}
-
-		//var insertUrlNode = new Element("div", {
-		//	"styles": this.css.changeIconActionNode,
-		//	"text": this.lp.insertUrl
-		//}).inject(sectionIconArea);
-		//insertUrlNode.addEvent("click", function () {
-		//	this.insertImage( function( data ){
-		//		this.iconNode.setStyle("display","");
-		//		this.iconNode.set( "src", data.imageUrl );
-		//		this.pictureUrl = data.imageUrl;
-		//		this.pictureBase64 = "";
-		//		this.pictureData = null;
-		//	}.bind(this) );
-		//}.bind(this));
-        //
-		//var selectCurrentDocumentFileNode = new Element("div", {
-		//	"styles": this.css.changeIconActionNode,
-		//	"text": this.lp.selectCurrentDocumentFile
-		//}).inject(sectionIconArea);
-		//selectCurrentDocumentFileNode.addEvent("click", function () {
-		//	this.selectDocImage( function( url, base64Code, data ){
-		//		this.iconNode.setStyle("display","");
-		//		this.iconNode.set( "src", base64Code || url);
-		//		this.pictureUrl = "";
-		//		this.pictureBase64 = base64Code || url;
-		//		this.pictureData = data;
-		//	}.bind(this), 230 );
-		//}.bind(this));
-        //
-		//var selectCloudFileNode = new Element("div", {
-		//	"styles": this.css.changeIconActionNode,
-		//	"text": this.lp.selectCloudFile
-		//}).inject(sectionIconArea);
-		//selectCloudFileNode.addEvent("click", function () {
-		//	this.selectCloudImage( function(url , base64Code){
-		//		this.iconNode.setStyle("display","");
-		//		this.iconNode.set( "src", base64Code || url );
-		//		this.pictureUrl = "";
-		//		this.pictureBase64 = base64Code || url;
-		//		this.pictureData = null;
-		//	}.bind(this), 230);
-		//}.bind(this));
-
+		if( sectionIconArea ){
+			this.picId =  (this.data && this.data.picId) ? this.data.picId : null;
+			if( this.picId ){
+				this.portalImage = new Element("img", {
+					"src" : MWF.xDesktop.getImageSrc(this.picId),
+					"styles" : this.css.portalImageNode
+				}).inject( sectionIconArea );
+			};
+			this.uploadImageAction = new Element("button.uploadActionNode",{
+				"styles" : this.css.uploadActionNode,
+				"text" : "设置图片"
+			}).inject(sectionIconArea);
+			this.uploadImageAction.addEvents({
+				"click": function(){
+					MWF.xDesktop.requireApp("ForumDocument", "ImageClipper",null,false);
+					this.clipper = new MWF.xApplication.ForumDocument.ImageClipper(this.form.app, {
+						"aspectRatio": 1.5,
+						"imageUrl": this.picId ? MWF.xDesktop.getImageSrc(this.picId) : "",
+						"reference": this.advanceId || this.data.id,
+						"referenceType": "forumDocument",
+						"onChange": function () {
+							if( this.portalImage )this.portalImage.destroy();
+							this.portalImage = new Element("img", {
+								"src" : this.clipper.imageSrc,
+								"styles" : this.css.portalImageNode
+							}).inject( sectionIconArea, "top" );
+							this.picId = this.clipper.imageId;
+						}.bind(this)
+					});
+					this.clipper.load();
+				}.bind(this)
+			});
+		}
 	},
 	reloadAllParents : function(){
 		var aid = "Forum";
@@ -474,11 +454,11 @@ MWF.xApplication.ForumDocument.Main = new Class({
 	},
 	saveSubject  : function(){
 		var data = this.form.getResult(true, ",", true, false, true);
-
+		if( this.advanceId )data.id = this.advanceId;
 		data.attachmentList = this.attachment.getAttachmentIds();
 		if (data) {
 			data.sectionId = this.sectionData.id;
-			data.pictureBase64 = this.clipper.getBase64Image() || "";
+			data.picId = this.picId || ""; //this.clipper.getBase64Image() || "";
 			this.restActions.saveSubject(data, function (json) {
 				this.notice(this.options.isNew ? this.lp.createSuccess : this.lp.updateSuccess, "success");
 				this.fireEvent("postPublish");
@@ -591,13 +571,13 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			"id" : this.data.id,
 			"appId": this.data.id ? "ForumDocument"+this.data.id : undefined,
 			"isEdited" : this.options.isEdited,
-			"isNew" : this.options.isEdited,
+			"isNew" : this.options.isNew,
 			"viewPageNum" : this.replyView ? this.replyView.getCurrentPageNum() : 1
 		};
 	},
 	loadAttachment: function( area ){
 		this.attachment = new MWF.xApplication.Forum.Attachment( area, this, this.restActions, this.lp, {
-			documentId : this.data ? this.data.id : "",
+			documentId : this.advanceId || this.data.id,
 			isNew : this.options.isNew,
 			isEdited : this.options.isEdited,
 			"size" : "min",
@@ -681,6 +661,8 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			this.desktop.openApplication(null, "ForumDocument", {
 				"sectionId": this.sectionData.id,
 				"appId": appId,
+				"isNew" : true,
+				"isEdited" : true,
 				"onPostPublish" : function(){
 					//this.view.reload();
 				}.bind(this)
@@ -1201,6 +1183,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		//}.bind(this))
 	},
 	getDateDiff: function (publishTime) {
+		if(!publishTime)return "";
 		var dateTimeStamp = Date.parse(publishTime.replace(/-/gi, "/"));
 		var minute = 1000 * 60;
 		var hour = minute * 60;
@@ -1404,6 +1387,12 @@ MWF.xApplication.ForumDocument.ReplyEditor = new Class({
 		this.app = app;
 	},
 	load: function(){
+		this.app.restActions.getUUID( function( id ){
+			this.advanceReplyId = id;
+			this._load();
+		}.bind(this))
+	},
+	_load: function(){
 		var html = "<div styles='itemNode'>" +
 			" <div styles='itemLeftNode'>" +
 			"   <div styles='itemUserFace'>" +
@@ -1429,7 +1418,7 @@ MWF.xApplication.ForumDocument.ReplyEditor = new Class({
 		}).inject(actionTd);
 		this.saveReplyAction.addEvent("click",function(){
 			this.saveReply();
-		}.bind(this))
+		}.bind(this));
 
 		MWF.xDesktop.requireApp("Template", "MForm", function () {
 			this.form = new MForm(this.node, this.data || {}, {
@@ -1448,6 +1437,8 @@ MWF.xApplication.ForumDocument.ReplyEditor = new Class({
 						skin : "bootstrapck",
 						"resize_enabled": false,
 						isSetImageMaxWidth : true,
+						reference : this.advanceReplyId,
+						referenceType: "forumReply",
 						//uiColor : '#9AB8F3',
 						//toolbarCanCollapse : true,
 						toolbar : [
@@ -1473,6 +1464,7 @@ MWF.xApplication.ForumDocument.ReplyEditor = new Class({
 		var data = this.form.getResult(true, ",", true, false, true);
 		if (data) {
 			data.subjectId = this.mainData.id ;
+			data.id = this.advanceReplyId;
 			this.app.restActions.saveReply(data, function (json) {
 				if (json.type == "error") {
 					this.app.notice(json.message, "error");
@@ -1503,7 +1495,17 @@ MWF.xApplication.ForumDocument.ReplyForm = new Class({
 		"closeAction": true,
 		"toMain" : true
 	},
-	_createTableContent: function () {
+	_createTableContent: function(){
+		if( this.isNew ){
+			this.app.restActions.getUUID( function(id){
+				this.advanceReplyId = id;
+				this._createTableContent_();
+			}.bind(this) )
+		}else{
+			this._createTableContent_()
+		}
+	},
+	_createTableContent_: function () {
 		var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
 			"<tr>" +
 			"   <td styles='formTableValue14' item='mainSubject'></td>" +
@@ -1543,6 +1545,8 @@ MWF.xApplication.ForumDocument.ReplyForm = new Class({
 						skin : "bootstrapck",
 						"resize_enabled": false,
 						isSetImageMaxWidth : true,
+						reference : this.advanceReplyId || this.data.id,
+						referenceType: "forumReply",
 						toolbar : [
 							{ name: 'document', items : [ 'Preview' ] },
 							//{ name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
@@ -1600,6 +1604,7 @@ MWF.xApplication.ForumDocument.ReplyForm = new Class({
 	},
 	_ok: function (data, callback) {
 		data.subjectId = this.mainData.id ;
+		if( this.advanceReplyId )data.id = this.advanceReplyId;
 		if( !this.options.toMain ){
 			data.parentId = this.parentData.id ;
 		}
@@ -1772,10 +1777,10 @@ MWF.xApplication.ForumDocument.ReplyDocument = new Class({
 				}.bind(this)
 			})
 			this.data.contentText = this.node.getElements("[item='content']")[0].get("text");
-	form.mainData = this.app.data;
-	form.parentData = this.data;
-	form.create()
-	}
+			form.mainData = this.app.data;
+			form.parentData = this.data;
+			form.create()
+		}
 	},
 	editReply : function(itemNode, ev ){	//编辑当前回复
 		var form = new MWF.xApplication.ForumDocument.ReplyForm(this, this.data, {
@@ -1974,154 +1979,4 @@ MWF.xApplication.ForumDocument.TopSettingForm = new Class({
 			}
 		}
 	}
-});
-
-//MWF.xApplication.ForumDocument.ImageLinkForm = new Class({
-//	Extends: MWF.xApplication.Template.Explorer.PopupForm,
-//	Implements: [Options, Events],
-//	options: {
-//		"style": "default",
-//		"width": "520",
-//		"height": "100",
-//		"hasTop": true,
-//		"hasIcon": false,
-//		"hasTopIcon" : true,
-//		"hasTopContent" : true,
-//		"hasBottom": true,
-//		"title": MWF.xApplication.Forum.LP.insertUrl,
-//		"draggable": true,
-//		"closeAction": true
-//	},
-//	createTopNode: function () {
-//
-//		if (!this.formTopNode) {
-//			this.formTopNode = new Element("div.formTopNode", {
-//				"styles": this.css.formTopNode
-//			}).inject(this.formNode);
-//
-//			if(this.options.hasTopIcon){
-//				this.formTopIconNode = new Element("div", {
-//					"styles": this.css.formTopIconNodeDocument
-//				}).inject(this.formTopNode)
-//			}
-//
-//			this.formTopTextNode = new Element("div", {
-//				"styles": this.css.formTopTextNodeImageLink,
-//				"text": this.options.title
-//			}).inject(this.formTopNode)
-//
-//			if (this.options.closeAction) {
-//				this.formTopCloseActionNode = new Element("div", {"styles": this.css.formTopCloseActionNode}).inject(this.formTopNode);
-//				this.formTopCloseActionNode.addEvent("click", function () {
-//					this.close()
-//				}.bind(this))
-//			}
-//		}
-//	},
-//	_createTableContent: function () {
-//		var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
-//			"<tr>" +
-//			"   <td styles='formTableValue' item='imageUrl'></td>" +
-//			"</tr>"
-//		"</table>"
-//		this.formTableArea.set("html", html);
-//
-//		MWF.xDesktop.requireApp("Template", "MForm", function () {
-//			this.form = new MForm(this.formTableArea, this.data, {
-//				style: "forum",
-//				isEdited: this.isEdited || this.isNew,
-//				itemTemplate: {
-//					imageUrl: { }
-//				}
-//			}, this.app, this.css);
-//			this.form.load();
-//		}.bind(this), true);
-//	},
-//	_createBottomContent: function () {
-//		if (this.isNew || this.isEdited) {
-//			this.okActionNode = new Element("div.formOkActionNode", {
-//				"styles": this.css.formOkActionNode,
-//				"text": this.app.lp.ok
-//			}).inject(this.formBottomNode);
-//
-//			this.okActionNode.addEvent("click", function (e) {
-//				this.ok(e);
-//			}.bind(this));
-//		}
-//
-//		this.cancelActionNode = new Element("div.formCancelActionNode", {
-//			"styles": this.css.formCancelActionNode,
-//			"text": this.app.lp.close
-//		}).inject(this.formBottomNode);
-//
-//		this.cancelActionNode.addEvent("click", function (e) {
-//			this.cancel(e);
-//		}.bind(this));
-//
-//	},
-//	ok: function (e) {
-//		this.fireEvent("queryOk");
-//		var data = this.form.getResult(true, ",", true, false, true);
-//		if (data) {
-//			this.formMarkNode.destroy();
-//			this.formAreaNode.destroy();
-//			this.fireEvent("postOk", data);
-//		}
-//	}
-//});
-
-MWF.xApplication.ForumDocument.ImageClipper = new Class({
-	Extends: MWF.widget.ImageClipper,
-	initialize: function(node, options, parent, docId){
-		this.node = node;
-		this.setOptions(options);
-		this.parent = parent;
-		this.docId = docId;
-
-		this.path = MWF.defaultPath+"/widget/$ImageClipper/";
-		this.cssPath = MWF.defaultPath+"/widget/$ImageClipper/"+this.options.style+"/css.wcss";
-
-		this._loadCss();
-		this.fireEvent("init");
-	}//,
-	//_createUploadButtom : function(){
-	//	if( !this.docId || this.docId=="" ){ return; };
-	//	this.uploadCurrentFile = new Element("button.uploadActionNode",{
-	//		"styles" : this.css.uploadActionNode,
-	//		"text" : "选择本文档图片"
-	//	}).inject(this.uploadToolbar);
-	//	this.uploadCurrentFile.addEvents({
-	//		"click": function(){ this.selectDocPicture(
-	//			function(url , base64Code){
-	//				this.loadImageAsUrl( url );
-	//			}.bind(this)
-	//		); }.bind(this)
-	//	});
-	//},
-	//selectDocPicture: function( callback ){
-	//	MWF.xDesktop.requireApp("Forum", "Attachment", null, false);
-	//	this.parent.actions.listAttachment( this.docId, function( json ){
-	//		this.selector_doc = new MWF.xApplication.Forum.Attachment(document.body, this.parent, this.parent.actions, this.parent.lp, {
-	//			//documentId : this.data ? this.data.id : "",
-	//			isNew : false,
-	//			isEdited : false,
-	//			"onUpload" : function( attData ){
-	//				this.attachment.attachmentController.addAttachment(attData);
-	//				this.attachment.attachmentController.checkActions();
-	//			}.bind(this)
-	//		})
-	//		this.selector_doc.data = json.data || [];
-	//		this.selector_doc.loadAttachmentSelecter({
-	//			"style": "cms",
-	//			"title": "选择本文档图片",
-	//			"listStyle": "preview",
-	//			"toBase64" : true,
-	//			"selectType": "images"
-	//		}, function (url, data, base64Code) {
-	//			if (callback)callback(url, base64Code);
-	//			//this.iconNode.set("src", base64Code || url);
-	//			//this.hotPicData.pictureBase64 = base64Code || url;
-	//		}.bind(this));
-	//	}.bind(this) )
-	//}
 });

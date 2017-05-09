@@ -211,7 +211,7 @@ public class OkrTaskFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception 
 	 */
-	public Long getTaskCount(List<String> taskTypeList, String userIdentity, String workTypeName ) throws Exception {
+	public Long getTaskCount( List<String> taskTypeList, String userIdentity, String workTypeName ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( OkrTask.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
@@ -266,6 +266,7 @@ public class OkrTaskFactory extends AbstractFactory {
 			return okrTaskList;
 		}
 	}
+	
 	/**
 	 * 根据待办类别和用户身份，查询待办列表
 	 * @param taskTypeList
@@ -300,14 +301,19 @@ public class OkrTaskFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception 
 	 */
-	public Long getTaskCountByUserName(List<String> taskTypeList, String name) throws Exception {
+	public Long getTaskCountByUserName( List<String> taskTypeList, List<String> notInTaskTypeList, String name) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( OkrTask.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<OkrTask> root = cq.from( OkrTask.class);
-		Predicate p = root.get( OkrTask_.dynamicObjectType ).in( taskTypeList );
-		p = cb.and( p, cb.equal( root.get( OkrTask_.targetName ), name ) );
-		cq.select( cb.count( root ) );		
+		Predicate p = cb.equal( root.get( OkrTask_.targetName ), name );
+		if( taskTypeList != null && !taskTypeList.isEmpty() ){
+			p = cb.and( p, root.get( OkrTask_.dynamicObjectType ).in( taskTypeList ) );
+		}
+		if( notInTaskTypeList != null && !notInTaskTypeList.isEmpty() ){
+			p = cb.and( p, cb.not( root.get( OkrTask_.dynamicObjectType ).in( notInTaskTypeList ) ) );
+		}
+		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
 
@@ -319,10 +325,56 @@ public class OkrTaskFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<OkrTask> root = cq.from(OkrTask.class);
-		Predicate p = cb.equal( root.get( OkrTask_.dynamicObjectId), id);
+		Predicate p = cb.equal( root.get( OkrTask_.dynamicObjectId ), id );
 		p = cb.and(p, cb.equal( root.get( OkrTask_.dynamicObjectType), "工作汇报"));
-		cq.select(root.get( OkrTask_.id));
+		cq.select(root.get( OkrTask_.id ));
 		return em.createQuery(cq.where(p)).setMaxResults(5000).getResultList();
+	}
+	/**
+	 * 查询待办处理者身份列表（去重复）
+	 * @param identities_ok 排除身份
+	 * @param identities_error 排除身份
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<String> listAllDistinctTargetIdentity(List<String> identities_ok, List<String> identities_error) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrTask.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<OkrTask> root = cq.from(OkrTask.class);
+		
+		Predicate p = cb.isNotNull( root.get( OkrTask_.id ) );
+		if( identities_ok != null && identities_ok.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrTask_.targetIdentity ).in( identities_ok )) );
+		}
+		if( identities_error != null && identities_error.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrTask_.targetIdentity ).in( identities_error )) );
+		}
+		cq.distinct(true).select(root.get( OkrTask_.targetIdentity ));
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+	/**
+	 * 根据身份名称，从具体工作待办待阅信息中查询与该身份有关的所有信息列表
+	 * @param identity
+	 * @param recordId 
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<OkrTask> listErrorIdentitiesInWorkTask(String identity, String recordId) throws Exception {		
+		EntityManager em = this.entityManagerContainer().get(OkrTask.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<OkrTask> cq = cb.createQuery( OkrTask.class );
+		Root<OkrTask> root = cq.from( OkrTask.class );
+		Predicate p = cb.isNotNull(root.get( OkrTask_.id ));
+		
+		if( recordId != null && !recordId.isEmpty() && !"all".equals( recordId ) ){
+			p = cb.and( p, cb.equal( root.get( OkrTask_.id ), recordId ) );
+		}
+		
+		Predicate p_targetIdentity = cb.isNotNull(root.get( OkrTask_.targetIdentity ));
+		p_targetIdentity = cb.and( p_targetIdentity, cb.equal( root.get( OkrTask_.targetIdentity ), identity ) );		
+		p = cb.and( p, p_targetIdentity );
+		return em.createQuery(cq.where(p)).getResultList();
 	}
 	
 }

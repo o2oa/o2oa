@@ -12,6 +12,11 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class({
 		this.json = json;
 		this.form = form;
 	},
+    _getSource: function(){
+        var parent = this.node.getParent();
+        while(parent && (parent.get("MWFtype")!="source" && parent.get("MWFtype")!="subSource" && parent.get("MWFtype")!="subSourceItem")) parent = parent.getParent();
+        return (parent) ? parent.retrieve("module") : null;
+    },
 	load: function(){
 
 		if (this.fireEvent("queryLoad")){

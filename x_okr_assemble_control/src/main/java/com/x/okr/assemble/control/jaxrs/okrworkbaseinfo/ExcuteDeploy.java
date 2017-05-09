@@ -5,11 +5,17 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.CenterWorkNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.UserNoLoginException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkBaseInfoProcessException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkNotExistsException;
 import com.x.okr.assemble.control.service.OkrWorkBaseInfoDeployService;
 import com.x.okr.assemble.control.service.OkrWorkBaseInfoOperationService;
 import com.x.okr.entity.OkrCenterWorkInfo;
@@ -45,7 +51,6 @@ public class ExcuteDeploy extends ExcuteBase {
 				check = false;
 				Exception exception = new WorkIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		
@@ -56,21 +61,21 @@ public class ExcuteDeploy extends ExcuteBase {
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName()  );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}	
 		}		
 		if( check && ( okrUserCache == null || okrUserCache.getLoginIdentityName() == null ) ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName()  );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		//对wrapIn里的信息进行校验
 		if( check && okrUserCache.getLoginUserName() == null ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName()  );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check ){
@@ -83,7 +88,6 @@ public class ExcuteDeploy extends ExcuteBase {
 						check = false;
 						Exception exception = new WorkNotExistsException( id  );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
 						break;
 					}
 					okrWorkBaseInfoList.add( okrWorkBaseInfo );
@@ -95,15 +99,14 @@ public class ExcuteDeploy extends ExcuteBase {
 							check = false;
 							Exception exception = new CenterWorkNotExistsException( centerId  );
 							result.error( exception );
-							logger.error( exception, effectivePerson, request, null);
 							break;
 						}
 					}
 				} catch ( Exception e ) {
 					check = false;
-					Exception exception = new WorkInfoCheckException( e, id  );
+					Exception exception = new WorkBaseInfoProcessException( e, "系统校验需要部署的工作信息合法性时发生异常! WorkId:" + id  );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 					break;
 				}
 			}
@@ -115,9 +118,9 @@ public class ExcuteDeploy extends ExcuteBase {
 				okrWorkBaseInfoDeployService.deploy( workIds, okrUserCache.getLoginIdentityName()  );
 			} catch( Exception e ){
 				check = false;
-				Exception exception = new WorkDeployException( e );
+				Exception exception = new WorkBaseInfoProcessException( e, "部署具体工作过程中发生异常。" );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){

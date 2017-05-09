@@ -1,12 +1,12 @@
 package com.x.okr.assemble.control.timertask;
 
 import java.util.List;
-import java.util.TimerTask;
 
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.Context;
+import com.x.base.core.project.clock.ClockScheduleTask;
 import com.x.okr.assemble.common.date.DateOperation;
-import com.x.okr.assemble.control.ThisApplication;
 import com.x.okr.assemble.control.service.OkrConfigSystemService;
 import com.x.okr.assemble.control.service.OkrWorkBaseInfoQueryService;
 
@@ -21,25 +21,24 @@ import com.x.okr.assemble.control.service.OkrWorkBaseInfoQueryService;
  * @author LIYI
  *
  */
-public class WorkProgressConfirm extends TimerTask {
+public class WorkProgressConfirm extends ClockScheduleTask {
 
 	private Logger logger = LoggerFactory.getLogger( WorkProgressConfirm.class );
 	private OkrConfigSystemService okrConfigSystemService = new OkrConfigSystemService();	
 	private OkrWorkBaseInfoQueryService okrWorkBaseInfoService = new OkrWorkBaseInfoQueryService();
 	private DateOperation dateOperation = new DateOperation();
 
-	public void run() {
+	public WorkProgressConfirm(Context context) {
+		super(context);
+	}
+	
+	public void execute() {
 		String report_progress = null;
 		String nowDateTime = dateOperation.getNowDateTime();
 		List<String> ids = null;
 		Integer maxWhileCount = 10;
 		Integer nowWhileCount = 0;
 		boolean check = true;
-		if( ThisApplication.getWorkProgressConfirmTaskRunning() ){
-			logger.info( "Timertask[WorkTaskProgressConfirm] service is running, wait for next time......" );
-			return;
-		}
-		ThisApplication.setWorkProgressConfirmTaskRunning( true );
 		
 		//此处编写定时任务的业务逻辑
 		try {
@@ -65,7 +64,7 @@ public class WorkProgressConfirm extends TimerTask {
 		if( check ){
 			while( ids != null && !ids.isEmpty() ){
 				nowWhileCount ++ ;
-				logger.debug( "第"+nowWhileCount+"次查询需要分析的工作列表......" );
+				//logger.info( "第"+nowWhileCount+"次查询需要分析的工作列表......" );
 				if( nowWhileCount > maxWhileCount ){
 					break;
 				}
@@ -88,8 +87,6 @@ public class WorkProgressConfirm extends TimerTask {
 				}
 			}
 		}
-		
-		ThisApplication.setWorkProgressConfirmTaskRunning( false );
-		logger.debug( "Timertask[WorkTaskProgressConfirm] completed and excute success." );
+		logger.info( "Timertask OKR_WorkProgressConfirm completed and excute success." );
 	}
 }

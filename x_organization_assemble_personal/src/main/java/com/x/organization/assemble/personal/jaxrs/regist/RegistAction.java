@@ -11,15 +11,15 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutBoolean;
 import com.x.base.core.http.WrapOutInteger;
 import com.x.base.core.http.WrapOutString;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
-import com.x.instrument.assemble.express.wrap.WrapCaptcha;
+import com.x.base.core.project.jaxrs.CaptchaWo;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.organization.assemble.personal.wrapin.WrapInRegist;
 
 @Path("regist")
@@ -41,14 +41,14 @@ public class RegistAction extends StandardJaxrsAction {
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "生成一个captcha", response = WrapCaptcha.class)
+	@HttpMethodDescribe(value = "生成一个captcha", response = CaptchaWo.class)
 	@GET
 	@Path("captcha/width/{width}/height/{height}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response captcha(@Context HttpServletRequest request, @PathParam("width") Integer width,
 			@PathParam("height") Integer height) {
-		ActionResult<WrapCaptcha> result = new ActionResult<>();
+		ActionResult<CaptchaWo> result = new ActionResult<>();
 		try {
 			result = new ActionCaptcha().execute(width, height);
 		} catch (Throwable th) {

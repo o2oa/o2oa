@@ -230,7 +230,6 @@ MWF.xApplication.BAM.monthly.MonthlyContent = new Class({
                 "count": 1,
                 "title": this.app.lp.monthly.selectSortProcess,
                 "onComplete": function(items){
-                    debugger;
                     this.sort = {"type": type,"range": {
                         "applicationName": items[0].data.applicationName,
                         "application": items[0].data.application,
@@ -445,7 +444,6 @@ MWF.xApplication.BAM.monthly.MonthlyContent = new Class({
         this.table = new MWF.xApplication.BAM.monthly.MonthlyContent.Table(this, this.tableAreaNode, this.data);
     },
     getSelectedData: function(){
-        debugger;
         if (this.table.selectedData.length) return this.table.selectedData;
         var data = [];
         Object.each(this.data, function(v, k){
@@ -513,7 +511,6 @@ MWF.xApplication.BAM.monthly.MonthlyContent.Table = new Class({
         this.createTitleRow();
         this.createDataRow();
         this.table.inject(this.container);
-        debugger;
     },
     getTableData: function(){
         var colData = [];

@@ -8,6 +8,7 @@
     "create" : true,
     "createAction" : "createCategory",
     "expand": true,
+    "unselected" : true,
     "sub": []
   },
   {

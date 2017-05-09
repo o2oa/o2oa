@@ -48,6 +48,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                         var _self = this;
                         var text = this.selector.app.lp.deleteDutyText.replace(/{duty}/g, this.data.name);
                         this.selector.app.confirm("warm", e, this.selector.app.lp.deleteDutyTitle, text, 300, 120, function(){
+                            _self.selector.identitys.erase(_self);
                             _self.selector.fireEvent("removeDuty", [_self]);
                             this.close();
                         }, function(){
@@ -216,6 +217,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector.DutyInput = Class
                 var _self = this;
                 var text = this.selector.app.lp.deleteDutyText.replace(/{duty}/g, this.data.name);
                 this.selector.app.confirm("warm", e, this.selector.app.lp.deleteDutyTitle, text, 300, 120, function(){
+                    _self.selector.identitys.erase(_self);
                     _self.selector.fireEvent("removeDuty", [_self]);
                     this.close();
                 }, function(){

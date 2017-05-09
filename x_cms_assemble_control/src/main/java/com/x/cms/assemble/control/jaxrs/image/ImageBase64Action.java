@@ -20,14 +20,20 @@ import org.apache.commons.codec.binary.Base64;
 import org.imgscalr.Scalr;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.AbstractJaxrsAction;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.cms.assemble.control.jaxrs.image.exception.Base64EncodeException;
+import com.x.cms.assemble.control.jaxrs.image.exception.ImageIsNullException;
+import com.x.cms.assemble.control.jaxrs.image.exception.LoadImageFromURLException;
+import com.x.cms.assemble.control.jaxrs.image.exception.URLEmptyException;
+import com.x.cms.assemble.control.jaxrs.image.exception.URLInvalidException;
+import com.x.cms.assemble.control.jaxrs.image.exception.WrapInConvertException;
 
 @Path("image/encode")
 public class ImageBase64Action extends AbstractJaxrsAction {
@@ -54,7 +60,7 @@ public class ImageBase64Action extends AbstractJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check ){
@@ -62,7 +68,7 @@ public class ImageBase64Action extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new URLEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -77,7 +83,7 @@ public class ImageBase64Action extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new URLInvalidException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -87,13 +93,13 @@ public class ImageBase64Action extends AbstractJaxrsAction {
 					check = false;
 					Exception exception = new ImageIsNullException( url.toString() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			} catch (IOException e) {
 				check = false;
 				Exception exception = new LoadImageFromURLException( e, url.toString() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -112,7 +118,7 @@ public class ImageBase64Action extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new Base64EncodeException( e, url.toString() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);

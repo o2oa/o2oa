@@ -50,6 +50,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                     this.loadApplicationSelector();
                     this.loadProcessSelector();
                     this.loadIconSelect();
+                    this.loadContextRoot();
                 }.bind(this));
                 //this.loadDutySelector();
             }else{
@@ -100,6 +101,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
 	},
 	
 	setEditNodeEvent: function(){
+	    debugger;
 		var property = this;
 	//	var inputs = this.propertyContent.getElements(".editTableInput");
 		var inputs = this.propertyContent.getElements("input");
@@ -125,6 +127,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                         input.addEvent("keydown", function(e){
                             e.stopPropagation();
                         });
+                        property.setRadioValue(jsondata, input);
 						break;
 					case "checkbox":
                         input.addEvent("keydown", function(e){
@@ -140,11 +143,12 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
 							property.setValue(jsondata, this.value);
 						});
 						input.addEvent("keydown", function(e){
-							if (e.code==13){
+							if (e.code===13){
 								property.setValue(jsondata, this.value);
 							}
                             e.stopPropagation();
 						});
+                        property.setValue(jsondata, input.get("value"));
 				}
 			}
 		}.bind(this));
@@ -268,7 +272,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                     "type": "formField",
                     "application": this.process.process.application,
                     "fieldType": "person",
-                    "names": this.data[node.get("name")],
+                    "names": this.data[node.get("name")] || [],
                     "onChange": function(ids){this.savePersonItem(node, ids);}.bind(this)
                 });
             }.bind(this));
@@ -614,6 +618,25 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                 }.bind(this));
 
 
+            }.bind(this));
+        }
+    },
+    loadContextRoot: function(){
+        var nodes = this.propertyContent.getElements(".MWFContextRoot");
+        if (nodes){
+            nodes.each(function(node){
+                var name = node.get("name");
+                var value = this.data[name];
+                var select = new Element("select").inject(node);
+                Object.each(layout.desktop.serviceAddressList, function(v, key){
+                    var option = new Element("option", {"value": key, "text": key, "selected": (value==key)}).inject(select);
+                }.bind(this));
+                select.addEvent("change", function(){
+                    var data = select.options[select.selectedIndex].value;
+                    // this.changeJsonDate(name, data);
+                    // this.changeData(name, node, value);
+                    this.setValue(name, data);
+                }.bind(this));
             }.bind(this));
         }
     },

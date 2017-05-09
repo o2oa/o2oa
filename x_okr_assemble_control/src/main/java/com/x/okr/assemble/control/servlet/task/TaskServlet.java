@@ -34,7 +34,7 @@ public class TaskServlet extends AbstractServletAction {
 			throws ServletException, IOException {
 		ActionResult<WrapOutOkrTaskCollect> result = new ActionResult<>();
 		EffectivePerson effectivePerson = null;
-		List<String> taskTypeList = new ArrayList<String>();
+		List<String> notInTaskTypeList = new ArrayList<String>();
 		WrapPerson person = null;
 		Long taskCount = 0L;
 		String flag = null;
@@ -75,22 +75,20 @@ public class TaskServlet extends AbstractServletAction {
 
 		if (check) {
 			if (person != null) {
-				taskTypeList.add( "中心工作");
-				taskTypeList.add( "工作汇报汇总");
-			    taskTypeList.add( "工作阅知" );
+				notInTaskTypeList.add( "工作汇报" );
 				try {
-					taskCount = okrTaskService.getTaskCountByUserName( taskTypeList, person.getName());
+					taskCount = okrTaskService.getTaskCountByUserName( null, notInTaskTypeList, person.getName());
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new TaskCountQueryException( e, person.getName() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			} else {
 				check = false;
 				Exception exception = new PersonNotExistsException( flag );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 

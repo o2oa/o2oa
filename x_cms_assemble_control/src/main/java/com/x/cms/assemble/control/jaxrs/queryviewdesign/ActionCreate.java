@@ -13,6 +13,8 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.cms.assemble.control.jaxrs.queryviewdesign.exception.AppInfoNotExistsException;
+import com.x.cms.assemble.control.jaxrs.queryviewdesign.exception.QueryViewAppIdEmptyException;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.element.QueryView;
 
@@ -47,12 +49,12 @@ class ActionCreate extends ActionBase {
 					}else{
 						Exception exception = new AppInfoNotExistsException( wrapIn.getAppId() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						//logger.error( e, effectivePerson, request, null);
 					}
 				}else{
 					Exception exception = new QueryViewAppIdEmptyException();
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 				
 			}

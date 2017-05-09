@@ -14,6 +14,14 @@ import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.project.server.StorageMapping;
 import com.x.okr.assemble.control.OkrUserCache;
 import com.x.okr.assemble.control.ThisApplication;
+import com.x.okr.assemble.control.jaxrs.okrattachmentfileinfo.exception.AttachmentDeleteException;
+import com.x.okr.assemble.control.jaxrs.okrattachmentfileinfo.exception.AttachmentIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrattachmentfileinfo.exception.AttachmentNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrattachmentfileinfo.exception.AttachmentQueryByIdException;
+import com.x.okr.assemble.control.jaxrs.okrattachmentfileinfo.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrattachmentfileinfo.exception.InsufficientPermissionsException;
+import com.x.okr.assemble.control.jaxrs.okrattachmentfileinfo.exception.UserNoLoginException;
+import com.x.okr.assemble.control.jaxrs.okrattachmentfileinfo.exception.WorkQueryByIdException;
 import com.x.okr.entity.OkrAttachmentFileInfo;
 import com.x.okr.entity.OkrWorkBaseInfo;
 
@@ -94,7 +102,7 @@ public class ExcuteDeleteWorkAttachment extends ExcuteBase {
 			if (hasDeletePermission) {
 				if (okrAttachmentFileInfo != null) {
 					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-						mapping = ThisApplication.storageMappings.get(OkrAttachmentFileInfo.class,
+						mapping = ThisApplication.context().storageMappings().get(OkrAttachmentFileInfo.class,
 								okrAttachmentFileInfo.getStorage());
 						// 对文件进行删除
 						okrAttachmentFileInfo.deleteContent(mapping);

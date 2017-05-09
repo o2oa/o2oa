@@ -44,7 +44,11 @@ public class ActionAttachmentDownload extends AbstractServletAction {
 						+ "} access denied.");
 			}
 			this.setResponseHeader(response, attachment, streamContentType);
-			StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class, attachment.getStorage());
+			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+					attachment.getStorage());
+			if (null == mapping) {
+				throw new StorageMappingNotExistedException(attachment.getStorage());
+			}
 			OutputStream output = response.getOutputStream();
 			attachment.readContent(mapping, output);
 		} catch (Exception e) {

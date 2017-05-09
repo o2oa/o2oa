@@ -11,6 +11,8 @@ import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.assemble.control.jaxrs.document.exception.DocumentInfoProcessException;
+import com.x.cms.assemble.control.jaxrs.document.exception.DocumentNotExistsException;
 import com.x.cms.core.entity.Document;
 
 public class ExcuteArchive extends ExcuteBase {
@@ -26,17 +28,18 @@ public class ExcuteArchive extends ExcuteBase {
 			if ( null == document ) {
 				Exception exception = new DocumentNotExistsException( id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 				throw exception;
 			}
 			try {
 				modifyDocStatus(id, "archived", effectivePerson.getName() );
 				document.setDocStatus( "archived" );
+				
 				ApplicationCache.notify( Document.class );
 			} catch (Exception e) {
-				Exception exception = new DocumentArchiveException( e, id );
+				Exception exception = new DocumentInfoProcessException( e, "系统将文档状态修改为归档状态时发生异常。Id:" + id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 				throw exception;
 			}
 			
@@ -44,10 +47,10 @@ public class ExcuteArchive extends ExcuteBase {
 			
 			wrap = new WrapOutId( document.getId() );
 			result.setData(wrap);
-		} catch (Throwable th) {
-			Exception exception = new DocumentArchiveException( th, id );
+		} catch (Exception e) {
+			Exception exception = new DocumentInfoProcessException( e, "系统将文档状态修改为归档状态时发生异常。Id:" + id );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 			throw exception;
 		}
 		return result;

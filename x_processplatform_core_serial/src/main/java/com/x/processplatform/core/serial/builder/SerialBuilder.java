@@ -22,6 +22,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.gson.XGsonBuilder;
+import com.x.base.core.project.Context;
 import com.x.organization.core.express.Organization;
 import com.x.organization.core.express.wrap.WrapCompanyAttribute;
 import com.x.organization.core.express.wrap.WrapDepartmentAttribute;
@@ -32,6 +33,12 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Process;
 
 public class SerialBuilder {
+
+	private Context context;
+
+	public SerialBuilder(Context context) {
+		this.context = context;
+	}
 
 	private EntityManagerContainer emc;
 
@@ -147,7 +154,7 @@ public class SerialBuilder {
 
 		public String companyAttribute(String name) throws Exception {
 			String result = "";
-			Organization org = new Organization();
+			Organization org = new Organization(context);
 			WrapCompanyAttribute wrap = org.companyAttribute().getWithName(name, work.getCreatorCompany());
 			if (null != wrap) {
 				result = StringUtils.join(wrap.getAttributeList(), ",");
@@ -157,7 +164,7 @@ public class SerialBuilder {
 
 		public String departmentAttribute(String name) throws Exception {
 			String result = "";
-			Organization org = new Organization();
+			Organization org = new Organization(context);
 			WrapDepartmentAttribute wrap = org.departmentAttribute().getWithName(name, work.getCreatorDepartment());
 			if (null != wrap) {
 				result = StringUtils.join(wrap.getAttributeList(), ",");
@@ -166,7 +173,7 @@ public class SerialBuilder {
 		}
 
 		public String personAttribute(String name) throws Exception {
-			Organization org = new Organization();
+			Organization org = new Organization(context);
 			WrapPersonAttribute wrap = org.personAttribute().getWithPerson(name, work.getCreatorPerson());
 			return StringUtils.join(wrap.getAttributeList(), ",");
 		}

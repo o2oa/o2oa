@@ -180,7 +180,7 @@ MWF.xApplication.process.Application.WorkCompletedExplorer.Work = new Class({
         }
         this.expireAreaNode.setStyles(this.css.expireAreaNode);
 
-        if (!this.data.control.allowRead){
+        if (!this.data.control.allowVisit){
             this.node.setStyles(this.css.workItemNode_noread)
             this.checkAreaNode.setStyles(this.css.actionStopWorkNode);
             this.actionAreaNode.setStyles(this.css.actionStopWorkActionNode);

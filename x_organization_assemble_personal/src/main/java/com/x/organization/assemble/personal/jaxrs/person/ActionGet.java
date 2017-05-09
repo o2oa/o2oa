@@ -28,7 +28,7 @@ class ActionGet extends ActionBase {
 					throw new PersonNotExistedException(effectivePerson.getName());
 				}
 				Person person = emc.find(id, Person.class, ExceptionWhen.not_found);
-				outCopier.copy(person, wrap);
+				personOutCopier.copy(person, wrap);
 			} else {
 				/* 静态管理员信息 */
 				Config.token().initialManagerInstance().copyTo(wrap, "password");

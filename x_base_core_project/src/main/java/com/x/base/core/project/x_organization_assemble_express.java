@@ -11,6 +11,7 @@ import com.x.base.core.gson.XGsonBuilder;
 
 public class x_organization_assemble_express extends Assemble {
 
+	public static final String name = "组织管理查询";
 	public static List<String> containerEntities = new ArrayList<>();
 	public static List<StorageType> usedStorageTypes = new ArrayList<>();
 	public static List<Class<? extends Compilable>> dependents = new ArrayList<>();

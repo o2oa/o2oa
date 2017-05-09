@@ -19,6 +19,11 @@
     "text": "人员",
     "className": "Personfield"
   },
+  "orgfield": {
+    "icon": "orgfield.png",
+    "text": "组织",
+    "className": "Orgfield"
+  },
   "calendar": {
     "icon": "calendar.png",
     "text": "日期选择",

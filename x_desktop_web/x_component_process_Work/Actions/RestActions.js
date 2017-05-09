@@ -76,12 +76,18 @@ MWF.xApplication.process.Work.Actions.RestActions = new Class({
     getJobByWorkAssignForm: function(success, failure, id, application, form, async){
         this.actionWork.invoke({"name": "getJobByWorkAssignForm","async": async, "parameter": {"id": id, "applicationTag": application, "formTag": form}, "success": success, "failure": failure});
     },
+    getJobByWorkCompletedAssignForm: function(success, failure, id, application, form, async){
+        this.actionWork.invoke({"name": "getJobByWorkCompletedAssignForm","async": async, "parameter": {"id": id, "applicationTag": application, "formTag": form}, "success": success, "failure": failure});
+    },
 
     getJobByWorkMobile: function(success, failure, id, async){
         this.actionWork.invoke({"name": "getJobByWorkMobile","async": async, "parameter": {"id": id},	"success": success,	"failure": failure});
     },
     getJobByWorkAssignFormMobile: function(success, failure, id, application, form, async){
         this.actionWork.invoke({"name": "getJobByWorkAssignFormMobile","async": async, "parameter": {"id": id, "applicationTag": application, "formTag": form}, "success": success, "failure": failure});
+    },
+    getJobByWorkCompletedAssignFormMobile: function(success, failure, id, application, form, async){
+        this.actionWork.invoke({"name": "getJobByWorkCompletedAssignFormMobile","async": async, "parameter": {"id": id, "applicationTag": application, "formTag": form}, "success": success, "failure": failure});
     },
 
     rerouteWork: function(success, failure, id, activityId, type, async){
@@ -132,6 +138,9 @@ MWF.xApplication.process.Work.Actions.RestActions = new Class({
 
     getView: function(id, workid, success, failure, async){
         this.actionDesigner.invoke({"name": "getView","async": async, "parameter": {"id": id},	"success": success,	"failure": failure});
+    },
+    getForm: function(id, success, failure, async){
+        this.actionDesigner.invoke({"name": "getForm","async": async, "parameter": {"id": id},	"success": success,	"failure": failure});
     },
     lookupView: function(id, workid, success, failure, async){
         this.actionView.invoke({"name": "lookupView","async": async, "parameter": {"id": id},	"success": success,	"failure": failure});

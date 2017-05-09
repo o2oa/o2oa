@@ -19,11 +19,11 @@ import com.google.gson.JsonElement;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.processplatform.assemble.designer.wrapin.WrapInApplicationDict;
 import com.x.processplatform.assemble.designer.wrapout.WrapOutApplicationDict;
 

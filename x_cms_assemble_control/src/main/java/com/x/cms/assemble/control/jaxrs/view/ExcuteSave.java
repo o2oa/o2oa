@@ -8,8 +8,13 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.cms.assemble.control.jaxrs.view.exception.ViewInfoAppIdEmptyException;
+import com.x.cms.assemble.control.jaxrs.view.exception.ViewInfoFormIdEmptyException;
+import com.x.cms.assemble.control.jaxrs.view.exception.ViewInfoSaveException;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.element.View;
+import com.x.cms.core.entity.element.ViewCategory;
+import com.x.cms.core.entity.element.ViewFieldConfig;
 
 public class ExcuteSave extends ExcuteBase {
 	
@@ -37,11 +42,13 @@ public class ExcuteSave extends ExcuteBase {
 		}
 		if( check ){
 			try {
-				view = viewServiceAdv.save( wrapIn, effectivePerson );
-				ApplicationCache.notify( View.class );
+				view = viewServiceAdv.save( wrapIn, effectivePerson );							
 				wrap = new WrapOutId( view.getId() );
-				
 				new LogService().log( null, effectivePerson.getName(), view.getName(), view.getAppId(), "", "", view.getId(), "VIEW", "保存");
+				
+				ApplicationCache.notify( View.class );
+				ApplicationCache.notify( ViewFieldConfig.class );
+				ApplicationCache.notify( ViewCategory.class );
 				
 				result.setData(wrap);
 				

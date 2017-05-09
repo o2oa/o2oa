@@ -14,5 +14,12 @@ MWF.xApplication.cms.Index.Starter.lp = {
     "inputSubject": "请输入标题",
     "selectStartId": "请选择启动部门，以确定启动者身份",
 
-    "Started": "新建成功"
+    "Started": "新建成功",
+
+    "nextActivity": "下一个活动：",
+    "nextUser": "处理人：",
+    "processStartedMessage": "您启动了一个新的工作：",
+
+    "processStarted": "文件已启动",
+    "deal": "处理"
 };

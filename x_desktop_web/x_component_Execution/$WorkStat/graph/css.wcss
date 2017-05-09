@@ -148,28 +148,4 @@
     "left" : "92px",
     "width" : "68px",
     "height" : "68px",
-    "background": "url(/x_component_Execution/$MinderExplorer/default/icon/xmind68.png) no-repeat center center",
-    "position" : "absolute"
-  },
-  "documentItemIconNode_over" : {
-    "background": "url(/x_component_Execution/$MinderExplorer/default/icon/xmind_over68.png) no-repeat center center"
-  },
-  "documentItemStatNode" : {
-    "float" : "left",
-    "margin-top" : "20px",
-    "padding" : "20px",
-    "color": "#cccccc",
-    "line-height" : "20px"
-  },
-  "documentItemStatNode_over" : {
-    "color": "#7d88a6"
-  },
-  "documentItemStatCountNode" :{
-    "font-weight" : "bold",
-    "font-size" : "32px",
-    "padding-bottom" : "10px"
-  },
-  "documentItemStatTextNode":{
-    "font-size" : "12px"
-  }
-}
+    "background": "url(/x_component_Execution/$MinderE

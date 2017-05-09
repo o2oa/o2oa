@@ -17,17 +17,17 @@ import javax.ws.rs.core.Response;
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.service.AttendanceWorkPlaceServiceAdv;
 import com.x.attendance.entity.AttendanceWorkPlace;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 
 
 @Path("workplace")
@@ -55,7 +55,7 @@ public class AttendanceWorkPlaceAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if( check ){
 			if( wrapIn.getErrorRange() == null || wrapIn.getPlaceName().isEmpty() ){
@@ -67,7 +67,7 @@ public class AttendanceWorkPlaceAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceWorkPlaceNameEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -75,7 +75,7 @@ public class AttendanceWorkPlaceAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceWorkPlaceLatitudeEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -83,7 +83,7 @@ public class AttendanceWorkPlaceAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceWorkPlaceLongitudeEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -103,7 +103,7 @@ public class AttendanceWorkPlaceAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceWorkPlaceWrapInException(e);
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -113,7 +113,7 @@ public class AttendanceWorkPlaceAction extends StandardJaxrsAction{
 			} catch (Exception e) {
 				Exception exception = new AttendanceWorkPlaceSaveException(e);
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		
@@ -138,7 +138,7 @@ public class AttendanceWorkPlaceAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceWorkPlaceListAllException(e);
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -149,7 +149,7 @@ public class AttendanceWorkPlaceAction extends StandardJaxrsAction{
 				} catch (Exception e) {
 					Exception exception = new AttendanceWorkPlaceWrapOutException(e);
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}
 		}
@@ -174,7 +174,7 @@ public class AttendanceWorkPlaceAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceWorkPlaceyQueryByIdException(e, id);
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -185,7 +185,7 @@ public class AttendanceWorkPlaceAction extends StandardJaxrsAction{
 				} catch (Exception e) {
 					Exception exception = new AttendanceWorkPlaceWrapOutException(e);
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 				
 			}
@@ -208,7 +208,7 @@ public class AttendanceWorkPlaceAction extends StandardJaxrsAction{
         		check = false;
         		Exception exception = new AttendanceWorkPlaceIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
         	}
         }
         if( check ){
@@ -218,7 +218,7 @@ public class AttendanceWorkPlaceAction extends StandardJaxrsAction{
     		} catch (Exception e) {
     			Exception exception = new AttendanceWorkPlaceDeleteException( e, id );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
     		}
         }
 		return ResponseFactory.getDefaultActionResultResponse(result);

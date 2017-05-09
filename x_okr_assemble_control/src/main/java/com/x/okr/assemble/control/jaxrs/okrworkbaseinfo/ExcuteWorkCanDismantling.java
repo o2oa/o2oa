@@ -8,6 +8,9 @@ import com.x.base.core.http.WrapOutBoolean;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.UserNoLoginException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkIdEmptyException;
 
 public class ExcuteWorkCanDismantling extends ExcuteBase {
 
@@ -26,21 +29,21 @@ public class ExcuteWorkCanDismantling extends ExcuteBase {
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName()  );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}		
 		if( check && ( okrUserCache == null || okrUserCache.getLoginIdentityName() == null ) ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName()  );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			if( okrUserCache.getLoginIdentityName() == null || okrUserCache.getLoginIdentityName().isEmpty() ){
 				check = false;
 				Exception exception = new UserNoLoginException( effectivePerson.getName()  );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -48,7 +51,7 @@ public class ExcuteWorkCanDismantling extends ExcuteBase {
 			if( id == null || id.isEmpty() ){
 				Exception exception = new WorkIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}else{
 				try {
 					if( okrWorkBaseInfoService.canDismantlingWorkByIdentity( id, loginIdentity ) ){

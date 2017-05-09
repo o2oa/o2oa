@@ -1,13 +1,17 @@
 package com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
-
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.LeaderOpinionEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.LeaderOpinionSaveException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkReportIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkReportNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkReportQueryByIdException;
 import com.x.okr.entity.OkrWorkReportBaseInfo;
 
 public class ExcuteSaveLeaderOpinion extends ExcuteBase {
@@ -25,7 +29,7 @@ public class ExcuteSaveLeaderOpinion extends ExcuteBase {
 				check = false;
 				Exception exception = new LeaderOpinionEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -34,7 +38,7 @@ public class ExcuteSaveLeaderOpinion extends ExcuteBase {
 				check = false;
 				Exception exception = new WorkReportIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -45,13 +49,13 @@ public class ExcuteSaveLeaderOpinion extends ExcuteBase {
 					check = false;
 					Exception exception = new WorkReportNotExistsException( wrapIn.getId() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			}catch( Exception e ){
 				check = false;
 				Exception exception = new WorkReportQueryByIdException( e, wrapIn.getId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -63,7 +67,7 @@ public class ExcuteSaveLeaderOpinion extends ExcuteBase {
 				check = false;
 				Exception exception = new LeaderOpinionSaveException( e, wrapIn.getId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

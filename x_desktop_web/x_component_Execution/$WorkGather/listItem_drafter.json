@@ -68,7 +68,25 @@
         }
       }
     },
-
+    {
+      "name": "completeProgress",
+      "head": {
+        "html": "<th styles='normalThNode' lable='completeProgress'></th>",
+        "width": "5%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>" +
+//        " <div styles='itemBlock'><div styles='itemInLine' lable='responsibilityEmployeeName' colon='true'></div><div styles='itemInLine' item='responsibilityEmployeeName'></div></div>" +
+//        " <div styles='itemBlock'><div styles='itemInLine' lable='deployerName' colon='true'></div><div styles='itemInLine' item='deployerName'></div></div>" +
+//        " <div styles='itemBlock'><div styles='itemInLine' lable='cooperateEmployeeName' colon='true'></div><div styles='itemInLine' item='cooperateEmployeeName'></div></div>" +
+        "</td>",
+        "items": {
+          "responsibilityEmployeeName": {},
+          "deployerName": {},
+          "cooperateEmployeeName": {}
+        }
+      }
+    },
     {
       //"access": "admin",
       "head": {

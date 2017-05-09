@@ -1,10 +1,10 @@
 package com.x.cms.assemble.control.jaxrs.queryviewdesign;
 
 import com.google.gson.Gson;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.gson.XGsonBuilder;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.cms.core.entity.element.QueryView;
 import com.x.cms.core.entity.query.Query;
 

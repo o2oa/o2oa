@@ -1,9 +1,9 @@
 package com.x.processplatform.assemble.bam.timer;
 
-import java.util.TimerTask;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.Context;
+import com.x.base.core.project.clock.ClockTimerTask;
 import com.x.processplatform.assemble.bam.Business;
 import com.x.processplatform.assemble.bam.ThisApplication;
 import com.x.processplatform.assemble.bam.jaxrs.state.TimerApplicationStubs;
@@ -15,9 +15,13 @@ import com.x.processplatform.assemble.bam.jaxrs.state.TimerPersonStubs;
 import com.x.processplatform.assemble.bam.jaxrs.state.TimerRunning;
 import com.x.processplatform.assemble.bam.jaxrs.state.TimerSummary;
 
-public class StateTimer extends TimerTask {
+public class StateTimer extends ClockTimerTask {
 
-	public void run() {
+	public StateTimer(Context context) {
+		super(context);
+	}
+
+	public void execute() {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ThisApplication.state.setCompanyStubs(new TimerCompanyStubs().execute());

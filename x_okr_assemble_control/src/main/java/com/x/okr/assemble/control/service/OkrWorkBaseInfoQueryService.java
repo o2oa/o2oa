@@ -7,12 +7,13 @@ import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.http.HttpAttribute;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.okr.assemble.common.date.DateOperation;
 import com.x.okr.assemble.control.Business;
 import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.WrapInFilter;
@@ -107,7 +108,7 @@ public class OkrWorkBaseInfoQueryService {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			if( id != null && !"(0)".equals(id) && id.trim().length() > 20 ){
-				if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+				if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
 					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkBaseInfo.class ), "sequence" );
 				}
 			}
@@ -132,7 +133,7 @@ public class OkrWorkBaseInfoQueryService {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			if( id != null && !"(0)".equals(id) && id.trim().length() > 20 ){
-				if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+				if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
 					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkBaseInfo.class ), "sequence" );
 				}
 			}
@@ -219,7 +220,7 @@ public class OkrWorkBaseInfoQueryService {
 				if( calendar.getTime().after( deployDate )){
 					dateStringList.add( dateOperation.getDateStringFromDate( calendar.getTime(), "yyyy-MM-dd" ) + " " + createTime );
 				}
-				//判断是否节假日	
+				//判断是否节假日
 				calendar.add( Calendar.WEEK_OF_YEAR, 1);
 				_tmp_date = calendar.getTime();
 			}while( _tmp_date.before(completeDateLimit));
@@ -502,6 +503,7 @@ public class OkrWorkBaseInfoQueryService {
 		//取到该工作最后一次，并且已经提交的汇报的内容
 		//根据汇报内容来确定该工作的进度情况。
 		Business business = null;
+		Date nextReportTime = null;
 		OkrWorkBaseInfo okrWorkBaseInfo = null;
 		OkrWorkPerson okrWorkPerson = null;
 		OkrWorkReportBaseInfo okrWorkReportBaseInfo = null;
@@ -510,16 +512,25 @@ public class OkrWorkBaseInfoQueryService {
 		statuses.add( "正常" );
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
+			
+			emc.beginTransaction( OkrWorkBaseInfo.class );
+			emc.beginTransaction( OkrWorkPerson.class );
+			emc.beginTransaction( OkrWorkReportBaseInfo.class );
+			
 			//查询工作对象
 			okrWorkBaseInfo = emc.find( workId, OkrWorkBaseInfo.class );
+			
 			if( okrWorkBaseInfo != null ){
-				okrWorkReportBaseInfo = business.okrWorkReportBaseInfoFactory().getLastSubmitReport( workId );
+				okrWorkReportBaseInfo = business.okrWorkReportBaseInfoFactory().getLastCompletedReport( workId );
 			}
 			if( okrWorkReportBaseInfo != null ){
 				okrWorkBaseInfo.setIsCompleted( okrWorkReportBaseInfo.getIsWorkCompleted() );
 				if( okrWorkReportBaseInfo.getIsWorkCompleted() ){
 					//已经完成
-					okrWorkBaseInfo.setOverallProgress( 1.0 );
+					okrWorkBaseInfo.setCompleteTime( new Date() );
+					okrWorkBaseInfo.setIsCompleted( true );
+					okrWorkBaseInfo.setOverallProgress( 100 );
+					
 					//修改所有干系人信息状态，从执行中修改为已完成，已删除的不要修改
 					ids = business.okrWorkPersonFactory().listByWorkId( workId, statuses );
 					if( ids != null && !ids.isEmpty() ){
@@ -530,11 +541,18 @@ public class OkrWorkBaseInfoQueryService {
 							emc.check( okrWorkPerson, CheckPersistType.all );
 						}
 					}
+					
+					//TODO:不需要进行汇报了，把工作的下次汇报时间设置为空
+					okrWorkBaseInfo.setNextReportTime( nextReportTime );
+					
 				}else{
+					okrWorkBaseInfo.setIsCompleted( false );
 					okrWorkBaseInfo.setOverallProgress( okrWorkReportBaseInfo.getProgressPercent() );
+					
 					//判断是否已经超时
 					if( okrWorkBaseInfo.getCompleteDateLimit().before( new Date() )){
 						okrWorkBaseInfo.setIsOverTime( true );
+						
 						//修改所有干系人信息状态，从执行中修改为已超时，已删除的不要修改
 						ids = business.okrWorkPersonFactory().listByWorkId( workId, statuses );
 						if( ids != null && !ids.isEmpty() ){
@@ -546,12 +564,17 @@ public class OkrWorkBaseInfoQueryService {
 								emc.check( okrWorkPerson, CheckPersistType.all );
 							}
 						}
+						
+						//TODO:还得分析一下下一次的汇报时间看看工作的下次汇报时间是否正确
+						nextReportTime = getNextReportTime( okrWorkBaseInfo );
+						okrWorkBaseInfo.setNextReportTime( nextReportTime );
 					}
 				}
 			}else{
 				//还没有开始汇报
 				okrWorkBaseInfo.setIsCompleted( false );
-				okrWorkBaseInfo.setOverallProgress( 0.0 );
+				okrWorkBaseInfo.setOverallProgress( 0 );
+				
 				//判断是否已经超时
 				if( okrWorkBaseInfo.getCompleteDateLimit().before( new Date() )){
 					okrWorkBaseInfo.setIsOverTime( true );
@@ -567,11 +590,114 @@ public class OkrWorkBaseInfoQueryService {
 						}
 					}
 				}
+				
+				//TODO:还得分析一下下一次的汇报时间看看工作的下次汇报时间是否正确
+				nextReportTime = getNextReportTime( okrWorkBaseInfo );
+				okrWorkBaseInfo.setNextReportTime( nextReportTime );
+			}
+			
+			if( okrWorkBaseInfo != null ){
+				okrWorkBaseInfo.setProgressAnalyseTime( analyse_time_flag );
+				emc.check( okrWorkBaseInfo, CheckPersistType.all );
 			}
 			emc.commit();
 		} catch ( Exception e ) {
 			throw e;
 		}
+	}
+
+	/**
+	 * 根据工作信息分析工作的下次汇报时间是否正常
+	 * @param okrWorkBaseInfo
+	 * @return
+	 * @throws Exception 
+	 */
+	public Date getNextReportTime( OkrWorkBaseInfo okrWorkBaseInfo ) throws Exception {
+		if( !okrWorkBaseInfo.getIsCompleted() ){
+			String reportStartTime = "10:00:00";
+			Calendar calendar = Calendar.getInstance();
+			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				reportStartTime = business.okrConfigSystemFactory().getValueWithConfigCode( "REPORT_CREATETIME" );
+			}catch(Exception e){
+				reportStartTime = "10:00:00";
+			}
+			if( reportStartTime == null || reportStartTime.isEmpty() ){
+				reportStartTime = "10:00:00";
+			}
+			//如果下次汇报的时间不为空，并且下一次汇报时间有效，那么直接返回
+			if( okrWorkBaseInfo.getNextReportTime() != null ){
+				calendar.setTime( dateOperation.getDateFromString( dateOperation.getDateStringFromDate( okrWorkBaseInfo.getNextReportTime(), "yyyy-MM-dd" ) + " " + reportStartTime ) );
+				okrWorkBaseInfo.setNextReportTime( calendar.getTime() );
+				if( okrWorkBaseInfo.getLastReportTime() == null ){
+					if( okrWorkBaseInfo.getNextReportTime().after( new Date() )){
+						return okrWorkBaseInfo.getNextReportTime();
+					}
+				}else{
+					if( okrWorkBaseInfo.getNextReportTime().after( okrWorkBaseInfo.getLastReportTime() )){
+						return okrWorkBaseInfo.getNextReportTime();
+					}
+				}
+			}
+			if( okrWorkBaseInfo.getLastReportTime() == null ){
+				//如果上次汇报时间为空，也就是说没有进行过任何汇报
+				//根据工作的汇报周期配置来计算离今天最近的后一次汇报时间
+				return calculateNextCycleTime( reportStartTime, okrWorkBaseInfo.getReportCycle(), okrWorkBaseInfo.getReportDayInCycle(), new Date() );
+			}else{
+				//根据上一次汇报时间来计算下一次汇报时间
+				return calculateNextCycleTime( reportStartTime, okrWorkBaseInfo.getReportCycle(), okrWorkBaseInfo.getReportDayInCycle(), okrWorkBaseInfo.getLastReportTime() );
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * TODO:根据周期方式，以后周期时间点，和开始时间来计算下一个周期时间点
+	 * @param reportCycle
+	 * @param reportDayInCycle
+	 * @param date
+	 * @return
+	 * @throws Exception 
+	 */
+	private Date calculateNextCycleTime( String reportStartTime, String reportCycle, Integer reportDayInCycle, Date lastReportDate ) throws Exception {
+		int reportDay = 0;
+		int dayMaxNumber = 0;
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime( dateOperation.getDateFromString( dateOperation.getDateStringFromDate( lastReportDate, "yyyy-MM-dd" ) + " " + reportStartTime ) );
+		if( reportCycle != null && reportCycle.trim().equals( "每月汇报" )){
+			dayMaxNumber = calendar.getActualMaximum( Calendar.DAY_OF_MONTH );
+			if( dayMaxNumber < reportDayInCycle ){
+				reportDay = dayMaxNumber;
+			}else{
+				reportDay = reportDayInCycle;
+			}
+			calendar.set( Calendar.DAY_OF_MONTH, reportDay );
+			//如果本月汇报时间已经过了，那么下月再汇报
+			System.out.println( calendar.getTime() + ".before(" + lastReportDate + "):"+calendar.getTime().before( lastReportDate ) );
+			while( calendar.getTime().before( lastReportDate )){
+				calendar.set( Calendar.DAY_OF_MONTH, reportDay );
+				calendar.add( Calendar.MONTH, 1 );
+			}
+		}else if( reportCycle != null && reportCycle.trim().equals( "每周汇报" )){
+			dayMaxNumber = 7;
+			if( dayMaxNumber < reportDayInCycle ){
+				reportDay = dayMaxNumber;
+			}else{
+				reportDay = reportDayInCycle;
+			}
+			calendar.set( Calendar.DAY_OF_WEEK, reportDay );
+			//如果本周汇报时间已经过了，那么下周再汇报
+			System.out.println( calendar.getTime() + ".before(" + lastReportDate + "):"+calendar.getTime().before( lastReportDate ) );
+			while( calendar.getTime().before( lastReportDate )){
+				calendar.set( Calendar.DAY_OF_WEEK, reportDay );
+				calendar.add( Calendar.WEEK_OF_YEAR, 1 );
+			}
+		}
+		//判断是否周末
+		while( dateOperation.isWeekend( calendar.getTime() ) ){
+			calendar.add( Calendar.DATE, 1 );
+		}
+		return dateOperation.getDateFromString( dateOperation.getDateStringFromDate( calendar.getTime(), "yyyy-MM-dd" ) + " " + reportStartTime );
 	}
 
 	/**
@@ -590,7 +716,7 @@ public class OkrWorkBaseInfoQueryService {
 		OkrWorkBaseInfo okrWorkBaseInfo = null;
 		OkrWorkPerson okrWorkPerson = null;
 		Business business = null;
-		Double completePercent = 0.0;
+		Integer completePercent = 0;
 		String deployDateString = null;
 		Date startDateTime = null, processDateLimit = null, nowDate = new Date();
 		List<String> ids = null;
@@ -613,17 +739,21 @@ public class OkrWorkBaseInfoQueryService {
 				if( deployDateString == null || deployDateString.isEmpty() ){
 					throw new Exception( "work deploy date string is null, system can not analyse work progress from process time limit." );
 				}
+				
 				try{
 					startDateTime = dateOperation.getDateFromString( deployDateString );
 				}catch(Exception e ){
 					logger.warn( "work deploy date string is not date style[deployDateString="+ deployDateString +"], system can not analyse work progress from process time limit." );
 					throw e;
 				}
+				
 				//根据部署时间，当前时间和结束时间进行进度计算
 				if( processDateLimit.before( nowDate )){
 					//处理时间已经耗尽，工作已经完成
+					okrWorkBaseInfo.setCompleteTime( new Date() );
 					okrWorkBaseInfo.setIsCompleted( true );
-					okrWorkBaseInfo.setOverallProgress( 1.0 );
+					okrWorkBaseInfo.setOverallProgress( 100 );
+					okrWorkBaseInfo.setNextReportTime( null );
 					//修改所有干系人信息状态，从执行中修改为已完成，已删除的不要修改
 					ids = business.okrWorkPersonFactory().listByWorkId( workId, statuses );
 					if( ids != null && !ids.isEmpty() ){
@@ -636,14 +766,21 @@ public class OkrWorkBaseInfoQueryService {
 					}
 				}else{
 					//计算完成百分比
-				//	logger.debug( "计算式： ((double)( " +nowDate.getTime()+" - " +startDateTime.getTime()+") /(double)( "+processDateLimit.getTime()+" - "+startDateTime.getTime()+"));" );
-					completePercent =  ((double)( nowDate.getTime() - startDateTime.getTime()) /(double)( processDateLimit.getTime() - startDateTime.getTime()));
-				//	logger.debug( "计算结果：completePercent=" + completePercent );
+					long usedTime = nowDate.getTime()-startDateTime.getTime();
+					long fullTime = processDateLimit.getTime() - startDateTime.getTime();
+					if( fullTime > usedTime ){
+						completePercent = Integer.parseInt( ( ( usedTime * 100 )/fullTime)+"" );
+					}else{
+						completePercent = 0;
+					}
 					okrWorkBaseInfo.setIsCompleted( false );
 					okrWorkBaseInfo.setOverallProgress( completePercent );
 				}
-				okrWorkBaseInfo.setProgressAnalyseTime( analyse_time_flag );
-				emc.check( okrWorkBaseInfo, CheckPersistType.all );
+				
+				if( okrWorkBaseInfo != null ){
+					okrWorkBaseInfo.setProgressAnalyseTime( analyse_time_flag );
+					emc.check( okrWorkBaseInfo, CheckPersistType.all );
+				}				
 			}
 			emc.commit();
 		} catch ( Exception e ) {
@@ -736,6 +873,21 @@ public class OkrWorkBaseInfoQueryService {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			return business.okrWorkBaseInfoFactory().listAllProcessingWorks();
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * 查询所有未完成工作列表
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<String> listAllProcessingWorkIds() throws Exception {
+		Business business = null;	
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			return business.okrWorkBaseInfoFactory().listAllProcessingWorkIds();
 		} catch ( Exception e ) {
 			throw e;
 		}

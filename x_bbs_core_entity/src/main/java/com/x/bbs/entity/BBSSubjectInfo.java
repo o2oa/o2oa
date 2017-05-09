@@ -177,6 +177,11 @@ public class BBSSubjectInfo extends SliceJpaObject {
 	@CheckPersist( allowEmpty = true )
 	private String mainSectionName = "";
 	
+	@EntityFieldDescribe( "首页图片ID" )
+	@Column(name="xpicId", length = JpaObject.length_id )
+	@CheckPersist( allowEmpty = true )
+	private String picId = "";
+	
 	@EntityFieldDescribe( "主题名称：标题" )
 	@Column(name="xtitle", length = JpaObject.length_128B )
 	@CheckPersist( allowEmpty = true )
@@ -188,18 +193,13 @@ public class BBSSubjectInfo extends SliceJpaObject {
 	private String type = "新闻";
 	
 	@EntityFieldDescribe( "主题的类别,不同的类别有不同的操作:信息|问题|投票" )
-	@Column(name="xtypeCatagory", length = JpaObject.length_64B )
-	private String typeCatagory = "信息";
+	@Column(name="xtypeCategory", length = JpaObject.length_64B )
+	private String typeCategory = "信息";
 	
 	@EntityFieldDescribe( "主题摘要" )
 	@Column(name="xsummary", length = JpaObject.length_255B )
 	@CheckPersist( allowEmpty = true )
 	private String summary = "";
-	
-	@EntityFieldDescribe( "图片地址" )
-	@Column(name="xpictureUrl", length = JpaObject.length_255B )
-	@CheckPersist( allowEmpty = true )
-	private String pictureUrl = null;
 	
 	@EntityFieldDescribe( "最新回复时间" )
 	@Column(name="xlatestReplyTime" )
@@ -631,12 +631,6 @@ public class BBSSubjectInfo extends SliceJpaObject {
 	public void setIsTopSubject(Boolean isTopSubject) {
 		this.isTopSubject = isTopSubject;
 	}
-	public String getPictureUrl() {
-		return pictureUrl;
-	}
-	public void setPictureUrl(String pictureUrl) {
-		this.pictureUrl = pictureUrl;
-	}
 	public String getMachineName() {
 		return machineName;
 	}
@@ -661,17 +655,23 @@ public class BBSSubjectInfo extends SliceJpaObject {
 	public void setIsCompleted(Boolean isCompleted) {
 		this.isCompleted = isCompleted;
 	}
-	public String getTypeCatagory() {
-		return typeCatagory;
+	public String getTypeCategory() {
+		return typeCategory;
 	}
-	public void setTypeCatagory(String typeCatagory) {
-		this.typeCatagory = typeCatagory;
+	public void setTypeCategory(String typeCategory) {
+		this.typeCategory = typeCategory;
 	}
 	public String getAcceptReplyId() {
 		return acceptReplyId;
 	}
 	public void setAcceptReplyId(String acceptReplyId) {
 		this.acceptReplyId = acceptReplyId;
+	}
+	public String getPicId() {
+		return picId;
+	}
+	public void setPicId(String picId) {
+		this.picId = picId;
 	}
 	
 }

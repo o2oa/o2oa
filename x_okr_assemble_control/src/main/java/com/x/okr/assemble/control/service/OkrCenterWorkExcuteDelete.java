@@ -194,7 +194,7 @@ public class OkrCenterWorkExcuteDelete {
 					}
 				}
 				
-				statisticList = okrStatisticReportStatusService.list( null, id, null, null, null );
+				statisticList = okrStatisticReportStatusService.list( null, null, id, null, null, null, null );
 				if( statisticList != null && !statisticList.isEmpty() ){
 					for( OkrStatisticReportStatus okrStatisticReportStatus : statisticList ){
 						emc.remove( okrStatisticReportStatus, CheckRemoveType.all);
@@ -238,7 +238,7 @@ public class OkrCenterWorkExcuteDelete {
 			for( String id : del_attachmentIds ){
 				attachment = emc.find( id, OkrAttachmentFileInfo.class );
 				if( attachment != null ){
-					mapping = ThisApplication.storageMappings.get( OkrAttachmentFileInfo.class, attachment.getStorage() );
+					mapping = ThisApplication.context().storageMappings().get( OkrAttachmentFileInfo.class, attachment.getStorage() );
 					attachment.deleteContent( mapping );
 					emc.remove( attachment, CheckRemoveType.all );
 				}

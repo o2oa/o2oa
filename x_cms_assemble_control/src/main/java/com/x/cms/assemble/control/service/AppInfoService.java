@@ -82,7 +82,6 @@ public class AppInfoService {
 			for (String del_id : ids) {
 				admin = emc.find(del_id, AppCategoryAdmin.class);
 				emc.remove(admin, CheckRemoveType.all);
-
 			}
 		}
 
@@ -202,7 +201,7 @@ public class AppInfoService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String> listNoViewPermissionAppInfoIds( EntityManagerContainer emc) throws Exception {
+	public List<String> listNoPermissionAppInfoIds( EntityManagerContainer emc) throws Exception {
 		List<String> ids = null;
 		Business business = new Business( emc );
 		ids = business.getAppCategoryPermissionFactory().listAllAppInfoIds( null, "VIEW" );		
@@ -210,8 +209,7 @@ public class AppInfoService {
 	}
 	
 	/**
-	 * 查询所有未设置发布权限的AppInfo的ID列表
-	 * 先查询出所有有发布权限设置的AppInfo,再查询未设置权限的AppInfo
+	 * TODO:查询所有未设置发布权限的AppInfo的ID列表
 	 * @param emc
 	 * @return
 	 * @throws Exception
@@ -222,6 +220,34 @@ public class AppInfoService {
 		ids = business.getAppCategoryPermissionFactory().listAllAppInfoIds( null, "PUBLISH" );
 		return business.getAppInfoFactory().listNoPermissionAppInfoIds( ids );
 	}	
+	
+	/**
+	 * TODO:查询所有未设置可见权限的AppInfo的ID列表
+	 * @param emc
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listNoViewPermissionOnlyAppInfoIds( EntityManagerContainer emc ) throws Exception {
+		List<String> ids = null;
+		Business business = new Business( emc );
+		ids = business.getAppCategoryPermissionFactory().listAllAppInfoIds( "APPINFO", null );		
+		return business.getAppInfoFactory().listNoPermissionAppInfoIds( ids );
+	}
+	
+	/**
+	 * TODO:查询所有未设置发布权限的AppInfo的ID列表
+	 * @param emc
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listNoPublishPermissionOnlyAppInfoIds( EntityManagerContainer emc ) throws Exception {
+		List<String> ids = null;
+		Business business = new Business( emc );
+		ids = business.getAppCategoryPermissionFactory().listAllAppInfoIds( "APPINFO", "PUBLISH" );		
+		return business.getAppInfoFactory().listNoPermissionAppInfoIds( ids );
+	}
+	
+	
 
 	public AppInfo get(EntityManagerContainer emc, String id) throws Exception {
 		return emc.find( id, AppInfo.class );
@@ -284,6 +310,9 @@ public class AppInfoService {
 								document = emc.find( docId, Document.class );
 								document.setAppName( categoryInfo.getAppName() );
 								document.setCategoryAlias( categoryInfo.getCategoryAlias() );
+								if( document.getHasIndexPic() == null ){
+									document.setHasIndexPic( false );
+								}
 								emc.check( document, CheckPersistType.all );
 								
 								//对该文档所有的阅读权限信息中的栏目名称和分类别名进行调整 
@@ -316,5 +345,12 @@ public class AppInfoService {
 		}
 		Business business = new Business( emc );
 		return business.getAppInfoFactory().listByAppName( appName );
+	}
+	public List<String> listByAppAlias(EntityManagerContainer emc, String appAlias) throws Exception {
+		if( appAlias == null || appAlias.isEmpty() ){
+			throw new Exception( "appAlias is null!" );
+		}
+		Business business = new Business( emc );
+		return business.getAppInfoFactory().listByAppAlias( appAlias );
 	}
 }

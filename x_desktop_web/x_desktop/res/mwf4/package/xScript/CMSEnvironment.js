@@ -6,7 +6,7 @@ MWF.xScript.CMSEnvironment = function(ev){
     var _forms = ev.forms;
 
     this.library = COMMON;
-    this.library.version = "4.0";
+    //this.library.version = "4.0";
 
     //data
     var getJSONData = function(jData){
@@ -156,7 +156,6 @@ MWF.xScript.CMSEnvironment = function(ev){
             getOrgActions();
             var v;
             orgActions.listCompanyByPerson(options.personName, function(json){
-                debugger;
                 v = json.data;
             }, null, false);
             return v;

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.x.base.core.gson.GsonPropertyObject;
-import com.x.base.core.utils.ClassTools;
 import com.x.base.core.utils.ListTools;
 
 public class DumpRestoreData extends GsonPropertyObject {
@@ -16,17 +15,17 @@ public class DumpRestoreData extends GsonPropertyObject {
 	public DumpRestoreData() {
 		this.includes = new ArrayList<String>();
 		this.excludes = new ArrayList<String>();
+		this.batchSize = 2000;
 	}
 
 	private List<String> includes;
 	private List<String> excludes;
+	private Integer batchSize;
 
 	public List<String> getIncludes() {
 		List<String> list = new ArrayList<>();
 		for (String str : ListTools.trim(includes, true, true)) {
-			if (ClassTools.isClass(str)) {
-				list.add(str);
-			}
+			list.add(str);
 		}
 		return list;
 	}
@@ -34,11 +33,16 @@ public class DumpRestoreData extends GsonPropertyObject {
 	public List<String> getExcludes() {
 		List<String> list = new ArrayList<>();
 		for (String str : ListTools.trim(excludes, true, true)) {
-			if (ClassTools.isClass(str)) {
-				list.add(str);
-			}
+			list.add(str);
 		}
 		return list;
+	}
+
+	public Integer getBatchSize() {
+		if ((null == this.batchSize) || (this.batchSize < 1)) {
+			return 2000;
+		}
+		return this.batchSize;
 	}
 
 	public void setIncludes(List<String> includes) {
@@ -47,6 +51,10 @@ public class DumpRestoreData extends GsonPropertyObject {
 
 	public void setExcludes(List<String> excludes) {
 		this.excludes = excludes;
+	}
+
+	public void setBatchSize(Integer batchSize) {
+		this.batchSize = batchSize;
 	}
 
 }

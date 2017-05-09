@@ -145,14 +145,14 @@ public class OkrStatisticReportContentService{
 	 * @return
 	 * @throws Exception 
 	 */
-	public List<String> list( String centerId, String parentId, String statisticTime, String reportCycle, Integer year, Integer month, Integer week, String stauts ) throws Exception {
+	public List<String> list( String centerId, String centerTitle, String parentId, String workType, String statisticTime, String reportCycle, Integer year, Integer month, Integer week, String stauts ) throws Exception {
 		Business business = null;
 		Long count = 0L;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business( emc );
-			count = business.okrStatisticReportContentFactory().count( centerId, parentId, statisticTime, reportCycle, year, month, week, stauts );
+			count = business.okrStatisticReportContentFactory().count( centerId, centerTitle, parentId, workType, statisticTime, reportCycle, year, month, week, stauts );
 			if( count > 0 ){
-				return business.okrStatisticReportContentFactory().list( centerId, parentId, statisticTime, reportCycle, year, month, week, stauts );
+				return business.okrStatisticReportContentFactory().list( centerId, centerTitle, parentId, workType, statisticTime, reportCycle, year, month, week, stauts );
 			}else{
 				return null;
 			}
@@ -179,25 +179,25 @@ public class OkrStatisticReportContentService{
 		}
 	}
 
-	public List<String> listDateTimeFlags(String centerId, String workId, String reportCycle,
+	public List<String> listDateTimeFlags(String centerId, String centerTitle, String workId, String workType, String reportCycle,
 			Integer year, Integer month, Integer week, Date startDate, Date endDate, String status) throws Exception {
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business( emc );
-			return business.okrStatisticReportContentFactory().listDateTimeFlags( centerId, workId, reportCycle, year, month, week, startDate, endDate, status );
+			return business.okrStatisticReportContentFactory().listDateTimeFlags( centerId, centerTitle, workId, workType, reportCycle, year, month, week, startDate, endDate, status );
 		}catch( Exception e ){
 			throw e;
 		}
 	}
 
-	public List<String> listFirstLayer(String centerId, String workId, String statisticTimeFlag, String reportCycle, Integer year, Integer month, Integer week, String stauts) throws Exception {
+	public List<String> listFirstLayer(String centerId, String centerTitle, String workId, String workType, String statisticTimeFlag, String reportCycle, Integer year, Integer month, Integer week, String stauts) throws Exception {
 		Business business = null;
 		Long count = 0L;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business( emc );
-			count = business.okrStatisticReportContentFactory().countFirstLayer( centerId, workId, statisticTimeFlag, reportCycle, year, month, week, stauts );
+			count = business.okrStatisticReportContentFactory().countFirstLayer( centerId, centerTitle, workId, workType, statisticTimeFlag, reportCycle, year, month, week, stauts );
 			if( count > 0 ){
-				return business.okrStatisticReportContentFactory().listFirstLayer( centerId, workId, statisticTimeFlag, reportCycle, year, month, week, stauts );
+				return business.okrStatisticReportContentFactory().listFirstLayer( centerId, centerTitle, workId, workType, statisticTimeFlag, reportCycle, year, month, week, stauts );
 			}else{
 				return null;
 			}

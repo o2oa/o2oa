@@ -10,6 +10,11 @@ import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.UserNoLoginException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkBaseInfoProcessException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkCanNotDeleteException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkIdEmptyException;
 import com.x.okr.assemble.control.service.OkrWorkBaseInfoOperationService;
 import com.x.okr.entity.OkrWorkBaseInfo;
 
@@ -38,29 +43,27 @@ public class ExcuteDelete extends ExcuteBase {
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName()  );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}	
 		}
 		if( check && ( okrUserCache == null || okrUserCache.getLoginIdentityName() == null ) ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName()  );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
 		}
 		if( id == null || id.isEmpty() ){
 			check = false;
 			Exception exception = new WorkIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
 		}
 		if( check ){
 			try {
 				ids = okrWorkBaseInfoService.getSubNormalWorkBaseInfoIds( id );
 			} catch (Exception e ) {
 				check = false;
-				Exception exception = new SubWorkQueryByPidException( e, id );
+				Exception exception = new WorkBaseInfoProcessException( e, "根据指定工作ID查询所有下级工作信息时发生异常。ID：" + id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -68,7 +71,6 @@ public class ExcuteDelete extends ExcuteBase {
 				check = false;
 				Exception exception = new WorkCanNotDeleteException( ids );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -76,9 +78,9 @@ public class ExcuteDelete extends ExcuteBase {
 				okrWorkBaseInfo = okrWorkBaseInfoService.get( id );
 			}catch(Exception e){
 				check = false;
-				Exception exception = new WorkQueryByIdException( e, id );
+				Exception exception = new WorkBaseInfoProcessException( e, "查询指定ID的具体工作信息时发生异常。ID：" + id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -87,9 +89,9 @@ public class ExcuteDelete extends ExcuteBase {
 				result.setData( new WrapOutId(id) );
 			}catch(Exception e){
 				check = false;
-				Exception exception = new WorkDeleteException( e, id );
+				Exception exception = new WorkBaseInfoProcessException( e, "工作删除过程中发生异常。"+id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){

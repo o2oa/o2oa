@@ -27,7 +27,6 @@ MWF.xApplication.IM.IMWidget = new Class({
     },
     doUnreadMessages: function(){
         this.unShowMessage = MWF.UD.getDataJson("unreadChat") || {};
-        debugger;
         layout.desktop.addEvent("unload", function(){
             MWF.UD.putData("unreadChat", this.unShowMessage);
         }.bind(this));
@@ -154,7 +153,6 @@ MWF.xApplication.IM.IMWidget = new Class({
         }.bind(this));
     },
     setUnread: function(){
-        debugger;
         var im = layout.desktop.apps["IM"];
         var count = 0;
         Object.each(this.unShowMessage, function(v, k){

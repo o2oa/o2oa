@@ -12,6 +12,9 @@ import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.SortTools;
 import com.x.okr.assemble.common.date.DateOperation;
+import com.x.okr.assemble.control.jaxrs.statistic.exception.QueryEndDateInvalidException;
+import com.x.okr.assemble.control.jaxrs.statistic.exception.QueryStartDateInvalidException;
+import com.x.okr.assemble.control.jaxrs.statistic.exception.QueryWithConditionException;
 
 public class ExcuteDateList extends ExcuteBase {
 
@@ -32,13 +35,6 @@ public class ExcuteDateList extends ExcuteBase {
 		Boolean check = true;
 		DateOperation dateOperation = new DateOperation();
 
-//		if (wrapIn == null) {
-//			check = false;
-//			logger.error("wrapIn is null, system can not get any object.");
-//			result.error(new Exception("传入的参数为空，无法进行查询！"));
-//			result.setUserMessage("传入的参数为空，无法进行查询！");
-//		}
-
 		if (check) {
 			order = wrapIn.getOrder();
 			centerId = wrapIn.getCenterId();
@@ -48,51 +44,50 @@ public class ExcuteDateList extends ExcuteBase {
 			reportCycle = wrapIn.getReportCycle();
 		}
 		if (check) {
-			if (wrapIn.getStartDate() != null && !wrapIn.getStartDate().isEmpty()) {
+			if ( wrapIn.getStartDate() != null && !wrapIn.getStartDate().isEmpty() ) {
 				try {
-					startDate = dateOperation.getDateFromString(wrapIn.getStartDate());
+					startDate = dateOperation.getDateFromString( wrapIn.getStartDate() );
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new QueryStartDateInvalidException( e, wrapIn.getStartDate() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
-			if (wrapIn.getEndDate() != null && !wrapIn.getEndDate().isEmpty()) {
+			if ( wrapIn.getEndDate() != null && !wrapIn.getEndDate().isEmpty() ) {
 				try {
-					endDate = dateOperation.getDateFromString(wrapIn.getEndDate());
+					endDate = dateOperation.getDateFromString( wrapIn.getEndDate() );
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new QueryEndDateInvalidException( e, wrapIn.getEndDate() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
 		if (check) {
 			try {
 				if( reportCycle == null || reportCycle.isEmpty() ){
-					datetimes = okrCenterWorkReportStatisticService.listDateTimeFlags( centerId, null, "每周汇报", year, month, week, startDate, endDate, null);
+					datetimes = okrCenterWorkReportStatisticService.listDateTimeFlags( centerId, wrapIn.getCenterTitle(), null, wrapIn.getWorkTypeName(), "每周汇报", year, month, week, startDate, endDate, null);
 					if( datetimes != null && !datetimes.isEmpty() ){
 						for( String datetime : datetimes){
 							result_datetimes.add( new WrapOutOkrReportSubmitStatusDate( datetime, "每周汇报"));
 						}
 					}
-					datetimes = okrCenterWorkReportStatisticService.listDateTimeFlags( centerId, null, "每月汇报", year, month, week, startDate, endDate, null);
+					datetimes = okrCenterWorkReportStatisticService.listDateTimeFlags( centerId, wrapIn.getCenterTitle(), null, wrapIn.getWorkTypeName(), "每月汇报", year, month, week, startDate, endDate, null);
 					if( datetimes != null && !datetimes.isEmpty() ){
 						for( String datetime : datetimes){
 							result_datetimes.add( new WrapOutOkrReportSubmitStatusDate( datetime, "每月汇报"));
 						}
 					}
 				}else{
-					datetimes = okrCenterWorkReportStatisticService.listDateTimeFlags( centerId, null, reportCycle, year, month, week, startDate, endDate, null );
+					datetimes = okrCenterWorkReportStatisticService.listDateTimeFlags( centerId, wrapIn.getCenterTitle(), null, wrapIn.getWorkTypeName(), reportCycle, year, month, week, startDate, endDate, null );
 					if( datetimes != null && !datetimes.isEmpty() ){
 						for( String datetime : datetimes){
 							result_datetimes.add( new WrapOutOkrReportSubmitStatusDate( datetime, reportCycle ));
 						}
 					}
 				}
-				
 				if ( result_datetimes != null) {
 					if ("DESC".equals( order.toUpperCase()) ) {
 						SortTools.desc(result_datetimes, "datetime");
@@ -105,7 +100,7 @@ public class ExcuteDateList extends ExcuteBase {
 				check = false;
 				Exception exception = new QueryWithConditionException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

@@ -76,4 +76,17 @@ public class OkrWorkDetailInfoFactory extends AbstractFactory {
 		cq.select(root.get( OkrWorkDetailInfo_.id));
 		return em.createQuery(cq.where(p)).getResultList();
 	}
+
+	public List<String> listByWorkId(String workId) throws Exception {
+		if( workId == null || workId.isEmpty() ){
+			throw new Exception( " workId is null!" );
+		}
+		EntityManager em = this.entityManagerContainer().get(OkrWorkDetailInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<OkrWorkDetailInfo> root = cq.from(OkrWorkDetailInfo.class);
+		Predicate p = cb.equal( root.get( OkrWorkDetailInfo_.id ), workId );
+		cq.select(root.get( OkrWorkDetailInfo_.id));
+		return em.createQuery(cq.where(p)).getResultList();
+	}
 }
