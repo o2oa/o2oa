@@ -1,13 +1,14 @@
 package com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
-
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.AdminSuperviseInfoEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.AdminSuperviseSaveException;
 
 public class ExcuteSaveAdminSupervise extends ExcuteBase {
 
@@ -22,7 +23,7 @@ public class ExcuteSaveAdminSupervise extends ExcuteBase {
 			check = false;
 			Exception exception = new AdminSuperviseInfoEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check ){
@@ -33,7 +34,7 @@ public class ExcuteSaveAdminSupervise extends ExcuteBase {
 				check = false;
 				Exception exception = new AdminSuperviseSaveException( e, reportId );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

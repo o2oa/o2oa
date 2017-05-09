@@ -26,7 +26,6 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
             this.selectedData = data;
             return (this.json.selectedScript.code) ? this.form.Macro.exec(this.json.selectedScript.code, this) : "";
         }else{
-            debugger;
             Object.each(this.json.selectedSetValues, function(v, k){
                 var value = "";
                 data.each(function(d, idx){
@@ -42,7 +41,6 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
     },
 
     selectView: function(callback){
-        debugger;
         if (this.json.viewName){
             var viewJson = {
                 "application": this.json.application || this.form.json.application,

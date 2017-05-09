@@ -55,7 +55,7 @@ public class UpdateServlet extends AbstractServletAction {
 				FileItemStream item = fileItemIterator.next();
 				if (!item.isFormField()) {
 					try (InputStream input = item.openStream()) {
-						StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class,
+						StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 								attachment.getStorage());
 						attachment.updateContent(mapping, input);
 						emc.beginTransaction(Attachment.class);

@@ -117,18 +117,18 @@ MWF.xApplication.cms.ViewDesigner.View = new Class({
             this.designer.notice(this.lp.notice.inputName, "error");
             return false;
         }
-        var flag = true;
-        if( flag ){
-            this.columns.each(function(column){
-                flag = column.save();
-            })
-        }
-        if(!flag)return false;
-        this.columnsRemoved.each(function(column){
-            column.delete(function(){
-                _self.columnsRemoved.erase(this);
-            }.bind(column));
-        })
+        //var flag = true;
+        //if( flag ){
+        //    this.columns.each(function(column){
+        //        flag = column.save();
+        //    })
+        //}
+        //if(!flag)return false;
+        //this.columnsRemoved.each(function(column){
+        //    column.delete(function(){
+        //        _self.columnsRemoved.erase(this);
+        //    }.bind(column));
+        //})
         var data = {};
         data.isNew = this.isNewView; //this.data.isNew;
         data.id = this.data.id;
@@ -143,6 +143,7 @@ MWF.xApplication.cms.ViewDesigner.View = new Class({
 
         this.data.isNew = false;
         this.data.columns = this.getColumnsData();
+        data.fields = this.getColumnsItemData();
         data.content = JSON.stringify(this.data);
 
         this.designer.actions.saveView(data, function(json){
@@ -327,6 +328,14 @@ MWF.xApplication.cms.ViewDesigner.View = new Class({
         var data = [];
         this.columns.each(function(column){
             data.push(column.data);
+        })
+        return data;
+    },
+    getColumnsItemData: function(){
+        var data = [];
+        this.columns.each(function(column){
+            data.push(column.getData());
+            column.data.isNew = false;
         })
         return data;
     },
@@ -1191,6 +1200,16 @@ MWF.xApplication.cms.ViewDesigner.View.Column = new Class({
                 if(callback)callback();
             }.bind(this));
         }
+    },
+    getData: function(){
+        var data = {};
+        data.id = this.data.id;
+        data.isNew = this.data.isNew;
+        data.viewId = this.view.data.id;
+        data.fieldTitle = this.data.title;
+        data.fieldName = this.data.value;
+        data.xshowSequence = this.view.data.relativeForm.id;
+        return data;
     },
     save : function(callback){
         var flag = true;

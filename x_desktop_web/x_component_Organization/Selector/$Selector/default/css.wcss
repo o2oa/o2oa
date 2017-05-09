@@ -213,15 +213,16 @@
 		"margin": "3px"
 	},
 	"letterAreaNode": {
-		"width": "412px",
-		"padding": "0px 9px",
-		"height": "40px",
+		"width": "390px",
+		"padding": "0px 20px",
+		"height": "46px",
 		"border-bottom": "1px solid #999",
-		"background-color": "#EEE",
+		"background-color": "#EEE"
 	},
 	"letterNode": {
-		"height": "20px",
-		"width": "24px",
+		"height": "23px",
+	  "line-height": "23px",
+		"width": "30px",
 		"text-align": "center",
 		"font-weight": "bold",
 		"float": "left",
@@ -230,8 +231,9 @@
 		"background": "transparent"
 	},
 	"letterNode_over": {
-		"height": "20px",
-		"width": "24px",
+		"height": "23px",
+	  	"line-height": "23px",
+		"width": "30px",
 		"text-align": "center",
 		"font-weight": "bold",
 		"float": "left",
@@ -241,7 +243,7 @@
 	},
 	"itemAreaScrollNode": {
 		"overflow": "hidden",
-		"height": "338px"
+		"height": "332px"
 	},
 	"itemAreaNode": {
 		"overflow": "hidden"
@@ -298,7 +300,7 @@
 		"overflow": "hidden",
 		"cursor": "pointer",
 		"border-bottom": "1px solid #FFF",
-		"background-color": "#87acd6",
+		"background-color": "#87acd6"
 	},
 	"selectorItemLevelNode": {
 	    "width": "0px",

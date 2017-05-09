@@ -13,7 +13,6 @@ import com.x.cms.assemble.control.factory.CategoryInfoFactory;
 import com.x.cms.assemble.control.factory.DataItemFactory;
 import com.x.cms.assemble.control.factory.DocumentFactory;
 import com.x.cms.assemble.control.factory.DocumentPermissionFactory;
-import com.x.cms.assemble.control.factory.DocumentPictureInfoFactory;
 import com.x.cms.assemble.control.factory.DocumentViewRecordFactory;
 import com.x.cms.assemble.control.factory.FileInfoFactory;
 import com.x.cms.assemble.control.factory.FormFactory;
@@ -40,7 +39,6 @@ public class Business {
 	private TemplateFormFactory templateFormFactory;
 	private AppInfoFactory appInfoFactory;
 	private CategoryInfoFactory categoryInfoFactory;
-	private DocumentPictureInfoFactory documentPictureInfoFactory;
 	private FileInfoFactory fileInfoFactory;
 	private AppCategoryPermissionFactory appCategoryPermissionFactory;
 	private AppCategoryAdminFactory appCategoryAdminFactory;
@@ -62,7 +60,7 @@ public class Business {
 	
 	public Organization organization() throws Exception {
 		if (null == this.organization) {
-			this.organization = new Organization();
+			this.organization = new Organization(ThisApplication.context());
 		}
 		return organization;
 	}
@@ -72,13 +70,6 @@ public class Business {
 			this.templateFormFactory = new TemplateFormFactory( this );
 		}
 		return templateFormFactory;
-	}
-	
-	public DocumentPictureInfoFactory documentPictureInfoFactory() throws Exception {
-		if (null == this.documentPictureInfoFactory) {
-			this.documentPictureInfoFactory = new DocumentPictureInfoFactory( this );
-		}
-		return documentPictureInfoFactory;
 	}
 	
 	public DocumentViewRecordFactory documentViewRecordFactory() throws Exception {

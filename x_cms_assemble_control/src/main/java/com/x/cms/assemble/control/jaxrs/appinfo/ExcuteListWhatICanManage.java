@@ -11,6 +11,7 @@ import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.SortTools;
 import com.x.cms.assemble.control.WrapTools;
+import com.x.cms.assemble.control.jaxrs.appinfo.exception.AppInfoProcessException;
 import com.x.cms.assemble.control.jaxrs.categoryinfo.WrapOutCategoryInfo;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
@@ -38,10 +39,10 @@ public class ExcuteListWhatICanManage extends ExcuteBase {
 			check = false;
 			Exception exception = new UserManagerCheckException( e, effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
-		String cacheKey = ApplicationCache.concreteCacheKey( "manage", effectivePerson.getName(), isXAdmin );
+		String cacheKey = ApplicationCache.concreteCacheKey( effectivePerson.getName(), "manage", isXAdmin );
 		Element element = cache.get(cacheKey);
 		
 		if ((null != element) && ( null != element.getObjectValue()) ) {
@@ -54,9 +55,9 @@ public class ExcuteListWhatICanManage extends ExcuteBase {
 						appInfoList = appInfoServiceAdv.listAll();
 					} catch (Exception e) {
 						check = false;
-						Exception exception = new AppInfoListAllException( e );
+						Exception exception = new AppInfoProcessException( e, "查询所有应用栏目信息对象时发生异常" );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 				}else{
 					try {
@@ -66,16 +67,16 @@ public class ExcuteListWhatICanManage extends ExcuteBase {
 								appInfoList = appInfoServiceAdv.list( app_ids );
 							} catch (Exception e) {
 								check = false;
-								Exception exception = new AppInfoListByIdsException( e );
+								Exception exception = new AppInfoProcessException( e, "系统根据ID列表查询应用栏目信息对象时发生异常。" );
 								result.error( exception );
-								logger.error( exception, effectivePerson, request, null);
+								logger.error( e, effectivePerson, request, null);
 							}
 						}
 					} catch (Exception e) {
 						check = false;
-						Exception exception = new AppInfoListManageableInPermissionException( e, effectivePerson.getName() );
+						Exception exception = new AppInfoProcessException( e, "系统在根据用户权限查询所有管理的栏目信息时发生异常。Name:" + effectivePerson.getName() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 				}
 			}
@@ -88,9 +89,9 @@ public class ExcuteListWhatICanManage extends ExcuteBase {
 						result.setData(wraps);
 					} catch (Exception e) {
 						check = false;
-						Exception exception = new AppInfoWrapOutException( e );
+						Exception exception = new AppInfoProcessException( e, "将查询出来的应用栏目信息对象转换为可输出的数据信息时发生异常。" );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 				}
 			}
@@ -101,9 +102,9 @@ public class ExcuteListWhatICanManage extends ExcuteBase {
 							catacoryList = categoryInfoServiceAdv.list( appInfo.getCategoryList() );
 						} catch (Exception e ) {
 							check = false;
-							Exception exception = new CategoryInfoListByIdsException( e );
+							Exception exception = new AppInfoProcessException( e, "系统根据ID列表查询分类信息对象时发生异常。" );
 							result.error( exception );
-							logger.error( exception, effectivePerson, request, null);
+							logger.error( e, effectivePerson, request, null);
 						}
 						if( catacoryList != null && !catacoryList.isEmpty() ){
 							try {
@@ -111,9 +112,9 @@ public class ExcuteListWhatICanManage extends ExcuteBase {
 								appInfo.setWrapOutCategoryList( wrapOutCatacoryList );
 							} catch (Exception e) {
 								check = false;
-								Exception exception = new CategoryInfoWrapOutException( e );
+								Exception exception = new AppInfoProcessException( e, "将查询出来的分类信息对象转换为可输出的数据信息时发生异常。" );
 								result.error( exception );
-								logger.error( exception, effectivePerson, request, null);
+								logger.error( e, effectivePerson, request, null);
 							}
 						}
 					}		

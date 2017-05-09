@@ -48,7 +48,7 @@ COMMON.DOM.addReady(function(){
                     //});
                 };
                 layout.openApplication = function(e, appNames, options, status){
-                    debugger;
+
                     if (layout.app){
                         layout.desktop.openBrowserApp = appNames;
                         layout.desktop.openBrowserStatus = status;
@@ -116,47 +116,47 @@ COMMON.DOM.addReady(function(){
                 //        if (callback) callback();
                 //    }.bind(this));
                 //};
-                layout.getServiceAddress = function(callback){
-                    if (typeOf(layout.config.center)=="object"){
-                        this.getServiceAddressConfigObject(callback);
-                    }else if (typeOf(layout.config.center)=="array"){
-                        this.getServiceAddressConfigArray(callback);
-                    }
-
-                };
-                layout.getServiceAddressConfigArray = function(callback) {
-                    var requests = [];
-                    layout.config.center.each(function(center){
-                        requests.push(
-                            this.getServiceAddressConfigObject(function(){
-                                requests.each(function(res){
-                                    if (res.isRunning()){res.cancel();}
-                                });
-                                if (callback) callback();
-                            }.bind(this), center)
-                        );
-                    }.bind(this));
-                };
-                layout.getServiceAddressConfigObject = function(callback, center){
-                    var centerConfig = center;
-                    if (!centerConfig) centerConfig = layout.config.center;
-                    var host = centerConfig.host || window.location.hostname;
-                    var port = centerConfig.port;
-                    var uri = "";
-                    if (!port || port=="80"){
-                        uri = "http://"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
-                    }else{
-                        uri = "http://"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
-                    }
-                    var currenthost = window.location.hostname;
-                    uri = uri.replace(/{source}/g, currenthost);
-                    //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
-                    return MWF.restful("get", uri, null, function(json){
-                        this.serviceAddressList = json.data;
-                        this.centerServer = center;
-                        if (callback) callback();
-                    }.bind(this));
-                };
+                //layout.getServiceAddress = function(callback){
+                //    if (typeOf(layout.config.center)=="object"){
+                //        this.getServiceAddressConfigObject(callback);
+                //    }else if (typeOf(layout.config.center)=="array"){
+                //        this.getServiceAddressConfigArray(callback);
+                //    }
+                //
+                //};
+                //layout.getServiceAddressConfigArray = function(callback) {
+                //    var requests = [];
+                //    layout.config.center.each(function(center){
+                //        requests.push(
+                //            this.getServiceAddressConfigObject(function(){
+                //                requests.each(function(res){
+                //                    if (res.isRunning()){res.cancel();}
+                //                });
+                //                if (callback) callback();
+                //            }.bind(this), center)
+                //        );
+                //    }.bind(this));
+                //};
+                //layout.getServiceAddressConfigObject = function(callback, center){
+                //    var centerConfig = center;
+                //    if (!centerConfig) centerConfig = layout.config.center;
+                //    var host = centerConfig.host || window.location.hostname;
+                //    var port = centerConfig.port;
+                //    var uri = "";
+                //    if (!port || port=="80"){
+                //        uri = "http://"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+                //    }else{
+                //        uri = "http://"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+                //    }
+                //    var currenthost = window.location.hostname;
+                //    uri = uri.replace(/{source}/g, currenthost);
+                //    //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
+                //    return MWF.restful("get", uri, null, function(json){
+                //        this.serviceAddressList = json.data;
+                //        this.centerServer = center;
+                //        if (callback) callback();
+                //    }.bind(this));
+                //};
 
                 layout.isAuthentication = function(callback){
                     this.authentication = new MWF.xDesktop.Authentication({
@@ -179,9 +179,14 @@ COMMON.DOM.addReady(function(){
                 MWF.getJSON("res/config/config.json", function(config){
                     layout.config = config;
 
-                    layout.getServiceAddress(function(){
+                    MWF.xDesktop.getServiceAddress(layout.config, function(service, center){
+                        layout.serviceAddressList = service;
+                        layout.centerServer = center;
                         layout.load();
-                    });
+                    }.bind(this));
+                    //layout.getServiceAddress(function(){
+                    //    layout.load();
+                    //});
                 });
 
 

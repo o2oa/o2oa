@@ -1,18 +1,28 @@
 package com.x.organization.assemble.personal;
 
-import com.x.base.core.project.AbstractThisApplication;
-import com.x.base.core.project.ReportTask;
+import com.x.base.core.project.Context;
 
-public class ThisApplication extends AbstractThisApplication {
-	public static void init() throws Exception {
-		/* 启动报告任务 */
-		timerWithFixedDelay(new ReportTask(), 1, 20);
-		initDatasFromCenters();
-	}
+public class ThisApplication {
 
-	public static void destroy() throws Exception {
-
-	}
-
+	protected static Context context;
 	public static final int passwordStrengthLevel = 4;
+
+	public static Context context() {
+		return context;
+	}
+
+	public static void init() {
+		try {
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void destroy() {
+		try {
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }

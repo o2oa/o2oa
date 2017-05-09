@@ -5,6 +5,8 @@ MWF.xApplication.cms.Module.LP = {
 	"publishedStatus" : "已发布",
 	"archivedStatus" : "已归档",
 
+	"noDescription" : "未定义描述",
+
 	"searchKey": "请输入关键字",
 	"all": "全部",
 	"allDocument": "所有文档",

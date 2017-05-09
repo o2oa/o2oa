@@ -11,8 +11,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.utils.annotation.MethodDescribe;
 import com.x.cms.assemble.control.AbstractFactory;
@@ -88,176 +86,6 @@ public class DocumentFactory extends AbstractFactory {
 		Predicate p = cb.equal( root.get(Document_.categoryId), categoryId );
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
-	}
-	
-	/**
-	 * 查询下一页的文档信息数据
-	 * @param id
-	 * @param count
-	 * @param sequence
-	 * @param wrapIn
-	 * @return
-	 * @throws Exception
-	 */
-	@SuppressWarnings("unchecked")
-	public List<Document> listIdsNextWithFilter( String id, Integer count, Object sequence, WrapInFilter wrapIn ) throws Exception {
-		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
-		EntityManager em = this.entityManagerContainer().get( Document.class );
-		DateOperation dateOperation = new DateOperation();
-		Date startDate = null, endDate = null;
-		String order = wrapIn.getOrderType();//排序方式
-		List<Object> vs = new ArrayList<>();
-		StringBuffer sql_stringBuffer = new StringBuffer();
-		
-		if( order == null || order.isEmpty() ){
-			order = "DESC";
-		}
-		
-		Integer index = 1;
-		sql_stringBuffer.append( "SELECT o FROM "+Document.class.getCanonicalName()+" o where 1=1" );
-
-		if ((null != sequence) ) {
-			sql_stringBuffer.append(" and o.sequence " + (StringUtils.equalsIgnoreCase(order, "DESC") ? "<" : ">") + (" ?" + (index)));
-			vs.add(sequence);
-			index++;
-		}
-		if ((null != wrapIn.getStatusList()) && (!wrapIn.getStatusList().isEmpty())) {
-			sql_stringBuffer.append(" and o.docStatus in ?" + (index));
-			vs.add( wrapIn.getStatusList() );
-			index++;
-		}
-		if ((null != wrapIn.getTitle()) && (!wrapIn.getTitle().isEmpty())) {
-			sql_stringBuffer.append(" and o.title like ?" + (index));
-			vs.add( "%"+wrapIn.getTitle()+"%" );
-			index++;
-		}
-		if ((null != wrapIn.getAppIdList()) && (!wrapIn.getAppIdList().isEmpty())) {
-			sql_stringBuffer.append(" and o.appId in ?" + (index));
-			vs.add( wrapIn.getAppIdList() );
-			index++;
-		}
-		if ((null != wrapIn.getCategoryIdList()) && (!wrapIn.getCategoryIdList().isEmpty())) {
-			sql_stringBuffer.append(" and o.categoryId in ?" + (index));
-			vs.add( wrapIn.getCategoryIdList() );
-			index++;
-		}
-		if ((null != wrapIn.getCreatorList()) && (!wrapIn.getCreatorList().isEmpty())) {
-			sql_stringBuffer.append(" and o.creatorPerson in ?" + (index));
-			vs.add( wrapIn.getCreatorList() );
-			index++;
-		}
-		if ((null != wrapIn.getCreateDateList()) && (!wrapIn.getCreateDateList().isEmpty())) {
-			if( wrapIn.getCreateDateList().size() == 1){
-				//从开始时间（yyyy-MM-DD），到现在
-				startDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(0).toString() );
-				endDate = new Date();
-			}else if( wrapIn.getCreateDateList().size() == 2){
-				//从开始时间到结束时间（yyyy-MM-DD）
-				startDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(0).toString() );
-				endDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(1).toString() );
-			}
-			sql_stringBuffer.append(" and o.createTime between ( ?"+(index)+", ?"+(index+1)+" )");
-			vs.add( startDate );
-			vs.add( endDate );
-		}
-		
-		if( wrapIn.getTitle() != null && !wrapIn.getTitle().isEmpty()){
-			sql_stringBuffer.append(" order by o."+wrapIn.getTitle()+" " + order );
-		}else{
-			sql_stringBuffer.append(" order by o.sequence " + order );
-		}
-	
-		Query query = em.createQuery( sql_stringBuffer.toString(), Document.class );
-		//为查询设置所有的参数值
-		for (int i = 0; i < vs.size(); i++) {
-			query.setParameter(i + 1, vs.get(i));
-		}
-		
-		return query.setMaxResults(count).getResultList();
-	}	
-	
-	/**
-	 * 查询上一页的文档信息数据
-	 * @param id
-	 * @param count
-	 * @param sequence
-	 * @param wrapIn
-	 * @return
-	 * @throws Exception
-	 */
-	@SuppressWarnings("unchecked")
-	public List<Document> listIdsPrevWithFilter( String id, Integer count, Object sequence, WrapInFilter wrapIn ) throws Exception {
-		//先获取上一页最后一条的sequence值，如果有值的话，以此sequence值作为依据取后续的count条数据
-		EntityManager em = this.entityManagerContainer().get( Document.class );
-		DateOperation dateOperation = new DateOperation();
-		Date startDate = null, endDate = null;
-		String order = wrapIn.getOrderType();//排序方式
-		List<Object> vs = new ArrayList<>();
-		StringBuffer sql_stringBuffer = new StringBuffer();
-		Integer index = 1;
-		
-		if( order == null || order.isEmpty() ){
-			order = "DESC";
-		}
-		
-		sql_stringBuffer.append( "SELECT o FROM "+Document.class.getCanonicalName()+" o where 1=1" );
-		if ((null != sequence) ) {
-			sql_stringBuffer.append(" and o.sequence " + (StringUtils.equalsIgnoreCase(order, "DESC") ? ">" : "<") + (" ?" + (index)));
-			vs.add(sequence);
-			index++;
-		}
-		if ((null != wrapIn.getStatusList()) && (!wrapIn.getStatusList().isEmpty())) {
-			sql_stringBuffer.append(" and o.docStatus in ?" + (index));
-			vs.add( wrapIn.getStatusList() );
-			index++;
-		}
-		if ((null != wrapIn.getTitle()) && (!wrapIn.getTitle().isEmpty())) {
-			sql_stringBuffer.append(" and o.title like ?" + (index));
-			vs.add( "%"+wrapIn.getTitle()+"%" );
-			index++;
-		}
-		if ((null != wrapIn.getAppIdList()) && (!wrapIn.getAppIdList().isEmpty())) {
-			sql_stringBuffer.append(" and o.appId in ?" + (index));
-			vs.add( wrapIn.getAppIdList() );
-			index++;
-		}
-		if ((null != wrapIn.getCategoryIdList()) && (!wrapIn.getCategoryIdList().isEmpty())) {
-			sql_stringBuffer.append(" and o.categoryId in ?" + (index));
-			vs.add( wrapIn.getCategoryIdList() );
-			index++;
-		}
-		if ((null != wrapIn.getCreatorList()) && (!wrapIn.getCreatorList().isEmpty())) {
-			sql_stringBuffer.append(" and o.creatorPerson in ?" + (index));
-			vs.add( wrapIn.getCreatorList() );
-			index++;
-		}
-		if ((null != wrapIn.getCreateDateList()) && (!wrapIn.getCreateDateList().isEmpty())) {
-			if( wrapIn.getCreateDateList().size() == 1){
-				//从开始时间（yyyy-MM-DD），到现在
-				startDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(0).toString() );
-				endDate = new Date();
-			}else if( wrapIn.getCreateDateList().size() == 2){
-				//从开始时间到结束时间（yyyy-MM-DD）
-				startDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(0).toString() );
-				endDate = dateOperation.getDateFromString( wrapIn.getCreateDateList().get(1).toString() );
-			}
-			sql_stringBuffer.append(" and o.createTime between ( ?"+(index)+", ?"+(index+1)+" )");
-			vs.add( startDate );
-			vs.add( endDate );
-		}
-		
-		if( wrapIn.getTitle() != null && !wrapIn.getTitle().isEmpty()){
-			sql_stringBuffer.append(" order by o."+wrapIn.getTitle()+" " + order );
-		}else{
-			sql_stringBuffer.append(" order by o.sequence " + order );
-		}
-		Query query = em.createQuery( sql_stringBuffer.toString(), Document.class );
-		//为查询设置所有的参数值
-		for (int i = 0; i < vs.size(); i++) {
-			query.setParameter(i + 1, vs.get(i));
-		}
-		
-		return query.setMaxResults(20).getResultList();
 	}
 	
 	/**
@@ -515,7 +343,6 @@ public class DocumentFactory extends AbstractFactory {
 		if( maxResultCount == null || maxResultCount == 0 ){
 			maxResultCount = 500;
 		}
-
 		documents = em.createQuery( cq.where( p ) ).setMaxResults( 500 ).getResultList();
 		if( documents != null && !documents.isEmpty() ){
 			for( Document document : documents ){

@@ -25,10 +25,10 @@
         "styles": {
           "text-align": "center",
           "font-size": "24px",
-          "line-height": "60px",
           "font-weight": "bold",
           "color": "#3c76b7",
-          "height": "60px"
+          "padding-top" : "30px",
+          "min-height": "32px"
         }
       },
 
@@ -65,10 +65,10 @@
         "styles": {
           "text-align": "center",
           "font-size": "24px",
-          "line-height": "60px",
           "font-weight": "bold",
           "color": "#3c76b7",
-          "height": "60px"
+          "padding-top" : "30px",
+          "min-height": "32px"
         }
       },
       "section": {
@@ -338,10 +338,10 @@
         "styles": {
           "text-align": "center",
           "font-size": "24px",
-          "line-height": "60px",
           "font-weight": "bold",
           "color": "#cc3d3d",
-          "height": "60px"
+          "padding-top" : "30px",
+          "min-height": "32px"
         }
       },
 
@@ -378,10 +378,10 @@
         "styles": {
           "text-align": "center",
           "font-size": "24px",
-          "line-height": "60px",
           "font-weight": "bold",
           "color": "#cc3d3d",
-          "height": "60px"
+          "padding-top" : "30px",
+          "min-height": "32px"
         }
       },
       "section": {
@@ -665,10 +665,10 @@
         "styles": {
           "text-align": "center",
           "font-size": "24px",
-          "line-height": "60px",
           "font-weight": "bold",
           "color": "#3c76b7",
-          "height": "60px"
+          "padding-top" : "30px",
+          "min-height": "32px"
         }
       },
 
@@ -705,10 +705,10 @@
         "styles": {
           "text-align": "center",
           "font-size": "24px",
-          "line-height": "60px",
           "font-weight": "bold",
           "color": "#3c76b7",
-          "height": "60px"
+          "padding-top" : "30px",
+          "min-height": "32px"
         }
       },
       "section": {
@@ -980,7 +980,7 @@
           //"line-height": "50px",
           "font-weight": "bold",
           "color": "#fb4747",
-          "height": "50px",
+          "min-height": "50px",
           "margin-bottom": "20px"
         }
       },
@@ -1108,7 +1108,7 @@
       },
       "layoutStyles": {},
       "properties": {
-        "width": "90%",
+        //"width": "90%",
         "border": "0",
         "cellpadding": "5",
         "cellspacing": "0",

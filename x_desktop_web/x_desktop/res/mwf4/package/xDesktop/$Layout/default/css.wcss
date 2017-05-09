@@ -7,7 +7,7 @@
 		"-webkit-background-size": "cover",
 		"-o-background-size": "cover",
 		"background-size": "cover",
-		"background-image": "url("+MWF.defaultPath+"/xDesktop/$Layout/default/desktop.jpg)"
+		"background-image": "url("+MWF.defaultPath+"/xDesktop/$Layout/default/desktop.jpg)",
 	},
 	layoutTopShimNode: {
         "height": "50px",
@@ -181,7 +181,7 @@
 	},
 	"taskItemNode_over": {
 		"background": "url("+MWF.defaultPath+"/xDesktop/$Layout/default/taskbar/taskbg_over.png)",
-		"box-shadow": "0px 0px 0px #456686", 
+		"box-shadow": "0px 0px 0px #456686",
 		"border": "1px solid #FFF"
 	},
 	"taskItemNode_down": {
@@ -190,6 +190,7 @@
 		"border": "1px solid #deefff"
 	},
 	"taskItemNode_current": {
+	    "color": "#FFF",
 		"background": "url("+MWF.defaultPath+"/xDesktop/$Layout/default/taskbar/taskbg_down.png)",
 		"box-shadow": "0px 0px 10px #999"
 	},

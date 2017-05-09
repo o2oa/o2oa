@@ -5,15 +5,13 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.cache.ApplicationCache;
-import com.x.base.core.project.x_instrument_service_express;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.server.Config;
 import com.x.base.core.utils.StringTools;
 import com.x.organization.assemble.control.Business;
-import com.x.organization.assemble.control.ThisApplication;
 import com.x.organization.assemble.control.wrapin.WrapInPerson;
 import com.x.organization.assemble.control.wrapout.WrapOutPerson;
 import com.x.organization.core.entity.Company;
@@ -35,11 +33,6 @@ class ActionBase extends StandardJaxrsAction {
 
 	protected static BeanCopyTools<WrapInPerson, Person> inCopier = BeanCopyToolsBuilder.create(WrapInPerson.class,
 			Person.class);
-
-	protected void collectTransmit() throws Exception {
-		/* 通知x_collect_service_transmit同步数据到collect */
-		ThisApplication.applications.getQuery(x_instrument_service_express.class, "collect/person");
-	}
 
 	protected void updateIcon(WrapOutPerson wrap) throws Exception {
 		if (StringUtils.isEmpty(wrap.getIcon())) {

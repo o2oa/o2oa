@@ -49,7 +49,7 @@ class ActionProcessing extends ActionBase {
 			}
 			emc.commit();
 			/* processing task */
-			ThisApplication.applications.putQuery(x_processplatform_service_processing.class,
+			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 					"task/" + URLEncoder.encode(task.getId(), DefaultCharset.name) + "/processing", requestAttributes);
 			/* 流程处理完毕,开始组装返回信息 */
 			List<WrapOutWorkLog> wraps = WorkLogBuilder.complex(business, emc.list(WorkLog.class,

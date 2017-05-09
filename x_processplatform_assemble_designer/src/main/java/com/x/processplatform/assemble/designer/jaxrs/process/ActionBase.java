@@ -8,13 +8,13 @@ import javax.persistence.EntityManager;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.cache.ApplicationCache;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.utils.ListTools;
 import com.x.base.core.utils.annotation.MethodDescribe;
 import com.x.processplatform.assemble.designer.Business;

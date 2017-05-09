@@ -867,7 +867,10 @@ public class DateOperation {
 		}
 	}
 
-	public boolean isTheSameDate(Date today, Date createTime) {
+	public boolean isTheSameDate( Date today, Date createTime ) {
+		if( today == null || createTime == null ){
+			return false;
+		}
 		String date1 = getDate( today, "yyyy-MM-dd" );
 		String date2 = getDate( createTime, "yyyy-MM-dd" );
 		if( date1.equalsIgnoreCase( date2 )){

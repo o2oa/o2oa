@@ -8,6 +8,7 @@ import com.x.base.core.http.WrapOutBoolean;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrconfigsystem.exception.GetOkrUserCacheException;
 import com.x.okr.assemble.control.service.OkrConfigSystemService;
 import com.x.okr.assemble.control.service.OkrUserInfoService;
 import com.x.okr.assemble.control.service.OkrUserManagerService;
@@ -53,7 +54,7 @@ public class ExcuteAllowedDeployWork extends ExcuteBase {
 				} catch (Exception e ) {
 					Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}else{

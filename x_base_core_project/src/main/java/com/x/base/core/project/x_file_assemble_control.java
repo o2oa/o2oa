@@ -11,6 +11,7 @@ import com.x.base.core.gson.XGsonBuilder;
 
 public class x_file_assemble_control extends Assemble {
 
+	public static final String name = "云文件";
 	public static List<String> containerEntities = new ArrayList<>();
 	public static List<StorageType> usedStorageTypes = new ArrayList<>();
 	public static List<Class<? extends Compilable>> dependents = new ArrayList<>();
@@ -19,6 +20,7 @@ public class x_file_assemble_control extends Assemble {
 		containerEntities.add("com.x.file.core.entity.personal.Folder");
 		containerEntities.add("com.x.file.core.entity.personal.Attachment");
 		containerEntities.add("com.x.file.core.entity.open.File");
+		usedStorageTypes.add(StorageType.file);
 		dependents.add(x_base_core_project.class);
 		dependents.add(x_collaboration_core_entity.class);
 		dependents.add(x_collaboration_core_message.class);

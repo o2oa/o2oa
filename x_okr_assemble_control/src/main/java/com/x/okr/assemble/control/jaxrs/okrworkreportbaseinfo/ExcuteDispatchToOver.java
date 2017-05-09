@@ -1,13 +1,14 @@
 package com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
-
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkReportDispatchOverException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkReportIdEmptyException;
 
 /**
  * 将汇报信息调度到结束
@@ -29,7 +30,7 @@ public class ExcuteDispatchToOver extends ExcuteBase {
 		if( reportId == null || reportId.isEmpty() ){
 			Exception exception = new WorkReportIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}else{
 			try{
 				okrWorkReportFlowService.dispatchToOver( reportId );
@@ -37,7 +38,7 @@ public class ExcuteDispatchToOver extends ExcuteBase {
 			}catch(Exception e){
 				Exception exception = new WorkReportDispatchOverException( e, reportId );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

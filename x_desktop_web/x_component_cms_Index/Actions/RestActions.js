@@ -5,6 +5,7 @@ MWF.require("MWF.widget.UUID", null, false);
 MWF.xApplication.cms.Index.Actions.RestActions = new Class({
 	initialize: function(){
 		this.action = new MWF.xDesktop.Actions.RestActions("/Actions/action.json", "x_cms_assemble_control", "x_component_cms_Index");
+        this.actionProcess = new MWF.xDesktop.Actions.RestActions("/Actions/action.json", "x_processplatform_assemble_surface", "x_component_cms_Index");
 	},
 	getId: function(count, success, failure, async){
 		this.action.invoke({"name": "getId","async": async, "parameter": {"count": count},	"success": success,	"failure": failure});
@@ -103,6 +104,9 @@ MWF.xApplication.cms.Index.Actions.RestActions = new Class({
     listColumnByAdmin: function( success, failure, async){
         this.action.invoke({"name": "listColumnByAdmin","async": async, "success": success,	"failure": failure});
     },
+    getColumn: function(columnData, success, failure){
+        this.action.invoke({"name": "getColumn","parameter": {"id": columnData.id},"success": success,"failure": failure});
+    },
 
     listCategory: function( columnId, success, failure, async){
         var _self = this;
@@ -167,5 +171,15 @@ MWF.xApplication.cms.Index.Actions.RestActions = new Class({
     listCategoryViewByCategory: function(categoryId, success, failure, async){
         this.action.invoke({"name": "listCategoryViewByCategory","async": async, "parameter": {"categoryId": categoryId}, "success": success,	"failure": failure});
     },
-	
+
+    listWorkFilter: function(id, count, application, data, success, failure, async){
+        this.actionProcess.invoke({"name": "listWorkFilter","async": async, "data": data, "parameter": {"id": id, "count": count, "applicationId": application}, "success": success,	"failure": failure});
+    },
+    startWork: function(success, failure, id, data, async){
+        this.actionProcess.invoke({"name": "startWork","data": data,"async": async, "parameter": {"processId": id},	"success": success,	"failure": failure});
+    },
+    saveWorkData: function(success, failure, id, data, async){
+        this.actionProcess.invoke({"name": "saveWorkData","async": async, "data": data, "parameter": {"id": id},	"success": success,	"failure": failure});
+    }
+
 });

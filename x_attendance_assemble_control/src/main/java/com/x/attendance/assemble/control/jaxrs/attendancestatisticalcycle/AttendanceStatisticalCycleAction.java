@@ -22,7 +22,6 @@ import com.x.attendance.assemble.control.factory.AttendanceStatisticalCycleFacto
 import com.x.attendance.assemble.control.service.AttendanceStatisticalCycleServiceAdv;
 import com.x.attendance.assemble.control.service.UserManagerService;
 import com.x.attendance.entity.AttendanceStatisticalCycle;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
@@ -32,11 +31,12 @@ import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 
 
 @Path("attendancestatisticalcycle")
@@ -128,7 +128,7 @@ public class AttendanceStatisticalCycleAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new QueryStatisticCycleYearEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -136,7 +136,7 @@ public class AttendanceStatisticalCycleAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new QueryStatisticCycleMonthEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}		
 		if( check ){
@@ -146,7 +146,7 @@ public class AttendanceStatisticalCycleAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new CanNotFindCompanyNameByPersonException( effectivePerson.getName() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			}  catch ( PersonHasNoIdentityException e ) {
 				check = false;
@@ -156,7 +156,7 @@ public class AttendanceStatisticalCycleAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetCompanyNameByPersonException( e, effectivePerson.getName() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -166,7 +166,7 @@ public class AttendanceStatisticalCycleAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new CanNotFindDepartmentNameByPersonException( effectivePerson.getName() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			} catch ( PersonHasNoIdentityException e ) {
 				check = false;
@@ -176,7 +176,7 @@ public class AttendanceStatisticalCycleAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetDepartmentNameByPersonException( e, effectivePerson.getName() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -186,7 +186,7 @@ public class AttendanceStatisticalCycleAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetCycleMapFromAllCyclesException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -196,7 +196,7 @@ public class AttendanceStatisticalCycleAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetAttendanceDetailStatisticCycleException( e, companyName, departmentName, year, month );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -207,7 +207,7 @@ public class AttendanceStatisticalCycleAction extends StandardJaxrsAction{
 				}catch(Exception e){
 					Exception exception = new AttendanceStatisticCycleWrapOutException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -230,7 +230,7 @@ public class AttendanceStatisticalCycleAction extends StandardJaxrsAction{
 		} catch (Exception e ) {
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( wrapIn != null){		
@@ -272,7 +272,7 @@ public class AttendanceStatisticalCycleAction extends StandardJaxrsAction{
 				e.printStackTrace();
 				Exception exception = new AttendanceStatisticCycleSaveException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 //		else{
@@ -296,7 +296,7 @@ public class AttendanceStatisticalCycleAction extends StandardJaxrsAction{
 			if (null == attendanceStatisticalCycle) {
 				Exception exception = new AttendanceStatisticCycleNotExistsException( id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}else{
 				//进行数据库持久化操作
 				emc.beginTransaction( AttendanceStatisticalCycle.class );
@@ -307,7 +307,7 @@ public class AttendanceStatisticalCycleAction extends StandardJaxrsAction{
 		} catch ( Exception e ) {
 			Exception exception = new AttendanceStatisticCycleDeleteException( e, id );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
 		return ResponseFactory.getDefaultActionResultResponse(result);

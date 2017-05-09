@@ -38,7 +38,87 @@
     "margin-left":"250px"
   },
 
+  "completeDiv":{
+    "font-weight":"bold",
+    "margin":"10px 0px",
+    "height":"30px"
+  },
+  "completeSelect":{
+    "margin-left":"10px"
+  },
+  "completePercentRateSpan":{
+    "margin-left":"5px",
+    "width":"40px",
+    "display":"inline-block"
+  },
+  "completePercentSpan":{
+    "margin":"0 5px"
+  },
+  "completeProgressDiv":{
+    "width":"600px",
+    "height":"20px",
+    "display":"inline-block"
+  },
+  "completeProgressContentDiv":{
+    "height":"10px",
+    "position": "relative"
+  },
+  "completeProgressPointDiv":{
+    "width": "8px",
+    "height": "8px",
+    "background": "#369",
+    "border-radius":"8px",
+    "position": "absolute",
+    "top": "-2px",
+    "z-index":9,
+    "cursor": "pointer"
+  },
+  "completeProgressLineDiv":{
+    "width":"50px",
+    "height":"5px",
+    "position": "absolute",
+//    "top": "-2px",
+    "background": "#ccc",
+    "cursor": "pointer",
+    "z-index":8,
+    "display":"inline-block"
+  },
+  "completeProgressTextDiv":{
+    "height":"10px"
+  },
+  "tmpCompletePercentTextSpan":{
+    "width":"50px",
+    "font-weight":"normal",
+    "display":"inline-block"
+  },
+//  "completeScrollDiv":{
+//    //"margin":"50px 0",
+//    "width":"500px",
+//    "height":"5px",
+//    "background":"#cccccc",
+//    "position": "relative",
+//    "cursor":"pointer",
+//    "display":"inline-block"
+//  },
+//  "completeBarDiv":{
+//    "width": "10px",
+//    "height": "20px",
+//    "background": "#369",
+//    "position": "absolute",
+//    "top": "-7px",
+//    "left": "0px",
+//    "cursor": "pointer"
+//  },
+//  "completeMaskDiv":{
+//    "position": "absolute",
+//    "left": "0",
+//    "top": "0",
+//    "background": "#369",
+//    "width": "0px",
+//    "height": "5px"
+//  },
   "prevReportDiv":{
+    "z-index":"10",
     "width":"300px","height":"100%","background-color":"#203140","position":"absolute","left":"0px","top":"0px"
   },
   "prevReportTopDiv":{
@@ -64,7 +144,7 @@
     "color":"#ffffff","font-size":"14px","margin":"2px 10px","cursor":"pointer","padding":"5px 0"
   },
   "prevReportInforDiv":{
-    //"width":"800px",
+    "z-index":"10",
     "height":"100%","background-color":"#006699","position":"absolute","left":"300px","top":"0px","display":"none"
   },
   "prevReportInforTopDiv":{
@@ -96,7 +176,10 @@
   "prevContentValueDiv":{
     "margin":"0px 20px"
   },
-
+  "prevReportInforListDiv":{
+    "height":"562px",
+    "overflow" : "hidden"
+  },
 
 
 
@@ -227,6 +310,7 @@
 //    "background-color" : "#5d97e1",
     "color": "#FFF",
     "margin-left": "20px"
+
 //    "box-shadow": "0px 0px 3px #5d97e1"
   },
   "formActionNode": {

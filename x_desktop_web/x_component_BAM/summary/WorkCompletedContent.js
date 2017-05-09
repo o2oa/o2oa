@@ -85,7 +85,6 @@ MWF.xApplication.BAM.summary.WorkCompletedContent = new Class({
             }.bind(this));
 
             this.expiredCountPage.addEvent("show", function(){
-                debugger;
                 if (!this.elapsedCountBar){
                     this.elapsedCountBar = this.loadBarChart(this.expiredCountNode, this[this.category+"Data"].workCompletedElapsedCount.slice(0,this.maxColumn),this.barOptions);
                 } else {

@@ -7,8 +7,6 @@ import com.x.bbs.assemble.control.jaxrs.roleinfo.bean.BindObject;
 
 public class WrapInFilter{
 	
-	private static final long serialVersionUID = -5076990764713538973L;
-	
 	public static List<String> Excludes = new ArrayList<String>();
 	
 	private String organizationName = null;

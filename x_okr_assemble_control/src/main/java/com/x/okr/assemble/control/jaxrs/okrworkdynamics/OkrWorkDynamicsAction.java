@@ -16,20 +16,29 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.okr.assemble.control.OkrUserCache;
-import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.WrapOutOkrWorkBaseInfo;
-import com.x.okr.assemble.control.jaxrs.okrworkchat.WrapInFilterWorkChat;
+import com.x.okr.assemble.control.jaxrs.okrworkdynamics.exception.DeployWorkIdsQueryException;
+import com.x.okr.assemble.control.jaxrs.okrworkdynamics.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrworkdynamics.exception.UserNoLoginException;
+import com.x.okr.assemble.control.jaxrs.okrworkdynamics.exception.ViewableWorkIdsQueryException;
+import com.x.okr.assemble.control.jaxrs.okrworkdynamics.exception.WorkDynamicsDeleteException;
+import com.x.okr.assemble.control.jaxrs.okrworkdynamics.exception.WorkDynamicsFilterException;
+import com.x.okr.assemble.control.jaxrs.okrworkdynamics.exception.WorkDynamicsIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrworkdynamics.exception.WorkDynamicsNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrworkdynamics.exception.WorkDynamicsQueryByIdException;
+import com.x.okr.assemble.control.jaxrs.okrworkdynamics.exception.WorkDynamicsSaveException;
+import com.x.okr.assemble.control.jaxrs.okrworkdynamics.exception.WrapInConvertException;
 import com.x.okr.assemble.control.service.OkrUserInfoService;
 import com.x.okr.assemble.control.service.OkrWorkDynamicsService;
 import com.x.okr.assemble.control.service.OkrWorkPersonService;
@@ -60,7 +69,7 @@ public class OkrWorkDynamicsAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			try {
@@ -69,7 +78,7 @@ public class OkrWorkDynamicsAction extends StandardJaxrsAction{
 			} catch (Exception e) {
 				Exception exception = new WorkDynamicsSaveException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -87,7 +96,7 @@ public class OkrWorkDynamicsAction extends StandardJaxrsAction{
 		if( id == null || id.isEmpty() ){
 			Exception exception = new WorkDynamicsIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}else{
 			try{
 				okrWorkDynamicsService.delete( id );
@@ -95,7 +104,7 @@ public class OkrWorkDynamicsAction extends StandardJaxrsAction{
 			}catch( Exception e ){
 				Exception exception = new WorkDynamicsDeleteException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -116,7 +125,7 @@ public class OkrWorkDynamicsAction extends StandardJaxrsAction{
 		if( id == null || id.isEmpty() ){
 			Exception exception = new WorkDynamicsIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}else{
 			try {
 				okrWorkDynamics = okrWorkDynamicsService.get( id );
@@ -126,12 +135,12 @@ public class OkrWorkDynamicsAction extends StandardJaxrsAction{
 				}else{
 					Exception exception = new WorkDynamicsNotExistsException( id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
-			} catch (Throwable th) {
-				Exception exception = new WorkDynamicsQueryByIdException( th, id );
+			} catch (Exception e) {
+				Exception exception = new WorkDynamicsQueryByIdException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -162,7 +171,7 @@ public class OkrWorkDynamicsAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 
 		if( check ){
@@ -172,7 +181,7 @@ public class OkrWorkDynamicsAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, currentPerson.getName()  );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}	
 		}
 		
@@ -180,7 +189,7 @@ public class OkrWorkDynamicsAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new UserNoLoginException( currentPerson.getName()  );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			//logger.error( e, currentPerson, request, null);
 		}
 		if( count == null ){
 			count = 20;
@@ -192,7 +201,7 @@ public class OkrWorkDynamicsAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new UserNoLoginException( currentPerson.getName()  );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
 			}
 		}
 		
@@ -216,7 +225,7 @@ public class OkrWorkDynamicsAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new DeployWorkIdsQueryException( e, identity  );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 				
 				//再查询不在deploy_ids这些中心工作下面可以观察的的其他工作的IDS
@@ -226,7 +235,7 @@ public class OkrWorkDynamicsAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new ViewableWorkIdsQueryException( e, identity  );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 				wrapIn.setWorkIds( work_ids );
 				wrapIn.setCenterIds( deploy_ids );
@@ -241,10 +250,10 @@ public class OkrWorkDynamicsAction extends StandardJaxrsAction{
 				total = okrWorkDynamicsService.getDynamicCountWithFilter(wrapIn);
 				result.setData( wrapOutOkrWorkDynamicsList );
 				result.setCount( total );
-			}catch(Throwable th){
-				Exception exception = new WorkDynamicsFilterException( th );
+			}catch(Exception e){
+				Exception exception = new WorkDynamicsFilterException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}else{
 			result.setCount( 0L );

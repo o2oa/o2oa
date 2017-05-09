@@ -265,6 +265,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
     },
 
 	_completeLineEdit: function(){
+        debugger;
 		//this.currentEditLine.getElemets(td);
         if (!this.editValidation()){
             return false;
@@ -288,7 +289,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		var titleThs = this.titleTr.getElements("th");
 		var editorTds = this.editorTr.getElements("td");
 		var cells = newTr.getElements("td");
-		debugger;
 		titleThs.each(function(th, idx){
 			var cell = cells[idx];
 			var id = th.get("id");
@@ -339,7 +339,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
         }
 
 
-        this._loadTotal();
+        //this._loadTotal();
 
 		this._loadBorderStyle();
 		this._loadZebraStyle();
@@ -379,7 +379,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		this.isEdit =true;
         this.validationMode();
         this.fireEvent("addLine");
-        debugger;
 //		newTr.addEvent("blur", function(e){
 //			this._completeLineEdit();
 //		}.bind(this));
@@ -750,11 +749,12 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		this._loadDatagridStyle();
 	},
     resetData: function(){
-        this.setData();
+        this.setData(this._getValue());
     },
     setData: function(data){
-        this._setBusinessData(data);
+        debugger;
         if (data){
+            this._setBusinessData(data);
             this.gridData = data;
         }else{
             this.gridData = this._getValue();
@@ -809,7 +809,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
             this._loadTotal();
             this.gridData.total = this.totalResaults;
 
-            this._setBusinessData(data);
+            this._setBusinessData(this.gridData);
 
             return (this.gridData.data.length) ? this.gridData : null;
         }else{
@@ -935,7 +935,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
         return true;
     },
     validationConfig: function(routeName, opinion){
-        debugger;
         if (this.json.validationConfig){
             if (this.json.validationConfig.length){
                 for (var i=0; i<this.json.validationConfig.length; i++) {

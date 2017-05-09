@@ -43,7 +43,7 @@ public class Invoke extends Activity {
 	private static final String TABLE = PersistenceProperties.Element.Invoke.table;
 
 	@PrePersist
-	public void prePersist() throws Exception { 
+	public void prePersist() throws Exception {
 		Date date = new Date();
 		if (null == this.createTime) {
 			this.createTime = date;
@@ -56,7 +56,7 @@ public class Invoke extends Activity {
 	}
 
 	@PreUpdate
-	public void preUpdate() throws Exception{
+	public void preUpdate() throws Exception {
 		this.updateTime = new Date();
 		this.onPersist();
 	}
@@ -116,7 +116,7 @@ public class Invoke extends Activity {
 
 	/* 以上为 JpaObject 默认字段 */
 
-	private void onPersist() throws Exception{
+	private void onPersist() throws Exception {
 	}
 
 	/* 更新运行方法 */
@@ -430,6 +430,16 @@ public class Invoke extends Activity {
 	@Column(name = "xjaxrsWithCipher")
 	@CheckPersist(allowEmpty = true)
 	private Boolean jaxrsWithCipher;
+
+	@EntityFieldDescribe("是否是内部请求.")
+	@Column(name = "xinternal")
+	@CheckPersist(allowEmpty = true)
+	private Boolean internal;
+
+	@EntityFieldDescribe("内部的项目简称")
+	@Column(length = JpaObject.length_255B, name = "xinternalProject")
+	@CheckPersist(allowEmpty = true)
+	private String internalProject;
 
 	@EntityFieldDescribe("允许调度")
 	@CheckPersist(allowEmpty = true)
@@ -849,6 +859,22 @@ public class Invoke extends Activity {
 
 	public void setReviewDataPathList(List<String> reviewDataPathList) {
 		this.reviewDataPathList = reviewDataPathList;
+	}
+
+	public Boolean getInternal() {
+		return internal;
+	}
+
+	public void setInternal(Boolean internal) {
+		this.internal = internal;
+	}
+	
+	public String getInternalProject() {
+		return internalProject;
+	}
+
+	public void setInternalProject(String internalProject) {
+		this.internalProject = internalProject;
 	}
 
 }

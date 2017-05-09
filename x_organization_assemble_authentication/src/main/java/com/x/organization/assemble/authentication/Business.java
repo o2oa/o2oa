@@ -1,7 +1,7 @@
 package com.x.organization.assemble.authentication;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.instrument.assemble.express.Instrument;
+import com.x.base.core.project.instrument.Instrument;
 import com.x.organization.assemble.authentication.factory.BindFactory;
 import com.x.organization.assemble.authentication.factory.PersonFactory;
 import com.x.organization.assemble.authentication.factory.RoleFactory;

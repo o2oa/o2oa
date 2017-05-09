@@ -133,7 +133,6 @@ MWF.xApplication.BAM.Monthly = new Class({
         var cells = this.table.getElements("td");
         cells.each(function(cell, i){
             if (i==idx){
-                debugger;
                 var currentDiv = cell.getFirst("div");
                 var currentIcon = currentDiv.retrieve("icon");
                 currentDiv.setStyles(this.css.monthTabItemNode_current);
@@ -147,7 +146,6 @@ MWF.xApplication.BAM.Monthly = new Class({
         }.bind(this));
     },
     loadContent: function(name){
-        debugger;
         var className = "Monthly"+name.capitalize()+"Content";
         if (this[name+"Content"]){
             this[name+"Content"].show();

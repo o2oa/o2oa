@@ -74,26 +74,18 @@ public class AppCategoryPermissionService {
 	 * @param name
 	 * @param departmentNames
 	 * @param companyNames
+	 * @param groupNames 
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String> listAppInfoIdsByPermission( EntityManagerContainer emc, String name, List<String> departmentNames, List<String> companyNames, String permission ) throws Exception {
+	public List<String> listAppInfoIdsByPermission( EntityManagerContainer emc, String name, List<String> departmentNames, List<String> companyNames, List<String> groupNames, String permission ) throws Exception {
 		Business business = new Business( emc );
-		return business.getAppCategoryPermissionFactory().listAppInfoIdsByPermission( name, departmentNames, companyNames, permission );
+		return business.getAppCategoryPermissionFactory().listAppInfoIdsByPermission( name, departmentNames, companyNames, groupNames, null, permission );
 	}
 	
-	/**
-	 * 根据用户姓名以及用户所在的公司和部门列表查询该用户可以访问到的所有分类ID列表
-	 * 不用判断可见和发布权限 ，发布的人员肯定可见，只需要distinct就行
-	 * @param emc
-	 * @param person
-	 * @param appCategoryIds
-	 * @return
-	 * @throws Exception
-	 */
-	public List<String> listCategoryIdsByPermission( EntityManagerContainer emc, String name, List<String> departmentNames, List<String> companyNames, String appId, String permission ) throws Exception {
+	public List<String> listAppInfoIdsByPermission( EntityManagerContainer emc, String name, List<String> departmentNames, List<String> companyNames, List<String> groupNames, String appId, String permission ) throws Exception {
 		Business business = new Business( emc );
-		return business.getAppCategoryPermissionFactory().listCategoryIdsByPermission( name, departmentNames, companyNames, appId, permission );
+		return business.getAppCategoryPermissionFactory().listAppInfoIdsByPermission( name, departmentNames, companyNames, groupNames, appId, permission );
 	}
 
 	public List<String> listAllAppInfoIds( EntityManagerContainer emc, String type, String permission ) throws Exception {
@@ -104,6 +96,11 @@ public class AppCategoryPermissionService {
 	public List<String> listAppCategoryIdByCondition( EntityManagerContainer emc, String objectType, String objectId, String personName, String permission ) throws Exception {
 		Business business = new Business( emc );
 		return business.getAppCategoryPermissionFactory().listAppCategoryIdByCondition( objectType, objectId, personName, permission );
+	}
+	
+	public List<String> listCategoryIdsByPermission( EntityManagerContainer emc, String name, List<String> departmentNames, List<String> companyNames, List<String> groupNames, String appId, String permission ) throws Exception {
+		Business business = new Business( emc );		
+		return business.getAppCategoryPermissionFactory().listCategoryIdsByPermission( name, departmentNames, companyNames, groupNames, appId, permission );
 	}
 	
 	public List<String> listAllCategoryIds( EntityManagerContainer emc, String permission ) throws Exception {

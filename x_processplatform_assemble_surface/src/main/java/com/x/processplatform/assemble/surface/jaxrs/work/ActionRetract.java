@@ -47,7 +47,7 @@ class ActionRetract extends ActionBase {
 			taskCompleted.setProcessingType(ProcessingType.retract);
 			taskCompleted.setRetractTime(new Date());
 			emc.commit();
-			ThisApplication.applications.putQuery(x_processplatform_service_processing.class,
+			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 					"work/" + URLEncoder.encode(work.getId(), DefaultCharset.name) + "/retract/worklog/"
 							+ URLEncoder.encode(workLog.getId(), DefaultCharset.name),
 					null);

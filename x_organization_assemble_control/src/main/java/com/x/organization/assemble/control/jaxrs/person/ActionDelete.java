@@ -30,7 +30,7 @@ class ActionDelete extends ActionBase {
 				emc.commit();
 				ApplicationCache.notify(Person.class);
 				/* 通知x_collect_service_transmit同步数据到collect */
-				this.collectTransmit();
+				business.instrument().collect().person();
 				WrapOutId wrap = new WrapOutId(o.getId());
 				result.setData(wrap);
 			}

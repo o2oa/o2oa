@@ -1,16 +1,12 @@
 package com.x.base.core.http;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
-import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.x.base.core.exception.PromptException;
 import com.x.base.core.gson.XGsonBuilder;
 
@@ -18,29 +14,29 @@ public class ActionResult<T> implements Serializable {
 
 	private static final long serialVersionUID = 1484547449073789817L;
 
-	private static Gson gson = XGsonBuilder.instance();
-
-	private Type type = Type.success;
+	protected static Gson gson = XGsonBuilder.instance();
 
 	public enum Type {
 		success, warn, error, connectFatal
 	}
 
-	private T data;
+	protected Type type = Type.success;
 
-	private Date date = new Date();
+	protected T data;
 
-	private Long spent = -1L;
+	protected String message = "";
 
-	private Long size = -1L;
+	protected Date date = new Date();
 
-	private Long count = 0L;
+	protected Long spent = -1L;
 
-	private Long position = 0L;
+	protected Long size = -1L;
 
-	private String message = "";
+	protected Long count = 0L;
 
-	private String prompt;
+	protected Long position = 0L;
+
+	protected String prompt;
 
 	public void setData(T data) {
 		this.data = data;
@@ -64,28 +60,6 @@ public class ActionResult<T> implements Serializable {
 
 	public T getData() {
 		return data;
-	}
-
-	public T getData(Class<T> clz) throws Exception {
-		if (Objects.equals(this.type, Type.connectFatal)) {
-			throw new Exception(this.message);
-		}
-		if (null == data) {
-			return null;
-		}
-		return XGsonBuilder.instance().fromJson(gson.toJsonTree(data), clz);
-	}
-
-	public List<T> getListData(Class<T> clz) throws Exception {
-		if (Objects.equals(this.type, Type.connectFatal)) {
-			throw new Exception(this.message);
-		}
-		if (null == data) {
-			return new ArrayList<T>();
-		}
-		java.lang.reflect.Type listType = new TypeToken<ArrayList<T>>() {
-		}.getType();
-		return XGsonBuilder.instance().fromJson(gson.toJsonTree(data), listType);
 	}
 
 	public Type getType() {
@@ -146,6 +120,38 @@ public class ActionResult<T> implements Serializable {
 
 	public String getPrompt() {
 		return prompt;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public void setSpent(Long spent) {
+		this.spent = spent;
+	}
+
+	public void setSize(Long size) {
+		this.size = size;
+	}
+
+	public void setPrompt(String prompt) {
+		this.prompt = prompt;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public String getMessage() {
+		return message;
 	}
 
 }

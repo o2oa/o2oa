@@ -23,4 +23,17 @@ public class TestOver {
 		System.out.println(StringUtils.replaceEachRepeatedly(str, new String[] { "{}" }, new String[] { "111" }));
 	}
 
+	@Test
+	public void test1() {
+		System.out.println(com.x.base.core.entity.JpaObject.createId());
+	}
+
+	@Test
+	public void test3() {
+		String str = "com.x.processplatform.core.entity.log.Work";
+		String aaa = "com.x.processplatform.core.entity.*";
+		System.out.println(StringUtils.substringBeforeLast(aaa, "*"));
+		System.out.println(StringUtils.startsWith(str, StringUtils.substringBeforeLast(aaa, "*")));
+	}
+
 }

@@ -36,7 +36,7 @@ public class DepartmentDutyFactory extends AbstractFactory {
 		Root<DepartmentDuty> root = cq.from(DepartmentDuty.class);
 		Predicate p = cb.equal(root.get(DepartmentDuty_.department), departmentId);
 		p = cb.and(p, cb.equal(root.get(DepartmentDuty_.name), name));
-		cq.select(root.get(DepartmentDuty_.id)).where(p);
+		cq.select(root.get(DepartmentDuty_.id)).where(p).distinct(true);
 		List<String> list = em.createQuery(cq).setMaxResults(1).getResultList();
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -52,7 +52,7 @@ public class DepartmentDutyFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<DepartmentDuty> root = cq.from(DepartmentDuty.class);
 		Predicate p = cb.equal(root.get(DepartmentDuty_.department), departmentId);
-		cq.select(root.get(DepartmentDuty_.id)).where(p);
+		cq.select(root.get(DepartmentDuty_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -63,8 +63,8 @@ public class DepartmentDutyFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<DepartmentDuty> root = cq.from(DepartmentDuty.class);
 		Predicate p = cb.equal(root.get(DepartmentDuty_.name), name);
-		cq.select(root.get(DepartmentDuty_.id)).where(p);
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get(DepartmentDuty_.id)).where(p).distinct(true);
+		return em.createQuery(cq).getResultList();
 	}
 
 	/* 查找Identity所有的部门职务 */
@@ -74,8 +74,8 @@ public class DepartmentDutyFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<DepartmentDuty> root = cq.from(DepartmentDuty.class);
 		Predicate p = cb.isMember(identityId, root.get(DepartmentDuty_.identityList));
-		cq.select(root.get(DepartmentDuty_.id)).where(p);
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get(DepartmentDuty_.id)).where(p).distinct(true);
+		return em.createQuery(cq).getResultList();
 	}
 
 	/* 转换字段 */
@@ -101,15 +101,6 @@ public class DepartmentDutyFactory extends AbstractFactory {
 		});
 		wrap.setIdentityList(list);
 		return wrap;
-	}
-
-	/* 进行排序 */
-	public void sort(List<WrapOutDepartmentDuty> wraps) throws Exception {
-		Collections.sort(wraps, new Comparator<WrapOutDepartmentDuty>() {
-			public int compare(WrapOutDepartmentDuty o1, WrapOutDepartmentDuty o2) {
-				return ObjectUtils.compare(o1.getName(), o2.getName(), true);
-			}
-		});
 	}
 
 }

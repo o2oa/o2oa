@@ -64,7 +64,8 @@ public class UploadServlet extends AbstractServletAction {
 					FileItemStream item = fileItemIterator.next();
 					if (!item.isFormField()) {
 						try (InputStream input = item.openStream()) {
-							StorageMapping mapping = ThisApplication.storageMappings.random(Attachment.class);
+							StorageMapping mapping = ThisApplication.context().storageMappings()
+									.random(Attachment.class);
 							emc.beginTransaction(Attachment.class);
 							Attachment attachment = this.concreteAttachment(meeting, summary);
 							attachment.saveContent(mapping, input, FilenameUtils.getName(item.getName()));

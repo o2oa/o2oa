@@ -1,4 +1,5 @@
 MWF.xDesktop.requireApp("process.ApplicationExplorer", "Actions.RestActions", null, false);
+MWF.xDesktop.requireApp("process.ApplicationExplorer", "lp."+MWF.language, null, false);
 MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 	Extends: MWF.xApplication.Common.Main,
 	Implements: [Options, Events],
@@ -30,7 +31,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
             "createApplication_cancel": MWF.xApplication.process.ApplicationExplorer.LP.application.createApplication_cancel,
             "inputApplicationName": MWF.xApplication.process.ApplicationExplorer.LP.application.inputApplicationName,
             "createApplicationSuccess": MWF.xApplication.process.ApplicationExplorer.LP.application.createApplicationSuccess,
-            "unCategory": MWF.xApplication.process.ApplicationExplorer.LP.application.unCategory,
+            //"unCategory": MWF.xApplication.process.ApplicationExplorer.LP.application.unCategory,
             "unDescription": MWF.xApplication.process.ApplicationExplorer.LP.application.unDescription,
             "noProcess": MWF.xApplication.process.ApplicationExplorer.LP.application.noProcess,
             "noForm": MWF.xApplication.process.ApplicationExplorer.LP.application.noForm,

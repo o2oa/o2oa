@@ -35,7 +35,7 @@ public class RoleFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Role> root = cq.from(Role.class);
 		Predicate p = cb.equal(root.get(Role_.name), name);
-		cq.select(root.get(Role_.id)).where(p);
+		cq.select(root.get(Role_.id)).where(p).distinct(true);
 		List<String> list = em.createQuery(cq).setMaxResults(1).getResultList();
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -76,8 +76,8 @@ public class RoleFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Role> root = cq.from(Role.class);
 		Predicate p = cb.like(root.get(Role_.pinyinInitial), str + "%", '\\');
-		cq.select(root.get(Role_.id)).where(p);
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get(Role_.id)).where(p).distinct(true);
+		return em.createQuery(cq).getResultList();
 	}
 
 	@MethodDescribe("进行模糊查询.")
@@ -92,8 +92,8 @@ public class RoleFactory extends AbstractFactory {
 		Predicate p = cb.like(root.get(Role_.name), "%" + str + "%", '\\');
 		p = cb.or(p, cb.like(root.get(Role_.pinyin), str + "%", '\\'));
 		p = cb.or(p, cb.like(root.get(Role_.pinyinInitial), str + "%", '\\'));
-		cq.select(root.get(Role_.id)).where(p);
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get(Role_.id)).where(p).distinct(true);
+		return em.createQuery(cq).getResultList();
 	}
 
 	@MethodDescribe("根据拼音进行模糊查询.")
@@ -107,8 +107,8 @@ public class RoleFactory extends AbstractFactory {
 		Root<Role> root = cq.from(Role.class);
 		Predicate p = cb.like(root.get(Role_.pinyin), str + "%");
 		p = cb.or(p, cb.like(root.get(Role_.pinyinInitial), str + "%"));
-		cq.select(root.get(Role_.id)).where(p);
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get(Role_.id)).where(p).distinct(true);
+		return em.createQuery(cq).getResultList();
 	}
 
 	public WrapOutRole wrap(Role o) throws Exception {

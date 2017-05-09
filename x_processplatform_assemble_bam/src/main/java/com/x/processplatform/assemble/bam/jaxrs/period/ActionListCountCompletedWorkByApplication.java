@@ -6,8 +6,8 @@ import java.util.List;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
-import com.x.base.core.http.HttpAttribute;
 import com.x.base.core.http.WrapOutMap;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.utils.DateRange;
 import com.x.base.core.utils.DateTools;
 import com.x.processplatform.assemble.bam.Business;
@@ -31,13 +31,13 @@ class ActionListCountCompletedWorkByApplication extends ActionListCountCompleted
 					pair.put("name", stub.getName());
 					pair.put("value", stub.getValue());
 					pair.put("category", stub.getCategory());
-					Long count = this.count(business, o, stub.getValue(), HttpAttribute.x_empty_symbol, companyName,
+					Long count = this.count(business, o, stub.getValue(), StandardJaxrsAction.EMPTY_SYMBOL, companyName,
 							departmentName, personName);
 					pair.put("count", count);
-					Long duration = this.duration(business, o, stub.getValue(), HttpAttribute.x_empty_symbol,
+					Long duration = this.duration(business, o, stub.getValue(), StandardJaxrsAction.EMPTY_SYMBOL,
 							companyName, departmentName, personName);
 					pair.put("duration", duration);
-					Long times = this.times(business, o, stub.getValue(), HttpAttribute.x_empty_symbol, companyName,
+					Long times = this.times(business, o, stub.getValue(), StandardJaxrsAction.EMPTY_SYMBOL, companyName,
 							departmentName, personName);
 					pair.put("times", times);
 					list.add(pair);

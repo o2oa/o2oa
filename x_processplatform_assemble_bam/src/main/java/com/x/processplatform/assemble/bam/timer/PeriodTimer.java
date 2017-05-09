@@ -1,9 +1,9 @@
 package com.x.processplatform.assemble.bam.timer;
 
-import java.util.TimerTask;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.Context;
+import com.x.base.core.project.clock.ClockTimerTask;
 import com.x.processplatform.assemble.bam.ThisApplication;
 import com.x.processplatform.assemble.bam.jaxrs.period.TimerCompletedTaskApplicationStubs;
 import com.x.processplatform.assemble.bam.jaxrs.period.TimerCompletedTaskCompanyStubs;
@@ -18,9 +18,13 @@ import com.x.processplatform.assemble.bam.jaxrs.period.TimerStartTaskCompanyStub
 import com.x.processplatform.assemble.bam.jaxrs.period.TimerStartWorkApplicationStubs;
 import com.x.processplatform.assemble.bam.jaxrs.period.TimerStartWorkCompanyStubs;
 
-public class PeriodTimer extends TimerTask {
+public class PeriodTimer extends ClockTimerTask {
 
-	public void run() {
+	public PeriodTimer(Context context) {
+		super(context);
+	}
+
+	public void execute() {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			/* 每月产生工作所需要的ApplicationStub和CompanyStub */
 			ThisApplication.period.setStartTaskApplicationStubs(new TimerStartTaskApplicationStubs().execute(emc));

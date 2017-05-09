@@ -6,7 +6,7 @@ import java.util.List;
 import com.x.base.core.http.annotation.Wrap;
 import com.x.bbs.entity.BBSSubjectInfo;
 
-@Wrap( BBSSubjectInfo.class)
+@Wrap( WrapInSubjectInfo.class)
 public class WrapInSubjectInfo extends BBSSubjectInfo{
 
 	private static final long serialVersionUID = -5076990764713538973L;
@@ -16,7 +16,6 @@ public class WrapInSubjectInfo extends BBSSubjectInfo{
 	private String subjectSystemName = "Windows";
 	private String userHostIp = "";
 	private String content = "";
-	private String pictureBase64 = "";
 	
 	public String getSubjectMachineName() {
 		return subjectMachineName;
@@ -41,11 +40,5 @@ public class WrapInSubjectInfo extends BBSSubjectInfo{
 	}
 	public void setContent(String content) {
 		this.content = content;
-	}
-	public String getPictureBase64() {
-		return pictureBase64;
-	}
-	public void setPictureBase64(String pictureBase64) {
-		this.pictureBase64 = pictureBase64;
 	}
 }

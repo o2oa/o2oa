@@ -170,4 +170,18 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		 */
 		public static final String table = "OKR_USERINFO";
 	}
+	
+	public static class OkrErrorSystemIdentityInfo {
+		/**
+		 * 系统问题人员身份记录表
+		 */
+		public static final String table = "OKR_ERRROIDENTITY";
+	}
+	
+	public static class OkrErrorIdentityRecords {
+		/**
+		 * 系统问题人员身份涉及数据记录表
+		 */
+		public static final String table = "OKR_ERRROIDENTITYRECORDS";
+	}
 }

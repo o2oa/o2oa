@@ -10,6 +10,9 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.cms.assemble.control.jaxrs.appinfo.exception.AppInfoNameAlreadyExistsException;
+import com.x.cms.assemble.control.jaxrs.appinfo.exception.AppInfoNameEmptyException;
+import com.x.cms.assemble.control.jaxrs.appinfo.exception.AppInfoProcessException;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.AppCategoryAdmin;
 import com.x.cms.core.entity.AppCategoryPermission;
@@ -44,9 +47,9 @@ public class ExcuteSave extends ExcuteBase {
 						identityName = userManagerService.getFistIdentityNameByPerson( effectivePerson.getName() );
 					} catch (Exception e) {
 						check = false;
-						Exception exception = new UserManagerQueryUserIdentityException( e, effectivePerson.getName() );
+						Exception exception = new AppInfoProcessException( e, "系统在查询用户身份信息时发生异常。Name:" + effectivePerson.getName() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 				}
 			}else{
@@ -61,9 +64,9 @@ public class ExcuteSave extends ExcuteBase {
 				departmentName = userManagerService.getDepartmentNameByIdentity( identityName );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new GetDepartmentNameByIdentityException( e, identityName );
+				Exception exception = new AppInfoProcessException( e, "系统在根据用户身份信息查询所属部门名称时发生异常。Identity:" + identityName );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check && !"xadmin".equals( identityName ) ){
@@ -71,9 +74,9 @@ public class ExcuteSave extends ExcuteBase {
 				companyName = userManagerService.getCompanyNameByIdentity( identityName );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new GetCompanyNameByIdentityException( e, identityName );
+				Exception exception = new AppInfoProcessException( e, "系统在根据用户身份信息查询所属公司名称时发生异常。Identity:" + identityName );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -82,7 +85,7 @@ public class ExcuteSave extends ExcuteBase {
 				check = false;
 				Exception exception = new AppInfoNameEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -94,15 +97,14 @@ public class ExcuteSave extends ExcuteBase {
 							check = false;
 							Exception exception = new AppInfoNameAlreadyExistsException( wrapIn.getAppName() );
 							result.error( exception );
-							logger.error( exception, effectivePerson, request, null);
 						}
 					}
 				}
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new AppInfoListByAppNameException( e, wrapIn.getAppName() );
+				Exception exception = new AppInfoProcessException( e, "系统根据应用栏目名称查询应用栏目信息对象时发生异常。AppName:" + wrapIn.getAppName() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -131,7 +133,7 @@ public class ExcuteSave extends ExcuteBase {
 				result.setData( new WrapOutId(appInfo.getId()) );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new AppInfoSaveException( e );
+				Exception exception = new AppInfoProcessException( e, "应用栏目信息保存时发生异常。" );
 				result.error( exception );
 				logger.error( e, effectivePerson, request, null);
 			}

@@ -5,8 +5,7 @@ import com.x.organization.core.entity.Company;
 
 import net.sf.ehcache.Ehcache;
 
-public class ActionBase {
+abstract class ActionBase {
 	protected static Ehcache cache = ApplicationCache.instance().getCache(Company.class);
-	
-	
+
 }

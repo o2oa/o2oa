@@ -52,7 +52,6 @@ public class UploadServlet extends AbstractServletAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		DocumentInfoServiceAdv documentInfoServiceAdv = new DocumentInfoServiceAdv();
 		List<WrapOutId> wraps = new ArrayList<>();
-		List<FileItemStream> file_items = new ArrayList<>();
 		WrapOutId wrap = null;
 		String site = null;
 		Boolean check = true;
@@ -61,6 +60,7 @@ public class UploadServlet extends AbstractServletAction {
 		ServletFileUpload upload = null;
 		FileItemIterator fileItemIterator = null;
 		FileItemStream item = null;
+		FileInfo fileInfo = null;
 		String name = null;
 		InputStream input = null;
 		
@@ -106,24 +106,25 @@ public class UploadServlet extends AbstractServletAction {
 				while ( fileItemIterator.hasNext() ) {
 					item = fileItemIterator.next();
 					name = item.getFieldName();
-					input = item.openStream();
-					if ( item.isFormField() ) {
-						String str = Streams.asString(input);
-						if ( StringUtils.equals( name, "site" ) ) {
-							site = str;
+					try {
+						input = item.openStream();
+						if ( item.isFormField() ) {
+							String str = Streams.asString(input);
+							if ( StringUtils.equals( name, "site" ) ) {
+								site = str;
+							}
+						} else {
+							wrap = saveAttachmetFile( effectivePerson.getName(), document, item, site, input );
+							wraps.add( wrap );
 						}
-					} else {
-						wrap = saveAttachmetFile( effectivePerson.getName(), document, item, site, input );
-						wraps.add( wrap );
+					}finally{
+						input.close();
 					}
 				}
-				
 				if( wraps != null && !wraps.isEmpty() && site!=null && !site.isEmpty() ){
 					for( WrapOutId _wrap : wraps ){
 						try( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();){
-							System.out.println("_wrap.toString():" + _wrap.toString() );
-							System.out.println("id:" + _wrap.getId() );
-							FileInfo fileInfo = emc.find( _wrap.getId(), FileInfo.class);
+							fileInfo = emc.find( _wrap.getId(), FileInfo.class);
 							emc.beginTransaction( FileInfo.class );
 							fileInfo.setSite(site);
 							emc.check( fileInfo, CheckPersistType.all);
@@ -148,6 +149,7 @@ public class UploadServlet extends AbstractServletAction {
 
 	private WrapOutId saveAttachmetFile( String personName, Document document, FileItemStream item, String site, InputStream input ) throws Exception {
 		WrapOutId wrap = null;
+		String name = null;
 		FileInfo fileInfo = null;
 		EntityManagerContainer emc = null;
 		StorageMapping mapping = null;
@@ -157,17 +159,20 @@ public class UploadServlet extends AbstractServletAction {
 			emc = EntityManagerContainerFactory.instance().create();
 			
 			document = emc.find( document.getId(), Document.class);
-			
+			if( document.getHasIndexPic() == null ){
+				document.setHasIndexPic( false );
+			}
 			emc.beginTransaction( FileInfo.class );
 			emc.beginTransaction( Document.class );
-			mapping = ThisApplication.storageMappings.random( FileInfo.class );
+			mapping = ThisApplication.context().storageMappings().random( FileInfo.class );
 			
 			fileInfo = concreteFileInfo( personName, document, mapping, this.getFileName( item.getName() ), site );
+			name = fileInfo.getName();
 			
 			//先检查对象是否能够被保存，如果能保存，再进行文件存储
 			emc.check( fileInfo, CheckPersistType.all);
 			
-			fileInfo.saveContent( mapping, input, item.getName() );					
+			fileInfo.saveContent( mapping, input, item.getName() );
 			
 			if( document.getAttachmentList() == null ){
 				document.setAttachmentList( new ArrayList<>() );
@@ -175,6 +180,7 @@ public class UploadServlet extends AbstractServletAction {
 			if( !document.getAttachmentList().contains( fileInfo.getId() ) ){
 				document.getAttachmentList().add( fileInfo.getId() );
 			}
+			fileInfo.setName(name);
 			emc.check( document, CheckPersistType.all);
 			emc.persist( fileInfo, CheckPersistType.all );
 			

@@ -1,13 +1,5 @@
 [
   {
-    "title": "流程配置",
-    "id": "1.1",
-    "action": "processConfig",
-    "icon": "process_flow.png",
-    "expand": false,
-    "sub": []
-  },
-  {
     "title": "表单配置",
     "id": "1.1",
     "action": "formConfig",
@@ -15,6 +7,15 @@
     "expand": false,
     "sub": []
   },
+  {
+    "title": "流程配置",
+    "id": "1.1",
+    "action": "processConfig",
+    "icon": "process_flow.png",
+    "expand": false,
+    "sub": []
+  },
+
   {
     "title": "视图配置",
     "id": "1.1",

@@ -145,33 +145,43 @@ MWF.xDesktop.WebSocket = new Class({
         });
     },
     receiveReadMessage: function(data){
-        var content = MWF.LP.desktop.messsage.receiveRead+"《"+data.title+"》. ";
-        content += "<br/><font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.appliction+": </font><font style='color: #ea621f'>"+data.applicationName+"</font>;  "+
-        "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.process+": </font><font style='color: #ea621f'>"+data.processName+"</font>";
-        var msg = {
-            "subject": MWF.LP.desktop.messsage.readMessage,
-            "content": content
-        };
-        var messageItem = layout.desktop.message.addMessage(msg);
-        var tooltipItem = layout.desktop.message.addTooltip(msg);
-        tooltipItem.contentNode.addEvent("click", function(e){
-            layout.desktop.message.hide();
-            layout.desktop.openApplication(e, "process.TaskCenter", null, {
-                "status": {
-                    "navi": "read"
-                }
-            });
+        var action = new MWF.xDesktop.Actions.RestActions("/res/mwf4/package/xDesktop/Actions/action.json", "x_processplatform_assemble_surface", "x_desktop");
+        action.invoke({
+            "name": "getRead",
+            "parameter": {"id": data.read},
+            "success": function(json){
+                var read = json.data;
+                var content = MWF.LP.desktop.messsage.receiveRead+"《"+read.title+"》. ";
+                content += "<br/><font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.appliction+": </font><font style='color: #ea621f'>"+read.applicationName+"</font>;  "+
+                "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.process+": </font><font style='color: #ea621f'>"+read.processName+"</font>";
+                var msg = {
+                    "subject": MWF.LP.desktop.messsage.readMessage,
+                    "content": content
+                };
+                var messageItem = layout.desktop.message.addMessage(msg);
+                var tooltipItem = layout.desktop.message.addTooltip(msg);
+                tooltipItem.contentNode.addEvent("click", function(e){
+                    layout.desktop.message.hide();
+                    layout.desktop.openApplication(e, "process.TaskCenter", null, {
+                        "status": {
+                            "navi": "read"
+                        }
+                    });
+                });
+
+                messageItem.contentNode.addEvent("click", function(e){
+                    layout.desktop.message.addUnread(-1);
+                    layout.desktop.message.hide();
+                    layout.desktop.openApplication(e, "process.TaskCenter", null, {
+                        "status": {
+                            "navi": "read"
+                        }
+                    });
+                });
+            }.bind(this)
         });
 
-        messageItem.contentNode.addEvent("click", function(e){
-            layout.desktop.message.addUnread(-1);
-            layout.desktop.message.hide();
-            layout.desktop.openApplication(e, "process.TaskCenter", null, {
-                "status": {
-                    "navi": "read"
-                }
-            });
-        });
+
     },
     receiveReviewMessage: function(data){
         var content = MWF.LP.desktop.messsage.receiveReview+"《"+data.title+"》. ";

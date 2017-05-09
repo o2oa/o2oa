@@ -54,7 +54,8 @@ public class UpdateServlet extends AbstractServletAction {
 		DocumentInfoServiceAdv documentInfoServiceAdv = new DocumentInfoServiceAdv();
 		FileInfoServiceAdv fileInfoServiceAdv = new FileInfoServiceAdv();
 		
-		List<FileItemStream> file_items = new ArrayList<>();
+		List<WrapOutId> wraps = new ArrayList<>();
+		WrapOutId wrap = null;
 		EffectivePerson effectivePerson = null;
 		String site = null;
 		Boolean check = true;
@@ -66,7 +67,6 @@ public class UpdateServlet extends AbstractServletAction {
 		String name = null;
 		InputStream input = null;
 		String id = null;
-		String part = null;
 		FileInfo fileInfo = null;
 		
 		if( check ){
@@ -76,14 +76,13 @@ public class UpdateServlet extends AbstractServletAction {
 				if (!ServletFileUpload.isMultipartContent(request)) {
 					throw new Exception("not multi part request.");
 				}
-				part = this.getURIPart(request.getRequestURI(), "update");
-				id = StringUtils.substringBefore(part, "/document/");
-				documentId = StringUtils.substringAfter(part, "/document/");
+				id = this.getURIPart(request.getRequestURI(), "update");
+				documentId = this.getURIPart(request.getRequestURI(), "document");
 			}catch(Exception e){
 				check = false;
 				Exception exception = new URLParameterGetException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			}
 		}
@@ -135,10 +134,25 @@ public class UpdateServlet extends AbstractServletAction {
 							site = str;
 						}
 					} else {
-						file_items.add( item );
+						wrap = updateAttachmetFile( id, effectivePerson.getName(), document, item, site, input );
+						wraps.add( wrap );
 					}
 				}
-				updateAttachmetFile( id, effectivePerson.getName(), document, file_items, site, input );
+				
+				if( wraps != null && !wraps.isEmpty() && site!=null && !site.isEmpty() ){
+					for( WrapOutId _wrap : wraps ){
+						try( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();){
+							fileInfo = emc.find( _wrap.getId(), FileInfo.class);
+							if( fileInfo != null ){
+								emc.beginTransaction( FileInfo.class );
+								fileInfo.setSite(site);
+								emc.check( fileInfo, CheckPersistType.all);
+								emc.commit();
+							}
+						}
+					}
+				}
+				
 			} catch ( Exception e ) {
 				result.error( e );
 				logger.error( e, effectivePerson, request, null );
@@ -152,51 +166,48 @@ public class UpdateServlet extends AbstractServletAction {
 		this.result(response, result);
 	}
 
-	private WrapOutId updateAttachmetFile( String fileId, String personName, Document document, List<FileItemStream> file_items, String site, InputStream input ) throws Exception {
+	private WrapOutId updateAttachmetFile( String fileId, String personName, Document document, FileItemStream item, String site, InputStream input ) throws Exception {
 		WrapOutId wrap = null;
 		FileInfo fileInfo = null;
 		FileInfo fileInfo_old = null;
 		EntityManagerContainer emc = null;
 		StorageMapping mapping = null;
 		
-		if( file_items != null && !file_items.isEmpty() ){
+		if( item != null ){
 			
 			emc = EntityManagerContainerFactory.instance().create();
 			document = emc.find( document.getId(), Document.class);
 			
 			emc.beginTransaction( FileInfo.class );
 			emc.beginTransaction( Document.class );
-			for (FileItemStream item : file_items ){
-				
-				mapping = ThisApplication.storageMappings.random( FileInfo.class );
-				
-				fileInfo = concreteFileInfo( personName, document, mapping, this.getFileName( item.getName() ), site );
-				//先检查对象是否能够被保存，如果能保存，再进行新的文件存储
-				emc.check( fileInfo, CheckPersistType.all);	
-				
-				//将新的文件保存到存储系统
-				fileInfo.saveContent( mapping, input, item.getName() );
-				
-				//将新的附件ID加入到文档的附件列表中
-				if( document.getAttachmentList() == null ){
-					document.setAttachmentList( new ArrayList<>() );
-				}
-				if( !document.getAttachmentList().contains( fileInfo.getId() ) ){
-					document.getAttachmentList().add( fileInfo.getId() );
-				}
-				
-				//尝试删除原来的附件记录对象
-				fileInfo_old = emc.find( fileId, FileInfo.class );
-				fileInfo_old.deleteContent( mapping );
-				//从文档附件列表中删除该附件的ID
-				document.getAttachmentList().remove( fileId );
-				emc.remove( fileInfo_old, CheckRemoveType.all );	
-				
-				emc.check( document, CheckPersistType.all);
-				emc.persist( fileInfo, CheckPersistType.all );
-				wrap = new WrapOutId( fileInfo.getId() );
-				logService.log( emc, personName, fileInfo.getName(), fileInfo.getAppId(), fileInfo.getCategoryId(), fileInfo.getDocumentId(), fileInfo.getId(), "FILE", "上传");
+			mapping = ThisApplication.context().storageMappings().random( FileInfo.class );
+			
+			fileInfo = concreteFileInfo( personName, document, mapping, this.getFileName( item.getName() ), site );
+			//先检查对象是否能够被保存，如果能保存，再进行新的文件存储
+			emc.check( fileInfo, CheckPersistType.all);	
+			
+			//将新的文件保存到存储系统
+			fileInfo.saveContent( mapping, input, item.getName() );
+			
+			//将新的附件ID加入到文档的附件列表中
+			if( document.getAttachmentList() == null ){
+				document.setAttachmentList( new ArrayList<>() );
 			}
+			if( !document.getAttachmentList().contains( fileInfo.getId() ) ){
+				document.getAttachmentList().add( fileInfo.getId() );
+			}
+			
+			//尝试删除原来的附件记录对象
+			fileInfo_old = emc.find( fileId, FileInfo.class );
+			fileInfo_old.deleteContent( mapping );
+			//从文档附件列表中删除该附件的ID
+			document.getAttachmentList().remove( fileId );
+			emc.remove( fileInfo_old, CheckRemoveType.all );	
+			
+			emc.check( document, CheckPersistType.all);
+			emc.persist( fileInfo, CheckPersistType.all );
+			wrap = new WrapOutId( fileInfo.getId() );
+			logService.log( emc, personName, fileInfo.getName(), fileInfo.getAppId(), fileInfo.getCategoryId(), fileInfo.getDocumentId(), fileInfo.getId(), "FILE", "上传");
 			emc.commit();
 			ApplicationCache.notify( FileInfo.class );
 			ApplicationCache.notify( Document.class );

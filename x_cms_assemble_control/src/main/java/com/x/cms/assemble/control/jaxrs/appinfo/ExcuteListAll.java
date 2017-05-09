@@ -11,6 +11,7 @@ import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.SortTools;
 import com.x.cms.assemble.control.WrapTools;
+import com.x.cms.assemble.control.jaxrs.appinfo.exception.AppInfoProcessException;
 import com.x.cms.core.entity.AppInfo;
 
 import net.sf.ehcache.Element;
@@ -37,9 +38,9 @@ public class ExcuteListAll extends ExcuteBase {
 				appInfoList = appInfoServiceAdv.listAll();
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new AppInfoListAllException( e );
+				Exception exception = new AppInfoProcessException( e, "查询所有应用栏目信息对象时发生异常" );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 			if( check ){
 				if( appInfoList != null && !appInfoList.isEmpty() ){
@@ -49,9 +50,9 @@ public class ExcuteListAll extends ExcuteBase {
 						cache.put(new Element( cacheKey, wraps ));
 						result.setData(wraps);
 					} catch (Exception e) {
-						Exception exception = new AppInfoWrapOutException( e );
+						Exception exception = new AppInfoProcessException( e, "将查询出来的应用栏目信息对象转换为可输出的数据信息时发生异常。" );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 				}
 			}

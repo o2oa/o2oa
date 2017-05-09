@@ -84,7 +84,7 @@ public class CenterWorkAttachmentDownloadServlet extends AbstractServletAction {
 		}
 		if (check) {
 			try {
-				mapping = ThisApplication.storageMappings.get(OkrAttachmentFileInfo.class,
+				mapping = ThisApplication.context().storageMappings().get(OkrAttachmentFileInfo.class,
 						okrAttachmentFileInfo.getStorage());
 				this.setResponseHeader(response, streamContentType, okrAttachmentFileInfo);
 			} catch (Exception e) {

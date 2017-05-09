@@ -2,6 +2,7 @@ MWF.xApplication.Execution = MWF.xApplication.Execution || {};
 
 MWF.xDesktop.requireApp("Execution", "WorkForm", null, false);
 MWF.xDesktop.requireApp("Execution", "Chat", null, false);
+MWF.xDesktop.requireApp("Execution","ReportAttachment",null,false);
 
 MWF.xApplication.Execution.WorkDetail = new Class({
     Extends: MWF.xApplication.Execution.WorkForm,
@@ -125,22 +126,20 @@ MWF.xApplication.Execution.WorkDetail = new Class({
             "styles": this.css.reportTopNode
         }).inject(this.reportArea);
 
-        this.reportTopIconNode = new Element("div", {
+        this.reportTopIconNode = new Element("div.reportTopIconNode", {
             "styles": this.css.reportTopIconNode
         }).inject(this.reportTopNode);
 
-        this.reportTopTextNode = new Element("div", {
+        this.reportTopTextNode = new Element("div.reportTopTextNode", {
             "styles": this.css.reportTopTextNode,
             "text": this.lp.workReportTitle
         }).inject(this.reportTopNode)
     },
     loadReportContent: function () {
         _self = this;
-        this.reportContentNode = new Element("div", {
+        this.reportContentNode = new Element("div.reportContentNode", {
             "styles": this.css.reportContentNode
         }).inject(this.reportArea);
-
-        this.setScrollBar(this.reportContentNode);
 
         this.getReportData(function(json){
             if( json.data ){
@@ -156,6 +155,9 @@ MWF.xApplication.Execution.WorkDetail = new Class({
                             }.bind(this))
                         }
                     }
+
+                    if(d.progressDescription=="" && d.workPlan=="") color= "#ff0000";
+
 
                     var createTimes = d.createTime.split(" ")[0].split("-");
                     var createTime = createTimes[0] + this.lp.year +  createTimes[1] + this.lp.month + createTimes[2] + this.lp.day;
@@ -189,6 +191,7 @@ MWF.xApplication.Execution.WorkDetail = new Class({
                 }.bind(this))
             }
         }.bind(this))
+        this.app.setScrollBar(this.reportContentNode)
     },
     getReportData: function (callback) {
         this.actions.getWorkReportList( this.data.id , function(json){
@@ -220,9 +223,12 @@ MWF.xApplication.Execution.WorkDetail = new Class({
         this.prevReportInforListDiv = new Element("div.prevReportInforListDiv",{
             "styles":this.css.prevReportInforListDiv
         }).inject(this.prevReportInforDiv);
+        this.prevReportInforListDiv.setStyles({"height":this.reportContentInforHeight+"px"})
 
         //这里显示具体内容
+        this.app.createShade(this.prevReportInforDiv);
         this.actions.getWorkReport(workReportId,function(json){
+            this.app.destroyShade();
             //alert(JSON.stringify(json))
             if(json.type == "success"){
                 var prevContentDiv = new Element("div.prevContentDiv",{
@@ -248,6 +254,18 @@ MWF.xApplication.Execution.WorkDetail = new Class({
                     "styles": this.css.prevContentValueDiv,
                     "text" : json.data.workPlan
                 }).inject(prevContentDiv);
+                //是否办结
+                prevContentDiv = new Element("div.prevContentDiv",{
+                    "styles": this.css.prevContentDiv
+                }).inject(this.prevReportInforListDiv);
+                prevContentTitleDiv = new Element("div.prevContentTitleDiv",{
+                    "styles" : this.css.prevContentTitleDiv,
+                    "text" :  this.workDetailLp.isCompleted+":"
+                }).inject(prevContentDiv);
+                var tmpstr = json.data.isWorkCompleted?" 是 ":" 否 "
+                tmpstr = this.workDetailLp.isCompleted+":" + tmpstr
+                tmpstr = tmpstr + " " +this.workDetailLp.completePercent + " " + parseInt(json.data.progressPercent)+"%";
+                prevContentTitleDiv.set("text",tmpstr)
 
                 //管理员督办
                 if(json.data.needAdminAudit){
@@ -309,8 +327,34 @@ MWF.xApplication.Execution.WorkDetail = new Class({
                         "text":this.preLeaderValue[i]
                     }).inject(reportLeaderContentDiv);
                 }
+
+                //附件
+                prevContentDiv = new Element("div.prevContentDiv",{
+                    "styles": this.css.prevContentDiv
+                }).inject(this.prevReportInforListDiv);
+                prevContentTitleDiv = new Element("div.prevContentTitleDiv",{
+                    "styles" : this.css.prevContentTitleDiv,
+                    "text" :   this.workDetailLp.attachment+":"
+                }).inject(prevContentDiv)
+                prevContentValueDiv = new Element("div.prevContentValueDiv",{
+                    "styles": this.css.prevContentValueDiv
+                }).inject(prevContentDiv);
+
+                this.loadReportAttachment(prevContentValueDiv,workReportId);
             }
-        }.bind(this),null,false)
+        }.bind(this),null,true)
+        this.app.setScrollBar(this.prevReportInforListDiv);
+
+    },
+    loadReportAttachment: function( area,id ){
+        this.attachment = new MWF.xApplication.Execution.ReportAttachment( area, this.app, this.actions, this.app.lp, {
+            //documentId : this.data.workId,
+            documentId : id,
+            isNew : this.options.isNew,
+            isEdited : false,
+            "size":"min"
+        })
+        this.attachment.load();
     },
     loadQuestionTop: function () {
         this.questionTopNode = new Element("div.questionTopNode", {
@@ -331,7 +375,7 @@ MWF.xApplication.Execution.WorkDetail = new Class({
             "styles": this.css.questionContentNode
         }).inject(this.questionArea)
 
-        this.setScrollBar(this.questionContentNode);
+        this.app.setScrollBar(this.questionContentNode);
 
         this.getQuestionData(function (json) {
             json.data.each(function (d) {
@@ -398,20 +442,30 @@ MWF.xApplication.Execution.WorkDetail = new Class({
     loadForm: function () {
         this.detailTopNode = new Element("div.detailTopNode", {
             "styles": this.css.detailTopNode
-        }).inject(this.detailArea)
+        }).inject(this.detailArea);
 
-        this.detailTopIconNode = new Element("div", {
+        this.detailTopIconNode = new Element("div.detailTopIconNode", {
             "styles": this.css.detailTopIconNode
-        }).inject(this.detailTopNode)
+        }).inject(this.detailTopNode);
 
-        this.detailTopTextNode = new Element("div", {
+        this.detailTopTextNode = new Element("div.detailTopTextNode", {
             "styles": this.css.detailTopTextNode,
             "text": this.lp.workDetailTitle
-        }).inject(this.detailTopNode)
+        }).inject(this.detailTopNode);
+
+        if(this.data.workProcessStatus && this.data.workProcessStatus == this.workDetailLp.archiveStatus){
+            var archiveDate = this.data.archiveDate && this.data.archiveDate!="" ? ":"+this.data.archiveDate:"";
+            this.archiveTextDiv = new Element("div.archiveTextDiv",{
+                "styles":this.css.archiveTextDiv,
+                "text":"("+this.workDetailLp.archiveStatus+archiveDate+")"
+            }).inject(this.detailTopNode);
+
+        }
+
 
         this.detailContentNode = new Element("div.detailContentNode", {
             "styles": this.css.detailContentNode
-        }).inject(this.detailArea)
+        }).inject(this.detailArea);
 
 
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
@@ -513,7 +567,7 @@ MWF.xApplication.Execution.WorkDetail = new Class({
         this.processInfoContent.set("html",tHead+tBody+tBottom)
         this.formatStyles(this.processInfoContent)
 
-        this.setScrollBar(this.detailContentNode)
+        this.app.setScrollBar(this.detailContentNode)
 
     },
     formatStyles:function(obj){
@@ -657,6 +711,14 @@ MWF.xApplication.Execution.WorkDetail = new Class({
         this.reportContentNode.setStyles({
             "height": "" + reportContentHeight + "px"
         });
+
+        this.reportContentInforHeight = ( contentHeight - (this.reportTopNode.getSize().y ) )
+        //alert(reportContentInforHeight)
+        if(this.prevReportInforListDiv){
+            this.prevReportInforListDiv.setStyles({
+                "height": "" + this.reportContentInforHeight + "px"
+            });
+        }
         this.questionContentNode.setStyles({
             "height": "" + reportContentHeight + "px"
         });
@@ -670,24 +732,6 @@ MWF.xApplication.Execution.WorkDetail = new Class({
         this.detailArea.setStyles({
             "width": "" + width + "px"
         });
-    },
-    setScrollBar: function(node, style, offset, callback){
-        if (!style) style = "attachment";
-        if (!offset){
-            offset = {
-                "V": {"x": 0, "y": 0},
-                "H": {"x": 0, "y": 0}
-            };
-        };
-        MWF.require("MWF.widget.ScrollBar", function(){
-            new MWF.widget.ScrollBar(node, {
-                "style": style,
-                "offset": offset,
-                "indent": false
-            });
-            if (callback) callback();
-        });
-        return false;
     },
 
     showErrorMessage:function(xhr,text,error){

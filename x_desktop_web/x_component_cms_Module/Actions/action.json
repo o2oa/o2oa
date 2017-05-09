@@ -51,10 +51,12 @@
 
   "listColumn": {"uri": "/jaxrs/appinfo/list/user/view" },
   "getColumn": {"uri": "/jaxrs/appinfo/{id}"},
+  "getColumnByAlias": {"uri": "/jaxrs/appinfo/alias/{alias}"},
 
   "listCategory": {"uri": "/jaxrs/categoryinfo/list/view/app/{appId}" },
   "listCategoryByPublisher": {"uri": "/jaxrs/categoryinfo/list/publish/app/{appId}" },
   "getCategory" : {"uri":"/jaxrs/categoryinfo/{id}"},
+  "getCategoryByAlias" : {"uri":"/jaxrs/categoryinfo/alias/{alias}"},
 
   "getForm": {"uri": "/jaxrs/form/{id}"},
 //  "getDictionary": {"uri": "/jaxrs/appdict/{appDictId}"},

@@ -304,6 +304,7 @@ MWF.restful = function(method, address, data, callback, async, withCredentials){
 	res.setHeader("Content-Type", "application/json; charset=utf-8");
 	//Content-Type	application/x-www-form-urlencoded; charset=utf-8
 	res.send(data);
+    return res;
 };
 MWF.encodeJsonString = function(str){
 	var tmp = [str];
@@ -925,7 +926,7 @@ MWF.defineProperties = Object.defineProperties || function (obj, properties) {
     properties = Object(properties);
 
     var keys = Object.keys(properties);
-    var descs = []
+    var descs = [];
 
     for (var i = 0; i < keys.length; i++)
         descs.push([keys[i], convertToDescriptor(properties[keys[i]])]);

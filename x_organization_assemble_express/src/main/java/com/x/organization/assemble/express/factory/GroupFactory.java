@@ -36,7 +36,7 @@ public class GroupFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Group> root = cq.from(Group.class);
 		Predicate p = cb.equal(root.get(Group_.name), name);
-		cq.select(root.get(Group_.id)).where(p);
+		cq.select(root.get(Group_.id)).where(p).distinct(true);
 		List<String> list = em.createQuery(cq).setMaxResults(1).getResultList();
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -105,7 +105,7 @@ public class GroupFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Group> root = cq.from(Group.class);
 		Predicate p = root.get(Group_.id).in(group.getGroupList());
-		cq.select(root.get(Group_.id)).where(p);
+		cq.select(root.get(Group_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -135,7 +135,7 @@ public class GroupFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Group> root = cq.from(Group.class);
 		Predicate p = cb.like(root.get(Group_.pinyinInitial), str + "%", '\\');
-		cq.select(root.get(Group_.id)).where(p);
+		cq.select(root.get(Group_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -151,7 +151,7 @@ public class GroupFactory extends AbstractFactory {
 		Predicate p = cb.like(root.get(Group_.name), "%" + str + "%", '\\');
 		p = cb.or(p, cb.like(root.get(Group_.pinyin), str + "%", '\\'));
 		p = cb.or(p, cb.like(root.get(Group_.pinyinInitial), str + "%", '\\'));
-		cq.select(root.get(Group_.id)).where(p);
+		cq.select(root.get(Group_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -166,7 +166,7 @@ public class GroupFactory extends AbstractFactory {
 		Root<Group> root = cq.from(Group.class);
 		Predicate p = cb.like(root.get(Group_.pinyin), str + "%");
 		p = cb.or(p, cb.like(root.get(Group_.pinyinInitial), str + "%"));
-		cq.select(root.get(Group_.id)).where(p);
+		cq.select(root.get(Group_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 

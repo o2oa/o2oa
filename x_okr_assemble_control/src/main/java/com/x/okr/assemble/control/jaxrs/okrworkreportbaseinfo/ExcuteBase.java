@@ -11,6 +11,7 @@ import com.x.okr.assemble.control.service.OkrConfigWorkTypeService;
 import com.x.okr.assemble.control.service.OkrTaskService;
 import com.x.okr.assemble.control.service.OkrUserInfoService;
 import com.x.okr.assemble.control.service.OkrUserManagerService;
+import com.x.okr.assemble.control.service.OkrWorkAuthorizeRecordService;
 import com.x.okr.assemble.control.service.OkrWorkBaseInfoQueryService;
 import com.x.okr.assemble.control.service.OkrWorkDetailInfoService;
 import com.x.okr.assemble.control.service.OkrWorkDynamicsService;
@@ -45,6 +46,7 @@ public class ExcuteBase {
 	protected OkrTaskService okrTaskService = new OkrTaskService();
 	protected OkrConfigWorkTypeService okrConfigWorkTypeService = new OkrConfigWorkTypeService();
 	protected OkrWorkReportTaskCollectService okrWorkReportTaskCollectService = new OkrWorkReportTaskCollectService();
+	protected OkrWorkAuthorizeRecordService okrWorkAuthorizeRecordService = new OkrWorkAuthorizeRecordService();
 	protected DateOperation dateOperation = new DateOperation();
 
 }

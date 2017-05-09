@@ -15,7 +15,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.bbs.entity.BBSSectionInfo.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:08:02 CST 2017")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sat May 06 19:34:23 CST 2017")
 public class BBSSectionInfo_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<BBSSectionInfo,Date> createTime;
     public static volatile SingularAttribute<BBSSectionInfo,String> creatorName;
@@ -46,6 +46,6 @@ public class BBSSectionInfo_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<BBSSectionInfo,Long> subjectTotal;
     public static volatile SingularAttribute<BBSSectionInfo,Long> subjectTotalToday;
     public static volatile SingularAttribute<BBSSectionInfo,String> subjectType;
-    public static volatile SingularAttribute<BBSSectionInfo,String> typeCatagory;
+    public static volatile SingularAttribute<BBSSectionInfo,String> typeCategory;
     public static volatile SingularAttribute<BBSSectionInfo,Date> updateTime;
 }

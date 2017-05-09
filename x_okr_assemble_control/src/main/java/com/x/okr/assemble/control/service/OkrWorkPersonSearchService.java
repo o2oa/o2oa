@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.http.HttpAttribute;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.okr.assemble.control.Business;
 import com.x.okr.entity.OkrCenterWorkInfo;
 import com.x.okr.entity.OkrWorkPerson;
@@ -30,7 +30,7 @@ public class OkrWorkPersonSearchService {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			if( id != null && !"(0)".equals(id) && id.trim().length() > 20 ){
-				if ( !StringUtils.equalsIgnoreCase( id, HttpAttribute.x_empty_symbol )) {
+				if ( !StringUtils.equalsIgnoreCase( id, StandardJaxrsAction.EMPTY_SYMBOL)) {
 					sequence = PropertyUtils.getProperty( emc.find( id, OkrCenterWorkInfo.class  ), "sequence" );
 				}
 			}
@@ -66,7 +66,7 @@ public class OkrWorkPersonSearchService {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			if( id != null && !"(0)".equals(id) && id.trim().length() > 20 ){
-				if ( !StringUtils.equalsIgnoreCase( id, HttpAttribute.x_empty_symbol )) {
+				if ( !StringUtils.equalsIgnoreCase( id, StandardJaxrsAction.EMPTY_SYMBOL)) {
 					sequence = PropertyUtils.getProperty( emc.find( id, OkrCenterWorkInfo.class  ), "sequence" );
 				}
 			}

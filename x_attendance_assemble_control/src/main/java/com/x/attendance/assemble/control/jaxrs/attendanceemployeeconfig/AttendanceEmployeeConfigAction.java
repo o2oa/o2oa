@@ -17,17 +17,17 @@ import javax.ws.rs.core.Response;
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.service.AttendanceEmployeeConfigServiceAdv;
 import com.x.attendance.entity.AttendanceEmployeeConfig;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 
 
 @Path("attendanceemployeeconfig")
@@ -57,7 +57,7 @@ public class AttendanceEmployeeConfigAction extends StandardJaxrsAction{
 				result.error(e);
 				Exception exception = new AttendanceEmployeeConfigListAllException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check && attendanceEmployeeConfigList != null ){
@@ -69,7 +69,7 @@ public class AttendanceEmployeeConfigAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceEmployeeConfigWrapOutException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -92,7 +92,7 @@ public class AttendanceEmployeeConfigAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceEmployeeConfigIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}		
 		if( check ){
@@ -102,13 +102,13 @@ public class AttendanceEmployeeConfigAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceEmployeeConfigNotExistsException( id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new AttendanceEmployeeConfigQueryByIdException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -119,7 +119,7 @@ public class AttendanceEmployeeConfigAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceEmployeeConfigWrapOutException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -143,7 +143,7 @@ public class AttendanceEmployeeConfigAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			try {
@@ -155,7 +155,7 @@ public class AttendanceEmployeeConfigAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceEmployeeConfigWrapInException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -167,7 +167,7 @@ public class AttendanceEmployeeConfigAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceEmployeeConfigSaveException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}		
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -189,7 +189,7 @@ public class AttendanceEmployeeConfigAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceEmployeeConfigIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}		
 		if( check ){
@@ -199,13 +199,13 @@ public class AttendanceEmployeeConfigAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceEmployeeConfigNotExistsException( id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new AttendanceEmployeeConfigQueryByIdException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -217,7 +217,7 @@ public class AttendanceEmployeeConfigAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceEmployeeConfigDeleteException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 			
 		}

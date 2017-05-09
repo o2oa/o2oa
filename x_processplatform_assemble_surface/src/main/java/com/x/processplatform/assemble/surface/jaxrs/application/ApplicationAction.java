@@ -12,16 +12,14 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.AbstractJaxrsAction;
+import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.processplatform.assemble.surface.wrapout.element.WrapOutApplication;
 
 @Path("application")
@@ -46,7 +44,7 @@ public class ApplicationAction extends AbstractJaxrsAction {
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "根据当前用户所有可见的Application.", response = WrapOutApplication.class)
+	@HttpMethodDescribe(value = "获取可见的应用,同时判断应用下有可见的流程.", response = WrapOutApplication.class)
 	@GET
 	@Path("list")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

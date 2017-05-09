@@ -8,8 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
-import com.x.base.core.http.HttpAttribute;
 import com.x.base.core.http.WrapOutMap;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.utils.DateRange;
 import com.x.base.core.utils.DateTools;
 import com.x.processplatform.assemble.bam.Business;
@@ -39,7 +39,7 @@ class ActionListCountStartTaskByDepartment extends ActionListCountStartTask {
 					p.put("companyValue", stub.getCompanyValue());
 					p.put("companyLevel", stub.getCompanyLevel());
 					p.put("count", this.count(business, o, applicationId, processId, activityId, companyName,
-							stub.getValue(), HttpAttribute.x_empty_symbol));
+							stub.getValue(), StandardJaxrsAction.EMPTY_SYMBOL));
 					list.add(p);
 				}
 			}
@@ -52,7 +52,7 @@ class ActionListCountStartTaskByDepartment extends ActionListCountStartTask {
 		List<DepartmentStub> list = new ArrayList<>();
 		for (CompanyStub o : ThisApplication.period.getStartTaskCompanyStubs()) {
 			if (StringUtils.equals(o.getValue(), companyName)
-					|| StringUtils.equals(companyName, HttpAttribute.x_empty_symbol)) {
+					|| StringUtils.equals(companyName, StandardJaxrsAction.EMPTY_SYMBOL)) {
 				list.addAll(o.getDepartmentStubs());
 			}
 		}

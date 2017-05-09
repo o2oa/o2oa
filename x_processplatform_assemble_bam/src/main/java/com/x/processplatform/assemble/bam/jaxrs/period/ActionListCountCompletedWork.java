@@ -14,8 +14,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
-import com.x.base.core.http.HttpAttribute;
 import com.x.base.core.http.WrapOutMap;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.utils.DateRange;
 import com.x.base.core.utils.DateTools;
 import com.x.processplatform.assemble.bam.Business;
@@ -59,19 +59,19 @@ class ActionListCountCompletedWork extends ActionBase {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<WorkCompleted> root = cq.from(WorkCompleted.class);
 		Predicate p = cb.between(root.get(WorkCompleted_.completedTime), dateRange.getStart(), dateRange.getEnd());
-		if (!StringUtils.equals(applicationId, HttpAttribute.x_empty_symbol)) {
+		if (!StringUtils.equals(applicationId, StandardJaxrsAction.EMPTY_SYMBOL)) {
 			p = cb.and(p, cb.equal(root.get(WorkCompleted_.application), applicationId));
 		}
-		if (!StringUtils.equals(processId, HttpAttribute.x_empty_symbol)) {
+		if (!StringUtils.equals(processId, StandardJaxrsAction.EMPTY_SYMBOL)) {
 			p = cb.and(p, cb.equal(root.get(WorkCompleted_.process), processId));
 		}
-		if (!StringUtils.equals(companyName, HttpAttribute.x_empty_symbol)) {
+		if (!StringUtils.equals(companyName, StandardJaxrsAction.EMPTY_SYMBOL)) {
 			p = cb.and(p, cb.equal(root.get(WorkCompleted_.creatorCompany), companyName));
 		}
-		if (!StringUtils.equals(departmentName, HttpAttribute.x_empty_symbol)) {
+		if (!StringUtils.equals(departmentName, StandardJaxrsAction.EMPTY_SYMBOL)) {
 			p = cb.and(p, cb.equal(root.get(WorkCompleted_.creatorDepartment), departmentName));
 		}
-		if (!StringUtils.equals(personName, HttpAttribute.x_empty_symbol)) {
+		if (!StringUtils.equals(personName, StandardJaxrsAction.EMPTY_SYMBOL)) {
 			p = cb.and(p, cb.equal(root.get(WorkCompleted_.creatorPerson), personName));
 		}
 		cq.select(cb.count(root)).where(p);
@@ -85,19 +85,19 @@ class ActionListCountCompletedWork extends ActionBase {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<WorkCompleted> root = cq.from(WorkCompleted.class);
 		Predicate p = cb.between(root.get(WorkCompleted_.completedTime), dateRange.getStart(), dateRange.getEnd());
-		if (!StringUtils.equals(applicationId, HttpAttribute.x_empty_symbol)) {
+		if (!StringUtils.equals(applicationId, StandardJaxrsAction.EMPTY_SYMBOL)) {
 			p = cb.and(p, cb.equal(root.get(WorkCompleted_.application), applicationId));
 		}
-		if (!StringUtils.equals(processId, HttpAttribute.x_empty_symbol)) {
+		if (!StringUtils.equals(processId, StandardJaxrsAction.EMPTY_SYMBOL)) {
 			p = cb.and(p, cb.equal(root.get(WorkCompleted_.process), processId));
 		}
-		if (!StringUtils.equals(companyName, HttpAttribute.x_empty_symbol)) {
+		if (!StringUtils.equals(companyName, StandardJaxrsAction.EMPTY_SYMBOL)) {
 			p = cb.and(p, cb.equal(root.get(WorkCompleted_.creatorCompany), companyName));
 		}
-		if (!StringUtils.equals(departmentName, HttpAttribute.x_empty_symbol)) {
+		if (!StringUtils.equals(departmentName, StandardJaxrsAction.EMPTY_SYMBOL)) {
 			p = cb.and(p, cb.equal(root.get(WorkCompleted_.creatorDepartment), departmentName));
 		}
-		if (!StringUtils.equals(personName, HttpAttribute.x_empty_symbol)) {
+		if (!StringUtils.equals(personName, StandardJaxrsAction.EMPTY_SYMBOL)) {
 			p = cb.and(p, cb.equal(root.get(WorkCompleted_.creatorPerson), personName));
 		}
 		cq.select(cb.sum(root.get(WorkCompleted_.duration))).where(p);
@@ -111,19 +111,19 @@ class ActionListCountCompletedWork extends ActionBase {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
 		Predicate p = cb.between(root.get(TaskCompleted_.completedTime), dateRange.getStart(), dateRange.getEnd());
-		if (!StringUtils.equals(applicationId, HttpAttribute.x_empty_symbol)) {
+		if (!StringUtils.equals(applicationId, StandardJaxrsAction.EMPTY_SYMBOL)) {
 			p = cb.and(p, cb.equal(root.get(TaskCompleted_.application), applicationId));
 		}
-		if (!StringUtils.equals(processId, HttpAttribute.x_empty_symbol)) {
+		if (!StringUtils.equals(processId, StandardJaxrsAction.EMPTY_SYMBOL)) {
 			p = cb.and(p, cb.equal(root.get(TaskCompleted_.process), processId));
 		}
-		if (!StringUtils.equals(companyName, HttpAttribute.x_empty_symbol)) {
+		if (!StringUtils.equals(companyName, StandardJaxrsAction.EMPTY_SYMBOL)) {
 			p = cb.and(p, cb.equal(root.get(TaskCompleted_.company), companyName));
 		}
-		if (!StringUtils.equals(departmentName, HttpAttribute.x_empty_symbol)) {
+		if (!StringUtils.equals(departmentName, StandardJaxrsAction.EMPTY_SYMBOL)) {
 			p = cb.and(p, cb.equal(root.get(TaskCompleted_.department), departmentName));
 		}
-		if (!StringUtils.equals(personName, HttpAttribute.x_empty_symbol)) {
+		if (!StringUtils.equals(personName, StandardJaxrsAction.EMPTY_SYMBOL)) {
 			p = cb.and(p, cb.equal(root.get(TaskCompleted_.person), personName));
 		}
 		cq.select(cb.count(root)).where(p);

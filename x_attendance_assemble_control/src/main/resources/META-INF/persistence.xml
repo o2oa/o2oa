@@ -45,8 +45,8 @@
   </persistence-unit>
   <persistence-unit name="com.x.attendance.entity.AttendanceScheduleSetting" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.attendance.entity.AttendanceScheduleSetting</class>
     <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.attendance.entity.AttendanceScheduleSetting</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
@@ -80,8 +80,8 @@
   </persistence-unit>
   <persistence-unit name="com.x.attendance.entity.AttendanceWorkDayConfig" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.attendance.entity.AttendanceWorkDayConfig</class>
+    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>

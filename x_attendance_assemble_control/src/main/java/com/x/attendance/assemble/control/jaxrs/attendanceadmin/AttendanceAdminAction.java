@@ -18,17 +18,17 @@ import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.service.AttendanceAdminServiceAdv;
 import com.x.attendance.assemble.control.service.UserManagerService;
 import com.x.attendance.entity.AttendanceAdmin;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 
 
 @Path("attendanceadmin")
@@ -72,7 +72,7 @@ public class AttendanceAdminAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceAdminWrapCopyException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -98,7 +98,7 @@ public class AttendanceAdminAction extends StandardJaxrsAction{
 				result.error( e );
 				Exception exception = new AttendanceAdminQueryByIdException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -110,7 +110,7 @@ public class AttendanceAdminAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceAdminWrapCopyException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -135,7 +135,7 @@ public class AttendanceAdminAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if( check ){
 			if( wrapIn.getOrganizationName() == null  || wrapIn.getOrganizationName().isEmpty() ){
@@ -145,7 +145,7 @@ public class AttendanceAdminAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new GetCurrentPersonCompanyNameException( e, currentPerson.getName() );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 				wrapIn.setOrganizationName( companyName );
 			}
@@ -161,7 +161,7 @@ public class AttendanceAdminAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceAdminWrapCopyException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -172,7 +172,7 @@ public class AttendanceAdminAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceAdminSaveException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -202,7 +202,7 @@ public class AttendanceAdminAction extends StandardJaxrsAction{
     			check = false;
     			Exception exception = new AttendanceAdminDeleteException( e, id );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
     		}
         }
 		return ResponseFactory.getDefaultActionResultResponse(result);

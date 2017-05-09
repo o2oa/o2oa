@@ -395,7 +395,7 @@
   "categoryNaviNode": {
 	"cursor" : "pointer",
 	"color" : "#666",
-	"padding-left" : "45px",
+	"padding-left" : "55px",
 	"height" : "39px",
 	"overflow" : "hidden",
 	"font-weight" : "normal",
@@ -405,17 +405,20 @@
 	//"background" : "url(/x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 20px 12px",
 	//"background-color": "#fff",
 	"position" : "relative",
-	"background-color" : "#f7f7f7"
+	"background-color" : "#f7f7f7",
+	"color" : "#333"
   },
   "categoryNaviTextNode" : {
 
   },
   "categoryNaviNode_selected" : {
-	"color" : "#447bbb",
-	//"background": "url(/x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 20px 12px",
-	"background-color" : "#f2f8ff"
+	//"color" : "#447bbb",
+	//"background-color" : "#f2f8ff"
+	"color" : "#fff",
+	"background-color" : "#3c76b7"
   },
   "categoryNaviNode_over" : {
+  	"color" : "#333",
 	//"background": "url(/x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 20px 12px",
 	"background-color" : "#f2f2f2"
   },
@@ -533,13 +536,28 @@
 	"position": "static",
 	"background-color" : "#fff"
   },
-  "rightContentResizeNode": {
+//  "rightContentResizeNode": {
+//	"width": "3px",
+//	"float": "left",
+//	"background-color": "#505050",
+//	"margin-right": "5px",
+//	"margin-left": "5px",
+//	"cursor": "col-resize"
+//  },
+  "rightVerticalResizeNode": {
 	"width": "3px",
 	"float": "left",
-	"background-color": "#505050",
+	"background-color": "#aaa",
 	"margin-right": "5px",
 	"margin-left": "5px",
 	"cursor": "col-resize"
+  },
+  "rightHorizontalResizeNode" : {
+	"height": "3px",
+	"background-color": "#aaa",
+//	"margin-top": "1px",
+//	"margin-bottom": "1px",
+	"cursor": "row-resize"
   },
   "viewAreaNode" : {
 	"float" : "left"

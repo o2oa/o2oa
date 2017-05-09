@@ -17,17 +17,17 @@ import javax.ws.rs.core.Response;
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.service.AttendanceSettingServiceAdv;
 import com.x.attendance.entity.AttendanceSetting;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 
 
 @Path("attendancesetting")
@@ -57,7 +57,7 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceSettingListAllException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -68,7 +68,7 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceSettingWrapOutException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -91,7 +91,7 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceSettingIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -101,7 +101,7 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetAttendanceSettingByIdException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -112,7 +112,7 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceSettingWrapOutException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -135,7 +135,7 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceSettingCodeEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -145,7 +145,7 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceSettingListByCodeException( e, code );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -156,7 +156,7 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceSettingWrapOutException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -180,14 +180,14 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			if( wrapIn.getConfigCode() == null || wrapIn.getConfigCode().isEmpty() ){
 				check = false;
 				Exception exception = new AttendanceSettingCodeEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -195,7 +195,7 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceSettingNameEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -208,7 +208,7 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceSettingWrapInException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -220,7 +220,7 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceSettingSaveException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -243,7 +243,7 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceSettingIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -253,13 +253,13 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceSettingNotExistsException( id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new GetAttendanceSettingByIdException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -271,7 +271,7 @@ public class AttendanceSettingAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceSettingDeleteException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);

@@ -89,7 +89,6 @@ MWF.xApplication.Deployment.Main = new Class({
             "mouseover": function(){iconNode.setStyles(this.css.addIconNode_over); titleNode.setStyle("color", "#3498db");}.bind(this),
             "mouseout": function(){iconNode.setStyles(this.css.addIconNode); titleNode.setStyle("color", "#999");}.bind(this),
             "click": function(e){
-                debugger;
                 this.createNewDeploy(e);
             }.bind(this)
         });
@@ -200,14 +199,21 @@ MWF.xApplication.Deployment.Component = new Class({
     },
     addAction: function(){
         if (this.data.visible){
-            this.openAction = new Element("div", {"styles": this.css.actionNode, "text": this.deployment.lp.open}).inject(this.actionAreaNode);
-            this.openAction.addEvents({
-                "mouseover": function(){this.openAction.setStyles(this.css.actionNode_over);}.bind(this),
-                "mouseout": function(){this.openAction.setStyles(this.css.actionNode);}.bind(this),
-                "click": function(e){
-                    this.deployment.desktop.openApplication(e, this.data.path);
-                }.bind(this)
-            });
+            var currentName = this.deployment.desktop.session.user.name;
+            var isAllow = true;
+            if (this.data.allowList) isAllow = (this.data.allowList.length) ? (this.data.allowList.indexOf(currentName)!=-1) : true;
+            var isDeny = false;
+            if (this.data.denyList) isDeny = (this.data.denyList.length) ? (this.data.denyList.indexOf(currentName)!=-1) : false;
+            if ((!isDeny && isAllow) || MWF.AC.isAdministrator()){
+                this.openAction = new Element("div", {"styles": this.css.actionNode, "text": this.deployment.lp.open}).inject(this.actionAreaNode);
+                this.openAction.addEvents({
+                    "mouseover": function(){this.openAction.setStyles(this.css.actionNode_over);}.bind(this),
+                    "mouseout": function(){this.openAction.setStyles(this.css.actionNode);}.bind(this),
+                    "click": function(e){
+                        this.deployment.desktop.openApplication(e, this.data.path);
+                    }.bind(this)
+                });
+            }
         }else{
 
         }
@@ -260,13 +266,19 @@ MWF.xApplication.Deployment.UserComponent = new Class({
 
     addAction: function(){
         this.node.setStyles(this.css.userComponentItemNode);
+        var currentName = this.deployment.desktop.session.user.name;
+
         var isAdministrator = this.checkAdministrator();
         if (isAdministrator && this.data.visible){
             this.createOpenAction("action2Node");
             this.createEditAction("action2Node");
             this.createRemoveAction("action3Node");
         }else if (!isAdministrator && this.data.visible){
-            this.createOpenAction("actionNode");
+            var isAllow = (this.data.allowList.length) ? (this.data.allowList.indexOf(currentName)!=-1) : true;
+            var isDeny = (this.data.denyList.length) ? (this.data.denyList.indexOf(currentName)!=-1) : false;
+            if ((!isDeny && isAllow) || MWF.AC.isAdministrator()){
+                this.createOpenAction("actionNode");
+            }
         }else if (isAdministrator && !this.data.visible){
             this.createEditAction("action4Node");
             this.createRemoveAction("action5Node");
@@ -417,7 +429,6 @@ MWF.xApplication.Deployment.DeployEdit = new Class({
         this.okAction.removeEvents("click");
 
         this.okAction.addEvent("click", function(){
-            debugger;
             var data = this.getComponentData();
             if ((!data.name) || (!data.title) || (!data.path)){
                 this.deployment.notice(this.lp.noInputInfor, "error");

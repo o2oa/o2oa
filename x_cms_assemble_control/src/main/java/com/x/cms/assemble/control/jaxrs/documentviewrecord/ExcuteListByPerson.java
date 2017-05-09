@@ -9,6 +9,8 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.cms.assemble.control.WrapTools;
+import com.x.cms.assemble.control.jaxrs.documentviewrecord.exception.PersonNameEmptyException;
+import com.x.cms.assemble.control.jaxrs.documentviewrecord.exception.ServiceLogicException;
 import com.x.cms.core.entity.DocumentViewRecord;
 
 public class ExcuteListByPerson extends ExcuteBase {
@@ -27,7 +29,7 @@ public class ExcuteListByPerson extends ExcuteBase {
 				check = false;
 				Exception exception = new PersonNameEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -38,7 +40,7 @@ public class ExcuteListByPerson extends ExcuteBase {
 				check = false;
 				Exception exception = new ServiceLogicException( e,"系统在根据人员姓名查询文档访问信息列表时发生异常。Name：" + name );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -50,7 +52,7 @@ public class ExcuteListByPerson extends ExcuteBase {
 					check = false;
 					Exception exception = new ServiceLogicException( e,"系统在根据访问记录ID列表查询访问记录信息列表时发生异常。" );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -65,7 +67,7 @@ public class ExcuteListByPerson extends ExcuteBase {
 					check = false;
 					Exception exception = new ServiceLogicException( e,"系统将查询结果转换为可输出的数据信息时发生异常。" );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}

@@ -44,7 +44,7 @@ class ActionUpdate extends ActionBase {
 			/* 刷新缓存 */
 			this.cacheNotify();
 			/* 通知x_collect_service_transmit同步数据到collect */
-			this.collectTransmit();
+			business.instrument().collect().person();
 			WrapOutId wrap = new WrapOutId(o.getId());
 			result.setData(wrap);
 			return result;

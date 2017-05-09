@@ -11,6 +11,8 @@ import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.assemble.control.jaxrs.document.exception.DocumentInfoProcessException;
+import com.x.cms.assemble.control.jaxrs.document.exception.DocumentNotExistsException;
 import com.x.cms.core.entity.Document;
 
 public class ExcuteDraft extends ExcuteBase {
@@ -28,17 +30,18 @@ public class ExcuteDraft extends ExcuteBase {
 			if ( null == document ) {
 				Exception exception = new DocumentNotExistsException( id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 				throw exception;
 			}
 			try {
 				modifyDocStatus( id, "draft", effectivePerson.getName() );
 				document.setDocStatus( "draft" );
 				ApplicationCache.notify( Document.class );
+				
 			} catch (Exception e) {
-				Exception exception = new DocumentRedraftException( e, id );
+				Exception exception = new DocumentInfoProcessException( e, "系统将文档状态修改为草稿状态时发生异常。Id:" + id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 			
 			logService.log( emc, effectivePerson.getName(), document.getCategoryAlias() + ":" + document.getTitle(), document.getAppId(), document.getCategoryId(), document.getId(), "", "DOCUMENT", "设为草稿" );

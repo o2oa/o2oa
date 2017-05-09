@@ -12,7 +12,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.base.core.entity.JpaObject.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:46:02 CST 2017")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sat May 06 19:34:15 CST 2017")
 public class JpaObject_ {
     public static volatile SingularAttribute<JpaObject,Boolean> scratchBoolean;
     public static volatile SingularAttribute<JpaObject,Date> scratchDate;

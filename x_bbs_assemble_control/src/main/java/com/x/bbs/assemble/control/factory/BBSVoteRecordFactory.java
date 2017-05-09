@@ -15,8 +15,6 @@ import com.x.bbs.assemble.control.AbstractFactory;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.entity.BBSVoteRecord;
 import com.x.bbs.entity.BBSVoteRecord_;
-import com.x.bbs.entity.BBSVoteRecord;
-import com.x.bbs.entity.BBSVoteRecord_;
 
 /**
  * 类   名：BBSVoteRecordFactory<br/>

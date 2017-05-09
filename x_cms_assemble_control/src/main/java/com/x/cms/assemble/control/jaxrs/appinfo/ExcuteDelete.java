@@ -8,6 +8,10 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.cms.assemble.control.jaxrs.appinfo.exception.AppInfoCanNotDeleteException;
+import com.x.cms.assemble.control.jaxrs.appinfo.exception.AppInfoIdEmptyException;
+import com.x.cms.assemble.control.jaxrs.appinfo.exception.AppInfoNotExistsException;
+import com.x.cms.assemble.control.jaxrs.appinfo.exception.AppInfoProcessException;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.AppCategoryAdmin;
 import com.x.cms.core.entity.AppCategoryPermission;
@@ -39,7 +43,7 @@ public class ExcuteDelete extends ExcuteBase {
 				appInfo = appInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new AppInfoQueryByIdException( e, id );
+				Exception exception = new AppInfoProcessException( e, "根据指定ID查询应用栏目信息对象时发生异常。ID:" + id );
 				result.error( exception );
 				logger.error( e, effectivePerson, request, null);
 			}
@@ -57,7 +61,7 @@ public class ExcuteDelete extends ExcuteBase {
 				count = appInfoServiceAdv.countCategoryByAppId( id );
 			} catch ( Exception e ) {
 				check = false;
-				Exception exception = new CountCategoryByAppIdException( e, id );
+				Exception exception = new AppInfoProcessException( e, "系统在根据应用栏目ID查询应用下分类个数时发生异常。ID:" + id );
 				result.error( exception );
 				logger.error( e, effectivePerson, request, null);
 			}
@@ -88,9 +92,9 @@ public class ExcuteDelete extends ExcuteBase {
 				
 				result.setData( new WrapOutId(appInfo.getId()) );
 			} catch (Exception e) {
-				Exception exception = new AppInfoDeleteException( e, id );
+				Exception exception = new AppInfoProcessException( e, "根据ID执行删除CMS应用信息对象操作时发生未知异常，ID:" + id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

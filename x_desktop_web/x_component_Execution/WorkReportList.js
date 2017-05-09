@@ -410,7 +410,6 @@ MWF.xApplication.Execution.WorkReportList = new Class({
         this.archiveView =  new  MWF.xApplication.Execution.WorkReportList.archiveView(this.rightContentDiv, this.app, this, { templateUrl : this.path+"listItem_archive.json",filterData: filterData },{lp: this.lp.view} )
         this.archiveView.load();
     }
-
 })
 
 
@@ -422,13 +421,14 @@ MWF.xApplication.Execution.WorkReportList.DrafterView = new Class({
     },
 
     _getCurrentPageData: function(callback, count){
-
-        if (!count)count = 15;
+        if (!count)count = 20;
         var id = (this.items.length) ? this.items[this.items.length - 1].data.id : "(0)";
+        if(id=="(0)")this.app.createShade()
         var filter = this.options.filterData || {};
 
         this.actions.getWorkReportDrafterNext(id, count, filter,function(json){
             if (callback)callback(json);
+            this.app.destroyShade();
         }.bind(this))
 
     },
@@ -517,11 +517,13 @@ MWF.xApplication.Execution.WorkReportList.todoView = new Class({
 
     _getCurrentPageData: function(callback, count){
 
-        if (!count)count = 15;
+        if (!count)count = 20;
         var id = (this.items.length) ? this.items[this.items.length - 1].data.id : "(0)";
+        if(id=="(0)")this.app.createShade()
         var filter = this.options.filterData || {};
         this.actions.getWorkReportTodoNext(id, count, filter,function(json){
             if (callback)callback(json);
+            this.app.destroyShade();
         }.bind(this))
 
     },
@@ -605,11 +607,13 @@ MWF.xApplication.Execution.WorkReportList.doneView = new Class({
 
     _getCurrentPageData: function(callback, count){
 
-        if (!count)count = 15;
+        if (!count)count = 20;
         var id = (this.items.length) ? this.items[this.items.length - 1].data.id : "(0)";
+        if(id=="(0)")this.app.createShade()
         var filter = this.options.filterData || {};
         this.actions.getWorkReportDoneNext(id, count, filter,function(json){
             if (callback)callback(json);
+            this.app.destroyShade();
         }.bind(this))
 
     },
@@ -700,11 +704,13 @@ MWF.xApplication.Execution.WorkReportList.archiveView = new Class({
 
     _getCurrentPageData: function(callback, count){
 
-        if (!count)count = 15;
+        if (!count)count = 20;
         var id = (this.items.length) ? this.items[this.items.length - 1].data.id : "(0)";
+        if(id=="(0)")this.app.createShade()
         var filter = this.options.filterData || {};
         this.actions.getWorkReportArchiveNext(id, count, filter,function(json){
             if (callback)callback(json);
+            this.app.destroyShade();
         }.bind(this))
 
     },

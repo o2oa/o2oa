@@ -43,7 +43,6 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class({
                     });
                 }
             }
-
             this.loadCkeditor(config);
         }
     //    this._loadValue();
@@ -57,11 +56,10 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class({
             }else if (this.json.templateCode){
                 editorDiv.set("html", this.json.templateCode);
             }
-
             var height = this.node.getSize().y;
             var editorConfig = config || {};
 
-            if (this.form.json.mode=="Mobile"){
+            if (this.form.json.mode==="Mobile"){
                 if (!editorConfig.toolbar && !editorConfig.toolbarGroups){
                     editorConfig.toolbar = [
                         { name: 'paragraph',   items: [ 'Bold', 'Italic', "-" , 'TextColor', "BGColor", 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', "-", 'Undo', 'Redo' ] },
@@ -71,9 +69,13 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class({
             }
             // CKEDITOR.basePath = COMMON.contentPath+"/res/framework/htmleditor/ckeditor/";
             // CKEDITOR.plugins.basePath = COMMON.contentPath+"/res/framework/htmleditor/ckeditor/plugins/";
+
+            editorConfig.localImageMaxWidth = 800;
+            editorConfig.reference = this.form.businessData.work.job; 
+            editorConfig.referenceType = "processPlatformJob";
+
             this.editor = CKEDITOR.replace(editorDiv, editorConfig);
             this._loadEvents();
-            debugger;
             //this.editor.on("loaded", function(){
             //    this._loadEvents();
             //}.bind(this));
@@ -225,7 +227,6 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class({
         return true;
     },
     validationConfig: function(routeName, opinion){
-        debugger;
         if (this.json.validationConfig){
             if (this.json.validationConfig.length){
                 for (var i=0; i<this.json.validationConfig.length; i++) {

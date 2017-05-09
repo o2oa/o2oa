@@ -1,5 +1,6 @@
 package com.x.cms.assemble.control.factory;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -59,7 +60,7 @@ public class DocumentViewRecordFactory extends AbstractFactory {
 	}
 	
 	@MethodDescribe("根据访问者姓名和文档ID列示指定Id的DocumentViewRecord信息列表")
-	public List<String> listByDocAndPerson(String documentId, String personName) throws Exception {
+	public List<String> listByDocAndPerson( String documentId, String personName ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( DocumentViewRecord.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery( String.class );
@@ -69,4 +70,55 @@ public class DocumentViewRecordFactory extends AbstractFactory {
 		cq.select( root.get( DocumentViewRecord_.id ));
 		return em.createQuery( cq.where(p) ).getResultList();
 	}
+	
+	@MethodDescribe( "根据文档ID查询文档被访问次数" )
+	public Long countWithDocmentId(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( DocumentViewRecord.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery( Long.class );
+		Root<DocumentViewRecord> root = cq.from( DocumentViewRecord.class );
+		Predicate p = cb.equal( root.get( DocumentViewRecord_.documentId ), id );
+		cq.select( cb.sumAsLong(root.get( DocumentViewRecord_.viewCount )) ).where(p);
+		return em.createQuery( cq.where(p) ).getSingleResult();
+	}
+	
+	public List<DocumentViewRecord> listNextWithDocIds( String docId, Integer count, Object sequenceFieldValue, String order ) throws Exception {
+		if( order == null || order.isEmpty() ){
+			order = "DESC";
+		}
+		if( count == null ){
+			count = 12;
+		}
+		EntityManager em = this.entityManagerContainer().get( DocumentViewRecord.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<DocumentViewRecord> cq = cb.createQuery( DocumentViewRecord.class );
+		Root<DocumentViewRecord> root = cq.from( DocumentViewRecord.class );
+		Predicate p = cb.equal( root.get( DocumentViewRecord_.documentId ), docId );
+		p = cb.and( p, cb.isNotNull( root.get( DocumentViewRecord_.lastViewTime ) ));
+		if( sequenceFieldValue != null ){
+			if( "DESC".equalsIgnoreCase( order )){
+				p = cb.and( p, cb.lessThan( root.get( DocumentViewRecord_.lastViewTime ), (Date)sequenceFieldValue ));
+			}else{
+				p = cb.and( p, cb.greaterThan( root.get( DocumentViewRecord_.lastViewTime ), (Date)sequenceFieldValue ));
+			}
+		}
+		if( "DESC".equalsIgnoreCase( order )){
+			cq.orderBy( cb.desc( root.get( DocumentViewRecord_.lastViewTime ) ) );
+		}
+		return em.createQuery(cq.where(p)).setMaxResults( count ).getResultList();
+	}
+
+	public Long countWithDocIds(String docId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( DocumentViewRecord.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery( Long.class );
+		Root<DocumentViewRecord> root = cq.from( DocumentViewRecord.class );
+		Predicate p = cb.equal( root.get( DocumentViewRecord_.documentId ), docId );
+		if( docId != null && docId.isEmpty() ){
+			p = cb.and( p, cb.equal( root.get( DocumentViewRecord_.documentId ), docId ));
+		}
+		cq.select( cb.count( root ));
+		return em.createQuery(cq.where(p)).getSingleResult();
+	}
+	
 }

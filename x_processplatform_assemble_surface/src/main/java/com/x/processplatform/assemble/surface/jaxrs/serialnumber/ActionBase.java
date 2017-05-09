@@ -2,10 +2,10 @@ package com.x.processplatform.assemble.surface.jaxrs.serialnumber;
 
 import java.util.List;
 
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.exception.ExceptionWhen;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.wrapin.content.WrapInSerialNumber;
 import com.x.processplatform.assemble.surface.wrapout.content.WrapOutSerialNumber;

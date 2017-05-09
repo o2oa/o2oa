@@ -1,7 +1,7 @@
 MWF.APPFD = MWF.xApplication.process.FormDesigner = MWF.xApplication.process.FormDesigner || {};
 MWF.xApplication.process.FormDesigner.Module = MWF.xApplication.process.FormDesigner.Module || {};
 MWF.xDesktop.requireApp("process.FormDesigner", "lp."+MWF.language, null, false);
-MWF.require("MWF.widget.Macro", null, false);
+//MWF.require("MWF.widget.Macro", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Form", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Label", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Div", null, false);
@@ -30,3 +30,4 @@ MWF.xDesktop.requireApp("process.FormDesigner", "Module.Iframe", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Htmleditor", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Office", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Attachment", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Orgfield", null, false);

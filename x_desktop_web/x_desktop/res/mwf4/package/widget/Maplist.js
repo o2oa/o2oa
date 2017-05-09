@@ -249,7 +249,6 @@ MWF.widget.Maplist = new Class({
 			this.items.push(newItem);
 		}
 	},
-	
 	deleteItem: function(item){
 		var key = item.key;
 		this.notAddItem = false;

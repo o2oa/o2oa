@@ -5,6 +5,7 @@ MWF.xDesktop.requireApp("Forum", "Actions.RestActions", null, false);
 MWF.xDesktop.requireApp("Forum", "lp."+MWF.language, null, false);
 MWF.xDesktop.requireApp("Template", "Explorer", null, false);
 MWF.xDesktop.requireApp("Forum", "Access", null, false);
+MWF.xDesktop.requireApp("Forum", "TopNode", null, false);
 MWF.xApplication.ForumSearch.options = {
 	multitask: true,
 	executable: true
@@ -426,6 +427,8 @@ MWF.xApplication.ForumSearch.Explorer = new Class({
 			this.app.desktop.openApplication(null, "ForumDocument", {
 				"sectionId": this.app.sectionData.id,
 				"appId": appId,
+				"isNew" : true,
+				"isEdited" : true,
 				"onPostPublish" : function(){
 					this.view.reload();
 				}.bind(this)

@@ -8,8 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
-import com.x.base.core.http.HttpAttribute;
 import com.x.base.core.http.WrapOutMap;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.utils.DateRange;
 import com.x.base.core.utils.DateTools;
 import com.x.processplatform.assemble.bam.Business;
@@ -58,10 +58,10 @@ class ActionListCountCompletedTaskByActivity extends ActionListCountCompletedTas
 		List<ActivityStub> list = new ArrayList<>();
 		for (ApplicationStub a : ThisApplication.period.getCompletedTaskApplicationStubs()) {
 			if (StringUtils.equals(a.getValue(), applicationId)
-					|| StringUtils.equals(applicationId, HttpAttribute.x_empty_symbol)) {
+					|| StringUtils.equals(applicationId, StandardJaxrsAction.EMPTY_SYMBOL)) {
 				for (ProcessStub p : a.getProcessStubs()) {
 					if (StringUtils.equals(p.getValue(), processId)
-							|| StringUtils.equals(processId, HttpAttribute.x_empty_symbol)) {
+							|| StringUtils.equals(processId, StandardJaxrsAction.EMPTY_SYMBOL)) {
 						list.addAll(p.getActivityStubs());
 					}
 				}

@@ -6,6 +6,7 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
 		this.node.empty();
         if (this.readonly){
             this.node.set("html", this._getBusinessData());
+            debugger;
             this.node.setStyles({
                 "-webkit-user-select": "text",
                 "-moz-user-select": "text"
@@ -13,7 +14,10 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
             if( layout.mobile ){
                 this.node.getElements("img").each( function( img ){
                     //if( img.height )img.erase("height");
-                    img.setStyle("height","auto");
+                    img.setStyles({
+                        "height": "auto",
+                        "max-width" : "100%"
+                    });
                 }.bind(this))
             }
         }else{
@@ -60,9 +64,9 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
             //    _self.selectCurrentDocumentImage( e, callback );
             //};
 
-            editorConfig.filebrowserFilesImage = function( e, callback ){
-                _self.selectCloudFilesImage( e, callback );
-            };
+            //editorConfig.filebrowserFilesImage = function( e, callback ){
+            //    _self.selectCloudFilesImage( e, callback );
+            //};
 
             editorConfig.localImageMaxWidth = 800;
             editorConfig.reference = this.form.businessData.document.id;
@@ -82,6 +86,13 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
             }.bind(this));
             //    this._loadEvents();
         }.bind(this));
+    },
+    getText : function(){
+        return this.editor.document.getBody().getText();
+    },
+    _loadStyles: function(){
+        if (this.json.styles) this.node.setStyles(this.json.styles);
+        this.node.setStyle("overflow","hidden");
     },
     //selectCurrentDocumentImage : function( e, callback ){
     //    var _self = this;

@@ -43,8 +43,8 @@
       {"name": "reset(option)", "value": "this.form.reset();"},
       {"name": "retract(option)", "value": "this.form.retract();"},
       {"name": "print(application, form)", "value": "this.form.print(application, form);"},
+      {"name": "openWindow(form, application)", "value": "this.form.print(form, application);"},
       {"name": "doDeleteWork(option)", "value": "this.form.doDeleteWork();"},
-
       {"name": "currentRouteName", "value": "this.form.currentRouteName;"},
       {"name": "opinion", "value": "this.form.opinion;"},
       "-",
@@ -61,8 +61,8 @@
   {
     "name": "view",
     "value": [
-      {"name": "lookup", "value": "this.view.lookup(\n\t{\n\t\t\"view\": (viewName), \n\t\t\"application\": (applicationName)\n\t}, \n\tfunction(data){\n\t\t(code)\n\t}\n);"},
-      {"name": "select", "value": "this.view.select(\n\t{\n\t\t\"view\": (viewName), \n\t\t\"application\": (applicationName)\n\t}, \n\tfunction(data){\n\t\t(code)\n\t}\n);"}
+      {"name": "lookup", "value": "this.view.lookup(\n\t{\n\t\t\"view\": //(viewName), \n\t\t\"application\": //(applicationName)\n\t}, \n\tfunction(data){\n\t\t//(code)\n\t}\n);"},
+      {"name": "select", "value": "this.view.select(\n\t{\n\t\t\"view\": //(viewName), \n\t\t\"application\": //(applicationName)\n\t}, \n\tfunction(data){\n\t\t//(code)\n\t}\n);"}
     ]
   },
   {"name": "target", "value": "this.target"},

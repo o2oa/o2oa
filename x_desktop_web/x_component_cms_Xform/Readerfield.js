@@ -149,9 +149,9 @@ MWF.xApplication.cms.Xform.Readerfield = MWF.CMSReaderfield =  new Class({
 		var input = this.node.getFirst();
 		if (!input){
 			input = this.node;
-		}
+		};
 		//if (this.readonly)var input = this.node;
-		//this.input.empty();
+		input.empty();
 		//if (this.node.getFirst()) this.node.getFirst().set("value", value);
 		var explorer = {
 			actions : this.form.documentAction,

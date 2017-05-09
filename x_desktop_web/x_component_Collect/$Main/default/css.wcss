@@ -1,0 +1,407 @@
+{
+    "node": {
+        "position": "absolute",
+        "border-radius": "8px",
+        "background-color": "#f1f1f1",
+        "box-shadow": "0px 0px 10px #cccccc",
+        "width": "800px",
+        "height": "500px",
+        "-webkit-user-select": "none",
+        "-moz-user-select": "none"
+    },
+    "titleAreaNode": {
+        "background-color": "#3c75b7",
+        "height": "60px",
+        "line-height": "60px",
+        "border-top-left-radius": "8px",
+        "border-top-right-radius": "8px"
+    },
+    "backNode": {
+        "height": "60px",
+        "width": "80px",
+        "display": "none",
+        "background": "url("+"/x_component_Collect/$Main/default/icon/back.png) center center no-repeat",
+        "cursor": "pointer",
+        "float": "left"
+    },
+    "closeNode": {
+        "height": "60px",
+        "width": "80px",
+        "background": "url("+"/x_component_Collect/$Main/default/icon/close.png) center center no-repeat",
+        "cursor": "pointer",
+        "float": "right"
+    },
+    "titleNode": {
+        "background-color": "#3c75b7",
+        "height": "60px",
+        "line-height": "60px",
+        "color": "#ffffff",
+        "font-size": "24px",
+        "text-align": "center",
+        "margin": "0px 80px"
+    },
+    "contentNode": {
+        "height": "440px",
+        "display": "none"
+    },
+
+    "statusConnectNode": {
+        "height": "80px",
+        "padding": "0px 20px",
+        "margin": "10px auto 0px auto",
+        "width": "660px",
+        "overflow": "hidden"
+    },
+    "statusLoginNode": {
+        "height": "80px",
+        "padding": "0px 20px",
+        "margin": "10px auto 0px auto",
+        "width": "660px",
+        "overflow": "hidden"
+    },
+    "statusConnectIconsNode": {
+        "width": "228px",
+        "height": "80px",
+        "float": "left"
+    },
+    "statusConnectIconCenterNode": {
+        "width": "64px",
+        "height": "80px",
+        "background": "url("+"/x_component_Collect/$Main/default/icon/centerServer64.png) center center no-repeat",
+        "float": "left"
+    },
+    "statusConnectIconConnectNode": {
+        "width": "100px",
+        "height": "80px",
+        "background": "url("+"/x_component_Collect/$Main/default/icon/connect.png) center center no-repeat",
+        "float": "left"
+    },
+    "statusConnectIconConnectedNode": {
+        "width": "100px",
+        "height": "80px",
+        "background": "url("+"/x_component_Collect/$Main/default/icon/connected.png) center center no-repeat",
+        "float": "left"
+    },
+    "statusConnectIconDisconnectNode": {
+        "width": "100px",
+        "height": "80px",
+        "background": "url("+"/x_component_Collect/$Main/default/icon/disconnect.png) center center no-repeat",
+        "float": "left"
+    },
+    "statusConnectIconCollectNode": {
+        "width": "64px",
+        "height": "80px",
+        "background": "url("+"/x_component_Collect/$Main/default/icon/o2Server64.png) center center no-repeat",
+        "float": "left"
+    },
+    "statusConnectTextNode": {
+        "margin-left": "230px",
+        "padding-left": "30px",
+        "height": "80px",
+        "line-height": "80px",
+        "color": "#666666",
+        "font-size": "20px"
+    },
+
+    "statusLoginIconsNode": {
+        "width": "228px",
+        "height": "80px",
+        "float": "left"
+    },
+    "statusLoginIconCenterNode": {
+        "width": "64px",
+        "height": "80px",
+        "background": "url("+"/x_component_Collect/$Main/default/icon/centerServer64.png) center center no-repeat",
+        "float": "left"
+    },
+    "statusLoginIconConnectNode": {
+        "width": "100px",
+        "height": "80px",
+        "background": "url("+"/x_component_Collect/$Main/default/icon/connect.png) center center no-repeat",
+        "float": "left"
+    },
+    "statusLoginIconConnectedNode": {
+        "width": "100px",
+        "height": "80px",
+        "background": "url("+"/x_component_Collect/$Main/default/icon/connected.png) center center no-repeat",
+        "float": "left"
+    },
+    "statusLoginIconDisconnectNode": {
+        "width": "100px",
+        "height": "80px",
+        "background": "url("+"/x_component_Collect/$Main/default/icon/disconnect.png) center center no-repeat",
+        "float": "left"
+    },
+    "statusLoginIconCollectNode": {
+        "width": "64px",
+        "height": "80px",
+        "background": "url("+"/x_component_Collect/$Main/default/icon/o2ServerLogin64.png) center center no-repeat",
+        "float": "left"
+    },
+    "statusLoginTextNode": {
+        "margin-left": "230px",
+        "padding-left": "30px",
+        "height": "80px",
+        "line-height": "80px",
+        "color": "#666666",
+        "font-size": "20px"
+    },
+
+    "recheckActionNode": {
+        "float": "right",
+        "margin-top": "20px",
+        "margin-right": "10px",
+        "height": "40px",
+        "width": "100px",
+        "border-radius": "5px",
+        "background-color": "#3498db",
+        "line-height": "40px",
+        "text-align": "center",
+        "cursor": "pointer",
+        "color": "#FFF"
+    },
+
+    "actionsNode": {
+        "margin": "10px 40px",
+        "padding": "20px",
+        "overflow": "hidden"
+    },
+
+    "loginInfor": {
+        "line-height": "50px",
+        "color": "#666666",
+        "font-size": "20px",
+        "float": "left"
+    },
+    "inforAction": {
+        "float": "left",
+        "margin-left": "10px",
+        "margin-top": "7px",
+        "height": "34px",
+        "width": "120px",
+        "border-radius": "5px",
+        "background-color": "#3498db",
+        "line-height": "34px",
+        "text-align": "center",
+        "cursor": "pointer",
+        "color": "#FFF"
+    },
+    "notLoginInfor": {
+        "line-height": "50px",
+        "color": "#666666",
+        "font-size": "20px",
+        "float": "left"
+    },
+    "disconnectInfor": {
+        "line-height": "30px",
+        "color": "#666666",
+        "font-size": "16px",
+        "float": "left",
+        "color": "#3c75b7"
+    },
+
+    "loginUsernameNode": {
+        "height": "40px",
+        "width": "400px",
+        "border": "1px solid #CCC",
+        "border-radius": "5px",
+        "background-color": "#ffffff",
+        "margin": "60px auto 0px auto"
+    },
+    "loginUsernameNode_over": {
+        "border": "1px solid #3c75b7"
+    },
+    "loginUsernameNode_error": {
+        "border": "1px solid #ff5c42"
+    },
+
+    "loginPasswordNode": {
+        "height": "40px",
+        "width": "400px",
+        "border": "1px solid #CCC",
+        "border-radius": "5px",
+        "background-color": "#ffffff",
+        "margin": "0px auto"
+    },
+    "loginPasswordNode_over": {
+        "border": "1px solid #3c75b7"
+    },
+    "loginPasswordNode_error": {
+        "border": "1px solid #ff5c42"
+    },
+
+    "loginActionNode": {
+        "height": "40px",
+        "width": "400px",
+        "border-radius": "5px",
+        "background-color": "#3498db",
+        "line-height": "40px",
+        "text-align": "center",
+        "cursor": "pointer",
+        "font-size": "16px",
+        "color": "#FFF",
+        "margin": "0px auto 5px auto"
+    },
+    "loginUsernameIconNode": {
+        "width": "60px",
+        "height": "40px",
+        "background": "url("+"/x_component_Collect/$Main/default/icon/icon_username.png) center center no-repeat",
+        "float": "left"
+    },
+    "loginPasswordIconNode": {
+        "width": "60px",
+        "height": "40px",
+        "background": "url("+"/x_component_Collect/$Main/default/icon/icon_password_or.png) center center no-repeat",
+        "float": "left"
+    },
+    "loginInputAreaNode": {
+        "margin-left": "60px",
+        "height": "40px"
+    },
+    "loginInputNode": {
+        "border": "0px solid",
+        "width": "98%",
+        "height": "38px",
+        "color": "#999999",
+        "line-height": "38px",
+        "font-size": "18px",
+        "-webkit-user-select": "text",
+        "-moz-user-select": "text"
+    },
+    "loginOtherActionNode": {
+        "height": "40px",
+        "width": "400px",
+        "margin": "5px auto 5px auto"
+    },
+    "loginRegisterActionNode": {
+        "display": "block",
+        "float": "left",
+        "cursor": "pointer",
+        "color": "#3c75b7"
+    },
+    "loginRegisterActionNode_over": {
+        "color": "#ff5c42"
+    },
+    "loginForgetActionNode": {
+        "display": "block",
+        "float": "right",
+        "cursor": "pointer",
+        "color": "#3c75b7"
+    },
+    "loginForgetActionNode_over": {
+        "color": "#ff5c42"
+    },
+    "loginErrorNode": {
+        "color": "#ff5c42",
+        "height": "30px",
+        "width": "390px",
+        "font-size": "16px",
+        "margin": "5px auto"
+    },
+
+    "registerAreaNode": {
+        "height": "40px",
+        "width": "440px",
+        "border": "1px solid #CCC",
+        "border-radius": "5px",
+        "background-color": "#ffffff",
+        "margin": "0px auto 0px auto"
+    },
+    "registerAreaNode_over": {
+        "border": "1px solid #3c75b7"
+    },
+    "registerAreaNode_error": {
+        "border": "1px solid #ff5c42"
+    },
+    "registerAreaNode_normal": {
+        "border": "1px solid #cccccc",
+    },
+    "registerUsernameIconNode": {
+        "width": "60px",
+        "height": "40px",
+        "background": "url("+"/x_component_Collect/$Main/default/icon/icon_username.png) center center no-repeat",
+        "float": "left"
+    },
+    "registerPasswordIconNode": {
+        "width": "60px",
+        "height": "40px",
+        "background": "url("+"/x_component_Collect/$Main/default/icon/icon_password_or.png) center center no-repeat",
+        "float": "left"
+    },
+    "registerMobileIconNode": {
+        "width": "60px",
+        "height": "40px",
+        "background": "url("+"/x_component_Collect/$Main/default/icon/icon_phone.png) center center no-repeat",
+        "float": "left"
+    },
+    "registerCodeIconNode": {
+        "width": "60px",
+        "height": "40px",
+        "background": "url("+"/x_component_Collect/$Main/default/icon/icon_verify_code.png) center center no-repeat",
+        "float": "left"
+    },
+    "registerCheckIconNode": {
+        "width": "40px",
+        "height": "40px",
+        "float": "right"
+    },
+    "registerInputAreaNode": {
+        "margin-left": "60px",
+        "margin-right": "40px",
+        "overflow": "hidden",
+        "height": "40px"
+    },
+    "registerInputNode": {
+        "border": "0px solid",
+        "width": "98%",
+        "height": "38px",
+        "color": "#999999",
+        "line-height": "38px",
+        "font-size": "18px",
+        "-webkit-user-select": "text",
+        "-moz-user-select": "text"
+    },
+    "registerErrorNode": {
+        "color": "#ff5c42",
+        "height": "20px",
+        "width": "430px",
+        "font-size": "14px",
+        "margin": "5px auto"
+    },
+
+    "registerActionNode": {
+        "height": "40px",
+        "width": "440px",
+        "border-radius": "5px",
+        "background-color": "#3498db",
+        "line-height": "40px",
+        "text-align": "center",
+        "cursor": "pointer",
+        "font-size": "16px",
+        "color": "#FFF",
+        "margin": "0px auto 5px auto"
+    },
+    "registerCodeAreaNode": {
+        "height": "72px",
+        "width": "440px",
+        "overflow": "hidden",
+        "margin": "0px auto 0px auto"
+    },
+    "registerGetCodeAtionNode": {
+        "height": "40px",
+        "width": "140px",
+        "border-radius": "5px",
+        "background-color": "#3498db",
+        "line-height": "40px",
+        "text-align": "center",
+        "cursor": "pointer",
+        "font-size": "14px",
+        "color": "#FFF",
+        "float": "right"
+    },
+    "registerGetCodeAtionNode_next": {
+        "background-color": "#999999",
+        "color": "#FFF"
+    }
+
+}

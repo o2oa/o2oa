@@ -1,3 +1,19 @@
+function person_getComplex() {
+    $('#result').html('');
+    $.ajax({
+	type : 'get',
+	dataType : 'json',
+	url : '../jaxrs/person/complex',
+	contentType : 'application/json; charset=utf-8',
+	xhrFields : {
+	    'withCredentials' : true
+	},
+	crossDomain : true
+    }).done(function(json) {
+	$('#result').html(JSON.stringify(json, null, 4));
+    });
+}
+
 function person_edit() {
     $('#content').html('');
     $('#result').html('');

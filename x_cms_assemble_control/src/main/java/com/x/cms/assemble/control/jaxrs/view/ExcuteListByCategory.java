@@ -23,12 +23,13 @@ public class ExcuteListByCategory extends ExcuteBase {
 	protected ActionResult<List<WrapOutView>> execute( HttpServletRequest request, EffectivePerson effectivePerson, String categoryId ) throws Exception {
 		ActionResult<List<WrapOutView>> result = new ActionResult<>();
 		List<WrapOutView> wraps = null;
+		
 		String cacheKey = ApplicationCache.concreteCacheKey( "category", categoryId );
 		Element element = cache.get(cacheKey);
 		
 		if ((null != element) && ( null != element.getObjectValue()) ) {
 			wraps = (List<WrapOutView>) element.getObjectValue();
-			result.setData(wraps);
+			result.setData( wraps );
 		} else {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
 				Business business = new Business(emc);			
@@ -42,7 +43,7 @@ public class ExcuteListByCategory extends ExcuteBase {
 				List<View> viewList = viewFactory.list( ids );//查询ID IN ids 的所有视图信息列表
 				wraps = WrapTools.view_wrapout_copier.copy( viewList );//将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
 				Collections.sort( wraps );
-				cache.put(new Element( cacheKey, wraps ));		
+				cache.put(new Element( cacheKey, wraps ));
 				result.setData(wraps);
 			} catch (Throwable th) {
 				th.printStackTrace();

@@ -52,11 +52,11 @@ MWF.xApplication.process.Xform.Tab = MWF.APPTab =  new Class({
     },
 
 	_setTabWidgetStyles: function(){
-        if (this.json.tabNodeContainer) this.tab.css.tabNodeContainer = this.json.tabNodeContainer;
-        if (this.json.contentNodeContainer) this.tab.css.contentNodeContainer = this.json.contentNodeContainer;
-		this.tab.css.tabNode = this.json.tabStyles;
-		this.tab.css.tabTextNode = this.json.tabTextStyles;
-		this.tab.css.tabNodeCurrent = this.json.tabCurrentStyles;
-		this.tab.css.tabTextNodeCurrent = this.json.tabTextCurrentStyles;
+        if (this.json.tabNodeContainer) this.tab.css.tabNodeContainer = Object.clone(this.json.tabNodeContainer);
+        if (this.json.contentNodeContainer) this.tab.css.contentNodeContainer = Object.clone(this.json.contentNodeContainer);
+		this.tab.css.tabNode = Object.clone(this.json.tabStyles);
+		this.tab.css.tabTextNode = Object.clone(this.json.tabTextStyles);
+		this.tab.css.tabNodeCurrent = Object.clone(this.json.tabCurrentStyles);
+		this.tab.css.tabTextNodeCurrent = Object.clone(this.json.tabTextCurrentStyles);
 	}
 }); 

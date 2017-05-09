@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.cache.ApplicationCache;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
@@ -20,16 +21,18 @@ class ActionListWithCompanySubNested extends ActionBase {
 	ActionResult<List<WrapOutDepartment>> execute(String companyName) throws Exception {
 		ActionResult<List<WrapOutDepartment>> result = new ActionResult<>();
 		List<WrapOutDepartment> wraps = new ArrayList<>();
-		String cacheKey = "listWithCompanySubNested#" + companyName;
+		String cacheKey = ApplicationCache.concreteCacheKey(ActionListWithCompanySubNested.class.getName(),
+				companyName);
 		Element element = cache.get(cacheKey);
-		if (null != element) {
+		if ((null != element) && (null != element.getObjectValue())) {
 			wraps = (List<WrapOutDepartment>) element.getObjectValue();
 		} else {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
+				/* 按名称查找Company */
 				String companyId = business.company().getWithName(companyName);
 				if (StringUtils.isNotEmpty(companyId)) {
-					List<String> ids = business.department().listWithCompanySubNested(companyId);
+					List<String> ids = business.department().listTopWithCompany(companyId);
 					for (Department o : emc.list(Department.class, ids)) {
 						WrapOutDepartment wrap = business.department().wrap(o);
 						wraps.add(wrap);

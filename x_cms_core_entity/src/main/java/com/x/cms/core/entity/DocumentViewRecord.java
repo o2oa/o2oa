@@ -184,7 +184,17 @@ public class DocumentViewRecord extends SliceJpaObject {
 	@Column( name="xviewerCompany", length = JpaObject.length_255B )
 	@CheckPersist( allowEmpty = true )
 	private String viewerCompany;
+	
+	@EntityFieldDescribe( "访问次数" )
+	@Column( name="xviewCount" )
+	@CheckPersist( allowEmpty = true )
+	private Integer viewCount;
 
+	@EntityFieldDescribe( "最后访问时间." )
+	@Index(name = TABLE + "_lastViewTime" )
+	@Column( name="xlastViewTime")
+	private Date lastViewTime;
+	
 	public String getAppId() {
 		return appId;
 	}
@@ -238,6 +248,18 @@ public class DocumentViewRecord extends SliceJpaObject {
 	}
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	public Integer getViewCount() {
+		return viewCount;
+	}
+	public Date getLastViewTime() {
+		return lastViewTime;
+	}
+	public void setViewCount(Integer viewCount) {
+		this.viewCount = viewCount;
+	}
+	public void setLastViewTime(Date lastViewTime) {
+		this.lastViewTime = lastViewTime;
 	}
 	
 }

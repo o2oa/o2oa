@@ -90,8 +90,7 @@ public class ReportAttachmentDownloadServlet extends AbstractServletAction {
 		// 文件下载
 		if (check) {
 			try {
-				mapping = ThisApplication.storageMappings.get(OkrAttachmentFileInfo.class,
-						okrAttachmentFileInfo.getStorage());
+				mapping = ThisApplication.context().storageMappings().get(OkrAttachmentFileInfo.class, okrAttachmentFileInfo.getStorage());
 				this.setResponseHeader(response, streamContentType, okrAttachmentFileInfo);
 			} catch (Exception e) {
 				check = false;

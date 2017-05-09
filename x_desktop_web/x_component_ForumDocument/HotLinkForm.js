@@ -1,13 +1,14 @@
 MWF.xApplication.ForumDocument = MWF.xApplication.ForumDocument || {};
 MWF.xDesktop.requireApp("Template", "Explorer", null, false);
+MWF.require("MWF.widget.ImageClipper", null, false);
 
 MWF.xApplication.ForumDocument.HotLinkForm = new Class({
     Extends: MWF.xApplication.Template.Explorer.PopupForm,
     Implements: [Options, Events],
     options: {
         "style": "default",
-        "width": "760",
-        "height": "620",
+        "width": "660",
+        "height": "520",
         "hasTop": true,
         "hasIcon": false,
         "hasTopIcon" : false,
@@ -66,12 +67,16 @@ MWF.xApplication.ForumDocument.HotLinkForm = new Class({
         //if (this.hotPicData.pictureBase64){
             //this.iconNode.set("src", this.hotPicData.pictureBase64.substr( 0, 10 ) == 'data:image' ? this.hotPicData.pictureBase64 : ('data:image/png;base64,'+this.hotPicData.pictureBase64));
         //}
+
         MWF.require("MWF.widget.ImageClipper", function () {
-            this.clipper = new MWF.xApplication.ForumDocument.ImageClipper(hotPictureArea, {
-                aspectRatio : 3,
-                formFileEnable : true
-            }, this, this.options.documentId );
-            this.clipper.load( this.hotPicData.pictureBase64 );
+            this.clipper = new MWF.widget.ImageClipper(hotPictureArea, {
+                aspectRatio : 2,
+                formFileEnable : true,
+                imageUrl : this.hotPicData.picId ?  MWF.xDesktop.getImageSrc( this.hotPicData.picId ) : "",
+                reference : this.options.documentId,
+                referenceType : "forumDocument"
+            });
+            this.clipper.load();
         }.bind(this));
 
         //var hotPictureActionArea = this.formTableArea.getElements("[item='hotPictureActionArea']")[0];
@@ -119,23 +124,23 @@ MWF.xApplication.ForumDocument.HotLinkForm = new Class({
     //        }.bind(this));
     //    }.bind(this) )
     //},
-    selectFilePicture: function () {
-        var _self = this;
-        MWF.xDesktop.requireApp("File", "FileSelector", function(){
-            _self.selector_cloud = new MWF.xApplication.File.FileSelector( document.body ,{
-                "style" : "default",
-                "title": "选择云文件图片",
-                "toBase64" : true,
-                "listStyle": "preview",
-                "selectType" : "images",
-                "onPostSelectAttachment" : function(url, base64Code){
-                    _self.iconNode.set("src", base64Code || url);
-                    _self.hotPicData.pictureBase64 = base64Code || url;
-                }
-            });
-            _self.selector_cloud.load();
-        }, true);
-    },
+    //selectFilePicture: function () {
+    //    var _self = this;
+    //    MWF.xDesktop.requireApp("File", "FileSelector", function(){
+    //        _self.selector_cloud = new MWF.xApplication.File.FileSelector( document.body ,{
+    //            "style" : "default",
+    //            "title": "选择云文件图片",
+    //            "toBase64" : true,
+    //            "listStyle": "preview",
+    //            "selectType" : "images",
+    //            "onPostSelectAttachment" : function(url, base64Code){
+    //                _self.iconNode.set("src", base64Code || url);
+    //                _self.hotPicData.pictureBase64 = base64Code || url;
+    //            }
+    //        });
+    //        _self.selector_cloud.load();
+    //    }, true);
+    //},
     _createBottomContent: function () {
 
         this.okActionNode = new Element("div.formOkActionNode", {
@@ -200,22 +205,28 @@ MWF.xApplication.ForumDocument.HotLinkForm = new Class({
         //var pictureBase64 =this.hotPicData.pictureBase64.replace("http://","").split("\/");
         //pictureBase64.shift();
         //this.hotPicData.pictureBase64 = "/"+ pictureBase64.join("/");
-        this.hotPicData.infoId = this.options.documentId;
-        this.hotPicData.url = this.options.documentId;
-        this.hotPicData.title = this.data.title;
-        this.hotPicData.application = "BBS";
-        this.hotPicData.creator = layout.desktop.session.user.name;
+        this.clipper.uploadImage( function( json ){
 
-        this._ok(this.hotPicData, function (json) {
-            if (json.type == "error") {
-                this.app.notice(json.message, "error");
-            } else {
-                this.formMarkNode.destroy();
-                this.formAreaNode.destroy();
-                this.app.notice(this.lp.setHotLinkSuccess, "success");
-                this.fireEvent("postOk", json.data.id);
-            }
-        }.bind(this))
+            //this.hotPicData.pictureBase64 = pictureBase64;
+            this.hotPicData.infoId = this.options.documentId;
+            this.hotPicData.url = MWF.xDesktop.getImageSrc( json.id );
+            this.hotPicData.picId = json.id;
+            this.hotPicData.title = this.data.title;
+            this.hotPicData.application = "BBS";
+            this.hotPicData.creator = layout.desktop.session.user.name;
+
+            this._ok(this.hotPicData, function (json) {
+                if (json.type == "error") {
+                    this.app.notice(json.message, "error");
+                } else {
+                    this.formMarkNode.destroy();
+                    this.formAreaNode.destroy();
+                    this.app.notice(this.lp.setHotLinkSuccess, "success");
+                    this.fireEvent("postOk", json.data.id);
+                }
+            }.bind(this))
+
+        }.bind(this) );
     },
     _ok: function (data, callback) {
         this.actions.saveHotPic( data, function(json){
@@ -226,3 +237,4 @@ MWF.xApplication.ForumDocument.HotLinkForm = new Class({
       this.clipper.close();
     }
 });
+

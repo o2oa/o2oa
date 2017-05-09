@@ -14,8 +14,9 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
 		"name": "cms.ColumnManager",
 		"icon": "icon.png",
 		"width": "1100",
-		"height": "720",
-		"title": MWF.xApplication.cms.ColumnManager.LP.title
+		"height": "700",
+		"title": MWF.xApplication.cms.ColumnManager.LP.title,
+        "currentCategoryId" : ""
 	},
 	onQueryLoad: function(){
         if(this.options.column)this.options.column.icon = this.options.column.appIcon;
@@ -27,22 +28,11 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
 
         this.restActions = new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
 
-        //if (this.status){
-        //    if (!this.options.application){
-        //        if (this.status.application){
-        //            this.restActions.getApplication(this.status.application, function(json){
-        //                if (json.data){
-        //                    this.options.application = json.data;
-        //                    alert("sds"+this.options.application);
-        //                }else{
-        //                    this.close();
-        //                }
-        //            }.bind(this), function(){this.close();}.bind(this), false)
-        //        }else{
-        //            this.close();
-        //        }
-        //    }
-        //}
+        if (this.status && !this.options.currentCategoryId ){
+            if( this.status.categoryId ){
+                this.options.currentCategoryId =  this.status.categoryId;
+            }
+        }
         this.getColumn(function(){
             this.setTitle( this.options.column.appName +this.lp.setting );
             this.loadController(function(){
@@ -136,7 +126,8 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
 
         this.leftTitleTextNode = new Element("div", {
             "styles": this.css.leftTitleTextNode,
-            "text" : this.options.column.appName + this.lp.setting
+            "text" : this.options.column.appName + this.lp.setting,
+            "title" : this.options.column.appName + this.lp.setting
         }).inject(this.leftTitleNode);
 
         this.startMenuNode = new Element("div", {
@@ -209,14 +200,14 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
         this.property.load();
     },
 
-    cagetoryConfig: function(){
+    cagetoryConfig: function( noRefresh ){
         this.clearContent();
         if( this.categoryConfiguratorContent ) {
             this.categoryConfiguratorContent.setStyle("display","");
             if( this.menu.itemObject["categoryConfig"] ){
                 this.menu.expend( this.menu.itemObject["categoryConfig"] );
             }
-            this.categoryConfigurator.refresh();
+            if(!noRefresh)this.categoryConfigurator.refresh();
         }else{
             this.categoryConfiguratorContent = new Element("div", {
                 "styles": this.css.rightContentNode
@@ -231,20 +222,31 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
                 var subNode = navi.retrieve( "subNode" );
                 if (!this.restActions) this.restActions = new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
                 this.categoryConfigurator = new MWF.xApplication.cms.ColumnManager.CategoryExplorer(this.categoryConfiguratorContent, subNode, this.restActions, {
+                    "currentCategoryId" : this.options.currentCategoryId,
                     "onPostLoadCategoryList" : function(){
+                    }.bind(this),
+                    "onPostClickSub" : function(){
+                        this.menu.cancelCurrentNavi();
                     }.bind(this)
                 });
                 this.categoryConfigurator.app = this;
                 //this.categoryConfigurator.categoryScrollWrapNode = this.menu.naviNode;
                 //this.categoryConfigurator.categoryScrollContentNode = this.menu.areaNode;
                 this.categoryConfigurator.load();
+                this.options.currentCategoryId = ""
             }.bind(this));
         }.bind(this));
     },
     createCategory : function(){
-        this.cagetoryConfig();
+        this.cagetoryConfig( true );
         if( this.categoryConfigurator ){
             this.categoryConfigurator.categoryList.newCategory();
+        }
+    },
+    setCategory : function( categoryId ){
+        this.cagetoryConfig( true );
+        if( this.categoryConfigurator ){
+            this.categoryConfigurator.categoryList.setCurrentCategoryById( categoryId );
         }
     },
 
@@ -438,11 +440,24 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
     },
     recordStatus: function(){
         var id = null;
+        var categoryId = "";
         if (this.menu.currentNavi){
             var naviData = this.menu.currentNavi.retrieve( "naviData" );
             id = naviData.id;
         }
-        return {"navi": id, "column": this.options.column.id};
+        if( id == "categoryConfig" ){
+            if( this.categoryConfigurator && this.categoryConfigurator.categoryList ){
+                var list = this.categoryConfigurator.categoryList;
+                if( list.currentCategory && list.currentCategory.data ){
+                    categoryId = list.currentCategory.data.id;
+                }
+            }
+        }
+        return {
+            "navi": id,
+            "column": this.options.column.id,
+            "categoryId" : categoryId
+        };
     }
 
 //	onResize: function(){
@@ -481,6 +496,18 @@ MWF.xApplication.cms.ColumnManager.Menu = new Class({
                 });
                 naviNode.store("naviData", navi);
 
+                if( navi.expand ){
+                    var expandNode =  new Element("div", {
+                        "styles": this.app.css.startMenuExpandNode
+                    });
+                    expandNode.inject(naviNode);
+                    naviNode.store("expandNode", expandNode );
+                }else{
+                    new Element("div", {
+                        "styles": this.app.css.startMenuEmptyNode
+                    }).inject(naviNode);
+                }
+
                 var iconNode =  new Element("div", {
                     "styles": this.app.css.startMenuIconNode
                 }).inject(naviNode);
@@ -492,14 +519,6 @@ MWF.xApplication.cms.ColumnManager.Menu = new Class({
                     "text": navi.title
                 });
                 textNode.inject(naviNode);
-
-                if( navi.expand ){
-                    var expandNode =  new Element("div", {
-                        "styles": this.app.css.startMenuExpandNode
-                    });
-                    expandNode.inject(naviNode);
-                    naviNode.store("expandNode", expandNode );
-                }
 
                 if( navi.create ){
                     var createNode = new Element("div", {
@@ -514,11 +533,19 @@ MWF.xApplication.cms.ColumnManager.Menu = new Class({
                             ev.stopPropagation();
                         }.bind( { obj : this, navi : navi } ),
                         "mouseover" : function(ev){
-                            this.createNode.setStyles( this.obj.app.css.startMenuCreateNode_over )
-                        }.bind({ obj : this, createNode : createNode }),
+                            if( this.obj.currentNavi == this.naviNode && !this.naviData.unselected ){
+                                this.createNode.setStyles( this.obj.app.css.startMenuCreateNode_current_over )
+                            }else{
+                                this.createNode.setStyles( this.obj.app.css.startMenuCreateNode_over )
+                            }
+                        }.bind({ obj : this, createNode : createNode, naviNode : naviNode , naviData : navi}),
                         "mouseout" : function(ev){
-                            this.createNode.setStyles( this.obj.app.css.startMenuCreateNode )
-                        }.bind({ obj : this, createNode : createNode })
+                            if( this.obj.currentNavi == this.naviNode && !this.naviData.unselected ){
+                                this.createNode.setStyles( this.obj.app.css.startMenuCreateNode_current )
+                            }else{
+                                this.createNode.setStyles( this.obj.app.css.startMenuCreateNode )
+                            }
+                        }.bind({ obj : this, createNode : createNode, naviNode : naviNode, naviData : navi })
                     })
                 }
 
@@ -582,7 +609,15 @@ MWF.xApplication.cms.ColumnManager.Menu = new Class({
             naviNode.store("isExpand",false);
         }
     },
-    doAction: function(naviNode){
+    cancelCurrentNavi: function(){
+        if( this.currentNavi ){
+            this.currentNavi.setStyles(this.app.css.startMenuNaviNode);
+            var iconNode = this.currentNavi.retrieve("iconNode");
+            var navi = this.currentNavi.retrieve("naviData");
+            iconNode.setStyle("background-image", "url("+this.app.path+this.app.options.style+"/icon/"+navi.icon+")");
+        }
+    },
+    doAction: function( naviNode ){
         if( this.currentNavi && this.currentNavi == naviNode ){
             var navi = this.currentNavi.retrieve("naviData");
             if( navi.expand ){
@@ -616,26 +651,48 @@ MWF.xApplication.cms.ColumnManager.Menu = new Class({
                 subNode.setStyle( "display" , "none" );
                 this.currentNavi.store("isExpand",false);
             }
+            if( navi.create ){
+                var createNode = this.currentNavi.retrieve("createNode");
+                createNode.setStyles(this.app.css.startMenuCreateNode);
+            }
         }
 
-        var navi = naviNode.retrieve("naviData");
-        var action = navi.action;
+        if( naviNode ){
+            var navi = naviNode.retrieve("naviData");
+            var action = navi.action;
 
-        naviNode.setStyles(this.app.css.startMenuNaviNode_current);
-        var iconNode = naviNode.retrieve("iconNode");
-        iconNode.setStyle("background-image", "url("+this.app.path+this.app.options.style+"/icon/"+navi.selectedIcon+")");
+            if( !navi.unselected ){
+                naviNode.setStyles(this.app.css.startMenuNaviNode_current);
+                var iconNode = naviNode.retrieve("iconNode");
+                iconNode.setStyle("background-image", "url("+this.app.path+this.app.options.style+"/icon/"+navi.selectedIcon+")");
+            }
 
-        if( navi.expand ){
-            var expandNode = naviNode.retrieve("expandNode");
-            expandNode.setStyles(this.app.css.startMenuCollapseNode);
-            var subNode = naviNode.retrieve("subNode");
-            subNode.setStyle( "display" , "" );
-            naviNode.store("isExpand",true);
+            if( navi.expand ){
+                if( !navi.unselected ){
+                    var expandNode = naviNode.retrieve("expandNode");
+                    expandNode.setStyles(this.app.css.startMenuCollapseNode_current);
+                }else{
+                    var expandNode = naviNode.retrieve("expandNode");
+                    expandNode.setStyles(this.app.css.startMenuCollapseNode );
+                }
+                var subNode = naviNode.retrieve("subNode");
+                subNode.setStyle( "display" , "" );
+                naviNode.store("isExpand",true);
+            }
 
+            if( navi.create ){
+                var createNode = naviNode.retrieve("createNode");
+                if( !navi.unselected ){
+                    createNode.setStyles(this.app.css.startMenuCreateNode_current);
+                }else{
+                    createNode.setStyles(this.app.css.startMenuCreateNode);
+                }
+            }
+
+            if (this.app[action]) this.app[action].apply( this.app );
         }
+
         this.currentNavi = naviNode;
-
-        if (this.app[action]) this.app[action].apply(this.app);
 
     },
     setContentSize : function(){
@@ -654,15 +711,15 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         this.controllerList = [];
     },
     load: function(){
-        this.propertyTitleBar = new Element("div", {
+        this.propertyTitleBar = new Element("div.propertyTitleBar", {
             "styles": this.app.css.propertyTitleBar,
             "text": "栏目属性"  //this.data.name || this.data.appName
         }).inject(this.node);
 
-        this.contentNode =  new Element("div", {
+        this.contentNode =  new Element("div.propertyContentNode", {
             "styles": this.app.css.propertyContentNode
         }).inject(this.node);
-        this.contentAreaNode =  new Element("div", {
+        this.contentAreaNode =  new Element("div.propertyContentAreaNode", {
             "styles": this.app.css.propertyContentAreaNode
         }).inject(this.contentNode);
 
@@ -673,14 +730,14 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
             new MWF.widget.ScrollBar(this.contentNode, {"indent": false});
         }.bind(this));
 
-        this.baseActionAreaNode = new Element("div", {
+        this.baseActionAreaNode = new Element("div.baseActionAreaNode", {
             "styles": this.app.css.baseActionAreaNode
         }).inject(this.contentAreaNode);
 
-        this.baseActionNode = new Element("div", {
+        this.baseActionNode = new Element("div.propertyInforActionNode", {
             "styles": this.app.css.propertyInforActionNode
         }).inject(this.baseActionAreaNode);
-        this.baseTextNode = new Element("div", {
+        this.baseTextNode = new Element("div.baseTextNode", {
             "styles": this.app.css.baseTextNode,
             "text": this.app.lp.application.property
         }).inject(this.baseActionAreaNode);
@@ -737,7 +794,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
     },
 
     createIconContentNode: function(){
-        this.iconContentTitleNode = new Element("div", {
+        this.iconContentTitleNode = new Element("div.iconContentTitleNode", {
             "styles": this.app.css.iconContentTitleNode,
             "text": this.app.lp.application.icon
         }).inject(this.contentAreaNode);
@@ -763,18 +820,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
             this.iconPreviewNode.setStyle("background", "url("+"/x_component_cms_Column/$Main/default/icon/column.png) center center no-repeat")
         }
         var changeIconAction = new Element("div", {
-            "styles": {
-                "margin-left": "20px",
-                "float": "left",
-                "background-color": "#FFF",
-                "padding": "4px 14px",
-                "border": "1px solid #999",
-                "border-radius": "3px",
-                "margin-top": "10px",
-                "font-size": "14px",
-                "color": "#666",
-                "cursor": "pointer"
-            },
+            "styles": this.app.css.selectButtonStyle,
             "text": "更改图标"
         }).inject(this.iconActionNode);
         changeIconAction.addEvent("click", function(){
@@ -827,7 +873,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
 
         var html = "<table cellspacing='0' cellpadding='0' border='0' width='95%' align='center' style='margin-top: 20px'>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.name+"</td><td id='formApplicationName'></td></tr>";
-        html += "<tr><td class='formTitle'>"+this.app.lp.application.alias+"</td><td id='formApplicationAlias'></td></tr>";
+        html += "<tr><td class='formTitle'>"+this.app.lp.application.sign+"</td><td id='formApplicationAlias' class='formValue'>"+(this.data.alias||this.data.appAlias||'')+"</td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.description+"</td><td id='formApplicationDescription'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.sort+"</td><td id='formApplicationSort'></td></tr>";
        // html += "<tr><td class='formTitle'>"+this.app.lp.application.type+"</td><td id='formApplicationType'></td></tr>";
@@ -835,9 +881,10 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         html += "</table>";
         this.propertyContentNode.set("html", html);
         this.propertyContentNode.getElements("td.formTitle").setStyles(this.app.css.propertyBaseContentTdTitle);
+        this.propertyContentNode.getElements("td.formValue").setStyles(this.app.css.propertyBaseContentTdValue);
 
-        this.nameInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formApplicationName"), this.data.name, this.app.css.formInput);
-        this.aliasInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formApplicationAlias"), this.data.alias, this.app.css.formInput);
+        this.nameInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formApplicationName"), this.data.name || this.data.appName, this.app.css.formInput);
+        //this.aliasInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formApplicationAlias"), this.data.alias, this.app.css.formInput);
         this.descriptionInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formApplicationDescription"), this.data.description, this.app.css.formInput);
         this.sortInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formApplicationSort"), this.data.appInfoSeq, this.app.css.formInput);
 
@@ -846,28 +893,16 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
     createControllerListNode: function(){
         if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();
 
-        this.controllerListTitleNode = new Element("div", {
+        this.controllerListTitleNode = new Element("div.controllerListTitleNode", {
             "styles": this.app.css.controllerListTitleNode,
             "text": this.app.lp.application.controllerList
         }).inject(this.contentAreaNode);
 
         this.controllerListContentNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.contentAreaNode);
-        this.administratorsContentNode = new Element("div", {"styles": this.app.css.administratorsContentNode}).inject(this.controllerListContentNode);
+        this.administratorsContentNode = new Element("div.administratorsContentNode", {"styles": this.app.css.administratorsContentNode}).inject(this.controllerListContentNode);
 
         var changeAdministrators = new Element("div", {
-            "styles": {
-                "margin-left": "40px",
-                "float": "left",
-                "background-color": "#FFF",
-                "padding": "4px 14px",
-                "border": "1px solid #999",
-                "border-radius": "3px",
-                "margin-top": "10px",
-                "margin-bottom": "20px",
-                "font-size": "14px",
-                "color": "#666",
-                "cursor": "pointer"
-            },
+            "styles": this.app.css.selectButtonStyle,
             "text": "设置栏目管理者"
         }).inject(this.contentAreaNode);
         changeAdministrators.addEvent("click", function(){
@@ -928,13 +963,13 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
                             "adminUid": item,
                             "adminName": item,
                             "adminLevel": "ADMIN"
-                        }
+                        };
                         this.app.restActions.saveController(controllerData, function(json){
                             controllerData.id = json.data.id;
                             this.controllerData.push( controllerData );
                         }.bind(this), null, false);
                     }
-                }.bind(this))
+                }.bind(this));
 
                 this.controllerList.each(function(item){
                     if( !controllerList.contains( item ) ){
@@ -961,21 +996,21 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
     },
 
     createEditBaseNode: function(){
-        this.editBaseNode = new Element("button", {
+        this.editBaseNode = new Element("button.editBaseNode", {
             "styles": this.app.css.editBaseNode,
             "text": this.app.lp.edit,
             "events": {"click": this.editBaseInfor.bind(this)}
         }).inject(this.baseActionNode);
     },
     createCancelBaseNode: function(){
-        this.cancelBaseNode = new Element("button", {
+        this.cancelBaseNode = new Element("button.cancelBaseNode", {
             "styles": this.app.css.cancelBaseNode,
             "text": this.app.lp.cancel,
             "events": {"click": this.cancelBaseInfor.bind(this)}
         }).inject(this.baseActionNode);
     },
     createSaveBaseNode: function(){
-        this.saveBaseNode = new Element("button", {
+        this.saveBaseNode = new Element("button.saveBaseNode", {
             "styles": this.app.css.saveBaseNode,
             "text": this.app.lp.save,
             "events": {"click": this.saveBaseInfor.bind(this)}
@@ -991,7 +1026,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
     },
     editMode: function(){
         this.nameInput.editMode();
-        this.aliasInput.editMode();
+        //this.aliasInput.editMode();
         this.descriptionInput.editMode();
         this.sortInput.editMode();
         //this.typeInput.editMode();
@@ -999,7 +1034,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
     },
     readMode: function(){
         this.nameInput.readMode();
-        this.aliasInput.readMode();
+        //this.aliasInput.readMode();
         this.descriptionInput.readMode();
         this.sortInput.readMode();
         //this.typeInput.readMode();
@@ -1022,12 +1057,12 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
             this.app.notice(this.app.lp.application.inputApplicationName, "error", this.node);
             return false;
         }
-        this.node.mask({
-            "style": {
-                "opacity": 0.7,
-                "background-color": "#999"
-            }
-        });
+        //this.node.mask({
+        //    "style": {
+        //        "opacity": 0.7,
+        //        "background-color": "#999"
+        //    }
+        //});
         this.save(function(){
             this.baseActionNode.empty();
             this.cancelBaseNode = null;
@@ -1036,20 +1071,20 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
 
             this.readMode();
 
-            this.node.unmask();
+            //this.node.unmask();
         }.bind(this), function(xhr, text, error){
             var errorText = error;
             if (xhr) errorText = xhr.responseText;
             this.app.notice("request json error: "+errorText, "error");
-            this.node.unmask();
+            //this.node.unmask();
         }.bind(this));
     },
     save: function(callback, cancel){
 
         this.data.name = this.nameInput.input.get("value");
         this.data.appName = this.data.name;
-        this.data.alias = this.aliasInput.input.get("value");
-        this.data.appAlias = this.data.alias;
+        //this.data.alias = this.aliasInput.input.get("value");
+        //this.data.appAlias = this.data.alias;
         this.data.description = this.descriptionInput.input.get("value");
         this.data.appInfoSeq = this.sortInput.input.get("value");
         //this.data.applicationCategory = this.typeInput.input.get("value");
@@ -1058,10 +1093,11 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
             this.propertyTitleBar.set("text", this.data.name);
             this.data.id = json.data.id;
             this.nameInput.save();
-            this.aliasInput.save();
+            //this.aliasInput.save();
             this.descriptionInput.save();
             this.sortInput.save();
             //this.typeInput.save();
+            this.app.notice( this.app.lp.application.saveSuccess, "success");
 
             if (callback) callback();
         }.bind(this), function(xhr, text, error){

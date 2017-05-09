@@ -36,7 +36,7 @@ public class CompanyDutyFactory extends AbstractFactory {
 		Root<CompanyDuty> root = cq.from(CompanyDuty.class);
 		Predicate p = cb.equal(root.get(CompanyDuty_.company), companyId);
 		p = cb.and(p, cb.equal(root.get(CompanyDuty_.name), name));
-		cq.select(root.get(CompanyDuty_.id)).where(p);
+		cq.select(root.get(CompanyDuty_.id)).where(p).distinct(true);
 		List<String> list = em.createQuery(cq).setMaxResults(1).getResultList();
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -52,7 +52,7 @@ public class CompanyDutyFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<CompanyDuty> root = cq.from(CompanyDuty.class);
 		Predicate p = cb.equal(root.get(CompanyDuty_.company), companyId);
-		cq.select(root.get(CompanyDuty_.id)).where(p);
+		cq.select(root.get(CompanyDuty_.id)).where(p).distinct(true);
 		List<String> list = em.createQuery(cq).getResultList();
 		return list;
 	}
@@ -64,8 +64,8 @@ public class CompanyDutyFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<CompanyDuty> root = cq.from(CompanyDuty.class);
 		Predicate p = cb.equal(root.get(CompanyDuty_.name), name);
-		cq.select(root.get(CompanyDuty_.id)).where(p);
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get(CompanyDuty_.id)).where(p).distinct(true);
+		return em.createQuery(cq).getResultList();
 	}
 
 	/* 根据属性名查找所有公司职务 */
@@ -75,8 +75,8 @@ public class CompanyDutyFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<CompanyDuty> root = cq.from(CompanyDuty.class);
 		Predicate p = cb.isMember(name, root.get(CompanyDuty_.identityList));
-		cq.select(root.get(CompanyDuty_.id)).where(p);
-		return em.createQuery(cq.where(p)).getResultList();
+		cq.select(root.get(CompanyDuty_.id)).where(p).distinct(true);
+		return em.createQuery(cq).getResultList();
 	}
 
 	/* 转换内容 */
@@ -91,7 +91,8 @@ public class CompanyDutyFactory extends AbstractFactory {
 		}
 		List<String> list = new ArrayList<>();
 		if (null != o.getIdentityList() && (!o.getIdentityList().isEmpty())) {
-			for (Identity identity : this.entityManagerContainer().fetchAttribute(o.getIdentityList(), Identity.class, "name")) {
+			for (Identity identity : this.entityManagerContainer().fetchAttribute(o.getIdentityList(), Identity.class,
+					"name")) {
 				list.add(identity.getName());
 			}
 		}
@@ -102,15 +103,6 @@ public class CompanyDutyFactory extends AbstractFactory {
 		});
 		wrap.setIdentityList(list);
 		return wrap;
-	}
-
-	/* 进行排序 */
-	public void sort(List<WrapOutCompanyDuty> wraps) throws Exception {
-		Collections.sort(wraps, new Comparator<WrapOutCompanyDuty>() {
-			public int compare(WrapOutCompanyDuty o1, WrapOutCompanyDuty o2) {
-				return ObjectUtils.compare(o1.getName(), o2.getName(), true);
-			}
-		});
 	}
 
 }

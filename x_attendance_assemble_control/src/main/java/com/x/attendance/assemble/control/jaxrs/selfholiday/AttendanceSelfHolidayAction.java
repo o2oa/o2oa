@@ -27,7 +27,6 @@ import com.x.attendance.assemble.control.service.AttendanceDetailAnalyseServiceA
 import com.x.attendance.assemble.control.service.AttendanceStatisticalCycleServiceAdv;
 import com.x.attendance.entity.AttendanceSelfHoliday;
 import com.x.attendance.entity.AttendanceStatisticalCycle;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
@@ -36,13 +35,13 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
-import com.x.base.core.http.HttpAttribute;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.organization.core.express.wrap.WrapCompany;
 import com.x.organization.core.express.wrap.WrapDepartment;
 
@@ -104,7 +103,7 @@ public class AttendanceSelfHolidayAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		
 		if( check ){
@@ -151,7 +150,7 @@ public class AttendanceSelfHolidayAction extends StandardJaxrsAction{
 						} catch (Exception e) {
 							Exception exception = new GetCycleMapFromAllCyclesException( e );
 							result.error( exception );
-							logger.error( exception, currentPerson, request, null);
+							logger.error( e, currentPerson, request, null);
 						}
 						attendanceDetailAnalyseServiceAdv.analyseAttendanceDetails( attendanceSelfHoliday.getEmployeeName(), attendanceSelfHoliday.getStartTime(), attendanceSelfHoliday.getEndTime(), companyAttendanceStatisticalCycleMap );
 					}
@@ -159,7 +158,7 @@ public class AttendanceSelfHolidayAction extends StandardJaxrsAction{
 			} catch ( Exception e ) {
 				Exception exception = new AttendanceSelfHolidaySaveException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		
@@ -181,7 +180,7 @@ public class AttendanceSelfHolidayAction extends StandardJaxrsAction{
 			if (null == attendanceSelfHoliday) {
 				Exception exception = new AttendanceSelfHolidayNotExistsException( id );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
 			}else{
 				emc.beginTransaction( AttendanceSelfHoliday.class );
 				emc.remove( attendanceSelfHoliday, CheckRemoveType.all );
@@ -195,7 +194,7 @@ public class AttendanceSelfHolidayAction extends StandardJaxrsAction{
 					} catch (Exception e) {
 						Exception exception = new GetCycleMapFromAllCyclesException( e );
 						result.error( exception );
-						logger.error( exception, currentPerson, request, null);
+						logger.error( e, currentPerson, request, null);
 					}
 					attendanceDetailAnalyseServiceAdv.analyseAttendanceDetails( attendanceSelfHoliday.getEmployeeName(), attendanceSelfHoliday.getStartTime(), attendanceSelfHoliday.getEndTime(), companyAttendanceStatisticalCycleMap );
 				}
@@ -203,7 +202,7 @@ public class AttendanceSelfHolidayAction extends StandardJaxrsAction{
 		} catch ( Exception e ) {
 			Exception exception = new AttendanceSelfHolidayDeleteException( e, id );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -232,7 +231,7 @@ public class AttendanceSelfHolidayAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if(check ){
 			try {		
@@ -244,7 +243,7 @@ public class AttendanceSelfHolidayAction extends StandardJaxrsAction{
 				if( id == null || "(0)".equals(id) || id.isEmpty() ){
 					//logger.info( "第一页查询，没有id传入" );
 				}else{
-					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+					if (!StringUtils.equalsIgnoreCase(id,StandardJaxrsAction.EMPTY_SYMBOL)) {
 						sequence = PropertyUtils.getProperty(emc.find( id, AttendanceSelfHoliday.class ), "sequence");
 					}
 				}
@@ -257,7 +256,7 @@ public class AttendanceSelfHolidayAction extends StandardJaxrsAction{
 					}catch(Exception e){
 						Exception exception = new ListCompaniesWithParentNameException( e, wrapIn.getQ_companyName() );
 						result.error( exception );
-						logger.error( exception, currentPerson, request, null);
+						logger.error( e, currentPerson, request, null);
 					}
 					if( companyList != null && companyList.size() > 0 ){
 						for( WrapCompany company : companyList){
@@ -275,7 +274,7 @@ public class AttendanceSelfHolidayAction extends StandardJaxrsAction{
 					}catch(Exception e){
 						Exception exception = new ListDepartmentsWithParentNameException( e, wrapIn.getQ_departmentName() );
 						result.error( exception );
-						logger.error( exception, currentPerson, request, null);
+						logger.error( e, currentPerson, request, null);
 					}
 					if( departments != null && departments.size() > 0 ){
 						for( WrapDepartment department : departments){
@@ -331,7 +330,7 @@ public class AttendanceSelfHolidayAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if(check ){
 			try {		
@@ -344,7 +343,7 @@ public class AttendanceSelfHolidayAction extends StandardJaxrsAction{
 				if( id == null || "(0)".equals(id) || id.isEmpty() ){
 					//logger.info( "第一页查询，没有id传入" );
 				}else{
-					if (!StringUtils.equalsIgnoreCase(id, HttpAttribute.x_empty_symbol)) {
+					if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
 						sequence = PropertyUtils.getProperty(emc.find(id, AttendanceSelfHoliday.class ), "sequence");
 					}
 				}		
@@ -357,7 +356,7 @@ public class AttendanceSelfHolidayAction extends StandardJaxrsAction{
 					}catch(Exception e){
 						Exception exception = new ListCompaniesWithParentNameException( e, wrapIn.getQ_companyName() );
 						result.error( exception );
-						logger.error( exception, currentPerson, request, null);
+						logger.error( e, currentPerson, request, null);
 					}
 					if( companyList != null && companyList.size() > 0 ){
 						for( WrapCompany company : companyList){
@@ -375,7 +374,7 @@ public class AttendanceSelfHolidayAction extends StandardJaxrsAction{
 					}catch(Exception e){
 						Exception exception = new ListDepartmentsWithParentNameException( e, wrapIn.getQ_departmentName() );
 						result.error( exception );
-						logger.error( exception, currentPerson, request, null);
+						logger.error( e, currentPerson, request, null);
 					}
 					if( departments != null && departments.size() > 0 ){
 						for( WrapDepartment department : departments){

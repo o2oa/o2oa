@@ -5,10 +5,12 @@ import java.util.Map;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.http.EffectivePerson;
 import com.x.cms.assemble.control.jaxrs.view.WrapInView;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.element.View;
+import com.x.cms.core.entity.element.ViewFieldConfig;
 
 public class ViewServiceAdv {
 	
@@ -44,6 +46,34 @@ public class ViewServiceAdv {
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return viewService.nextPageDocuemntView( emc, id, count, viewAbleDocIds, condition );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	public List<String> listFieldConfigByView(String viewId ) throws Exception {
+		if( viewId == null ){
+			throw new Exception("viewId is null!");
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return viewService.listFieldConfigByView( emc, viewId );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	public void deleteFieldConfig(String fieldId) throws Exception {
+		if( fieldId == null ){
+			throw new Exception("fieldId is null!");
+		}
+		ViewFieldConfig fieldConfig = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			fieldConfig = viewService.getFieldConfig( emc, fieldId );
+			if( fieldConfig != null ){
+				emc.beginTransaction( ViewFieldConfig.class );
+				emc.remove( fieldConfig, CheckRemoveType.all );
+				emc.commit();
+			}
 		} catch ( Exception e ) {
 			throw e;
 		}

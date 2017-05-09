@@ -20,17 +20,19 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.EqualsTerms;
 import com.x.base.core.application.jaxrs.LikeTerms;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.cms.assemble.control.jaxrs.form.exception.ServiceLogicException;
+import com.x.cms.assemble.control.jaxrs.form.exception.WrapInConvertException;
 import com.x.cms.core.entity.element.Form;
 
 @Path("form")
@@ -52,7 +54,7 @@ public class FormAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new ServiceLogicException( e, "系统在查询所有CMS表单时发生异常。" );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -71,7 +73,7 @@ public class FormAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new ServiceLogicException( e, "系统在根据栏目ID查询表单时发生异常。" );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -90,7 +92,7 @@ public class FormAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new ServiceLogicException( e, "系统在根据ID查询表单时发生异常。" );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -111,7 +113,7 @@ public class FormAction extends StandardJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check ){
@@ -143,7 +145,7 @@ public class FormAction extends StandardJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check ){
@@ -173,7 +175,7 @@ public class FormAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new ServiceLogicException( e, "系统在根据ID删除表单时发生异常。" );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -198,7 +200,7 @@ public class FormAction extends StandardJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		
 		if( check ){
@@ -253,7 +255,7 @@ public class FormAction extends StandardJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if( check ){
 			try {

@@ -46,7 +46,7 @@ public class ExcuteDelete extends ExcuteBase {
 				throw new Exception("fileInfo{name:" + effectivePerson.getName() + "} ，用户没有内容管理应用信息操作的权限！");
 			}
 			// 删除文件，并且删除记录及文档的关联信息
-			StorageMapping mapping = ThisApplication.storageMappings.get(FileInfo.class, fileInfo.getStorage());
+			StorageMapping mapping = ThisApplication.context().storageMappings().get(FileInfo.class, fileInfo.getStorage());
 
 			// 从FTP上删除文件
 			fileInfo.deleteContent(mapping);

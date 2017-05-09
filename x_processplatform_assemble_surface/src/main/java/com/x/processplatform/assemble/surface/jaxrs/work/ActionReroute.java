@@ -59,7 +59,7 @@ class ActionReroute extends ActionBase {
 			emc.check(work, CheckPersistType.all);
 			this.removeTask(business, work);
 			emc.commit();
-			ThisApplication.applications.putQuery(x_processplatform_service_processing.class,
+			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 					"work/" + URLEncoder.encode(work.getId(), "UTF-8") + "/processing", null);
 			WrapOutId wrap = new WrapOutId(work.getId());
 			result.setData(wrap);

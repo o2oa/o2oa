@@ -248,7 +248,8 @@ MWF.xApplication.Execution.WorkStat = new Class({
         if( this.currentCategoryNode ){
             var value = this.currentCategoryNode.retrieve("workTypeName");
             if( value && value != "" ){
-                filterData.defaultWorkTypes = [value];
+                //filterData.defaultWorkTypes = [value];
+                filterData.workTypes = [value];
             }
         }
         if( this.filter ){
@@ -332,12 +333,23 @@ MWF.xApplication.Execution.WorkStat = new Class({
             "<tr>" +
             "    <td styles='filterTableValue' item='beginDate'></td>" +
             "    <td styles='filterTableValue' item='endDate'></td>" +
+            "    <td styles='filterTableValue' item='workType'></td>" +
+            "    <td styles='filterTableValue' item='centerWork'></td>" +
             "    <td styles='filterTableValue' item='reportCycle'></td>" +
             "    <td styles='filterTableValue' item='searchAction'></td>" +
             "    <td styles='filterTableValue' item='returnAction' style='display:none;'></td>" +
+            "    <td styles='filterTableValue' item='exportAction'></td>" +
             "</tr>" +
             "</table>"
         this.deptFileterNode.set("html", html);
+        var defaultWorkType="";
+        this.actions.listCategoryAll(function(json){
+            if(json.type=="success"){
+                json.data.each(function(d,i){
+                    defaultWorkType = defaultWorkType + "," + d.workTypeName
+                }.bind(this))
+            }
+        }.bind(this),null,false)
 
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.deptFilter = new MForm(this.deptFileterNode, {}, {
@@ -351,7 +363,7 @@ MWF.xApplication.Execution.WorkStat = new Class({
                         "style":this.css.filterTitle,
                         tType:"date",
                         name:"beginDate",
-                        readonly:true,
+                        attr : {readonly:true},
                         notEmpty:true,
                         defaultValue : _self.nowDate.getFullYear()+"-"+(_self.nowDate.getMonth()+1)+"-01",
                         "event":{
@@ -363,12 +375,25 @@ MWF.xApplication.Execution.WorkStat = new Class({
                         "style":this.css.filterTitle,
                         tType:"date",
                         name:"endDate",
-                        readonly:true,
+                        attr : {readonly:true},
                         notEmpty:true,
                         defaultValue : _self.nowDate.getFullYear()+"-"+(_self.nowDate.getMonth()+1)+"-"+_self.day.getDate(),
                         "event":{
                             focus : function( item ){ if(item.get("value")==_self.lp.deptStat.endDate)item.setValue("") },
                             blur : function( item ){ if(item.get("value").trim()=="")item.setValue(_self.lp.deptStat.endDate) },
+                        }
+                    },
+                    workType:{
+                        text: this.lp.workType + ":",
+                        type: "select",
+                        readonly:true,
+                        selectValue: defaultWorkType.split(",")
+                    },
+                    centerWork:{
+                        type:"text",
+                        defaultValue:this.lp.centerWorkDefault,
+                        event:{
+                            focus:function(item){this.select()}
                         }
                     },
                     reportCycle: {
@@ -400,9 +425,17 @@ MWF.xApplication.Execution.WorkStat = new Class({
                                 _self.deptFileterNode.getElements("[item='returnAction']").setStyle("display","none");
                             }
                         }
+                    },
+                    exportAction : {
+                        "type": "button", "value": this.lp.export, "style": this.css.filterButton,
+                        "event": {
+                            "click": function () {
+                                _self.exportDeptExcel()
+                            }
+                        }
                     }
                 }
-            }, this.app, this.css);
+            }, this.app,this.css);
             this.deptFilter.load();
         }.bind(this), true);
     },
@@ -415,6 +448,8 @@ MWF.xApplication.Execution.WorkStat = new Class({
 
         this.bDate = this.deptFilter.getItem("beginDate").get("value");
         this.eDate = this.deptFilter.getItem("endDate").get("value");
+        this.workType = this.deptFilter.getItem("workType").get("value");
+        this.centerWork = this.deptFilter.getItem("centerWork").get("value");
         this.cycleType = this.deptFilter.getItem("reportCycle").get("value");
 
         if(this.bDate == "" || this.bDate == this.lp.deptStat.beginDate || this.eDate == "" || this.eDate == this.lp.deptStat.endDate){
@@ -423,23 +458,27 @@ MWF.xApplication.Execution.WorkStat = new Class({
         var filterData = {
             "cycleType":this.cycleType,
             "startDate":this.bDate,
-            "endDate":this.eDate
+            "endDate":this.eDate,
+            "workTypeName":this.workType,
+            "centerTitle":this.centerWork == this.lp.centerWorkDefault?"":this.centerWork
         }
-        this.actions.getStatType(filterData,function(json){
+        this.app.createShade()
+
+        this.actions.getStatType(filterData,
+            function(json){
                 if(json.type == "success"){
                     this.deptStatData = json.data
                     this.displayDeptStat();
                     var y = this.contentDiv.getSize().y - this.deptToolbar.getSize().y
-                    this.deptStatContent.setStyles({"height":(y-20)+"px"})
+                    this.deptStatContent.setStyles({"height":(y-20)+"px"});
                 }
+                this.app.destroyShade()
             }.bind(this),
             function(xhr,text,error){
                 this.showErrorMessage(xhr,text,error)
-            }.bind(this),true
+                this.app.destroyShade()
+            }.bind(this)
         )
-
-
-
     },
     displayDeptStat: function() {
         if(this.deptStatContent) this.deptStatContent.destroy();
@@ -604,6 +643,37 @@ MWF.xApplication.Execution.WorkStat = new Class({
         //this.deptStatTable.getElements("[row='"+curRow+"']").setStyles({"background-color":""})
         //this.deptStatTable.getElements("[col='"+curCol+"']").setStyles({"background-color":""})
     },
+    exportDeptExcel : function(){
+        this.bDate = this.deptFilter.getItem("beginDate").get("value");
+        this.eDate = this.deptFilter.getItem("endDate").get("value");
+        this.workType = this.deptFilter.getItem("workType").get("value");
+        this.centerWork = this.deptFilter.getItem("centerWork").get("value");
+        this.cycleType = this.deptFilter.getItem("reportCycle").get("value");
+
+        if(this.bDate == "" || this.bDate == this.lp.deptStat.beginDate || this.eDate == "" || this.eDate == this.lp.deptStat.endDate){
+            this.app.notice("选择日期","error")
+            return false;
+        }
+        var filterData = {
+            "cycleType":this.cycleType,
+            "startDate":this.bDate,
+            "endDate":this.eDate,
+            "workTypeName":this.workType,
+            "centerTitle":this.centerWork == this.lp.centerWorkDefault?"":this.centerWork
+        }
+
+        this.actions.exportByDeptWork(filterData,function(json){
+                if(json.data && json.data.id){
+                    var address = this.actions.action.address;
+                    var url = address + "/servlet/export/statisticreportcontent/"+json.data.id+"/stream"
+                    window.open(url)
+                }
+            }.bind(this),
+            function(xhr,text,error){
+                this.showErrorMsg(xhr,text,error)
+            }.bind(this),false)
+
+    },
     //*************************按部门统计结束**************************************
 
     //*************************按日期统计开始**************************************
@@ -627,6 +697,8 @@ MWF.xApplication.Execution.WorkStat = new Class({
             "<tr>" +
             "    <td styles='filterTableValue' item='beginDate'></td>" +
             "    <td styles='filterTableValue' item='endDate'></td>" +
+            "    <td styles='filterTableValue' item='workType'></td>" +
+            "    <td styles='filterTableValue' item='centerWork'></td>" +
             "    <td styles='filterTableValue' item='reportCycle'></td>" +
             "    <td styles='filterTableValue' item='searchAction'></td>" +
             "    <td styles='filterTableValue' item='returnAction' style='display:none;'></td>" +
@@ -634,6 +706,15 @@ MWF.xApplication.Execution.WorkStat = new Class({
             "</tr>" +
             "</table>"
         this.dateFileterNode.set("html", html);
+        var defaultWorkType="";
+
+        this.actions.listCategoryAll(function(json){
+            if(json.type=="success"){
+                json.data.each(function(d,i){
+                    defaultWorkType = defaultWorkType + "," + d.workTypeName
+                }.bind(this))
+            }
+        }.bind(this),null,false)
 
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.dateFilter = new MForm(this.dateFileterNode, {}, {
@@ -647,7 +728,7 @@ MWF.xApplication.Execution.WorkStat = new Class({
                         "style":this.css.filterTitle,
                         tType:"date",
                         name:"beginDate",
-                        readonly:true,
+                        attr : {readonly:true},
                         notEmpty:true,
                         defaultValue : _self.nowDate.getFullYear()+"-"+(_self.nowDate.getMonth()+1)+"-01",
                         "event":{
@@ -659,12 +740,25 @@ MWF.xApplication.Execution.WorkStat = new Class({
                         "style":this.css.filterTitle,
                         tType:"date",
                         name:"endDate",
-                        readonly:true,
+                        attr : {readonly:true},
                         notEmpty:true,
                         defaultValue : _self.nowDate.getFullYear()+"-"+(_self.nowDate.getMonth()+1)+"-"+_self.day.getDate(),
                         "event":{
                             focus : function( item ){ if(item.get("value")==_self.lp.dateStat.endDate)item.setValue("") },
                             blur : function( item ){ if(item.get("value").trim()=="")item.setValue(_self.lp.dateStat.endDate) },
+                        }
+                    },
+                    workType:{
+                        text: this.lp.workType + ":",
+                        type: "select",
+                        attr : {readonly:true},
+                        selectValue: defaultWorkType.split(",")
+                    },
+                    centerWork:{
+                        type:"text",
+                        defaultValue:this.lp.centerWorkDefault,
+                        event:{
+                            focus:function(item){this.select()}
                         }
                     },
                     reportCycle: {
@@ -714,6 +808,8 @@ MWF.xApplication.Execution.WorkStat = new Class({
     loadDateStat:function(){
         this.bDate = this.dateFilter.getItem("beginDate").get("value");
         this.eDate = this.dateFilter.getItem("endDate").get("value");
+        this.workType = this.dateFilter.getItem("workType").get("value");
+        this.centerWork = this.dateFilter.getItem("centerWork").get("value");
         this.cycleType = this.dateFilter.getItem("reportCycle").get("value");
 
         if(this.bDate == "" || this.bDate == this.lp.dateStat.beginDate || this.eDate == "" || this.eDate == this.lp.dateStat.endDate){
@@ -723,18 +819,24 @@ MWF.xApplication.Execution.WorkStat = new Class({
         if(this.statViewListDiv) this.statViewListDiv.destroy()
         var filterData = {
             "reportCycle":this.cycleType,
+            "workTypeName":this.workType,
             "startDate":this.bDate,
+            "centerTitle":this.centerWork == this.lp.centerWorkDefault?"":this.centerWork,
             "endDate":this.eDate
         }
+        this.app.createShade()
         this.actions.getStatDateList(filterData,function(json){
+                this.app.destroyShade();
                 if(json.type == "success"){
                     this.dateStatListData = json.data
                     this.displayDateStatList();
                 }
+
             }.bind(this),
             function(xhr,text,error){
-                this.showErrorMessage(xhr,text,error)
-            }.bind(this),true
+                this.showErrorMessage(xhr,text,error);
+                this.app.destroyShade();
+            }.bind(this)
         )
 
 
@@ -775,7 +877,13 @@ MWF.xApplication.Execution.WorkStat = new Class({
                     }.bind(this)
                 })
             }.bind(this))
-            if(this.dateStatContentDiv.getElements("li"))this.dateStatContentDiv.getElements("li")[0].click()
+            if(this.dateStatListData.length==0){
+                this.tmpSpan = new Element("span",{
+                    styles:{"margin-left":"10px"},
+                    text :this.lp.nullReportStat
+                }).inject(this.dateStatContentDiv)
+            }
+            if(this.dateStatContentDiv.getElements("li").length>0)this.dateStatContentDiv.getElements("li")[0].click()
         }
 
     },
@@ -788,21 +896,26 @@ MWF.xApplication.Execution.WorkStat = new Class({
         if(d){
             var filterData = {
                 "statisticTimeFlag": d.datetime,
+                "workTypeName":this.workType,
+                "centerTitle":this.centerWork == this.lp.centerWorkDefault?"":this.centerWork,
                 "reportCycle": d.reportCycle
             }
             if(id){
                 filterData.centerId = id
             }
 
+            this.app.createShade()
             this.actions.getStatDate(filterData,function(json){
                     if(json.type == "success"){
                         this.dateStatData = json.data
                         this.displayDateStatTable()
                     }
+                    this.app.destroyShade();
                 }.bind(this),
                 function(xhr,text,error){
-                    this.showErrorMessage(xhr,text,error)
-                }.bind(this),true
+                    this.showErrorMessage(xhr,text,error);
+                    this.app.destroyShade();
+                }.bind(this)
             )
 
 
@@ -900,7 +1013,9 @@ MWF.xApplication.Execution.WorkStat = new Class({
         if(this.currentDateData){
             var sendData = {}
             sendData.statisticTimeFlag = this.currentDateData.datetime;
-            sendData.reportCycle = this.currentDateData.reportCycle
+            sendData.reportCycle = this.currentDateData.reportCycle;
+            sendData.centerTitle = this.centerWork == this.lp.centerWorkDefault?"":this.centerWork;
+            sendData.workTypeName = this.workType;
             this.actions.exportByCenterWork(sendData,function(json){
                     if(json.data && json.data.id){
                         var address = this.actions.action.address;
@@ -966,9 +1081,11 @@ MWF.xApplication.Execution.WorkStat.WorkView = new Class({
     _getCurrentPageData: function(callback, count){
         if (!count)count = 20;
         var id = (this.items.length) ? this.items[this.items.length - 1].data.id : "(0)";
+        if(id=="(0)")this.app.createShade()
         var filter = this.filterData || {};
         this.actions.getCenterWorkListNext(id, count, filter, function (json) {
             if (callback)callback(json);
+            this.app.destroyShade();
         }.bind(this))
     },
     _removeDocument: function(documentData, all){

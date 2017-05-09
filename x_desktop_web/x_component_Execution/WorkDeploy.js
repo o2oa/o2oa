@@ -178,7 +178,7 @@ MWF.xApplication.Execution.WorkDeploy = new Class({
         this.centerWorkContentNode.set("html", html);
 
         var resultWorkType = []
-        var resultWorkTypeTxt = ""
+        var resultWorkTypeTxt = "";
         if(data.workTypes){
             data.workTypes.each(function(d,i){
                 if(d.workTypeName) resultWorkType.push(d.workTypeName)
@@ -430,13 +430,13 @@ MWF.xApplication.Execution.WorkDeploy = new Class({
                         var formData = new FormData();
                         formData.append('file', file);
 
-                        this.createShade("正在导入，请稍后.....")
+                        this.app.createShade(null,"正在导入，请稍后.....")
                         this.actions.importBaseWork(centerId,function(json){
                             this.reloadTableContent(centerId)
-                            this.destroyShade()
+                            this.app.destroyShade()
                         }.bind(this),function(xhr,text,error){
                             this.showErrorMessage(xhr,text,error)
-                            this.destroyShade()
+                            this.app.destroyShade()
                         }.bind(this),formData,file)
 
                     }
@@ -449,13 +449,16 @@ MWF.xApplication.Execution.WorkDeploy = new Class({
     deleteWork:function(e){
         var _self = this;
         _self.app.confirm("warn",e,_self.lp.submitWarn.warnTitle,_self.lp.submitWarn.warnContent,300,120,function(){
+            _self.app.createShade();
             _self.actions.deleteCenterWork(_self.centerWorkData.id, function(json){
                 if(json.type && json.type=="success"){
                     _self.app.notice(this.lp.prompt.deleteCenterWork, "success");
                     _self.closeWork({"action":"reload"});
                 }
+                _self.app.destroyShade();
             }.bind(_self),function(xhr,text,error){
-                _self.showErrorMessage(xhr,text,error)
+                _self.showErrorMessage(xhr,text,error);
+                _self.app.destroyShade();
             }.bind(_self));
 
             this.close()
@@ -468,14 +471,17 @@ MWF.xApplication.Execution.WorkDeploy = new Class({
     deployWork:function(e){
         var _self = this;
         _self.app.confirm("warn",e,_self.lp.submitWarn.warnTitle,_self.lp.submitWarn.warnDeployContent,300,120,function(){
+            _self.app.createShade();
             _self.actions.deployCenterWork(_self.centerWorkData.id, function(json){
                 if(json.type && json.type=="success"){
                     _self.app.notice(this.lp.prompt.deployCenterWork, "success");
                     _self.close();
                     _self.fireEvent("reloadView", {"action":"reload"});
+                    _self.app.destroyShade();
                 }
             }.bind(_self),function(xhr,text,error){
-                _self.showErrorMessage(xhr,text,error)
+                _self.showErrorMessage(xhr,text,error);
+                _self.app.destroyShade();
             }.bind(_self));
 
             this.close()
@@ -488,13 +494,16 @@ MWF.xApplication.Execution.WorkDeploy = new Class({
         var _self = this;
         _self.app.confirm("warn",e,_self.lp.submitWarn.warnTitle,_self.lp.submitWarn.warnConfirmContent,300,120,function(){
             _self.actions.deployCenterWork(_self.centerWorkData.id, function(json){
+                _self.app.createShade();
                 if(json.type && json.type=="success"){
                     _self.app.notice(this.lp.prompt.comfirmCenterWork, "success");
                     _self.close();
                     _self.fireEvent("reloadView", {"action":"reload"});
+                    _self.app.destroyShade();
                 }
             }.bind(_self),function(xhr,text,error){
-                _self.showErrorMessage(xhr,text,error)
+                _self.showErrorMessage(xhr,text,error);
+                _self.app.destroyShade();
             }.bind(_self));
 
             this.close()
@@ -506,14 +515,17 @@ MWF.xApplication.Execution.WorkDeploy = new Class({
     archiveWork:function(e){
         var _self = this;
         _self.app.confirm("warn",e,_self.lp.submitWarn.warnTitle,_self.lp.submitWarn.warnArchiveContent,300,120,function(){
+            _self.app.createShade();
             _self.actions.archiveMainTask(_self.centerWorkData.id, function(json){
                 if(json.type && json.type=="success"){
                     _self.app.notice(this.lp.prompt.archiveCenterWork, "success");
                     _self.close();
                     _self.fireEvent("reloadView", {"action":"reload"});
+                    _self.app.destroyShade();
                 }
             }.bind(_self),function(xhr,text,error){
-                _self.showErrorMessage(xhr,text,error)
+                _self.showErrorMessage(xhr,text,error);
+                _self.app.destroyShade();
             }.bind(_self));
 
             this.close()
@@ -527,23 +539,6 @@ MWF.xApplication.Execution.WorkDeploy = new Class({
 
     //*************************底部按钮及方法**************************************
 
-    createShade: function(txt){
-        if(this.shadeDiv){ this.shadeDiv.destroy()}
-        if(this.shadeTxtDiv)  this.shadeTxtDiv.destroy()
-        this.shadeDiv = new Element("div.shadeDiv").inject(this.formNode)
-        this.shadeTxtDiv = new Element("div.shadeTxtDiv").inject(this.shadeDiv);
-        this.shadeTxtDiv.set("text",txt)
-
-        this.shadeDiv.setStyles({
-            "left":"0px","top":"40px","width":"100%","height":"100%","position":"absolute","opacity":"0.6","background-color":"#999999","z-index":"999",
-            "text-align":"center"
-        })
-        this.shadeTxtDiv.setStyles({"color":"#ffffff","font-size":"30px","margin-top":"300px"})
-    },
-    destroyShade : function(){
-        if(this.shadeDiv) this.shadeDiv.destroy()
-        if(this.shadeDiv) this.shadeDiv.destroy()
-    },
 
     saveCenterWork: function(data,callback){
         this.app.restActions.saveCenterWork( data,
@@ -776,13 +771,16 @@ MWF.xApplication.Execution.WorkDeploy.MyDeployWorkDocument = new Class({
     action_delete:function(id,e){
         var _self = this;
         _self.view.app.confirm("warn",e,_self.view.app.lp.WorkDeploy.submitWarn.warnTitle,_self.view.app.lp.WorkDeploy.submitWarn.warnContent,300,120,function(){
+            _self.app.createShade()
             _self.actions.deleteBaseWork(id, function(json){
                 if(json.type && json.type=="success"){
                     this.app.notice(_self.view.explorer.lp.prompt.deleteBaseWork, "success");
-                    _self.view.explorer.reloadTableContent()
+                    _self.view.explorer.reloadTableContent();
+                    _self.app.destroyShade();
                 }
             }.bind(_self),function(xhr,text,error){
                 _self.view.explorer.showErrorMessage(xhr,text,error)
+                _self.app.destroyShade();
             }.bind(_self));
 
             this.close()

@@ -26,7 +26,9 @@ MWF.xApplication.cms.Column.LP = {
 		"edit" : "编辑栏目",
 		"createColumnSuccess" : "栏目创建成功",
 		"updateColumnSuccess" : "栏目修改成功",
-		"noElement" : "系统没有栏目或者没有您有权限管理的栏目"
+		"noElement" : "系统没有栏目或者没有您有权限管理的栏目",
+		"category" : "分类",
+		"form" : "表单"
 	},
 
 	"category" : {

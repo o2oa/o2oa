@@ -75,22 +75,31 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class({
     selectImage: function(d, callback){
         var clipperType = this.json.clipperType || "unrestricted";
         var ratio = 1;
+        var description = "";
+        var maxSize = 800;
         if( clipperType == "unrestricted" ){
             ratio = 0;
         }else if( clipperType == "size" ){
             var width = this.json.imageWidth.toInt();
             var height = this.json.imageHeight.toInt();
-            ratio = width / height
+            ratio = width / height;
+            maxSize = Math.max( width, height );
+            if( !isNaN( width ) && !isNaN( height )  ){
+                description = MWF.LP.widget.pictureSize.replace(/{width}/g, width).replace(/{height}/g, height);
+            }
         }else if( clipperType == "ratio" ){
-            ratio = this.json.imageRatio || 1
+            ratio = this.json.imageRatio || 1;
+            description = MWF.LP.widget.pictureRatio.replace(/{ratio}/g, ratio);
         }
         MWF.xDesktop.requireApp("process.Xform", "widget.ImageClipper", function(){
             this.imageClipper = new MWF.xApplication.process.Xform.widget.ImageClipper(this.form.app, {
                 "style": "default",
                 "aspectRatio" : ratio,
+                "description" : description,
                 "imageUrl" : d ? MWF.xDesktop.getImageSrc( d ) : "",
                 "reference" : this.form.businessData.work.job,
                 "referenceType": "processPlatformJob",
+                "resultMaxSize" : maxSize,
                 "onChange" : function(){
                     callback( { src : this.imageClipper.imageSrc, id : this.imageClipper.imageId } );
                 }.bind(this)

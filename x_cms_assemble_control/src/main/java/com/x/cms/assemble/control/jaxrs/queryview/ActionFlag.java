@@ -9,6 +9,8 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.assemble.control.jaxrs.queryview.exception.InsufficientPermissionsException;
+import com.x.cms.assemble.control.jaxrs.queryview.exception.QueryViewNotExistsException;
 import com.x.cms.core.entity.element.QueryView;
 
 
@@ -24,12 +26,12 @@ public class ActionFlag extends ActionBase {
 			if( queryView == null ){
 				Exception exception = new QueryViewNotExistsException( flag );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}else{
 				if (!business.queryViewFactory().allowRead( effectivePerson, queryView )) {
 					Exception exception = new InsufficientPermissionsException( flag );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}else{
 					WrapOutQueryView wrap = outCopier.copy( queryView );
 					result.setData(wrap);

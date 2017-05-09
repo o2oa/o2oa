@@ -9,7 +9,7 @@ import com.x.base.core.http.HttpToken;
 import com.x.base.core.http.TokenType;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
-import com.x.organization.assemble.authentication.wrap.out.WrapOutAuthentication;
+import com.x.organization.assemble.authentication.wrapout.WrapOutAuthentication;
 
 class ActionLogout extends ActionBase {
 

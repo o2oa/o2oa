@@ -7,6 +7,7 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.cms.assemble.control.jaxrs.documentpermission.exception.ServiceLogicException;
 import com.x.cms.core.entity.Document;
 
 public class ExcuteRefreshDocumentPermission extends ExcuteBase {
@@ -23,7 +24,7 @@ public class ExcuteRefreshDocumentPermission extends ExcuteBase {
 				check = false;
 				Exception exception = new ServiceLogicException( "文档ID为空，无法为文档添加权限。" );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -32,7 +33,7 @@ public class ExcuteRefreshDocumentPermission extends ExcuteBase {
 				check = false;
 				Exception exception = new ServiceLogicException( "文档权限为空，该文档将没有任何用户可以访问。ID：" + wrapIn.getDocId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -43,13 +44,13 @@ public class ExcuteRefreshDocumentPermission extends ExcuteBase {
 					check = false;
 					Exception exception = new ServiceLogicException( "文档不存在。ID：" + wrapIn.getDocId() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ServiceLogicException( e,"系统在根据文档ID查询文档信息时发生异常。ID：" + wrapIn.getDocId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -60,7 +61,7 @@ public class ExcuteRefreshDocumentPermission extends ExcuteBase {
 				check = false;
 				Exception exception = new ServiceLogicException( e,"系统在为文档设置用户访问权限过程中发生异常。ID：" + wrapIn.getDocId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 			
 		}

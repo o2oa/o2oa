@@ -12,17 +12,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.okr.assemble.control.service.OkrWorkReportDetailInfoService;
 import com.x.okr.entity.OkrWorkReportDetailInfo;
 
@@ -49,7 +49,7 @@ public class OkrWorkReportDetailInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			try {
@@ -58,7 +58,7 @@ public class OkrWorkReportDetailInfoAction extends StandardJaxrsAction{
 			} catch (Exception e) {
 				Exception exception = new ReportDetailSaveException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);	
+				logger.error( e, effectivePerson, request, null);	
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -75,7 +75,7 @@ public class OkrWorkReportDetailInfoAction extends StandardJaxrsAction{
 		if( id == null || id.isEmpty() ){
 			Exception exception = new ReportDetailIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}else{
 			try{
 				okrWorkReportDetailInfoService.delete( id );
@@ -83,7 +83,7 @@ public class OkrWorkReportDetailInfoAction extends StandardJaxrsAction{
 			}catch(Exception e){
 				Exception exception = new ReportDetailDeleteException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -102,7 +102,7 @@ public class OkrWorkReportDetailInfoAction extends StandardJaxrsAction{
 		if( id == null || id.isEmpty() ){
 			Exception exception = new ReportDetailIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}else{
 			try {
 				okrWorkReportDetailInfo = okrWorkReportDetailInfoService.get( id );
@@ -112,12 +112,12 @@ public class OkrWorkReportDetailInfoAction extends StandardJaxrsAction{
 				}else{
 					Exception exception = new ReportDetailNotExistsException( id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
-			} catch (Throwable th) {
-				Exception exception = new ReportDetailQueryByIdException( th, id );
+			} catch (Exception e) {
+				Exception exception = new ReportDetailQueryByIdException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);

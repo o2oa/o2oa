@@ -14,6 +14,14 @@ import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.project.server.StorageMapping;
 import com.x.okr.assemble.control.OkrUserCache;
 import com.x.okr.assemble.control.ThisApplication;
+import com.x.okr.assemble.control.jaxrs.okrattachmentfileinfo.exception.AttachmentDeleteException;
+import com.x.okr.assemble.control.jaxrs.okrattachmentfileinfo.exception.AttachmentIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrattachmentfileinfo.exception.AttachmentNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrattachmentfileinfo.exception.AttachmentQueryByIdException;
+import com.x.okr.assemble.control.jaxrs.okrattachmentfileinfo.exception.CenterWorkQueryByIdException;
+import com.x.okr.assemble.control.jaxrs.okrattachmentfileinfo.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrattachmentfileinfo.exception.InsufficientPermissionsException;
+import com.x.okr.assemble.control.jaxrs.okrattachmentfileinfo.exception.UserNoLoginException;
 import com.x.okr.entity.OkrAttachmentFileInfo;
 import com.x.okr.entity.OkrCenterWorkInfo;
 
@@ -35,19 +43,17 @@ public class ExcuteDeleteCenterAttachment extends ExcuteBase {
 			check = false;
 			Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		if( check && ( okrUserCache == null || okrUserCache.getLoginIdentityName() == null ) ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
 		}
 		if( id == null || id.isEmpty() ){
 			check = false;
 			Exception exception = new AttachmentIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
 		}
 		if( check ){
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -56,13 +62,12 @@ public class ExcuteDeleteCenterAttachment extends ExcuteBase {
 					check = false;
 					Exception exception = new AttachmentNotExistsException( id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
 				}
 			}catch(Exception e){
 				check = false;
 				Exception exception = new AttachmentQueryByIdException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}		
 		if( check ){
@@ -84,14 +89,14 @@ public class ExcuteDeleteCenterAttachment extends ExcuteBase {
 				check = false;
 				Exception exception = new CenterWorkQueryByIdException( e, okrAttachmentFileInfo.getKey() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}		
 		if( check ){
 			if( hasDeletePermission ){
 				if( okrAttachmentFileInfo != null ){
 					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-						mapping = ThisApplication.storageMappings.get(OkrAttachmentFileInfo.class, okrAttachmentFileInfo.getStorage());
+						mapping = ThisApplication.context().storageMappings().get(OkrAttachmentFileInfo.class, okrAttachmentFileInfo.getStorage());
 						okrAttachmentFileInfo.deleteContent( mapping );
 						okrAttachmentFileInfo = emc.find( id, OkrAttachmentFileInfo.class );
 						okrCenterWorkInfo = emc.find( okrAttachmentFileInfo.getKey(), OkrCenterWorkInfo.class );
@@ -108,13 +113,13 @@ public class ExcuteDeleteCenterAttachment extends ExcuteBase {
 						check = false;
 						Exception exception = new AttachmentDeleteException( e, okrAttachmentFileInfo.getId() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 				}
 			}else{
 				Exception exception = new InsufficientPermissionsException( effectivePerson.getName(), okrAttachmentFileInfo.getId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

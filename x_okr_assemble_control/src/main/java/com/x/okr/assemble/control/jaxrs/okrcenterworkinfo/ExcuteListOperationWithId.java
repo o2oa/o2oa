@@ -9,6 +9,10 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.CenterWorkQueryByIdException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.CompanyWorkManagerCheckException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.WorkPersonQueryException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.WorkTaskQueryException;
 import com.x.okr.assemble.control.service.OkrTaskService;
 import com.x.okr.assemble.control.service.OkrWorkBaseInfoQueryService;
 import com.x.okr.assemble.control.service.OkrWorkPersonService;
@@ -69,7 +73,7 @@ public class ExcuteListOperationWithId extends ExcuteBase {
 			okrCenterWorkInfo = okrCenterWorkQueryService.get( id );
 		} catch (Exception e) {
 			Exception exception = new CenterWorkQueryByIdException( e, id );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		operation.add( "VIEW" );
 		//如果中心工作为空
@@ -90,7 +94,7 @@ public class ExcuteListOperationWithId extends ExcuteBase {
 			}
 		} catch (Exception e ) {
 			Exception exception = new CompanyWorkManagerCheckException( e, okrUserCache.getLoginIdentityName() );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
 		//创建具体工作|导入具体工作
@@ -124,7 +128,7 @@ public class ExcuteListOperationWithId extends ExcuteBase {
 				}
 			} catch (Exception e) {
 				Exception exception = new WorkPersonQueryException( e, okrCenterWorkInfo.getId(), okrUserCache.getLoginIdentityName(), "部署者" );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}		
 		//归档中心工作
@@ -151,7 +155,7 @@ public class ExcuteListOperationWithId extends ExcuteBase {
 				}
 			} catch (Exception e) {
 				Exception exception = new WorkTaskQueryException( e, okrCenterWorkInfo.getId(), okrUserCache.getLoginIdentityName(), "中心工作" );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		operation.add( "CLOSE" );

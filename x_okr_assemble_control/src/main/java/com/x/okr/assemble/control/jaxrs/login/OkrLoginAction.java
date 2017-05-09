@@ -11,15 +11,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.gson.XGsonBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.okr.assemble.control.OkrUserCache;
 import com.x.okr.assemble.control.service.OkrConfigSecretaryService;
 import com.x.okr.assemble.control.service.OkrUserInfoService;
@@ -57,7 +57,7 @@ public class OkrLoginAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new UserProxyQueryException( e, currentPerson.getName(), wrapIn.getLoginIdentity() );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 				if( hasIdentity ){
 					//以自己的身份登录
@@ -67,7 +67,7 @@ public class OkrLoginAction extends StandardJaxrsAction{
 					} catch (Exception e) {
 						Exception exception = new GetOkrUserCacheException( e, currentPerson.getName(), wrapIn.getLoginIdentity() );
 						result.error( exception );
-						logger.error( exception, currentPerson, request, null);
+						logger.error( e, currentPerson, request, null);
 					}
 				}else{
 					//查询用户是否有该身份的代理配置（秘书）
@@ -77,17 +77,17 @@ public class OkrLoginAction extends StandardJaxrsAction{
 							check = false;
 							Exception exception = new UserHasNoProxyIdentityException( currentPerson.getName(), wrapIn.getLoginIdentity() );
 							result.error( exception );
-							logger.error( exception, currentPerson, request, null);
+							//logger.error( e, currentPerson, request, null);
 						}else{
 							//顺利查询到身份代理配置信息，向cache里新增用户相关信息
 							okrUserCache = setUserLoginIdentity( request, currentPerson, wrapIn.getLoginIdentity() );
 							result.setData( okrUserCache );
 						}
-					} catch (Exception e1) {
+					} catch (Exception e) {
 						check = false;
-						Exception exception = new UserProxyQueryException( e1, currentPerson.getName(), wrapIn.getLoginIdentity() );
+						Exception exception = new UserProxyQueryException( e, currentPerson.getName(), wrapIn.getLoginIdentity() );
 						result.error( exception );
-						logger.error( exception, currentPerson, request, null);
+						logger.error( e, currentPerson, request, null);
 					}
 				}
 			}else{ //没有传入身份，即以自己的第一个身份登入系统
@@ -102,7 +102,7 @@ public class OkrLoginAction extends StandardJaxrsAction{
 						check = false;
 						Exception exception = new UserIdentityQueryException( e, currentPerson.getName() );
 						result.error( exception );
-						logger.error( exception, currentPerson, request, null);
+						logger.error( e, currentPerson, request, null);
 					}
 				}else{
 					try {
@@ -111,7 +111,7 @@ public class OkrLoginAction extends StandardJaxrsAction{
 					} catch (Exception e) {
 						Exception exception = new GetOkrUserCacheException( e, currentPerson.getName(), wrapIn.getLoginIdentity() );
 						result.error( exception );
-						logger.error( exception, currentPerson, request, null);
+						logger.error( e, currentPerson, request, null);
 					}
 					
 				}
@@ -150,7 +150,7 @@ public class OkrLoginAction extends StandardJaxrsAction{
 			isOkrSystemAdmin = okrUserManagerService.isHasRole( currentPerson.getName(), "OkrSystemAdmin" );
 		} catch ( Exception e ) {
 			Exception exception = new OkrSystemAdminCheckException( e, currentPerson.getName() );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		okrUserCache.setOkrSystemAdmin( isOkrSystemAdmin );
 		

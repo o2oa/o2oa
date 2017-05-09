@@ -229,7 +229,8 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
         newNode.inject(node.node);
 
         var className = this.moduleName.capitalize();
-        var newTool = new MWF["FC"+className](this.form);
+        var prefix = (this.form.moduleType=="page") ? "PC" : "FC";
+        var newTool = new MWF[prefix+className](this.form);
         newModuleJson.id = newTool._getNewId();
         newNode.set("id", newModuleJson.id);
 
@@ -281,7 +282,6 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 	},
 
     copyModule: function(e){
-        debugger;
     },
 
 	_setOtherNodeEvent: function(){},
@@ -317,7 +317,6 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		if (this.actionArea) this.actionArea.setStyle("display", "none");
 	},
 	selected: function(){
-        debugger;
 		if (this.form.currentSelectedModule){
 			if (this.form.currentSelectedModule==this){
 				return true;
@@ -414,15 +413,18 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 	},
 	_onLeaveOther: function(dragging, inObj){
 	},
+    _onMoveEnter: function(dragging, inObj){
+        var module = inObj.retrieve("module");
+        if (module) module._dragIn(this);
+        this._onEnterOther(dragging, inObj);
+    },
 	_setNodeMove: function(e){
 		this._setMoveNodePosition(e);
 		var droppables = [this.form.node].concat(this.form.moduleElementNodeList, this.form.moduleContainerNodeList, this.form.moduleComponentNodeList);
 		var nodeDrag = new Drag.Move(this.moveNode, {
 			"droppables": droppables,
 			"onEnter": function(dragging, inObj){
-				var module = inObj.retrieve("module");
-				if (module) module._dragIn(this);
-				this._onEnterOther(dragging, inObj);
+                this._onMoveEnter(dragging, inObj);
 			}.bind(this),
 			"onLeave": function(dragging, inObj){
 				var module = inObj.retrieve("module");
@@ -446,7 +448,6 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			}.bind(this)
 		});
 		nodeDrag.start(e);
-
 
 		this.form.moveModule = this;
 		this.form.recordCurrentSelectedModule = this.form.currentSelectedModule;

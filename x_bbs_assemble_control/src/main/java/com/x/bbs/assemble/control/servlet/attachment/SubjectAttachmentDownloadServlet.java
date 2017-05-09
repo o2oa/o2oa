@@ -34,7 +34,6 @@ public class SubjectAttachmentDownloadServlet extends AbstractServletAction {
 		ActionResult<Object> result = new ActionResult<>();
 		BBSSubjectAttachment subjectAttachment = null;
 		StorageMapping mapping = null;
-		String part = null;
 		String attachId = null;
 		boolean streamContentType = false;
 		boolean check = true;
@@ -43,8 +42,8 @@ public class SubjectAttachmentDownloadServlet extends AbstractServletAction {
 
 		if (check) {
 			try {
-				part = this.getURIPart(request.getRequestURI(), "subjectattachment");
-				attachId = StringUtils.substringBefore(part, "/");
+				attachId = this.getURIPart(request.getRequestURI(), "subjectattachment");
+				// attachId = StringUtils.substringBefore(part, "/");
 			} catch (Exception e) {
 				check = false;
 				result.error(e);
@@ -54,7 +53,7 @@ public class SubjectAttachmentDownloadServlet extends AbstractServletAction {
 		}
 
 		if (check) {
-			streamContentType = StringUtils.endsWith(part, "/stream");
+			streamContentType = StringUtils.endsWith(request.getRequestURI(), "/stream");
 			logger.info("streamContentType = " + streamContentType);
 		}
 
@@ -76,8 +75,7 @@ public class SubjectAttachmentDownloadServlet extends AbstractServletAction {
 		// 文件下载
 		if (check) {
 			try {
-				mapping = ThisApplication.storageMappings.get(BBSSubjectAttachment.class,
-						subjectAttachment.getStorage());
+				mapping = ThisApplication.context().storageMappings().get(BBSSubjectAttachment.class, subjectAttachment.getStorage());
 				if (mapping == null) {
 					check = false;
 					logger.warn("bbs mapping is null.storage:" + subjectAttachment.getStorage());

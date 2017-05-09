@@ -52,7 +52,7 @@ MWF.xApplication.process.Work.Main = new Class({
 
         this.addEvent("queryClose", function(){
             this.refreshTaskCenter();
-        }.bind(this))
+        }.bind(this));
 
         this.addKeyboardEvents();
 

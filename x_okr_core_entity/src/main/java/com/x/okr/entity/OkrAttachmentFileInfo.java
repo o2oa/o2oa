@@ -246,12 +246,6 @@ public class OkrAttachmentFileInfo extends StorageObject {
 	@CheckPersist(simplyString = true, allowEmpty = true)
 	private String filePath;
 
-	@EntityFieldDescribe("关联类型的名称.")
-	@Column(name = "xstorageName", length = JpaObject.length_64B)
-	@CheckPersist(simplyString = true, allowEmpty = true)
-	@Index(name = TABLE + "_storageName")
-	private String storageName;
-
 	@EntityFieldDescribe("文件说明")
 	@Column(name = "xdescription", length = JpaObject.length_255B)
 	@CheckPersist(simplyString = false, allowEmpty = true)
@@ -425,24 +419,6 @@ public class OkrAttachmentFileInfo extends StorageObject {
 	 */
 	public void setLength(Long length) {
 		this.length = length;
-	}
-
-	/**
-	 * 获取文件存储名称
-	 * 
-	 * @return
-	 */
-	public String getStorageName() {
-		return storageName;
-	}
-
-	/**
-	 * 设置文件存储名称
-	 * 
-	 * @param storageName
-	 */
-	public void setStorageName(String storageName) {
-		this.storageName = storageName;
 	}
 
 	/**

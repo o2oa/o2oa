@@ -9,8 +9,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.attendance.assemble.control.jaxrs.attendanceimportfileinfo.WrapOutAttendanceImportFileInfo;
 import com.x.attendance.entity.AttendanceImportFileInfo;
 import com.x.base.core.application.servlet.AbstractServletAction;
@@ -33,35 +31,27 @@ public class DownloadServlet extends AbstractServletAction {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		AttendanceImportFileInfo fileInfo = null;
-		boolean streamContentType = false;
+		boolean streamContentType = true;
 		request.setCharacterEncoding("UTF-8");
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			logger.debug("[downloadFile]用户" + effectivePerson.getName() + "尝试下载数据文件.....");
-			String part = this.getURIPart(request.getRequestURI(), "download");
-			logger.debug("[downloadFile]截取URL, part=[" + part + "]");
+			EffectivePerson effectivePerson = this.effectivePerson( request );
 			// 从URI里截取需要的信息
-			String id = StringUtils.substringBefore(part, "/"); // 附件的ID
-			logger.debug("[downloadFile]从URL中获取文件的ID, id=[" + id + "]");
-			// part = StringUtils.substringAfter(part, "/");
-			logger.debug("[downloadFile]从URL中获取part, part=[" + part + "]");
+			String id = this.getURIPart( request.getRequestURI(), "download" );
 
-			streamContentType = StringUtils.endsWith(part, "/stream");
-			logger.info("[downloadFile]用application/octet-stream输出，streamContentType=" + streamContentType);
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				OutputStream output = response.getOutputStream();
-				logger.debug("[downloadFile]系统尝试从数据库中根据ID进行查询......");
+				logger.debug("系统尝试从数据库中根据ID进行查询......");
 				fileInfo = emc.find(id, AttendanceImportFileInfo.class);
 				if (fileInfo != null) {
-					logger.debug("[downloadFile]成功从数据库中查询到文件信息：filename=" + fileInfo.getFileName());
+					logger.debug("成功从数据库中查询到文件信息：filename=" + fileInfo.getFileName());
 					try {
 						byte[] buffer = fileInfo.getFileBody();
-						logger.debug("[downloadFile]设置浏览器响应头......");
+						logger.debug("设置浏览器响应头......");
 						this.setResponseHeader(response, streamContentType, fileInfo);
 						output.write(buffer, 0, buffer.length);
 						output.flush();
 					} catch (Exception e) {
-						logger.info("[downloadFile]数据文件流向浏览器输出时发生异常！");
+						logger.info("数据文件流向浏览器输出时发生异常！");
 						e.printStackTrace();
 					} finally {
 						if (output != null) {

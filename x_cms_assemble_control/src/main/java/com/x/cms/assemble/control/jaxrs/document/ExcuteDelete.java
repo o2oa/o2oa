@@ -14,6 +14,7 @@ import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.assemble.control.jaxrs.document.exception.DocumentNotExistsException;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.DocumentPermission;
 import com.x.cms.core.entity.content.DataItem;
@@ -39,7 +40,7 @@ public class ExcuteDelete extends ExcuteBase {
 			if (null == document) {
 				Exception exception = new DocumentNotExistsException( id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 				throw exception;
 			}
 			

@@ -35,7 +35,7 @@ public class ScriptFactory extends ElementFactory {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Script> listScriptNestedWithWithApplicationWithUniqueName(Application application, String uniqueName)
+	public List<Script> listScriptNestedWithApplicationWithUniqueName(Application application, String uniqueName)
 			throws Exception {
 		List<Script> list = new ArrayList<>();
 		Ehcache cache = ApplicationCache.instance().getCache(Script.class);

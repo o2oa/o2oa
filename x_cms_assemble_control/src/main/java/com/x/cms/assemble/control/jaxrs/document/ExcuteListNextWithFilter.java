@@ -11,6 +11,8 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.cms.assemble.control.WrapTools;
+import com.x.cms.assemble.control.jaxrs.document.entity.DocumentCacheForFilter;
+import com.x.cms.assemble.control.jaxrs.document.exception.DocumentInfoProcessException;
 import com.x.cms.assemble.control.jaxrs.documentpermission.WrapInDocumentSearchFilter;
 import com.x.cms.core.entity.Document;
 
@@ -20,18 +22,17 @@ public class ExcuteListNextWithFilter extends ExcuteBase {
 
 	private Logger logger = LoggerFactory.getLogger( ExcuteListNextWithFilter.class );
 	
-	@SuppressWarnings("unchecked")
-	protected ActionResult<List<WrapOutDocument>> execute( HttpServletRequest request, String id, Integer count, WrapInFilter wrapIn, EffectivePerson effectivePerson ) {
-		ActionResult<List<WrapOutDocument>> result = new ActionResult<>();
+	protected ActionResult<List<WrapOutDocumentSimple>> execute( HttpServletRequest request, String id, Integer count, WrapInFilter wrapIn, EffectivePerson effectivePerson ) {
+		ActionResult<List<WrapOutDocumentSimple>> result = new ActionResult<>();
 		WrapInDocumentSearchFilter wrapInDocumentSearchFilter = new WrapInDocumentSearchFilter();
 		Long total = 0L;
-		
-		List<WrapOutDocument> wraps = null;
+		List<WrapOutDocumentSimple> wraps = null;
 		List<String> manageableCatagories = null;
 		List<String> viewAbleDocIds = null;
 		List<String> allViewAbleCategoryIds = new ArrayList<>();
 		List<String> permissionObjectCode = new ArrayList<>();
 		List<Document> documentList = null;
+		DocumentCacheForFilter documentCacheForFilter = null;
 		Boolean isXAdmin = false;
 		Boolean check = true;
 		
@@ -41,31 +42,31 @@ public class ExcuteListNextWithFilter extends ExcuteBase {
 		if( count == 0 ){
 			count = 20;
 		}
-		
 		try {
 			isXAdmin = effectivePerson.isManager();
 		} catch (Exception e) {
 			check = false;
-			Exception exception = new UserManagerCheckException( e, effectivePerson.getName() );
+			Exception exception = new DocumentInfoProcessException( e, "系统在检查用户是否是平台管理员时发生异常。Name:" + effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
 		String cacheKey = getCacheKeyFormWrapInFilter( effectivePerson.getName(), isXAdmin, id, count, wrapIn );
-		Element element = cache.get( cacheKey );
-
-		if ((null != element) && ( null != element.getObjectValue()) ) {
-			wraps = ( List<WrapOutDocument> ) element.getObjectValue();
-			result.setData(wraps);
-		} else {
+		Element element_filter = cache.get( cacheKey );
+		
+		if ( (null != element_filter) && ( null != element_filter.getObjectValue()) ) {
+			documentCacheForFilter = ( DocumentCacheForFilter ) element_filter.getObjectValue();
+			result.setCount( documentCacheForFilter.getTotal() );
+			result.setData( documentCacheForFilter.getDocumentList() );
+		} else {			
 			//计算当前用户管理的所有栏目和分类
 			if( check ){
 				//根据权限，把用户传入的AppId和categoryId进行过滤，最终形成一个可以访问的allViewAbleCategoryIds
 				try {
-					manageableCatagories = getManagerableCatagories( effectivePerson.getName() );
+					manageableCatagories = appCategoryAdminServiceAdv.getManagerableCatagories( effectivePerson.getName() );
 				} catch (Exception e) {
 					check = false;
-					Exception exception = new ServiceLogicException( e, "系统在根据登录人员获取能管理的分类信息ID列表时发生异常。" );
+					Exception exception = new DocumentInfoProcessException( e, "系统在根据登录人员获取能管理的分类信息ID列表时发生异常。" );
 					result.error( exception );
 					logger.error( e, effectivePerson, request, null);
 				}
@@ -74,25 +75,32 @@ public class ExcuteListNextWithFilter extends ExcuteBase {
 			if( check ){
 				//根据权限，把用户传入的AppId和categoryId进行过滤，最终形成一个可以访问的allViewAbleCategoryIds
 				try {
-					allViewAbleCategoryIds = getAllViewAbleCategoryIds( wrapIn.getAppIdList(), wrapIn.getCategoryIdList(), effectivePerson.getName(), isXAdmin );
+					allViewAbleCategoryIds = getAllViewAbleCategoryIds( wrapIn.getAppIdList(), wrapIn.getAppAliasList(), wrapIn.getCategoryIdList(), wrapIn.getCategoryAliasList(), effectivePerson.getName(), isXAdmin );
 				} catch (Exception e) {
 					check = false;
-					Exception exception = new ServiceLogicException( e, "系统在根据应用栏目列表和分类列表计算可访问的分类ID列表时发生异常。" );
+					Exception exception = new DocumentInfoProcessException( e, "系统在根据应用栏目列表和分类列表计算可访问的分类ID列表时发生异常。" );
 					result.error( exception );
 					logger.error( e, effectivePerson, request, null);
 				}
 			}
 			
 			if( check ){
-				
 				if( allViewAbleCategoryIds == null || allViewAbleCategoryIds.isEmpty() ){
-					wrapInDocumentSearchFilter.setAppIdList( wrapIn.getAppIdList() );
-				}else{
-					wrapInDocumentSearchFilter.setAppIdList( null );
+					if( allViewAbleCategoryIds == null ){
+						allViewAbleCategoryIds = new ArrayList<>();
+					}
+					//看看是不是从所有的栏目和分类里取，如果不是，则添加无可见分类，如果是，则整体排序
+					if( ( wrapIn.getAppIdList()== null || wrapIn.getAppIdList().isEmpty() )&&
+						( wrapIn.getAppAliasList()== null || wrapIn.getAppAliasList().isEmpty() )&&
+						( wrapIn.getCategoryIdList()== null || wrapIn.getCategoryIdList().isEmpty() )&&
+						( wrapIn.getCategoryAliasList()== null || wrapIn.getCategoryAliasList().isEmpty() )
+					){
+						//手机办公首页，是从所有文档里直接查询的，没有带查询条件
+					}else{
+						allViewAbleCategoryIds.add( "无可见分类" );
+					}
 				}
-				
 				wrapInDocumentSearchFilter.setCategoryIdList( allViewAbleCategoryIds );
-				
 				wrapInDocumentSearchFilter.setTitle( wrapIn.getTitle() );
 				wrapInDocumentSearchFilter.setCreateDateList( wrapIn.getCreateDateList() );
 				wrapInDocumentSearchFilter.setCreatorList( wrapIn.getCreatorList() );
@@ -101,8 +109,6 @@ public class ExcuteListNextWithFilter extends ExcuteBase {
 				wrapInDocumentSearchFilter.setStatusList( wrapIn.getStatusList( ));
 				wrapInDocumentSearchFilter.setOrderField( wrapIn.getOrderField() );
 				wrapInDocumentSearchFilter.setOrderType( wrapIn.getOrderType() );
-				wrapInDocumentSearchFilter.setAppAliasList( wrapIn.getAppAliasList() );
-				wrapInDocumentSearchFilter.setCategoryAliasList( wrapIn.getAppAliasList() );
 			}
 			
 			if( check ){
@@ -111,19 +117,18 @@ public class ExcuteListNextWithFilter extends ExcuteBase {
 					permissionObjectCode = userManagerService.composeUserPermission( effectivePerson.getName() );
 				} catch (Exception e) {
 					check = false;
-					Exception exception = new ServiceLogicException( e, "系统在根据登录用户姓名获取用户拥有的所有组织，角色，群组信息列表时发生异常。" );
+					Exception exception = new DocumentInfoProcessException( e, "系统在根据登录用户姓名获取用户拥有的所有组织，角色，群组信息列表时发生异常。" );
 					result.error( exception );
 					logger.error( e, effectivePerson, request, null);
 				}
 			}
-			
 			if( check ){
 				if( isXAdmin ){
 					try {
 						viewAbleDocIds = documentServiceAdv.lisViewableDocIdsWithFilter( wrapInDocumentSearchFilter, 500 );
 					} catch (Exception e) {
 						check = false;
-						Exception exception = new ServiceLogicException( e, "系统在根据过滤条件查询用户可访问的文档ID列表时发生异常。" );
+						Exception exception = new DocumentInfoProcessException( e, "系统在根据过滤条件查询用户可访问的文档ID列表时发生异常。" );
 						result.error( exception );
 						logger.error( e, effectivePerson, request, null);
 					}
@@ -133,89 +138,67 @@ public class ExcuteListNextWithFilter extends ExcuteBase {
 						viewAbleDocIds = documentPermissionServiceAdv.lisViewableDocIdsWithFilter( wrapInDocumentSearchFilter, permissionObjectCode, manageableCatagories, 500 );
 					} catch (Exception e) {
 						check = false;
-						Exception exception = new ServiceLogicException( e, "系统在根据过滤条件查询用户可访问的文档ID列表时发生异常。" );
+						Exception exception = new DocumentInfoProcessException( e, "系统在根据过滤条件查询用户可访问的文档ID列表时发生异常。" );
 						result.error( exception );
 						logger.error( e, effectivePerson, request, null);
 					}
 				}
 			}
-			
 			if( check ){
 				//从数据库中查询符合条件的对象总数
 				try {
 					total = documentServiceAdv.countWithDocIds( viewAbleDocIds );
 				} catch (Exception e) {
 					check = false;
-					Exception exception = new ServiceLogicException( e, "系统在获取用户可查询到的文档数据条目数量时发生异常。" );
+					Exception exception = new DocumentInfoProcessException( e, "系统在获取用户可查询到的文档数据条目数量时发生异常。" );
 					result.error( exception );
 					logger.error( e, effectivePerson, request, null);
 				}
 			}
-			
 			if( check ){
 				try {
-					documentList = documentServiceAdv.listNextWithDocIds( id, count, viewAbleDocIds, 
-							wrapInDocumentSearchFilter.getOrderField(),  wrapInDocumentSearchFilter.getOrderType() );
+					documentList = documentServiceAdv.listNextWithDocIds( id, count, viewAbleDocIds,  wrapInDocumentSearchFilter.getOrderField(),  wrapInDocumentSearchFilter.getOrderType() );
 				} catch ( Exception e ) {
 					check = false;
-					Exception exception = new ServiceLogicException( e, "系统在根据用户可访问的文档ID列表对文档进行分页查询时发生异常。" );
+					Exception exception = new DocumentInfoProcessException( e, "系统在根据用户可访问的文档ID列表对文档进行分页查询时发生异常。" );
 					result.error( exception );
 					logger.error( e, effectivePerson, request, null);
 				}
 			}
-			
 			if( check ){
 				if( documentList != null ){
 					try {
-						wraps = WrapTools.document_wrapout_copier.copy( documentList );
+						wraps = WrapTools.documentSimple_wrapout_copier.copy( documentList );
+						documentCacheForFilter = new DocumentCacheForFilter();
+						documentCacheForFilter.setDocumentList( wraps );
+						documentCacheForFilter.setTotal( total );
+						cache.put( new Element( cacheKey, documentCacheForFilter ) );
 						result.setCount( total );
-						cache.put(new Element( cacheKey, wraps ));
-						result.setData(wraps);
+						result.setData( wraps );
 					} catch (Exception e) {
-						Exception exception = new ServiceLogicException( e, "系统在将分页查询结果转换为可输出的数据信息时发生异常。" );
+						Exception exception = new DocumentInfoProcessException( e, "系统在将分页查询结果转换为可输出的数据信息时发生异常。" );
 						result.error( exception );
 						logger.error( e, effectivePerson, request, null);
 					}
 				}
-			}	
-		}
-		return result;
-	}
-
-	private List<String> getManagerableCatagories(String personName ) throws Exception {
-		List<String> appInfo_ids = null;
-		List<String> category_ids = null;
-		List<String> result = new ArrayList<>();
-				
-		appInfo_ids = appCategoryAdminServiceAdv.listAppCategoryObjectIdByUser( personName, "APPINFO" );
-		if( appInfo_ids != null && !appInfo_ids.isEmpty() ){
-			for( String appId : appInfo_ids ){
-				category_ids = categoryInfoServiceAdv.listByAppId(appId);
-				if( category_ids != null && !category_ids.isEmpty() ){
-					for( String categoryId : category_ids ){
-						if( !result.contains( categoryId )){
-							result.add( categoryId );
-						}
-					}
-				}
 			}
 		}
-		
-		category_ids = appCategoryAdminServiceAdv.listAppCategoryObjectIdByUser( personName, "CATEGORY" );
-		if( category_ids != null && !category_ids.isEmpty() ){
-			for( String categoryId : category_ids ){
-				if( !result.contains( categoryId )){
-					result.add( categoryId );
-				}
-			}
-		}
-		
 		return result;
-	}
+	}	
 
+	/**
+	 * 组织一个缓存的KEY
+	 * 
+	 * @param personName
+	 * @param isXAdmin
+	 * @param id
+	 * @param count
+	 * @param wrapIn
+	 * @return
+	 */
 	private String getCacheKeyFormWrapInFilter( String personName, Boolean isXAdmin, String id, Integer count, WrapInFilter wrapIn ) {
 		
-		String cacheKey = ApplicationCache.concreteCacheKey( id, count, personName, isXAdmin );
+		String cacheKey = ApplicationCache.concreteCacheKey( personName, id, count, isXAdmin );
 		
 		if( wrapIn.getTitle() != null && !wrapIn.getTitle().isEmpty() ){
 			cacheKey = ApplicationCache.concreteCacheKey( cacheKey, wrapIn.getTitle() );
@@ -231,8 +214,18 @@ public class ExcuteListNextWithFilter extends ExcuteBase {
 				cacheKey = ApplicationCache.concreteCacheKey( cacheKey, key );
 			}
 		}
+		if( wrapIn.getAppAliasList() != null && !wrapIn.getAppAliasList().isEmpty() ){
+			for( String key : wrapIn.getAppAliasList() ){
+				cacheKey = ApplicationCache.concreteCacheKey( cacheKey, key );
+			}
+		}
 		if( wrapIn.getCategoryIdList() != null && !wrapIn.getCategoryIdList().isEmpty() ){
 			for( String key : wrapIn.getCategoryIdList() ){
+				cacheKey = ApplicationCache.concreteCacheKey( cacheKey, key );
+			}
+		}
+		if( wrapIn.getCategoryAliasList() != null && !wrapIn.getCategoryAliasList().isEmpty() ){
+			for( String key : wrapIn.getCategoryAliasList() ){
 				cacheKey = ApplicationCache.concreteCacheKey( cacheKey, key );
 			}
 		}
@@ -257,6 +250,7 @@ public class ExcuteListNextWithFilter extends ExcuteBase {
 				cacheKey = ApplicationCache.concreteCacheKey( cacheKey, key );
 			}
 		}
+		cacheKey = ApplicationCache.concreteCacheKey( cacheKey, "filterNext" );
 		return cacheKey;
 	}
 }

@@ -10,8 +10,8 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.server.StorageMapping;
-import com.x.base.core.queue.AbstractQueue;
 import com.x.file.assemble.control.Business;
 import com.x.file.assemble.control.ThisApplication;
 import com.x.file.core.entity.open.File;
@@ -36,9 +36,10 @@ public class FileRemoveQueue extends AbstractQueue<Map<String, String>> {
 				Business business = new Business(emc);
 				List<String> ids = business.file().listWithReferenceTypeWithReference(referenceType, reference);
 				for (File o : emc.list(File.class, ids)) {
-					StorageMapping mapping = ThisApplication.storageMappings.get(File.class, o.getStorage());
+					StorageMapping mapping = ThisApplication.context().storageMappings().get(File.class,
+							o.getStorage());
 					if (null == mapping) {
-						logger.warn("删除File: {}, id: {}, 无法找到对应的storage: {}.", o.getName(), o.getId(), o.getStorage());
+						throw new StorageMappingNotExistedException(o.getStorage());
 					} else {
 						o.deleteContent(mapping);
 						emc.beginTransaction(File.class);

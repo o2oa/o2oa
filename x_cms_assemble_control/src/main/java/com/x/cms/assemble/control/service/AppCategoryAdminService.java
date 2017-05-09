@@ -119,16 +119,19 @@ public class AppCategoryAdminService {
 		return business.getAppCategoryAdminFactory().listCategoryInfoIdsByAdminName( name );
 	}
 
-	public List<String> listCategoryInfoIdsByAdminName(EntityManagerContainer emc, String name, String appId ) throws Exception {
-		if( name == null || name.isEmpty() ){
-			throw new Exception( "name is null!" );
+	public List<String> listCategoryInfoIdsByAdminName(EntityManagerContainer emc, String person, String appId ) throws Exception {
+		if( person == null || person.isEmpty() ){
+			throw new Exception( "person is null!" );
 		}
 		if( appId == null || appId.isEmpty() ){
 			throw new Exception( "appId is null!" );
 		}
 		List<String> myCategoryIds = null;
 		Business business = new Business( emc );
-		myCategoryIds = business.getAppCategoryAdminFactory().listCategoryInfoIdsByAdminName( name );
+		myCategoryIds = business.getAppCategoryAdminFactory().listCategoryInfoIdsByAdminName( person );
+		if( myCategoryIds == null || myCategoryIds.isEmpty() ){
+			return null;
+		}
 		return business.getCategoryInfoFactory().listMyCategoryWithAppId( myCategoryIds, appId );
 	}
 

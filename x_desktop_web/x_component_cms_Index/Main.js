@@ -5,7 +5,7 @@ MWF.xDesktop.requireApp("cms.Index", "Actions.RestActions", null, false);
 MWF.xApplication.cms.Index.options = {
 	multitask: false,
 	executable: true
-}
+};
 MWF.xApplication.cms.Index.Main = new Class({
 	Extends: MWF.xApplication.Common.Main,
 	Implements: [Options, Events],
@@ -14,9 +14,9 @@ MWF.xApplication.cms.Index.Main = new Class({
 		"style": "default",
 		"name": "cms.Index",
 		"icon": "icon.png",
-		"width": "1160",
-		"height": "700",
-		"isResize": false,
+		"width": "1220",
+		"height": "680",
+		"isResize": true,
 		"isMax": true,
 		"title": MWF.CMSE.LP.title
 	},
@@ -36,7 +36,7 @@ MWF.xApplication.cms.Index.Main = new Class({
 	createNode: function(){
 		this.content.setStyle("overflow", "hidden");
 		this.node = new Element("div", {
-			"styles": {"width": "100%", "height": "100%", "overflow": "hidden"}
+			"styles": this.css.container
 		}).inject(this.content);
 	},
 	loadApplicationContent: function(){
@@ -46,38 +46,44 @@ MWF.xApplication.cms.Index.Main = new Class({
 	loadTitle : function(){
 		this.loadTitleBar();
 		this.loadCreateDocumentActionNode();
-		this.loadTitleTextNode();
-		this.loadRefreshNode();
+		//this.loadTitleTextNode();
+		//this.loadRefreshNode();
 		this.loadSearchNode();
 	},
 	loadTitleBar: function(){
+		this.titleBarContainer = new Element("div", {
+			"styles": this.css.titleBarContainer
+		}).inject(this.node);
 		this.titleBar = new Element("div", {
 			"styles": this.css.titleBar
-		}).inject(this.node);
+		}).inject(this.titleBarContainer);
 	},
 	loadCreateDocumentActionNode: function() {
 		this.createDocumentAction = new Element("div", {
-			"styles": this.css.createDocumentAction
+			"styles": this.css.createDocumentAction,
+			"text" : this.lp.start
 		}).inject(this.titleBar);
 		this.createDocumentAction.addEvents({
 			"click": function(e){
-				if( this.creater ){
+				MWF.xDesktop.requireApp("cms.Index", "Newer", function(){
+					this.creater = new MWF.xApplication.cms.Index.Newer(null,null,this);
 					this.creater.load();
-				}else{
-					MWF.xDesktop.requireApp("cms.Index", "Creater", function(){
-						this.creater = new MWF.xApplication.cms.Index.Creater(this,null,this);
-						this.creater.load();
-					}.bind(this));
-				}
+				}.bind(this));
+			}.bind(this),
+			"mouseover" : function(e){
+				this.createDocumentAction.setStyles( this.css.createDocumentAction_over )
+			}.bind(this),
+			"mouseout" : function(e){
+				this.createDocumentAction.setStyles( this.css.createDocumentAction )
 			}.bind(this)
 		});
 	},
-	loadTitleTextNode: function(){
-		this.titleTextNode = new Element("div", {
-			"styles": this.css.titleTextNode,
-			"text": this.lp.title
-		}).inject(this.titleBar);
-	},
+	//loadTitleTextNode: function(){
+	//	this.titleTextNode = new Element("div", {
+	//		"styles": this.css.titleTextNode,
+	//		"text": this.lp.title
+	//	}).inject(this.titleBar);
+	//},
 	loadSearchNode: function(){
 		this.searchBarAreaNode = new Element("div", {
 			"styles": this.css.searchBarAreaNode
@@ -127,43 +133,54 @@ MWF.xApplication.cms.Index.Main = new Class({
 			}
 		});
 	},
-	loadRefreshNode : function(){
-		this.refreshAreaNode = new Element("div", {
-			"styles": this.css.refreshAreaNode
-		}).inject(this.titleBar);
-
-		this.refreshActionNode = new Element("div", {
-			"styles": this.css.refreshActionNode,
-			"title" : this.lp.refresh
-		}).inject(this.refreshAreaNode);
-		this.refreshActionNode.addEvent("click", function(){
-			this.reload();
-		}.bind(this));
-	},
+	//loadRefreshNode : function(){
+	//	this.refreshAreaNode = new Element("div", {
+	//		"styles": this.css.refreshAreaNode
+	//	}).inject(this.titleBar);
+    //
+	//	this.refreshActionNode = new Element("div", {
+	//		"styles": this.css.refreshActionNode,
+	//		"title" : this.lp.refresh
+	//	}).inject(this.refreshAreaNode);
+	//	this.refreshActionNode.addEvent("click", function(){
+	//		this.reload();
+	//	}.bind(this));
+	//},
 	loadContent: function(callback){
+
+		//this.container = new Element("div", {
+		//	"styles": this.css.container
+		//}).inject(this.node);
+		this.scrollNode = new Element("div", {
+			"styles": this.css.scrollNode
+		}).inject(this.node);
+		this.contentWarpNode = new Element("div", {
+			"styles": this.css.node
+		}).inject(this.scrollNode);
+
 		this.contentContainerNode = new Element("div",{
 			"styles" : this.css.contentContainerNode
-		}).inject(this.node);
+		}).inject(this.contentWarpNode);
 		this.contentNode = new Element("div", {
 			"styles": this.css.contentNode
 		}).inject(this.contentContainerNode);
 
 		this.createColumnNodes();
 
-		MWF.require("MWF.widget.ScrollBar", function(){
-			new MWF.widget.ScrollBar(this.contentContainerNode, {
-				"indent": false,"style":"xApp_TaskList", "where": "before", "distance": 30, "friction": 4,	"axis": {"x": false, "y": true},
-				"onScroll": function(y){
-					//var scrollSize = _self.elementContentNode.getScrollSize();
-					//var clientSize = _self.elementContentNode.getSize();
-					//var scrollHeight = scrollSize.y-clientSize.y;
-					//if (y+200>scrollHeight) {
-					//	if (!_self.view.isItemsLoaded) _self.view.loadElementList();
-					//}
-				}
-			});
-		}.bind(this));
-
+		//MWF.require("MWF.widget.ScrollBar", function(){
+		//	new MWF.widget.ScrollBar(this.contentContainerNode, {
+		//		"indent": false,"style":"xApp_TaskList", "where": "before", "distance": 30, "friction": 4,	"axis": {"x": false, "y": true},
+		//		"onScroll": function(y){
+		//			//var scrollSize = _self.elementContentNode.getScrollSize();
+		//			//var clientSize = _self.elementContentNode.getSize();
+		//			//var scrollHeight = scrollSize.y-clientSize.y;
+		//			//if (y+200>scrollHeight) {
+		//			//	if (!_self.view.isItemsLoaded) _self.view.loadElementList();
+		//			//}
+		//		}
+		//	});
+		//}.bind(this));
+        //
 		this.setContentSize();
 
 		this.addEvent("resize", function(){
@@ -238,13 +255,32 @@ MWF.xApplication.cms.Index.Main = new Class({
 		//}
 	},
 	setContentSize: function(){
-		var titlebarSize = this.titleBar ? this.titleBar.getSize() : {"x":0,"y":0};
-		var nodeSize = this.node.getSize();
-		var pt = this.contentContainerNode.getStyle("padding-top").toFloat();
-		var pb = this.contentContainerNode.getStyle("padding-bottom").toFloat();
+		//var titlebarSize = this.titleBar ? this.titleBar.getSize() : {"x":0,"y":0};
+		//var nodeSize = this.node.getSize();
+		//var pt = this.contentContainerNode.getStyle("padding-top").toFloat();
+		//var pb = this.contentContainerNode.getStyle("padding-bottom").toFloat();
+        //
+		//var height = nodeSize.y-pt-pb-titlebarSize.y;
+		//this.contentContainerNode.setStyle("height", ""+height+"px");
 
-		var height = nodeSize.y-pt-pb-titlebarSize.y;
-		this.contentContainerNode.setStyle("height", ""+height+"px");
+		var nodeSize = this.content.getSize();
+		var titlebarSize = this.titleBarContainer ? this.titleBarContainer.getSize() : {"x":0,"y":0};
+
+		this.scrollNode.setStyle("height", ""+(nodeSize.y-titlebarSize.y)+"px");
+
+		if (this.contentWarpNode){
+			var count = (nodeSize.x/550).toInt();
+			var x = 550 * count;
+			var m = (nodeSize.x-x)/2-10;
+			this.contentWarpNode.setStyles({
+				"width": ""+x+"px",
+				"margin-left": ""+m+"px"
+			});
+			this.titleBar.setStyles({
+				"margin-left": ""+(m+10)+"px",
+				"margin-right": ""+(m+10)+"px"
+			})
+		}
 	}
 });
 
@@ -261,7 +297,6 @@ MWF.xApplication.cms.Index.Column = new Class({
 		this.container = this.app.contentNode;
 		this.data = data;
 		this.isNew = false;
-		this.backgroundColors = ["#cde6fe","#e6f3ff","#f5f6f7","#fcfcfc"];
 		this.defaultColumnIcon = "/x_component_cms_Index/$Main/"+this.app.options.style+"/icon/column.png";
 	},
 	load : function(){
@@ -275,16 +310,29 @@ MWF.xApplication.cms.Index.Column = new Class({
 			"styles": this.app.css.columnItemNode
 		}).inject(this.container,this.options.where);
 
-		var topNode = this.topNode = new Element("div.columnItemTopNode", {
-			"styles": this.app.css.columnItemTopNode
+		//if( this.options.index % 2 == 1 ){
+		//	this.node.setStyles({
+		//		"margin-left" : "0px",
+		//		"margin-right" : "0px"
+		//	})
+		//}else{
+		//	this.node.setStyles({
+		//		"margin-left" : "0px",
+		//		"margin-right" : "10px"
+		//	})
+		//}
+
+		var leftNode = this.leftNode = new Element("div.columnItemLeftNode", {
+			"styles": this.app.css.columnItemLeftNode
 		}).inject(this.node);
-		var mod = this.options.index % this.backgroundColors.length;
-		this.color = this.backgroundColors[mod];
-		topNode.setStyle("background-color",this.color);
+
+		var rightNode = this.rightNode = new Element("div.columnItemRightNode", {
+			"styles": this.app.css.columnItemRightNode
+		}).inject(this.node);
 
 		this.categoryContainer = new Element("div.categoryContainer",{
 			"styles" : this.app.css.categoryContainer
-		}).inject(this.node);
+		}).inject(this.rightNode);
 
 		this.categoryList = new Element("div.categoryList",{
 			"styles" : this.app.css.categoryList
@@ -292,7 +340,7 @@ MWF.xApplication.cms.Index.Column = new Class({
 
 		this.documentList = new Element("div",{
 			"styles" : this.app.css.documentList
-		}).inject(this.node);
+		}).inject(this.rightNode);
 	},
 	loadTop: function () {
 		this.data.name = this.data.appName;
@@ -303,7 +351,7 @@ MWF.xApplication.cms.Index.Column = new Class({
 		var creator =this.data.creatorUid;
 		var createTime = this.data.createTime;
 
-		var topNode = this.topNode;
+		var leftNode = this.leftNode;
 
 
 		//var iconNode = this.iconNode = new Element("div",{
@@ -318,7 +366,10 @@ MWF.xApplication.cms.Index.Column = new Class({
 
 		var iconAreaNode = this.iconAreaNode = new Element("div",{
 			"styles" : this.app.css.columnItemIconAreaNode
-		}).inject(topNode);
+		}).inject(leftNode);
+		//var mod = this.options.index % this.backgroundColors.length;
+		//this.color = this.backgroundColors[mod];
+		//iconAreaNode.setStyle("background-color",this.color);
 
 		var iconNode = this.iconNode = new Element("img",{
 			"styles" : this.app.css.columnItemIconNode
@@ -334,7 +385,7 @@ MWF.xApplication.cms.Index.Column = new Class({
 
 		var textNode = new Element("div",{
 			"styles" : this.app.css.columnItemTextNode
-		}).inject(topNode)
+		}).inject(leftNode)
 
 		var titleNode = new Element("div",{
 			"styles" : this.app.css.columnItemTitleNode,
@@ -350,7 +401,7 @@ MWF.xApplication.cms.Index.Column = new Class({
 		}).inject(textNode)
 
 		var _self = this;
-		topNode.addEvents({
+		leftNode.addEvents({
 			//"mouseover": function(){if (!_self.selected) this.setStyles(_self.app.css.columnItemNode_over);},
 			//"mouseout": function(){if (!_self.selected) this.setStyles(_self.app.css.columnItemNode);},
 			"click": function(e){_self.clickColumnNode(_self,this,e)}
@@ -406,7 +457,7 @@ MWF.xApplication.cms.Index.Column = new Class({
 			var categoryNode = new Element("div.categoryItem",{
 				"text" : category.categoryName,
 				"styles" : this.app.css.categoryItem
-			}).inject( this.categoryList );
+			}).inject( this.categoryList, "top" );
 
 			categoryNode.store("category",category)
 			categoryNode.addEvents({
@@ -417,6 +468,7 @@ MWF.xApplication.cms.Index.Column = new Class({
 				}
 			})
 		}.bind(this));
+
 		if( this.categoryList.getScrollSize().y > this.categoryContainer.getSize().y ){
 			this.categoryArrowNode = new Element("div.categoryArrowNode",{
 				"styles" : this.app.css.categoryArrowNode
@@ -466,7 +518,7 @@ MWF.xApplication.cms.Index.Column = new Class({
 		if(this.documentList)this.documentList.empty();
 		if(this.moreArea)this.moreArea.destroy();
 		var filter = {
-			"titleList": [key],
+			"title": key,
 			"appIdList": [this.data.id],
 			"statusList": ["published"]
 		};
@@ -487,9 +539,9 @@ MWF.xApplication.cms.Index.Column = new Class({
 		this.getDocumentData(function(json){
 			//json.count //栏目下文档总数
 			//json.size //当前条数
-			if( json.count > json.size ){
-				this.loadMoreItem( json.count, json.size )
-			}
+			//if( json.count > json.size ){
+			//	this.loadMoreItem( json.count, json.size )
+			//}
 			json.data.each(function(data){
 				this.listDocument(data);
 			}.bind(this))
@@ -499,6 +551,7 @@ MWF.xApplication.cms.Index.Column = new Class({
 		var _self = this;
 		var documentItem = new Element("div",{
 			"text" : data.title,
+			"title" : data.title,
 			"styles" : this.app.css.documentItem
 		}).inject(this.documentList);
 		documentItem.store("documentId",data.id);
@@ -522,7 +575,7 @@ MWF.xApplication.cms.Index.Column = new Class({
 		})
 	},
 	getDocumentData: function(callback, count, filter){
-		if(!count)count=7;
+		if(!count)count=6;
 		var id = "(0)";
 		if(!filter){
 			filter = {
@@ -538,17 +591,26 @@ MWF.xApplication.cms.Index.Column = new Class({
 		var _self = this;
 		this.moreArea = new Element("div",{
 			"styles" : this.app.css.moreArea
-		}).inject(this.node);
-		this.moreLink = new Element("div",{
-			"styles" : this.app.css.moreLink,
-			"text" : "查看其余"+(total-size)+"份信息"
+		}).inject(this.rightNode);
+		this.moreLinkText = new Element("div",{
+			"styles" : this.app.css.moreLinkText,
+			"text" : "更多("+(total-size)+")"
 		}).inject(this.moreArea);
-		this.moreLink.addEvents({
-			"mouseover" : function(){this.setStyles(_self.app.css.moreLink_over)},
-			"mouseout" : function(){this.setStyles(_self.app.css.moreLink)},
+		this.moreLinkImage = new Element("div",{
+			"styles" : this.app.css.moreLinkImage
+		}).inject(this.moreArea);
+		this.moreArea.addEvents({
+			"mouseover" : function(){
+				this.moreLinkText.setStyles(_self.app.css.moreLinkText_over);
+				this.moreLinkImage.setStyles(_self.app.css.moreLinkImage_over)
+			}.bind(this),
+			"mouseout" : function(){
+				this.moreLinkText.setStyles(_self.app.css.moreLinkText);
+				this.moreLinkImage.setStyles(_self.app.css.moreLinkImage)
+			}.bind(this),
 			"click" : function(e){_self.clickMoreLink( e )}
 		})
-		this.moreArea.setStyle("background-color",this.color)
+		//this.moreArea.setStyle("background-color",this.color)
 	}
 
 

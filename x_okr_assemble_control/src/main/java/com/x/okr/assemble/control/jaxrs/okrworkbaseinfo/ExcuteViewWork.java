@@ -6,15 +6,21 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.SortTools;
 import com.x.okr.assemble.control.OkrUserCache;
 import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.WrapOutOkrCenterWorkViewInfo;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.CenterWorkNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.UserNoLoginException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkBaseInfoProcessException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkNotExistsException;
 import com.x.okr.assemble.control.service.OkrAttachmentFileInfoService;
 import com.x.okr.assemble.control.service.OkrWorkReportQueryService;
 import com.x.okr.entity.OkrAttachmentFileInfo;
@@ -83,7 +89,6 @@ public class ExcuteViewWork extends ExcuteBase {
 			check = false;
 			Exception exception = new WorkIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
 		}
 		if( check ){
 			try {
@@ -92,14 +97,13 @@ public class ExcuteViewWork extends ExcuteBase {
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName()  );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check && ( okrUserCache == null || okrUserCache.getLoginIdentityName() == null ) ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName()  );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
 		}
 		
 		//1, 工作基础信息
@@ -115,13 +119,12 @@ public class ExcuteViewWork extends ExcuteBase {
 					check = false;
 					Exception exception = new WorkNotExistsException( id  );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
 				}
 			} catch ( Exception e ) {
 				check = false;
-				Exception exception = new WorkQueryByIdException( e, id  );
+				Exception exception = new WorkBaseInfoProcessException( e, "查询指定ID的具体工作信息时发生异常。ID：" + id  );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -139,13 +142,12 @@ public class ExcuteViewWork extends ExcuteBase {
 						check = false;
 						Exception exception = new CenterWorkNotExistsException( okrWorkBaseInfo.getCenterId() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
 					}
 				} catch (Exception e) {
 					check = false;
-					Exception exception = new CenterWorkQueryByIdException( e, okrWorkBaseInfo.getCenterId() );
+					Exception exception = new WorkBaseInfoProcessException( e, "查询指定ID的中心工作信息时发生异常。ID：" + okrWorkBaseInfo.getCenterId() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -165,9 +167,9 @@ public class ExcuteViewWork extends ExcuteBase {
 				}
 			} catch ( Exception e ) {
 				check = false;
-				Exception exception = new WorkDetailQueryByIdException( e, id );
+				Exception exception = new WorkBaseInfoProcessException( e, "查询指定ID的工作详细信息时发生异常。ID：" + id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		//4, 工作的附件列表
@@ -181,9 +183,9 @@ public class ExcuteViewWork extends ExcuteBase {
 					}
 				} catch ( Exception e ) {
 					check = false;
-					Exception exception = new AttachmentListByWorkIdException( e, id );
+					Exception exception = new WorkBaseInfoProcessException( e, "根据工作ID获取工作附件列表发生异常，ID:"+id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 			
@@ -201,9 +203,9 @@ public class ExcuteViewWork extends ExcuteBase {
 				}
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new WorkReportListByWorkIdException( e, id );
+				Exception exception = new WorkBaseInfoProcessException( e, "系统根据工作ID查询所有工作汇报ID列表发生异常. ID：" + id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -217,9 +219,9 @@ public class ExcuteViewWork extends ExcuteBase {
 				}
 			} catch ( Exception e ) {
 				check = false;
-				Exception exception = new AuthorizeRecordGetLastRecordException( e, okrUserCache.getLoginIdentityName(), id );
+				Exception exception = new WorkBaseInfoProcessException( e, "系统根据工作ID以及授权相关人信息查询工作最后一次授权信息发生异常。Person: "+ okrUserCache.getLoginIdentityName() +", ID：" + id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		//7, 递归查询所有的下级工作信息
@@ -285,9 +287,9 @@ public class ExcuteViewWork extends ExcuteBase {
 				}
 			} catch ( Exception e ) {
 				check = false;
-				Exception exception = new AuthorizeRecordListByWorkException( e, id );
+				Exception exception = new WorkBaseInfoProcessException( e, "系统根据工作ID以及授权相关人信息查询工作最后一次授权信息发生异常。ID：" + id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if(check){

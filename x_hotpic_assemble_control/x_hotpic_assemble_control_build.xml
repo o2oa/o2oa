@@ -21,4 +21,5 @@
 		<copy file="${store.dir}/${project}.war" todir="d:/o2server/store" />
 		<touch file="d:/o2server/servers/applicationServer/webapps/${project}.xml" />
 	</target>
+
 </project>

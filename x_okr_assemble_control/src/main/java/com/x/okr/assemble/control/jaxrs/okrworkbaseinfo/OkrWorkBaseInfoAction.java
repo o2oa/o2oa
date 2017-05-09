@@ -16,18 +16,18 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutBoolean;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.WrapOutOkrCenterWorkInfo;
-import com.x.okr.assemble.control.jaxrs.okrtaskhandled.WrapInFilterTaskHandled;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkBaseInfoProcessException;
 
 /**
  * 具体工作项有短期工作还长期工作，短期工作不需要自动启动定期汇报，由人工撰稿汇报即可
@@ -51,9 +51,9 @@ public class OkrWorkBaseInfoAction extends StandardJaxrsAction{
 			wrapIn = this.convertToWrapIn( jsonElement, WrapInOkrWorkBaseInfo.class );
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new WorkBaseInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			try {
@@ -84,9 +84,9 @@ public class OkrWorkBaseInfoAction extends StandardJaxrsAction{
 			wrapIn = this.convertToWrapIn( jsonElement, WrapInOkrWorkBaseInfo.class );
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new WorkBaseInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
@@ -100,6 +100,42 @@ public class OkrWorkBaseInfoAction extends StandardJaxrsAction{
 			}
 		}
 		
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
+	@HttpMethodDescribe(value = "根据ID归档OkrWorkBaseInfo数据对象.", response = WrapOutOkrWorkBaseInfo.class)
+	@GET
+	@Path( "archive/{id}" )
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response archive(@Context HttpServletRequest request, @PathParam( "id" ) String id) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		try {
+			result = new ExcuteArchive().execute( request, effectivePerson, id );
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			result.error( e );
+			logger.error( e, effectivePerson, request, null);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
+	@HttpMethodDescribe(value = "根据ID对OkrWorkBaseInfo进行工作进度调整.", response = WrapOutOkrWorkBaseInfo.class)
+	@GET
+	@Path( "progress/{id}/{percent}" )
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response progressAdjust(@Context HttpServletRequest request, @PathParam( "id" ) String id, @PathParam( "percent" ) Integer percent) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		try {
+			result = new ExcuteProgressAdjust().execute( request, effectivePerson, id, percent );
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			result.error( e );
+			logger.error( e, effectivePerson, request, null);
+		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -217,7 +253,7 @@ public class OkrWorkBaseInfoAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "根据中心工作ID获取我可以看到的所有OkrWorkBaseInfo对象.", response = WrapOutOkrWorkBaseInfo.class)
+	@HttpMethodDescribe(value = "根据中心工作ID获取我可以看到的所有OkrWorkBaseInfo对象.", response = WrapOutOkrCenterWorkInfo.class)
 	@GET
 	@Path( "center/{id}" )
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -249,16 +285,28 @@ public class OkrWorkBaseInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new WorkBaseInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListDraftNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.addQueryInfoStatus( "正常" );	
+				wrapIn.addQueryWorkProcessStatus( "草稿" );
+				wrapIn.addQueryProcessIdentity( "部署者" );
+				result = new ExcuteListMyWorkByProcessIdentityNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -283,16 +331,28 @@ public class OkrWorkBaseInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new WorkBaseInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListDraftPrevWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.addQueryInfoStatus( "正常" );	
+				wrapIn.addQueryWorkProcessStatus( "草稿" );
+				wrapIn.addQueryProcessIdentity( "部署者" );
+				result = new ExcuteListMyWorkByProcessIdentityNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -317,16 +377,34 @@ public class OkrWorkBaseInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new WorkBaseInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListDeployNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.addQueryProcessIdentity( "部署者" );
+				wrapIn.addQueryInfoStatus( "正常" );	
+				if( wrapIn.getWorkProcessStatuses() == null ){
+					wrapIn.addQueryWorkProcessStatus( "待审核" );
+					wrapIn.addQueryWorkProcessStatus( "待确认" );
+					wrapIn.addQueryWorkProcessStatus( "执行中" );
+					wrapIn.addQueryWorkProcessStatus( "已完成" );
+					wrapIn.addQueryWorkProcessStatus( "已撤消" );
+				}
+				result = new ExcuteListMyWorkByProcessIdentityNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -351,16 +429,34 @@ public class OkrWorkBaseInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new WorkBaseInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListDeployPrevWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.addQueryProcessIdentity( "部署者" );
+				wrapIn.addQueryInfoStatus( "正常" );	
+				if( wrapIn.getWorkProcessStatuses() == null ){
+					wrapIn.addQueryWorkProcessStatus( "待审核" );
+					wrapIn.addQueryWorkProcessStatus( "待确认" );
+					wrapIn.addQueryWorkProcessStatus( "执行中" );
+					wrapIn.addQueryWorkProcessStatus( "已完成" );
+					wrapIn.addQueryWorkProcessStatus( "已撤消" );
+				}
+				result = new ExcuteListMyWorkByProcessIdentityPrevWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -385,16 +481,34 @@ public class OkrWorkBaseInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new WorkBaseInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListReadNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.addQueryProcessIdentity( "阅知者" );
+				wrapIn.addQueryInfoStatus( "正常" );	
+				if( wrapIn.getWorkProcessStatuses() == null ){
+					wrapIn.addQueryWorkProcessStatus( "待审核" );
+					wrapIn.addQueryWorkProcessStatus( "待确认" );
+					wrapIn.addQueryWorkProcessStatus( "执行中" );
+					wrapIn.addQueryWorkProcessStatus( "已完成" );
+					wrapIn.addQueryWorkProcessStatus( "已撤消" );
+				}
+				result = new ExcuteListMyWorkByProcessIdentityNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -419,16 +533,34 @@ public class OkrWorkBaseInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new WorkBaseInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListReadPrevWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.addQueryProcessIdentity( "阅知者" );
+				wrapIn.addQueryInfoStatus( "正常" );	
+				if( wrapIn.getWorkProcessStatuses() == null ){
+					wrapIn.addQueryWorkProcessStatus( "待审核" );
+					wrapIn.addQueryWorkProcessStatus( "待确认" );
+					wrapIn.addQueryWorkProcessStatus( "执行中" );
+					wrapIn.addQueryWorkProcessStatus( "已完成" );
+					wrapIn.addQueryWorkProcessStatus( "已撤消" );
+				}
+				result = new ExcuteListMyWorkByProcessIdentityPrevWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -453,16 +585,34 @@ public class OkrWorkBaseInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new WorkBaseInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListResponsibilityNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.addQueryProcessIdentity( "责任者" );
+				wrapIn.addQueryInfoStatus( "正常" );	
+				if( wrapIn.getWorkProcessStatuses() == null ){
+					wrapIn.addQueryWorkProcessStatus( "待审核" );
+					wrapIn.addQueryWorkProcessStatus( "待确认" );
+					wrapIn.addQueryWorkProcessStatus( "执行中" );
+					wrapIn.addQueryWorkProcessStatus( "已完成" );
+					wrapIn.addQueryWorkProcessStatus( "已撤消" );
+				}
+				result = new ExcuteListMyWorkByProcessIdentityNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -487,16 +637,34 @@ public class OkrWorkBaseInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new WorkBaseInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListResponsibilityPrevWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.addQueryProcessIdentity( "责任者" );
+				wrapIn.addQueryInfoStatus( "正常" );	
+				if( wrapIn.getWorkProcessStatuses() == null ){
+					wrapIn.addQueryWorkProcessStatus( "待审核" );
+					wrapIn.addQueryWorkProcessStatus( "待确认" );
+					wrapIn.addQueryWorkProcessStatus( "执行中" );
+					wrapIn.addQueryWorkProcessStatus( "已完成" );
+					wrapIn.addQueryWorkProcessStatus( "已撤消" );
+				}
+				result = new ExcuteListMyWorkByProcessIdentityPrevWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -521,16 +689,34 @@ public class OkrWorkBaseInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new WorkBaseInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListDelegatedNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.addQueryProcessIdentity( "授权者" );
+				wrapIn.addQueryInfoStatus( "正常" );	
+				if( wrapIn.getWorkProcessStatuses() == null ){
+					wrapIn.addQueryWorkProcessStatus( "待审核" );
+					wrapIn.addQueryWorkProcessStatus( "待确认" );
+					wrapIn.addQueryWorkProcessStatus( "执行中" );
+					wrapIn.addQueryWorkProcessStatus( "已完成" );
+					wrapIn.addQueryWorkProcessStatus( "已撤消" );
+				}
+				result = new ExcuteListMyWorkByProcessIdentityNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -555,16 +741,34 @@ public class OkrWorkBaseInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new WorkBaseInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListDelegatedPrevWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.addQueryProcessIdentity( "授权者" );
+				wrapIn.addQueryInfoStatus( "正常" );	
+				if( wrapIn.getWorkProcessStatuses() == null ){
+					wrapIn.addQueryWorkProcessStatus( "待审核" );
+					wrapIn.addQueryWorkProcessStatus( "待确认" );
+					wrapIn.addQueryWorkProcessStatus( "执行中" );
+					wrapIn.addQueryWorkProcessStatus( "已完成" );
+					wrapIn.addQueryWorkProcessStatus( "已撤消" );
+				}
+				result = new ExcuteListMyWorkByProcessIdentityPrevWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -589,16 +793,34 @@ public class OkrWorkBaseInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new WorkBaseInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListCooperateNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.addQueryProcessIdentity( "协助者" );
+				wrapIn.addQueryInfoStatus( "正常" );	
+				if( wrapIn.getWorkProcessStatuses() == null ){
+					wrapIn.addQueryWorkProcessStatus( "待审核" );
+					wrapIn.addQueryWorkProcessStatus( "待确认" );
+					wrapIn.addQueryWorkProcessStatus( "执行中" );
+					wrapIn.addQueryWorkProcessStatus( "已完成" );
+					wrapIn.addQueryWorkProcessStatus( "已撤消" );
+				}
+				result = new ExcuteListMyWorkByProcessIdentityNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -623,16 +845,34 @@ public class OkrWorkBaseInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new WorkBaseInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListCooperatePrevWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.addQueryProcessIdentity( "协助者" );
+				wrapIn.addQueryInfoStatus( "正常" );	
+				if( wrapIn.getWorkProcessStatuses() == null ){
+					wrapIn.addQueryWorkProcessStatus( "待审核" );
+					wrapIn.addQueryWorkProcessStatus( "待确认" );
+					wrapIn.addQueryWorkProcessStatus( "执行中" );
+					wrapIn.addQueryWorkProcessStatus( "已完成" );
+					wrapIn.addQueryWorkProcessStatus( "已撤消" );
+				}
+				result = new ExcuteListMyWorkByProcessIdentityPrevWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -657,16 +897,27 @@ public class OkrWorkBaseInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new WorkBaseInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListArchiveNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.addQueryInfoStatus( "已归档" );
+				wrapIn.addQueryProcessIdentity( "观察者" );
+				result = new ExcuteListMyWorkByProcessIdentityNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -691,16 +942,27 @@ public class OkrWorkBaseInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new WorkBaseInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListArchivePrevWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.addQueryInfoStatus( "已归档" );
+				wrapIn.addQueryProcessIdentity( "观察者" );
+				result = new ExcuteListMyWorkByProcessIdentityPrevWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -725,16 +987,29 @@ public class OkrWorkBaseInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new WorkBaseInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListWorkSimpleInfoNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.addQueryProcessIdentity( "观察者" );
+				if( wrapIn.getSequenceField() == null || wrapIn.getSequenceField().isEmpty() ){
+					wrapIn.setSequenceField( "completeDateLimitStr" );
+				}
+				result = new ExcuteListMyWorkByProcessIdentityNextWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );
@@ -759,16 +1034,29 @@ public class OkrWorkBaseInfoAction extends StandardJaxrsAction{
 		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter.class );
+			if( wrapIn == null ){
+				wrapIn = new com.x.okr.assemble.control.jaxrs.okrworkperson.WrapInFilter();
+			}
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new WorkBaseInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
 			try {
-				result = new ExcuteListWorkSimpleInfoPrevWithFilter().execute( request, effectivePerson, id, count, wrapIn );
+				wrapIn.setEmployeeNames( null );
+				wrapIn.setEmployeeIdentities(null);
+				wrapIn.setCompanyNames( null );
+				wrapIn.setOrganizationNames( null );
+				wrapIn.setInfoStatuses( null );
+				wrapIn.setProcessIdentities( null );
+				wrapIn.addQueryProcessIdentity( "观察者" );
+				if( wrapIn.getSequenceField() == null || wrapIn.getSequenceField().isEmpty() ){
+					wrapIn.setSequenceField( "completeDateLimitStr" );
+				}
+				result = new ExcuteListMyWorkByProcessIdentityPrevWithFilter().execute( request, effectivePerson, id, count, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error( e );

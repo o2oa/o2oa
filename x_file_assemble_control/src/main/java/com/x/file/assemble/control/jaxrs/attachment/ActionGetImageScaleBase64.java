@@ -40,7 +40,8 @@ public class ActionGetImageScaleBase64 extends ActionBase {
 			if (scale < 0 || scale > 100) {
 				throw new Exception("invaild scale:" + scale + ".");
 			}
-			StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class, attachment.getStorage());
+			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+					attachment.getStorage());
 			try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
 				attachment.readContent(mapping, output);
 				try (ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray())) {

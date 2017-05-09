@@ -11,6 +11,7 @@ import com.x.base.core.gson.XGsonBuilder;
 
 public class x_processplatform_assemble_bam extends Assemble {
 
+	public static final String name = "流程监控";
 	public static List<String> containerEntities = new ArrayList<>();
 	public static List<StorageType> usedStorageTypes = new ArrayList<>();
 	public static List<Class<? extends Compilable>> dependents = new ArrayList<>();
@@ -32,6 +33,7 @@ public class x_processplatform_assemble_bam extends Assemble {
 		containerEntities.add("com.x.processplatform.core.entity.element.Application");
 		containerEntities.add("com.x.processplatform.core.entity.element.ApplicationDict");
 		containerEntities.add("com.x.processplatform.core.entity.element.ApplicationDictItem");
+		containerEntities.add("com.x.processplatform.core.entity.element.ApplicationDictLobItem");
 		containerEntities.add("com.x.processplatform.core.entity.element.Begin");
 		containerEntities.add("com.x.processplatform.core.entity.element.Cancel");
 		containerEntities.add("com.x.processplatform.core.entity.element.Choice");

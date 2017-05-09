@@ -29,7 +29,7 @@ public class CategoryInfoServiceAdv {
 	}
 
 	/**
-	 * 根据栏目ID以及用户的权限获取用户可访问所的所有分类ID列表
+	 * 根据栏目ID以及用户的权限获取用户可访问|发布的所有分类ID列表
 	 * 1、栏目下所有未设置访问权限的（全员可以访问的Category）
 	 * 2、该用户自己为管理员的所有Category
 	 * 3、该用户以及用户所在的部门，公司有权限访问的所有Category
@@ -38,7 +38,7 @@ public class CategoryInfoServiceAdv {
 	 * @return
 	 * @throws Exception 
 	 */
-	public List<String> listViewableByAppIdAndUserPermission( String appId, String person, String permission ) throws Exception {
+	public List<String> listPublishByAppIdAndUserPermission( String appId, String person, String permission ) throws Exception {
 		if( appId == null || appId.isEmpty() ){
 			throw new Exception("appId is null!");
 		}
@@ -46,17 +46,31 @@ public class CategoryInfoServiceAdv {
 			throw new Exception("name is null!");
 		}
 		List<String> viewAbleCategoryIds = new ArrayList<>();
+		List<String> permissionIds = null;
 		List<String> categoryIds = null;
 		List<String> departmentNames = null;
 		List<String> companyNames = null;
+		List<String> groupNames = null;
+		CategoryInfo categoryInfo = null;
 		
 		//1、在指定APPID下所有未设置访问权限的（全员可以访问的Category）
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			
 			categoryIds = categoryInfoService.listNoViewPermissionCategoryIds( emc, appId, permission );
-			if (categoryIds != null && !categoryIds.isEmpty()) {
-				for (String id : categoryIds) {
-					if (!viewAbleCategoryIds.contains(id)) {
-						viewAbleCategoryIds.add(id);
+			
+			if ( categoryIds != null && !categoryIds.isEmpty() ) {
+				for ( String id : categoryIds ) {
+					//System.out.println("========== 00 category:" + id );
+					if ( !viewAbleCategoryIds.contains( id ) ) {
+						//如果栏目也没有设置发布权限 ，那么才可以算作为没有设置发布权限的
+						categoryInfo = categoryInfoService.get(emc, id);
+						if( categoryInfo != null ){
+							permissionIds = appCategoryPermissionService.listPermissionByAppInfo( emc, categoryInfo.getAppId(), "PUBLISH" );
+							if( permissionIds == null || permissionIds.isEmpty() ){
+								//System.out.println( "=======11 add category:" + id );
+								viewAbleCategoryIds.add( id );
+							}
+						}
 					}
 				}
 			}
@@ -70,6 +84,7 @@ public class CategoryInfoServiceAdv {
 			if (categoryIds != null && !categoryIds.isEmpty()) {
 				for (String id : categoryIds) {
 					if (!viewAbleCategoryIds.contains(id)) {
+						//System.out.println("=======22 add category:" + id );
 						viewAbleCategoryIds.add(id);
 					}
 				}
@@ -81,12 +96,14 @@ public class CategoryInfoServiceAdv {
 		// 3、该用户以及用户所在的部门，公司有权限访问的所有Category
 		departmentNames = userManagerService.listDepartmentNameByEmployeeName( person );
 		companyNames = userManagerService.listCompanyNameByEmployeeName( person );
+		groupNames = userManagerService.listGroupNamesByPersonName( person );
 		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			categoryIds = appCategoryPermissionService.listCategoryIdsByPermission(emc, person, departmentNames, companyNames, appId, permission );
+			categoryIds = appCategoryPermissionService.listCategoryIdsByPermission( emc, person, departmentNames, companyNames, groupNames, appId, permission );
 			if ( categoryIds != null && !categoryIds.isEmpty()) {
 				for ( String id : categoryIds ) {
 					if (!viewAbleCategoryIds.contains(id)) {
+						//System.out.println("=======33 add category:" + id );
 						viewAbleCategoryIds.add(id);
 					}
 				}
@@ -94,8 +111,102 @@ public class CategoryInfoServiceAdv {
 		} catch (Exception e) {
 			throw e;
 		}
+		
+		if( viewAbleCategoryIds == null || viewAbleCategoryIds.isEmpty() ){
+			viewAbleCategoryIds.add("没有可用分类");
+		}
+		
 		return viewAbleCategoryIds;
 	}
+	
+	
+	/**
+	 * 根据栏目ID以及用户的权限获取用户可访问|发布的所有分类ID列表
+	 * 1、栏目下所有未设置访问权限的（全员可以访问的Category）
+	 * 2、该用户自己为管理员的所有Category
+	 * 3、该用户以及用户所在的部门，公司有权限访问的所有Category
+	 * @param appId
+	 * @param name
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<String> listViewableByAppIdAndUserPermission( String appId, String person ) throws Exception {
+		if( appId == null || appId.isEmpty() ){
+			throw new Exception("appId is null!");
+		}
+		if( person == null || person.isEmpty() ){
+			throw new Exception("name is null!");
+		}
+		List<String> appIds = null;
+		List<String> viewAbleCategoryIds = new ArrayList<>();
+		List<String> categoryIds = null;
+		List<String> departmentNames = null;
+		List<String> companyNames = null;
+		List<String> groupNames = null;
+		
+		//1、如果该栏目是全员可见，在指定APPID下所有未设置访问权限的（ 全员可以访问的Category ）
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			
+			//如果栏目没有配置可见范围
+			appIds = appCategoryPermissionService.listAllAppInfoIds( emc, "APPINFO", "VIEW" );
+			
+			if( appIds == null || appIds.isEmpty() || !appIds.contains( appId )){
+				categoryIds = categoryInfoService.listNoViewPermissionCategoryIds( emc, appId, "VIEW" );
+			}
+			
+			if ( categoryIds != null && !categoryIds.isEmpty() ) {
+				for ( String id : categoryIds ) {
+					if ( !viewAbleCategoryIds.contains( id ) ) {
+						viewAbleCategoryIds.add( id );
+					}
+				}
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		}
+		
+		// 2、该用户自己为管理员的所有Category
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			categoryIds = appCategoryAdminService.listCategoryInfoIdsByAdminName( emc, person, appId );
+			if (categoryIds != null && !categoryIds.isEmpty()) {
+				for (String id : categoryIds) {
+					if (!viewAbleCategoryIds.contains(id)) {
+						//System.out.println("=======2 add category:" + id );
+						viewAbleCategoryIds.add(id);
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		
+		// 3、该用户以及用户所在的部门，公司有权限访问的所有Category
+		departmentNames = userManagerService.listDepartmentNameByEmployeeName( person );
+		companyNames = userManagerService.listCompanyNameByEmployeeName( person );
+		groupNames = userManagerService.listGroupNamesByPersonName( person );
+		
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			categoryIds = appCategoryPermissionService.listCategoryIdsByPermission( emc, person, departmentNames, companyNames, groupNames, appId , null );
+			if ( categoryIds != null && !categoryIds.isEmpty()) {
+				for ( String id : categoryIds ) {
+					if (!viewAbleCategoryIds.contains(id)) {
+						//System.out.println("=======3 add category:" + id );
+						viewAbleCategoryIds.add(id);
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		
+		if( viewAbleCategoryIds == null || viewAbleCategoryIds.isEmpty() ){
+			viewAbleCategoryIds.add("没有可用分类");
+		}
+		
+		return viewAbleCategoryIds;
+	}
+
 
 	public List<CategoryInfo> list(List<String> ids) throws Exception {
 		if( ids == null || ids.isEmpty() ){
@@ -176,6 +287,39 @@ public class CategoryInfoServiceAdv {
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			categoryInfoService.delete( emc, id );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	public List<String> listByAlias(String cataggoryAlias) throws Exception {
+		if( cataggoryAlias == null || cataggoryAlias.isEmpty() ){
+			throw new Exception("cataggoryAlias is null.");
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return categoryInfoService.listByAlias( emc, cataggoryAlias );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	public List<String> listNoViewPermissionCategoryIds( String appId ) throws Exception {
+		if( appId == null || appId.isEmpty() ){
+			throw new Exception("appId is null.");
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return categoryInfoService.listNoViewPermissionCategoryIds( emc, appId, null );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+	
+	public List<String> listNoPublishPermissionCategoryIds( String appId ) throws Exception {
+		if( appId == null || appId.isEmpty() ){
+			throw new Exception("appId is null.");
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return categoryInfoService.listNoViewPermissionCategoryIds( emc, appId, "PUBLISH" );
 		} catch ( Exception e ) {
 			throw e;
 		}

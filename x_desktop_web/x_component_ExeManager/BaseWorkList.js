@@ -188,8 +188,8 @@ MWF.xApplication.ExeManager.BaseWorkList = new Class({
         if (xhr) errorMessage = xhr.responseText;
         try{
             var e = JSON.parse(errorMessage);
-            if (e && e.userMessage) {
-                this.app.notice(e.userMessage, "error");
+            if (e && e.message) {
+                this.app.notice(e.message, "error");
             } else {
                 this.app.notice(errorText, "error");
             }
@@ -216,9 +216,11 @@ MWF.xApplication.ExeManager.BaseWorkList.View = new Class({
         if (!count)count = 20;
         var id = (this.items.length) ? this.items[this.items.length - 1].data.id : "(0)";
         var filter = this.options.filterData || {};
+        if(id=="(0)")this.app.createShade();
 
         this.actions.getBaseWorkListNext(id, count, filter, function (json) {
             if (callback)callback(json);
+            this.app.destroyShade();
         }.bind(this),function(xhr,error,text){
             this.explorer.explorer.showErrorMsg(xhr,error,text)
         }.bind(this))
@@ -515,9 +517,9 @@ MWF.xApplication.ExeManager.BaseWorkList.WorkForm = new Class({
                     }
                     this.app.restActions.saveTask(data, function(json){
                         if(json.type && json.type == "success"){
-                            if(json.userMessage) {
-                                this.attachment.options.documentId = json.userMessage;
-                                this.data.id = json.userMessage;
+                            if(json.data && json.data.id) {
+                                this.attachment.options.documentId = json.data.id;
+                                this.data.id = json.data.id;
                                 //this.options.isNew = false;
                             }
                         }

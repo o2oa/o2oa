@@ -148,7 +148,7 @@ public class SlicePropertiesBuilder {
 			if (StringUtils.equals(determineDBDictionary(list.get(0)), dictionary_informix)) {
 				properties.put("openjpa.jdbc.Schema", "x");
 			}
-			properties.put("openjpa.slice.Lenient", "true");
+			properties.put("openjpa.slice.Lenient", "false");
 			// properties.put("openjpa.Multithreaded", "true");
 			properties.put("openjpa.slice.DistributionPolicy", FactorDistributionPolicy.class.getName());
 			properties.put("openjpa.slice.Names", getSliceNames(list));

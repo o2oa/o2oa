@@ -9,7 +9,7 @@
         "text-align" : "center"
     },
     "uploadActionNode":{
-        "margin": "10px 10px 10px 10px",
+        "margin": "0px 10px 10px 10px",
         "background-color": "#FFF",
         "padding": "4px 14px",
         "border": "1px solid #999",
@@ -58,6 +58,11 @@
     },
     "editorNode": {
         "overflow": "hidden"
+    },
+    "descriptionNode":{
+      "font-size":"14px",
+        "color" : "#666",
+        "margin-top" : "5px"
     },
     "innerNode": {
         "width": "100%",

@@ -8,10 +8,6 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.utils.SortTools;
-import com.x.organization.core.express.wrap.WrapCompany;
-import com.x.organization.core.express.wrap.WrapDepartment;
-import com.x.organization.core.express.wrap.WrapIdentity;
-import com.x.organization.core.express.wrap.WrapRole;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.wrapout.element.WrapOutApplication;
 import com.x.processplatform.assemble.surface.wrapout.element.WrapOutProcess;
@@ -24,22 +20,14 @@ class ActionListWithPersonComplex extends ActionBase {
 			ActionResult<List<WrapOutApplication>> result = new ActionResult<>();
 			List<WrapOutApplication> wraps = new ArrayList<>();
 			Business business = new Business(emc);
-			List<String> identities = new ArrayList<>();
-			for (WrapIdentity o : business.organization().identity().listWithPerson(effectivePerson.getName())) {
-				identities.add(o.getName());
-			}
-			List<String> departments = new ArrayList<>();
-			for (WrapDepartment o : business.organization().department().listWithPerson(effectivePerson.getName())) {
-				departments.add(o.getName());
-			}
-			List<String> companies = new ArrayList<>();
-			for (WrapCompany o : business.organization().company().listWithPerson(effectivePerson.getName())) {
-				companies.add(o.getName());
-			}
-			List<String> roles = new ArrayList<>();
-			for (WrapRole o : business.organization().role().listWithPerson(effectivePerson.getName())) {
-				companies.add(o.getName());
-			}
+			List<String> identities = business.organization().identity().listNameWithPerson(effectivePerson.getName());
+			/** 去除部门以及上级部门,如果设置了一级部门可用,那么一级部门下属的二级部门也可用 */
+			List<String> departments = business.organization().department()
+					.listNameWithPersonSupNested(effectivePerson.getName());
+			/** 去除部门以及上级公司,如果设置了一级公司可用,那么一级公司下属的二级公司也可用 */
+			List<String> companies = business.organization().company()
+					.listNameWithPersonSupNested(effectivePerson.getName());
+			List<String> roles = business.organization().role().listNameWithPerson(effectivePerson.getName());
 			List<String> ids = business.application().listAvailable(effectivePerson, roles, identities, departments,
 					companies);
 			for (String id : ids) {

@@ -38,16 +38,16 @@ MWF.xApplication.cms.ColumnManager.PermissionSetting = new Class({
     createNode: function(){
         if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();
 
-        this.titleNode = new Element("div", {
+        this.titleNode = new Element("div.availableTitleNode", {
             "styles": this.app.css.availableTitleNode,
             "text": this.lp.title
         }).inject(this.node);
 
         this.contentNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.node);
-        this.itemsContentNode = new Element("div", {"styles": this.app.css.availableItemsContentNode}).inject(this.contentNode);
+        this.itemsContentNode = new Element("div.availableItemsContentNode", {"styles": this.app.css.availableItemsContentNode}).inject(this.contentNode);
         this.actionAreaNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.node);
 
-        var changeIdentityList = new Element("div", {
+        var changeIdentityList = new Element("div.selectButtonStyle", {
             "styles": this.app.css.selectButtonStyle,
             "text": this.lp.setPerson
         }).inject(this.actionAreaNode);
@@ -55,7 +55,7 @@ MWF.xApplication.cms.ColumnManager.PermissionSetting = new Class({
             this.changeIdentitys();
         }.bind(this));
 
-        var changeDepartmentList = new Element("div", {
+        var changeDepartmentList = new Element("div.selectButtonStyle", {
             "styles": this.app.css.selectButtonStyle,
             "text": this.lp.setDepartment
         }).inject(this.actionAreaNode);
@@ -63,7 +63,7 @@ MWF.xApplication.cms.ColumnManager.PermissionSetting = new Class({
             this.changeDepartments();
         }.bind(this));
 
-        var changeCompanyList = new Element("div", {
+        var changeCompanyList = new Element("div.selectButtonStyle", {
             "styles": this.app.css.selectButtonStyle,
             "text":this.lp.setCompany
         }).inject(this.actionAreaNode);

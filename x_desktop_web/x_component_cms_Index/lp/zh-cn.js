@@ -1,6 +1,7 @@
 MWF.xApplication.cms.Index.LP = {
 	"title": "内容管理首页",
-
+	"createDocument" : "新建文档",
+	"selectCategory" : "选择分类",
 	"searchKey": "请输入关键字",
 	"all": "全部",
 	"filter": "筛选",
@@ -28,6 +29,7 @@ MWF.xApplication.cms.Index.LP = {
 	"key": "关键字",
 	"noFormSelected" : "该分类未设置表单，请通知管理员",
 	"documentStartedMessage": "您创建了一份文档：",
+	//"backgroundColors" : ["#e64d4a","#8b53da","#66cc80","#ed8c47","#3c76b7","#57c8ce"],
 
 	"open" : "打开",
 	"delete" : "删除",

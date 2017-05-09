@@ -1,6 +1,7 @@
 package com.x.okr.assemble.control.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -138,6 +139,7 @@ public class OkrCenterWorkExcuteArchive {
 						emc.remove( okrWorkBaseInfo, CheckRemoveType.all );
 					}else{
 						okrWorkBaseInfo.setStatus( "已归档" );
+						okrWorkBaseInfo.setArchiveDate( new Date() );
 						emc.check( okrWorkBaseInfo, CheckPersistType.all );
 					}
 				}
@@ -156,7 +158,7 @@ public class OkrCenterWorkExcuteArchive {
 						}
 					}
 				}
-				statisticList = okrStatisticReportStatusService.list( null, id, null, null, null );
+				statisticList = okrStatisticReportStatusService.list( null, null, id, null, null, null, null );
 				if( statisticList != null && !statisticList.isEmpty() ){
 					for( OkrStatisticReportStatus statistic : statisticList ){
 						statistic.setStatus( "已归档" );
@@ -240,7 +242,7 @@ public class OkrCenterWorkExcuteArchive {
 			for( String id : del_attachmentIds ){
 				attachment = emc.find( id, OkrAttachmentFileInfo.class );
 				if( attachment != null ){
-					mapping = ThisApplication.storageMappings.get(OkrAttachmentFileInfo.class, attachment.getStorage() );
+					mapping = ThisApplication.context().storageMappings().get(OkrAttachmentFileInfo.class, attachment.getStorage() );
 					attachment.deleteContent( mapping );
 					emc.remove( attachment, CheckRemoveType.all );
 				}

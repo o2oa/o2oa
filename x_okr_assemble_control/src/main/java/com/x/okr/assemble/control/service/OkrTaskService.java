@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.common.date.DateOperation;
 import com.x.okr.assemble.control.Business;
 import com.x.okr.entity.OkrCenterWorkInfo;
@@ -590,17 +590,14 @@ public class OkrTaskService{
 	 * @return
 	 * @throws Exception 
 	 */
-	public Long getTaskCountByUserName( List<String> taskTypeList, String name ) throws Exception {
-		if( taskTypeList == null || taskTypeList.isEmpty() ){
-			throw new Exception( "taskTypeList is null, system can not excute query." );
-		}
+	public Long getTaskCountByUserName( List<String> taskTypeList, List<String> notInTaskTypeList, String name ) throws Exception {
 		if( name == null || name.isEmpty() ){
 			throw new Exception( "name is null, system can not excute query." );
 		}
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			return business.okrTaskFactory().getTaskCountByUserName( taskTypeList, name );
+			return business.okrTaskFactory().getTaskCountByUserName( taskTypeList, notInTaskTypeList, name );
 		} catch ( Exception e ) {
 			throw e;
 		}

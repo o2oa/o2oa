@@ -14,6 +14,7 @@ import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.WrapInStringList;
 import com.x.base.core.http.WrapOutOnline;
 import com.x.base.core.project.x_collaboration_assemble_websocket;
+import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.utils.ListTools;
 import com.x.base.core.utils.SortTools;
 import com.x.organization.assemble.control.Business;
@@ -80,8 +81,9 @@ public class ActionGetDepartmentSubDirectDepartmentSubDirectIdentity {
 		List<String> personNames = ListTools.extractProperty(wraps, "personName", String.class, true, true);
 		WrapInStringList parameters = new WrapInStringList();
 		parameters.setValueList(personNames);
-		List<WrapOutOnline> onlines = ThisApplication.applications.putQuery(x_collaboration_assemble_websocket.class,
-				"online/list", parameters, collectionType);
+		ActionResponse resp = ThisApplication.context().applications()
+				.putQuery(x_collaboration_assemble_websocket.class, "online/list", parameters);
+		List<WrapOutOnline> onlines = resp.getDataAsList(WrapOutOnline.class);
 		for (WrapOutOnline o : onlines) {
 			if (StringUtils.equals(o.getOnlineStatus(), WrapOutOnline.status_online)) {
 				for (WrapOutIdentity wrap : wraps) {

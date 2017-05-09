@@ -108,11 +108,15 @@ public abstract class AbstractServletAction extends HttpServlet {
 		if (streamContentType || StringUtils.isEmpty(o.getExtension())) {
 			response.setHeader(CONTENT_TYPE, "application/octet-stream");
 			response.setHeader(CONTENT_DISPOSITION,
-					"attachment; filename=" + URLEncoder.encode(o.getName(), DefaultCharset.name));
+					"attachment; filename*=UTF-8''" + URLEncoder.encode(o.getName(), DefaultCharset.name));
+			// response.setHeader(CONTENT_DISPOSITION, "attachment;
+			// filename*=UTF-8''" + o.getName());
 		} else {
 			response.setHeader(CONTENT_TYPE, Config.mimeTypes().getMimeByExtension("." + o.getExtension()));
 			response.setHeader(CONTENT_DISPOSITION,
-					"inline; filename=" + URLEncoder.encode(o.getName(), DefaultCharset.name));
+					"inline; filename*=UTF-8''" + URLEncoder.encode(o.getName(), DefaultCharset.name));
+			// response.setHeader(CONTENT_DISPOSITION, "inline;
+			// filename*=UTF-8''" + o.getName());
 		}
 		response.setIntHeader(CONTENT_LENGTH, o.getLength().intValue());
 	}

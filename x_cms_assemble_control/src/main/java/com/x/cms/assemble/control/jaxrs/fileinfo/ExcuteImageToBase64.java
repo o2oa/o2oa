@@ -19,6 +19,12 @@ import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.project.server.StorageMapping;
 import com.x.cms.assemble.control.ThisApplication;
+import com.x.cms.assemble.control.jaxrs.fileinfo.exception.FileInfoBase64EncodeException;
+import com.x.cms.assemble.control.jaxrs.fileinfo.exception.FileInfoIdEmptyException;
+import com.x.cms.assemble.control.jaxrs.fileinfo.exception.FileInfoIsNotImageException;
+import com.x.cms.assemble.control.jaxrs.fileinfo.exception.FileInfoNotExistsException;
+import com.x.cms.assemble.control.jaxrs.fileinfo.exception.FileInfoQueryByIdException;
+import com.x.cms.assemble.control.jaxrs.fileinfo.exception.FileInfoSizeInvalidException;
 import com.x.cms.core.entity.FileInfo;
 
 import net.sf.ehcache.Element;
@@ -45,7 +51,7 @@ public class ExcuteImageToBase64 extends ExcuteBase {
 					check = false;
 					Exception exception = new FileInfoIdEmptyException();
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			}
 			if( check ){
@@ -56,7 +62,7 @@ public class ExcuteImageToBase64 extends ExcuteBase {
 						check = false;
 						Exception exception = new FileInfoSizeInvalidException();
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						//logger.error( e, effectivePerson, request, null);
 					}
 				}else{
 					sizeNum = 800;
@@ -69,13 +75,13 @@ public class ExcuteImageToBase64 extends ExcuteBase {
 						check = false;
 						Exception exception = new FileInfoNotExistsException( id );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						//logger.error( e, effectivePerson, request, null);
 					}
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new FileInfoQueryByIdException( e, id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 				
 			}
@@ -84,14 +90,14 @@ public class ExcuteImageToBase64 extends ExcuteBase {
 					check = false;
 					Exception exception = new FileInfoIsNotImageException( id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			}
 			BufferedImage image = null;
 			ByteArrayInputStream input = null;
 			ByteArrayOutputStream output_for_ftp = new ByteArrayOutputStream();
 			ByteArrayOutputStream output = new ByteArrayOutputStream();
-			StorageMapping mapping = ThisApplication.storageMappings.get( FileInfo.class, fileInfo.getStorage());
+			StorageMapping mapping = ThisApplication.context().storageMappings().get( FileInfo.class, fileInfo.getStorage());
 			try{
 				fileInfo.readContent( mapping, output_for_ftp );
 				input = new ByteArrayInputStream( output_for_ftp.toByteArray() );
@@ -112,7 +118,7 @@ public class ExcuteImageToBase64 extends ExcuteBase {
 				check = false;
 				Exception exception = new FileInfoBase64EncodeException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		

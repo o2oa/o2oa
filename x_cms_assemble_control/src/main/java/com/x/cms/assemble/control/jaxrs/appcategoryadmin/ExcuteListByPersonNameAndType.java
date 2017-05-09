@@ -11,6 +11,9 @@ import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.SortTools;
 import com.x.cms.assemble.control.WrapTools;
+import com.x.cms.assemble.control.jaxrs.appcategoryadmin.exception.AppCategoryAdminObjectTypeEmptyException;
+import com.x.cms.assemble.control.jaxrs.appcategoryadmin.exception.AppCategoryAdminPersonNameEmptyException;
+import com.x.cms.assemble.control.jaxrs.appcategoryadmin.exception.AppCategoryAdminProcessException;
 import com.x.cms.core.entity.AppCategoryAdmin;
 
 import net.sf.ehcache.Element;
@@ -27,7 +30,7 @@ public class ExcuteListByPersonNameAndType extends ExcuteBase {
 		List<AppCategoryAdmin> appCategoryAdminList = null;
 		Boolean check = true;
 		
-		String cacheKey = ApplicationCache.concreteCacheKey( "personAndType", personName, objectType );
+		String cacheKey = ApplicationCache.concreteCacheKey( personName, "personAndType", objectType );
 		Element element = cache.get(cacheKey);
 		
 		if ((null != element) && ( null != element.getObjectValue()) ) {
@@ -39,7 +42,6 @@ public class ExcuteListByPersonNameAndType extends ExcuteBase {
 					check = false;
 					Exception exception = new AppCategoryAdminPersonNameEmptyException();
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 			if( check ){
@@ -47,7 +49,6 @@ public class ExcuteListByPersonNameAndType extends ExcuteBase {
 					check = false;
 					Exception exception = new AppCategoryAdminObjectTypeEmptyException();
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 			if( check ){
@@ -55,9 +56,9 @@ public class ExcuteListByPersonNameAndType extends ExcuteBase {
 					ids = appCategoryAdminServiceAdv.listAppCategoryObjectIdByUser( personName, objectType );
 				} catch (Exception e) {
 					check = false;
-					Exception exception = new AppCategoryAdminListByPersonException( e, personName, objectType );
+					Exception exception = new AppCategoryAdminProcessException( e, "根据管理员姓名查询所有对应的应用栏目分类管理员配置信息列表时发生异常。Person:" + personName + ", objectType:" + objectType );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 			if( check ){
@@ -66,9 +67,9 @@ public class ExcuteListByPersonNameAndType extends ExcuteBase {
 						appCategoryAdminList = appCategoryAdminServiceAdv.list( ids );
 					} catch (Exception e) {
 						check = false;
-						Exception exception = new AppCategoryAdminListByIdsException( e );
+						Exception exception = new AppCategoryAdminProcessException( e, "根据指定的ID列表查询应用栏目分类管理员配置信息时发生异常。" );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 				}
 			}
@@ -80,9 +81,9 @@ public class ExcuteListByPersonNameAndType extends ExcuteBase {
 						cache.put(new Element( cacheKey, wraps ));
 						result.setData(wraps);
 					} catch (Exception e) {
-						Exception exception = new AppCategoryAdminWrapOutException( e );
+						Exception exception = new AppCategoryAdminProcessException( e, "系统将查询出来的应用栏目分类管理员信息转换为输出格式时发生异常。" );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 				}
 			}

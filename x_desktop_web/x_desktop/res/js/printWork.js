@@ -84,18 +84,18 @@ COMMON.DOM.addReady(function(){
                     var obj = {};
                     qDatas.each(function(d){
                         var q = d.split("=");
-                        obj[q[0]] = q[1];
+                        obj[q[0].toLowerCase()] = q[1];
                     });
 
                     return obj;
                 };
 
                 layout.loadWork = function(options){
-                    var id = options.workid;
+                    debugger;
+                    var id = options.workid || options.workcompletedid;
                     var application = options.app;
                     var form = options.form;
-                    var method = "getJobByWorkAssignForm";
-
+                    var method = (options.workid) ? "getJobByWorkAssignForm" : "getJobByWorkCompletedAssignForm";
                     if (method && id){
                         this.action[method](function(json){
                             if (this.mask) this.mask.hide();
@@ -105,6 +105,32 @@ COMMON.DOM.addReady(function(){
                             this.errorWork();
                         }, id, application, form);
                     }
+
+                    //if (options.workid){
+                    //    var method = "getJobByWorkAssignForm";
+                    //    if (method && id){
+                    //        this.action[method](function(json){
+                    //            if (this.mask) this.mask.hide();
+                    //            this.parseData(json.data);
+                    //            this.openWork();
+                    //        }.bind(this), function(){
+                    //            this.errorWork();
+                    //        }, id, application, form);
+                    //    }
+                    //}else if (options.workcompletedid){
+                    //    id = options.workcompletedid;
+                    //    this.action.getJobByWorkCompleted(function(json){
+                    //        this.action.getForm(form, function(formJson){
+                    //            json.data.form = formJson.data;
+                    //            if (this.mask) this.mask.hide();
+                    //            this.parseData(json.data);
+                    //            this.openWork();
+                    //        }.bind(this));
+                    //    }.bind(this), function(){
+                    //        this.errorWork();
+                    //    }, id);
+                    //}
+
                 };
 
                 layout.errorWork = function(){
@@ -116,10 +142,13 @@ COMMON.DOM.addReady(function(){
                         this.options.taskid = this.taskList[data.currentTaskIndex].id;
                         return this.taskList[data.currentTaskIndex];
                     }
-                    if (this.taskList.length==1){
-                        this.options.taskid = this.taskList[0].id;
-                        return this.taskList[0];
+                    if (this.taskList){
+                        if (this.taskList.length==1){
+                            this.options.taskid = this.taskList[0].id;
+                            return this.taskList[0];
+                        }
                     }
+
                     return null;
                 };
                 layout.parseData = function(data){
@@ -131,6 +160,7 @@ COMMON.DOM.addReady(function(){
                     this.currentTask = this.getCurrentTaskData(data);
                     this.taskList = data.taskList;
                     this.work = data.work;
+                    this.workCompleted = data.workCompleted;
                     this.workLogList = data.workLogList;
                     this.attachmentList = data.attachmentList;
                     this.inheritedAttachmentList = data.inheritedAttachmentList;
@@ -145,6 +175,7 @@ COMMON.DOM.addReady(function(){
                             "data": this.data,
                             "taskList": this.taskList,
                             "work": this.work,
+                            "workCompleted": this.workCompleted,
                             "control": this.control,
                             "activity": this.activity,
                             "task": this.currentTask,
@@ -192,53 +223,53 @@ COMMON.DOM.addReady(function(){
                 //        if (callback) callback();
                 //    }.bind(this));
                 //};
-                layout.getServiceAddress = function(callback){
-                    if (typeOf(layout.config.center)=="object"){
-                        this.getServiceAddressConfigObject(callback);
-                    }else if (typeOf(layout.config.center)=="array"){
-                        this.getServiceAddressConfigArray(callback);
-                    }
-
-                };
-                layout.getServiceAddressConfigArray = function(callback) {
-                    var requests = [];
-                    layout.config.center.each(function(center){
-                        requests.push(
-                            this.getServiceAddressConfigObject(function(){
-                                requests.each(function(res){
-                                    if (res.isRunning()){res.cancel();}
-                                });
-                                if (callback) callback();
-                            }.bind(this), center)
-                        );
-                    }.bind(this));
-                };
-                layout.getServiceAddressConfigObject = function(callback, center){
-                    var centerConfig = center;
-                    if (!centerConfig) centerConfig = layout.config.center;
-                    var host = centerConfig.host || window.location.hostname;
-                    var port = centerConfig.port;
-                    var uri = "";
-                    if (!port || port=="80"){
-                        uri = "http://"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
-                    }else{
-                        uri = "http://"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
-                    }
-                    var currenthost = window.location.hostname;
-                    uri = uri.replace(/{source}/g, currenthost);
-                    //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
-                    return MWF.restful("get", uri, null, function(json){
-                        this.serviceAddressList = json.data;
-                        this.centerServer = center;
-                        if (callback) callback();
-                    }.bind(this));
-                };
+                //layout.getServiceAddress = function(callback){
+                //    if (typeOf(layout.config.center)=="object"){
+                //        this.getServiceAddressConfigObject(callback);
+                //    }else if (typeOf(layout.config.center)=="array"){
+                //        this.getServiceAddressConfigArray(callback);
+                //    }
+                //
+                //};
+                //layout.getServiceAddressConfigArray = function(callback) {
+                //    var requests = [];
+                //    layout.config.center.each(function(center){
+                //        requests.push(
+                //            this.getServiceAddressConfigObject(function(){
+                //                requests.each(function(res){
+                //                    if (res.isRunning()){res.cancel();}
+                //                });
+                //                if (callback) callback();
+                //            }.bind(this), center)
+                //        );
+                //    }.bind(this));
+                //};
+                //layout.getServiceAddressConfigObject = function(callback, center){
+                //    var centerConfig = center;
+                //    if (!centerConfig) centerConfig = layout.config.center;
+                //    var host = centerConfig.host || window.location.hostname;
+                //    var port = centerConfig.port;
+                //    var uri = "";
+                //    if (!port || port=="80"){
+                //        uri = "http://"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+                //    }else{
+                //        uri = "http://"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+                //    }
+                //    var currenthost = window.location.hostname;
+                //    uri = uri.replace(/{source}/g, currenthost);
+                //    //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
+                //    return MWF.restful("get", uri, null, function(json){
+                //        this.serviceAddressList = json.data;
+                //        this.centerServer = center;
+                //        if (callback) callback();
+                //    }.bind(this));
+                //};
                 layout.confirm = function(type, e, title, text, width, height, ok, cancel, callback, mask, style){
                     MWF.require("MWF.xDesktop.Dialog", function(){
                         var size = this.content.getSize();
                         var x = 0;
                         var y = 0;
-                        debugger;
+
                         if (typeOf(e)=="element"){
                             var position = e.getPosition(this.content);
                             x = position.x;
@@ -351,9 +382,14 @@ COMMON.DOM.addReady(function(){
                 MWF.getJSON("res/config/config.json", function(config){
                     layout.config = config;
 
-                    layout.getServiceAddress(function(){
+                    MWF.xDesktop.getServiceAddress(layout.config, function(service, center){
+                        layout.serviceAddressList = service;
+                        layout.centerServer = center;
                         layout.load();
-                    });
+                    }.bind(this));
+                    //layout.getServiceAddress(function(){
+                    //    layout.load();
+                    //});
                 });
 
             })();

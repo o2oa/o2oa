@@ -182,7 +182,13 @@ public class AppInfo extends SliceJpaObject {
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@Column(name = "xappIcon", length = JpaObject.length_32K)
+	@CheckPersist(allowEmpty = true)
 	private String appIcon;
+	
+	@EntityFieldDescribe("图标主色调.")
+	@Column(name = "xiconColor", length = JpaObject.length_16B)
+	@CheckPersist(allowEmpty = true)
+	private String iconColor;
 
 	@EntityFieldDescribe("备注信息")
 	@Column(name = "xappMemo", length = JpaObject.length_255B)
@@ -377,4 +383,12 @@ public class AppInfo extends SliceJpaObject {
 	public void setCreatorCompany(String creatorCompany) {
 		this.creatorCompany = creatorCompany;
 	}
+
+	public String getIconColor() {
+		return iconColor;
+	}
+
+	public void setIconColor(String iconColor) {
+		this.iconColor = iconColor;
+	}	
 }

@@ -4,11 +4,12 @@ MWF.xApplication.Empty.Main = new Class({
 	Implements: [Options, Events],
 
 	options: {
+		"style1": "default",
 		"style": "default",
 		"name": "Empty",
 		"icon": "icon.png",
 		"width": "400",
-		"height": "500",
+		"height": "700",
 		"isResize": false,
 		"isMax": false,
 		"title": MWF.xApplication.Empty.LP.title
@@ -22,6 +23,7 @@ MWF.xApplication.Empty.Main = new Class({
         //    this["x"+i] = node;
         //    node.tmp = this["x"+i];
         //}
-        this.content
+
+        //this.content
 	}
 });

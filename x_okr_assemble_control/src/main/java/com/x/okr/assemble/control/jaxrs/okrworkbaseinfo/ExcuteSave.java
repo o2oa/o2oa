@@ -4,12 +4,27 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.CenterWorkIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.CenterWorkNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.ReportCycleInvalidException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.ReportDayInCycleEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.ReportDayInCycleInvalidException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.UserNoLoginException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkBaseInfoProcessException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkCompleteDateLimitEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkCooperateInvalidException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkDetailEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkReadLeaderInvalidException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkResponsibilityEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkResponsibilityInvalidException;
 import com.x.okr.assemble.control.service.OkrUserManagerService;
 import com.x.okr.assemble.control.service.OkrWorkBaseInfoOperationService;
 import com.x.okr.entity.OkrCenterWorkInfo;
@@ -38,14 +53,13 @@ public class ExcuteSave extends ExcuteBase {
 			check = false;
 			Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName()  );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check && ( okrUserCache == null || okrUserCache.getLoginIdentityName() == null ) ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName()  );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
 		}
 		
 		//保存时wrapIn不能为空
@@ -93,9 +107,9 @@ public class ExcuteSave extends ExcuteBase {
 						wrapIn.setCreatorCompanyName( okrUserManagerService.getCompanyNameByIdentity( wrapIn.getCreatorIdentity() ) );
 					}catch(Exception e){
 						check = false;
-						Exception exception = new UserOrganizationQueryException( e, effectivePerson.getName() );
+						Exception exception = new WorkBaseInfoProcessException( e, "系统通过操作用户查询用户身份和组织信息时发生异常!Person:" + effectivePerson.getName() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 				}
 			}
@@ -112,7 +126,6 @@ public class ExcuteSave extends ExcuteBase {
 					check = false;
 					Exception exception = new WorkDetailEmptyException();
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
 				}else{
 					if( wrapIn.getWorkDetail().length() > 30 ){
 						wrapIn.setTitle( wrapIn.getWorkDetail().substring( 0, 30 ) );
@@ -134,13 +147,12 @@ public class ExcuteSave extends ExcuteBase {
 							check = false;
 							Exception exception = new WorkNotExistsException( wrapIn.getParentWorkId() );
 							result.error( exception );
-							logger.error( exception, effectivePerson, request, null);
 						}
 					} catch (Exception e) {
 						check = false;
-						Exception exception = new WorkQueryByIdException( e, wrapIn.getParentWorkId() );
+						Exception exception = new WorkBaseInfoProcessException( e, "查询指定ID的具体工作信息时发生异常。ID：" + wrapIn.getParentWorkId() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 				}
 			}
@@ -163,19 +175,17 @@ public class ExcuteSave extends ExcuteBase {
 							check = false;
 							Exception exception = new CenterWorkNotExistsException( wrapIn.getCenterId() );
 							result.error( exception );
-							logger.error( exception, effectivePerson, request, null);
 						}
 					} catch (Exception e) {
 						check = false;
-						Exception exception = new CenterWorkQueryByIdException( e, wrapIn.getCenterId() );
+						Exception exception = new WorkBaseInfoProcessException( e, "查询指定ID的中心工作信息时发生异常。ID：" + wrapIn.getCenterId() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 				}else{
 					check = false;
 					Exception exception = new CenterWorkIdEmptyException();
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 			
@@ -186,15 +196,14 @@ public class ExcuteSave extends ExcuteBase {
 						wrapIn.setCompleteDateLimit( dateOperation.getDateFromString( wrapIn.getCompleteDateLimitStr() ) );
 					}catch( Exception e ){
 						check = false;
-						Exception exception = new WorkCompleteDateLimitFormatException( e, wrapIn.getCompleteDateLimitStr() );
+						Exception exception = new WorkBaseInfoProcessException( e, "工作完成时限格式不正确，无法进行工作保存。Date：" + wrapIn.getCompleteDateLimitStr() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 				}else{
 					check = false;
 					Exception exception = new WorkCompleteDateLimitEmptyException();
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 			
@@ -207,13 +216,12 @@ public class ExcuteSave extends ExcuteBase {
 						check = false;
 						Exception exception = new WorkResponsibilityInvalidException( e, wrapIn.getResponsibilityIdentity() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 				}else{
 					check = false;
 					Exception exception = new WorkResponsibilityEmptyException();
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 			
@@ -225,7 +233,7 @@ public class ExcuteSave extends ExcuteBase {
 					check = false;
 					Exception exception = new WorkCooperateInvalidException( e, wrapIn.getCooperateIdentity() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 			
@@ -237,7 +245,7 @@ public class ExcuteSave extends ExcuteBase {
 					check = false;
 					Exception exception = new WorkReadLeaderInvalidException( e, wrapIn.getReadLeaderIdentity() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 			
@@ -267,17 +275,17 @@ public class ExcuteSave extends ExcuteBase {
 								} catch (Exception e) {
 									check = false;
 									logger.warn("系统根据汇报周期信息计算汇报时间序列时发生异常。DeployDate："+wrapIn.getDeployDateStr()+", CompleteDateLimit:"+wrapIn.getCompleteDateLimit()+", ReportCycle:"+wrapIn.getReportCycle()+", ReportDayInCycle:" + wrapIn.getReportDayInCycle() + ", ReportStartTime:" + reportStartTime);
-									Exception exception = new ReportTimeQueCalculateException( e );
+									Exception exception = new WorkBaseInfoProcessException( e, "系统根据汇报周期信息计算汇报时间序列时发生异常。" );
 									result.error( exception );
-									logger.error( exception, effectivePerson, request, null);
+									logger.error( e, effectivePerson, request, null);
 								}
 								try {
 									nextReportTime = okrWorkBaseInfoService.getNextReportTime( reportTimeQue, wrapIn.getLastReportTime() );
 								} catch (Exception e) {
 									check = false;
-									Exception exception = new NextReportTimeCalculateException( e );
+									Exception exception = new WorkBaseInfoProcessException( e, "系统根据汇报周期信息计算下一次汇报时间时发生异常。" );
 									result.error( exception );
-									logger.error( exception, effectivePerson, request, null);
+									logger.error( e, effectivePerson, request, null);
 								}
 								wrapIn.setReportTimeQue( reportTimeQue );
 								wrapIn.setNextReportTime( nextReportTime );
@@ -285,13 +293,11 @@ public class ExcuteSave extends ExcuteBase {
 								check = false;
 								Exception exception = new ReportDayInCycleInvalidException( wrapIn.getReportDayInCycle() );
 								result.error( exception );
-								logger.error( exception, effectivePerson, request, null);
 							}
 						}else{
 							check = false;
 							Exception exception = new ReportDayInCycleEmptyException();
 							result.error( exception );
-							logger.error( exception, effectivePerson, request, null);
 						}
 					}else if( wrapIn.getReportCycle() != null && wrapIn.getReportCycle().trim().equals( "每月汇报" )){
 						if( wrapIn.getReportDayInCycle() != null ){
@@ -309,17 +315,17 @@ public class ExcuteSave extends ExcuteBase {
 								} catch (Exception e) {
 									check = false;
 									logger.warn("系统根据汇报周期信息计算汇报时间序列时发生异常。DeployDate："+wrapIn.getDeployDateStr()+", CompleteDateLimit:"+wrapIn.getCompleteDateLimit()+", ReportCycle:"+wrapIn.getReportCycle()+", ReportDayInCycle:" + wrapIn.getReportDayInCycle() + ", ReportStartTime:" + reportStartTime);
-									Exception exception = new ReportTimeQueCalculateException( e );
+									Exception exception = new WorkBaseInfoProcessException( e, "系统根据汇报周期信息计算汇报时间序列时发生异常。" );
 									result.error( exception );
-									logger.error( exception, effectivePerson, request, null);
+									logger.error( e, effectivePerson, request, null);
 								}
 								try {
 									nextReportTime = okrWorkBaseInfoService.getNextReportTime( reportTimeQue, wrapIn.getLastReportTime() );
 								} catch (Exception e) {
 									check = false;
-									Exception exception = new NextReportTimeCalculateException( e );
+									Exception exception = new WorkBaseInfoProcessException( e, "系统根据汇报周期信息计算下一次汇报时间时发生异常。" );
 									result.error( exception );
-									logger.error( exception, effectivePerson, request, null);
+									logger.error( e, effectivePerson, request, null);
 								}
 								wrapIn.setReportTimeQue( reportTimeQue );
 								wrapIn.setNextReportTime( nextReportTime );
@@ -327,19 +333,16 @@ public class ExcuteSave extends ExcuteBase {
 								check = false;
 								Exception exception = new ReportDayInCycleInvalidException( wrapIn.getReportDayInCycle() );
 								result.error( exception );
-								logger.error( exception, effectivePerson, request, null);
 							}
 						}else{
 							check = false;
 							Exception exception = new ReportDayInCycleEmptyException();
 							result.error( exception );
-							logger.error( exception, effectivePerson, request, null);
 						}
 					}else{
 						check = false;
 						Exception exception = new ReportCycleInvalidException( wrapIn.getReportCycle() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
 					}
 				}
 			}
@@ -361,16 +364,12 @@ public class ExcuteSave extends ExcuteBase {
 							"具体工作保存成功！"
 					);
 				}catch( Exception e ){
-					Exception exception = new WorkInfoSaveException( e );
+					Exception exception = new WorkBaseInfoProcessException( e, "保存具体工作信息时发生异常! " );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
-//		else{
-//			result.error( new Exception( "请求传入的参数为空，无法继续保存工作信息!" ) );
-//			result.setUserMessage( "请求传入的参数为空，无法继续保存工作信息!" );
-//		}
 		return result;
 	}
 	

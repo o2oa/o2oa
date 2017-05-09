@@ -1,0 +1,80 @@
+{
+  "container":{
+    "width":"100%",
+    "height":"100%",
+    "background-color":"#3066a7",
+    "font-family": "微软雅黑"
+  },
+  "topBar":{
+    "width":"100%",
+    "height":"56px",
+    "background-color":"#3c76c1",
+    "box-shadow": "0px 0px 5px #2a5c95",
+    "min-width":"1000px"
+  },
+  "topBarContent":{
+    "height":"100%",
+    "margin-left":"10px",
+    "display":"inline",
+    "list-style-type":"none"
+  },
+  "topBarTitleLi":{
+    "margin-left":"10px",
+    "float":"left",
+    "width":"270px",
+    "color":"#fff",
+    "vertical-align":"middle",
+    "font-size":"16px"
+  },
+  "topBarLog":{
+    "height":"45px",
+    "width":"60px",
+    "margin-top":"5px"
+  },
+  "topBarTitleSpan":{
+    "position":"absolute",
+    "margin-top":"18px"
+  },
+  "topBarLi":{
+    "float":"left",
+    "cursor":"pointer",
+    "width":"100px",
+    "height":"38px",
+    "color":"#fff",
+    "font-size":"14px",
+    "margin-top":"10px",
+    "margin-right":"10px",
+    "line-height":"38px",
+    "text-align":"center",
+    "border-radius":"3px",
+    "background-color":"#5c97e1",
+    "box-shadow": "0px 0px 10px #2a5c95"
+  },
+  "topBarCurrentLi":{
+    "float":"left",
+    "cursor":"pointer",
+    "width":"100px",
+    "height":"38px",
+    "color":"#fff",
+    "font-size":"14px",
+    "margin-top":"10px",
+    "margin-right":"10px",
+    "line-height":"38px",
+    "text-align":"center",
+    "border-radius":"3px",
+    "background-color":"#124c93",
+    "box-shadow": "0px 0px 10px #2a5c95"
+  },
+  "topBarImg":{
+    "width":"30px","height":"25px","margin":"6px 0 0 15px","float":"left"
+  },
+  "topBarSpan":{
+    "margin":"0px 0 0 5px",
+    "float":""
+  },
+  "middleContent":{
+    "width":"100%",
+    "min-width":"1000px",
+    "height":"100%"
+  }
+}

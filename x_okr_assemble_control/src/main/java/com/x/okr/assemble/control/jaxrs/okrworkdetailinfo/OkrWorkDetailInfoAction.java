@@ -12,17 +12,23 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.okr.assemble.control.jaxrs.okrworkdetailinfo.exception.WorkDetailDeleteException;
+import com.x.okr.assemble.control.jaxrs.okrworkdetailinfo.exception.WorkDetailSaveException;
+import com.x.okr.assemble.control.jaxrs.okrworkdetailinfo.exception.WorkIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrworkdetailinfo.exception.WorkNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrworkdetailinfo.exception.WorkQueryByIdException;
+import com.x.okr.assemble.control.jaxrs.okrworkdetailinfo.exception.WrapInConvertException;
 import com.x.okr.assemble.control.service.OkrWorkBaseInfoQueryService;
 import com.x.okr.assemble.control.service.OkrWorkDetailInfoService;
 import com.x.okr.entity.OkrWorkBaseInfo;
@@ -52,14 +58,14 @@ public class OkrWorkDetailInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			if( wrapIn.getId() == null ){
 				check = false;
 				Exception exception = new WorkIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 			if( check ){
 				//查询工作信息，补充工作详细信息的ID
@@ -69,7 +75,7 @@ public class OkrWorkDetailInfoAction extends StandardJaxrsAction{
 						check = false;
 						Exception exception = new WorkNotExistsException( wrapIn.getId() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						//logger.error( e, effectivePerson, request, null);
 					}else{
 						wrapIn.setCenterId( okrWorkBaseInfo.getCenterId() ); //ID需要查询确认一下，数据一定要有效
 					}
@@ -77,7 +83,7 @@ public class OkrWorkDetailInfoAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new WorkQueryByIdException( e, wrapIn.getId() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}			
 			try {
@@ -86,7 +92,7 @@ public class OkrWorkDetailInfoAction extends StandardJaxrsAction{
 			} catch (Exception e) {
 				Exception exception = new WorkDetailSaveException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -104,7 +110,7 @@ public class OkrWorkDetailInfoAction extends StandardJaxrsAction{
 		if( id == null || id.isEmpty() ){
 			Exception exception = new WorkIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}else{
 			try{
 				okrWorkDetailInfoService.delete( id );
@@ -112,7 +118,7 @@ public class OkrWorkDetailInfoAction extends StandardJaxrsAction{
 			}catch(Exception e){
 				Exception exception = new WorkDetailDeleteException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -132,7 +138,7 @@ public class OkrWorkDetailInfoAction extends StandardJaxrsAction{
 		if( id == null || id.isEmpty() ){
 			Exception exception = new WorkIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		try {
 			okrWorkDetailInfo = okrWorkDetailInfoService.get( id );
@@ -142,12 +148,12 @@ public class OkrWorkDetailInfoAction extends StandardJaxrsAction{
 			}else{
 				Exception exception = new WorkNotExistsException( id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
-		} catch (Throwable th) {
-			Exception exception = new WorkQueryByIdException( th, id );
+		} catch (Exception e) {
+			Exception exception = new WorkQueryByIdException( e, id );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

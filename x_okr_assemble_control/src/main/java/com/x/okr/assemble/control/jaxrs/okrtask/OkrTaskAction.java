@@ -22,18 +22,21 @@ import com.x.base.core.application.jaxrs.MemberTerms;
 import com.x.base.core.application.jaxrs.NotEqualsTerms;
 import com.x.base.core.application.jaxrs.NotInTerms;
 import com.x.base.core.application.jaxrs.NotMemberTerms;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrtask.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrtask.exception.UserNoLoginException;
+import com.x.okr.assemble.control.jaxrs.okrtask.exception.WrapInConvertException;
 import com.x.okr.assemble.control.service.OkrUserInfoService;
 import com.x.okr.entity.OkrTask;
 
@@ -121,7 +124,7 @@ public class OkrTaskAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 
 		if( check ){
@@ -131,7 +134,7 @@ public class OkrTaskAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, currentPerson.getName() );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		
@@ -139,7 +142,7 @@ public class OkrTaskAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new UserNoLoginException( currentPerson.getName() );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			//logger.error( e, currentPerson, request, null);
 		}
 //		if( wrapIn == null ){
 //			check = false;

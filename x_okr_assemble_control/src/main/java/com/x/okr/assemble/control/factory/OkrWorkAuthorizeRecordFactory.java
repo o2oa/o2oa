@@ -199,4 +199,82 @@ public class OkrWorkAuthorizeRecordFactory extends AbstractFactory {
 		cq.select( root.get( OkrWorkAuthorizeRecord_.id) );
 		return em.createQuery(cq.where(p)).getResultList();
 	}
+
+	/**
+	 * 查询工作授权者身份列表（去重复）
+	 * @param identities_ok 排除身份
+	 * @param identities_error 排除身份
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<String> listAllDistinctDelegatorIdentity(List<String> identities_ok, List<String> identities_error) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrWorkAuthorizeRecord.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<OkrWorkAuthorizeRecord> root = cq.from(OkrWorkAuthorizeRecord.class);
+		
+		Predicate p = cb.isNotNull( root.get( OkrWorkAuthorizeRecord_.id ) );
+		if( identities_ok != null && identities_ok.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkAuthorizeRecord_.delegatorIdentity ).in( identities_ok )) );
+		}
+		if( identities_error != null && identities_error.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkAuthorizeRecord_.delegatorIdentity ).in( identities_error )) );
+		}
+		cq.distinct(true).select(root.get( OkrWorkAuthorizeRecord_.delegatorIdentity ));
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+	/**
+	 * 查询工作承接者身份列表（去重复）
+	 * @param identities_ok 排除身份
+	 * @param identities_error 排除身份
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<String> listAllDistinctTargetIdentity(List<String> identities_ok, List<String> identities_error) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrWorkAuthorizeRecord.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<OkrWorkAuthorizeRecord> root = cq.from(OkrWorkAuthorizeRecord.class);
+		
+		Predicate p = cb.isNotNull( root.get( OkrWorkAuthorizeRecord_.id ) );
+		if( identities_ok != null && identities_ok.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkAuthorizeRecord_.targetIdentity ).in( identities_ok )) );
+		}
+		if( identities_error != null && identities_error.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkAuthorizeRecord_.targetIdentity ).in( identities_error )) );
+		}
+		cq.distinct(true).select(root.get( OkrWorkAuthorizeRecord_.targetIdentity ));
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+	/**
+	 * 根据身份名称，从工作授权信息中查询与该身份有关的所有信息列表
+	 * @param identity
+	 * @param recordId 
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<OkrWorkAuthorizeRecord> listErrorIdentitiesInAuthorizeRecord(String identity, String recordId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrWorkAuthorizeRecord.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<OkrWorkAuthorizeRecord> cq = cb.createQuery( OkrWorkAuthorizeRecord.class );
+		Root<OkrWorkAuthorizeRecord> root = cq.from( OkrWorkAuthorizeRecord.class );
+		Predicate p = cb.isNotNull(root.get( OkrWorkAuthorizeRecord_.id ));
+		
+		if( recordId != null && !recordId.isEmpty() && !"all".equals( recordId ) ){
+			p = cb.and( p, cb.equal( root.get( OkrWorkAuthorizeRecord_.id ), recordId ) );
+		}
+		
+		Predicate p_delegatorIdentity = cb.isNotNull(root.get( OkrWorkAuthorizeRecord_.delegatorIdentity ));
+		p_delegatorIdentity = cb.and( p_delegatorIdentity, cb.equal( root.get( OkrWorkAuthorizeRecord_.delegatorIdentity ), identity ) );
+		
+		Predicate p_targetIdentity = cb.isNotNull(root.get( OkrWorkAuthorizeRecord_.targetIdentity ));
+		p_targetIdentity = cb.and( p_targetIdentity, cb.equal( root.get( OkrWorkAuthorizeRecord_.targetIdentity ), identity ) );
+
+		Predicate p_identity = cb.or( p_delegatorIdentity, p_targetIdentity );
+			
+		p = cb.and( p, p_identity );
+
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+
 }

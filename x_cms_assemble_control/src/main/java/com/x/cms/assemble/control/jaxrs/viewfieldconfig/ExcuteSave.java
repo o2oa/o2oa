@@ -15,6 +15,10 @@ import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.WrapTools;
+import com.x.cms.assemble.control.jaxrs.viewfieldconfig.exception.NoPermissionException;
+import com.x.cms.assemble.control.jaxrs.viewfieldconfig.exception.ViewNotExistsException;
+import com.x.cms.assemble.control.jaxrs.viewfieldconfig.exception.ViewQueryByIdEmptyException;
+import com.x.cms.assemble.control.jaxrs.viewfieldconfig.exception.WrapInViewIdEmptyException;
 import com.x.cms.core.entity.element.View;
 import com.x.cms.core.entity.element.ViewFieldConfig;
 
@@ -33,7 +37,7 @@ public class ExcuteSave extends ExcuteBase {
 			check = false;
 			Exception exception = new WrapInViewIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check ){
@@ -45,33 +49,33 @@ public class ExcuteSave extends ExcuteBase {
 					check = false;
 					Exception exception = new NoPermissionException( effectivePerson.getName() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
-			} catch (Throwable th) {
+			} catch (Exception e) {
 				check = false;
-				Exception exception = new ViewQueryByIdEmptyException( th, wrapIn.getViewId() );
+				Exception exception = new ViewQueryByIdEmptyException( e, wrapIn.getViewId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
 		if( check ){
 			//先看看视图信息是否存在，如果不存在
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 				Business business = new Business(emc);				
-				view = business.getViewFactory().get( wrapIn.getId() );
+				view = business.getViewFactory().get( wrapIn.getViewId() );
 				if( view == null ){
 					check = false;
 					Exception exception = new ViewNotExistsException( wrapIn.getViewId() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 				
-			} catch (Throwable th) {
+			} catch (Exception e) {
 				check = false;
-				Exception exception = new ViewQueryByIdEmptyException( th, wrapIn.getViewId() );
+				Exception exception = new ViewQueryByIdEmptyException( e, wrapIn.getViewId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -108,13 +112,10 @@ public class ExcuteSave extends ExcuteBase {
 					
 					logService.log( emc,  effectivePerson.getName(), viewFieldConfig.getFieldName(), "", "", "", viewFieldConfig.getId(), "VIEWFIELDCONFIG", "更新" );
 				}
-				
 				wrap = new WrapOutId( viewFieldConfig.getId() );
 				result.setData(wrap);
-				
 				ApplicationCache.notify( ViewFieldConfig.class );
 				ApplicationCache.notify( View.class );
-				
 			} catch (Throwable th) {
 				th.printStackTrace();
 				result.error(th);

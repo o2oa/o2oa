@@ -5,6 +5,7 @@
 package com.x.cms.core.entity;
 
 import com.x.base.core.entity.SliceJpaObject_;
+import java.lang.Integer;
 import java.lang.String;
 import java.util.Date;
 import javax.persistence.metamodel.SingularAttribute;
@@ -12,7 +13,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.cms.core.entity.DocumentViewRecord.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 13:46:13 CST 2017")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sat May 06 19:34:34 CST 2017")
 public class DocumentViewRecord_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<DocumentViewRecord,String> appId;
     public static volatile SingularAttribute<DocumentViewRecord,String> appName;
@@ -21,9 +22,11 @@ public class DocumentViewRecord_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<DocumentViewRecord,Date> createTime;
     public static volatile SingularAttribute<DocumentViewRecord,String> documentId;
     public static volatile SingularAttribute<DocumentViewRecord,String> id;
+    public static volatile SingularAttribute<DocumentViewRecord,Date> lastViewTime;
     public static volatile SingularAttribute<DocumentViewRecord,String> sequence;
     public static volatile SingularAttribute<DocumentViewRecord,String> title;
     public static volatile SingularAttribute<DocumentViewRecord,Date> updateTime;
+    public static volatile SingularAttribute<DocumentViewRecord,Integer> viewCount;
     public static volatile SingularAttribute<DocumentViewRecord,String> viewerCompany;
     public static volatile SingularAttribute<DocumentViewRecord,String> viewerName;
     public static volatile SingularAttribute<DocumentViewRecord,String> viewerOrganization;

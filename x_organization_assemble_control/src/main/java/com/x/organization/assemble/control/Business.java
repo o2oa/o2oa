@@ -1,16 +1,14 @@
 package com.x.organization.assemble.control;
 
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.Crypto;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.EffectivePerson;
-import com.x.base.core.project.server.Config;
+import com.x.base.core.project.instrument.Instrument;
 import com.x.base.core.role.RoleDefinition;
 import com.x.organization.assemble.control.factory.CompanyAttributeFactory;
 import com.x.organization.assemble.control.factory.CompanyDutyFactory;
@@ -36,6 +34,15 @@ public class Business {
 
 	public EntityManagerContainer entityManagerContainer() {
 		return this.emc;
+	}
+
+	private Instrument instrument;
+
+	public Instrument instrument() throws Exception {
+		if (null == this.instrument) {
+			this.instrument = new Instrument();
+		}
+		return instrument;
 	}
 
 	private PersonFactory person;

@@ -13,7 +13,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.bbs.entity.BBSSubjectAttachment.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:08:02 CST 2017")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sat May 06 19:34:23 CST 2017")
 public class BBSSubjectAttachment_ extends StorageObject_  {
     public static volatile SingularAttribute<BBSSubjectAttachment,Date> createTime;
     public static volatile SingularAttribute<BBSSubjectAttachment,String> creatorUid;
@@ -35,7 +35,6 @@ public class BBSSubjectAttachment_ extends StorageObject_  {
     public static volatile SingularAttribute<BBSSubjectAttachment,String> sequence;
     public static volatile SingularAttribute<BBSSubjectAttachment,String> site;
     public static volatile SingularAttribute<BBSSubjectAttachment,String> storage;
-    public static volatile SingularAttribute<BBSSubjectAttachment,String> storageName;
     public static volatile SingularAttribute<BBSSubjectAttachment,String> subjectId;
     public static volatile SingularAttribute<BBSSubjectAttachment,String> title;
     public static volatile SingularAttribute<BBSSubjectAttachment,Date> updateTime;

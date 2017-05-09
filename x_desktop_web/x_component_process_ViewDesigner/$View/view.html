@@ -69,8 +69,8 @@
             <tr>
                 <td class="editTableTitle">流转状态:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}dateEffectTypeTable').setStyle('display', 'none');}" name="text{$.id}*data.scopeType" text{($.taskExpireType!='workCompleted')?'checked':''} type="radio" value="work"/>流转中
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}dateEffectTypeTable').setStyle('display', 'block');}" name="text{$.id}*data.scopeType" text{($.taskExpireType=='workCompleted')?'checked':''} type="radio" value="workCompleted"/>已完成
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}dateEffectTypeTable').setStyle('display', 'none');}" name="text{$.id}*data.scopeType" text{($.data.scopeType!='workCompleted')?'checked':''} type="radio" value="work"/>流转中
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}dateEffectTypeTable').setStyle('display', 'block');}" name="text{$.id}*data.scopeType" text{($.data.scopeType=='workCompleted')?'checked':''} type="radio" value="workCompleted"/>已完成
                 </td>
             </tr>
             <tr>

@@ -42,6 +42,7 @@ public class ExcuteListByApp extends ExcuteBase {
 				List<View> viewList = viewFactory.list( ids );//查询ID IN ids 的所有视图信息列表
 				wraps = WrapTools.view_wrapout_copier.copy( viewList );//将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
 				Collections.sort( wraps );
+				
 				cache.put(new Element( cacheKey, wraps ));
 				result.setData(wraps);
 			} catch (Throwable th) {

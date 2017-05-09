@@ -3,6 +3,7 @@ package com.x.attendance.assemble.control.servlet.download;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -10,12 +11,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.attendanceimportfileinfo.WrapOutAttendanceImportFileInfo;
 import com.x.attendance.entity.AttendanceAppealInfo;
@@ -24,7 +25,6 @@ import com.x.base.core.application.servlet.AbstractServletAction;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
-import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
@@ -36,28 +36,23 @@ public class ExportAbnormalCaseDetailsServlet extends AbstractServletAction {
 	private static final long serialVersionUID = -4314532091497625540L;
 	private Logger logger = LoggerFactory.getLogger(ExportAbnormalCaseDetailsServlet.class);
 
-	@HttpMethodDescribe(value = "导出信息 servlet/export/abnormaldetails/{year}/{month}/stream", response = WrapOutAttendanceImportFileInfo.class)
+	@HttpMethodDescribe(value = "导出信息 servlet/export/abnormaldetails/year/{year}/month/{month}", response = WrapOutAttendanceImportFileInfo.class)
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		boolean streamContentType = false;
+		boolean streamContentType = true;
 		request.setCharacterEncoding("UTF-8");
+		DateOperation dateOperation = new DateOperation();
 		try {
-			EffectivePerson effectivePerson = this.effectivePerson(request);
-			logger.info("[ExportAbnormalCaseDetailsServlet]用户" + effectivePerson.getName() + "尝试下载数据文件.....");
-			String part = this.getURIPart(request.getRequestURI(), "abnormaldetails");
-			logger.info("[ExportAbnormalCaseDetailsServlet]截取URL, part=[" + part + "]");
 			// 从URI里截取需要的信息
-			String year = StringUtils.substringBefore(part, "/"); // year
-			logger.info("[ExportAbnormalCaseDetailsServlet]从URL中获取year, year=[" + year + "]");
-			part = StringUtils.substringAfter(part, "/"); // {month}/stream
-			logger.info("[ExportAbnormalCaseDetailsServlet]从URL中获取part, part=[" + part + "]");
-			String month = StringUtils.substringBefore(part, "/"); // year
-			logger.info("[ExportAbnormalCaseDetailsServlet]从URL中获取month, month=[" + month + "]");
-			part = StringUtils.substringAfter(part, "/"); // {month}/stream
-			logger.info("[ExportAbnormalCaseDetailsServlet]从URL中获取part, part=[" + part + "]");
-			streamContentType = StringUtils.endsWith(part, "stream");
-			logger.info("[downloadFile]用application/octet-stream输出，streamContentType=" + streamContentType);
-
+			String year = this.getURIPart( request.getRequestURI(), "year" );
+			String month = this.getURIPart( request.getRequestURI(), "month" );
+			if( year == null || year.isEmpty() ){
+				year = dateOperation.getYear( new Date() );
+			}
+			if( month == null || month.isEmpty() ){
+				month = dateOperation.getMonth( new Date() );
+			}
+			
 			List<String> ids = null;
 			List<AttendanceDetail> detailList = null;
 			// 先组织一个EXCEL

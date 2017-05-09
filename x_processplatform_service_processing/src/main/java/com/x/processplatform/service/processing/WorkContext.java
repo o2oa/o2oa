@@ -31,7 +31,8 @@ public class WorkContext {
 	private Gson gson;
 	private Map<String, Object> attributes;
 
-	public WorkContext(Business business, ProcessingAttributes attributes, Work work, Activity activity) throws Exception {
+	public WorkContext(Business business, ProcessingAttributes attributes, Work work, Activity activity)
+			throws Exception {
 		this.business = business;
 		this.work = work;
 		this.activity = activity;
@@ -54,6 +55,16 @@ public class WorkContext {
 			return gson.toJson(list);
 		} catch (Exception e) {
 			throw new Exception("getTaskList error.", e);
+		}
+	}
+
+	public String getTaskCompletedList() throws Exception {
+		try {
+			List<String> ids = business.taskCompleted().listWithWork(work.getId());
+			List<TaskCompleted> list = business.entityManagerContainer().list(TaskCompleted.class, ids);
+			return gson.toJson(list);
+		} catch (Exception e) {
+			throw new Exception("getTaskCompletedList error.", e);
 		}
 	}
 
@@ -86,7 +97,8 @@ public class WorkContext {
 			business.entityManagerContainer().check(o, CheckPersistType.all);
 		}
 		business.entityManagerContainer().beginTransaction(TaskCompleted.class);
-		for (TaskCompleted o : business.entityManagerContainer().list(TaskCompleted.class, business.taskCompleted().listWithWork(work.getId()))) {
+		for (TaskCompleted o : business.entityManagerContainer().list(TaskCompleted.class,
+				business.taskCompleted().listWithWork(work.getId()))) {
 			o.setTitle(title);
 			business.entityManagerContainer().check(o, CheckPersistType.all);
 		}
@@ -96,12 +108,14 @@ public class WorkContext {
 			business.entityManagerContainer().check(o, CheckPersistType.all);
 		}
 		business.entityManagerContainer().beginTransaction(ReadCompleted.class);
-		for (ReadCompleted o : business.entityManagerContainer().list(ReadCompleted.class, business.readCompleted().listWithWork(work.getId()))) {
+		for (ReadCompleted o : business.entityManagerContainer().list(ReadCompleted.class,
+				business.readCompleted().listWithWork(work.getId()))) {
 			o.setTitle(title);
 			business.entityManagerContainer().check(o, CheckPersistType.all);
 		}
 		business.entityManagerContainer().beginTransaction(Review.class);
-		for (Review o : business.entityManagerContainer().list(Review.class, business.review().listWithWork(work.getId()))) {
+		for (Review o : business.entityManagerContainer().list(Review.class,
+				business.review().listWithWork(work.getId()))) {
 			o.setTitle(title);
 			business.entityManagerContainer().check(o, CheckPersistType.all);
 		}
@@ -115,8 +129,10 @@ public class WorkContext {
 	public String getScript(String uniqueName, List<String> imported) throws Exception {
 		try {
 			List<Script> list = new ArrayList<>();
-			for (Script o : business.element().listScriptNestedWithApplicationWithUniqueName(work.getApplication(), uniqueName)) {
-				if ((null != imported) && (!imported.contains(o.getAlias())) && (!imported.contains(o.getName())) && (!imported.contains(o.getId()))) {
+			for (Script o : business.element().listScriptNestedWithApplicationWithUniqueName(work.getApplication(),
+					uniqueName)) {
+				if ((null != imported) && (!imported.contains(o.getAlias())) && (!imported.contains(o.getName()))
+						&& (!imported.contains(o.getId()))) {
 					list.add(o);
 				}
 			}

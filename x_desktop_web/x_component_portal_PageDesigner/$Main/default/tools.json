@@ -1,0 +1,102 @@
+{
+  "div": {
+    "icon": "div.png",
+    "text": "容器",
+    "className": "Div"
+  },
+  "label": {
+    "icon": "label.png",
+    "text": "文本",
+    "className": "Label"
+  },
+  "source": {
+    "icon": "source.png",
+    "text": "数据源",
+    "className": "Source"
+  },
+  "SubSource": {
+    "icon": "subSource.png",
+    "text": "子数据源",
+    "className": "SubSource"
+  },
+  "sourceText": {
+    "icon": "sourceText.png",
+    "text": "数据文本",
+    "className": "SourceText"
+  },
+  "table": {
+    "icon": "table.png",
+    "text": "表格",
+    "className": "Table"
+  },
+  "tab": {
+    "icon": "tabs.png",
+    "text": "分页",
+    "className": "Tab"
+  },
+  "image": {
+    "icon": "image.png",
+    "text": "图片",
+    "className": "Image"
+  },
+  "button": {
+    "icon": "button.png",
+    "text": "按钮",
+    "className": "Button"
+  },
+  "iframe": {
+    "icon": "iframe.png",
+    "text": "Iframe",
+    "className": "Iframe"
+  },
+  "html": {
+    "icon": "html.png",
+    "text": "HTML",
+    "className": "Html"
+  },
+  "tree": {
+    "icon": "tree.png",
+    "text": "树",
+    "className": "Tree"
+  },
+  "view": {
+    "icon": "view.png",
+    "text": "嵌入视图",
+    "className": "View"
+  },
+  "textfield": {
+    "icon": "textfield.png",
+    "text": "文本字段",
+    "className": "Textfield"
+  },
+  "personfield": {
+    "icon": "personfield.png",
+    "text": "人员",
+    "className": "Personfield"
+  },
+  "calendar": {
+    "icon": "calendar.png",
+    "text": "日期选择",
+    "className": "Calendar"
+  },
+  "textarea": {
+    "icon": "textarea.png",
+    "text": "多行文本",
+    "className": "Textarea"
+  },
+  "select": {
+    "icon": "select.png",
+    "text": "下拉框",
+    "className": "Select"
+  },
+  "radio": {
+    "icon": "radio.png",
+    "text": "单选框",
+    "className": "Radio"
+  },
+  "checkbox": {
+    "icon": "checkbox.png",
+    "text": "多选框",
+    "className": "Checkbox"
+  }
+}

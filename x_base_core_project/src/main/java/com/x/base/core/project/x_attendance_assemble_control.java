@@ -11,6 +11,7 @@ import com.x.base.core.gson.XGsonBuilder;
 
 public class x_attendance_assemble_control extends Assemble {
 
+	public static final String name = "考勤";
 	public static List<String> containerEntities = new ArrayList<>();
 	public static List<StorageType> usedStorageTypes = new ArrayList<>();
 	public static List<Class<? extends Compilable>> dependents = new ArrayList<>();
@@ -34,6 +35,7 @@ public class x_attendance_assemble_control extends Assemble {
 		containerEntities.add("com.x.attendance.entity.AttendanceStatisticalCycle");
 		containerEntities.add("com.x.attendance.entity.AttendanceEmployeeConfig");
 		containerEntities.add("com.x.attendance.entity.AttendanceStatisticRequireLog");
+
 		dependents.add(x_base_core_project.class);
 		dependents.add(x_organization_core_entity.class);
 		dependents.add(x_organization_core_express.class);

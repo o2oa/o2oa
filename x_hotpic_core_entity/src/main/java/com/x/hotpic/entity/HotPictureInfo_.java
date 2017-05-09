@@ -12,7 +12,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.hotpic.entity.HotPictureInfo.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:36:24 CST 2017")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sat May 06 19:35:12 CST 2017")
 public class HotPictureInfo_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<HotPictureInfo,String> application;
     public static volatile SingularAttribute<HotPictureInfo,Date> createTime;

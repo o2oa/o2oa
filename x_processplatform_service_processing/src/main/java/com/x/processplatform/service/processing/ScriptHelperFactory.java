@@ -45,11 +45,11 @@ public class ScriptHelperFactory {
 		Map<String, Object> map = new HashMap<>();
 		map.put(workContext_binding_name, workContext);
 		map.put(data_binding_name, data);
-		map.put(organization_binding_name, new Organization());
+		map.put(organization_binding_name, new Organization(ThisApplication.context()));
 		map.put(webservicesClient_binding_name, new WebservicesClient());
 		map.put(dictionary_binding_name,
 				new ApplicationDictHelper(business.entityManagerContainer(), work.getApplication()));
-		//map.put(lookup_binding_name, new LookupBuilder());
+		// map.put(lookup_binding_name, new LookupBuilder());
 		for (BindingPair o : bindingPairs) {
 			map.put(o.getName(), o.getValue());
 		}

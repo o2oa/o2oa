@@ -16,15 +16,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
+import com.x.base.core.http.WrapOutCount;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.cms.assemble.control.jaxrs.document.exception.DocumentInfoProcessException;
 
 @Path("document")
 public class DocumentAction extends StandardJaxrsAction{
@@ -45,9 +47,9 @@ public class DocumentAction extends StandardJaxrsAction{
 			wrapIn = this.convertToWrapIn( jsonElement, WrapInDocument.class );
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new DocumentInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check ){
@@ -91,6 +93,24 @@ public class DocumentAction extends StandardJaxrsAction{
 		ActionResult<WrapOutDocumentComplex> result = new ActionResult<>();
 		try {
 			result = new ExcuteView().execute( request, id, effectivePerson );
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			result.error( e );
+			logger.error( e, effectivePerson, request, null);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
+	@HttpMethodDescribe(value = "根据ID获取document对象详细信息，包括附件列表，数据信息.", response = WrapOutDocument.class)
+	@GET
+	@Path("{id}/view/count")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response getViewCount(@Context HttpServletRequest request, @PathParam("id") String id) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<WrapOutCount> result = new ActionResult<>();
+		try {
+			result = new ExcuteGetViewCount().execute( request, id, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
@@ -150,9 +170,9 @@ public class DocumentAction extends StandardJaxrsAction{
 			wrapIn = this.convertToWrapIn( jsonElement, WrapInDocument.class );
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new DocumentInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check ){
@@ -165,6 +185,41 @@ public class DocumentAction extends StandardJaxrsAction{
 			}
 		}
 		
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
+	@HttpMethodDescribe(value = "直接发布文档信息.", response = WrapOutId.class)
+	@PUT
+	@Path("publish/content")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response publishContent(@Context HttpServletRequest request, JsonElement jsonElement ) {		
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		WrapInDocument wrapIn = null;
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		Boolean check = true;
+		System.out.println( ">>>>>>>>>>>>>>>>>>>>>>>>>>system try to convert json element to wrap in......" );
+		
+		System.out.println( ">>>>>>>>>>>>>>>>>>>>>>>>>>jsonElement:" + jsonElement.toString() );
+		
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInDocument.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new DocumentInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
+			result.error( exception );
+			logger.error( e, effectivePerson, request, null);
+		}
+		if( check ){
+			System.out.println( ">>>>>>>>>>>>>>>>>>>>>>>>>>system try to publish content......" );
+			try {
+				result = new ExcutePublishContent().execute( request, wrapIn, effectivePerson );
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error( e );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -186,23 +241,23 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@HttpMethodDescribe(value = "列示根据过滤条件的Document,下一页.", response = WrapOutDocument.class, request = JsonElement.class)
+	@HttpMethodDescribe(value = "列示根据过滤条件的Document,下一页.", response = WrapOutDocumentSimple.class, request = JsonElement.class)
 	@PUT
 	@Path("filter/list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listNextWithFilter( @Context HttpServletRequest request, @PathParam("id") String id, @PathParam("count") Integer count, JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<List<WrapOutDocument>> result = new ActionResult<>();
+		ActionResult<List<WrapOutDocumentSimple>> result = new ActionResult<>();
 		Boolean check = true;
 		WrapInFilter wrapIn = null;
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilter.class );
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new DocumentInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			try {
@@ -230,9 +285,9 @@ public class DocumentAction extends StandardJaxrsAction{
 			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilter.class );
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new DocumentInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			try {

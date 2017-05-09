@@ -33,7 +33,7 @@ public class PersonAttributeFactory extends AbstractFactory {
 		Root<PersonAttribute> root = cq.from(PersonAttribute.class);
 		Predicate p = cb.equal(root.get(PersonAttribute_.person), personId);
 		p = cb.and(p, cb.equal(root.get(PersonAttribute_.name), name));
-		cq.select(root.get(PersonAttribute_.id)).where(p);
+		cq.select(root.get(PersonAttribute_.id)).where(p).distinct(true);
 		List<String> list = em.createQuery(cq).setMaxResults(1).getResultList();
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -49,7 +49,7 @@ public class PersonAttributeFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<PersonAttribute> root = cq.from(PersonAttribute.class);
 		Predicate p = cb.equal(root.get(PersonAttribute_.person), personId);
-		cq.select(root.get(PersonAttribute_.id)).where(p);
+		cq.select(root.get(PersonAttribute_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -59,7 +59,7 @@ public class PersonAttributeFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<PersonAttribute> root = cq.from(PersonAttribute.class);
 		Predicate p = cb.isMember(attribute, root.get(PersonAttribute_.attributeList));
-		cq.select(root.get(PersonAttribute_.id)).where(p);
+		cq.select(root.get(PersonAttribute_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 

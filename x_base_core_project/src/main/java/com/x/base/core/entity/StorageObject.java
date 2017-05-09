@@ -87,22 +87,43 @@ public abstract class StorageObject extends SliceJpaObject {
 	}
 
 	/** 将内容导入到bytes字段，用于进行导入导出 */
-	public void dumpContent(StorageMapping mapping) throws Exception {
+	public Long dumpContent(StorageMapping mapping) throws Exception {
+		long length = -1L;
 		try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-			this.readContent(mapping, output);
-			this.setBytes(output.toByteArray());
+			length = this.readContent(mapping, output);
+			if (length < 0) {
+				this.setBytes(new byte[] {});
+			} else {
+				this.setBytes(output.toByteArray());
+			}
+		}
+		return length;
+	}
+
+	/** 将导入的字节进行保存 */
+	public Long saveContent(StorageMapping mapping, byte[] bytes, String name) throws Exception {
+		try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes)) {
+			return saveContent(mapping, bais, name);
 		}
 	}
 
 	/** 将导入的流进行保存 */
-	public void saveContent(StorageMapping mapping, InputStream input, String name) throws Exception {
+	public Long saveContent(StorageMapping mapping, InputStream input, String name) throws Exception {
 		this.setName(name);
 		this.setExtension(StringUtils.lowerCase(FilenameUtils.getExtension(name)));
-		this.updateContent(mapping, input);
+		return this.updateContent(mapping, input);
 	}
 
 	/** 更新Content内容 */
-	public void updateContent(StorageMapping mapping, InputStream input) throws Exception {
+	public Long updateContent(StorageMapping mapping, byte[] bytes) throws Exception {
+		try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes)) {
+			return updateContent(mapping, bais);
+		}
+	}
+
+	/** 更新Content内容 */
+	public Long updateContent(StorageMapping mapping, InputStream input) throws Exception {
+		long length = -1L;
 		FileSystemManager manager = this.getFileSystemManager();
 		String prefix = this.getPrefix(mapping);
 		String path = this.path();
@@ -112,20 +133,30 @@ public abstract class StorageObject extends SliceJpaObject {
 		FileSystemOptions options = this.getOptions(mapping);
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			/* 由于可以在传输过程中取消传输,先拷贝到内存 */
-			IOUtils.copy(input, baos);
+			IOUtils.copyLarge(input, baos);
 			try (FileObject fo = manager.resolveFile(prefix + PATHSEPARATOR + path, options);
 					OutputStream output = fo.getContent().getOutputStream()) {
-				int length = IOUtils.copy(new ByteArrayInputStream(baos.toByteArray()), output);
-				this.setLength((long) length);
+				length = IOUtils.copyLarge(new ByteArrayInputStream(baos.toByteArray()), output);
+				this.setLength(length);
 				manager.closeFileSystem(fo.getFileSystem());
 			}
 		}
 		this.setStorage(mapping.getName());
 		this.setLastUpdateTime(new Date());
+		return length;
+	}
+
+	/** 读出内容 */
+	public byte[] readContent(StorageMapping mapping) throws Exception {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			readContent(mapping, baos);
+			return baos.toByteArray();
+		}
 	}
 
 	/** 将内容流出到output */
-	public void readContent(StorageMapping mapping, OutputStream output) throws Exception {
+	public Long readContent(StorageMapping mapping, OutputStream output) throws Exception {
+		long length = -1L;
 		FileSystemManager manager = this.getFileSystemManager();
 		String prefix = this.getPrefix(mapping);
 		String path = this.path();
@@ -133,14 +164,29 @@ public abstract class StorageObject extends SliceJpaObject {
 		try (FileObject fo = manager.resolveFile(prefix + PATHSEPARATOR + path, options)) {
 			if (fo.exists() && fo.isFile()) {
 				try (InputStream input = fo.getContent().getInputStream()) {
-					IOUtils.copy(input, output);
+					length = IOUtils.copyLarge(input, output);
 				}
 			}
 			manager.closeFileSystem(fo.getFileSystem());
 		}
+		return length;
 	}
 
-	/** 删除内容 */
+	/** 检查是否存在内容 */
+	public boolean existContent(StorageMapping mapping) throws Exception {
+		FileSystemManager manager = this.getFileSystemManager();
+		String prefix = this.getPrefix(mapping);
+		String path = this.path();
+		FileSystemOptions options = this.getOptions(mapping);
+		try (FileObject fo = manager.resolveFile(prefix + PATHSEPARATOR + path, options)) {
+			if (fo.exists() && fo.isFile()) {
+				return true;
+			}
+			return false;
+		}
+	}
+
+	/** 删除内容,同时判断上一级目录(只判断一级)是否为空,为空则删除上一级目录 */
 	public void deleteContent(StorageMapping mapping) throws Exception {
 		FileSystemManager manager = this.getFileSystemManager();
 		String prefix = this.getPrefix(mapping);

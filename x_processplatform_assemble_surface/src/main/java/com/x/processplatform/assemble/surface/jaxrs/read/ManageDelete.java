@@ -28,8 +28,8 @@ class ManageDelete extends ActionBase {
 			if (!business.process().allowControl(effectivePerson, process)) {
 				throw new ReadAccessDeniedException(effectivePerson.getName(), read.getId());
 			}
-			ThisApplication.applications.deleteQuery(x_processplatform_service_processing.class,
-					"read/" + URLEncoder.encode(read.getId(), "UTF-8"), null);
+			ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
+					"read/" + URLEncoder.encode(read.getId(), "UTF-8"));
 			WrapOutId wrap = new WrapOutId(read.getId());
 			result.setData(wrap);
 			return result;

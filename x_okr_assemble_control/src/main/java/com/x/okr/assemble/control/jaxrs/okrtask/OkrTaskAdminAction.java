@@ -1,4 +1,5 @@
 package com.x.okr.assemble.control.jaxrs.okrtask;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,69 +22,73 @@ import com.x.base.core.application.jaxrs.MemberTerms;
 import com.x.base.core.application.jaxrs.NotEqualsTerms;
 import com.x.base.core.application.jaxrs.NotInTerms;
 import com.x.base.core.application.jaxrs.NotMemberTerms;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.okr.assemble.control.ThisApplication;
+import com.x.okr.assemble.control.jaxrs.okrtask.exception.InsufficientPermissionsException;
+import com.x.okr.assemble.control.jaxrs.okrtask.exception.OkrSystemAdminCheckException;
+import com.x.okr.assemble.control.jaxrs.okrtask.exception.WrapInConvertException;
 import com.x.okr.entity.OkrTask;
 import com.x.organization.core.express.Organization;
 
+@Path("admin/okrtask")
+public class OkrTaskAdminAction extends StandardJaxrsAction {
+	private Logger logger = LoggerFactory.getLogger(OkrTaskAdminAction.class);
 
-@Path( "admin/okrtask" )
-public class OkrTaskAdminAction extends StandardJaxrsAction{
-	private Logger logger = LoggerFactory.getLogger( OkrTaskAdminAction.class );
-	
 	@HttpMethodDescribe(value = "根据ID删除OkrTask数据对象.", response = WrapOutOkrTask.class)
 	@DELETE
-	@Path( "{id}" )
+	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response delete( @Context HttpServletRequest request, @PathParam( "id" ) String id ) {
-		EffectivePerson effectivePerson = this.effectivePerson( request );
+	public Response delete(@Context HttpServletRequest request, @PathParam("id") String id) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		try {
-			result = new ExcuteDelete().execute( request, effectivePerson, id );
+			result = new ExcuteDelete().execute(request, effectivePerson, id);
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			result.error( e );
-			logger.warn( "system excute ExcuteDelete got an exception.");
-			logger.error( e, effectivePerson, request, null);
+			result.error(e);
+			logger.warn("system excute ExcuteDelete got an exception.");
+			logger.error(e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
 	@HttpMethodDescribe(value = "根据ID获取OkrTask对象.", response = WrapOutOkrTask.class)
 	@GET
-	@Path( "{id}" )
+	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response get(@Context HttpServletRequest request, @PathParam( "id" ) String id) {
-		EffectivePerson effectivePerson = this.effectivePerson( request );
+	public Response get(@Context HttpServletRequest request, @PathParam("id") String id) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<WrapOutOkrTask> result = new ActionResult<>();
 		try {
-			result = new ExcuteGet().execute( request, effectivePerson, id );
+			result = new ExcuteGet().execute(request, effectivePerson, id);
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			result.error( e );
-			logger.warn( "system excute ExcuteGet got an exception.id:" + id);
-			logger.error( e, effectivePerson, request, null);
+			result.error(e);
+			logger.warn("system excute ExcuteGet got an exception.id:" + id);
+			logger.error(e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
-	
+
 	@HttpMethodDescribe(value = "根据过滤条件列表我的待办列表,下一页.", response = WrapOutOkrTask.class, request = JsonElement.class)
 	@PUT
-	@Path( "filter/{id}/next/{count}" )
+	@Path("filter/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response filterListTaskNext(@Context HttpServletRequest request, @PathParam( "id" ) String id, @PathParam( "count" ) Integer count, JsonElement jsonElement) {
+	public Response filterListTaskNext(@Context HttpServletRequest request, @PathParam("id") String id,
+			@PathParam("count") Integer count, JsonElement jsonElement) {
 		ActionResult<List<WrapOutOkrTask>> result = new ActionResult<>();
 		String sequenceField = null;
 		EqualsTerms equalsMap = new EqualsTerms();
@@ -94,67 +99,70 @@ public class OkrTaskAdminAction extends StandardJaxrsAction{
 		NotMemberTerms notMembersMap = new NotMemberTerms();
 		LikeTerms likesMap = new LikeTerms();
 		EffectivePerson currentPerson = this.effectivePerson(request);
-		Organization organization = new Organization();
+		Organization organization = new Organization(ThisApplication.context());
 		Boolean hasPermission = false;
 		WrapInFilterTask wrapIn = null;
 		Boolean check = true;
-		
+
 		try {
-			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilterTask.class );
-		} catch (Exception e ) {
+			wrapIn = this.convertToWrapIn(jsonElement, WrapInFilterTask.class);
+		} catch (Exception e) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
-			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			Exception exception = new WrapInConvertException(e, jsonElement);
+			result.error(exception);
+			logger.error(e, currentPerson, request, null);
 		}
 
-		if( check ){
+		if (check) {
 			try {
-				hasPermission = organization.role().hasAny(currentPerson.getName(),"OkrSystemAdmin" );
-				if( !hasPermission ){
+				hasPermission = organization.role().hasAny(currentPerson.getName(), "OkrSystemAdmin");
+				if (!hasPermission) {
 					check = false;
-					Exception exception = new InsufficientPermissionsException( currentPerson.getName(), "OkrSystemAdmin" );
-					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					Exception exception = new InsufficientPermissionsException(currentPerson.getName(),
+							"OkrSystemAdmin");
+					result.error(exception);
+					// logger.error( e, currentPerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new OkrSystemAdminCheckException( e, currentPerson.getName() );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				Exception exception = new OkrSystemAdminCheckException(e, currentPerson.getName());
+				result.error(exception);
+				logger.error(e, currentPerson, request, null);
 			}
 		}
-		if( check ){
-			if( wrapIn.getFilterLikeContent() != null && !wrapIn.getFilterLikeContent().isEmpty() ){
-				likesMap.put( "dynamicObjectTitle", wrapIn.getFilterLikeContent() );
-				likesMap.put( "targetName", wrapIn.getFilterLikeContent() );
-				likesMap.put( "targetIdentity", wrapIn.getFilterLikeContent() );
-				likesMap.put( "dynamicObjectType", wrapIn.getFilterLikeContent() );
+		if (check) {
+			if (wrapIn.getFilterLikeContent() != null && !wrapIn.getFilterLikeContent().isEmpty()) {
+				likesMap.put("dynamicObjectTitle", wrapIn.getFilterLikeContent());
+				likesMap.put("targetName", wrapIn.getFilterLikeContent());
+				likesMap.put("targetIdentity", wrapIn.getFilterLikeContent());
+				likesMap.put("dynamicObjectType", wrapIn.getFilterLikeContent());
 			}
 		}
-		if( check ){
+		if (check) {
 			sequenceField = wrapIn.getSequenceField();
-			try{
-				BeanCopyTools<OkrTask, WrapOutOkrTask> wrapout_copier = BeanCopyToolsBuilder.create( OkrTask.class, WrapOutOkrTask.class, null, WrapOutOkrTask.Excludes);
-				result = this.standardListNext( wrapout_copier, id, count, sequenceField,  equalsMap, notEqualsMap, likesMap, insMap, notInsMap, 
-						membersMap, notMembersMap, true, wrapIn.getOrder() );
-				
-			}catch( Exception e ){
+			try {
+				BeanCopyTools<OkrTask, WrapOutOkrTask> wrapout_copier = BeanCopyToolsBuilder.create(OkrTask.class,
+						WrapOutOkrTask.class, null, WrapOutOkrTask.Excludes);
+				result = this.standardListNext(wrapout_copier, id, count, sequenceField, equalsMap, notEqualsMap,
+						likesMap, insMap, notInsMap, membersMap, notMembersMap, true, wrapIn.getOrder());
+
+			} catch (Exception e) {
 				check = false;
-				logger.warn( "系统查询待办信息列表时发生异常!");
-				result.error( e );
-				logger.error( e, currentPerson, request, null);
+				logger.warn("系统查询待办信息列表时发生异常!");
+				result.error(e);
+				logger.error(e, currentPerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
-	
+
 	@HttpMethodDescribe(value = "根据过滤条件列表我的待办列表,下一页.", response = WrapOutOkrTask.class, request = WrapInFilterTask.class)
 	@PUT
-	@Path( "filter/{id}/prev/{count}" )
+	@Path("filter/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response filterListTaskPrev(@Context HttpServletRequest request, @PathParam( "id" ) String id, @PathParam( "count" ) Integer count, WrapInFilterTask wrapIn) {
+	public Response filterListTaskPrev(@Context HttpServletRequest request, @PathParam("id") String id,
+			@PathParam("count") Integer count, WrapInFilterTask wrapIn) {
 		ActionResult<List<WrapOutOkrTask>> result = new ActionResult<>();
 		String sequenceField = null;
 		EqualsTerms equalsMap = new EqualsTerms();
@@ -165,55 +173,55 @@ public class OkrTaskAdminAction extends StandardJaxrsAction{
 		NotMemberTerms notMembersMap = new NotMemberTerms();
 		LikeTerms likesMap = new LikeTerms();
 		Boolean check = true;
-		
+
 		EffectivePerson currentPerson = this.effectivePerson(request);
-		Organization organization = new Organization();
+		Organization organization =	new Organization(ThisApplication.context());
 		Boolean hasPermission = false;
 		try {
-			hasPermission = organization.role().hasAny(currentPerson.getName(),"OkrSystemAdmin" );
-			if( !hasPermission ){
+			hasPermission = organization.role().hasAny(currentPerson.getName(), "OkrSystemAdmin");
+			if (!hasPermission) {
 				check = false;
-				Exception exception = new InsufficientPermissionsException( currentPerson.getName(), "OkrSystemAdmin" );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				Exception exception = new InsufficientPermissionsException(currentPerson.getName(), "OkrSystemAdmin");
+				result.error(exception);
+				// logger.error( e, currentPerson, request, null);
 			}
 		} catch (Exception e) {
 			check = false;
-			Exception exception = new OkrSystemAdminCheckException( e, currentPerson.getName() );
-			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			Exception exception = new OkrSystemAdminCheckException(e, currentPerson.getName());
+			result.error(exception);
+			logger.error(e, currentPerson, request, null);
 		}
-//		if( check ){
-//			if( wrapIn == null ){
-//				check = false;
-//				result.error( new Exception( "请求传入的参数为空，无法继续保存工作信息!" ) );
-//				result.setUserMessage( "请求传入的参数为空，无法继续保存工作信息!" );
-//			}
-//		}
-		if( check ){
-			if( wrapIn.getFilterLikeContent() != null && !wrapIn.getFilterLikeContent().isEmpty() ){
-				likesMap.put( "dynamicObjectTitle", wrapIn.getFilterLikeContent() );
-				likesMap.put( "targetName", wrapIn.getFilterLikeContent() );
-				likesMap.put( "targetIdentity", wrapIn.getFilterLikeContent() );
-				likesMap.put( "dynamicObjectType", wrapIn.getFilterLikeContent() );
+		// if( check ){
+		// if( wrapIn == null ){
+		// check = false;
+		// result.error( new Exception( "请求传入的参数为空，无法继续保存工作信息!" ) );
+		// result.setUserMessage( "请求传入的参数为空，无法继续保存工作信息!" );
+		// }
+		// }
+		if (check) {
+			if (wrapIn.getFilterLikeContent() != null && !wrapIn.getFilterLikeContent().isEmpty()) {
+				likesMap.put("dynamicObjectTitle", wrapIn.getFilterLikeContent());
+				likesMap.put("targetName", wrapIn.getFilterLikeContent());
+				likesMap.put("targetIdentity", wrapIn.getFilterLikeContent());
+				likesMap.put("dynamicObjectType", wrapIn.getFilterLikeContent());
 			}
 		}
-		if( check ){
+		if (check) {
 			sequenceField = wrapIn.getSequenceField();
-			try{
-				BeanCopyTools<OkrTask, WrapOutOkrTask> wrapout_copier = BeanCopyToolsBuilder.create( OkrTask.class, WrapOutOkrTask.class, null, WrapOutOkrTask.Excludes);
-				result = this.standardListPrev( wrapout_copier, id, count, sequenceField,  equalsMap, notEqualsMap, likesMap, insMap, notInsMap, 
-						membersMap, notMembersMap, true, wrapIn.getOrder() );
-				
-			}catch( Exception e ){
+			try {
+				BeanCopyTools<OkrTask, WrapOutOkrTask> wrapout_copier = BeanCopyToolsBuilder.create(OkrTask.class,
+						WrapOutOkrTask.class, null, WrapOutOkrTask.Excludes);
+				result = this.standardListPrev(wrapout_copier, id, count, sequenceField, equalsMap, notEqualsMap,
+						likesMap, insMap, notInsMap, membersMap, notMembersMap, true, wrapIn.getOrder());
+
+			} catch (Exception e) {
 				check = false;
-				logger.warn( "系统查询待办信息列表时发生异常!");
-				result.error( e );
-				logger.error( e, currentPerson, request, null);
+				logger.warn("系统查询待办信息列表时发生异常!");
+				result.error(e);
+				logger.error(e, currentPerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	
 }

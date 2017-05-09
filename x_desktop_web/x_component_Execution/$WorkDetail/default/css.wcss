@@ -283,6 +283,11 @@
     "font-size": "16px",
     "float": "left"
   },
+  "archiveTextDiv":{
+    "float":"right",
+    "margin-right":"5px",
+    "color":"#ffff00"
+  },
   "detailContentNode" : {
     "overflow" : "hidden",
     "margin-right" : "6px"
@@ -395,7 +400,10 @@
     "border-bottom":"1px dashed #3c76c1",
     "padding-top":"10px"
   },
-
+  "prevReportInforListDiv":{
+    "height":"562px",
+    "overflow" : "hidden"
+  },
   "authDiv":{
     "width":"100%","color":"#f6ac0d","font-weight":"bold","margin-left":"10px","margin-top":"5px"
   }

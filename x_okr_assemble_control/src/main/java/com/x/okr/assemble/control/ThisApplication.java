@@ -3,11 +3,11 @@ package com.x.okr.assemble.control;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.x.base.core.project.AbstractThisApplication;
-import com.x.base.core.project.ReportTask;
+import com.x.base.core.project.Context;
 import com.x.collaboration.core.message.Collaboration;
 import com.x.okr.assemble.control.service.OkrConfigSystemService;
 import com.x.okr.assemble.control.servlet.workimport.CacheImportFileStatus;
+import com.x.okr.assemble.control.timertask.ErrorIdentityCheckTask;
 import com.x.okr.assemble.control.timertask.St_CenterWorkCount;
 import com.x.okr.assemble.control.timertask.St_WorkReportContent;
 import com.x.okr.assemble.control.timertask.St_WorkReportStatus;
@@ -15,70 +15,43 @@ import com.x.okr.assemble.control.timertask.WorkProgressConfirm;
 import com.x.okr.assemble.control.timertask.WorkReportCollectCreate;
 import com.x.okr.assemble.control.timertask.WorkReportCreate;
 
-public class ThisApplication extends AbstractThisApplication {
+public class ThisApplication {
 
+	protected static Context context;
 	public static Map<String, CacheImportFileStatus> importFileStatusMap = new HashMap<String, CacheImportFileStatus>();
-	private static Boolean centerWorkCountStatisticTaskRunning = false;
-	private static Boolean workProgressConfirmTaskRunning = false;
-	private static Boolean workReportCollectCreateTaskRunning = false;
-	private static Boolean workReportCreateTaskRunning = false;
-	private static Boolean workReportStatisticTaskRunning = false;
-	private static Boolean workReportSubmitStatisticTaskRunning = false;
 
-	public static void init() throws Exception {
-		/* 启动报告任务 */
-		timerWithFixedDelay(new ReportTask(), 1, 20);
-
-		initDatasFromCenters();
-
-		initStoragesFromCenters();
-
-		Collaboration.start();
-
-		initAllSystemConfig();
-
-		initAllTimerTask();
-
+	public static Context context() {
+		return context;
 	}
 
-	private static void initAllTimerTask() throws Exception {
-
-		// LoggerFactory.getLogger( ThisApplication.class ).info("OKR registing
-		// timer task：对中心工作的工作总数进行统计分析.");
-		// 注册定时器：定时代理，对中心工作的工作总数进行统计分析。
-		// 运行时间设置：启动后1分钟执行第一次，之后间隔30分钟执行
-		timerWithFixedDelay(new St_CenterWorkCount(), 60 * 15, 60 * 60);
-		// LoggerFactory.getLogger( ThisApplication.class ).info("OKR registing
-		// timer task：定时对需要汇报的工作发起工作汇报拟稿的待办.");
-		// 注册定时器：定时代理，定时对需要汇报的工作发起工作汇报拟稿的待办
-		// 运行时间设置：启动后1分钟执行第一次，之后间隔1分钟执行
-		timerWithFixedDelay(new WorkReportCreate(), 60 * 25, 60 * 60);
-		// LoggerFactory.getLogger( ThisApplication.class ).info("OKR registing
-		// timer task：定时分析所有未完成工作的进度情况.");
-		// 注册定时器：定时代理，定时分析所有未完成工作的进度情况
-		// 运行时间设置：启动后10分钟执行第一次，之后间隔6小时执行
-		timerWithFixedDelay(new WorkProgressConfirm(), 60 * 15, 60 * 60);
-		// LoggerFactory.getLogger( ThisApplication.class ).info("OKR registing
-		// timer task：定时分析所有员工的工作汇报汇总待办是否正常.");
-		// 注册定时器：定时代理，定时分析所有员工的工作汇报汇总待办是否正常
-		// 运行时间设置：启动后5分钟执行第一次，之后间隔2小时执行
-		timerWithFixedDelay(new WorkReportCollectCreate(), 60 * 10, 60 * 60 * 2);
-
-		// LoggerFactory.getLogger( ThisApplication.class ).info("OKR registing
-		// timer task：对中心工作的完成情况以及中心工作的状态进行统计分析。.");
-		// 注册定时器：定时代理，对中心工作的完成情况以及中心工作的状态进行统计分析。
-		// 运行时间设置：启动后1分钟执行第一次，之后间隔30分钟执行
-		timerWithFixedDelay(new St_WorkReportContent(), 60 * 30, 60 * 60 * 6);
-		timerWithFixedDelay(new St_WorkReportStatus(), 60 * 20, 60 * 60 * 12);
-	}
-
-	public static void destroy() throws Exception {
-		Collaboration.stop();
-	}
-
-	private static void initAllSystemConfig() {
+	public static void init() {
 		try {
+			Collaboration.start(ThisApplication.context());
 			new OkrConfigSystemService().initAllSystemConfig();
+
+			// 每天凌晨2点执行一次
+			context().schedule(St_WorkReportContent.class, "0 0 2 * * ?");
+			// 每天凌晨2点30执行一次
+			context().schedule(St_WorkReportStatus.class, "0 30 2 * * ?");
+			// 每天5点至20点间，每10分钟执行一次
+			context().schedule(St_CenterWorkCount.class, "0 0/10 5-20 * * ?");
+			// 每天7点至17点间，每10分钟执行一次
+			context().schedule(WorkReportCreate.class, "* 0/10 7-17 * * ?");
+			// 每天7点至17点间，每小时执行一次
+			context().schedule(WorkProgressConfirm.class, "0 0 7-17/1 * * ?");
+			// 每天7点至17点间，每10分钟执行一次
+			context().schedule(WorkReportCollectCreate.class, "0 0/10 7-17 * * ?");
+			// 每天凌晨2点执行一次
+			context().schedule(ErrorIdentityCheckTask.class, "0 0 2 * * ?");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void destroy() {
+		try {
+			Collaboration.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -104,53 +77,4 @@ public class ThisApplication extends AbstractThisApplication {
 		}
 		return importFileStatusMap.get(key);
 	}
-
-	public static void setWorkProgressConfirmTaskRunning(Boolean workProgressConfirmTaskRunning) {
-		ThisApplication.workProgressConfirmTaskRunning = workProgressConfirmTaskRunning;
-	}
-
-	public static Boolean getCenterWorkCountStatisticTaskRunning() {
-		return centerWorkCountStatisticTaskRunning;
-	}
-
-	public static void setCenterWorkCountStatisticTaskRunning(Boolean centerWorkCountStatisticTaskRunning) {
-		ThisApplication.centerWorkCountStatisticTaskRunning = centerWorkCountStatisticTaskRunning;
-	}
-
-	public static Boolean getWorkReportCollectCreateTaskRunning() {
-		return workReportCollectCreateTaskRunning;
-	}
-
-	public static void setWorkReportCollectCreateTaskRunning(Boolean workReportCollectCreateTaskRunning) {
-		ThisApplication.workReportCollectCreateTaskRunning = workReportCollectCreateTaskRunning;
-	}
-
-	public static Boolean getWorkReportCreateTaskRunning() {
-		return workReportCreateTaskRunning;
-	}
-
-	public static void setWorkReportCreateTaskRunning(Boolean workReportCreateTaskRunning) {
-		ThisApplication.workReportCreateTaskRunning = workReportCreateTaskRunning;
-	}
-
-	public static Boolean getWorkReportStatisticTaskRunning() {
-		return workReportStatisticTaskRunning;
-	}
-
-	public static void setWorkReportStatisticTaskRunning(Boolean workReportStatisticTaskRunning) {
-		ThisApplication.workReportStatisticTaskRunning = workReportStatisticTaskRunning;
-	}
-
-	public static Boolean getWorkProgressConfirmTaskRunning() {
-		return workProgressConfirmTaskRunning;
-	}
-
-	public static Boolean getWorkReportSubmitStatisticTaskRunning() {
-		return workReportSubmitStatisticTaskRunning;
-	}
-
-	public static void setWorkReportSubmitStatisticTaskRunning(Boolean workReportSubmitStatisticTaskRunning) {
-		ThisApplication.workReportSubmitStatisticTaskRunning = workReportSubmitStatisticTaskRunning;
-	}
-
 }

@@ -8,6 +8,9 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.cms.assemble.control.WrapTools;
+import com.x.cms.assemble.control.jaxrs.appinfo.exception.AppInfoIdEmptyException;
+import com.x.cms.assemble.control.jaxrs.appinfo.exception.AppInfoNotExistsException;
+import com.x.cms.assemble.control.jaxrs.appinfo.exception.AppInfoProcessException;
 import com.x.cms.core.entity.AppInfo;
 
 import net.sf.ehcache.Element;
@@ -26,7 +29,7 @@ public class ExcuteGet extends ExcuteBase {
 			check = false;
 			Exception exception = new AppInfoIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		
 		String cacheKey = ApplicationCache.concreteCacheKey( id );
@@ -43,13 +46,12 @@ public class ExcuteGet extends ExcuteBase {
 						check = false;
 						Exception exception = new AppInfoNotExistsException( id );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
 					}
 				} catch (Exception e) {
 					check = false;
-					Exception exception = new AppInfoQueryByIdException( e, id );
+					Exception exception = new AppInfoProcessException( e, "根据指定ID查询应用栏目信息对象时发生异常。ID:" + id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 			if( check ){
@@ -58,9 +60,9 @@ public class ExcuteGet extends ExcuteBase {
 					cache.put(new Element( cacheKey, wrap ));
 					result.setData( wrap );
 				} catch (Exception e) {
-					Exception exception = new AppInfoWrapOutException( e );
+					Exception exception = new AppInfoProcessException( e, "将查询出来的应用栏目信息对象转换为可输出的数据信息时发生异常。" );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}

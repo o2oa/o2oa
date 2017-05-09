@@ -16,7 +16,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 		"icon": "icon.png",
 		"width": "1200",
 		"height": "700",
-		"isResize": false,
+		"isResize": true,
 		"isMax": true,
 		"isCategory" : false,
 		"searchKey" : "",
@@ -37,6 +37,20 @@ MWF.xApplication.cms.Module.Main = new Class({
 		this.node = new Element("div", {
 			"styles": this.css.node
 		}).inject(this.content);
+
+		this.naviContainerNode = new Element("div.naviContainerNode", {
+			"styles": this.css.naviContainerNode
+		}).inject(this.node);
+		this.leftTitleNode = new Element("div.leftTitleNode", {
+			"styles": this.css.leftTitleNode
+		}).inject(this.naviContainerNode);
+
+		this.rightContentNode = new Element("div", {
+			"styles":this.css.rightContentNode
+		}).inject(this.node);
+		this.titleBar = new Element("div", {
+			"styles": this.css.titleBar
+		}).inject(this.rightContentNode );
 	},
 	loadApplicationContent: function(){
 		if( this.options.columnData ){
@@ -46,8 +60,19 @@ MWF.xApplication.cms.Module.Main = new Class({
 					this.loadMenu();
 				}.bind(this));
 			}.bind(this))
-		}else if( this.status && this.status.columnId ){
-			this.loadColumnData( this.status.columnId, function(){
+		}else if( (this.status && this.status.columnId) || this.options.columnId ){
+			var columnId = this.options.columnId || this.status.columnId;
+			this.loadColumnData( columnId, function(){
+				this.loadController(function(){
+					this.loadTitle(function(){
+						this.loadMenu();
+					}.bind(this));
+				}.bind(this))
+			}.bind(this))
+		}else if( this.options.columnAlias ){
+			this.restActions.getColumnByAlias( this.options.columnAlias, function( json ){
+				this.options.columnData = json.data;
+				this.setTitle(this.options.columnData.appName);
 				this.loadController(function(){
 					this.loadTitle(function(){
 						this.loadMenu();
@@ -74,38 +99,36 @@ MWF.xApplication.cms.Module.Main = new Class({
 		}.bind(this));
 	},
 	loadTitle : function(callback){
-		this.loadTitleBar();
 		this.loadCreateDocumentActionNode(
 			function(){
+				//this.loadRefreshNode();
 				this.loadTitleIconNode();
-				this.loadTitleTextNode();
-				this.loadRefreshNode();
+				this.loadTitleContentNode();
 				this.loadSearchNode();
 				if(callback)callback();
 			}.bind(this)
 		);
 	},
-	loadTitleBar: function(){
-		this.titleBar = new Element("div", {
-			"styles": this.css.titleBar
-		}).inject(this.node);
-	},
 	loadCreateDocumentActionNode: function( callback ) {
 		this.restActions.listCategoryByPublisher( this.options.columnData.id, function( json ){
 			if( json.data && json.data.length ){
 				this.createDocumentAction = new Element("div", {
-					"styles": this.css.createDocumentAction
+					"styles": this.css.createDocumentAction,
+					"text" : this.lp.start
 				}).inject(this.titleBar);
 				this.createDocumentAction.addEvents({
 					"click": function(e){
-						if( this.creater ){
-							this.creater.load();
-						}else{
-							MWF.xDesktop.requireApp("cms.Index", "Creater", function(){
-								this.creater = new MWF.xApplication.cms.Index.Creater(this,this.options.columnData,this.view );
-								this.creater.load();
-							}.bind(this));
-						}
+						MWF.xDesktop.requireApp("cms.Index", "Newer", null, false);
+						this.creater = new MWF.xApplication.cms.Index.Newer( this.options.columnData, null, this, this.view, {
+							restrictToColumn : true
+						});
+						this.creater.load();
+					}.bind(this),
+					"mouseover" : function(e){
+						this.createDocumentAction.setStyles( this.css.createDocumentAction_over )
+					}.bind(this),
+					"mouseout" : function(e){
+						this.createDocumentAction.setStyles( this.css.createDocumentAction )
 					}.bind(this)
 				});
 			}
@@ -118,7 +141,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 
 		var iconAreaNode = this.iconAreaNode = new Element("div",{
 			"styles" : this.css.titleIconAreaNode
-		}).inject(this.titleBar);
+		}).inject(this.leftTitleNode);
 
 		var iconNode = this.iconNode = new Element("img",{
 			"styles" : this.css.titleIconNode
@@ -143,11 +166,22 @@ MWF.xApplication.cms.Module.Main = new Class({
 			"par": "cms.Module#{\"columnId\": \""+this.options.columnData.id+"\", \"appId\": \""+appId+"\"}"
 		};
 	},
-	loadTitleTextNode: function(){
+	loadTitleContentNode: function(){
+		this.titleContentNode = new Element("div", {
+			"styles": this.css.titleContentNode
+		}).inject(this.leftTitleNode);
+
 		this.titleTextNode = new Element("div", {
 			"styles": this.css.titleTextNode,
-			"text": this.options.columnData.appName
-		}).inject(this.titleBar);
+			"text": this.options.columnData.appName,
+			"title": this.options.columnData.appName
+		}).inject(this.titleContentNode);
+
+		this.titleDescriptionNode =  new Element("div", {
+			"styles": this.css.titleDescriptionNode,
+			"text": this.options.columnData.description ? this.options.columnData.description : this.lp.noDescription,
+			"title": this.options.columnData.description ? this.options.columnData.description : this.lp.noDescription
+		}).inject(this.titleContentNode);
 	},
 	loadSearchNode: function(){
 		this.searchBarAreaNode = new Element("div", {
@@ -212,9 +246,6 @@ MWF.xApplication.cms.Module.Main = new Class({
 		}.bind(this));
 	},
 	loadMenu: function(callback){
-		this.naviContainerNode = new Element("div.naviContainerNode", {
-			"styles": this.css.naviContainerNode
-		}).inject(this.node);
 
 		this.naviNode = new Element("div.naviNode", {
 			"styles": this.css.naviNode
@@ -240,13 +271,14 @@ MWF.xApplication.cms.Module.Main = new Class({
 			if( this.options.viewId && this.options.viewId!="" ){
 				this._loadMenu( { "categoryId" :this.options.categoryId , "viewId" : this.options.viewId } )
 			}else{
-				this.getCategoryDefaultView(this.options.categoryId , function(viewId){
-					if( viewId ){
-						this._loadMenu( { "categoryId" :this.options.categoryId , "viewId" : viewId, "isCategory" : this.options.isCategory } );
-					}else{
-						this._loadMenu( { "categoryId" :this.options.categoryId , "isCategory" : this.options.isCategory, "naviIndex" : (this.options.naviIndex || 0) } );
-					}
-				}.bind(this))
+				//this.getCategoryDefaultView(this.options.categoryId , function(viewId){
+				//	if( viewId ){
+				//		this._loadMenu( { "categoryId" :this.options.categoryId , "viewId" : viewId, "isCategory" : this.options.isCategory } );
+				//	}else{
+				//		this._loadMenu( { "categoryId" :this.options.categoryId , "isCategory" : this.options.isCategory, "naviIndex" : (this.options.naviIndex || 0) } );
+				//	}
+				//}.bind(this))
+				this._loadMenu( { "categoryId" :this.options.categoryId , "isCategory" : this.options.isCategory, "naviIndex" : (this.options.naviIndex || 0) } );
 			}
 		}else{
 			this._loadMenu( { "categoryId" :"all" } )
@@ -278,8 +310,8 @@ MWF.xApplication.cms.Module.Main = new Class({
 		MWF.xDesktop.requireApp("cms.Module", "ViewExplorer", function(){
 			this.clearContent();
 			this.moduleContent = new Element("div", {
-				"styles": this.css.rightContentNode
-			}).inject(this.node);
+				"styles": this.css.moduleContent
+			}).inject(this.rightContentNode);
 			if (!this.restActions) this.restActions = new MWF.xApplication.cms.Module.Actions.RestActions();
 			this.view = new MWF.xApplication.cms.Module.ViewExplorer(
 				this.moduleContent,
@@ -298,16 +330,16 @@ MWF.xApplication.cms.Module.Main = new Class({
 			}
 		}.bind(this));
 	},
-	getCategoryDefaultView : function(categoryId, callback){
-		MWF.UD.getDataJson("cms_defaultView_" + categoryId, function( data ){
-			if(callback)callback( data ? data.id : null );
-		}.bind(this))
-	},
-	setCategoryDefaultView : function(categoryId, viewId){
-		MWF.UD.putData("cms_defaultView_" + categoryId , { "id":viewId }, function(){
-			this.app.notice(this.app.lp.setDefaultSuccess, "success");
-		}.bind(this))
-	},
+	//getCategoryDefaultView : function(categoryId, callback){
+		//MWF.UD.getDataJson("cms_defaultView_" + categoryId, function( data ){
+		//	if(callback)callback( data ? data.id : null );
+		//}.bind(this))
+	//},
+	//setCategoryDefaultView : function(categoryId, viewId){
+	//	MWF.UD.putData("cms_defaultView_" + categoryId , { "id":viewId }, function(){
+	//		this.app.notice(this.app.lp.setDefaultSuccess, "success");
+	//	}.bind(this))
+	//},
 	search : function( key ){
 		if(!key)key = this.searchBarInputNode.get("value");
 		if(key==this.lp.searchKey)key="";
@@ -372,13 +404,13 @@ MWF.xApplication.cms.Module.Main = new Class({
 		}
 	},
 	setNaviSize: function(){
-		var titlebarSize = this.titleBar ? this.titleBar.getSize() : {"x":0,"y":0};
+		//var titlebarSize = this.titleBar ? this.titleBar.getSize() : {"x":0,"y":0};
 		var nodeSize = this.node.getSize();
-		var pt = this.naviContainerNode.getStyle("padding-top").toFloat();
-		var pb = this.naviContainerNode.getStyle("padding-bottom").toFloat();
+		//var pt = this.naviContainerNode.getStyle("padding-top").toFloat();
+		//var pb = this.naviContainerNode.getStyle("padding-bottom").toFloat();
 
-		var height = nodeSize.y-pt-pb-titlebarSize.y;
-		this.naviContainerNode.setStyle("height", ""+height+"px");
+		//var height = nodeSize.y-pt-pb-titlebarSize.y;
+		this.naviContainerNode.setStyle("height", ""+nodeSize.y+"px");
 	}
 });
 
@@ -396,22 +428,33 @@ MWF.xApplication.cms.Module.Navi = new Class({
 		this.node = $(node);
 		this.columnData = columnData;
 		this.categorys = {};
+		this.css = this.app.css;
 		this.load();
 	},
 	load: function(){
 		var self = this;
 		this.loadAllDocNaviNode();
 		new Element("div",{
-			"styles" : this.app.css.viewNaviBottom
+			"styles" : this.css.viewNaviBottom
 		}).inject(this.node);
 
 		this.app.restActions.listCategory( this.columnData.id, function( json ){
 			json.data.each(function(categroyData){
+				var isCurrent = false;
 
 				var categoryNaviNode = new Element("div.categoryNaviNode", {
-					"styles": this.app.css.categoryNaviNode,
-					"text": categroyData.name
+					"styles": this.css.categoryNaviNode
 				}).inject(this.node);
+
+				var categoryExpendNode = new Element("div.emptyExpendNode",{
+					"styles": this.css.emptyExpendNode
+				}).inject(categoryNaviNode);
+
+				var categoryNaviTextNode = new Element("div.categoryNaviTextNode",{
+					"styles": this.css.categoryNaviTextNode,
+					"text": categroyData.name
+				}).inject(categoryNaviNode);
+
 
 				this.categorys[categroyData.id] = {};
 				this.categorys[categroyData.id].data = categroyData;
@@ -420,87 +463,82 @@ MWF.xApplication.cms.Module.Navi = new Class({
 
 				categoryNaviNode.store( "categoryId" , categroyData.id );
 				categoryNaviNode.store( "isCategory" , true );
+				categoryNaviNode.store( "expendNode" , categoryExpendNode );
 				categoryNaviNode.addEvents({
 					"mouseover": function(){ if (self.currentViewNaviNode!=this)this.setStyles(self.app.css.categoryNaviNode_over) },
 					"mouseout": function(){ if (self.currentViewNaviNode!=this)this.setStyles( self.app.css.categoryNaviNode ) },
 					click : function(){self.setCurrentViewNode(this);}
 				});
+
+				var viewNaviListNode = new Element("div.viewNaviListNode",{
+					"styles" : this.css.viewNaviListNode
+				}).inject(this.node);
+				categoryNaviNode.store( "viewNode" , viewNaviListNode );
+
 				if( !categroyData.defaultViewName || categroyData.defaultViewName == "default" || categroyData.defaultViewName == ""){
 					categoryNaviNode.store( "viewData" , {"isDefault":true} );
 					if( this.options.categoryId == categroyData.id && this.options.isCategory ){
 						this.setCurrentViewNode( categoryNaviNode );
+						isCurrent = true;
 					}
+					this.loadViewNaviListNode( categroyData, categoryNaviNode, viewNaviListNode, categoryExpendNode, isCurrent );
 				}else{
 					this.app.restActions.getView( categroyData.defaultViewName, function(json){
 						categoryNaviNode.store( "viewData" , json.data );
 						if( this.options.categoryId == categroyData.id && this.options.isCategory ){
 							this.setCurrentViewNode( categoryNaviNode );
+							isCurrent = true;
 						}
+						this.loadViewNaviListNode( categroyData, categoryNaviNode, viewNaviListNode, categoryExpendNode, isCurrent );
 					}.bind(this));
 				}
-
-				var viewNaviListNode = new Element("div.viewNaviListNode",{
-					"styles" : this.app.css.viewNaviListNode
-				}).inject(this.node);
-
-				//this.app.restActions.listCategoryViewByCategory( categroyData.id, function (data) {
-				//	var index = 0
-				//	for(var i=0;i<data.data.length;i++){
-				//		if(data.data[i].viewId == "default" ){
-				//			this.createViewNaviNode(viewNaviListNode, {"isDefault":true}, categroyData.id, index++ );
-				//			break;
-				//		}
-				//	}
-				//	this.app.restActions.listViewByCategory( categroyData.id, function (d) {
-				//		d.data.each(function(viewData ){
-				//			this.createViewNaviNode(viewNaviListNode, viewData, categroyData.id, index++ );
-				//		}.bind(this));
-				//		new Element("div", {
-				//			"styles": this.app.css.viewNaviSepartorNode
-				//		}).inject(viewNaviListNode);
-				//	}.bind(this));
-				//}.bind(this))
-
-				var index = 0;
-				this.app.restActions.listViewByCategory( categroyData.id, function (d) {
-					//this.createViewNaviNode(viewNaviListNode, {"isDefault":true}, categroyData.id, index++ );
-					//this.createViewNaviNode(viewNaviListNode, {"isDefault":true}, categroyData.id, index++ );
-					//this.createViewNaviNode(viewNaviListNode, {"isDefault":true}, categroyData.id, index++ );
-					d.data.each(function(viewData ){
-						this.createViewNaviNode(viewNaviListNode, viewData, categroyData.id, index++ );
-					}.bind(this));
-					new Element("div", {
-						"styles": this.app.css.viewNaviSepartorNode
-					}).inject(viewNaviListNode);
-
-				}.bind(this));
-
-			}.bind(this))
+			}.bind(this));
 			this.fireEvent("postLoad");
 		}.bind(this),function(){
 			this.fireEvent("postLoad");
 		}.bind(this), true)
 
 	},
+	loadViewNaviListNode: function( categroyData, categoryNaviNode, viewNaviListNode, categoryExpendNode, isCurrent ){
+		var index = 0;
+		this.app.restActions.listViewByCategory( categroyData.id, function (d) {
+			if(d.data.length > 0 ){
+				categoryNaviNode.store( "isExpend", true );
+				categoryNaviNode.store( "hasSub", true );
+				categoryExpendNode.setStyles( isCurrent ? this.css.categoryExpendNode_selected : this.css.categoryExpendNode );
+				categoryExpendNode.addEvent( "click" , function(ev){
+					this.obj.triggerExpend( this.naviNode );
+					ev.stopPropagation();
+				}.bind({ obj : this, naviNode : categoryNaviNode }));
+			}
+			d.data.each(function(viewData ){
+				this.createViewNaviNode(viewNaviListNode, viewData, categroyData.id, index++ );
+			}.bind(this));
+			new Element("div", {
+				"styles": this.css.viewNaviSepartorNode
+			}).inject(viewNaviListNode);
+
+		}.bind(this));
+	},
 	loadAllDocNaviNode : function(){
 		var _self = this;
 
 
-		this.categorys.all = {}
-		this.categorys.all.data = {"isAll":true}
+		this.categorys.all = {};
+		this.categorys.all.data = {"isAll":true};
 		this.categorys.all.views = {};
 
 		var viewNaviListNode = this.viewNaviListNode_all  = new Element("div.viewNaviListNode_all",{
-			"styles" : this.app.css.viewNaviListNode_all
+			"styles" : this.css.viewNaviListNode_all
 		}).inject(this.node);
 		var viewNaviNode = this.viewNaviNode_all = new Element("div.viewNaviNode_all", {
-			"styles": this.app.css.viewNaviNode_all,
+			"styles": this.css.viewNaviNode_all,
 			"text" : this.app.lp.allDocument //+ this.columnData.appName
 		}).inject(viewNaviListNode);
 		var viewData = {
 			"isDefault" : true,
 			"isAll" : true
-		}
+		};
 		viewNaviNode.store("isAll",true);
 		viewNaviNode.store("viewData",viewData);
 		viewNaviNode.store("categoryId","all");
@@ -509,15 +547,15 @@ MWF.xApplication.cms.Module.Navi = new Class({
 		view.node = viewNaviNode;
 
 		viewNaviNode.addEvents({
-			"mouseover": function(){ if (_self.currentViewNaviNode!=this)this.setStyles(_self.app.css.viewNaviNode_all_over) },
-			"mouseout": function(){ if (_self.currentViewNaviNode!=this)this.setStyles( _self.app.css.viewNaviNode_all ) },
+			"mouseover": function(){ if (_self.currentViewNaviNode!=this)this.setStyles(_self.css.viewNaviNode_all_over) },
+			"mouseout": function(){ if (_self.currentViewNaviNode!=this)this.setStyles( _self.css.viewNaviNode_all ) },
 			"click": function (el) {
 				_self.setCurrentViewNode(this);
 			}
 		})
 
 		new Element("div", {
-			"styles": this.app.css.viewNaviSepartorNode
+			"styles": this.css.viewNaviSepartorNode
 		}).inject(viewNaviListNode);
 
 		if( this.options.categoryId == "all" ){
@@ -528,7 +566,7 @@ MWF.xApplication.cms.Module.Navi = new Class({
 	createViewNaviNode : function(viewNaviListNode, viewData, categoryId,index){
 		var _self = this;
 		var viewNaviNode = new Element("div.viewNaviNode", {
-			"styles": this.app.css.viewNaviNode,
+			"styles": this.css.viewNaviNode,
 			"text" : viewData.isDefault ? this.app.lp.defaultView : viewData.name
 		}).inject(viewNaviListNode);
 		viewNaviNode.store("viewData",viewData);
@@ -540,12 +578,12 @@ MWF.xApplication.cms.Module.Navi = new Class({
 		view.node = viewNaviNode;
 
 		viewNaviNode.addEvents({
-			"mouseover": function(){ if (_self.currentViewNaviNode!=this)this.setStyles(_self.app.css.viewNaviNode_over) },
-			"mouseout": function(){ if (_self.currentViewNaviNode!=this)this.setStyles( _self.app.css.viewNaviNode ) },
+			"mouseover": function(){ if (_self.currentViewNaviNode!=this)this.setStyles(_self.css.viewNaviNode_over) },
+			"mouseout": function(){ if (_self.currentViewNaviNode!=this)this.setStyles( _self.css.viewNaviNode ) },
 			"click": function (el) {
 				_self.setCurrentViewNode(this);
 			}
-		})
+		});
 
 		if( this.options.categoryId == categoryId && !this.options.isCategory ){
 			if( this.options.viewId == "default" && viewData.isDefault ){
@@ -558,23 +596,64 @@ MWF.xApplication.cms.Module.Navi = new Class({
 		}
 
 	},
+	triggerExpend : function( viewNaviNode  ){
+		if( viewNaviNode.retrieve("hasSub") ){
+			if( viewNaviNode.retrieve("isExpend") ){
+				viewNaviNode.store("isExpend",false);
+				if( this.currentViewNaviNode == viewNaviNode ){
+					viewNaviNode.retrieve("expendNode").setStyles( this.css.categoryCollapseNode_selected );
+				}else{
+					viewNaviNode.retrieve("expendNode").setStyles( this.css.categoryCollapseNode );
+				}
+				viewNaviNode.retrieve("viewNode").setStyle("display","none");
+			}else{
+				viewNaviNode.store("isExpend",true);
+				if( this.currentViewNaviNode == viewNaviNode ){
+					viewNaviNode.retrieve("expendNode").setStyles( this.css.categoryExpendNode_selected );
+				}else{
+					viewNaviNode.retrieve("expendNode").setStyles( this.css.categoryExpendNode );
+				}
+				viewNaviNode.retrieve("viewNode").setStyle("display","");
+			}
+		}
+	},
 	setCurrentViewNode : function( viewNaviNode ){
 		if(this.currentViewNaviNode){
 			if( this.currentViewNaviNode.retrieve("isAll")  ){
-				this.currentViewNaviNode.setStyles( this.app.css.viewNaviNode_all );
+				this.currentViewNaviNode.setStyles( this.css.viewNaviNode_all );
 			}else if( this.currentViewNaviNode.retrieve("isCategory") ){
-				this.currentViewNaviNode.setStyles( this.app.css.categoryNaviNode );
+				this.currentViewNaviNode.setStyles( this.css.categoryNaviNode );
 			}else{
-				this.currentViewNaviNode.setStyles( this.app.css.viewNaviNode );
+				this.currentViewNaviNode.setStyles( this.css.viewNaviNode );
+			}
+			if( this.currentViewNaviNode.retrieve("hasSub") ){
+				if( this.currentViewNaviNode.retrieve("isExpend") ){
+					this.currentViewNaviNode.retrieve("expendNode").setStyles( this.css.categoryExpendNode );
+				}else{
+					this.currentViewNaviNode.retrieve("expendNode").setStyles( this.css.categoryCollapseNode );
+				}
 			}
 		}
 		if( viewNaviNode.retrieve("isAll")  ){
-			viewNaviNode.setStyles( this.app.css.viewNaviNode_all_selected );
+			viewNaviNode.setStyles( this.css.viewNaviNode_all_selected );
 		}else if( viewNaviNode.retrieve("isCategory") ){
-			viewNaviNode.setStyles( this.app.css.categoryNaviNode_selected );
+			viewNaviNode.setStyles( this.css.categoryNaviNode_selected );
 		}else{
-			viewNaviNode.setStyles( this.app.css.viewNaviNode_selected );
+			viewNaviNode.setStyles( this.css.viewNaviNode_selected );
 		}
+
+		if( viewNaviNode.retrieve("hasSub") ){
+			if( viewNaviNode.retrieve("isExpend") ){
+				//viewNaviNode.store("isExpend",false);
+				viewNaviNode.retrieve("expendNode").setStyles( this.css.categoryExpendNode_selected );
+				//viewNaviNode.retrieve("viewNode").setStyle("display","none");
+			}else{
+				//viewNaviNode.store("isExpend",true);
+				viewNaviNode.retrieve("expendNode").setStyles( this.css.categoryCollapseNode_selected );
+				//viewNaviNode.retrieve("viewNode").setStyle("display","");
+			}
+		}
+
 		this.currentViewNaviNode = viewNaviNode;
 		var viewData = viewNaviNode.retrieve("viewData");
 		var categoryId = viewNaviNode.retrieve("categoryId");
@@ -583,6 +662,6 @@ MWF.xApplication.cms.Module.Navi = new Class({
 		}
 		this.app.openView( viewNaviNode, this.categorys[categoryId].data, viewData, "", this );
 	}
-})
+});
 
 

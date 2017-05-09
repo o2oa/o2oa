@@ -4,12 +4,23 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.CenterWorkNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.CenterWorkQueryByIdException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.UserNoLoginException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.UserOrganizationQueryException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkQueryByIdException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkReportMaxReportCountQueryException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkReportQueryByIdException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkReportSubmitException;
 import com.x.okr.entity.OkrCenterWorkInfo;
 import com.x.okr.entity.OkrWorkBaseInfo;
 import com.x.okr.entity.OkrWorkReportBaseInfo;
@@ -34,14 +45,14 @@ public class ExcuteSubmitDraftReport extends ExcuteBase {
 			check = false;
 			Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check && okrUserCache == null ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		
 		// 对wrapIn里的信息进行校验
@@ -50,7 +61,7 @@ public class ExcuteSubmitDraftReport extends ExcuteBase {
 			check = false;
 			Exception exception = new WorkIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 
 		// 设置当前登录用户为创建工作汇报的用户
@@ -62,7 +73,7 @@ public class ExcuteSubmitDraftReport extends ExcuteBase {
 				check = false;
 				Exception exception = new UserOrganizationQueryException( e, effectivePerson.getName() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -73,7 +84,7 @@ public class ExcuteSubmitDraftReport extends ExcuteBase {
 				check = false;
 				Exception exception = new UserOrganizationQueryException( e, wrapIn.getCreatorIdentity() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if (check) {
@@ -83,7 +94,7 @@ public class ExcuteSubmitDraftReport extends ExcuteBase {
 				check = false;
 				Exception exception = new UserOrganizationQueryException( e, wrapIn.getCreatorIdentity() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		// 补充工作相关信息标题
@@ -97,13 +108,13 @@ public class ExcuteSubmitDraftReport extends ExcuteBase {
 					check = false;
 					Exception exception = new WorkNotExistsException( wrapIn.getWorkId() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new WorkQueryByIdException( e, wrapIn.getWorkId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		// 补充中心工作相关信息
@@ -117,13 +128,13 @@ public class ExcuteSubmitDraftReport extends ExcuteBase {
 					check = false;
 					Exception exception = new CenterWorkNotExistsException( okrWorkBaseInfo.getCenterId() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new CenterWorkQueryByIdException( e, okrWorkBaseInfo.getCenterId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);	
+				logger.error( e, effectivePerson, request, null);	
 			}
 		}
 		
@@ -143,7 +154,7 @@ public class ExcuteSubmitDraftReport extends ExcuteBase {
 				check = false;
 				Exception exception = new WorkReportQueryByIdException( e, wrapIn.getId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		// 补充状态信息
@@ -158,7 +169,7 @@ public class ExcuteSubmitDraftReport extends ExcuteBase {
 						check = false;
 						Exception exception = new WorkReportMaxReportCountQueryException( e, okrWorkBaseInfo.getId() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 				}
 				if (wrapIn.getTitle() == null || wrapIn.getTitle().isEmpty()) {
@@ -189,25 +200,19 @@ public class ExcuteSubmitDraftReport extends ExcuteBase {
 				logger.error(e);
 			}
 		}
+		
 		if( check ){
 			try {
 				wrapIn.setSubmitTime( new Date() ); //保存提交时间
 				wrapIn.setWorkType( okrWorkBaseInfo.getWorkType() );
-				okrWorkReportBaseInfo = okrWorkReportFlowService.submitReportInfo( wrapIn, okrCenterWorkInfo, okrWorkBaseInfo);
-				//提交完成，需要分析一下工作的进展情况, 用户有可能根据配置要求在汇报过程中提交工作进度数字信息
-				try {
-					okrWorkBaseInfoService.analyseWorkProgress( okrWorkBaseInfo.getId(), report_progress, dateOperation.getNowDateTime() );
-				} catch (Exception e1 ) {
-					logger.warn( "system analyse work progres got an exceptin.", e1);
-					throw e1;
-				}
+				okrWorkReportBaseInfo = okrWorkReportFlowService.submitReportInfo( wrapIn, okrCenterWorkInfo, okrWorkBaseInfo);	
 				wrapIn.setId( okrWorkReportBaseInfo.getId() );
 				result.setData( new WrapOutId( okrWorkReportBaseInfo.getId()) );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new WorkReportSubmitException( e, okrWorkReportBaseInfo.getId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return result;

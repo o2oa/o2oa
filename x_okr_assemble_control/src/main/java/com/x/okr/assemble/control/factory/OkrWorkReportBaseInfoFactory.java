@@ -290,7 +290,7 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception 
 	 */
-	public OkrWorkReportBaseInfo getLastSubmitReport( String workId ) throws Exception {
+	public OkrWorkReportBaseInfo getLastCompletedReport( String workId ) throws Exception {
 		if( workId == null || workId.isEmpty() ){
 			throw new Exception( "workId is empty, system can not excute query!" );
 		}
@@ -299,7 +299,8 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 		CriteriaQuery<OkrWorkReportBaseInfo> cq = cb.createQuery( OkrWorkReportBaseInfo.class );
 		Root<OkrWorkReportBaseInfo> root = cq.from( OkrWorkReportBaseInfo.class);		
 		cq.orderBy( cb.desc( root.get( OkrWorkReportBaseInfo_.reportCount) ) );
-		Predicate p = cb.equal( root.get( OkrWorkReportBaseInfo_.workId), workId);
+		Predicate p = cb.equal( root.get( OkrWorkReportBaseInfo_.workId ), workId);
+		p = cb.and( p, cb.equal( root.get( OkrWorkReportBaseInfo_.activityName ), "已完成" ) );
 		List<OkrWorkReportBaseInfo> resultList = em.createQuery(cq.where(p)).getResultList();
 		if( resultList == null || resultList.size() == 0 ){
 			return null;
@@ -345,7 +346,7 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception 
 	 */
-	public OkrWorkReportBaseInfo getLastReportBaseInfo(String workId) throws Exception {
+	public OkrWorkReportBaseInfo getLastReportBaseInfo( String workId ) throws Exception {
 		if( workId == null || workId.isEmpty() ){
 			throw new Exception( "workId is empty, system can not excute query!" );
 		}
@@ -378,6 +379,162 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 		p = cb.and( p, cb.notEqual( root.get( OkrWorkReportBaseInfo_.activityName ), "已完成" ));
 		p = cb.and( p, cb.equal( root.get( OkrWorkReportBaseInfo_.status ), "正常" ));
 		cq.select(root.get( OkrWorkReportBaseInfo_.id));
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+	
+	/**
+	 * 查询工作汇报创建者身份列表（去重复）
+	 * @param identities_ok 排除身份
+	 * @param identities_error 排除身份
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<String> listAllDistinctCreatorIdentity(List<String> identities_ok, List<String> identities_error) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrWorkReportBaseInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<OkrWorkReportBaseInfo> root = cq.from(OkrWorkReportBaseInfo.class);
+		
+		Predicate p = cb.isNotNull( root.get( OkrWorkReportBaseInfo_.id ) );
+		if( identities_ok != null && identities_ok.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkReportBaseInfo_.creatorIdentity ).in( identities_ok )) );
+		}
+		if( identities_error != null && identities_error.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkReportBaseInfo_.creatorIdentity ).in( identities_error )) );
+		}
+		cq.distinct(true).select(root.get( OkrWorkReportBaseInfo_.creatorIdentity ));
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+	/**
+	 * 查询工作汇报当前处理者身份列表（去重复）
+	 * @param identities_ok 排除身份
+	 * @param identities_error 排除身份
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<String> listAllDistinctCurrentProcessorIdentity(List<String> identities_ok, List<String> identities_error) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrWorkReportBaseInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<OkrWorkReportBaseInfo> root = cq.from(OkrWorkReportBaseInfo.class);
+		
+		Predicate p = cb.isNotNull( root.get( OkrWorkReportBaseInfo_.id ) );
+		if( identities_ok != null && identities_ok.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkReportBaseInfo_.currentProcessorIdentity ).in( identities_ok )) );
+		}
+		if( identities_error != null && identities_error.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkReportBaseInfo_.currentProcessorIdentity ).in( identities_error )) );
+		}
+		cq.distinct(true).select(root.get( OkrWorkReportBaseInfo_.currentProcessorIdentity ));
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+	/**
+	 * 查询工作汇报阅知领导身份列表（去重复）
+	 * @param identities_ok 排除身份
+	 * @param identities_error 排除身份
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<String> listAllDistinctReadleadersIdentity(List<String> identities_ok, List<String> identities_error) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrWorkReportBaseInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<OkrWorkReportBaseInfo> root = cq.from(OkrWorkReportBaseInfo.class);
+		
+		Predicate p = cb.isNotNull( root.get( OkrWorkReportBaseInfo_.id ) );
+		if( identities_ok != null && identities_ok.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkReportBaseInfo_.readLeadersIdentity ).in( identities_ok )) );
+		}
+		if( identities_error != null && identities_error.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkReportBaseInfo_.readLeadersIdentity ).in( identities_error )) );
+		}
+		cq.distinct(true).select(root.get( OkrWorkReportBaseInfo_.readLeadersIdentity ));
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+	/**
+	 * 查询工作汇报者身份列表（去重复）
+	 * @param identities_ok 排除身份
+	 * @param identities_error 排除身份
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<String> listAllDistinctReporterIdentity(List<String> identities_ok, List<String> identities_error) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrWorkReportBaseInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<OkrWorkReportBaseInfo> root = cq.from(OkrWorkReportBaseInfo.class);
+		
+		Predicate p = cb.isNotNull( root.get( OkrWorkReportBaseInfo_.id ) );
+		if( identities_ok != null && identities_ok.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkReportBaseInfo_.reporterIdentity ).in( identities_ok )) );
+		}
+		if( identities_error != null && identities_error.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkReportBaseInfo_.reporterIdentity ).in( identities_error )) );
+		}
+		cq.distinct(true).select(root.get( OkrWorkReportBaseInfo_.reporterIdentity ));
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+	/**
+	 * 查询工作管理者，督办员身份列表（去重复）
+	 * @param identities_ok 排除身份
+	 * @param identities_error 排除身份
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<String> listAllDistinctWorkAdminIdentity(List<String> identities_ok, List<String> identities_error) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrWorkReportBaseInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<OkrWorkReportBaseInfo> root = cq.from(OkrWorkReportBaseInfo.class);
+		
+		Predicate p = cb.isNotNull( root.get( OkrWorkReportBaseInfo_.id ) );
+		if( identities_ok != null && identities_ok.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkReportBaseInfo_.workAdminIdentity ).in( identities_ok )) );
+		}
+		if( identities_error != null && identities_error.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrWorkReportBaseInfo_.workAdminIdentity ).in( identities_error )) );
+		}
+		cq.distinct(true).select(root.get( OkrWorkReportBaseInfo_.workAdminIdentity ));
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+
+	/**
+	 * 根据身份名称，从工作汇报信息中查询与该身份有关的所有信息列表
+	 * @param identity
+	 * @param recordId 
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<OkrWorkReportBaseInfo> listErrorIdentitiesInReportBaseInfo( String identity, String recordId ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrWorkReportBaseInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<OkrWorkReportBaseInfo> cq = cb.createQuery( OkrWorkReportBaseInfo.class );
+		Root<OkrWorkReportBaseInfo> root = cq.from( OkrWorkReportBaseInfo.class );
+		Predicate p = cb.isNotNull(root.get( OkrWorkReportBaseInfo_.id ));
+		
+		if( recordId != null && !recordId.isEmpty() && !"all".equals( recordId ) ){
+			p = cb.and( p, cb.equal( root.get( OkrWorkReportBaseInfo_.id ), recordId ) );
+		}
+		
+		Predicate p_creatorIdentity = cb.isNotNull(root.get( OkrWorkReportBaseInfo_.creatorIdentity ));
+		p_creatorIdentity = cb.and( p_creatorIdentity, cb.equal( root.get( OkrWorkReportBaseInfo_.creatorIdentity ), identity ) );
+		
+		Predicate p_reporterIdentity = cb.isNotNull(root.get( OkrWorkReportBaseInfo_.reporterIdentity ));
+		p_reporterIdentity = cb.and( p_reporterIdentity, cb.equal( root.get( OkrWorkReportBaseInfo_.reporterIdentity ), identity ) );
+		
+		Predicate p_currentProcessorIdentity = cb.isNotNull(root.get( OkrWorkReportBaseInfo_.currentProcessorIdentity ));
+		p_currentProcessorIdentity = cb.and( p_currentProcessorIdentity, cb.equal( root.get( OkrWorkReportBaseInfo_.currentProcessorIdentity ), identity ) );
+		
+		Predicate p_readleadersIdentity = cb.isNotNull(root.get( OkrWorkReportBaseInfo_.readLeadersIdentity ));
+		p_readleadersIdentity = cb.and( p_readleadersIdentity, cb.equal( root.get( OkrWorkReportBaseInfo_.readLeadersIdentity ), identity ) );
+		
+		Predicate p_workAdminIdentity = cb.isNotNull(root.get( OkrWorkReportBaseInfo_.workAdminIdentity ));
+		p_workAdminIdentity = cb.and( p_workAdminIdentity, cb.equal( root.get( OkrWorkReportBaseInfo_.workAdminIdentity ), identity ) );
+
+		Predicate p_identity = cb.or( p_creatorIdentity, p_reporterIdentity, p_currentProcessorIdentity, p_readleadersIdentity, p_workAdminIdentity );
+			
+		p = cb.and( p, p_identity );
+
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 }

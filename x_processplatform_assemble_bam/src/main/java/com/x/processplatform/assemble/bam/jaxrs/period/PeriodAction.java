@@ -15,9 +15,9 @@ import javax.ws.rs.core.Response;
 import com.x.base.core.bean.NameValueCountPair;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutMap;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.processplatform.assemble.bam.stub.ApplicationStubs;
 import com.x.processplatform.assemble.bam.stub.CompanyStubs;
 

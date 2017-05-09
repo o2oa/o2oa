@@ -119,6 +119,8 @@
         " <span styles='documentActionNode' item='action_tackBack'></span>" +
         " <span styles='documentActionNode' item='action_report'></span>" +
         " <span styles='documentActionNode' item='action_delete'></span>" +
+        " <span styles='documentActionNode' item='action_progress'></span>" +
+        " <span styles='documentActionNode' item='action_archive'></span>" +
         "</td>",
         "items": {
           "action_view": {
@@ -181,6 +183,24 @@
             "action": "action_delete",
             "styles": "documentActionNode",
             "condition": "function( d ){ return this.deleteActionReturn(d) }",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "action_progress": {
+            "title": "action_progress",
+            "text": "action_progress",
+            "action": "action_progress",
+            "styles": "documentActionNode",
+            "condition": "function( d ){ return this.progressActionReturn(d) }",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "action_archive": {
+            "title": "action_archive",
+            "text": "action_archive",
+            "action": "action_archive",
+            "styles": "documentActionNode",
+            "condition": "function( d ){ return this.archiveActionReturn(d) }",
             "mouseoverStyles": "documentActionNode_over",
             "mousedownStyles": "documentActionNode_down"
           }

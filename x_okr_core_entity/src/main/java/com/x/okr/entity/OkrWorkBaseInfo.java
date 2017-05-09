@@ -249,6 +249,11 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 	@CheckPersist( allowEmpty = true )
 	private Date completeDateLimit = null;
 	
+	@EntityFieldDescribe( "工作归档时间" )
+	@Column(name="xarchiveDate" )
+	@CheckPersist( allowEmpty = true )
+	private Date archiveDate = null;
+	
 	@EntityFieldDescribe( "工作完成日期-字符串，显示用：yyyy-mm-dd" )
 	@Column(name="xcompleteDateLimitStr", length = JpaObject.length_32B )
 	@CheckPersist( allowEmpty = true )
@@ -326,7 +331,7 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 	
 	@EntityFieldDescribe( "工作进度" )
 	@Column(name="xoverallProgress" )
-	private Double overallProgress = 0.0;
+	private Integer overallProgress = 0;
 	
 	@EntityFieldDescribe( "工作处理状态：草稿|待确认|执行中|已超期|已完成|已撤消" )
 	@Column(name="xworkProcessStatus", length = JpaObject.length_16B )
@@ -342,7 +347,11 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 	@Column(name="xisCompleted" )
 	@CheckPersist( allowEmpty = true )
 	private Boolean isCompleted = false;
-
+	
+	@EntityFieldDescribe( "工作完成时间" )
+	@Column(name="xcompleteTime" )
+	@CheckPersist( allowEmpty = true )
+	private Date completeTime = null;
 	@EntityFieldDescribe( "上一次汇报时间" )
 	@Column(name="xlastReportTime", length = JpaObject.length_32B )
 	@CheckPersist( allowEmpty = true )
@@ -760,18 +769,11 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 	public void setReadLeaderName(String readLeaderName) {
 		this.readLeaderName = readLeaderName;
 	}
-	/**
-	 * 获取工作总体进度%
-	 * @return
-	 */
-	public Double getOverallProgress() {
+	
+	public Integer getOverallProgress() {
 		return overallProgress;
 	}
-	/**
-	 * 设置工作总体进度%
-	 * @param overallProgress
-	 */
-	public void setOverallProgress(Double overallProgress) {
+	public void setOverallProgress(Integer overallProgress) {
 		this.overallProgress = overallProgress;
 	}
 	/**
@@ -1195,5 +1197,18 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 	public void setProgressAnalyseTime(String progressAnalyseTime) {
 		this.progressAnalyseTime = progressAnalyseTime;
 	}
+	public Date getArchiveDate() {
+		return archiveDate;
+	}
+	public void setArchiveDate(Date archiveDate) {
+		this.archiveDate = archiveDate;
+	}
+	public Date getCompleteTime() {
+		return completeTime;
+	}
+	public void setCompleteTime(Date completeTime) {
+		this.completeTime = completeTime;
+	}
+	
 	
 }

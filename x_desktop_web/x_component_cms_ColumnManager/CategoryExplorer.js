@@ -2,9 +2,19 @@ MWF.xDesktop.requireApp("cms.ColumnManager", "Explorer", null, false);
 MWF.xDesktop.requireApp("cms.ColumnManager", "FormExplorer", null, false);
 MWF.xDesktop.requireApp("cms.ColumnManager", "ViewExplorer", null, false);
 MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
-	Extends: MWF.xApplication.cms.ColumnManager.Explorer,
-	Implements: [Options, Events],
-
+    Extends: MWF.xApplication.cms.ColumnManager.Explorer,
+    Implements: [Options, Events],
+    options: {
+        "style": "default",
+        "title" : "",
+        "currentCategoryId" : "",
+        "tooltip": {
+            "create": MWF.CMSCM.LP.category.create,
+            "search": MWF.CMSCM.LP.category.search,
+            "searchText": MWF.CMSCM.LP.category.searchText,
+            "noElement": MWF.CMSCM.LP.category.noCategoryNoticeText
+        }
+    },
     initialize: function(node, naviNode, actions, options){
         this.setOptions(options);
         this.setTooltip();
@@ -57,13 +67,13 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
         this.setContentSize();
         this.app.addEvent("resize", function(){this.setContentSize();}.bind(this));
 
-        this.loadCategoryList();
-
         this.loadForm();
 
         this.loadView();
 
         this.loadProperty();
+
+        this.loadCategoryList();
     },
     loadContentNodes: function(){
         //this.naviContainerNode = new Element("div.naviContainerNode", {
@@ -91,6 +101,10 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
             "styles": this.css.rightTopContent
         }).inject(this.rightContent);
 
+        this.rightHorizontalResizeNode = new Element("div.rightHorizontalResizeNode", {
+            "styles": this.css.rightHorizontalResizeNode
+        }).inject(this.rightContent);
+
         this.rightBottomContent = new Element("div.rightBottomContent", {
             "styles": this.css.rightBottomContent
         }).inject(this.rightContent);
@@ -100,14 +114,15 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
         this.createFormNode();
 
 
-        this.rightContentResizeNode = new Element("div.rightContentResizeNode", {
-            "styles": this.css.rightContentResizeNode
-        }).inject(this.rightTopContent);
+        //this.rightVerticalResizeNode = new Element("div.rightVerticalResizeNode", {
+        //    "styles": this.css.rightVerticalResizeNode
+        //}).inject(this.rightTopContent);
 
         this.createViewNode();
         this.formPercent = 0.5;
         this.topPercent = 0.5;
-        //this.loadRightContentResize();
+        //this.loadRightVerticalResize();
+        this.loadRightHorizontalResize();
         //this.setNodeScroll();
     },
     setNodeScroll: function(){
@@ -120,6 +135,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
     },
     loadCategoryList : function( options ){
         this.categoryList = new MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryList(this, this.naviNode, {
+            currentCategoryId : this.options.currentCategoryId,
             columnId : this.app.options.column.id,
             onPostLoad : function(){
                 this.fireEvent( "postLoadCategoryList", this.categoryList );
@@ -133,69 +149,6 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
         this.categoryProperty = new MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty(this.app, this.rightBottomContent);
         this.categoryProperty.load();
     },
-    createProcessNode : function(){
-        this.processAreaNode = new Element("div.processAreaNode" , {
-            "styles": this.css.processAreaNode
-        }).inject(this.formTitleNode);
-        this.processAreaNode.setStyle("display","none");
-
-        //new Element("div.formTitleSepNode" , {
-        //    "styles": this.css.formTitleSepNode
-        //}).inject(this.formTitleNode);
-
-        //this.processTitleNode = new Elements("div.processTitleNode" , {
-        //    "styles": this.css.processTitleNode,
-        //    "text" : "流程"
-        //}).inject(this.processAreaNode);
-
-        //this.processSelectNode = new Elements("div.processSelectNode" , {
-        //    "styles": this.css.processSelectNode
-        //}).inject(this.processAreaNode);
-
-        this.createProcessSelect();
-    },
-    createProcessSelect : function(){
-        this.processSelect = new Element("select").inject( this.processAreaNode );
-        new Element( "option" ,　{
-            "value" : "",
-            "text" : "选择使用的流程"
-        }).inject( this.processSelect );
-        new Element( "option" ,　{
-            "value" : "",
-            "text" : "无"
-        }).inject( this.processSelect );
-        this.actions.listProcess( "12b13867-282e-428b-8b90-7ad12191569f", function( json ){
-            json.data.each( function( d ){
-                   new Element( "option" ,　{
-                       "value" : d.id,
-                       "text" : d.name
-                   }).inject( this.processSelect )
-            }.bind(this))
-        }.bind(this));
-        this.processSelect.addEvent( "change" , function( ev ){
-            var process = this.getSelectProcess();
-            this.categoryList.currentCategory.saveProcess( process.id, process.name );
-        }.bind(this))
-    },
-    getSelectProcess : function(){
-        this.processSelect.get("option").each( function( option ){
-            if( option.selected ){
-                return { "id" : option.value , "name" : option.text }
-            }
-        }.bind(this))
-    },
-    setProcess : function( value ){
-        var flag = true;
-        this.processSelect.getElements("option").each( function( option ){
-            if( flag ){
-                if( option.value == value ){
-                    option.selected = true;
-                }
-                flag = false;
-            }
-        }.bind(this))
-    },
-
     createFormNode: function(){
         this.formAreaNode = new Element("div.formAreaNode", {
             "styles": this.css.formAreaNode
@@ -204,8 +157,6 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
         this.formTitleNode = new Element("div.formTitleNode", {
             "styles": this.css.formTitleNode
         }).inject(this.formAreaNode);
-
-        //this.createProcessNode();
 
         this.formCreateNode = new Element("div.formCreateNode", {
             "styles": this.css.formCreateNode
@@ -229,9 +180,9 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
             "text" : "选择分类表单"
         }).inject(this.formTitleNode);
 
-       //this.formContainerNode = new Element("div.formContainerNode", {
-       //     "styles": this.css.formContainerNode
-       // }).inject(this.rightContent);
+        //this.formContainerNode = new Element("div.formContainerNode", {
+        //     "styles": this.css.formContainerNode
+        // }).inject(this.rightContent);
 
         this.formNode = new Element("div.formNode", {
             "styles": this.css.formNode
@@ -288,41 +239,41 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
         this.viewExplorer.explorer = this;
         this.viewExplorer.load();
     },
-    loadCategoryListResize: function(){
-        this.categoryistResize = new Drag(this.categoryListResizeNode,{
-            "snap": 1,
-            "onStart": function(el, e){
-                var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
-                var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
-                el.store("position", {"x": x, "y": y});
-
-                var size = this.naviContainerNode.getSize();
-                el.store("initialWidth", size.x);
-            }.bind(this),
-            "onDrag": function(el, e){
-                var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
-//				var y = e.event.y;
-                var bodySize = this.elementContentNode.getSize();
-                var position = el.retrieve("position");
-                var initialWidth = el.retrieve("initialWidth").toFloat();
-                var dx = x.toFloat() - position.x.toFloat();
-
-                var width = initialWidth+dx;
-                if (width> bodySize.x/2) width =  bodySize.x/2;
-                if (width<130) width = 130;
-                this.naviContainerNode.setStyle("width", width);
-                this.rightContent.setStyle("margin-left", width+1);
-                var w = bodySize.x-width;
-                this.rightContent.setStyle("width", w);
-                this.formNode.setStyle("width", ""+(w-15)+"px");
-                this.viewNode.setStyle("width", ""+(w-15)+"px");
-                if( this.formExplorer )this.formExplorer.setContentSize();
-                if( this.viewExplorer )this.viewExplorer.setContentSize();
-                //this.tab.pages.each(function(page){
-                //this.view.setViewWidth();
-                //});
-            }.bind(this)
-        });
+//    loadCategoryListResize: function(){
+//        this.categoryistResize = new Drag(this.categoryListResizeNode,{
+//            "snap": 1,
+//            "onStart": function(el, e){
+//                var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
+//                var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
+//                el.store("position", {"x": x, "y": y});
+//
+//                var size = this.naviContainerNode.getSize();
+//                el.store("initialWidth", size.x);
+//            }.bind(this),
+//            "onDrag": function(el, e){
+//                var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
+////				var y = e.event.y;
+//                var bodySize = this.elementContentNode.getSize();
+//                var position = el.retrieve("position");
+//                var initialWidth = el.retrieve("initialWidth").toFloat();
+//                var dx = x.toFloat() - position.x.toFloat();
+//
+//                var width = initialWidth+dx;
+//                if (width> bodySize.x/2) width =  bodySize.x/2;
+//                if (width<130) width = 130;
+//                this.naviContainerNode.setStyle("width", width);
+//                this.rightContent.setStyle("margin-left", width+1);
+//                var w = bodySize.x-width;
+//                this.rightContent.setStyle("width", w);
+//                this.formNode.setStyle("width", ""+(w-15)+"px");
+//                this.viewNode.setStyle("width", ""+(w-15)+"px");
+//                if( this.formExplorer )this.formExplorer.setContentSize();
+//                if( this.viewExplorer )this.viewExplorer.setContentSize();
+//                //this.tab.pages.each(function(page){
+//                //this.view.setViewWidth();
+//                //});
+//            }.bind(this)
+//        });
 //        this.categoryListResizeNode.addEvents({
 //            "touchstart": function(e){
 //                el = e.target;
@@ -357,9 +308,9 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
 //                this.viewNode.setStyle("width", ""+w+"px");
 //            }.bind(this)
 //        });
-    },
-    loadRightContentResize: function(){
-        this.rightContentResize = new Drag(this.rightContentResizeNode, {
+//    },
+    loadRightVerticalResize: function(){
+        this.rightVerticalResize = new Drag(this.rightVerticalResizeNode, {
             "snap": 1,
             "onStart": function(el, e){
                 var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
@@ -384,28 +335,67 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
 
                 this.topPercent = height/size.y;
 
-                this.setRightContentResize();
+                this.setRightVerticalResize();
 
             }.bind(this)
         });
     },
-    setRightContentResize: function(){
-        var size = this.rightContent.getSize();
-        var resizeNodeSize = this.rightContentResizeNode ? this.rightContentResizeNode.getSize() : {x:0,y:0};
-        var topTitleSize = 50; //this.rightTopContent.getSize();
-        var bottomTitleSize = 50; //this.rightBottomContent.getSize();
-        var height = size.y-resizeNodeSize.y-topTitleSize-bottomTitleSize;
-
-        var topHeight = this.topPercent*height;
-        var bottomHeight = height-topHeight;
-
-        this.rightTopContent.setStyle("height", ""+topHeight+"px");
-        this.rightBottomContent.setStyle("height", ""+bottomHeight+"px");
-        if( this.formExplorer )this.formExplorer.setContentSize();
-        if( this.viewExplorer )this.viewExplorer.setContentSize();
+    setRightVerticalResize: function(){
+        var nodeSize = this.node.getSize();
+        var width = nodeSize.x; //-naviContainerNodeSize.x;
+        this.elementContentListNode.setStyles({
+            "width": ""+width+"px"//,
+            //"margin-left": "" + m + "px"
+        });
+        this.rightContent.setStyle("width", ""+width+"px");
+        //var formTitleSize = this.formTitleNode.getSize();
+        //var viewTitleSize = this.viewTitleNode.getSize();
+        var resizeNodeSize = this.rightVerticalResizeNode ? this.rightVerticalResizeNode.getSize() : {x:0,y:0};
+        var w = width - resizeNodeSize.x - 2;
+        var formWidth = w*this.formPercent;
+        var viewWidth =  w-w*this.formPercent;
+        this.formAreaNode.setStyle("width", ""+ formWidth +"px");
+        this.formNode.setStyle("width", ""+ formWidth +"px");
+        this.viewAreaNode.setStyle("width", ""+ viewWidth +"px");
+        this.viewNode.setStyle("width", ""+ viewWidth +"px");
     },
-    setContentSize: function(){
+    loadRightHorizontalResize: function(){
+        this.rightHorizontalResize = new Drag(this.rightHorizontalResizeNode, {
+            "snap": 1,
+            "onStart": function(el, e){
+                var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
+                var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
+                el.store("position", {"x": x, "y": y});
 
+                var size = this.rightTopContent.getSize();
+                el.store("initialHeight", size.y);
+            }.bind(this),
+            "onDrag": function(el, e){
+                var size = this.rightContent.getSize();
+
+                //			var x = e.event.x;
+                var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
+                var position = el.retrieve("position");
+                var dy = y.toFloat()-position.y.toFloat();
+
+                var initialHeight = el.retrieve("initialHeight").toFloat();
+                var height = initialHeight+dy;
+                if (height<120) height = 120;
+                if (height> size.y-120) height = size.y-120;
+
+                this.topPercent = height/size.y;
+
+                this.setRightHorizontalResize();
+
+
+                if( this.formExplorer )this.formExplorer.setContentSize();
+                if( this.viewExplorer )this.viewExplorer.setContentSize();
+                if( this.categoryProperty )this.categoryProperty.setContentHeight();
+
+            }.bind(this)
+        });
+    },
+    setRightHorizontalResize: function(){
         //var toolbarSize = this.toolbarNode.getSize();
         var nodeSize = this.node.getSize();
         var pt = this.elementContentNode.getStyle("padding-top").toFloat();
@@ -420,33 +410,33 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
 
         this.rightContent.setStyle("height", ""+height+"px");
 
-        var topHeight = this.topPercent*height;
-        var bottomHeight = height-topHeight;
+
+        var resizeHorizontalNodeSize = this.rightHorizontalResizeNode ? this.rightHorizontalResizeNode.getSize() : {x:0,y:0};
+        var h = height - resizeHorizontalNodeSize.y;
+        var topHeight = this.topPercent*h;
+        var bottomHeight = h-topHeight;
 
         this.rightTopContent.setStyle("height", ""+topHeight+"px");
         this.rightBottomContent.setStyle("height", ""+bottomHeight+"px");
 
-        this.formNode.setStyle("height", ""+(topHeight-30)+"px");
-        this.viewNode.setStyle("height", ""+(topHeight-30)+"px");
+        this.formNode.setStyle("height", ""+(topHeight-50)+"px");
+        this.viewNode.setStyle("height", ""+(topHeight-50)+"px");
+    },
+    setContentSize: function(){
+
+        this.setRightHorizontalResize();
 
         //var count = (nodeSize.x/282).toInt();
         //var x = count*282;
         //var m = (nodeSize.x-x)/2-10;
 
-        var width = nodeSize.x; //-naviContainerNodeSize.x;
-        this.elementContentListNode.setStyles({
-            "width": ""+width+"px"//,
-            //"margin-left": "" + m + "px"
-        });
-        this.rightContent.setStyle("width", ""+width+"px");
-        //var formTitleSize = this.formTitleNode.getSize();
-        //var viewTitleSize = this.viewTitleNode.getSize();
-        var resizeNodeSize = this.rightContentResizeNode.getSize();
-        var w = width - resizeNodeSize.x;
-        this.formNode.setStyle("width", ""+ w*this.formPercent +"px");
-        this.viewNode.setStyle("width", ""+ (w-w*this.formPercent) +"px");
+
+        this.setRightVerticalResize();
 
 
+    },
+    afterClickCategory: function( category ){
+        this.fireEvent("postClickSub",[category])
     }
 });
 
@@ -454,6 +444,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
 MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryList = new Class({
     Implements: [Options, Events],
     options : {
+        currentCategoryId : "",
         columnId : ""
     },
     initialize: function(explorer, node, options){
@@ -476,7 +467,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryList = new Class({
         this.app.restActions.listCategory( this.options.columnId, function( json ){
             json.data.each(function(cData){
 
-               this.loadCategoryByData( cData );
+                this.loadCategoryByData( cData );
 
             }.bind(this));
             this.fireEvent("postLoad");
@@ -503,6 +494,12 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryList = new Class({
             }else{
                 this.currentNode.setStyles( this.css.viewNaviNode )
             }
+            this.currentNode = null;
+        }
+    },
+    setCurrentCategoryById : function( categoryId ){
+        if( categoryId && this.categoryObj[categoryId]){
+            this.setCurrentCategory( this.categoryObj[categoryId] );
         }
     },
     setCurrentCategory : function( category ){
@@ -515,15 +512,8 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryList = new Class({
         this.currentTimeout = setTimeout( function(){
             category._showActions();
             this.currentTimeout = null;
+            this.explorer.afterClickCategory( category );
         }.bind(this), 100 );
-
-        //if( !this.category ){
-        //    this.explorer.setProcess("");
-        //}else if( this.category.options.isNew ) {
-        //    this.explorer.setProcess("");
-        //}else{
-        //    this.explorer.setProcess( category.data.processId );
-        //}
 
         this.explorer.formExplorer.refreshByCategory( category );
 
@@ -558,6 +548,10 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryList = new Class({
         this.categoryObj[cData.id] = category;
         this.categoryArr.push( category );
         if( callback )callback( category );
+        if( this.options.currentCategoryId && this.options.currentCategoryId == cData.id ){
+            this.setCurrentCategory( category );
+            this.options.currentCategoryId = "";
+        }
     },
     loadCategoryById: function( id, relativeNode, relativePosition, callback ){
         this.app.restActions.getCategory( id , function( json ){
@@ -567,8 +561,12 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryList = new Class({
                 relativePosition: relativePosition
             });
             this.categoryObj[cData.id] = category;
-            this.categoryArr.push( category )
+            this.categoryArr.push( category );
             if( callback )callback( category );
+            if( this.options.currentCategoryId && this.options.currentCategoryId == cData.id ){
+                this.setCurrentCategory( category );
+                this.options.currentCategoryId = "";
+            }
         }.bind(this) )
     },
     adjustSeq : function( async ){
@@ -590,7 +588,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryList = new Class({
             "relativeNode" : relativeNode,
             "relativePosition" : positon
         });
-        //this.setCurrentCategory( category );
+        this.setCurrentCategory( category );
         //this.newCategoryNode = new Element("div.newCategoryNaviNode", {
         //    "styles": this.css.newCategoryNaviNode
         //}).inject( relativeNode || this.node , positon || "bottom" );
@@ -629,6 +627,8 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
                 "name": "saveCategory",
                 "icon": "save.png",
                 "icon_over": "save_over.png",
+                "unselectedIcon" : "save_over.png",
+                "unselectedIcon_over" : "save_unselected_over.png",
                 "event": "click",
                 "action": "saveCategory",
                 "title": MWF.xApplication.cms.ColumnManager.LP.category.saveCategory
@@ -637,6 +637,8 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
                 "name": "cancel",
                 "icon": "cancel.png",
                 "icon_over": "cancel_over.png",
+                "unselectedIcon" : "cancel_over.png",
+                "unselectedIcon_over" : "cancel_unselected_over.png",
                 "event": "click",
                 "action": "cancel",
                 "title": MWF.xApplication.cms.ColumnManager.LP.category.cancelEdit
@@ -782,14 +784,6 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
         }.bind(this),null,false);
 
     },
-    saveProcess : function( processId, processName ){
-        var d = this.data;
-        d.workflowFlag = processId;
-        d.workflowAppName = processName;
-        this.app.restActions.saveCategory(  d, function( json ){
-            this.app.notice("设置流程成功");
-        }.bind(this))
-    },
     setEditForm : function( formId, formName ){
         var d = this.data;
         d.formId = formId;
@@ -807,7 +801,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
         }.bind(this))
     },
     saveCategory : function(){
-       var d = this.data || {};
+        var d = this.data || {};
         if( this.options.isNew ){
             d.isNew = this.options.isNew;
             d.appId = this.app.options.column.id;
@@ -851,6 +845,9 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
         this.input.addEvents( {
             "click" : function(ev){
                 this._showActions(true);
+                if( this.list.currentCategory != this ){
+                    this.setCurrentNode();
+                }
                 ev.stopPropagation();
             }.bind(this),
             "focus" : function( ev ){
@@ -900,7 +897,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
     },
     createIconAction: function(){
         this.actionNodes = this.actionNodes || {};
-        if (!this.actionArea_read){
+        if (!this.actionArea_read && !this.options.isNew){
             this.actionArea_read = new Element("div", {
                 styles: this.css.actionArea
             }).inject(this.node);
@@ -917,10 +914,18 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
                 }.bind(this));
                 actionNode.addEvents({
                     "mouseover": function(e){
-                        e.target.setStyle("background", "url("+this.obj.explorer.path+this.obj.options.style+"/icon/"+this.action.icon_over+") no-repeat left center");
+                        if( this.obj.list.currentCategory == this.obj || !this.action.unselectedIcon_over ){
+                            e.target.setStyle("background", "url("+this.obj.explorer.path+this.obj.options.style+"/icon/"+this.action.icon_over+") no-repeat left center");
+                        }else{
+                            e.target.setStyle("background", "url("+this.obj.explorer.path+this.obj.options.style+"/icon/"+this.action.unselectedIcon_over+") no-repeat left center");
+                        }
                     }.bind({ obj : this, action : action }),
                     "mouseout": function(e){
-                        e.target.setStyle("background", "url("+this.obj.explorer.path+this.obj.options.style+"/icon/"+this.action.icon+") no-repeat left center");
+                        if( this.obj.list.currentCategory == this.obj || !this.action.unselectedIcon ){
+                            e.target.setStyle("background", "url("+this.obj.explorer.path+this.obj.options.style+"/icon/"+this.action.icon+") no-repeat left center");
+                        }else{
+                            e.target.setStyle("background", "url("+this.obj.explorer.path+this.obj.options.style+"/icon/"+this.action.unselectedIcon+") no-repeat left center");
+                        }
                     }.bind({ obj : this, action : action })
                 });
 
@@ -944,10 +949,18 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
                 }.bind(this));
                 actionNode.addEvents({
                     "mouseover": function(e){
-                        e.target.setStyle("background", "url("+this.obj.explorer.path+this.obj.options.style+"/icon/"+this.action.icon_over+") no-repeat left center");
+                        if( this.obj.list.currentCategory == this.obj || !this.action.unselectedIcon_over ){
+                            e.target.setStyle("background", "url("+this.obj.explorer.path+this.obj.options.style+"/icon/"+this.action.icon_over+") no-repeat left center");
+                        }else{
+                            e.target.setStyle("background", "url("+this.obj.explorer.path+this.obj.options.style+"/icon/"+this.action.unselectedIcon_over+") no-repeat left center");
+                        }
                     }.bind({ obj : this, action : action }),
                     "mouseout": function(e){
-                        e.target.setStyle("background", "url("+this.obj.explorer.path+this.obj.options.style+"/icon/"+this.action.icon+") no-repeat left center");
+                        if( this.obj.list.currentCategory == this.obj || !this.action.unselectedIcon ){
+                            e.target.setStyle("background", "url("+this.obj.explorer.path+this.obj.options.style+"/icon/"+this.action.icon+") no-repeat left center");
+                        }else{
+                            e.target.setStyle("background", "url("+this.obj.explorer.path+this.obj.options.style+"/icon/"+this.action.unselectedIcon+") no-repeat left center");
+                        }
                     }.bind({ obj : this, action : action })
                 });
 
@@ -1189,9 +1202,12 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.FormExplorer =  new Class({
     },
     refreshByCategory: function( category ){
         this.currentCategory = category;
-        var formId = category.data.formId;
-        var formName = category.data.formName;
-        var readFormId = category.data.readFormId;
+        var formId, formName, readFormId;
+        if( category.data ){
+            formId = category.data.formId;
+            formName = category.data.formName;
+            readFormId = category.data.readFormId;
+        }
         if( this.currentEditForm ){
             this.currentEditForm.isEditForm = false;
             this.currentEditForm.setStyle();
@@ -1222,7 +1238,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.FormExplorer =  new Class({
         if( !category ){
             this.itemArray.each( function( item ){
                 item.node.setStyle("display","none");
-            })
+            });
             this.noElementNode = new Element("div", {
                 "styles": this.css.noElementNode,
                 "text": "请先新建或选择分类"
@@ -1230,7 +1246,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.FormExplorer =  new Class({
         }else if( category.options.isNew ){
             this.itemArray.each( function( item ){
                 item.node.setStyle("display","none");
-            })
+            });
             this.noElementNode = new Element("div", {
                 "styles": this.css.noElementNode,
                 "text": "请先保存分类"
@@ -1561,6 +1577,12 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.ViewExplorer =  new Class({
         this.node = $(node);
         this.initData();
     },
+    reload: function(){
+        if( !this.node )return;
+        this.initData();
+        this.node.empty();
+        this.load();
+    },
     load: function(){
         //this.loadToolbar();
         this.loadContentNode();
@@ -1583,11 +1605,13 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.ViewExplorer =  new Class({
     },
     loadElementList: function(){
         if( !this.category ){
+            this.elementContentListNode.empty();
             var noElementNode = new Element("div", {
                 "styles": this.css.noElementNode,
                 "text": "请先新建或选择分类"
             }).inject(this.elementContentListNode);
         }else if( this.category.options.isNew ){
+            this.elementContentListNode.empty();
             var noElementNode = new Element("div", {
                 "styles": this.css.noElementNode,
                 "text": "请先保存分类"
@@ -1633,6 +1657,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.ViewExplorer =  new Class({
             this.actions.listViewByForm( formId, callback );
         }else{
             //this.actions.listView(this.app.options.column.id,callback);
+            this.elementContentListNode.empty();
             var noElementNode = new Element("div", {
                 "styles": this.css.noElementNode,
                 "text": categoryId ? "请先设置分类的编辑表单！" : "请先选择分类！"
@@ -1675,11 +1700,12 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.ViewExplorer =  new Class({
         return view;
     },
     loadContentNode: function(){
-        this.elementContentNode = new Element("div", {
+        if( this.elementContentNode )this.elementContentNode.destroy();
+        this.elementContentNode = new Element("div.elementContentNode", {
             "styles": this.css.elementContentNode
         }).inject(this.node);
 
-        this.elementContentListNode = new Element("div", {
+        this.elementContentListNode = new Element("div.elementContentListNode", {
             "styles": this.css.elementContentListNode
         }).inject(this.elementContentNode);
 
@@ -1783,7 +1809,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.View = new Class({
                 this.setCategoryView();
             }.bind(this),
             "mouseover" : function(ev){
-               this.setCategoryViewAction.setStyles( this.css.setCategoryViewAction_selected )
+                this.setCategoryViewAction.setStyles( this.css.setCategoryViewAction_selected )
             }.bind(this),
             "mouseout" : function(ev){
                 this.setCategoryViewAction.setStyles( this.css.setCategoryViewAction )
@@ -1821,11 +1847,11 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.View = new Class({
             }.bind(this));
             this.deleteActionNode.addEvents({
                 "mouseover" : function(ev){
-                this.deleteActionNode.setStyles( this.css.deleteAction_over )
-            }.bind(this),
-               "mouseout" : function(ev){
-                this.deleteActionNode.setStyles( this.css.deleteAction )
-            }.bind(this)})
+                    this.deleteActionNode.setStyles( this.css.deleteAction_over )
+                }.bind(this),
+                "mouseout" : function(ev){
+                    this.deleteActionNode.setStyles( this.css.deleteAction )
+                }.bind(this)})
         }
 
         //if (!this.explorer.options.noDelete){
@@ -1991,6 +2017,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         this.app = app;
         this.node = $(node);
         this.category = category;
+        this.lp = this.app.lp.category;
 
         this.controllerData = [];
         this.controllerList = [];
@@ -1998,7 +2025,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
     load: function(){
         this.propertyTitleBar = new Element("div", {
             "styles": this.app.css.propertyTitleBar,
-            "text": "分类属性"  //this.data.name || this.data.appName
+            "text": this.lp.categoryProperty  //this.data.name || this.data.appName
         }).inject(this.node);
 
         this.contentNode =  new Element("div", {
@@ -2020,9 +2047,12 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         this.contentAreaNode.empty();
         this.controllerData = [];
         this.controllerList = [];
-        if(this.category)this.loadContent();
+        if(this.category && !this.category.options.isNew )this.loadContent();
     },
     loadContent : function(){
+        this.processContainer = new Element( "div").inject( this.contentAreaNode );
+        this.createProcessNode();
+
         this.publisherContainer = new Element( "div").inject( this.contentAreaNode );
         MWF.xDesktop.requireApp("cms.ColumnManager", "widget.CategoryPublisherSetting", null, false);
         this.publisherSetting = new MWF.xApplication.cms.ColumnManager.CategoryPublisherSetting( this.app,
@@ -2049,6 +2079,150 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
             this.createControllerListNode();
         }.bind(this) );
     },
+
+    saveProcessApp : function( appId, appName ){
+        var d = this.category.data;
+        d.workflowAppId = appId;
+        d.workflowAppName = appName;
+        this.app.restActions.saveCategory(  d, function( json ){
+            this.app.notice(this.lp.setProcessAppSucess);
+        }.bind(this))
+    },
+    saveProcess : function( processId, processName ){
+        var d = this.category.data;
+        d.workflowFlag = processId;
+        d.workflowName = processName;
+        d.workflowType = processId ? "固定审批流" : "禁用审批流";
+        this.app.restActions.saveCategory(  d, function( json ){
+            this.app.notice(this.lp.setProcessSucess);
+        }.bind(this))
+    },
+    createProcessNode : function(){
+        this.processTitleNode = new Element("div.availableTitleNode", {
+            "styles": this.app.css.availableTitleNode,
+            "text": this.lp.useProcess
+        }).inject(this.processContainer);
+
+        this.processContentNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.processContainer);
+        //this.itemsContentNode = new Element("div.availableItemsContentNode", {"styles": this.app.css.availableItemsContentNode}).inject(this.processContentNode);
+
+        this.processAreaNode = new Element("div.processAreaNode" , {
+            "styles": this.app.css.processAreaNode
+        }).inject(this.processContentNode);
+        //this.processAreaNode.setStyle("display","none");
+
+        //new Element("div.formTitleSepNode" , {
+        //    "styles": this.css.formTitleSepNode
+        //}).inject(this.formTitleNode);
+
+        //this.processTitleNode = new Elements("div.processTitleNode" , {
+        //    "styles": this.css.processTitleNode,
+        //    "text" : "流程"
+        //}).inject(this.processAreaNode);
+
+        //this.processSelectNode = new Elements("div.processSelectNode" , {
+        //    "styles": this.css.processSelectNode
+        //}).inject(this.processAreaNode);
+        this.createProcessAppSelect( this.category.data.workflowAppId || "" );
+        this.createProcessSelect( this.category.data.workflowAppId || "", this.category.data.workflowFlag || "" );
+    },
+    createProcessAppSelect : function( appId ){
+        this.processAppSelect = new Element("select", { styles : this.app.css.processSelect }).inject( this.processAreaNode );
+        new Element( "option" ,　{
+            "value" : "",
+            "text" : this.lp.selectProcessApp
+        }).inject( this.processAppSelect );
+        new Element( "option" ,　{
+            "value" : "",
+            "text" : this.lp.none
+        }).inject( this.processAppSelect );
+        this.app.restActions.listApplication( null, function( json ){
+            json.data.each( function( d ){
+                var opt = new Element( "option" ,　{
+                    "value" : d.id,
+                    "text" : d.name
+                }).inject( this.processAppSelect );
+                if( d.id == appId )opt.selected = true;
+            }.bind(this))
+        }.bind(this));
+        this.processAppSelect.addEvent( "change" , function( ev ){
+            var app = this.getSelectProcessApp();
+            this.createProcessSelect( app.id );
+            this.saveProcessApp( app.id, app.name );
+        }.bind(this))
+    },
+    getSelectProcessApp : function(){
+        var app;
+        this.processAppSelect.getElements("option").each( function( option ){
+            if( option.selected ){
+                app = { "id" : option.value , "name" : option.text }
+            }
+        }.bind(this));
+        return app;
+    },
+    setProcessApp : function( value ){
+        var flag = true;
+        this.processAppSelect.getElements("option").each( function( option ){
+            if( flag ){
+                if( option.value == value ){
+                    option.selected = true;
+                    flag = false;
+                }
+            }
+        }.bind(this))
+    },
+
+    createProcessSelect : function( appId, processId ){
+        if( this.processSelect )this.processSelect.destroy();
+        if( !appId )return;
+        this.processSelect = new Element("select", { styles : this.app.css.processSelect }).inject( this.processAreaNode );
+        new Element( "option" ,　{
+            "value" : "",
+            "text" : this.lp.selectProcess
+        }).inject( this.processSelect );
+        new Element( "option" ,　{
+            "value" : "",
+            "text" : this.lp.none
+        }).inject( this.processSelect );
+        this.app.restActions.listProcess( appId, function( json ){
+            json.data.each( function( d ){
+                var opt = new Element( "option" ,　{
+                    "value" : d.id,
+                    "text" : d.name
+                }).inject( this.processSelect )
+                if( d.id == processId )opt.selected = true;
+            }.bind(this))
+        }.bind(this));
+        this.processSelect.addEvent( "change" , function( ev ){
+            var process = this.getSelectProcess();
+            this.saveProcess( process.id, process.name );
+        }.bind(this))
+    },
+    getSelectProcess : function(){
+        var process;
+        if( this.processSelect ){
+            this.processSelect.getElements("option").each( function( option ){
+                if( option.selected ){
+                    process = { "id" : option.value , "name" : option.text }
+                }
+            }.bind(this))
+        }
+        return process;
+    },
+    setProcess : function( value ){
+        var flag = true;
+        if( this.processSelect ){
+            this.processSelect.getElements("option").each( function( option ){
+                if( flag ){
+                    if( option.value == value ){
+                        option.selected = true;
+                        flag = false;
+                    }
+                }
+            }.bind(this))
+        }
+    },
+
     listController : function( callback ){
         this.app.restActions.listCategoryController(this.category.data.id, function(json){
             json.data = json.data || [];
@@ -2062,7 +2236,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
     setContentHeight: function(){
         var size = this.node.getSize();
         var titleSize = this.propertyTitleBar.getSize();
-        var y = size.y-titleSize.y-10;
+        var y = size.y-titleSize.y;
         this.contentNode.setStyle("height", ""+y+"px");
     },
 
@@ -2078,20 +2252,8 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         this.administratorsContentNode = new Element("div", {"styles": this.app.css.administratorsContentNode}).inject(this.controllerListContentNode);
 
         var changeAdministrators = new Element("div", {
-            "styles": {
-                "margin-left": "40px",
-                "float": "left",
-                "background-color": "#FFF",
-                "padding": "4px 14px",
-                "border": "1px solid #999",
-                "border-radius": "3px",
-                "margin-top": "10px",
-                "margin-bottom": "20px",
-                "font-size": "14px",
-                "color": "#666",
-                "cursor": "pointer"
-            },
-            "text": "设置分类管理者"
+            "styles": this.app.css.selectButtonStyle,
+            "text": this.lp.setCategoryManager
         }).inject(this.contentAreaNode);
         changeAdministrators.addEvent("click", function(){
             this.changeAdministrators();
@@ -2119,7 +2281,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
 
         var options = {
             "type": "person",
-            "title": "设置分类管理者",
+            "title": this.lp.setCategoryManager,
             "names": this.controllerList || [],
             "onComplete": function(items){
 
@@ -2147,11 +2309,11 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
                     if( !this.controllerList.contains( item ) ){
                         var controllerData = {
                             "objectType": "CATEGORY",
-                            "objectId": this.data.id,
+                            "objectId": this.category.data.id,
                             "adminUid": item,
                             "adminName": item,
                             "adminLevel": "ADMIN"
-                        }
+                        };
                         this.app.restActions.saveController(controllerData, function(json){
                             controllerData.id = json.data.id;
                             this.controllerData.push( controllerData );

@@ -30,8 +30,8 @@
                     <input class="editTableRadio" name="passExpired" text{(!$.passExpired)?'checked':''} type="radio" value="false"/>否</td>
             </tr>
             <tr>
-                <td class="editTableValue" id="text{$.id}passSameTarget" colspan="2"><b>与上一活动处理人相同时自动流转：</b><input class="editTableRadio" name="passSameTarget" text{($.allowDeleteWork)?'checked':''} type="radio" value="true"/>是
-                    <input class="editTableRadio" name="passSameTarget" text{(!$.allowDeleteWork)?'checked':''} type="radio" value="false"/>否</td>
+                <td class="editTableValue" id="text{$.id}passSameTarget" colspan="2"><b>与上一活动处理人相同时自动流转：</b><input class="editTableRadio" name="passSameTarget" text{($.passSameTarget)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="passSameTarget" text{(!$.passSameTarget)?'checked':''} type="radio" value="false"/>否</td>
             </tr>
         </table>
     </div>

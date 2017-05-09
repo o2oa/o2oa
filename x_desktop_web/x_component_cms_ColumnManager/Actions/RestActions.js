@@ -557,6 +557,13 @@ MWF.xApplication.cms.ColumnManager.Actions.RestActions = new Class({
         this.action.invoke({"name": "loadQueryView","async": async, "data": {}, "parameter": {"flag": flag}, "success": success,	"failure": failure});
     },
 
+    listApplication: function(categoryName, success, failure, async){
+        if (categoryName){
+            this.actionProcess.invoke({"name": "listApplicationByCategory","async": async, "parameter": {"applicationCategory": categoryName}, "success": success,	"failure": failure});
+        }else{
+            this.actionProcess.invoke({"name": "listApplication","async": async, "success": success,	"failure": failure});
+        }
+    },
     listProcess: function(application, success, failure, async){
         this.actionProcess.invoke({"name": "listProcess","async": async, "parameter": {"id": application},	"success": success,	"failure": failure});
     }

@@ -90,4 +90,48 @@ public class OkrConfigSystemFactory extends AbstractFactory {
 		}
 		return null;
 	}
+	/**
+	 * 查询系统配置值身份列表（去重复）
+	 * @param identities_ok 排除身份
+	 * @param identities_error 排除身份
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<String> listAllDistinctValueIdentity( List<String> identities_ok, List<String> identities_error ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(OkrConfigSystem.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<OkrConfigSystem> root = cq.from(OkrConfigSystem.class);
+		
+		Predicate p = cb.isNotNull( root.get( OkrConfigSystem_.id ) );
+		p = cb.and( p, cb.equal( root.get( OkrConfigSystem_.valueType ), "identity") );
+		if( identities_ok != null && identities_ok.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrConfigSystem_.configValue ).in( identities_ok )) );
+		}
+		if( identities_error != null && identities_error.size() > 0 ){
+			p = cb.and( p, cb.not(root.get( OkrConfigSystem_.configValue ).in( identities_error )) );
+		}
+		cq.distinct(true).select(root.get( OkrConfigSystem_.configValue ));
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+	/**
+	 * 根据身份名称，从系统参数配置信息中查询与该身份有关的所有信息列表
+	 * @param identity
+	 * @param recordId 
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<OkrConfigSystem> listErrorIdentitiesInConfigSystem(String identity, String recordId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( OkrConfigSystem.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<OkrConfigSystem> cq = cb.createQuery( OkrConfigSystem.class );
+		Root<OkrConfigSystem> root = cq.from( OkrConfigSystem.class );
+		Predicate p = cb.isNotNull(root.get( OkrConfigSystem_.configValue ));
+		if( recordId != null && !recordId.isEmpty() && !"all".equals( recordId ) ){
+			p = cb.and( p, cb.equal( root.get( OkrConfigSystem_.id ), recordId ) );
+		}
+		//p = cb.and( p, cb.equal( root.get( OkrConfigSystem_.valueType ), "identity") );
+		p = cb.and( p, cb.like( root.get( OkrConfigSystem_.configValue ), "%"+identity+"%" ) );		
+		return em.createQuery(cq.where(p)).getResultList();
+	}
 }

@@ -2,11 +2,11 @@ package com.x.okr.assemble.control.timertask;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimerTask;
 
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
-import com.x.okr.assemble.control.ThisApplication;
+import com.x.base.core.project.Context;
+import com.x.base.core.project.clock.ClockScheduleTask;
 import com.x.okr.assemble.control.service.OkrCenterWorkQueryService;
 
 /**
@@ -16,21 +16,20 @@ import com.x.okr.assemble.control.service.OkrCenterWorkQueryService;
  * @author LIYI
  *
  */
-public class St_CenterWorkCount extends TimerTask {
+public class St_CenterWorkCount extends ClockScheduleTask {
 
 	private Logger logger = LoggerFactory.getLogger(St_CenterWorkCount.class);
 	private OkrCenterWorkQueryService okrCenterWorkInfoService = new OkrCenterWorkQueryService();
 
-	public void run() {
+	public St_CenterWorkCount(Context context) {
+		super(context);
+	}
+	
+	public void execute() {
 		List<String> ids = null;
 		// 草稿|待审核|待确认|执行中|已完成|已撤消
 		List<String> processStatus = new ArrayList<String>();
 		List<String> status = new ArrayList<String>();
-		if (ThisApplication.getCenterWorkCountStatisticTaskRunning()) {
-			logger.info("Timertask service is running, wait for next time......");
-			return;
-		}
-		ThisApplication.setCenterWorkCountStatisticTaskRunning(true);
 
 		// 1、查询所有未完成的中心工作
 		status.add("正常");
@@ -52,8 +51,6 @@ public class St_CenterWorkCount extends TimerTask {
 				}
 			}
 		}
-
-		ThisApplication.setCenterWorkCountStatisticTaskRunning(false);
-		logger.debug("Timertask completed and excute success.");
+		logger.info("Timertask OKR_St_CenterWorkCount completed and excute success.");
 	}
 }

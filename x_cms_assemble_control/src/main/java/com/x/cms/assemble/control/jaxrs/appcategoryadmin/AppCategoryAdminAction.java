@@ -15,15 +15,16 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.cms.assemble.control.jaxrs.appcategoryadmin.exception.AppCategoryAdminProcessException;
 
 @Path("appcategoryadmin")
 public class AppCategoryAdminAction extends StandardJaxrsAction {
@@ -44,18 +45,18 @@ public class AppCategoryAdminAction extends StandardJaxrsAction {
 			wrapIn = this.convertToWrapIn( jsonElement, WrapInAppCategoryAdmin.class );
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new AppCategoryAdminProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		if(check){
 			try {
 				result = new ExcuteSave().execute( request, effectivePerson, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new AppCategoryAdminSaveException( e );
+				Exception exception = new AppCategoryAdminProcessException( e, "应用栏目分类管理员配置信息保存时发生异常。" );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -74,9 +75,9 @@ public class AppCategoryAdminAction extends StandardJaxrsAction {
 			result = new ExcuteDelete().execute( request, effectivePerson, id );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new AppCategoryAdminDeleteException( e, id );
+			Exception exception = new AppCategoryAdminProcessException( e, "根据ID删除应用栏目分类管理员配置信息时发生异常。ID:" + id );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -93,9 +94,9 @@ public class AppCategoryAdminAction extends StandardJaxrsAction {
 			result = new ExcuteGet().execute( request, effectivePerson, id );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new AppCategoryAdminQueryByIdException( e, id );
+			Exception exception = new AppCategoryAdminProcessException( e, "根据ID查询应用栏目分类管理员配置信息时发生异常。ID:" + id );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -112,9 +113,9 @@ public class AppCategoryAdminAction extends StandardJaxrsAction {
 			result = new ExcuteListAll().execute( request, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new AppCategoryAdminListAllException( e );
+			Exception exception = new AppCategoryAdminProcessException( e, "查询所有应用栏目分类管理员配置信息时发生异常。" );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse( result );
 	}
@@ -131,9 +132,9 @@ public class AppCategoryAdminAction extends StandardJaxrsAction {
 			result = new ExcuteListByCategoryId().execute( request, effectivePerson, categoryId );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new AppCategoryAdminListByCategoryIdException( e, categoryId );
+			Exception exception = new AppCategoryAdminProcessException( e, "根据分类ID查询所有对应的应用栏目分类管理员配置信息列表时发生异常。CategoryId:" + categoryId );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse( result );
 	}
@@ -150,9 +151,9 @@ public class AppCategoryAdminAction extends StandardJaxrsAction {
 			result = new ExcuteListByAppId().execute( request, effectivePerson, appId );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new AppCategoryAdminListByAppIdException( e, appId );
+			Exception exception = new AppCategoryAdminProcessException( e, "根据应用栏目ID查询所有对应的应用栏目分类管理员配置信息列表时发生异常。AppId:" + appId );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse( result );
 	}
@@ -169,9 +170,9 @@ public class AppCategoryAdminAction extends StandardJaxrsAction {
 			result = new ExcuteListByPersonName().execute( request, effectivePerson, person );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new AppCategoryAdminListByPersonException( e, person );
+			Exception exception = new AppCategoryAdminProcessException( e, "根据管理员姓名查询所有对应的应用栏目分类管理员配置信息列表时发生异常。Person:" + person );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse( result );
 	}
@@ -189,9 +190,9 @@ public class AppCategoryAdminAction extends StandardJaxrsAction {
 			result = new ExcuteListByPersonNameAndType().execute( request, effectivePerson, person, objectType );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new AppCategoryAdminListByPersonException( e, person, objectType );
+			Exception exception = new AppCategoryAdminProcessException( e, "根据管理员姓名查询所有对应的应用栏目分类管理员配置信息列表时发生异常。Person:" + person + ", objectType:" + objectType );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse( result );
 	}	

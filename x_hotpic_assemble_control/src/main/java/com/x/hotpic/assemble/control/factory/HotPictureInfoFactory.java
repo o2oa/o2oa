@@ -56,6 +56,7 @@ public class HotPictureInfoFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<HotPictureInfo> cq = cb.createQuery(HotPictureInfo.class);
 		Root<HotPictureInfo> root = cq.from(HotPictureInfo.class);
+		cq.orderBy( cb.desc( root.get( HotPictureInfo_.updateTime ) ) );
 		return em.createQuery( cq ).setMaxResults( 100 ).getResultList();
 	}
 

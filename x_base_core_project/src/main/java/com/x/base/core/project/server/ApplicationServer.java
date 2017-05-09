@@ -1,6 +1,5 @@
 package com.x.base.core.project.server;
 
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -10,7 +9,6 @@ import com.x.base.core.gson.GsonPropertyObject;
 import com.x.base.core.utils.Host;
 
 public class ApplicationServer extends GsonPropertyObject {
-
 
 	public static ApplicationServer defaultInstance() {
 		return new ApplicationServer();
@@ -59,6 +57,14 @@ public class ApplicationServer extends GsonPropertyObject {
 		private String name;
 
 		private Integer weight = default_weight;
+
+		public NameWeightPair() {
+		}
+
+		public NameWeightPair(String name, Integer weight) {
+			this.name = name;
+			this.weight = weight;
+		}
 
 		public String getName() {
 			return name;
@@ -164,6 +170,12 @@ public class ApplicationServer extends GsonPropertyObject {
 
 	public void setWeights(CopyOnWriteArrayList<NameWeightPair> weights) {
 		this.weights = weights;
+	}
+
+	public Integer weight(Class<?> clazz) {
+		NameWeightPair pair = this.weights.stream().filter(p -> StringUtils.equals(p.getName(), clazz.getName()))
+				.findFirst().orElse(new NameWeightPair(clazz.getName(), default_weight));
+		return pair.getWeight();
 	}
 
 }

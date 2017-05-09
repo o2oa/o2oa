@@ -61,7 +61,7 @@ public class CancelProcessor extends AbstractProcessor {
 		emc.delete(Review.class, this.business().review().listWithWork(work.getId()));
 		for (Attachment o : this.business().entityManagerContainer().list(Attachment.class, work.getAttachmentList())) {
 			if (!this.business().attachmentMultiReferenced(o.getId())) {
-				StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class,
+				StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 						o.getStorage());
 				if (null != mapping) {
 					o.deleteContent(mapping);

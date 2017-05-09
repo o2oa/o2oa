@@ -675,19 +675,20 @@ MWF.xApplication.File.Main = new Class({
         this.fileUploadNode.set("accept", "*/*");
         this.fileUploadNode.set("multiple", true);
 		var fileNode = this.uploadFileAreaNode.getFirst();
+        fileNode.set("accept", "*/*");
 		fileNode.click();
 	},
     replaceAttachment: function(e, node, attachment){
         this.replaceUploadFile(attachment);
     },
     replaceUploadFile: function(attachment){
-        if (!this.uploadFileAreaNode){
-            this.uploadFileAreaNode = new Element("div");
+        if (!this.replaceFileAreaNode){
+            this.replaceFileAreaNode = new Element("div");
             var html = "<input name=\"file\" multiple type=\"file\"/>";
-            this.uploadFileAreaNode.set("html", html);
+            this.replaceFileAreaNode.set("html", html);
 
-            this.fileUploadNode = this.uploadFileAreaNode.getFirst();
-            this.fileUploadNode.addEvent("change", function(){
+            this.fileReplaceNode = this.replaceFileAreaNode.getFirst();
+            this.fileReplaceNode.addEvent("change", function(){
                 var fileId = attachment.data.id;
 
                 var files = fileNode.files;
@@ -718,10 +719,11 @@ MWF.xApplication.File.Main = new Class({
 
             }.bind(this));
         }
-        this.fileUploadNode.set("accept", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-        this.fileUploadNode.set("multiple", false);
+        this.fileReplaceNode.set("accept", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        this.fileReplaceNode.set("multiple", false);
 
-        var fileNode = this.uploadFileAreaNode.getFirst();
+        var fileNode = this.replaceFileAreaNode.getFirst();
+        fileNode.set("accept", "*/*");
         fileNode.click();
     },
 

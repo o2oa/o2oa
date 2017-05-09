@@ -3,8 +3,7 @@ package com.x.bbs.assemble.control;
 import java.util.List;
 
 import com.x.base.core.logger.LoggerFactory;
-import com.x.base.core.project.AbstractThisApplication;
-import com.x.base.core.project.ReportTask;
+import com.x.base.core.project.Context;
 import com.x.bbs.assemble.control.service.BBSConfigSettingService;
 import com.x.bbs.assemble.control.service.BBSForumInfoServiceAdv;
 import com.x.bbs.assemble.control.service.BBSPermissionInfoService;
@@ -15,30 +14,31 @@ import com.x.bbs.assemble.control.timertask.SubjectTotalStatisticTask;
 import com.x.bbs.assemble.control.timertask.UserSubjectReplyPermissionStatisticTask;
 import com.x.bbs.entity.BBSForumInfo;
 import com.x.bbs.entity.BBSSectionInfo;
-import com.x.collaboration.core.message.Collaboration;
 
-public class ThisApplication extends AbstractThisApplication {
-	private static Boolean subjectReplyTotalStatisticTaskRunning = false;
-	private static Boolean subjectTotalStatisticTaskRunning = false;
-	private static Boolean userSubjectReplyStatisticTaskRunning = false;
+public class ThisApplication {
+	
+	protected static Context context;
+	
+	public static Context context() {
+		return context;
+	}
 
 	public static void init() throws Exception {
-		timerWithFixedDelay(new ReportTask(), 1, 20);
-		initDatasFromCenters();
-		initStoragesFromCenters();
-		Collaboration.start();
-		initAllSystemConfig();
-		initAllTimerTask();
+		try {
+			initAllSystemConfig();
+			context().schedule( SubjectTotalStatisticTask.class, "0 10 * * * ?");
+			context().schedule( SubjectReplyTotalStatisticTask.class, "0 40 * * * ?");
+			context().schedule( UserSubjectReplyPermissionStatisticTask.class, "0 0/30 * * * ?");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
-	public static void destroy() throws Exception {
-		Collaboration.stop();
-	}
-
-	private static void initAllTimerTask() throws Exception {
-		timerWithFixedDelay(new SubjectTotalStatisticTask(), 60 * 20, 60 * 60);
-		timerWithFixedDelay(new SubjectReplyTotalStatisticTask(), 60 * 30, 60 * 60);
-		timerWithFixedDelay(new UserSubjectReplyPermissionStatisticTask(), 60 * 10, 60 * 60 * 60);
+	public static void destroy() {
+		try {
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static void initAllSystemConfig() {
@@ -85,29 +85,5 @@ public class ThisApplication extends AbstractThisApplication {
 					.warn("BBS system check all section permission and role got an exception.");
 			LoggerFactory.getLogger(ThisApplication.class).error(e);
 		}
-	}
-
-	public static Boolean getSubjectTotalStatisticTaskRunning() {
-		return subjectTotalStatisticTaskRunning;
-	}
-
-	public static void setSubjectTotalStatisticTaskRunning(Boolean subjectTotalStatisticTaskRunning) {
-		ThisApplication.subjectTotalStatisticTaskRunning = subjectTotalStatisticTaskRunning;
-	}
-
-	public static Boolean getSubjectReplyTotalStatisticTaskRunning() {
-		return subjectReplyTotalStatisticTaskRunning;
-	}
-
-	public static void setSubjectReplyTotalStatisticTaskRunning(Boolean subjectReplyTotalStatisticTaskRunning) {
-		ThisApplication.subjectReplyTotalStatisticTaskRunning = subjectReplyTotalStatisticTaskRunning;
-	}
-
-	public static Boolean getUserSubjectReplyStatisticTaskRunning() {
-		return userSubjectReplyStatisticTaskRunning;
-	}
-
-	public static void setUserSubjectReplyStatisticTaskRunning(Boolean userSubjectReplyStatisticTaskRunning) {
-		ThisApplication.userSubjectReplyStatisticTaskRunning = userSubjectReplyStatisticTaskRunning;
 	}
 }

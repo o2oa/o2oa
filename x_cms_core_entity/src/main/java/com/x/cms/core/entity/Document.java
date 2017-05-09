@@ -114,7 +114,12 @@ public class Document extends SliceJpaObject {
 		
 	}
 
-	/* 更新运行方法 */
+	@EntityFieldDescribe("文档摘要")
+	@Column(name="xsummary", length = JpaObject.length_255B )
+	@Index(name = TABLE + "_title")
+	@CheckPersist(allowEmpty = true)
+	private String summary;
+	
 	@EntityFieldDescribe("文档标题")
 	@Column(name="xtitle", length = JpaObject.length_255B )
 	@Index(name = TABLE + "_title")
@@ -208,7 +213,22 @@ public class Document extends SliceJpaObject {
 	@Index(name = TABLE + "_publishTime")
 	@CheckPersist( allowEmpty = true )
 	private Date publishTime;
+	
+	@EntityFieldDescribe("是否含有首页图片")
+	@Column(name="xhasIndexPic" )
+	@Index(name = TABLE + "_hasIndexPic")
+	@CheckPersist( allowEmpty = false )
+	private Boolean hasIndexPic = false;
 
+	@EntityFieldDescribe("首页图片列表")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@ContainerTable(name = TABLE + "_pictureList", joinIndex = @Index(name = TABLE + "_pictureList_join") )
+	@ElementColumn(length = JpaObject.length_id)
+	@ElementIndex(name = TABLE + "_pictureList_element")
+	@CheckPersist(allowEmpty = true)
+	private List<String> pictureList;
+	
 	@EntityFieldDescribe("附件列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
@@ -364,6 +384,30 @@ public class Document extends SliceJpaObject {
 
 	public void setCategoryAlias(String categoryAlias) {
 		this.categoryAlias = categoryAlias;
+	}
+
+	public List<String> getPictureList() {
+		return pictureList;
+	}
+
+	public void setPictureList(List<String> pictureList) {
+		this.pictureList = pictureList;
+	}
+
+	public Boolean getHasIndexPic() {
+		return hasIndexPic;
+	}
+
+	public void setHasIndexPic(Boolean hasIndexPic) {
+		this.hasIndexPic = hasIndexPic;
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
 	}
 	
 }

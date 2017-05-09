@@ -1,15 +1,20 @@
 package com.x.okr.assemble.control.jaxrs.okrconfigsercretary;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
-
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.cache.ApplicationCache;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.WrapOutId;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrconfigsercretary.exception.GetCompanyNameByIdentityException;
+import com.x.okr.assemble.control.jaxrs.okrconfigsercretary.exception.GetDepartmentNameByIdentityException;
+import com.x.okr.assemble.control.jaxrs.okrconfigsercretary.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrconfigsercretary.exception.SercretaryConfigLeaderIdentityEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrconfigsercretary.exception.SercretaryConfigSaveException;
+import com.x.okr.assemble.control.jaxrs.okrconfigsercretary.exception.UserNoLoginException;
 import com.x.okr.entity.OkrConfigSecretary;
 
 public class ExcuteSave extends ExcuteBase {
@@ -27,14 +32,14 @@ public class ExcuteSave extends ExcuteBase {
 			check = false;
 			Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}		
 		
 		if( check && ( okrUserCache == null || okrUserCache.getLoginIdentityName() == null ) ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 
 		if( wrapIn != null ){
@@ -45,7 +50,7 @@ public class ExcuteSave extends ExcuteBase {
 					check = false;
 					Exception exception = new UserNoLoginException( effectivePerson.getName() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			}
 			
@@ -56,7 +61,7 @@ public class ExcuteSave extends ExcuteBase {
 					check = false;
 					Exception exception = new UserNoLoginException( effectivePerson.getName() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			}
 			
@@ -65,7 +70,7 @@ public class ExcuteSave extends ExcuteBase {
 					check = false;
 					Exception exception = new SercretaryConfigLeaderIdentityEmptyException();
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}else{
 					//补充代理领导所属组织名称和公司名称
 					try {
@@ -73,14 +78,14 @@ public class ExcuteSave extends ExcuteBase {
 					} catch (Exception e) {
 						Exception exception = new GetDepartmentNameByIdentityException( e, wrapIn.getLeaderIdentity() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 					try {
 						wrapIn.setLeaderCompanyName( okrUserManagerService.getCompanyNameByIdentity( wrapIn.getLeaderIdentity() ) );
 					} catch (Exception e) {
 						Exception exception = new GetCompanyNameByIdentityException( e, wrapIn.getLeaderIdentity() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 				}
 			}
@@ -89,18 +94,15 @@ public class ExcuteSave extends ExcuteBase {
 				try {
 					okrConfigSecretary = okrConfigSecretaryService.save( wrapIn );
 					result.setData( new WrapOutId( okrConfigSecretary.getId() ) );
+					
 					ApplicationCache.notify( OkrConfigSecretary.class );
 				} catch (Exception e) {
 					Exception exception = new SercretaryConfigSaveException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
-//		else{
-//			result.error( new Exception( "请求传入的参数为空，无法继续保存!" ) );
-//			result.setUserMessage( "请求传入的参数为空，无法继续保存!" );
-//		}
 		return result;
 	}
 	

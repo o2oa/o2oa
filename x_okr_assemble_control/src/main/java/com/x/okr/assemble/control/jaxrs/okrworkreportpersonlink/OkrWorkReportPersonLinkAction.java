@@ -12,17 +12,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.okr.assemble.control.service.OkrWorkReportPersonLinkService;
 import com.x.okr.entity.OkrWorkReportPersonLink;
 
@@ -49,7 +49,7 @@ public class OkrWorkReportPersonLinkAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			try {
@@ -58,7 +58,7 @@ public class OkrWorkReportPersonLinkAction extends StandardJaxrsAction{
 			} catch (Exception e) {
 				Exception exception = new ReportPersonLinkSaveException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -75,7 +75,7 @@ public class OkrWorkReportPersonLinkAction extends StandardJaxrsAction{
 		if( id == null || id.isEmpty() ){
 			Exception exception = new ReportPersonLinkIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}else{
 			try{
 				okrWorkReportPersonLinkService.delete( id );
@@ -83,7 +83,7 @@ public class OkrWorkReportPersonLinkAction extends StandardJaxrsAction{
 			}catch(Exception e){
 				Exception exception = new ReportPersonLinkDeleteException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -103,7 +103,7 @@ public class OkrWorkReportPersonLinkAction extends StandardJaxrsAction{
 		if( id == null || id.isEmpty() ){
 			Exception exception = new ReportPersonLinkIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}else{
 			try {
 				okrWorkReportPersonLink = okrWorkReportPersonLinkService.get( id );
@@ -113,12 +113,12 @@ public class OkrWorkReportPersonLinkAction extends StandardJaxrsAction{
 				}else{
 					Exception exception = new ReportPersonLinkNotExistsException( id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
-			} catch (Throwable th) {
-				Exception exception = new ReportPersonLinkQueryByIdException( th, id );
+			} catch (Exception e) {
+				Exception exception = new ReportPersonLinkQueryByIdException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		

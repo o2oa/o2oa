@@ -5,9 +5,9 @@
 <title>x_organization_assemble_surface_authentication</title>
 <script src="./jquery.js"></script>
 <script src="./common.js"></script>
-<script src="./debug.js"></script>
-<script src="authentication.js"></script>
-<script src="bind.js"></script>
+<script src="./logger.js"></script>
+<script src="./authentication.js"></script>
+<script src="./bind.js"></script>
 <script>
     $(document).ready(function() {
 	authentication_who();
@@ -36,9 +36,9 @@
 						<li><a onclick="bind_list()" href="#">List</a></li>
 					</ul>
 				</li>
-				<li>Debug
+				<li>Logger
 					<ul>
-						<li><a onclick="debug_init()" href="#">Debug</a></li>
+						<li><a onclick="logger_init()" href="#">Logger</a></li>
 					</ul>
 				</li>
 			</ul>

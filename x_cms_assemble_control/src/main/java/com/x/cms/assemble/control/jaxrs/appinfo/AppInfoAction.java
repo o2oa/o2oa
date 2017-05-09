@@ -22,17 +22,19 @@ import com.google.gson.JsonElement;
 import com.x.base.core.application.jaxrs.EqualsTerms;
 import com.x.base.core.application.jaxrs.InTerms;
 import com.x.base.core.application.jaxrs.LikeTerms;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.cms.assemble.control.jaxrs.appinfo.exception.AppInfoProcessException;
+import com.x.cms.assemble.control.jaxrs.search.exception.AppInfoListViewableInPermissionException;
 import com.x.cms.core.entity.AppInfo;
 
 @Path("appinfo")
@@ -54,9 +56,9 @@ public class AppInfoAction extends StandardJaxrsAction {
 			wrapIn = this.convertToWrapIn( jsonElement, WrapInAppInfo.class );
 		} catch ( Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new AppInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check ){
@@ -64,9 +66,9 @@ public class AppInfoAction extends StandardJaxrsAction {
 				result = new ExcuteSave().execute( request, effectivePerson, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new AppInfoSaveException( e );
+				Exception exception = new AppInfoProcessException( e, "应用栏目信息保存时发生异常。" );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -85,7 +87,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result = new ExcuteDelete().execute( request, effectivePerson, id );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new AppInfoDeleteException( e, id );
+			Exception exception = new AppInfoProcessException( e, "根据ID删除CMS应用信息对象发生未知异常，ID:"+ id );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
@@ -104,7 +106,26 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result = new ExcuteGet().execute( request, effectivePerson, id );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new AppInfoQueryByIdException( e, id );
+			Exception exception = new AppInfoProcessException( e, "根据指定ID查询应用栏目信息对象时发生异常。ID:" + id );
+			result.error( exception );
+			logger.error( e, effectivePerson, request, null);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
+	@HttpMethodDescribe(value = "根据ID获取appInfo对象.", response = WrapOutAppInfo.class)
+	@GET
+	@Path("alias/{alias}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response getByAlias( @Context HttpServletRequest request, @PathParam("alias") String alias ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<WrapOutAppInfo> result = new ActionResult<>();
+		try {
+			result = new ExcuteGetByAlias().execute( request, effectivePerson, alias );
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			Exception exception = new AppInfoProcessException( e, "根据指定应用唯一标识查询应用栏目信息对象时发生异常。ALIAS:" + alias );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
@@ -142,7 +163,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result = new ExcuteListWhatICanPublish().execute( request, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new AppInfoListViewableInPermissionException( e, effectivePerson.getName() );
+			Exception exception = new AppInfoProcessException( e, "系统在根据用户权限查询所有可见的栏目信息时发生异常。Name:" + effectivePerson.getName() );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
@@ -161,7 +182,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result = new ExcuteListWhatICanManage().execute( request, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new AppInfoListManageableInPermissionException( e, effectivePerson.getName() );
+			Exception exception = new AppInfoProcessException( e, "系统在根据用户权限查询所有管理的栏目信息时发生异常。Name:" + effectivePerson.getName() );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
@@ -180,7 +201,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result = new ExcuteListAll().execute( request, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new AppInfoListAllException( e );
+			Exception exception = new AppInfoProcessException( e, "查询所有应用栏目信息对象时发生异常" );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
@@ -205,7 +226,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilter.class );
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new AppInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
@@ -265,7 +286,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilter.class );
 		} catch (Exception e ) {
 			check = false;
-			Exception exception = new WrapInConvertException( e, jsonElement );
+			Exception exception = new AppInfoProcessException( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}

@@ -11,12 +11,13 @@ import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.Application;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.http.WrapOutBoolean;
+import com.x.base.core.project.Application;
 import com.x.base.core.project.x_collaboration_assemble_websocket;
+import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.utils.ListTools;
 import com.x.collaboration.assemble.websocket.ThisApplication;
 import com.x.collaboration.core.entity.Dialog;
@@ -32,7 +33,7 @@ import com.x.organization.core.express.wrap.WrapPerson;
 
 public class ActionSend extends ActionBase {
 
-	private Organization org = new Organization();
+	private Organization org = new Organization(ThisApplication.context());
 
 	protected WrapOutBoolean execute(JsonElement jsonElement) throws Exception {
 		MessageCategory category = BaseMessage.extractCategory(jsonElement);
@@ -73,12 +74,12 @@ public class ActionSend extends ActionBase {
 
 	protected boolean forwardOnRemote(JsonElement jsonElement) throws Exception {
 		boolean sent = false;
-		List<Application> list = ThisApplication.applications.get(x_collaboration_assemble_websocket.class);
+		List<Application> list = ThisApplication.context().applications().get(x_collaboration_assemble_websocket.class);
 		if (ListTools.isNotEmpty(list)) {
 			for (Application application : list) {
-				if (!StringUtils.equals(application.getToken(), ThisApplication.token)) {
-					WrapOutBoolean wrap = ThisApplication.applications.putQuery(application, "message", jsonElement,
-							WrapOutBoolean.class);
+				if (!StringUtils.equals(application.getToken(), ThisApplication.context().token())) {
+					WrapOutBoolean wrap = CipherConnectionAction.put(application.getUrlRoot() + "message", jsonElement)
+							.getData(WrapOutBoolean.class);
 					sent = sent || wrap.getValue();
 				}
 			}

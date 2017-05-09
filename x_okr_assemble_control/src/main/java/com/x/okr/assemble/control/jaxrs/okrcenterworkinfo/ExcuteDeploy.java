@@ -11,6 +11,16 @@ import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.CenterWorkDeployException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.CenterWorkIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.CenterWorkNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.CenterWorkQueryByIdException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.DeployableWorkQueryException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.UserNoLoginException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.WorkDeployException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.WorkTaskCreateException;
+import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.exception.WorkTaskRemoveException;
 import com.x.okr.assemble.control.service.OkrCenterWorkOperationService;
 import com.x.okr.assemble.control.service.OkrSendNotifyService;
 import com.x.okr.assemble.control.service.OkrTaskService;
@@ -45,7 +55,7 @@ public class ExcuteDeploy extends ExcuteBase {
 			check = false;
 			Exception exception = new CenterWorkIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check ){
@@ -55,7 +65,7 @@ public class ExcuteDeploy extends ExcuteBase {
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}	
 		}
 		
@@ -63,7 +73,7 @@ public class ExcuteDeploy extends ExcuteBase {
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			try{
@@ -72,13 +82,13 @@ public class ExcuteDeploy extends ExcuteBase {
 					check = false;
 					Exception exception = new CenterWorkNotExistsException( id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			}catch( Exception e){
 				check = false;
 				Exception exception = new CenterWorkQueryByIdException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -100,7 +110,7 @@ public class ExcuteDeploy extends ExcuteBase {
 			} catch (Exception e) {
 				Exception exception = new DeployableWorkQueryException( e, okrCenterWorkInfo.getId(), okrUserCache.getLoginIdentityName() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -124,7 +134,7 @@ public class ExcuteDeploy extends ExcuteBase {
 				check = false;
 				Exception exception = new WorkDeployException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -140,13 +150,13 @@ public class ExcuteDeploy extends ExcuteBase {
 					check = false;
 					Exception exception = new CenterWorkNotExistsException( id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			}catch( Exception e){
 				check = false;
 				Exception exception = new CenterWorkDeployException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -157,7 +167,7 @@ public class ExcuteDeploy extends ExcuteBase {
 				}catch( Exception e ){
 					Exception exception = new WorkTaskCreateException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}else{
 				try {
@@ -165,7 +175,7 @@ public class ExcuteDeploy extends ExcuteBase {
 				}catch( Exception e ){
 					Exception exception = new WorkTaskRemoveException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}

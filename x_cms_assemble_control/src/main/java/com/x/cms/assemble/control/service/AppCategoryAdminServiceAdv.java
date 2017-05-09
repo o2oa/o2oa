@@ -1,5 +1,6 @@
 package com.x.cms.assemble.control.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -11,6 +12,7 @@ import com.x.cms.core.entity.AppCategoryAdmin;
 public class AppCategoryAdminServiceAdv {
 
 	private AppCategoryAdminService appCategoryAdminService = new AppCategoryAdminService();
+	private CategoryInfoService categoryInfoService = new CategoryInfoService();
 	
 	public List<AppCategoryAdmin> listAll() throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -100,5 +102,36 @@ public class AppCategoryAdminServiceAdv {
 		} catch ( Exception e ) {
 			throw e;
 		}
+	}
+	
+	public List<String> getManagerableCatagories( String personName ) throws Exception {
+		List<String> appInfo_ids = null;
+		List<String> category_ids = null;
+		List<String> result = new ArrayList<>();
+				
+		appInfo_ids = listAppCategoryObjectIdByUser( personName, "APPINFO" );
+		if( appInfo_ids != null && !appInfo_ids.isEmpty() ){
+			for( String appId : appInfo_ids ){
+				category_ids = categoryInfoService.listByAppId( appId );
+				if( category_ids != null && !category_ids.isEmpty() ){
+					for( String categoryId : category_ids ){
+						if( !result.contains( categoryId )){
+							result.add( categoryId );
+						}
+					}
+				}
+			}
+		}
+		
+		category_ids = listAppCategoryObjectIdByUser( personName, "CATEGORY" );
+		if( category_ids != null && !category_ids.isEmpty() ){
+			for( String categoryId : category_ids ){
+				if( !result.contains( categoryId )){
+					result.add( categoryId );
+				}
+			}
+		}
+		
+		return result;
 	}
 }

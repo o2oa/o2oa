@@ -11,6 +11,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.WrapOutOnline;
 import com.x.base.core.project.x_collaboration_assemble_websocket;
+import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.utils.SortTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.assemble.control.ThisApplication;
@@ -112,8 +113,10 @@ public class ActionGetPersonIdentityCompanyDutyDepartmentDuty {
 
 	private void fillOnlineStatus(Business business, WrapOutPerson wrap) throws Exception {
 		wrap.setOnlineStatus(WrapOutOnline.status_offline);
-		WrapOutOnline online = ThisApplication.applications.getQuery(x_collaboration_assemble_websocket.class,
-				"online/person/" + URLEncoder.encode(wrap.getName(), DefaultCharset.name), WrapOutOnline.class);
+		ActionResponse resp = ThisApplication.context().applications().getQuery(
+				x_collaboration_assemble_websocket.class,
+				"online/person/" + URLEncoder.encode(wrap.getName(), DefaultCharset.name));
+		WrapOutOnline online = resp.getData(WrapOutOnline.class);
 		wrap.setOnlineStatus(online.getOnlineStatus());
 	}
 }

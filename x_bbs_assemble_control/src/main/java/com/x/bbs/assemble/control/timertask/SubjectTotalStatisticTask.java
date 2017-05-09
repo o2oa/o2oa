@@ -1,10 +1,11 @@
 package com.x.bbs.assemble.control.timertask;
 
 import java.util.List;
-import java.util.TimerTask;
+
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
-import com.x.bbs.assemble.control.ThisApplication;
+import com.x.base.core.project.Context;
+import com.x.base.core.project.clock.ClockScheduleTask;
 import com.x.bbs.assemble.control.service.BBSForumInfoServiceAdv;
 import com.x.bbs.assemble.control.service.BBSForumSubjectStatisticService;
 import com.x.bbs.entity.BBSForumInfo;
@@ -15,34 +16,28 @@ import com.x.bbs.entity.BBSForumInfo;
  * @author LIYI
  *
  */
-public class SubjectTotalStatisticTask extends TimerTask {
+public class SubjectTotalStatisticTask extends ClockScheduleTask {
 
 	private Logger logger = LoggerFactory.getLogger(SubjectTotalStatisticTask.class);
 	private BBSForumInfoServiceAdv forumInfoServiceAdv = new BBSForumInfoServiceAdv();
 	private BBSForumSubjectStatisticService forumSubjectStatisticService = new BBSForumSubjectStatisticService();
 
-	public void run() {
-
-		if (ThisApplication.getSubjectReplyTotalStatisticTaskRunning()) {
-			logger.info("Timertask[SubjectReplyTotalStatisticTask] service is running, wait for next time......");
-			return;
-		}
-
-		ThisApplication.setSubjectReplyTotalStatisticTaskRunning(true);
-
+	public SubjectTotalStatisticTask(Context context) {
+		super(context);
+	}
+	
+	public void execute() {
 		List<BBSForumInfo> forumInfoList = null;
 
 		try {
 			forumInfoList = forumInfoServiceAdv.listAll();
 			if (forumInfoList != null && !forumInfoList.isEmpty()) {
-				forumSubjectStatisticService.statisticSubjectTotalAndReplayTotalForForum(forumInfoList);
+				forumSubjectStatisticService.statisticSubjectTotalAndReplayTotalForForum( forumInfoList );
 			}
+			logger.info("Timertask[SubjectReplyTotalStatisticTask] completed and excute success.");
 		} catch (Exception e) {
 			logger.warn("SubjectTotalStatisticTask got an exception." );
 			logger.error(e);
 		}
-
-		ThisApplication.setSubjectReplyTotalStatisticTaskRunning(false);
-		logger.info("Timertask[SubjectReplyTotalStatisticTask] completed and excute success.");
 	}
 }

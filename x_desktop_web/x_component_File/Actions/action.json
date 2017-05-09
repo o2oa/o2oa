@@ -1,6 +1,6 @@
 {
 	"addAttachment": {
-		"uri": "/servlet/upload/folder/{folder}",
+		"uri": "/servlet/attachment/upload/folder/{folder}",
 		"method": "POST",
 		"enctype": "formData"
 	},
@@ -20,10 +20,10 @@
 		"uri": "/jaxrs/attachment/{id}",
 		"method": "PUT"
 	},
-	"getAttachmentData": {"uri": "/servlet/download/{id}"},
-    "getAttachmentStream": {"uri": "/servlet/download/{id}/stream"},
+	"getAttachmentData": {"uri": "/servlet/attachment/download/{id}"},
+    "getAttachmentStream": {"uri": "/servlet/attachment/download/{id}/stream"},
 	"updateAttachmentData": {
-		"uri": "/servlet/update/{id}",
+		"uri": "/servlet/attachment/update/{id}",
 		"method": "POST",
 		"enctype": "formData"
 	},

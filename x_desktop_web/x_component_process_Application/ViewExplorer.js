@@ -99,8 +99,10 @@ MWF.xApplication.process.Application.ViewExplorer = new Class({
         viewNode.store("view", view);
         this.items.push(viewNode);
 
-        if (this.app.status.viewName){
-            if (view.name == this.app.status.viewName) this.currentView = viewNode;
+        if (this.app.status){
+            if (this.app.status.viewName){
+                if (view.name == this.app.status.viewName) this.currentView = viewNode;
+            }
         }
 
         var _self = this;

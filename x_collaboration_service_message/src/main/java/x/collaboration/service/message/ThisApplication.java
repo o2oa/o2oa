@@ -1,20 +1,35 @@
 package x.collaboration.service.message;
 
-import com.x.base.core.project.AbstractThisApplication;
-import com.x.base.core.project.ReportTask;
+import com.x.base.core.project.Context;
 
-public class ThisApplication extends AbstractThisApplication {
-	public static void init() throws Exception {
-		/* 启动报告任务 */
-		timerWithFixedDelay(new ReportTask(), 1, 20);
-		initDatasFromCenters();
-		WsConnector.start();
-		PushMessageConnector.start();
+public class ThisApplication {
+
+	protected static Context context;
+
+	public static Context context() {
+		return context;
 	}
 
-	public static void destroy() throws Exception {
-		WsConnector.stop();
-		PushMessageConnector.stop();
+	public static WsQueue wsQueue;
 
+	public static PushMessageQueue pushMessageQueue;
+
+	public static void init() {
+		try {
+			wsQueue = new WsQueue(context());
+			pushMessageQueue = new PushMessageQueue(context());
+			context().startQueue(wsQueue);
+			context().startQueue(pushMessageQueue);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
+
+	public static void destroy() {
+		try {
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }

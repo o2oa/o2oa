@@ -85,7 +85,6 @@ MWF.xApplication.BAM.Main = new Class({
     },
     loadMonthly: function(){
         //this.app.content.mask();
-        debugger;
         this.mask();
         MWF.xDesktop.requireApp("BAM", "Monthly", function(){
             this.monthly = new MWF.xApplication.BAM.Monthly(this, this.monthlyNode, {

@@ -362,7 +362,7 @@
                 "text": "",
                 "condition": "reutrn true"
               }
-            ],
+            ]
           },
           "tools": [],
           "style": "form",

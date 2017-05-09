@@ -5,7 +5,7 @@ MWF.xScript.Environment = function(ev){
     var _forms = ev.forms;
 
     this.library = COMMON;
-    this.library.version = "4.0";
+    //this.library.version = "4.0";
 
     //data
     var getJSONData = function(jData){
@@ -161,7 +161,6 @@ MWF.xScript.Environment = function(ev){
             getOrgActions();
             var v;
             orgActions.listCompanyByPerson(options.personName, function(json){
-                debugger;
                 v = json.data;
             }, null, false);
             return v;
@@ -282,6 +281,51 @@ MWF.xScript.Environment = function(ev){
                 v = json.data;
             }, null, false);
             return v;
+        },
+        //获取公司的顶层公司
+        "listTopCompanyByCompany": function(options){ 
+            getOrgActions();
+            var v;
+            orgActions.listTopCompanyByCompany(options.compName, function(json){
+                v = json.data;
+            }, null, false);
+            return v;
+        },
+        //根据属性获取公司
+        "listCompanyByAttribute": function(options){
+            getOrgActions();
+            var v;
+            orgActions.listCompanyByAttribute(options.attributeName, function(json){
+                v = json.data;
+            }, null, false);
+            return v;
+        },
+        //列式所有顶层公司
+        "listTopCompany": function(options){
+            getOrgActions();
+            var v;
+            orgActions.listTopCompany( function(json){
+                v = json.data;
+            }, null, false);
+            return v;
+        },
+        //查询指定公司的嵌套下级公司
+        "listSubCompanyNest": function(options){
+            getOrgActions();
+            var v;
+            orgActions.listSubCompanyNest(options.compName, function(json){
+                v = json.data;
+            }, null, false);
+            return v;
+        },
+        //查询指定公司的直接下级公司
+        "listSubCompanyDirect": function(options){
+            getOrgActions();
+            var v;
+            orgActions.listSubCompanyDirect(options.compName, function(json){
+                v = json.data;
+            }, null, false);
+            return v;
         }
     };
 
@@ -314,7 +358,7 @@ MWF.xScript.Environment = function(ev){
     this.view = {
         "lookup": function(view, callback){
             getLookupAction(function(){
-                lookupAction.invoke({"name": "lookup","async": true, "parameter": {"view": view.view, "application": view.applcation},"success": function(json){
+                lookupAction.invoke({"name": "lookup","async": true, "parameter": {"view": view.view, "application": view.application},"success": function(json){
                     var data = {
                         "grid": json.data.grid,
                         "groupGrid": json.data.groupGrid
@@ -326,7 +370,7 @@ MWF.xScript.Environment = function(ev){
         "select": function(view, callback, options){
             if (view.view){
                 var viewJson = {
-                    "application": view.application || "",
+                    "application": view.application || _form.json.application,
                     "viewName": view.view || "",
                     "isTitle": view.isTitle || "yes",
                     "select": view.select || "multi"
@@ -483,7 +527,10 @@ MWF.xScript.Environment = function(ev){
         "notice": function(content, type, target, where){
             _form.notice(content, type, target, where);
         },
-        "addEvent": function(e, f){_form.addEvent(e, f);}
+        "addEvent": function(e, f){_form.addEvent(e, f);},
+        "openWindow": function(form, app){
+            _form.openWindow(form, app);
+        }
     };
     this.form.currentRouteName = _form.json.currentRouteName;
     this.form.opinion = _form.json.opinion;
@@ -493,6 +540,21 @@ MWF.xScript.Environment = function(ev){
     this.status = ev.status;
     this.session = layout.desktop.session;
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 MWF.xScript.JSONData = function(data, callback, key, parent){
     var getter = function(data, callback, k, _self){
@@ -523,7 +585,6 @@ MWF.xScript.JSONData = function(data, callback, key, parent){
                         newValue = newKey;
                         newKey = data.length-1;
                     }else{
-                        debugger;
                         if (!newKey && newKey!=0){
                             data.push(newValue);
                             newKey = data.length-1;

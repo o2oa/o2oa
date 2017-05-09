@@ -19,6 +19,7 @@ public class HttpToken {
 
 	public static final String X_Token = "x-token";
 	public static final String X_Person = "x-person";
+	public static final String X_Client = "x-client";
 	private static final String RegularExpression_IP = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
 	private static final String RegularExpression_Token = "^(anonymous|user|manager|cipher)([2][0][1-2][0-9][0-1][0-9][0-3][0-9][0-5][0-9][0-5][0-9][0-5][0-9])(\\S{1,})$";
 
@@ -40,11 +41,11 @@ public class HttpToken {
 				plain = Crypto.decrypt(token, key);
 			} catch (Exception e) {
 				System.out.println("can not decrypt token:" + token + ". " + e.getMessage());
+				return EffectivePerson.anonymous();
 			}
 			Pattern pattern = Pattern.compile(RegularExpression_Token, Pattern.CASE_INSENSITIVE);
 			Matcher matcher = pattern.matcher(plain);
 			if (!matcher.find()) {
-				// throw new Exception("token format error." + token);
 				/* 不报错,跳过错误,将用户设置为anonymous */
 				System.out.println("token format error:" + plain + ".");
 				return EffectivePerson.anonymous();
@@ -54,7 +55,7 @@ public class HttpToken {
 			long diff = (new Date().getTime() - date.getTime());
 			diff = Math.abs(diff);
 			if (TokenType.user.equals(tokenType) || TokenType.manager.equals(tokenType)) {
-				if (diff > (60000 * 60 * 24 * 15)) {
+				if (diff > (60000L * 60 * 24 * 15)) {
 					// throw new Exception("token expired." + token);
 					/* 不报错,跳过错误,将用户设置为anonymous */
 					System.out.println("token expired." + plain);

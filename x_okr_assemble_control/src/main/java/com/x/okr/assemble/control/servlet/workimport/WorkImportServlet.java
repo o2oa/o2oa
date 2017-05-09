@@ -90,7 +90,7 @@ public class WorkImportServlet extends AbstractServletAction {
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 			
@@ -99,7 +99,7 @@ public class WorkImportServlet extends AbstractServletAction {
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		
 		if (check) {
@@ -107,7 +107,7 @@ public class WorkImportServlet extends AbstractServletAction {
 				check = false;
 				Exception exception = new UserNoLoginException( effectivePerson.getName() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 
@@ -140,14 +140,14 @@ public class WorkImportServlet extends AbstractServletAction {
 						check = false;
 						Exception exception = new CenterWorkNotExistsException( centerId );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						//logger.error( e, effectivePerson, request, null);
 					}
 				}
 			} catch (Exception e) {// 获取中心工作发生异常
 				check = false;
 				Exception exception = new CenterWorkQueryByIdException( e, centerId );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 
@@ -169,7 +169,7 @@ public class WorkImportServlet extends AbstractServletAction {
 				check = false;
 				Exception exception = new ExcelReadException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			} finally {
 				if (input != null) {
 					input.close();
@@ -204,7 +204,7 @@ public class WorkImportServlet extends AbstractServletAction {
 		if ( importRowList == null || importRowList.isEmpty() ) {
 			Exception exception = new NoDataException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 			return result;
 		}
 		List<WrapInOkrWorkBaseInfo> wrapInList = new ArrayList<WrapInOkrWorkBaseInfo>();
@@ -228,14 +228,14 @@ public class WorkImportServlet extends AbstractServletAction {
 			check = false;
 			Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}		
 		
 		if( check && ( okrUserCache == null || okrUserCache.getLoginIdentityName() == null ) ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 
 		if (check) {
@@ -248,7 +248,7 @@ public class WorkImportServlet extends AbstractServletAction {
 					check = false;
 					Exception exception = new CenterWorkQueryByIdException( e, centerId );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -258,7 +258,7 @@ public class WorkImportServlet extends AbstractServletAction {
 				check = false;
 				Exception exception = new CenterWorkNotExistsException( centerId );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 
@@ -269,7 +269,7 @@ public class WorkImportServlet extends AbstractServletAction {
 				check = false;
 				Exception exception = new UserOrganizationQueryException( e, effectivePerson.getName() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if (check) {
@@ -279,7 +279,7 @@ public class WorkImportServlet extends AbstractServletAction {
 				check = false;
 				Exception exception = new UserOrganizationQueryException( e, currentUserIdentityName );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if (check) {
@@ -289,7 +289,7 @@ public class WorkImportServlet extends AbstractServletAction {
 				check = false;
 				Exception exception = new UserOrganizationQueryException( e, currentUserIdentityName );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 
@@ -328,7 +328,7 @@ public class WorkImportServlet extends AbstractServletAction {
 						check = false;
 						Exception exception = new UserNoLoginException( effectivePerson.getName() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						//logger.error( e, effectivePerson, request, null);
 					}
 
 					if (check) {
@@ -382,7 +382,7 @@ public class WorkImportServlet extends AbstractServletAction {
 								check = false;
 								Exception exception = new WorkNotExistsException( cacheImportRowDetail.getParentWorkId() );
 								result.error( exception );
-								logger.error( exception, effectivePerson, request, null);
+								//logger.error( e, effectivePerson, request, null);
 								wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
 								wrapInOkrWorkBaseInfo.setDescription("上级工作不存在, id:'" + cacheImportRowDetail.getParentWorkId() + "'，无法继续保存工作信息!");
 							}
@@ -400,7 +400,7 @@ public class WorkImportServlet extends AbstractServletAction {
 								check = false;
 								Exception exception = new WorkCompleteDateLimitFormatException( e, cacheImportRowDetail.getCompleteDateLimitStr() );
 								result.error( exception );
-								logger.error( exception, effectivePerson, request, null);
+								logger.error( e, effectivePerson, request, null);
 								wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
 								wrapInOkrWorkBaseInfo.setDescription("工作完成时限格式不正确：" + cacheImportRowDetail.getCompleteDateLimitStr() + "，无法继续保存工作信息!");
 							}
@@ -408,7 +408,7 @@ public class WorkImportServlet extends AbstractServletAction {
 							check = false;
 							Exception exception = new WorkCompleteDateLimitEmptyException();
 							result.error( exception );
-							logger.error( exception, effectivePerson, request, null);
+							//logger.error( e, effectivePerson, request, null);
 							wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
 							wrapInOkrWorkBaseInfo.setDescription("工作完成时限信息为空，无法继续保存工作信息!");
 						}
@@ -459,7 +459,7 @@ public class WorkImportServlet extends AbstractServletAction {
 								check = false;
 								Exception exception = new WorkResponsibilityInvalidException( e, cacheImportRowDetail.getResponsibilityIdentity() );
 								result.error( exception );
-								logger.error( exception, effectivePerson, request, null);
+								logger.error( e, effectivePerson, request, null);
 								wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
 								wrapInOkrWorkBaseInfo.setDescription("系统校验工作责任人发生异常，" + userName + "!");
 							}
@@ -467,7 +467,7 @@ public class WorkImportServlet extends AbstractServletAction {
 							check = false;
 							Exception exception = new WorkResponsibilityEmptyException();
 							result.error( exception );
-							logger.error( exception, effectivePerson, request, null);
+							//logger.error( e, effectivePerson, request, null);
 							wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
 							wrapInOkrWorkBaseInfo.setDescription("责任者[responsibilityEmployeeName]信息为空，无法继续保存工作信息!");
 						}
@@ -517,7 +517,7 @@ public class WorkImportServlet extends AbstractServletAction {
 								check = false;
 								Exception exception = new WorkCooperateInvalidException( e, cacheImportRowDetail.getCooperateIdentity() );
 								result.error( exception );
-								logger.error( exception, effectivePerson, request, null);
+								logger.error( e, effectivePerson, request, null);
 								wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
 								wrapInOkrWorkBaseInfo.setDescription("系统校验工作协助人发生异常，" + userName + "!");
 							}
@@ -573,7 +573,7 @@ public class WorkImportServlet extends AbstractServletAction {
 								check = false;
 								Exception exception = new WorkReadLeaderInvalidException( e, cacheImportRowDetail.getReadLeaderIdentity() );
 								result.error( exception );
-								logger.error( exception, effectivePerson, request, null);
+								logger.error( e, effectivePerson, request, null);
 								wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
 								wrapInOkrWorkBaseInfo.setDescription("系统校验工作阅知领导信息发生异常，" + identityNames + "!");
 							}
@@ -614,7 +614,7 @@ public class WorkImportServlet extends AbstractServletAction {
 									check = false;
 									Exception exception = new ReportDayInCycleInvalidException( wrapInOkrWorkBaseInfo.getReportDayInCycle() );
 									result.error( exception );
-									logger.error( exception, effectivePerson, request, null);
+									//logger.error( e, effectivePerson, request, null);
 									wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
 									wrapInOkrWorkBaseInfo.setDescription("每周汇报日选择不正确：" + wrapInOkrWorkBaseInfo.getReportDayInCycle() + "，无法继续保存工作信息!");
 								}
@@ -622,7 +622,7 @@ public class WorkImportServlet extends AbstractServletAction {
 								check = false;
 								Exception exception = new ReportDayInCycleEmptyException();
 								result.error( exception );
-								logger.error( exception, effectivePerson, request, null);
+								//logger.error( e, effectivePerson, request, null);
 								wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
 								wrapInOkrWorkBaseInfo.setDescription("每周汇报日为空，无法继续保存工作信息!");
 							}
@@ -646,7 +646,7 @@ public class WorkImportServlet extends AbstractServletAction {
 									check = false;
 									Exception exception = new ReportDayInCycleInvalidException( wrapInOkrWorkBaseInfo.getReportDayInCycle() );
 									result.error( exception );
-									logger.error( exception, effectivePerson, request, null);
+									//logger.error( e, effectivePerson, request, null);
 									wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
 									wrapInOkrWorkBaseInfo.setDescription("每月汇报日选择不正确：" + wrapInOkrWorkBaseInfo.getReportDayInCycle() + "，无法继续保存工作信息!");
 								}
@@ -654,7 +654,7 @@ public class WorkImportServlet extends AbstractServletAction {
 								check = false;
 								Exception exception = new ReportDayInCycleEmptyException();
 								result.error( exception );
-								logger.error( exception, effectivePerson, request, null);
+								//logger.error( e, effectivePerson, request, null);
 								wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
 								wrapInOkrWorkBaseInfo.setDescription("每月汇报日期为空，无法继续保存工作信息!");
 							}
@@ -662,7 +662,7 @@ public class WorkImportServlet extends AbstractServletAction {
 							check = false;
 							Exception exception = new ReportCycleInvalidException( cacheImportRowDetail.getReportCycle() );
 							result.error( exception );
-							logger.error( exception, effectivePerson, request, null);
+							//logger.error( e, effectivePerson, request, null);
 							wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
 							wrapInOkrWorkBaseInfo.setDescription( "汇报周期选择不正确：" + cacheImportRowDetail.getReportCycle() + "，无法继续保存工作信息!");
 						}
@@ -672,7 +672,7 @@ public class WorkImportServlet extends AbstractServletAction {
 					check = false;
 					Exception exception = new WorkImportDataCheckException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 					wrapInOkrWorkBaseInfo.setCheckSuccess("failture");
 					wrapInOkrWorkBaseInfo.setDescription("系统在校验所有待保存数据信息时发生未知异常!");
 				}
@@ -697,7 +697,7 @@ public class WorkImportServlet extends AbstractServletAction {
 							check = false;
 							Exception exception = new WorkImportDataException( e );
 							result.error( exception );
-							logger.error( exception, effectivePerson, request, null);
+							logger.error( e, effectivePerson, request, null);
 						}
 					}
 				}

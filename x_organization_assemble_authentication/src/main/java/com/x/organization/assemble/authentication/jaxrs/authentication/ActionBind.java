@@ -20,7 +20,7 @@ import com.x.base.core.http.ActionResult;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.StringTools;
-import com.x.organization.assemble.authentication.wrap.out.WrapOutBind;
+import com.x.organization.assemble.authentication.wrapout.WrapOutBind;
 
 class ActionBind extends ActionBase {
 

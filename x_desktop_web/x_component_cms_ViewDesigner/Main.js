@@ -21,7 +21,7 @@ MWF.xApplication.cms.ViewDesigner.Main = new Class({
 	},
 	onQueryLoad: function(){
         this.shortcut = true;
-        if (this.status){
+        if (!this.options.id && this.status){
             this.options.application = this.status.applicationId;
             this.application = this.status.application;
             this.options.id = this.status.id;
@@ -352,7 +352,6 @@ MWF.xApplication.cms.ViewDesigner.Main = new Class({
 	
 	//loadForm------------------------------------------
     loadView: function(){
-        //debugger;
 		this.getViewData(this.options.id, function(vdata){
             var name = vdata.name || "";
             this.setTitle(this.options.appTitle + "-"+ name);
@@ -412,6 +411,7 @@ MWF.xApplication.cms.ViewDesigner.Main = new Class({
 		this.actions.getView(id, function(data){
 			if (data){
                 data.data.content = JSON.parse(data.data.content);
+                if( data.data.content.id != id )data.data.content.id = id;
                 if (!this.application){
                     this.actions.getColumn( {"id":data.appId }, function(json){
                         this.application = {"name": json.data.name, "id": json.data.id};

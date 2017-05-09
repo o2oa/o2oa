@@ -422,7 +422,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         MWF.xDesktop.requireApp("process.FormDesigner", "Preview", function(){
 
             if (this.options.mode=="Mobile"){
-                this.previewBox = new MWF.xApplication.process.FormDesigner.Preview(this, {"size": {"x": "340", "y": 580}});
+                this.previewBox = new MWF.xApplication.process.FormDesigner.Preview(this, {"size": {"x": "400", "y": 580}, "mode": "mobile"});
             }else{
                 this.previewBox = new MWF.xApplication.process.FormDesigner.Preview(this);
             }
@@ -520,7 +520,6 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			this.node.set("id", this.json.id);
 		}
         if (name=="formStyleType"){
-            debugger;
             this.templateStyles = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType] : null;
             if (oldValue) {
                 var oldTemplateStyles = this.stylesList[oldValue];

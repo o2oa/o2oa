@@ -57,7 +57,6 @@ MWF.Macro.FormContext = new Class({
         }
     },
     exec: function(code, target){
-        debugger;
         this.setTarget(target);
         return MWF.Macro.exec(code, this.environment);
     },

@@ -12,6 +12,7 @@ import com.x.okr.assemble.control.service.OkrConfigSystemService;
 import com.x.okr.assemble.control.service.OkrUserInfoService;
 import com.x.okr.assemble.control.service.OkrUserManagerService;
 import com.x.okr.assemble.control.service.OkrWorkAuthorizeRecordService;
+import com.x.okr.assemble.control.service.OkrWorkBaseInfoOperationService;
 import com.x.okr.assemble.control.service.OkrWorkBaseInfoQueryService;
 import com.x.okr.assemble.control.service.OkrWorkDetailInfoService;
 import com.x.okr.assemble.control.service.OkrWorkDynamicsService;
@@ -30,6 +31,7 @@ public class ExcuteBase {
 	protected BeanCopyTools<OkrWorkBaseInfo, WrapOutOkrWorkBaseSimpleInfo> wrapout_copier_worksimple = BeanCopyToolsBuilder.create( OkrWorkBaseInfo.class, WrapOutOkrWorkBaseSimpleInfo.class, null, WrapOutOkrWorkBaseSimpleInfo.Excludes);
 	protected OkrCenterWorkQueryService okrCenterWorkInfoService = new OkrCenterWorkQueryService();
 	protected OkrWorkAuthorizeRecordService okrWorkAuthorizeRecordService = new OkrWorkAuthorizeRecordService();
+	protected OkrWorkBaseInfoOperationService okrWorkBaseInfoOperationService = new OkrWorkBaseInfoOperationService();
 	protected OkrWorkBaseInfoQueryService okrWorkBaseInfoService = new OkrWorkBaseInfoQueryService();
 	protected OkrWorkPersonService okrWorkPersonService = new OkrWorkPersonService();
 	protected OkrWorkDetailInfoService okrWorkDetailInfoService = new OkrWorkDetailInfoService();

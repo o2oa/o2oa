@@ -40,7 +40,7 @@ public class DepartmentFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Department> root = cq.from(Department.class);
-		cq.select(root.get(Department_.id));
+		cq.select(root.get(Department_.id)).distinct(true);
 		List<String> list = em.createQuery(cq).getResultList();
 		return list;
 	}
@@ -52,7 +52,7 @@ public class DepartmentFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Department> root = cq.from(Department.class);
 		Predicate p = cb.equal(root.get(Department_.name), name);
-		cq.select(root.get(Department_.id)).where(p);
+		cq.select(root.get(Department_.id)).where(p).distinct(true);
 		List<String> list = em.createQuery(cq).setMaxResults(1).getResultList();
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -68,7 +68,7 @@ public class DepartmentFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = cb.equal(root.get(Identity_.id), id);
-		cq.select(root.get(Identity_.department)).where(p);
+		cq.select(root.get(Identity_.department)).where(p).distinct(true);
 		List<String> list = em.createQuery(cq).setMaxResults(1).getResultList();
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -84,7 +84,7 @@ public class DepartmentFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Department> root = cq.from(Department.class);
 		Predicate p = cb.equal(root.get(Department_.id), id);
-		cq.select(root.get(Department_.superior)).where(p);
+		cq.select(root.get(Department_.superior)).where(p).distinct(true);
 		List<String> list = em.createQuery(cq).setMaxResults(1).getResultList();
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -93,14 +93,14 @@ public class DepartmentFactory extends AbstractFactory {
 		}
 	}
 
-	@MethodDescribe("查找部门的嵌套上级部门.")
+	@MethodDescribe("查找部门的嵌套上级部门,不包含当前部门")
 	public List<String> listSupNested(String id) throws Exception {
 		ListOrderedSet<String> set = new ListOrderedSet<String>();
 		this.supNested(id, set);
 		return set.asList();
 	}
 
-	@MethodDescribe("递归查找部门的嵌套上级部门.")
+	@MethodDescribe("递归查找部门的嵌套上级部门,,不包含当前部门")
 	private void supNested(String id, ListOrderedSet<String> set) throws Exception {
 		String str = this.getSupDirect(id);
 		if ((str != null) && (!set.contains(str))) {
@@ -123,7 +123,7 @@ public class DepartmentFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Department> root = cq.from(Department.class);
 		Predicate p = cb.equal(root.get(Department_.superior), id);
-		cq.select(root.get(Department_.id)).where(p);
+		cq.select(root.get(Department_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -151,7 +151,7 @@ public class DepartmentFactory extends AbstractFactory {
 		Root<Department> root = cq.from(Department.class);
 		Predicate p = cb.equal(root.get(Department_.company), id);
 		p = cb.and(p, cb.equal(root.get(Department_.level), 1));
-		cq.select(root.get(Department_.id)).where(p);
+		cq.select(root.get(Department_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -162,7 +162,7 @@ public class DepartmentFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Department> root = cq.from(Department.class);
 		Predicate p = cb.equal(root.get(Department_.company), id);
-		cq.select(root.get(Department_.id)).where(p);
+		cq.select(root.get(Department_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -176,7 +176,7 @@ public class DepartmentFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Department> root = cq.from(Department.class);
 		Predicate p = cb.like(root.get(Department_.pinyinInitial), str + "%", '\\');
-		cq.select(root.get(Department_.id)).where(p);
+		cq.select(root.get(Department_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -192,7 +192,7 @@ public class DepartmentFactory extends AbstractFactory {
 		Predicate p = cb.like(root.get(Department_.name), "%" + str + "%", '\\');
 		p = cb.or(p, cb.like(root.get(Department_.pinyin), str + "%", '\\'));
 		p = cb.or(p, cb.like(root.get(Department_.pinyinInitial), str + "%", '\\'));
-		cq.select(root.get(Department_.id)).where(p);
+		cq.select(root.get(Department_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -207,7 +207,7 @@ public class DepartmentFactory extends AbstractFactory {
 		Root<Department> root = cq.from(Department.class);
 		Predicate p = cb.like(root.get(Department_.pinyin), str + "%");
 		p = cb.or(p, cb.like(root.get(Department_.pinyinInitial), str + "%"));
-		cq.select(root.get(Department_.id)).where(p);
+		cq.select(root.get(Department_.id)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 
@@ -218,7 +218,7 @@ public class DepartmentFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<Department> root = cq.from(Department.class);
 		Predicate p = cb.equal(root.get(Department_.superior), id);
-		cq.select(cb.count(root)).where(p);
+		cq.select(cb.count(root)).where(p).distinct(true);
 		return em.createQuery(cq).getSingleResult();
 	}
 
@@ -230,7 +230,7 @@ public class DepartmentFactory extends AbstractFactory {
 		Root<Department> root = cq.from(Department.class);
 		Predicate p = cb.equal(root.get(Department_.superior), "");
 		p = cb.and(p, cb.equal(root.get(Department_.company), id));
-		cq.select(cb.count(root)).where(p);
+		cq.select(cb.count(root)).where(p).distinct(true);
 		return em.createQuery(cq).getSingleResult();
 	}
 
@@ -242,7 +242,7 @@ public class DepartmentFactory extends AbstractFactory {
 		Root<DepartmentAttribute> root = cq.from(DepartmentAttribute.class);
 		Predicate p = cb.equal(root.get(DepartmentAttribute_.name), name);
 		p = cb.and(p, cb.isMember(attribute, root.get(DepartmentAttribute_.attributeList)));
-		cq.select(root.get(DepartmentAttribute_.department)).where(p);
+		cq.select(root.get(DepartmentAttribute_.department)).where(p).distinct(true);
 		return em.createQuery(cq).getResultList();
 	}
 

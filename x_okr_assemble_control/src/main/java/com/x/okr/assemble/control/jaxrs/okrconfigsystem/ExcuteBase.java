@@ -5,6 +5,8 @@ import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.cache.ApplicationCache;
 import com.x.okr.assemble.control.service.OkrConfigSystemService;
 import com.x.okr.assemble.control.service.OkrUserInfoService;
+import com.x.okr.assemble.control.service.OkrWorkBaseInfoOperationService;
+import com.x.okr.assemble.control.service.OkrWorkBaseInfoQueryService;
 import com.x.okr.assemble.control.service.OkrWorkDynamicsService;
 import com.x.okr.entity.OkrConfigSystem;
 
@@ -12,6 +14,8 @@ import net.sf.ehcache.Ehcache;
 
 public class ExcuteBase {
 	protected BeanCopyTools<OkrConfigSystem, WrapOutOkrConfigSystem> wrapout_copier = BeanCopyToolsBuilder.create( OkrConfigSystem.class, WrapOutOkrConfigSystem.class, null, WrapOutOkrConfigSystem.Excludes);
+	protected OkrWorkBaseInfoQueryService  okrWorkBaseInfoQueryService  = new OkrWorkBaseInfoQueryService();
+	protected OkrWorkBaseInfoOperationService okrWorkBaseInfoOperationService = new OkrWorkBaseInfoOperationService();
 	protected OkrConfigSystemService okrConfigSystemService = new OkrConfigSystemService();
 	protected OkrWorkDynamicsService okrWorkDynamicsService = new OkrWorkDynamicsService();
 	protected OkrUserInfoService okrUserInfoService = new OkrUserInfoService();

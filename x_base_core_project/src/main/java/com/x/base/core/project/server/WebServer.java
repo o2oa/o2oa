@@ -14,6 +14,7 @@ public class WebServer extends GsonPropertyObject {
 
 	public WebServer() {
 		this.enable = true;
+		this.host = "";
 		this.port = default_port;
 		this.sslEnable = false;
 		this.proxyHost = "";
@@ -26,6 +27,7 @@ public class WebServer extends GsonPropertyObject {
 
 	private Boolean enable;
 	private Integer port;
+	private String host;
 	private Boolean sslEnable;
 	private String proxyHost;
 	private Integer proxyPort;
@@ -67,6 +69,13 @@ public class WebServer extends GsonPropertyObject {
 		return default_port;
 	}
 
+	public String getHost() {
+		if (StringUtils.isNotEmpty(this.host)) {
+			return this.host;
+		}
+		return "";
+	}
+
 	public void setEnable(Boolean enable) {
 		this.enable = enable;
 	}
@@ -89,6 +98,10 @@ public class WebServer extends GsonPropertyObject {
 
 	public void setWeight(Integer weight) {
 		this.weight = weight;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
 	}
 
 }

@@ -12,19 +12,20 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import com.x.attendance.assemble.control.service.AttendanceImportFileInfoServiceAdv;
 import com.x.attendance.entity.AttendanceImportFileInfo;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 
 
 @Path("attendanceimportfileinfo")
@@ -53,7 +54,7 @@ public class AttendanceImportFileInfoAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceImportFileListAllException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check && attendanceSettingList != null ){
@@ -64,7 +65,7 @@ public class AttendanceImportFileInfoAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceImportFileWrapOutException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 			
 		}
@@ -88,7 +89,7 @@ public class AttendanceImportFileInfoAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceImportFileIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -98,13 +99,13 @@ public class AttendanceImportFileInfoAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceImportFileNotExistsException( id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new AttendanceImportFileQueryByIdException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check && attendanceImportFileInfo != null ){
@@ -115,7 +116,7 @@ public class AttendanceImportFileInfoAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceImportFileWrapOutException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}	
 		}	
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -138,7 +139,7 @@ public class AttendanceImportFileInfoAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceImportFileIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -148,13 +149,13 @@ public class AttendanceImportFileInfoAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AttendanceImportFileNotExistsException( id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new AttendanceImportFileQueryByIdException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -166,7 +167,7 @@ public class AttendanceImportFileInfoAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AttendanceImportFileDeleteException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);

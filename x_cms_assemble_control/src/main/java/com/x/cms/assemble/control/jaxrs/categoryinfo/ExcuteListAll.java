@@ -11,6 +11,7 @@ import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.SortTools;
 import com.x.cms.assemble.control.WrapTools;
+import com.x.cms.assemble.control.jaxrs.categoryinfo.exception.CategoryInfoProcessException;
 import com.x.cms.core.entity.CategoryInfo;
 
 import net.sf.ehcache.Element;
@@ -37,7 +38,7 @@ public class ExcuteListAll extends ExcuteBase {
 				categoryInfoList = categoryInfoServiceAdv.listAll();
 			} catch ( Exception e ) {
 				check = false;
-				Exception exception = new CategoryInfoListAllException( e );
+				Exception exception = new CategoryInfoProcessException( e, "查询所有分类信息对象时发生异常。" );
 				result.error( exception );
 				logger.error( e, effectivePerson, request, null);
 			}
@@ -50,7 +51,7 @@ public class ExcuteListAll extends ExcuteBase {
 						result.setData(wraps);
 					} catch ( Exception e ) {
 						check = false;
-						Exception exception = new CategoryInfoWrapOutException( e );
+						Exception exception = new CategoryInfoProcessException( e, "将查询出来的分类信息对象转换为可输出的数据信息时发生异常。" );
 						result.error( exception );
 						logger.error( e, effectivePerson, request, null);
 					}

@@ -18,11 +18,10 @@ MWF.shortcut = {
         if (app) app.fireEvent("keySave", [e]);
     },
     keyDelete: function(e){
-        debugger;
         var app = layout.desktop.currentApp;
         if (app) app.fireEvent("keyDelete", [e]);
     }
-}
+};
 
 MWF.shortcut.keyboard = new Keyboard({
     defaultEventType: 'keydown',

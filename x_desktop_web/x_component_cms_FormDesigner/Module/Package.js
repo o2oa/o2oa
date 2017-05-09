@@ -1,4 +1,4 @@
-MWF.xApplication.cms.FormDesigner.ResetTemplateModules = ["actionbar","readerfield"];
+MWF.xApplication.cms.FormDesigner.ResetTemplateModules = ["actionbar","readerfield","log"];
 //MWF.xApplication.cms.FormDesigner.ResetPropertyModules = ["actionbar","readerfield","calendar","checkbox","datagrid","number","personfield","radio","select","textarea","textfield"];
 MWF.require("MWF.widget.Macro", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "ModuleImplements", null, false);
@@ -29,3 +29,4 @@ MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Iframe", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Htmleditor", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Office", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Attachment", null, false);
+MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Log", null, false);

@@ -1,16 +1,17 @@
 package com.x.okr.assemble.control.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.Business;
 import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.WrapInOkrWorkBaseInfo;
 import com.x.okr.entity.OkrCenterWorkInfo;
@@ -32,6 +33,8 @@ public class OkrWorkBaseInfoOperationService {
 
 	private Logger logger = LoggerFactory.getLogger( OkrWorkBaseInfoOperationService.class );
 	private BeanCopyTools<WrapInOkrWorkBaseInfo, OkrWorkBaseInfo> wrapin_copier = BeanCopyToolsBuilder.create( WrapInOkrWorkBaseInfo.class, OkrWorkBaseInfo.class, null, WrapInOkrWorkBaseInfo.Excludes );
+	private OkrWorkBaseInfoExcuteArchive okrWorkBaseInfoExcuteArchive = new OkrWorkBaseInfoExcuteArchive();
+	private OkrWorkBaseInfoExcuteProgressAdjust okrWorkBaseInfoExcuteProgressAdjust = new OkrWorkBaseInfoExcuteProgressAdjust();
 	private OkrWorkPersonService okrWorkPersonService = new OkrWorkPersonService();
 	private OkrSendNotifyService okrNotifyService = new OkrSendNotifyService();
 	private OkrStatisticReportStatusService okrStatisticReportStatusService = new OkrStatisticReportStatusService();
@@ -1025,6 +1028,66 @@ public class OkrWorkBaseInfoOperationService {
 			business = new Business(emc);
 			return business.okrWorkBaseInfoFactory().list(ids);
 		}catch( Exception e ){
+			throw e;
+		}
+	}
+	
+	/**
+	 * 根据ID从归档OkrWorkBaseInfo对象
+	 * 同时归档所有的下级工作以及工作的相关汇报，请示等等
+	 * 并且删除所有待办
+	 * @param id
+	 * @throws Exception
+	 */
+	public void archive( String workId ) throws Exception {
+		if( workId == null || workId.isEmpty() ){
+			throw new Exception( "workId is null, system can not archive any object." );
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			okrWorkBaseInfoExcuteArchive.excute( emc, workId );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * 根据ID修改工作进展情况，同时修改最后一次生效的汇报进度
+	 * 
+	 * @param workId
+	 * @param percent
+	 * 
+	 * @throws Exception
+	 */
+	public void progressAdjust( String workId, Integer percent ) throws Exception {
+		if( workId == null || workId.isEmpty() ){
+			throw new Exception( "workId is null, system can not adjust progress." );
+		}
+		if( percent == null ){
+			throw new Exception( "percent is null, system can not adjust progress." );
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			okrWorkBaseInfoExcuteProgressAdjust.excute( emc, workId, percent );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	public void updateWorkReportTime(String workId, Date nextReportTime, String reportTimeQue) throws Exception {
+		if( workId == null || workId.isEmpty() ){
+			throw new Exception( "workId is null, system can not update reportTime for work." );
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			OkrWorkBaseInfo okrWorkBaseInfo = emc.find( workId, OkrWorkBaseInfo.class );
+			if( okrWorkBaseInfo != null ){
+				emc.beginTransaction( OkrWorkBaseInfo.class );
+				okrWorkBaseInfo.setNextReportTime(nextReportTime);
+				okrWorkBaseInfo.setReportTimeQue( reportTimeQue );
+				emc.check( okrWorkBaseInfo, CheckPersistType.all );
+				emc.commit();
+			}else{
+				throw new Exception( "work is not exists." );
+			}
+		} catch ( Exception e ) {
 			throw e;
 		}
 	}

@@ -12,18 +12,19 @@ import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
+import com.x.base.core.bean.BeanCopyTools;
+import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpToken;
 import com.x.base.core.http.TokenType;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.server.Config;
 import com.x.base.core.role.RoleDefinition;
 import com.x.organization.assemble.authentication.Business;
-import com.x.organization.assemble.authentication.wrap.WrapTools;
-import com.x.organization.assemble.authentication.wrap.out.WrapOutAuthentication;
+import com.x.organization.assemble.authentication.wrapout.WrapOutAuthentication;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Person_;
 import com.x.organization.core.entity.Role;
@@ -31,6 +32,9 @@ import com.x.organization.core.entity.Role;
 abstract class ActionBase extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionBase.class);
+
+	static BeanCopyTools<Person, WrapOutAuthentication> authenticationOutCopier = BeanCopyToolsBuilder
+			.create(Person.class, WrapOutAuthentication.class, null, WrapOutAuthentication.Excludes);
 
 	Boolean credentialExisted(EntityManagerContainer emc, String credential) throws Exception {
 		EntityManager em = emc.get(Person.class);
@@ -66,9 +70,9 @@ abstract class ActionBase extends StandardJaxrsAction {
 	WrapOutAuthentication user(HttpServletRequest request, HttpServletResponse response, Business business,
 			Person person) throws Exception {
 		business.entityManagerContainer().beginTransaction(Person.class);
-		person.setLastLoginTime(new Date());
+		//person.setLastLoginTime(new Date());
 		business.entityManagerContainer().commit();
-		WrapOutAuthentication wrap = WrapTools.authenticationOutCopier.copy(person);
+		WrapOutAuthentication wrap = authenticationOutCopier.copy(person);
 		List<String> roles = new ArrayList<>();
 		for (Role o : business.entityManagerContainer().fetchAttribute(business.role().listWithPerson(person.getId()),
 				Role.class, "name")) {

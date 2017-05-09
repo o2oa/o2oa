@@ -8,6 +8,12 @@ import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrauthorize.exception.AuthorizeWorkIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrauthorize.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrauthorize.exception.UserNoLoginException;
+import com.x.okr.assemble.control.jaxrs.okrauthorize.exception.WorkNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrauthorize.exception.WorkQueryByIdException;
+import com.x.okr.assemble.control.jaxrs.okrauthorize.exception.WorkTackbackProcessException;
 import com.x.okr.assemble.control.service.OkrWorkAuthorizeService;
 import com.x.okr.entity.OkrWorkBaseInfo;
 
@@ -34,21 +40,21 @@ public class ExcuteWorkTackback extends ExcuteBase {
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}		
 		}
 		if( check && ( okrUserCache == null || okrUserCache.getLoginIdentityName() == null ) ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			if( okrUserCache.getLoginUserName() == null ){
 				check = false;
 				Exception exception = new UserNoLoginException( effectivePerson.getName() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 			wrapIn.setAuthorizeIdentity( okrUserCache.getLoginIdentityName()  );
 		}
@@ -57,7 +63,7 @@ public class ExcuteWorkTackback extends ExcuteBase {
 				check = false;
 				Exception exception = new AuthorizeWorkIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -69,13 +75,13 @@ public class ExcuteWorkTackback extends ExcuteBase {
 					check = false;
 					Exception exception = new WorkNotExistsException( wrapIn.getWorkId() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new WorkQueryByIdException( e, wrapIn.getWorkId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -98,7 +104,7 @@ public class ExcuteWorkTackback extends ExcuteBase {
 				check = false;
 				Exception exception = new WorkTackbackProcessException( e, wrapIn.getWorkId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		

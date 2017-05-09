@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.cms.assemble.control.Business;
@@ -43,6 +44,14 @@ public class CategoryInfoService {
 		Business business = new Business( emc );
 		return business.getCategoryInfoFactory().listByAppId( appId );
 	}
+	
+	public List<String> listByAppId( String appId ) throws Exception {
+		if( appId == null || appId.isEmpty() ){
+			return null;
+		}
+		Business business = new Business( EntityManagerContainerFactory.instance().create() );
+		return business.getCategoryInfoFactory().listByAppId( appId );
+	}
 
 	public List<String> listNoViewPermissionCategoryInfoIds( EntityManagerContainer emc ) throws Exception {
 		List<String> ids = null;
@@ -54,7 +63,7 @@ public class CategoryInfoService {
 	public List<String> listNoViewPermissionCategoryIds(EntityManagerContainer emc, String appId, String permission ) throws Exception {
 		List<String> ids = null;
 		Business business = new Business( emc );
-		ids = business.getAppCategoryPermissionFactory().listAllCategoryInfoIds( permission );		
+		ids = business.getAppCategoryPermissionFactory().listAllCategoryInfoIds( appId, permission );		
 		return business.getCategoryInfoFactory().listNoPermissionCategoryInfoIds( ids, appId );
 	}
 
@@ -105,7 +114,7 @@ public class CategoryInfoService {
 		CategoryInfo categoryInfo = null;
 		Document document = null;
 		AppInfo appInfo = null;
-		
+		String oldCategoryName = null;
 		List<String> document_ids = null;
 		List<String> permission_ids = null;
 		Business business = new Business(emc);
@@ -125,24 +134,34 @@ public class CategoryInfoService {
 		if( categoryInfo == null ){
 			categoryInfo = new CategoryInfo();
 			WrapTools.category_wrapin_copier.copy( wrap, categoryInfo );
+			
 			categoryInfo.setAppName( appInfo.getAppName() );
 			categoryInfo.setCategoryAlias( categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName() );
+			
 			emc.persist( categoryInfo, CheckPersistType.all);
 		}else{
-			if( !wrap.getCategoryName().equals( categoryInfo.getCategoryName() )){
+			oldCategoryName = categoryInfo.getCategoryName();
+			WrapTools.category_wrapin_copier.copy( wrap, categoryInfo );
+			categoryInfo.setAppName( appInfo.getAppName() );
+			categoryInfo.setCategoryAlias( categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName() );
+			emc.check( categoryInfo, CheckPersistType.all );
+			
+			if( !oldCategoryName.equals( categoryInfo.getCategoryName() )){
 				emc.beginTransaction( DocumentPermission.class );
 				emc.beginTransaction( Document.class );
 				
 				//对该目录下所有的文档的栏目名称和分类别名进行调整
-				document_ids = business.getDocumentFactory().listByCategoryId( wrap.getId() );
+				document_ids = business.getDocumentFactory().listByCategoryId( categoryInfo.getId() );
+				
 				if( document_ids != null && !document_ids.isEmpty() ){
 					for( String docId : document_ids ){
 						document = emc.find( docId, Document.class );
 						document.setAppName( categoryInfo.getAppName() );
-						document.setCategoryAlias( categoryInfo.getCategoryAlias() );
-						
+						document.setCategoryAlias( categoryInfo.getCategoryAlias() );						
+						if( document.getHasIndexPic() == null ){
+							document.setHasIndexPic( false );
+						}
 						emc.check( document, CheckPersistType.all );
-						
 						//对该文档所有的阅读权限信息中的栏目名称和分类别名进行调整 
 						permission_ids = business.documentPermissionFactory().listIdsByDocumentId( docId );
 						if( permission_ids != null && !permission_ids.isEmpty() ){
@@ -156,11 +175,6 @@ public class CategoryInfoService {
 					}
 				}
 			}
-			
-			WrapTools.category_wrapin_copier.copy( wrap, categoryInfo );
-			categoryInfo.setAppName( appInfo.getAppName() );
-			categoryInfo.setCategoryAlias( categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName() );
-			emc.check( categoryInfo, CheckPersistType.all );
 		}
 		if ( appInfo.getCategoryList() == null ){
 			appInfo.setCategoryList( new ArrayList<String>());
@@ -269,5 +283,13 @@ public class CategoryInfoService {
 		
 		emc.remove( categoryInfo, CheckRemoveType.all );
 		emc.commit();
+	}
+
+	public List<String> listByAlias(EntityManagerContainer emc, String cataggoryAlias) throws Exception {
+		if( cataggoryAlias == null || cataggoryAlias.isEmpty() ){
+			return null;
+		}
+		Business business = new Business( emc );
+		return business.getCategoryInfoFactory().listByAlias( cataggoryAlias );
 	}
 }

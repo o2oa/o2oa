@@ -159,6 +159,11 @@ public class AppCategoryPermission extends SliceJpaObject {
 	@CheckPersist( allowEmpty = true )
 	private String objectId;
 	
+	@EntityFieldDescribe( "对象名称" )
+	@Column( name="xobjectName",length = JpaObject.length_255B  )
+	@CheckPersist( allowEmpty = true )
+	private String objectName;
+	
 	@EntityFieldDescribe( "使用者类别：组织|人员|群组|角色" )
 	@Column( name="xusedObjectType", length = JpaObject.length_16B )
 	@CheckPersist( allowEmpty = true )
@@ -293,6 +298,12 @@ public class AppCategoryPermission extends SliceJpaObject {
 	}
 	public void setAppId(String appId) {
 		this.appId = appId;
+	}
+	public String getObjectName() {
+		return objectName;
+	}
+	public void setObjectName(String objectName) {
+		this.objectName = objectName;
 	}
 	
 }

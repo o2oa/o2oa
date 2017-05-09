@@ -5,12 +5,19 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
-
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrtask.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrtask.exception.SystemConfigQueryByCodeException;
+import com.x.okr.assemble.control.jaxrs.okrtask.exception.TaskIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrtask.exception.TaskListByTaskTypeException;
+import com.x.okr.assemble.control.jaxrs.okrtask.exception.TaskQueryByIdException;
+import com.x.okr.assemble.control.jaxrs.okrtask.exception.UserNoLoginException;
+import com.x.okr.assemble.control.jaxrs.okrtask.exception.WorkNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrtask.exception.WorkQueryByIdException;
 import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.WrapOutOkrWorkReportBaseInfo;
 import com.x.okr.entity.OkrTask;
 import com.x.okr.entity.OkrWorkBaseInfo;
@@ -42,14 +49,14 @@ public class ExcuteListTaskCollect extends ExcuteBase {
 			check = false;
 			Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}		
 		
 		if( check && ( okrUserCache == null || okrUserCache.getLoginIdentityName() == null ) ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			userIdentity = okrUserCache.getLoginIdentityName() ;
@@ -60,7 +67,7 @@ public class ExcuteListTaskCollect extends ExcuteBase {
 				check = false;
 				Exception exception = new TaskIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}else{
 				//查询该汇总待办信息
 				try {
@@ -69,7 +76,7 @@ public class ExcuteListTaskCollect extends ExcuteBase {
 					check = false;
 					Exception exception = new TaskQueryByIdException( e, id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -84,7 +91,7 @@ public class ExcuteListTaskCollect extends ExcuteBase {
 					check = false;
 					Exception exception = new TaskListByTaskTypeException( e, userIdentity );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}else{
 				check = false;
@@ -99,7 +106,7 @@ public class ExcuteListTaskCollect extends ExcuteBase {
 				check = false;
 				Exception exception = new SystemConfigQueryByCodeException( e, "REPORT_SUPERVISOR" );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -112,13 +119,13 @@ public class ExcuteListTaskCollect extends ExcuteBase {
 							check = false;
 							Exception exception = new WorkNotExistsException( task.getWorkId() );
 							result.error( exception );
-							logger.error( exception, effectivePerson, request, null);
+							//logger.error( e, effectivePerson, request, null);
 						}
 					} catch (Exception e) {
 						check = false;
 						Exception exception = new WorkQueryByIdException( e, task.getWorkId() );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 					try {
 						okrWorkReportBaseInfo = okrWorkReportQueryService.get( task.getDynamicObjectId() );

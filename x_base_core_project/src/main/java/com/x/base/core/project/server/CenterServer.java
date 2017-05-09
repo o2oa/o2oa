@@ -1,5 +1,7 @@
 package com.x.base.core.project.server;
 
+import java.util.LinkedHashMap;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,6 +20,7 @@ public class CenterServer extends GsonPropertyObject {
 	public CenterServer() {
 		this.sslEnable = false;
 		this.redeploy = true;
+		this.host = "";
 		this.port = default_port;
 		this.proxyHost = "";
 		this.proxyPort = default_port;
@@ -26,10 +29,13 @@ public class CenterServer extends GsonPropertyObject {
 
 	private Boolean sslEnable;
 	private Boolean redeploy;
+	private String host;
 	private Integer port;
 	private String proxyHost;
 	private Integer proxyPort;
 	private Integer scanInterval;
+	private String systemTitle;
+	private LinkedHashMap<String, Object> config;
 
 	public Integer getScanInterval() {
 		if (null != this.scanInterval && this.scanInterval > 0) {
@@ -67,6 +73,27 @@ public class CenterServer extends GsonPropertyObject {
 		return default_port;
 	}
 
+	public String getSystemTitle() {
+		if (StringUtils.isNotEmpty(this.systemTitle)) {
+			return this.systemTitle;
+		}
+		return "企业办公平台";
+	}
+
+	public LinkedHashMap<String, Object> getConfig() {
+		if (null == this.config) {
+			return new LinkedHashMap<String, Object>();
+		}
+		return this.config;
+	}
+
+	public String getHost() {
+		if (StringUtils.isNotEmpty(this.host)) {
+			return this.host;
+		}
+		return "";
+	}
+
 	public void setSslEnable(Boolean sslEnable) {
 		this.sslEnable = sslEnable;
 	}
@@ -89,6 +116,18 @@ public class CenterServer extends GsonPropertyObject {
 
 	public void setRedeploy(Boolean redeploy) {
 		this.redeploy = redeploy;
+	}
+
+	public void setSystemTitle(String systemTitle) {
+		this.systemTitle = systemTitle;
+	}
+
+	public void setConfig(LinkedHashMap<String, Object> config) {
+		this.config = config;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
 	}
 
 }

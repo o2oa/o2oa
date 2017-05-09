@@ -1,9 +1,9 @@
 package com.x.processplatform.assemble.designer.jaxrs.templateform;
 
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.processplatform.assemble.designer.wrapin.WrapInTemplateForm;
 import com.x.processplatform.assemble.designer.wrapout.WrapOutTemplateForm;
 import com.x.processplatform.assemble.designer.wrapout.WrapOutTemplateFormSimple;

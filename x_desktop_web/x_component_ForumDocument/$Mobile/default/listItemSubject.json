@@ -40,7 +40,7 @@
             "show": "function( d ){ return d.isCreamSubject ? true : false }"
           },
           "creatorName" : {},
-          "createTime" : {  "value" : "function( d ){ return this.explorer.getDateDiff( d.createTime )}" , "title" : "function( d ){ return d.createTime }" },
+          "createTime" : {  "value" : "function( d ){ return this.explorer.getDateDiff( d.createTime || d.updateTime )}" , "title" : "function( d ){ return d.createTime || d.updateTime }" },
           "summaryContainer" : {
             "value": "",
             "show": "function( d ){ return ( d.summary && d.summary!='' ) ? true : false }"

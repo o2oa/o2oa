@@ -1,18 +1,17 @@
 package com.x.okr.assemble.control.service;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.common.date.DateOperation;
 import com.x.okr.assemble.control.Business;
 import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.WrapInOkrWorkReportBaseInfo;
@@ -35,6 +34,7 @@ import com.x.organization.core.express.wrap.WrapPerson;
 public class OkrWorkReportOperationService{
 	private Logger logger = LoggerFactory.getLogger( OkrWorkReportOperationService.class );
 	private BeanCopyTools<WrapInOkrWorkReportBaseInfo, OkrWorkReportBaseInfo> wrapin_copier = BeanCopyToolsBuilder.create( WrapInOkrWorkReportBaseInfo.class, OkrWorkReportBaseInfo.class, null, WrapInOkrWorkReportBaseInfo.Excludes );	private OkrUserManagerService okrUserManagerService = new OkrUserManagerService();
+	private OkrWorkBaseInfoQueryService okrWorkBaseInfoQueryService = new OkrWorkBaseInfoQueryService();
 	private OkrWorkReportQueryService okrWorkReportQueryService = new OkrWorkReportQueryService();
 	private OkrWorkReportFlowService okrWorkReportFlowService = new OkrWorkReportFlowService();
 	private OkrSendNotifyService okrNotifyService = new OkrSendNotifyService();
@@ -50,6 +50,7 @@ public class OkrWorkReportOperationService{
 		OkrWorkReportDetailInfo okrWorkReportDetailInfo = null;
 		List<String> ids = null;
 		Business business = null;
+		
 		if( wrapIn.getId() !=null && wrapIn.getId().trim().length() > 20 ){
 			//根据ID查询信息是否存在，如果存在就update，如果不存在就create
 			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -60,14 +61,15 @@ public class OkrWorkReportOperationService{
 				emc.beginTransaction( OkrWorkReportBaseInfo.class );
 				emc.beginTransaction( OkrWorkReportDetailInfo.class );
 				if( okrWorkReportBaseInfo != null ){//如果信息已经存在，那么不需要更新基础信息
-					//wrapin_copier.copy( wrapIn, okrWorkReportBaseInfo );
-					//emc.check( okrWorkReportBaseInfo, CheckPersistType.all );
+					wrapin_copier.copy( wrapIn, okrWorkReportBaseInfo );
+					emc.check( okrWorkReportBaseInfo, CheckPersistType.all );
 				}else{//信息不存在，创建一个新的记录
 					okrWorkReportBaseInfo = new OkrWorkReportBaseInfo();
 					wrapin_copier.copy( wrapIn, okrWorkReportBaseInfo );
 					okrWorkReportBaseInfo.setId( wrapIn.getId());
 					emc.persist( okrWorkReportBaseInfo, CheckPersistType.all);
 				}
+				
 				if( okrWorkReportDetailInfo != null ){
 					okrWorkReportDetailInfo.setId( okrWorkReportBaseInfo.getId() );
 					okrWorkReportDetailInfo.setCenterId(okrWorkReportBaseInfo.getCenterId());
@@ -94,8 +96,9 @@ public class OkrWorkReportOperationService{
 					okrWorkReportDetailInfo.setMemo( wrapIn.getMemo() );
 					emc.persist( okrWorkReportDetailInfo, CheckPersistType.all);	
 				}
+				
 				//判断该汇报创建者的待办是否存在，如果不存在就创建一个新的待办
-				ids = business.okrTaskFactory().listIdsByTargetActivityAndObjId( "TASK", "工作汇报拟稿", okrWorkReportBaseInfo.getId(), "拟稿", okrWorkReportBaseInfo.getReporterIdentity() );
+				ids = business.okrTaskFactory().listIdsByTargetActivityAndObjId( "TASK", "工作汇报", okrWorkReportBaseInfo.getId(), "拟稿", okrWorkReportBaseInfo.getReporterIdentity() );
 				if( ids == null || ids.isEmpty() ){
 					//创建工作汇报的待办
 					OkrTask okrTask = new OkrTask();
@@ -393,7 +396,7 @@ public class OkrWorkReportOperationService{
 		okrWorkReportBaseInfo.setProcessStatus( "草稿" );
 		okrWorkReportBaseInfo.setStatus( "正常" );
 		okrWorkReportBaseInfo.setProcessType( "审批" );
-		okrWorkReportBaseInfo.setProgressPercent(0.00);
+		okrWorkReportBaseInfo.setProgressPercent(0);
 		okrWorkReportBaseInfo.setIsWorkCompleted(false);
 		
 		//创建者是系统创建
@@ -440,14 +443,21 @@ public class OkrWorkReportOperationService{
 		okrTask.setStatus( "正常" );	
 		okrTask.setViewUrl( "" );
 		
-		nextReportTime = getNextReportTime( okrWorkBaseInfo.getReportTimeQue(), okrTask.getArriveDateTime() );
-		
+		//从计算好的汇报时间序列里找出下一次汇报时间，如果找不到，那么留为null
+		//定时代理WorkProgressConfirm会对下一次汇报时间为空的，未完成的工作进行工作汇报时间计算，自动延时
+		nextReportTime = okrWorkBaseInfoQueryService.getNextReportTime( okrWorkBaseInfo.getReportTimeQue(), okrTask.getArriveDateTime() );
+		logger.info( "work id：" + okrWorkBaseInfo.getId() + "lastreporttime: "+ okrWorkBaseInfo.getLastReportTime() +" nextreporttime1:" + nextReportTime );
+		if( nextReportTime == null ){
+			nextReportTime = okrWorkBaseInfoQueryService.getNextReportTime( okrWorkBaseInfo );
+		}
+		logger.info( "work id：" + okrWorkBaseInfo.getId() + "lastreporttime: "+ okrWorkBaseInfo.getLastReportTime() +" nextreporttime2:" + nextReportTime );
 		if( report_auto_over != null && "OPEN".equals( report_auto_over )){
 			//根据配置查询该工作所有正在流转中的工作汇报ID列表,包括草稿
 			try {
-				ids = okrWorkReportQueryService.listProcessingReportIdsByWorkId(okrWorkBaseInfo.getId());
-				if (ids != null && !ids.isEmpty()) {
+				ids = okrWorkReportQueryService.listProcessingReportIdsByWorkId( okrWorkBaseInfo.getId() );
+				if ( ids != null && !ids.isEmpty() ) {
 					for (String id : ids) {
+						logger.info( "system try to dispatch exists report to over，id：" + id );
 						okrWorkReportFlowService.dispatchToOver( id );
 					}
 				}
@@ -463,33 +473,22 @@ public class OkrWorkReportOperationService{
 			if( okrWorkBaseInfo != null ){
 				emc.beginTransaction(OkrWorkReportBaseInfo.class);
 				emc.beginTransaction(OkrWorkBaseInfo.class);
-				emc.beginTransaction(OkrTask.class);
-				// 保存汇报基础信息
-				emc.persist(okrWorkReportBaseInfo, CheckPersistType.all);
-				// 保存汇报待办
-				emc.persist( okrTask, CheckPersistType.all );
+				emc.beginTransaction(OkrTask.class);				
 				//还要修改工作的下一次汇报信息
 				okrWorkBaseInfo.setNextReportTime( nextReportTime );
 				okrWorkBaseInfo.setLastReportTime( okrTask.getArriveDateTime() );
 				okrWorkBaseInfo.setReportCount( okrWorkReportBaseInfo.getReportCount() );
+				// 保存汇报基础信息
+				emc.persist( okrWorkReportBaseInfo, CheckPersistType.all );
+				// 保存汇报待办
+				emc.persist( okrTask, CheckPersistType.all );
 				emc.check( okrWorkBaseInfo, CheckPersistType.all );
 				emc.commit();
+				logger.info( "system try to save new report draft.id：" + okrWorkReportBaseInfo.getId() );
+				logger.info( "system try to update work report time and count.id：" + okrWorkBaseInfo.getId() );
 			}
 		} catch (Exception e) {
 			throw e;
-		}
-		
-		//根据配置查询该工作所有正在流转中的工作汇报ID列表,包括草稿
-		try{
-			ids = okrWorkReportQueryService.listProcessingReportIdsByWorkId( okrWorkBaseInfo.getId() );
-			if( ids != null && !ids.isEmpty() ){
-				for( String id : ids ){
-					okrWorkReportFlowService.dispatchToOver( id );
-				}
-			}
-		}catch( Exception e ){
-			logger.warn( "system dispatch processing report to over got an exception." );
-			logger.error( e );
 		}
 		
 		if( okrTask != null ){
@@ -499,47 +498,6 @@ public class OkrWorkReportOperationService{
 		}
 		
 		return okrWorkReportBaseInfo;
-	}
-	/**
-	 * 根据工作汇报时间序列和当前时间获取下一次汇报时间
-	 * @param reportTimeQue
-	 * @return
-	 * @throws Exception 
-	 */
-	private Date getNextReportTime(String reportTimeQue, Date lastReportTime ) throws Exception {
-		String[] reportTimeArray = reportTimeQue.split( ";" );
-		Date date = null;
-		List<Date> dateList = new ArrayList<Date>();
-		if( reportTimeArray != null && reportTimeArray.length > 0 ){
-			for( String time : reportTimeArray ){
-				//找出最早的，在lastReportTime的时间
-				try{
-					date = dateOperation.getDateFromString( time );
-					dateList.add( date );
-				}catch(Exception e ){
-					throw new Exception( "reportTimeQue is invalid." );
-				}
-			}
-			//对dateList进行排序
-			dateList.sort(new Comparator<Date>(){
-				public int compare(Date date1, Date date2){
-					if( date1.before(date2)){
-						return -1;
-					}else if( date2.before(date1) ){
-						return 1;
-					}
-					return 0;
-				}
-			});
-			//找出晚于lastReportTime的第一个
-			for( Date resultDate : dateList ){
-				//logger.debug(  "lastReportTime:"+ lastReportTime + ", resultDate:" + resultDate.toString() );
-				if( resultDate.after( lastReportTime )){
-					return resultDate;
-				}
-			}
-		}
-		return null;
 	}
 
 	public void saveAdminSuperviseInfo( String reportId, String adminSuperviseInfo ) throws Exception {

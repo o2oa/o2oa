@@ -6,15 +6,18 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.gson.XGsonBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.SortTools;
 import com.x.okr.assemble.common.date.DateOperation;
+import com.x.okr.assemble.control.jaxrs.statistic.exception.ReportStatisitcListException;
+import com.x.okr.assemble.control.jaxrs.statistic.exception.ReportStatisitcListWithIdsException;
+import com.x.okr.assemble.control.jaxrs.statistic.exception.StatisticTimeInvalidException;
 import com.x.okr.assemble.control.timertask.entity.WorkReportProcessOpinionEntity;
 import com.x.okr.entity.OkrStatisticReportContent;
 import com.x.okr.entity.OkrWorkDetailInfo;
@@ -67,18 +70,18 @@ public class ExcuteFilterList extends ExcuteBase {
 					check = false;
 					Exception exception = new StatisticTimeInvalidException( e, statisticTimeFlag );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
 		
 		if( check ){
 			try {
-				ids = okrCenterWorkReportStatisticService.listFirstLayer( centerId, null, statisticTimeFlag, reportCycle, year, month, week, null );
+				ids = okrCenterWorkReportStatisticService.listFirstLayer( centerId, wrapIn.getCenterTitle(), null, wrapIn.getWorkTypeName(), statisticTimeFlag, reportCycle, year, month, week, null );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ReportStatisitcListException( e );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 				result.error( exception );
 			}
 		}
@@ -89,7 +92,7 @@ public class ExcuteFilterList extends ExcuteBase {
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ReportStatisitcListWithIdsException( e );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 				result.error( exception );
 			}
 		}
@@ -163,9 +166,9 @@ public class ExcuteFilterList extends ExcuteBase {
 					}
 				}
 				if( isTree ){
-					wraps_centers = composeWorkTreeInCenter( wraps_centers, statisticTimeFlag, reportCycle, year, month, week, null );
+					wraps_centers = composeWorkTreeInCenter( wraps_centers, wrapIn.getCenterTitle(), wrapIn.getWorkTypeName(), statisticTimeFlag, reportCycle, year, month, week, null );
 				}else{
-					wraps_centers = composeWorkInCenter( wraps_centers, statisticTimeFlag, reportCycle, year, month, week, null );
+					wraps_centers = composeWorkInCenter( wraps_centers, wrapIn.getCenterTitle(), wrapIn.getWorkTypeName(), statisticTimeFlag, reportCycle, year, month, week, null );
 				}
 				result.setData( wraps_centers );
 			}

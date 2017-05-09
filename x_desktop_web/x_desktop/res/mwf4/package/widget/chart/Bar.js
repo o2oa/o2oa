@@ -41,7 +41,7 @@ MWF.widget.chart.Bar = new Class({
         this.bars.push(data);
     },
     load: function(){
-        debugger;
+
         this.svgNode = new Element("div", {"styles": this.css.svgNode}).inject(this.node);
         if (this.fireEvent("queryLoad")){
             this.size = this.node.getSize();
@@ -82,7 +82,7 @@ MWF.widget.chart.Bar = new Class({
     },
 
     loadBars: function(){
-        debugger;
+        ;
         this.rectClass = Math.round(Math.random()*100);
         var barWidth = this.xScale.bandwidth()/this.barsData.length;
         this.rectCluster = [];
@@ -175,7 +175,7 @@ MWF.widget.chart.Bar = new Class({
         return [this.size.y, 0];
     },
     setSvgSize: function(){
-        debugger;
+        ;
         var x = this.size.x-(this.options.marginLeft+this.options.marginRight);
         var y = this.size.y-(this.options.marginTop+this.options.marginBottom);
         //this.svgNode.setStyles({

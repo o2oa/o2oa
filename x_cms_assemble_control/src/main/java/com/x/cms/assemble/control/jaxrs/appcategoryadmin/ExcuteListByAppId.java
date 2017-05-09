@@ -11,6 +11,8 @@ import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.SortTools;
 import com.x.cms.assemble.control.WrapTools;
+import com.x.cms.assemble.control.jaxrs.appcategoryadmin.exception.AppCategoryAdminAppIdEmptyException;
+import com.x.cms.assemble.control.jaxrs.appcategoryadmin.exception.AppCategoryAdminProcessException;
 import com.x.cms.core.entity.AppCategoryAdmin;
 
 import net.sf.ehcache.Element;
@@ -39,7 +41,6 @@ public class ExcuteListByAppId extends ExcuteBase {
 					check = false;
 					Exception exception = new AppCategoryAdminAppIdEmptyException();
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
 				}
 			}
 			if( check ){
@@ -47,9 +48,9 @@ public class ExcuteListByAppId extends ExcuteBase {
 					ids = appCategoryAdminServiceAdv.listAppCategoryIdByAppId( appId );
 				} catch (Exception e) {
 					check = false;
-					Exception exception = new AppCategoryAdminListByAppIdException( e, appId );
+					Exception exception = new AppCategoryAdminProcessException( e, "根据应用栏目ID查询所有对应的应用栏目分类管理员配置信息列表时发生异常。AppId:" + appId );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 			if( check ){
@@ -58,9 +59,9 @@ public class ExcuteListByAppId extends ExcuteBase {
 						appCategoryAdminList = appCategoryAdminServiceAdv.list( ids );
 					} catch (Exception e) {
 						check = false;
-						Exception exception = new AppCategoryAdminListByIdsException( e );
+						Exception exception = new AppCategoryAdminProcessException( e, "根据指定的ID列表查询应用栏目分类管理员配置信息时发生异常。" );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 				}
 			}
@@ -72,9 +73,9 @@ public class ExcuteListByAppId extends ExcuteBase {
 						cache.put(new Element( cacheKey, wraps ));
 						result.setData( wraps );
 					} catch (Exception e) {
-						Exception exception = new AppCategoryAdminWrapOutException( e );
+						Exception exception = new AppCategoryAdminProcessException( e, "系统将查询出来的应用栏目分类管理员信息转换为输出格式时发生异常。" );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 				}
 			}

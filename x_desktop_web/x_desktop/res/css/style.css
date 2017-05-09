@@ -13,3 +13,4 @@ body {
     font-size:14px;
 	/*background-color: #F1F1F1;*/
 }
+::-ms-clear, ::-ms-reveal{display: none;}

@@ -12,6 +12,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.set.ListOrderedSet;
+import org.apache.commons.lang3.StringUtils;
 
 public class ListTools {
 
@@ -128,14 +129,14 @@ public class ListTools {
 		return list;
 	}
 
-	public static <T> boolean contains(List<T> list, T t) throws Exception {
+	public static <T> boolean contains(List<T> list, T t) {
 		if (null == list) {
 			return false;
 		}
 		return list.contains(t);
 	}
 
-	public static <T> boolean containsAll(List<T> list, List<T> other) throws Exception {
+	public static <T> boolean containsAll(List<T> list, List<T> other) {
 		if ((null == list) || (null == other)) {
 			return false;
 		}
@@ -235,6 +236,48 @@ public class ListTools {
 		return list;
 	}
 
+	/**
+	 * 
+	 * @param list
+	 *            原始字符串List
+	 * @param includes
+	 *            需要包含的字符串List,可以使用*在结尾作为通配符
+	 * @param excludes
+	 *            需要剔除的字符串List,可以使用*在结尾作为通配符
+	 * @return
+	 */
+	public static List<String> includesExcludesWildcard(List<String> list, List<String> includes,
+			List<String> excludes) {
+		if (isEmpty(list)) {
+			return list;
+		}
+		if (ListTools.isNotEmpty(includes)) {
+			final List<String> wildcardIncludes = includes.stream().filter(s -> {
+				return StringUtils.endsWith(s, "*");
+			}).map(s -> {
+				return StringUtils.substringBeforeLast(s, "*");
+			}).distinct().collect(Collectors.toList());
+			list = list.stream().filter(s -> {
+				return ListTools.contains(includes, s) || (wildcardIncludes.stream().filter(w -> {
+					return StringUtils.startsWith(s, w);
+				}).count() > 0);
+			}).distinct().collect(Collectors.toList());
+		}
+		if (ListTools.isNotEmpty(excludes)) {
+			final List<String> wildcardExcludes = excludes.stream().filter(s -> {
+				return StringUtils.endsWith(s, "*");
+			}).map(s -> {
+				return StringUtils.substringBeforeLast(s, "*");
+			}).distinct().collect(Collectors.toList());
+			list = list.stream().filter(s -> {
+				return !((ListTools.contains(excludes, s)) || (wildcardExcludes.stream().filter(w -> {
+					return StringUtils.startsWith(s, w);
+				}).count() > 0));
+			}).distinct().collect(Collectors.toList());
+		}
+		return list;
+	}
+
 	public static <T> List<List<T>> batch(List<T> list, Integer size) throws Exception {
 		if (null == size || size < 1) {
 			throw new Exception("size can not be null or less than 1.");
@@ -254,6 +297,14 @@ public class ListTools {
 			}
 		}
 		return result;
+	}
+
+	public static <T> List<T> toList(T... ts) throws Exception {
+		List<T> list = new ArrayList<>();
+		for (T t : ts) {
+			list.add(t);
+		}
+		return list;
 	}
 
 }

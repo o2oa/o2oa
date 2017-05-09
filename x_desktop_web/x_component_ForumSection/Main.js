@@ -449,6 +449,7 @@ MWF.xApplication.ForumSection.Main = new Class({
 		};
 	},
 	getDateDiff: function (publishTime) {
+		if(!publishTime)return "";
 		var dateTimeStamp = Date.parse(publishTime.replace(/-/gi, "/"));
 		var minute = 1000 * 60;
 		var hour = minute * 60;
@@ -731,6 +732,8 @@ MWF.xApplication.ForumSection.Explorer = new Class({
 			this.app.desktop.openApplication(null, "ForumDocument", {
 				"sectionId": this.app.sectionData.id,
 				"appId": appId,
+				"isNew" : true,
+				"isEdited" : true,
 				"onPostPublish" : function(){
 					//this.view.reload();
 				}.bind(this)

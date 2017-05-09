@@ -16,19 +16,27 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.utils.SortTools;
 import com.x.okr.assemble.control.OkrUserCache;
-import com.x.okr.assemble.control.jaxrs.okrworkchat.WrapInFilterWorkChat;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.ReportProcessLogListException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.UserNoLoginException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkReportDetailQueryByIdException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkReportFilterException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkReportListByWorkIdException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WrapInConvertException;
 import com.x.okr.assemble.control.jaxrs.okrworkreportpersonlink.WrapOutOkrWorkReportPersonLink;
 import com.x.okr.assemble.control.jaxrs.okrworkreportprocesslog.WrapOutOkrWorkReportProcessLog;
 import com.x.okr.assemble.control.service.OkrUserInfoService;
@@ -75,14 +83,14 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		WrapInOkrWorkReportBaseInfo wrapIn = null;
-		Boolean check = true;
+		Boolean check = true;		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, WrapInOkrWorkReportBaseInfo.class );
 		} catch (Exception e ) {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			try {
@@ -128,7 +136,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
@@ -225,7 +233,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 		if( workId == null || workId.isEmpty() ){
 			Exception exception = new WorkIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}else{
 			try {
 				ids = okrWorkReportQueryService.listByWorkId( workId );
@@ -245,7 +253,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 							} catch (Exception e) {
 								Exception exception = new ReportProcessLogListException( e, wrap.getId() );
 								result.error( exception );
-								logger.error( exception, effectivePerson, request, null);
+								logger.error( e, effectivePerson, request, null);
 							}
 							try {
 								okrWorkReportDetailInfo = okrWorkReportDetailInfoService.get( wrap.getId() );
@@ -257,20 +265,22 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 							} catch (Exception e) {
 								Exception exception = new WorkReportDetailQueryByIdException( e, wrap.getId() );
 								result.error( exception );
-								logger.error( exception, effectivePerson, request, null);
+								logger.error( e, effectivePerson, request, null);
 							}
 							String workDetail = okrWorkDetailInfoService.getWorkDetailWithId( wrap.getWorkId() );
 							if( workDetail != null && !workDetail.isEmpty() ){
 								wrap.setTitle( workDetail );
 							}
 						}
+						
+						SortTools.asc( wraps,"reportCount" );
 						result.setData( wraps );
 					}
 				}
 			} catch ( Exception e ) {
 				Exception exception = new WorkReportListByWorkIdException( e, workId );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -299,7 +309,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if( check ){
 			try {
@@ -308,7 +318,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, currentPerson.getName() );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		
@@ -316,7 +326,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new UserNoLoginException( currentPerson.getName() );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			//logger.error( e, currentPerson, request, null);
 		}
 		
 		if( wrapIn == null ){
@@ -327,7 +337,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new UserNoLoginException( currentPerson.getName() );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			//logger.error( e, currentPerson, request, null);
 		}
 		
 		if ( check ) {
@@ -352,10 +362,10 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 				}
 				result.setCount( total );
 				result.setData( wraps );
-			}catch( Throwable th ){
-				Exception exception = new WorkReportFilterException( th );
+			}catch( Exception e ){
+				Exception exception = new WorkReportFilterException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}else{
 			result.setCount( 0L );
@@ -387,7 +397,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if( check ){
 			try {
@@ -396,14 +406,14 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, currentPerson.getName() );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}	
 		}
 		if( check && okrUserCache == null ){
 			check = false;
 			Exception exception = new UserNoLoginException( currentPerson.getName() );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			//logger.error( e, currentPerson, request, null);
 		}
 		
 		if( wrapIn == null ){
@@ -413,7 +423,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new UserNoLoginException( currentPerson.getName() );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			//logger.error( e, currentPerson, request, null);
 		}		
 		if ( check ) {
 			wrapIn.addQueryInfoStatus( "正常" );
@@ -437,10 +447,10 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 				}
 				result.setCount( total );
 				result.setData( wraps );
-			}catch(Throwable th){
-				Exception exception = new WorkReportFilterException( th );
+			}catch( Exception e ){
+				Exception exception = new WorkReportFilterException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}else{
 			result.setCount( 0L );
@@ -472,7 +482,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if( check ){
 			try {
@@ -481,14 +491,14 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, currentPerson.getName() );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}	
 		}
 		if( check && okrUserCache == null ){
 			check = false;
 			Exception exception = new UserNoLoginException( currentPerson.getName() );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			//logger.error( e, currentPerson, request, null);
 		}
 		
 		if( wrapIn == null ){
@@ -499,7 +509,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new UserNoLoginException( currentPerson.getName() );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			//logger.error( e, currentPerson, request, null);
 		}
 		
 		if ( check ) {
@@ -525,10 +535,10 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 				}
 				result.setCount( total );
 				result.setData( wraps );
-			}catch(Throwable th){
-				Exception exception = new WorkReportFilterException( th );
+			}catch( Exception e ){
+				Exception exception = new WorkReportFilterException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}else{
 			result.setCount( 0L );
@@ -561,7 +571,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if( check ){
 			try {
@@ -570,14 +580,14 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, currentPerson.getName() );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}		
 		if( check && okrUserCache == null ){
 			check = false;
 			Exception exception = new UserNoLoginException( currentPerson.getName() );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			//logger.error( e, currentPerson, request, null);
 		}
 		
 		if( wrapIn == null ){
@@ -588,7 +598,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new UserNoLoginException( currentPerson.getName() );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			//logger.error( e, currentPerson, request, null);
 		}
 		
 		if ( check ) {
@@ -614,10 +624,10 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 				}
 				result.setCount( total );
 				result.setData( wraps );
-			}catch(Throwable th){
-				Exception exception = new WorkReportFilterException( th );
+			}catch( Exception e ){
+				Exception exception = new WorkReportFilterException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}else{
 			result.setCount( 0L );
@@ -649,7 +659,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if( check ){
 			try {
@@ -658,14 +668,14 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, currentPerson.getName() );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}	
 		}
 		if( check && okrUserCache == null ){
 			check = false;
 			Exception exception = new UserNoLoginException( currentPerson.getName() );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			//logger.error( e, currentPerson, request, null);
 		}	
 		
 		if( wrapIn == null ){
@@ -676,7 +686,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new UserNoLoginException( currentPerson.getName() );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			//logger.error( e, currentPerson, request, null);
 		}
 		
 		if ( check ) {
@@ -702,10 +712,10 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 				}
 				result.setCount( total );
 				result.setData( wraps );
-			}catch(Throwable th){
-				Exception exception = new WorkReportFilterException( th );
+			}catch(Exception e){
+				Exception exception = new WorkReportFilterException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}else{
 			result.setCount( 0L );
@@ -737,7 +747,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if( check ){
 			try {
@@ -746,14 +756,14 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, currentPerson.getName() );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check && okrUserCache == null ){
 			check = false;
 			Exception exception = new UserNoLoginException( currentPerson.getName() );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			//logger.error( e, currentPerson, request, null);
 		}
 		
 		if( wrapIn == null ){
@@ -764,7 +774,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new UserNoLoginException( currentPerson.getName() );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			//logger.error( e, currentPerson, request, null);
 		}
 		
 		if ( check ) {
@@ -790,10 +800,10 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 				}
 				result.setCount( total );
 				result.setData( wraps );
-			}catch(Throwable th){
-				Exception exception = new WorkReportFilterException( th );
+			}catch(Exception e){
+				Exception exception = new WorkReportFilterException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}else{
 			result.setCount( 0L );
@@ -825,7 +835,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if( check ){
 			try {
@@ -834,14 +844,14 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, currentPerson.getName() );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check && okrUserCache == null ){
 			check = false;
 			Exception exception = new UserNoLoginException( currentPerson.getName() );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			//logger.error( e, currentPerson, request, null);
 		}	
 		
 		if( wrapIn == null ){
@@ -852,7 +862,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new UserNoLoginException( currentPerson.getName() );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			//logger.error( e, currentPerson, request, null);
 		}
 		
 		if ( check ) {
@@ -876,10 +886,10 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 				}
 				result.setCount( total );
 				result.setData( wraps );
-			}catch(Throwable th){
-				Exception exception = new WorkReportFilterException( th );
+			}catch(Exception e){
+				Exception exception = new WorkReportFilterException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}else{
 			result.setCount( 0L );
@@ -912,7 +922,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if( check ){
 			try {
@@ -921,14 +931,14 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, currentPerson.getName() );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check && okrUserCache == null ){
 			check = false;
 			Exception exception = new UserNoLoginException( currentPerson.getName() );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			//logger.error( e, currentPerson, request, null);
 		}
 		
 		if( wrapIn == null ){
@@ -939,7 +949,7 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new UserNoLoginException( currentPerson.getName() );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			//logger.error( e, currentPerson, request, null);
 		}
 		
 		if ( check ) {
@@ -963,10 +973,10 @@ public class OkrWorkReportBaseInfoAction extends StandardJaxrsAction{
 				}
 				result.setCount( total );
 				result.setData( wraps );
-			}catch(Throwable th){
-				Exception exception = new WorkReportFilterException( th );
+			}catch(Exception e){
+				Exception exception = new WorkReportFilterException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}else{
 			result.setCount( 0L );

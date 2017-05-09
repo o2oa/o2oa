@@ -9,17 +9,17 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.entity.StorageType;
 import com.x.base.core.gson.XGsonBuilder;
 
-
 public class x_hotpic_assemble_control extends Assemble {
 
+	public static final String name = "热点图片";
 	public static List<String> containerEntities = new ArrayList<>();
 	public static List<StorageType> usedStorageTypes = new ArrayList<>();
 	public static List<Class<? extends Compilable>> dependents = new ArrayList<>();
 
 	static {
 		containerEntities.add("com.x.hotpic.entity.HotPictureInfo");
-		containerEntities.add("com.x.bbs.entity.BBSSubjectInfo");	
-		containerEntities.add("com.x.cms.core.entity.Document");	
+		containerEntities.add("com.x.bbs.entity.BBSSubjectInfo");
+		containerEntities.add("com.x.cms.core.entity.Document");
 		dependents.add(x_base_core_project.class);
 		dependents.add(x_organization_core_entity.class);
 		dependents.add(x_organization_core_express.class);

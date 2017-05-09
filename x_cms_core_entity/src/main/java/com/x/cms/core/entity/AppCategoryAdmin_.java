@@ -12,7 +12,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.cms.core.entity.AppCategoryAdmin.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 13:46:13 CST 2017")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sat May 06 19:34:34 CST 2017")
 public class AppCategoryAdmin_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<AppCategoryAdmin,String> adminLevel;
     public static volatile SingularAttribute<AppCategoryAdmin,String> adminName;
@@ -22,6 +22,7 @@ public class AppCategoryAdmin_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<AppCategoryAdmin,String> description;
     public static volatile SingularAttribute<AppCategoryAdmin,String> id;
     public static volatile SingularAttribute<AppCategoryAdmin,String> objectId;
+    public static volatile SingularAttribute<AppCategoryAdmin,String> objectName;
     public static volatile SingularAttribute<AppCategoryAdmin,String> objectType;
     public static volatile SingularAttribute<AppCategoryAdmin,String> sequence;
     public static volatile SingularAttribute<AppCategoryAdmin,Date> updateTime;

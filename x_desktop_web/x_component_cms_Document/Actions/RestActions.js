@@ -108,6 +108,9 @@ MWF.xApplication.cms.Document.Actions.RestActions = new Class({
     redraftDocument: function(documentData, success, failure){
         this.actionDocument.invoke({"name": "redraftDocument","data": documentData,"parameter": {"id": documentData.id},"success": success,"failure": failure});
     },
+    publishDocumentComplex: function(documentData, success, failure){
+        this.actionDocument.invoke({"name": "publishDocumentComplex","data": documentData,"success": success,"failure": failure});
+    },
 
 
     getCategory: function(id, success, failure){
@@ -252,6 +255,13 @@ MWF.xApplication.cms.Document.Actions.RestActions = new Class({
             url = url.replace("{documentid}", encodeURIComponent(documentid));
             if (callback) callback(this.actionDocument.address+url);
         }.bind(this));
+    },
+
+    getReadedCount: function(id, success, failure, async){
+        this.actionDocument.invoke({"name": "getReadedCount", "async": async, "parameter": {"id": id}, "success": success, "failure": failure});
+    },
+    listReadedLog: function(docId, id, count, success, failure, async){
+        this.actionDocument.invoke({"name": "listReadedLog","async": async, "parameter": {"docId": docId, "id": id, "count": count}, "success": success,	"failure": failure});
     }
 
 });

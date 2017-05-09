@@ -134,7 +134,8 @@ MWF.xApplication.process.FormDesigner.Module.$Component = MWF.FC$Component = new
         newNode.inject(node.node);
 
         var className = this.moduleName.capitalize();
-        var newTool = new MWF["FC"+className](this.form);
+        var prefix = (this.form.moduleType=="page") ? "PC" : "FC";
+        var newTool = new MWF[prefix+className](this.form);
         newModuleJson.id = newTool._getNewId();
         newNode.set("id", newModuleJson.id);
         this.form.json.moduleList[newModuleJson.id] = newModuleJson;

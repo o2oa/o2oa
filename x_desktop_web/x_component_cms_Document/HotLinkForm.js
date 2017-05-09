@@ -7,8 +7,8 @@ MWF.xApplication.cms.Document.HotLinkForm = new Class({
     Implements: [Options, Events],
     options: {
         "style": "default",
-        "width": "760",
-        "height": "620",
+        "width": "660",
+        "height": "520",
         "hasTop": true,
         "hasIcon": false,
         "hasTopIcon" : false,
@@ -67,11 +67,12 @@ MWF.xApplication.cms.Document.HotLinkForm = new Class({
         //if (this.hotPicData.pictureBase64){
         //    this.iconNode.set("src", this.hotPicData.pictureBase64);
         //}
+        debugger;
         MWF.require("MWF.widget.ImageClipper", function () {
             this.clipper = new MWF.widget.ImageClipper(hotPictureArea, {
                 aspectRatio : 2,
                 formFileEnable : true,
-                imageUrl : MWF.xDesktop.getImageSrc( this.hotPicData.picId ),
+                imageUrl : this.hotPicData.picId ?  MWF.xDesktop.getImageSrc( this.hotPicData.picId ) : "",
                 reference : this.options.documentId,
                 referenceType : "cmsDocument"
             });

@@ -29,8 +29,8 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm =  new Class({
         this.json = data.json;
         this.html = data.html;
 
-        this.path = "/x_component_process_Xform/$Form/";
-        this.cssPath = this.options.cssPath || "/x_component_process_Xform/$Form/"+this.options.style+"/css.wcss";
+        this.path = "/x_component_cms_Xform/$Form/";
+        this.cssPath = this.options.cssPath || "/x_component_cms_Xform/$Form/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.modules = [];
@@ -61,6 +61,14 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm =  new Class({
                 this.app.addEvent("queryClose", function(){
                     if( this.options.saveOnClose && this.businessData.document.docStatus == "draft" )this.saveDocument(null, true);
                     //if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
+                    Object.each(this.forms, function(module, id){
+                        if( module.json.type == "Htmleditor" && module.editor ){
+                            //if(CKEDITOR.currentImageDialog)CKEDITOR.currentImageDialog.destroy();
+                            //CKEDITOR.currentImageDialog = null;
+                            CKEDITOR.remove( module.editor );
+                            delete module.editor
+                        }
+                    });
                 }.bind(this));
             }
 
@@ -185,9 +193,11 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm =  new Class({
         });
         return result.length > 0 ? result : null;
     },
-    getReaderData: function(){
+    getSpecialData: function(){
         var data= this.businessData.data;
         var readers = [];
+        var pictures = [];
+        var summary = "";
         Object.each(this.forms, function(module, id){
             if( module.json.type == "Readerfield" ){
                 if (module.json.section=="yes"){
@@ -196,23 +206,33 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm =  new Class({
                     readers = readers.concat( module.getData() );
                 }
             }
+            if( module.json.type == "ImageClipper" ){
+                var d = module.getData();
+                if(d)pictures.push( d );
+            }
+            if( module.json.type == "Htmleditor" ){
+                var text = module.getText();
+                summary = text.substr(0,85);
+            }
         });
-        r = this.transportReaderData( readers );
-        return r;
+        if( data.processOwnerList && typeOf( data.processOwnerList ) == "array" ){ //如果是流程中发布的
+            var owner = { personValue : [] };
+            data.processOwnerList.each( function( p ){
+                owner.personValue.push({
+                    name : p,
+                    type: "person"
+                });
+            });
+            readers = readers.concat( owner );
+        }
+        return {
+            readers : this.transportReaderData( readers ),
+            pictures : pictures,
+            summary : summary
+        };
     },
     getDocumentData: function( formData ){
         var data= Object.clone(this.businessData.document);
-        if( formData.htmleditor ){
-            var div = new Element( "div" , {
-                "styles" : { "display" : "none" },
-                "html" : formData.htmleditor
-            } ).inject( this.container );
-            div.getElements("img").each( function( el ){
-                el.setStyle( "max-width" , "100%" );
-            });
-            formData.htmleditor = div.get("html");
-            div.destroy();
-        }
         if( formData.subject ){
             data.title = formData.subject;
             data.subject = formData.subject;
@@ -232,15 +252,19 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm =  new Class({
         }
         var data = this.getData();
         var documentData = this.getDocumentData(data);
-        documentData.permissionList = this.getReaderData();
+        var specialData = this.getSpecialData();
+        documentData.permissionList = specialData.readers;
+        documentData.pictureList = specialData.pictures;
+        documentData.summary = specialData.summary;
+        documentData.docData = data;
         delete documentData.attachmentList;
         this.documentAction.saveDocument(documentData, function(){
-            this.documentAction.saveData(function(json){
+            //this.documentAction.saveData(function(json){
                 this.notice(MWF.xApplication.cms.Xform.LP.dataSaved, "success");
                 this.businessData.data.isNew = false;
                 this.fireEvent("afterSave");
                 if (callback) callback();
-            }.bind(this), null, this.businessData.document.id, data, !sync );
+            //}.bind(this), null, this.businessData.document.id, data, !sync );
         }.bind(this),null, !sync );
     },
     closeDocument: function(){
@@ -275,25 +299,62 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm =  new Class({
         }
 
         var data = this.getData();
-        var readerData = this.getReaderData();
-        this.documentAction.saveData(function(json){
+        var specialData = this.getSpecialData();
+        //this.documentAction.saveData(function(json){
+        var documentData = this.getDocumentData(data);
+        documentData.permissionList = specialData.readers;
+        documentData.pictureList = specialData.pictures;
+        documentData.summary = specialData.summary;
+        documentData.docData = data;
+        delete documentData.attachmentList;
+        //this.documentAction.saveDocument(documentData, function(){
+        this.documentAction.publishDocumentComplex(documentData, function(json){
             this.businessData.data.isNew = false;
-            var documentData = this.getDocumentData(data);
-            documentData.permissionList = readerData;
-            delete documentData.attachmentList;
-            this.documentAction.saveDocument(documentData, function(){
-                this.documentAction.publishDocument(documentData, function(json){
-                    this.fireEvent("afterPublish");
-                    this.fireEvent("postPublish");
-                    if (callback) callback();
-                    this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished+": “"+this.businessData.document.title+"”", "success");
-                    this.options.saveOnClose = false;
-                    this.app.close();
-                    //this.close();
-                }.bind(this) );
-            }.bind(this))
-        }.bind(this), null, this.businessData.document.id, data);
+            this.fireEvent("afterPublish");
+            this.fireEvent("postPublish");
+            if (callback) callback();
+            this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished+": “"+this.businessData.document.title+"”", "success");
+            this.options.saveOnClose = false;
+            this.app.close();
+            //this.close();
+        }.bind(this) );
+            //}.bind(this))
+        //}.bind(this), null, this.businessData.document.id, data);
     },
+    //publishDocument_bak: function(callback){
+    //    this.fireEvent("beforePublish");
+    //    this.app.content.mask({
+    //        "destroyOnHide": true,
+    //        "style": this.app.css.maskNode
+    //    });
+    //    if (!this.formValidation("publish")){
+    //        this.app.content.unmask();
+    //        if (callback) callback();
+    //        return false;
+    //    }
+    //
+    //    var data = this.getData();
+    //    var specialData = this.getSpecialData();
+    //    this.documentAction.saveData(function(json){
+    //        this.businessData.data.isNew = false;
+    //        var documentData = this.getDocumentData(data);
+    //        documentData.permissionList = specialData.readers;
+    //        documentData.pictureList = specialData.pictures;
+    //        documentData.summary = specialData.summary;
+    //        delete documentData.attachmentList;
+    //        this.documentAction.saveDocument(documentData, function(){
+    //            this.documentAction.publishDocument(documentData, function(json){
+    //                this.fireEvent("afterPublish");
+    //                this.fireEvent("postPublish");
+    //                if (callback) callback();
+    //                this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished+": “"+this.businessData.document.title+"”", "success");
+    //                this.options.saveOnClose = false;
+    //                this.app.close();
+    //                //this.close();
+    //            }.bind(this) );
+    //        }.bind(this))
+    //    }.bind(this), null, this.businessData.document.id, data);
+    //},
 
     deleteDocument: function(){
         var _self = this;
@@ -305,7 +366,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm =  new Class({
                 "clientX": p.x,
                 "clientY": p.y-200
             }
-        }
+        };
         this.app.confirm("infor", event, MWF.xApplication.cms.Xform.LP.deleteDocumentTitle, MWF.xApplication.cms.Xform.LP.deleteDocumentText, 380, 120, function(){
             _self.app.content.mask({
                 "style": {

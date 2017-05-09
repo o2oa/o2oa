@@ -1,5 +1,8 @@
 package com.x.bbs.assemble.control.jaxrs.subjectinfo;
 
+import com.x.base.core.http.annotation.Wrap;
+
+@Wrap( WrapOutNearSubjectInfo.class)
 public class WrapOutNearSubjectInfo{
 
 	private WrapOutSubjectInfo lastSubject = null;

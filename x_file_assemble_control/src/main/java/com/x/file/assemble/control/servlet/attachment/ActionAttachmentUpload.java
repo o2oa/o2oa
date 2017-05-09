@@ -38,14 +38,15 @@ public class ActionAttachmentUpload extends AbstractServletAction {
 	private static final long serialVersionUID = 5628571943877405247L;
 
 	@HttpMethodDescribe(value = "创建Attachment对象./servlet/attachment/upload/folder/{folderId}", response = WrapOutId.class)
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		ActionResult<List<WrapOutId>> result = new ActionResult<>();
 		List<WrapOutId> wraps = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			String folderId = null;
 			EffectivePerson effectivePerson = this.effectivePerson(request);
 			this.setCharacterEncoding(request, response);
-			if (this.isMultipartContent(request)) {
+			if (!this.isMultipartContent(request)) {
 				throw new Exception("not multi part request.");
 			}
 			folderId = this.getURIPart(request.getRequestURI(), "folder");
@@ -65,7 +66,10 @@ public class ActionAttachmentUpload extends AbstractServletAction {
 				FileItemStream item = fileItemIterator.next();
 				try (InputStream input = item.openStream()) {
 					if (!item.isFormField()) {
-						StorageMapping mapping = ThisApplication.storageMappings.random(Attachment.class);
+						StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
+						if (null == mapping) {
+							throw new AllocateStorageMaapingException();
+						}
 						/** 由于需要校验要把所有的必要字段进行填写 */
 						/** 禁止不带扩展名的文件上传 */
 						if (StringUtils.isEmpty(FilenameUtils.getExtension(item.getName()))) {

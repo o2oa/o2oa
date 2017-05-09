@@ -63,7 +63,15 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "moveCategory" : "调整分类顺序",
         "saveCategory" : "保存分类",
         "editCategory" : "编辑分类",
-        "cancelEdit" : "取消"
+        "cancelEdit" : "取消",
+        "categoryProperty" : "分类属性",
+        "useProcess" : "使用流程",
+        "setProcessAppSucess" : "设置流程应用成功",
+        "setProcessSucess":"设置流程成功",
+        "selectProcess":"选择流程",
+        "selectProcessApp":"选择流程应用",
+        "setCategoryManager" : "设置分类管理者",
+        "none" : "无"
 	},
 	"form": {
         "create": "新建表单",
@@ -114,6 +122,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
     },
     "application": {
         "inputApplicationName": "请输入栏目名称",
+        "saveSuccess" : "保存成功",
         "property": "栏目属性",
         "name": "栏目名称",
         "alias": "栏目别名",
@@ -121,6 +130,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "sort" : "栏目排序",
         "type": "栏目类型",
         "icon": "栏目图标",
+        "sign" : "栏目标识",
         "controllerList": "管理者",
         availableSetting : {
             title : "可用范围",

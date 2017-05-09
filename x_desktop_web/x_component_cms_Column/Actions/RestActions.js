@@ -20,6 +20,9 @@ MWF.xApplication.cms.Column.Actions.RestActions = new Class({
     listColumn: function( success, failure, async){
         this.action.invoke({"name": "listColumn","async": async, "success": success,	"failure": failure});
     },
+    listColumnByAdmin: function( success, failure, async){
+        this.action.invoke({"name": "listColumnByAdmin","async": async, "success": success,	"failure": failure});
+    },
     getColumn: function(columnData, success, failure){
         this.action.invoke({"name": "getColumn","parameter": {"id": columnData.id},"success": success,"failure": failure});
     },
@@ -45,6 +48,37 @@ MWF.xApplication.cms.Column.Actions.RestActions = new Class({
     },
     updataColumnIcon: function(columnId, success, failure, formData, file){
         this.action.invoke({"name": "updataColumnIcon", "parameter": {"id": columnId},"data": formData,"file": file,"success": success,"failure": failure});
+    },
+
+    listCategory: function( columnId, success, failure, async){
+        var _self = this;
+        this.action.invoke({"name": "listCategory","parameter": {"appId": columnId },"async": async, "success": function(json){
+            _self.transCategoryData(json);
+            success.call(this,json);
+        },"failure": failure});
+    },
+    transCategoryData : function( json ){
+        var trans = function(category){
+            if(!category.name)category.name = category.categoryName;
+            if(!category.alias)category.alias = category.categoryAlias;
+            if(!category.categoryName)category.categoryName = category.name;
+            if(!category.categoryAlias)category.categoryAlias = category.alias;
+        };
+        if( json.data ){
+            if( typeOf(json.data) == "array" ){
+                json.data.each( function(category){
+                    trans(category)
+                })
+            }else{
+                trans(json.data)
+            }
+        }else{
+            json.data = [];
+        }
+    },
+
+    listForm: function(columnId, success, failure, async){
+        this.action.invoke({"name": "listForm","async": async, "parameter": {"appId": columnId}, "success": success,	"failure": failure});
     },
 
     listControllerByPerson: function(person, success, failure, async){

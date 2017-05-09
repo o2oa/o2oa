@@ -12,7 +12,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.cms.core.entity.AppCategoryPermission.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 13:46:13 CST 2017")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sat May 06 19:34:34 CST 2017")
 public class AppCategoryPermission_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<AppCategoryPermission,String> appId;
     public static volatile SingularAttribute<AppCategoryPermission,Date> createTime;
@@ -20,6 +20,7 @@ public class AppCategoryPermission_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<AppCategoryPermission,String> description;
     public static volatile SingularAttribute<AppCategoryPermission,String> id;
     public static volatile SingularAttribute<AppCategoryPermission,String> objectId;
+    public static volatile SingularAttribute<AppCategoryPermission,String> objectName;
     public static volatile SingularAttribute<AppCategoryPermission,String> objectType;
     public static volatile SingularAttribute<AppCategoryPermission,String> permission;
     public static volatile SingularAttribute<AppCategoryPermission,String> sequence;

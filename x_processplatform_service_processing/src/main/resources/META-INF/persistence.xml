@@ -3,10 +3,10 @@
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd" version="2.0">
   <persistence-unit name="com.x.processplatform.core.entity.content.Attachment" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.processplatform.core.entity.content.Attachment</class>
-    <class>com.x.base.core.entity.StorageObject</class>
+    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.base.core.entity.StorageObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.processplatform.core.entity.content.DataItem" transaction-type="RESOURCE_LOCAL">
@@ -18,8 +18,8 @@
   </persistence-unit>
   <persistence-unit name="com.x.processplatform.core.entity.content.DataLobItem" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.processplatform.core.entity.content.DataLobItem</class>
     <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.processplatform.core.entity.content.DataLobItem</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
@@ -53,8 +53,8 @@
   </persistence-unit>
   <persistence-unit name="com.x.processplatform.core.entity.content.Task" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.processplatform.core.entity.content.Task</class>
+    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
@@ -67,8 +67,8 @@
   </persistence-unit>
   <persistence-unit name="com.x.processplatform.core.entity.content.Work" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.processplatform.core.entity.content.Work</class>
+    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
@@ -88,8 +88,8 @@
   </persistence-unit>
   <persistence-unit name="com.x.processplatform.core.entity.element.Agent" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.processplatform.core.entity.element.Agent</class>
+    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
@@ -102,8 +102,8 @@
   </persistence-unit>
   <persistence-unit name="com.x.processplatform.core.entity.element.ApplicationDict" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.processplatform.core.entity.element.ApplicationDict</class>
+    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
@@ -111,6 +111,13 @@
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>com.x.processplatform.core.entity.element.ApplicationDictItem</class>
     <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="com.x.processplatform.core.entity.element.ApplicationDictLobItem" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.processplatform.core.entity.element.ApplicationDictLobItem</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
@@ -123,8 +130,8 @@
   </persistence-unit>
   <persistence-unit name="com.x.processplatform.core.entity.element.Cancel" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.processplatform.core.entity.element.Cancel</class>
+    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
@@ -137,8 +144,8 @@
   </persistence-unit>
   <persistence-unit name="com.x.processplatform.core.entity.element.Condition" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.processplatform.core.entity.element.Condition</class>
     <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.processplatform.core.entity.element.Condition</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
@@ -151,8 +158,8 @@
   </persistence-unit>
   <persistence-unit name="com.x.processplatform.core.entity.element.Embed" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.processplatform.core.entity.element.Embed</class>
     <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.processplatform.core.entity.element.Embed</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
@@ -165,16 +172,16 @@
   </persistence-unit>
   <persistence-unit name="com.x.processplatform.core.entity.element.Form" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.processplatform.core.entity.element.Form</class>
+    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.processplatform.core.entity.element.Invoke" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.processplatform.core.entity.element.Invoke</class>
     <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
+    <class>com.x.processplatform.core.entity.element.Invoke</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.processplatform.core.entity.element.Manual" transaction-type="RESOURCE_LOCAL">
@@ -186,8 +193,8 @@
   </persistence-unit>
   <persistence-unit name="com.x.processplatform.core.entity.element.Merge" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.processplatform.core.entity.element.Merge</class>
+    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
@@ -200,22 +207,22 @@
   </persistence-unit>
   <persistence-unit name="com.x.processplatform.core.entity.element.Parallel" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.processplatform.core.entity.element.Parallel</class>
+    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.processplatform.core.entity.element.Process" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.processplatform.core.entity.element.Process</class>
     <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.processplatform.core.entity.element.Process</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.processplatform.core.entity.element.Route" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.processplatform.core.entity.element.Route</class>
     <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.processplatform.core.entity.element.Route</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>

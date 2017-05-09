@@ -313,5 +313,23 @@ MWF.xDesktop.Message.Tooltip = new Class({
                 }.bind(this));
             }.bind(this)
         });
+    },
+    closeItem: function(callback){
+        var morph = new Fx.Morph(this.node, {
+            duration: "200"
+            //	transition: Fx.Transitions.Sine.easeOut
+        });
+        var size = this.node.getSize();
+        this.node.setStyle("height", ""+size.y+"px");
+        this.message.items.erase(this);
+        morph.start({
+            "opacity": 0,
+            "height": "0px"
+        }).chain(function(){
+            //this.message.addUnread(-1);
+            this.node.destroy();
+            if (callback) callback();
+            delete this;
+        }.bind(this));
     }
 });

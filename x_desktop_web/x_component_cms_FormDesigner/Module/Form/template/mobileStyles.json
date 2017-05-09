@@ -15,7 +15,7 @@
           //"line-height": "50px",
           "font-weight": "bold",
           "color": "#fb4747",
-          "height": "50px",
+          "min-height": "50px",
           "margin-bottom": "20px"
         }
       },
@@ -139,7 +139,6 @@
       },
       "layoutStyles": {},
       "properties": {
-        "width": "90%",
         "border": "0",
         "cellpadding": "5",
         "cellspacing": "0",
@@ -148,8 +147,7 @@
     },
     "datagrid": {
       "styles": {
-        "margin": "10px auto",
-        "width": "90%"
+        "margin": "10px auto"
       },
       "tableStyles": {},
       "titleStyles": {

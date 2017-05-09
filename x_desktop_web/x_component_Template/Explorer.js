@@ -271,11 +271,11 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
         }.bind(this))
     },
     createViewNode: function () {
-        this.fireEvent("queryCreateViewNode")
-        this._queryCreateViewNode( )
-        this.viewNode = this.formatElement(this.node, this.template.viewSetting)
-        this._postCreateViewNode( this.viewNode )
-        this.fireEvent("postCreateViewNode")
+        this.fireEvent("queryCreateViewNode");
+        this._queryCreateViewNode( );
+        this.viewNode = this.formatElement(this.node, this.template.viewSetting);
+        this._postCreateViewNode( this.viewNode );
+        this.fireEvent("postCreateViewNode");
         if (!this.viewNode)return;
     },
     getContentTemplateNode: function(){
@@ -286,14 +286,14 @@ MWF.xApplication.Template.Explorer.ComplexView = new Class({
     },
     createViewHead: function () {
         this.fireEvent("queryCreateViewHead");
-        this._queryCreateViewHead( )
+        this._queryCreateViewHead( );
         if (this.template) {
             if (!this.template.headSetting || this.template.headSetting.disable || !this.template.headSetting.html) {
                 return;
             }
         }
         var _self = this;
-        var headNode = this.headNode = this.formatElement(this.viewNode, this.template.headSetting)
+        var headNode = this.headNode = this.formatElement(this.viewNode, this.template.headSetting);
 
         this.template.items.each(function (item) {
             if( !item.head )return;
@@ -913,12 +913,39 @@ MWF.xApplication.Template.Explorer.PopupForm = new Class({
         }
         this.data = data || {};
 
+        this.cssPath = "/x_component_Template/$PopupForm/"+this.options.style+"/css.wcss";
+
         this.load();
     },
     load: function () {
-
+        this._loadCss();
     },
+    _loadCss: function(){
+        var css = {};
+        var r = new Request.JSON({
+            url: this.cssPath,
+            secure: false,
+            async: false,
+            method: "get",
+            noCache: false,
+            onSuccess: function(responseJSON, responseText){
+                css = responseJSON;
+                MWF.widget.css[key] = responseJSON;
+            }.bind(this),
+            onError: function(text, error){
+                alert(error + text);
+            }
+        });
+        r.send();
 
+        var isEmptyObject = true;
+        for( var key in css ){
+            if(key)isEmptyObject = false
+        }
+        if( !isEmptyObject ){
+            this.css = Object.merge(  css, this.css );
+        }
+    },
     open: function (e) {
         this.fireEvent("queryOpen");
         this.isNew = false;
@@ -1006,6 +1033,8 @@ MWF.xApplication.Template.Explorer.PopupForm = new Class({
             this.createBottomNode();
         }
 
+        this._setCustom();
+
         if( this.options.hasScroll ){
             //this.setScrollBar(this.formTableContainer)
             MWF.require("MWF.widget.ScrollBar", function () {
@@ -1027,6 +1056,9 @@ MWF.xApplication.Template.Explorer.PopupForm = new Class({
                 });
             }.bind(this));
         }
+    },
+    _setCustom : function(){
+
     },
     createTopNode: function () {
 

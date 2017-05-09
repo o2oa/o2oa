@@ -12,7 +12,24 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
 		"style": "default",
         "readonly": false,
 		"cssPath": "",
-        "moduleEvents": ["postLoad", "afterLoad", "beforeSave", "afterSave", "beforeClose", "beforeProcess", "afterProcess"]
+        "macro": "FormContext",
+        "parameters": null,
+        "moduleEvents": ["queryLoad",
+            "beforeLoad",
+            "postLoad",
+            "afterLoad",
+            "beforeSave",
+            "afterSave",
+            "beforeClose",
+            "beforeProcess",
+            "afterProcess",
+            "beforeReset",
+            "afterReset",
+            "beforeRetract",
+            "afterRetract",
+            "beforeReroute",
+            "afterReroute",
+            "beforeDelete"]
 	},
 	initialize: function(node, data, options){
 		this.setOptions(options);
@@ -34,6 +51,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
         if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();
 	},
 	load: function(){
+        debugger;
         if (this.app){
             if (this.app.formNode) this.app.formNode.setStyles(this.json.styles);
         }
@@ -45,14 +63,27 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
 	//		this.container.setStyles(this.css.container);
 			this._loadBusinessData();
 
-            this.Macro = new MWF.Macro.FormContext(this);
+            if (!MWF.Macro[this.options.macro || "FormContext"]){
+                MWF.require("MWF.xScript.Macro", function(){
+                    this.Macro = new MWF.Macro[this.options.macro || "FormContext"](this);
 
-			this._loadHtml();
-			this._loadForm();	
-			this._loadModules(this.node);
+                    this._loadHtml();
+                    this._loadForm();
+                    this._loadModules(this.node);
 
-			this.fireEvent("postLoad");
-            this.fireEvent("afterLoad");
+                    this.fireEvent("postLoad");
+                    this.fireEvent("afterLoad");
+                }.bind(this));
+            }else{
+                this.Macro = new MWF.Macro[this.options.macro || "FormContext"](this);
+
+                this._loadHtml();
+                this._loadForm();
+                this._loadModules(this.node);
+
+                this.fireEvent("postLoad");
+                this.fireEvent("afterLoad");
+            }
 		}
 	},
 	_loadBusinessData: function(){
@@ -95,7 +126,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
                 select = e.target.getStyle("-webkit-user-select").toString().toLowerCase();
             }
 
-            if (select!="text" && select!="auto") e.preventDefault();
+            if (select!=="text" && select!=="auto") e.preventDefault();
         });
 	},
 	
@@ -132,19 +163,18 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
 		if (code) Browser.exec(code);
 	},
 	_loadEvents: function(){
-        debugger;
 		Object.each(this.json.events, function(e, key){
 			if (e.code){
-                if (this.options.moduleEvents.indexOf(key)!=-1){
+                if (this.options.moduleEvents.indexOf(key)!==-1){
                     this.addEvent(key, function(event){
                         return this.Macro.fire(e.code, this, event);
                     }.bind(this));
                 }else{
-                    if (key=="load"){
+                    if (key==="load"){
                         this.addEvent("postLoad", function(){
                             return this.Macro.fire(e.code, this);
                         }.bind(this));
-                    }else if (key=="submit"){
+                    }else if (key==="submit"){
                         this.addEvent("beforeProcess", function(){
                             return this.Macro.fire(e.code, this);
                         }.bind(this));
@@ -182,10 +212,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
 		while (subDom){
 			if (subDom.get("MWFtype")){
                 var type = subDom.get("MWFtype");
-				if (type.indexOf("$")==-1){
+				if (type.indexOf("$")===-1){
                     moduleNodes.push(subDom);
                 }
-				if (subDom.get("MWFtype") != "datagrid"){
+				if (subDom.get("MWFtype") !== "datagrid" && subDom.get("MWFtype") !== "subSource"){
 					moduleNodes = moduleNodes.concat(this._getModuleNodes(subDom));
 				}
 			}else{
@@ -230,7 +260,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
     getData: function(){
         var data= Object.clone(this.businessData.data);
         Object.each(this.forms, function(module, id){
-            if (module.json.section=="yes"){
+            if (module.json.section==="yes"){
                 data[id] = this.getSectionData(module, data[id]);
             }else{
                 data[id] = module.getData();
@@ -262,25 +292,25 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
     },
     getSectionDataByPerson: function(v, obj) {
         var key = layout.desktop.session.user.id;
-        if (!obj || (typeOf(obj)!="object")) obj={};
+        if (!obj || (typeOf(obj)!=="object")) obj={};
         obj[key] = v;
         return obj;
     },
     getSectionDataByDepartment: function(v, obj) {
         var key = (this.businessData.task) ? this.businessData.task.department : "";
-        if (!obj || (typeOf(obj)!="object")) obj={};
+        if (!obj || (typeOf(obj)!=="object")) obj={};
         if (key) obj[key] = v;
         return obj;
     },
     getSectionDataByPActivity: function(v, obj) {
         var key = (this.businessData.work) ? this.businessData.work.activity : "";
-        if (!obj || (typeOf(obj)!="object")) obj={};
+        if (!obj || (typeOf(obj)!=="object")) obj={};
         if (key) obj[key] = v;
         return obj;
     },
     getSectionDataByScript: function(code, v, obj) {
         var key = this.form.Macro.exec(code, this);
-        if (!obj || (typeOf(obj)!="object")) obj={};
+        if (!obj || (typeOf(obj)!=="object")) obj={};
         if (key) obj[key] = v;
         return obj;
     },
@@ -306,7 +336,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
         }
     },
     addMessage: function(data){
-        var content = ""
+        var content = "";
         if (data.length){
             data.each(function(work){
                 var users = [];
@@ -530,19 +560,20 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
         MWF.require("MWF.xDesktop.Dialog", function(){
             var size = this.container.getSize();
 
-            var x = parseFloat((Browser.name=="firefox") ? e.event.clientX : e.event.x);
-            var y = parseFloat((Browser.name=="firefox") ? e.event.clientY : e.event.y);
+            var x = parseFloat((Browser.name==="firefox") ? e.event.clientX : e.event.x);
+            var y = parseFloat((Browser.name==="firefox") ? e.event.clientY : e.event.y);
 
             if (x+parseFloat(width)>size.x){
                 x = x-parseFloat(width);
             }
+            if (x<0) x = 20;
             var dlg = new MWF.xDesktop.Dialog({
                 "title": title,
-                "style": "flat",
+                "style": "o2",
                 "top": y,
                 "left": x-20,
                 "fromTop":e.event.y,
-                "fromLeft": (Browser.name=="firefox") ? e.event.clientX-20 : e.event.x-20,
+                "fromLeft": (Browser.name==="firefox") ? e.event.clientX-20 : e.event.x-20,
                 "width": width,
                 "height": height,
                 "text": text,
@@ -587,10 +618,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
             position: where,
             move: false,
             target: noticeTarget,
-            delayClose: (type=="error") ? 5000 : 1000,
+            delayClose: (type==="error") ? 5000 : 1000,
             offset: {
                 x: 10,
-                y: where.y.toString().toLowerCase()=="bottom" ? 10 : 10
+                y: where.y.toString().toLowerCase()==="bottom" ? 10 : 10
             },
             content: content
         });
@@ -670,8 +701,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
                     var explorer = {
                         "actions": this.personActions,
                         "app": {"lp": this.app.lp}
-                    }
-                    debugger;
+                    };
                     new MWF.widget.Identity(item.data, areaNode, explorer, false, null, {"style": "reset"});
                     identityList.push(item.data.name);
                 }.bind(this));
@@ -698,7 +728,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
                         "actions": this.personActions,
                         "app": {"lp": this.app.lp}
                     };
-                    debugger;
                     new MWF.widget.Identity(item.data, areaNode, explorer, false, null, {"style": "reset"});
                     identityList.push(item.data.name);
                 }.bind(this));
@@ -724,7 +753,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
                         "actions": this.personActions,
                         "app": {"lp": this.app.lp}
                     };
-                    debugger;
+
                     new MWF.widget.Identity(item.data, areaNode, explorer, false, null, {"style": "reset"});
                     identityList.push(item.data.name);
                 }.bind(this));
@@ -755,10 +784,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
 
             this.resetWorkToPeson(names, opinion, function(){
                 this.workAction.getJobByWork(function(workJson){
+                    this.fireEvent("afterReset");
                     this.addResetMessage(workJson.data);
                     this.app.notice(MWF.xApplication.process.Xform.LP.resetOk+": "+names.join(", "), "success");
                     this.app.close();
-                }.bind(this), null, this.businessData.work.id)
+                }.bind(this), null, this.businessData.work.id);
                 dlg.close();
                 if (this.mask) {this.mask.hide(); this.mask = null;}
             }.bind(this), function(xhr, text, error){
@@ -784,7 +814,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
             "opinion": opinion,
             "routeName": MWF.xApplication.process.Xform.LP.reset,
             "identityList": identityList
-        }
+        };
 
         this.workAction.saveData(
             function(json){
@@ -832,7 +862,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
                 "clientX": p.x,
                 "clientY": p.y-200
             }
-        }
+        };
         this.app.confirm("infor", event, MWF.xApplication.process.Xform.LP.retractTitle, MWF.xApplication.process.Xform.LP.retractText, 300, 120, function(){
             _self.app.content.mask({
                 "style": {
@@ -849,6 +879,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
 
                 _self.doRetractWork(function(){
                     _self.workAction.getJobByWork(function(workJson){
+                        _self.fireEvent("afterRetract");
                         _self.app.notice(MWF.xApplication.process.Xform.LP.workRetract, "success");
                         _self.app.content.unmask();
                         _self.app.reload(workJson.data);
@@ -869,7 +900,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
         });
     },
     doRetractWork: function(success, failure){
-        debugger;
         if (this.businessData.control["allowRetract"]){
             this.workAction.retractWork(function(json){
                 if (success) success();
@@ -1048,6 +1078,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
 
             this.rerouteWorkToActivity(activity, type, opinion, function(){
                 this.workAction.getJobByWork(function(workJson){
+                    this.fireEvent("afterReroute");
                     this.addRerouteMessage(workJson.data);
                     this.app.notice(MWF.xApplication.process.Xform.LP.rerouteOk+": "+activityName, "success");
                     this.app.close();
@@ -1106,7 +1137,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
                 "clientX": p.x,
                 "clientY": p.y-200
             }
-        }
+        };
         this.app.confirm("infor", event, MWF.xApplication.process.Xform.LP.deleteWorkTitle, MWF.xApplication.process.Xform.LP.deleteWorkText, 380, 120, function(){
             //_self.app.content.mask({
             //    "style": {
@@ -1167,22 +1198,66 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
     //    window.open("/x_desktop/printWork.html?workid="+this.businessData.work.id+"&app="+this.businessData.work.application+"&form="+form);
     //},
     printWork: function(app, form){
-        var application = app || this.businessData.work.application;
+        var application = app || (this.businessData.work) ? this.businessData.work.application : this.businessData.workCompleted.application;
         var form = form;
         if (!form){
             form = this.json.id;
             if (this.json.printForm) form = this.json.printForm;
         }
-        window.open("/x_desktop/printWork.html?workid="+this.businessData.work.id+"&app="+this.businessData.work.application+"&form="+form);
+        if (this.businessData.workCompleted){
+            var application = app || this.businessData.workCompleted.application;
+            window.open("/x_desktop/printWork.html?workCompletedId="+this.businessData.workCompleted.id+"&app="+application+"&form="+form);
+        }else{
+            var application = app || this.businessData.work.application;
+            window.open("/x_desktop/printWork.html?workid="+this.businessData.work.id+"&app="+application+"&form="+form);
+        }
+
     },
     openWindow: function(form, app){
-        var application = app || this.businessData.work.application;
+        //var application = app || (this.businessData.work) ? this.businessData.work.application : this.businessData.workCompleted.application;
         var form = form;
         if (!form){
             form = this.json.id;
             //if (this.json.printForm) form = this.json.printForm;
         }
-        window.open("/x_desktop/printWork.html?workid="+this.businessData.work.id+"&app="+this.businessData.work.application+"&form="+form);
+        if (this.businessData.workCompleted){
+            var application = app || this.businessData.workCompleted.application;
+            window.open("/x_desktop/printWork.html?workCompletedId="+this.businessData.workCompleted.id+"&app="+application+"&form="+form);
+        }else{
+            var application = app || this.businessData.work.application;
+            window.open("/x_desktop/printWork.html?workid="+this.businessData.work.id+"&app="+application+"&form="+form);
+        }
+        //window.open("/x_desktop/printWork.html?workid="+this.businessData.work.id+"&app="+this.businessData.work.application+"&form="+form);
+    },
+
+    uploadedAttachment: function(site, id){
+        this.workAction.getAttachment(id, this.businessData.work.id, function(json){
+            var att = this.all[site];
+            if (att){
+                if (json.data) att.attachmentController.addAttachment(json.data);
+                att.attachmentController.checkActions();
+                att.fireEvent("upload", [json.data]);
+            }
+        }.bind(this));
+    },
+    replacedAttachment: function(site, id){
+        this.workAction.getAttachment(id, this.businessData.work.id, function(json){
+
+            var att = this.all[site];
+            if (att){
+                var attachmentController = att.attachmentController;
+                var attachment = null;
+                for (var i=0; i<attachmentController.attachments.length; i++){
+                    if (attachmentController.attachments[i].data.id===id){
+                        attachment = attachmentController.attachments[i];
+                        break;
+                    }
+                }
+                attachment.data = json.data;
+                attachment.reload();
+                attachmentController.checkActions();
+            }
+        }.bind(this))
     }
 	
 });

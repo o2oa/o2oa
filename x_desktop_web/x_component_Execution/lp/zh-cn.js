@@ -71,13 +71,18 @@ MWF.xApplication.Execution.LP = {
 			"deploy":"部署给",
 			"appoint":"委派给",
 			"tackback":"收回"
-		}
+		},
+		"attachment":"附件",
+		"isCompleted":"是否办结",
+		"completePercent":"完成百分比",
+		"archiveStatus":"已归档"
 
 	},
 	"workGather":{
 		"prompt":{
 			"submitWorkReport":"提交成功"
 		},
+
 		"bottomAction":{
 			"submit":"提交",
 			"close":"关闭"
@@ -96,17 +101,24 @@ MWF.xApplication.Execution.LP = {
 		"submitWarn":{
 			"submitSuccess":"提交成功",
 			"warnTitle":"信息确认",
-			"warnContent":"确认提交所有汇报？"
+			"warnContent":"确认提交所有汇报？",
+			"warnWorkCompleted":"如果是否办结选择“是”,即表示该工作已经完成，后续不会自动生成汇报! 确定提交?",
+			"warnGatherSubmit":"如果是否办结选择“是”,即表示该工作已经完成，后续不会自动生成汇报! 确定提交所有汇报?"
 		},
 		"viewTitle":"标题",
 		"viewProgressAction":"具体行动举措",
 		"viewProgressDescription":"截止当前完成情况",
 		"viewWorkPlan":"下一步工作要点及需求",
+		"completeProgress":"是否办结",
 		"viewAdminSuperviseInfo":"督办评价",
 		"viewLeaderOpinion":"领导评价",
 		"viewAction":"操作",
 		"viewSubmit":"提交",
-		"notEmpty" :"不能为空"
+		"notEmpty" :"不能为空",
+		"leaderDefaultOpinion":"已阅",
+		"isCompletedYesOption":"是",
+		"isCompletedNoOption":"否",
+		"completePercent":"完成百分比"
 	},
 	"workConditionMenuTitle":"工作动态",
 	"workConditionMenuTitleMore":"更多...",
@@ -115,7 +127,8 @@ MWF.xApplication.Execution.LP = {
 		"prompt":{
 			"deleteCenterWork":"删除成功",
 			"deleteBaseWork":"删除成功",
-			"tackbackBaseWork":"收回成功"
+			"tackbackBaseWork":"收回成功",
+			"archiveBase":"归档成功"
 		},
 		"navi":{
 			"title":"工作部署",
@@ -150,12 +163,20 @@ MWF.xApplication.Execution.LP = {
 			"warnTitle":"信息确认",
 			"warnContent":{
 				"tackBack":"确认收回？",
-				"delete":"确认删除？"
+				"delete":"确认删除？",
+				"archive":"确认归档？"
 			}
 		},
 		"searchButton":{
 			"search":"搜索",
 			"reset":"返回"
+		},
+		"progress":{
+			"progressTitle":"修改进展",
+			"isCompleted":"是否完成",
+			"isCompletedYes":"是",
+			"isCOmpletedNo":"否",
+			"completedPercent":"完成百分比"
 		}
 
 	},
@@ -419,7 +440,9 @@ MWF.xApplication.Execution.LP = {
 		action_tackBack:"收回",
 		action_report:"汇报",
 		action_delete:"删除",
-		action_view:"查看"
+		action_archive:"归档",
+		action_view:"查看",
+		action_progress:"进展"
 	},
 	"workForm" : {
 		title : "工作详情",
@@ -539,19 +562,29 @@ MWF.xApplication.Execution.LP = {
 			readDone:"已阅成功",
 			submitWorkReport:"提交成功"
 		},
+		"submitWarn":{
+			"submitSuccess":"提交成功",
+			"warnTitle":"信息确认",
+			"warnContent":"如果是否办结选择“是”,即表示该工作已经完成，后续不会自动生成汇报! 确定提交?"
+		},
+		attachment:"附件",
 		topTitle :"工作汇报",
 		reportLinks:"查看历次汇报",
 		reportContentTitle:"汇报内容",
 		adminContentTitle:"督办评价",
 		leaderContentTitle:"领导批示",
-		contentTitle1: "截止当前完成情况",
-		contentTitle2: "下一步工作要点及需求",
+		contentTitle1: "截止当前完成情况（说明是否办结，简述进展情况）",
+		contentTitle2: "下一步工作要点及需求（细化主要举措，明确办结时间）",
 		prevReportLinks: "历次汇报查询",
 		checkEmpty:"不能为空",
 		appointTitle:"委派记录",
 		"appointFor" :"委派给",
 		"appointOpinion" :"委派意见",
 		"statuArchive":"已归档",
+		"isCompleted":"是否办结",
+		"isCompletedYesOption":"是",
+		"isCompletedNoOption":"否",
+		"completePercent":"完成百分比",
 		
 		"information":{
 			saveSuccess:"保存成功"
@@ -630,6 +663,7 @@ MWF.xApplication.Execution.LP = {
 		"yearCount" : "年度",
 		"level":"等级",
 		"type":"类别",
+		"workType":"类别",
 		"starWork":"星标工作",
 		"starWorkText":"全部,星标工作",
 		"searchText" : "请输入需要搜索的标题内容",
@@ -647,6 +681,8 @@ MWF.xApplication.Execution.LP = {
 			"beginDate":"开始日期",
 			"endDate":"结束日期"
 		},
+		"centerWorkDefault":"输入中心工作标题",
+		"nullReportStat":"未生成汇报统计",
 		"dateStatListTitle":"统计周期",
 		"statTable":{
 			"serialNumber":"序号",

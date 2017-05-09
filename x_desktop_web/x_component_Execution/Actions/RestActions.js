@@ -415,7 +415,14 @@ MWF.xApplication.Execution.Actions.RestActions = new Class({
     getMyRelativeWork :function(id, success, failure, async){
         this.action.invoke({"name": "getMyRelativeWork", "parameter": {"id": id },"success": success,"failure": failure,"async": async});
     },
-
+    //具体工作归档
+    archiveBaseWork: function(id, success, failure, async){
+        this.action.invoke({"name": "archiveBaseWork", "parameter": {"id": id },"success": success,"failure": failure,"async": async});
+    },
+    //修改具体工作进展
+    progressBaseWork: function(id,percent,success,failure,async){
+        this.action.invoke({"name":"progressBaseWork","parameter": {"id": id,"percent":percent },"async": async, "success": success,	"failure": failure})
+    },
     //*******************具体工作*******************
     //*******************工作汇报*******************
 
@@ -438,6 +445,10 @@ MWF.xApplication.Execution.Actions.RestActions = new Class({
     //导出单个时间得EXCEL
     exportByCenterWork : function(filterData, success,failure, async){
         this.action.invoke({"name": "exportByCenterWork", "data": filterData, "async": async, "success": success,	"failure": failure});
+    },
+    //按部门导出
+    exportByDeptWork : function(filterData, success,failure, async){
+        this.action.invoke({"name": "exportByDeptWork", "data": filterData, "async": async, "success": success,	"failure": failure});
     },
     //*******************统计*******************
     //*******************脑图*******************

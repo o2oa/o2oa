@@ -91,23 +91,35 @@ COMMON.DOM.addReady(function(){
                 };
 
                 layout.loadDocument = function(options){
-                    this.action.getDocument( options.id, function(document){
+                    this.action.viewDocument( options.id, function(document){
                         if (this.mask) this.mask.hide();
                         this.parseData(document.data);
-                        this.action.getCategory( this.document.categoryId, function( js ){
-                            this.categoryData = js.data;
-                            var formId = this.categoryData.formId || this.categoryData.readFormId;
-                            if( this.readonly == true && this.categoryData.readFormId && this.categoryData.readFormId != "" ){
-                                formId = this.categoryData.readFormId;
-                            }
-                            if( !formId || formId=="" ){
-                                this.notice(  this.document.categoryName + this.lp.formNotSetted , "error");
-                            }else{
-                                this.loadForm( formId );
-                            }
-                        }.bind(this))
+                        if( !this.formId || this.formId=="" ){
+                            this.notice(  this.document.categoryName + this.lp.formNotSetted , "error");
+                        }else{
+                            this.loadForm( this.formId );
+                        }
                     }.bind(this), null);
                 };
+
+                //layout.loadDocument = function(options){
+                //    this.action.getDocument( options.id, function(document){
+                //        if (this.mask) this.mask.hide();
+                //        this.parseData(document.data);
+                //        this.action.getCategory( this.document.categoryId, function( js ){
+                //            this.categoryData = js.data;
+                //            var formId = this.categoryData.formId || this.categoryData.readFormId;
+                //            if( this.readonly == true && this.categoryData.readFormId && this.categoryData.readFormId != "" ){
+                //                formId = this.categoryData.readFormId;
+                //            }
+                //            if( !formId || formId=="" ){
+                //                this.notice(  this.document.categoryName + this.lp.formNotSetted , "error");
+                //            }else{
+                //                this.loadForm( formId );
+                //            }
+                //        }.bind(this))
+                //    }.bind(this), null);
+                //};
 
                 layout.loadForm = function( formId ){
                     this.action.getForm(formId, function( json ){
@@ -116,33 +128,37 @@ COMMON.DOM.addReady(function(){
                         if( !this.form ){
                             this.form = (json.data.data) ? JSON.decode(MWF.decodeJsonString(json.data.data)): null;
                         }
-                        this.listAttachment();
+                        //this.listAttachment();
+                        if (this.mask) this.mask.hide();
+                        this.attachmentList = [];
+                        this.openDocument();
                     }.bind(this), function(error){
+                        if (this.mask) this.mask.hide();
                         this.notice(  this.lp.formGettedError + ":" + error.responseText , "error");
                         //this.close();
                     }.bind(this));
                 };
 
-                layout.listAttachment = function(){
-                    if( this.document.attachmentList && this.document.attachmentList.length > 0 ){
-                        this.action.listAttachment(this.document.id, function( json ){
-                            if (this.mask) this.mask.hide();
-                            this.attachmentList = json.data;
-                            this.attachmentList.each(function(att){
-                                att.lastUpdateTime = att.updateTime;
-                                att.person = att.creatorUid;
-                            })
-                            this.openDocument();
-                        }.bind(this), function(error){
-                            this.notice(  this.lp.attachmentGettedError  + ":" + error.responseText, "error");
-                            this.close();
-                        }.bind(this));
-                    }else{
-                        if (this.mask) this.mask.hide();
-                        this.attachmentList = [];
-                        this.openDocument();
-                    }
-                },
+                //layout.listAttachment = function(){
+                //    if( this.document.attachmentList && this.document.attachmentList.length > 0 ){
+                //        this.action.listAttachment(this.document.id, function( json ){
+                //            if (this.mask) this.mask.hide();
+                //            this.attachmentList = json.data;
+                //            this.attachmentList.each(function(att){
+                //                att.lastUpdateTime = att.updateTime;
+                //                att.person = att.creatorUid;
+                //            })
+                //            this.openDocument();
+                //        }.bind(this), function(error){
+                //            this.notice(  this.lp.attachmentGettedError  + ":" + error.responseText, "error");
+                //            this.close();
+                //        }.bind(this));
+                //    }else{
+                //        if (this.mask) this.mask.hide();
+                //        this.attachmentList = [];
+                //        this.openDocument();
+                //    }
+                //},
 
                 layout.errorDocument = function(){
                     if (this.mask) this.mask.hide();
@@ -154,8 +170,19 @@ COMMON.DOM.addReady(function(){
                     data.document.subject = data.document.title;
                     this.data =  data.data;
                     this.document = data.document;
-                    this.attachmentList = data.attachmentList;
+                    this.attachmentList = data.attachmentList || [];
+                    this.attachmentList.each(function(att){
+                        att.lastUpdateTime = att.updateTime;
+                        att.person = att.creatorUid;
+                    });
+
                     this.readonly = true;
+
+                    this.formId = this.document.form || this.document.readFormId;
+                    if( this.readonly == true && this.document.readFormId && this.document.readFormId != "" ){
+                        this.formId  = this.document.readFormId;
+                    }
+
                     this.control = data.control ||  {
                             "allowRead": true,
                             "allowPublishDocument": false,
@@ -166,7 +193,6 @@ COMMON.DOM.addReady(function(){
                             "allowEditDocument":  false,
                             "allowDeleteDocument":  false
                         };
-                    this.form = (data.form) ? JSON.decode(MWF.decodeJsonString(data.form.data)): null;
                 };
                 layout.openDocument = function(){
                     if (this.form){
@@ -226,53 +252,52 @@ COMMON.DOM.addReady(function(){
                 //        if (callback) callback();
                 //    }.bind(this));
                 //};
-                layout.getServiceAddress = function(callback){
-                    if (typeOf(layout.config.center)=="object"){
-                        this.getServiceAddressConfigObject(callback);
-                    }else if (typeOf(layout.config.center)=="array"){
-                        this.getServiceAddressConfigArray(callback);
-                    }
-
-                };
-                layout.getServiceAddressConfigArray = function(callback) {
-                    var requests = [];
-                    layout.config.center.each(function(center){
-                        requests.push(
-                            this.getServiceAddressConfigObject(function(){
-                                requests.each(function(res){
-                                    if (res.isRunning()){res.cancel();}
-                                });
-                                if (callback) callback();
-                            }.bind(this), center)
-                        );
-                    }.bind(this));
-                };
-                layout.getServiceAddressConfigObject = function(callback, center){
-                    var centerConfig = center;
-                    if (!centerConfig) centerConfig = layout.config.center;
-                    var host = centerConfig.host || window.location.hostname;
-                    var port = centerConfig.port;
-                    var uri = "";
-                    if (!port || port=="80"){
-                        uri = "http://"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
-                    }else{
-                        uri = "http://"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
-                    }
-                    var currenthost = window.location.hostname;
-                    uri = uri.replace(/{source}/g, currenthost);
-                    //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
-                    return MWF.restful("get", uri, null, function(json){
-                        this.serviceAddressList = json.data;
-                        this.centerServer = center;
-                        if (callback) callback();
-                    }.bind(this));
-                };
+                //layout.getServiceAddress = function(callback){
+                //    if (typeOf(layout.config.center)=="object"){
+                //        this.getServiceAddressConfigObject(callback);
+                //    }else if (typeOf(layout.config.center)=="array"){
+                //        this.getServiceAddressConfigArray(callback);
+                //    }
+                //
+                //};
+                //layout.getServiceAddressConfigArray = function(callback) {
+                //    var requests = [];
+                //    layout.config.center.each(function(center){
+                //        requests.push(
+                //            this.getServiceAddressConfigObject(function(){
+                //                requests.each(function(res){
+                //                    if (res.isRunning()){res.cancel();}
+                //                });
+                //                if (callback) callback();
+                //            }.bind(this), center)
+                //        );
+                //    }.bind(this));
+                //};
+                //layout.getServiceAddressConfigObject = function(callback, center){
+                //    var centerConfig = center;
+                //    if (!centerConfig) centerConfig = layout.config.center;
+                //    var host = centerConfig.host || window.location.hostname;
+                //    var port = centerConfig.port;
+                //    var uri = "";
+                //    if (!port || port=="80"){
+                //        uri = "http://"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+                //    }else{
+                //        uri = "http://"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+                //    }
+                //    var currenthost = window.location.hostname;
+                //    uri = uri.replace(/{source}/g, currenthost);
+                //    //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
+                //    return MWF.restful("get", uri, null, function(json){
+                //        this.serviceAddressList = json.data;
+                //        this.centerServer = center;
+                //        if (callback) callback();
+                //    }.bind(this));
+                //};
                 layout.confirm = function(type, e, title, text, width, height, ok, cancel, callback, mask, style){
                     MWF.require("MWF.xDesktop.Dialog", function(){
                         var size = this.content.getSize();
                         var x = 0;
                         var y = 0;
-                        debugger;
                         if (typeOf(e)=="element"){
                             var position = e.getPosition(this.content);
                             x = position.x;
@@ -388,9 +413,14 @@ COMMON.DOM.addReady(function(){
                 MWF.getJSON("res/config/config.json", function(config){
                     layout.config = config;
 
-                    layout.getServiceAddress(function(){
+                    MWF.xDesktop.getServiceAddress(layout.config, function(service, center){
+                        layout.serviceAddressList = service;
+                        layout.centerServer = center;
                         layout.load();
-                    });
+                    }.bind(this));
+                    //layout.getServiceAddress(function(){
+                    //    layout.load();
+                    //});
                 });
             })();
 

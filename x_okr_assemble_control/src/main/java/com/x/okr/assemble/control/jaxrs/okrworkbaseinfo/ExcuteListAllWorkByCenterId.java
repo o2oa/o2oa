@@ -4,13 +4,15 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
-
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.SortTools;
 import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.WrapOutOkrCenterWorkInfo;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.CenterWorkNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrworkbaseinfo.exception.WorkBaseInfoProcessException;
 import com.x.okr.entity.OkrCenterWorkInfo;
 import com.x.okr.entity.OkrWorkBaseInfo;
 
@@ -32,7 +34,7 @@ public class ExcuteListAllWorkByCenterId extends ExcuteBase {
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName()  );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}	
 		}
 		if( check ){
@@ -40,7 +42,6 @@ public class ExcuteListAllWorkByCenterId extends ExcuteBase {
 				check = false;
 				Exception exception = new CenterWorkNotExistsException( id  );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -48,9 +49,9 @@ public class ExcuteListAllWorkByCenterId extends ExcuteBase {
 				wrapOutOkrCenterWorkInfo = okrCenterWorkInfo_wrapout_copier.copy( okrCenterWorkInfo );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new CenterWorkWrapOutException( e  );
+				Exception exception = new WorkBaseInfoProcessException( e, "将中心工作查询结果转换为可以输出的数据信息时发生异常。"  );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -59,9 +60,9 @@ public class ExcuteListAllWorkByCenterId extends ExcuteBase {
 				all_workBaseInfoList = okrWorkBaseInfoService.listWorkInCenter( id, null );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new WorkListByCenterException( e, id );
+				Exception exception = new WorkBaseInfoProcessException( e, "根据中心工作ID查询中心工作下所有具体工作信息时发生异常。ID：" + id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -70,9 +71,9 @@ public class ExcuteListAllWorkByCenterId extends ExcuteBase {
 					all_wrapWorkBaseInfoList = wrapout_copier.copy( all_workBaseInfoList );
 				} catch (Exception e) {
 					check = false;
-					Exception exception = new WorkWrapOutException( e );
+					Exception exception = new WorkBaseInfoProcessException( e, "将查询结果转换为可以输出的数据信息时发生异常。" );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}

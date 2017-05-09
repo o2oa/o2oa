@@ -19,8 +19,6 @@ import com.x.bbs.entity.BBSSubjectContent;
 import com.x.bbs.entity.BBSSubjectContent_;
 import com.x.bbs.entity.BBSSubjectInfo;
 import com.x.bbs.entity.BBSSubjectInfo_;
-import com.x.bbs.entity.BBSSubjectPictureBase64;
-import com.x.bbs.entity.BBSSubjectPictureBase64_;
 
 /**
  * 类   名：BBSSubjectInfoFactory<br/>
@@ -272,7 +270,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId));
 		}
 		if( needPicture != null && needPicture ){
-			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.pictureUrl ) ) );
+			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.picId ) ) );
 		}
 		if( creatorName != null && !creatorName.isEmpty() ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.creatorName ), creatorName ) );
@@ -311,7 +309,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId));
 		}
 		if( needPicture != null && needPicture ){
-			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.pictureUrl ) ) );
+			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.picId ) ) );
 		}
 		if( creatorName != null && !creatorName.isEmpty() ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.creatorName ), creatorName ) );
@@ -413,7 +411,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId));
 		}
 		if( needPicture != null && needPicture ){
-			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.pictureUrl ) ) );
+			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.picId ) ) );
 		}
 		cq.select( cb.count( root ) );		
 		return em.createQuery(cq.where(p)).getSingleResult();
@@ -449,7 +447,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId));
 		}
 		if( needPicture != null && needPicture ){
-			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.pictureUrl ) ) );
+			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.picId ) ) );
 		}
 		cq.orderBy( cb.desc( root.get( BBSSubjectInfo_.createTime ) ) );
 		return em.createQuery(cq.where(p)).setMaxResults( maxRecordCount ).getResultList();
@@ -717,18 +715,6 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		}
 		cq.orderBy( cb.desc( root.get( BBSSubjectInfo_.updateTime ) ) );
 		return em.createQuery(cq.where(p)).setMaxResults( count ).getResultList();
-	}
-
-	public List<BBSSubjectPictureBase64> getPictureBase64( String id ) throws Exception {
-		if( id == null || id.isEmpty() ){
-			throw new Exception("id is null");
-		}
-		EntityManager em = this.entityManagerContainer().get(BBSSubjectPictureBase64.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<BBSSubjectPictureBase64> cq = cb.createQuery(BBSSubjectPictureBase64.class);
-		Root<BBSSubjectPictureBase64> root = cq.from( BBSSubjectPictureBase64.class );
-		Predicate p = cb.equal( root.get( BBSSubjectPictureBase64_.id ), id );
-		return em.createQuery(cq.where(p)).getResultList();
 	}
 	
 	public List<BBSSubjectContent> getSubjectContent( String id ) throws Exception {

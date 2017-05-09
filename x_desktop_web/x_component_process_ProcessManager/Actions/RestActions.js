@@ -196,12 +196,11 @@ MWF.xApplication.process.ProcessManager.Actions.RestActions = new Class({
 	},
 	addForm: function(formData, mobileData, fieldList, success, failure){
         var data, mobileDataStr;
-        debugger;
         if (!formData.json.id){
             this.getUUID(function(id){
                 formData.json.id = id;
-                if (formData) formData.isNewForm = false;
-                if (mobileData) mobileData.isNewForm = false;
+                //if (formData) formData.isNewForm = false;
+                //if (mobileData) mobileData.isNewForm = false;
 
                 if (formData) data = MWF.encodeJsonString(JSON.encode(formData));
                 if (mobileData) mobileDataStr = MWF.encodeJsonString(JSON.encode(mobileData));
@@ -221,8 +220,8 @@ MWF.xApplication.process.ProcessManager.Actions.RestActions = new Class({
                 this.action.invoke({"name": "addForm","data": json, "parameter": {"id": formData.json.categoryId}, "success": success,"failure": failure});
             }.bind(this));
         }else{
-            if (formData) formData.isNewForm = false;
-            if (mobileData) mobileData.isNewForm = false;
+            //if (formData) formData.isNewForm = false;
+            //if (mobileData) mobileData.isNewForm = false;
             if (formData) data = MWF.encodeJsonString(JSON.encode(formData));
             if (mobileData) mobileData = MWF.encodeJsonString(JSON.encode(mobileData));
 
@@ -350,9 +349,10 @@ MWF.xApplication.process.ProcessManager.Actions.RestActions = new Class({
     },
     addDictionary: function(data, success, failure){
         if (!data.id){
+            var dirData = Object.clone(data);
             this.getUUID(function(id){
-                data.id = id;
-                this.action.invoke({"name": "addDictionary","data": data,"success": success,"failure": failure});
+                dirData.id = id;
+                this.action.invoke({"name": "addDictionary","data": dirData,"success": success,"failure": failure});
             }.bind(this));
         }
     },

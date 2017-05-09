@@ -1,25 +1,32 @@
 package com.x.hotpic.assemble.control;
 
-import com.x.base.core.project.AbstractThisApplication;
-import com.x.base.core.project.ReportTask;
-import com.x.collaboration.core.message.Collaboration;
+import com.x.base.core.project.Context;
+import com.x.hotpic.assemble.control.queueTask.DocumentExistsCheckTask;
 import com.x.hotpic.assemble.control.timertask.InfoExistsCheckTask;
 
-public class ThisApplication extends AbstractThisApplication {
-
-	public static void init() throws Exception {
-		timerWithFixedDelay(new ReportTask(), 1, 20);
-		initDatasFromCenters();
-		initStoragesFromCenters();
-		Collaboration.start();
-		initTimertasks();
+public class ThisApplication{
+	
+	public static DocumentExistsCheckTask queueLoginRecord;
+	protected static Context context;
+	
+	public static Context context() {
+		return context;
+	}
+	
+	public static void init() {
+		try {
+			queueLoginRecord = new DocumentExistsCheckTask();
+			context().startQueue( queueLoginRecord );
+			context().schedule( InfoExistsCheckTask.class, "0 0 0 * * ?");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
-	private static void initTimertasks() throws Exception {
-		timerWithFixedDelay( new InfoExistsCheckTask(), 60 * 10, 60 * 60 );
-	}
-
-	public static void destroy() throws Exception {
-		Collaboration.stop();
+	public static void destroy() {
+		try {
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

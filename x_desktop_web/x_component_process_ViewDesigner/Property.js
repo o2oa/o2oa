@@ -261,8 +261,8 @@ MWF.xApplication.process.ViewDesigner.Property = MWF.FVProperty = new Class({
 		}
 	},
 	setCheckboxValue: function(name, input){
-		
-		var checkboxList = $$("input:[name='"+name+"']");
+        var id = this.module.json.id;
+        var checkboxList = $$("input[name='"+id+name+"']");
 		var values = [];
 		checkboxList.each(function(checkbox){
 			if (checkbox.get("checked")){

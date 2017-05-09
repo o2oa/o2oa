@@ -13,25 +13,35 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.gson.XGsonBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
+import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.okr.assemble.common.date.DateOperation;
 import com.x.okr.assemble.common.date.MonthOfYear;
 import com.x.okr.assemble.common.date.WeekOfYear;
+import com.x.okr.assemble.common.excel.writer.WorkReportStatusExportExcelWriter;
+import com.x.okr.assemble.control.jaxrs.okrtask.WrapOutOkrTask;
+import com.x.okr.assemble.control.jaxrs.statistic.exception.QueryEndDateEmptyException;
+import com.x.okr.assemble.control.jaxrs.statistic.exception.QueryEndDateInvalidException;
+import com.x.okr.assemble.control.jaxrs.statistic.exception.QueryStartDateEmptyException;
+import com.x.okr.assemble.control.jaxrs.statistic.exception.QueryStartDateInvalidException;
+import com.x.okr.assemble.control.jaxrs.statistic.exception.QueryWithConditionException;
+import com.x.okr.assemble.control.jaxrs.statistic.exception.ReportStatisitcWrapOutException;
+import com.x.okr.assemble.control.jaxrs.statistic.exception.WrapInConvertException;
+import com.x.okr.assemble.control.service.ExcuteSt_WorkReportStatusService;
 import com.x.okr.assemble.control.service.OkrStatisticReportStatusService;
-import com.x.okr.assemble.control.service.OkrWorkBaseInfoQueryService;
-import com.x.okr.assemble.control.timertask.St_WorkReportStatus;
 import com.x.okr.assemble.control.timertask.entity.WorkBaseReportSubmitEntity;
 import com.x.okr.entity.OkrStatisticReportStatus;
 
@@ -43,40 +53,84 @@ public class OkrStatisticReportStatusAction extends StandardJaxrsAction{
 	private OkrStatisticReportStatusService okrReportStatusStatisticService = new OkrStatisticReportStatusService();
 	private DateOperation dateOperation = new DateOperation();
 
-	@Path( "filter/list" )
+	@HttpMethodDescribe(value = "测试定时代理，对工作的汇报提交情况进行统计分析.", response = WrapOutOkrTask.class)
+	@GET
+	@Path( "excute" )
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response excute(@Context HttpServletRequest request ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<WrapOutOkrTask> result = new ActionResult<>();
+		try {
+			new ExcuteSt_WorkReportStatusService().execute();
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			result.error( e );
+			logger.warn( "OKR_St_WorkReportStatus completed and excute got an exception." );
+			logger.error( e, effectivePerson, request, null);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
+	@HttpMethodDescribe(value = "测试定时代理，对工作的汇报提交情况进行统计分析.", response = WrapOutOkrTask.class)
+	@GET
+	@Path( "excute/all" )
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response excuteAll(@Context HttpServletRequest request ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<WrapOutOkrTask> result = new ActionResult<>();
+		try {
+			new ExcuteSt_WorkReportStatusService().executeAll();
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			result.error( e );
+			logger.warn( "OKR_St_WorkReportStatus completed and excute got an exception." );
+			logger.error( e, effectivePerson, request, null);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
+	@Path( "export" )
 	@HttpMethodDescribe( value = "根据条件获取OkrStatisticReportStatus部分信息对象.", request = WrapInFilterOkrStatisticReportStatus.class, response = WrapOutOkrStatisticReportStatusTable.class)
 	@PUT
 	@Produces( HttpMediaType.APPLICATION_JSON_UTF_8 )
 	@Consumes( MediaType.APPLICATION_JSON )
-	public Response listByCondition( @Context HttpServletRequest request, WrapInFilterOkrStatisticReportStatus wrapIn ) {
-		ActionResult<WrapOutOkrStatisticReportStatusTable> result = new ActionResult<>();
+	public Response export( @Context HttpServletRequest request , JsonElement jsonElement ) {
+		ActionResult<WrapOutId> result = new ActionResult<>();
+		
 		List<WrapOutOkrStatisticReportStatus> wrapOutOkrReportSubmitStatusStatisticList = null;
 		List<OkrStatisticReportStatus> okrReportStatusStatisticList = null;
 		List<WrapOutOkrStatisticReportStatusEntity> organizationLayer = null;
 		List<WrapOutOkrStatisticReportStatusHeader> headers = null;
 		List<WeekOfYear> weeks = null;
 		List<MonthOfYear> months = null;
+		WrapInFilterOkrStatisticReportStatus wrapIn = null;
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		WrapOutOkrStatisticReportStatusTable wrapOutOkrReportSubmitStatusTable = new WrapOutOkrStatisticReportStatusTable();
 		Date startDate = null;
 		Date endDate = null;
+		String workTitle = null;
 		String startDateString = null;
 		String endDateString = null;
-		
+		String workType = null;
 		String cycleType = "每周汇报";
 		String centerId = null;
 		String workId = null;
 		String organization = null;
-		
+		String fileName = null;
 		
 		Boolean check = true;
 		
-//		if( wrapIn == null ){
-//			check = false;
-//			logger.error( "wrapIn is null, system can not get any object." );
-//			result.error( new Exception("传入的参数为空，无法进行查询！") );
-//			result.setUserMessage("传入的参数为空，无法进行查询！");
-//		}
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilterOkrStatisticReportStatus.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( e, effectivePerson, request, null);
+		}
+		
 		if( check ){
 			startDateString = wrapIn.getStartDate();
 			if( startDateString != null ){
@@ -86,13 +140,13 @@ public class OkrStatisticReportStatusAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new QueryStartDateInvalidException( e, startDateString );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}else{
 				check = false;
 				Exception exception = new QueryStartDateEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 			endDateString = wrapIn.getEndDate();
 			if( endDateString != null ){
@@ -102,17 +156,19 @@ public class OkrStatisticReportStatusAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new QueryEndDateInvalidException( e, endDateString );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}else{
 				check = false;
 				Exception exception = new QueryEndDateEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
 			//查询过滤条件
+			workTitle = wrapIn.getCenterTitle();
+			workType = wrapIn.getWorkTypeName();
 			cycleType = wrapIn.getCycleType();
 			centerId = wrapIn.getCenterId();
 			workId = wrapIn.getWorkId();
@@ -120,12 +176,12 @@ public class OkrStatisticReportStatusAction extends StandardJaxrsAction{
 		}
 		if( check ){
 			try {
-				okrReportStatusStatisticList = okrReportStatusStatisticService.list( centerId, workId, organization, cycleType, "正常" );
+				okrReportStatusStatisticList = okrReportStatusStatisticService.list( centerId, workTitle, workId, workType, organization, cycleType, "正常" );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new QueryWithConditionException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -136,7 +192,136 @@ public class OkrStatisticReportStatusAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new ReportStatisitcWrapOutException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
+				}
+			}
+		}
+		if( "每月汇报".equals( cycleType ) ){
+			months = dateOperation.getMonthsOfYear( startDate, endDate );
+			headers = getHeaderForOrganizationMonthStatistic( months );
+			organizationLayer = getMonthFirstLayerArray( wrapOutOkrReportSubmitStatusStatisticList, months, startDate, endDate );
+		}else{
+			weeks = dateOperation.getWeeksOfYear( startDate, endDate );
+			headers = getHeaderForOrganizationWeekStatistic( weeks );
+			organizationLayer = getWeekFirstLayerArray( wrapOutOkrReportSubmitStatusStatisticList, weeks, startDate, endDate );
+		}
+		wrapOutOkrReportSubmitStatusTable.setHeader(headers);
+		wrapOutOkrReportSubmitStatusTable.setContent( organizationLayer );
+		
+		//将所有的数据组织成EXCEL文件
+		if ( check ) {
+			try {
+				fileName = new WorkReportStatusExportExcelWriter().writeExcel( wrapOutOkrReportSubmitStatusTable );
+				result.setData( new WrapOutId( fileName ) );
+			} catch ( Exception e ) {
+				logger.warn( "system write export data to excel file got an exception. " );
+				logger.error( e );
+			}
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
+	@Path( "filter/list" )
+	@HttpMethodDescribe( value = "根据条件获取OkrStatisticReportStatus部分信息对象.", request = WrapInFilterOkrStatisticReportStatus.class, response = WrapOutOkrStatisticReportStatusTable.class)
+	@PUT
+	@Produces( HttpMediaType.APPLICATION_JSON_UTF_8 )
+	@Consumes( MediaType.APPLICATION_JSON )
+	public Response listByCondition( @Context HttpServletRequest request , JsonElement jsonElement ) {
+		ActionResult<WrapOutOkrStatisticReportStatusTable> result = new ActionResult<>();
+		List<WrapOutOkrStatisticReportStatus> wrapOutOkrReportSubmitStatusStatisticList = null;
+		List<OkrStatisticReportStatus> okrReportStatusStatisticList = null;
+		List<WrapOutOkrStatisticReportStatusEntity> organizationLayer = null;
+		List<WrapOutOkrStatisticReportStatusHeader> headers = null;
+		List<WeekOfYear> weeks = null;
+		List<MonthOfYear> months = null;
+		WrapInFilterOkrStatisticReportStatus wrapIn = null;
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		WrapOutOkrStatisticReportStatusTable wrapOutOkrReportSubmitStatusTable = new WrapOutOkrStatisticReportStatusTable();
+		Date startDate = null;
+		Date endDate = null;
+		String workTitle = null;
+		String startDateString = null;
+		String endDateString = null;
+		String workType = null;
+		String cycleType = "每周汇报";
+		String centerId = null;
+		String workId = null;
+		String organization = null;
+		
+		
+		Boolean check = true;
+		
+		try {
+			wrapIn = this.convertToWrapIn( jsonElement, WrapInFilterOkrStatisticReportStatus.class );
+		} catch (Exception e ) {
+			check = false;
+			Exception exception = new WrapInConvertException( e, jsonElement );
+			result.error( exception );
+			logger.error( e, effectivePerson, request, null);
+		}
+		
+		if( check ){
+			startDateString = wrapIn.getStartDate();
+			if( startDateString != null ){
+				try {
+					startDate = dateOperation.getDateFromString( startDateString );
+				} catch (Exception e) {
+					check = false;
+					Exception exception = new QueryStartDateInvalidException( e, startDateString );
+					result.error( exception );
+					logger.error( e, effectivePerson, request, null);
+				}
+			}else{
+				check = false;
+				Exception exception = new QueryStartDateEmptyException();
+				result.error( exception );
+				//logger.error( e, effectivePerson, request, null);
+			}
+			endDateString = wrapIn.getEndDate();
+			if( endDateString != null ){
+				try {
+					endDate = dateOperation.getDateFromString( endDateString );
+				} catch (Exception e) {
+					check = false;
+					Exception exception = new QueryEndDateInvalidException( e, endDateString );
+					result.error( exception );
+					logger.error( e, effectivePerson, request, null);
+				}
+			}else{
+				check = false;
+				Exception exception = new QueryEndDateEmptyException();
+				result.error( exception );
+				//logger.error( e, effectivePerson, request, null);
+			}
+		}
+		if( check ){
+			//查询过滤条件
+			workTitle = wrapIn.getCenterTitle();
+			workType = wrapIn.getWorkTypeName();
+			cycleType = wrapIn.getCycleType();
+			centerId = wrapIn.getCenterId();
+			workId = wrapIn.getWorkId();
+			organization = wrapIn.getOrganization();
+		}
+		if( check ){
+			try {
+				okrReportStatusStatisticList = okrReportStatusStatisticService.list( centerId, workTitle, workId, workType, organization, cycleType, "正常" );
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new QueryWithConditionException( e );
+				result.error( exception );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		if( check ){
+			if( okrReportStatusStatisticList != null ){
+				try {
+					wrapOutOkrReportSubmitStatusStatisticList = wrapout_copier.copy( okrReportStatusStatisticList );
+				} catch (Exception e) {
+					check = false;
+					Exception exception = new ReportStatisitcWrapOutException( e );
+					result.error( exception );
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -487,26 +672,4 @@ public class OkrStatisticReportStatusAction extends StandardJaxrsAction{
 		return null;
 	}
 
-
-	@HttpMethodDescribe(value = "测试工作汇报状态统计.", response = WrapOutOkrStatisticReportStatus.class)
-	@GET
-	@Path( "process" )
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response test( @Context HttpServletRequest request ) {
-		ActionResult<WrapOutOkrStatisticReportStatus> result = new ActionResult<>();
-		OkrWorkBaseInfoQueryService okrWorkBaseInfoService = new OkrWorkBaseInfoQueryService();
-		List<String>  ids = null;
-		String status = "正常";//如果不需要在统计里展示 ，就应该为已归档
-		try {
-			ids = okrWorkBaseInfoService.listAllDeployedWorkIds( null, status );
-		} catch (Exception e) {
-			logger.warn("Timertask service list all no archive centerworks got an exception." );
-			logger.error(e);
-		}
-		if (ids != null && !ids.isEmpty()) {
-			new St_WorkReportStatus().statisticWorksReportSubmit( ids );
-		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
-	}
 }

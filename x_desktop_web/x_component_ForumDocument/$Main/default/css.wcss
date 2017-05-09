@@ -1051,5 +1051,19 @@
   },
   "person_over" : {
     "color": "#0258ad"
+  },
+  "uploadActionNode":{
+    "margin": "10px 10px 10px 10px",
+    "background-color": "#FFF",
+    "padding": "4px 14px",
+    "border": "1px solid #999",
+    "border-radius": "3px",
+    "font-size": "14px",
+    "color": "#666",
+    "cursor": "pointer"
+  },
+  "portalImageNode" : {
+    "width" : "260px",
+    "height" : "173px"
   }
 }

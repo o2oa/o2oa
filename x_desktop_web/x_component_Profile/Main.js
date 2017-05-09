@@ -230,18 +230,29 @@ MWF.xApplication.Profile.Main = new Class({
     },
     loadLayoutConfigNode: function(){
         this.layoutConfigNode = new Element("div", {"styles": this.css.configNode}).inject(this.content);
-        this.clearDataAction = new Element("div", {"styles": this.css.clearDataAction, "text": this.lp.clear}).inject(this.layoutConfigNode);
+
+        new Element("div", {"styles": this.css.layoutTitleNode, "text": this.lp.layoutAction}).inject(this.layoutConfigNode);
+
+        var buttonNode = new Element("div", {"styles": this.css.buttonNodeArea}).inject(this.layoutConfigNode);
+
+        this.clearDataAction = new Element("div", {"styles": this.css.clearDataAction, "text": this.lp.clear}).inject(buttonNode);
         this.clearDataAction.addEvent("click", function(){
             MWF.require("MWF.widget.UUID", function(){
-                MWF.UD.putData("layout", {}, function(){
+                //MWF.UD.putData("layout", {}, function(){
+                //    this.notice(this.lp.clearok, "success");
+                //    this.desktop.notRecordStatus = true;
+                //}.bind(this));
+
+                MWF.UD.deleteData("layout", function(){
                     this.notice(this.lp.clearok, "success");
                     this.desktop.notRecordStatus = true;
                 }.bind(this));
+
             }.bind(this));
         }.bind(this));
 
         if (MWF.AC.isAdministrator()){
-            this.defaultDataAction = new Element("div", {"styles": this.css.setDefaultDataAction, "text": this.lp.setDefault}).inject(this.layoutConfigNode);
+            this.defaultDataAction = new Element("div", {"styles": this.css.setDefaultDataAction, "text": this.lp.setDefault}).inject(buttonNode);
             this.defaultDataAction.addEvent("click", function(){
                 MWF.require("MWF.widget.UUID", function(){
                     var text = this.lp.setDefaultOk;
@@ -252,10 +263,86 @@ MWF.xApplication.Profile.Main = new Class({
                     }.bind(this));
                 }.bind(this));
             }.bind(this));
+
+
+            //var tmpNode = new Element("div", {"styles": {
+            //    "width": "300px",
+            //    "margin": "-20px auto"
+            //}}).inject(this.layoutConfigNode);
+
+            this.forceDataAction = new Element("div", {"styles": this.css.setDefaultDataAction, "text": this.lp.setForce}).inject(buttonNode);
+            this.forceDataAction.setStyle("float", "left");
+            this.forceDataAction.addEvent("click", function(){
+                MWF.require("MWF.widget.UUID", function(){
+                    var text = this.lp.setForceOk;
+                    this.close();
+                    var status = layout.desktop.getLayoutStatusData();
+                    MWF.UD.putPublicData("forceLayout", status, function(){
+                        MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, text, layout.desktop.desktopNode);
+                    }.bind(this));
+                }.bind(this));
+            }.bind(this));
+
+            this.deleteForceDataAction = new Element("div", {"styles": this.css.setDefaultDataAction, "text": this.lp.clearForce}).inject(buttonNode);
+            this.deleteForceDataAction.addEvent("click", function(){
+                MWF.require("MWF.widget.UUID", function(){
+                    MWF.UD.deletePublicData("forceLayout", function(){
+                        this.notice(this.lp.clearok, "success");
+                        this.desktop.notRecordStatus = true;
+                    }.bind(this));
+                }.bind(this));
+            }.bind(this));
+        }
+
+        new Element("div", {"styles": this.css.layoutTitleNode, "text": this.lp.desktopBackground}).inject(this.layoutConfigNode);
+        var UINode = new Element("div", {"styles": this.css.buttonNodeArea}).inject(this.layoutConfigNode);
+        this.loadDesktopBackground(UINode);
+    },
+    loadDesktopBackground: function(UINode){
+        var currentSrc = layout.desktop.options.style;
+        MWF.UD.getDataJson("layoutDesktop", function(json){
+            if (json) currentSrc = json.src;
+        }.bind(this), false);
+
+        MWF.getJSON(layout.desktop.path+"styles.json", function(json){
+            json.each(function(style){
+                var img = MWF.defaultPath+"/xDesktop/$Layout/"+style.style+"/preview.jpg";
+                //var dskImg = MWF.defaultPath+"/xDesktop/$Layout/"+style.style+"/desktop.jpg";
+                var imgArea = new Element("div", {"styles": this.css.previewBackground}).inject(UINode);
+                if (currentSrc==style.style){
+                    imgArea.setStyles({"border": "4px solid #ffea00"});
+                }
+                new Element("img", {"src": img}).inject(imgArea);
+
+                imgArea.store("dskimg", style.style);
+                var _self = this;
+                imgArea.addEvent("click", function(){ _self.selectDesktopImg(this, UINode); });
+            }.bind(this));
+        }.bind(this));
+
+        //MWF.UD.getPublicData("layoutDesktopImgs", function(json){
+        //    if (json) currentSrc = json.src;
+        //}.bind(this), false);
+        //
+        if (MWF.AC.isAdministrator()){
+
         }
     },
+    selectDesktopImg: function(item, UINode){
+        var desktopImg = item.retrieve("dskimg");
+        MWF.UD.putData("layoutDesktop", {"src": desktopImg}, function(){
+            UINode.getChildren().each(function(node){
+                node.setStyles({"border": "4px solid #eeeeee"});
+            }.bind(this));
+            item.setStyles({"border": "4px solid #ffea00"});
+
+            var dskImg = MWF.defaultPath+"/xDesktop/$Layout/"+desktopImg+"/desktop.jpg";
+            layout.desktop.node.setStyle("background-image", "url("+dskImg+")");
+        }.bind(this));
+    },
+
     loadIdeaConfigNode: function(){
-        this.ideaConfigNode = new Element("div", {"styles": this.css.configNode}).inject(this.content);;
+        this.ideaConfigNode = new Element("div", {"styles": this.css.configNode}).inject(this.content);
         this.ideasArea = new Element("textarea", {"styles": this.css.ideasArea}).inject(this.ideaConfigNode);
         this.ideasSaveAction = new Element("div", {"styles": this.css.ideasSaveAction, "text": this.lp.saveIdea}).inject(this.ideaConfigNode);
 
@@ -307,9 +394,16 @@ MWF.xApplication.Profile.Main = new Class({
         var titleNode = new Element("div", {"styles": this.css.inforTitleNode, "text": this.lp.password}).inject(lineNode);
         var contentNode = new Element("div", {"styles": this.css.inforContentNode}).inject(lineNode);
         this.passwordInputNode = new Element("input", {"type": "password", "styles": this.css.inforContentInputNode, "events": {
-            "blur": function(){this.setStyles(_self.css.inforContentInputNode);},
-            "focus": function(){this.setStyles(_self.css.inforContentInputNode_focus);}
+            "blur": function(){
+                this.setStyles(_self.css.inforContentInputNode);
+            },
+            "focus": function(){this.setStyles(_self.css.inforContentInputNode_focus);},
+            "keyup" : function(){ this.checkPassowrdStrength(  this.passwordInputNode.get("value") ) }.bind(this)
         }}).inject(contentNode);
+
+        var lineNode = new Element("div", {"styles": this.css.inforLineNode}).inject(this.passwordConfigAreaNode);
+        var titleNode = new Element("div", {"styles": this.css.inforTitleNode}).inject(lineNode);
+        this.passwordRemindContainer = new Element("div", {"styles": this.css.inforContentNode}).inject(lineNode);
 
         var lineNode = new Element("div", {"styles": this.css.inforLineNode}).inject(this.passwordConfigAreaNode);
         var titleNode = new Element("div", {"styles": this.css.inforTitleNode, "text": this.lp.morePassword}).inject(lineNode);
@@ -324,6 +418,9 @@ MWF.xApplication.Profile.Main = new Class({
         this.saveAction.addEvent("click", function(){
             this.changePassword();
         }.bind(this));
+
+        this.createPasswordStrengthNode();
+        this.passworRemindNode = new Element("div",{"styles": this.css.passwordRemindNode, "text": this.lp.paswordRule }).inject( this.passwordRemindContainer );
 
     },
     changePassword: function(){
@@ -362,6 +459,68 @@ MWF.xApplication.Profile.Main = new Class({
             }.bind(this));
         }else{
             if (callback) callback();
+        }
+    },
+    createPasswordStrengthNode : function(){
+        var passwordStrengthArea = this.passwordRemindContainer;
+
+        var lowNode = new Element( "div", {styles : this.css.passwordStrengthNode }).inject( passwordStrengthArea );
+        this.lowColorNode = new Element( "div", {styles : this.css.passwordStrengthColor }).inject( lowNode );
+        this.lowTextNode = new Element( "div", {styles : this.css.passwordStrengthText, text : this.lp.weak }).inject( lowNode );
+
+        var middleNode = new Element( "div" , {styles : this.css.passwordStrengthNode }).inject( passwordStrengthArea );
+        this.middleColorNode = new Element( "div", {styles : this.css.passwordStrengthColor }).inject( middleNode );
+        this.middleTextNode = new Element( "div", {styles : this.css.passwordStrengthText, text : this.lp.middle }).inject( middleNode );
+
+        var highNode = new Element("div", {styles : this.css.passwordStrengthNode }).inject( passwordStrengthArea );
+        this.highColorNode = new Element( "div", {styles : this.css.passwordStrengthColor }).inject( highNode );
+        this.highTextNode = new Element( "div", {styles : this.css.passwordStrengthText, text : this.lp.high }).inject( highNode );
+    },
+    getPasswordLevel: function( password, callback ){
+        /*Level（级别）
+         •0-3 : [easy]
+         •4-6 : [midium]
+         •7-9 : [strong]
+         •10-12 : [very strong]
+         •>12 : [extremely strong]
+         */
+        this.getAction( function( ){
+            this.action.checkPassword( password, function( json ){
+                debugger;
+                if(callback)callback( json.data.value );
+            }.bind(this), null, false );
+        }.bind(this) );
+    },
+    checkPassowrdStrength: function(pwd){
+        this.lowColorNode.setStyles( this.css.passwordStrengthColor );
+        this.lowTextNode.setStyles( this.css.passwordStrengthText );
+        this.middleColorNode.setStyles( this.css.passwordStrengthColor );
+        this.middleTextNode.setStyles( this.css.passwordStrengthText );
+        this.highColorNode.setStyles( this.css.passwordStrengthColor );
+        this.highTextNode.setStyles( this.css.passwordStrengthText );
+        if (pwd==null||pwd==''){
+        }else{
+            this.getPasswordLevel( pwd, function( level ){
+                switch(level) {
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        this.lowColorNode.setStyles( this.css.passwordStrengthColor_low );
+                        this.lowTextNode.setStyles( this.css.passwordStrengthText_current );
+                        break;
+                    case 4:
+                    case 5:
+                    case 6:
+                        this.middleColorNode.setStyles( this.css.passwordStrengthColor_middle );
+                        this.middleTextNode.setStyles( this.css.passwordStrengthText_current );
+                        break;
+                    default:
+                        this.highColorNode.setStyles( this.css.passwordStrengthColor_high );
+                        this.highTextNode.setStyles( this.css.passwordStrengthText_current );
+                }
+            }.bind(this) )
+
         }
     }
 });

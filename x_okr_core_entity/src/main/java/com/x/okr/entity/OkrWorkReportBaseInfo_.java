@@ -6,7 +6,6 @@ package com.x.okr.entity;
 
 import com.x.base.core.entity.SliceJpaObject_;
 import java.lang.Boolean;
-import java.lang.Double;
 import java.lang.Integer;
 import java.lang.String;
 import java.util.Date;
@@ -16,7 +15,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.okr.entity.OkrWorkReportBaseInfo.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:09:40 CST 2017")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sat May 06 19:35:29 CST 2017")
 public class OkrWorkReportBaseInfo_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<OkrWorkReportBaseInfo,String> activityName;
     public static volatile ListAttribute<OkrWorkReportBaseInfo,String> attachmentList;
@@ -39,7 +38,7 @@ public class OkrWorkReportBaseInfo_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<OkrWorkReportBaseInfo,Boolean> needLeaderRead;
     public static volatile SingularAttribute<OkrWorkReportBaseInfo,String> processStatus;
     public static volatile SingularAttribute<OkrWorkReportBaseInfo,String> processType;
-    public static volatile SingularAttribute<OkrWorkReportBaseInfo,Double> progressPercent;
+    public static volatile SingularAttribute<OkrWorkReportBaseInfo,Integer> progressPercent;
     public static volatile SingularAttribute<OkrWorkReportBaseInfo,String> readLeadersIdentity;
     public static volatile SingularAttribute<OkrWorkReportBaseInfo,String> readLeadersName;
     public static volatile SingularAttribute<OkrWorkReportBaseInfo,Integer> reportCount;

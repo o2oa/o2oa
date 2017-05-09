@@ -525,7 +525,7 @@
   	"deleteAction" : {
 	  "width": "16px",
 	  "height": "16px",
-	  "background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/trash.png) no-repeat left",
+	  "background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/remove.png) no-repeat left",
 	  "margin-left": "2px",
 	  "margin-right": "2px",
 	  "float": "left",
@@ -534,7 +534,7 @@
   "deleteAction_over" : {
 	"width": "16px",
 	"height": "16px",
-	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/trash_over.png) no-repeat left",
+	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/remove_over.png) no-repeat left",
 	"margin-left": "2px",
 	"margin-right": "2px",
 	"float": "left",

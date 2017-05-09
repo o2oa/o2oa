@@ -25,18 +25,18 @@ import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.DateRecord;
 import com.x.attendance.entity.AttendanceDetail;
 import com.x.attendance.entity.AttendanceImportFileInfo;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 
 
 @Path("fileimport")
@@ -68,7 +68,7 @@ public class AttendanceDetailFileImportAction extends StandardJaxrsAction{
 			}catch(Exception e){
 				Exception exception = new AttendanceImportFileQueryByIdException( e, file_id );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 			if( attendanceImportFileInfo == null ){
 				logger.info( "需要导入的文件信息不存在，无法进行数据导入。" );
@@ -96,7 +96,7 @@ public class AttendanceDetailFileImportAction extends StandardJaxrsAction{
 					} catch (Exception e) {
 						Exception exception = new AttendanceImportFileWriteToLocalException( e, attendanceImportFileInfo.getId(), attendanceImportFileInfo.getFileName() );
 						result.error( exception );
-						logger.error( exception, currentPerson, request, null);
+						logger.error( e, currentPerson, request, null);
 					} finally{
 						logger.info( "关闭输出流......"  );
 						output.close();
@@ -104,7 +104,7 @@ public class AttendanceDetailFileImportAction extends StandardJaxrsAction{
 				} catch (Exception e) {
 					Exception exception = new AttendanceImportFileWriteToLocalException( e );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 				
 				//然后进行数据检查
@@ -127,7 +127,7 @@ public class AttendanceDetailFileImportAction extends StandardJaxrsAction{
 				} catch (Exception e) {
 					Exception exception = new AttendanceImportFileReadException( e, file_id, importFilePath + importFileName );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 				logger.info("数据检查完成，准备向客户端返回需要导入的数据检查情况......");
 				
@@ -279,16 +279,16 @@ public class AttendanceDetailFileImportAction extends StandardJaxrsAction{
 				}
 				result.setData( dateRecordList );				
 				logger.info("数据处理事务提交完成！");
-			} catch (Throwable th) {
-				Exception exception = new AttendanceImportFileImportException( th, file_id );
+			} catch ( Exception e ) {
+				Exception exception = new AttendanceImportFileImportException( e, file_id );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 			ApplicationGobal.importFileCheckResultMap.remove( file_id );
 		}else{
 			Exception exception = new AttendanceImportFileDataCacheNotExistsException( file_id );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			//logger.error( e, currentPerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

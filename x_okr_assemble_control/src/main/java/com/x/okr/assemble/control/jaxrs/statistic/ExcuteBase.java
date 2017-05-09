@@ -3,13 +3,13 @@ package com.x.okr.assemble.control.jaxrs.statistic;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.gson.XGsonBuilder;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.utils.SortTools;
 import com.x.okr.assemble.control.service.OkrStatisticReportContentService;
 import com.x.okr.assemble.control.service.OkrWorkBaseInfoQueryService;
@@ -26,7 +26,7 @@ public class ExcuteBase {
 	protected OkrWorkBaseInfoQueryService okrWorkBaseInfoQueryService = new OkrWorkBaseInfoQueryService();
 	
 	protected List<WrapOutOkrStatisticReportContentCenter> composeWorkInCenter( 
-			List<WrapOutOkrStatisticReportContentCenter> wraps_centers, String statisticTimeFlag, String reportCycle, Integer year, Integer month, Integer week, String status ) {
+		List<WrapOutOkrStatisticReportContentCenter> wraps_centers, String centerTitle, String workType, String statisticTimeFlag, String reportCycle, Integer year, Integer month, Integer week, String status ) {
 		List<WrapOutOkrStatisticReportContentCenter> wrapout_centers = new ArrayList<>();
 		List<WrapOutOkrStatisticReportContent> work_st_contents = null;
 		WrapOutOkrStatisticReportContentCenter wrapout_center = null;
@@ -54,7 +54,7 @@ public class ExcuteBase {
 							}
 							wrapout_center.getContents().add( work_st_content );
 						}
-						composeWorkStContent( wrapout_center, work_st_content, workLevel, work_st_content.getSerialNumber(), statisticTimeFlag, reportCycle, year, month, week, status );
+						composeWorkStContent( wrapout_center, work_st_content, centerTitle, workType, workLevel, work_st_content.getSerialNumber(), statisticTimeFlag, reportCycle, year, month, week, status );
 					}
 				}
 			}
@@ -62,7 +62,7 @@ public class ExcuteBase {
 		return wrapout_centers;
 	}
 	
-	protected List<WrapOutOkrStatisticReportContentCenter> composeWorkTreeInCenter( List<WrapOutOkrStatisticReportContentCenter> wraps_centers, String statisticTimeFlag, String reportCycle, Integer year, Integer month, Integer week, String status ) {
+	protected List<WrapOutOkrStatisticReportContentCenter> composeWorkTreeInCenter( List<WrapOutOkrStatisticReportContentCenter> wraps_centers, String centerTitle, String workType, String statisticTimeFlag, String reportCycle, Integer year, Integer month, Integer week, String status ) {
 		List<WrapOutOkrStatisticReportContent> work_st_contents = null;
 		Integer workNumber = 0;
 		Integer workLevel = 1;
@@ -75,7 +75,7 @@ public class ExcuteBase {
 						workNumber++;
 						work_st_content.setSerialNumber( workNumber +"" );
 						work_st_content.setLevel( workLevel );
-						composeWorkStContent( null, work_st_content, workLevel, work_st_content.getSerialNumber(), statisticTimeFlag, reportCycle, year, month, week, status );
+						composeWorkStContent( null,  work_st_content, centerTitle, workType, workLevel, work_st_content.getSerialNumber(), statisticTimeFlag, reportCycle, year, month, week, status );
 					}
 				}
 			}
@@ -84,7 +84,7 @@ public class ExcuteBase {
 	}
 
 	protected void composeWorkStContent( 
-			WrapOutOkrStatisticReportContentCenter center, WrapOutOkrStatisticReportContent work_st_content, 
+			WrapOutOkrStatisticReportContentCenter center, WrapOutOkrStatisticReportContent work_st_content, String centerTitle, String workType,
 			Integer workLevel, String serialNumber, String statisticTimeFlag, String reportCycle, Integer year, Integer month, Integer week, String status ) {
 		List<WrapOutOkrStatisticReportContent> wrap_workContents = null;
 		List<OkrStatisticReportContent> workContents = null;
@@ -102,7 +102,7 @@ public class ExcuteBase {
 		if( work_st_content.getWorkId() != null &&!work_st_content.getWorkId().isEmpty() ){
 			cuurrent_workLevel = workLevel.intValue() + 1;
 			try {
-				ids = okrCenterWorkReportStatisticService.list( null, work_st_content.getWorkId(), statisticTimeFlag, reportCycle, year, month, week, status );
+				ids = okrCenterWorkReportStatisticService.list( null, centerTitle, work_st_content.getWorkId(), workType, statisticTimeFlag, reportCycle, year, month, week, status );
 				if( ids != null && !ids.isEmpty() ){
 					workContents = okrCenterWorkReportStatisticService.list( ids );
 					if( workContents != null && !workContents.isEmpty() ){
@@ -157,7 +157,7 @@ public class ExcuteBase {
 								}else{
 									work_st_content.addSubWork( wrap );
 								}
-								composeWorkStContent( center, wrap, cuurrent_workLevel, serialNumber, statisticTimeFlag, reportCycle, year, month, week, status);
+								composeWorkStContent( center, wrap, centerTitle, workType, cuurrent_workLevel, serialNumber, statisticTimeFlag, reportCycle, year, month, week, status);
 							} catch (Exception e) {
 								logger.warn( "system copy object to wrap got an exception." );
 								logger.error(e);

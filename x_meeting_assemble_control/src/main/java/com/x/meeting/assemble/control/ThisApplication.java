@@ -1,18 +1,30 @@
 package com.x.meeting.assemble.control;
 
-import com.x.base.core.project.AbstractThisApplication;
-import com.x.base.core.project.ReportTask;
+import com.x.base.core.project.Context;
 import com.x.collaboration.core.message.Collaboration;
 
-public class ThisApplication extends AbstractThisApplication {
-	public static void init() throws Exception {
-		/* 启动报告任务 */
-		timerWithFixedDelay(new ReportTask(), 1, 20);
-		initDatasFromCenters();
-		Collaboration.start();
+public class ThisApplication {
+
+	protected static Context context;
+
+	public static Context context() {
+		return context;
 	}
 
-	public static void destroy() throws Exception {
-		Collaboration.stop();
+	public static void init() {
+		try {
+			Collaboration.start(context());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
+
+	public static void destroy() {
+		try {
+			Collaboration.stop();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }

@@ -175,8 +175,8 @@ public class Service {
 		}
 		message.setFrom(effectivePerson.getName());
 		message.setTime(new Date());
-		WrapOutBoolean wrap = ThisApplication.applications.postQuery(x_collaboration_assemble_websocket.class,
-				"message", message, WrapOutBoolean.class);
+		WrapOutBoolean wrap = ThisApplication.context().applications()
+				.postQuery(x_collaboration_assemble_websocket.class, "message", message).getData(WrapOutBoolean.class);
 		return wrap;
 
 	}

@@ -18,7 +18,6 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -26,9 +25,10 @@ import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.server.StorageMapping;
 import com.x.base.core.utils.SortTools;
 import com.x.meeting.assemble.control.Business;
@@ -162,7 +162,7 @@ public class RoomAction extends StandardJaxrsAction {
 			for (Meeting meeting : emc.list(Meeting.class, business.meeting().listWithRoom(room.getId()))) {
 				for (Attachment attachment : emc.list(Attachment.class,
 						business.attachment().listWithMeeting(meeting.getId()))) {
-					StorageMapping mapping = ThisApplication.storageMappings.get(Attachment.class,
+					StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 							attachment.getStorage());
 					attachment.deleteContent(mapping);
 					emc.remove(attachment);

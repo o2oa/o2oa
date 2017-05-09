@@ -58,6 +58,7 @@ MWF.widget.ScrollBar = new Class({
 //			this.checkScrollShow(e);
 //		}.bind(this));
 
+        this.checkScrollShow();
         document.body.addEvent("mousemove", function(e){
             this.checkScrollShow(e);
         }.bind(this));
@@ -73,68 +74,130 @@ MWF.widget.ScrollBar = new Class({
 	//	}.bind(this);
 		
 	},
-	
-	checkScrollShow: function(e){
+
+    checkScrollShow: function(e){
         if (!this.node.isPointIn) return false;
-		if (this.node.isPointIn(e.event.clientX, e.event.clientY, this.scrollVWidth)){
-			if (this.scrollVAreaNode){
-				var opacity = this.scrollVAreaNode.getStyle("opacity");
-				if (opacity==0){
-					if (!this.scrollAreaOverLock && !this.scrollAreaOutLock){
-						this.scrollAreaOverLock = true;
-						var margin = this.node.getStyle("margin-right").toFloat();
-						if (this.options.indent){
-							var marginFx = new Fx.Tween(this.node, {property: "margin-right", duration: "100"});
-							marginFx.start(margin+this.scrollVWidth).chain(function(){
-								this.scrollVAreaNode.setStyle("display", "block");
-								
-								var scrollFx = new Fx.Tween(this.scrollVAreaNode, {property: "opacity", duration: "100"});
-								scrollFx.start(0,1).chain(function(){
-									this.scrollAreaOverLock = false;
-								}.bind(this));
-	
-								//this.scrollVAreaNode.fade("in");
-								
-							}.bind(this)); 
-						}else{
-							this.scrollVAreaNode.setStyle("display", "block");
-							
-							var scrollFx = new Fx.Tween(this.scrollVAreaNode, {property: "opacity", duration: "100"});
-							scrollFx.start(0,1).chain(function(){
-								this.scrollAreaOverLock = false;
-							}.bind(this));
-						}
-					}
-				}
-			}
-		}else{
-			if (this.scrollVAreaNode){
-				var opacity = this.scrollVAreaNode.getStyle("opacity");
-		//		if (!this.options.isShow){
-					if (opacity==1){
-						if (!this.scrollAreaOutLock && !this.scrollAreaOverLock){
-							if (!this.showScrollBar){
-								this.scrollAreaOutLock = true;
-								var scrollFx = new Fx.Tween(this.scrollVAreaNode, {property: "opacity", duration: "100"});
-								scrollFx.start(0).chain(function(){
-									var margin = this.node.getStyle("margin-right").toFloat();
-									this.scrollVAreaNode.setStyle("display", "none");
-									if (this.options.indent){
-										var marginFx = new Fx.Tween(this.node, {property: "margin-right", duration: "100"});
-										marginFx.start(margin-this.scrollVWidth).chain(function(){
-											this.scrollAreaOutLock = false;
-										}.bind(this));
-									}else{
-										this.scrollAreaOutLock = false;
-									}
-								}.bind(this));
-							} 
-						}
-					}
-		//		}
-			}
-		}
-	},
+        //if (this.node.isPointIn(e.event.clientX, e.event.clientY, this.scrollVWidth)){
+            if (this.scrollVAreaNode){
+                var opacity = this.scrollVAreaNode.getStyle("opacity");
+                if (opacity==0){
+                    if (!this.scrollAreaOverLock && !this.scrollAreaOutLock){
+                        this.scrollAreaOverLock = true;
+                        var margin = this.node.getStyle("margin-right").toFloat();
+                        if (this.options.indent){
+                            var marginFx = new Fx.Tween(this.node, {property: "margin-right", duration: "100"});
+                            marginFx.start(margin+this.scrollVWidth).chain(function(){
+                                this.scrollVAreaNode.setStyle("display", "block");
+
+                                var scrollFx = new Fx.Tween(this.scrollVAreaNode, {property: "opacity", duration: "100"});
+                                scrollFx.start(0,1).chain(function(){
+                                    this.scrollAreaOverLock = false;
+                                }.bind(this));
+
+                                //this.scrollVAreaNode.fade("in");
+
+                            }.bind(this));
+                        }else{
+                            this.scrollVAreaNode.setStyle("display", "block");
+
+                            var scrollFx = new Fx.Tween(this.scrollVAreaNode, {property: "opacity", duration: "100"});
+                            scrollFx.start(0,1).chain(function(){
+                                this.scrollAreaOverLock = false;
+                            }.bind(this));
+                        }
+                    }
+                }
+            }
+        // }else{
+        //     if (this.scrollVAreaNode){
+        //         var opacity = this.scrollVAreaNode.getStyle("opacity");
+        //         //		if (!this.options.isShow){
+        //         if (opacity==1){
+        //             if (!this.scrollAreaOutLock && !this.scrollAreaOverLock){
+        //                 if (!this.showScrollBar){
+        //                     this.scrollAreaOutLock = true;
+        //                     var scrollFx = new Fx.Tween(this.scrollVAreaNode, {property: "opacity", duration: "100"});
+        //                     scrollFx.start(0).chain(function(){
+        //                         var margin = this.node.getStyle("margin-right").toFloat();
+        //                         this.scrollVAreaNode.setStyle("display", "none");
+        //                         if (this.options.indent){
+        //                             var marginFx = new Fx.Tween(this.node, {property: "margin-right", duration: "100"});
+        //                             marginFx.start(margin-this.scrollVWidth).chain(function(){
+        //                                 this.scrollAreaOutLock = false;
+        //                             }.bind(this));
+        //                         }else{
+        //                             this.scrollAreaOutLock = false;
+        //                         }
+        //                     }.bind(this));
+        //                 }
+        //             }
+        //         }
+        //         //		}
+        //     }
+        // }
+    },
+
+	// checkScrollShow: function(e){
+     //    if (!this.node.isPointIn) return false;
+	// 	if (this.node.isPointIn(e.event.clientX, e.event.clientY, this.scrollVWidth)){
+	// 		if (this.scrollVAreaNode){
+	// 			var opacity = this.scrollVAreaNode.getStyle("opacity");
+	// 			if (opacity==0){
+	// 				if (!this.scrollAreaOverLock && !this.scrollAreaOutLock){
+	// 					this.scrollAreaOverLock = true;
+	// 					var margin = this.node.getStyle("margin-right").toFloat();
+	// 					if (this.options.indent){
+	// 						var marginFx = new Fx.Tween(this.node, {property: "margin-right", duration: "100"});
+	// 						marginFx.start(margin+this.scrollVWidth).chain(function(){
+	// 							this.scrollVAreaNode.setStyle("display", "block");
+	//
+	// 							var scrollFx = new Fx.Tween(this.scrollVAreaNode, {property: "opacity", duration: "100"});
+	// 							scrollFx.start(0,1).chain(function(){
+	// 								this.scrollAreaOverLock = false;
+	// 							}.bind(this));
+	//
+	// 							//this.scrollVAreaNode.fade("in");
+	//
+	// 						}.bind(this));
+	// 					}else{
+	// 						this.scrollVAreaNode.setStyle("display", "block");
+	//
+	// 						var scrollFx = new Fx.Tween(this.scrollVAreaNode, {property: "opacity", duration: "100"});
+	// 						scrollFx.start(0,1).chain(function(){
+	// 							this.scrollAreaOverLock = false;
+	// 						}.bind(this));
+	// 					}
+	// 				}
+	// 			}
+	// 		}
+	// 	}else{
+	// 		if (this.scrollVAreaNode){
+	// 			var opacity = this.scrollVAreaNode.getStyle("opacity");
+	// 	//		if (!this.options.isShow){
+	// 				if (opacity==1){
+	// 					if (!this.scrollAreaOutLock && !this.scrollAreaOverLock){
+	// 						if (!this.showScrollBar){
+	// 							this.scrollAreaOutLock = true;
+	// 							var scrollFx = new Fx.Tween(this.scrollVAreaNode, {property: "opacity", duration: "100"});
+	// 							scrollFx.start(0).chain(function(){
+	// 								var margin = this.node.getStyle("margin-right").toFloat();
+	// 								this.scrollVAreaNode.setStyle("display", "none");
+	// 								if (this.options.indent){
+	// 									var marginFx = new Fx.Tween(this.node, {property: "margin-right", duration: "100"});
+	// 									marginFx.start(margin-this.scrollVWidth).chain(function(){
+	// 										this.scrollAreaOutLock = false;
+	// 									}.bind(this));
+	// 								}else{
+	// 									this.scrollAreaOutLock = false;
+	// 								}
+	// 							}.bind(this));
+	// 						}
+	// 					}
+	// 				}
+	// 	//		}
+	// 		}
+	// 	}
+	// },
 	
 	setScrollNodePosition: function(){
 		this.node.scrollTo(0,0);

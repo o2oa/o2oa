@@ -17,11 +17,7 @@ import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.role.RoleDefinition;
-import com.x.base.core.utils.ListTools;
 import com.x.base.core.utils.SortTools;
-import com.x.organization.core.express.wrap.WrapCompany;
-import com.x.organization.core.express.wrap.WrapDepartment;
-import com.x.organization.core.express.wrap.WrapIdentity;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.wrapout.element.WrapOutQueryView;
 import com.x.processplatform.core.entity.element.Application;
@@ -69,32 +65,17 @@ class ActionList extends ActionBase {
 							cb.isEmpty(root.get(QueryView_.availableIdentityList))));
 			p = cb.or(p, cb.isMember(effectivePerson.getName(), root.get(QueryView_.availablePersonList)));
 			p = cb.or(p, root.get(QueryView_.availableCompanyList)
-					.in(this.listCompany(business, effectivePerson.getName())));
+					.in(business.organization().company().listWithPersonSupNested(effectivePerson.getName())));
 			p = cb.or(p, root.get(QueryView_.availableDepartmentList)
-					.in(this.listDepartment(business, effectivePerson.getName())));
+					.in(business.organization().department().listWithPersonSupNested(effectivePerson.getName())));
 			p = cb.or(p, root.get(QueryView_.availableIdentityList)
-					.in(this.listIdentity(business, effectivePerson.getName())));
+					.in(business.organization().identity().listNameWithPerson(effectivePerson.getName())));
 		}
 		p = cb.and(p, cb.equal(root.get(QueryView_.application), application.getId()));
 		p = cb.and(p, cb.notEqual(root.get(QueryView_.display), false));
 		cq.select(root.get(QueryView_.id)).where(p).distinct(true);
 		List<String> list = em.createQuery(cq).getResultList();
 		return list;
-	}
-
-	private List<String> listIdentity(Business business, String name) throws Exception {
-		List<WrapIdentity> list = business.organization().identity().listWithPerson(name);
-		return ListTools.extractProperty(list, "name", String.class, true, true);
-	}
-
-	private List<String> listDepartment(Business business, String name) throws Exception {
-		List<WrapDepartment> list = business.organization().department().listWithPerson(name);
-		return ListTools.extractProperty(list, "name", String.class, true, true);
-	}
-
-	private List<String> listCompany(Business business, String name) throws Exception {
-		List<WrapCompany> list = business.organization().company().listWithPerson(name);
-		return ListTools.extractProperty(list, "name", String.class, true, true);
 	}
 
 }

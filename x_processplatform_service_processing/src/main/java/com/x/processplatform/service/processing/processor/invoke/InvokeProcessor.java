@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -21,6 +22,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.gson.XGsonBuilder;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpToken;
+import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.server.Config;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Work;
@@ -32,12 +34,13 @@ import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ProcessingAttributes;
 import com.x.processplatform.service.processing.ScriptHelper;
 import com.x.processplatform.service.processing.ScriptHelperFactory;
+import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.WebservicesClient;
 import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
 import com.x.processplatform.service.processing.processor.AbstractProcessor;
 
 public class InvokeProcessor extends AbstractProcessor {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(InvokeProcessor.class);
 
 	public InvokeProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
@@ -79,6 +82,19 @@ public class InvokeProcessor extends AbstractProcessor {
 
 	private void jaxws(Business business, ProcessingAttributes attributes, Work work, Data data, Invoke invoke)
 			throws Exception {
+		if (BooleanUtils.isTrue(invoke.getInternal())) {
+			this.jaxwsInternal(business, attributes, work, data, invoke);
+		} else {
+			this.jaxwsExternal(business, attributes, work, data, invoke);
+		}
+	}
+
+	private void jaxwsInternal(Business business, ProcessingAttributes attributes, Work work, Data data, Invoke invoke)
+			throws Exception {
+	}
+
+	private void jaxwsExternal(Business business, ProcessingAttributes attributes, Work work, Data data, Invoke invoke)
+			throws Exception {
 		Object[] parameters = this.jaxwsEvalParameters(business, attributes, work, data, invoke);
 		WebservicesClient client = new WebservicesClient();
 		Object response = client.jaxws(invoke.getJaxwsAddress(), invoke.getJaxwsMethod(), parameters);
@@ -105,6 +121,66 @@ public class InvokeProcessor extends AbstractProcessor {
 	}
 
 	private void jaxrs(Business business, ProcessingAttributes attributes, Work work, Data data, Invoke invoke)
+			throws Exception {
+		if (BooleanUtils.isTrue(invoke.getInternal())) {
+			this.jaxrsInternal(business, attributes, work, data, invoke);
+		} else {
+			this.jaxrsExternal(business, attributes, work, data, invoke);
+		}
+	}
+
+	private void jaxrsInternal(Business business, ProcessingAttributes attributes, Work work, Data data, Invoke invoke)
+			throws Exception {
+		ActionResponse resp = null;
+		Class<?> clz = Class.forName("com.x.base.core.project." + invoke.getInternalProject());
+		String uri = this.jaxrsUrl(business, attributes, work, data, invoke);
+		String body = null;
+		switch (StringUtils.lowerCase(invoke.getJaxrsMethod())) {
+		case "post":
+			body = this.jaxrsEvalBody(business, attributes, work, data, invoke);
+			resp = ThisApplication.context().applications().postQuery(clz, uri, body);
+			break;
+		case "put":
+			body = this.jaxrsEvalBody(business, attributes, work, data, invoke);
+			resp = ThisApplication.context().applications().putQuery(clz, uri, body);
+			break;
+		case "get":
+			resp = ThisApplication.context().applications().getQuery(clz, uri);
+			break;
+		case "delete":
+			resp = ThisApplication.context().applications().deleteQuery(clz, uri);
+			break;
+		case "head":
+			// resp = ThisApplication.context().applications().headQuery(clz,
+			// uri);
+			break;
+		case "options":
+			// result = this.httpOptions(business, attributes, work, data,
+			// invoke);
+			break;
+		case "patch":
+			// result = this.httpPatch(business, attributes, work, data,
+			// invoke);
+			break;
+		case "trace":
+			// result = this.httpTrace(business, attributes, work, data,
+			// invoke);
+			break;
+		default:
+			throw new Exception("unknown http method " + invoke.getJaxrsMethod());
+		}
+		JaxrsResponse jaxrsResponse = new JaxrsResponse();
+		jaxrsResponse.set(resp.getData().toString());
+		if ((StringUtils.isNotEmpty(invoke.getJaxrsResponseScript()))
+				|| (StringUtils.isNotEmpty(invoke.getJaxrsResponseScriptText()))) {
+			ScriptHelper scriptHelper = ScriptHelperFactory.create(business, attributes, work, data, invoke,
+					new BindingPair("jaxrsResponse", jaxrsResponse));
+			scriptHelper.eval(work.getApplication(), invoke.getJaxrsResponseScript(),
+					invoke.getJaxrsResponseScriptText());
+		}
+	}
+
+	private void jaxrsExternal(Business business, ProcessingAttributes attributes, Work work, Data data, Invoke invoke)
 			throws Exception {
 		String result;
 		switch (StringUtils.lowerCase(invoke.getJaxrsMethod())) {
@@ -136,11 +212,11 @@ public class InvokeProcessor extends AbstractProcessor {
 			throw new Exception("unknown http method " + invoke.getJaxrsMethod());
 		}
 		JaxrsResponse jaxrsResponse = new JaxrsResponse();
-		jaxrsResponse.setValue(result);
+		jaxrsResponse.set(result);
 		if ((StringUtils.isNotEmpty(invoke.getJaxrsResponseScript()))
 				|| (StringUtils.isNotEmpty(invoke.getJaxrsResponseScriptText()))) {
 			ScriptHelper scriptHelper = ScriptHelperFactory.create(business, attributes, work, data, invoke,
-					new BindingPair("response", jaxrsResponse));
+					new BindingPair("jaxrsResponse", jaxrsResponse));
 			scriptHelper.eval(work.getApplication(), invoke.getJaxrsResponseScript(),
 					invoke.getJaxrsResponseScriptText());
 		}
@@ -165,14 +241,14 @@ public class InvokeProcessor extends AbstractProcessor {
 
 	private String jaxrsEvalBody(Business business, ProcessingAttributes attributes, Work work, Data data,
 			Invoke invoke) throws Exception {
-		JaxrsBody body = new JaxrsBody();
+		JaxrsBody jaxrsBody = new JaxrsBody();
 		if ((StringUtils.isNotEmpty(invoke.getJaxrsBodyScript()))
 				|| (StringUtils.isNotEmpty(invoke.getJaxrsBodyScriptText()))) {
 			ScriptHelper scriptHelper = ScriptHelperFactory.create(business, attributes, work, data, invoke,
-					new BindingPair("body", body));
+					new BindingPair("jaxrsBody", jaxrsBody));
 			scriptHelper.eval(work.getApplication(), invoke.getJaxrsBodyScript(), invoke.getJaxrsBodyScriptText());
 		}
-		return StringUtils.trimToEmpty(body.get());
+		return jaxrsBody.get();
 	}
 
 	private String httpPost(Business business, ProcessingAttributes attributes, Work work, Data data, Invoke invoke)
@@ -283,15 +359,14 @@ public class InvokeProcessor extends AbstractProcessor {
 
 		private String value;
 
-		public String get() {
-			return value;
+		private String get() {
+			return Objects.toString(value, "");
 		}
 
-		public void set(Object value) throws Exception {
-			if (null != value) {
-				this.value = XGsonBuilder.toJson(value);
-			}
+		public void set(String value) throws Exception {
+			this.value = value;
 		}
+
 	}
 
 	private HttpURLConnection prepareConnection(String address, boolean withCipher, String contentType)
@@ -345,11 +420,11 @@ public class InvokeProcessor extends AbstractProcessor {
 			this.status = status;
 		}
 
-		public String getValue() {
-			return value;
+		public String get() {
+			return Objects.toString(this.value, "");
 		}
 
-		public void setValue(String value) {
+		private void set(String value) {
 			this.value = value;
 		}
 

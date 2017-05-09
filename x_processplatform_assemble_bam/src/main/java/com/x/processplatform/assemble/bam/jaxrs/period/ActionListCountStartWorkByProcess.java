@@ -8,8 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.http.ActionResult;
-import com.x.base.core.http.HttpAttribute;
 import com.x.base.core.http.WrapOutMap;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.utils.DateRange;
 import com.x.base.core.utils.DateTools;
 import com.x.processplatform.assemble.bam.Business;
@@ -51,7 +51,7 @@ class ActionListCountStartWorkByProcess extends ActionListCountStartWork {
 		List<ProcessStub> list = new ArrayList<>();
 		for (ApplicationStub o : ThisApplication.period.getStartWorkApplicationStubs()) {
 			if (StringUtils.equals(o.getValue(), applicationId)
-					|| StringUtils.equals(applicationId, HttpAttribute.x_empty_symbol)) {
+					|| StringUtils.equals(applicationId, StandardJaxrsAction.EMPTY_SYMBOL)) {
 				list.addAll(o.getProcessStubs());
 			}
 		}

@@ -133,4 +133,14 @@ public class CategoryInfoFactory extends AbstractFactory {
 		}
 		return em.createQuery(cq.where( p )).getResultList();
 	}
+
+	public List<String> listByAlias(String cataggoryAlias) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( CategoryInfo.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<CategoryInfo> root = cq.from(CategoryInfo.class);
+		cq.select(root.get(CategoryInfo_.id));
+		Predicate p = cb.equal( root.get( CategoryInfo_.categoryAlias ), cataggoryAlias );
+		return em.createQuery(cq.where( p )).getResultList();
+	}
 }

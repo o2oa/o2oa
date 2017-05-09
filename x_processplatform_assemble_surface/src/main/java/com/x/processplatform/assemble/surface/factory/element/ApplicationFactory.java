@@ -17,10 +17,6 @@ import com.x.base.core.exception.ExceptionWhen;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.role.RoleDefinition;
 import com.x.base.core.utils.ListTools;
-import com.x.organization.core.express.Organization;
-import com.x.organization.core.express.wrap.WrapCompany;
-import com.x.organization.core.express.wrap.WrapDepartment;
-import com.x.organization.core.express.wrap.WrapIdentity;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Application_;
@@ -56,7 +52,8 @@ public class ApplicationFactory extends ElementFactory {
 	}
 
 	/* 判断是否有阅读的权限 */
-	public boolean allowRead(EffectivePerson effectivePerson, Application application) throws Exception {
+	public boolean allowRead(EffectivePerson effectivePerson, List<String> roles, List<String> identities,
+			List<String> departments, List<String> companies, Application application) throws Exception {
 		if (null == application) {
 			return false;
 		}
@@ -71,29 +68,25 @@ public class ApplicationFactory extends ElementFactory {
 				&& application.getAvailableCompanyList().isEmpty()) {
 			return true;
 		}
-		Organization organization = this.business().organization();
-		List<WrapIdentity> identities = organization.identity().listWithPerson(effectivePerson.getName());
-		List<String> identityNames = new ArrayList<>();
-		for (WrapIdentity o : identities) {
-			identityNames.add(o.getName());
-		}
-		if (CollectionUtils.containsAny(application.getAvailableIdentityList(), identityNames)) {
+		// Organization organization = this.business().organization();
+		// List<String> roles =
+		// organization.role().listNameWithPerson(effectivePerson.getName());
+		if (roles.contains(RoleDefinition.ProcessPlatformManager)) {
 			return true;
 		}
-		List<WrapDepartment> departments = organization.department().listWithPerson(effectivePerson.getName());
-		List<String> departmentNames = new ArrayList<>();
-		for (WrapDepartment o : departments) {
-			departmentNames.add(o.getName());
-		}
-		if (CollectionUtils.containsAny(application.getAvailableDepartmentList(), departmentNames)) {
+		// List<String> identities =
+		// organization.identity().listNameWithPerson(effectivePerson.getName());
+		if (CollectionUtils.containsAny(application.getAvailableIdentityList(), identities)) {
 			return true;
 		}
-		List<WrapCompany> companies = organization.company().listWithPerson(effectivePerson.getName());
-		List<String> companyNames = new ArrayList<>();
-		for (WrapCompany o : companies) {
-			companyNames.add(o.getName());
+		// List<String> departments =
+		// organization.department().listNameWithPersonSupNested(effectivePerson.getName());
+		if (CollectionUtils.containsAny(application.getAvailableDepartmentList(), departments)) {
+			return true;
 		}
-		if (CollectionUtils.containsAny(application.getAvailableCompanyList(), companyNames)) {
+		// List<String> companies =
+		// organization.company().listNameWithPersonSupNested(effectivePerson.getName());
+		if (CollectionUtils.containsAny(application.getAvailableCompanyList(), companies)) {
 			return true;
 		}
 		return false;

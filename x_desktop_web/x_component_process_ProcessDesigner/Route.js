@@ -989,11 +989,11 @@ MWF.xApplication.process.ProcessDesigner.Route = new Class({
         }
     },
     _setEditProperty: function (name, input, oldValue) {
-        if (name == "passExpired" || name == "passSameTarget") {
+        if (name === "passExpired" || name === "passSameTarget") {
             if (this.data[name]) {
                 if (this.fromActivity) {
                     this.fromActivity.routes.each(function(route){
-                        if (route.data.id != this.data.id) {
+                        if (route.data.id !== this.data.id) {
                             if (route.data[name]) {
                                 route.data[name] = false;
                                 if (route.property){

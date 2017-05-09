@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.common.date.DateOperation;
 import com.x.okr.assemble.control.Business;
 import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.WrapInOkrWorkReportBaseInfo;
@@ -83,6 +83,8 @@ public class OkrWorkReportFlowService{
 		Business business = null;
 		Date taskArriveDate = null;
 		String taskArriveDateString = null;
+		Boolean isWorkCompleted = false;
+		Integer progressPercent = 0;
 		Integer processLevel = 0;
 		Integer maxProcessLevel = 0;
 		OkrTask okrTask = null;
@@ -97,6 +99,9 @@ public class OkrWorkReportFlowService{
 		List<OkrWorkReportPersonLink> next_okrWorkReportPersonLinkList = null;
 		
 		WrapPerson  processor = okrUserManagerService.getUserByIdentity(userIdentity);
+		
+		isWorkCompleted = okrWorkReportBaseInfo.getIsWorkCompleted();
+		progressPercent = okrWorkReportBaseInfo.getProgressPercent();
 		
 		if( processor != null ){			
 			//二、处理本层级的处理人处理信息以及待办信息删除，新增已办信息
@@ -306,34 +311,14 @@ public class OkrWorkReportFlowService{
 						okrWorkReportBaseInfo.setCurrentProcessorIdentity( null );
 						okrWorkReportBaseInfo.setCurrentProcessorName( null );
 						okrWorkReportBaseInfo.setCurrentProcessorOrganizationName( null );
-						
-						//汇报审批已经完成，给汇报人发送待阅信息
-						okrTask = new OkrTask();
-						okrTask.setTitle(okrWorkReportBaseInfo.getTitle());
-						okrTask.setCenterId(okrWorkReportBaseInfo.getCenterId());
-						okrTask.setCenterTitle(okrWorkReportBaseInfo.getCenterTitle());
-						okrTask.setWorkId(okrWorkReportBaseInfo.getWorkId());
-						okrTask.setWorkTitle(okrWorkReportBaseInfo.getWorkTitle());
-						okrTask.setWorkType( okrWorkReportBaseInfo.getWorkType() );
-						okrTask.setTargetIdentity(okrWorkReportBaseInfo.getReporterIdentity());
-						okrTask.setTargetName(okrWorkReportBaseInfo.getReporterName());
-						okrTask.setTargetOrganizationName(okrWorkReportBaseInfo.getReporterOrganizationName());
-						okrTask.setTargetCompanyName(okrWorkReportBaseInfo.getReporterCompanyName());
-						okrTask.setActivityName( "汇报确认" );
-						okrTask.setArriveDateTime( new Date() );
-						okrTask.setArriveDateTimeStr(dateOperation.getNowDateTime());
-						okrTask.setDynamicObjectId(okrWorkReportBaseInfo.getId());
-						okrTask.setDynamicObjectTitle(okrWorkReportBaseInfo.getTitle());
-						okrTask.setDynamicObjectType( "汇报确认" );
-						okrTask.setProcessType( "READ" );
-						okrTask.setStatus( "正常" );
-						okrTask.setViewUrl( "" );
-						emc.persist(okrTask, CheckPersistType.all);
-						taskList.add( okrTask );
 					}
 				}else{
 					logger.debug( "本等级还有其他人员未完成处理，不需要处理下一审批层级的信息。" );
 				}
+				
+				okrWorkReportBaseInfo.setIsWorkCompleted( isWorkCompleted );
+				okrWorkReportBaseInfo.setProgressPercent( progressPercent );
+				
 				emc.check( okrWorkReportBaseInfo, CheckPersistType.all );
 				emc.commit();
 			} catch ( Exception e ) {
@@ -341,7 +326,7 @@ public class OkrWorkReportFlowService{
 			}
 		}else{
 			throw new Exception( "处理者不存在，身份：" + userIdentity);
-		}		
+		}
 		if( taskList != null && taskList.size() > 0  ){
 			for( OkrTask task : taskList ){
 				List<String> workTypeList = new ArrayList<String>();
@@ -374,6 +359,8 @@ public class OkrWorkReportFlowService{
 		String taskArriveDateString = null;
 		Integer processLevel = 0;
 		Integer maxProcessLevel = 0;
+		Boolean isWorkCompleted = false;
+		Integer progressPercent = 0;
 		OkrTask okrTask = null;
 		OkrTaskHandled okrTaskHandled = null;
 		OkrWorkReportProcessLog okrWorkReportProcessLog = null;
@@ -385,6 +372,9 @@ public class OkrWorkReportFlowService{
 		List<OkrWorkReportPersonLink> next_okrWorkReportPersonLinkList = null;
 		
 		WrapPerson  processor = okrUserManagerService.getUserByIdentity( userIdentity );
+		
+		isWorkCompleted = okrWorkReportBaseInfo.getIsWorkCompleted();
+		progressPercent = okrWorkReportBaseInfo.getProgressPercent();
 		
 		if( processor != null ){
 			//二、处理本层级的处理人处理信息以及待办信息删除，新增已办信息
@@ -580,29 +570,6 @@ public class OkrWorkReportFlowService{
 						okrWorkReportBaseInfo.setCurrentProcessorIdentity(null);
 						okrWorkReportBaseInfo.setCurrentProcessorName(null);
 						okrWorkReportBaseInfo.setCurrentProcessorOrganizationName(null);
-						//汇报审批已经完成，给汇报人发送待阅信息
-						okrTask = new OkrTask();
-						okrTask.setTitle(okrWorkReportBaseInfo.getTitle());
-						okrTask.setCenterId(okrWorkReportBaseInfo.getCenterId());
-						okrTask.setCenterTitle(okrWorkReportBaseInfo.getCenterTitle());
-						okrTask.setWorkId(okrWorkReportBaseInfo.getWorkId());
-						okrTask.setWorkTitle(okrWorkReportBaseInfo.getWorkTitle());
-						okrTask.setWorkType( okrWorkReportBaseInfo.getWorkType() );
-						okrTask.setTargetIdentity(okrWorkReportBaseInfo.getReporterIdentity());
-						okrTask.setTargetName(okrWorkReportBaseInfo.getReporterName());
-						okrTask.setTargetOrganizationName(okrWorkReportBaseInfo.getReporterOrganizationName());
-						okrTask.setTargetCompanyName(okrWorkReportBaseInfo.getReporterCompanyName());
-						okrTask.setActivityName( "汇报确认" );
-						okrTask.setArriveDateTime( new Date() );
-						okrTask.setArriveDateTimeStr(dateOperation.getNowDateTime());
-						okrTask.setDynamicObjectId(okrWorkReportBaseInfo.getId());
-						okrTask.setDynamicObjectTitle(okrWorkReportBaseInfo.getTitle());
-						okrTask.setDynamicObjectType( "汇报确认" );
-						okrTask.setProcessType( "READ" );
-						okrTask.setStatus( "正常" );
-						okrTask.setViewUrl( "" );
-						emc.persist( okrTask, CheckPersistType.all );
-						taskList.add( okrTask );
 					}
 				} else {
 					// logger.debug( "本等级还有其他人员未完成处理，不需要处理下一审批层级的信息。 ids.size=" + ids.size() );
@@ -639,6 +606,10 @@ public class OkrWorkReportFlowService{
 						}
 					}
 				}
+				
+				okrWorkReportBaseInfo.setIsWorkCompleted( isWorkCompleted );
+				okrWorkReportBaseInfo.setProgressPercent( progressPercent );
+				
 				emc.check( okrWorkReportBaseInfo, CheckPersistType.all );
 				emc.commit();
 			} catch ( Exception e ) {
@@ -1355,14 +1326,27 @@ public class OkrWorkReportFlowService{
 				okrWorkReportBaseInfo.setActivityName( "结束" );
 				okrWorkReportBaseInfo.setStatus( "结束" );
 				okrWorkReportBaseInfo.setProcessStatus( "自动结束" );
-				emc.check( okrWorkReportBaseInfo,CheckPersistType.all );
+				emc.check( okrWorkReportBaseInfo, CheckPersistType.all );
 			}
-			//删除所有的汇报详情
+			
+			ids = business.okrTaskFactory().listIdsByReportId( id );
+			if( ids != null && !ids.isEmpty() ){
+				for( String _id : ids ){
+					okrTask = emc.find( _id, OkrTask.class );
+					if ( null != okrTask ) {
+						okrTaskList.add( okrTask );
+						emc.remove( okrTask, CheckRemoveType.all );
+					}
+				}
+			}
+			
+			//处理所有的汇报详情
 			okrWorkReportDetailInfo = emc.find( id, OkrWorkReportDetailInfo.class );
 			if ( null != okrWorkReportDetailInfo ) {
 				okrWorkReportDetailInfo.setStatus( "结束" );
 				emc.check( okrWorkReportDetailInfo,CheckPersistType.all );
 			}
+			
 			ids = business.okrWorkReportPersonLinkFactory().listIdsByReportId( id );
 			if( ids != null && !ids.isEmpty() ){
 				for( String _id : ids ){
@@ -1399,18 +1383,6 @@ public class OkrWorkReportFlowService{
 				//保存处理记录
 				emc.persist( okrWorkReportProcessLog, CheckPersistType.all );
 			}
-			
-			ids = business.okrTaskFactory().listIdsByReportId( id );
-			if( ids != null && !ids.isEmpty() ){
-				for( String _id : ids ){
-					okrTask = emc.find( _id, OkrTask.class );
-					if ( null != okrTask ) {
-						okrTaskList.add( okrTask );
-						emc.remove( okrTask,CheckRemoveType.all );
-					}
-				}
-			}
-			//okrSendNotifyService.notifyReportDeleteSuccess( okrWorkReportBaseInfo, operator );
 			emc.commit();
 		} catch ( Exception e ) {
 			throw e;

@@ -34,7 +34,7 @@ class ManageDeleteSingleWork extends ActionBase {
 			if (!business.process().allowControl(effectivePerson, process)) {
 				throw new ProcessAccessDeniedException(effectivePerson.getName(), process.getId());
 			}
-			ThisApplication.applications.deleteQuery(x_processplatform_service_processing.class,
+			ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
 					"work/" + URLEncoder.encode(work.getId(), DefaultCharset.name));
 			wraps.add(new WrapOutId(work.getId()));
 			result.setData(wraps);

@@ -15,15 +15,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.cms.assemble.control.jaxrs.appcategorypermission.exception.AppCategoryPermissionProcessException;
+import com.x.cms.assemble.control.jaxrs.documentpermission.exception.WrapInConvertException;
 
 
 @Path("appcategorypermission")
@@ -47,7 +49,7 @@ public class AppCategoryPermissionAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check ){
@@ -55,9 +57,9 @@ public class AppCategoryPermissionAction extends StandardJaxrsAction{
 				result = new ExcuteSave().execute( request, effectivePerson, wrapIn );
 			} catch (Exception e) {
 				result = new ActionResult<>();
-				Exception exception = new AppCategoryPermissionSaveException( e );
+				Exception exception = new AppCategoryPermissionProcessException( e, "应用栏目分类权限配置信息保存时发生异常。" );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}	
 		}
 			
@@ -76,9 +78,9 @@ public class AppCategoryPermissionAction extends StandardJaxrsAction{
 			result = new ExcuteDelete().execute( request, effectivePerson, id );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new AppCategoryPermissionDeleteException( e, id );
+			Exception exception = new AppCategoryPermissionProcessException( e, "根据ID删除应用栏目分类权限配置信息时发生异常。ID:" + id );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -95,9 +97,9 @@ public class AppCategoryPermissionAction extends StandardJaxrsAction{
 			result = new ExcuteGet().execute( request, effectivePerson, id );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new AppCategoryPermissionQueryByIdException( e, id );
+			Exception exception = new AppCategoryPermissionProcessException( e, "根据ID查询应用栏目分类权限配置信息时发生异常。ID:" + id );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -114,9 +116,9 @@ public class AppCategoryPermissionAction extends StandardJaxrsAction{
 			result = new ExcuteListByAppInfo().execute( request, effectivePerson, appId, "VIEW" );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new AppCategoryPermissionListByAppIdException( e, appId );
+			Exception exception = new AppCategoryPermissionProcessException( e, "根据应用栏目ID查询所有对应的应用栏目分类权限配置信息列表时发生异常。AppId:" + appId );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse( result );
 	}
@@ -133,9 +135,9 @@ public class AppCategoryPermissionAction extends StandardJaxrsAction{
 			result = new ExcuteListByAppInfo().execute( request, effectivePerson, appId, "PUBLISH" );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new AppCategoryPermissionListByAppIdException( e, appId );
+			Exception exception = new AppCategoryPermissionProcessException( e, "根据应用栏目ID查询所有对应的应用栏目分类权限配置信息列表时发生异常。AppId:" + appId );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse( result );
 	}
@@ -152,9 +154,9 @@ public class AppCategoryPermissionAction extends StandardJaxrsAction{
 			result = new ExcuteListByCategory().execute( request, effectivePerson, categoryId, "VIEW" );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new AppCategoryPermissionListByAppIdException( e, categoryId );
+			Exception exception = new AppCategoryPermissionProcessException( e, "根据分类ID查询所有对应的应用栏目分类权限配置信息列表时发生异常。categoryId:" + categoryId );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse( result );
 	}
@@ -171,11 +173,10 @@ public class AppCategoryPermissionAction extends StandardJaxrsAction{
 			result = new ExcuteListByCategory().execute( request, effectivePerson, categoryId, "PUBLISH" );
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new AppCategoryPermissionListByAppIdException( e, categoryId );
+			Exception exception = new AppCategoryPermissionProcessException( e, "根据分类ID查询所有对应的应用栏目分类权限配置信息列表时发生异常。categoryId:" + categoryId );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse( result );
 	}
-	
 }

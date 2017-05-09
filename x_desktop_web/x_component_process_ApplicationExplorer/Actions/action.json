@@ -18,23 +18,23 @@
   "listScript": {"uri": "/jaxrs/script/application/{id}"},
 
 
-  "listProcessCategory": {"uri": "/jaxrs/processCategory/list/{id}/next/{count}"},
-  "getProcessCategory": {"uri": "/jaxrs/processCategory/{id}"},
-  "addProcessCategory": {"uri": "/jaxrs/processCategory","method": "POST"},
-  "removeProcessCategory": {"uri": "/jaxrs/processCategory/{id}","method": "DELETE"},
-  "updataProcessCategory": {"uri": "/jaxrs/processCategory/{id}","method": "PUT"},
+//  "listProcessCategory": {"uri": "/jaxrs/processCategory/list/{id}/next/{count}"},
+//  "getProcessCategory": {"uri": "/jaxrs/processCategory/{id}"},
+//  "addProcessCategory": {"uri": "/jaxrs/processCategory","method": "POST"},
+//  "removeProcessCategory": {"uri": "/jaxrs/processCategory/{id}","method": "DELETE"},
+//  "updataProcessCategory": {"uri": "/jaxrs/processCategory/{id}","method": "PUT"},
 
 
   "getProcess": {"uri": "/jaxrs/process/{id}"},
   "addProcess": {"uri": "/jaxrs/process","method": "POST"},
   "removeProcess": {"uri": "/jaxrs/process/{id}","method": "DELETE"},
   "updataProcess": {"uri": "/jaxrs/process/{id}","method": "PUT"},
-
-  "listFormCategory": {"uri": "/jaxrs/formCategory/list/{id}/next/{count}"},
-  "getFormCategory": {"uri": "/jaxrs/formCategory/{id}"},
-  "addFormCategory": {"uri": "/jaxrs/formCategory","method": "POST"},
-  "removeFormCategory": {"uri": "/jaxrs/formCategory/{id}","method": "DELETE"},
-  "updataFormCategory": {"uri": "/jaxrs/formCategory/{id}","method": "PUT"},
+//
+//  "listFormCategory": {"uri": "/jaxrs/formCategory/list/{id}/next/{count}"},
+//  "getFormCategory": {"uri": "/jaxrs/formCategory/{id}"},
+//  "addFormCategory": {"uri": "/jaxrs/formCategory","method": "POST"},
+//  "removeFormCategory": {"uri": "/jaxrs/formCategory/{id}","method": "DELETE"},
+//  "updataFormCategory": {"uri": "/jaxrs/formCategory/{id}","method": "PUT"},
 
 
   "getForm": {"uri": "/jaxrs/form/{id}"},

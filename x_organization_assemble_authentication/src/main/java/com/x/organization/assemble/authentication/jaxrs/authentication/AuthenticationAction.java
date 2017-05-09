@@ -13,21 +13,20 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutBoolean;
 import com.x.base.core.http.WrapOutMap;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
-import com.x.instrument.assemble.express.wrap.WrapCaptcha;
-import com.x.organization.assemble.authentication.wrap.in.WrapInAuthentication;
-import com.x.organization.assemble.authentication.wrap.out.WrapOutAuthentication;
-import com.x.organization.assemble.authentication.wrap.out.WrapOutBind;
-import com.x.organization.assemble.authentication.wrap.out.WrapOutInitManagerCredential;
+import com.x.base.core.project.jaxrs.CaptchaWo;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.organization.assemble.authentication.wrapin.WrapInAuthentication;
+import com.x.organization.assemble.authentication.wrapout.WrapOutAuthentication;
+import com.x.organization.assemble.authentication.wrapout.WrapOutBind;
 
 @Path("authentication")
 public class AuthenticationAction extends StandardJaxrsAction {
@@ -109,7 +108,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		ActionResult<WrapOutAuthentication> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionWho().execute(effectivePerson);
+			result = new ActionWho().execute(request, effectivePerson);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -135,14 +134,14 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
-	@HttpMethodDescribe(value = "获取图片验证码.", response = WrapCaptcha.class)
+	@HttpMethodDescribe(value = "获取图片验证码.", response = CaptchaWo.class)
 	@GET
 	@Path("captcha/width/{width}/height/{height}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response captcha(@Context HttpServletRequest request, @PathParam("width") Integer width,
 			@PathParam("height") Integer height) {
-		ActionResult<WrapCaptcha> result = new ActionResult<>();
+		ActionResult<CaptchaWo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCaptcha().execute(width, height);

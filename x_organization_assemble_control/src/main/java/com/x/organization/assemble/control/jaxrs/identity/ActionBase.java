@@ -15,6 +15,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.http.WrapInStringList;
 import com.x.base.core.http.WrapOutOnline;
 import com.x.base.core.project.x_collaboration_assemble_websocket;
+import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.utils.ListTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.assemble.control.ThisApplication;
@@ -48,8 +49,11 @@ public class ActionBase {
 	protected void fillOnlineStatus(Business business, WrapOutIdentity wrap) throws Exception {
 		this.fillPersonName(business, wrap);
 		wrap.setOnlineStatus(WrapOutOnline.status_offline);
-		WrapOutOnline online = ThisApplication.applications.getQuery(x_collaboration_assemble_websocket.class,
-				"online/person/" + URLEncoder.encode(wrap.getPersonName(), DefaultCharset.name), WrapOutOnline.class);
+
+		ActionResponse resp = ThisApplication.context().applications().getQuery(
+				x_collaboration_assemble_websocket.class,
+				"online/person/" + URLEncoder.encode(wrap.getPersonName(), DefaultCharset.name));
+		WrapOutOnline online = resp.getData(WrapOutOnline.class);
 		wrap.setOnlineStatus(online.getOnlineStatus());
 	}
 
@@ -63,8 +67,9 @@ public class ActionBase {
 		List<String> personNames = ListTools.extractProperty(wraps, "personName", String.class, true, true);
 		WrapInStringList parameters = new WrapInStringList();
 		parameters.setValueList(personNames);
-		List<WrapOutOnline> onlines = ThisApplication.applications.putQuery(x_collaboration_assemble_websocket.class,
-				"online/list", parameters, collectionType);
+		ActionResponse resp = ThisApplication.context().applications()
+				.putQuery(x_collaboration_assemble_websocket.class, "online/list", parameters);
+		List<WrapOutOnline> onlines = resp.getDataAsList(WrapOutOnline.class);
 		for (WrapOutOnline o : onlines) {
 			if (StringUtils.equals(o.getOnlineStatus(), WrapOutOnline.status_online)) {
 				for (WrapOutIdentity wrap : wraps) {

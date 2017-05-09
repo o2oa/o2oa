@@ -5,7 +5,8 @@ MWF.xApplication.cms.Index.Starter = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
 	options: {
-		"style": "default"
+		"style": "default",
+        "ignoreDrafted" : false
 	},
     initialize: function(columnData, categoryData, app, options){
         this.setOptions(options);
@@ -20,7 +21,32 @@ MWF.xApplication.cms.Index.Starter = new Class({
         this.categoryData = categoryData;
         this.app = app;
     },
-    load: function(){
+    load: function( ){
+        if( this.options.ignoreDrafted ){
+            this._load();
+            this.fireEvent( "postLoad" );
+        }else if(this.categoryData.workflowAppId && this.categoryData.workflowFlag ){
+            this._load();
+            this.fireEvent( "postLoad" );
+        }else{
+            var fielter = {
+                "categoryIdList": [this.categoryData.id ],
+                "creatorList": [layout.desktop.session.user.name]
+            };
+            this.getDocumentAction( function(){
+                this.documentAction.listDraftNext("(0)", 1, fielter, function(json){
+                    if( json.data.length > 0 ){
+                        this._openDocument(json.data[0].id);
+                        this.fireEvent( "postLoad" );
+                    }else{
+                        this._load();
+                        this.fireEvent( "postLoad" );
+                    }
+                }.bind(this));
+            }.bind(this));
+        }
+    },
+    _load: function(){
         this.createMarkNode();
         this.createAreaNode();
         this.createStartNode();
@@ -33,7 +59,25 @@ MWF.xApplication.cms.Index.Starter = new Class({
         this.setStartNodeSizeFun = this.setStartNodeSize.bind(this);
         this.app.addEvent("resize", this.setStartNodeSizeFun);
     },
+    _openDocument: function(id,el){
+        var _self = this;
 
+        var appId = "cms.Document"+id;
+        if (_self.app.desktop.apps[appId]){
+            _self.app.desktop.apps[appId].setCurrent();
+        }else {
+            var options = {
+                "readonly" :false,
+                "documentId": id,
+                "appId": appId,
+                "postPublish" : function(){
+                    //if(_self.creater.view )_self.creater.view.reload();
+                    this.fireEvent( "postPublish" );
+                }.bind(this)
+            };
+            this.app.desktop.openApplication(el, "cms.Document", options);
+        }
+    },
     createMarkNode: function(){
         this.markNode = new Element("div#mark", {
             "styles": this.css.markNode,
@@ -60,9 +104,10 @@ MWF.xApplication.cms.Index.Starter = new Class({
             "styles": this.css.formNode
         }).inject(this.createNode);
 
+        var categoryName = this.categoryData.name || this.categoryData.categoryName;
         var html = "<table width=\"100%\" height=\"90%\" border=\"0\" cellPadding=\"0\" cellSpacing=\"0\">" +
             "<tr><td colSpan=\"2\" style=\"height: 60px; line-height: 60px; text-align: center; font-size: 24px; font-weight: bold\">" +
-            this.lp.start+" - "+this.categoryData.name+"</td></tr>" +
+            this.lp.start+" - "+categoryName+"</td></tr>" +
             "<tr><td style=\"height: 30px; line-height: 30px; text-align: left\">"+this.lp.department+":</td>" +
             "<td style=\"; text-align: left;\" id=\"form_startDepartment\"></td></tr>" +
             "<tr><td style=\"height: 30px; line-height: 30px;  text-align: left\">"+this.lp.identity+":</td>" +
@@ -149,6 +194,7 @@ MWF.xApplication.cms.Index.Starter = new Class({
         });
         var hY = size.y*0.8;
         var mY = size.y*0.2/2;
+        if( hY > 500 )hY = 500;
         this.createNode.setStyles({
             "height": ""+hY+"px",
             "margin-top": ""+mY+"px"
@@ -178,7 +224,14 @@ MWF.xApplication.cms.Index.Starter = new Class({
             this.areaNode.destroy();
         }
     },
-    okStart: function(e){
+    okStart: function(){
+        if( this.categoryData.workflowAppId && this.categoryData.workflowFlag ){
+            this._createProcessDocument();
+        }else{
+            this._createDocument();
+        }
+    },
+    _createDocument: function(e){
         var title = $("form_startSubject").get("value");
         this.getDocumentAction();
         var data = {
@@ -213,7 +266,8 @@ MWF.xApplication.cms.Index.Starter = new Class({
                     this.markNode.destroy();
                     this.areaNode.destroy();
 
-                    this.fireEvent("started", [json.data, title, this.categoryData.name]);
+                    this._openDocument( json.data.id );
+                    //this.fireEvent("started", [json.data, title, this.categoryData.name]);
 
                     //this.app.refreshAll();
                     this.app.notice(this.lp.Started, "success");
@@ -231,6 +285,122 @@ MWF.xApplication.cms.Index.Starter = new Class({
         }else{
             if (callback) callback();
         }
+    },
+
+
+    _createProcessDocument:function(e){
+        var title = $("form_startSubject").get("value");
+        var processId = this.categoryData.workflowFlag;
+        var data = {
+            "title":$("form_startSubject").get("value"),
+            "identity": this.identityArea.get("value")
+        };
+        if (!data.title){
+            $("form_startSubject").setStyle("border-color", "red");
+            $("form_startSubject").focus();
+            this.app.notice(this.lp.inputSubject, "error");
+        }else if (!data.identity){
+            this.departmentSelArea.setStyle("border-color", "red");
+            this.app.notice(this.lp.selectStartId, "error");
+        }else{
+            var workData = {
+                cmsDocument : {
+                    "isNewDocument" : true,
+                    "title": title,
+                    "creatorIdentity": data.identity,
+                    "appId" :this.categoryData.appId,
+                    "categoryId" : this.categoryData.id,
+                    //"form" : this.categoryData.formId,
+                    //"formName" :this.categoryData.formName,
+                    "docStatus" : "draft",
+                    "categoryName" : this.categoryData.name,
+                    "categoryAlias" : this.categoryData.alias,
+                    "createTime": new Date().format("db"),
+                    "attachmentList" : []
+                }
+            };
+
+            this.mask = new MWF.widget.Mask({"style": "desktop"});
+            this.mask.loadNode(this.areaNode);
+            this.getDocumentAction(function(){
+                this.documentAction.startWork( function( json ){
+                    this.mask.hide();
+
+                    this.markNode.destroy();
+                    this.areaNode.destroy();
+
+                    this.afterStartProcess( json.data, data.title, this.categoryData.workflowName, workData );
+                    //this.fireEvent("started", [json.data, title, this.categoryData.name]);
+
+                    //this.app.refreshAll();
+                    this.app.notice(this.lp.Started, "success");
+                }.bind(this), null, processId, data)
+            }.bind(this));
+        }
+    },
+    afterStartProcess: function(data, title, processName, workData){
+        var workInfors = [];
+        var currentTask = [];
+
+        data.each(function(work){
+            if (work.currentTaskIndex != -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
+            workInfors.push(this.getStartWorkInforObj(work));
+        }.bind(this));
+        var workId = currentTask[0];
+
+        this.documentAction.saveWorkData(function(){
+
+            if (currentTask.length==1){
+                var options = {"workId": workId};
+                this.app.desktop.openApplication(null, "process.Work", options);
+
+                this.createStartWorkResault(workInfors, title, processName, false);
+            }else{
+                this.createStartWorkResault(workInfors, title, processName, true);
+            }
+
+        }.bind(this), null, workId, workData)
+
+
+    },
+    getStartWorkInforObj: function(work){
+        var users = [];
+        var currentTask = "";
+        work.taskList.each(function(task, idx){
+            users.push(task.person+"("+task.department + ")");
+            if (work.currentTaskIndex==idx) currentTask = task.id;
+        }.bind(this));
+        return {"activity": work.fromActivityName, "users": users, "currentTask": currentTask};
+    },
+    createStartWorkResault: function(workInfors, title, processName, isopen){
+        var content = "";
+        workInfors.each(function(infor){
+            content += "<div><b>"+this.lp.nextActivity+"<font style=\"color: #ea621f\">"+infor.activity+"</font>, "+this.lp.nextUser+"<font style=\"color: #ea621f\">"+infor.users.join(", ")+"</font></b>"
+            if (infor.currentTask && isopen){
+                content += "&nbsp;&nbsp;&nbsp;&nbsp;<span value=\""+infor.currentTask+"\">"+this.lp.deal+"</span></div>";
+            }else{
+                content += "</div>";
+            }
+        }.bind(this));
+
+        var msg = {
+            "subject": this.lp.processStarted,
+            "content": "<div>"+this.lp.processStartedMessage+"“["+processName+"]"+title+"”</div>"+content
+        };
+        var tooltip = layout.desktop.message.addTooltip(msg);
+        var item = layout.desktop.message.addMessage(msg);
+
+        this.setStartWorkResaultAction(tooltip);
+        this.setStartWorkResaultAction(item);
+    },
+    setStartWorkResaultAction: function(item){
+        var node = item.node.getElements("span");
+        node.setStyles(this.css.dealStartedWorkAction);
+        var _self = this;
+        node.addEvent("click", function(e){
+            var options = {"taskId": this.get("value")};
+            _self.app.desktop.openApplication(e, "process.Work", options);
+        });
     }
 
 });

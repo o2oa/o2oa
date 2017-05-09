@@ -11,7 +11,7 @@ import net.sf.ehcache.Ehcache;
 
 public class ExcuteBase {
 	
-	protected static Ehcache cache = ApplicationCache.instance().getCache( AppCategoryPermission.class);
+	protected Ehcache cache = ApplicationCache.instance().getCache( AppCategoryPermission.class);
 	
 	protected AppInfoServiceAdv appInfoServiceAdv = new AppInfoServiceAdv();
 	protected UserManagerService userManagerService = new UserManagerService();

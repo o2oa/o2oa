@@ -1,5 +1,4 @@
 package com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,28 +21,32 @@ import com.x.base.core.application.jaxrs.MemberTerms;
 import com.x.base.core.application.jaxrs.NotEqualsTerms;
 import com.x.base.core.application.jaxrs.NotInTerms;
 import com.x.base.core.application.jaxrs.NotMemberTerms;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
+import com.x.base.core.http.WrapOutBoolean;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.okr.assemble.control.jaxrs.okrcenterworkinfo.WrapInFilterAdminCenterWorkInfo;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkQueryByIdException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkReportFilterException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkReportIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkReportQueryByIdException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkReportWrapOutException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WrapInConvertException;
 import com.x.okr.assemble.control.jaxrs.okrworkreportprocesslog.WrapOutOkrWorkReportProcessLog;
-import com.x.okr.assemble.control.service.OkrTaskService;
+import com.x.okr.assemble.control.service.ExcuteWorkReportCreateService;
 import com.x.okr.assemble.control.service.OkrWorkBaseInfoQueryService;
-import com.x.okr.assemble.control.service.OkrWorkDynamicsService;
 import com.x.okr.assemble.control.service.OkrWorkReportDetailInfoService;
-import com.x.okr.assemble.control.service.OkrWorkReportOperationService;
 import com.x.okr.assemble.control.service.OkrWorkReportProcessLogService;
 import com.x.okr.assemble.control.service.OkrWorkReportQueryService;
-import com.x.okr.assemble.control.service.OkrWorkReportTaskCollectService;
-import com.x.okr.entity.OkrTask;
 import com.x.okr.entity.OkrWorkBaseInfo;
 import com.x.okr.entity.OkrWorkReportBaseInfo;
 import com.x.okr.entity.OkrWorkReportDetailInfo;
@@ -54,105 +57,47 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 	private Logger logger = LoggerFactory.getLogger( OkrWorkReportBaseInfoAdminAction.class );
 	private BeanCopyTools<OkrWorkReportBaseInfo, WrapOutOkrWorkReportBaseInfo> wrapout_copier = BeanCopyToolsBuilder.create( OkrWorkReportBaseInfo.class, WrapOutOkrWorkReportBaseInfo.class, null, WrapOutOkrWorkReportBaseInfo.Excludes);
 	private BeanCopyTools<OkrWorkReportProcessLog, WrapOutOkrWorkReportProcessLog> okrWorkReportProcessLog_wrapout_copier = BeanCopyToolsBuilder.create( OkrWorkReportProcessLog.class, WrapOutOkrWorkReportProcessLog.class, null, WrapOutOkrWorkReportProcessLog.Excludes);
-	private OkrWorkReportOperationService okrWorkReportBaseInfoService = new OkrWorkReportOperationService();
 	private OkrWorkReportQueryService okrWorkReportQueryService = new OkrWorkReportQueryService();
 	private OkrWorkReportDetailInfoService okrWorkReportDetailInfoService = new OkrWorkReportDetailInfoService();
 	private OkrWorkReportProcessLogService okrWorkReportProcessLogService = new OkrWorkReportProcessLogService();
 	private OkrWorkBaseInfoQueryService okrWorkBaseInfoService = new OkrWorkBaseInfoQueryService();
-	private OkrWorkDynamicsService okrWorkDynamicsService = new OkrWorkDynamicsService();
-	private OkrTaskService okrTaskService = new OkrTaskService();
-	private OkrWorkReportTaskCollectService okrWorkReportTaskCollectService = new OkrWorkReportTaskCollectService();
 
+	@HttpMethodDescribe(value = "根据ID获取OkrWorkReportBaseInfo对象.", response = WrapOutBoolean.class)
+	@GET
+	@Path( "create" )
+	@Produces( HttpMediaType.APPLICATION_JSON_UTF_8 )
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response reportAutoCreate(@Context HttpServletRequest request ) {
+		WrapOutBoolean wrapOutBoolean = new WrapOutBoolean();
+		ActionResult<WrapOutBoolean> result = new ActionResult<>();
+		try {
+			ExcuteWorkReportCreateService workReportCreate = new ExcuteWorkReportCreateService();
+			workReportCreate.execute();
+			wrapOutBoolean.setValue( true );
+			result.setData( wrapOutBoolean );
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			result.error( e );
+			logger.warn( "system excute reportAutoCreate got an exception. " );
+			logger.error( e );
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
 	@HttpMethodDescribe(value = "根据ID删除OkrWorkReportBaseInfo数据对象.", response = WrapOutId.class)
 	@DELETE
 	@Path( "{id}" )
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response delete( @Context HttpServletRequest request, @PathParam( "id" ) String id ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		OkrWorkReportBaseInfo okrWorkReportBaseInfo = null;
-		List<OkrTask> taskList = null;
-		List<String> taskTargetName = new ArrayList<String>();
-		Boolean check = true;
-		
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		
-		if( check ){
-			if( id == null || id.isEmpty() ){
-				check = false;
-				Exception exception = new WorkReportIdEmptyException();
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
-		if( check ){
-			try {
-				okrWorkReportBaseInfo = okrWorkReportQueryService.get( id );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new WorkReportQueryByIdException( e, id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		if( check ){
-			try{
-				okrWorkReportBaseInfoService.delete( id, currentPerson.getName() );
-				result.setData( new WrapOutId( id ));
-			}catch(Exception e){
-				Exception exception = new WorkReportDeleteException( e, id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		if( check ){
-			try {
-				taskList = okrTaskService.listIdsByReportId( id );
-			} catch (Exception e) {
-				check = false;
-				logger.warn( "system get task by report id got an exception" );
-				logger.error(e);
-			}
-		}
-		if( check ){
-			if( taskList != null && !taskList.isEmpty() ){
-				List<String> workTypeList = new ArrayList<String>();
-				for( OkrTask task : taskList ){
-					if( !taskTargetName.contains( task.getTargetIdentity() )){
-						try{
-							workTypeList.clear();
-							workTypeList.add( task.getWorkType() );
-							okrWorkReportTaskCollectService.checkReportCollectTask( task.getTargetIdentity(), workTypeList );
-						}catch( Exception e ){
-							logger.warn( "待办信息删除成功，但对汇报者进行汇报待办汇总发生异常。");
-							logger.error(e);
-						}
-					}
-				}
-			}
-		}
-		if( check ){
-			if( okrWorkReportBaseInfo != null ){
-				try {
-					okrWorkDynamicsService.reportDynamic(
-							okrWorkReportBaseInfo.getCenterId(), 
-							okrWorkReportBaseInfo.getTitle(), 
-							okrWorkReportBaseInfo.getWorkId(), 
-							okrWorkReportBaseInfo.getWorkTitle(), 
-							okrWorkReportBaseInfo.getTitle(), 
-							id, 
-							"保存中心工作", 
-							currentPerson.getName(), 
-							currentPerson.getName(), 
-							currentPerson.getName(), 
-							"删除中心工作：" + okrWorkReportBaseInfo.getTitle(),
-							"中心工作删除成功！" );
-				} catch (Exception e) {
-					logger.warn( "okrWorkDynamicsService reportDynamic got an exception" );
-					logger.error(e);
-				}
-			}
+		try {
+			result = new ExcuteDelete().execute( request, effectivePerson, id );
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			result.error( e );
+			logger.warn( "system excute ExcuteGet got an exception. " );
+			logger.error( e );
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -178,7 +123,6 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new WorkReportIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -188,7 +132,7 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new WorkReportQueryByIdException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -199,7 +143,7 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new WorkReportWrapOutException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -210,13 +154,12 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new WorkNotExistsException( wrap.getWorkId() );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new WorkQueryByIdException( e, wrap.getWorkId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);	
+				logger.error( e, effectivePerson, request, null);	
 			}
 		}
 		if( check ){
@@ -278,7 +221,7 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			if( wrapIn == null ){
@@ -303,7 +246,7 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 			}catch( Exception e ){
 				Exception exception = new WorkReportFilterException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);	
+				logger.error( e, effectivePerson, request, null);	
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -333,7 +276,7 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
@@ -359,7 +302,7 @@ public class OkrWorkReportBaseInfoAdminAction extends StandardJaxrsAction{
 			}catch( Exception e ){
 				Exception exception = new WorkReportFilterException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);	
+				logger.error( e, effectivePerson, request, null);	
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);

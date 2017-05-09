@@ -45,6 +45,42 @@ MWF.xApplication.Execution.WorkReport = new Class({
         } else {
             this.open();
         }
+
+        this.setContentSize();
+        this.setContentSizeFun = this.setContentSize.bind(this);
+        this.app.addEvent("resize", this.setContentSizeFun);
+
+        if(this.workReportData){
+            //百分比
+            if(this.completeProgressContentDiv){
+                var obj = this.completeProgressContentDiv.getElements(".completeProgressLineDiv");
+                obj.setStyles({"background":"#ccc"})
+                var curLen = parseInt(this.workReportData.progressPercent/10)
+                obj.each(function(d,j){
+                    if(j<curLen){
+                        d.setStyles({"background":"#369"})
+                    }
+                })
+            }
+
+            //是否完成
+            if(this.completeSelect){
+                this.completeSelect.set("value",this.workReportData.isWorkCompleted?"yes":"no")
+            }
+        }
+
+    },
+    setContentSize: function () {
+        var allSize = this.app.content.getSize();
+
+        this.reportContentInforHeight = ( allSize.y - (this.formTopNode.getSize().y ) )
+        //alert(reportContentInforHeight)
+        if(this.prevReportInforListDiv){
+            this.prevReportInforListDiv.setStyles({
+                "height": "" + this.reportContentInforHeight + "px"
+            });
+            }
+
     },
     reload:function(data){
 
@@ -148,7 +184,7 @@ MWF.xApplication.Execution.WorkReport = new Class({
                     }
                 }
             }.bind(this),null,false);
-        }else{ //不是草稿的 直接获取this.data信息
+        }else{  //不是草稿的 直接获取this.data信息
             this.actions.getWorkReport(this.data.workReportId,function(json){ //alert(JSON.stringify(json))
                 if(json.type=="success"){
                     this.workReportData = json.data;
@@ -156,7 +192,7 @@ MWF.xApplication.Execution.WorkReport = new Class({
                         this.workReportId = json.data.id
                     }
                 }
-            }.bind(this),null,false)
+            }.bind(this),null,false);
 
             if(this.workReportData.currentProcessorIdentity){
                 this.processIdentity = this.workReportData.currentProcessorIdentity
@@ -268,6 +304,109 @@ MWF.xApplication.Execution.WorkReport = new Class({
             }).inject(this.reportContentInfor)
         }
 
+        //是否办结
+        this.completeDiv = new Element("div.completeDiv",{
+            "styles":this.css.completeDiv
+        }).inject(this.reportContentInfor)
+        this.completeTextSpan = new Element("span.completeTextSpan",{
+            "styles":this.css.completeTextSpan,
+            "text":this.lp.isCompleted
+        }).inject(this.completeDiv)
+        //if(this.processIdentity == this.app.identity || this.processIdentity.indexOf(this.app.identity)>-1) {
+        if((this.workReportData.processStatus == this.lp.activityName.drafter && this.workReportData.isReporter)|| (this.workReportData.processStatus == this.lp.activityName.manager && (this.processIdentity == this.app.identity || this.processIdentity.indexOf(this.app.identity)>-1))){
+            this.completeSelect = new Element("select.completeSelect",{
+                styles:this.css.completeSelect
+            }).inject(this.completeDiv)
+            //this.completeSelectOption = new Element("option.completeSelectOption",{"text":"","value":"no"}).inject(this.completeSelect)
+            this.completeSelectOption = new Element("option.completeSelectOption",{"text":this.lp.isCompletedNoOption,"value":"no"}).inject(this.completeSelect)
+            this.completeSelectOption = new Element("option.completeSelectOption",{"text":this.lp.isCompletedYesOption,"value":"yes"}).inject(this.completeSelect)
+            this.completeSelect.addEvents({
+                "change":function(){
+                    if(this.completeSelect.get("value")=="yes"){
+                        var obj = this.completeProgressContentDiv.getElements(".completeProgressLineDiv");
+                        obj.setStyles({"background":"#369"})
+                        this.completePercentRateSpan.set("text","100%")
+
+                    }else{
+                        this.completePercentRateSpan.set("text",parseInt(this.workReportData.progressPercent)+"%")
+                        var obj = this.completeProgressContentDiv.getElements(".completeProgressLineDiv");
+                        obj.setStyles({"background":"#ccc"})
+                        var curLen = parseInt(this.workReportData.progressPercent/10)
+                        obj.each(function(d,j){
+                            if(j<curLen){
+                                d.setStyles({"background":"#369"})
+                            }
+                        })
+                    }
+                }.bind(this)
+            })
+
+        }else{
+            var tmpstr = this.workReportData.isWorkCompleted?this.lp.isCompletedYesOption:this.lp.isCompletedNoOption;
+            this.completeTextSpan.set("text",this.completeTextSpan.get("text")+" "+tmpstr)
+        }
+
+        this.completePercentSpan = new Element("span.completePercentSpan",{
+            "styles":this.css.completePercentSpan,
+            "text":this.lp.completePercent
+        }).inject(this.completeDiv)
+        this.completePercentRateSpan = new Element("span.completePercentRateSpan",{
+            "id":"completePercentRateSpan",
+            "styles":this.css.completePercentRateSpan,
+            "text":parseInt(this.workReportData.progressPercent)+"%"
+        }).inject(this.completeDiv);
+
+
+
+        if((this.workReportData.processStatus == this.lp.activityName.drafter && this.workReportData.isReporter)|| (this.workReportData.processStatus == this.lp.activityName.manager && (this.processIdentity == this.app.identity || this.processIdentity.indexOf(this.app.identity)>-1))){
+            this.completeProgressDiv = new Element("div.completeProgressDiv",{
+                "styles":this.css.completeProgressDiv
+            }).inject(this.completeDiv);
+
+            this.completeProgressContentDiv = new Element("div.completeProgressContentDiv",{
+                "styles":this.css.completeProgressContentDiv
+            }).inject(this.completeProgressDiv);
+
+            var _self = this;
+            for(i=0;i<11;i++){
+                var tmpPointDiv = new Element("div.completeProgressPointDiv",{
+                    "styles":this.css.completeProgressPointDiv,
+                    "position":i
+                }).inject(_self.completeProgressContentDiv)
+                tmpPointDiv.setStyles({"left":(i*50)+"px"});
+                tmpPointDiv.addEvents({
+                    "click":function(){
+                        _self.selectProgress(parseInt(this.get("position")),"point")
+                    }
+                })
+                if(i<10){
+                    var tmpLineDiv = new Element("div.completeProgressLineDiv",{
+                        "styles":this.css.completeProgressLineDiv,
+                        "position":i
+                    }).inject(_self.completeProgressContentDiv)
+                    tmpLineDiv.setStyles({"left":(i*50)+"px"})
+                    tmpLineDiv.addEvents({
+                        "click":function(){
+                            _self.selectProgress(parseInt(this.get("position"))+1,"line")
+                        }
+                    })
+                }
+
+            }
+
+            this.completeProgressTextDiv = new Element("div.completeProgressTextDiv",{
+                "styles":this.css.completeProgressTextDiv
+            }).inject(this.completeProgressDiv);
+            for(i=0;i<11;i++){
+                var tmpCompletePercentTextSpan = new Element("lable.tmpCompletePercentTextSpan",{
+                    "styles":this.css.tmpCompletePercentTextSpan,
+                    "text":(i*10)+"%"
+                }).inject(this.completeProgressTextDiv)
+            }
+        }
+
+        //是否办结
+
         this.reportAttachment = new Element("div.reportAttachment",{
             "item":"reportAttachments"
         }).inject(this.reportContentInfor)
@@ -334,6 +473,16 @@ MWF.xApplication.Execution.WorkReport = new Class({
 
         }
 
+    },
+    selectProgress:function(i,s){
+        var obj = this.completeProgressContentDiv.getElements(".completeProgressLineDiv");
+        obj.setStyles({"background":"#ccc"})
+        obj.each(function(d,j){
+            if(j<i){
+                d.setStyles({"background":"#369"})
+            }
+        })
+        this.completePercentRateSpan.set("text",(i*10)+"%")
     },
     getLeaderOpinions: function(){
         //获取领导意见
@@ -450,6 +599,7 @@ MWF.xApplication.Execution.WorkReport = new Class({
         this.prevReportInforListDiv = new Element("div.prevReportInforListDiv",{
             "styles":this.css.prevReportInforListDiv
         }).inject(this.prevReportInforDiv);
+        this.prevReportInforListDiv.setStyles({"height":this.reportContentInforHeight+"px"})
 
         //这里显示具体内容
         this.actions.getWorkReport(workReportId,function(json){
@@ -478,6 +628,17 @@ MWF.xApplication.Execution.WorkReport = new Class({
                     "styles": this.css.prevContentValueDiv,
                     "text" : json.data.workPlan
                 }).inject(prevContentDiv);
+                //是否办结
+                prevContentTitleDiv = new Element("div.prevContentTitleDiv",{
+                    "styles" : this.css.prevContentTitleDiv,
+                    "text" : this.lp.contentTitle2 + ":"
+                }).inject(prevContentDiv)
+
+                var tmpstr = json.data.isWorkCompleted?" "+this.lp.isCompletedYesOption+" ":" "+this.lp.isCompletedNoOption+" "
+                tmpstr = this.lp.isCompleted+":" + tmpstr
+                tmpstr = tmpstr + " " +this.lp.completePercent + " " + parseInt(json.data.progressPercent)+"%";
+                prevContentTitleDiv.set("text",tmpstr)
+
 
                 //管理员督办
                 if(json.data.needAdminAudit){
@@ -541,9 +702,32 @@ MWF.xApplication.Execution.WorkReport = new Class({
                     }).inject(reportLeaderContentDiv);
                 }
 
+                //附件
+                prevContentDiv = new Element("div.prevContentDiv",{
+                    "styles": this.css.prevContentDiv
+                }).inject(this.prevReportInforListDiv);
+                prevContentTitleDiv = new Element("div.prevContentTitleDiv",{
+                    "styles" : this.css.prevContentTitleDiv,
+                    "text" :   this.lp.attachment+":"
+                }).inject(prevContentDiv)
+                prevContentValueDiv = new Element("div.prevContentValueDiv",{
+                    "styles": this.css.prevContentValueDiv
+                }).inject(prevContentDiv);
 
+                this.loadPreReportAttachment(prevContentValueDiv,workReportId);
             }
         }.bind(this),null,false)
+        this.setScrollBar(this.prevReportInforListDiv);
+    },
+    loadPreReportAttachment: function( area,id ){
+        this.attachment = new MWF.xApplication.Execution.ReportAttachment( area, this.app, this.actions, this.app.lp, {
+            //documentId : this.data.workId,
+            documentId : id,
+            isNew : this.options.isNew,
+            isEdited : false,
+            "size":"min"
+        })
+        this.attachment.load();
     },
     expandWorkReportInfor:function(prevReportListLi){
         this.currentPrevReportLinkId = prevReportListLi.get("id");
@@ -766,9 +950,6 @@ MWF.xApplication.Execution.WorkReport = new Class({
             isEdited : edit,
             "size":this.workReportData.processStatus == this.lp.activityName.drafter ? "max":"min",
             onQueryUploadAttachment : function(){
-
-
-
                 var saveData = {}
                 saveData.workId = this.workReportData.workId;
                 saveData.id = this.workReportData.id;
@@ -798,21 +979,47 @@ MWF.xApplication.Execution.WorkReport = new Class({
         }.bind(this),function(xhr){}.bind(this))
     },
     save: function(){
+        this.app.createShade()
+        //this.saveActionNode.removeEvents("click")
         var saveData = {}
         saveData.workId = this.workReportData.workId;
         saveData.id = this.workReportData.id;
+        var rateTmp = 0;
+        rateTmp = parseInt(this.completePercentRateSpan.get("text").replace("%",""))
+
         if(this.workReportData.processStatus == this.lp.activityName.drafter){
             saveData.progressDescription = this.contentTextarea1.value;
-            saveData.workPlan = this.contentTextarea2.value
+            saveData.workPlan = this.contentTextarea2.value;
+            saveData.isWorkCompleted = this.completeSelect.get("value")=="yes"?true:false
+            //saveData.progressPercent = this.completePercentRateSpan.get("text")*100
+            saveData.progressPercent = rateTmp
         }else if(this.workReportData.processStatus == this.lp.activityName.manager){
             saveData.adminSuperviseInfo = this.contentTextarea3.value
+            saveData.isWorkCompleted = this.completeSelect.get("value")=="yes"?true:false
+            saveData.progressPercent = rateTmp
         }else if(this.workReportData.processStatus == this.lp.activityName.leader){
             saveData.opinion = this.contentTextarea4.value
+        }
+
+        if(saveData.progressDescription){
+            if(saveData.progressDescription.length>600){
+                this.app.notice( "字数不能大于600","error");
+                this.app.destroyShade();
+                return false;
+            }
+        }
+        if(saveData.workPlan){
+            if(saveData.workPlan.length>600){
+                this.app.notice( "字数不能大于600","error");
+                this.app.destroyShade();
+                return false;
+            }
         }
 
         this.actions.saveWorkReport( saveData, function(json){
             if(json.type == "success"){
                 this.app.notice(this.lp.information.saveSuccess, "success");
+                this.app.destroyShade();
             }
         }.bind(this),function(xhr,text,error){
             var errorText = error;
@@ -823,9 +1030,15 @@ MWF.xApplication.Execution.WorkReport = new Class({
             }else{
                 this.app.notice( errorText,"error");
             }
-        }.bind(this));
+            this.app.destroyShade();
+        }.bind(this),true);
+        //this.saveActionNode.addEvents({
+        //    "click": function () {
+        //        this.save();
+        //    }.bind(this)
+        //})
     },
-    submit: function(){
+    submit: function(e){
         if(this.contentTextarea1){
             if(this.contentTextarea1.value == ""){
                 this.app.notice(this.lp.contentTitle1+this.lp.checkEmpty, "error");
@@ -838,47 +1051,90 @@ MWF.xApplication.Execution.WorkReport = new Class({
                 return false;
             }
         }
-        //if(this.contentTextarea3){
-        //    if(this.contentTextarea3.value == ""){
-        //        this.app.notice(this.lp.adminContentTitle+this.lp.checkEmpty, "error");
-        //        return false;
-        //    }
-        //}
-        //if(this.contentTextarea4){
-        //    if(this.contentTextarea4.value == ""){
-        //        this.app.notice(this.lp.leaderContentTitle+this.lp.checkEmpty, "error");
-        //        return false;
-        //    }
-        //}
+
 
         var saveData = {}
         saveData.workId = this.workReportData.workId;
         saveData.id = this.workReportData.id;
+        var rateTmp = 0;
+        rateTmp = parseInt(this.completePercentRateSpan.get("text").replace("%",""))
         if(this.workReportData.processStatus == this.lp.activityName.drafter){
             saveData.progressDescription = this.contentTextarea1.value;
             saveData.workPlan = this.contentTextarea2.value
+            saveData.isWorkCompleted = this.completeSelect.get("value")=="yes"?true:false
+            //saveData.progressPercent = this.completePercentRateSpan.get("text")*100
+            saveData.progressPercent = rateTmp
         }else if(this.workReportData.processStatus == this.lp.activityName.manager){
             saveData.adminSuperviseInfo = this.contentTextarea3.value
+            saveData.isWorkCompleted = this.completeSelect.get("value")=="yes"?true:false
+            //saveData.progressPercent = this.completePercentRateSpan.get("text")*100
+            saveData.progressPercent = rateTmp
         }else if(this.workReportData.processStatus == this.lp.activityName.leader){
             saveData.opinion = this.contentTextarea4.value
         }
+        if(saveData.progressDescription){
+            if(saveData.progressDescription.length>600){
+                this.app.notice( "字数不能大于600","error");
+                return false;
+            }
+        }
+        if(saveData.workPlan){
+            if(saveData.workPlan.length>600){
+                this.app.notice( "字数不能大于600","error");
+                return false;
+            }
+        }
 
-        this.actions.submitWorkReport( saveData, function(json){
-            if(json.type == "success"){
-                this.app.notice(this.lp.prompt.submitWorkReport,"success");
-                this.fireEvent("reloadView", json);
+        if(this.completeSelect && this.completeSelect.get("value")=="yes"){
+            var _self = this;
+            this.app.confirm("warn",e,_self.lp.submitWarn.warnTitle,_self.lp.submitWarn.warnContent,300,150,function(){
+                _self.app.createShade()
+                _self.actions.submitWorkReport( saveData, function(json){
+                    if(json.type == "success"){
+                        _self.app.notice(_self.lp.prompt.submitWorkReport,"success");
+                        _self.fireEvent("reloadView", json);
+                        _self.close();
+                    }
+                    _self.app.destroyShade()
+                }.bind(_self),function(xhr,text,error){
+                    var errorText = error;
+                    if (xhr) errorMessage = xhr.responseText;
+                    var e = JSON.parse(errorMessage);
+                    if(e.message){
+                        _self.app.notice( e.message,"error");
+                    }else{
+                        _self.app.notice( errorText,"error");
+                    }
+                    _self.app.destroyShade()
+                }.bind(_self),true);
+
                 this.close();
-            }
-        }.bind(this),function(xhr,text,error){
-            var errorText = error;
-            if (xhr) errorMessage = xhr.responseText;
-            var e = JSON.parse(errorMessage);
-            if(e.message){
-                this.app.notice( e.message,"error");
-            }else{
-                this.app.notice( errorText,"error");
-            }
-        }.bind(this));
+            },function(){
+                this.close();
+            })
+        }else{
+            this.app.createShade()
+            this.actions.submitWorkReport( saveData, function(json){
+                if(json.type == "success"){
+                    this.app.notice(this.lp.prompt.submitWorkReport,"success");
+                    this.fireEvent("reloadView", json);
+                    this.close();
+                }
+                this.app.destroyShade()
+            }.bind(this),function(xhr,text,error){
+                var errorText = error;
+                if (xhr) errorMessage = xhr.responseText;
+                var e = JSON.parse(errorMessage);
+                if(e.message){
+                    this.app.notice( e.message,"error");
+                }else{
+                    this.app.notice( errorText,"error");
+                }
+                this.app.destroyShade()
+            }.bind(this),true);
+        }
+
+
 
     },
     _createBottomContent: function () {
@@ -888,8 +1144,8 @@ MWF.xApplication.Execution.WorkReport = new Class({
                 "text": this.lp.bottomAction.submit
             }).inject(this.formBottomNode)
                 .addEvents({
-                    "click": function () {
-                        this.submit();
+                    "click": function (e) {
+                        this.submit(e);
                     }.bind(this)
                 })
         }

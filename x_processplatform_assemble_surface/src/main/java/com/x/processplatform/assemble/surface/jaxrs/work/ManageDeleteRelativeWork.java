@@ -32,8 +32,10 @@ class ManageDeleteRelativeWork extends ActionBase {
 			if (!business.process().allowControl(effectivePerson, process)) {
 				throw new ProcessAccessDeniedException(effectivePerson.getName(), process.getId());
 			}
-			List<WrapOutId> wraps = ThisApplication.applications.deleteQuery(x_processplatform_service_processing.class,
-					"job/" + URLEncoder.encode(work.getJob(), DefaultCharset.name), wrapOutIdCollectionType);
+			List<WrapOutId> wraps = ThisApplication.context().applications()
+					.deleteQuery(x_processplatform_service_processing.class,
+							"job/" + URLEncoder.encode(work.getJob(), DefaultCharset.name))
+					.getDataAsList(WrapOutId.class);
 			result.setData(wraps);
 			return result;
 		}

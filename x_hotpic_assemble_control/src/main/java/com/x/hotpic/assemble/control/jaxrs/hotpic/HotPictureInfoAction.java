@@ -17,19 +17,19 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.cache.ApplicationCache;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.WrapOutString;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.AbstractJaxrsAction;
+import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.utils.SortTools;
 import com.x.hotpic.assemble.control.service.HotPictureInfoServiceAdv;
 import com.x.hotpic.entity.HotPictureInfo;
@@ -45,6 +45,23 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 	private BeanCopyTools<WrapInHotPictureInfo, HotPictureInfo> wrapin_copier = BeanCopyToolsBuilder.create( WrapInHotPictureInfo.class, HotPictureInfo.class, null, WrapInHotPictureInfo.Excludes );
 	private BeanCopyTools< HotPictureInfo, WrapOutHotPictureInfo > wrapout_copier = BeanCopyToolsBuilder.create( HotPictureInfo.class, WrapOutHotPictureInfo.class, null, WrapOutHotPictureInfo.Excludes);
 	private Ehcache cache = ApplicationCache.instance().getCache( HotPictureInfo.class);
+	
+	@HttpMethodDescribe(value = "检查所有的热点新闻还在不在.", response = WrapOutString.class)
+	@GET
+	@Path("exists/check")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response existsCheck(@Context HttpServletRequest request ) {
+		ActionResult<WrapOutString> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		try {
+			hotPictureInfoService.documentExistsCheck();
+		} catch (Exception e) {
+			result.error( e );
+			logger.error( e, effectivePerson, request, null);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
 	
 	@HttpMethodDescribe(value = "查询指定的图片的base64编码.", response = WrapOutString.class)
 	@GET
@@ -63,7 +80,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new InfoIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}		
 		String cacheKey = "base64#" + id;
@@ -78,7 +95,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 					if ( hotPictureInfo == null ) {
 						Exception exception = new InfoNotExistsException( id );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						//logger.error( e, effectivePerson, request, null);
 					}else{
 						wrap = new WrapOutString();
 						cache.put(new Element(cacheKey, wrap));
@@ -88,7 +105,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 					check = false;
 					Exception exception = new InfoQueryByIdException( e, id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -113,7 +130,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new InfoApplicationEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -121,7 +138,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new InfoIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -140,7 +157,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 						check = false;
 						Exception exception = new InfoListByApplicationException( e, application, infoId );
 						result.error( exception );
-						logger.error( exception, effectivePerson, request, null);
+						logger.error( e, effectivePerson, request, null);
 					}
 				}
 				if( check ){
@@ -153,7 +170,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 							check = false;
 							Exception exception = new InfoWrapOutException( e );
 							result.error( exception );
-							logger.error( exception, effectivePerson, request, null);
+							logger.error( e, effectivePerson, request, null);
 						}
 					}
 				}
@@ -185,7 +202,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 
 		if( check ){
@@ -230,7 +247,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 								check = false;
 								Exception exception = new InfoListByFilterException( e );
 								result.error( exception );
-								logger.error( exception, effectivePerson, request, null);
+								logger.error( e, effectivePerson, request, null);
 							}
 						}
 					}
@@ -246,14 +263,14 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 										check = false;
 										Exception exception = new InfoWrapOutException( e );
 										result.error( exception );
-										logger.error( exception, effectivePerson, request, null);
+										logger.error( e, effectivePerson, request, null);
 									}
 								}
 							} catch (Exception e) {
 								check = false;
 								Exception exception = new InfoListByFilterException( e );
 								result.error( exception );
-								logger.error( exception, effectivePerson, request, null);
+								logger.error( e, effectivePerson, request, null);
 							}
 						}
 					}
@@ -301,14 +318,14 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			if( wrapIn.getTitle() == null || wrapIn.getTitle().isEmpty() ){
 				check = false;
 				Exception exception = new InfoTitleEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -316,7 +333,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new InfoUrlEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -326,7 +343,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new InfoWrapInException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -338,7 +355,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new InfoSaveException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 			try {
 				ApplicationCache.notify( HotPictureInfo.class );
@@ -367,7 +384,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new InfoIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -377,7 +394,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new InfoQueryByIdException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -385,7 +402,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new InfoNotExistsException( id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -397,7 +414,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new InfoDeleteException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 			try {
 				ApplicationCache.notify( HotPictureInfo.class );
@@ -427,7 +444,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new InfoApplicationEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -435,7 +452,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new InfoIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -445,7 +462,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new InfoListByApplicationException( e, application, infoId);
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -453,7 +470,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new InfoNotExistsException( application, infoId);
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -466,7 +483,7 @@ public class HotPictureInfoAction extends AbstractJaxrsAction {
 					check = false;
 					Exception exception = new InfoDeleteException( e, application, infoId);
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 			try {

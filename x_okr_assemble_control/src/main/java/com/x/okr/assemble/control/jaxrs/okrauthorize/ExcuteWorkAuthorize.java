@@ -8,6 +8,18 @@ import com.x.base.core.http.WrapOutId;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrauthorize.exception.AuthorizeOpinionEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrauthorize.exception.AuthorizeTakerIdentityEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrauthorize.exception.AuthorizeWorkIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrauthorize.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrauthorize.exception.PersonNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrauthorize.exception.SystemConfigFetchException;
+import com.x.okr.assemble.control.jaxrs.okrauthorize.exception.SystemConfigNotFetchException;
+import com.x.okr.assemble.control.jaxrs.okrauthorize.exception.UserNoLoginException;
+import com.x.okr.assemble.control.jaxrs.okrauthorize.exception.WorkAuthorizeNotOpenException;
+import com.x.okr.assemble.control.jaxrs.okrauthorize.exception.WorkAuthorizeProcessException;
+import com.x.okr.assemble.control.jaxrs.okrauthorize.exception.WorkNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrauthorize.exception.WorkQueryByIdException;
 import com.x.okr.assemble.control.service.OkrUserManagerService;
 import com.x.okr.assemble.control.service.OkrWorkAuthorizeService;
 import com.x.okr.entity.OkrConfigSystem;
@@ -65,13 +77,13 @@ public class ExcuteWorkAuthorize extends ExcuteBase {
 					check = false;
 					Exception exception = new SystemConfigNotFetchException( "WORK_AUTHORIZE");
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new SystemConfigFetchException( e, "WORK_AUTHORIZE");
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -79,7 +91,7 @@ public class ExcuteWorkAuthorize extends ExcuteBase {
 				check = false;
 				Exception exception = new WorkAuthorizeNotOpenException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -88,7 +100,7 @@ public class ExcuteWorkAuthorize extends ExcuteBase {
 				check = false;
 				Exception exception = new PersonNotExistsException( undertakerIdentity );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -98,21 +110,21 @@ public class ExcuteWorkAuthorize extends ExcuteBase {
 				check = false;
 				Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}		
 		if( check && ( okrUserCache == null || okrUserCache.getLoginIdentityName() == null ) ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			//logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			if( okrUserCache.getLoginUserName() == null ){
 				check = false;
 				Exception exception = new UserNoLoginException( effectivePerson.getName() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 			authorizeIdentity = okrUserCache.getLoginIdentityName();
 		}
@@ -121,7 +133,7 @@ public class ExcuteWorkAuthorize extends ExcuteBase {
 				check = false;
 				Exception exception = new AuthorizeWorkIdEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -129,7 +141,7 @@ public class ExcuteWorkAuthorize extends ExcuteBase {
 				check = false;
 				Exception exception = new AuthorizeOpinionEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -137,7 +149,7 @@ public class ExcuteWorkAuthorize extends ExcuteBase {
 				check = false;
 				Exception exception = new AuthorizeTakerIdentityEmptyException();
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				//logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -147,13 +159,13 @@ public class ExcuteWorkAuthorize extends ExcuteBase {
 					check = false;
 					Exception exception = new WorkNotExistsException( workId );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					//logger.error( e, effectivePerson, request, null);
 				}
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new WorkQueryByIdException( e, workId );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if( check ){
@@ -175,7 +187,7 @@ public class ExcuteWorkAuthorize extends ExcuteBase {
 				check = false;
 				Exception exception = new WorkAuthorizeProcessException( e, workId );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		

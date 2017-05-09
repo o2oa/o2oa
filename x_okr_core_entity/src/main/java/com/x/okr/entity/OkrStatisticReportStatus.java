@@ -220,7 +220,7 @@ public class OkrStatisticReportStatus extends SliceJpaObject {
 	
 	@EntityFieldDescribe( "工作进度" )
 	@Column(name="xoverallProgress" )
-	private Double overallProgress = 0.0;
+	private Integer overallProgress = 0;
 	
 	@EntityFieldDescribe( "汇报周期:不需要汇报|每月汇报|每周汇报" )
 	@Column(name="xreportCycle", length = JpaObject.length_32B )
@@ -317,10 +317,11 @@ public class OkrStatisticReportStatus extends SliceJpaObject {
 	public void setWorkLevel(String workLevel) {
 		this.workLevel = workLevel;
 	}
-	public Double getOverallProgress() {
+	
+	public Integer getOverallProgress() {
 		return overallProgress;
 	}
-	public void setOverallProgress(Double overallProgress) {
+	public void setOverallProgress(Integer overallProgress) {
 		this.overallProgress = overallProgress;
 	}
 	public String getWorkProcessStatus() {

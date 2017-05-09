@@ -6,6 +6,7 @@ public class WrapInFilterOkrStatisticReportContent {
 	
 	private String reportCycle = null;
 	private String centerId = null;
+	private String centerTitle = null;
 	private String workTypeName = null;
 	private String parentWorkId = null;
 	private String workLevel = null;
@@ -96,5 +97,12 @@ public class WrapInFilterOkrStatisticReportContent {
 	}
 	public void setStream(Boolean stream) {
 		this.stream = stream;
-	}	
+	}
+	public String getCenterTitle() {
+		return centerTitle;
+	}
+	public void setCenterTitle(String centerTitle) {
+		this.centerTitle = centerTitle;
+	}
+	
 }

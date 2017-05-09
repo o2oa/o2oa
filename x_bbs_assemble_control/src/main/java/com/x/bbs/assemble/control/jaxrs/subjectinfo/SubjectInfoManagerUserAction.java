@@ -1,7 +1,5 @@
 package com.x.bbs.assemble.control.jaxrs.subjectinfo;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,39 +16,26 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
-import com.x.base.core.bean.BeanCopyTools;
-import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
-import com.x.bbs.assemble.control.service.BBSOperationRecordService;
-import com.x.bbs.assemble.control.service.BBSSectionInfoServiceAdv;
-import com.x.bbs.assemble.control.service.BBSSubjectInfoServiceAdv;
-import com.x.bbs.assemble.control.service.BBSSubjectVoteService;
-import com.x.bbs.entity.BBSSectionInfo;
-import com.x.bbs.entity.BBSSubjectAttachment;
-import com.x.bbs.entity.BBSSubjectInfo;
-import com.x.bbs.entity.BBSVoteOption;
+import com.x.base.core.project.jaxrs.AbstractJaxrsAction;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.bbs.assemble.control.jaxrs.roleinfo.exception.RoleInfoProcessException;
+import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.SubjectIdEmptyException;
+import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.WrapInConvertException;
 
 
 
 @Path("user/subject")
 public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	private Logger logger = LoggerFactory.getLogger( SubjectInfoManagerUserAction.class );
-	private BBSSubjectVoteService subjectVoteService = new BBSSubjectVoteService();
-	private BBSSubjectInfoServiceAdv subjectInfoServiceAdv = new BBSSubjectInfoServiceAdv();
-	private BBSSectionInfoServiceAdv sectionInfoServiceAdv = new BBSSectionInfoServiceAdv();
-	private BBSOperationRecordService operationRecordService = new BBSOperationRecordService();
-	private BeanCopyTools< BBSSubjectAttachment, WrapOutSubjectAttachment > attachmentWrapout_copier = BeanCopyToolsBuilder.create( BBSSubjectAttachment.class, WrapOutSubjectAttachment.class, null, WrapOutSubjectAttachment.Excludes);
-	private BeanCopyTools< BBSSubjectInfo, WrapOutSubjectInfo > wrapout_copier = BeanCopyToolsBuilder.create( BBSSubjectInfo.class, WrapOutSubjectInfo.class, null, WrapOutSubjectInfo.Excludes);
-	private BeanCopyTools<WrapInSubjectInfo, BBSSubjectInfo> wrapin_copier = BeanCopyToolsBuilder.create( WrapInSubjectInfo.class, BBSSubjectInfo.class, null, WrapInSubjectInfo.Excludes );
-	private BeanCopyTools< BBSVoteOption, WrapOutBBSVoteOption > voteOptionWrapout_copier = BeanCopyToolsBuilder.create( BBSVoteOption.class, WrapOutBBSVoteOption.class, null, WrapOutBBSVoteOption.Excludes);
+	
+	
 	
 	@HttpMethodDescribe(value = "根据指定ID获取主题具体信息.", response = WrapOutSubjectInfo.class)
 	@GET
@@ -59,16 +44,7 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response get( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutSubjectInfo> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		List<WrapOutSubjectAttachment> wrapSubjectAttachmentList = null;
-		List<BBSSubjectAttachment> subjectAttachmentList = null;
-		String subjectVoteResult = null;
-		String optionBinaryContent = null;
-		List<BBSVoteOption> voteOptionList = null;
-		List<WrapOutBBSVoteOption> wrapOutSubjectVoteOptionList = null;
-		WrapOutSubjectInfo wrap = null;
-		BBSSubjectInfo subjectInfo = null;
-		String subjectContent = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 		
 		if( check ){
@@ -76,123 +52,18 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}
-		
-		//查询版块信息是否存在
-		if (check) {
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectGet().execute( request, effectivePerson, id );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "根据指定ID获取主题具体信息时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
+				logger.error( e, effectivePerson, request, null);
+			}	
 		}
-
-		if (check) {
-			if ( subjectInfo == null ) {
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}else{//查到了主题信息
-				try {
-					wrap = wrapout_copier.copy( subjectInfo );
-					//根据附件ID列表查询附件信息
-					if( wrap.getAttachmentList() != null && wrap.getAttachmentList().size() > 0 ){
-						subjectAttachmentList = subjectInfoServiceAdv.listAttachmentByIds( wrap.getAttachmentList() );
-						if( subjectAttachmentList != null && subjectAttachmentList.size() > 0 ){
-							wrapSubjectAttachmentList = attachmentWrapout_copier.copy( subjectAttachmentList );
-							wrap.setSubjectAttachmentList( wrapSubjectAttachmentList );
-						}
-					}
-				} catch (Exception e) {
-					check = false;
-					Exception exception = new SubjectWrapOutException( e );
-					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
-				}
-			}			
-		}
-		if (check) {
-			if( wrap != null ){
-				//填充主题的内容信息
-				try {
-					subjectContent = subjectInfoServiceAdv.getSubjectContent( id );
-					if( subjectContent != null ){
-						wrap.setContent( subjectContent );
-					}
-				} catch (Exception e) {
-					check = false;
-					Exception exception = new SubjectContentQueryByIdException( e, id );
-					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
-				}
-			}
-		}
-		if (check) {
-			if( wrap != null ){//获取该主题的投票选项
-				try {
-					voteOptionList = subjectVoteService.listVoteOption( id );
-				} catch (Exception e) {
-					check = false;
-					Exception exception = new VoteOptionListByIdException( e, id );
-					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
-				}
-			}
-		}
-		if (check) {
-			if( voteOptionList != null  && !voteOptionList.isEmpty() ){
-				try {
-					wrapOutSubjectVoteOptionList = voteOptionWrapout_copier.copy( voteOptionList );
-				} catch (Exception e) {
-					check = false;
-					Exception exception = new SubjectWrapOutException( e );
-					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
-				}
-			}
-		}
-		if (check) {
-			if( wrapOutSubjectVoteOptionList != null  && !wrapOutSubjectVoteOptionList.isEmpty() ){
-				for( WrapOutBBSVoteOption option : wrapOutSubjectVoteOptionList ){
-					//获取图片编码
-					try {
-						optionBinaryContent = subjectVoteService.getOptionBinaryContent( option.getId() );
-						option.setOptionBinary( optionBinaryContent );
-					} catch (Exception e) {
-						check = false;
-						Exception exception = new VoteOptionBinaryQueryByIdException( e, option.getId() );
-						result.error( exception );
-						logger.error( exception, currentPerson, request, null);
-					}
-				}
-			}
-		}
-		if (check) {
-			if( wrapOutSubjectVoteOptionList != null  && !wrapOutSubjectVoteOptionList.isEmpty() ){
-				wrap.setVoteOptionList( wrapOutSubjectVoteOptionList );
-			}
-		}
-		if ( check ) {
-			if( wrap != null ){
-				//获取该主题的投票结果
-				try {
-					subjectVoteResult = subjectVoteService.getVoteResult( id );
-					wrap.setVoteResult( subjectVoteResult );
-				} catch (Exception e) {
-					check = false;
-					Exception exception = new VoteResultQueryByIdException( e, id );
-					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
-				}
-			}
-		}
-		result.setData( wrap );
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -203,52 +74,25 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response setCream( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		BBSSubjectInfo subjectInfo = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
-		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}
-		
-		//查询版块信息是否存在
-		if (check) {
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectSetCream().execute( request, effectivePerson, id );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "设置精华主题时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
+				logger.error( e, effectivePerson, request, null);
+			}	
 		}
-		
-		if (check) {
-			if( subjectInfo == null ){
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
-		if (check) {
-			try {
-				subjectInfo = subjectInfoServiceAdv.setCream( id, true, currentPerson.getName() );
-				result.setData( new WrapOutId(id) );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectOperationException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -259,8 +103,7 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response nonCream( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		BBSSubjectInfo subjectInfo = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 		
 		if( check ){
@@ -268,43 +111,18 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}
-		
-		//查询版块信息是否存在
-		if (check) {
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectNonCream().execute( request, effectivePerson, id );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "锁定主题时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
+				logger.error( e, effectivePerson, request, null);
+			}	
 		}
-		
-		if (check) {
-			if( subjectInfo == null ){
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
-		if (check) {
-			try {
-				subjectInfo = subjectInfoServiceAdv.setCream( id, false, currentPerson.getName() );
-				result.setData( new WrapOutId(id) );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectOperationException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -315,52 +133,25 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response setOriginal( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		BBSSubjectInfo subjectInfo = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
-		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}
-		
-		//查询版块信息是否存在
-		if (check) {
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectSetOriginal().execute( request, effectivePerson, id );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "设置为原创主题时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
+				logger.error( e, effectivePerson, request, null);
+			}	
 		}
-		
-		if (check) {
-			if( subjectInfo == null ){
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
-		if (check) {
-			try {
-				subjectInfo = subjectInfoServiceAdv.setOriginal( id, true, currentPerson.getName() );
-				result.setData( new WrapOutId(id) );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectOperationException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -371,8 +162,7 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response nonOriginal( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		BBSSubjectInfo subjectInfo = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 		
 		if( check ){
@@ -380,43 +170,18 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}
-		
-		//查询版块信息是否存在
-		if (check) {
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectNonOriginal().execute( request, effectivePerson, id );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "取消原创主题时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
+				logger.error( e, effectivePerson, request, null);
+			}	
 		}
-		
-		if (check) {
-			if( subjectInfo == null ){
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
-		if (check) {
-			try {
-				subjectInfo = subjectInfoServiceAdv.setOriginal( id, false, currentPerson.getName() );
-				result.setData( new WrapOutId(id) );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectOperationException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -427,46 +192,25 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response unlock( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		BBSSubjectInfo subjectInfo = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}		
-		if (check) {
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectUnLock().execute( request, effectivePerson, id );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "锁定主题时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
-		if (check) {
-			if( subjectInfo == null ){
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
-		if (check) {
-			try {
-				subjectInfo = subjectInfoServiceAdv.lock( id, false, currentPerson.getName() );
-				result.setData( new WrapOutId(id) );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectOperationException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
+				logger.error( e, effectivePerson, request, null);
+			}	
+		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -477,46 +221,25 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response lock( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		BBSSubjectInfo subjectInfo = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}		
-		if (check) {
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectLock().execute( request, effectivePerson, id );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "锁定主题时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
-		if (check) {
-			if( subjectInfo == null ){
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
-		if (check) {
-			try {
-				subjectInfo = subjectInfoServiceAdv.lock( id, true, currentPerson.getName() );
-				result.setData( new WrapOutId(id) );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectOperationException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
+				logger.error( e, effectivePerson, request, null);
+			}	
+		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -527,46 +250,25 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response unComplete( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		BBSSubjectInfo subjectInfo = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}		
-		if (check) {
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectUnComplete().execute( request, effectivePerson, id );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "取消完成主题时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
-		if (check) {
-			if( subjectInfo == null ){
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
-		if (check) {
-			try {
-				subjectInfo = subjectInfoServiceAdv.complete( id, true, currentPerson.getName() );
-				result.setData( new WrapOutId(id) );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectOperationException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
+				logger.error( e, effectivePerson, request, null);
+			}	
+		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -577,46 +279,25 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response complete( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		BBSSubjectInfo subjectInfo = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}		
-		if (check) {
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectCompleted().execute( request, effectivePerson, id );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "完成主题时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
-		if (check) {
-			if( subjectInfo == null ){
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
-		if (check) {
-			try {
-				subjectInfo = subjectInfoServiceAdv.complete( id, true, currentPerson.getName() );
-				result.setData( new WrapOutId(id) );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectOperationException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
+				logger.error( e, effectivePerson, request, null);
+			}	
+		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -627,46 +308,25 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response unAcceptReply( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		BBSSubjectInfo subjectInfo = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}		
-		if (check) {
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectUnAcceptReply().execute( request, effectivePerson, id );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "取消问题贴采纳回复时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
-		if (check) {
-			if( subjectInfo == null ){
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
-		if (check) {
-			try {
-				subjectInfo = subjectInfoServiceAdv.acceptReply( id, "", currentPerson.getName() );
-				result.setData( new WrapOutId(id) );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectOperationException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
+				logger.error( e, effectivePerson, request, null);
+			}	
+		}	
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -677,46 +337,25 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response acceptReply( @Context HttpServletRequest request, @PathParam("id") String id, @PathParam("replyId") String replyId ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		BBSSubjectInfo subjectInfo = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}		
-		if (check) {
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectAcceptReply().execute( request, effectivePerson, id, replyId );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "问题贴采纳回复时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
-		if (check) {
-			if( subjectInfo == null ){
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
-		if (check) {
-			try {
-				subjectInfo = subjectInfoServiceAdv.acceptReply( id, replyId, currentPerson.getName() );
-				result.setData( new WrapOutId(id) );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectOperationException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
+				logger.error( e, effectivePerson, request, null);
+			}	
+		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -727,46 +366,25 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response topToSection( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		BBSSubjectInfo subjectInfo = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}		
-		if (check) {
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectTopToMainSection().execute( request, effectivePerson, id );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "版块置顶时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
-		if (check) {
-			if( subjectInfo == null ){
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
-		if (check) {
-			try {
-				subjectInfo = subjectInfoServiceAdv.setTopToSection( id, true, currentPerson.getName() );
-				result.setData( new WrapOutId(id) );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectOperationException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
+				logger.error( e, effectivePerson, request, null);
+			}	
+		}	
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -777,8 +395,7 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response nonTopToSection( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		BBSSubjectInfo subjectInfo = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 		
 		if( check ){
@@ -786,43 +403,18 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}
-		
-		//查询版块信息是否存在
-		if (check) {
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectNonTopToSection().execute( request, effectivePerson, id );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "取消版块置顶时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
+				logger.error( e, effectivePerson, request, null);
+			}	
 		}
-		
-		if (check) {
-			if( subjectInfo == null ){
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
-		if (check) {
-			try {
-				subjectInfo = subjectInfoServiceAdv.setTopToSection( id, false, currentPerson.getName() );
-				result.setData( new WrapOutId(id) );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectOperationException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -833,52 +425,25 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response topToMainSection( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		BBSSubjectInfo subjectInfo = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
-		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}
-		
-		//查询版块信息是否存在
-		if (check) {
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectTopToMainSection().execute( request, effectivePerson, id );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "主版块置顶时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
+				logger.error( e, effectivePerson, request, null);
+			}	
 		}
-		
-		if (check) {
-			if( subjectInfo == null ){
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
-		if (check) {
-			try {
-				subjectInfo = subjectInfoServiceAdv.setTopToMainSection( id, true, currentPerson.getName() );
-				result.setData( new WrapOutId(id) );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectOperationException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -889,8 +454,7 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response nonTopToMainSection( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		BBSSubjectInfo subjectInfo = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 		
 		if( check ){
@@ -898,43 +462,18 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}
-		
-		//查询版块信息是否存在
-		if (check) {
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectNonTopToMainSection().execute( request, effectivePerson, id );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "取消主版块置顶时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
+				logger.error( e, effectivePerson, request, null);
+			}	
 		}
-		
-		if (check) {
-			if( subjectInfo == null ){
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
-		if (check) {
-			try {
-				subjectInfo = subjectInfoServiceAdv.setTopToMainSection( id, false, currentPerson.getName() );
-				result.setData( new WrapOutId(id) );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectOperationException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -945,8 +484,7 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response topToForum( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		BBSSubjectInfo subjectInfo = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 		
 		if( check ){
@@ -954,43 +492,18 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}
-		
-		//查询版块信息是否存在
-		if (check) {
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectTopToForum().execute( request, effectivePerson, id );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "全局置顶时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
+				logger.error( e, effectivePerson, request, null);
+			}	
 		}
-		
-		if (check) {
-			if( subjectInfo == null ){
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
-		if (check) {
-			try {
-				subjectInfo = subjectInfoServiceAdv.setTopToForum( id, true, currentPerson.getName() );
-				result.setData( new WrapOutId(id) );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectOperationException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -1001,8 +514,7 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response nonTopToForum( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		BBSSubjectInfo subjectInfo = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 		
 		if( check ){
@@ -1010,43 +522,18 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}
-		
-		//查询版块信息是否存在
-		if (check) {
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectNonTopToForum().execute( request, effectivePerson, id );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "取消论坛置顶时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
+				logger.error( e, effectivePerson, request, null);
+			}	
 		}
-		
-		if (check) {
-			if( subjectInfo == null ){
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
-		if (check) {
-			try {
-				subjectInfo = subjectInfoServiceAdv.setTopToForum( id, false, currentPerson.getName() );
-				result.setData( new WrapOutId(id) );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectOperationException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -1057,52 +544,25 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response topToBBS( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		BBSSubjectInfo subjectInfo = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
-		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}
-		
-		//查询版块信息是否存在
-		if (check) {
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectTopToBBS().execute( request, effectivePerson, id );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "全局置顶时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
+				logger.error( e, effectivePerson, request, null);
+			}	
 		}
-		
-		if (check) {
-			if( subjectInfo == null ){
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
-		if (check) {
-			try {
-				subjectInfo = subjectInfoServiceAdv.setTopToBBS( id, true, currentPerson.getName() );
-				result.setData( new WrapOutId(id) );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectOperationException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -1113,52 +573,25 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response setRecommendToBBSIndex( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		BBSSubjectInfo subjectInfo = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
-		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}
-		
-		//查询版块信息是否存在
-		if (check) {
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectSetRecommendToBBSIndex().execute( request, effectivePerson, id );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "推荐到BBS首页时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
+				logger.error( e, effectivePerson, request, null);
+			}	
 		}
-		
-		if (check) {
-			if( subjectInfo == null ){
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
-		if (check) {
-			try {
-				subjectInfo = subjectInfoServiceAdv.recommendToBBSIndex( id, true, currentPerson.getName() );
-				result.setData( new WrapOutId(id) );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectOperationException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -1169,8 +602,7 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response nonRecommendToBBSIndex( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		BBSSubjectInfo subjectInfo = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 		
 		if( check ){
@@ -1178,43 +610,18 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}
-		
-		//查询版块信息是否存在
-		if (check) {
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectNonRecommendToBBSIndex().execute( request, effectivePerson, id );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "取消推荐到BBS首页时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
+				logger.error( e, effectivePerson, request, null);
+			}	
 		}
-		
-		if (check) {
-			if( subjectInfo == null ){
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
-		if (check) {
-			try {
-				subjectInfo = subjectInfoServiceAdv.recommendToBBSIndex( id, false, currentPerson.getName() );
-				result.setData( new WrapOutId(id) );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectOperationException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -1225,8 +632,7 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response nonTopToBBS( @Context HttpServletRequest request, @PathParam("id") String id ) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		BBSSubjectInfo subjectInfo = null;
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 		
 		if( check ){
@@ -1234,43 +640,18 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}
-		
-		//查询版块信息是否存在
-		if (check) {
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectNonTopToBBS().execute( request, effectivePerson, id );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "取消全局置顶时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
+				logger.error( e, effectivePerson, request, null);
+			}	
 		}
-		
-		if (check) {
-			if( subjectInfo == null ){
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
-		if (check) {
-			try {
-				subjectInfo = subjectInfoServiceAdv.setTopToBBS( id, false, currentPerson.getName() );
-				result.setData( new WrapOutId(id) );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectOperationException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
     
@@ -1281,171 +662,25 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	public Response save(@Context HttpServletRequest request, JsonElement jsonElement) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		WrapInSubjectInfo wrapIn = null;
-		BBSSectionInfo sectionInfo = null;
-		BBSSubjectInfo subjectInfo = null;
-		EffectivePerson currentPerson = this.effectivePerson( request );
+		EffectivePerson effectivePerson = this.effectivePerson( request );
 		Boolean check = true;
-		
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, WrapInSubjectInfo.class );
 		} catch (Exception e ) {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
-		
-		if( check ){
-			wrapIn.setHostIp( request.getRemoteHost() );
-			if( wrapIn.getTitle() == null ){
-				check = false;
-				Exception exception = new SubjectPropertyEmptyException( "主题标题" );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
-		if( check ){
-			if( wrapIn.getType() == null ){
-				check = false;
-				Exception exception = new SubjectPropertyEmptyException( "主题类别" );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
-		if( check ){
-			if( wrapIn.getContent() == null ){
-				check = false;
-				Exception exception = new SubjectPropertyEmptyException( "主题内容" );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		if( check ){
-			if( wrapIn.getSectionId() == null || wrapIn.getSectionId().isEmpty() ){
-				check = false;
-				Exception exception = new SubjectPropertyEmptyException( "所属版块ID" );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
-		//查询版块信息是否存在
-		if( check ){
+		if(check){
 			try {
-				sectionInfo = sectionInfoServiceAdv.get( wrapIn.getSectionId() );
+				result = new ExcuteSubjectSave().execute( request, effectivePerson, wrapIn );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SectionQueryByIdException( e, wrapIn.getSectionId() );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "创建新的主题信息或者更新主题信息时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
-		if( check ){
-			if( sectionInfo == null ){
-				check = false;
-				Exception exception = new SectionNotExistsException( wrapIn.getSectionId() );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		if( check ){
-			if( wrapIn.getTypeCatagory() == null || !wrapIn.getTypeCatagory().isEmpty() ){
-				wrapIn.setTypeCatagory( "信息" );
-			}else{
-				if( sectionInfo.getTypeCatagory() == null || sectionInfo.getTypeCatagory().isEmpty() ){
-					check = false;
-					Exception exception = new SectionTypeCatagoryEmptyException( wrapIn.getSectionId() );
-					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
-				}else{
-					//判断TypeCatagory是否合法
-					String[] catagories = sectionInfo.getTypeCatagory().split("\\|");
-					Boolean catagoryValid = false;
-					if( catagories != null && catagories.length > 0 ){
-						for( String catagory : catagories ){
-							if( catagory.equals( wrapIn.getTypeCatagory() )){
-								catagoryValid = true;
-							}
-						}
-						if( !catagoryValid ){
-							check = false;
-							Exception exception = new SectionTypeCatagoryInvalidException( catagories );
-							result.error( exception );
-							logger.error( exception, currentPerson, request, null);
-						}
-					}
-				}
-			}				
-		}
-		if( check ){
-			if( wrapIn.getType() == null || wrapIn.getType().isEmpty() ){
-				wrapIn.setType( "未知类别" );
-			}else{
-				if( sectionInfo.getSubjectType() == null || sectionInfo.getSubjectType().isEmpty() ){
-					check = false;
-					Exception exception = new SectionSubjectTypeEmptyException( wrapIn.getSectionId() );
-					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
-				}else{
-					//判断Type是否合法
-					String[] types = sectionInfo.getSubjectType().split("\\|");
-					Boolean typeValid = false;
-					if( types != null && types.length > 0 ){
-						for( String type : types ){
-							if( type.equals( wrapIn.getType() )){
-								typeValid = true;
-							}
-						}
-						if( !typeValid ){
-							check = false;
-							Exception exception = new SectionSubjectTypeInvalidException( types );
-							result.error( exception );
-							logger.error( exception, currentPerson, request, null);
-						}
-					}
-				}
-			}				
-		}
-		if( check ){
-			try {
-				subjectInfo = wrapin_copier.copy( wrapIn );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectWrapInException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		
-		if( check ){
-			subjectInfo.setForumId( sectionInfo.getForumId() );
-			subjectInfo.setForumName( sectionInfo.getForumName() );
-			subjectInfo.setMainSectionId(sectionInfo.getMainSectionId());
-			subjectInfo.setMainSectionName(sectionInfo.getMainSectionName());
-			subjectInfo.setSectionId(sectionInfo.getId());
-			subjectInfo.setSectionName(sectionInfo.getSectionName());
-			subjectInfo.setCreatorName( currentPerson.getName() );
-			subjectInfo.setLatestReplyTime( new Date() );
-			subjectInfo.setTypeCatagory( wrapIn.getTypeCatagory() );
-			subjectInfo.setType( wrapIn.getType() );
-			subjectInfo.setTitle( subjectInfo.getTitle().trim() );
-		}
-		
-		if( check ){
-			subjectInfo.setMachineName( wrapIn.getSubjectMachineName() );
-			subjectInfo.setSystemType( wrapIn.getSubjectSystemName() );
-			try {
-				subjectInfo = subjectInfoServiceAdv.save( subjectInfo, wrapIn.getContent(), wrapIn.getPictureBase64() );
-				result.setData( new WrapOutId(subjectInfo.getId()));
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectSaveException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
+				logger.error( e, effectivePerson, request, null);
+			}	
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -1457,50 +692,25 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response delete(@Context HttpServletRequest request, @PathParam("id") String id) {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		BBSSubjectInfo subjectInfo = null;
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		String hostIp = request.getRemoteAddr();
-		String hostName = request.getRemoteAddr();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
 				Exception exception = new SubjectIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}		
-		//判断主题信息是否存在
-		if( check ){
+		if(check){
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				result = new ExcuteSubjectDelete().execute( request, effectivePerson, id );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectQueryByIdException( e, id );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "完成主题时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
-		if( check ){
-			if( subjectInfo == null ){
-				check = false;
-				Exception exception = new SubjectNotExistsException( id );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
-		try {
-			subjectInfoServiceAdv.delete( id );//删除主题同时要将所有的回复内容全部删除
-			result.setData( new WrapOutId(id) );
-			//记录操作日志
-			operationRecordService.subjectOperation( currentPerson.getName(), subjectInfo, "DELETE", hostIp, hostName );
-		} catch (Exception e) {
-			check = false;
-			Exception exception = new SubjectDeleteException( e, id );
-			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+				logger.error( e, effectivePerson, request, null);
+			}	
 		}
-		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
@@ -1511,11 +721,7 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listMySubjectForPage( @Context HttpServletRequest request, @PathParam("page") Integer page, @PathParam("count") Integer count, JsonElement jsonElement ) {
 		ActionResult<List<WrapOutSubjectInfo>> result = new ActionResult<>();
-		List<WrapOutSubjectInfo> wraps = new ArrayList<>();
-		List<BBSSubjectInfo> subjectInfoList = null;
-		List<BBSSubjectInfo> subjectInfoList_out = new ArrayList<BBSSubjectInfo>();
-		Long total = 0L;
-		EffectivePerson currentPerson = this.effectivePerson(request);
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		WrapInFilter wrapIn = null;
 		Boolean check = true;
 		
@@ -1525,67 +731,17 @@ public class SubjectInfoManagerUserAction extends AbstractJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
-
-		if( check ){
-			if( page == null ){
-				page = 1;
-			}
-		}
-		if( check ){
-			if( count == null ){
-				count = 20;
-			}
-		}
-		if( check ){
-			try{
-				total = subjectInfoServiceAdv.countUserSubjectForPage( wrapIn.getForumId(), wrapIn.getMainSectionId(), wrapIn.getSectionId(), wrapIn.getNeedPicture(), wrapIn.getWithTopSubject(), currentPerson.getName() );
+		if(check){
+			try {
+				result = new ExcuteSubjectListMyForPage().execute( request, effectivePerson, wrapIn, page, count );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new SubjectFilterException( e );
+				result = new ActionResult<>();
+				Exception exception = new RoleInfoProcessException( e, "列示我发布的主题时发生异常！" );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		if( check ){
-			if( total > 0 ){
-				try{
-					subjectInfoList = subjectInfoServiceAdv.listUserSubjectForPage( wrapIn.getForumId(), wrapIn.getMainSectionId(), wrapIn.getSectionId(), wrapIn.getNeedPicture(), wrapIn.getWithTopSubject(), page*count, currentPerson.getName() );
-				} catch (Exception e) {
-					check = false;
-					Exception exception = new SubjectFilterException( e );
-					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
-				}
-			}
-		}
-		if( check ){
-			if( page <= 0 ){
-				page = 1;
-			}
-			if( count <= 0 ){
-				count = 20;
-			}
-			int startIndex = ( page - 1 ) * count;
-			int endIndex = page * count;
-			for( int i=0; subjectInfoList != null && i< subjectInfoList.size(); i++ ){
-				if( i < subjectInfoList.size() && i >= startIndex && i < endIndex ){
-					subjectInfoList_out.add( subjectInfoList.get( i ) );
-				}
-			}
-			if( subjectInfoList_out != null && !subjectInfoList_out.isEmpty() ){
-				try {
-					wraps = wrapout_copier.copy( subjectInfoList_out );
-					result.setData( wraps );
-					result.setCount( total );
-				} catch (Exception e) {
-					check = false;
-					Exception exception = new SubjectWrapOutException( e );
-					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
-				}
-			}
+				logger.error( e, effectivePerson, request, null);
+			}	
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

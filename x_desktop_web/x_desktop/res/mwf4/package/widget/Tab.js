@@ -12,6 +12,7 @@ MWF.widget.Tab = new Class({
 		this.path = MWF.defaultPath+"/widget/$Tab/";
 		this.cssPath = MWF.defaultPath+"/widget/$Tab/"+this.options.style+"/css.wcss";
 		this._loadCss();
+        this.css = Object.clone(this.css);
 		this.showPage = null;
 
 		this.node = $(container);

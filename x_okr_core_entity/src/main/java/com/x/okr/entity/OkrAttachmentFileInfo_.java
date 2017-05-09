@@ -13,7 +13,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.okr.entity.OkrAttachmentFileInfo.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:09:39 CST 2017")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sat May 06 19:35:29 CST 2017")
 public class OkrAttachmentFileInfo_ extends StorageObject_  {
     public static volatile SingularAttribute<OkrAttachmentFileInfo,String> centerId;
     public static volatile SingularAttribute<OkrAttachmentFileInfo,Date> createTime;
@@ -33,7 +33,6 @@ public class OkrAttachmentFileInfo_ extends StorageObject_  {
     public static volatile SingularAttribute<OkrAttachmentFileInfo,String> site;
     public static volatile SingularAttribute<OkrAttachmentFileInfo,String> status;
     public static volatile SingularAttribute<OkrAttachmentFileInfo,String> storage;
-    public static volatile SingularAttribute<OkrAttachmentFileInfo,String> storageName;
     public static volatile SingularAttribute<OkrAttachmentFileInfo,Date> updateTime;
     public static volatile SingularAttribute<OkrAttachmentFileInfo,String> workInfoId;
 }

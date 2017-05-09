@@ -6,7 +6,7 @@ import com.x.base.core.gson.GsonPropertyObject;
 import com.x.base.core.http.annotation.Wrap;
 import com.x.cms.core.entity.AppCategoryPermission;
 
-@Wrap( AppCategoryPermission.class)
+@Wrap(AppCategoryPermission.class)
 public class WrapInFilter extends GsonPropertyObject {
 
 	private List<String> appIdList;
@@ -19,8 +19,7 @@ public class WrapInFilter extends GsonPropertyObject {
 
 	private List<String> titleList;
 
-	private String key;	
-
+	private String key;
 
 	public List<String> getAppIdList() {
 		return appIdList;

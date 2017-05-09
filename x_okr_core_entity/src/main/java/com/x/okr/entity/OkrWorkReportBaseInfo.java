@@ -248,7 +248,7 @@ public class OkrWorkReportBaseInfo extends SliceJpaObject {
 	
 	@EntityFieldDescribe( "工作完成进度 % " )
 	@Column(name="xprogressPercent" )
-	private Double progressPercent = 0.0;
+	private Integer progressPercent = 0;
 	
 	@EntityFieldDescribe( "汇报处理状态：草稿|管理员督办|领导批示|已完成" )
 	@Column(name="xprocessStatus", length = JpaObject.length_16B )
@@ -523,18 +523,11 @@ public class OkrWorkReportBaseInfo extends SliceJpaObject {
 	public void setIsWorkCompleted(Boolean isWorkCompleted) {
 		this.isWorkCompleted = isWorkCompleted;
 	}
-	/**
-	 * 获取工作进度百分比
-	 * @return
-	 */
-	public Double getProgressPercent() {
+	
+	public Integer getProgressPercent() {
 		return progressPercent;
 	}
-	/**
-	 * 设置工作进度百分比
-	 * @param progressPercent
-	 */
-	public void setProgressPercent(Double progressPercent) {
+	public void setProgressPercent(Integer progressPercent) {
 		this.progressPercent = progressPercent;
 	}
 	/**

@@ -8,7 +8,7 @@ import net.sf.ehcache.Ehcache;
 
 public class ExcuteBase {
 	
-	static Ehcache cache = ApplicationCache.instance().getCache( ViewCategory.class);
+	protected Ehcache cache = ApplicationCache.instance().getCache( ViewCategory.class);
 	
 	protected LogService logService = new LogService();
 	

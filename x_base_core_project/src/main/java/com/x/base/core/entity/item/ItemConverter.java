@@ -116,9 +116,11 @@ public class ItemConverter<T extends Item> {
 		if (t.getItemType().equals(ItemType.p)) {
 			if (t.getItemPrimitiveType().equals(ItemPrimitiveType.s)) {
 				if (t.getItemStringValueType().equals(ItemStringValueType.l)) {
-					jsonElement = new JsonPrimitive(t.getStringLobValue());
+					/**为了兼容LobItem之前可能没有的问题,需要强制转换成""*/
+					jsonElement = new JsonPrimitive(Objects.toString(t.getStringLobValue(), ""));
 				} else {
-					jsonElement = new JsonPrimitive(t.getStringValue());
+					/**为了兼容LobItem之前可能没有的问题,需要强制转换成""*/
+					jsonElement = new JsonPrimitive(Objects.toString(t.getStringValue(), ""));
 				}
 			} else if (t.getItemPrimitiveType().equals(ItemPrimitiveType.n)) {
 				jsonElement = new JsonPrimitive(t.getNumberValue());

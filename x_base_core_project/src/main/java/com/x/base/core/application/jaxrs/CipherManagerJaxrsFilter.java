@@ -29,9 +29,11 @@ public abstract class CipherManagerJaxrsFilter extends TokenFilter {
 			FilterTools.allow(request, response);
 			if (!request.getMethod().equalsIgnoreCase("options")) {
 				HttpToken httpToken = new HttpToken();
-				EffectivePerson effectivePerson = httpToken.who(request, response,  Config.token().getCipher());
+				EffectivePerson effectivePerson = httpToken.who(request, response, Config.token().getCipher());
 				if ((!TokenType.cipher.equals(effectivePerson.getTokenType()))
 						&& (!TokenType.manager.equals(effectivePerson.getTokenType()))) {
+					/** 需要自己标志500 */
+					response.setStatus(500);
 					response.setHeader("Content-Type", "application/json;charset=UTF-8");
 					response.getWriter().write(FilterTools.Application_Not_CipherManager_Json);
 				} else {

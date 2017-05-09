@@ -100,6 +100,9 @@ MWF.xApplication.cms.Module.Actions.RestActions = new Class({
     getColumn: function(columnData, success, failure){
         this.action.invoke({"name": "getColumn","parameter": {"id": columnData.id},"success": success,"failure": failure});
     },
+    getColumnByAlias: function(alias, success, failure){
+        this.action.invoke({"name": "getColumnByAlias","parameter": {"alias": alias },"success": success,"failure": failure});
+    },
 
     listCategory: function( columnId, success, failure, async){
         var _self = this;
@@ -118,6 +121,13 @@ MWF.xApplication.cms.Module.Actions.RestActions = new Class({
     getCategory: function(id, success, failure){
         var _self = this;
         this.action.invoke({"name": "getCategory","data": categoryData,"parameter": {"id": id },"success": function(json){
+            _self.transCategoryData(json);
+            success.call(this,json);
+        },"failure": failure});
+    },
+    getCategoryByAlias: function(alias, success, failure){
+        var _self = this;
+        this.action.invoke({"name": "getCategoryByAlias","data": categoryData,"parameter": {"alias": alias },"success": function(json){
             _self.transCategoryData(json);
             success.call(this,json);
         },"failure": failure});

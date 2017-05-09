@@ -5,7 +5,6 @@
 package com.x.okr.entity;
 
 import com.x.base.core.entity.SliceJpaObject_;
-import java.lang.Double;
 import java.lang.Integer;
 import java.lang.String;
 import java.util.Date;
@@ -14,7 +13,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.okr.entity.OkrStatisticReportStatus.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:09:40 CST 2017")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sat May 06 19:35:29 CST 2017")
 public class OkrStatisticReportStatus_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<OkrStatisticReportStatus,String> centerId;
     public static volatile SingularAttribute<OkrStatisticReportStatus,String> centerTitle;
@@ -22,7 +21,7 @@ public class OkrStatisticReportStatus_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<OkrStatisticReportStatus,Date> createTime;
     public static volatile SingularAttribute<OkrStatisticReportStatus,String> deployDateStr;
     public static volatile SingularAttribute<OkrStatisticReportStatus,String> id;
-    public static volatile SingularAttribute<OkrStatisticReportStatus,Double> overallProgress;
+    public static volatile SingularAttribute<OkrStatisticReportStatus,Integer> overallProgress;
     public static volatile SingularAttribute<OkrStatisticReportStatus,String> parentId;
     public static volatile SingularAttribute<OkrStatisticReportStatus,String> reportCycle;
     public static volatile SingularAttribute<OkrStatisticReportStatus,Integer> reportDayInCycle;

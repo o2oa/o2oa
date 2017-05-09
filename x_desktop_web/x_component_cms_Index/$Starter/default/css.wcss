@@ -86,5 +86,9 @@
     "departSelNode_selected": {
         "background-color": "#ea621f",
         "color": "#FFF"
+    },
+    "dealStartedWorkAction": {
+        "color": "#0000FF",
+        "cursor": "pointer"
     }
 }

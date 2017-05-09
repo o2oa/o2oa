@@ -21,7 +21,6 @@ import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.factory.AttendanceWorkDayConfigFactory;
 import com.x.attendance.entity.AttendanceWorkDayConfig;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.container.EntityManagerContainer;
@@ -31,11 +30,12 @@ import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 
 
 @Path("attendanceworkdayconfig")
@@ -100,7 +100,7 @@ public class AttendanceWorkDayConfigAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if(check ){
 			q_Name = wrapIn.getQ_Name();
@@ -194,7 +194,7 @@ public class AttendanceWorkDayConfigAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		if( check ){
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -218,7 +218,7 @@ public class AttendanceWorkDayConfigAction extends StandardJaxrsAction{
 							}catch(Exception e){
 								Exception exception = new AttendanceWorkDayFormatException( e, _attendanceWorkDayConfig.getConfigDate() );
 								result.error( exception );
-								logger.error( exception, currentPerson, request, null);
+								logger.error( e, currentPerson, request, null);
 							}
 						}else{
 							emc.beginTransaction( AttendanceWorkDayConfig.class );
@@ -234,7 +234,7 @@ public class AttendanceWorkDayConfigAction extends StandardJaxrsAction{
 							}catch(Exception e){
 								Exception exception = new AttendanceWorkDayFormatException( e, attendanceWorkDayConfig.getConfigDate() );
 								result.error( exception );
-								logger.error( exception, currentPerson, request, null);
+								logger.error( e, currentPerson, request, null);
 							}
 						}
 					}else{
@@ -251,14 +251,14 @@ public class AttendanceWorkDayConfigAction extends StandardJaxrsAction{
 						}catch(Exception e){
 							Exception exception = new AttendanceWorkDayFormatException( e, attendanceWorkDayConfig.getConfigDate() );
 							result.error( exception );
-							logger.error( exception, currentPerson, request, null);
+							logger.error( e, currentPerson, request, null);
 						}
 					}
 				}
 			} catch ( Exception e ) {
 				Exception exception = new AttendanceWorkDayConfigSaveException( e );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -278,7 +278,7 @@ public class AttendanceWorkDayConfigAction extends StandardJaxrsAction{
 			if (null == attendanceWorkDayConfig) {
 				Exception exception = new AttendanceWorkDayConfigNotExistsException( id );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				//logger.error( e, currentPerson, request, null);
 			}else{
 				//进行数据库持久化操作
 				emc.beginTransaction( AttendanceWorkDayConfig.class );
@@ -289,7 +289,7 @@ public class AttendanceWorkDayConfigAction extends StandardJaxrsAction{
 		} catch ( Exception e ) {
 			Exception exception = new AttendanceWorkDayConfigDeleteException( e, id );
 			result.error( exception );
-			logger.error( exception, currentPerson, request, null);
+			logger.error( e, currentPerson, request, null);
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

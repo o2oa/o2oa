@@ -24,8 +24,15 @@ public class WrapOutDocumentComplex extends GsonPropertyObject {
 	@EntityFieldDescribe( "文档所有数据信息." )
 	private Map<?, ?> data;
 	
-	@EntityFieldDescribe( "作为输出的CMS文档表单." )
+	@EntityFieldDescribe( "作为编辑的CMS文档表单." )
 	private WrapOutForm form;
+	
+	@EntityFieldDescribe( "作为查看的CMS文档表单." )
+	private WrapOutForm readForm;
+	
+	private Boolean isAppAdmin = false;
+	private Boolean isCategoryAdmin = false;
+	private Boolean isManager = false;
 
 	public WrapOutDocument getDocument() {
 		return document;
@@ -65,6 +72,38 @@ public class WrapOutDocumentComplex extends GsonPropertyObject {
 
 	public void setForm(WrapOutForm form) {
 		this.form = form;
+	}
+
+	public WrapOutForm getReadForm() {
+		return readForm;
+	}
+
+	public void setReadForm(WrapOutForm readForm) {
+		this.readForm = readForm;
+	}
+
+	public Boolean getIsAppAdmin() {
+		return isAppAdmin;
+	}
+
+	public Boolean getIsCategoryAdmin() {
+		return isCategoryAdmin;
+	}
+
+	public Boolean getIsManager() {
+		return isManager;
+	}
+
+	public void setIsAppAdmin(Boolean isAppAdmin) {
+		this.isAppAdmin = isAppAdmin;
+	}
+
+	public void setIsCategoryAdmin(Boolean isCategoryAdmin) {
+		this.isCategoryAdmin = isCategoryAdmin;
+	}
+
+	public void setIsManager(Boolean isManager) {
+		this.isManager = isManager;
 	}
 
 }

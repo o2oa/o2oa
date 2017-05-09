@@ -240,7 +240,7 @@ public class BBSSubjectAttachment extends StorageObject {
 	private String subjectId = "";
 	
 	@EntityFieldDescribe( "主题名称：标题" )
-	@Column(name="xtitle", length = JpaObject.length_128B )
+	@Column(name="xtitle", length = JpaObject.length_255B )
 	@CheckPersist( allowEmpty = true )
 	private String title = "";
 
@@ -262,12 +262,6 @@ public class BBSSubjectAttachment extends StorageObject {
 	@Column(name = "xfilePath", length = JpaObject.length_255B)
 	@CheckPersist(simplyString = true, allowEmpty = true)
 	private String filePath;
-
-	@EntityFieldDescribe("关联类型的名称.")
-	@Column(name = "xstorageName", length = JpaObject.length_64B)
-	@CheckPersist(simplyString = true, allowEmpty = true)
-	@Index(name = TABLE + "_storageName")
-	private String storageName;
 
 	@EntityFieldDescribe("文件说明")
 	@Column(name = "xdescription", length = JpaObject.length_255B)
@@ -382,15 +376,7 @@ public class BBSSubjectAttachment extends StorageObject {
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
 	}
-
-	public String getStorageName() {
-		return storageName;
-	}
-
-	public void setStorageName(String storageName) {
-		this.storageName = storageName;
-	}
-
+	
 	public String getDescription() {
 		return description;
 	}

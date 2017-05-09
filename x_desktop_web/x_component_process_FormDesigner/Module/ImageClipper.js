@@ -100,7 +100,7 @@ MWF.xApplication.process.FormDesigner.Module.ImageClipper = MWF.FCImageClipper =
 
 	getData: function(){
 		return this.attachmentController.getAttachmentNames();
-	},
+	}
 
 	//_setEditStyle_custom: function(name){
 	//	if (name=="name"){

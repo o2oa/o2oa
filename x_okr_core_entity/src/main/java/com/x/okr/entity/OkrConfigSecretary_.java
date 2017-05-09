@@ -12,7 +12,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.okr.entity.OkrConfigSecretary.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Mar 10 10:09:40 CST 2017")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sat May 06 19:35:29 CST 2017")
 public class OkrConfigSecretary_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<OkrConfigSecretary,Date> createTime;
     public static volatile SingularAttribute<OkrConfigSecretary,String> description;

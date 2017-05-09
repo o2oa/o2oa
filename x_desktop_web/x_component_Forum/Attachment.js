@@ -45,7 +45,7 @@ MWF.xApplication.Forum.Attachment = new Class({
             this.data.each(function (att) {
                 this.attachmentController.addAttachment(att);
             }.bind(this));
-        }else if( this.options.documentId && this.options.documentId!="" ){
+        }else if( !this.options.isNew && this.options.documentId && this.options.documentId!="" ){
             this.listAttachment( function( json ){
                 json.data.each(function (att) {
                     this.attachmentController.addAttachment(att);
@@ -73,7 +73,7 @@ MWF.xApplication.Forum.Attachment = new Class({
     },
     listAttachment: function( callback ){
 
-        if( this.options.documentId && this.options.documentId!="" ){
+        if( !this.options.isNew && this.options.documentId && this.options.documentId!="" ){
             this.actions.listAttachment(this.options.documentId, function(json){
                 if(callback)callback(this.transportData(json));
             }.bind(this))

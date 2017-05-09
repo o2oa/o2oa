@@ -17,6 +17,12 @@
 		"background": "url("+"/x_component_process_FormDesigner/widget/$EventsEditor/default/icon/code_empty.png) center center no-repeat",
 		"float": "left"
 	},
+	"parIconNode": {
+        "width": "20px",
+        "height": "20px",
+        "background": "url("+"/x_component_process_FormDesigner/widget/$EventsEditor/default/icon/codePar_empty.png) center center no-repeat",
+        "float": "left"
+    },
 	"actionNode": {
 		"width": "45px",
 		"height": "20px",
@@ -53,5 +59,14 @@
 		"width": "98%",
 		"font-size": "12px",
 		"border": "1px solid #CCC"
+	},
+	"addNewItemAction": {
+	    "width": "80%",
+	    "height": "18px",
+	    "line-height": "18px",
+	    "background-color":"#eeeeee",
+	    "margin": "5px auto",
+	    "cursor": "pointer",
+	    "text-align": "center"
 	}
 }

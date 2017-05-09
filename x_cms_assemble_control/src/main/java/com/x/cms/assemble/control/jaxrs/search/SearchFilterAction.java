@@ -12,14 +12,21 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.cms.assemble.control.jaxrs.search.exception.AppInfoFilterListException;
+import com.x.cms.assemble.control.jaxrs.search.exception.AppInfoIdsListAllException;
+import com.x.cms.assemble.control.jaxrs.search.exception.AppInfoListViewableInPermissionException;
+import com.x.cms.assemble.control.jaxrs.search.exception.CategoryInfoFilterListException;
+import com.x.cms.assemble.control.jaxrs.search.exception.CompanyNameFilterListException;
+import com.x.cms.assemble.control.jaxrs.search.exception.DepartmentNameFilterListException;
+import com.x.cms.assemble.control.jaxrs.search.exception.UserManagerCheckException;
 import com.x.cms.assemble.control.service.AppInfoServiceAdv;
 import com.x.cms.assemble.control.service.SearchServiceAdv;
 import com.x.cms.assemble.control.service.UserManagerService;
@@ -88,7 +95,7 @@ public class SearchFilterAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new UserManagerCheckException( e, currentPerson.getName() );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -99,7 +106,7 @@ public class SearchFilterAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AppInfoIdsListAllException( e );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}else{
 				try {
@@ -108,7 +115,7 @@ public class SearchFilterAction extends StandardJaxrsAction{
 					check = false;
 					Exception exception = new AppInfoListViewableInPermissionException( e, currentPerson.getName() );
 					result.error( exception );
-					logger.error( exception, currentPerson, request, null);
+					logger.error( e, currentPerson, request, null);
 				}
 			}
 		}
@@ -121,7 +128,7 @@ public class SearchFilterAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new AppInfoFilterListException( e, app_ids, docStatus, categoryId );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		//2、获取分类统计列表
@@ -132,7 +139,7 @@ public class SearchFilterAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new CategoryInfoFilterListException( e, app_ids, docStatus, categoryId );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -142,7 +149,7 @@ public class SearchFilterAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new CompanyNameFilterListException( e, app_ids, docStatus, categoryId );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){
@@ -152,7 +159,7 @@ public class SearchFilterAction extends StandardJaxrsAction{
 				check = false;
 				Exception exception = new DepartmentNameFilterListException( e, app_ids, docStatus, categoryId );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, currentPerson, request, null);
 			}
 		}
 		if( check ){

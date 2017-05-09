@@ -192,7 +192,7 @@ MWF.xApplication.Execution.WorkForm = new Class({
                     notEmpty:true,
                     selectValue: lp.workLevelValue.split(",")
             },
-            timeLimit: {text: lp.timeLimit + ":", tType: "date",name:"completeDateLimitStr",notEmpty:true},
+            timeLimit: {text: lp.timeLimit + ":", tType: "date",name:"completeDateLimitStr",notEmpty:true,attr : {readonly:true}},
             reportCycle: {
                 text: lp.reportCycle + ":",
                     type: "select",
@@ -208,7 +208,7 @@ MWF.xApplication.Execution.WorkForm = new Class({
                             this.form.getItem("reportDay").resetItemOptions(lp.monthDayValue.split(","),lp.monthDayText.split(","))
                         }
                     }.bind(this)
-                }
+                   }
             },
             reportDay: {
                 type: "select",
@@ -218,7 +218,7 @@ MWF.xApplication.Execution.WorkForm = new Class({
                 selectText:  (!this.data.reportCycle || this.data.reportCycle==lp.reportCycleText.split(",")[0])?lp.weekDayText.split(","):lp.monthDayText.split(","),
                 className: "inputSelectUnformatWidth"
             },
-            dutyDepartment: {text: lp.dutyDepartment + ":", tType: "department",name:"responsibilityOrganizationName",notEmpty:true,event:{
+            dutyDepartment: {text: lp.dutyDepartment + ":", tType: "department",name:"responsibilityOrganizationName",notEmpty:true,attr : {readonly:true},event:{
                 "change":function(item){
                     var department = item.getValue();
                     if( department ){
@@ -229,11 +229,11 @@ MWF.xApplication.Execution.WorkForm = new Class({
 
                 }
             }},
-            dutyPerson: {text: lp.dutyPerson + ":", tType: "identity",count:1,name:"responsibilityIdentity",notEmpty:true, onQuerySelect : function( item ){
+            dutyPerson: {text: lp.dutyPerson + ":", tType: "identity",count:1,name:"responsibilityIdentity",notEmpty:true,attr : {readonly:true}, onQuerySelect : function( item ){
                 var department = this.form.getItem("dutyDepartment").getValue();
                 item.options.departments = department ? [department] : [] ;
             }.bind(this)},
-            secondDepartment: {text: lp.secondDepartment + ":", tType: "department",name:"cooperateOrganizationName", count: 0,event:{
+            secondDepartment: {text: lp.secondDepartment + ":", tType: "department",name:"cooperateOrganizationName", count: 0,attr : {readonly:true},event:{
                 "change":function(item){
                     var deptstr = item.getValue();
                     if(deptstr){
@@ -252,8 +252,8 @@ MWF.xApplication.Execution.WorkForm = new Class({
                     }
                 }
             }},
-            secondPerson: {text: lp.secondPerson + ":", tType: "identity",name:"cooperateIdentity", count: 0},
-            readReader: {text: lp.readReader + ":", tType: "identity", name:"readLeaderIdentity",count: 0},
+            secondPerson: {text: lp.secondPerson + ":", tType: "identity",name:"cooperateIdentity", count: 0,attr : {readonly:true}},
+            readReader: {text: lp.readReader + ":", tType: "identity", name:"readLeaderIdentity",attr : {readonly:true},count: 0},
             subject: {text: lp.subject + ":",name:"title",notEmpty:true},
             workSplitAndDescription: {text: lp.workSplitAndDescription + ":", type: "textarea",name:"workDetail",notEmpty:true},
             specificActionInitiatives: {text: lp.specificActionInitiatives + ":", type: "textarea",name:"progressAction"},
@@ -335,6 +335,8 @@ MWF.xApplication.Execution.WorkForm = new Class({
             data.deployerName = this.app.user;
             data.creatorName = this.app.user;
             data.centerId = this.data.centerId;
+
+            this.app.createShade();
             this.app.restActions.saveTask(data,function(json){
                 if(json.type && json.type == "success"){
                     if(json.data.id){
@@ -350,28 +352,20 @@ MWF.xApplication.Execution.WorkForm = new Class({
 
                             }
                             this.fireEvent("postDeploy", json);
+                            this.app.destroyShade();
                         }.bind(this),function(xhr,error,text){
-                            var errorText = error;
-                            if (xhr) errorMessage = xhr.responseText;
-                            var e = JSON.parse(errorMessage);
-                            if(e.message){
-                                this.app.notice( e.message,"error");
-                            }else{
-                                this.app.notice( errorText,"error");
-                            }
+                            this.app.destroyShade();
+                            this.app.showErrorMessage(xhr,error,text)
                         }.bind(this));
                     }
                 }
+            }.bind(this),function(xhr,error,text){
+                this.app.showErrorMessage(xhr,error,text)
             }.bind(this))
         }
     },
     _ok: function (data, callback) {
-        //data.title = data.workDetail;
-        //if(this.options.isNew){
-        //    data.deployerName = this.app.user;
-        //    data.creatorName = this.app.user;
-        //    data.centerId = this.data.centerWorkId
-        //}
+        this.app.createShade();
         this.app.restActions.saveTask(data,function(json){
             if(json.type && json.type=="success"){
                 this.app.notice(this.lp.submitSuccess, "ok");
@@ -391,8 +385,10 @@ MWF.xApplication.Execution.WorkForm = new Class({
 
                 this.close();
             }
+            this.app.destroyShade();
             this.fireEvent("postSave", json);
         }.bind(this),function(xhr,text,error){
+            this.app.destroyShade();
             var errorText = error;
             if (xhr) errorMessage = xhr.responseText;
             var e = JSON.parse(errorMessage);

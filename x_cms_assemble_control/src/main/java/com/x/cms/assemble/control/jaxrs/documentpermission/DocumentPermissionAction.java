@@ -10,15 +10,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.cms.assemble.control.jaxrs.documentpermission.exception.ServiceLogicException;
+import com.x.cms.assemble.control.jaxrs.documentpermission.exception.WrapInConvertException;
 
 @Path("docpermission")
 public class DocumentPermissionAction extends StandardJaxrsAction{
@@ -41,7 +43,7 @@ public class DocumentPermissionAction extends StandardJaxrsAction{
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		if(check){
 			try {
@@ -50,7 +52,7 @@ public class DocumentPermissionAction extends StandardJaxrsAction{
 				result = new ActionResult<>();
 				Exception exception = new ServiceLogicException( e, "系统在更新文档的访问和管理权限过程中发生异常！" );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);

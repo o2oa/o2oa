@@ -4,8 +4,8 @@
   <persistence-unit name="com.x.meeting.core.entity.Attachment" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>com.x.base.core.entity.JpaObject</class>
-    <class>com.x.base.core.entity.StorageObject</class>
     <class>com.x.meeting.core.entity.Attachment</class>
+    <class>com.x.base.core.entity.StorageObject</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>

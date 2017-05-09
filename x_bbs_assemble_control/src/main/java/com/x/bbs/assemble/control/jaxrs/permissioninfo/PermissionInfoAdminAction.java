@@ -1,6 +1,5 @@
 package com.x.bbs.assemble.control.jaxrs.permissioninfo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,19 +11,19 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
 
-import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
-import com.x.base.core.bean.BeanCopyTools;
-import com.x.base.core.bean.BeanCopyToolsBuilder;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
-import com.x.bbs.assemble.control.service.BBSPermissionInfoService;
-import com.x.bbs.entity.BBSPermissionInfo;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.AbstractJaxrsAction;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.bbs.assemble.control.jaxrs.permissioninfo.exception.ForumIdEmptyException;
+import com.x.bbs.assemble.control.jaxrs.permissioninfo.exception.PermissionInfoProcessException;
+import com.x.bbs.assemble.control.jaxrs.permissioninfo.exception.RoleCodeEmptyException;
+import com.x.bbs.assemble.control.jaxrs.permissioninfo.exception.SectionIdEmptyException;
 
 
 
@@ -32,47 +31,6 @@ import com.x.bbs.entity.BBSPermissionInfo;
 public class PermissionInfoAdminAction extends AbstractJaxrsAction {
 
 	private Logger logger = LoggerFactory.getLogger( PermissionInfoAdminAction.class );
-	private BBSPermissionInfoService permissionInfoService = new BBSPermissionInfoService();
-	private BeanCopyTools< BBSPermissionInfo, WrapOutPermissionInfo > wrapout_copier = BeanCopyToolsBuilder.create( BBSPermissionInfo.class, WrapOutPermissionInfo.class, null, WrapOutPermissionInfo.Excludes);
-	
-	@HttpMethodDescribe(value = "获取所有PermissionInfo的信息列表.", response = WrapOutPermissionInfo.class)
-	@GET
-	@Path("all")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response listAll( @Context HttpServletRequest request ) {
-		ActionResult<List<WrapOutPermissionInfo>> result = new ActionResult<>();
-		List<WrapOutPermissionInfo> wraps = new ArrayList<>();
-		List<BBSPermissionInfo> permissionInfoList = null;	
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		Boolean check = true;
-		
-		if( check ){
-			//从数据库查询论坛列表
-			try {
-				permissionInfoList = permissionInfoService.listAllPermissionInfo();
-				if( permissionInfoList == null ){
-					permissionInfoList = new ArrayList<BBSPermissionInfo>();
-				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new PermissionListAllException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		if( check ){
-			try {
-				wraps = wrapout_copier.copy( permissionInfoList );
-				result.setData( wraps );
-			} catch (Exception e) {
-				Exception exception = new PermissionWrapOutException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
-	}
 	
 	@HttpMethodDescribe(value = "获取指定的角色Code绑定的所有PermissionInfo的信息列表.", response = WrapOutPermissionInfo.class)
 	@GET
@@ -81,9 +39,7 @@ public class PermissionInfoAdminAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listPermissionByRoleCode( @Context HttpServletRequest request, @PathParam("roleCode") String roleCode ) {
 		ActionResult<List<WrapOutPermissionInfo>> result = new ActionResult<>();
-		List<WrapOutPermissionInfo> wraps = new ArrayList<>();
-		List<BBSPermissionInfo> permissionInfoList = null;
-		EffectivePerson currentPerson = this.effectivePerson(request);
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 		
 		if( check ){
@@ -91,32 +47,18 @@ public class PermissionInfoAdminAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new RoleCodeEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}
-		if( check ){
+		if(check){
 			try {
-				permissionInfoList = permissionInfoService.listPermissionByRoleCode( roleCode );
-				if( permissionInfoList == null ){
-					permissionInfoList = new ArrayList<BBSPermissionInfo>();
-				}
+				result = new ExcuteListPermissionByRoleCode().execute( request, effectivePerson, roleCode );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new PermissionListByRoleCodeException( e, roleCode );
+				result = new ActionResult<>();
+				Exception exception = new PermissionInfoProcessException( e, "获取指定的角色Code绑定的所有PermissionInfo的信息列表时发生异常." );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}		
+				logger.error( e, effectivePerson, request, null);
+			}	
 		}
-		if( check ){
-			try {
-				wraps = wrapout_copier.copy( permissionInfoList );
-				result.setData( wraps );
-			} catch (Exception e) {
-				Exception exception = new PermissionWrapOutException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 
@@ -127,9 +69,7 @@ public class PermissionInfoAdminAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listPermissionByForumId( @Context HttpServletRequest request, @PathParam("forumId") String forumId ) {
 		ActionResult<List<WrapOutPermissionInfo>> result = new ActionResult<>();
-		List<WrapOutPermissionInfo> wraps = new ArrayList<>();
-		List<BBSPermissionInfo> permissionInfoList = null;
-		EffectivePerson currentPerson = this.effectivePerson(request);
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 		
 		if( check ){
@@ -137,31 +77,17 @@ public class PermissionInfoAdminAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new ForumIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}		
-		if( check ){
+		if(check){
 			try {
-				permissionInfoList = permissionInfoService.listPermissionByForumId( forumId );
-				if( permissionInfoList == null ){
-					permissionInfoList = new ArrayList<BBSPermissionInfo>();
-				}
+				result = new ExcuteListPermissionByRoleCode().execute( request, effectivePerson, forumId );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new PermissionListByForumException( e, forumId );
+				result = new ActionResult<>();
+				Exception exception = new PermissionInfoProcessException( e, "获取指定的论坛绑定的所有PermissionInfo的信息列表时发生异常." );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
-		}
-		if( check ){
-			try {
-				wraps = wrapout_copier.copy( permissionInfoList );
-				result.setData( wraps );
-			} catch (Exception e) {
-				Exception exception = new PermissionWrapOutException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
+				logger.error( e, effectivePerson, request, null);
+			}	
 		}
 		
 		return ResponseFactory.getDefaultActionResultResponse(result);
@@ -174,9 +100,7 @@ public class PermissionInfoAdminAction extends AbstractJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listPermissionBySection( @Context HttpServletRequest request, @PathParam("sectionId") String sectionId ) {
 		ActionResult<List<WrapOutPermissionInfo>> result = new ActionResult<>();
-		List<WrapOutPermissionInfo> wraps = new ArrayList<>();
-		List<BBSPermissionInfo> permissionInfoList = null;
-		EffectivePerson currentPerson = this.effectivePerson(request);
+		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
 		
 		if( check ){
@@ -184,31 +108,17 @@ public class PermissionInfoAdminAction extends AbstractJaxrsAction {
 				check = false;
 				Exception exception = new SectionIdEmptyException();
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
 			}
 		}
-		if( check ){
+		if(check){
 			try {
-				permissionInfoList = permissionInfoService.listPermissionBySection( sectionId );
-				if( permissionInfoList == null ){
-					permissionInfoList = new ArrayList<BBSPermissionInfo>();
-				}
+				result = new ExcuteListPermissionBySection().execute( request, effectivePerson, sectionId );
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new PermissionListBySectionException( e, sectionId );
+				result = new ActionResult<>();
+				Exception exception = new PermissionInfoProcessException( e, "获取指定的版块绑定的所有PermissionInfo的信息列表时发生异常." );
 				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}	
-		}
-		if( check ){
-			try {
-				wraps = wrapout_copier.copy( permissionInfoList );
-				result.setData( wraps );
-			} catch (Exception e) {
-				Exception exception = new PermissionWrapOutException( e );
-				result.error( exception );
-				logger.error( exception, currentPerson, request, null);
-			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

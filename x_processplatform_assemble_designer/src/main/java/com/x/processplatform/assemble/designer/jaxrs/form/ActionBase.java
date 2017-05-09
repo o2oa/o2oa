@@ -1,8 +1,8 @@
 package com.x.processplatform.assemble.designer.jaxrs.form;
 
-import com.x.base.core.application.jaxrs.StandardJaxrsAction;
 import com.x.base.core.bean.BeanCopyTools;
 import com.x.base.core.bean.BeanCopyToolsBuilder;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.processplatform.assemble.designer.wrapin.WrapInForm;
 import com.x.processplatform.assemble.designer.wrapin.WrapInFormField;
 import com.x.processplatform.assemble.designer.wrapout.WrapOutForm;

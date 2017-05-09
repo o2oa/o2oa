@@ -14,23 +14,23 @@
 //    "visible": true
 //  },
   {
+    "name": "Organization",
+    "path": "Organization",
+    "title": "组织管理",
+    "iconPath": "appicon.png",
+    "visible": true
+  },
+  {
     "name": "ApplicationExplorer",
     "path": "process.ApplicationExplorer",
     "title": "流程应用管理",
     "iconPath": "appicon.png",
     "visible": true
   },
-//  {
-//    "name": "cmsManager",
-//    "path": "cms.Column",
-//    "title": "内容管理配置",
-//    "iconPath": "appicon.png",
-//    "visible": true
-//  },
   {
-    "name": "Organization",
-    "path": "Organization",
-    "title": "组织管理",
+    "name": "cmsManager",
+    "path": "cms.Column",
+    "title": "内容管理配置",
     "iconPath": "appicon.png",
     "visible": true
   },
@@ -58,13 +58,13 @@
     "widgetIconPath": "widgeticon.png",
     "visible": true
   },
-//  {
-//    "name": "cms",
-//    "path": "cms.Index",
-//    "title": "信息平台",
-//    "iconPath": "appicon.png",
-//    "visible": true
-//  },
+  {
+    "name": "cms",
+    "path": "cms.Index",
+    "title": "信息平台",
+    "iconPath": "appicon.png",
+    "visible": true
+  },
   {
     "name": "File",
     "path": "File",
@@ -72,22 +72,57 @@
     "iconPath": "appicon.png",
     "visible": true
   },
-//  {
-//    "name": "IM",
-//    "path": "IM",
-//    "title": "在线交流",
-//    "iconPath": "appicon.png",
-//    "visible": true,
-//    "widgetName": "IMWidget",
-//    "widgetTitle": "IMWidget",
-//    "widgetIconPath": "widgeticon.png",
-//    "widgetStart": true,
-//    "widgetVisible": false
-//  },
+  {
+    "name": "IM",
+    "path": "IM",
+    "title": "在线交流",
+    "iconPath": "appicon.png",
+    "visible": true,
+    "widgetName": "IMWidget",
+    "widgetTitle": "IMWidget",
+    "widgetIconPath": "widgeticon.png",
+    "widgetStart": true,
+    "widgetVisible": false
+  },
   {
     "name": "Note",
     "path": "Note",
     "title": "便签",
+    "iconPath": "appicon.png",
+    "visible": true
+  },
+  {
+    "name": "Meeting",
+    "path": "Meeting",
+    "title": "会议管理",
+    "iconPath": "appicon.png",
+    "visible": true
+  },
+//  {
+//    "name": "Execution",
+//    "path": "Execution",
+//    "title": "执行力管理",
+//    "iconPath": "appicon.png",
+//    "visible": true
+//  },
+//  {
+//    "name": "Attendance",
+//    "path": "Attendance",
+//    "title": "考勤管理",
+//    "iconPath": "appicon.png",
+//    "visible": true
+//  },
+  {
+    "name": "Forum",
+    "path": "Forum",
+    "title": "论坛",
+    "iconPath": "appicon.png",
+    "visible": true
+  },
+  {
+    "name": "HotArticle",
+    "path": "HotArticle",
+    "title": "热点",
     "iconPath": "appicon.png",
     "visible": true
   },
@@ -118,6 +153,13 @@
     "name": "Common",
     "path": "Common",
     "title": "通用组件",
+    "iconPath": "appicon.png",
+    "visible": false
+  },
+  {
+    "name": "Collect",
+    "path": "Collect",
+    "title": "连接到O2云",
     "iconPath": "appicon.png",
     "visible": false
   },
@@ -153,6 +195,20 @@
     "name": "ScriptDesigner",
     "path": "process.ScriptDesigner",
     "title": "脚本设计器",
+    "iconPath": "appicon.png",
+    "visible": false
+  },
+  {
+    "name": "ViewDesigner",
+    "path": "process.ViewDesigner",
+    "title": "视图设计器",
+    "iconPath": "appicon.png",
+    "visible": false
+  },
+  {
+    "name": "StatDesigner",
+    "path": "process.StatDesigner",
+    "title": "统计设计器",
     "iconPath": "appicon.png",
     "visible": false
   },

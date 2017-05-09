@@ -48,4 +48,7 @@ MWF.xApplication.Profile.Actions.RestActions = new Class({
     changeIcon: function(success, failure, formData, file){
         this.actionOrg.invoke({"name": "changeIcon", "data": formData,"file": file,"success": success,"failure": failure});
     },
+    checkPassword:  function(password, success, failure, async){
+        this.actionOrg.invoke({"name": "checkPassword", "parameter": {"password": password },"success": success,"failure": failure, "async": async});
+    }
 });

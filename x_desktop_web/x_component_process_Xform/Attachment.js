@@ -18,27 +18,26 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
         this.loadAttachmentController();
 	},
     loadAttachmentController: function(){
-        debugger;
         MWF.require("MWF.widget.AttachmentController", function() {
             var options = {
                 "title": "附件区域",
                 "listStyle": this.json.listStyle || "icon",
                 "size": this.json.size || "max",
-                "resize": (this.json.size=="true") ? true : false,
+                "resize": (this.json.size==="true") ? true : false,
                 "attachmentCount": this.json.attachmentCount || 0,
-                "isUpload": (this.json.isUpload=="y") ? true : false,
-                "isDelete": (this.json.isDelete=="y") ? true : false,
-                "isReplace": (this.json.isReplace=="y") ? true : false,
-                "isDownload": (this.json.isDownload=="y") ? true : false,
-                "isSizeChange": (this.json.isSizeChange=="y") ? true : false,
-                "readonly": (this.json.readonly=="y") ? true : false
+                "isUpload": (this.json.isUpload==="y") ? true : false,
+                "isDelete": (this.json.isDelete==="y") ? true : false,
+                "isReplace": (this.json.isReplace==="y") ? true : false,
+                "isDownload": (this.json.isDownload==="y") ? true : false,
+                "isSizeChange": (this.json.isSizeChange==="y") ? true : false,
+                "readonly": (this.json.readonly==="y") ? true : false
             }
             if (this.readonly) options.readonly = true;
             this.attachmentController = new MWF.widget.ATTER(this.node, this, options);
             this.attachmentController.load();
 
             this.form.businessData.attachmentList.each(function (att) {
-                if (att.site==this.json.id) this.attachmentController.addAttachment(att);
+                if (att.site===this.json.id) this.attachmentController.addAttachment(att);
             }.bind(this));
         }.bind(this));
     },
@@ -46,7 +45,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
     _loadEvents: function(editorConfig){
         Object.each(this.json.events, function(e, key){
             if (e.code){
-                if (this.options.moduleEvents.indexOf(key)!=-1){
+                if (this.options.moduleEvents.indexOf(key)!==-1){
                     this.addEvent(key, function(event){
                         return this.form.Macro.fire(e.code, this, event);
                     }.bind(this));
@@ -102,11 +101,16 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
         }.bind(this));
     },
     uploadAttachment: function(e, node){
-        if (!this.uploadFileAreaNode){
-            this.createUploadFileNode();
+        if (window.o2 && window.o2.uploadAttachment){
+            window.o2.uploadAttachment(this.json.id);
+        }else if(window.webkit && window.webkit.messageHandlers) {
+            window.webkit.messageHandlers.uploadAttachment.postMessage({"site": this.json.id});
+        }else{
+            if (!this.uploadFileAreaNode){
+                this.createUploadFileNode();
+            }
+            this.fileUploadNode.click();
         }
-        //var fileNode = this.uploadFileAreaNode.getFirst();
-        this.fileUploadNode.click();
     },
     deleteAttachments: function(e, node, attachments){
         var names = [];
@@ -134,13 +138,19 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
     },
 
     replaceAttachment: function(e, node, attachment){
-        var _self = this;
-        this.form.confirm("warn", e, MWF.xApplication.process.Xform.LP.replaceAttachmentTitle, MWF.xApplication.process.Xform.LP.replaceAttachment+"( "+attachment.data.name+" )", 300, 120, function(){
-            _self.replaceAttachmentFile(attachment);
-            this.close();
-        }, function(){
-            this.close();
-        }, null);
+        if (window.o2 && window.o2.replaceAttachment){
+            window.o2.replaceAttachment(attachment.data.id, this.json.id);
+        }else if(window.webkit && window.webkit.messageHandlers) {
+            window.webkit.messageHandlers.replaceAttachment.postMessage({"id": attachment.data.id, "site": this.json.id});
+        }else {
+            var _self = this;
+            this.form.confirm("warn", e, MWF.xApplication.process.Xform.LP.replaceAttachmentTitle, MWF.xApplication.process.Xform.LP.replaceAttachment+"( "+attachment.data.name+" )", 350, 120, function(){
+                _self.replaceAttachmentFile(attachment);
+                this.close();
+            }, function(){
+                this.close();
+            }, null);
+        }
     },
 
     createReplaceFileNode: function(attachment){
@@ -181,23 +191,46 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
     downloadAttachment: function(e, node, attachments){
         if (this.form.businessData.work){
             attachments.each(function(att){
-                debugger;
-                this.form.workAction.getAttachmentStream(att.data.id, this.form.businessData.work.id);
+                if (window.o2 && window.o2.downloadAttachment){
+                    window.o2.downloadAttachment(att.data.id);
+                }else if(window.webkit && window.webkit.messageHandlers) {
+                    window.webkit.messageHandlers.downloadAttachment.postMessage({"id": att.data.id, "site": this.json.id});
+                }else{
+                    this.form.workAction.getAttachmentStream(att.data.id, this.form.businessData.work.id);
+                }
             }.bind(this));
         }else{
             attachments.each(function(att){
-                this.form.workAction.getWorkcompletedAttachmentStream(att.data.id, this.form.businessData.workCompleted.id);
+                if (window.o2 && window.o2.downloadAttachment){
+                    window.o2.downloadAttachment(att.data.id);
+                }else if(window.webkit && window.webkit.messageHandlers) {
+                    window.webkit.messageHandlers.downloadAttachment.postMessage({"id": att.data.id, "site": this.json.id});
+                }else{
+                    this.form.workAction.getWorkcompletedAttachmentStream(att.data.id, this.form.businessData.workCompleted.id);
+                }
             }.bind(this));
         }
     },
     openAttachment: function(e, node, attachments){
         if (this.form.businessData.work){
             attachments.each(function(att){
-                this.form.workAction.getAttachmentData(att.data.id, this.form.businessData.work.id);
+                if (window.o2 && window.o2.downloadAttachment){
+                    window.o2.downloadAttachment(att.data.id);
+                }else if(window.webkit && window.webkit.messageHandlers) {
+                    window.webkit.messageHandlers.downloadAttachment.postMessage({"id": att.data.id, "site": this.json.id});
+                }else {
+                    this.form.workAction.getAttachmentData(att.data.id, this.form.businessData.work.id);
+                }
             }.bind(this));
         }else{
             attachments.each(function(att){
-                this.form.workAction.getWorkcompletedAttachmentData(att.data.id, this.form.businessData.workCompleted.id);
+                if (window.o2 && window.o2.downloadAttachment){
+                    window.o2.downloadAttachment(att.data.id);
+                }else if(window.webkit && window.webkit.messageHandlers) {
+                    window.webkit.messageHandlers.downloadAttachment.postMessage(att.data.id, this.json.id);
+                }else {
+                    this.form.workAction.getWorkcompletedAttachmentData(att.data.id, this.form.businessData.workCompleted.id);
+                }
             }.bind(this));
         }
         //this.downloadAttachment(e, node, attachment);
@@ -324,7 +357,6 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
         return true;
     },
     validationConfig: function(routeName, opinion){
-        debugger;
         if (this.json.validationConfig){
             if (this.json.validationConfig.length){
                 for (var i=0; i<this.json.validationConfig.length; i++) {

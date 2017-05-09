@@ -27,7 +27,7 @@ class ActionLoad extends ActionBase {
 				throw new ApplicationNotExistedException(applicationFlag);
 			}
 			List<Script> list = new ArrayList<>();
-			for (Script o : business.script().listScriptNestedWithWithApplicationWithUniqueName(application, flag)) {
+			for (Script o : business.script().listScriptNestedWithApplicationWithUniqueName(application, flag)) {
 				if ((!wrapIn.getImportedList().contains(o.getAlias()))
 						&& (!wrapIn.getImportedList().contains(o.getName()))
 						&& (!wrapIn.getImportedList().contains(o.getId()))) {

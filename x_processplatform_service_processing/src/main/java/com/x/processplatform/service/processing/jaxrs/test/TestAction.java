@@ -8,14 +8,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
+import com.x.base.core.project.jaxrs.AbstractJaxrsAction;
+import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.organization.core.express.Organization;
 import com.x.organization.core.express.wrap.WrapIdentity;
+import com.x.processplatform.service.processing.ThisApplication;
 
 @Path("test")
 public class TestAction extends AbstractJaxrsAction {
@@ -29,7 +30,7 @@ public class TestAction extends AbstractJaxrsAction {
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		WrapOutId wrap = null;
 		try {
-			Organization org = new Organization();
+			Organization org = new Organization(ThisApplication.context());
 			WrapIdentity o = org.identity().getWithName(name);
 			System.out.println("##########################################");
 			System.out.println(o);

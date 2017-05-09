@@ -2,7 +2,6 @@ package com.x.organization.assemble.authentication.schedule;
 
 import java.util.Calendar;
 import java.util.List;
-import java.util.TimerTask;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -14,14 +13,20 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.Context;
+import com.x.base.core.project.clock.ClockScheduleTask;
 import com.x.organization.core.entity.Bind;
 import com.x.organization.core.entity.Bind_;
 
-public class CleanupBind extends TimerTask {
+public class CleanupBind extends ClockScheduleTask {
+
+	public CleanupBind(Context context) {
+		super(context);
+	}
 
 	private static Logger logger = LoggerFactory.getLogger(CleanupBind.class);
 
-	public void run() {
+	public void execute() {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			this.removeExpired(emc);
 		} catch (Exception e) {

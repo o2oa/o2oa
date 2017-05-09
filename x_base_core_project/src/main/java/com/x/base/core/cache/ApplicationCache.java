@@ -9,12 +9,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 import com.x.base.core.Packages;
-import com.x.base.core.application.Application;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.gson.XGsonBuilder;
-import com.x.base.core.project.AbstractThisApplication;
 import com.x.base.core.project.Assemble;
 import com.x.base.core.project.Service;
+import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.base.core.project.server.Config;
 import com.x.base.core.utils.ListTools;
 
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
@@ -102,7 +102,7 @@ public class ApplicationCache extends AbstractApplicationCache {
 		instance().ReceiveQueue.put(clearCacheRequest);
 	}
 
-	private Ehcache getCache(String name, Integer cacheSize, Integer timeToIdle, Integer timeToLive) {
+	public Ehcache getCache(String name, Integer cacheSize, Integer timeToIdle, Integer timeToLive) {
 		Ehcache cache = manager.getCache(name);
 		if (null != cache) {
 			return cache;
@@ -186,7 +186,8 @@ public class ApplicationCache extends AbstractApplicationCache {
 					if (clearCacheRequest instanceof StopNotifyThreadSignal) {
 						break out;
 					} else {
-						dispatch(clearCacheRequest);
+						String url = Config.x_program_centerUrlRoot() + "cachedispatch";
+						CipherConnectionAction.put(url, clearCacheRequest);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -196,17 +197,22 @@ public class ApplicationCache extends AbstractApplicationCache {
 		}
 	}
 
-	private void dispatch(ClearCacheRequest clearCacheRequest) {
-		for (Class<?> cls : ListTools.nullToEmpty(incidenceMap.get(clearCacheRequest.getClassName()))) {
-			for (Application o : ListTools.nullToEmpty(AbstractThisApplication.applications.get(cls.getName()))) {
-				try {
-					AbstractThisApplication.applications.putQuery(o, "cache", clearCacheRequest);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
+	// private void dispatch(ClearCacheRequest clearCacheRequest) {
+	// for (Class<?> cls :
+	// ListTools.nullToEmpty(incidenceMap.get(clearCacheRequest.getClassName())))
+	// {
+	// for (Application o :
+	// ListTools.nullToEmpty(AbstractThisApplication.applications.get(cls.getName())))
+	// {
+	// try {
+	// AbstractThisApplication.applications.putQuery(o, "cache",
+	// clearCacheRequest);
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// }
+	// }
+	// }
 
 	public class ReceiveThread extends Thread {
 		public void run() {

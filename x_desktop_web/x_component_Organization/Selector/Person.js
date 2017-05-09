@@ -695,7 +695,6 @@ MWF.xApplication.Organization.Selector.Person = new Class({
 });
 MWF.xApplication.Organization.Selector.Person.Item = new Class({
 	initialize: function(data, selector, container, level){
-        debugger;
 		this.data = data;
 		this.selector = selector;
 		this.container = container;

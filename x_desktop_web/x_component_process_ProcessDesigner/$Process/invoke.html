@@ -78,6 +78,25 @@
         <div id="webserviceInvokeModeJaxrs" style="display: text{($.invokeMode=='jaxrs')?'block':'none'}">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
+                    <td class="editTableTitle">系统内请求:</td>
+                    <td class="editTableValue">
+                        <input type="radio" onclick="if (this.checked){$('webserviceInvokeInternalProjectJaxrs').setStyle('display', 'block');}" name="internal" checked value="true"/>是
+                        <input type="radio" onclick="if (this.checked){$('webserviceInvokeInternalProjectJaxrs').setStyle('display', 'none');}" name="internal" value="false"/>否
+                    </td>
+                </tr>
+            </table>
+
+            <div id="webserviceInvokeInternalProjectJaxrs" style="display: text{($.invokeMode=='jaxrs')?'block':'none'}">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">服务应用:</td>
+                        <td class="editTableValue"><div class="MWFContextRoot" name="internalProject"></div></td>
+                    </tr>
+                </table>
+            </div>
+
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
                     <td class="editTableTitle">REST地址:</td>
                     <td class="editTableValue"><input type="text" name="jaxrsAddress" value="text{$.jaxrsAddress}" class="editTableInput"/></td>
                 </tr>
@@ -99,10 +118,6 @@
                 <tr>
                     <td class="editTableTitle">ContentType:</td>
                     <td class="editTableValue"><input type="text" name="jaxrsContentType" value="text{$.jaxrsContentType}" class="editTableInput"/></td>
-                </tr>
-                <tr>
-                    <td class="editTableTitle">系统内请求:</td>
-                    <td class="editTableValue"><input type="radio" name="jaxrsWithCipher" checked value="true"/>是<input type="radio" name="jaxrsWithCipher" value="false"/>否</td>
                 </tr>
             </table>
 

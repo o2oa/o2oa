@@ -90,8 +90,8 @@ MWF.xApplication.Execution.Attachment = new Class({
                         formData.append('site', this.options.documentId);
                         this.actions.uploadAttachment(this.options.documentId, function (o, text) {
                             j = JSON.decode(text);
-                            if (j.data && j.data.id) {
-                                this.actions.getAttachment(j.data.id, this.options.documentId, function (json) {
+                            if (j.data.length>0 && j.data[0] && j.data[0].id) {
+                                this.actions.getAttachment(j.data[0].id, this.options.documentId, function (json) {
                                     json = this.transportData(json);
                                     if (json.data) {
                                         this.attachmentController.addAttachment(json.data);

@@ -4,11 +4,20 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.base.core.logger.Logger;
-import com.x.base.core.logger.LoggerFactory;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
+import com.x.base.core.logger.Logger;
+import com.x.base.core.logger.LoggerFactory;
 import com.x.okr.assemble.control.OkrUserCache;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.GetOkrUserCacheException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.ReportProcessLogListException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.SystemConfigQueryByCodeException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.UserNoLoginException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkNotExistsException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkQueryByIdException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkReportIdEmptyException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkReportQueryByIdException;
+import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.exception.WorkReportWrapOutException;
 import com.x.okr.entity.OkrWorkBaseInfo;
 import com.x.okr.entity.OkrWorkReportBaseInfo;
 import com.x.okr.entity.OkrWorkReportDetailInfo;
@@ -26,8 +35,9 @@ public class ExcuteGet extends ExcuteBase {
 		OkrWorkReportDetailInfo okrWorkReportDetailInfo  = null;
 		List<OkrWorkReportProcessLog> okrWorkReportProcessLogList = null;
 		String workAdminIdentity = null;
+		String report_progress = "CLOSE";
 		List<String> ids = null;
-		boolean check = true;
+		Boolean check = true;
 		OkrUserCache  okrUserCache  = null;
 		
 		try {
@@ -36,21 +46,33 @@ public class ExcuteGet extends ExcuteBase {
 			check = false;
 			Exception exception = new GetOkrUserCacheException( e, effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
 		if( check && okrUserCache == null ){
 			check = false;
 			Exception exception = new UserNoLoginException( effectivePerson.getName() );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+		}
+		
+		if( check ){
+			try {
+				//是否汇报工作的进展进度数字
+				report_progress = okrConfigSystemService.getValueWithConfigCode( "REPORT_PROGRESS" );
+				if( report_progress == null || report_progress.isEmpty() ){
+					report_progress = "CLOSE";
+				}
+			} catch (Exception e) {
+				report_progress = "CLOSE";
+				logger.warn( "system get config got an exception." );
+				logger.error(e);
+			}
 		}
 		
 		if( id == null || id.isEmpty() ){
 			check = false;
 			Exception exception = new WorkReportIdEmptyException();
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
 		}
 		
 		if( check ){
@@ -58,7 +80,6 @@ public class ExcuteGet extends ExcuteBase {
 				check = false;
 				Exception exception = new UserNoLoginException( effectivePerson.getName() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
 			}
 		}
 		
@@ -69,7 +90,7 @@ public class ExcuteGet extends ExcuteBase {
 				check = false;
 				Exception exception = new WorkReportQueryByIdException( e, id );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
@@ -81,7 +102,7 @@ public class ExcuteGet extends ExcuteBase {
 					check = false;
 					Exception exception = new WorkReportWrapOutException( e );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -92,13 +113,12 @@ public class ExcuteGet extends ExcuteBase {
 				check = false;
 				Exception exception = new WorkNotExistsException( wrap.getWorkId() );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
 			}
 		} catch (Exception e) {
 			check = false;
-			Exception exception = new WorkQueryByIdException( e, wrap.getWorkId() );
+			Exception exception = new WorkQueryByIdException( e, id );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);	
+			logger.error( e, effectivePerson, request, null);	
 		}
 		
 		// 查询汇报详细信息
@@ -132,7 +152,7 @@ public class ExcuteGet extends ExcuteBase {
 				} catch (Exception e) {
 					Exception exception = new ReportProcessLogListException( e, id );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);	
+					logger.error( e, effectivePerson, request, null);	
 				}
 			}
 		}
@@ -145,7 +165,7 @@ public class ExcuteGet extends ExcuteBase {
 					check = false;
 					Exception exception = new SystemConfigQueryByCodeException( e, "REPORT_SUPERVISOR" );
 					result.error( exception );
-					logger.error( exception, effectivePerson, request, null);
+					logger.error( e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -180,6 +200,11 @@ public class ExcuteGet extends ExcuteBase {
 			String workDetail = okrWorkDetailInfoService.getWorkDetailWithId( wrap.getWorkId() );
 			if( workDetail != null && !workDetail.isEmpty() ){
 				wrap.setTitle( workDetail );
+			}
+			if( "OPEN".equals( report_progress )){
+				wrap.setNeedReportProgress( true );
+			}else{
+				wrap.setNeedReportProgress( false );
 			}
 			result.setData(wrap);
 		}

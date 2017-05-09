@@ -18,7 +18,7 @@ import net.sf.ehcache.Ehcache;
 
 public class ExcuteBase {
 	
-	protected static Ehcache cache = ApplicationCache.instance().getCache( AppDictItem.class );
+	protected Ehcache cache = ApplicationCache.instance().getCache( AppDictItem.class );
 	
 	protected LogService logService = new LogService();
 	

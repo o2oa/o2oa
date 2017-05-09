@@ -11,6 +11,7 @@ import com.x.base.core.gson.XGsonBuilder;
 
 public class x_cms_assemble_control extends Assemble {
 
+	public static final String name = "内容管理";
 	public static List<String> containerEntities = new ArrayList<>();
 	public static List<StorageType> usedStorageTypes = new ArrayList<>();
 	public static List<Class<? extends Compilable>> dependents = new ArrayList<>();
@@ -18,7 +19,7 @@ public class x_cms_assemble_control extends Assemble {
 	static {
 		containerEntities.add("com.x.cms.core.entity.content.DataItem");
 		containerEntities.add("com.x.cms.core.entity.content.DataLobItem");
-		
+
 		containerEntities.add("com.x.cms.core.entity.element.AppDict");
 		containerEntities.add("com.x.cms.core.entity.element.AppDictItem");
 		containerEntities.add("com.x.cms.core.entity.element.AppDictLobItem");
@@ -29,19 +30,23 @@ public class x_cms_assemble_control extends Assemble {
 		containerEntities.add("com.x.cms.core.entity.element.View");
 		containerEntities.add("com.x.cms.core.entity.element.ViewCategory");
 		containerEntities.add("com.x.cms.core.entity.element.ViewFieldConfig");
-		
+
 		containerEntities.add("com.x.cms.core.entity.AppCategoryAdmin");
 		containerEntities.add("com.x.cms.core.entity.AppCategoryPermission");
 		containerEntities.add("com.x.cms.core.entity.AppInfo");
 		containerEntities.add("com.x.cms.core.entity.CategoryInfo");
 		containerEntities.add("com.x.cms.core.entity.Document");
-		containerEntities.add("com.x.cms.core.entity.DocumentPermission"); 
-		containerEntities.add("com.x.cms.core.entity.DocumentPictureInfo");
+		containerEntities.add("com.x.cms.core.entity.DocumentPermission");
 		containerEntities.add("com.x.cms.core.entity.DocumentViewRecord");
 		containerEntities.add("com.x.cms.core.entity.FileInfo");
-		containerEntities.add("com.x.cms.core.entity.Log");		
+		containerEntities.add("com.x.cms.core.entity.Log");
+		containerEntities.add("com.x.processplatform.core.entity.content.Attachment");
+		
+		usedStorageTypes.add( StorageType.cms );
+		usedStorageTypes.add( StorageType.processPlatform );
 		
 		dependents.add(x_base_core_project.class);
+		dependents.add(x_processplatform_core_entity.class);
 		dependents.add(x_organization_core_entity.class);
 		dependents.add(x_organization_core_express.class);
 		dependents.add(x_cms_core_entity.class);

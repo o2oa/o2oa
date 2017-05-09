@@ -11,6 +11,7 @@ import com.x.base.core.gson.XGsonBuilder;
 
 public class x_organization_assemble_authentication extends Assemble {
 
+	public static final String name = "组织管理认证";
 	public static List<String> containerEntities = new ArrayList<>();
 	public static List<StorageType> usedStorageTypes = new ArrayList<>();
 	public static List<Class<? extends Compilable>> dependents = new ArrayList<>();
@@ -21,7 +22,6 @@ public class x_organization_assemble_authentication extends Assemble {
 		containerEntities.add("com.x.organization.core.entity.Bind");
 		dependents.add(x_base_core_project.class);
 		dependents.add(x_organization_core_entity.class);
-		dependents.add(x_instrument_core_express.class);
 	}
 
 	protected void custom(File lib, String xLib) throws Exception {

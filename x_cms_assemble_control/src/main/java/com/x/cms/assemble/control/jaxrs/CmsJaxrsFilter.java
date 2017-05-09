@@ -16,7 +16,6 @@ import com.x.base.core.application.jaxrs.ManagerUserJaxrsFilter;
 		"/jaxrs/categoryinfo/*", 
 		"/jaxrs/data/*", 
 		"/jaxrs/document/*", 
-		"/jaxrs/document/pic/*", 
 		"/jaxrs/fileinfo/*", 
 		"/jaxrs/form/*",
 		"/jaxrs/view/*", 

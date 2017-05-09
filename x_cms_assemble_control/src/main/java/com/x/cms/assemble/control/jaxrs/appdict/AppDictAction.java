@@ -16,15 +16,21 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.application.jaxrs.AbstractJaxrsAction;
 import com.x.base.core.http.ActionResult;
 import com.x.base.core.http.EffectivePerson;
 import com.x.base.core.http.HttpMediaType;
-import com.x.base.core.http.ResponseFactory;
 import com.x.base.core.http.WrapOutId;
 import com.x.base.core.http.annotation.HttpMethodDescribe;
 import com.x.base.core.logger.Logger;
 import com.x.base.core.logger.LoggerFactory;
+import com.x.base.core.project.jaxrs.AbstractJaxrsAction;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.cms.assemble.control.jaxrs.appdict.exception.AppDictDeleteException;
+import com.x.cms.assemble.control.jaxrs.appdict.exception.AppDictListByAppIdException;
+import com.x.cms.assemble.control.jaxrs.appdict.exception.AppDictQueryByIdException;
+import com.x.cms.assemble.control.jaxrs.appdict.exception.AppDictSaveException;
+import com.x.cms.assemble.control.jaxrs.appdict.exception.AppDictUpdateException;
+import com.x.cms.assemble.control.jaxrs.appdict.exception.WrapInConvertException;
 
 @Path("appdict")
 public class AppDictAction extends AbstractJaxrsAction {
@@ -47,7 +53,7 @@ public class AppDictAction extends AbstractJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		
 		if(check){
@@ -57,7 +63,7 @@ public class AppDictAction extends AbstractJaxrsAction {
 				result = new ActionResult<>();
 				Exception exception = new AppDictSaveException( e );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}	
 		}
 			
@@ -78,7 +84,7 @@ public class AppDictAction extends AbstractJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictDeleteException( e, appDictId );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -97,7 +103,7 @@ public class AppDictAction extends AbstractJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictListByAppIdException( e, appId );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -116,7 +122,7 @@ public class AppDictAction extends AbstractJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new AppDictQueryByIdException( e, appDictId );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}		
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
@@ -140,7 +146,7 @@ public class AppDictAction extends AbstractJaxrsAction {
 			check = false;
 			Exception exception = new WrapInConvertException( e, jsonElement );
 			result.error( exception );
-			logger.error( exception, effectivePerson, request, null);
+			logger.error( e, effectivePerson, request, null);
 		}
 		if( check ){
 			try {
@@ -149,7 +155,7 @@ public class AppDictAction extends AbstractJaxrsAction {
 				result = new ActionResult<>();
 				Exception exception = new AppDictUpdateException( e, appDictId );
 				result.error( exception );
-				logger.error( exception, effectivePerson, request, null);
+				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		
