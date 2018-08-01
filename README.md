@@ -15,6 +15,10 @@ O2OA 是一套现代企业级的办公平台。她有以下特点\:
 
 更多的产品介绍、使用说明、下载、在线体验、API及讨论请移步至[http://o2oa.io/](http://www.o2oa.io/)
 
+![o2oa](https://raw.githubusercontent.com/fancylou/o2oa/master/screenshot/20180801-225850%402x.png)
+
+
+
 ## 安装
 建议您在[http://o2oa.io/](http://www.o2oa.io/)中下载最新版本的O2 Server进行安装使用    
 如果您要使用github的程序自行打包，可以`fork` 本仓库。  
@@ -28,7 +32,7 @@ git clone https://github.com/{YOUR_GITHUB_USERNAME}/o2oa.git  
 
 ### 目录
   前台程序位于github的x_desktop_web目录。  
- 
+
 #### 目录说明
 ```bash
 x_desktop                                //桌面资源、平台基础资源和通用工具类
@@ -123,7 +127,7 @@ x_component_{APPLICATION_NAME}  //x_component_HelloWorld
         action.json         //后台服务的url和方法，本系统使用JAX-RS 方式的 RESTful Web Service
         RestAction.js       //应用程序中直接使用此类的方法进行后台交互
 ```
- 
+
 ### 创建Hello World
 本样例中，我们创建一个名为HelloWorld的应用，在应用窗口中显示“您好，这是我的第一个O2应用！”。
 
