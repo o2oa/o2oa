@@ -15,7 +15,7 @@ O2OA 是一套现代企业级的办公平台。她有以下特点\:
 
 更多的产品介绍、使用说明、下载、在线体验、API及讨论请移步至[http://o2oa.io/](http://www.o2oa.io/)
 
-![o2oa](https://raw.githubusercontent.com/fancylou/o2oa/master/screenshot/20180801-225850%402x.png)
+![o2oa](http://muliba.u.qiniudn.com/post/20180801-225850@2x.png)
 
 
 
