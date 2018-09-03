@@ -1,3 +1,0 @@
-{
-  "getProcess": {"uri": "/jaxrs/process/{id}/complex"}
-}
