@@ -1,7 +1,0 @@
-.idea
-.DS_Store
-*.sublime-project
-*.sublime-workspace
-node_modules/
-_drafts/
-bower_components
