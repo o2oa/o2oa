@@ -1,0 +1,40 @@
+[
+  {
+    "name": "ApplicationExplorer",
+    "path": "process.ApplicationExplorer",
+    "title": "流程管理平台",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "PortalExplorer",
+    "path": "portal.PortalExplorer",
+    "title": "门户管理平台",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "cmsManager",
+    "path": "cms.Column",
+    "title": "内容管理平台",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "DataExplorer",
+    "path": "query.QueryExplorer",
+    "title": "数据中心平台",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "service.ServiceManager",
+    "path": "service.ServiceManager",
+    "title": "服务管理",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "AppCenter",
+    "path": "AppCenter",
+    "title": "应用导出",
+    "iconPath": "appicon.png"
+  }
+
+
+]

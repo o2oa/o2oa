@@ -1,1 +1,3 @@
 .DS_Store
+jvm/*
+webserver/x_desktop_web/.idea/*

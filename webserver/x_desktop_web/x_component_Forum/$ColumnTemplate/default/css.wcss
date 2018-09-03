@@ -1,0 +1,549 @@
+{
+  "person" : {
+    "cursor" : "pointer",
+    "color": "#5c7084"
+  },
+  "person_over" : {
+    "color": "#0258ad"
+  },
+  "listNode" : {
+    //"margin" : "0px 20px 0px 0px"
+    "overflow" : "hidden",
+    "background-color" : "#fff"
+  },
+
+
+  "itemTopDiv" : {
+    "overflow":"hidden",
+    "padding-top":"7px"
+  },
+
+  "itemTopInfor" : {
+    "font-size" : "13px",
+    "height" : "15px",
+    "line-height" : "15px",
+    "color" : "#9f9f9f",
+    "float" : "left"
+  },
+  "itemTitleNode" : {
+    "margin-top" : "5px",
+    "height": "20px", "color": "rgb(51, 51, 51)", "line-height": "20px", "font-family": "微软雅黑", "font-size": "16px","font-weight" : "bold",
+    "float" : "left"
+  },
+  "itemTitleNode_over" : {
+    "color" : "rgb(51, 51, 51)"
+  },
+  "itemToday" : {
+    "margin-top" : "5px",
+    "margin-left" : "10px",
+    "background-color" : "#8ca3b5",
+    "height" : "20px",
+    "line-height" : "20px",
+    "width" : "50px",
+    "color" : "#fff",
+    "float" : "left",
+    "text-align" : "center"
+  },
+  "itemListNode" : {
+    "height" : "159px",
+    "padding-top" : "5px",
+    "margin-top" : "5px",
+    "margin-left" : "10px",
+    "margin-right" : "10px"//,
+    //"border-top" : "1px solid #dedede"
+  },
+  "itemListItemNode_over" : {
+    "color" : "#0258ad",
+    "background": "url(/x_component_Forum/$Main/default/icon/dot_over.png) no-repeat left center"
+  },
+  "node_list" : {
+    "overflow" : "hidden",
+    //"margin" : "0px 0px 10px 0px",
+    "border-bottom" : "1px solid #eee",
+    "height" : "170px",
+    "box-shadow" :"none",
+    "float" : "left"//,
+    //"cursor":"pointer"
+  },
+  "node_list_over" : {
+    "box-shadow" :"3px 3px 3px #999"
+  },
+  "itemNode_list" : {
+    "overflow" : "hidden",
+    "background-color" : "#fff"
+  },
+  "itemLeftNode":{
+    "overflow": "hidden",
+    "width" : "450px",
+    "float": "left"
+  },
+  "itemLeftIconNode" : {
+    "margin-left" : "20px",
+    "margin-top": "40px",
+    "float": "left",
+    "cursor" : "pointer"
+  },
+  "itemLeftIcon" : {
+    "border-radius": "10px",
+    "width": "64px",
+    "height": "64px"
+  },
+  "itemLeftContent" : {
+    "height": "170px",
+    "margin-right": "5px",
+    "margin-left": "100px"
+  },
+  "itemLeftDiv" : {
+    "overflow":"hidden","padding-top":"7px"
+  },
+  "itemLeftInfor" : {
+    "height" : "15px",
+    "line-height" : "15px",
+    "color" : "#9f9f9f",
+    "float" : "left"
+  },
+  "itemLeftMemo" : {
+    "color" : "#666",
+    "height" : "80px",
+    "line-height" : "20px",
+    "overflow" : "hidden"
+  },
+  "itemTitleNode" : {
+    "margin-top" : "5px",
+    "height": "20px", "color": "rgb(51, 51, 51)", "line-height": "20px", "font-family": "微软雅黑", "font-size": "16px","font-weight" : "bold",
+    "float" : "left",
+    "cursor" : "pointer"
+  },
+  "itemTitleNode_over" : {
+    "color" : "rgb(51, 51, 51)"
+  },
+  "itemListNode" : {
+    "float" : "left",
+    "width" : "472px",
+    "height" : "170px",
+    "padding-top" : "5px",
+    "margin-top" : "5px",
+    "margin-left" : "10px",
+    "margin-right" : "10px"
+  },
+  "itemListItemNode" : {
+    "padding-left" : "15px",
+    "color" : "#333",
+    "height" : "24px",
+    "line-height" : "24px",
+    "font-size" : "14px",
+    "cursor" : "pointer",
+    "overflow": "hidden",
+    "white-space": "nowrap",
+    "text-overflow": "ellipsis",
+    "letter-spacing" : "1px",
+    "background": "url(/x_component_Forum/$Main/default/icon/dot.png) no-repeat left center"
+  },
+  "itemListItemNode_over" : {
+    "color" : "#0258ad",
+    "background": "url(/x_component_Forum/$Main/default/icon/dot_over.png) no-repeat left center"
+  },
+  "itemReplyListNode" : {
+    "float" : "left",
+    "width" : "204px",
+    "height" : "140px",
+    "padding-top" : "5px",
+    "margin-top" : "5px",
+    "margin-left" : "20px",
+    "margin-right" : "16px"
+  },
+  "itemReplyListItemNode" : {
+    "color" : "#888",
+    "height" : "24px",
+    "line-height" : "24px",
+    "font-size" : "12px",
+    "cursor" : "pointer"
+  },
+  "itemReplyListItemNode_over" : {
+    "color" : "#0258ad"
+  },
+  "itemReplyTimeNode" : {
+    "float" : "right"
+  },
+  "itemReplyPersonNode" : {
+    "margin-left" : "10px",
+    "float" : "right",
+    "min-width" : "40px",
+    "text-align" : "right",
+    "color" : "#5c7084"
+  },
+  "itemReplyPersonNode_over" : {
+    "color" : "#0258ad"
+  },
+  //list样式结束
+
+  "node_list_1_1" : {
+    "overflow" : "hidden",
+    "border-bottom" : "1px solid #eee",
+    "height" : "182px",
+    "box-shadow" :"none",
+    "float" : "left"
+  },
+  "itemImageNode_type_1_1" : {
+    "float" : "left",
+    "width" : "245px"
+  },
+  "itemImage_type_1_1" : {
+    "width" : "225px",
+    "height" : "150px",
+    "margin" : "16px"
+  },
+  "itemLeftNode_type_1_1":{
+    "overflow": "hidden",
+    "width" : "205px",
+    "float": "left",
+    "padding-top" : "12px"
+  },
+  "itemLeftContent_type_1_1" : {
+    "height": "170px",
+    "margin-right": "5px",
+    "margin-left": "10px"
+  },
+  "itemReplyListNode_type_1_1" : {
+    "float" : "left",
+    "width" : "204px",
+    "height" : "140px",
+    "padding-top" : "5px",
+    "margin-top" : "15px",
+    "margin-left" : "20px",
+    "margin-right" : "16px"
+  },
+  "itemListNode_type_1_1" : {
+    "float" : "left",
+    "width" : "472px",
+    "height" : "170px",
+    "padding-top" : "5px",
+    "margin-top" : "15px",
+    "margin-left" : "10px",
+    "margin-right" : "10px"
+  },
+
+  "node_list_type_2_0" : {
+    "overflow" : "hidden",
+    //"margin" : "0px 0px 10px 0px",
+    "border-bottom" : "1px solid #eee",
+    "height" : "93px",
+    "box-shadow" :"none",
+    "float" : "left"//,
+    //"cursor":"pointer"
+  },
+  "itemLeftNode_type_2_0":{
+    "overflow": "hidden",
+    "width" : "268px",
+    "float": "left"
+  },
+  "itemLeftIconNode_type_2_0" : {
+    "margin-left" : "20px",
+    "margin-top": "15px",
+    "float": "left",
+    "cursor" : "pointer"
+  },
+  "itemLeftContent_type_2_0" : {
+    //"height": "170px",
+    "margin-right": "5px",
+    "margin-left": "100px"
+  },
+  "itemListNode_type_2_0" : {
+    "float" : "left",
+    "width" : "302px",
+    "height" : "170px",
+    "padding-top" : "5px",
+    "margin-top" : "5px",
+    "margin-left" : "10px",
+    "margin-right" : "10px"
+  },
+
+  "node_list_type_2_0_2" : {
+    "overflow" : "hidden",
+    //"margin" : "0px 0px 10px 0px",
+    "border-bottom" : "1px solid #eee",
+    "height" : "228px",
+    "box-shadow" :"none",
+    "float" : "left"//,
+    //"cursor":"pointer"
+  },
+  "itemLeftNode_type_2_0_2":{
+    "overflow": "hidden",
+    "width" : "188px",
+    "height" : "160px",
+    "float": "left",
+    "background-color" : "#f7f7f7",
+    "margin" : "16px 16px",
+    "padding-top" : "20px",
+    "padding-bottom" : "16px"
+  },
+  "itemLeftIconNode_type_2_0_2" : {
+    "text-align" : "center",
+    "margin-bottom" : "5px",
+    "cursor" : "pointer"
+  },
+  "itemLeftContent_type_2_0_2" : {
+    "text-align" : "center"
+  },
+  "itemTopDiv_type_2_0_2" : {
+    "overflow":"hidden",
+    "padding-top":"7px",
+    "display" : "inline-block"
+  },
+  "itemListNode_type_2_0_2" : {
+    "float" : "left",
+    "width" : "348px",
+    "height" : "220px",
+    "padding-top" : "5px",
+    "margin-top" : "5px",
+    "margin-left" : "10px",
+    "margin-right" : "10px"
+  },
+
+  "node_list_type_2_1" : {
+    "overflow" : "hidden",
+    "border-bottom" : "1px solid #eee",
+    "height" : "280px",
+    "box-shadow" :"none",
+    "float" : "left"//,
+  },
+  "itemLeftNode_type_2_1":{
+    "overflow": "hidden",
+    "width" : "248px",
+    "height" : "280px",
+    "float": "left",
+    "margin" : "16px 6px 16px 16px"
+  },
+  "itemImageNode_type_2_1" : {
+    "float" : "left"
+  },
+  "itemLeftIconNode_type_2_1" : {
+    "float" : "left",
+    "margin-bottom" : "5px",
+    "cursor" : "pointer",
+    "margin-top" : "12px"
+  },
+  "itemLeftContent_type_2_1" : {
+    "float" : "left",
+    "margin-left": "10px"
+  },
+  "itemImage_type_2_1" : {
+    "width" : "258px",
+    "height" : "172px"
+  },
+  "itemListNode_type_2_1" : {
+    "float" : "left",
+    "width" : "298px",
+    "height" : "280px",
+    "padding-top" : "5px",
+    "margin-top" : "5px",
+    "margin-left" : "10px",
+    "margin-right" : "10px"
+  },
+
+
+  "node_list_type_2_1_2" : {
+    "overflow" : "hidden",
+    "border-bottom" : "1px solid #eee",
+    "height" : "203px",
+    "box-shadow" :"none",
+    "float" : "left"//,
+  },
+  "itemImageNode_type_2_1_2" : {
+    "float" : "left",
+    "margin" : "16px"
+  },
+  "itemImage_type_2_1_2" : {
+    "width" : "258px",
+    "height" : "172px"
+  },
+  "itemLeftNode_type_2_1_2":{
+    "overflow": "hidden",
+    "width" : "280px",
+    "height" : "80px",
+    "padding-top" : "4px"
+  },
+  "itemLeftIconNode_type_2_1_2" : {
+    "float" : "left",
+    "margin-bottom" : "5px",
+    "cursor" : "pointer",
+    "margin-top" : "12px"
+  },
+  "itemLeftContent_type_2_1_2" : {
+    "float" : "left",
+    "margin-left": "10px"
+  },
+  "itemListNode_type_2_1_2" : {
+    "width" : "280px",
+    "height" : "123px",
+    "overflow" : "hidden",
+    "padding-top" : "5px",
+    "margin-top" : "5px",
+    "margin-left" : "10px",
+    "margin-right" : "10px"
+  },
+
+
+  "node_list_type_3_0" : {
+    "overflow" : "hidden",
+    "margin-right" : "10px",
+    "margin-top" : "10px",
+    "height" : "180px",
+    "box-shadow" :"none",
+    "float" : "left",
+    "border":"1px solid #eee"
+  },
+  "itemLeftNode_type_3_0":{
+    "overflow": "hidden",
+    "width" : "365px"
+  },
+  "itemLeftIconNode_type_3_0" : {
+    "margin-left" : "20px",
+    "margin-top": "15px",
+    "float": "left",
+    "cursor" : "pointer"
+  },
+  "itemLeftContent_type_3_0" : {
+    //"height": "170px",
+    "margin-right": "5px",
+    "margin-left": "100px"
+  },
+  "itemListNode_type_3_0" : {
+    "width" : "365px",
+    "height" : "175px",
+    "padding-top" : "5px",
+    "margin-top" : "5px",
+    "margin-left" : "10px",
+    "margin-right" : "10px"
+  },
+
+
+  "node_list_type_3_1" : {
+    "overflow" : "hidden",
+    "margin-right" : "10px",
+    "margin-top" : "10px",
+    "height" : "260px",
+    "box-shadow" :"none",
+    "float" : "left",
+    "border":"1px solid #eee"
+  },
+  "itemLeftNode_type_3_1":{
+    "margin-top": "5px",
+    "overflow": "hidden",
+    "width" : "385px"
+  },
+  "itemImageNode_type_3_1" : {
+    "margin" : "10px",
+    "float" : "left"
+  },
+  "itemImage_type_3_1" : {
+    "width" : "225px",
+    "height" : "150px"
+  },
+  "itemToday_type_3_1" : {
+    "background-color" : "#8ca3b5",
+    "height" : "20px",
+    "line-height" : "20px",
+    "width" : "50px",
+    "color" : "#fff",
+    "float" : "left",
+    "text-align" : "center"
+  },
+  "itemLeftIconNode_type_3_1" : {
+    "overflow": "hidden",
+    "margin-left" : "20px",
+    "margin-top": "14px",
+    "cursor" : "pointer"
+  },
+  "itemLeftContent_type_3_1" : {
+    "overflow": "hidden",
+    "margin-left" : "20px",
+    "margin-right": "5px"
+  },
+  "itemTopDiv_type_3_1" : {
+    "overflow":"hidden",
+    "padding-top":"2px"
+  },
+  "itemListNode_type_3_1" : {
+    "width" : "360px",
+    "height" : "70px",
+    "padding-left" : "5px",
+    "margin-left" : "10px",
+    "margin-right" : "10px"
+  },
+
+
+  "node_list_type_4_0" : {
+    "overflow" : "hidden",
+    "margin-right" : "10px",
+    "margin-top" : "10px",
+    "height" : "180px",
+    "box-shadow" :"none",
+    "float" : "left",
+    "border":"1px solid #eee"
+  },
+  "itemLeftNode_type_4_0":{
+    "overflow": "hidden",
+    "width" : "266px"
+  },
+  "itemLeftIconNode_type_4_0" : {
+    "margin-left" : "20px",
+    "margin-top": "15px",
+    "float": "left",
+    "cursor" : "pointer"
+  },
+  "itemLeftContent_type_4_0" : {
+    //"height": "170px",
+    "margin-right": "5px",
+    "margin-left": "100px"
+  },
+  "itemListNode_type_4_0" : {
+    "width" : "266px",
+    "height" : "175px",
+    "padding-top" : "5px",
+    "margin-top" : "5px",
+    "margin-left" : "10px",
+    "margin-right" : "10px"
+  },
+
+  "node_list_type_4_1" : {
+    "overflow" : "hidden",
+    "margin-right" : "10px",
+    "margin-top" : "10px",
+    "height" : "370px",
+    "box-shadow" :"none",
+    "float" : "left",
+    "border":"1px solid #eee"
+  },
+  "itemLeftNode_type_4_1":{
+    "overflow": "hidden",
+    "width" : "266px"
+  },
+  "itemImageNode_type_4_1" : {
+    "margin-top" : "12px",
+    "text-align" : "center"
+  },
+  "itemImage_type_4_1" : {
+    "width" : "258px",
+    "height" : "172px"
+  },
+  "itemLeftIconNode_type_4_1" : {
+    "margin-left" : "20px",
+    "margin-top": "15px",
+    "float": "left",
+    "cursor" : "pointer"
+  },
+  "itemLeftContent_type_4_1" : {
+    //"height": "170px",
+    "margin-right": "5px",
+    "margin-left": "100px"
+  },
+  "itemListNode_type_4_1" : {
+    "width" : "266px",
+    "height" : "170px",
+    "padding-top" : "5px",
+    "margin-top" : "5px",
+    "margin-left" : "10px",
+    "margin-right" : "10px"
+  }
+}

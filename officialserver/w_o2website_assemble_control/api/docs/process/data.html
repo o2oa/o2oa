@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        <!--
+        .STYLE2 {
+            color: #333333;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .STYLE3 {color: #333333}
+        .STYLE4 {font-size: 14px}
+
+        .title {
+            padding: 2px 5px; margin: 20px 0px 5px 0px; color:#000000; border-radius: 5px; font-weight: normal; background-color: #dddddd
+        }
+        .code-javascript {
+            padding: 5px 10px; border-radius: 5px; border: 1px solid #cccccc; background-color: #ffffff
+        }
+        .session {
+            padding: 5px 10px; color: #ffffff;font-size: 18px; font-weight: bold; background-color: #666666; border-radius: 5px;
+        }
+        .top {
+            font-size: 12px; float: right; color: #ffffff; font-weight: normal;
+        }
+        .returnType {
+            color: #000000; font-style: italic; font-family: 'Courier New', Monospace; font-weight: bold; font-size: 16px;
+        }
+
+        -->
+    </style>
+</head>
+
+<body>
+    <h1 class="STYLE3">Object: data</h1>
+    <div>
+        <div style="padding: 5px;">在流程平台和内容管理平台中，您可以使用data对象获取当前实例的所有业务数据。这些数据一般情况下是通过您创建的表单收集而来的，也可以通过脚本创建和增删改查。data对象基本上是一个JSON对象，您可以用访问JSON对象的方法访问他对象的所有数据，但增加和删除数据时略有不同。</div>
+        <div class="title">Syntax:</div>
+        <textarea class="code-javascript">var data = this.data;
+var data = this.form.getData();</textarea>
+
+        <div style="height: 5px; border-top:2px solid #dddddd; margin: 30px 0px 5px 0px"></div>
+
+        <div class="session"><a href="#top" class="top" name="data:property">Top</a>[property]</div>
+        <div style="padding: 5px;">访问或修改data对象的数据。data数据用于存储自定义表单的获取数据，所有属性都是动态的，其格式和访问方式都和JSON类似。请参考：<a href="http://json.org/" target="_blank">http://json.org</a>。</div>
+        <div class="title">Syntax:</div>
+        <textarea class="code-javascript">
+var value = this.data.property;  //获取名为property的数据值
+this.data.property = '123';   //将property的值修改为'123'</textarea>
+        <div class="title">Return:</div>
+        <div style="padding: 0px 5px;">> <span class="returnType">any</span> : 任何数据类型。</div>
+
+        <div class="title">Examples 1:</div>
+        <div style="padding: 5px;">获取流程文档的subject值：</div>
+        <textarea class="code-javascript">var subject = this.data.subject; </textarea>
+
+        <div class="title">Examples 2:</div>
+        <div style="padding: 5px;">获取流程文档中的数据网格的值：<br/>
+        如有以下数据网格：<br><image src="api/image/datagrid.jpg" style="width: 100%"/><br/>其数据网格设计如下(数据网格id为：datagrid)：<br><image src="api/image/datagridDesign.jpg" style="width: 100%"/><br/>
+        通过下面的脚本：
+        </div>
+        <textarea class="code-javascript">var data = this.data.datagrid; </textarea>
+
+        <div style="padding: 5px;">获取到data的值如下：</div>
+        <textarea class="code-javascript">
+{
+    "data": [
+        {
+            "amountCol": { "amount": "12000" },
+            "countCol": { "number": "10" },
+            "nameCol": { "name": "手机" },
+            "priceCol": { "price": "1200" }
+        },
+        {
+            "amountCol": { "amount": "15000" },
+            "countCol": { "number": "5" },
+            "nameCol": { "name": "电脑" },
+            "priceCol": { "price": "3000" }
+        }
+    ],
+    "total": {
+        "amountCol": "27000",
+        "countCol": "15"
+    }
+}
+        </textarea>
+
+        <div style="padding: 5px;">获取到数据网格中的其他数据：</div>
+        <textarea class="code-javascript">
+//获取数据网格中的第一条数据
+var data = this.data.datagrid.data[0];
+
+//获取数据网格中的第一条数据的 nameCol 列的值
+var data = this.data.datagrid.data[0].nameCol.name;
+
+//获取数据网格中的 amountCol 列的总计值
+var data = this.data.datagrid.total.amountCol; </textarea>
+
+        <div style="padding: 5px;">修改数据网格中的数据：</div>
+        <textarea class="code-javascript">
+this.data.datagrid.data[0].nameCol.name='平板电脑'; //获取数据网格中的第一条数据的 nameCol 列的值</textarea>
+        <div style="padding: 5px;">修改后数据网格中的数据为：</div><image src="api/image/datagrid2.jpg" style="width: 100%"/><br/>
+
+        <div style="height: 5px; border-top:2px solid #dddddd; margin: 30px 0px 5px 0px"></div>
+
+        <div class="session"><a href="#top" class="top"  name="data:add">Top</a>Method: add</div>
+        <div style="padding: 5px;">为data对象添加一个数据节点。</div>
+        <div class="title">Syntax:</div>
+        <div class="code-javascript">var newData = this.data.add(key, value, overwrite);</div>
+
+        <div class="title">Arguments:</div>
+        <div style="padding: 0px 5px;">> <span class="returnType">key</span> : （string or number）必选，要添加的新的数据节点名称或数组索引号</div>
+        <div style="padding: 0px 5px;">> <span class="returnType">value</span> : （string, number, array or JsonObject）必选，新的数据节点的值</div>
+        <div style="padding: 0px 5px;">> <span class="returnType">overwrite</span> : （boolean）可选，如果要添加的节点已经存在，是否覆盖。默认为 false</div>
+
+        <div class="title">Return:</div>
+        <div style="padding: 0px 5px;">> <span class="returnType">any</span> : 新添加的数据节点或原有的同名节点。</div>
+
+        <div class="title">Examples:</div>
+        <textarea class="code-javascript">
+//为data添加一个名为"remark"值为"I am remark"的数据
+this.data.add("remark", "I am remark");
+//-------------------------------------------------------------------
+
+//为data添加一个名为"person"的Object对象数据
+var person = this.data.add("person", {});
+person.add("name", "Tom");
+person.add("age", 23);
+
+//或者可以这样
+var person = this.data.add("person", {name: "Tom", "age": "23"});
+//-------------------------------------------------------------------
+
+//为data添加一个名为"orders"的数组对象数据
+var orders = this.data.add("orders", []);
+orders.add({name: "phone", count: 5});
+orders.add({name: "computer", count: 10});
+orders[0].add("count", 10, true);  //将第一条数据的count修改为10
+
+//或者可以这样
+var orders = this.data.add("orders", [
+    {name: "phone", count: 5},
+    {name: "computer", count: 10}
+]);
+//将第一条数据修改为name为mobile; count为10
+orders.add(0, {name: "mobile", count: 10}, true);
+        </textarea>
+
+
+        <div style="height: 5px; border-top:2px solid #dddddd; margin: 30px 0px 5px 0px"></div>
+
+        <div class="session"><a href="#top" class="top" name="data:del">Top</a>Method: del</div>
+        <div style="padding: 5px;">删除data对象中一个指定的数据节点。</div>
+        <div class="title">Syntax:</div>
+        <div class="code-javascript">var data = this.data.del(key);</div>
+        <div class="title">Arguments:</div>
+        <div style="padding: 0px 5px;"> <span class="returnType">key</span> : （string or number）必选，要删除的数据节点名称或数组索引号</div>
+        <div class="title">Return:</div>
+        <div style="padding: 0px 5px;"> <span class="returnType">data</span> : 被删除数据节点的父节点</div>
+
+        <div class="title">Examples:</div>
+        <textarea class="code-javascript">
+//删除data下名为"remark"的数据节点
+this.data.del("remark");
+//-------------------------------------------------------------------
+
+//删除"person"的age数据节点
+var person = this.data.add.person.del("age");
+//-------------------------------------------------------------------
+
+//删除"orders"数组对象中的第二条数据
+this.data.orders.del(1);</textarea>
+    </div>
+
+    <div class="session"><a href="#top" class="top" name="data:save">Top</a>Method: save</div>
+    <div style="padding: 5px;">保存data对象。</div>
+    <div class="title">Syntax:</div>
+    <div class="code-javascript">this.data.save(callback);</div>
+    <div class="title">Arguments:</div>
+    <div style="padding: 0px 5px;"> <span class="returnType">callback</span> : （function）可选，保存成功后的回调函数</div>
+    <div class="title">Return:</div>
+    <div style="padding: 0px 5px;"> 没有返回值</div>
+
+    <div class="title">Examples:</div>
+    <textarea class="code-javascript">
+this.data.save(function(json){
+    this.form.notice("save success!", "success")
+});</textarea>
+
+    <div style="height: 5px; border-top:2px solid #dddddd; margin: 5px 0px"></div>
+
+<script>
+    (function(){
+        $(".code-javascript").each(function(i, node){
+            highlight(node);
+        });
+    })();
+</script>
+</body>
+</html>

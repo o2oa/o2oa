@@ -1,0 +1,226 @@
+{
+    "contentNode": {
+        "height": "24px",
+        "margin-right": "100px"
+    },
+
+
+    "maskNode": {
+        "background-color": "#666",
+        "opacity": 0.6,
+        "z-index":10002
+    },
+    "containerNode": {
+		"height": "540px",
+		"width": "800px",
+		"background-color": "#FFF",
+		"overflow": "hidden",
+		"border": "3px solid #666",
+		"border-radius": "10px",
+		"box-shadow": "0px 0px 15px #666",
+		"position": "absolute",
+		"z-index":10003
+	},
+	"titleNode": {
+        "height": "30px",
+        "background-color": "#EEE",
+        "border-bottom": "1px solid #CCC"
+    },
+    "titleTextNode": {
+        "margin-right": "30px",
+        "height": "30px",
+        "padding": "0px 10px",
+        "color": "#666",
+        "font-weight": "bold",
+        "font-size": "14px",
+        "line-height": "30px"
+    },
+    "titleActionNode": {
+        "width": "30px",
+        "height": "30px",
+        "float": "right",
+        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/close.png) no-repeat center center",
+        "cursor": "pointer"
+    },
+    "windowContentScrollNode": {
+        "overflow": "hidden",
+        "height": "455px",
+        "padding": "5px",
+        "margin-right": "6px",
+        "margin-bottom": "5px"
+    },
+    "windowContentNode": {
+        "overflow": "hidden"
+    },
+    "actionNode": {
+        "height": "40px",
+        //"width": "280px",
+        //"float": "right",
+        "border-top": "1px solid #CCC",
+        "background-color": "#EEE",
+        "margin": "auto"
+    },
+    "okActionNode": {
+        "width": "150px",
+        "height": "30px",
+        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/editOk_bg.png) no-repeat center center",
+        "border": "0px",
+        "color": "#FFF",
+        "font-size": "18px",
+        "padding-left": "35px",
+        "border-radius": "4px",
+        "margin": "5px 10px 0px 0px",
+        "float": "right",
+        "cursor": "pointer"
+    },
+    "cancelActionNode": {
+        "width": "100px",
+        "height": "30px",
+        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/editCancel_bg.png) no-repeat center center",
+        "border": "0px",
+        "color": "#FFF",
+        "font-size": "18px",
+        "padding-left": "20px",
+        "border-radius": "4px",
+        "float": "right",
+        "margin": "5px 10px 0px 0px",
+        "cursor": "pointer"
+    },
+    "scriptListNode": {
+        "width": "160px"
+    },
+
+    "editorNode": {
+        "height": "200px"
+    },
+   "applicationItemNode": {
+        "width": "235px",
+        "overflow": "hidden",
+        "float": "left",
+        "margin-left": "20px",
+        "margin-top": "20px",
+        "border": "1px solid #BBB",
+        "box-shadow": "0px 0px 0px #BBB",
+        "background-color": "#FFF"
+    },
+    "applicationItemNode_select": {
+        "border": "1px solid #e97070",
+        "box-shadow": "0px 0px 10px #e97070"
+    },
+
+
+    "applicationItemTopNode": {
+        "height": "80px",
+        "cursor": "pointer"
+    },
+    "applicationItemTopNode_select": {
+        "background-color": "#e97070"
+    },
+    "applicationItemIconNode": {
+        "width": "80px",
+        "height": "80px",
+        "float": "left",
+        "background-repeat": "no-repeat",
+        "background-position": "center center"
+    },
+    "applicationItemTitileNode": {
+        "margin-left": "80px",
+        "margin-right": "26px",
+        "height": "80px"
+    },
+    "applicationItemSelectIcon": {
+        "width": "26px",
+        "height": "26px",
+        "float": "right",
+        "background": "url("+"/x_component_process_ProcessManager/widget/$ApplicationSelector/default/icon/select.png) no-repeat center center"
+    },
+    "applicationItemSelectIcon_selected": {
+        "width": "26px",
+        "height": "26px",
+        "float": "right",
+        "background": "url("+"/x_component_process_ProcessManager/widget/$ApplicationSelector/default/icon/selected.png) no-repeat center center"
+    },
+    "applicationItemExportActionNode": {
+        "width": "22px",
+        "height": "26px",
+        "float": "right",
+        "opacity": 0,
+        "background": "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/export.png) no-repeat center center"
+    },
+
+    "applicationItemDelActionNode_select": {
+        "opacity": 1,
+        "background": "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/delete_red.png) no-repeat center center"
+    },
+    "deleteElementsNode":{
+        "position": "absolute",
+        "background-color": "#c04444",
+        "border": "2px solid #FFF",
+        "border-radius": "5px",
+        "box-shadow": "0px 0px 10px #999",
+        "cursor": "pointer",
+        "color": "#FFF",
+        "padding": "5px 10px"
+    },
+
+
+
+    "applicationItemNameNode": {
+        "height": "30px",
+        "font-size": "18px",
+        "font-family": "微软雅黑",
+        "font-weight": "bold",
+        "line-height": "40px",
+        "color": "#FFF"
+    },
+    "applicationItemTypeNode": {
+        "height": "30px",
+        "font-size": "14px",
+        "font-family": "微软雅黑",
+        "line-height": "40px",
+        "color": "#EEE"
+    },
+    "applicationItemInforNode": {
+        "border-top": "1px solid #BBB",
+        "overflow": "hidden"
+    },
+    "applicationItemDescriptionNode": {
+        "overflow": "hidden",
+        "color": "#999",
+        "padding": "5px"
+    },
+    "applicationItemElNode": {
+        "overflow": "hidden"
+    },
+    "applicationItemElTitleNode": {
+        "font-size": "14px",
+        "font-weight": "bold",
+        "font-family": "微软雅黑",
+        "color": "#333",
+        "padding": "0px 5px 5px 5px"
+    },
+    "applicationItemElListNode": {
+        "color": "#666",
+        "height": "40px",
+        "line-height": "20px",
+        "padding": "0px 5px 5px 15px"
+    },
+    "noApplicationNode": {
+        "text-align": "center",
+        "padding": "20px",
+        "height": "60px",
+        "line-height": "60px",
+        "margin-top": "10px",
+        "margin-left": "0px",
+        "color": "#888",
+        "cursor": "pointer",
+        "font-size": "16px"
+    },
+    "applicationItemDateNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "color": "#999",
+        "text-align": "right",
+        "margin-right": "20px"
+    },
+}

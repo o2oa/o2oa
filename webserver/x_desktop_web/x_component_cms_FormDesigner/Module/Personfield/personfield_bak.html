@@ -1,0 +1,116 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="基本" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		  <tr>
+		    <td class="editTableTitle">标识:</td>
+		    <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">名称:</td>
+		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">描述:</td>
+		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+		  </tr>
+		</table>
+        <br/>
+
+		<div class="MWFMaplist" name="styles" title="样式"></div>
+        <div class="MWFMaplist" name="inputStyles" title="Input样式"></div>
+		<div class="MWFMaplist" name="properties" title="属性"></div>
+
+        <div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">默认值：</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">计算:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="compute" value="create" text{($.compute.indexOf('create')!=-1)?'checked':''}/>创建
+                    <input type="radio" name="compute" value="save" text{($.compute.indexOf('save')!=-1)?'checked':''}/>保存
+                    <input type="radio" name="compute" value="show" text{($.compute.indexOf('show')!=-1)?'checked':''}/>显示
+                </td>
+            </tr>
+        </table>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">用户标识:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonIdentity" name="identityValue"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">部　　门:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonDepartment" name="departmentValue" type="department"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">公　　司:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonCompany" name="companyValue" type="company"></div>
+                </td>
+            </tr>
+            <!--<tr>-->
+                <!--<td class="editTableTitle">职　　位:</td>-->
+                <!--<td class="editTableValue">-->
+                    <!--<div class="MWFDutySelector" name="dutyValue"></div>-->
+                <!--</td>-->
+            <!--</tr>-->
+        </table>
+		
+		<div class="MWFFormulaArea" name="defaultValue" title="默认值脚本 (S)"></div>
+
+        <div class="MWFValidation" name="validationConfig"></div>
+        <div class="MWFScriptArea" name="validation" title="校验脚本 (S)"></div>
+		
+	</div>
+    <div title="选择" class="MWFTab">
+        <div style="height: 24px; line-height:24px; font-weight:bold;background-color: #DDD; border-top:1px solid #999; padding: 0px 6px">人员选择配置</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">选择范围:</td>
+                <td class="editTableValue">
+                    <select name="range" onchange="var selV = this.options[this.selectedIndex].value; $('text{$.id}rangeScriptValue').setStyle('display', 'none'); if (selV=='depart' || selV=='company') $('text{$.id}rangeScriptValue').setStyle('display', 'block') ">
+                        <option value="currentdepart" text{($.range=='currentdepart')?'selected':''}>本部门</option>
+                        <option value="currentcompany" text{($.range=='currentcompany')?'selected':''}>本公司</option>
+                        <option value="depart" text{($.range=='depart')?'selected':''}>指定部门</option>
+                        <option value="company" text{($.range=='company')?'selected':''}>指定公司</option>
+                        <option value="all" text{($.range=='all')?'selected':''}>所有</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">选择数量:</td>
+                <td class="editTableValue"><input type="text" name="count" value="text{$.count}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">选择类型:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="selectType" value="identity" text{($.selectType.indexOf('identity')!=-1)?'checked':''}/>个人
+                    <input type="radio" name="selectType" value="department" text{($.selectType.indexOf('department')!=-1)?'checked':''}/>部门
+                    <input type="radio" name="selectType" value="company" text{($.selectType.indexOf('company')!=-1)?'checked':''}/>公司
+                </td>
+            </tr>
+        </table>
+        <div id="text{$.id}rangeScriptValue" style="border-bottom: 1px solid #999">
+            <div style="height: 24px; line-height:24px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">通过选择表单数据指定选择范围</div>
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">表单数据:</td>
+                    <td class="editTableValue"><div class="MWFFormFieldPerson" name="rangeField" type="formField"></div></td>
+                </tr>
+            </table>
+
+            <div style="height: 24px; line-height:24px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">通过编写脚本指定选择范围</div>
+            <div style="display: text{($.range=='depart' || $.range=='company')?'block':'none'};" class="MWFScriptArea" name="rangeKey" title="脚本 (S)"></div>
+
+        </div>
+    </div>
+
+	<div title="事件"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

@@ -1,0 +1,60 @@
+{
+  "id": "",
+  "name": "",
+  "type": "Attachment",
+  "description": "",
+  "events": {
+    "click": {
+      "code": "",
+      "html": ""
+    },
+    "dblclick": {
+      "code": "",
+      "html": ""
+    },
+    "mousedown": {
+      "code": "",
+      "html": ""
+    },
+    "mousemove": {
+      "code": "",
+      "html": ""
+    },
+    "mouseout": {
+      "code": "",
+      "html": ""
+    },
+    "mouseover": {
+      "code": "",
+      "html": ""
+    },
+    "mouseup": {
+      "code": "",
+      "html": ""
+    },
+    "upload": {
+      "code": "",
+      "html": ""
+    },
+    "delete": {
+      "code": "",
+      "html": ""
+    }
+  },
+  "size": "max", //max, min
+  "isSizeChange": "y",
+  "attachmentCount": "0",
+  "resize": "n",
+  "listStyle": "icon", //list, icon, preview
+  "readonly": "n",
+  "isUpload": "y",
+  "isDelete": "y",
+  "isReplace": "y",
+  "isDownload": "y",
+  "toolbarGroupHidden" : [],
+  "downloadEvent" : "",
+
+  "class": "",
+  "styles": {},
+  "container": ""
+}

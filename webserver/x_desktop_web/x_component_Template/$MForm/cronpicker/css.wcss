@@ -1,0 +1,29 @@
+{
+  "inputText": {
+    "border":"1px solid #ccc",
+    "background-color":"#FFF",
+    "width" : "30px",
+    "height" : "18px"
+  },
+  "inputCheckbox" : {
+    "float" : "left",
+    "margin-right" : "6px"
+  },
+  "inputRadio" : {
+    "margin-right" : "3px"
+  },
+  "inputRadioBlock" : {
+
+  },
+
+  "formTable" : {
+    "color" : "#333"
+    //"margin-top" : "10px"
+  },
+  "formTableValue14" : {
+    "text-align": "left",
+    "font-size" : "14px",
+    "line-height" : "26px"
+  }
+}
+

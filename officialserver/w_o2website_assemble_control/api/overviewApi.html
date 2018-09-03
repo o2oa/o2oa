@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        <!--
+        .STYLE2 {
+            color: #333333;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .STYLE3 {color: #333333}
+        .STYLE4 {font-size: 14px}
+        -->
+    </style>
+</head>
+
+<body>
+<div style="width:1000px; margin:auto; font-size:14px; color:#666666; font-family:微软雅黑;line-height:28px">
+    <h1 class="STYLE3">概述</h1>
+    <div style="background-color: #dddddd; height:28px; line-height: 28px; font-size:12px;">　edited this page on Feb 7 2017</div>
+    <div style="padding: 5px;">　　<span class="STYLE2">• O2Platform</span> 是一个高度可定制化的企业级办公平台，您可以通过脚本语言扩展平台功能。</div>
+    <div style="padding: 5px;">　　<span class="STYLE2">• O2Platform</span> 脚本基于Javascript语法，您可以通过脚本访问和操作允许的DOM对象；也可以通过平台定义的API操作业务数据、组织、视图等各种对象。脚本可以在后端（服务器端）和前端（浏览器端）执行。定义在流程中的脚本在后端执行；定义在表单等其他地方的脚本在前端执行。</div>
+    <div style="padding: 5px;">　　<span class="STYLE2">• </span> 后端脚本基于JDK8标准的Nashorn，遵循ECMAScript 5.1规范。前端脚本基于您使用的浏览器的Javascript引擎。 </div>
+
+    <div style="height: 5px; border-top:2px solid #dddddd; margin: 5px 0px"></div>
+
+    <h2 class="STYLE3">嵌入脚本</h2>
+    <div>
+        <div style="padding: 5px; float: right; margin-right: 0px">
+            <div style="background-color: #999999; color:#fff; font-size: 16px; height:38px; line-height: 38px; margin: 5px 0px; text-align: center; font-weight: bold">Alt+/ 脚本提示</div>
+            <image width="310px" height="300px" src="api/image/t4.png"/>
+        </div>
+        <div style="padding: 5px; float: left; margin-right: 5px; margin-left: 30px">
+            <div style="background-color: #999999; color:#fff; font-size: 16px; height:38px; line-height: 38px; margin: 5px 0px; text-align: center; font-weight: bold">属性窗格可嵌入脚本</div>
+            <image width="310px" height="300px" src="api/image/t1.png"/>
+        </div>
+        <div style="padding: 5px; float: left; margin-right: 5px">
+            <div style="background-color: #999999; color:#fff; font-size: 16px; height:38px; line-height: 38px; margin: 5px 0px; text-align: center; font-weight: bold">单击进入脚本编辑器</div>
+            <image width="310px" height="300px" src="api/image/t2.png"/>
+        </div>
+    </div>
+    <div style="height: 5px; border-top:2px solid #dddddd; margin: 5px 0px; clear: both"></div>
+
+    <h2 class="STYLE3">API总览</h2>
+    <div style="">　　<span class="STYLE2">• </span> 业务数据（data）</div>
+    <div style="">　　<span class="STYLE2">• </span> 业务环境（workContext）</div>
+    <div style="">　　<span class="STYLE2">• </span> 组织（org）</div>
+    <div style="">　　<span class="STYLE2">• </span> 服务（service）</div>
+    <div style="">　　<span class="STYLE2">• </span> 表单（form）（仅前端）</div>
+    <div style="">　　<span class="STYLE2">• </span> 视图（view）</div>
+    <div style="">　　<span class="STYLE2">• </span> 引用（include）</div>
+    <div style="">　　<span class="STYLE2">• </span> 方法定义（define）</div>
+    <div style="">　　<span class="STYLE2">• </span> 数据字典（Dict）</div>
+
+    <div style="height: 5px; border-top:2px solid #dddddd; margin: 5px 0px"></div>
+
+    <h2 class="STYLE3">例子</h2>
+    <div style="padding: 5px;">　　<span class="STYLE2">• </span> 本列中，在表单上设计了一个选择城市的下拉选择框，根据表单上另外一个省份选择框的值，来改变城市选择框的可选值。 </div>
+
+    <div style="padding: 5px; margin: 5px 0px 5px 30px; overflow: hidden">
+        <image style="height: 130px" src="api/image/t5.png"/>
+    </div>
+
+    <div style="padding: 5px;">　　在选择框属性窗格中，可选择属性选择“脚本”，在脚本编辑器中输入以下代码。 </div>
+
+    <div class="code-javascript" style="margin-left:30px; border:1px solid #cccccc; background-color: #ffffff; padding: 10px; overflow:hidden; line-height: 20px; font-size:14px">var dict = new this.Dict("country");  //获取名为country的数据字典
+var cityList = dict.get(this.data.province);  //获取数据字典中，以表单输入框province的值为关键字的数据值（数组）
+return cityList;  //返回数组，作为列表框的可选值<br/></div>
+
+    <div style="padding: 5px;">　　数据字典“country”设计如下：。 </div>
+
+    <div style="padding: 5px; margin: 5px 0px 5px 30px; overflow: hidden">
+        <image style="width: 800px;" src="api/image/t6.png"/>
+    </div>
+
+
+    <script src="api/ace/src-min/ace.js"></script>
+    <script src="api/ace/src-min/mode-javascript.js"></script>
+    <script src="api/ace/src-min/ext-language_tools.js"></script>
+    <script src="api/ace/src-min/ext-static_highlight.js"></script>
+    <script>
+        function highlight(node) {
+            var highlighter = ace.require("ace/ext/static_highlight");
+            highlighter.highlight(node, {mode: "ace/mode/javascript", theme: "ace/theme/tomorrow"})
+        }
+        (function(){
+            $(".code-javascript").each(function(i, node){
+                highlight(node);
+            });
+        })();
+
+    </script>
+</div>
+
+</body>
+</html>

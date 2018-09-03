@@ -1,0 +1,41 @@
+[
+  {
+    "name": "Setting",
+    "path": "Setting",
+    "title": "系统设置",
+    "iconPath": "appicon.png",
+    "allowList": ["xadmin", "Manager"]
+  },
+  {
+    "name": "AppMarket",
+    "path": "AppMarket",
+    "title": "应用市场",
+    "iconPath": "appicon.png",
+    "allowList": ["xadmin", "Manager"]
+  },
+//  {
+//    "name": "Deployment",
+//    "path": "Deployment",
+//    "title": "部署管理",
+//    "iconPath": "appicon.png",
+//    "allowList": ["xadmin", "Manager"]
+//  },
+  {
+    "name": "Org",
+    "path": "Org",
+    "title": "组织管理",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "Profile",
+    "path": "Profile",
+    "title": "个人设置",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "BAM",
+    "path": "BAM",
+    "title": "流程监控",
+    "iconPath": "appicon.png"
+  }
+]

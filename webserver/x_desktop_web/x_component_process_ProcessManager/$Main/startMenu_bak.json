@@ -1,0 +1,41 @@
+[
+	{
+		"title": "流程配置",
+		"id": "1.1",
+		"action": "processConfig",
+		"icon": "process_flow.png",
+		"expand": false,
+		"sub": []
+	},
+	{
+		"title": "表单配置",
+		"id": "1.1",
+		"action": "formConfig",
+		"icon": "process_form.png",
+		"expand": false,
+		"sub": []
+	},
+	{
+		"title": "数据配置",
+		"id": "1.1",
+		"action": "layout.actions.loadDataDesigner()",
+		"icon": "process_data.png",
+		"expand": false,
+		"sub": []
+	},
+	{
+		"title": "规则配置",
+		"id": "1.1",
+		"action": "MWF.proess.RuleDesignAction",
+		"icon": "process_rule.png",
+		"expand": false,
+		"sub": []
+	},
+	{
+		"title": "插件配置",
+		"id": "1.1",
+		"action": "MWF.proess.RuleDesignAction",
+		"icon": "process_plugin.png",
+		"sub": []
+	}
+]

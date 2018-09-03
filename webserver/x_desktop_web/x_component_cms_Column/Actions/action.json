@@ -1,0 +1,28 @@
+//jaxrs/appinfo	POST	WrapInappinfo	创建appinfo应用信息对象.
+//jaxrs/appinfo/list/all	GET		获取用户有权限访问的所有应用列表
+//jaxrs/appinfo/list/user	GET		获取用户有权限访问的所有应用列表
+//jaxrs/appinfo/{id}	GET		根据ID获取appinfo对象.
+//jaxrs/appinfo/{id}	DELETE		根据ID删除appinfo应用信息对象.
+//jaxrs/appinfo/{id}	PUT	WrapInappinfo	更新appinfo应用信息对象.
+
+{
+  "getId" : {"uri":"/jaxrs/uuid/random"},
+  "listColumn": {"uri": "/jaxrs/appinfo/list/all" }, //"/jaxrs/appinfo/list/user"},
+  "listColumnByAdmin": {"uri": "/jaxrs/appinfo/list/admin" },
+  "getColumn": {"uri": "/jaxrs/appinfo/{id}"},
+  "addColumn": {"uri": "/jaxrs/appinfo","method": "POST"},
+  "removeColumn": {"uri": "/jaxrs/appinfo/{id}","method": "DELETE"},
+  "updateColumn": {"uri": "/jaxrs/appinfo","method": "POST"},
+  "getColumnIcon":{"uri":"/jaxrs/appinfo/{id}/icon"},
+  "updataColumnIcon": {
+    "uri": "/jaxrs/appinfo/{id}/icon/size/256",
+    "method": "POST",
+    "enctype": "formData"
+  },
+
+  "listCategory": {"uri": "/jaxrs/categoryinfo/list/view/app/{appId}" },
+  "listForm": {"uri": "/jaxrs/form/list/app/{appId}"},
+
+  "listControllerByPerson" : {"uri": "/jaxrs/appcategoryadmin/list/person/{person}"},
+  "addController" : {"uri":"/jaxrs/appcategoryadmin", "method":"POST"}
+}

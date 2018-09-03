@@ -1,0 +1,62 @@
+{
+  "text": {
+    "text": "文本",
+    "content": "",
+    "description": "固定文本"
+  },
+  "year":{
+    "text": "年",
+    "content": "",
+    "description": "拟稿时间年度"
+  },
+  "month": {
+    "text": "月",
+    "content": "",
+    "description": "拟稿时间月份"
+  },
+  "day": {
+    "text": "日",
+    "content": "",
+    "description": "拟稿时间日"
+  },
+  "unit": {
+    "text": "组织",
+    "content": "",
+    "description": "拟稿人所在直接组织"
+  },
+  "unitAttribute": {
+    "text": "组织属性",
+    "content": "",
+    "description": "拟稿人所在直接组织的属性"
+  },
+//  "company": {
+//    "text": "公司",
+//    "content": "",
+//    "description": "拟稿人所在公司名称"
+//  },
+//  "department": {
+//    "text": "部门",
+//    "content": "",
+//    "description": "拟稿人所在部门"
+//  },
+//  "companyAttribute": {
+//    "text": "公司属性",
+//    "content": "",
+//    "description": "拟稿人所在公司的属性"
+//  },
+//  "departmentAttribute": {
+//    "text": "部门属性",
+//    "content": "",
+//    "description": "拟稿人所在部门的属性"
+//  },
+  "script": {
+    "text": "脚本",
+    "content": "",
+    "description": "脚本"
+  },
+  "number": {
+    "text": "流水号",
+    "content": "",
+    "description": "流水号"
+  }
+}

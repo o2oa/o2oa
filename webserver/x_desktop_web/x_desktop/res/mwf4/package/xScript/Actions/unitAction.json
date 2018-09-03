@@ -1,0 +1,139 @@
+{
+  //群组**************************************************************
+  //data: {"groupList": []}
+  "listGroup": {"uri": "/jaxrs/group/list/object", "method": "POST"},  //查询群组对象
+  "listSubGroupDirect": {"uri": "/jaxrs/group/list/group/sub/direct/object", "method": "POST"},  //查询直接下级群组
+  "listSubGroupNested": {"uri": "/jaxrs/group/list/group/sub/nested/object", "method": "POST"},  //查询嵌套下级群组
+  "listSupGroupDirect": {"uri": "/jaxrs/group/list/group/sup/direct/object", "method": "POST"},  //查询直接上级群组
+  "listSupGroupNested": {"uri": "/jaxrs/group/list/group/sup/nested/object", "method": "POST"},  //查询嵌套上级群组
+
+  //data: {"personList":[]}
+  "listGroupWithPerson": {"uri": "/jaxrs/group/list/person/object", "method": "POST"}, //人员所在群组（嵌套）
+
+  //data: {"group":"","roleList":[""]}
+  "groupHasRole": {"uri": "/jaxrs/group/has/role", "method": "POST"}, //群组是否拥有角色
+  //*****************************************************************
+
+
+
+  //角色**************************************************************
+  //data: {"roleList":[]}
+  "listRole": {"uri": "/jaxrs/role/list/object", "method": "POST"},  //查询对象素组
+  //data: {"personList":[]}
+  "listRoleWithPerson": {"uri": "/jaxrs/role/list/person/object", "method": "POST"}, //人员所有角色
+  //*****************************************************************
+
+
+
+  //人员**************************************************************
+  //data: {"person":"","roleList":[""]}
+  "personHasRole": {"uri": "/jaxrs/person/has/role", "method": "POST"}, //人员所有角色
+
+  //data: {"personList": []}
+  "listPerson": {"uri": "/jaxrs/person/list/object", "method": "POST"}, //查询人员对象
+  "listPersonSubDirect": {"uri": "/jaxrs/person/list/person/sub/direct/object", "method": "POST"}, //查询人员的直接下级人员
+  "listPersonSubNested": {"uri": "/jaxrs/person/list/person/sub/nested/object", "method": "POST"}, //查询人员的嵌套下级人员
+  "listPersonSupDirect": {"uri": "/jaxrs/person/list/person/sup/direct/object", "method": "POST"}, //查询人员的直接上级人员
+  "listPersonSupNested": {"uri": "/jaxrs/person/list/person/sup/nested/object", "method": "POST"}, //查询人员的嵌套上级人员
+
+  //data: {"groupList": []}
+  "listPersonWithGroup": {"uri": "/jaxrs/person/list/group/object", "method": "POST"}, //查询群组中的人员（嵌套）
+
+  //data: {"roleList": []}
+  "listPersonWithRole": {"uri": "/jaxrs/person/list/role/object", "method": "POST"}, //查询角色中的人员（嵌套）
+
+  //data: {"identityList": []}
+  "listPersonWithIdentity": {"uri": "/jaxrs/person/list/identity/object", "method": "POST"}, //查询身份的人员对象
+
+  //data: {"unitList": []}
+  "listPersonWithUnitDirect": {"uri": "/jaxrs/person/list/unit/sub/direct/object", "method": "POST"}, //查询组织直接成员的人员对象
+  "listPersonWithUnitNested": {"uri": "/jaxrs/person/list/unit/sub/direct/object", "method": "POST"}, //查询组织嵌套成员的人员对象
+  //*****************************************************************
+
+
+
+  //人员属性***********************************************************
+  //data: {"attributeList":[],"name":"","person":""}
+  "appendPersonAttribute": {"uri": "/jaxrs/personattribute/append/person/name", "method": "POST"}, //添加人员属性的值
+  "setPersonAttribute": {"uri": "/jaxrs/personattribute/set/person/name", "method": "POST"}, //覆盖人员属性的值
+
+  //data: {"name":"","person":""}
+  "getPersonAttribute": {"uri": "/jaxrs/personattribute/list/attribute/person/name", "method": "POST"}, //查询人员属性的值
+
+  //data: {"personList":[]}
+  "listPersonAttributeName": {"uri": "/jaxrs/personattribute/list/name/person", "method": "POST"}, //列出人员所有属性的名称
+  "listPersonAllAttribute": {"uri": "/jaxrs/personattribute/list/person/object", "method": "POST"}, //列出人员的所有属性
+  //******************************************************************
+
+
+  //身份***************************************************************
+  //data: {"identityList": []}
+  "listIdentity": {"uri": "/jaxrs/identity/list/object", "method": "POST"}, //查询身份对象
+
+  //data: {"personList": []}
+  "listIdentityWithPerson": {"uri": "/jaxrs/identity/list/person/object", "method": "POST"}, //查询人员的身份对象
+
+  //data: {"unitList": []}
+  "listIdentityWithUnitDirect": {"uri": "/jaxrs/identity/list/unit/sub/direct/object", "method": "POST"}, //查询组织直接成员身份对象
+  "listIdentityWithUnitNested": {"uri": "/jaxrs/identity/list/unit/sub/nested/object", "method": "POST"}, //查询组织嵌套成员身份对象
+  //******************************************************************
+
+
+  //组织***************************************************************
+  //data: {"unitList": []}
+  "listUnit": {"uri": "/jaxrs/unit/list/object", "method": "POST"}, //查询组织对象
+  "listUnitSubDirect": {"uri": "/jaxrs/unit/list/unit/sub/direct/object", "method": "POST"}, //查询指定组织的直接下级组织
+  "listUnitSubNested": {"uri": "/jaxrs/unit/list/unit/sub/nested/object", "method": "POST"}, //查询指定组织的嵌套下级组织
+  "listUnitSupDirect": {"uri": "/jaxrs/unit/list/unit/sup/direct/object", "method": "POST"}, //查询指定组织的直接上级组织
+  "listUnitSupNested": {"uri": "/jaxrs/unit/list/unit/sup/nested/object", "method": "POST"}, //查询指定组织的嵌套上级组织
+
+  //data: {"identity":"","level":""}
+  "getUnitWithIdentityAndLevel": {"uri": "/jaxrs/unit/identity/level/object", "method": "POST"}, //获取身份所在的第（level）组织
+
+  //data: {"identity":"","type":""}
+  "getUnitWithIdentityAndType": {"uri": "/jaxrs/unit/identity/type/object", "method": "POST"}, //获取身份所在的类型为（type）的组织
+
+  //data: {"identityList":[]}
+  "listUnitWithIdentity": {"uri": "/jaxrs/unit/list/identity/object", "method": "POST"}, //获取身份所在的组织
+  "listUnitSupNestedWithIdentity": {"uri": "/jaxrs/unit/list/identity/sup/nested/object", "method": "POST"}, //获取身份所在的组织的上级所有组织
+
+  //data: {"personList":[]}
+  "listUnitWithPerson": {"uri": "/jaxrs/unit/list/person/object", "method": "POST"}, //获取人员所在的所有组织
+  "listUnitSupNestedWithPerson": {"uri": "/jaxrs/unit/list/person/sup/nested/object", "method": "POST"}, //获取人员所在的所有组织的上级所有组织
+
+  //data: {"name":"","attribute":""}
+  "listUnitWithAttribute": {"uri": "/jaxrs/unit/list/unitattribute/object", "method": "POST"}, //获取符合指定属性值的所有组织
+
+  //data: {"name":"","identity":""}
+  "listUnitWithDuty": {"uri": "/jaxrs/unit/list/unitduty/object", "method": "POST"}, //获取符合指定职务值的所有组织
+  //******************************************************************
+
+
+
+  //组织职务***********************************************************
+  //data: {"name":"","unit":""}
+  "getDuty": {"uri": "/jaxrs/unitduty/list/identity/unit/name/object", "method": "POST"}, //获取组织的职务值
+
+  //data: {"identityList":[]}
+  "listDutyNameWithIdentity": {"uri": "/jaxrs/unitduty/list/name/identity", "method": "POST"}, //获取身份所有的职务名称
+
+  //data: {"unitList":[]}
+  "listDutyNameWithUnit": {"uri": "/jaxrs/unitduty/list/name/unit", "method": "POST"}, //获取组织所有的职务名称
+  "listUnitAllDuty": {"uri": "/jaxrs/unitduty/list/unit/object", "method": "POST"}, //获取组织的所有职务
+  //******************************************************************
+
+
+
+  //组织属性***********************************************************
+  //data: {"attributeList":[],"name":"","unit":""}
+  "appendUnitAttribute": {"uri": "/jaxrs/unitattribute/append/unit/name", "method": "POST"}, //添加组织属性的值
+  "setUnitAttribute": {"uri": "/jaxrs/unitattribute/set/unit/name", "method": "POST"}, //覆盖组织属性的值
+
+  //data: {"name":"","unit":""}
+  "getUnitAttribute": {"uri": "/jaxrs/unitattribute/list/attribute/unit/name", "method": "POST"}, //查询组织属性的值
+
+  //data: {"unitList":[]}
+  "listUnitAttributeName": {"uri": "/jaxrs/unitattribute/list/name/unit", "method": "POST"}, //列出组织所有属性的名称
+  "listUnitAllAttribute": {"uri": "/jaxrs/unitattribute/list/unit/object", "method": "POST"} //列出组织的所有属性
+  //******************************************************************
+}

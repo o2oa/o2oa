@@ -1,0 +1,174 @@
+{
+  "formMaskNode": {
+    "width": "100%",
+    "height": "100%",
+    "opacity": 0.6,
+    "position": "absolute",
+    "background-color": "#CCC",
+    "top": "0px",
+    "left": "0px"
+  },
+  "formAreaNode": {
+    "position": "absolute",
+    "opacity": 0,
+    "top": "0px"
+  },
+  "formNode": {
+    "background-color": "#fff",
+    "box-shadow": "0px 0px 20px #999",
+    "border": "6px solid #666",
+    "margin": "auto",
+    "border-radius" : "8px",
+    "overflow": "hidden"
+  },
+  "formTopNode": {
+    "color" : "#666",
+    "height" : "50px",
+    "background-color": "#fff",
+    "line-height": "40px",
+    "font-size": "14px",
+    "padding-left" : "5px",
+    "text-align": "center",
+    "position" : "relative"
+  },
+  "formTopTextNode" : {
+    //"font-family" : "PingFang-SC-Medium",
+    "height" : "70px",
+    "line-height" : "70px",
+    "padding-left" : "18px",
+    "font-size": "20px",
+    "font-weight" : "bold",
+    "overflow" : "hidden",
+    "text-overflow" : "ellipsis",
+    "white-space":"nowrap"
+  },
+  "formTopCloseActionNode": {
+    "position" : "absolute",
+    "width": "32px",
+    "height" : "30px",
+    "line-height" : "30px",
+    "right": "10px",
+    "top" : "10px",
+    "background": "url(/x_component_Template/$MPopupForm/attendance/icon/close.png) no-repeat center center",
+    "cursor": "pointer"
+  },
+  "resizeNode" : {
+    "position": "absolute",
+    "height": "15px",
+    "width": "15px",
+    "bottom": "0px",
+    "right": "0px",
+    "cursor" : "se-resize"
+  },
+  "formTopContentNode" : {
+    "float" : "right",
+    "padding-right" : "10px",
+    "text-align" : "right"
+  },
+  "formTopContentSepNode" : {
+    "float" : "right",
+    "width" : "1px",
+    "margin-top" : "33px",
+    "margin-right" : "10px",
+    "height" : "16px",
+    "border-left" : "1px solid #fff"
+  },
+  "inputActive" : {
+    "border" : "1px solid #3c75b7"
+  },
+  "formTopContentNode" : {
+    "overflow" : "hidden",
+    "float" : "right",
+    "padding-right" : "10px",
+    "text-align" : "right"
+  },
+  "formTopContentCustomNode" : {
+    "float" : "right",
+    "margin-top" : "20px",
+    "margin-right" : "10px",
+    "font-size" : "16px",
+    "cursor" : "pointer"
+  },
+  "formTopContentTitle" : {
+  },
+  "formTopContentValue" : {
+    "padding-right" : "20px",
+    "font-size": "12px"
+  },
+  "formContentNode": {
+    "border": "0px solid #666",
+    "width": "100%",
+    "margin": "auto",
+    "font-size": "14px",
+    "color": "#666",
+    "font-family": "微软雅黑",
+    "overflow" : "hidden",
+    "position" : "relative"
+  },
+  "formTableContainer" : {
+    "width" : "700px",
+    "margin": "0px auto 20px auto",
+    "padding-top" : "40px",
+    "overflow" : "hidden",
+    "positon" : "static"
+  },
+  "formTableContainer2" : {
+    "width" : "600px",
+    "margin": "20px auto 0px auto",
+    "overflow" : "hidden",
+    "positon" : "static"
+  },
+  "formBottomNode" : {
+    "height" : "60px",
+    "line-height" : "60px",
+    "background-color" : "#fff",
+    "overflow" : "hidden"
+  },
+  "editTableTitle": {
+    "width": "80px",
+    "font-weight": "bold",
+    "font-size": "12px",
+    "height": "24px",
+    "line-height": "24px",
+    "border" : "1px solid #e9e9e9",
+    "border-collapse" : "collapse"
+  },
+  "editTableValue": {
+    "height": "24px",
+    "line-height": "24px",
+    "border" : "1px solid #e9e9e9",
+    "border-collapse" : "collapse"
+  },
+  "formOkActionNode": {
+    "height": "30px",
+    "width": "85px",
+    "cursor": "pointer",
+    "float": "right",
+    "line-height": "30px",
+    "padding-left": "65px",
+    "font-size": "16px",
+    "font-family": "微软雅黑",
+    "border-radius": "3px",
+    "border": "1px solid #354f67",
+    "color": "#FFF",
+    "margin-right": "30px",
+    "box-shadow": "0px 0px 0px #666",
+    "background": "url("+"/x_component_Template/$MPopupForm/blue/icon/editOk_bg.png) no-repeat"
+  },
+  "formCancelActionNode": {
+    "height": "30px",
+    "width": "60px",
+    "cursor": "pointer",
+    "float": "right",
+    "line-height": "30px",
+    "padding-left": "40px",
+    "font-size": "16px",
+    "font-family": "微软雅黑",
+    "border-radius": "3px",
+    "color": "#FFF",
+    "margin-right": "80px",
+    "box-shadow": "0px 0px 0px #666",
+    "border": "1px solid #999",
+    "background": "url("+"/x_component_Template/$MPopupForm/blue/icon/editCancel_bg.png) no-repeat"
+  }
+}

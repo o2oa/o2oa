@@ -1,0 +1,59 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='3' cellspacing='0' styles='listViewTable'></table>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='listViewTableTr'></tr>",
+    "mouseoverStyles": "listViewTableTr_over",
+    "action": "open"
+  },
+  "items": [
+//        {
+//          "name": "$checkbox",
+//          "content": {
+//            "html": "<td styles='normalTdNode' width='30px'></td>",
+//            //"condition": "function(d){ return false }",
+//            "value": "",
+//            "event" : "click^^function(){ this.view.explorer.addContentToAll( this.data ) }",
+//            "show" : "function(d){ return this.view.getStatus() == 'confirm' }"
+//          }
+//        },
+    {
+      "name": "addContentToAll",
+      "content": {
+        "html": "<td styles='listViewTableTd' width='40'><input type='button' item='addContentToAll' styles='addButton'></td>",
+        "show" : "function(d){ return ( this.view.getStatus() == 'confirm' &&  this.view.options.isEdited == true ) }",
+        "items": {
+          "addContentToAll" : {
+            "attr" : "value^^function(){ return '添加' }",
+            "event" : "click^^function(){ this.view.explorer.addContentToAll( this.data ) }"
+          }
+        }
+      }
+    },
+    {
+      "name": "targetPerson",
+      "content": {
+        "html": "<td styles='listViewTableTd' item='targetPerson' width='70'></td>",
+        "items": {
+          "targetPerson" : {
+            "value" : "function(d){ return !d.targetPerson ? '' : d.targetPerson.split('@')[0] + '：' }"
+          }
+        }
+      }
+    },
+    {
+      "name": "progressContent",
+      "content": {
+        "html": "<td styles='listViewTableTd' item='progressContent'></td>",
+        "items": {
+          "progressContent" : {
+            "type" : "html",
+            "value" : "function(d){ return this.app.common.replaceWithBr( d.progressContent )  }"
+            //"show" : "function( d ){ return d.progressContent && d.progressContent!='暂无内容' ? true : false }"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,257 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="基本" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		  <tr>
+		    <td class="editTableTitle">标识:</td>
+		    <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">名称:</td>
+		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">描述:</td>
+		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">Class:</td>
+		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+		  </tr>
+		</table>
+		
+		<div class="MWFMaplist" name="styles" title="样式"></div>
+		<div class="MWFMaplist" name="properties" title="属性"></div>
+
+        <div class="MWFMaplist" name="titleStyles" title="标题样式"></div>
+        <div class="MWFMaplist" name="itemStyles" title="数据样式"></div>
+
+		<!--<div>-->
+			<!--<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+				<!--<tr>-->
+					<!--<td class="editTableTitle"></td>-->
+					<!--<td class="editTableValue">-->
+						<!--<input type="radio" onclick="if (this.checked) {$('text{$.id}processViewArea').setStyle('display', 'block'); $('text{$.id}cmsViewArea').setStyle('display', 'none');}" name="selectViewType" value="process" text{($.selectViewType!='cms')?'checked':''}/>流程视图-->
+						<!--<input type="radio" onclick="if (this.checked) {$('text{$.id}processViewArea').setStyle('display', 'none'); $('text{$.id}cmsViewArea').setStyle('display', 'block');}" name="selectViewType" value="cms" text{($.selectViewType=='cms')?'checked':''}/>内容管理视图-->
+					<!--</td>-->
+				<!--</tr>-->
+			<!--</table>-->
+		<!--</div>-->
+		<!--<div id="text{$.id}processViewArea" style="display: text{($.selectViewType!='cms')?'block':'none'};">-->
+			<!--<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+				<!--<tr>-->
+					<!--<td class="editTableTitle">视图:</td>-->
+					<!--<td class="editTableValue"><div class="MWFViewSelect" name="processView"></div></td>-->
+				<!--</tr>-->
+			<!--</table>-->
+		<!--</div>-->
+		<!--<div id="text{$.id}cmsViewArea" style="display: text{($.selectViewType=='cms')?'block':'none'};">-->
+			<!--<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+				<!--<tr>-->
+					<!--<td class="editTableTitle">视图:</td>-->
+					<!--<td class="editTableValue"><div class="MWFCMSViewSelect" name="cmsView"></div></td>-->
+				<!--</tr>-->
+			<!--</table>-->
+		<!--</div>-->
+
+
+        <!--<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+            <!--&lt;!&ndash;<tr>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td class="editTableTitle">视图:</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td class="editTableValue">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="MWFViewSelect" name="view"></div>&ndash;&gt;-->
+                <!--&lt;!&ndash;</td>&ndash;&gt;-->
+            <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+            <!--<tr>-->
+                <!--<td class="editTableTitle">显示标题</td>-->
+                <!--<td class="editTableValue">-->
+                    <!--<input class="editTableRadio" name="isTitle" text{($.isTitle!='no')?'checked':''} type="radio" value="yes"/>显示-->
+                    <!--<input class="editTableRadio" name="isTitle" text{($.isTitle=='no')?'checked':''} type="radio" value="no"/>不显示-->
+                <!--</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<td class="editTableTitle">选择文件</td>-->
+                <!--<td class="editTableValue">-->
+                    <!--<select name="select">-->
+                        <!--<option text{($.select!='single' && $.select!='multi')?'selected':''} value="no">不允许</option>-->
+                        <!--<option text{($.select=='single')?'selected':''} value="single">单选</option>-->
+                        <!--<option text{($.select=='multi')?'selected':''} value="multi">多选</option>-->
+                    <!--</select>-->
+                <!--</td>-->
+            <!--</tr>-->
+            <!--&lt;!&ndash;<tr>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td class="editTableTitle">打开文件</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td class="editTableValue">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<input class="editTableRadio" name="isOpen" text{($.isOpen!='no')?'checked':''} type="radio" value="yes"/>允许&ndash;&gt;-->
+                    <!--&lt;!&ndash;<input class="editTableRadio" name="isOpen" text{($.isOpen=='no')?'checked':''} type="radio" value="no"/>不允许&ndash;&gt;-->
+                <!--&lt;!&ndash;</td>&ndash;&gt;-->
+            <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+        <!--</table>-->
+	</div>
+
+	<div title="视图"  class="MWFTab">
+		<!--<div>-->
+			<!--<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+				<!--<tr>-->
+					<!--<td class="editTableTitle"></td>-->
+					<!--<td class="editTableValue">-->
+						<!--<input type="radio" onclick="if (this.checked) {$('text{$.id}processViewArea').setStyle('display', 'block'); $('text{$.id}cmsViewArea').setStyle('display', 'none');}" name="selectViewType" value="process" text{($.selectViewType!='cms')?'checked':''}/>流程视图-->
+						<!--<input type="radio" onclick="if (this.checked) {$('text{$.id}processViewArea').setStyle('display', 'none'); $('text{$.id}cmsViewArea').setStyle('display', 'block');}" name="selectViewType" value="cms" text{($.selectViewType=='cms')?'checked':''}/>内容管理视图-->
+					<!--</td>-->
+				<!--</tr>-->
+			<!--</table>-->
+		<!--</div>-->
+		<!--<div id="text{$.id}processViewArea" style="display: text{($.selectViewType!='cms')?'block':'none'};">-->
+			<!--<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+				<!--<tr>-->
+					<!--<td class="editTableTitle">视图:</td>-->
+					<!--<td class="editTableValue"><div class="MWFViewSelect" name="processView"></div></td>-->
+				<!--</tr>-->
+			<!--</table>-->
+		<!--</div>-->
+		<!--<div id="text{$.id}cmsViewArea" style="display: text{($.selectViewType=='cms')?'block':'none'};">-->
+			<!--<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+				<!--<tr>-->
+					<!--<td class="editTableTitle">视图:</td>-->
+					<!--<td class="editTableValue"><div class="MWFCMSViewSelect" name="cmsView"></div></td>-->
+				<!--</tr>-->
+			<!--</table>-->
+		<!--</div>-->
+		<div>
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">视图:</td>
+					<td class="editTableValue"><div class="MWFQueryViewSelect" name="queryView"></div></td>
+				</tr>
+			</table>
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">立即载入:</td>
+					<td class="editTableValue">
+						<input type="radio" name="loadView" value="yes" text{($.loadView!='no')?'checked':''}/>是
+						<input type="radio" name="loadView" value="no" text{($.loadView=='no')?'checked':''}/>否
+					</td>
+				</tr>
+			</table>
+		</div>
+
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<!--<tr>-->
+			<!--<td class="editTableTitle">视图:</td>-->
+			<!--<td class="editTableValue">-->
+			<!--<div class="MWFViewSelect" name="view"></div>-->
+			<!--</td>-->
+			<!--</tr>-->
+			<tr>
+				<td class="editTableTitle">显示标题</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="isTitle" text{($.isTitle!='no')?'checked':''} type="radio" value="yes"/>显示
+					<input class="editTableRadio" name="isTitle" text{($.isTitle=='no')?'checked':''} type="radio" value="no"/>不显示
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">默认展开</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="isExpand" text{($.isExpand=='yes')?'checked':''} type="radio" value="yes"/>展开
+					<input class="editTableRadio" name="isExpand" text{($.isExpand!='yes')?'checked':''} type="radio" value="no"/>不展开
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">选择文件</td>
+				<td class="editTableValue">
+					<select name="select">
+						<option text{($.select!='single' && $.select!='multi')?'selected':''} value="no">不允许</option>
+						<option text{($.select=='single')?'selected':''} value="single">单选</option>
+						<option text{($.select=='multi')?'selected':''} value="multi">多选</option>
+					</select>
+				</td>
+			</tr>
+			<!--<tr>-->
+			<!--<td class="editTableTitle">打开文件</td>-->
+			<!--<td class="editTableValue">-->
+			<!--<input class="editTableRadio" name="isOpen" text{($.isOpen!='no')?'checked':''} type="radio" value="yes"/>允许-->
+			<!--<input class="editTableRadio" name="isOpen" text{($.isOpen=='no')?'checked':''} type="radio" value="no"/>不允许-->
+			<!--</td>-->
+			<!--</tr>-->
+		</table>
+
+		<div style="background-color: #eeeeee; border-top:1px solid #999999; height: 24px; line-height: 24px; text-align: center; cursor:pointer">过滤</div>
+		<div class="MWFViewFilter">
+			<div>
+				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+					<tr style="display:none">
+						<td class="editTableTitle">标题:</td>
+						<td class="editTableValue"><input type="text" class="editTableInput"/></td>
+					</tr>
+					<tr>
+						<td class="editTableTitle">路径:</td>
+						<td class="editTableValue"><input type="text" class="editTableInput"/></td>
+					</tr>
+					<tr>
+						<td class="editTableTitle">数据类型:</td>
+						<td class="editTableValue"><select>
+							<option value="textValue" selected>文本</option>
+							<option value="numberValue">数字</option>
+							<option value="datetimeValue">日期</option>
+							<option value="booleanValue">布尔</option>
+						</select></td>
+					</tr>
+					<tr style="display:none">
+						<td class="editTableTitle"></td>
+						<td class="editTableValue">
+							<input type="radio" value="restrict" name="text{$.id}viewFilterType" checked/>作为默认过滤条件<br>
+							<input type="radio" value="custom" name="text{$.id}viewFilterType"/>作为自定义过滤数据
+						</td>
+					</tr>
+				</table>
+				<table id="text{$.pid}viewFilterRestrict" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+					<tr>
+						<td class="editTableTitle">逻辑:</td>
+						<td class="editTableValue"><select><option selected value="and">并且(and)</option><option value="or">或者(or)</option></select></td>
+					</tr>
+
+					<tr>
+						<td class="editTableTitle">比较:</td>
+						<td class="editTableValue"><select>
+							<option value="equals" selected>等于(==)</option>
+							<option value="notEquals">不等于(!=)</option>
+							<option value="greaterThan">大于(>)</option>
+							<option value="greaterThanOrEqualTo">大于等于(>=)</option>
+							<option value="lessThan">小于(<)</option>
+							<option value="lessThanOrEqualTo">小于等于(<=)</option>
+							<option value="like">匹配(like)</option>
+							<option value="notLike">不匹配(not-like)</option>
+							<option value="range">范围(range)</option>
+						</select></td>
+					</tr>
+					<tr style="display:none">
+						<td class="editTableTitle">值:</td>
+						<td class="editTableValue">
+							<input type="text" class="editTableInput" style="display: block"/>
+							<input type="number" class="editTableInput" style="display: none"/>
+							<input type="text" class="editTableInput" style="display: none" readonly/>
+							<select style="display: none">
+								<option value="true" selected>是(True)</option>
+								<option value="false">否(False)</option>
+							</select>
+						</td>
+					</tr>
+				</table>
+				<div title="值" class="MWFFilterFormulaArea"></div>
+			</div>
+			<div></div>
+			<div style="height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">默认过滤条件</div>
+			<div style="min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
+			<div style="display:none; height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">自定义过滤数据</div>
+			<div style="display:none; min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
+		</div>
+
+	</div>
+
+	<div title="事件"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

@@ -1,0 +1,174 @@
+{
+  "type": "success",
+  "data": {
+    "x_portal_assemble_designer": {
+      "name": "门户设计",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_portal_assemble_designer"
+    },
+    "x_portal_assemble_surface": {
+      "name": "门户",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_portal_assemble_surface"
+    },
+    "x_query_assemble_surface": {
+      "name": "数据查询",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_query_assemble_surface"
+    },
+    "x_file_assemble_control": {
+      "name": "云文件",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_file_assemble_control"
+    },
+    "x_cms_assemble_control": {
+      "name": "内容管理",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_cms_assemble_control"
+    },
+    "x_organization_assemble_control": {
+      "name": "组织管理",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_organization_assemble_control"
+    },
+    "x_mind_assemble_control": {
+      "name": "脑图",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_mind_assemble_control"
+    },
+    "x_okr_assemble_control": {
+      "name": "OKR",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_okr_assemble_control"
+    },
+    "x_query_assemble_designer": {
+      "name": "数据查询设计",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_query_assemble_designer"
+    },
+    "x_organization_assemble_custom": {
+      "name": "布局",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_organization_assemble_custom"
+    },
+    "x_report_assemble_control": {
+      "name": "汇报管理",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_report_assemble_control"
+    },
+    "x_processplatform_assemble_surface": {
+      "name": "流程",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_processplatform_assemble_surface"
+    },
+    "x_processplatform_assemble_designer": {
+      "name": "流程设计",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_processplatform_assemble_designer"
+    },
+    "x_meeting_assemble_control": {
+      "name": "会议管理",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_meeting_assemble_control"
+    },
+    "x_processplatform_assemble_bam": {
+      "name": "流程监控",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_processplatform_assemble_bam"
+    },
+    "x_hotpic_assemble_control": {
+      "name": "热点图片",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_hotpic_assemble_control"
+    },
+    "x_attendance_assemble_control": {
+      "name": "考勤",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_attendance_assemble_control"
+    },
+    "x_bbs_assemble_control": {
+      "name": "论坛",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_bbs_assemble_control"
+    },
+    "x_collaboration_assemble_websocket": {
+      "name": "协作",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_collaboration_assemble_websocket"
+    },
+    "x_crm_assemble_control": {},
+    "x_organization_assemble_express": {
+      "name": "组织管理查询",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_organization_assemble_express"
+    },
+    "x_organization_assemble_personal": {
+      "name": "组织管理个人",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_organization_assemble_personal"
+    },
+    "x_component_assemble_control": {
+      "name": "组件",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_component_assemble_control"
+    },
+    "x_message_assemble_communicate": {
+      "name": "消息通讯",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_message_assemble_communicate"
+    },
+    "x_organization_assemble_authentication": {
+      "name": "组织管理认证",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_organization_assemble_authentication"
+    },
+    "x_calendar_assemble_control": {
+      "name": "日程管理",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_calendar_assemble_control"
+    },
+    "x_cms_assemble_search": {
+      "name": "内容搜索",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_cms_assemble_search"
+    },
+    "x_strategydeploy_assemble_control": {
+      "name": "战略工作",
+      "host": "60.190.253.249",
+      "port": 20020,
+      "context": "/x_strategydeploy_assemble_control"
+    }
+  },
+  "message": "",
+  "date": "2018-08-10 22:43:24",
+  "spent": 0,
+  "size": -1,
+  "count": 0,
+  "position": 0
+}

@@ -1,0 +1,219 @@
+{
+	"toolbarNode": {
+		"overflow": "hidden",
+		"height": "80px",
+		"border-bottom-left-radius": "0px",
+		"border-bottom-right-radius": "0px",
+		"border-bottom": "1px solid #314e69",
+		"border-right": "1px solid #314e69",
+		"border-left": "1px solid #314e69",
+		"margin-right": "0px",
+		"margin-left": "0px",
+		"background-color": "#4c6b87",
+		"position": "static"
+	},
+	"iconElementNode": {
+        "float": "left",
+        "width": "80px",
+        "height": "80px",
+        "background-position": "center center",
+        "background-repeat": "no-repeat",
+        "cursor": "pointer"
+    },
+	"titleElementNode": {
+        "float": "left",
+        "width": "180px",
+        "height": "80px",
+        "line-height": "80px",
+        "color": "#FFF",
+        "font-weight": "bold",
+        "font-family": "微软雅黑",
+        "font-size": "18px",
+        "margin-left": "5px"
+	},
+    "elementContentNode": {
+        "overflow": "hidden",
+        "position": "static",
+        "margin": "0px 10px"
+    },
+    "elementContentListNode": {
+        "overflow": "hidden",
+        "padding-bottom": "20px",
+        "margin-right": "10px"
+    },
+
+
+    "workItemHeadNode": {
+	    "margin-top": "5px",
+        "height": "40px",
+        "background-color": "#dddddd",
+        "color": "#666666",
+        "font-weight": "bold",
+        "line-height": "40px",
+        "font-family": "微软雅黑",
+        "font-size": "14px"
+    },
+	"processAreaHeadNode": {
+        "width": "20%",
+        "height": "40px",
+        "float": "left"
+    },
+	"keyAreaHeadNode": {
+        "width": "40%",
+        "height": "40px",
+        "float": "left"
+    },
+    "numberAreaHeadNode":{
+        "width": "20%",
+        "height": "40px",
+        "float": "left"
+    },
+    "emptyAreaHeadNode": {
+        "width": "10%",
+        "height": "40px",
+        "float": "left"
+    },
+
+
+    "workItemNode": {
+        "background-color": "#F6F6F6",
+        "border-top": "1px solid #FFF",
+        "border-bottom": "1px solid #CCC",
+        "overflow": "hidden"
+    },
+
+    "workItemWorkNode":{
+        "background-color": "#F6F6F6",
+        "min-height": "39px",
+        "overflow": "hidden",
+        "color": "#666666",
+        //"line-height": "39px",
+        "font-family": "微软雅黑",
+        "font-size": "12px"
+    },
+    "workItemWorkNode_remove": {
+        "background-color": "#ffcccc"
+    },
+
+    "processAreaNode": {
+        "width": "20%",
+        "height": "39px",
+        "line-height": "39px",
+        "float": "left"
+    },
+    "keyAreaNode": {
+        "width": "40%",
+        "height": "39px",
+        "line-height": "39px",
+        "float": "left"
+    },
+    "numberAreaNode": {
+        "width": "20%",
+        "height": "39px",
+        "line-height": "39px",
+        "float": "left"
+    },
+    "emptyAreaNode": {
+        "width": "10%",
+        "height": "39px",
+        "line-height": "39px",
+        "float": "left"
+    },
+
+    "actionDeleteNode": {
+        "height": "20px",
+        "border-radius": "3px",
+        "border": "1px solid #666",
+        "width": "20px",
+        "line-height": "20px",
+        "margin-top": "10px",
+        "box-shadow": "1px 1px 2px #CCC",
+        "color": "#888",
+        "cursor": "pointer",
+        "float": "left",
+        "margin-right": "5px",
+        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/delete.png) no-repeat center center"
+    },
+    "actionDeleteNode_over":{
+        "box-shadow": "1px 1px 2px #999",
+        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/delete_over.png) no-repeat center center",
+        "background-color": "#666"
+    },
+    "actionDeleteNode_down":{
+        "box-shadow": "-1px -1px 3px #999 inset",
+    },
+
+    "actionEditNode": {
+        "height": "20px",
+        "border-radius": "3px",
+        "border": "1px solid #666",
+        "width": "20px",
+        "line-height": "20px",
+        "margin-top": "10px",
+        "box-shadow": "1px 1px 2px #CCC",
+        "color": "#888",
+        "cursor": "pointer",
+        "float": "left",
+        "margin-right": "5px",
+        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/edit.png) no-repeat center center"
+    },
+    "actionEditNode_over":{
+        "box-shadow": "1px 1px 2px #999",
+        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/edit_over.png) no-repeat center center",
+        "background-color": "#666"
+    },
+    "actionEditNode_down":{
+        "box-shadow": "-1px -1px 3px #999 inset",
+    },
+
+    "editAreaNode": {
+        "height": "38px",
+        "position": "absolute",
+        "border": "0px solid #999",
+        "background-color": "#F6F6F6"
+    },
+    "editNumberInputNode": {
+        "height": "18px",
+        "margin-top": "8px",
+        "border": "1px solid #999",
+        "margin-left": "0px",
+        "float": "left"
+    },
+    "editOkActionNode": {
+        "height": "20px",
+        "width": "50px",
+        "line-height": "20px",
+        "border": "1px solid #999",
+        "border-radius": "3px",
+        "background-color": "#4c6b87",
+        "color": "#FFF",
+        "text-align": "center",
+        "margin-top": "7px",
+        "margin-left": "5px",
+        "cursor": "pointer",
+        "float": "left"
+    },
+    "editCancelActionNode": {
+        "height": "20px",
+        "width": "40px",
+        "line-height": "20px",
+        "border": "1px solid #999",
+        "border-radius": "3px",
+        "color": "#666",
+        "text-align": "center",
+        "margin-top": "7px",
+        "margin-left": "5px",
+        "cursor": "pointer",
+        "float": "left"
+    },
+
+    "noListText": {
+        "color": "#999",
+        "height": "30px",
+        "line-height": "30px",
+        "margin-left": "60px",
+        "position": "relative",
+        "top": "-30px"
+    }
+
+}

@@ -1,0 +1,35 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='3' cellspacing='0' styles='listViewTable'></table>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='listViewTableTr'></tr>",
+    "mouseoverStyles": "listViewTableTr_over"//,
+    //"action": "open"
+  },
+  "items": [
+    {
+      "name": "targetPerson",
+      "content": {
+        "html": "<td styles='listViewTableTd' item='targetPerson' width='70'></td>",
+        "items": {
+          "targetPerson" : {
+            "value" : "function(d){ return !d.targetPerson ? '' : d.targetPerson.split('@')[0] + '：' }"
+          }
+        }
+      }
+    },
+    {
+      "name": "planContent",
+      "content": {
+        "html": "<td styles='listViewTableTd' item='planContent'></td>",
+        "items": {
+          "planContent" : {
+            "type" : "html",
+            "value" : "function(d){ return this.app.common.replaceWithBr( d.planContent )  }"
+          }
+        }
+      }
+    }
+  ]
+}

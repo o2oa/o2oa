@@ -1,0 +1,198 @@
+{
+  "topMenu": {
+    "height": "50px",
+    //"position": "absolute",
+    "top": "0px",
+    "width": "100%",
+    "color": "#FFF",
+    "line-height": "50px",
+    "font-size": "14px",
+    "font-family": "微软雅黑",
+    "background-color": "#fff",
+    "overflow" : "hidden"
+  },
+  "topMenuRight" : {
+    "float" : "right",
+    "margin-right" : "20px"
+  },
+  "contentNode": {
+    "height": "100%",
+    "min-height": "400px",
+    "overflow": "hidden",
+    "-webkit-user-select": "text",
+    "-moz-user-select": "text"
+  },
+  "bottomMenu": {
+    "height": "60px",
+    "position": "absolute",
+    "bottom": "0px",
+    "width": "100%",
+    "color": "#FFF",
+    "font-family": "微软雅黑",
+    "background-color": "#365775"
+  },
+  "topMenuNode": {
+    "height": "50px",
+    "color" : "#333",
+    "font-size" : "16px",
+    "line-height": "50px",
+    "float": "left",
+    "cursor": "pointer",
+    "padding-left" : "15px",
+    "padding-right" : "15px",
+    "overflow" : "hidden"
+  },
+  "topMenuNode_right" : {
+    "height": "50px",
+    "color" : "#333",
+    "font-size" : "16px",
+    "line-height": "50px",
+    "float": "left",
+    "cursor": "pointer"
+  },
+  "topMenuNode_over": {
+    "color" : "#3C76B7"
+  },
+  "topMenuNode_down": {
+    "color" : "#3C76B7"
+  },
+  "topMenuIconNode": {
+    "height": "50px",
+    "width": "30px",
+    "float": "left"
+  },
+  "topMenuTextNode": {
+    "line-height": "50px",
+    "height": "50px",
+    "float": "left"
+  },
+
+
+
+  "configNode": {
+    "box-shadow": "inset 1px 0 0 0 #CCCCCC",
+    "background": "#F8F8F8",
+    "width": "300px",
+    "position": "absolute",
+    "right": "0px",
+    "top": "50px",
+    "opacity": "0"
+  },
+  "configContentNode": {
+    "margin": "20px",
+    "overflow": "hidden"
+  },
+  "configContentLine": {
+    "height": "1px",
+    "border-bottom": "1px dashed #ccc",
+    "margin-top" : "20px",
+    "margin-bottom" : "20px"
+  },
+  "configProcessNode": {
+    "height": "30px",
+    "border-bottom": "1px dashed #ccc",
+    "background": "url(/x_component_Report/$Main/default/icon/addPerson.png) no-repeat right center",
+    "margin-top" : "10px",
+    "cursor": "pointer",
+    "margin-bottom" : "20px"
+  },
+  "configTitleDiv": {
+    "height": "30px",
+    "width": "120px",
+    "color": "#333",
+    "font-size": "18px",
+    "margin-bottom" : "10px"
+  },
+
+  "configActionNode": {
+    "height": "50px",
+    "margin": "20px"
+  },
+  "configActionSaveNode": {
+    "background": "#3C76B7",
+    "border-radius": "4px",
+    "width" : "120px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "border" : "0px",
+    "color" : "#fff",
+    "cursor" : "pointer",
+    "text-align"  : "center",
+    "margin-right" : "20px",
+    "font-size" : "18px",
+    "float" : "right"
+  },
+  "configActionCancelNode": {
+    "background": "#f0f0f0",
+    "border-radius": "4px",
+    "width" : "80px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "margin-right" : "20px",
+    "color" : "#666",
+    "border" : "0px",
+    "font-size" : "18px",
+    "text-align"  : "center",
+    "cursor" : "pointer",
+    "float" : "right"
+  },
+  "dealStartedWorkAction": {
+    "color": "#0000FF",
+    "cursor": "pointer"
+  },
+
+  "searchBarAreaNode": {
+    //"margin": "0px 20px 0px 20px",
+    "height": "32px",
+    "overflow": "hidden",
+    "float" : "right"
+  },
+  "searchBarNode": {
+    "max-width": "500px",
+    "height": "30px",
+    "background-color": "#FFF",
+    "border": "1px solid #ccc",
+    //"border-radius":"10px",
+    "float": "left"
+  },
+  "searchBarActionNode": {
+    "width": "40px",
+    "height": "30px",
+    "background": "url(/x_component_Report/$Main/default/icon/search.png) center center no-repeat",
+    "float": "left",
+    "cursor": "pointer"
+  },
+  "searchBarResetActionNode": {
+    "position" : "absolute",
+    "top" : "0px",
+    "right" : "0px",
+    "width": "40px",
+    "height": "30px",
+    "background": "url(/x_component_Report/$Main/default/icon/icon_off.png) center center no-repeat",
+    "cursor": "pointer"
+  },
+  "searchMoreActionNode": {
+    "width": "40px",
+    "height": "30px",
+    "background": "url(/x_component_Report/$Main/default/icon/more.png) center center no-repeat",
+    "float": "left",
+    "cursor": "pointer"
+  },
+  "searchBarInputBoxNode": {
+    "position" : "relative",
+    "height": "30px",
+    "line-height": "30px",
+    "padding-left": "10px",
+    "float" : "left",
+    "width" : "310px"
+  },
+  "searchBarInputNode": {
+    "-webkit-user-select": "text",
+    "-moz-user-select": "text",
+    "width": "100%",
+    "height": "24px",
+    "border": "0px",
+    "color": "#666"
+  }
+
+}

@@ -1,0 +1,79 @@
+{
+  "getId" : {"uri":"/jaxrs/uuid/random"},
+
+  "listDocumentAll": {"uri" : "/jaxrs/document/list/category/{categoryId}"},
+  /*
+  过滤条件：
+    private List<NameValueCountPair> appIdList; //一个APPID   [{"appId":""}]
+    private List<NameValueCountPair> categoryIdList;//一个CATEGORYID       [{"categoryId":""}]
+    private List<NameValueCountPair> creatorList;//一个创建人        [{"creatorUid":""}]
+    private List<NameValueCountPair> statusList;//一个DOCSTATUS    [{"docStatus":""}]
+    private List<NameValueCountPair> titleList;	//一个标题         [{"title":""}]
+    private List<NameValueCountPair> formList;//一个FORM          [{"form":""}]
+    private List<NameValueCountPair> createDateList;	//创建年份月份，可以传入一个或者两个   [{"startDate":""},{"endDate":""}]
+  */
+  "listDocumentFilterNext": {"uri" : "/jaxrs/document/filter/list/{id}/next/{count}", "method": "PUT"},
+  "listDocumentFilterPrev": {"uri" : "/jaxrs/document/filter/list/{id}/prev/{count}", "method": "PUT"},
+
+  "listViewDataNext": {"uri" : "/jaxrs/view/viewdata/list/{id}/next/{count}", "method": "POST"},
+  /*
+  参数：
+  {
+      "orderField":"createTime",
+      "orderType":"desc",
+      "categoryId":"86b3a04e-a245-40e9-9580-615abda330b1",
+      "viewId":"6e69d043-d8ae-4887-a8d1-e8fb2c981d7d",
+      "searchDocStatus":"published"
+  }
+  */
+
+  "listDraftNext": {"uri" : "/jaxrs/document/draft/list/{id}/next/{count}", "method": "PUT"},
+  "listDraftPrev": {"uri" : "/jaxrs/document/draft/list/{id}/prev/{count}", "method": "PUT"},
+
+  "listDraftFilterAttribute": {"uri" : "/jaxrs/searchfilter/list/draft/filter"},
+  "listPublishFilterAttribute": {"uri" : "/jaxrs/searchfilter/list/publish/filter"},
+  "listArchiveFilterAttribute": {"uri" : "/jaxrs/searchfilter/list/archive/filter"},
+
+  "listCategoryDraftFilterAttribute": {"uri" : "/jaxrs/searchfilter/list/draft/filter/category/{categoryId}"},
+  "listCategoryPublishFilterAttribute": {"uri" : "/jaxrs/searchfilter/list/publish/filter/category/{categoryId}"},
+  "listCategoryArchiveFilterAttribute": {"uri" : "/jaxrs/searchfilter/list/archive/filter/category/{categoryId}"},
+
+  "getDocument" : {"uri" : "/jaxrs/document/{id}"},
+  "addDocument": {"uri" : "/jaxrs/document", "method": "POST"},
+  "updateDocument" : {"uri":"/jaxrs/document/{id}","medthod":"PUT"},
+  "removeDocument" : {"uri":"/jaxrs/document/{id}","method": "DELETE"},
+  "publishDocument" : {"uri":"/jaxrs/document/publish/{id}","method":"PUT"},  //发布文档信息
+  "cancelPublishDocument" : {"uri":"/jaxrs/document/publish/{id}/cancel","method":"PUT"}, //取消发布文档信息
+  "achiveDocument" : {"uri":"/jaxrs/document/achive/{id}","method":"PUT"}, //归档文档信息
+  "redraftDocument" : {"uri":"/jaxrs/document/draft/{id}","method":"PUT"}, //恢复为草稿
+
+  //"listColumnController" : {"uri": "/jaxrs/appcategoryadmin/list/app/{appId}"},
+
+  "listColumn": {"uri": "/jaxrs/appinfo/list/user/view/all" },
+  "listColumnByPublish": {"uri": "/jaxrs/appinfo/list/user/publish" },
+  "listColumnByAdmin": {"uri": "/jaxrs/appinfo/list/admin" },
+  "getColumn": {"uri": "/jaxrs/appinfo/{id}"},
+
+  "listCategory": {"uri": "/jaxrs/categoryinfo/list/view/app/{appId}/all" },
+  "listCategoryByPublisher": {"uri": "/jaxrs/categoryinfo/list/publish/app/{appId}" },
+  "getCategory" : {"uri":"/jaxrs/categoryinfo/{id}"},
+
+  "getForm": {"uri": "/jaxrs/form/{id}"},
+//  "getDictionary": {"uri": "/jaxrs/appdict/{appDictId}"},
+//  "getScript": {"uri": "/jaxrs/script/{id}"},
+//  "getScriptByName": {"uri": "/jaxrs/script/list/app/{appId}/name/{name}"}
+
+  "listViewByCategory": {"uri" : "/jaxrs/view/list/category/{categoryId}"},
+  "getView" : {"uri" : "/jaxrs/view/{id}"},
+  "listCategoryViewByCategory": {"uri" : "/jaxrs/viewcategory/list/category/{categoryId}"},
+
+  "listWorkFilter": {"uri": "/jaxrs/work/list/{id}/next/{count}/application/{applicationId}/filter", "method": "POST"},
+  "startWork": {"uri": "/jaxrs/work/process/{processId}", "method": "POST"},
+  "saveWorkData": {"uri": "/jaxrs/data/work/{id}", "method": "PUT"},
+
+  "getCurrentPerson" : {"uri" : "/jaxrs/person"},
+  //{"identityList":[identity]}
+  "listDepartmentWithIdentity" : {"uri" : "/jaxrs/unit/list/identity","method": "POST"}
+
+
+}

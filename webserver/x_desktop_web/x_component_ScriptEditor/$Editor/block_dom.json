@@ -1,0 +1,473 @@
+[
+  {
+    "name": "dom.getDom",
+    "contents": [
+      "获取一个DOM对象",
+      {"type": "input","default": ""}
+    ],
+    "class": "dom.GetDom", "extend": "$Expression"
+  },
+  {
+    "name": "dom.getDoms",
+    "contents": [
+      "获取一组DOM对象",
+      {"type": "input","default": ""}
+    ],
+    "class": "dom.GetDoms", "extend": "$Expression"
+  },
+  {
+    "name": "dom.getDomByid",
+    "contents": [
+      "获取id为",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的DOM对象"
+    ],
+    "class": "dom.GetDomByid", "extend": "$Expression"
+  },
+  {
+    "name": "dom.new",
+    "contents": [
+      "创建DOM对象",
+      {"type": "input","default": "div"},
+      "并赋值给",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "dom.New", "extend": "$Around"
+  },
+  {
+    "name": "dom.html",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的HTML"
+    ],
+    "class": "dom.Html", "extend": "$Expression"
+  },
+  {
+    "name": "dom.text",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的文本"
+    ],
+    "class": "dom.Text", "extend": "$Expression"
+  },
+  {
+    "name": "dom.tag",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的Tagname"
+    ],
+    "class": "dom.Tag", "extend": "$Expression"
+  },
+  {
+    "name": "dom.tag",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的Tagname"
+    ],
+    "class": "dom.Tag", "extend": "$Expression"
+  },
+
+  {
+    "name": "dom.getElement",
+    "contents": [
+      "获取对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的一个子对象",
+      {"type": "input","default": ""}
+    ],
+    "class": "dom.GetElement", "extend": "$Expression"
+  },
+  {
+    "name": "dom.getElements",
+    "contents": [
+      "获取对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的一组子对象",
+      {"type": "input","default": ""}
+    ],
+    "class": "dom.GetElements", "extend": "$Expression"
+  },
+  {
+    "name": "dom.getElementById",
+    "contents": [
+      "获取对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "id为",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的子对象"
+    ],
+    "class": "dom.GetElementById", "extend": "$Expression"
+  },
+  {
+    "name": "dom.get",
+    "contents": [
+      "获取对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的",
+      {"type": "input","default": ""},
+      "属性"
+    ],
+    "class": "dom.Get", "extend": "$Expression"
+  },
+  {
+    "name": "dom.set",
+    "contents": [
+      "设置对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的",
+      {"type": "input","default": ""},
+      "属性，为",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "dom.Set", "extend": "$Operation"
+  },
+  {
+    "name": "dom.erase",
+    "contents": [
+      "删除对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的属性",
+      {"type": "input","default": ""}
+    ],
+    "class": "dom.Erase", "extend": "$Operation"
+  },
+  {
+    "name": "dom.contains",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "包含另一个对象",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "dom.Contains", "extend": "$Expression"
+  },
+  {
+    "name": "dom.inject",
+    "contents": [
+      "将对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "插入到对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的",
+      {"type": "select", "options": ["顶部|top", "底部|bottom", "前面|before", "后面|after"], "default": "bottom"}
+    ],
+    "class": "dom.Inject", "extend": "$Operation"
+  },
+  {
+    "name": "dom.appendHTML",
+    "contents": [
+      "在对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "中添加HTML",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "dom.AppendHTML", "extend": "$Operation"
+  },
+  {
+    "name": "dom.appendText",
+    "contents": [
+      "在对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "中添加文本",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "dom.AppendText", "extend": "$Operation"
+  },
+  {
+    "name": "dom.dispose",
+    "contents": [
+      "从DOM中移除对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "，并返回"
+    ],
+    "class": "dom.Dispose", "extend": "$Expression"
+  },
+  {
+    "name": "dom.clone",
+    "contents": [
+      "克隆DOM对象",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "dom.Clone", "extend": "$Expression"
+  },
+  {
+    "name": "dom.replaces",
+    "contents": [
+      "将对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "替换为",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "并返回原对象"
+    ],
+    "class": "dom.Replaces", "extend": "$Expression"
+  },
+  {
+    "name": "dom.hasClass",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "是否有Class",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "dom.HasClass", "extend": "$Expression"
+  },
+  {
+    "name": "dom.addClass",
+    "contents": [
+      "给对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "添加Class",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "dom.AddClass", "extend": "$Operation"
+  },
+  {
+    "name": "dom.removeClass",
+    "contents": [
+      "删除对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的Class",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "dom.RemoveClass", "extend": "$Operation"
+  },
+  {
+    "name": "dom.getPrevious",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的上一个对象",
+      {"type": "input","default": ""}
+    ],
+    "class": "dom.GetPrevious", "extend": "$Expression"
+  },
+  {
+    "name": "dom.getNext",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的下一个对象",
+      {"type": "input","default": ""}
+    ],
+    "class": "dom.GetNext", "extend": "$Expression"
+  },
+  {
+    "name": "dom.getFirst",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的第一个子对象",
+      {"type": "input","default": ""}
+    ],
+    "class": "dom.GetFirst", "extend": "$Expression"
+  },
+  {
+    "name": "dom.getLast",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的最后一个子对象",
+      {"type": "input","default": ""}
+    ],
+    "class": "dom.GetLast", "extend": "$Expression"
+  },
+  {
+    "name": "dom.getParent",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的父对象对象",
+      {"type": "input","default": ""}
+    ],
+    "class": "dom.GetParent", "extend": "$Expression"
+  },
+  {
+    "name": "dom.getChildren",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的第一层子对象",
+      {"type": "input","default": ""}
+    ],
+    "class": "dom.GetChildren", "extend": "$Expression"
+  },
+  {
+    "name": "dom.empty",
+    "contents": [
+      "清空对象",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "dom.Empty", "extend": "$Expression"
+  },
+  {
+    "name": "dom.destroy",
+    "contents": [
+      "删除对象",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "dom.Destroy", "extend": "$Expression"
+  },
+  {
+    "name": "dom.store",
+    "contents": [
+      "在对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "存储数据：键",
+      {"type": "input","default": ""},
+      "值",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "dom.Store", "extend": "$Operation"
+  },
+  {
+    "name": "dom.retrieve",
+    "contents": [
+      "在对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "取回数据",
+      {"type": "input","default": ""}
+    ],
+    "class": "dom.Retrieve", "extend": "$Expression"
+  },
+  {
+    "name": "dom.eliminate",
+    "contents": [
+      "删除对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的数据",
+      {"type": "input","default": ""}
+    ],
+    "class": "dom.liminate", "extend": "$Operation"
+  },
+
+  {
+    "name": "dom.addEvent",
+    "contents": [
+      "给对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "添加",
+      {"type": "input","default": ""},
+      "事件",
+      {"type": "mortise","tenonTypes": []}
+    ],
+    "class": "dom.AddEvent", "extend": "$Operation"
+  },
+  {
+    "name": "dom.removeEvent",
+    "contents": [
+      "删除对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的",
+      {"type": "input","default": ""},
+      "事件",
+      {"type": "mortise","tenonTypes": []}
+    ],
+    "class": "dom.AddEvent", "extend": "$Operation"
+  },
+  {
+    "name": "dom.scrollTo",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "滚动到：x",
+      {"type": "input","default": "0"},
+      "y",
+      {"type": "input","default": "0"}
+    ],
+    "class": "dom.ScrollTo", "extend": "$Operation"
+  },
+  {
+    "name": "dom.getSize",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的大小"
+    ],
+    "class": "dom.GetSize", "extend": "$Expression"
+  },
+  {
+    "name": "dom.getScrollSize",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的滚动大小"
+    ],
+    "class": "dom.GetScrollSize", "extend": "$Expression"
+  },
+  {
+    "name": "dom.getScroll",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的滚动到的位置"
+    ],
+    "class": "dom.GetScroll", "extend": "$Expression"
+  },
+  {
+    "name": "dom.getPosition",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的位置，参考对象：",
+      {"type": "mortise","tenonTypes": []}
+    ],
+    "class": "dom.GetPosition", "extend": "$Expression"
+  },
+  {
+    "name": "dom.setPosition",
+    "contents": [
+      "设置对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的位置，x",
+      {"type": "input","default": "0"},
+      "y",
+      {"type": "input","default": "0"}
+    ],
+    "class": "dom.SetPosition", "extend": "$Operation"
+  },
+  {
+    "name": "dom.getCoordinates",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的位置大小信息，参考对象：",
+      {"type": "mortise","tenonTypes": []}
+    ],
+    "class": "dom.GetCoordinates", "extend": "$Expression"
+  },
+  {
+    "name": "dom.getOffsetParent",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的定位父对象"
+    ],
+    "class": "dom.GetOffsetParent", "extend": "$Expression"
+  },
+  {
+    "name": "dom.getStyle",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的样式",
+      {"type": "input","default": ""}
+    ],
+    "class": "dom.GetStyle", "extend": "$Expression"
+  },
+  {
+    "name": "dom.setStyle",
+    "contents": [
+      "设置对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的样式",
+      {"type": "input","default": ""},
+      "为",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "dom.SetStyle", "extend": "$Expression"
+  }
+]

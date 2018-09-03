@@ -1,0 +1,14 @@
+<div id="MWF_calendar_container">
+	<div id="MWF_calendar_title">
+		<div id="MWF_calendar_prev"></div>
+		<div id="MWF_calendar_current"><div id="MWF_calendar_currentText"></div></div>
+		<div id="MWF_calendar_next"></div>
+	</div>
+	<div id="MWF_calendar_content">
+		<div id="MWF_calendar_content_time">
+	</div>
+
+	</div>
+
+	<div id="MWF_calendar_bottom"></div>
+</div>

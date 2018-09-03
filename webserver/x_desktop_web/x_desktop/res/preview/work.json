@@ -1,0 +1,166 @@
+{
+  "work": {
+    "createTime": (new Date()).format("db"),
+    "updateTime": (new Date()).format("db"),
+    "id": "4c70386b-45f0-45d9-97da-07ed9824ca8d",
+    "job": "28571df4-7390-4410-a051-325b20a9bd00",
+    "title": "工作标题（预览）",
+    "startTime": (new Date()).format("db"),
+    "startTimeMonth": "2015-12",
+    "creatorPerson": "创建用户（预览）",
+    "creatorIdentity": "xxxx@431da633-660f-48bd-8778-9f0eca457be0@I",
+    "creatorDepartment": "创建部门（预览）",
+    "creatorCompany": "创建公司（预览）",
+    "creatorUnit": "创建组织（预览）",
+    "application": "c5bb8455-e952-4e11-8dfc-59d725d6c404",
+    "applicationName": "应用（预览）",
+    "process": "5812c5c7-b9fc-45ba-bfe5-e5e6a54c7523",
+    "processName": "流程（预览）",
+    "activity": "0a9dcb17-d3fa-4797-820e-ab9b26b534dc",
+    "activityType": "manual",
+    "activityName": "活动（预览）",
+    "activityToken": "0de13bf1-d64d-4f97-8b05-d93e1b8265be",
+    "activityArrivedTime": (new Date()).format("db"),
+    "workStatus": "processing",
+    "executed": false,
+    "inquired": false,
+    "errorRetry": 0,
+    "attachmentList": [],
+    "manualTaskIdentityList": [
+      "身份（预览）"
+    ],
+    "splitting": false,
+    "splitTokenList": [],
+    "form": "482bb41f-1da6-4811-aa63-6c8d540dcd60",
+    "power": {},
+  },
+
+  "taskList": [
+    {
+      "createTime": (new Date()).format("db"),
+      "updateTime": (new Date()).format("db"),
+      "sequence": "20151211102459efc1524d-8248-4098-9990-61769d8a5111",
+      "id": "efc1524d-8248-4098-9990-61769d8a5111",
+      "job": "28571df4-7390-4410-a051-325b20a9bd00",
+      "title": "44444444",
+      "startTime": (new Date()).format("db"),
+      "startTimeMonth": "2015-12",
+      "work": "4c70386b-45f0-45d9-97da-07ed9824ca8d",
+      "application": "c5bb8455-e952-4e11-8dfc-59d725d6c404",
+      "applicationName": "应用（预览）",
+      "process": "5812c5c7-b9fc-45ba-bfe5-e5e6a54c7523",
+      "processName": "流程（预览）",
+      "person": "用户（预览）",
+      "identity": "身份（预览）",
+      "department": "部门（预览）",
+      "company": "公司（预览）",
+      "activity": "0a9dcb17-d3fa-4797-820e-ab9b26b534dc",
+      "activityName": "活动（预览）",
+      "activityType": "manual",
+      "activityToken": "0de13bf1-d64d-4f97-8b05-d93e1b8265be",
+      "creatorPerson": "创建用户（预览）",
+      "creatorIdentity": "创建身份（预览）",
+      "creatorDepartment": "创建部门（预览）",
+      "creatorCompany": "创建公司（预览）",
+      "unit": "组织（预览）",
+      "routeList": [
+        "ee4b4c94-6f32-43ec-aee2-ba5a11602f33"
+      ],
+      "routeNameList": [
+        "路由决策1",
+        "路由决策2"
+      ],
+      "routeName": "",
+      "opinion": "",
+      "manualMode": "single",
+      "modified": false,
+      "viewed": false,
+      "allowRapid": false
+    }
+  ],
+  "readList": [],
+  "attachmentList": [],
+  "workLogList": [
+    {
+      "taskCompletedList": [],
+      "taskList": [],
+      "createTime": (new Date()).format("db"),
+      "updateTime": (new Date()).format("db"),
+      "id": "7afedf79-2460-4855-a76b-d8c09b65fcf8",
+      "completed": false,
+      "fromActivity": "5be9e7da-ebf6-4fda-9b1c-5c6bbdabce5f",
+      "fromActivityType": "begin",
+      "fromActivityName": "开始",
+      "fromActivityToken": "46348c48-8dbe-44b1-affb-0923c0d346b4",
+      "fromTime": (new Date()).format("db"),
+      "arrivedActivity": "0a9dcb17-d3fa-4797-820e-ab9b26b534dc",
+      "arrivedActivityType": "manual",
+      "arrivedActivityName": "申请人",
+      "arrivedActivityToken": "0de13bf1-d64d-4f97-8b05-d93e1b8265be",
+      "arrivedTime": (new Date()).format("db"),
+      "route": "84968314-d99a-4c7b-92ac-077c4894abd9",
+      "routeName": "开始",
+      "connected": true,
+      "splitting": false,
+      "splitTokenList": []
+    },
+    {
+      "taskCompletedList": [],
+      "taskList": [
+        {
+          "createTime": (new Date()).format("db"),
+          "updateTime": (new Date()).format("db"),
+          "id": "2061b6a2-b915-497f-b6dc-34162964fd63",
+          "startTime": (new Date()).format("db"),
+          "startTimeMonth": "2015-12",
+          "work": "4c70386b-45f0-45d9-97da-07ed9824ca8d",
+          "person": "胡起",
+          "identity": "胡起(开发部)",
+          "department": "开发部",
+          "company": "兰德",
+          "unit": "组织（预览）",
+          "routeList": [
+            "ee4b4c94-6f32-43ec-aee2-ba5a11602f33"
+          ],
+          "routeNameList": [
+            "决策"
+          ],
+          "allowRapid": false
+        }
+      ],
+      "createTime": (new Date()).format("db"),
+      "updateTime": (new Date()).format("db"),
+      "id": "ebae8788-c134-4b33-9c47-fad8c2f240db",
+      "completed": false,
+      "fromActivity": "0a9dcb17-d3fa-4797-820e-ab9b26b534dc",
+      "fromActivityType": "manual",
+      "fromActivityName": "申请人",
+      "fromActivityToken": "0de13bf1-d64d-4f97-8b05-d93e1b8265be",
+      "fromTime": (new Date()).format("db"),
+      "connected": false,
+      "splitting": false,
+      "splitTokenList": []
+    }
+  ],
+  "data": {},
+  "activity": {
+    "id": "0a9dcb17-d3fa-4797-820e-ab9b26b534dc",
+    "name": "活动（预览）",
+    "description": "",
+    "alias": "",
+    "position": "540,110",
+    "resetRange": "department",
+    "resetCount": 0
+  },
+  "control": {
+    "allowRead": true,
+    "allowProcess": true,
+    "allowSave": true,
+    "allowReset": true,
+    "allowRetract": false,
+    "allowReroute": true,
+    "allowDeleteWork": false
+  },
+  "currentTaskIndex": 0,
+  "currentReadIndex": -1
+}

@@ -1,0 +1,31 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="基本" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">标识:</td>
+				<td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">名称:</td>
+				<td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">描述:</td>
+				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">设置热点操作:</td>
+				<td class="editTableValue">
+					<input type="radio" name="hideSetPopularDocumentTool" value="false" text{(!$.hideSetPopularDocumentTool)?'checked':''}/>显示
+					<input type="radio" name="hideSetPopularDocumentTool" value="true" text{($.hideSetPopularDocumentTool)?'checked':''}/>不显示
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div title="操作"  class="MWFTab" style="overflow: hidden">
+		<div class="MWFActionArea" name="tools"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

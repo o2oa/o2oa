@@ -1,0 +1,33 @@
+{
+  "addAttachment": {"uri": "/jaxrs/attachment/upload/folder/{folder}", "method": "POST", "enctype": "formData"},
+  "addAttachment_jaxrs": {"uri": "/jaxrs/attachment", "method": "POST", "enctype": "formData"},
+  "listAttachment": {"uri": "/jaxrs/attachment/list/folder/{id}"},
+  "listAttachmentTop": {"uri": "/jaxrs/attachment/list/top"},
+  "getAttachment": {"uri": "/jaxrs/attachment/{id}"},
+  "removeAttachment": {"uri": "/jaxrs/attachment/{id}", "method": "DELETE"},
+  "deleteFile": {"uri": "/jaxrs/attachment/{id}", "method": "DELETE"},
+  "updateAttachment": {"uri": "/jaxrs/attachment/{id}", "method": "PUT"},
+  "getAttachmentData": {"uri": "/jaxrs/attachment/{id}/download"},
+  "getAttachmentStream": {"uri": "/jaxrs/attachment/{id}/download/stream"},
+  "updateAttachmentData": {"uri": "/jaxrs/attachment/{id}/update", "method": "PUT", "enctype": "formData"},
+
+  "addFolder": {"uri": "/jaxrs/folder", "method": "POST"},
+  "listFolderTop": {"uri": "/jaxrs/folder/list/top"},
+  "listTopFolder": {"uri": "/jaxrs/folder/list/top"},
+  "getFolder": {"uri": "/jaxrs/folder/{id}"},
+  "deleteFolder": {"uri": "/jaxrs/folder/{id}", "method": "DELETE"},
+  "updateFolder": {"uri": "/jaxrs/folder/{id}", "method": "PUT"},
+  "listFolder": {"uri": "/jaxrs/folder/list/{id}"},
+
+  "listShare": {"uri": "/jaxrs/share/list"},
+  "listShareAttachment": {"uri": "/jaxrs/attachment/list/share/{person}"},
+
+  "listEditor": {"uri": "/jaxrs/editor/list"},
+  "listEditorAttachment": {"uri": "/jaxrs/attachment/list/editor/{person}"},
+
+  "listComplex": {"uri": "/jaxrs/complex/folder/{id}"},
+
+  "getBase64Code" : {"uri" : "/jaxrs/attachment/{id}/image/width/{width}/height/{height}/binary/base64"},
+  "clazz": "x_file_assemble_control"
+
+}

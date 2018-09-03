@@ -1,0 +1,42 @@
+[
+  {
+    "name": "form.json",
+    "title": "空白表单",
+    "icon": "form.png"
+  },
+  {
+    "name": "form_common.json",
+    "title": "通用表单模板",
+    "icon": "form_common.png"
+  },
+  {
+    "name": "form_tab.json",
+    "title": "标准表单样式(蓝色)",
+    "icon": "form_tab.png"
+  },
+  {
+    "name": "form_tab_red.json",
+    "title": "标准表单样式(红色)",
+    "icon": "form_tab_red.png"
+  },
+  {
+    "name": "form_tab.json",
+    "title": "传统表单样式",
+    "icon": "form_tab.png"
+  },
+  {
+    "name": "form_project.json",
+    "title": "立项表单模板",
+    "icon": "form_project.png"
+  },
+  {
+    "name": "form_cms_publish.json",
+    "title": "发布类审批表单",
+    "icon": "form_cms_publish.png"
+  },
+  {
+    "name": "form_file.json",
+    "title": "公文表单模板",
+    "icon": "form_file.png"
+  }
+]

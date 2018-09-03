@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript">
+        var path = "http://o2server.io/w_o2website_assemble_control";
+        $("#toIndex").click(function(){
+            $("#main").load( "o2.html" );
+            $.getJSON( path + "/visit/index.do", null, null );
+        });
+        $("#to_download").click(function(){
+            $("#main").load( "download.html" );
+            $.getJSON( path + "/visit/download.do", null, null );
+        });
+        $("#to_feedback").click(function(){
+            $("#main").load( "feedback.html" );
+            $.getJSON( path + "/visit/feedback.do", null, null );
+        });
+        $("#to_trial").click(function(){
+            window.open("http://demo.xplatform.tech");
+            $.getJSON( path + "/visit/trial.do", null, null );
+        });
+        $("#to_o2forum").click(function(){
+            window.open("http://www.o2server.io:9081/x_desktop/forum.html");
+            $.getJSON( path + "/visit/forum.do", null, null );
+        });
+        $("#to_o2api").click(function(){
+            window.open("api.html");
+            //$("#main").load( "api.html" );
+            //$.getJSON( path + "/visit/api.do", null, null );
+        });
+
+        $(function () {
+            debugger;
+            $.getJSON( path + "/visit/index.do", null, null );
+            $(".nav li").mouseover(function(){
+                $(this).css("background-color","rgb(60, 117, 183)");
+                $(this).find("a").css("color","#FFF");
+                $(this).find("a").css("font-weight","bold");
+            });
+            $(".nav li").mouseout(function(){
+                $(this).css("background-color","#FFF");
+                $(this).find("a").css("color","#000");
+                $(this).find("a").css("font-weight","");
+            });
+
+        });
+    </script>
+</head>
+<body>
+<div class="nav">
+    <div class="nav-center">
+        <img src="images/logo.png">
+        <ul>
+            <li id="toIndex"><center><a href="javascript:void(0)"> 首页</a></center></li>
+            <li id="to_download"><center><a href="javascript:void(0)"> 下载</a></center></li>
+            <li id="to_trial"><center><a href="javascript:void(0)"> 在线演示</a></center></li>
+            <li id="to_o2forum"><center><a href="javascript:void(0)"> O2社区</a></center></li>
+            <li id="to_o2api"><center><a href="javascript:void(0)"> API</a></center></li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

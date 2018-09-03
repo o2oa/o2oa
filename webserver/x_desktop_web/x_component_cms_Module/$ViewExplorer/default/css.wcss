@@ -1,0 +1,29 @@
+{
+  "elementContentNode": {
+    "overflow-y": "hidden",
+    "overflow-x": "hidden",
+    "position": "static",
+    "margin-left" : "13px",
+    "margin-right" : "0px"
+  },
+  "searchContainer": {
+    "overflow": "hidden",
+    "float" : "left",
+    "width" : "640px"
+  },
+  "normalThNode" : {
+    "background-color" : "#f0f0f0",
+    "height": "30px",
+    "font-size" : "15px",
+    "font-weight" : "normal",
+    "border-top": "1px solid #FFF"
+  },
+  "normalTdNode" : {
+    "height": "30px",
+    "text-align":"center",
+    "overflow" : "hidden",
+    //"font-weight" : "bold",
+    "border-top": "1px solid #FFF",
+    "border-bottom": "1px solid #CCC"
+  }
+}

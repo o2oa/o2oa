@@ -1,0 +1,144 @@
+{
+	"name": "node1",
+	"isPrimaryCenter": false,
+	"centerPort": 20030,
+	"centerSslEnable": false,
+	"webEnable": true,
+	"webPort": 80,
+	"webSslEnable": false,
+	"dataEnable": true,
+	"dataTcpPort": 20050,
+	"dataWebPort": 20051,
+	"dataPassword": "o2password",
+	"applicationEnable": true,
+	"applicationPort": 20020,
+	"applicationSslEnable": false,
+	"applicationProjects": [
+		{
+			"name": "x_attendance_assemble_control",
+			"weight": 100
+		},
+		{
+			"name": "x_cms_assemble_control",
+			"weight": 100
+		},
+		{
+			"name": "x_collaboration_assemble_websocket",
+			"weight": 100
+		},
+		{
+			"name": "x_component_assemble_control",
+			"weight": 100
+		},
+		{
+			"name": "x_file_assemble_control",
+			"weight": 100
+		},
+		{
+			"name": "x_mail_assemble_control",
+			"weight": 100
+		},
+		{
+			"name": "x_meeting_assemble_control",
+			"weight": 100
+		},
+		{
+			"name": "x_meeting_assemble_junction",
+			"weight": 100
+		},
+		{
+			"name": "x_okr_assemble_control"
+		},
+		{
+			"name": "x_organization_assemble_authentication"
+		},
+		{
+			"name": "x_organization_assemble_control"
+		},
+		{
+			"name": "x_organization_assemble_custom"
+		},
+		{
+			"name": "x_organization_assemble_express"
+		},
+		{
+			"name": "x_organization_assemble_personal"
+		},
+		{
+			"name": "x_processplatform_assemble_designer"
+		},
+		{
+			"name": "x_processplatform_assemble_surface_application"
+		},
+		{
+			"name": "x_processplatform_assemble_surface_applicationdict"
+		},
+		{
+			"name": "x_processplatform_assemble_surface_attachment"
+		},
+		{
+			"name": "x_processplatform_assemble_surface_bam"
+		},
+		{
+			"name": "x_processplatform_assemble_surface_data"
+		},
+		{
+			"name": "x_processplatform_assemble_surface_lookup"
+		},
+		{
+			"name": "x_processplatform_assemble_surface_process"
+		},
+		{
+			"name": "x_processplatform_assemble_surface_query"
+		},
+		{
+			"name": "x_processplatform_assemble_surface_read"
+		},
+		{
+			"name": "x_processplatform_assemble_surface_readcompleted"
+		},
+		{
+			"name": "x_processplatform_assemble_surface_review"
+		},
+		{
+			"name": "x_processplatform_assemble_surface_script"
+		},
+		{
+			"name": "x_processplatform_assemble_surface_serialnumber"
+		},
+		{
+			"name": "x_processplatform_assemble_surface_task"
+		},
+		{
+			"name": "x_processplatform_assemble_surface_taskcompleted"
+		},
+		{
+			"name": "x_processplatform_assemble_surface_work"
+		},
+		{
+			"name": "x_processplatform_assemble_surface_workcompleted"
+		},
+		{
+			"name": "x_processplatform_assemble_surface_worklog"
+		},
+		{
+			"name": "x_collaboration_service_message"
+		},
+		{
+			"name": "x_collect_service_transmit"
+		},
+		{
+			"name": "x_processplatform_service_processing"
+		},
+		{
+			"name": "x_processplatform_service_processing_trigger"
+		},
+		{
+			"name": "x_processplatform_service_service"
+		}
+	],
+	"storageEnable": true,
+	"storagePort": 20040,
+	"storageSslEnable": false,
+	"storageUsers": []
+}

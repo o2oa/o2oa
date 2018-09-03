@@ -1,0 +1,13 @@
+[
+  {
+    "access" : "admin",
+    "title": "新建排班设置",
+    "id": "1.1",
+    "action": "createDocument",
+    "icon": "create.png",
+    "expand": false,
+    "position" : "left",
+    "styles" : "toolbarItemNode",
+    "sub": []
+  }
+]

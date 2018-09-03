@@ -1,0 +1,70 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Stat",
+	"description": "",
+    "view": "",
+    "isTitle": "yes",
+    "select": "no",  //single, multi
+    "isOpen": "yes",
+	"events": {
+		"click": {
+			"code": "",
+			"html": ""
+		},
+		"dblclick": {
+			"code": "",
+			"html": ""
+		},
+		"keydown": {
+			"code": "",
+			"html": ""
+		},
+		"keypress": {
+			"code": "",
+			"html": ""
+		},
+		"keyup": {
+			"code": "",
+			"html": ""
+		},
+		"mousedown": {
+			"code": "",
+			"html": ""
+		},
+		"mousemove": {
+			"code": "",
+			"html": ""
+		},
+		"mouseout": {
+			"code": "",
+			"html": ""
+		},
+		"mouseover": {
+			"code": "",
+			"html": ""
+		},
+		"mouseup": {
+			"code": "",
+			"html": ""
+		},
+		"focus": {
+			"code": "",
+			"html": ""
+		},
+		"blur": {
+			"code": "",
+			"html": ""
+		},
+        "select": {
+          "code": "",
+          "html": ""
+        }
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+    "titleStyles":{},
+    "itemStyles": {},
+	"container": ""
+}

@@ -1,0 +1,28 @@
+{
+  //根据身份获取人员
+  "getPersonByIdentity": {"uri": "/jaxrs/person/identity/{name}"},
+  //根据人员获取身份
+  "listIdentityByPerson": {"uri": "/jaxrs/identity/list/person/{name}"},
+  //获取人员
+  "getPerson": {"uri": "/jaxrs/person/{name}"},
+  //根据当前人员获取可能替代的身份
+  "listMyRelief": {"uri": "/jaxrs/okrconfigsecretary/list/my"},
+
+  //获取配置表信息
+  "getProfiles":{"uri":"/jaxrs/baseconfig/getconfig/{type}","method":"PUT"},
+  "getProvinceList":{"uri":"/jaxrs/region/provincelist","method":"PUT"},
+  "getCityList":{"uri":"/jaxrs/region/citylist","method":"PUT"},
+  "getCityListByName":{"uri":"/jaxrs/region/citylistbyname","method":"PUT"},
+  "getAreaList":{"uri":"/jaxrs/region/countylist","method":"PUT"},
+  "getAreaListByName":{"uri":"/jaxrs/region/countylistbyname","method":"PUT"},
+  //customer
+  "getCustomerInfo" : {"uri":"/jaxrs/customer/baseinfo/getbyid/{id}","method":"GET"},
+
+  "getCustomerListNext":{"uri":"/jaxrs/customer/baseinfo/listall/{id}/next/{count}","method":"PUT"},
+  "getCustomerListPrev":{"uri":"/jaxrs/customer/baseinfo/listall/{id}/prev/{count}","method":"PUT"},
+  "getCustomerListPage":{"uri":"/jaxrs/customer/baseinfo/page/{page}/count/{count}","method":"PUT"},
+  "saveCustomer" : {"uri":"/jaxrs/customer/baseinfo/create","method":"PUT"},
+  "gettest":{"uri":"/jaxrs/customer/baseinfo/iswork","method":"GET"}
+
+  //customer
+}

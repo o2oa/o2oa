@@ -1,0 +1,97 @@
+{
+  "getId": {"uri": "/jaxrs/id/{count}"},
+
+  "listApplication": {"uri": "/jaxrs/application/list"},
+  "listApplicationSummary": {"uri": "/jaxrs/application/list/summary"},
+  "listApplicationByCategorySummary": {"uri": "/jaxrs/application/list/summary/applicationcategory/{applicationCategory}"},
+  "listApplicationByCategory": {"uri": "/jaxrs/application/list/applicationcategory/{applicationCategory}"},
+  "listApplicationCategory": {"uri": "/jaxrs/applicationcategory/list"},
+
+  "addApplication": {"uri": "/jaxrs/application","method": "POST"},
+  "updataApplication": {"uri": "/jaxrs/application/{id}","method": "PUT"},
+  "getApplication": {"uri": "/jaxrs/application/{id}"},
+  "removeApplication": {"uri": "/jaxrs/application/{id}/{onlyRemoveNotCompleted}","method": "DELETE"},
+  "deleteApplication": {"uri": "/jaxrs/application/{id}/{onlyRemoveNotCompleted}","method": "DELETE"},
+
+  "listProcess": {"uri": "/jaxrs/process/application/{id}"},
+  "listForm": {"uri": "/jaxrs/form/list/application/{id}"},
+  "listDictionary": {"uri": "/jaxrs/applicationdict/list/application/{application}"},
+  "listScript": {"uri": "/jaxrs/script/application/{id}"},
+  "listView": {"uri": "/jaxrs/queryview/list/application/{id}"},
+  "listStat": {"uri": "/jaxrs/querystat/list/application/{id}"},
+  "listFormField": {"uri": "/jaxrs/form/list/formfield/application/{id}"},
+  "listFormFieldWithForm": {"uri": "/jaxrs/form/list/{id}/formfield"},
+  
+  "listFile": {"uri": "/jaxrs/file/list/application/{id}"},
+
+  "listProcessCategory": {"uri": "/jaxrs/processCategory/list/{id}/next/{count}"},
+  "getProcessCategory": {"uri": "/jaxrs/processCategory/{id}"},
+  "addProcessCategory": {"uri": "/jaxrs/processCategory","method": "POST"},
+  "removeProcessCategory": {"uri": "/jaxrs/processCategory/{id}","method": "DELETE"},
+  "updataProcessCategory": {"uri": "/jaxrs/processCategory/{id}","method": "PUT"},
+
+
+  "getProcess": {"uri": "/jaxrs/process/{id}"},
+  "addProcess": {"uri": "/jaxrs/process","method": "POST"},
+  "removeProcess": {"uri": "/jaxrs/process/{id}/true","method": "DELETE"},
+  "updataProcess": {"uri": "/jaxrs/process/{id}","method": "PUT"},
+
+  "listFormCategory": {"uri": "/jaxrs/formCategory/list/{id}/next/{count}"},
+  "getFormCategory": {"uri": "/jaxrs/formCategory/{id}"},
+  "addFormCategory": {"uri": "/jaxrs/formCategory","method": "POST"},
+  "removeFormCategory": {"uri": "/jaxrs/formCategory/{id}","method": "DELETE"},
+  "updataFormCategory": {"uri": "/jaxrs/formCategory/{id}","method": "PUT"},
+
+
+  "getForm": {"uri": "/jaxrs/form/{id}"},
+  "addForm": {"uri": "/jaxrs/form","method": "POST"},
+  "removeForm": {"uri": "/jaxrs/form/{id}","method": "DELETE"},
+  "updataForm": {"uri": "/jaxrs/form/{id}","method": "PUT"},
+
+  "getFormTemplate": {"uri": "/jaxrs/templateform/{id}"},
+  "deleteFormTemplate": {"uri": "/jaxrs/templateform/{id}","method": "DELETE"},
+  "addFormTemplate": {"uri": "/jaxrs/templateform","method": "POST"},
+  "listFormTemplate": {"uri": "/jaxrs/templateform/list"},
+  "listFormTemplateCategory": {"uri": "/jaxrs/templateform/list/category"},
+  "listFormTemplatByCategory": {"uri": "/jaxrs/templateform/list/category","method": "PUT"},
+
+
+
+  "getDictionary": {"uri": "/jaxrs/applicationdict/{applicationDict}"},
+  "addDictionary": {"uri": "/jaxrs/applicationdict", "method": "POST"},
+  "removeDictionary": {"uri": "/jaxrs/applicationdict/{applicationDict}","method": "DELETE"},
+  "updataDictionary": {"uri": "/jaxrs/applicationdict/{applicationDict}","method": "PUT"},
+
+  "getScript": {"uri": "/jaxrs/script/{id}"},
+  "addScript": {"uri": "/jaxrs/script", "method": "POST"},
+  "removeScript": {"uri": "/jaxrs/script/{id}", "method": "DELETE"},
+  "updataScript": {"uri": "/jaxrs/script/{id}", "method": "PUT"},
+  "getScriptByName": {"uri": "/jaxrs/script/application/{applicationId}/name/{name}"},
+
+  "getView": {"uri": "/jaxrs/queryview/{id}"},
+  "addView": {"uri": "/jaxrs/queryview", "method": "POST"},
+  "removeView": {"uri": "/jaxrs/queryview/{id}", "method": "DELETE"},
+  "updataView": {"uri": "/jaxrs/queryview/{id}", "method": "PUT"},
+  "loadView": {"uri": "/jaxrs/queryview/{id}/simulate", "method": "PUT"},
+
+  "getStat": {"uri": "/jaxrs/querystat/{id}"},
+  "addStat": {"uri": "/jaxrs/querystat", "method": "POST"},
+  "removeStat": {"uri": "/jaxrs/querystat/{id}", "method": "DELETE"},
+  "updataStat": {"uri": "/jaxrs/querystat/{id}", "method": "PUT"},
+  "loadStat": {"uri": "/jaxrs/querystat/{id}/simulate", "method": "PUT"},
+
+
+  "getFile": {"uri": "/jaxrs/file/{id}"},
+  "addFile": {"uri": "/jaxrs/file", "method": "POST"},
+  "removeFile": {"uri": "/jaxrs/file/{id}", "method": "DELETE"},
+  "deleteFile": {"uri": "/jaxrs/file/{id}", "method": "DELETE"},
+  "updataFile": {"uri": "/jaxrs/file/{id}", "method": "PUT"},
+  "getFileByName": {"uri": "/jaxrs/file/application/{applicationId}/name/{name}"},
+  "downloadFile": {"uri": "/jaxrs/file/{id}/download"},
+  "readFile": {"uri": "/jaxrs/file/{id}/content"},
+  "uploadFile": {"uri": "/jaxrs/file/{id}/upload", "method": "POST", "enctype": "formData"},
+
+  "updateApplicationIcon": {"uri": "/jaxrs/application/{id}/icon", "method": "PUT", "enctype": "formData"},
+
+  "clazz": "x_processplatform_assemble_designer"
+}

@@ -1,0 +1,290 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="基本" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle" colspan="2"><div style="text-align:center; color: red;">仅IE浏览器可用</div></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">标识:</td>
+				<td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">名称:</td>
+				<td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">描述:</td>
+				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">是否只读:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>是
+					<input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>否
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">延时加载:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isNotLoadNow" value="true" text{($.isNotLoadNow)?'checked':''}/>是
+					<input type="radio" name="isNotLoadNow" value="false" text{(!$.isNotLoadNow)?'checked':''}/>否
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">是否保留历史版本:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isHistory" value="true" text{($.isHistory)?'checked':''}/>是
+					<input type="radio" name="isHistory" value="false" text{(!$.isHistory)?'checked':''}/>否
+				</td>
+			</tr>
+		</table>
+		<div class="MWFMaplist" name="styles" title="样式"></div>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		  <tr>
+		    <td class="editTableTitle">类型:</td>
+		    <td class="editTableValue">
+		    	<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='word')?'checked':''} type="radio" value="word"/>Word 文档<br/>
+		    	<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='excel')?'checked':''} type="radio" value="excel"/>Excel 电子表格<br/>
+		    	<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='ppt')?'checked':''} type="radio" value="ppt"/>PowerPoint 幻灯片<br/>
+		    	<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'block'); " name="officeType" text{($.officeType=='other')?'checked':''} type="radio" value="other"/>根据模板创建
+		    </td>
+		  </tr>
+		</table>
+		<div id="officeTemplateArea" title="src" style="display: text{($.officeType=='other')?'block':'none'}">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			  <tr>
+			    <td class="editTableTitle">模板位置:</td>
+			    <td class="editTableValue">
+			    	<input type="text" name="template" value="text{$.template}" class="editTableInput"/>
+			    </td>
+			  </tr>
+			</table>
+		</div>
+        <div class="MWFScriptArea" name="readScript" title="满足条件时只读 (S)"></div>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">用户标题:</td>
+				<td class="editTableValue"><input type="text" name="productCaption" value="text{$.productCaption}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">用户标识:</td>
+				<td class="editTableValue"><input type="text" name="productKey" value="text{$.productKey}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">授权标题:</td>
+				<td class="editTableValue"><input type="text" name="makerCaption" value="text{$.makerCaption}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">授权标识:</td>
+				<td class="editTableValue"><input type="text" name="makerKey" value="text{$.makerKey}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">控件版本:</td>
+				<td class="editTableValue"><input type="text" name="version" value="text{$.version}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">classid:</td>
+				<td class="editTableValue"><input type="text" name="clsid" value="text{$.clsid}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">控件路径:</td>
+				<td class="editTableValue"><input type="text" name="codeBase" value="text{$.codeBase}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">classid64位:</td>
+				<td class="editTableValue"><input type="text" name="clsid64" value="text{$.clsid64}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">控件路径64位:</td>
+				<td class="editTableValue"><input type="text" name="codeBase64" value="text{$.codeBase64}" class="editTableInput"/></td>
+			</tr>
+		</table>
+
+
+	</div>
+	<div title="编辑"  class="MWFTab">
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">工具栏</div>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">工具</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('new')!=-1)?'checked':''} type="checkbox" value="new"/>新建文档
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('open')!=-1)?'checked':''} type="checkbox" value="open"/>打开本地文件
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('save')!=-1)?'checked':''} type="checkbox" value="save"/>保存到本地
+					<br/>
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('revisions')!=-1)?'checked':''} type="checkbox" value="revisions"/>痕迹切换
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('fullscreen')!=-1)?'checked':''} type="checkbox" value="fullscreen"/>全屏模式
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('toolbar')!=-1)?'checked':''} type="checkbox" value="toolbar"/>工具栏切换
+					<br/><input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('preview')!=-1)?'checked':''} type="checkbox" value="preview"/>打印预览
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('redfile')!=-1)?'checked':''} type="checkbox" value="redfile"/>套红按钮
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('seal')!=-1)?'checked':''} type="checkbox" value="seal"/>盖章按钮
+					<br/><input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('showHistory')!=-1)?'checked':''} type="checkbox" value="showHistory"/>查看历史版本
+				</td>
+			</tr>
+		</table>
+		<!--<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+			<!--<tr>-->
+				<!--<td class="editTableValue">-->
+                    <!--<b>痕迹切换:</b>-->
+					<!--<input class="editTableRadio" name="menu_revisions" text{($.menu_revisions!='0')?'checked':''} type="radio" value="1"/>是-->
+					<!--<input class="editTableRadio" name="menu_revisions" text{($.menu_revisions=='0')?'checked':''} type="radio" value="0"/>否-->
+				<!--</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td class="editTableValue">-->
+                    <!--<b>全屏模式:</b>-->
+					<!--<input class="editTableRadio" name="menu_fullscreen" text{($.menu_fullscreen!='0')?'checked':''} type="radio" value="1"/>是-->
+					<!--<input class="editTableRadio" name="menu_fullscreen" text{($.menu_fullscreen=='0')?'checked':''} type="radio" value="0"/>否-->
+				<!--</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td class="editTableValue">-->
+                    <!--<b>工具栏切换:</b>-->
+					<!--<input class="editTableRadio" name="menu_toolbar" text{($.menu_toolbar=='1')?'checked':''} type="radio" value="1"/>是-->
+					<!--<input class="editTableRadio" name="menu_toolbar" text{($.menu_toolbar!='1')?'checked':''} type="radio" value="0"/>否-->
+				<!--</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td class="editTableValue">-->
+                    <!--<b>打印预览:</b>-->
+					<!--<input class="editTableRadio" name="menu_preview" text{($.menu_preview!='0')?'checked':''} type="radio" value="1"/>是-->
+					<!--<input class="editTableRadio" name="menu_preview" text{($.menu_preview=='0')?'checked':''} type="radio" value="0"/>否-->
+				<!--</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td class="editTableValue">-->
+					<!--<b>套红按钮:</b>-->
+					<!--<input class="editTableRadio" name="menu_redfile" text{($.menu_redfile=='1')?'checked':''} type="radio" value="1"/>是-->
+					<!--<input class="editTableRadio" name="menu_redfile" text{($.menu_redfile!='1')?'checked':''} type="radio" value="0"/>否-->
+				<!--</td>-->
+			<!--</tr>-->
+			<!--<tr>-->
+				<!--<td class="editTableValue">-->
+					<!--<b>盖章按钮:</b>-->
+					<!--<input class="editTableRadio" name="menu_seal" text{($.menu_seal=='1')?'checked':''} type="radio" value="1"/>是-->
+					<!--<input class="editTableRadio" name="menu_seal" text{($.menu_seal!='1')?'checked':''} type="radio" value="0"/>否-->
+				<!--</td>-->
+			<!--</tr>-->
+		<!--</table>-->
+
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">属性：</div>
+
+		<!--<div style="background-color: #eeeeee; height: 24px; line-height: 24px; text-align: center;">界面相关</div>-->
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr><td class="editTableValue"  colspan="2">
+				<b>是否显示标题栏：</b>
+				<input class="editTableRadio" name="ntkoEditProperties.TitleBar" text{($.ntkoEditProperties.TitleBar=='1')?'checked':''} type="radio" value="1"/>是
+				<input class="editTableRadio" name="ntkoEditProperties.TitleBar" text{($.ntkoEditProperties.TitleBar!='1')?'checked':''} type="radio" value="0"/>否
+			</td></tr>
+			<tr><td class="editTableValue"  colspan="2">
+				<b>是否显示菜单栏：</b>
+				<input class="editTableRadio" name="ntkoEditProperties.Menubar" text{($.ntkoEditProperties.Menubar=='1')?'checked':''} type="radio" value="1"/>是
+				<input class="editTableRadio" name="ntkoEditProperties.Menubar" text{($.ntkoEditProperties.Menubar!='1')?'checked':''} type="radio" value="0"/>否
+			</td></tr>
+			<tr><td class="editTableValue"  colspan="2">
+				<b>是否显示工具栏：</b>
+				<input class="editTableRadio" name="ntkoEditProperties.ToolBars" text{($.ntkoEditProperties.ToolBars!='0')?'checked':''} type="radio" value="1"/>是
+				<input class="editTableRadio" name="ntkoEditProperties.ToolBars" text{($.ntkoEditProperties.ToolBars=='0')?'checked':''} type="radio" value="0"/>否
+			</td></tr>
+			<tr><td class="editTableValue"  colspan="2">
+				<b>是否显示状态栏：</b>
+				<input class="editTableRadio" name="ntkoEditProperties.Statusbar" text{($.ntkoEditProperties.Statusbar=='1')?'checked':''} type="radio" value="1"/>是
+				<input class="editTableRadio" name="ntkoEditProperties.Statusbar" text{($.ntkoEditProperties.Statusbar!='1')?'checked':''} type="radio" value="0"/>否
+			</td></tr>
+			<tr>
+				<td class="editTableTitle">标题:</td>
+				<td class="editTableValue"><input type="text" name="ntkoEditProperties.Caption" value="text{$.ntkoEditProperties.Caption}" class="editTableInput"/></td>
+			</tr>
+			<tr><td class="editTableValue"  colspan="2">
+				<b>边框样式：</b>
+				<input class="editTableRadio" name="ntkoEditProperties.BorderStyle" text{($.ntkoEditProperties.BorderStyle=='0')?'checked':''} type="radio" value="0"/>无
+				<input class="editTableRadio" name="ntkoEditProperties.BorderStyle" text{($.ntkoEditProperties.BorderStyle!='0' && $.ntkoEditProperties.BorderStyle!='2')?'checked':''} type="radio" value="1"/>平面
+				<input class="editTableRadio" name="ntkoEditProperties.BorderStyle" text{($.ntkoEditProperties.BorderStyle=='2')?'checked':''} type="radio" value="2"/>3D
+			</td></tr>
+			<tr>
+				<td class="editTableTitle">边框颜色:</td>
+				<td class="editTableValue"><input type="color" name="ntkoEditProperties.BorderColor" value="text{$.ntkoEditProperties.BorderColor}" class="editTableInput"/></td>
+			</tr>
+            <tr><td class="editTableValue"  colspan="2">
+                <b>是否禁止拷贝：</b>
+                <input class="editTableRadio" name="ntkoEditProperties.IsNoCopy" text{($.ntkoEditProperties.IsNoCopy=='1')?'checked':''} type="radio" value="1"/>是
+                <input class="editTableRadio" name="ntkoEditProperties.IsNoCopy" text{($.ntkoEditProperties.IsNoCopy!='1')?'checked':''} type="radio" value="0"/>否
+            </td></tr>
+			<tr><td class="editTableValue"  colspan="2">
+				<b>是否保留痕迹：</b>
+				<input class="editTableRadio" name="trackRevisions" text{($.trackRevisions=='1')?'checked':''} type="radio" value="1"/>是
+				<input class="editTableRadio" name="trackRevisions" text{($.trackRevisions!='1')?'checked':''} type="radio" value="0"/>否
+			</td></tr>
+		</table>
+		<div class="MWFMaplist" name="editProperties" title="其他属性"></div>
+	</div>
+    <div title="阅读"  class="MWFTab">
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">工具栏</div>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">工具</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="menuReadButtons" text{(($.menuReadButtons) && $.menuReadButtons.indexOf('revisions')!=-1)?'checked':''} type="checkbox" value="revisions"/>痕迹切换
+					<input class="editTableRadio" name="menuReadButtons" text{(($.menuReadButtons) && $.menuReadButtons.indexOf('fullscreen')!=-1)?'checked':''} type="checkbox" value="fullscreen"/>全屏模式
+					<input class="editTableRadio" name="menuReadButtons" text{(($.menuReadButtons) && $.menuReadButtons.indexOf('toolbar')!=-1)?'checked':''} type="checkbox" value="toolbar"/>工具栏切换
+					<br/><input class="editTableRadio" name="menuReadButtons" text{(($.menuReadButtons) && $.menuReadButtons.indexOf('preview')!=-1)?'checked':''} type="checkbox" value="preview"/>打印预览
+					<input class="editTableRadio" name="menuEditButtons" text{(($.menuEditButtons) && $.menuEditButtons.indexOf('showHistory')!=-1)?'checked':''} type="checkbox" value="showHistory"/>查看历史版本
+					<!--<input class="editTableRadio" name="menuReadButtons" text{(($.menu_buttons) && $.menu_buttons.indexOf('redfile')!=-1)?'checked':''} type="checkbox" value="redfile"/>套红按钮-->
+					<!--<input class="editTableRadio" name="menuReadButtons" text{(($.menu_buttons) && $.menu_buttons.indexOf('seal')!=-1)?'checked':''} type="checkbox" value="seal"/>盖章按钮-->
+				</td>
+			</tr>
+		</table>
+        <!--<div style="background-color: #eeeeee; height: 24px; line-height: 24px; text-align: center;">界面相关</div>-->
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr><td class="editTableValue"  colspan="2">
+                <b>是否显示标题栏：</b>
+                <input class="editTableRadio" name="ntkoReadProperties.TitleBar" text{($.ntkoReadProperties.TitleBar=='1')?'checked':''} type="radio" value="1"/>是
+                <input class="editTableRadio" name="ntkoReadProperties.TitleBar" text{($.ntkoReadProperties.TitleBar!='1')?'checked':''} type="radio" value="0"/>否
+            </td></tr>
+            <tr><td class="editTableValue"  colspan="2">
+                <b>是否显示菜单栏：</b>
+                <input class="editTableRadio" name="ntkoReadProperties.Menubar" text{($.ntkoReadProperties.Menubar=='1')?'checked':''} type="radio" value="1"/>是
+                <input class="editTableRadio" name="ntkoReadProperties.Menubar" text{($.ntkoReadProperties.Menubar!='1')?'checked':''} type="radio" value="0"/>否
+            </td></tr>
+            <tr><td class="editTableValue"  colspan="2">
+                <b>是否显示工具栏：</b>
+                <input class="editTableRadio" name="ntkoReadProperties.ToolBars" text{($.ntkoReadProperties.ToolBars!='0')?'checked':''} type="radio" value="1"/>是
+                <input class="editTableRadio" name="ntkoReadProperties.ToolBars" text{($.ntkoReadProperties.ToolBars=='0')?'checked':''} type="radio" value="0"/>否
+            </td></tr>
+            <tr><td class="editTableValue"  colspan="2">
+                <b>是否显示状态栏：</b>
+                <input class="editTableRadio" name="ntkoReadProperties.Statusbar" text{($.ntkoReadProperties.Statusbar=='1')?'checked':''} type="radio" value="1"/>是
+                <input class="editTableRadio" name="ntkoReadProperties.Statusbar" text{($.ntkoReadProperties.Statusbar!='1')?'checked':''} type="radio" value="0"/>否
+            </td></tr>
+            <tr>
+                <td class="editTableTitle">标题:</td>
+                <td class="editTableValue"><input type="text" name="ntkoReadProperties.Caption" value="text{$.ntkoReadProperties.Caption}" class="editTableInput"/></td>
+            </tr>
+            <tr><td class="editTableValue"  colspan="2">
+                <b>边框样式：</b>
+                <input class="editTableRadio" name="ntkoReadProperties.BorderStyle" text{($.ntkoReadProperties.BorderStyle=='0')?'checked':''} type="radio" value="0"/>无
+                <input class="editTableRadio" name="ntkoReadProperties.BorderStyle" text{($.ntkoReadProperties.BorderStyle!='0' && $.ntkoReadProperties.BorderStyle!='2')?'checked':''} type="radio" value="1"/>平面
+                <input class="editTableRadio" name="ntkoReadProperties.BorderStyle" text{($.ntkoReadProperties.BorderStyle=='2')?'checked':''} type="radio" value="2"/>3D
+            </td></tr>
+            <tr>
+                <td class="editTableTitle">边框颜色:</td>
+                <td class="editTableValue"><input type="color" name="ntkoReadProperties.BorderColor" value="text{$.ntkoReadProperties.BorderColor}" class="editTableInput"/></td>
+            </tr>
+            <tr><td class="editTableValue"  colspan="2">
+                <b>是否禁止拷贝：</b>
+                <input class="editTableRadio" name="ntkoReadProperties.IsNoCopy" text{($.ntkoReadProperties.IsNoCopy=='1')?'checked':''} type="radio" value="1"/>是
+                <input class="editTableRadio" name="ntkoReadProperties.IsNoCopy" text{($.ntkoReadProperties.IsNoCopy!='1')?'checked':''} type="radio" value="0"/>否
+            </td></tr>
+        </table>
+        <div class="MWFMaplist" name="readProperties" title="其他属性"></div>
+    </div>
+
+	<div title="事件"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

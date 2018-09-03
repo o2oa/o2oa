@@ -1,0 +1,272 @@
+{
+  "node" : {
+    "width": "100%", "height": "100%", "overflow": "hidden", //, "background-color" : "#1f497d"
+    "-webkit-user-select": "text",
+    "-moz-user-select": "text"
+  },
+  "contentContainerNode" : {
+    "overflow-x" : "hidden",
+    //"margin-right": "10px",
+    "overflow-y" : "scroll"
+  },
+  "topContainerNode" : {
+    "overflow" : "hidden",
+    "margin" : "0px auto",
+    "width" : "1182px"
+  },
+
+  "topNode" : {
+    "font-family": "微软雅黑",
+    "color" : "#999",
+    "background-color" : "#fff",
+    "overflow" : "hidden",
+    "padding-top" : "10px",
+    //"padding-left" : "10px",
+    "padding-bottom" : "10px",
+    "width" : "1182px",
+    "height" : "20px",
+    "line-height" : "20px",
+    "margin" : "0px auto"
+  },
+  "topTitleMiddleNode" : {
+    "float" : "left",
+    "height" : "20px",
+    "line-height" : "20px"
+  },
+  "topItemTitleNode" : {
+    //"height": "35px",
+    //"line-height" :"35px",
+    "font-size": "14px",
+    "margin-left" : "6px",
+    "padding-left" : "10px",
+    "padding-right" : "10px",
+    "float" : "left",
+    "cursor" : "pointer"
+  },
+  "topItemTitleLastNode" : {
+  //"height": "35px",
+  //"line-height" :"35px",
+    "color" : "#3c76b6",
+  "font-size": "14px",
+  "padding-left" : "10px",
+  "padding-right" : "10px",
+  "float" : "left",
+  "cursor" : "pointer"
+},
+  "topItemSepNode" : {
+    "float" : "left",
+    "font-size" : "16px",
+    "width" : "10px",
+    "height" : "20px",
+    "line-height" : "20px"
+  },
+  "topRightNode" : {
+    "margin-top" : "3px",
+    "overflow" : "hidden",
+    "width" : "60px",
+    "cursor" : "pointer",
+    "float" : "right"
+  },
+  "topRightIconNode" : {
+    "width": "16px",
+    "height": "16px",
+    "float": "left",
+    "background": "url(/x_component_ForumCategory/$Main/default/icon/up_over.png) no-repeat center 1px"
+  },
+  "topRightIconDownNode" : {
+    "width": "16px",
+    "height": "16px",
+    "float": "left",
+    "background": "url(/x_component_ForumCategory/$Main/default/icon/down_over.png) no-repeat center center"
+  },
+  "topRightTextNode" : {
+    "height": "24px",
+    "line-height" : "24px",
+    "float": "left",
+    "color" : "#fff",
+    "font-size" : "16px",
+    "font-weight" : "normal"
+  },
+  "noteNode" : {
+    "overflow" : "hidden",
+    "background-color" : "#fff",
+    //"margin-left" : "10px",
+    //"margin-right" : "10px",
+    "padding-top" : "20px"
+    //"margin-bottom" : "10px"
+  },
+  "noteTopNode" : {
+    "position" : "relative",
+    "border-top" : "1px solid #dedede",
+    "height" : "20px"
+  },
+  "noteTopContent" : {
+    "overflow" : "hidden",
+    "position" : "absolute",
+    "left" : "45%",
+    "top" : "-10px",
+    "background-color" : "#fff",
+    "height" : "30px",
+    "width" : "120px"
+  },
+  "noteIcon" : {
+    "float" : "left",
+    "margin-left" : "10px",
+    "width" : "20px",
+    "height" : "20px",
+    "background": "url(/x_component_ForumCategory/$Main/default/icon/icon_laba.png) no-repeat center center"
+  },
+  "noteTopText" : {
+    "float" : "left",
+    "font-family": "微软雅黑",
+    "color" : "#FB4747",
+    "font-size" : "16px",
+    "padding-left" : "10px",
+    "font-weight" : "bold"
+  },
+  "noteContent" : {
+    "padding" : "10px 20px"
+  },
+  "settingNode" : {
+    "margin-top" : "13px",
+    "margin-right" : "13px",
+    "overflow" : "hidden",
+    "background-color" : "#2a4058",
+    "width" : "60px",
+    "cursor" : "pointer"
+  },
+  "settingIconNode" : {
+    "width": "24px",
+    "height": "24px",
+    "float": "left",
+    "background": "url(/x_component_Forum/$Main/default/icon/settings.png) no-repeat center center"
+  },
+  "settingTextNode" : {
+    "height": "24px",
+    "line-height" : "24px",
+    "float": "left",
+    "color" : "#fff",
+    "font-size" : "16px",
+    "font-weight" : "normal"
+  },
+  "rightContentNode": {
+    "height": "100%",
+    "margin-left": "160px",
+    "overflow": "hidden",
+    "background-color" : "#fff", //"#fcfcfc",
+    "opacity": 1
+  },
+  "naviNode": {
+    "padding-top" : "10px",
+    "width": "162px",
+    "height": "100%",
+    "overflow": "hidden",
+    //    "border": "0px",
+    //    "border-radius": "0px",
+    "float": "left",
+    "position": "static",
+    "overflow": "hidden",
+    //"margin-right" : "-7px",
+    //"background-color" : "#fcfcfc",
+    "background-color" : "#365775" //"#476783"
+    //"border-right": "1px solid #e8e8e8"
+  },
+  "naviMenuNode": {
+    "display" : "block",
+    "padding-top" :"10px",
+    "width": "198px",
+    "height": "30px",
+    "margin": "0px",
+    "line-height" :"30px",
+    "font-family": "微软雅黑",
+    "font-size": "14px",
+    "color" : "#ddd",
+    "padding-left" : "10px"
+  },
+
+  "naviItemNode" : {
+    "background-color" : "transparent",
+    "cursor" : "pointer",
+    //"color" : "#666",
+    "color" : "#fff",
+    "padding-left" : "30px",
+    "height" : "30px",
+    "line-height" : "30px",
+    "font-family": "微软雅黑",
+    "font-size": "14px"
+    //"text-shadow": "0px 0px 2px #fff"
+  },
+  "naviItemNode_current" : {
+//    "background-color" : "#e6f3ff",
+    "background-color" : "#fff",
+    "color" : "#666",
+    "font-weight" : "400"
+    //"text-shadow": "0px 0px 0px"
+  },
+  "naviItemNode_over" : {
+    "background-color" : "#e6f3ff",
+    "color" : "#666"
+    //"text-shadow": "0px 0px 2px #fff"
+  },
+  "viewNaviSepartorNode" : {
+    "margin" : "10px auto",
+    //"height" : "10px",
+    "width" : "100%",
+    "border-bottom" : "1px solid #ddd"
+  },
+  "middleNode" : {
+    "overflow" : "hidden",
+    "margin" : "0px auto",
+    "width" : "1182px",
+    "font-size" : "12px"
+  },
+  "categoryNode" : {
+    "overflow" : "hidden"
+  },
+  "categoryTopNode" : {
+    //"padding" : "5px",
+    "font-family": "微软雅黑",
+    "color" : "#fff",
+    "background-color" : "#f7f7f7",
+    "overflow" : "hidden",
+    "position" : "relative",
+    "height": "40px",
+    "width" : "100%"
+    //"margin-bottom" : "10px",
+  },
+  "categoryTopTitleNode" : {
+    "padding-left" : "15px",
+    "height": "40px",
+    "line-height" :"40px",
+    "font-size": "18px",
+    "font-weight" : "bold",
+    "float" : "left",
+    "cursor" : "pointer",
+    "width" : "275px",
+    "position" : "absolute"
+    //"background": "url(/x_component_Forum/$Main/default/icon/title_background.png) no-repeat 10px 0px"
+  },
+  "categoryTopRightNode" : {
+    "color" : "#999",
+    "height": "40px",
+    "font-size": "14px",
+    "line-height" :"40px",
+    "float" : "right"
+  },
+  "categoryTopRightNode2" : {
+    "color" : "#333",
+    "padding-right" : "15px",
+    "height": "40px",
+    "font-size": "14px",
+    "line-height" :"40px",
+    "float" : "right"
+  },
+  "person" : {
+    "cursor" : "pointer",
+    "color": "#5c7084"
+  },
+  "person_over" : {
+    "color": "#0258ad"
+  }
+	
+}
