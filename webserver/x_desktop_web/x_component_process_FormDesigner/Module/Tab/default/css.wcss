@@ -1,0 +1,75 @@
+{
+	"moduleNodeMove": {
+		"border": "2px dashed #ffa200",
+		"overflow": "hidden",
+		"margin": "3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "absolute",
+		"display": "block",
+		"z-index": 10002,
+		"opacity": 0.7,
+		"cursor": "move",
+		"width":"100px",
+		"background-color":"#FFF",
+		"height": "50px",
+		"color": "#EEE",
+		"padding": "1px"
+	},
+	"moduleNodeMove_tab":{
+		"width": "30px",
+		"height": "10px",
+		"background-color": "#999",
+		"float": "left"
+	},
+	"moduleNodeMove_tab_current":{
+		"width": "30px",
+		"height": "10px",
+		"background-color": "#CCC",
+		"float": "left"
+	},
+	"moduleNodeMove_content":{
+		"margin-top": "10px",
+		"height": "40px",
+		"background-color": "#DDD"
+	},
+	"moduleNodeMoveTd": {
+		"border-right": "1px dashed #ffa200",
+		"border-bottom": "1px dashed #ffa200",
+		"height": "16px"
+	},
+	
+	"moduleNodeShow": {
+		"border": "1px dashed #333",
+		"height": "2px",
+		"cursor": "pointer",
+		"line-height": "22px",
+		"overflow": "hidden",
+		"margin": "3px 3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "static",
+		"display": "block",
+		"top": "auto",
+		"left": "auto",
+		"width": "auto",
+		"opacity": 0.5,
+		"background": "#ffa200"
+	},
+	"moduleNode": {
+		"border": "1px dashed #CCC",
+		"height": "auto",
+		"cursor": "pointer",
+		"overflow": "hidden",
+		"margin": "3px 3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "static",
+		"display": "block",
+		"top": "auto",
+		"left": "auto",
+		"width": "auto",
+		"opacity": 1,
+		"background": "transparent"
+	}
+}

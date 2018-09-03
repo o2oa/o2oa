@@ -1,0 +1,231 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='0' cellspacing='0' styles='editTable'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='documentNode'></tr>",
+    "mouseoverStyles": "documentNode_over",
+    "action": "open"
+  },
+  "items": [
+    {
+      "name": "subject",
+      "head": {
+        "html": "<th styles='normalThNode' lable='shortWorkDetail'></th>",
+        "width": "30%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>" +
+       //" <div styles='appointNode' name='appointDiv'></div>" +
+        " <div item='workDetail' styles='documentSubject'></div>" +
+        " <div item='centerTitle' styles='documentCenterWork'></div>" +
+        " <span icon='showIcon' styles='documentIcon'></span>" +
+        "</td>",
+        "items": {
+          "title": {},
+          "workDetail":{"value" : "function(d){ return d.workDetail.length > 50 ? d.workDetail.substr(0,50)+'...' : d.workDetail }"},
+          "centerTitle":{"value":"function(d){ return '中心工作：'+d.centerTitle}"},
+          "workType": {},
+          "workLevel": {}
+        }
+      }
+    },
+    {
+      "name": "progressAction",
+      "head": {
+        "html": "<th styles='normalThNode' lable='shortProgressAction'></th>",
+        "width": "30%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>" +
+        " <div item='progressAction' styles='documentSubject'></div>" +
+        " <span  styles='documentIcon'></span>" +
+        "</td>",
+        "items": {
+          "title": {},
+          "progressAction":{"value" : "function(d){ return d.progressAction.length > 50 ? d.progressAction.substr(0,50)+'...' : d.progressAction }"},
+          "shortWorkDetail":{},
+          "workType": {},
+          "workLevel": {}
+        }
+      }
+    },
+    {
+      "name": "relativeDepartment",
+      "head": {
+        "html": "<th styles='normalThNode' lable='relativeDepartment'></th>",
+        "width": "15%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>"  +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='responsibilityOrganizationName' colon='true'></div><div styles='itemInLine' item='responsibilityUnitName'></div></div>" +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='deployerOrganizationName' colon='true'></div><div styles='itemInLine' item='deployerUnitName'></div></div>" +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='cooperateOrganizationName' colon='true'></div><div styles='itemInLine' item='cooperateUnitNameList'></div></div>" +
+        "</td>",
+        "items": {
+          "responsibilityUnitName": {
+            "value":"function(d){return d.responsibilityUnitName.split('@')[0]}"
+          },
+          "deployerUnitName": {
+            "value":"function(d){return d.deployerUnitName.split('@')[0]}"
+          },
+          "cooperateUnitNameList": {
+            "value":"function(d){if(d.cooperateUnitNameList)v = d.cooperateUnitNameList;else return '';v1='';for(i=0;i<v.length;i++){	if(v1==''){v1=v[i].split('@')[0];}else{	v1=v1+','+v[i].split('@')[0];};}return v1}"
+          }
+        }
+      }
+    },
+    {
+      "name": "relativePerson",
+      "head": {
+        "html": "<th styles='normalThNode' lable='relativePerson'></th>",
+        "width": "10%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>" +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='responsibilityEmployeeName' colon='true'></div><div styles='itemInLine' item='responsibilityEmployeeName'></div></div>" +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='deployerName' colon='true'></div><div styles='itemInLine' item='deployerName'></div></div>" +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='cooperateEmployeeName' colon='true'></div><div styles='itemInLine' item='cooperateEmployeeNameList'></div></div>" +
+        "</td>",
+        "items": {
+          "responsibilityEmployeeName": {
+            "value":"function(d){return d.responsibilityEmployeeName.split('@')[0]}"
+          },
+          "deployerName": {"value":"function(d){return d.deployerName.split('@')[0]}"},
+          "cooperateEmployeeNameList": {
+            "value":"function(d){if(d.cooperateEmployeeNameList)v = d.cooperateEmployeeNameList;else return '';v1='';for(i=0;i<v.length;i++){if(v1==''){v1=v[i].split('@')[0];}else{	v1=v1+','+v[i].split('@')[0];};}return v1}"
+          }
+        }
+      }
+    },
+    {
+      "name": "timeLimit",
+      "head": {
+        "html": "<th styles='normalThNode' lable='completeDateLimitStr'></th>",
+        "width": "10%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' item='completeDateLimitStr'></td>",
+        "items": {
+          "completeDateLimitStr" : {}
+        }
+      }
+    },
+    {
+      //"access": "admin",
+      "head": {
+        "html": "<th styles='normalThNode' lable='action'></th>",
+        "width": "15%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode'>" +
+        " <span styles='documentActionNode' item='action_view'></span>" +
+        " <span styles='documentActionNode' item='action_edit'></span>" +
+        " <span styles='documentActionNode' item='action_split'></span>" +
+        " <span styles='documentActionNode' item='action_authorize'></span>" +
+        " <span styles='documentActionNode' item='action_tackBack'></span>" +
+        " <span styles='documentActionNode' item='action_report'></span>" +
+        " <span styles='documentActionNode' item='action_delete'></span>" +
+        " <span styles='documentActionNode' item='action_progress'></span>" +
+        " <span styles='documentActionNode' item='action_archive'></span>" +
+        " <span styles='documentActionNode' item='action_check'></span>" +
+        "</td>",
+        "items": {
+          "action_view": {
+            "title": "action_view",
+            "text": "action_view",
+            "action": "action_view",
+            "styles": "documentActionNode",
+            "condition": "function( d ){ return this.viewActionReturn(d) }",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "action_edit": {
+            "title": "action_edit",
+            "text": "action_edit",
+            "action": "action_edit",
+            "styles": "documentActionNode",
+            "condition": "function( d ){ return this.editActionReturn(d) }",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "action_split": {
+            "title": "action_split",
+            "text": "action_split",
+            "action": "action_split",
+            "styles": "documentActionNode",
+            "condition": "function( d ){ return this.splitActionReturn(d) }",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "action_authorize": {
+            "title": "action_authorize",
+            "text": "action_authorize",
+            "action": "action_authorize",
+            "styles": "documentActionNode",
+            "condition": "function( d ){ return this.authorizeActionReturn(d) }",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "action_tackBack": {
+            "title": "action_tackBack",
+            "text": "action_tackBack",
+            "action": "action_tackBack",
+            "styles": "documentActionNode",
+            "condition": "function( d ){ return this.tackBackActionReturn(d) }",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "action_report": {
+            "title": "action_report",
+            "text": "action_report",
+            "action": "action_report",
+            "styles": "documentActionNode",
+            "condition": "function( d ){ return this.reportActionReturn(d) }",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "action_delete": {
+            "title": "action_delete",
+            "text": "action_delete",
+            "action": "action_delete",
+            "styles": "documentActionNode",
+            "condition": "function( d ){ return this.deleteActionReturn(d) }",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "action_progress": {
+            "title": "action_progress",
+            "text": "action_progress",
+            "action": "action_progress",
+            "styles": "documentActionNode",
+            "condition": "function( d ){ return this.progressActionReturn(d) }",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "action_archive": {
+            "title": "action_archive",
+            "text": "action_archive",
+            "action": "action_archive",
+            "styles": "documentActionNode",
+            "condition": "function( d ){ return this.archiveActionReturn(d) }",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "action_check": {
+            "title": "action_check",
+            "text": "action_check",
+            "action": "action_check",
+            "styles": "documentActionNode",
+            "condition": "function( d ){ return this.checkActionReturn(d) }",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          }
+        }
+      }
+    }
+  ]
+}

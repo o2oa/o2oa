@@ -1,0 +1,67 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='todoTable' class='todoTable'></table>"
+  },
+
+  "documentSetting": {
+    "html": "<tr class='documentTr' styles='documentTr'></tr>",
+    "mouseoverStyles": "documentTr_over",
+    "action": "open"
+  },
+  "items": [
+
+    {
+      "name": "dynamicObjectTitle",
+      "content": {
+        "html": "<td class='titleTd' styles='titleTd'>" +
+        "<div styles='titleDiv' class='titleDiv'>" +
+        "<span class='titleSpan' styles='titleSpan' item='title'></span>" +
+        "</div>"+
+        "</td>",
+        "items": {
+          "title": {}
+        }
+      }
+    },
+    {
+      "name": "progress",
+      "content": {
+        "html": "<td styles='createTd' class='createTd'>"  +
+        "   <div styles='barDiv' class='barDiv'>" +
+        "     <div styles='barPercentDiv' class='barPercentDiv'></div>" +
+        "   </div>"+
+        "</td>",
+        "items": {
+
+        }
+      }
+    },
+    {
+      "name": "limitDate",
+      "content":{
+        "html" :"<td styles='createTd' class='createTd'>" +
+        "   <div styles='createDiv' class='createDiv' item='completeDateLimitStr'></div>"+
+        "</td>",
+        "items": {
+          "completeDateLimitStr": {
+            "value": "function(d){return d.completeDateLimitStr.substring(0,10) }"
+          }
+        }
+      }
+    },
+    {
+      "name": "status",
+      "content":{
+        "html" :"<td class='statusTd'>" +
+        "   <div styles='statusDiv' class='statusDiv' item='workProcessStatus'></div>"+
+        "</td>",
+        "items": {
+          "workProcessStatus": {
+
+          }
+        }
+      }
+    }
+  ]
+}
+

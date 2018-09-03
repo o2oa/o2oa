@@ -1,0 +1,257 @@
+{
+    "monthNode": {
+        "overflow": "hidden",
+    },
+    "monthTitleAreaNode": {
+        "overflow": "hidden",
+        "border-bottom": "0px solid #999",
+        "height": "32px"
+    },
+    "monthSortByAreaNode":{
+         "overflow-y": "hidden",
+         "float": "left",
+         "height": "40px"
+    },
+    "monthFilterAreaNode":{
+         "overflow": "hidden",
+         "float": "right",
+         "height": "40px"
+    },
+    "monthTableAreaNode": {
+         "overflow": "auto",
+         "border-bottom": "1px solid #999",
+         "background-color":"#FFF",
+         "max-height": "600px",
+         "margin-top": "20px"
+     },
+    "monthChartAreaNode": {
+         "overflow": "hidden",
+         "border": "1px solid #BBB",
+         "height": "300px",
+         "padding": "0px 0px",
+         "background-color": "#FFF"
+    },
+    "sortActionNode": {
+        "height": "24px",
+        "float": "left",
+        "margin": "0px 0px 5px 0px",
+        "border": "1px solid #999",
+        "background-color": "#FFF",
+        "border-bottom": "1px solid #999",
+        "position": "static"
+    },
+    "sortActionNode_menu": {
+        "position": "absolute",
+    },
+    "sortActionTitleNode": {
+        "height": "24px",
+        "width": "60px",
+        "color": "#FFF",
+        "text-align": "center",
+        "line-height": "24px",
+        //"background-color": "#ff7010",
+        "background-color": "#16a085",
+        "font-size": "14px",
+        "cursor": "pointer",
+        "float": "left"
+    },
+    "sortActionTitleNode_over": {
+        "background-color": "#16a085"
+    },
+    "sortActionTitleNode_menu": {
+        "background-color": "#ff7010"
+    },
+    "sortActionTextNode": {
+        "height": "24px",
+        "padding": "0px 10px",
+        "color": "#666",
+        "line-height": "24px",
+        "margin-left": "60px",
+        "font-size": "14px"
+    },
+
+    "filterActionNode": {
+         "height": "24px",
+         "float": "right",
+         "margin": "0px 0px 5px 0px",
+         "border": "1px solid #999",
+         "background-color": "#FFF",
+         "position": "static"
+    },
+    "filterActionNode_menu": {
+        "position": "absolute",
+    },
+    "filterActionTitleNode": {
+         "height": "24px",
+         "width": "60px",
+         "color": "#FFF",
+         "text-align": "center",
+         "line-height": "24px",
+         //"background-color": "#ff7010",
+         "background-color": "#16a085",
+         "font-size": "14px",
+         "cursor": "pointer",
+         "float": "right"
+    },
+    "filterActionTitleNode_over": {
+        "background-color": "#16a085"
+    },
+    "filterActionTitleNode_menu": {
+        "background-color": "#ff7010"
+    },
+    "filterActionTextNode": {
+         "height": "24px",
+         "padding": "0px 10px",
+         "color": "#666",
+         "line-height": "24px",
+         "margin-right": "60px",
+         "font-size": "14px"
+    },
+    "monthlyTable": {
+        "width": "100%",
+        "border-left": "1px solid #999",
+        "border-top": "1px solid #999",
+        "cursor": "default",
+    },
+    "monthlyTableTitleTd": {
+        "text-align": "center",
+        "border-right": "1px solid #999",
+        "border-bottom": "1px solid #999",
+        "font-size": "14px",
+        "padding": "3px",
+        "color": "#666",
+        "background-color":"#f0f8ff",
+        "font-weight": "bold"
+    },
+    "monthlyTableTd": {
+        "text-align": "center",
+        "border-right": "1px solid #999",
+        "border-bottom": "1px solid #999",
+        "padding": "3px",
+        "background-color":"#FFF",
+        "font-size": "12px"
+    },
+    "monthlyTableTd_selected": {
+        "background-color":"#faebd7",
+    },
+    "monthlyTableColSelectTd": {
+        "border-right": "1px solid #999",
+        "border-bottom": "1px solid #999",
+        "background": "url(/x_component_BAM/monthly/$MonthlyContent/default/icon/check.png) center center no-repeat",
+        "cursor": "pointer",
+        "height": "20px",
+        "padding": "3px"
+    },
+    "monthlyTableRowSelectTd": {
+        "border-right": "1px solid #BBB",
+        "border-bottom": "1px solid #BBB",
+        "background": "url(/x_component_BAM/monthly/$MonthlyContent/default/icon/check.png) center center no-repeat",
+        "cursor": "pointer",
+        "width": "30px",
+        "padding": "3px"
+    },
+    "monthlyTableAllSelectTd": {
+        "border-right": "1px solid #BBB",
+        "border-bottom": "1px solid #BBB",
+        "height": "20px",
+        "cursor": "pointer",
+        "background": "url(/x_component_BAM/monthly/$MonthlyContent/default/icon/checkAll.png) center center no-repeat",
+        "padding": "3px"
+    },
+    "monthlyTableAllColSelectTd": {
+        "border-right": "1px solid #BBB",
+        "border-bottom": "1px solid #BBB",
+        "height": "20px",
+        "cursor": "pointer",
+        "background": "url(/x_component_BAM/monthly/$MonthlyContent/default/icon/checkAllCol.png) center center no-repeat",
+        "padding": "3px"
+    },
+    "monthlyTableAllRowSelectTd": {
+        "border-right": "1px solid #BBB",
+        "border-bottom": "1px solid #BBB",
+        "height": "20px",
+        "cursor": "pointer",
+        "background": "url(/x_component_BAM/monthly/$MonthlyContent/default/icon/checkAllRow.png) center center no-repeat",
+        "padding": "3px"
+    },
+    "monthlyTableSelectedTd": {
+        "background": "url(/x_component_BAM/monthly/$MonthlyContent/default/icon/checked.png) center center no-repeat"
+    },
+    "monthlyTableSelectTd": {
+        "background": "url(/x_component_BAM/monthly/$MonthlyContent/default/icon/check.png) center center no-repeat"
+    },
+    "monthlyTableUnSelectTd": {
+        "border-right": "1px solid #BBB",
+        "border-bottom": "1px solid #BBB",
+        "padding": "3px"
+    },
+    "monthlyChartFlagAreaNode": {
+        "width": "180px",
+        "height": "300px",
+        "float": "left",
+        "background-color": "#EEE",
+        "overflow": "auto",
+        "padding": " 10px 10px 15px 20px"
+    },
+    "monthlyChartNode": {
+        "margin-left": "180px",
+        "height": "300px",
+        "background-color": "#FFF",
+        "overflow": "hidden"
+    },
+    "monthlyChartFlagNode": {
+        "height": "30x",
+        "margin": "5px 5px 0px 0px",
+        "background-color": "#EEE",
+        "cursor": "default"
+    },
+    "monthlyChartFlagColorNode": {
+        "height": "24px",
+        "width": "24px",
+        "float": "left",
+        "box-shadow": "0px 0px 0px #FFF",
+    },
+    "monthlyChartFlagColorNode_over": {
+        "box-shadow": "2px 2px 5px #333",
+    },
+    "monthlyChartFlagNameNode": {
+        "height": "24px",
+        "line-height": "24px",
+        "font-size": "14px",
+        "margin-left": "34px",
+        "overflow": "hidden"
+    },
+
+    "filterAreaNode": {
+        "border": "1px solid #999",
+        "box-shadow": "3px 3px 10px #666",
+        "borderground-color": "#FFF",
+        "padding": "10px"
+    },
+    "filterAreaConditionNode": {
+        "overflow": "hidden"
+    },
+    "filterAreaActionNode": {
+        "margin-top": "10px",
+        "height": "30px"
+    },
+    "filterAreaActionNode": {
+        "height": "24px",
+        "width": "80px",
+        "color": "#FFF",
+        "text-align": "center",
+        "float": "left",
+        "background-color": "#"
+    },
+
+    "selectBox": {
+        "position": "absolute",
+        "z-index": 10000,
+        "background-color": "#4682b4",
+        "opacity": 0.3,
+        "border": "1px solid #333",
+        "width": "0px",
+        "height": "0px"
+    }
+
+}

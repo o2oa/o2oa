@@ -1,0 +1,17 @@
+[
+	{
+		"id": "",
+		"processList": [
+			"*"
+		],
+		"formList": [
+			"*"
+		],
+		"applicationDictList": [
+			"*"
+		],
+		"scriptList": [
+			"*"
+		]
+	}
+]

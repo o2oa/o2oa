@@ -1,0 +1,231 @@
+{
+  "listApplication": {"uri": "/jaxrs/appinfo/list/user/view/all" },
+  "listCMSApplication": {"uri": "/jaxrs/appinfo/list/user/view/all" },
+  "getApplication": {"uri": "/jaxrs/appinfo/{id}"},
+  "getCMSApplication": {"uri": "/jaxrs/appinfo/{id}"},
+
+  "listCMSCategory" : {"uri": "/jaxrs/categoryinfo/list/view/app/{appId}" },
+  "getCMSForm" : {"uri": "/jaxrs/form/{id}" },
+
+  "listApplicationView": {"uri": "/jaxrs/queryview/list/all"},
+  "listCMSApplicationView": {"uri": "/jaxrs/queryview/list/all"},
+
+  "getId" : {"uri":"/jaxrs/uuid/random"},
+
+  "listColumn": {"uri": "/jaxrs/appinfo/list/user/view/all" }, //"/jaxrs/appinfo/list/all"},
+  "listColumnByPublish": {"uri": "/jaxrs/appinfo/list/user/publish" },
+  "listColumnByAdmin": {"uri": "/jaxrs/appinfo/list/admin" },
+  "getColumn": {"uri": "/jaxrs/appinfo/{id}"},
+  "addColumn": {"uri": "/jaxrs/appinfo","method": "POST"},
+  "removeColumn": {"uri": "/jaxrs/appinfo/{id}","method": "DELETE"},
+  "updateColumn": {"uri": "/jaxrs/appinfo","method": "POST"},
+  "getColumnIcon":{"uri":"/jaxrs/appinfo/{id}/icon"},
+  "updataColumnIcon": {
+    "uri": "/jaxrs/appinfo/{id}/icon/size/72",
+    "method": "POST",
+    "enctype": "formData"
+  },
+
+  "listAllCategory" : {"uri":"/jaxrs/categoryinfo/list/all"},
+  "listCategory": {"uri": "/jaxrs/categoryinfo/list/view/app/{appId}/all" },
+  "listCategoryByPublisher": {"uri": "/jaxrs/categoryinfo/list/publish/app/{appId}" },
+  "addCategory" : {"uri":"/jaxrs/categoryinfo","method":"POST"},
+  "getCategory" : {"uri":"/jaxrs/categoryinfo/{id}"},
+  "updateCategory": {"uri": "/jaxrs/categoryinfo","method": "POST"},
+  "removeCategory": {"uri": "/jaxrs/categoryinfo/{id}","method": "DELETE"},
+  "saveCategoryExtContent" : {"uri": "/jaxrs/categoryinfo/extContent","method": "POST"},
+  "saveCategoryImportView" : {"uri": "/jaxrs/categoryinfo/bind/{categoryId}/view","method": "PUT"},
+
+  "listAllForm" : {"uri":"/jaxrs/form/list/all"},
+  "listForm": {"uri": "/jaxrs/form/list/app/{appId}"},
+  "getForm": {"uri": "/jaxrs/form/{id}"},
+  "addForm": {"uri": "/jaxrs/form","method": "POST"},
+  "removeForm": {"uri": "/jaxrs/form/{id}","method": "DELETE"},
+  "updataForm": {"uri": "/jaxrs/form/{id}","method": "PUT"},
+  "getFormByAnonymous": {"uri": "/jaxrs/anonymous/form/{id}"},
+
+  "getFormTemplate": {"uri": "/jaxrs/templateform/{id}"},
+  "deleteFormTemplate": {"uri": "/jaxrs/templateform/{id}","method": "DELETE"},
+  "addFormTemplate": {"uri": "/jaxrs/templateform","method": "POST"},
+  "listFormTemplate": {"uri": "/jaxrs/templateform/list"},
+  "listFormTemplateCategory": {"uri": "/jaxrs/templateform/list/category"},
+  "listFormTemplatByCategory": {"uri": "/jaxrs/templateform/list/category","method": "PUT"},
+
+  "listDictionary": {"uri": "/jaxrs/design/appdict/list/appInfo/{appId}"},
+  "getDictionary": {"uri": "/jaxrs/design/appdict/{appDictId}"},
+  "addDictionary": {"uri": "/jaxrs/design/appdict", "method": "POST"},
+  "removeDictionary": {"uri": "/jaxrs/design/appdict/{appDictId}","method": "DELETE"},
+  "updataDictionary": {"uri": "/jaxrs/design/appdict/{appDictId}","method": "PUT"},
+
+  "listScript": {"uri": "/jaxrs/script/list/app/{appId}"},
+  "getScript": {"uri": "/jaxrs/script/{id}"},
+  "addScript": {"uri": "/jaxrs/script", "method": "POST"},
+  "removeScript": {"uri": "/jaxrs/script/{id}", "method": "DELETE"},
+  "updataScript": {"uri": "/jaxrs/script/{id}", "method": "PUT"},
+  "getScriptByName": {"uri": "/jaxrs/script/list/app/{appId}/name/{name}"},
+
+  "listAppByManager" : {"uri":"/jaxrs/appinfo/list/manage"},
+  "isAppInfoManager" : {"uri":"/jaxrs/permission/appInfo/{id}/manageable"},
+
+  "isCategoryInfoManagers" : {"uri":"/jaxrs/permission/categoryInfo/{id}/manageable"},
+
+  "listAppInfoManagers" : {"uri":"/jaxrs/permission/appInfo/{id}/managers"},
+  "listAppInfoPublishers" : {"uri":"/jaxrs/permission/appInfo/{id}/publishers"},
+  "listAppInfoViewers" : {"uri":"/jaxrs/permission/appInfo/{id}/viewers"},
+
+  "listCategoryInfoManagers" : {"uri":"/jaxrs/permission/category/{id}/managers"},
+  "listCategoryInfoPublishers" : {"uri":"/jaxrs/permission/category/{id}/publishers"},
+  "listCategoryInfoViewers" : {"uri":"/jaxrs/permission/category/{id}/viewers"},
+
+  "saveAppInfoManager" : {"uri":"/jaxrs/permission/manager/appInfo/{id}", "method":"POST" },
+  "saveAppInfoPublisher" : {"uri":"/jaxrs/permission/publisher/appInfo/{id}", "method":"POST" },
+  "saveAppInfoViewer" : {"uri":"/jaxrs/permission/viewer/appInfo/{id}", "method":"POST" },
+
+  "saveCategoryInfoManager" : {"uri":"/jaxrs/permission/manager/categoryInfo/{id}", "method":"POST" },
+  "saveCategoryInfoPublisher" : {"uri":"/jaxrs/permission/publisher/categoryInfo/{id}", "method":"POST" },
+  "saveCategoryInfoViewer" : {"uri":"/jaxrs/permission/viewer/categoryInfo/{id}", "method":"POST" },
+
+  "listView": {"uri" : "/jaxrs/view/list/app/{appId}"},
+  "listViewByCategory": {"uri" : "/jaxrs/view/list/category/{categoryId}"},
+  "listViewByForm": {"uri" : "/jaxrs/view/list/form/{formId}"},
+  "getView" : {"uri" : "/jaxrs/view/{id}"},
+  "addView": {"uri" : "/jaxrs/view", "method": "POST"},
+  "updateView" : {"uri":"/jaxrs/view/{id}","method":"PUT"},
+  "deleteView" : {"uri":"/jaxrs/view/{id}","method": "DELETE"},
+
+  "listViewColumn": {"uri" : "/jaxrs/viewfieldconfig/list/view/{viewId}"},
+  "getViewColumn" : {"uri" : "/jaxrs/viewfieldconfig/{id}"},
+  "addViewColumn" : {"uri":"/jaxrs/viewfieldconfig", "method": "POST"},
+  "updateViewColumn" : {"uri":"/jaxrs/viewfieldconfig/{id}","method":"PUT"},
+  "deleteViewColumn" : {"uri":"/jaxrs/viewfieldconfig/{id}","method": "DELETE"},
+
+  "listCategoryViewByView": {"uri" : "/jaxrs/viewcategory/list/view/{viewId}"},
+  "listCategoryViewByCategory": {"uri" : "/jaxrs/viewcategory/list/category/{categoryId}"},
+  "getCategoryView" : {"uri" : "/jaxrs/viewfieldconfig/{id}"},
+  "addCategoryView" : {"uri":"/jaxrs/viewcategory", "method": "POST"},
+  "updateCategoryView" : {"uri":"/jaxrs/viewcategory/{id}","method":"PUT"},
+  "deleteCategoryView" : {"uri":"/jaxrs/viewcategory/{id}","method": "DELETE"},
+
+  "listQueryView": {"uri": "/jaxrs/queryview/design/list/application/{applicationId}"},
+  "listQueryViewNextPage": {"uri": "/jaxrs/queryview/design/list/{id}/next/{count}"},
+  "listQueryViewPrevPage": {"uri": "/jaxrs/queryview/design/list/{id}/prev/{count}"},
+  "getQueryView": {"uri": "/jaxrs/queryview/design/{id}"},
+  "addQueryView": {"uri": "/jaxrs/queryview/design", "method": "POST"},
+  "updateQueryView": {"uri": "/jaxrs/queryview/design/{id}","method": "PUT"},
+  "deleteQueryView": {"uri": "/jaxrs/queryview/design/{id}","method": "DELETE"},
+  "getQueryViewContent": {"uri": "/jaxrs/queryview/design/flag/{flag}"}, //获取QueryView内容.
+  "loadQueryView": {"uri": "/jaxrs/queryview/design/flag/{flag}/simulate","method": "PUT"},
+
+
+
+  //---document--
+  "getDocument" : {"uri" : "/jaxrs/document/{id}"},
+  "viewDocument" : {"uri" : "/jaxrs/document/{id}/view"},
+  "getDocumentByAnonymous" : {"uri" : "/jaxrs/anonymous/document/{id}/view"},
+  "addDocument": {"uri" : "/jaxrs/document", "method": "POST"},
+  "updateDocument" : {"uri":"/jaxrs/document","method":"POST"},
+  "removeDocument" : {"uri":"/jaxrs/document/{id}","method": "DELETE"},
+  "publishDocument" : {"uri":"/jaxrs/document/publish/{id}","method":"PUT"},  //发布文档信息
+  "cancelPublishDocument" : {"uri":"/jaxrs/document/publish/{id}/cancel","method":"PUT"}, //取消发布文档信息
+  "archiveDocument" : {"uri":"/jaxrs/document/achive/{id}","method":"PUT"}, //归档文档信息
+  "redraftDocument" : {"uri":"/jaxrs/document/draft/{id}","method":"PUT"}, //恢复为草稿
+  "publishDocumentComplex" : {  "uri":"/jaxrs/document/publish/content","method":"PUT" },  //直接一次性发布
+  "publishDocumentCipher" : {"uri":"/jaxrs/document/cipher/publish/content","method":"PUT"},
+
+  //"getCategory" : {"uri":"/jaxrs/categoryinfo/{id}"},
+
+  //"getForm": {"uri": "/jaxrs/form/{id}"},
+
+  "getData": {"uri": "/jaxrs/data/document/{id}"},
+  "addData": {"uri": "/jaxrs/data/document/{id}", "method": "POST"},
+  "updateData": {"uri": "/jaxrs/data/document/{id}", "method": "PUT"},
+
+  "listAttachment" : {"uri":"/jaxrs/fileinfo/list/document/{documentid}"},
+  "getAttachment": {"uri": "/jaxrs/fileinfo/{id}/document/{documentid}"},
+  "deleteAttachment": {"uri": "/jaxrs/fileinfo/{id}", "method": "DELETE"},
+
+  "uploadAttachment": {"uri": "/jaxrs/fileinfo/upload/document/{id}", "method": "POST", "enctype": "formData"},
+  "replaceAttachment": {"uri": "/jaxrs/fileinfo/update/document/{documentid}/attachment/{id}", "method": "POST", "enctype": "formData"},
+  //"getAttachmentData": {"uri": "/servlet/download/{id}/document/{documentid}", "method": "GET"},
+  "getAttachmentData": {"uri": "/jaxrs/fileinfo/download/document/{id}/stream/true", "method": "GET"}, //document/{documentid}/
+  "getAttachmentStream": {"uri": "/jaxrs/fileinfo/download/document/{id}/stream/true", "method": "GET"}, //document/{documentid}/
+
+  //获取互联网URL指向的图片的base64编码[Jaxrs],必填, 需要获取的图片URL地址
+  //  url- 必填, 需要获取的图片URL地址
+  //  size - 转换图片压缩, size为最大宽高限制, 如 size=64 为 64*64
+  //  注意,如果附件本身不是图片格式,则系统不会进行编码,并且给出异常, 扩展名限制:BMP、JPG、JPEG、PNG、GIF、TIFF
+  //  访问文件无权限限制
+  "getInternetImageBaseBase64" : {"uri":"/jaxrs/image/encode/base64", "method": "POST"},
+  //上传一个图片,直接转换为一个base64编码[Servlet]
+  "convertLocalImageToBase64": {"uri": "/servlet/image/encode/base64/size/{size}", "method": "POST", "enctype": "formData"},
+  //将用户已经上传的图片附件直接转换为一个base64编码[Jaxrs]
+  "getSubjectAttachmentBase64" : {"uri":"/jaxrs/fileinfo/{id}/binary/base64/{size}"},
+
+  //id                   -- ID
+  //  documentId           --文档ID
+  //  description          --信息说明（size:255）
+  //  base64               --图片Base64编码后的文本（size:1MB）
+  "saveImage" : {"uri" : "/jaxrs/document/pic", "method": "POST" },
+  "getImage" : {"uri":"/jaxrs/document/pic/{id}"},
+  "listImage" :{"uri":"/jaxrs/document/pic/doc/{documentid}"},
+  "removeImage" : {"uri":"/jaxrs/document/pic/{id}","method": "DELETE"},
+  //4、获取指定文档的ID获取文档大图的base64编码，如果有多个则获取第一个，如果没有则返回“0”
+  "getImageByDocument" : {"uri":"/servlet/document/{documentid}/mainpic", "method": "PUT"},
+
+  "getReadedCount" : {"uri":"/jaxrs/document/{id}/view/count"},
+  "listReadedLog" : {"uri":"/jaxrs/viewrecord/document/{docId}/filter/list/{id}/next/{count}","method":"GET"},
+
+  //--index----
+  "listDocumentAll": {"uri" : "/jaxrs/document/list/category/{categoryId}"},
+  /*
+  过滤条件：
+    private List<NameValueCountPair> appIdList; //一个APPID   [{"appId":""}]
+    private List<NameValueCountPair> categoryIdList;//一个CATEGORYID       [{"categoryId":""}]
+    private List<NameValueCountPair> creatorList;//一个创建人        [{"creatorUid":""}]
+    private List<NameValueCountPair> statusList;//一个DOCSTATUS    [{"docStatus":""}]
+    private List<NameValueCountPair> titleList;	//一个标题         [{"title":""}]
+    private List<NameValueCountPair> formList;//一个FORM          [{"form":""}]
+    private List<NameValueCountPair> createDateList;	//创建年份月份，可以传入一个或者两个   [{"startDate":""},{"endDate":""}]
+  */
+  "listDocumentFilterNext": {"uri" : "/jaxrs/document/filter/list/{id}/next/{count}", "method": "PUT"},
+  "listDocumentFilterPrev": {"uri" : "/jaxrs/document/filter/list/{id}/prev/{count}", "method": "PUT"},
+
+  "listViewDataNext": {"uri" : "/jaxrs/view/viewdata/list/{id}/next/{count}", "method": "POST"},
+  /*
+  参数：
+  {
+      "orderField":"createTime",
+      "orderType":"desc",
+      "categoryId":"86b3a04e-a245-40e9-9580-615abda330b1",
+      "viewId":"6e69d043-d8ae-4887-a8d1-e8fb2c981d7d",
+      "searchDocStatus":"published"
+  }
+  */
+
+  "listDraftNext": {"uri" : "/jaxrs/document/draft/list/{id}/next/{count}", "method": "PUT"},
+  "listDraftPrev": {"uri" : "/jaxrs/document/draft/list/{id}/prev/{count}", "method": "PUT"},
+
+  "listDraftFilterAttribute": {"uri" : "/jaxrs/searchfilter/list/draft/filter"},
+  "listPublishFilterAttribute": {"uri" : "/jaxrs/searchfilter/list/publish/filter"},
+  "listArchiveFilterAttribute": {"uri" : "/jaxrs/searchfilter/list/archive/filter"},
+
+  "listCategoryDraftFilterAttribute": {"uri" : "/jaxrs/searchfilter/list/draft/filter/category/{categoryId}"},
+  "listCategoryPublishFilterAttribute": {"uri" : "/jaxrs/searchfilter/list/publish/filter/category/{categoryId}"},
+  "listCategoryArchiveFilterAttribute": {"uri" : "/jaxrs/searchfilter/list/archive/filter/category/{categoryId}"},
+
+  //---module---
+  "achiveDocument" : {"uri":"/jaxrs/document/achive/{id}","method":"PUT"}, //归档文档信息
+
+  "importDocumentFormExcel": {"uri" : "/jaxrs/document/import/category/{categoryId}", "method": "POST", "enctype": "formData"},
+  "deleteDocumentWithBatchName" :  {"uri":"/jaxrs/document/batch/{batchId}","method":"DELETE"},
+  "checkImportStatus" : {"uri" : "/jaxrs/document/batch/{batchName}/status"},
+  "checkAllImportStatus" : {"uri" : "/jaxrs/document/batch/status"},
+
+  "getColumnByAlias": {"uri": "/jaxrs/appinfo/alias/{alias}"},
+  "getCategoryByAlias" : {"uri":"/jaxrs/categoryinfo/alias/{alias}"},
+
+  //{  docIds : docIds, dataChanges : dataChanges }
+  "batchModifyData" :  {"uri":"/jaxrs/document/batch/data/modify","method":"PUT"}, //批量修改数据
+
+  "clazz": "x_cms_assemble_control"
+}

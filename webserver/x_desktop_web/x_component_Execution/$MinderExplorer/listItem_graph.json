@@ -1,0 +1,77 @@
+{
+  "viewSetting": {
+    "html": "<div styles='documentListNode'></div>"
+  },
+  "documentSetting": {
+    "html": "<div styles='documentNode'></div>",
+    "mouseoverStyles": "documentNode_over",
+    "action": "open",
+    "event" : "mouseover^^function( documentNode, ev ){ this.mouseoverDocument() }##mouseout^^function( documentNode, ev ){ this.mouseoutDocument() }"
+  },
+  "items": [
+    {
+      "name": "work",
+      "content": {
+        "html": "<div styles='documentItemNode'>"  +
+        "<div styles='documentItemTopNode'>"+
+        " <div styles='documentItemTitleNode' item='title'></div>"+
+        " <div styles='documentItemIconNode'></div>" +
+        "</div>" +
+        "<div styles='documentItemStatListNode'>"+
+        " <div styles='documentItemStatNode'>"+
+        "   <div styles='documentItemStatCountNode' item='processingWorkCount'></div>"+
+        "   <div styles='documentItemStatTextNode' lable='executing'>执行中</div>"+
+        " </div>"+
+        " <div styles='documentItemStatNode'>"+
+        "   <div styles='documentItemStatCountNode' item='overtimeWorkCount'></div>"+
+        "   <div styles='documentItemStatTextNode' lable='exceed'>已超期</div>"+
+        " </div>"+
+        " <div styles='documentItemStatNode'>"+
+        "   <div styles='documentItemStatCountNode' item='completedWorkCount'></div>"+
+        "   <div styles='documentItemStatTextNode' lable='completed'>已完成</div>"+
+        " </div>"+
+        "</div>" +
+        "</div>",
+        "items": {
+          "title": {
+            "value" : "function(d){ return d.title.length > 50 ? d.title.substr(0,50)+'...' : d.title }"
+          },
+          "processingWorkCount" : {},
+          "overtimeWorkCount" : {},
+          "completedWorkCount" : {},
+          "doDepartment": {},
+          "secondDepartment": {}
+        }
+      }
+   }
+//    {
+//      "content": {
+//        "html": "<td styles='normalTdCenterNode'>" +
+//        " <span styles='documentActionNode' item='action_open'></span>" +
+//        " <span styles='documentActionNode' item='action_delete'></span>" +
+//        "</td>",
+//        "items": {
+//          "action_open": {
+//            "title": "open",
+//            "text": "open",
+//            "action": "action_open",
+//            "condition": "function( d ){ return true }",
+//            "styles": "documentActionNode",
+//            "mouseoverStyles": "documentActionNode_over",
+//            "mousedownStyles": "documentActionNode_down"
+//          },
+//          "action_delete": {
+//            "title": "delete",
+//            "text": "delete",
+//            "action": "action_delete",
+//            "condition": "function( d ){ return true }",
+//            "styles": "documentActionNode",
+//            "mouseoverStyles": "documentActionNode_over",
+//            "mousedownStyles": "documentActionNode_down"
+//          }
+//        }
+//      }
+//    }
+  ]
+}
+

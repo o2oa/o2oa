@@ -1,0 +1,46 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>O2办公平台 - 永久免费的DIY办公平台</title>
+	<meta name="description" content=""/>
+	<meta name="keywords" content="O2,O2Platform,O2 Platform,O2办公平台,互联网工作平台,企业工作平台,OA,免费办公平台,管理软件,企业沟通,企业管理,客户,云办公,协作办公,移动化办公"/>
+	<link rel="shortcut icon" href="/images/favicon_16.ico"/>
+	<link rel="bookmark" href="/images/favicon_16.ico"/>
+    <script src="js/jquery-3.1.0.min.js"></script> <!-- jQuery -->
+    <script src="js/slide.js"></script>
+	<script src="js/json2.js"></script>
+	<link rel="stylesheet" href="css/slide.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script type="text/javascript">
+    $(function () {
+		$("#top").load( "top.html" , function(){
+			$("#main").load( "o2.html" , function(){
+				$("#foot").load( "foot.html" );
+			});
+		});
+	});
+	
+	function toDownloadPage(){
+		$("#main").load( "download.html", function(){
+			 $('body,html').animate({ scrollTop: 0 }, 500); 
+		} );
+	}
+	
+	function toIndexPage(){
+		$("#main").load( "o2.html" );
+		$('body,html').animate({ scrollTop: 0 }, 500); 
+	}
+    </script>
+</head>
+<body>
+	<!-- 这里LOAD其他的页面 top.jsp -->
+  	<div id="top" ></div>
+  	
+    <!-- 这里LOAD其他的页面 main.jsp -->
+  	<div id="main" ></div>
+  	
+  	<!-- 这里LOAD其他的页面 foot.jsp -->
+  	<div id="foot" ></div>
+</body>
+</html>

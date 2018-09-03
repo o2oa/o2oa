@@ -1,0 +1,17 @@
+[
+  {
+    "title" : "系统设置",
+    "icon" :"Maintenance-96.png",
+    "action" : "openSystemConfig"
+  },
+  {
+    "title" : "秘书设置",
+    "icon" :"assistant100.png",
+    "action" : "openSecretarySetting"
+  },
+  {
+    "title" : "分类设置",
+    "icon" :"categorize.png",
+    "action" : "openCategorySetting"
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "title" : "标题",
+    "headStyles" : "titleAreaHeadNode",
+    "contentStyles" : "titleAreaContentNode",
+    "item" : "title",
+    "name" : "titleAreaNode",
+    "sortByClickTitle" : "yes",
+    "width" : "42%"
+  },
+  {
+    "title" : "创建人",
+    "headStyles" : "personAreaHeadNode",
+    "contentStyles" : "personAreaContentNode",
+    "item" : "creatorPersonShort",
+    "name" : "personAreaNode",
+    "sortByClickTitle" : "yes",
+    "width" : "13%"
+  },
+  {
+    "title" : "创建部门",
+    "headStyles" : "departmentAreaHeadNode",
+    "contentStyles" : "departmentAreaContentNode",
+    "item" : "creatorUnitNameShort",
+    "name" : "departmentAreaNode",
+    "sortByClickTitle" : "yes",
+    "width" : "13%"
+  },
+  {
+    "title" : "发布时间",
+    "headStyles" : "timeAreaHeadNode",
+    "contentStyles" : "timeAreaContentNode",
+    "item" : "publishTime",
+    "name" : "timeAreaNode",
+    "sortByClickTitle" : "yes",
+    "width" : "18%"
+  },
+  {
+    "access" : "admin",
+    "title" : "操作",
+    "headStyles" : "actionAreaHeadNode",
+    "contentStyles" : "actionAreaContentNode",
+    "item" : "action",
+    "name" : "actionAreaNode",
+    "width" : "13%"
+  }
+]

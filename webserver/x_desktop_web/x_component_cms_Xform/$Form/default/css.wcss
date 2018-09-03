@@ -1,0 +1,266 @@
+{
+	"container": {
+		"padding": "3px",
+		"overflow": "hidden",
+		"-webkit-user-select": "text",
+        "-moz-user-select": "text"
+	},
+	"textfieldNode": {
+		"display": "inline-block"
+	},
+	"personfieldIcon": {
+		"background": "url("+"/x_component_cms_Xform/$Form/default/icon/selectperson.png) center center no-repeat",
+		"width": "18px",
+		"height": "18px",
+		//"position": "relative",
+		//"top": "-18px",
+		//"display": "inline-block",
+		"float": "right",
+		"cursor": "pointer" 
+	},
+	"textFieldIcon": {
+	    "background": "url("+"/x_component_cms_Xform/$Form/default/icon/inputtext.png) center center no-repeat",
+        "width": "18px",
+        "height": "18px",
+        //"position": "relative",
+        //"top": "-18px",
+        //"display": "inline-block",
+        "float": "right"
+	},
+	"numberIcon": {
+	    "background": "url("+"/x_component_cms_Xform/$Form/default/icon/number.png) center center no-repeat",
+        "width": "18px",
+        "height": "18px",
+        //"position": "relative",
+        //"top": "-18px",
+        //"display": "inline-block",
+        "float": "right"
+	},
+	"calendarIcon": {
+		"background": "url("+"/x_component_cms_Xform/$Form/default/icon/calendar.png) center center no-repeat",
+		"width": "18px",
+		"height": "18px",
+		//"position": "relative",
+		//"display": "inline-block",
+		"float": "right",
+		"cursor": "pointer" 
+	},
+	"selectIcon": {
+		"background": "url("+"/x_component_cms_Xform/$Form/default/icon/pull.png) center center no-repeat",
+		"width": "18px",
+		"height": "18px",
+		//"position": "relative",
+		//"display": "inline-block",
+		"float": "right",
+		"cursor": "pointer"
+	},
+    "descriptionNode": {
+        "color": "#bbb",
+        "cursor": "text",
+        "position": "absolute",
+        "top": "0px"
+    },
+
+	"buttonStyles": {
+        "color" : "#777",
+		"border-radius": "5px",
+		"border-top": "1px solid #ccc",
+		"border-left": "1px solid #ccc",
+		"border-right": "1px solid #ccc",
+		"border-bottom": "1px solid #ccc",
+		"overflow": "hidden",
+		"cursor": "pointer",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "static",
+		"top": "auto",
+		"left": "auto",
+		"opacity": 1,
+		"height": "26px"
+	},
+	"datagridTitle": {
+		"height": "28px",
+		"cursor": "pointer",
+		"line-height": "28px",
+		"overflow": "hidden",
+		"opacity": 1,
+		"background": "#C3CEEA"
+		//"background": "#efefef"
+	},
+	"gridLineActionCell": {
+		"width": "40px"
+	},
+	"gridMoveActionCell": {
+		"width": "5px"
+	},
+	"addLineAction": {
+		"width": "20px",
+		"height": "20px",
+		"background": "url("+"/x_component_cms_Xform/$Form/default/icon/addline.png) center center no-repeat",
+		"cursor": "pointer",
+		"float": "left"
+	},
+	"delLineAction": {
+		"width": "20px",
+		"height": "20px",
+		"background": "url("+"/x_component_cms_Xform/$Form/default/icon/delline.png) center center no-repeat",
+		"cursor": "pointer",
+		"float": "left"
+	},
+	"completeLineAction": {
+		"width": "20px",
+		"height": "20px",
+		"background": "url("+"/x_component_cms_Xform/$Form/default/icon/check.png) center center no-repeat",
+		"cursor": "pointer",
+		"float": "left"
+	},
+	"moveLineAction": {
+		"width": "5px",
+		"height": "20px",
+		"background": "url("+"/x_component_cms_Xform/$Form/default/icon/move.png) center center no-repeat",
+		"cursor": "move",
+		"float": "left"
+	},
+	"gridMoveLineDragNode": {
+		"opacity": 0.7,
+		"z-index": 30000,
+		"background-color": "#CCC",
+		"position": "absolute"
+	},
+	"gridMoveLineDragNodeTr": {
+		//"background-color": "#f3f1ad"
+		"background-color": "#e4f6e9"
+	},
+    "datagridTotalTr": {
+        "height": "20px",
+        "cursor": "pointer",
+        "line-height": "20px",
+        "overflow": "hidden",
+        "background": "#e1e6f3"
+    },
+    "datagridTotalTd": {
+        "font-weight": "bold"
+    },
+
+    "mobileDatagridTable": {
+
+    },
+    "gridTotalNode": {
+        "overflow": "hidden",
+        "margin-bottom": "10px"
+    },
+    "gridTotalTitleNode": {
+        "height": "30px",
+        "text-align": "center",
+        "line-height": "30px",
+        "font-size": "14px",
+        "font-weight": "bold",
+        "background-color": "#C3CEEA",
+        "border-top": "1px solid #999",
+        "border-left": "1px solid #999",
+        "border-right": "1px solid #999"
+    },
+    "gridTotalTableNode": {
+        "overflow": "hidden"
+    },
+    "gridMobileDeleteActionAreaNode": {
+        "color": "#FFF",
+        "text-align": "center",
+        "float": "right"
+    },
+    "gridMobileDeleteActionNode": {
+        "background": "#cd0a0a",
+        "color": "#FFF",
+        "text-align": "center",
+        "height": "100%",
+        //"line-height": "100%",
+        "width": "100%",
+        //"margin": "0px auto",
+        "float": "right"
+    },
+    "gridMobileActionNode": {
+        "margin-bottom": "10px",
+        "height": "30px",
+        "line-height": "30px",
+        "border": "1px solid #CCCCCC",
+        "border-radius": "5px",
+        "text-align": "center"
+    },
+    "mobileGridHelpNode": {
+        "width": "30px",
+        "height": "30px",
+        "background": "url("+"/x_component_cms_Xform/$Form/default/icon/help.png) center center no-repeat",
+        "cursor": "pointer"
+    },
+    "mobileDatagridActionNode": {
+        "width": "235px",
+        "text-align": "right",
+        "float": "right"
+    },
+    "mobileDatagridDelActionNode": {
+        "width": "34px",
+        "margin-left": "10px",
+        "height": "28px",
+        "line-height": "28px",
+        "color": "#666",
+        "font-size": "16px",
+        "padding-left": "26px",
+        "padding-right": "5px",
+        "border": "1px solid #CCCCCC",
+        "border-radius": "3px",
+        "background": "url("+"/x_component_cms_Xform/$Form/default/icon/del.png) 5px center no-repeat",
+        "float": "right",
+        "cursor": "pointer"
+    },
+    "mobileDatagridEditActionNode": {
+        "width": "34px",
+        "margin-left": "10px",
+        "height": "28px",
+        "line-height": "28px",
+        "color": "#666",
+        "font-size": "16px",
+        "padding-left": "26px",
+        "padding-right": "5px",
+        "border": "1px solid #CCCCCC",
+        "border-radius": "3px",
+        "background": "url("+"/x_component_cms_Xform/$Form/default/icon/edit.png) 5px center no-repeat",
+        "float": "right",
+        "cursor": "pointer"
+    },
+    "mobileDatagridAddActionNode": {
+        "width": "34px",
+        "margin-left": "10px",
+        "height": "28px",
+        "line-height": "28px",
+        "color": "#666",
+        "font-size": "16px",
+        "padding-left": "26px",
+        "padding-right": "5px",
+        "border": "1px solid #CCCCCC",
+        "border-radius": "3px",
+        "background": "url("+"/x_component_cms_Xform/$Form/default/icon/add.png) 5px center no-repeat",
+        "float": "right",
+        "cursor": "pointer"
+    },
+    "mobileDatagridCompleteActionNode": {
+        "width": "34px",
+        "margin-left": "10px",
+        "height": "28px",
+        "line-height": "28px",
+        "color": "#666",
+        "font-size": "16px",
+        "padding-left": "26px",
+        "padding-right": "5px",
+        "border": "1px solid #CCCCCC",
+        "border-radius": "3px",
+        "background": "url("+"/x_component_cms_Xform/$Form/default/icon/completed.png) 5px center no-repeat",
+        "float": "right",
+        "cursor": "pointer",
+        "display": "none"
+    },
+    "mobileGridHelpContentNode": {
+        "font-size": "14px",
+        "color": "#999"
+    }
+
+}

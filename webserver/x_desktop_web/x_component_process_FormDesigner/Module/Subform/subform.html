@@ -1,0 +1,56 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="基本" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		  <tr>
+		    <td class="editTableTitle">标识:</td>
+		    <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">名称:</td>
+		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">描述:</td>
+		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+		  </tr>
+		  <!--<tr>-->
+		    <!--<td class="editTableTitle">Class:</td>-->
+		    <!--<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>-->
+		  <!--</tr>-->
+		</table>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableValue" colspan="2">
+					<input type="radio" onclick="if (this.checked) {$('text{$.pid}selectSubform').setStyle('display', 'block'); $('text{$.pid}scriptSubform').setStyle('display', 'none');}" name="subformType" value="select" text{($.subformType!='script')?'checked':''}/>选择子表单
+					<input type="radio" onclick="debugger;if (this.checked) {$('text{$.pid}selectSubform').setStyle('display', 'none'); $('text{$.pid}scriptSubform').setStyle('display', 'block');}" name="subformType" value="script" text{($.subformType=='script')?'checked':''}/>计算子表单<br/>
+				</td>
+			</tr>
+		</table>
+
+		<div id="text{$.pid}selectSubform" style="display: text{($.subformType!='script')?'block':'none'}">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">子表单:</td>
+					<td class="editTableValue">
+						<div class="MWFFormSelect" name="subformSelected"></div>
+					</td>
+				</tr>
+				<!--<tr>-->
+					<!--<td class="editTableTitle"></td>-->
+					<!--<td class="editTableValue">-->
+						<!--<input type="button" value="编辑表单" onclick="">-->
+					<!--</td>-->
+				<!--</tr>-->
+			</table>
+		</div>
+		<div id="text{$.pid}scriptSubform" style="display: text{($.subformType=='script')?'block':'none'}">
+			<div class="MWFScriptArea" name="subformScript" title="子表单脚本 (S)"></div>
+		</div>
+
+	<!--<div title="事件"  class="MWFTab">-->
+		<!--<div class="MWFEventsArea" name="events"></div>-->
+	<!--</div>-->
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

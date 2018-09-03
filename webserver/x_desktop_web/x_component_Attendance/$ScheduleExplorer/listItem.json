@@ -1,0 +1,68 @@
+[
+  {
+    "title" : "单位",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "function(d){ return d.unitName.split('@')[0] }",
+    "name" : "unitName",
+    "width" : "15%"
+  },
+  {
+    "title" : "上班时间",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "onDutyTime",
+    "name" : "onDutyTime",
+    "width" : "15%"
+  },
+  {
+    "title" : "下班时间",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "offDutyTime",
+    "name" : "offDutyTime",
+    "width" : "15%"
+  },
+
+  {
+    "title" : "迟到起算时间",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "lateStartTime",
+    "name" : "lateStartTime",
+    "width" : "15%"
+  },
+
+//  {
+//    "title" : "早退起算时间",
+//    "headStyles" : "normalThNode",
+//    "contentStyles" : "normalTdNode",
+//    "item" : "leaveEarlyStartTime",
+//    "name" : "leaveEarlyStartTime",
+//    "width" : "15%"
+//  },
+  {
+    "title" : "旷工起算时间",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "absenceStartTime",
+    "name" : "absenceStartTime",
+    "width" : "15%"
+  },
+  {
+    "access" : "admin",
+    "title" : "操作",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "actions",
+    "name" : "actions",
+    "width" : "10%",
+    "sub" : [{
+      "title" : "删除文件",
+      "action" : "remove",
+      "styles" : "actionDeleteNode",
+      "overStyles" : "actionDeleteNode_over",
+      "downStyles" : "actionDeleteNode_down"
+    }]
+  }
+]

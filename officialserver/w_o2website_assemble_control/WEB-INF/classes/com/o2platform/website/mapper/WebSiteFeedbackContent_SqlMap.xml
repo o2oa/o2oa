@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.o2platform.website.dao.WebSiteFeedbackContentDao"> 
+
+	<resultMap type="com.o2platform.website.entity.WebSiteFeedbackContent" id="webSiteFeedbackContentResult"/> 
+
+	<insert id="add" parameterType="com.o2platform.website.entity.WebSiteFeedbackContent">
+		<![CDATA[
+			INSERT INTO WEBSITEVISITRECORD ( ID, CREATETIME, CONTENT  ) 
+			VALUES ( #{id}, #{createTime}, #{content} ) 
+		]]>
+	</insert>
+</mapper>
+

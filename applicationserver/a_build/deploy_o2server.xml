@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." name="main" default="default">
+	<basename property="project" file="${basedir}" />
+	<dirname property="applicationserver.dir" file="${basedir}../" />
+	<dirname property="code.dir" file="${basedir}../../" />
+	<property file="${applicationserver.dir}/a_build/build.properties" />
+	<include file="${applicationserver.dir}/a_build/build_common.xml" as="common" />
+
+	<target name="default">
+		<for-contrib param="line">
+			<tokens>
+				<file file="${store.dir}/jars/manifest_o2server.cfg" />
+			</tokens>
+			<sequential>
+				<copy tofile="D:/o2server/store/jars/@{line}" file="${store.dir}/jars/@{line}" overwrite="true" />
+			</sequential>
+		</for-contrib>
+		<for-contrib param="line">
+			<tokens>
+				<file file="${store.dir}/manifest_o2server.cfg" />
+			</tokens>
+			<sequential>
+				<copy tofile="D:/o2server/store/@{line}" file="${store.dir}/@{line}" overwrite="true" />
+			</sequential>
+		</for-contrib>
+		<for-contrib param="line">
+			<tokens>
+				<file file="${ext.dir}/manifest_o2server.cfg" />
+			</tokens>
+			<sequential>
+				<copy tofile="D:/o2server/commons/ext/@{line}" file="${ext.dir}/@{line}" overwrite="true" />
+				<echo message="${ext.dir}/@{line}"></echo>
+			</sequential>
+		</for-contrib>
+		<copy file="${store.dir}/jars/manifest_o2server.cfg" tofile="D:/o2server/store/jars/manifest.cfg" />
+		<copy file="${store.dir}/manifest_o2server.cfg" tofile="D:/o2server/store/manifest.cfg" />
+		<copy file="${ext.dir}/manifest_o2server.cfg" tofile="D:/o2server/commons/ext/manifest.cfg" />
+		<copy file="${store.dir}/jars/m_console.jar" tofile="D:/o2server/console.jar" />
+		<copy file="${commons.dir}/initialScriptText.js" tofile="D:/o2server/commons/initialScriptText.js" />
+		<copy file="${commons.dir}/webdefault_a.xml" tofile="D:/o2server/commons/webdefault_a.xml" />
+		<copy file="${commons.dir}/webdefault_c.xml" tofile="D:/o2server/commons/webdefault_c.xml" />
+		<copy file="${commons.dir}/webdefault_w.xml" tofile="D:/o2server/commons/webdefault_w.xml" />
+	</target>
+
+</project>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../res/framework/mootools/mootools-1.6.0_all.js"></script>
+    <script src="WebOffice.js"></script>
+    <script src="office.js"></script>
+    <script language="JavaScript" for=WebOffice2015 event="OnCommand(ID, Caption, bCancel)">
+        debugger;
+        switch(ID){
+            case 1:WebOpenLocal();break;//打开本地文件
+            case 2:WebOffice.WebSaveLocal();break;//另存本地文件
+            case 4:WebOffice.PrintPreview();break;//启用
+            case 5:WebOffice.PrintPreviewExit();WebOffice.ShowField();break;//启用
+            case 17:WebOffice.SaveEnabled(true);StatusMsg("启用保存");break;//启用保存
+            case 18:WebOffice.SaveEnabled(false);StatusMsg("关闭保存");break;//关闭保存
+            case 19:WebOffice.PrintEnabled(true);StatusMsg("启用打印");break;//启用打印
+            case 20:WebOffice.PrintEnabled(false);StatusMsg("关闭打印");break;//关闭打印
+            case 301:WebOffice.HandWriting("255","4");StatusMsg("手写签批");break;//手写签批
+            case 302:WebOffice.StopHandWriting();StatusMsg("停止手写签批");break;//停止手写签批
+            case 303:WebOffice.TextWriting();StatusMsg("文字签名");break;//文字签名
+            case 304:WebOffice.ShapeWriting();StatusMsg("图形签批");break;//图形签批
+            case 305:WebOffice.RemoveLastWriting();StatusMsg("取消上一次签批");break;//取消上一次签批
+            case 306:WebOffice.ShowWritingUser(false,WebOffice.UserName);StatusMsg("显示签批用户");break;//显示签批用户
+            default: break;
+        }
+    </script>
+</head>
+<body>
+<div id="officeDiv"></div>
+<input type="button" value="save" onclick="save();">
+</body>
+</html>

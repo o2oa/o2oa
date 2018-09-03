@@ -1,0 +1,187 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='editTable' style='table-layout:fixed;'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='documentNode'></tr>",
+    "mouseoverStyles": "documentNode_over",
+    "action": "open"
+  },
+  "items": [
+    //    {
+    //      "name": "$checkbox",
+    //      "head": {
+    //        "html": "<th styles='normalThNode'></th>",
+    //        "width": "5%"
+    //      },
+    //      "content": {
+    //        "html": "<td styles='normalTdNode'></td>",
+    //        //"condition": "function(d){ return d.status==0 ? true : false }",
+    //        "value": ""
+    //      }
+    //    },
+//    {
+//      "name": "sectionName",
+//      "head": {
+//        "html": "<th styles='normalThNode' lable='sectionName'></th>",
+//        "width": "10%"
+//      },
+//      "content": {
+//        "html": "<td styles='normalTdCenterNode' width='10%'>"+
+//        "<div item='sectionName' styles='tdSection'></div>"+
+//        "</td>",
+//        "items": {
+//          "sectionName": {
+//            "value" : "function(d){ return d.sectionName.length > 8 ? d.sectionName.substr(0,8)+'...' : d.sectionName }",
+//            "styles" : "function(d){ return { 'color' : MWF.xApplication.Forum.ForumSetting[ d.forumId ].forumColor } }",
+//            "event" : "click^^function( node, ev ){ this.openSection( ev ) }"
+//          }
+//        }
+//      }
+//    },
+    {
+      "name": "icon",
+      "head": {
+        "html": "<th styles='normalThNode'></th>",
+        "width": "3%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='3%'>"+
+        " <div item='icon' styles='tdIcon'></div>"+
+        "</td>",
+        "items": {
+          "icon" : {
+            "type" : "html",
+            "value" : "function(d){ var path = '/x_component_ForumSection/$Main/default/icon/'; if(d.isTopSubject){  return '<img src='+path+'icon_zhiding.png title=置顶帖>'; }else if(d.isCreamSubject){ return '<img src='+path+'icon_jinghua.png title=精华帖>'; }else if(d.typeCategory == this.lp.vote ){ return '<img src='+path+'icon_vote.png title=投票帖>'; }else if(d.typeCategory == this.lp.question ){ return '<img src='+path+'icon_question.png title=提问帖>'; }else{ return '<img src='+path+'icon_normal.png>'} }"
+          }
+        }
+      }
+    },
+    {
+      "name": "sectionName",
+      "head": {
+        "html": "<th styles='normalThNode' lable='sectionName'></th>",
+        "width": "12%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' width='12%'>"+
+        "<div item='sectionName' styles='tdSection'></div>"+
+        "</td>",
+        "items": {
+          "sectionName": {
+            "value" : "function(d){ return d.sectionName.length > 8 ? d.sectionName.substr(0,8)+'...' : d.sectionName }",
+            "styles" : "function(d){ var formSetting = MWF.xApplication.Forum.ForumSetting[ d.forumId ]; return { 'color' : formSetting ? formSetting.forumColor : '#666' } }",
+            "event" : "click^^function( node, ev ){ this.openSection( ev ) }"
+          }
+        }
+      }
+    },
+    {
+      "name": "title",
+      "head": {
+        "html": "<th styles='normalThNode' lable='subject'></th>",
+        "width": "51%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' width='51%'>"+
+        " <span styles='tdType'>[</span><span item='type' styles='tdType'></span><span styles='tdType'>]</span>"+
+        " <span item='title' styles='tdTitle'></span>"+
+        "</td>",
+        "items": {
+          "title" : {},
+          "type" : {}
+        }
+      }
+    },
+    {
+      "name": "creatorName",
+      "head": {
+        "html": "<th styles='normalThNode' lable='create'></th>",
+        "width": "10%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='10%'><div item='creatorName'></div><div item='createTime' styles='normalTdBottom'></div></td>",
+        "items": {
+          "creatorName" : {
+            "value" : "function(d){ return d.creatorName? d.creatorName.split('@')[0] : '' }"
+          },
+          "createTime" : {
+            "value" : "function(d){ return this.app.getDateDiff( d.createTime ) }"
+          }
+        }
+      }
+    },
+    {
+      "name": "replyAndReadCount",
+      "head": {
+        "html": "<th styles='normalThNode' lable='replyAndReadCount'></th>",
+        "width": "7%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='7%'><div item='total'></div></td>",
+        "items": {
+          "total" : {
+            "value" : "function(d){ return d.replyTotal +'/' + d.viewTotal }"
+          }
+        }
+      }
+    },
+    {
+      "name": "lastReply",
+      "head": {
+        "html": "<th styles='normalThNode' lable='lastReply'></th>",
+        "width": "9%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='9%'><div item='latestReplyUser'></div><div item='latestReplyTime2' styles='normalTdBottom'></div></td>",
+        "items": {
+          "latestReplyUser" : {
+            "value" : "function(d){ return d.latestReplyUser ? d.latestReplyUser.split('@')[0] : '' }",
+            "styles" : "person",
+            "mouseoverStyles": "person_over",
+            "event" : "click^^function(node){ this.app.openPerson( this.data.latestReplyUser ) }"
+          },
+          "latestReplyTime2" : {
+            "show": "function( d ){ return !d.latestReplyUser ? false : true }",
+            "value" : "function(d){ return this.app.getDateDiff( d.latestReplyTime ) }"
+          }
+        }
+      }
+    },
+    {
+      //"access": "admin",
+      "head": {
+        "html": "<th styles='normalThNode' lable='action'></th>",
+        "width": "8%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='8%'>" +
+        " <span styles='documentActionNode' item='edit'></span>" +
+        " <span styles='documentActionNode' item='remove'></span>" +
+        "</td>",
+        "items": {
+          "edit": {
+            //"access": "admin",
+            "title": "edit",
+            "action": "edit",
+            "condition": "function( d ){ return this.isAdmin() || (d.creatorName == this.app.userName) }",
+            "styles": "actionEditNode",
+            "mouseoverStyles": "actionEditNode_over",
+            "mousedownStyles": "actionEditNode_over"
+          },
+          "remove": {
+            "title": "remove",
+            "action": "remove",
+            "condition": "function( d ){ return this.isAdmin() || (d.creatorName == this.app.userName) }",
+            "styles": "actionDeleteNode",
+            "mouseoverStyles": "actionDeleteNode_over",
+            "mousedownStyles": "actionDeleteNode_over"
+          }
+        }
+      }
+    }
+  ]
+}

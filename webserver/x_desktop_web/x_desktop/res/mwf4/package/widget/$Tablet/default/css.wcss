@@ -1,0 +1,8 @@
+{
+    "container": {
+        "-webkit-user-select": "none",
+        "-moz-user-select": "none",
+        "user-select" : "none",
+        "border" : "1px solid #ccc"
+    }
+}

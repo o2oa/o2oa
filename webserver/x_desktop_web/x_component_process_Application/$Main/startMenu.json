@@ -1,0 +1,51 @@
+[
+    {
+      "title": "我的流程实例",
+      "id": "1.1",
+      "action": "myWorkConfig",
+      "icon": "mywork.png",
+      "hint": "我拟稿的工作实例"
+    },
+	{
+		"title": "流程实例管理",
+		"id": "1.1",
+		"action": "workConfig",
+		"icon": "work.png"
+	},
+    {
+      "title": "视图",
+      "id": "1.1",
+      "action": "viewConfig",
+      "icon": "view.png"
+    },
+    {
+      "title": "统计",
+      "id": "1.1",
+      "action": "statConfig",
+      "icon": "stat.png"
+    },
+	{
+		"title": "数据配置",
+		"id": "1.1",
+		"action": "dataConfig",
+		"icon": "data.png"
+	},
+    {
+      "title": "编号配置",
+      "id": "1.1",
+      "action": "serialConfig",
+      "icon": "number.png"
+    },
+    {
+      "title": "统计",
+      "id": "1.1",
+      "action": "statConfigTmp",
+      "icon": "stat.png"
+    }
+//	{
+//		"title": "数据统计",
+//		"id": "1.1",
+//		"action": "statsConfig",
+//		"icon": "stats.png"
+//	}
+]

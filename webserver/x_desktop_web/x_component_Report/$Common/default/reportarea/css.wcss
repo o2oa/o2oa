@@ -1,0 +1,56 @@
+{
+  "reportNode" : {
+    "border": "1px solid #ccc",
+    //    "border-top" : "1px solid #ccc",
+    //    "border-right" : "1px solid #ccc",
+    //    "border-bottom" : "1px solid #ccc",
+    "border-radius": "4px",
+    "margin" : "20px",
+    "width" : "260px",
+    "overflow" : "hidden",
+    "cursor" : "pointer",
+    "box-shadow" : "none"
+  },
+  "reportNode_over" : {
+    //"box-shadow": "0 0 6px 0 rgba(0,0,0,0.25)"
+  },
+  "reportColorNode" : {
+    "border-top-left-radius" : "4px",
+    "border-bottom-left-radius" : "4px",
+    "background-color" : "#ccc",
+    "width" : "10px",
+    "height" : "100px",
+    "float" : "left"
+  },
+  "reportContentNode" : {
+    "border-top-right-radius" : "4px",
+    "border-bottom-right-radius" : "4px",
+    "width" : "229px",
+    "float" : "left"
+  },
+  "reportTimeNode" : {
+    "margin-top" : "20px",
+    "padding-left" : "20px",
+    "margin-bottom" : "20px",
+    "color" : "#999",
+    "font-size" : "20px",
+    "line-height" : "20px"
+  },
+  "reportSubjectNode" : {
+    "color" : "#333",
+    "margin-top" : "10px",
+    "padding-left" : "20px",
+    "font-size" : "16px"
+  },
+  "reportSubjectNode_over" : {
+    "color" : "#3C76B7"
+  },
+  "reportDescriptionNode" : {
+    "margin-top" : "20px",
+    "padding-left" : "20px",
+    "margin-bottom" : "20px",
+    "margin-right" : "20px",
+    "color" : "#666",
+    "font-size" : "14px"
+  }
+}

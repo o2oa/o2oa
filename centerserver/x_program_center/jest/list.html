@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="pragma" content="no-cache" />
+<script src="./jquery.min.js"></script>
+<script src="./common.js"></script>
+<script>
+    $(function() {
+	$.ajax({
+	    type : 'get',
+	    dataType : 'json',
+	    contentType : 'application/json; charset=utf-8',
+	    url : '../jaxrs/jest/list',
+	    xhrFields : {
+		'withCredentials' : true
+	    },
+	    crossDomain : true
+	}).done(function(json) {
+	    if (json.type == 'success') {
+		if (json.data) {
+		    var str = '<table border="1">';
+		    $.each(json.data, function(index, o) {
+			str += '<tr>';
+			str += '<td>' + o.name + '</td>';
+			str += '<td>';
+			$.each(o.urlList, function(i, url) {
+			    url = url.replace(/(127.0.0.1)/g, window.location.hostname);
+			    str += '<a href="'+url+'" target="_blank">' + url + '</a><br/>';
+			});
+			str += '</td>';
+			str += '</tr>';
+		    });
+		    str += '</table>';
+		    $('#content').html(str);
+		}
+	    }
+	});
+    });
+</script>
+</head>
+
+<body style="font-size: 12px; font-family: Microsoft Yahei; margin: 0px">
+	<div id="content">&nbsp;</div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+{
+  "col1":{
+    "title":"标题",
+    "width":"60%",
+    "text":[
+
+    ]
+  },
+  "col2":{
+    "title":"相关部门",
+    "width":"10%",
+    "text":[
+      {"title":"责任部门","item":"item1"},
+      {"title":"部署部门","item":"item2"},
+      {"title":"协助部门","item":"item3"}
+    ]
+  },
+  "col3":{
+    "title":"干系人",
+    "width":"10%",
+    "text":[
+      {"title":"责任人","item":"item1"},
+      {"title":"部署人","item":"item2"},
+      {"title":"协助人","item":"item3"}
+    ]
+  },
+  "col4":{
+      "title":"完成时限",
+    "width":"10%",
+      "text":[
+
+      ]
+  },
+  "col5":{
+    "title":"操作",
+    "width":"10%",
+    "text":[
+
+    ]
+  }
+}
+

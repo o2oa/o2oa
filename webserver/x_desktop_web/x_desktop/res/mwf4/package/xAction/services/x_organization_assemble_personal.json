@@ -1,0 +1,13 @@
+{
+  "changePassword": {"uri": "/jaxrs/person/password", "method": "PUT"},
+  "getPerson": {"uri": "/jaxrs/person"},
+  "updatePerson": {"uri": "/jaxrs/person", "method": "PUT"},
+  "changeIcon": {"uri": "/jaxrs/person/icon", "method": "PUT", "enctype": "formData"},
+  "checkPassword" : {"uri":"/jaxrs/reset/check/password/{password}"},
+  "getPersonIcon": {"uri": "/jaxrs/person/icon"},
+  "getRegisterMode" : { "uri" : "/jaxrs/regist/mode" },
+
+  "getIcon": {"uri": "/jaxrs/icon/{person}"},
+
+  "clazz": "x_organization_assemble_personal"
+}

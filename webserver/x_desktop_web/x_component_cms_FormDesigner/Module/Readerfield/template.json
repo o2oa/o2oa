@@ -1,0 +1,78 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Readerfield",
+	"description": "",
+	"defaultValue": {
+		"code": "",
+		"html": ""
+	},
+	"range": "all",
+	"count": 0,
+	"selectType": ["person","unit","group"],
+    "compute": "create", //create, show, save
+    "section": "no",
+    "sectionBy": "person",
+    "sectionByScript": {
+      "code": "",
+      "html": ""
+    },
+	"events": {
+		"click": {
+			"code": "",
+			"html": ""
+		},
+		"dblclick": {
+			"code": "",
+			"html": ""
+		},
+		"change": {
+			"code": "",
+			"html": ""
+		},
+		"keydown": {
+			"code": "",
+			"html": ""
+		},
+		"keypress": {
+			"code": "",
+			"html": ""
+		},
+		"keyup": {
+			"code": "",
+			"html": ""
+		},
+		"mousedown": {
+			"code": "",
+			"html": ""
+		},
+		"mousemove": {
+			"code": "",
+			"html": ""
+		},
+		"mouseout": {
+			"code": "",
+			"html": ""
+		},
+		"mouseover": {
+			"code": "",
+			"html": ""
+		},
+		"mouseup": {
+			"code": "",
+			"html": ""
+		},
+		"focus": {
+			"code": "",
+			"html": ""
+		},
+		"blur": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"container": ""
+}

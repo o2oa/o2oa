@@ -1,0 +1,10 @@
+{
+  //"getDictWhole": {"uri": "/jaxrs/appdictitem/{appDictId}/app/{appId}/data"},
+  "getDictWhole": {"uri": "/jaxrs/surface/appdict/{appDictId}/appInfo/{appId}/data"},
+  //"getDict": {"uri": "/jaxrs/appdictitem/{appDictId}/app/{appId}/{path}/data"},
+  "getDict": {"uri": "/jaxrs/surface/appdict/{appDictId}/appInfo/{appId}/{path}/data"},
+  //"setDict": {"uri": "/jaxrs/appdictitem/{appDictId}/app/{appId}/data", "method": "PUT"},
+  "setDict": {"uri": "/jaxrs/surface/appdict/{appDictId}/appInfo/{appId}", "method": "PUT"},
+  "addDict": {"uri": "/jaxrs/appdictitem/{appDictId}/app/{appId}/data", "method": "POST"},
+  "deleteDict": {"uri": "/jaxrs/appdictitem/{appDictId}/app/{appId}/data", "method": "DELETE"}
+}

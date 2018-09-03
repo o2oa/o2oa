@@ -1,0 +1,7 @@
+{
+  "getLoginMode" : {"uri":"/jaxrs/authentication/mode"}, //图片验证码默认可用，mode获取扫描二维码和手机验证码是否可用
+  "logout" : { "uri" : "/jaxrs/authentication", "method": "DELETE" },
+  "authentication": { "uri": "/jaxrs/authentication",  "method": "GET" },
+
+  "clazz": "x_organization_assemble_authentication"
+}

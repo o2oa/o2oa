@@ -1,0 +1,590 @@
+{
+  "container" : {
+    "width": "100%", "height": "100%", "overflow": "hidden",
+    "-webkit-user-select": "text",
+    "-moz-user-select": "text",
+    "background-color" : "#f7f7f7"
+  },
+  "contentContainer" : {
+    "overflow-x" : "hidden",
+    "overflow-y" : "scroll"
+  },
+  "contentContainer_flow" : {
+    "overflow-x" : "hidden",
+    "overflow-y" : "hidden"
+  },
+  "monthNode" : {
+    "border" : "1px solid #ccc",
+    "margin" : "10px",
+    "border-radius" : "5px"
+  },
+  "monthTitleNode" : {
+      "height" : "40px",
+    "line-height" : "40px",
+    "color" : "#fff",
+    "background-color" : "#99ccff",
+    "text-align" : "center",
+    "font-size" : "16px",
+    "margin-bottom" : "20px"
+  },
+  "topNode" : {
+    "font-family": "微软雅黑",
+    "color" : "#999",
+    "background-color" : "#fff",
+    "overflow" : "hidden",
+    "padding-top" : "10px",
+    //"padding-left" : "10px",
+    "padding-bottom" : "10px",
+    "width" : "1200px",
+    "height" : "20px",
+    "line-height" : "20px",
+    "margin" : "0px auto"
+  },
+  "topTitleMiddleNode" : {
+    "float" : "left",
+    "height" : "20px",
+    "line-height" : "20px"
+  },
+  "topItemTitleNode" : {
+    //"height": "35px",
+    //"line-height" :"35px",
+    "font-size": "14px",
+    "margin-left" : "6px",
+    "padding-left" : "10px",
+    "padding-right" : "10px",
+    "float" : "left",
+    "cursor" : "pointer"
+  },
+  "topItemTitleLastNode" : {
+    //"height": "35px",
+    //"line-height" :"35px",
+    "color" : "#3c76b6",
+    "font-size": "14px",
+    "padding-left" : "10px",
+    "padding-right" : "10px",
+    "float" : "left",
+    "cursor" : "pointer"
+  },
+  "topItemSepNode" : {
+    "float" : "left",
+    "font-size" : "16px",
+    "width" : "10px",
+    "height" : "20px",
+    "line-height" : "20px"
+  },
+  "middleNode" : {
+//    "width" : "1200px",
+    "overflow" : "hidden"
+//    "background-color" : "#f7f7f7",
+//    "margin" : "0px auto 0px auto"
+  },
+  "mainContentNode" : {
+    "overflow" : "hidden",
+    "background-color" : "#fff",
+    "margin" : "0px auto 0px auto"
+  },
+  "inforNode" : {
+    "padding" : "15px 0px 10px 0px",
+    "background-color" : "#fff"
+  },
+  "selectNode" : {
+    "padding" : "15px",
+    "padding-left" : "30px",
+    "background-color" : "#fff"
+  },
+  "customWorkTopNode" : {
+    "height" : "50px",
+    "line-height" : "50px",
+    "background-color" : "#f0f0f0",
+    "border-top-left-radius" : "5px",
+    "border-top-right-radius" : "5px",
+    "border-left" : "7px solid #4a90e2",
+    "padding-left" : "20px",
+    "font-size" : "16px",
+    "color" : "#666"
+  },
+
+  "normalButton" : {
+    "font-size" : "12px",
+    "background-color" : "#dbedef",
+    "border" : "1px solid #a2bfc8",
+    "height" : "28px",
+    "color" : "#386e8b",
+    "cursor" : "pointer"
+  },
+  "showMeasureNode" : {
+    "float" : "right",
+    "font-size" : "12px",
+    "background-color" : "#dbedef",
+    "border" : "1px solid #a2bfc8",
+    "height" : "28px",
+    "color" : "#386e8b",
+    "cursor" : "pointer"
+  },
+  "showMeasureNode2" : {
+    "display" : "block",
+    "font-size" : "12px",
+    "margin" : "5px auto 0px auto",
+    "background-color" : "#dbedef",
+    "border" : "1px solid #a2bfc8",
+    "height" : "28px",
+    "color" : "#386e8b",
+    "cursor" : "pointer"
+  },
+  "keyWorkNode" : {
+    "border-radius" : "5px",
+    "border-left" : "1px solid #ccc",
+    "border-top" : "1px solid #ccc",
+    "border-right" : "1px solid #ccc",
+    "border-bottom" : "1px solid #ccc",
+    "margin" : "0px 30px 30px 30px"
+  },
+  "keyWorkTitleInput" : {
+    "width" : "750px",
+    "padding" : "0px 5px",
+    "height" : "32px",
+    "line-height" : "32px",
+    "font-size" : "12px",
+    "border" : "1px solid #d8d5d5",
+    "box-shadow" : "0 2px 5px #eae8e9 inset",
+    "float" : "left"
+  },
+  "keyWorkTopNode" : {
+    "padding-top" : "13px",
+    "padding-bottom" : "13px",
+    "line-height" : "24px",
+    "background-color" : "#f0f0f0",
+    "border-top-left-radius" : "5px",
+    "border-top-right-radius" : "5px",
+    //"border-left" : "7px solid #4a90e2",
+    "padding-left" : "5px",
+    "font-size" : "16px",
+    "color" : "#666",
+    "overflow" : "hidden"
+  },
+  "keyWorkTopTextNode_ext" : {
+    "line-height" : "40px",
+    "padding-left" : "10px",
+    "float" : "left"
+  },
+  "keyWorkTopNode_ext" : {
+    "padding-top" : "5px",
+    "padding-bottom" : "5px",
+    "line-height" : "30px",
+    "background-color" : "#f0f0f0",
+    "border-top-left-radius" : "5px",
+    "border-top-right-radius" : "5px",
+    //"border-left" : "7px solid #4a90e2",
+    "padding-left" : "5px",
+    "font-size" : "16px",
+    "color" : "#666",
+    "overflow" : "hidden"
+  },
+
+  "keyWorkTopAction_ext" : {
+    "height" : "30px",
+    "margin-top" : "5px",
+    "line-height" : "30px",
+    "padding" : "0px 10px 0px 35px",
+    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_add2.png) no-repeat 10px center", //icon_zengjia_click2
+    "color" : "#4a90e2",
+    "border" : "1px dotted #4a90e2",
+    "border-radius" : "2px",
+    "float" : "right",
+    "margin-right" : "20px",
+    "font-size" : "14px",
+    "cursor" : "pointer"
+  },
+  "keyWorkTopAction_ext_over" : {
+    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_zengjia_click2.png) no-repeat 10px center",
+    "background-color" : "#4898F3",
+    "color" : "#fff"
+  },
+  "keyWorkTopIconNode" : {
+    "margin-top" : "18px",
+    "width" : "16px",
+    "height" : "16px",
+    "float" : "left",
+    "background" : "url(/x_component_Report/$StrategyExplorer/default/icon/icon_biao.png) no-repeat center center"
+  },
+  "keyWorkTopTextNode" : {
+    "padding-left" : "10px",
+    "float" : "left"
+  },
+  "listContainer" : {
+    //"margin-bottom" : "15px",
+    //"padding-bottom" : "15px",
+    //"border-top" : "1px solid #ccc",
+    "padding-bottom" : "10px",
+    "padding-left" : "20px",
+    "border-bottom-left-radius" : "5px",
+    "border-bottom-right-radius" : "5px",
+    "background-color" : "#fff"
+  },
+  "listMeasureTop" : {
+    "height" : "40px",
+    "line-height" : "40px",
+    "background-color" : "#fff",
+    "padding-left" : "20px",
+    "font-size" : "14px",
+    "color" : "#666"
+  },
+  "measureContentNode" : {
+    "padding-left" : "10px"
+  },
+  "itemMeasureNode" : {
+    "color" : "#666",
+    "background-color" : "#fff",
+    "padding" : "0px 10px 0px 0px",
+    "overflow" : "hidden"
+    //"margin-top" : "15px"
+  },
+  "itemMeasureIconNode" : {
+    "margin-top" : "2px",
+    "margin-left" : "2px",
+    "width" : "16px",
+    "height" : "24px",
+    "float" : "left",
+    "background" : "url(/x_component_Report/$StrategyExplorer/default/icon/icon_biao.png) no-repeat center center"
+  },
+  "itemMeasureTextNode" : {
+    "padding-left" : "10px",
+    "line-height" : "24px",
+    "float" : "left"
+  },
+  "listTop" : {
+    "height" : "40px",
+    "line-height" : "40px",
+    //"background-color" : "#f7f7f7",
+    "font-size" : "14px",
+    "color" : "#666"
+  },
+  "listTopAction" : {
+    "height" : "30px",
+    "margin-top" : "5px",
+    "line-height" : "30px",
+    "padding" : "0px 10px 0px 35px",
+    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_add2.png) no-repeat 10px center", //icon_zengjia_click2
+    "color" : "#4a90e2",
+    "border" : "1px dotted #4a90e2",
+    "border-radius" : "2px",
+    "float" : "right",
+    "margin-right" : "20px",
+    "font-size" : "14px",
+    "cursor" : "pointer"
+  },
+  "listTopAction_over" : {
+    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_zengjia_click2.png) no-repeat 10px center",
+    "background-color" : "#4898F3",
+    "color" : "#fff"
+  },
+  "listAddActionContainer" : {
+    "margin" : "15px 15px 0px 15px",
+    "border-radius" : "5px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "border" : "1px dotted #4a90e2",
+    "background-color" : "#fff",
+    "cursor" : "pointer"
+  },
+  "listAddActionContainer_over" : {
+    "background-color" : "#4898F3"
+  },
+  "listAddAction" : {
+    "font-size" : "14px",
+    "margin" : "0px auto",
+    "width" : "100px",
+    "padding-left" : "30px",
+    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_add2.png) no-repeat 10px center",
+    "color" : "#4a90e2"
+  },
+  "listAddAction_over" : {
+    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_zengjia_click2.png) no-repeat 10px center",
+    "color" : "#fff"
+  },
+  "listNode" : {
+    "background-color" : "#f8f8f8",
+    "margin" : "0px 15px 0px 15px"
+    //"margin-bottom" : "15px"
+  },
+  "tagContainer" :{
+    "margin-top" : "5px",
+    "background-color" : "#fff",
+    "padding" : "5px 20px",
+    "overflow" : "hidden"
+  },
+  "tagNode" : {
+    "cursor" : "pointer",
+    "margin" : "5px 5px",
+    "color" : "#4a90e2",
+    "line-height" : "24px",
+    "font-size" : "14px",
+    "padding" : "0px 10px",
+    "border" : "1px solid #4a90e2",
+    "background-color" : "#fff",
+    "float" : "left"
+  },
+  "tagNode_over" : {
+    "color" : "#fff",
+    "background-color" : "#4a90e2",
+    "border" : "1px solid #4a90e2"
+  },
+  "tagNode_current" : {
+    "cursor" : "pointer",
+    "margin" : "5px 5px",
+    "line-height" : "24px",
+    "font-size" : "14px",
+    "padding" : "0px 10px",
+    "float" : "left",
+    "color" : "#fff",
+    "background-color" : "#4a90e2",
+    "border" : "1px solid #4a90e2"
+  },
+  "itemNode" : {
+    "background-color" : "#fff",
+    "margin" : "0px 0px",
+    "padding" : "0px 10px 0px 0px"//,
+    //"margin-top" : "15px"
+  },
+  "itemSortCloneNode" : {
+    "border":"1px dotted #000"
+  },
+  "itemTitleNode" : {
+    "font-size" : "14px",
+    "color" : "#333",
+    "float" : "left"
+  },
+  "itemTitleNode_over" : {
+    "color" : "#4a90e2"
+  },
+  "itemContentNode" : {
+    "font-size" : "14px",
+    "color" : "#666",
+    "line-height" : "24px",
+    "overflow" : "hidden"
+  },
+  "itemPersonNode2" : {
+    "font-size" : "14px",
+    "color" : "#333",
+    "line-height" : "24px"
+  },
+  "itemPersonNode" : {
+    "font-size" : "14px",
+    "color" : "#333",
+    "line-height" : "24px",
+    "float" : "left"
+  },
+  "itemDescriptionNode2" : {
+    "font-size" : "14px",
+    "color" : "#666",
+    "line-height" : "24px"
+  },
+  "itemDescriptionNode" : {
+    "font-size" : "14px",
+    "color" : "#666",
+    "line-height" : "24px",
+    "float" : "left"
+  },
+  "itemTagNode" : {
+    "color" : "#4a90e2",
+    "line-height" : "24px",
+    "font-size" : "12px",
+    "padding" : "0px 10px",
+    "border" : "1px dotted #4a90e2",
+    "float" : "right"
+  },
+  "itemDateNode" : {
+    "margin-left" : "10px",
+    "font-size" : "14px",
+    "line-height" : "24px",
+    "color" : "#999"
+  },
+  "itemActionBar" : {
+//    "position" : "absolute",
+//    "top" : "10px",
+//    "right" : "10px",
+//    "width" : "100px",
+//    "height" : "30px",
+//    "overflow" : "hidden"
+  },
+  "action_view" : {
+    "float" : "left",
+    "padding-right" : "10px",
+    "width" : "16px",
+    "height" : "16px",
+    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_chakan.png) no-repeat center center"
+  },
+  "action_view_over" : {
+    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_chakan_click.png) no-repeat center center"
+  },
+  "action_edit" : {
+    "cursor" : "pointer",
+    "float" : "left",
+    "padding-right" : "10px",
+    "width" : "16px",
+    "height" : "16px",
+    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_bianji.png) no-repeat center center"
+  },
+  "action_edit_over" : {
+    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_bianji_click.png) no-repeat center center"
+  },
+  "action_remove" : {
+    "cursor" : "pointer",
+    "float" : "left",
+    "padding-right" : "10px",
+    "width" : "16px",
+    "height" : "16px",
+    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_delete_grey.png) no-repeat center center"
+  },
+  "action_remove_over" : {
+    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_delete_blue_click2.png) no-repeat center center"
+  },
+  "keyWorkContainer" : {
+    "padding-bottom" : "10px"
+  },
+  "deplymentNode" : {
+    "background-color" : "#fff"
+  },
+  "personDeployNode" : {
+    "margin-bottom" : "20px"
+  },
+  "keyWorkTitle" : {
+    "margin" : "20px auto 0px auto",
+    "width" : "84%",
+    "color" : "#666"
+  },
+  "keyworkDepory" : {
+    "display" : "inline-block",
+    "overflow" : "hidden"
+  },
+  "keyWorkIconNode" : {
+    "margin-top" : "2px",
+    "width" : "16px",
+    "height" : "16px",
+    "float" : "left",
+    "background" : "url(/x_component_Report/$StrategyExplorer/default/icon/icon_biao.png) no-repeat center center"
+  },
+  "keyWorkTextNode" : {
+    "padding-left" : "10px",
+    "float" : "left"
+  },
+  "measureDeployNode" : {
+    "margin-top" : "10px"
+  },
+  "warmMessageNode" : {
+    //"margin-top" : "10px",
+    "font-size": "14px",
+    "color":"#ff5c42",
+    "padding-left": "20px",
+    "background" : "url(/x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
+  },
+  "warningMessageNode" : {
+    //"margin-top" : "10px",
+    "font-size": "12px",
+    "color":"#ff5c42",
+    "padding-left": "20px",
+    "background" : "url(/x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
+  },
+  "measureIconNode" : { 
+    "margin-top" : "1px",
+    "width" : "16px",
+    "height" : "16px",
+    "float" : "left",
+    "background" : "url(/x_component_Report/$StrategyExplorer/default/icon/icon_biao.png) no-repeat center center"
+  },
+  "measuresDescribeNode" : {
+    "margin-left" : "36px",
+    "color" : "#888"
+  },
+
+  "formTable" : {
+    "border-collapse" : "collapse",
+    "margin": "0px auto",
+    "margin-bottom" : "15px",
+    "line-height" : "120%"
+    //"margin-top" : "10px"
+  },
+  "formTableHead" : {
+      "height": "50px",
+      "line-height": "50px",
+      "text-align": "center",
+      "min-width": "80px",
+      "font-size":"20px",
+      "font-weight": "bold"
+    },
+    "formTableTitle" : {
+      "border":"1px solid #d8d5d5",
+      "background-color" : "#effafe",
+      "color" : "#444",
+      "font-size": "12px",
+      "height" : "30px",
+      "line-height" : "30px",
+      "font-weight" : "bold",
+      "text-align": "center"
+    },
+
+    "formTableValue" : {
+      "border" : "1px solid #d8d5d5",
+      "color" : "#444",
+      "font-size": "12px",
+      "font-weight" : "400",
+      "text-align": "left"
+    },
+
+    "textarea" : {
+      "border":"1px solid #d8d5d5",
+      "margin" : "10px auto 5px auto",
+      "width":"98%",
+      "height":"62px",
+      "font-size" : "12px",
+      "padding": "2px 2px",
+      "box-shadow":"0 2px 5px #eae8e9 inset"
+    },
+  "textinput" : {
+    "width":"98%",
+    "padding" : "0px 5px",
+    "margin" : "10px auto 5px auto",
+    "height" : "32px",
+    "line-height" : "32px",
+    "font-size" : "12px",
+    "border" : "1px solid #d8d5d5",
+    "box-shadow" : "0 2px 5px #eae8e9 inset"
+  },
+
+  "addButton" : {
+    "color" : "#386e8b",
+    "border" : "1px solid #a2bfc8",
+    "background-color" : "#dbedef",
+    "padding": "4px 4px",
+    "font-size" : "12px",
+    "cursor" : "pointer"
+  },
+  "descriptionNode" : {
+    "color" : "#386e8b",
+    "border" : "1px solid #a2bfc8",
+    "background-color" : "#dbedef",
+    "text-align" : "center",
+    "line-height" : "24px",
+    "width" : "32px",
+    "font-size" : "12px",
+    "cursor" : "pointer"
+  },
+  "selectMeasureAction" : {
+    "margin-left" : "3px",
+    "font-size" : "12px",
+    "background-color" : "#dbedef",
+    "border" : "1px solid #a2bfc8",
+    "height" : "28px",
+    "color" : "#386e8b",
+    "cursor" : "pointer"
+  },
+  "setRead" : {
+    "padding" : "0px 15px",
+    "font-size" : "14px",
+    "background-color" : "#dbedef",
+    "border" : "1px solid #a2bfc8",
+    "height" : "32px",
+    "color" : "#386e8b",
+    "cursor" : "pointer"
+  }
+}

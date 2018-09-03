@@ -1,0 +1,11 @@
+{
+  "filterList":[  {
+      "value": "",
+      "otherValue": "新增加的值,用于between时的第二个值",
+      "path": "",
+      "formatType": "",
+      "logic": "",
+      "comparison": ""
+    }],
+  "parameter":{}
+}

@@ -1,0 +1,70 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Log",
+	"description": "",
+    "filterActivity": [],
+    "filterPerson": [],
+    "filterRoute": [],
+    "mode": "table", //table or text
+    "textStyle": "<font style='color:#00F;'>{person}</font>（{unitName}） 阅于<font style='color:#00F'>{date}</font>，首次于<font style='color:#00F'>{firstDate}</font>，共<font style='color:#00F'>{count}</font>次",  //"{person}({department})在[{activity}]中选择[{route}]，提交于：{time}，处理意见：{opinion}",
+    "isTask": "true",
+	"filterScript": {
+		"code": "",
+		"html": ""
+	},
+	"events": {
+		"click": {
+			"code": "",
+			"html": ""
+		},
+		"dblclick": {
+			"code": "",
+			"html": ""
+		},
+		"keydown": {
+			"code": "",
+			"html": ""
+		},
+		"keypress": {
+			"code": "",
+			"html": ""
+		},
+		"keyup": {
+			"code": "",
+			"html": ""
+		},
+		"mousedown": {
+			"code": "",
+			"html": ""
+		},
+		"mousemove": {
+			"code": "",
+			"html": ""
+		},
+		"mouseout": {
+			"code": "",
+			"html": ""
+		},
+		"mouseover": {
+			"code": "",
+			"html": ""
+		},
+		"mouseup": {
+			"code": "",
+			"html": ""
+		},
+		"focus": {
+			"code": "",
+			"html": ""
+		},
+		"blur": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"container": ""
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        function of(){
+            var o = new ActiveXObject("Word.Application");
+            o.visible = true;
+            o.Documents.open("E:\\公司项目\\ntko\\文档控件文档\\NTKO_OFFICE文档控件开发接口参考V5025.doc");
+
+        }
+    </script>
+</head>
+<body>
+<button onclick="of()">test</button>
+
+
+<!--<OBJECT id=TANGER_OCX style="HEIGHT: 600px; WIDTH: 100%" codeBase="/x_desktop/res/framework/officecontrol/OfficeControl.cab#version=5,0,2,9" classid="clsid:000209FF-0000-0000-C000-000000000046">-->
+    <!--<PARAM NAME="BorderColor" VALUE="14402205">-->
+    <!--<PARAM NAME="BackColor" VALUE="-2147483643">-->
+    <!--<PARAM NAME="ForeColor" VALUE="-2147483640">-->
+    <!--<PARAM NAME="TitlebarColor" VALUE="14402205">-->
+    <!--<PARAM NAME="TitlebarTextColor" VALUE="0">-->
+    <!--<PARAM NAME="BorderStyle" VALUE="1">-->
+    <!--<PARAM NAME="Titlebar" VALUE="1">-->
+    <!--<PARAM NAME="Toolbars" VALUE="1">-->
+    <!--<PARAM NAME="Caption" VALUE="欢迎！">-->
+    <!--<PARAM NAME="ProductCaption" value="O2">-->
+    <!--<PARAM NAME="ProductKey" value="EDCC626CB85C9A1D3E0D7BDDDC2637753C596725">-->
+    <!--<PARAM NAME="MakerCaption" VALUE="浙江兰德纵横网络技术股份有限公司">-->
+    <!--<PARAM NAME="MakerKey" VALUE="E138DABB4AC26C2D8E09FAE59AB3BDE87AFB9D7B">-->
+    <!--&lt;!&ndash;<PARAM NAME="IsShowToolMenu" VALUE="0">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsNoCopy" VALUE="0">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsHiddenOpenURL" VALUE="0">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="MaxUploadSize" VALUE="0">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="NetworkBufferSize" VALUE="0">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="Menubar" VALUE="1">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="Statusbar" VALUE="1">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="FileNew" VALUE="1">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="FileOpen" VALUE="1">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="FileClose" VALUE="0">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="FileSave" VALUE="0">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="FileSaveAs" VALUE="-1">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="FilePrint" VALUE="-1">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="FilePrintPreview" VALUE="-1">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="FilePageSetup" VALUE="-1">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="FileProperties" VALUE="-1">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsStrictNoCopy" VALUE="0">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsUseUTF8URL" VALUE="1">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="MenubarColor" VALUE="15790320">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsUseControlAgent" VALUE="0">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsUseUTF8Data" VALUE="1">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsSaveDocExtention" VALUE="0">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsDirectConnect" VALUE="1">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="SignCursorType" VALUE="0">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsResetToolbarsOnOpen" VALUE="0">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsSaveDataIfHasVDS" VALUE="0">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="MenuButtonStyle" VALUE="0">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="MenuButtonColor" VALUE="16180947">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="MenuButtonFrameColor" VALUE="14924434">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="MenuBarStyle" VALUE="0">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsGetPicOnlyOnHandSign" VALUE="0">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsSecurityOptionsOpen" VALUE="0">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsShowHelpMenu" VALUE="1">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsShowInsertMenu" VALUE="1">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsAutoDetectWebCharSet" VALUE="0">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="WebCodePage" VALUE="936">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsShowEditMenu" VALUE="1">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsShowFileErrorMsg" VALUE="1">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsShowNetErrorMsg" VALUE="1">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="ReceiveDataTimeOut" VALUE="180">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="ConnectServerTimeOut" VALUE="180">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsRemoveMacrosOnSave" VALUE="1">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsForceCheckSecSignCertCRLOnline" VALUE="0">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsAutoLockOnSecSign" VALUE="0">&ndash;&gt;-->
+    <!--&lt;!&ndash;<PARAM NAME="IsAllowAddSignOnLockedDoc" VALUE="0">&ndash;&gt;-->
+<!--</OBJECT>-->
+</body>
+</html>

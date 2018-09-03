@@ -1,0 +1,59 @@
+<div>
+    <div title="基本" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">标识:</td>
+                <td class="editTableValue">text{$.id}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">创建时间:</td>
+                <td class="editTableValue">text{$.createTime}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">更新时间:</td>
+                <td class="editTableValue">text{$.updataTime}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">名称:</td>
+                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">别名:</td>
+                <td class="editTableValue"><input type="text" name="alias" value="text{$.alias}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">描述:</td>
+                <td class="editTableValue"><textarea name="description" class="editTableTextarea">text{$.description}</textarea></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">顺序号:</td>
+                <td class="editTableValue"><input type="text" name="orderNumber" value="text{$.orderNumber}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">默认意见:</td>
+                <td class="editTableValue"><input type="text" name="opinion" value="text{$.opinion}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableValue" id="text{$.id}passExpired" colspan="2"><b>活动超时时自动流转：</b><input class="editTableRadio" name="passExpired" text{($.passExpired)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="passExpired" text{(!$.passExpired)?'checked':''} type="radio" value="false"/>否</td>
+            </tr>
+            <tr>
+                <td class="editTableValue" id="text{$.id}passSameTarget" colspan="2"><b>与上一活动处理人相同时自动流转：</b><input class="editTableRadio" name="passSameTarget" text{($.passSameTarget)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="passSameTarget" text{(!$.passSameTarget)?'checked':''} type="radio" value="false"/>否</td>
+            </tr>
+        </table>
+    </div>
+    <!--<div title="条件" class="MWFTab MWFRouteCondition" style="display: none">-->
+
+    <!--</div>-->
+    <!-- <div title="事件" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+          <tr>
+            <td class="editTableTitle">流转事件:</td>
+            <td class="editTableValue">
+                <div class="MWFScript" name="routeScriptIdList"></div>
+            </td>
+          </tr>
+        </table>
+    </div>  -->
+</div>

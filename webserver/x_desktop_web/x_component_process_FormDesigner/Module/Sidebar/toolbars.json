@@ -1,0 +1,13 @@
+[
+  {
+    "type": "MWFToolBarButton",
+    "img": "save.png",
+    "title": "保存工作",
+    "action": "saveWork",
+    "text": "保存",
+    "id": "action_saveData",
+    "control": "allowSave",
+    "condition": "",
+    "read": false
+  }
+]

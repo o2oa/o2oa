@@ -1,0 +1,68 @@
+{
+  "rightContentNode": {
+    "height": "100%",
+    "margin-left": "160px",
+    "overflow": "hidden",
+    "background-color" : "#fff", //"#fcfcfc",
+    "opacity": 1
+  },
+  "naviNode": {
+    "padding-top" : "10px",
+    "width": "162px",
+    "height": "100%",
+    "overflow": "hidden",
+    //    "border": "0px",
+    //    "border-radius": "0px",
+    "float": "left",
+    "position": "static",
+    "overflow": "hidden",
+    //"margin-right" : "-7px",
+    //"background-color" : "#fcfcfc",
+    "background-color" : "#365775" //"#476783"
+    //"border-right": "1px solid #e8e8e8"
+  },
+  "naviMenuNode": {
+    "display" : "block",
+    "padding-top" :"10px",
+    "width": "198px",
+    "height": "30px",
+    "margin": "0px",
+    "line-height" :"30px",
+    "font-family": "微软雅黑",
+    "font-size": "14px",
+    "color" : "#ddd",
+    "padding-left" : "10px"
+  },
+
+  "naviItemNode" : {
+    "background-color" : "transparent",
+    "cursor" : "pointer",
+    //"color" : "#666",
+    "color" : "#fff",
+    "padding-left" : "30px",
+    "height" : "30px",
+    "line-height" : "30px",
+    "font-family": "微软雅黑",
+    "font-size": "14px"
+    //"text-shadow": "0px 0px 2px #fff"
+  },
+  "naviItemNode_current" : {
+//    "background-color" : "#e6f3ff",
+    "background-color" : "#fff",
+    "color" : "#666",
+    "font-weight" : "400"
+    //"text-shadow": "0px 0px 0px"
+  },
+  "naviItemNode_over" : {
+    "background-color" : "#e6f3ff",
+    "color" : "#666"
+    //"text-shadow": "0px 0px 2px #fff"
+  },
+  "viewNaviSepartorNode" : {
+    "margin" : "10px auto",
+    //"height" : "10px",
+    "width" : "100%",
+    "border-bottom" : "1px solid #ddd"
+  }
+	
+}

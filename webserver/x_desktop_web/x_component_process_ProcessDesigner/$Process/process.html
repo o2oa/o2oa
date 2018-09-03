@@ -1,0 +1,231 @@
+<div class="editNode">
+    <div title="基本" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">标识:</td>
+                <td class="editTableValue">text{$.id}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">创建人:</td>
+                <td class="editTableValue">text{$.creatorPerson}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">创建时间:</td>
+                <td class="editTableValue">text{$.createTime}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">更新人:</td>
+                <td class="editTableValue">text{$.lastUpdatePerson}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">更新时间:</td>
+                <td class="editTableValue">text{$.lastUpdateTime}</td>
+            </tr>
+
+            <tr>
+                <td class="editTableTitle">应用:</td>
+                <td class="editTableValue">text{$.applicationName}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">名称:</td>
+                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">别名:</td>
+                <td class="editTableValue"><input type="text" name="alias" value="text{$.alias}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">描述:</td>
+                <td class="editTableValue"><textarea  name="description" class="editTableTextarea">text{$.description}</textarea></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">图标:</td>
+                <td class="editTableValue"><div class="MWFIcon" name="icon"></div></td>
+            </tr>
+        </table>
+    </div>
+    <div title="编号"  class="MWFTab">
+        <div class="MWFSerial" name="serialTexture"></div>
+        <div style="border-top: 1px solid #CCC">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">编号活动:</td>
+                    <td class="editTableValue">
+                        <div class="MWFSericalActivitySelect" name="serialActivity"></div></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div title="时效"  class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">流程超时:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}expireTypeAppointEditArea').setStyle('display', 'none'); $('text{$.id}expireTypeScriptEditArea').setStyle('display', 'none');}" name="expireType" text{($.expireType!='appoint' && $.expireType!='script')?'checked':''} type="radio" value="never"/>不超时
+                    <input class="editTableRadio" onclick="debugger; if (this.checked){ $('text{$.id}expireTypeAppointEditArea').setStyle('display', 'block'); $('text{$.id}expireTypeScriptEditArea').setStyle('display', 'none');}" name="expireType" text{($.expireType=='appoint')?'checked':''} type="radio" value="appoint"/>指定时长
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}expireTypeAppointEditArea').setStyle('display', 'none'); $('text{$.id}expireTypeScriptEditArea').setStyle('display', 'block');}" name="expireType" text{($.expireType=='script')?'checked':''} type="radio" value="script"/>通过脚本设定
+                </td>
+            </tr>
+        </table>
+
+        <div id="text{$.id}expireTypeAppointEditArea" style="display: text{($.expireType=='appoint')?'block':'none'}; margin-top: 5px;">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">超时时长:</td>
+                    <td class="editTableValue">
+                        <input type="text" name="expireDay" value="text{$.expireDay || 7}" style="width: 80px; border: 1px solid #cccccc"/> 天 <br/>
+                        <input type="text" name="expireHour" value="text{($.expireHour) ? $.expireHour : 0}" style="width: 80px; border: 1px solid #cccccc"/> 小时
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle"></td>
+                    <td class="editTableValue">
+                        <input class="editTableRadio" name="expireWorkTime" text{!($.expireWorkTime===false)?'checked':''} type="radio" value="true"/>仅计算工作时间
+                        <input class="editTableRadio" name="expireWorkTime" text{($.expireWorkTime===false)?'checked':''} type="radio" value="false"/>包含非指定时长
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="text{$.id}expireTypeScriptEditArea" style="display: text{($.expireType=='script')?'block':'none'}; margin-top: 5px;">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">脚本:</td>
+                    <td class="editTableValue">
+                        <div class="MWFScript" name="expireScript"></div>
+                    </td>
+                </tr>
+            </table>
+            <div class="MWFScriptText" name="expireScriptText"></div><hr />
+            <div style="margin: 5px;">脚本返回JSON数据: <br>
+                {<br>
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>hour: 3  <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>//几小时后超时<br>
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>workHour: 5   <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>//几个工作小时后超时<br>
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>date: '2016-08-01'    <span>&nbsp;&nbsp;</span>//到达指定时间后超时<br>
+                }<br>
+                三个值任选其一</div>
+        </div>
+
+    </div>
+    <div title="权限"  class="MWFTab">
+        <!--<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+            <!--<tr>-->
+                <!--<td class="editTableTitle">启动者:</td>-->
+                <!--<td class="editTableValue">-->
+                    <!--<input class="editTableRadio" name="availableMode" onclick="if (this.checked) $('processEditStarter').setStyle('display', 'none')" type="radio" name="availableMode" text{($.availableMode=='all')?'checked':''} value="all"/>所有人-->
+                    <!--<input class="editTableRadio" name="availableMode" onclick="if (this.checked) $('processEditStarter').setStyle('display', 'none')" type="radio" name="availableMode" text{($.availableMode=="auth")?"checked":""} value="auth"/>认证用户-->
+                    <!--<input class="editTableRadio" name="availableMode" onclick="if (this.checked) $('processEditStarter').setStyle('display', 'table')" type="radio" name="availableMode" text{($.availableMode=="assign")?"checked":""} value="assign" />指定-->
+                    <!--<input class="editTableRadio" name="availableMode" onclick="if (this.checked) $('processEditStarter').setStyle('display', 'none')" type="radio" name="availableMode" text{($.availableMode=="none")?"checked":""} value="none"/>无-->
+                <!--</td>-->
+            <!--</tr>-->
+        <!--</table>-->
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter"">
+            <tr>
+                <td class="editTableTitle">启动人:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonIdentity" name="startableIdentityList"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">启动组织:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonUnit" name="startableUnitList"></div>
+                </td>
+            </tr>
+            <!--<tr>-->
+                <!--<td class="editTableTitle">启动部门:</td>-->
+                <!--<td class="editTableValue">-->
+                    <!--<div class="MWFPersonDepartment" name="startableDepartmentList"></div>-->
+                <!--</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<td class="editTableTitle">启动公司:</td>-->
+                <!--<td class="editTableValue">-->
+                    <!--<div class="MWFPersonCompany" name="startableCompanyList"></div>-->
+                <!--</td>-->
+            <!--</tr>-->
+        </table>
+        <hr />
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">管理者:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonPerson" name="controllerList"></div>
+                </td>
+            </tr>
+            <!--<tr>-->
+                <!--<td class="editTableTitle">管理部门:</td>-->
+                <!--<td class="editTableValue">-->
+                    <!--<div class="MWFPersonDepartment" name="manageDepartmentList"></div>-->
+                <!--</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<td class="editTableTitle">管理者脚本:</td>-->
+                <!--<td class="editTableValue">-->
+                    <!--&lt;!&ndash; <textarea type="text" jsondata="reviewerScriptIdList" value="text{$.reviewerScriptIdList}" class="editTableInput"></textarea> &ndash;&gt;-->
+                    <!--<div class="MWFScript" name="manageScriptList"></div>-->
+                <!--</td>-->
+            <!--</tr>-->
+        </table>
+        <hr />
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">阅读者:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonIdentity" name="reviewIdentityList"></div>
+                </td>
+            </tr>
+            <!--<tr>-->
+                <!--<td class="editTableTitle">阅读部门:</td>-->
+                <!--<td class="editTableValue">-->
+                    <!--<div class="MWFPersonDepartment" name="reviewDepartmentList"></div>-->
+                <!--</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<td class="editTableTitle">阅读人脚本:</td>-->
+                <!--<td class="editTableValue">-->
+                    <!--&lt;!&ndash; <textarea type="text" jsondata="reviewerScriptIdList" value="text{$.reviewerScriptIdList}" class="editTableInput"></textarea> &ndash;&gt;-->
+                    <!--<div class="MWFScript" name="reviewScriptList"></div>-->
+                <!--</td>-->
+            <!--</tr>-->
+        </table>
+    </div>
+    <div title="事件"  class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">流程启动前:</td>
+                <td class="editTableValue">
+                    <div class="MWFScript" name="beforeBeginScript"></div>
+                </td>
+            </tr>
+        </table>
+        <div class="MWFScriptText" name="beforeBeginScriptText"></div><hr />
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">流程启动后:</td>
+                <td class="editTableValue">
+                    <div class="MWFScript" name="afterBeginScript"></div>
+                </td>
+            </tr>
+        </table>
+        <div class="MWFScriptText" name="afterBeginScriptText"></div><hr />
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">流程结束前:</td>
+                <td class="editTableValue">
+                    <div class="MWFScript" name="beforeEndScript"></div>
+                </td>
+            </tr>
+        </table>
+        <div class="MWFScriptText" name="beforeEndScriptText"></div><hr />
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">流程结束后:</td>
+                <td class="editTableValue">
+                    <div class="MWFScript" name="afterEndScript"></div>
+                </td>
+            </tr>
+        </table>
+        <div class="MWFScriptText" name="afterEndScriptText"></div><hr />
+    </div>
+</div>

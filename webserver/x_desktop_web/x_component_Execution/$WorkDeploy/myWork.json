@@ -1,0 +1,162 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='editTable'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='documentNode'></tr>",
+    "mouseoverStyles": "documentNode_over",
+    "action": "open"
+  },
+  "items": [
+    {
+      "name": "subject",
+      "head": {
+        "html": "<th styles='normalThNode' lable='shortWorkDetail'></th>",
+        "width": "40%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' width='40%'>" +
+        " <div styles='appointNode' name='appointDiv'></div>" +
+        " <div item='title' styles='documentSubject'></div>" +
+
+        "</td>",
+        "items": {
+          "title": {},
+          "shortWorkDetail":{},
+          "workType": {},
+          "workLevel": {}
+        }
+      }
+    },
+    {
+      "name": "relativeDepartment",
+      "head": {
+        "html": "<th styles='normalThNode' lable='relativeDepartment'></th>",
+        "width": "20%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' width='20%'>"  +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='dutyDepartent' colon='true'></div><div styles='itemInLine' item='responsibilityUnitName'></div></div>" +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='doDepartment' colon='true'></div><div styles='itemInLine' item='deployerUnitName'></div></div>" +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='secondDepartment' colon='true'></div><div styles='itemInLine' item='cooperateUnitName'></div></div>" +
+        "</td>",
+        "items": {
+          "responsibilityUnitName": {
+              "value":"function(d){ return d.responsibilityUnitName.split('@')[0]}"
+          },
+          "deployerUnitName": {
+            //"value":"function(d){ return d.deployerUnitName.split('@')[0]}"
+            "value":"function(d){var v=d.deployerUnitName.split(',');v1='';for(i=0;i<v.length;i++){if(v1==''){v1=v[i].split('@')[0];}else{	v1=v1+','+v[i].split('@')[0];};}return v1}"
+          },
+          "cooperateUnitName": {
+            "value":"function(d){if(!d.cooperateUnitNameList)return '';var v=d.cooperateUnitNameList;v1='';for(i=0;i<v.length;i++){if(v1==''){v1=v[i].split('@')[0];}else{	v1=v1+','+v[i].split('@')[0];};}return v1}"
+          }
+        }
+      }
+    },
+    {
+      "name": "relativePerson",
+      "head": {
+        "html": "<th styles='normalThNode' lable='relativePerson'></th>",
+        "width": "15%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' width='15%'>" +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='dutyPerson' colon='true'></div><div styles='itemInLine' item='responsibilityEmployeeName'></div></div>" +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='doPerson' colon='true'></div><div styles='itemInLine' item='deployerName'></div></div>" +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='secondPerson' colon='true'></div><div styles='itemInLine' item='cooperateEmployeeName'></div></div>" +
+        "</td>",
+        "items": {
+          "responsibilityEmployeeName": {
+            "value":"function(d){var v=d.responsibilityEmployeeName.split(',');v1='';for(i=0;i<v.length;i++){if(v1==''){v1=v[i].split('@')[0];}else{	v1=v1+','+v[i].split('@')[0];};}return v1}"
+          },
+          "deployerName": {
+            "value":"function(d){var v=d.deployerName.split(',');v1='';for(i=0;i<v.length;i++){if(v1==''){v1=v[i].split('@')[0];}else{	v1=v1+','+v[i].split('@')[0];};}return v1}"
+          },
+          "cooperateEmployeeName": {
+            "value":"function(d){if(!d.cooperateIdentityList)return '';var v=d.cooperateIdentityList;v1='';for(i=0;i<v.length;i++){if(v1==''){v1=v[i].split('@')[0];}else{	v1=v1+','+v[i].split('@')[0];};}return v1}"
+          }
+        }
+      }
+    },
+    {
+      "name": "timeLimit",
+      "head": {
+        "html": "<th styles='normalThNode' lable='timeLimit'></th>",
+        "width": "15%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' item='completeDateLimitStr' width='15%'></td>",
+        "items": {
+          "completeDateLimitStr" : {}
+        }
+      }
+    },
+    {
+      //"access": "admin",
+      "head": {
+        "html": "<th styles='normalThNode' lable='action'></th>",
+        "width": "10%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' width='10%'>" +
+        " <span styles='documentActionNode' item='action_view'></span>" +
+        " <span styles='documentActionNode' item='action_split'></span>" +
+        " <span styles='documentActionNode' item='action_authorize'></span>" +
+        " <span styles='documentActionNode' item='action_tackBack'></span>" +
+        " <span styles='documentActionNode' item='action_archive'></span>" +
+        "</td>",
+        "items": {
+          "action_view": {
+            "title": "action_view",
+            "text": "action_view",
+            "action": "action_view",
+            "styles": "documentActionNode",
+            "condition": "function( d ){ return this.viewActionReturn(d) }",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "action_split": {
+            "title": "action_split",
+            "text": "action_split",
+            "action": "action_split",
+            "styles": "documentActionNode",
+            "condition": "function( d ){ return this.splitActionReturn(d) }",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "action_authorize": {
+            "title": "action_authorize",
+            "text": "action_authorize",
+            "action": "action_authorize",
+            "styles": "documentActionNode",
+            "condition": "function( d ){ return this.authorizeActionReturn(d) }",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "action_tackBack": {
+            "title": "action_tackBack",
+            "text": "action_tackBack",
+            "action": "action_tackBack",
+            "styles": "documentActionNode",
+            "condition": "function( d ){ return this.tackBackActionReturn(d) }",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "action_archive": {
+            "title": "action_archive",
+            "text": "action_archive",
+            "action": "action_archive",
+            "styles": "documentActionNode",
+            "condition": "function( d ){ return this.archiveActionReturn(d) }",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          }
+        }
+      }
+    }
+  ]
+}

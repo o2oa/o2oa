@@ -1,0 +1,241 @@
+{
+	"rightContentNode": {
+		"height": "100%",
+		"margin-left": "140px",
+		"overflow": "hidden",
+		"opacity": 1
+	},
+	"startMenuNode": {
+		"overflow": "hidden",
+		"border-radius": "8px",
+		"box-shadow": "0px 0px 10px #333",
+		"border": "5px solid #999",
+		"position": "absolute",
+		"height": "130px",
+		"margin": "auto",
+		"background-color": "#EEE"
+	},
+	"startMenuNaviNode": {
+		"width": "90px",
+		"height": "90px",
+		"float": "left",
+		"margin": "20px",
+		"cursor": "pointer",
+		"box-shadow": "0px 0px 0px",
+		"border-radius": "8px",
+		"background-color": "#EEE",
+		"border": "2px solid #EEE"
+	},
+	"startMenuNaviNode_over": {
+		"box-shadow": "0px 0px 5px #333",
+		"background-color": "#EEE",
+		"border": "2px solid #EEE"
+	},
+	"startMenuNaviNode_current": {
+		"box-shadow": "0px 0px 5px #333",
+		"background-color": "#FFF",
+		"border": "2px solid #FFF"
+	},
+	"startMenuNaviNode_down": {
+		"box-shadow": "0px 0px 0px",
+		"border-top": "2px solid #CCC",
+		"border-left": "2px solid #CCC",
+		"border-right": "2px solid #FFF",
+		"border-bottom": "2px solid #FFF",
+		"background-color": "#EEE"
+	},
+	"startMenuIconNode": {
+		"width": "90px",
+		"height": "70px",
+		"background-repeat": "no-repeat",
+		"background-position": "center center"
+	},
+	"startMenuTextNode": {
+		"text-align": "center",
+		"font-family": "微软雅黑",
+		"font-size": "14px"
+	},
+	"normalStartMenuNode": {
+		"width": "132px",
+		"height": "100%",
+		"top": "0",
+		"left": "0",
+		"overflow": "hidden",
+		"border": "0px",
+		"box-shadow": "0px 0px 15px #999",
+		"border-radius": "0px",
+		"float": "left",
+		"position": "static",
+		"overflow": "hidden"
+	},
+
+	"propertyTitleBar": {
+	    "overflow": "hidden",
+        "height": "60px",
+        "background-color": "#4c6b87",
+        "padding-left": "20px",
+        "color": "#FFF",
+        "font-size": "18px",
+        "line-height": "60px",
+        "font-weight": "bold"
+	},
+	"propertyContentNode": {
+	    "overflow": "hidden"
+	},
+    "propertyContentAreaNode": {
+        "overflow": "hidden",
+        "margin-right": "8px"
+    },
+
+	"propertyBaseContentTdTitle": {
+        "width": "20%",
+        "text-align": "right",
+        "color": "#da7429",
+        "font-size": "14px"
+    },
+    "baseActionAreaNode": {
+        "height": "40px",
+        "overflow": "hidden",
+        "border-bottom": "1px solid #999",
+        "margin": "10px 40px 10px 40px"
+    },
+    "baseTextNode": {
+        "height": "40px",
+        "color": "#333",
+        "font-size": "18px",
+        "line-height": "40px",
+        "font-weight": "bold",
+        "margin-right": "300px"
+    },
+    "propertyInforActionNode":{
+        "float": "right",
+        "height": "40px",
+        "margin-right": "10px",
+        "border-bottom": "1px solid #c9c9c9",
+        "width": "200px"
+    },
+    "editBaseNode": {
+        "background": "url("+"/x_component_process_ProcessManager/$Main/default/icon/edit.png) 3px center no-repeat",
+        "float": "right",
+        "cursor": "pointer",
+        "margin-top": "12px",
+        "padding": "3px 5px",
+        "padding-left": "22px",
+        "font-size": "12px",
+        "font-weight": "normal",
+        "border": "1px solid #AAA",
+        "background-color": "#FFF",
+        "line-height": "normal",
+        "color":"#666",
+        "border-radius":"3px"
+    },
+    "cancelBaseNode": {
+        "background": "url("+"/x_component_process_ProcessManager/$Main/default/icon/editCancel.png) 3px center no-repeat",
+        "float": "right",
+        "cursor": "pointer",
+        "margin-top": "12px",
+        "padding": "3px 5px",
+        "padding-left": "22px",
+        "font-size": "12px",
+        "font-weight": "normal",
+        "border": "1px solid #999",
+        "background-color": "#AAA",
+        "line-height": "normal",
+        "color":"#FFF",
+        "border-radius":"3px"
+    },
+    "saveBaseNode": {
+        "background": "url("+"/x_component_process_ProcessManager/$Main/default/icon/editOk.png) 15px center no-repeat",
+        "float": "right",
+        "cursor": "pointer",
+        "margin-top": "12px",
+        "padding": "3px 20px",
+        "padding-left": "35px",
+        "font-size": "12px",
+        "font-weight": "normal",
+        "border": "1px solid #888",
+        "background-color": "#6b8bbd",
+        "line-height": "normal",
+        "color":"#FFF",
+        "margin-right": "10px",
+        "border-radius":"3px",
+        "box-shadow": "0px 0px 5px #888"
+    },
+    "formInput": {
+        "content": {
+            "min-height": "24px",
+            "line-height": "24px",
+            "margin": "3px 20px",
+            "cursor": "default",
+            "font-size": "14px"
+        },
+        "input": {
+            "width": "90%",
+            "height": "22px",
+            "border": "1px solid #CCC",
+            "box-shadow": "0px 0px 0px",
+            "font-size": "14px"
+        },
+        "input_focus": {
+            "width": "90%",
+            "height": "22px",
+            "border": "1px solid #da7429",
+            "box-shadow": "0px 0px 8px #fab37e",
+            "font-size": "14px"
+        }
+    },
+    "iconContentTitleNode": {
+        "overflow": "hidden",
+        "margin": "20px 40px 10px 40px",
+        "height": "40px",
+        "color": "#333",
+        "font-size": "18px",
+        "line-height": "40px",
+        "font-weight": "bold",
+        "border-bottom": "1px solid #c9c9c9"
+    },
+     "controllerListTitleNode": {
+        "overflow": "hidden",
+        "margin": "20px 40px 10px 40px",
+        "height": "40px",
+        "color": "#333",
+        "font-size": "18px",
+        "line-height": "40px",
+        "font-weight": "bold",
+        "clear": "both",
+        "border-bottom": "1px solid #c9c9c9"
+     },
+     "administratorsContentNode": {
+        "padding": "10px",
+        "overflow": "hidden",
+        "margin": "0px 40px"
+     },
+     "availableTitleNode": {
+        "overflow": "hidden",
+        "margin": "20px 40px 10px 40px",
+        "height": "40px",
+        "color": "#333",
+        "font-size": "18px",
+        "line-height": "40px",
+        "font-weight": "bold",
+        "clear": "both",
+        "border-bottom": "1px solid #c9c9c9"
+     },
+     "availableItemsContentNode": {
+        "padding": "10px",
+        "overflow": "hidden",
+        "margin": "0px 40px"
+     },
+     "selectButtonStyle": {
+        "margin-left": "40px",
+        "float": "left",
+        "background-color": "#FFF",
+        "padding": "4px 14px",
+        "border": "1px solid #999",
+        "border-radius": "3px",
+        "margin-top": "10px",
+        "font-size": "14px",
+        "color": "#666",
+        "cursor": "pointer"
+     }
+}

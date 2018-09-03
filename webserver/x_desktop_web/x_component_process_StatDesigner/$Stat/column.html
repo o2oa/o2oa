@@ -1,0 +1,50 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="基本" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">ID:</td>
+                <td class="editTableValue">text{$.id}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">名称:</td>
+                <td class="editTableValue"><input type="text" name="displayName" value="text{$.displayName}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">视图列:</td>
+                <td class="editTableValue"><select class="MWFViewColumnSelect" name="column">
+                    <option>请先为统计选择视图</option>
+                </select></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">计算类型:</td>
+                <td class="editTableValue"><select name="calculateType">
+                    <option value="sum" text{($.calculateType)=='sum'?'selected':''}>总和(sum)</option>
+                    <option value="average" text{($.calculateType)=='average'?'selected':''}>平均(average)</option>
+                    <option value="count" text{($.calculateType)=='count'?'selected':''}>数量(count)</option>
+                    <option value="groupSum" text{($.calculateType)=='groupSum'?'selected':''}>分类总和(groupSum)</option>
+                    <option value="groupAverage" text{($.calculateType)=='groupAverage'?'selected':''}>分类平均(groupAverage)</option>
+                    <option value="groupCount" text{($.calculateType)=='groupCount'?'selected':''}>分类数量(groupCount)</option>
+                </select></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">排序:</td>
+                <td class="editTableValue"><select name="orderType">
+                    <option value="original" text{($.orderType)=='original'?'selected':''}>无</option>
+                    <option value="desc" text{($.orderType)=='desc'?'selected':''}>降序</option>
+                    <option value="asc" text{($.orderType)=='asc'?'selected':''}>升序</option>
+                </select></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">排序依据:</td>
+                <td class="editTableValue"><select name="orderEffectType">
+                    <option value="value" text{($.orderEffectType)=='value'?'selected':''}>统计值</option>
+                    <option value="key" text{($.orderEffectType)=='key'?'selected':''}>分类值</option>
+                </select></td>
+            </tr>
+        </table>
+        <div class="MWFFormulaArea" name="code" title="显示脚本 (S)"></div>
+	</div>
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

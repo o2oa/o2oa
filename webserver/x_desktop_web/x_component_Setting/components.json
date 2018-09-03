@@ -1,0 +1,206 @@
+[
+  {
+    "name": "ControlPanel",
+    "path": "ControlPanel",
+    "title": "控制面板",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "Setting",
+    "path": "Setting",
+    "title": "系统设置",
+    "iconPath": "appicon.png",
+    "allowList": ["xadmin", "Manager"]
+  },
+  {
+    "name": "AppMarket",
+    "path": "AppMarket",
+    "title": "应用市场",
+    "iconPath": "appicon.png",
+    "allowList": ["xadmin", "Manager"]
+  },
+  {
+    "name": "Deployment",
+    "path": "Deployment",
+    "title": "部署管理",
+    "iconPath": "appicon.png",
+    "allowList": ["xadmin", "Manager"]
+  },
+  {
+    "name": "Org",
+    "path": "Org",
+    "title": "组织管理",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "Profile",
+    "path": "Profile",
+    "title": "个人设置",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "BAM",
+    "path": "BAM",
+    "title": "流程监控",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "DesignCenter",
+    "path": "DesignCenter",
+    "title": "设计中心",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "ApplicationExplorer",
+    "path": "process.ApplicationExplorer",
+    "title": "流程管理平台",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "PortalExplorer",
+    "path": "portal.PortalExplorer",
+    "title": "门户管理平台",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "cmsManager",
+    "path": "cms.Column",
+    "title": "内容管理平台",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "DataExplorer",
+    "path": "query.QueryExplorer",
+    "title": "数据中心平台",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "service.ServiceManager",
+    "path": "service.ServiceManager",
+    "title": "服务管理",
+    "iconPath": "appicon.png"
+  },
+
+  {
+    "name": "AppCenter",
+    "path": "AppCenter",
+    "title": "应用导出",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "TaskCenter",
+    "path": "process.TaskCenter",
+    "title": "办公中心",
+    "iconPath": "appicon.png",
+    "widgetName": "TaskWidget",
+    "widgetTitle": "待办列表",
+    "widgetIconPath": "widgeticon.png"
+  },
+  {
+    "name": "cms",
+    "path": "cms.Index",
+    "title": "信息平台",
+    "iconPath": "appicon.png"
+  },
+
+  {
+    "name": "File",
+    "path": "File",
+    "title": "云文件",
+    "iconPath": "appicon.png",
+    "visible": true
+  },
+
+  {
+    "name": "Note",
+    "path": "Note",
+    "title": "便签",
+    "iconPath": "appicon.png",
+    "visible": true
+  },
+  {
+    "name": "Meeting",
+    "path": "Meeting",
+    "title": "会议管理",
+    "iconPath": "appicon.png",
+    "visible": true
+  },
+  {
+    "name": "Execution",
+    "path": "Execution",
+    "title": "执行力管理",
+    "iconPath": "appicon.png",
+    "visible": true
+  },
+  {
+    "name": "Attendance",
+    "path": "Attendance",
+    "title": "考勤管理",
+    "iconPath": "appicon.png",
+    "visible": true
+  },
+  {
+    "name": "Forum",
+    "path": "Forum",
+    "title": "论坛",
+    "iconPath": "appicon.png",
+    "visible": true
+  },
+  {
+    "name": "HotArticle",
+    "path": "HotArticle",
+    "title": "热点",
+    "iconPath": "appicon.png",
+    "visible": true
+  },
+//  {
+//    "name": "CRM",
+//    "path": "CRM",
+//    "title": "CRM",
+//    "iconPath": "appicon.png",
+//    "visible": true
+//  },
+  {
+    "name": "ExeManager",
+    "path": "ExeManager",
+    "title": "执行力管理",
+    "iconPath": "appicon.png",
+    "visible": true
+  },
+  {
+    "name": "OnlineMeeting",
+    "path": "OnlineMeeting",
+    "title": "网络会议",
+    "iconPath": "appicon.png",
+    "visible": true
+  },
+  {
+    "name": "Strategy",
+    "path": "Strategy",
+    "title": "战略管理",
+    "iconPath": "appicon.png",
+    "visible": true
+  },
+  {
+    "name": "Report",
+    "path": "Report",
+    "title": "工作报告",
+    "iconPath": "appicon.png",
+    "visible": true
+  },
+  {
+    "name": "Minder",
+    "path": "Minder",
+    "title": "脑图编辑器",
+    "iconPath": "appicon.png",
+    "visible": true
+  },
+  {
+    "name": "Calendar",
+    "path": "Calendar",
+    "title": "日程安排",
+    "iconPath": "appicon.png",
+    "visible": true
+  }
+
+]

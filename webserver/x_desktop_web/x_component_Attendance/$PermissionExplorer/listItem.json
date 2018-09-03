@@ -1,0 +1,42 @@
+[
+  {
+    "title" : "角色",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "function(data){ return data.adminLevel == 'DEPT' ? '部门管理员' : '公司管理员'  }",
+    "name" : "adminLevel",
+    "width" : "30%"
+  },
+  {
+    "title" : "人员名称",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "function(d){ return d.adminName.split('@')[0] }",
+    "name" : "adminName",
+    "width" : "30%"
+  },
+  {
+    "title" : "部门",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "function(d){ return d.unitName.split('@')[0] }",
+    "name" : "unitName",
+    "width" : "30%"
+  },
+  {
+    "access" : "admin",
+    "title" : "操作",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "actions",
+    "name" : "actions",
+    "width" : "10%",
+    "sub" : [{
+      "title" : "删除文件",
+      "action" : "remove",
+      "styles" : "actionDeleteNode",
+      "overStyles" : "actionDeleteNode_over",
+      "downStyles" : "actionDeleteNode_down"
+    }]
+  }
+]

@@ -1,0 +1,93 @@
+{
+  "collectConnected": {"uri": "/jaxrs/collect/connect"},
+  "getCollectConfig": {"uri": "/jaxrs/collect"},
+  "collectValidate": {"uri": "/jaxrs/collect/validate"},
+
+  "updateCollect": {"uri": "/jaxrs/collect", "method": "PUT"},
+  "createCollect": {"uri": "/jaxrs/collect", "method": "POST"},
+  "collectValidateInput": {"uri": "/jaxrs/collect/validate/direct", "method": "PUT"},
+
+  "getCode": {"uri": "/jaxrs/collect/code/mobile/{mobile}"},
+  "codeValidate": {"uri": "/jaxrs/collect/validate/codeanswer", "method": "PUT"},
+  "resetPassword": {"uri": "/jaxrs/collect/resetpassword", "method": "PUT"},
+
+  "nameExist": {"uri": "/jaxrs/collect/name/{name}/exist"},
+  "passwordValidate": {"uri": "/jaxrs/collect/validate/password", "method": "PUT"},
+
+  "listModuleCategory": {"uri": "/jaxrs/module/list/category"},
+  "listModule": {"uri": "/jaxrs/module/list", "method": "PUT"},
+  "compareModule": {"uri": "/jaxrs/module/{id}/compare"},
+  "importModule": {"uri": "/jaxrs/module/write/{flag}", "method": "PUT"},
+
+  "outputStructure": {"uri": "/jaxrs/module/output/structure"},
+  "outputCreate": {"uri": "/jaxrs/module/output", "method": "PUT"},
+  "output": {"uri": "/jaxrs/module/output", "method": "PUT"},
+  "download": {"uri": "/jaxrs/module/output/{flag}/file"},
+  "listStructure": {"uri": "/jaxrs/module/output/list/structure"},
+
+  "getCollect": {"uri": "/jaxrs/config/collect"},
+  "getPerson": {"uri": "/jaxrs/config/person"},
+  "getToken": {"uri": "/jaxrs/config/token"},
+  "setCollect": {"uri": "/jaxrs/config/collect", "method": "PUT"},
+  "setPerson": {"uri": "/jaxrs/config/person", "method": "PUT"},
+  "setToken": {"uri": "/jaxrs/config/token", "method": "PUT"},
+
+  "getCenterServer": {"uri": "/jaxrs/config/centerserver"},
+  "setCenterServer": {"uri": "/jaxrs/config/centerserver", "method": "PUT"},
+  "getProxy": {"uri": "/jaxrs/config/proxy"},
+  "setProxy": {"uri": "/jaxrs/config/proxy", "method": "PUT"},
+
+  "mobile_defaultStyle": {"uri": "/jaxrs/appstyle/default/style"},
+  "mobile_currentStyle": {"uri": "/jaxrs/appstyle/current/style"},
+
+
+  "imageLaunchLogo": {"uri": "/jaxrs/appstyle/image/launch/logo", "method": "PUT", "enctype": "formData"},
+  "imageLaunchLogoErase": {"uri": "/jaxrs/appstyle/image/launch/logo/erase"},
+
+  "imageLoginAvatar": {"uri": "/jaxrs/appstyle/image/login/avatar", "method": "PUT", "enctype": "formData"},
+  "imageLoginAvatarErase": {"uri": "/jaxrs/appstyle/image/login/avatar/erase"},
+
+  "imageMenuLogoBlur": {"uri": "/jaxrs/appstyle/image/menu/logo/blur", "method": "PUT", "enctype": "formData"},
+  "imageMenuLogoBlurErase": {"uri": "/jaxrs/appstyle/image/menu/logo/blur/erase"},
+
+  "imageMenuLogoFocus": {"uri": "/jaxrs/appstyle/image/menu/logo/focus", "method": "PUT", "enctype": "formData"},
+  "imageMenuLogoFocusErase": {"uri": "/jaxrs/appstyle/image/menu/logo/focus/erase"},
+
+  "imagePeopleAvatarDefault": {"uri": "/jaxrs/appstyle/image/people/avatar/default", "method": "PUT", "enctype": "formData"},
+  "imagePeopleAvatarDefaultErase": {"uri": "/jaxrs/appstyle/image/people/avatar/default/erase"},
+
+  "imageProcessDefault": {"uri": "/jaxrs/appstyle/image/people/avatar/default", "method": "PUT", "enctype": "formData"},
+  "imageProcessDefaultErase": {"uri": "/jaxrs/appstyle/image/people/avatar/default/erase"},
+
+  "imageSetupAboutLogo": {"uri": "/jaxrs/appstyle/image/setup/about/logo", "method": "PUT", "enctype": "formData"},
+  "imageSetupAboutLogoErase": {"uri": "/jaxrs/appstyle/image/setup/about/logo/erase"},
+
+  "setAppStyle": {"uri": "/jaxrs/appstyle", "method": "PUT"},
+
+  "listAgent": {"uri": "/jaxrs/agent"},
+  "createAgent" : {"uri": "/jaxrs/agent", "method": "POST"},
+  "updateAgent" : {"uri": "/jaxrs/agent/{flag}", "method": "PUT"},
+  "updateAgentByUploadFile" : {"uri": "/jaxrs/agent/{flag}/file", "method": "PUT", "enctype": "formData"},
+  "deleteAgent" : {"uri": "/jaxrs/agent/{flag}", "method": "DELETE"},
+  "getAgent" : {"uri": "/jaxrs/agent/{flag}"},
+  "disableAgent" : {"uri": "/jaxrs/agent/{flag}/disable"},
+  "enableAgent" : {"uri": "/jaxrs/agent/{flag}/enable"},
+  "executeAgent" : {"uri": "/jaxrs/agent/{flag}/execute"},
+
+  "listInvoke": {"uri": "/jaxrs/invoke"},
+  "createInvoke" : {"uri": "/jaxrs/invoke", "method": "POST"},
+  "updateInvoke" : {"uri": "/jaxrs/invoke/{flag}", "method": "PUT"},
+  "updateInvokeByUploadFile" : {"uri": "/jaxrs/invoke/{flag}/file", "method": "PUT", "enctype": "formData"},
+  "deleteInvoke" : {"uri": "/jaxrs/invoke/{flag}", "method": "DELETE"},
+  "getInvoke" : {"uri": "/jaxrs/invoke/{flag}"},
+  "executeInvoke" : {"uri": "/jaxrs/invoke/{flag}/execute"},
+
+  "listPromptErrorLog" : {"uri": "/jaxrs/prompterrorlog/list/{id}/next/{count}"},
+  "listPromptErrorLogWithDate" : {"uri": "/jaxrs/prompterrorlog/list/{id}/next/{count}/date/{date}"},
+  "listUnexpectedErrorLog" : {"uri": "/jaxrs/unexpectederrorlog/list/{id}/next/{count}"},
+  "listUnexpectedErrorLogWithDate" : {"uri": "/jaxrs/unexpectederrorlog/list/{id}/next/{count}/date/{date}"},
+  "listWarnLog" : {"uri": "/jaxrs/warnlog/list/{id}/next/{count}"},
+  "listWarnLogWithDate" : {"uri": "/jaxrs/warnlog/list/{id}/next/{count}/date/{date}"}
+
+
+}

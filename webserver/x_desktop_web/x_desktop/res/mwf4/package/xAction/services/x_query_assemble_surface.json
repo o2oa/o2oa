@@ -1,0 +1,17 @@
+{
+  "getQuery": {"uri": "/jaxrs/query/{flag}"},
+  "listQuery": {"uri": "/jaxrs/query/list"},
+  "listQueryByKey": {"uri": "/jaxrs/query/list/key/{key}"},
+
+  "getStatById": {"uri": "/jaxrs/stat/{id}"},
+  "getStat": {"uri": "/jaxrs/stat/flag/{flag}/query/{queryFlag}"},
+  "listStat": {"uri": "/jaxrs/stat/list/query/{queryFlag}"},
+  "loadStatById": {"uri": "/jaxrs/stat/{id}/execute", "method": "PUT"},
+  "loadStat": {"uri": "/jaxrs/stat/flag/{flag}/query/{queryFlag}/execute", "method": "PUT"},
+
+  "getViewById": {"uri": "/jaxrs/view/{id}"},
+  "getView": {"uri": "/jaxrs/view/flag/{flag}/query/{queryFlag}"},
+  "listView": {"uri": "/jaxrs/view/list/query/{queryFlag}"},
+  "loadViewById": {"uri": "/jaxrs/view/{id}/execute", "method": "PUT"},
+  "loadView": {"uri": "/jaxrs/view/flag/{flag}/query/{queryFlag}/execute", "method": "PUT"}
+}

@@ -1,0 +1,38 @@
+{
+  "saveFolder": { "uri": "/jaxrs/folder/save", "method": "POST" },
+  "getFolder": {"uri": "/jaxrs/folder/{id}"},
+  "removeFolder": { "uri": "/jaxrs/folder/{id}", "method": "DELETE" },
+  "removeFolderForce": { "uri": "/jaxrs/folder/{id}/force", "method": "DELETE" },
+  "listMyFolder": {"uri": "/jaxrs/folder/tree/my"},
+
+  //{sharePersons:"",shareUnits:"",shareGroups："",folderId:"",orderField:"",orderType:DESC|ASC， 默认为DESC},
+  "listMySharedMind" : {"uri":"/jaxrs/mind/filter/shared/{id}/next/{count}","method": "PUT"},
+  //{sharePersons:"",shareUnits:"",shareGroups：""},
+  "shareMind" : {"uri":"/jaxrs/mind/share/{id}","method": "PUT"},
+  //根据分享记录ID取消对脑图的分享
+  "cancelShareMind" : {"uri":"/jaxrs/mind/share/{shareId}/cancel","method": "PUT"},
+  "listShareRecordsWithMindId" : {"uri":"/jaxrs/mind/list/{id}/shareRecords"},
+
+  "listMyRecycledMind" : {"uri":"/jaxrs/mind/filter/recycle/{id}/next/{count}","method": "PUT"},
+
+  "listMyReceivedMind" : {"uri":"/jaxrs/mind/filter/recived/{id}/next/{count}","method": "PUT"},
+
+  "saveMind" : { "uri" : "/jaxrs/mind/save" , "method": "POST" },
+  "getMind" : { "uri" : "/jaxrs/mind/view/{id}" }, //带正文
+  "getMindBaseInfor" : { "uri" : "/jaxrs/mind/{id}" }, //基本信息，不带正文
+  "deleteMind": { "uri": "/jaxrs/mind/{id}/destorymind", "method": "DELETE" },
+  "recycleMind" : {"uri":"/jaxrs/mind/recycle/{id}", "method": "DELETE" }, //放入回收站
+  "destroyFromRecycle" : {"uri":"/jaxrs/mind/{recycleId}/destoryrecycle", "method": "DELETE" }, //放入回收站
+  "restoreMind" : {"uri":"/jaxrs/mind/restore/{id}"}, //从回收站恢复
+  //{"name":"","folderId":"root","description":"","creator":"","creatorUnit":"","shared":"","orderField":"","orderType":""}
+  "listNextMindWithFilter" : {"uri":"/jaxrs/mind/filter/list/{id}/next/{count}", "method": "PUT"},
+
+  "uploadMindIcon" : {"uri":"/jaxrs/mind/{mindId}/icon/size/{size}", "method": "POST", "enctype": "formData"},
+  "getMindIcon" : {"uri":"/jaxrs/mind/{id}/icon"},
+
+  "listVersionsWithMindId" : {"uri":"/jaxrs/mind/list/{id}/version"}, //根据脑图ID获取脑图所有的版本信息
+  "viewMindVersionWithId": {"uri":"/jaxrs/mind/version/{versionid}"}, //根据历史版本信息ID获取脑图信息，包括脑图内容
+
+
+  "clazz": "x_mind_assemble_control"
+}

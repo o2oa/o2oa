@@ -1,0 +1,121 @@
+<div style="background-color: #FFF; overflow: hidden">
+    <div title="基本" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">标识:</td>
+                <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">名称:</td>
+                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">描述:</td>
+                <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+            </tr>
+        </table>
+
+        <div class="MWFMaplist" name="styles" title="样式"></div>
+
+        <div class="MWFValidation" name="validationConfig"></div>
+        <div class="MWFScriptArea" name="validation" title="校验脚本 (S)"></div>
+    </div>
+    <div title="属性"  class="MWFTab" style="overflow: hidden">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">显示方式:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="size" text{($.size=='max')?'checked':''} type="radio" value="max"/>完整
+                    <input class="editTableRadio" name="size" text{($.size=='min')?'checked':''} type="radio" value="min"/>简单
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">切换样式:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isSizeChange" text{($.isSizeChange=='y')?'checked':''} type="radio" value="y"/>允许
+                    <input class="editTableRadio" name="isSizeChange" text{($.isSizeChange=='n')?'checked':''} type="radio" value="n"/>不允许
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">允许上传数量:</td>
+                <td class="editTableValue">
+                    <input type="text" name="attachmentCount" value="text{$.attachmentCount}" class="editTableInput"/>
+                    <br />
+                    <div style="text-align:center">“0”表示上传数量没有限制</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">改变大小:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="resize" text{($.resize=='y')?'checked':''} type="radio" value="y"/>允许
+                    <input class="editTableRadio" name="resize" text{($.resize=='n')?'checked':''} type="radio" value="n"/>不允许
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">附件样式:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="listStyle" text{($.listStyle=='list')?'checked':''} type="radio" value="list"/>列表 </br>
+                    <input class="editTableRadio" name="listStyle" text{($.listStyle=='icon')?'checked':''} type="radio" value="icon"/>图标 </br>
+                    <input class="editTableRadio" name="listStyle" text{($.listStyle=='preview')?'checked':''} type="radio" value="preview"/>预览
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">只读模式:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="readonly" text{($.readonly=='y')?'checked':''} type="radio" value="y"/>是
+                    <input class="editTableRadio" name="readonly" text{($.readonly=='n')?'checked':''} type="radio" value="n"/>否
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">允许上载:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isUpload" text{($.isUpload=='y')?'checked':''} type="radio" value="y"/>允许
+                    <input class="editTableRadio" name="isUpload" text{($.isUpload=='n')?'checked':''} type="radio" value="n"/>不允许
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">允许删除:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isDelete" text{($.isDelete=='y')?'checked':''} type="radio" value="y"/>允许
+                    <input class="editTableRadio" name="isDelete" text{($.isDelete=='n')?'checked':''} type="radio" value="n"/>不允许<br/>
+                    <input class="editTableRadio" name="isDelete" text{($.isDelete=='o')?'checked':''} type="radio" value="o"/>仅允许本人上传的文件<br/>
+                    <input class="editTableRadio" name="isDelete" text{($.isDelete=='a')?'checked':''} type="radio" value="a"/>仅允许本活动上传的文件<br/>
+                    <input class="editTableRadio" name="isDelete" text{($.isDelete=='ao')?'checked':''} type="radio" value="ao"/>仅允许本活动且本人上传的文件
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">允许替换:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isReplace" text{($.isReplace=='y')?'checked':''} type="radio" value="y"/>允许
+                    <input class="editTableRadio" name="isReplace" text{($.isReplace=='n')?'checked':''} type="radio" value="n"/>不允许<br/>
+                    <input class="editTableRadio" name="isReplace" text{($.isDelete=='o')?'checked':''} type="radio" value="o"/>仅允许本人上传的文件<br/>
+                    <input class="editTableRadio" name="isReplace" text{($.isDelete=='a')?'checked':''} type="radio" value="a"/>仅允许本活动上传的文件<br/>
+                    <input class="editTableRadio" name="isReplace" text{($.isDelete=='ao')?'checked':''} type="radio" value="ao"/>仅允许本活动且本人上传的文件
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">操作条:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="toolbarGroupHidden" text{(($.toolbarGroupHidden || []).indexOf('edit')!=-1)?'checked':''} type="checkbox" value="edit"/>隐藏编辑操作组<br/>
+                    <input class="editTableRadio" name="toolbarGroupHidden" text{(($.toolbarGroupHidden || []).indexOf('read')!=-1)?'checked':''} type="checkbox" value="read"/>隐藏阅读操作组<br/>
+                    <input class="editTableRadio" name="toolbarGroupHidden" text{(($.toolbarGroupHidden || []).indexOf('list')!=-1)?'checked':''} type="checkbox" value="list"/>隐藏布局操作组<br/>
+                    <input class="editTableRadio" name="toolbarGroupHidden" text{(($.toolbarGroupHidden || []).indexOf('view')!=-1)?'checked':''} type="checkbox" value="view"/>隐藏模式操作<br/>
+                </td>
+            </tr>
+            <!--<tr>-->
+                <!--<td class="editTableTitle">下载附件:</td>-->
+                <!--<td class="editTableValue">-->
+                    <!--<input class="editTableRadio" name="downloadEvent" text{($.downloadEvent!='click')?'checked':''} type="radio" value="dblclick"/>双击附件下载-->
+                    <!--<input class="editTableRadio" name="downloadEvent" text{($.downloadEvent=='click')?'checked':''} type="radio" value="click"/>单击附件下载-->
+                <!--</td>-->
+            <!--</tr>-->
+        </table>
+    </div>
+
+    <div title="事件"  class="MWFTab" style="overflow: hidden">
+        <div class="MWFEventsArea" name="events"></div>
+    </div>
+    <div title="HTML"  class="MWFTab">
+        <div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apps id="hkmobile" name="香港移动">
+	<open>
+		<work>
+			<doc_id>aaaaaaaaaaaaaaaaaaaaaaa</doc_id>
+			<url>url</url>
+			<work_id>undefined</work_id>
+			<user_id>周睿@00019@P</user_id>
+			<doc_type>测试 拆分</doc_type>
+			<doc_type_zh_hk />
+			<doc_type_en />
+			<title>测试拆分lj444</title>
+			<start_time>2018-03-21 22:07:49</start_time>
+			<from_man>appsadmin</from_man>
+			<from_man_zh_hk />
+			<from_man_en />
+			<timeout_time />
+			<form_id>undefined</form_id>
+			<author_id>testCFnull</author_id>
+			<pri>1</pri>
+			<node_name>核稿</node_name>
+			<node_name_zh_hk>处理2</node_name_zh_hk>
+			<node_name_en />
+			<type>0</type>
+		</work>
+	</open>
+</apps>

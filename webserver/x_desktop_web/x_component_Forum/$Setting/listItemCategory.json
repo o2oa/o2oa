@@ -1,0 +1,125 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='editTable'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='documentNode'></tr>",
+    "mouseoverStyles": "documentNode_over",
+    "action": "open"
+  },
+  "items": [
+    //    {
+    //      "name": "$checkbox",
+    //      "head": {
+    //        "html": "<th styles='normalThNode'></th>",
+    //        "width": "5%"
+    //      },
+    //      "content": {
+    //        "html": "<td styles='normalTdNode'></td>",
+    //        //"condition": "function(d){ return d.status==0 ? true : false }",
+    //        "value": ""
+    //      }
+    //    },
+    {
+      "name": "forumName",
+      "head": {
+        "html": "<th styles='normalThNode' lable='forumName'></th>",
+        "width": "20%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' item='forumName'></td>",
+        "items": {
+          "forumName" : {}
+        }
+      }
+    },
+    {
+      "name": "creatorName",
+      "head": {
+        "html": "<th styles='normalThNode' lable='creatorName'></th>",
+        "width": "10%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' item='creatorName'></td>",
+        "items": {
+          "creatorName" : { "value" : "function( d ){ return d.creatorName.split('@')[0] }" }
+        }
+      }
+    },
+    {
+      "name": "forumStatus",
+      "head": {
+        "html": "<th styles='normalThNode' lable='forumStatus'></th>",
+        "width": "10%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' item='forumStatus'></td>",
+        "items": {
+          "forumStatus" : {}
+        }
+      }
+    },
+    {
+      "name": "forumManagerName",
+      "head": {
+        "html": "<th styles='normalThNode' lable='forumManagerName'></th>",
+        "width": "20%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' item='forumManagerName'></td>",
+        "items": {
+          "forumManagerName" : { "value" : "function( d ){ var result=[]; d.forumManagerName.split(',').each( function(n){ result.push( n.split('@')[0] ) } ); return result.join(',') }" }
+        }
+      }
+    },
+    {
+      "name": "indexListStyle",
+      "head": {
+        "html": "<th styles='normalThNode' lable='indexListStyle'></th>",
+        "width": "20%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' item='indexListStyle'></td>",
+        "items": {
+          "indexListStyle" : {}
+        }
+      }
+    },
+    {
+      //"access": "admin",
+      "head": {
+        "html": "<th styles='normalThNode' lable='action'></th>",
+        "width": "20%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode'>" +
+        " <span styles='documentActionNode' item='action_comfirm'></span>" +
+        " <span styles='documentActionNode' item='remove'></span>" +
+        "</td>",
+        "items": {
+          "action_edit": {
+            //"access": "admin",
+            "title": "edit",
+            "text": "edit",
+            "action": "action_edit",
+            "styles": "documentActionNode",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "remove": {
+            "title": "remove",
+            "text": "remove",
+            "action": "remove",
+            "condition": "function( d ){ return this.app.access.isAdmin() }", //this.app.access.hasForumAdminAuthority( d )
+            "styles": "documentActionNode",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          }
+        }
+      }
+    }
+  ]
+}

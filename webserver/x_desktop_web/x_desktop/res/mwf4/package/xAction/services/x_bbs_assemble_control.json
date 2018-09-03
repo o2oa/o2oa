@@ -1,0 +1,164 @@
+{
+  "getId" : {"uri":"/jaxrs/uuid/random"},
+
+  "login" : {"uri":"/jaxrs/login","method":"POST"}, //登陆并获取权限列表
+
+  "getUserInfor" : {"uri":"/jaxrs/userinfo", "method":"PUT"}, //查看指定用户的论坛用户信息 { "userName":"" }
+
+  "getBBSName" : {"uri" : "/jaxrs/setting/bbsName"},
+  "listSystemSettingAll": {"uri" : "/jaxrs/user/setting/all"},
+  "getSystemSetting" : {"uri":"/jaxrs/user/setting/{id}"},
+  //根据CODE获取BBSConfigSetting对象. {configCode : 'configCode' }
+  "getSystemSettingByCode" : {"uri":"/jaxrs/user/setting/code", "method":"PUT"},
+  "saveSystemSetting" : {"uri":"/jaxrs/user/setting", "method":"PUT"},
+
+  "getCategory" : {"uri":"/jaxrs/forum/{id}"},
+  "listCategoryAll": {"uri" : "/jaxrs/forum/view/all"}, //根据权限访问
+  "listCategoryAllByAdmin" : {"uri" : "/jaxrs/user/forum/all"}, //完全权限访问
+  /*{'q_Year':'2016','q_Name':'五一劳动节','q_Month':'03'}*/
+  //"listHolidayFilter" : {"uri" : "/jaxrs/attendanceworkdayconfig/filter", "method": "PUT"},
+  "saveCategory": {"uri" : "/jaxrs/user/forum", "method": "POST"},
+  "deleteCategory" : {"uri":"/jaxrs/user/forum/{id}","method": "DELETE"},
+  "deleteCategoryForce" : {"uri":"/jaxrs/forum/force/{id}","method": "DELETE"},
+
+  "getSection" : {"uri":"/jaxrs/section/{id}"}, //根据ID查询版块信息(可匿名访问)
+  "listSection": {"uri" : "/jaxrs/section/viewforum/{forumId}"}, //根据论坛ID获取所有版块的信息列表(可匿名访问)
+  "listSectionByAdmin": {"uri" : "/jaxrs/user/section/forum/{forumId}"}, //根据论坛ID获取所有版块的信息列表
+  "listSubSection": {"uri" : "/jaxrs/section/viewsub/{sectionId}"}, //根据主版块ID查询所有的子版块信息列表(可匿名访问)
+  "listSubSectionByAdmin": {"uri" : "/jaxrs/user/section/sub/{sectionId}"}, //根据主版块ID查询所有的子版块信息列表
+  "listSectionAll": {"uri" : "/jaxrs/user/section/all"}, //查询所有的版块信息列表
+  "saveSection": {"uri" : "/jaxrs/user/section", "method": "POST"},
+  "deleteSection" : {"uri":"/jaxrs/user/section/{id}","method": "DELETE"},
+  "deleteSectionForce" : {"uri":"/jaxrs/user/section/force/{id}","method": "DELETE"},
+  "uploadSectionIcon": {"uri": "/jaxrs/picture/section/{id}/icon", "method": "POST", "enctype": "formData"},
+  "listSubjectForBBSIndex" : {"uri" : "/jaxrs/subject/index/list/page/{page}/count/{count}", "method": "PUT"},
+
+  "listPermissionAll": {"uri" : "/jaxrs/user/permission/all"},
+  "listPermissionByRole": {"uri" : "/jaxrs/user/permission/role/{roleCode}"},
+  "listPermissionByForum": {"uri" : "/jaxrs/user/permission/forum/{forumId}"},
+  "listPermissionBySection": {"uri" : "/jaxrs/user/permission/section/{sectionId}"},
+
+  "listSectionPermission" : {"uri" :"/jaxrs/permission/section/{sectionId}"}, //查询用户在指定板块中的所有操作权限.
+  "listSubjectPermission" : {"uri" :"/jaxrs/permission/subject/{subjectId}"}, //查询用户对指定主题的所有操作权限.
+  "listSubjectPublishPermission" : {"uri" :"/jaxrs/permission/subjectPublishable/{sectionId}"}, //查询用户中否可以在指定版块中发布主题.
+  "listReplyPublishPermission" : {"uri" :"/jaxrs/permission/replyPublishable/{subjectId}"}, //查询用户是否可以对指定主题进行回复.
+
+  //根据角色编码查询所有的人员部门群组绑定信息列表
+  //{"bindRoleCode":"FORUM_PERMISSION_MANAGER_0ba0f2c7-31ee-472f-895e-977d79482e9f"}
+  "listRoleMemberByCode" : {"uri" : "/jaxrs/user/role/rolecode/selected", "method": "PUT"},
+  "getRole": {"uri" : "/jaxrs/role/{id}"},
+  "listRoleAll": {"uri" : "/jaxrs/user/role/all"},
+  "saveRole": {"uri" : "/jaxrs/user/role", "method": "POST"},
+  "deleteRole" : {"uri":"/jaxrs/user/role/{id}","method": "DELETE"},
+  "listRoleByForum": {"uri" : "/jaxrs/user/role/forum/{forumId}", "method": "PUT"},
+  "listRoleBySection": {"uri" : "/jaxrs/user/role/section/{sectionId}", "method": "PUT"},
+  "listRoleByOrganization": {"uri" : "/jaxrs/user/role/organization/selected", "method": "PUT"},
+  "listRoleByUser": {"uri" : "/jaxrs/user/role/user/selected", "method": "PUT"},
+  //把一个或者多个角色CODE绑定到一个对象（对象名称#对象类型）上.
+  //bindObject ： '蔡艳红#人员'
+  //bindRoleCodes ： ['FORUM_SECTION_MANAGER_d935e8a1-3011-46ad-bd53-629fc6b1c8d4']
+  "bindObject" : {"uri":"/jaxrs/user/role/bind/object","method": "PUT"},
+  //把一个或者多个对象（对象名称#对象类型）绑定到一个角色CODE上.
+  //bindObjectArray： ['蔡艳红#人员','开发部#组织']
+  //bindRoleCode： 'FORUM_SECTION_MANAGER_d935e8a1-3011-46ad-bd53-629fc6b1c8d4'
+  "bindRole" : {"uri":"/jaxrs/user/role/bind/role","method": "PUT"},
+
+  "listRecommendedSubject" : {"uri":"/jaxrs/subject/recommended/index/{count}"},
+  //精华主题列表查询(分页，可匿名访问)
+  //{
+  //"forumId":"",
+  //"mainSectionId":"",
+  //"sectionId":""
+  //}
+  "listCreamSubjectFilterPage" : {"uri":"/jaxrs/subject/creamed/list/page/{page}/count/{count}", "method": "PUT"},
+  //{
+  //"serachContent":""
+  //}
+  "listSubjectSearchPage" : {"uri":"/jaxrs/subject/search/list/page/{page}/count/{count}", "method": "PUT"},
+  "getSubject" : {"uri":"/jaxrs/user/subject/{id}"},
+  //查看主题信息，和根据ID查询一样，但是这个服务会记录查看主题次数和主题热度(可匿名访问)
+  "getSubjectView" : {"uri":"/jaxrs/subject/view/{id}"},
+  "saveSubject": {"uri" : "/jaxrs/user/subject", "method": "POST"},
+  "deleteSubject" : {"uri":"/jaxrs/user/subject/{id}","method": "DELETE"},
+  //根据版块ID查询主题信息，要分页(可匿名访问)
+  //{
+  //"forumId":"",
+  //"mainSectionId":"",
+  //"sectionId":"",
+  //"creatorName":""
+  //}
+  "listSubjectFilterPage": {"uri" : "/jaxrs/subject/filter/list/page/{page}/count/{count}", "method": "PUT"},
+  //根据版块ID查询所有的置顶贴：子版块，版块，论坛，全局置顶全部取到(可匿名访问)
+  "listTopSubject" : {"uri":"/jaxrs/subject/top/{sectionId}"},
+  "setCream" : {"uri":"/jaxrs/user/subject/setCream/{id}"},   //设置精华
+  "cancelCream" : {"uri":"/jaxrs/user/subject/nonCream/{id}"},  //取消精华
+  "topToBBS" : {"uri":"/jaxrs/user/subject/topToBBS/{id}"},   //设置全局置顶
+  "cancelTopToBBS" : {"uri":"/jaxrs/user/subject/nonTopToBBS/{id}"},  //取消全局置顶
+  "topToForum" : {"uri":"/jaxrs/user/subject/topToForum/{id}"},   //设置分区置顶
+  "cancelTopToForum" : {"uri":"/jaxrs/user/subject/nonTopToForum/{id}"},  //取消分区置顶
+  "topToMainSection" : {"uri":"/jaxrs/user/subject/topToMainSection/{id}"},   //设置主版块置顶
+  "cancelTopToMainSection" : {"uri":"/jaxrs/user/subject/nonTopToMainSection/{id}"},  //取消主版块置顶
+  "topToSection" : {"uri":"/jaxrs/user/subject/topToSection/{id}"},   //设置版块置顶
+  "cancelTopToSection" : {"uri":"/jaxrs/user/subject/nonTopToSection/{id}"},  //取消版块置顶
+  "setRecommend" : {"uri":"/jaxrs/user/subject/setRecommendToBBSIndex/{id}"},   //推荐到首页
+  "cancelRecommend" : {"uri":"/jaxrs/user/subject/nonRecommendToBBSIndex/{id}"},  //取消推荐到首页
+  "lock" : {"uri":"/jaxrs/user/subject/lock/{id}"},
+  "unlock" : {"uri":"/jaxrs/user/subject/unlock/{id}"},
+
+  "getReply" : {"uri":"/jaxrs/reply/{id}"},
+  "saveReply": {"uri" : "/jaxrs/user/reply", "method": "POST"},
+  "deleteReply" : {"uri":"/jaxrs/user/reply/{id}","method": "DELETE"},
+  //data {"subjectId":""};
+  "listReplyFilterPage": {"uri" : "/jaxrs/reply/filter/list/page/{page}/count/{count}", "method": "PUT"},
+
+  //个人中心
+  "listMySubjectPage": {"uri" : "/jaxrs/user/subject/my/list/page/{page}/count/{count}", "method": "PUT"},
+  "listMyReplyPage": {"uri" : "/jaxrs/user/reply/my/list/page/{page}/count/{count}", "method": "PUT"},
+  //{
+  //"forumId":"",
+  //"mainSectionId":"",
+  //"sectionId":"",
+  //"creatorName":""
+  //}
+  "listUserSubjectPage": {"uri" : "/jaxrs/subject/filter/list/page/{page}/count/{count}", "method": "PUT"},
+
+
+  //"listAttachment" : {"uri":"/jaxrs/subjectattach/list/subject/{documentid}"},
+  "listAttachment" : {"uri":"/jaxrs/attachment/list/subject/{documentid}"},
+  "getAttachment": {"uri": "/jaxrs/attachment/{id}"},
+  "deleteAttachment": {"uri": "/jaxrs/attachment/{id}", "method": "DELETE"},
+  "uploadAttachment": {"uri": "/jaxrs/attachment/upload/subject/{documentid}", "method": "POST", "enctype": "formData"},
+  //"replaceAttachment": {"uri": "/servlet/download/{id}/stream", "method": "POST", "enctype": "formData"},
+  "getAttachmentData": {"uri": "/jaxrs/attachment/download/{id}/stream/true", "method": "GET"},
+  "getAttachmentStream": {"uri": "/jaxrs/attachment/download/{id}/stream/true", "method": "GET"},
+  //"getAttachmentData": {"uri": "/servlet/download/subjectattachment/{id}/stream", "method": "GET"},
+  //"getAttachmentStream": {"uri": "/servlet/download/subjectattachment/{id}/stream", "method": "GET"},
+
+  "deployBaseWork" : {"uri" : "/jaxrs/okrworkbaseinfo/deploy", "method": "PUT"},
+
+  //获取互联网URL指向的图片的base64编码[Jaxrs],必填, 需要获取的图片URL地址
+  //  url- 必填, 需要获取的图片URL地址
+  //  size - 转换图片压缩, size为最大宽高限制, 如 size=64 为 64*64
+  //  注意,如果附件本身不是图片格式,则系统不会进行编码,并且给出异常, 扩展名限制:BMP、JPG、JPEG、PNG、GIF、TIFF
+  //  访问文件无权限限制
+  "getInternetImageBaseBase64" : {"uri":"/jaxrs/image/encode/base64", "method": "POST"},
+  //上传一个图片,直接转换为一个base64编码[Servlet]
+  "convertLocalImageToBase64": {"uri": "/servlet/image/encode/base64/size/{size}", "method": "POST", "enctype": "formData"},
+  //将用户已经上传的图片附件直接转换为一个base64编码[Jaxrs]
+  "getSubjectAttachmentBase64" : {"uri":"/jaxrs/subjectattach/{id}/binary/base64/{size}"},
+
+  "submitVote" : {"uri":"/jaxrs/user/subject/vote/submit", "method" : "PUT"},
+  //{
+  //"subjectId":"#subjectId",
+  //"voteOptionId": "voteOptionId"
+  //}
+  "listVoteRecord" : {"uri":"/jaxrs/user/subject/voterecord/list/page/{page}/count/{count}", "method" : "PUT"},
+  //{"id": replyId }
+  "acceptReply" : {"uri":"/jaxrs/user/reply/accept","method":"PUT"},
+  "getAcceptedReply" : {"uri":"/jaxrs/reply/{replyId}"},
+
+  //{"subjectIds":["11"],"sectionId":"333"}
+  "changeSection" : {"uri":"/jaxrs/user/subject/change/section","method":"PUT"},
+
+  "clazz": "x_bbs_assemble_control"
+}

@@ -1,0 +1,138 @@
+{
+    "node": {
+        "overflow": "hidden",
+        "height": "100%",
+        "width": "100%"
+    },
+    "circleBig": {
+        "stroke": "#999999",
+        "stroke-width": "1px",
+        "fill": "#CCCCCC"
+	},
+	"circleBig_defs": {
+	    "tag": "linearGradient",
+	    "attrs": {
+	        "x1": "0%",
+	        "y1": "0%",
+	        "x2": "100%",
+	        "y2": "100%"
+	    },
+	    "subs": [
+	        {
+                "tag": "stop",
+                "attrs": {
+                    "offset": "0%",
+                    "stop-color": "#CCCCCC"
+                }
+            },
+            {
+                "tag": "stop",
+                "attrs": {
+                    "offset": "50%",
+                    "stop-color": "#EEE"
+                }
+            },
+            {
+                "tag": "stop",
+                "attrs": {
+                    "offset": "60%",
+                    "stop-color": "#F6F6F6"
+                }
+            },
+            {
+                "tag": "stop",
+                "attrs": {
+                    "offset": "100%",
+                    "stop-color": "#999999"
+                }
+            }
+        ],
+        "urlAttr": "fill"
+    },
+
+
+	"circleSmall": {
+        "stroke": "#999999",
+        "stroke-width": "1px",
+        "fill": "#FFFFFF"
+    },
+    "circleCenter": {
+        "stroke": "#999",
+        "stroke-width": "1px",
+        "fill": "#CCC"
+    },
+    "circleCenter_defs": {
+        "tag": "linearGradient",
+        "attrs": {
+            "x1": "0%",
+            "y1": "0%",
+            "x2": "100%",
+            "y2": "100%"
+        },
+        "subs": [
+            {
+                "tag": "stop",
+                "attrs": {
+                    "offset": "0%",
+                    "stop-color": "#EEE"
+                }
+            },
+            {
+                "tag": "stop",
+                "attrs": {
+                    "offset": "50%",
+                    "stop-color": "#EEE"
+                }
+            },
+            {
+                "tag": "stop",
+                "attrs": {
+                    "offset": "60%",
+                    "stop-color": "#EEE"
+                }
+            },
+            {
+                "tag": "stop",
+                "attrs": {
+                    "offset": "100%",
+                    "stop-color": "#EEE"
+                }
+            }
+        ],
+        "urlAttr": "fill"
+    },
+
+
+
+	"greenArc": {
+	    "fill": "#2ecc71"
+	},
+    "yellowArc": {
+        "fill": "#f1c40f"
+    },
+    "redArc": {
+        "fill": "#e74c3c"
+    },
+
+    "tick": {
+        "stroke": "#666666",
+        "stroke-width": "2px",
+    },
+    "miniTick": {
+        "stroke": "#999999",
+        "stroke-width": "1px",
+    },
+    "pointer": {
+        "stroke": "#333",
+        "stroke-width": "1px",
+        "fill": "#333"
+    },
+
+    "dataText": {
+        "font-size": "18px",
+        "font-family": "Microsoft Sans Serif",
+        "font-weight": "bold",
+        "fill": "#0582d2"
+    }
+
+}

@@ -1,0 +1,169 @@
+{
+  "inputText": {
+    "width":"98%",
+    "padding" : "0px 5px",
+    "margin" : "10px auto 5px auto",
+    "height" : "32px",
+    "line-height" : "32px",
+    "font-size" : "12px",
+    "border" : "1px solid #d8d5d5",
+    "box-shadow" : "0 2px 5px #eae8e9 inset"
+  },
+  "inputTime" : {
+    "width": "99%",
+    "border":"1px solid #ccc",
+    "background-color":"#FFF",
+    "height": "24px",
+    "background" : "url(/x_component_Template/$MForm/default/icon/calendar.png) 98% center no-repeat"
+  },
+  "inputPerson" : {
+    "width": "99%",
+    "border":"1px solid #ccc",
+    "background-color":"#FFF",
+    "min-height": "24px",
+    "overflow" : "hidden",
+    "background" : "url(/x_component_Template/$MForm/default/icon/selectperson.png) 98% center no-repeat"
+  },
+  "inputTextarea" : {
+    "border":"1px solid #d8d5d5",
+    "margin" : "10px auto 5px auto",
+    "width":"98%",
+    "height":"52px",
+    "padding": "2px 2px",
+    "font-size" : "12px",
+    "box-shadow":"0 2px 5px #eae8e9 inset"
+  },
+  "inputCheckbox" : {
+    "float" : "left",
+    "font-size" : "12px",
+    "cursor" : "pointer"
+  },
+  "inputSelect" : {
+    "width": "99%",
+    "border":"1px solid #ccc",
+    "background-color":"#FFF",
+    "height": "26px"
+  },
+  "inputSelectUnformatWidth" : {
+    "margin-right":"5px",
+    "border":"1px solid #ccc",
+    "background-color":"#FFF",
+    "height": "24px"
+  },
+  "inputButton" : {
+    "margin-right": "5px",
+    "float": "left",
+    "background-color": "#FFF",
+    "padding": "2px 14px",
+    "border": "1px solid #999",
+    "border-radius": "3px",
+    "font-size": "12px",
+    "color": "#666",
+    "cursor": "pointer"
+  },
+
+  "formTable" : {
+    "border-collapse" : "collapse",
+    "margin": "0px auto",
+    "margin-bottom" : "15px",
+    "font-size": "12px"
+  },
+  "formTableHead" : {
+    "height": "30px",
+    "line-height": "30px",
+    "text-align": "center",
+    "min-width": "80px",
+    "font-size":"20px",
+    "font-weight": "bold"
+  },
+  "formTableTitle" : {
+    "border":"1px solid #d8d5d5",
+    "background-color" : "#effafe",
+    "color" : "#444",
+    "font-size": "12px",
+    "height" : "30px",
+    "line-height" : "30px",
+    "font-weight" : "bold",
+    "text-align": "center"
+  },
+  "formTableAddTd" : {
+    "width" : "50px",
+    "border":"1px solid #d8d5d5",
+    "background-color" : "#effafe",
+    "color" : "#444",
+    "font-size": "12px",
+    "height" : "30px",
+    "line-height" : "30px",
+    "font-weight" : "400",
+    "text-align": "center"
+  },
+  "formTableValue" : {
+    "border" : "1px solid #d8d5d5",
+    "color" : "#444",
+    "font-size": "12px",
+    "font-weight" : "400",
+    "text-align": "left"
+  },
+  "formTableSequence" : {
+    "border" : "1px solid #d8d5d5",
+    "font-size": "12px",
+    "font-weight" : "400"
+  },
+  "formTableRemoveTd" : {
+    "width" : "50px",
+    "border" : "1px solid #d8d5d5",
+    "font-size": "12px",
+    "font-weight" : "400",
+    "text-align": "center"
+  },
+  "formTableTitleRight" : {
+    "font-size" : "14px",
+    "text-align" : "right"
+  },
+  "formTableTitleDiv" : {
+    "font-weight" : "bold"
+  },
+  "formTableValueDiv" : {
+    "min-height" : "40px",
+    "line-height" : "22px"
+  },
+  "formTableInlineValueDiv" : {
+    "float" : "left",
+    "margin-right" : "10px"
+  },
+  "formItemSpan" : {
+//    "padding-bottom" : "10px",
+//    "padding-right" : "10px"
+  },
+
+  "actionRemove" : {
+    "color" : "#fff",
+    "border" : "1px solid #46b8da",
+    "background-color" : "#5bc0de",
+    "padding": "4px 4px",
+    "border-radius" : "4px",
+    "cursor" : "pointer"
+  },
+//  "actionRemove_over" : {
+//    "background-color" : "#e1edf7"
+//  },
+  "actionAdd" : {
+    "color" : "#fff",
+    "border" : "1px solid #eea236",
+    "background-color" : "#f0ad4e",
+    "padding": "0px 4px",
+    "border-radius" : "4px",
+    "cursor" : "pointer"
+  },
+//  "actionAdd_over" : {
+//    "background-color" : "#e1edf7"
+//  },
+  "warningMessageNode" : {
+    "margin-top" : "10px",
+    "font-size": "14px",
+    "color":"#ff5c42",
+    "padding-left": "20px",
+    "background" : "url(/x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
+  }
+}
+
