@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Configure class="org.eclipse.jetty.webapp.WebAppContext">
-	<Set name="contextPath">/x_file_assemble_control</Set>
-	<Set name="war">D:\o2server\store\x_file_assemble_control.war</Set>
-	<Set name="extraClasspath">D:\o2server\commons\ext\ehcache-2.10.3.jar;D:\o2server\commons\ext\jetty-all-9.3.14.v20161028-uber.jar;D:\o2server\commons\ext\openjpa-3.0.0-SNAPSHOT.jar;D:\o2server\commons\ext\slf4j-api-1.7.21.jar;D:\o2server\commons\ext\slf4j-simple-1.7.21.jar
-	</Set>
-	<Set name="tempDirectory">D:\o2server\servers\applicationServer\work\x_file_assemble_control
-	</Set>
-</Configure>
