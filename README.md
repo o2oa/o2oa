@@ -198,7 +198,7 @@ MWF.xApplication.HelloWorld.Main = new Class({          //应用入口
 5. 已部署的应用可以在“组件”界面找到，您可以拖动到桌面创建快捷方式。  
 
 ## 授权协议
-o2oa软件遵守双重协议，一个是AGPL授权协议，一个是商用授权协议。
-1、o2oa是开源软件，您可以修改源码及免费使用；这时需遵守AGPL协议。
-2、当使用者使用o2oa软件提供收费服务，或者对o2oa进行分发、销售时需进行商业授权。具体请查看：[http://www.o2oa.io/product.html](http://www.o2oa.io/product.html)。
-3、使用者下载本软件即表示愿遵守此项协议。
+o2oa软件遵守双重协议，一个是AGPL授权协议，一个是商用授权协议。  
+1、o2oa是开源软件，您可以修改源码及免费使用；这时需遵守AGPL协议。  
+2、当使用者使用o2oa软件提供收费服务，或者对o2oa进行分发、销售时需进行商业授权。具体请查看：[http://www.o2oa.io/product.html](http://www.o2oa.io/product.html)。  
+3、使用者下载本软件即表示愿遵守此项协议。  
