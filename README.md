@@ -18,184 +18,98 @@ O2OA 是一套现代企业级的办公平台。有以下特点\:
 ![o2oa](http://muliba.u.qiniudn.com/post/20180801-225850@2x.png)
 
 
+##官方网站
+项目主页 : https://www.oschina.net/p/o2oa
+下载地址 : http://www.o2oa.io
 
-## 安装
-建议您在[http://o2oa.io/](http://www.o2oa.io/)中下载最新版本的O2 Server进行安装使用    
-如果您要使用github的程序自行打包，可以`fork` 本仓库。  
-`fork` 操作完成后，会在您的 github 账户下创建一个 o2oa 的副本。接下来可以克隆到本地。  
-```bash  
-cd {YOUR_WORKING_DIRECTORY}
-git clone https://github.com/{YOUR_GITHUB_USERNAME}/o2oa.git  
-```
-## 扩展开发
-在开发前，请先了解`mootools`, 我们基于 `mootools`[https://mootools.net/](https://mootools.net/) 架构创建了产品的js类库。
+##版本信息
+##v4 build 11.02更新内容：
+ 新增功能：
+    1、[内容管理]增加设计元素可以拷贝粘贴的功能。
+    2、[内容管理]增加组合框、子表单等设计元素组件。
+    3、[企业社区]增加导航浏览模式。
+    4、[服务管理]增加设计元素可以拷贝粘贴的功能。
 
-### 目录
-  前台程序位于github的x_desktop_web目录。  
+更新优化：
+    1、可以在配置中选择是否对office，pdf，text，image进行切词索引。
+    2、优化调整切词索引中对词性的判断。
+    3、优化钉钉,企业微信,政务钉钉中由于反复获取accessToken导致的页面响应缓慢的问题。
 
-#### 目录说明
-```bash
-x_desktop                                //桌面资源、平台基础资源和通用工具类
-    config                                //系统配置目录
-    css                                
-    framework                            //系统用到的开源框架
-        ace                                //脚本编辑器框架
-        d3                                //图表框架
-        echarts                            //考勤用到的图表框架
-        htmleditor                        //富文本编辑器
-        kityminder                        //脑图
-        mootools                        //模块化、面对对象的JS Web应用框架
-        raphael                            //矢量图形框架，在流程图配置中用到
-    js                                
-    mwf4                                //通用资源和工具
-        package
-            lp                            //系统桌面语言包
-            widget                        //通用工具类
-            xAction                        //登录页和桌面用到的后台交互类
-            xDesktop                    //系统桌面工具类
-            xScript                        //流程引擎和内容管理自定义脚本的运行环境
-        MWF.js                            //底层方法JS库，对mootools的补充
-    preview                                //预览界面模拟json
-    common.js                            //底层方法、通用方法、框架引用JS库
-    index.html                            //首页HTML
-    app.html                            //在新窗口打开应用时的HTML
-    forum.html                            //在新窗口打开论坛的HTML
-    cmsdocMobile.html                    //手机端打开内容管理文档页面的HTML
-    {NAME}.html                            //其他在新窗口打开的HTML
-x_component_Attendance                    //考勤应用
-x_component_Chat                        //在线交流应用
-x_component_cms_Column                    //CMS（内容管理）栏目的列式、增删配置
-x_component_cms_ColumnManager            //CMS栏目管理设置（分类、表单、脚本、数据字典的列式、增删）
-x_component_cms_Document                //CMS文档
-x_component_cms_FormDesigner            //CMS表单设计
-x_component_cms_Index                    //CMS首页
-x_component_cms_Module                    //CMS栏目页面
-x_component_cms_QueryViewDesigner        //CMS查询视图设计（嵌入在文档中）
-x_component_cms_ScriptDesigner            //CMS脚本设计
-x_component_cms_ViewDesigner            //CMS列式视图设计
-x_component_cms_Xform                    //CMS文档中表单的实现
-x_component_Execution                    //OKR应用
-x_component_ExeManager                    //OKR文档的管理界面
-x_component_File                        //云文件
-x_component_Forum                        //论坛首页
-x_component_ForumCategory                //论坛分类页面
-x_component_ForumDocument                //论坛帖子页面
-x_component_ForumPerson                    //论坛个人中心
-x_component_ForumSearch                    //论坛搜索结果页面
-x_component_ForumSection                //论坛版块界面
-x_component_HotArticle                    //热点图片管理界面
-x_component_Meeting                        //会议室管理
-x_component_Note                        //桌面记事本插件
-x_component_OnlineMeeting                //在线会议应用
-x_component_OnlineMeetingRoom            //在线会议室
-x_component_Organization                //人员、部门、组织管理以及选择
-x_component_portal_PageDesigner            //门户页面设计
-x_component_portal_Portal                //门户展现
-x_component_portal_portalExplorer
-x_component_portal_PortalManager        //门户管理设置（页面、脚本的列式、增删）
-x_component_portal_ScriptDesigner        //门户脚本设计
-x_component_portal_XPage                //门户页面实现
-x_component_process_Application            //流程应用
-x_component_process_ApplicationExplorer    
-x_component_process_DictionaryDesigner    //流程数据字典
-x_component_process_FormDesigner        //流程表单设计
-x_component_process_ProcessDesigner        //流程图设计
-x_component_process_ProcessManager        //流程管理设置（流程图、表单、脚本、数据字典的列式、增删）
-x_component_process_ScriptDesigner        //流程脚本设计
-x_component_process_StatDesigner        //流程统计、流程监控设计
-x_component_process_TaskCenter            //办公中心，普通用户发起流程和查看待办
-x_component_process_ViewDesigner        //流程查询视图设计
-x_component_process_Work                //流程任务的展现
-x_component_process_Xfrom                //流程表单的实现
-x_component_Profile                        //用户个人设置界面
-x_component_Template                    //列式、弹出页接口类
-```
-### 规范：
-*  每个应用都是以 `x_component_{APPLICATION_NAME}`方式来命名，如x_component_Attendance表示考勤的目录  
-*  应用中至少包括下列文件及目录\:
-```bash
-x_component_{APPLICATION_NAME}  //x_component_HelloWorld
-    Main.js                 //应用主程序  
-    $Main                   //主程序用到的资源包  
-        appicon.png         //应用图标，在桌面上显示，尺寸为72*72
-        default             //样式包，可以创建其他名称的样式包，并在options传入到Main.js以改变页面风格  
-          css.wcss          //样式文件，以json格式编写
-          icon.png          //打开应用时，桌面标签页的图标，图片尺寸为24*24
-    lp                      //语言包，目前支持中文  
-        zh-cn.js        
-    Actions                  //如果没有后台交互，您可以忽略此目录           
-        action.json         //后台服务的url和方法，本系统使用JAX-RS 方式的 RESTful Web Service
-        RestAction.js       //应用程序中直接使用此类的方法进行后台交互
-```
+BUG修复
+    1、[内容管理]视图的分类标题无法保存的问题。
+    2、[内容管理]修复附件无法替换的问题。
+    3、修正office格式引起的:NoSuchMethodException: org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTPictureBaseImpl"。
+ 
 
-### 创建Hello World
-本样例中，我们创建一个名为HelloWorld的应用，在应用窗口中显示“您好，这是我的第一个O2应用！”。
+ 
 
-#### 创建目录：
-在x_desktop_web目录下创建x_component_HelloWorld目录，并按照规范第2点创建目录和文件。
+##历史版本：
+==========
+##v4 build 11.01更新内容：
+ 新增功能：
+    1、企业微信，钉钉，政务钉钉组织同步，待办消息推送，通知消息群发，移动设备页面集成。
+    2、新增SqlServer支持，目前可以支持一下数据库：Oracle，DB2，MySQL，Postgresql，Informix，H2(内嵌)，DM（达梦国产数据库），MS-SQLServer。
+    3、OAuth2客户端功能优化，支持浙江CA，微信，QQ等其他OAuth认证服务。
+    4、增加消息群发功能.
+    5、ISO，AndroidApp端增加语音处理功能。
+    6、ISO，AndroidApp端增加AI自动处理功能。
+    7、启用新域名o2oa.net。
+    8、增加登录页面定制功能，现在可以通过门户定制登录页面了。
 
-#### 编写css.wcss：
-打开$Main\default\css.wcss输入json格式的样式文本。
-```bash
-{
-    "contentStyle" : {
-        "font-size" : "14px", 
-        "line-height" : "20px",
-        "margin" : "20px",
-        "padding" : "10px"
-    }
-}
-```
+更新优化：
+    1、支持金山WPS。
+    2、统计中数据量导致的新能下降。
+    3、群组(Group)支持组织成员，可以统一翻译成人员。
+    4、增加个人的主身份设置，当不指名身份时可以自动取到主身份。
+    5、用户可以自行绑定微信,通过微信扫码登录。
+    6、[信息管理]对信息文档查询效率源码级优化。
 
-#### 编写lp\zh-cn.js：
-```bash
-MWF.xApplication.HelloWorld.LP = {
-    "title": "HelloWorld",
-    "contentText": "您好，这是我的第一个O2应用！"
-};
-```
+BUG修复
+    1、会议管理字段超长导致的错误。
+    2、无标题流程消息提醒显示空字符串。
+    3、脚本编辑器在同时打开多个窗口情况无法正常保存。
+    4、修改组织同步触发机制，现在可以通过cron表达式定制运行时间。
+    5、[信息管理]修复数据字典无法复制的问题以及分类显示的错误。
+    6、Office控件代码修正。
 
-#### 编写Main.js：
-```bash
 
-//所有的应用类都扩展在MWF.xApplication对象下
-//应用名称HelloWorld要和目录x_component_HelloWorld最后一段一致
-//在执行时，平台会自动创建MWF.xApplication.HelloWorld类和MWF.xApplication.HelloWorld.options
+##v4 build 09.21更新内容：
+新增功能：
+    1、增加手写签批功能，支持在线手写签批，录音。
+    2、增加全文搜索功能。支持pdf，.doc，.docx，.ppt，.pptx，.xls，.xlsx内容的全文检索。
+    3、OAuth客户端功能，支持微信等其他OAuth认证服务。
+    4、[汇报管理]添加手工漏发检测功能。
+    
+更新优化：
+    1、更新统计展现功能，支持饼图，柱状图，折线图，支持行列转换。
+    2、统计功能，可以源于不同试图的列进行合并统计。
+    3、优化日程管理提醒不及时的问题
 
-MWF.xApplication.HelloWorld.options.multitask = true; //multitask表示应用可以在一个浏览器窗口重复打开
-MWF.xApplication.HelloWorld.Main = new Class({          //应用入口类
-    Extends: MWF.xApplication.Common.Main,              //MWF.xApplication.Common.Main类提供了平台桌面窗口创建和其他基本功能，比如展现、最大化、最小化等
-    Implements: [Options, Events],                      //使用mootools的Options和Events类，请参考mootools的文档
+BUG修复
+    1、流程重置处理人错误。
+    2、[信息管理]修复数据型文档类型保存不正确的问题。
+    3、[脑图]修复某些情况下脑图无法创建的问题。   
 
-    options: {                                          //应用选项
-        "style": "default",                              //样式，和 目录$Main/default对应。应用初始化的时候会自动加载$Main/default/css.wcss文件，可以在this.css中使用定义的样式      
-        "name": "HelloWorld",
-        "icon": "icon.png",                              //打开应用时，桌面标签页的图标
-        "width": "400",                                  //应用窗口宽度
-        "height": "500",                              //应用窗口高度
-        "isResize": false,                              //应用窗口是否允许拖动改变大小
-        "isMax": false,                                  //应用窗口是否允许最大化
-        "title": MWF.xApplication.HelloWorld.LP.title      //应用窗口标题，MWF.xApplication.HelloWorld.LP在 lp/zh-cn.js中定义
-    },
-    onQueryLoad: function(){                            //在应用加载前执行的程序
-        this.lp = MWF.xApplication.HelloWorld.LP;        //设置应用的语言包
-    },
-    loadApplication: function(callback){
-        //this.restActions = new MWF.xApplication.HelloWorld.Actions.RestActions();  //后台交互对象。和Actions/RestAction.js对应，如果没有后台交互可以忽略此代码
-        var div = new Element("div", {                    //创建一个div
-            styles : this.css.contentStyle,                    //样式为content。应用初始化的时候会自动加载$Main/default/css.wcss文件，可以在this.css中使用定义的样式
-            text : this.lp.contentText                    //文本内容是zh-cn.js里定义的contentText
-        }).inject( this.content )                        //插入到窗口内容中。this.content是应用窗口的内容DOM容器，您创建的DOM对象都是this.content的子对象
-    }
-});
-```
+ 
 
-#### 部署应用
-1. 在web端进入系统  
-2. 点击左上角的图标打开应用菜单，切换到“组件”界面。  
-3. 打开“部署管理”，在打开的界面最下方找到“部署组件”并点击。  
-4. 部署组件界面中，“组件名称”、“组件标题”、“组件路径”都填写"HelloWorld",然后点击“部署组件”，部署完成。  
-5. 已部署的应用可以在“组件”界面找到，您可以拖动到桌面创建快捷方式。  
+##v4 build 09.04更新内容：
+新增功能：
+    1、电子签章支持。
+    2、流程引擎增加定时节点。
+    3、政务钉钉支持，可以同步政务钉钉的人员，组织。
+    4、增加行政区划组件。
+    5、[社区应用]添加调整主贴版块的服务。
+    
+更新优化：
+    1、视图统计代码优化，提升统计查询效率。
+    2、优化待办已办查询，TaskCompleted 增加 latest。
+    3、流程引擎底层优化，修改PorcessPlatform实现的aeiObjects。
+
+BUG修复
+    1、应用导入导出错误。
+    2、[信息管理]修复CMS_Review自动同步更新的问题
+    3、[信息管理]修复序列保存时为空的问题
+    4、修正移动端APP信息管理会把数据类的信息读取出来的问题
 
 ## 授权协议
 o2oa软件遵守双重协议，一个是AGPL授权协议，一个是商用授权协议。  
