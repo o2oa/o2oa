@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.openide.modules">
+    <module_version install_time="1410360480070" last="true" origin="installer" specification_version="7.42.1">
+        <file crc="3570905378" name="config/ModuleAutoDeps/org-openide-modules.xml"/>
+        <file crc="2410305920" name="lib/org-openide-modules.jar"/>
+    </module_version>
+</module>

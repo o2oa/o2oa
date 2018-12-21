@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<OBJECT id=TANGER_OCX style="HEIGHT: 800px; WIDTH: 100%" codeBase="/x_desktop/res/framework/officecontrol/OfficeControl.cab#version=5,0,2,9" classid="clsid:A64E3073-2016-4baf-A89D-FFE1FAA10EC0">
+    <PARAM NAME="BorderColor" VALUE="14402205">
+    <PARAM NAME="BackColor" VALUE="0xff0000">
+    <PARAM NAME="ForeColor" VALUE="-2147483640">
+    <!--<PARAM NAME="TitlebarColor" VALUE="14402205">-->
+    <PARAM NAME="TitlebarColor" VALUE="16711680">
+    <PARAM NAME="TitlebarTextColor" VALUE="0">
+    <PARAM NAME="BorderStyle" VALUE="1">
+    <PARAM NAME="Titlebar" VALUE="1">
+    <PARAM NAME="Toolbars" VALUE="1">
+    <PARAM NAME="Caption" VALUE="欢迎！">
+    <PARAM NAME="ProductCaption" value="O2">
+    <PARAM NAME="ProductKey" value="EDCC626CB85C9A1D3E0D7BDDDC2637753C596725">
+    <PARAM NAME="MakerCaption" VALUE="浙江兰德纵横网络技术股份有限公司">
+    <PARAM NAME="MakerKey" VALUE="E138DABB4AC26C2D8E09FAE59AB3BDE87AFB9D7B">
+    <!--<PARAM NAME="IsShowToolMenu" VALUE="0">-->
+    <!--<PARAM NAME="IsNoCopy" VALUE="0">-->
+    <!--<PARAM NAME="IsHiddenOpenURL" VALUE="0">-->
+    <!--<PARAM NAME="MaxUploadSize" VALUE="0">-->
+    <!--<PARAM NAME="NetworkBufferSize" VALUE="0">-->
+    <PARAM NAME="Menubar" VALUE="1">
+    <PARAM NAME="Statusbar" VALUE="1">
+    <!--<PARAM NAME="FileNew" VALUE="1">-->
+    <!--<PARAM NAME="FileOpen" VALUE="1">-->
+    <!--<PARAM NAME="FileClose" VALUE="0">-->
+    <!--<PARAM NAME="FileSave" VALUE="0">-->
+    <!--<PARAM NAME="FileSaveAs" VALUE="-1">-->
+    <!--<PARAM NAME="FilePrint" VALUE="-1">-->
+    <!--<PARAM NAME="FilePrintPreview" VALUE="-1">-->
+    <!--<PARAM NAME="FilePageSetup" VALUE="-1">-->
+    <!--<PARAM NAME="FileProperties" VALUE="-1">-->
+    <!--<PARAM NAME="IsStrictNoCopy" VALUE="0">-->
+    <!--<PARAM NAME="IsUseUTF8URL" VALUE="1">-->
+    <!--<PARAM NAME="MenubarColor" VALUE="15790320">-->
+    <!--<PARAM NAME="IsUseControlAgent" VALUE="0">-->
+    <!--<PARAM NAME="IsUseUTF8Data" VALUE="1">-->
+    <!--<PARAM NAME="IsSaveDocExtention" VALUE="0">-->
+    <!--<PARAM NAME="IsDirectConnect" VALUE="1">-->
+    <!--<PARAM NAME="SignCursorType" VALUE="0">-->
+    <PARAM NAME="IsResetToolbarsOnOpen" VALUE="1">
+    <!--<PARAM NAME="IsSaveDataIfHasVDS" VALUE="0">-->
+    <!--<PARAM NAME="MenuButtonStyle" VALUE="0">-->
+    <!--<PARAM NAME="MenuButtonColor" VALUE="16180947">-->
+    <!--<PARAM NAME="MenuButtonFrameColor" VALUE="14924434">-->
+    <!--<PARAM NAME="MenuBarStyle" VALUE="0">-->
+    <!--<PARAM NAME="IsGetPicOnlyOnHandSign" VALUE="0">-->
+    <!--<PARAM NAME="IsSecurityOptionsOpen" VALUE="0">-->
+    <!--<PARAM NAME="IsShowHelpMenu" VALUE="1">-->
+    <!--<PARAM NAME="IsShowInsertMenu" VALUE="1">-->
+    <!--<PARAM NAME="IsAutoDetectWebCharSet" VALUE="0">-->
+    <!--<PARAM NAME="WebCodePage" VALUE="936">-->
+    <!--<PARAM NAME="IsShowEditMenu" VALUE="1">-->
+    <!--<PARAM NAME="IsShowFileErrorMsg" VALUE="1">-->
+    <!--<PARAM NAME="IsShowNetErrorMsg" VALUE="1">-->
+    <!--<PARAM NAME="ReceiveDataTimeOut" VALUE="180">-->
+    <!--<PARAM NAME="ConnectServerTimeOut" VALUE="180">-->
+    <!--<PARAM NAME="IsRemoveMacrosOnSave" VALUE="1">-->
+    <!--<PARAM NAME="IsForceCheckSecSignCertCRLOnline" VALUE="0">-->
+    <!--<PARAM NAME="IsAutoLockOnSecSign" VALUE="0">-->
+    <!--<PARAM NAME="IsAllowAddSignOnLockedDoc" VALUE="0">-->
+</OBJECT>
+<div id="test"></div>
+<script>
+    var script = document.createElement("script");
+    script.setAttribute("for", "TANGER_OCX");
+    //script.for = "TANGER_OCX";
+    script.event = "OnDocumentOpened(File, Document)";
+    script.innerText = 'alert("11111111");';
+    document.all.test.appendChild(script);
+
+    var TANGER_OCX_OBJ;
+    function init()
+    {
+        TANGER_OCX_OBJ=document.getElementById("TANGER_OCX");
+        TANGER_OCX_OBJ.activate(true);
+        //TANGER_OCX_OBJ.UILangCode =	"cht"; // cht chs  enu
+        TANGER_OCX_OBJ.AddDocTypePlugin(".pdf","PDF.NtkoDocument","4.0.0.3","officecontrol/ntkooledocall.cab",51,true);
+        TANGER_OCX_OBJ.CreateNew("word.document");
+    }
+
+    init();
+
+//    var html = '<script for="TANGER_OCX" event="OnDocumentOpened(File, Document)">alert("11111111");</'+'script>';
+//    document.write(html);
+</script>
+</body>
+</html>

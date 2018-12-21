@@ -1,0 +1,61 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.9.2
+Created-By: 1.6.0_45-b06 (Sun Microsystems Inc.)
+Export-Package: com.jrockit.mc.rjmx,com.jrockit.mc.rjmx.model,com.jroc
+ kit.mc.rjmx.model.internal; x-friends:="com.jrockit.mc.browser",com.j
+ rockit.mc.rjmx.actionprovider,com.jrockit.mc.rjmx.descriptorprovider,
+ com.jrockit.mc.rjmx.internal; x-friends:="com.jrockit.mc.console.ui, 
+  com.jrockit.mc.browser.jdp,  com.jrockit.mc.console.ui.notification,
+   com.jrockit.mc.console.historicaldata,  com.jrockit.mc.rcp.applicat
+ ion,  com.jrockit.mc.test,  com.jrockit.mc.browser,  com.jrockit.mc.b
+ rowser.attach,  com.jrockit.mc.license.test,  com.jrockit.mc.flightre
+ corder.controlpanel.ui,  com.jrockit.mc.dtrace.ui",com.jrockit.mc.rjm
+ x.model; x-friends:="com.jrockit.mc.console.ui,  com.jrockit.mc.brows
+ er.jdp,  com.jrockit.mc.console.ui.notification,  com.jrockit.mc.cons
+ ole.historicaldata,  com.jrockit.mc.rcp.application,  com.jrockit.mc.
+ test,  com.jrockit.mc.browser,  com.jrockit.mc.browser.attach,  com.j
+ rockit.mc.license.test,  com.jrockit.mc.flightrecorder.controlpanel.u
+ i,  com.jrockit.mc.dtrace.ui",com.jrockit.mc.rjmx.persistence.interna
+ l; x-friends:="com.jrockit.mc.console.headless,  com.jrockit.mc.conso
+ le.historicaldata,  com.jrockit.mc.console.ui,  com.jrockit.mc.rjmx.u
+ i",com.jrockit.mc.rjmx.preferences; x-friends:="com.jrockit.mc.browse
+ r,  com.jrockit.mc.console.headless,  com.jrockit.mc.console.ui,  com
+ .jrockit.mc.jra.ui,  com.jrockit.mc.console.historicaldata,  com.jroc
+ kit.mc.rjmx.ui",com.jrockit.mc.rjmx.services,com.jrockit.mc.rjmx.serv
+ ices.flr,com.jrockit.mc.rjmx.subscription,com.jrockit.mc.rjmx.subscri
+ ption.internal; x-friends:="com.jrockit.mc.console.ext.coherence,  co
+ m.jrockit.mc.console.historicaldata,  com.jrockit.mc.console.internal
+ .subscriptions,  com.jrockit.mc.console.ui,  com.jrockit.mc.console.u
+ i.mbeanbrowser,  com.jrockit.mc.rjmx.ui,  com.jrockit.mc.test",com.jr
+ ockit.mc.rjmx.subscription.storage.internal; x-friends:="com.jrockit.
+ mc.console.ui,  com.jrockit.mc.console.headless,  com.jrockit.mc.rjmx
+ .services,  com.jrockit.mc.rjmx.ui",com.jrockit.mc.rjmx.triggers,com.
+ jrockit.mc.rjmx.triggers.actions.internal;x-friends:="com.jrockit.mc.
+ console.ui.notification",com.jrockit.mc.rjmx.triggers.condition.inter
+ nal;x-friends:="com.jrockit.mc.console.ui.notification,com.jrockit.mc
+ .test.jemmy",com.jrockit.mc.rjmx.triggers.extension.internal;x-friend
+ s:="com.jrockit.mc.console.ui.notification,com.jrockit.mc.alert",com.
+ jrockit.mc.rjmx.triggers.fields.internal,com.jrockit.mc.rjmx.triggers
+ .internal; x-friends:="com.jrockit.mc.alert,  com.jrockit.mc.console.
+ ui.notification,  com.jrockit.mc.twitter,  com.jrockit.mc.console.act
+ ion.hprof",com.jrockit.mc.rjmx.util.internal; x-friends:="com.jrockit
+ .mc.console.ui.mbeanbrowser,  com.jrockit.mc.flightrecorder.ui,  com.
+ jrockit.mc.flightrecorder.controlpanel.ui,  com.jrockit.mc.console.ui
+ ,  com.jrockit.mc.browser,  com.jrockit.mc.rjmx.ui,  com.jrockit.mc.d
+ trace.ui",javax.mail,javax.mail.event,javax.mail.internet,javax.mail.
+ search
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: rjmx.jar,lib/dsn.jar,lib/gimap.jar,lib/imap.jar,lib/
+ mailapi.jar,lib/pop3.jar,lib/smtp.jar
+Bundle-Name: RJMX Plug-in
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: com.jrockit.mc.core;visibility:="reexport";bundle-vers
+ ion="[5.5.0,6.0.0)",com.jrockit.mc.commands;bundle-version="[5.5.0,6.
+ 0.0)"
+Bundle-Vendor: Oracle
+Bundle-Version: 5.5.0.165303
+Bundle-ManifestVersion: 2
+Bundle-Activator: com.jrockit.mc.rjmx.RJMXPlugin
+Bundle-SymbolicName: com.jrockit.mc.rjmx;singleton:=true
+

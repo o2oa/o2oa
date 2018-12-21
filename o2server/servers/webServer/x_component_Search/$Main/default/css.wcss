@@ -1,0 +1,100 @@
+{
+	"searchArea": {
+	    "padding": "0px",
+	    "height": "40px",
+	    "padding": "20px 20px",
+	    "background-color": "#f3f3f3",
+	    "border-bottom": "1px solid #999999"
+	},
+	"resultArea": {
+	    "overflow": "auto",
+	    "background-color": "#ffffff"
+	},
+	"searchBarNode": {
+	    "width": "800px",
+	    "overflow": "hidden"
+	},
+    "logoNode": {
+	    "height": "40px",
+	    "width": "40px",
+	    "background": "url("+"/x_component_Search/$Main/default/icon/logo.png) no-repeat center center",
+	    "float": "left"
+	},
+
+	"searchInputActionArea": {
+        "background-color": "#ffffff",
+        "margin-left": "50px"
+	},
+    "resultInfor": {
+        "color": "#999999",
+        "padding": "10px 20px",
+        "margin-left": "50px",
+        "font-size": "16px"
+    },
+    "searchResultInfor": {
+        "color": "#999999",
+        "margin-left": "50px",
+        "padding": "10px 20px",
+        "font-size": "12px"
+    },
+    "resultContent": {
+        "width": "1000px",
+        "margin-left": "50px",
+        "overflow": "hidden"
+    },
+    "resultPageArea": {
+        "padding": "10px 20px",
+        "margin": "10px 0px",
+        "margin-left": "50px",
+        "height": "40px"
+    },
+    "pageItem": {
+        "height": "30px",
+        "width": "30px",
+        "line-height": "30px",
+        "float": "left",
+        "cursor": "pointer",
+        "margin-left": "10px",
+        "text-align": "center",
+        "border": "1px solid #999999",
+        "color": "#999999",
+        "font-weight": "400"
+    },
+    "pageItem_current": {
+        "border": "1px solid #3c76b7",
+        "color": "#3c76b7",
+        "font-weight": "bold"
+    },
+
+    "resaultItemNode": {
+        "marign-top": "10px",
+        "padding": "10px 20px",
+        "overflow": "hidden"
+    },
+    "resaultItemTitleNode": {
+        "font-size": "18px",
+        "color": "#001ba0",
+        "overflow": "hidden",
+        "cursor": "pointer",
+        "margin": "5px 0px"
+    },
+    "resaultItemTitleNode_gray": {
+        "color": "#666666",
+    },
+    "resaultItemSummaryNode": {
+        "font-size": "14px",
+        "color": "#666666",
+        "line-height": "20px",
+        "overflow": "hidden",
+        "margin": "5px 0px"
+    },
+    "resaultItemInforNode": {
+        "font-size": "14px",
+        "color": "#666666",
+        "line-height": "20px",
+        "height": "20px",
+        "margin": "5px 0px"
+    }
+
+
+}

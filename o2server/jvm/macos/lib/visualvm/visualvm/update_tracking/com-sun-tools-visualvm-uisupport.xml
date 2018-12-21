@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="com.sun.tools.visualvm.uisupport/0">
+    <module_version install_time="1410360588092" last="true" origin="installer" specification_version="1.3">
+        <file crc="3764595938" name="config/Modules/com-sun-tools-visualvm-uisupport.xml"/>
+        <file crc="2761796175" name="modules/com-sun-tools-visualvm-uisupport.jar"/>
+    </module_version>
+</module>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.openide.explorer">
+    <module_version install_time="1410360477078" last="true" origin="installer" specification_version="6.56.1">
+        <file crc="186921713" name="config/ModuleAutoDeps/org-openide-explorer.xml"/>
+        <file crc="3046209104" name="config/Modules/org-openide-explorer.xml"/>
+        <file crc="3916282598" name="modules/org-openide-explorer.jar"/>
+    </module_version>
+</module>

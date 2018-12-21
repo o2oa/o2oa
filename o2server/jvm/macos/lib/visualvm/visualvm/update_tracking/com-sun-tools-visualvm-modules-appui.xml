@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="com.sun.tools.visualvm.modules.appui">
+    <module_version install_time="1410360594838" last="true" origin="installer" specification_version="1.0">
+        <file crc="3454457119" name="config/Modules/com-sun-tools-visualvm-modules-appui.xml"/>
+        <file crc="3363002219" name="modules/com-sun-tools-visualvm-modules-appui.jar"/>
+    </module_version>
+</module>
