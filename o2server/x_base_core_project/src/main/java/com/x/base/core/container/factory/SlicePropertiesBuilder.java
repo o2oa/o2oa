@@ -12,8 +12,6 @@ import com.x.base.core.project.config.DataMapping;
 
 public class SlicePropertiesBuilder {
 
-	// 20160127要做的事情，删除应用要删除数据字典和work，目前已经删除了信泰的数据字典重复部分，没有来得及删除数据
-
 	public static String driver_db2 = "com.ibm.db2.jcc.DB2Driver";
 	public static String driver_oracle = "oracle.jdbc.OracleDriver";
 	public static String driver_mysql = "com.mysql.jdbc.Driver";
@@ -56,6 +54,9 @@ public class SlicePropertiesBuilder {
 				properties.put("openjpa.jdbc.Schema", "x");
 			}
 			if (StringUtils.equals(determineDBDictionary(list.get(0)), dictionary_informix)) {
+				properties.put("openjpa.jdbc.Schema", "x");
+			}
+			if (StringUtils.equals(determineDBDictionary(list.get(0)), dictionary_dm)) {
 				properties.put("openjpa.jdbc.Schema", "x");
 			}
 			properties.put("openjpa.slice.Lenient", "false");

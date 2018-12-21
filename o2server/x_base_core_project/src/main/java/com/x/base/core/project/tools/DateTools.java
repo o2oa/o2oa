@@ -508,8 +508,4 @@ public class DateTools {
 		return DateUtils.addMinutes(date, minutes);
 	}
 
-	@Test
-	public void test() {
-		System.out.println(cronAvailable(null));
-	}
 }

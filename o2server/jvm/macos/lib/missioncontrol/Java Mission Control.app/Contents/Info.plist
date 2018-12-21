@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleExecutable</key>
+	<string>jmc</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright \u00A9 1999, 2013, Oracle and/or its affiliates. All rights reserved.</string>
+	<key>CFBundleIconFile</key>
+	<string>jmc.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.oracle.jmc</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Java Mission Control</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>5.5.0</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>550000</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>ja</string>
+		<string>zh_CN</string>
+	</array>
+
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Java Flight Recording</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>jmc.icns</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.oracle.java.flightrecording</string>
+			</array>
+		</dict>
+	</array>
+
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+				<string>public.content</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Java Flight Recording</string>
+			<key>UTTypeIconFile</key>
+			<string>jmc.icns</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.oracle.java.flightrecording</string>
+			<key>UTTypeReferenceURL</key>
+			<string>http://docs.oracle.com/javase/7/docs/technotes/guides/jfr/</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>jfr</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+
+	<key>Eclipse</key>
+	<array>		
+		<string>--launcher.appendVmargs</string>
+		<string>-vm</string>
+		<string>$APP_PACKAGE/../../../jre/bin/</string>
+		<string>-keyring</string>
+		<string>~/.eclipse_keyring</string>
+		<!-- Make sure the same vmargs are also listed in the jmc.ini file, which is used when jmc is started with JAVA_HOME/bin/jmc -->
+		<string>-vmargs</string>
+		<string>-Xdock:icon=$APP_PACKAGE/Contents/Resources/jmc.icns</string>
+		<string>-XX:+UseG1GC</string>
+		<string>-XX:+UnlockCommercialFeatures</string>
+		<string>-XX:+FlightRecorder</string>
+		<string>-XX:FlightRecorderOptions=defaultrecording=true</string>
+		<string>-Djava.net.preferIPv4Stack=true</string>
+		<string>-XstartOnFirstThread</string>
+		<string>-Dorg.eclipse.swt.internal.carbon.smallFonts</string>
+	</array>
+</dict>
+</plist>

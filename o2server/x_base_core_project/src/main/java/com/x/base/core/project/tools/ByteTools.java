@@ -5,7 +5,6 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 import org.apache.commons.codec.binary.Base64;
-import org.junit.Test;
 
 public class ByteTools {
 
@@ -37,15 +36,6 @@ public class ByteTools {
 			byte[] output = outputStream.toByteArray();
 			return output;
 		}
-	}
-
-	@Test
-	public void test() throws Exception {
-		String abc = "abcdefg";
-		String str = compressBase64String(abc.getBytes());
-		byte[] bs = decompressBase64String(str);
-		String s = new String(bs);
-		System.out.println(s);
 	}
 
 }

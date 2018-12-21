@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<basename property="project" file="${basedir}" />
+	<dirname property="o2server.dir" file="./" />
+	<path id="project.classpath">
+		<fileset dir="${o2server.dir}/commons/ext">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${o2server.dir}/store/jars">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${o2server.dir}/x_build_and_scratch/lib">
+			<include name="**/*.jar" />
+		</fileset>
+		<pathelement location="${basedir}/target/classes" />
+	</path>
+
+	<taskdef name="openjpac" classname="org.apache.openjpa.ant.PCEnhancerTask">
+		<classpath refid="project.classpath" />
+	</taskdef>
+	<taskdef name="if-contrib" classname="net.sf.antcontrib.logic.IfTask">
+		<classpath refid="project.classpath" />
+	</taskdef>
+	<taskdef name="for-contrib" classname="net.sf.antcontrib.logic.ForTask">
+		<classpath refid="project.classpath" />
+	</taskdef>
+	<taskdef name="var-contrib" classname="net.sf.antcontrib.property.Variable">
+		<classpath refid="project.classpath" />
+	</taskdef>
+
+	<target name="metamodel">
+		<delete>
+			<fileset dir="${basedir}/src/main/java" includes="**/entity/**/*_.java" />
+		</delete>
+		<javac srcdir="${basedir}/src/main/java" destdir="${basedir}/src/main/java" includes="**/entity/**,**/entity" debug="true" debuglevel="source,lines,vars" includeantruntime="true" encoding="utf-8" target="1.8" source="1.8" fork="true">
+			<classpath refid="project.classpath">
+			</classpath>
+			<compilerarg value="-Aopenjpa.metamodel=true" />
+			<compilerarg value="-Aopenjpa.log=TRACE" />
+		</javac>
+		<delete>
+			<fileset dir="${basedir}/src/main/java" includes="**/*.class" />
+		</delete>
+		<echo message="metamodel complete." />
+	</target>
+
+	<target name="createPersistenceXml">
+		<java classname="com.x.base.core.entity.tools.PersistenceXmlWriter" fork="true">
+			<sysproperty key="file.encoding" value="utf-8" />
+			<classpath>
+				<pathelement path="${basedir}/target/classes" />
+				<pathelement path="${basedir}/src/main/java" />
+				<fileset dir="${o2server.dir}/commons/ext">
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="${o2server.dir}/store/jars">
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="${o2server.dir}/x_build_and_scratch/lib">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+			<arg value="{
+				project:'${project}',
+				path:'${basedir}/src/main/resources/META-INF/x_persistence.xml'
+			}" />
+		</java>
+	</target>
+
+	<target name="describe">
+		<mkdir dir="${basedir}/src/main/webapp/describe" />
+		<delete includeemptydirs="true">
+			<fileset dir="${basedir}/src/main/webapp/describe" includes="**/*" />
+		</delete>
+		<java classname="com.x.base.core.project.annotation.Describe" fork="true">
+			<sysproperty key="file.encoding" value="utf-8" />
+			<arg value="${basedir}/src/main/webapp/describe" />
+			<arg value="${project}" />
+			<classpath>
+				<pathelement location="${basedir}/target/classes" />
+				<pathelement location="${basedir}/src/main/resources" />
+				<fileset dir="${o2server.dir}/commons/ext">
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="${o2server.dir}/store/jars">
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="${o2server.dir}/x_build_and_scratch/lib">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</java>
+		<copy todir="${basedir}/src/main/webapp/describe/sources">
+			<fileset dir="${basedir}/src/main/java">
+				<include name="**/*.java" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="createEnhancePersistenceXml">
+		<mkdir dir="${basedir}/src/main/resources/META-INF" />
+		<java classname="com.x.base.core.entity.tools.EnhancePersistenceXmlWriter" fork="true">
+			<sysproperty key="file.encoding" value="utf-8" />
+			<classpath>
+				<pathelement path="${basedir}/target/classes" />
+				<pathelement path="${basedir}/src/main/java" />
+				<pathelement path="${basedir}/src/main/resources" />
+				<fileset dir="${o2server.dir}/commons/ext">
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="${o2server.dir}/store/jars">
+					<include name="x_base_core_project.jar" />
+					<exclude name="${project}.jar" />
+				</fileset>
+				<fileset dir="${o2server.dir}/x_build_and_scratch/lib">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+			<arg value="{
+					path:'${basedir}/src/main/resources/META-INF/persistence.xml'
+				}" />
+		</java>
+	</target>
+
+</project>

@@ -3,8 +3,6 @@ package com.x.base.core.project.tools;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
-
 import com.x.base.core.project.gson.XGsonBuilder;
 
 public class PermutationsTools {
@@ -94,62 +92,6 @@ public class PermutationsTools {
 			}
 		}
 		return result;
-	}
-
-	@Test
-	public void test_combination() throws Exception {
-		List<String> list = new ArrayList<>();
-		list.add("A");
-		list.add("B");
-		list.add("C");
-		list.add("D");
-		System.out.println(combination(1, list));
-		System.out.println(combination(2, list));
-		System.out.println(combination(3, list));
-		System.out.println(combination(4, list));
-	}
-
-	@Test
-	public void test_arrangement() throws Exception {
-		List<String> list = new ArrayList<>();
-		list.add("A");
-		list.add("B");
-		list.add("C");
-		list.add("D");
-		System.out.println(arrangement(1, list));
-		System.out.println(arrangement(2, list));
-		System.out.println(arrangement(3, list));
-		System.out.println(arrangement(4, list));
-	}
-
-	@Test
-	public void test_groupCombination() throws Exception {
-		List<String> a = new ArrayList<>();
-		List<String> b = new ArrayList<>();
-		List<String> c = new ArrayList<>();
-		a.add("a1");
-		a.add("a2");
-		a.add("a3");
-		b.add("b1");
-		b.add("b2");
-		b.add("b3");
-		c.add("c1");
-		c.add("c2");
-		c.add("c3");
-		List<List<String>> result = groupCombination(a, b, c);
-		System.out.println(XGsonBuilder.toJson(result));
-		System.out.println(XGsonBuilder.toJson(result.size()));
-	}
-
-	@Test
-	public void test5() throws Exception {
-		List<String> list = new ArrayList<>();
-		list.add("A");
-		list.add("B");
-		list.add("C");
-		list.add("D");
-		System.out.println(arrangement(2, list));
-		System.out.println(combination(3, list));
 	}
 
 }

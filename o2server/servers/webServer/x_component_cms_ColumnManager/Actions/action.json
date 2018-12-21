@@ -1,0 +1,134 @@
+{
+  "getId" : {"uri":"/jaxrs/uuid/random"},
+
+  "listColumn": {"uri": "/jaxrs/appinfo/list/user/view/all" }, //"/jaxrs/appinfo/list/all"},
+  "listColumnByPublish": {"uri": "/jaxrs/appinfo/list/user/publish" },
+  "listColumnByAdmin": {"uri": "/jaxrs/appinfo/list/admin" },
+  "getColumn": {"uri": "/jaxrs/appinfo/{id}"},
+  "addColumn": {"uri": "/jaxrs/appinfo","method": "POST"},
+  "removeColumn": {"uri": "/jaxrs/appinfo/{id}","method": "DELETE"},
+  "updateColumn": {"uri": "/jaxrs/appinfo","method": "POST"},
+  "getColumnIcon":{"uri":"/jaxrs/appinfo/{id}/icon"},
+  "updataColumnIcon": {
+    "uri": "/jaxrs/appinfo/{id}/icon/size/72",
+    "method": "POST",
+    "enctype": "formData"
+  },
+
+  "listAllCategory" : {"uri":"/jaxrs/categoryinfo/list/all"},
+  "listCategory": {"uri": "/jaxrs/categoryinfo/list/view/app/{appId}/all" },
+  "listCategoryByPublisher": {"uri": "/jaxrs/categoryinfo/list/publish/app/{appId}" },
+  "addCategory" : {"uri":"/jaxrs/categoryinfo","method":"POST"},
+  "getCategory" : {"uri":"/jaxrs/categoryinfo/{id}"},
+  "updateCategory": {"uri": "/jaxrs/categoryinfo","method": "POST"},
+  "removeCategory": {"uri": "/jaxrs/categoryinfo/{id}","method": "DELETE"},
+  "saveCategoryExtContent" : {"uri": "/jaxrs/categoryinfo/extContent","method": "POST"},
+  "saveCategoryImportView" : {"uri": "/jaxrs/categoryinfo/bind/{categoryId}/view","method": "PUT"},
+
+  "listAllForm" : {"uri":"/jaxrs/form/list/all"},
+  "listForm": {"uri": "/jaxrs/form/list/app/{appId}"},
+  "getForm": {"uri": "/jaxrs/form/{id}"},
+  "addForm": {"uri": "/jaxrs/form","method": "POST"},
+  "removeForm": {"uri": "/jaxrs/form/{id}","method": "DELETE"},
+  "updataForm": {"uri": "/jaxrs/form/{id}","method": "PUT"},
+
+  "getFormTemplate": {"uri": "/jaxrs/templateform/{id}"},
+  "deleteFormTemplate": {"uri": "/jaxrs/templateform/{id}","method": "DELETE"},
+  "addFormTemplate": {"uri": "/jaxrs/templateform","method": "POST"},
+  "listFormTemplate": {"uri": "/jaxrs/templateform/list"},
+  "listFormTemplateCategory": {"uri": "/jaxrs/templateform/list/category"},
+  "listFormTemplatByCategory": {"uri": "/jaxrs/templateform/list/category","method": "PUT"},
+
+  "listDictionary": {"uri": "/jaxrs/appdict/list/app/{appId}"},
+  "getDictionary": {"uri": "/jaxrs/appdict/{appDictId}"},
+  "addDictionary": {"uri": "/jaxrs/appdict", "method": "POST"},
+  "removeDictionary": {"uri": "/jaxrs/appdict/{appDictId}","method": "DELETE"},
+  "updataDictionary": {"uri": "/jaxrs/appdict/{appDictId}","method": "PUT"},
+
+  "listScript": {"uri": "/jaxrs/script/list/app/{appId}"},
+  "getScript": {"uri": "/jaxrs/script/{id}"},
+  "addScript": {"uri": "/jaxrs/script", "method": "POST"},
+  "removeScript": {"uri": "/jaxrs/script/{id}", "method": "DELETE"},
+  "updataScript": {"uri": "/jaxrs/script/{id}", "method": "PUT"},
+  "getScriptByName": {"uri": "/jaxrs/script/list/app/{appId}/name/{name}"},
+
+  //"listController" : {"uri": "/jaxrs/appcategoryadmin/list/{person}/type/{objectType}"}, //根据用户帐号和权限类别查询配置记录
+  //"listAllController" : {"uri": "/jaxrs/appcategoryadmin/list/all"},
+  //"listCategoryController" : {"uri": "/jaxrs/appcategoryadmin/list/category/{categoryId}"},
+  //"listColumnController" : {"uri": "/jaxrs/appcategoryadmin/list/app/{appId}"},
+  //"listControllerByPerson" : {"uri": "/jaxrs/appcategoryadmin/list/person/{person}"},
+  //"getController" : {"uri": "/jaxrs/appcategoryadmin/{id}"},
+  //"addController" : {"uri":"/jaxrs/appcategoryadmin", "method":"POST"},
+  //"updateController" : {"uri":"/jaxrs/appcategoryadmin", "method":"POST"},
+  //"removeController" : {"uri":"/jaxrs/appcategoryadmin/{id}", "method":"DELETE"},
+
+  "listAppByManager" : {"uri":"/jaxrs/appinfo/list/manage"},
+  "isAppInfoManager" : {"uri":"/jaxrs/permission/appInfo/{id}/manageable"},
+
+  "isCategoryInfoManagers" : {"uri":"/jaxrs/permission/categoryInfo/{id}/manageable"},
+
+  "listAppInfoManagers" : {"uri":"/jaxrs/permission/appInfo/{id}/managers"},
+  "listAppInfoPublishers" : {"uri":"/jaxrs/permission/appInfo/{id}/publishers"},
+  "listAppInfoViewers" : {"uri":"/jaxrs/permission/appInfo/{id}/viewers"},
+
+  "listCategoryInfoManagers" : {"uri":"/jaxrs/permission/category/{id}/managers"},
+  "listCategoryInfoPublishers" : {"uri":"/jaxrs/permission/category/{id}/publishers"},
+  "listCategoryInfoViewers" : {"uri":"/jaxrs/permission/category/{id}/viewers"},
+
+  //{  personList : [] , unitList : [], groupList : []}
+  "saveAppInfoManager" : {"uri":"/jaxrs/permission/manager/appInfo/{id}", "method":"POST" },
+  "saveAppInfoPublisher" : {"uri":"/jaxrs/permission/publisher/appInfo/{id}", "method":"POST" },
+  "saveAppInfoViewer" : {"uri":"/jaxrs/permission/viewer/appInfo/{id}", "method":"POST" },
+
+  "saveCategoryInfoManager" : {"uri":"/jaxrs/permission/manager/categoryInfo/{id}", "method":"POST" },
+  "saveCategoryInfoPublisher" : {"uri":"/jaxrs/permission/publisher/categoryInfo/{id}", "method":"POST" },
+  "saveCategoryInfoViewer" : {"uri":"/jaxrs/permission/viewer/categoryInfo/{id}", "method":"POST" },
+
+  //"listPermission" : {"uri": "/jaxrs/appcategorypermission/list/{person}/type/{objectType}"}, //根据用户帐号和权限类别查询配置记录
+  //"listAllPermission" : {"uri": "/jaxrs/appcategorypermission/list/all"},
+  //"listColumnPermission" : {"uri": "/jaxrs/appcategorypermission/list/app/{appId}/view"},
+  //"listPermissionByPerson" : {"uri": "/jaxrs/appcategorypermission/list/person/{person}/appInfo"},
+  //"getPermission" : {"uri": "/jaxrs/appcategorypermission/{id}"},
+  //"addPermission" : {"uri":"/jaxrs/appcategorypermission", "method":"POST"},
+  //"updatePermission" : {"uri":"/jaxrs/appcategorypermission", "method":"POST"},
+  //"removePermission" : {"uri":"/jaxrs/appcategorypermission/{id}", "method":"DELETE"},
+
+  //"listColumnPublisher" : {"uri": "/jaxrs/appcategorypermission/list/app/{appId}/publish"},
+  //"listCategoryPermission" : {"uri": "/jaxrs/appcategorypermission/list/category/{categoryId}/view"},
+  //"listCategoryPublisher" : {"uri": "/jaxrs/appcategorypermission/list/category/{categoryId}/publish"},
+
+  "listView": {"uri" : "/jaxrs/view/list/app/{appId}"},
+  "listViewByCategory": {"uri" : "/jaxrs/view/list/category/{categoryId}"},
+  "listViewByForm": {"uri" : "/jaxrs/view/list/form/{formId}"},
+  "getView" : {"uri" : "/jaxrs/view/{id}"},
+  "addView": {"uri" : "/jaxrs/view", "method": "POST"},
+  "updateView" : {"uri":"/jaxrs/view/{id}","method":"PUT"},
+  "deleteView" : {"uri":"/jaxrs/view/{id}","method": "DELETE"},
+
+  "listViewColumn": {"uri" : "/jaxrs/viewfieldconfig/list/view/{viewId}"},
+  "getViewColumn" : {"uri" : "/jaxrs/viewfieldconfig/{id}"},
+  "addViewColumn" : {"uri":"/jaxrs/viewfieldconfig", "method": "POST"},
+  "updateViewColumn" : {"uri":"/jaxrs/viewfieldconfig/{id}","method":"PUT"},
+  "deleteViewColumn" : {"uri":"/jaxrs/viewfieldconfig/{id}","method": "DELETE"},
+
+  "listCategoryViewByView": {"uri" : "/jaxrs/viewcategory/list/view/{viewId}"},
+  "listCategoryViewByCategory": {"uri" : "/jaxrs/viewcategory/list/category/{categoryId}"},
+  "getCategoryView" : {"uri" : "/jaxrs/viewfieldconfig/{id}"},
+  "addCategoryView" : {"uri":"/jaxrs/viewcategory", "method": "POST"},
+  "updateCategoryView" : {"uri":"/jaxrs/viewcategory/{id}","method":"PUT"},
+  "deleteCategoryView" : {"uri":"/jaxrs/viewcategory/{id}","method": "DELETE"},
+
+  "listQueryView": {"uri": "/jaxrs/queryview/design/list/application/{applicationId}"},
+  "listQueryViewNextPage": {"uri": "/jaxrs/queryview/design/list/{id}/next/{count}"},
+  "listQueryViewPrevPage": {"uri": "/jaxrs/queryview/design/list/{id}/prev/{count}"},
+  "getQueryView": {"uri": "/jaxrs/queryview/design/{id}"},
+  "addQueryView": {"uri": "/jaxrs/queryview/design", "method": "POST"},
+  "updateQueryView": {"uri": "/jaxrs/queryview/design/{id}","method": "PUT"},
+  "deleteQueryView": {"uri": "/jaxrs/queryview/design/{id}","method": "DELETE"},
+  "getQueryViewContent": {"uri": "/jaxrs/queryview/design/flag/{flag}"}, //获取QueryView内容.
+  "loadQueryView": {"uri": "/jaxrs/queryview/design/flag/{flag}/simulate","method": "PUT"},
+
+  "listApplication": {"uri": "/jaxrs/application/list"},
+  "listApplicationByCategory": {"uri": "/jaxrs/application/list/applicationcategory/{applicationCategory}"},
+  "listProcess": {"uri": "/jaxrs/process/application/{id}"}
+}

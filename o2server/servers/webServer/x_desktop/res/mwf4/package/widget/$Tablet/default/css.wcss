@@ -1,0 +1,87 @@
+{
+    "container": {
+        "-webkit-user-select": "none",
+        "-moz-user-select": "none",
+        "user-select" : "none"
+    },
+    "toolbar" : {
+        "overflow" : "hidden",
+        "text-align" : "center"
+    },
+    "uploadActionNode":{
+        "margin": "0px 10px 10px 10px",
+        "background-color": "#FFF",
+        "padding": "4px 14px",
+        "border": "1px solid #999",
+        "border-radius": "3px",
+        "font-size": "14px",
+        "color": "#666",
+        "cursor": "pointer"
+    },
+    "resetActionNode" : {
+        "margin": "10px 10px 10px 10px",
+        "background-color": "#FFF",
+        "padding": "4px 14px",
+        "border": "1px solid #999",
+        "border-radius": "3px",
+        "font-size": "14px",
+        "color": "#666",
+        "cursor": "pointer"
+    },
+    "contentNode" :{
+        "overflow" : "hidden",
+        "border" : "0px solid #ccc"
+    },
+    "descriptionNode":{
+        "font-size":"14px",
+        "color" : "#666",
+        "margin-top" : "5px",
+        "margin-left" : "5px"
+    },
+    "toolbar" : {
+        "font-size": "14px",
+        "color": "#666",
+        "overflow": "hidden",
+        "margin-bottom": "3px",
+        "height": "70px",
+        "background-color": "#F8F8F8",
+        "box-shadow": "0 1px 3px 0 rgba(0,0,0,0.25)"
+    },
+    "toolItemGroup": {
+        "float": "left",
+        "overflow": "hidden"
+    },
+    "toolItem": {
+        "margin": "15px 3px 10px 3px",
+        "color": "#666",
+        "float": "left",
+        "background-repeat": "no-repeat",
+        "background-position-x": "center",
+        "background-position-y": "top",
+        "padding": "23px 5px 5px 5px",
+        "cursor": "pointer"
+    },
+    "toolRightItem": {
+        "margin": "15px 10px 10px 3px",
+        "color": "#666",
+        "float": "right",
+        "background-repeat": "no-repeat",
+        "background-position-x": "center",
+        "background-position-y": "top",
+        "padding": "23px 5px 5px 5px",
+        "cursor": "pointer"
+    },
+    "toolItem_over": {
+        "color": "#3C76B7"
+    },
+    "toolItem_disable": {
+        "color": "#999",
+        "cursor": "default"
+    },
+    "separator": {
+        "margin": "17px 2px 10px 2px",
+        "height": "40px",
+        "float": "left",
+        "border-left": "1px solid rgba(0,0,0,0.12)"
+    }
+}

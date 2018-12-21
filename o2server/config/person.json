@@ -1,0 +1,16 @@
+{
+  "oauthLogin": false,
+  "codeLogin": true,
+  "bindLogin": true,
+  "faceLogin": true,
+  "password": "(person.getMobile())",
+  "passwordPeriod": 0,
+  "register": "disable",
+  "superPermission": true,
+  "mobileRegex": "(^(\\+)?0{0,2}852\\d{8}$)|(^(\\+)?0{0,2}853\\d{8}$)|(^1(3|4|5|7|8|9)\\d{9}$)",
+  "loginPage": {
+    "enable": false,
+    "portal": "",
+    "page": ""
+  }
+}

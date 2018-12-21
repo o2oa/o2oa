@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="com.sun.tools.visualvm.jvmstat/0">
+    <module_version install_time="1410360601398" last="true" origin="installer" specification_version="1.0">
+        <file crc="2265758519" name="config/Modules/com-sun-tools-visualvm-jvmstat.xml"/>
+        <file crc="3215991702" name="modules/com-sun-tools-visualvm-jvmstat.jar"/>
+    </module_version>
+</module>

@@ -4,7 +4,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.junit.Test;
 
 public class NumberTools {
 
@@ -73,21 +72,6 @@ public class NumberTools {
 			}
 		}
 		return null;
-	}
-
-	@Test
-	public void test() {
-		System.out.println(NumberUtils.isNumber("2.1E+03"));
-		System.out.println(NumberUtils.toDouble("2.1E+03"));
-		System.out.println(stirngOfPercent("%"));
-		System.out.println(stirngOfPercent("1%"));
-		System.out.println(stirngOfPercent("100%"));
-		System.out.println(stirngOfPercent("AB%"));
-		System.out.println(stirngOfPercent("AB.BB%"));
-		System.out.println(stirngOfPercent("33.22%"));
-		System.out.println(stirngOfPercent("-33.22%"));
-		System.out.println(stirngOfPercent("-33%"));
-
 	}
 
 }

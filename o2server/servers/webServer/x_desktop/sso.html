@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="UTF-8">
+    <title></title>
+    <!--<script src="res/framework/mootools/mootools-core-1.4.5-full-nocompat.js"></script>-->
+    <!--<script src="res/framework/mootools/mootools-more-1.4.0.1-all_2.js"></script>-->
+    <script src="res/framework/mootools/mootools-1.6.0.min.js"></script>
+    <script src="res/common.js?v=1.0.6"></script>
+    <script>
+        function getServiceAddress(config, callback){
+            if (typeOf(config.center)=="object"){
+                getServiceAddressConfigObject(callback);
+            }else if (typeOf(config.center)=="array"){
+                var center = chooseCenter(config);
+                if (center){
+                    getServiceAddressConfigObject(callback, center);
+                }else{
+                    getServiceAddressConfigArray(config, callback);
+                }
+                //this.getServiceAddressConfigArray(callback);
+            }
+        }
+        function chooseCenter(config){
+            var host = window.location.host;
+            var center = null;
+            for (var i=0; i<config.center.length; i++){
+                var ct = config.center[i];
+                if (ct.webHost==host){
+                    center = ct;
+                    break;
+                }
+            }
+            return center;
+        }
+        function getServiceAddressConfigArray(config, callback) {
+            var requests = [];
+            config.center.each(function(center){
+                requests.push(
+                        getServiceAddressConfigObject(function(address){
+                            requests.each(function(res){
+                                if (res.isRunning()){res.cancel();}
+                            });
+                            if (callback) callback(address);
+                        }.bind(this), center)
+                );
+            }.bind(this));
+        }
+        function getServiceAddressConfigObject(callback, center){
+            var centerConfig = center;
+            var host = centerConfig.host || window.location.hostname;
+            var port = centerConfig.port;
+            var uri = "";
+            var locate = window.location;
+            var protocol = locate.protocol;
+            if (!port || port=="80"){
+                uri = protocol+"//"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+            }else{
+                uri = protocol+"//"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+            }
+            var currenthost = window.location.hostname;
+            uri = uri.replace(/{source}/g, currenthost);
+            //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
+            return MWF.restful("get", uri, null, function(json){
+                var serviceAddressList = json.data;
+                var addressObj = serviceAddressList["x_organization_assemble_authentication"];
+                var address = protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
+
+                if (callback) callback(address);
+            }.bind(this));
+        }
+
+//        function getServiceAddress(config, callback){
+//            var host = config.center.host || window.location.host;
+//            var port = config.center.port;
+//            var uri = "";
+//            if (!port || port=="80"){
+//                uri = "http://"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+//            }else{
+//                uri = "http://"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+//            }
+//            var currenthost = window.location.hostname;
+//            uri = uri.replace(/{source}/g, currenthost);
+//            //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
+//            MWF.restful("get", uri, null, function(json){
+//                var serviceAddressList = json.data;
+//                var addressObj = serviceAddressList["x_organization_assemble_authentication"];
+//                var address = "http://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
+//
+//                if (callback) callback(address);
+//            }.bind(this));
+//        }
+        COMMON.setContentPath("/x_desktop");
+        COMMON.AjaxModule.load("mwf", function(){
+            MWF.getJSON("res/config/config.json", function(config){
+                getServiceAddress(config, function(address){
+                    var uri = new URI(window.location.toString());
+                    var xtoken = uri.getData("xtoken");
+                    var client = uri.getData("client");
+                    if (xtoken){
+                        var res = new Request.JSON({
+                            //url: "http://hbxa01.bf.ctc.com:20080/x_organization_assemble_authentication/jaxrs/sso",
+                            url: address+"/jaxrs/sso",
+                            secure: false,
+                            method: "POST",
+                            noCache: true,
+                            withCredentials: true,
+                            onSuccess: function(responseJSON, responseText){
+                                window.location = "/";
+                            }.bind(this),
+                            onFailure: function(xhr){
+                                window.location = "/";
+                            }.bind(this),
+                            onError: function(text, error){
+                                window.location = "/";
+                            }.bind(this)
+                        });
+                        res.setHeader("Content-Type", "application/json; charset=utf-8");
+                        var json = {"token": xtoken, "client": client};
+
+                        res.send(JSON.encode(json));
+                    }else{
+                        window.location = "/"
+                    }
+                });
+            });
+
+
+            //	MWF.require("MWF.process.RestActions", function(){
+            //		layout.restActions = new MWF.process.RestActions(Properties.action);
+            //	});
+        });
+
+
+    </script>
+</head>
+<body bgcolor="#faebd7" bgcolor="#ffc0cb">
+
+</body>
+</html>

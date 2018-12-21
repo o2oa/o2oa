@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Test;
 
 public class MapTools {
 
@@ -31,23 +30,6 @@ public class MapTools {
 		return list;
 	}
 
-	@Test
-	public void test() throws Exception {
-		Map<String, Object> map = new HashMap<>();
-		Map<String, Object> map1 = new HashMap<>();
-		Map<String, Object> map2 = new HashMap<>();
-		map.put("obj1", map1);
-		map1.put("obj2", map2);
-		map2.put("city", "hagnzhou");
-		List<String> address = new ArrayList<>();
-		address.add("aaaaaaaaaa");
-		address.add("aaaaaaaaaa1");
-		address.add("aaaaaaaaaa2");
-		map2.put("address", address);
-		System.out.println(MapTools.extractStringList(map, "obj1.obj2.city", false, true));
-		System.out.println(MapTools.extractStringList(map, "obj1.obj2.address", false, false));
-		System.out.println(MapTools.extractStringList(map, "obj1.address", false, false));
-
-	}
+	 
 
 }

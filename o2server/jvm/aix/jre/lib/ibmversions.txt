@@ -1,0 +1,23 @@
+# default installation directories for IBM SDKs
+8.0=/opt/ibm/java-ppc64-80
+1.8.0=/opt/ibm/java-ppc64-80
+8.0=/opt/ibm/java-ppc-80
+1.8.0=/opt/ibm/java-ppc-80
+7.1=/opt/ibm/java-ppc64-71
+1.7.1=/opt/ibm/java-ppc64-71
+7.1=/opt/ibm/java-ppc-71
+1.7.1=/opt/ibm/java-ppc-71
+7.0=/opt/ibm/java-ppc64-70
+1.7.0=/opt/ibm/java-ppc64-70
+7.0=/opt/ibm/java-ppc-70
+1.7.0=/opt/ibm/java-ppc-70
+6.0=/opt/ibm/java-ppc64-60
+1.6.0=/opt/ibm/java-ppc64-60
+6.0=/opt/ibm/java-ppc-60
+1.6.0=/opt/ibm/java-ppc-60
+5.0=/opt/ibm/java2-ppc64-50
+1.5.0=/opt/ibm/java2-ppc64-50
+5.0=/opt/ibm/java2-ppc-50
+1.5.0=/opt/ibm/java2-ppc-50
+1.4.2=/opt/IBMJava2-ppc64-142
+1.4.2=/opt/IBMJava2-ppc-142

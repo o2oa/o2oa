@@ -1,0 +1,244 @@
+<div>
+    <div title="基本" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">标识:</td>
+                <td class="editTableValue">text{$.id}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">创建时间:</td>
+                <td class="editTableValue">text{$.createTime}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">类型:</td>
+                <td class="editTableValue">text{$.type}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">名称:</td>
+                <td class="editTableValue"><input type="text" name="name" jsondata="name" value="text{$.name}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">别名:</td>
+                <td class="editTableValue"><input type="text" name="alias" jsondata="alias" value="text{$.alias}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">描述:</td>
+                <td class="editTableValue"><textarea name="description" jsondata="description" class="editTableTextarea">text{$.description}</textarea></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">表单:</td>
+                <td class="editTableValue">
+                    <div class="MWFFormSelect" name="form"></div></td>
+            </tr>
+        </table>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableValue"  colspan="2"><b>是否允许调度：</b><input class="editTableRadio" name="allowReroute" text{($.allowReroute)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="allowReroute" text{(!$.allowReroute)?'checked':''} type="radio" value="false"/>否</td>
+            </tr>
+            <tr>
+                <td class="editTableValue"  colspan="2"><b>允许调度到此活动：</b><input class="editTableRadio" name="allowRerouteTo" text{($.allowRerouteTo)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTeditTableRadioableInput" class="editTableInput" name="allowRerouteTo" text{(!$.allowRerouteTo)?'checked':''} type="radio" value="false"/>否</td>
+            </tr>
+        </table>
+    </div>
+    <!--<div title="路由" class="MWFTab">-->
+        <!--<div class="MWFCondition" name="script"></div>-->
+    <!--</div>-->
+    <div title="人员"  class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableHeadTitle" colspan="2">待阅人</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">待阅人标识:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonIdentity" name="readIdentityList" type="identity"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">待阅组织:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonUnit" name="readUnitList"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">职　　位:</td>
+                <td class="editTableValue">
+                    <div class="MWFDutySelector" name="readDuty"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">流程数据:</td>
+                <td class="editTableValue">
+                    <div class="MWFFormFieldPerson" name="readDataPathList"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">脚本:</td>
+                <td class="editTableValue">
+                    <div class="MWFScript" name="readScript"></div>
+                </td>
+            </tr>
+        </table>
+        <div class="MWFScriptText" name="readScriptText"></div>
+        <hr />
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableHeadTitle" colspan="2">阅读人</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">阅读人标识:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonIdentity" name="reviewIdentityList" type="identity"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">阅读组织:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonUnit" name="reviewUnitList"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">职　　位:</td>
+                <td class="editTableValue">
+                    <div class="MWFDutySelector" name="reviewDuty"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">流程数据:</td>
+                <td class="editTableValue">
+                    <div class="MWFFormFieldPerson" name="reviewDataPathList"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">脚本:</td>
+                <td class="editTableValue">
+                    <div class="MWFScript" name="reviewScript"></div>
+                </td>
+            </tr>
+        </table>
+        <div class="MWFScriptText" name="reviewScriptText"></div>
+    </div>
+    <div title="事件"  class="MWFTab">
+        <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
+            <div style="height: 30px; width: 30px; float: left; background: url(/x_component_process_ProcessDesigner/$Process/event.png) no-repeat center center;"></div>
+            <div style="margin-left: 20px; padding: 0px 5px;">工作到达前</div>
+        </div>
+
+        <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">文件收到前:</td>
+                    <td class="editTableValue">
+                        <div class="MWFScript" name="beforeArriveScript"></div>
+                    </td>
+                </tr>
+            </table>
+            <div class="MWFScriptText" name="beforeArriveScriptText"></div><hr />
+        </div>
+        <div style="line-height: 20px; height: 46px; border-bottom: 1px solid #CCCCCC; border-top: 1px solid #CCCCCC; background-color:#f6f6f6;">
+            <div style="height: 46px; width: 30px; float: left; background: url(/x_component_process_ProcessDesigner/$Process/down.png) no-repeat center center;"></div>
+            <div style="margin-left: 20px; padding: 3px 10px; text-align: center; color: #666666;">执行Arrive操作<br/>活动属性设置</div>
+        </div>
+
+        <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
+            <div style="height: 30px; width: 30px; float: left; background: url(/x_component_process_ProcessDesigner/$Process/event.png) no-repeat center center;"></div>
+            <div style="margin-left: 20px; padding: 0px 5px;">文件收到后</div>
+        </div>
+        <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">文件收到后:</td>
+                    <td class="editTableValue">
+                        <div class="MWFScript" name="afterArriveScript"></div>
+                    </td>
+                </tr>
+            </table>
+            <div class="MWFScriptText" name="afterArriveScriptText"></div><hr />
+        </div>
+
+        <div style="line-height: 20px; height: 26px; border-bottom: 1px solid #CCCCCC; border-top: 1px solid #CCCCCC">
+            <div style="height: 26px; background: url(/x_component_process_ProcessDesigner/$Process/down16.png) no-repeat center center;"></div>
+        </div>
+
+        <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
+            <div style="height: 30px; width: 30px; float: left; background: url(/x_component_process_ProcessDesigner/$Process/event.png) no-repeat center center;"></div>
+            <div style="margin-left: 20px; padding: 0px 5px;">活动执行前</div>
+        </div>
+        <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">活动执行前:</td>
+                    <td class="editTableValue">
+                        <div class="MWFScript" name="beforeExecuteScript"></div>
+                    </td>
+                </tr>
+            </table>
+            <div class="MWFScriptText" name="beforeExecuteScriptText"></div><hr />
+        </div>
+
+        <div style="line-height: 20px; height: 46px; border-bottom: 1px solid #CCCCCC; border-top: 1px solid #CCCCCC; background-color:#f6f6f6;">
+            <div style="height: 46px; width: 30px; float: left; background: url(/x_component_process_ProcessDesigner/$Process/down.png) no-repeat center center;"></div>
+            <div style="margin-left: 20px; padding: 3px 10px; text-align: center; color: #666666;">执行Execute操作<br/>执行自动活动任务</div>
+        </div>
+
+        <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
+            <div style="height: 30px; width: 30px; float: left; background: url(/x_component_process_ProcessDesigner/$Process/event.png) no-repeat center center;"></div>
+            <div style="margin-left: 20px; padding: 0px 5px;">活动执行后</div>
+        </div>
+        <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">文件流转后:</td>
+                    <td class="editTableValue">
+                        <div class="MWFScript" name="afterExecuteScript"></div>
+                    </td>
+                </tr>
+            </table>
+            <div class="MWFScriptText" name="afterExecuteScriptText"></div><hr />
+        </div>
+
+        <div style="line-height: 20px; height: 26px; border-bottom: 1px solid #CCCCCC; border-top: 1px solid #CCCCCC">
+            <div style="height: 26px; background: url(/x_component_process_ProcessDesigner/$Process/down16.png) no-repeat center center;"></div>
+        </div>
+
+        <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
+            <div style="height: 30px; width: 30px; float: left; background: url(/x_component_process_ProcessDesigner/$Process/event.png) no-repeat center center;"></div>
+            <div style="margin-left: 20px; padding: 0px 5px;">路由查询前</div>
+        </div>
+        <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">路由查询前:</td>
+                    <td class="editTableValue">
+                        <div class="MWFScript" name="beforeInquireScript"></div>
+                    </td>
+                </tr>
+            </table>
+            <div class="MWFScriptText" name="beforeInquireScriptText"></div><hr />
+        </div>
+
+        <div style="line-height: 20px; height: 46px; border-bottom: 1px solid #CCCCCC; border-top: 1px solid #CCCCCC; background-color:#f6f6f6;">
+            <div style="height: 46px; width: 30px; float: left; background: url(/x_component_process_ProcessDesigner/$Process/down.png) no-repeat center center;"></div>
+            <div style="margin-left: 20px; padding: 3px 10px; text-align: center; color: #666666;">执行Inquire操作<br/>查询到达下一个活动的路由</div>
+        </div>
+
+        <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
+            <div style="height: 30px; width: 30px; float: left; background: url(/x_component_process_ProcessDesigner/$Process/event.png) no-repeat center center;"></div>
+            <div style="margin-left: 20px; padding: 0px 5px;">路由查询后</div>
+        </div>
+        <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">路由查询后:</td>
+                    <td class="editTableValue">
+                        <div class="MWFScript" name="afterInquireScript"></div>
+                    </td>
+                </tr>
+            </table>
+            <div class="MWFScriptText" name="afterInquireScriptText"></div><hr />
+        </div>
+
+    </div>
+</div>
