@@ -22,9 +22,4 @@ public class DefaultCharset {
 
 	public static final String name_gbk = Charset.forName("GBK").name();
 
-	@Test
-	public void test() {
-		Charset charset = Charset.forName("utf-8");
-		System.out.println(charset.name());
-	}
 }

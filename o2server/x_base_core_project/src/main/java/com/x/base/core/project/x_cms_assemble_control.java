@@ -27,7 +27,7 @@ public class x_cms_assemble_control extends AssembleA {
 		containerEntities.add("com.x.cms.core.entity.element.View");
 		containerEntities.add("com.x.cms.core.entity.element.ViewCategory");
 		containerEntities.add("com.x.cms.core.entity.element.ViewFieldConfig");
-		
+
 		containerEntities.add("com.x.cms.core.entity.AppInfo");
 		containerEntities.add("com.x.cms.core.entity.CategoryInfo");
 		containerEntities.add("com.x.cms.core.entity.CategoryExt");
@@ -36,24 +36,25 @@ public class x_cms_assemble_control extends AssembleA {
 		containerEntities.add("com.x.cms.core.entity.FileInfo");
 		containerEntities.add("com.x.cms.core.entity.Log");
 		containerEntities.add("com.x.cms.core.entity.Review");
-		
+
 		containerEntities.add("com.x.processplatform.core.entity.content.Attachment");
 		containerEntities.add("com.x.query.core.entity.Item");
-		containerEntities.add("com.x.query.core.entity.View");		
-		
+		containerEntities.add("com.x.query.core.entity.View");
+
 		containerEntities.add("com.x.cms.core.entity.AppCategoryAdmin");
 		containerEntities.add("com.x.cms.core.entity.AppCategoryPermission");
 		containerEntities.add("com.x.cms.core.entity.DocumentPermission");
-		
-		usedStorageTypes.add( StorageType.cms );
-		usedStorageTypes.add( StorageType.processPlatform );
-		
+
+		usedStorageTypes.add(StorageType.cms);
+		usedStorageTypes.add(StorageType.processPlatform);
+
 		dependents.add(x_base_core_project.class);
 		dependents.add(x_processplatform_core_entity.class);
 		dependents.add(x_organization_core_entity.class);
 		dependents.add(x_organization_core_express.class);
 		dependents.add(x_cms_core_entity.class);
 		dependents.add(x_query_core_entity.class);
+		dependents.add(x_query_core_express.class);
 	}
 
 	protected void custom(File lib, String xLib) throws Exception {

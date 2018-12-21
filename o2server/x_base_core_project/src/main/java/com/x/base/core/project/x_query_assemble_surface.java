@@ -42,6 +42,7 @@ public class x_query_assemble_surface extends AssembleA {
 		dependents.add(x_organization_core_express.class);
 		dependents.add(x_processplatform_core_entity.class);
 		dependents.add(x_cms_core_entity.class);
+		dependents.add(x_query_core_express.class);
 	}
 
 	protected void custom(File lib, String xLib) throws Exception {

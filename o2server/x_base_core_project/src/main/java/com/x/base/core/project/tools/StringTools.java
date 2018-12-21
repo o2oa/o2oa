@@ -24,7 +24,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.junit.Test;
 import org.slf4j.helpers.MessageFormatter;
 
 public class StringTools {
@@ -317,9 +316,4 @@ public class StringTools {
 		return os;
 	}
 
-	@Test
-	public void test() {
-		String str = "b7112225-e3bf-422d-9732-5919dce62d8c";
-		System.out.println(isUUIDFormat(str));
-	}
 }

@@ -1,0 +1,10 @@
+[
+	{
+		"url":"jdbc:mysql://127.0.0.1:3306/X?serverTimezone=UTC&useSSL=false",
+		"username" : "root",
+		"password" :"1234abcd",
+		"includes": [],
+		"excludes": [],
+		"enable" : true
+	}
+]

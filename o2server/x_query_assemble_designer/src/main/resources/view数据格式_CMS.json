@@ -1,0 +1,66 @@
+{
+  "where": {
+    "accessible": false,
+    "scope": "cms_info,cms_data,all",
+    "appInfoList": [
+      {
+        "name": "",
+        "alias": "",
+        "id": ""
+      }
+    ],
+    "categoryInfoList": [
+      {
+        "name": "",
+        "alias": "",
+        "id": ""
+      }
+    ],
+    "dateRange": {
+      "start": "",
+      "completed": ""
+    },
+    "creatorPersonList": [],
+    "creatorUnitList": [],
+    "creatorIdentityList": []
+  },
+  "selectList": [
+    {
+      "orderType": 1,
+      "orderRank": "",
+      "column": "",
+      "displayName": "",
+      "path": "",
+      "id": "",
+      "defaultValue": "",
+      "hideColumn": true,
+      "code": "",
+      "allowOpen": true
+    }
+  ],
+  "filterList": [
+    {
+      "value": "",
+      "otherValue": "新增加的值,用于between时的第二个值",
+      "path": "",
+      "formatType": "",
+      "logic": "",
+      "comparison": ""
+    }
+  ],
+  "orderList": [
+    {
+      "column": "",
+      "orderType": "asc,desc,original"
+    }
+  ],
+  "group": {
+    "column": "",
+    "orderType": "asc,desc,original"
+  },
+  "columnList": [],
+  "calculate": {},
+  "afterGridScriptText": "",
+  "afterGroupGridScriptText": "",
+  "afterCalculateGridScriptText": ""
+}

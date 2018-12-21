@@ -40,6 +40,7 @@ public class x_query_assemble_designer extends AssembleA {
 		dependents.add(x_organization_core_express.class);
 		dependents.add(x_processplatform_core_entity.class);
 		dependents.add(x_cms_core_entity.class);
+		dependents.add(x_query_core_express.class);
 	}
 
 	public static void main(String[] args) {

@@ -1,0 +1,27 @@
+{
+  "filterList": [
+    {
+      "title": "",
+      "value": "",
+      "otherValue": "",
+      "path": "",
+      "formatType": "",
+      "logic": "",
+      "comparison": ""
+    }
+  ],
+  "parameter": {},
+  "calculate": {
+    "isGroup": true,
+    "isAmount": true,
+    "orderType": "",
+    "id": "",
+    "calculateList": [
+      {
+        "column": "",
+        "calculateType": "sum,count,average",
+        "id": ""
+      }
+    ]
+  }
+}

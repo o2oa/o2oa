@@ -1,0 +1,18 @@
+{
+  "enable": false,
+  "corpId": "",
+  "agentId": "",
+  "corpSecret": "",
+  "syncCron": "10 0/10 * * * ?",
+  "forceSyncCron": "10 45 8,12 * * ?",
+  "oapiAddress": "https://oapi.dingtalk.com",
+  "messageEnable": true,
+  "###enable": "是否启用###",
+  "###corpId": "钉钉corpId###",
+  "###agentId": "agentId###",
+  "###corpSecret": "钉钉corpSecret###",
+  "###syncCron": "组织同步cron,默认每10分钟同步一次.###",
+  "###forceSyncCron": "强制拉入同步cron,默认在每天的8点和12点强制进行同步.###",
+  "###oapiAddress": "oapi服务器地址###",
+  "###messageEnable": "是否启用消息推送###"
+}

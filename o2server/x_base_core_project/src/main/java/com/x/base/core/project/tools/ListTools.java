@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -16,11 +17,9 @@ import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.junit.Test;
 
 import com.x.base.core.project.gson.XGsonBuilder;
 
-import jersey.repackaged.com.google.common.base.Objects;
 
 public class ListTools {
 
@@ -262,7 +261,7 @@ public class ListTools {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				return Objects.equal(v, value);
+				return Objects.equals(v, value);
 			}).findFirst().orElse(null);
 		}
 		return t;
@@ -431,7 +430,7 @@ public class ListTools {
 		}
 		T t = list.get(0);
 		for (T o : list) {
-			if (!Objects.equal(t, o)) {
+			if (!Objects.equals(t, o)) {
 				return false;
 			}
 		}
@@ -488,10 +487,6 @@ public class ListTools {
 		return os;
 	}
 
-	@Test
-	public void test() {
-		List<String> list = new ArrayList<>();
-		System.out.println(XGsonBuilder.toJson(randomWithRate(list, 1.0)));
-	}
+ 
 
 }

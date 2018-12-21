@@ -1,0 +1,22 @@
+{
+  "enable": false,
+  "syncCron": "10 0/10 * * * ?",
+  "forceSyncCron": "10 45 8,12 * * ?",
+  "apiAddress": "https://qyapi.weixin.qq.com",
+  "corpId": "",
+  "corpSecret": "",
+  "agentId": "",
+  "token": "",
+  "encodingAesKey": "",
+  "messageEnable": true,
+  "###enable": "是否启用.###",
+  "###syncCron": "拉入同步cron,默认每10分钟同步一次.###",
+  "###forceSyncCron": "强制拉入同步cron,默认在每天的8点和12点强制进行同步.###",
+  "###apiAddress": "api服务器地址###",
+  "###corpId": "企业微信corpId###",
+  "###corpSecret": "企业微信corpSecret###",
+  "###agentId": "企业微信agentId###",
+  "###token": "回调token###",
+  "###encodingAesKey": "回调encodingAesKey###",
+  "###messageEnable": "推送消息到企业微信###"
+}

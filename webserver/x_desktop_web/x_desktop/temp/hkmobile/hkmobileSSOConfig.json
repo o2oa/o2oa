@@ -1,4 +1,0 @@
-{
-"casLoginUrl":"http://casdev.hk.chinamobile.com/cas/login?service=http://strmgtuat.hk.chinamobile.com/x_desktop/hkmobile/index.html",
-"casLogoutUrl":"http://casdev.hk.chinamobile.com/cas/logout?service=http://strmgtuat.hk.chinamobile.com/x_desktop/hkmobile/index.html"
-}

@@ -1,0 +1,142 @@
+{
+	"selectEntryList": 
+	[
+		{
+			"orderType": "original",
+			"orderRank": 0,
+			"selectType": "path",
+			"attribute": "",
+			"name": "",
+			"column": "qsubject",
+			"displayName": "",
+			"path": "subject"
+		},
+
+		{
+			"orderType": "original",
+			"orderRank": 0,
+			"selectType": "path",
+			"attribute": "",
+			"name": "",
+			"column": "qamount",
+			"displayName": "",
+			"path": "amount"
+		},
+
+		{
+			"orderType": "original",
+			"orderRank": 0,
+			"selectType": "path",
+			"attribute": "",
+			"name": "",
+			"column": "qphone",
+			"displayName": "",
+			"path": "phone"
+		},
+
+		{
+			"orderType": "original",
+			"orderRank": 0,
+			"selectType": "path",
+			"attribute": "",
+			"name": "",
+			"column": "qslDate",
+			"displayName": "",
+			"path": "slDate"
+		},
+
+		{
+			"orderType": "original",
+			"orderRank": 0,
+			"selectType": "path",
+			"attribute": "",
+			"name": "",
+			"column": "qjzDate",
+			"displayName": "",
+			"path": "jzDate"
+		},
+
+		{
+			"orderType": "original",
+			"orderRank": 0,
+			"selectType": "attribute",
+			"attribute": "title",
+			"name": "",
+			"column": "qtitle",
+			"displayName": "",
+			"path": ""
+		},
+
+		{
+			"orderType": "original",
+			"orderRank": 0,
+			"selectType": "attribute",
+			"attribute": "creatorPerson",
+			"name": "",
+			"column": "qcreatorPerson",
+			"displayName": "",
+			"path": ""
+		}
+	],
+
+	"whereEntry": 
+	{
+		"applicationList": 
+		[
+			"0c2c3d76-5301-4918-8869-f88de8d2fe57"
+		],
+
+		"processList": 
+		[
+			
+		],
+
+		"companyList": 
+		[
+			
+		],
+
+		"departmentList": 
+		[
+			
+		],
+
+		"personList": 
+		[
+			
+		],
+
+		"identityList": 
+		[
+			
+		]
+	},
+
+	"filterEntryList": 
+	[
+		
+	],
+
+	"calculateEntryList": 
+	[
+		
+	],
+
+	"groupEntry": 
+	{
+		"column": "qphone",
+		"orderType": "original"
+	},
+
+	"dateRangeEntry": 
+	{
+		"dateRangeType": "none",
+		"dateEffectType": "completed",
+		"year": "",
+		"month": "",
+		"date": "",
+		"season": 0,
+		"week": 0,
+		"adjust": 0
+	}
+}

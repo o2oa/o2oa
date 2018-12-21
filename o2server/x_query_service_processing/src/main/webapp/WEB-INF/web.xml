@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="x_query_service_processing"
+	metadata-complete="false" version="3.0">
+	<display-name>x_query_service_processing</display-name>
+</web-app>
