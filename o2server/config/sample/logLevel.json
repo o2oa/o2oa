@@ -1,0 +1,22 @@
+{
+  "x_program_center": "",
+  "x_processplatform_service_processing": "",
+  "x_query_assemble_designer": "",
+  "x_query_assemble_surface": "",
+  "x_query_service_processing": "",
+  "x_meeting_assemble_control": "",
+  "x_collaboration_service_message": "",
+  "x_collaboration_assemble_websocket": "",
+  "x_organization_assemble_authentication": "",
+  "x_general_assemble_control": "",
+  "###x_program_center": "是否启用调试###",
+  "###x_processplatform_service_processing": "是否启用调试###",
+  "###x_query_assemble_designer": "是否启用调试###",
+  "###x_query_assemble_surface": "是否启用调试###",
+  "###x_query_service_processing": "是否启用调试###",
+  "###x_meeting_assemble_control": "是否启用调试###",
+  "###x_collaboration_service_message": "是否启用调试###",
+  "###x_collaboration_assemble_websocket": "是否启用调试###",
+  "###x_organization_assemble_authentication": "是否启用调试###",
+  "###x_general_assemble_control": "是否启用调试###"
+}

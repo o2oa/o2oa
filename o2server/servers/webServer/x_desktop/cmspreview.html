@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" type="text/css" href="/x_desktop/res/css/style.css" charset="UTF-8" />
+    <link rel="stylesheet" href="/x_desktop/res/css/mBoxNotice.css" charset="UTF-8" />
+    <link rel="stylesheet" href="/x_desktop/res/css/mBoxTooltip.css" charset="UTF-8" />
+    <script src="/x_desktop/res/common.js?v=1.0.6"></script>
+    <!--<script src="/x_desktop/res/framework/mootools/mootools-core-1.4.5-full-nocompat.js"></script>-->
+    <!--<script src="/x_desktop/res/framework/mootools/mootools-more-1.4.0.1-all_2.js"></script>-->
+    <script src="res/framework/mootools/mootools-1.6.0.min.js"></script>
+    <script src="res/framework/Decimal.js"></script>
+
+    <title>FORM PREVIEW</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <script>
+        layout = window.layout || {};
+        var href = window.location.href;
+        if (href.indexOf("debugger")!=-1) layout["debugger"] = true;
+        var mode = (new URI(href)).get("data").mode;
+        if (mode){
+            if (mode=="mobile") layout.mobile = true;
+        }
+        //layout.desktop = layout;
+        COMMON.DOM.addReady(function(){
+            COMMON.AjaxModule.load("/x_desktop/res/framework/mootools/plugin/mBox.Notice.js", null, false);
+            COMMON.AjaxModule.load("/x_desktop/res/framework/mootools/plugin/mBox.Tooltip.js", null, false);
+
+            COMMON.setContentPath("/x_desktop");
+            COMMON.AjaxModule.load("mwf", function(){
+                MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
+                MWF.loadLP("zh-cn");
+                MWF.require("MWF.xDesktop.Layout", function(){
+                    //MWF.require("MWF.xDesktop.Authentication", null, false);
+
+                    (function(){
+                        layout.load = function(){
+                    //        if (this.isAuthentication()){
+                            var preview = window.frameElement.retrieve("preview");
+                            layout.desktop = window.frameElement.ownerDocument.window.layout.desktop;
+
+                            MWF.xDesktop.requireApp("cms.Xform", "Form", function(){
+                                layout.appForm = new MWF.CMSForm($("layout"), preview.data);
+                                layout.appForm.app = {
+                                    "options" : {
+                                        "name" : "CMSDocument"
+                                    },
+                                    "content": document.body,
+                                    "addEvent" : function(){}
+                                };
+                                MWF.getJSON("res/preview/cmsdoc.json", function(data){
+                                    layout.appForm.businessData = {
+                                        "data": data.data,
+                                        "document": data.document,
+                                        "attachmentList": data.attachmentList,
+                                        "status": {
+                                            //"readonly": (this.options.readonly) ? true : false
+                                            "readonly": true //this.readonly
+                                        },
+                                        "control" : data.control
+                                    };
+                                    layout.appForm.load();
+                                });
+                            });
+                    //        }
+                        };
+
+//                        layout.authentication = new MWF.xDesktop.Authentication({
+//                            "onLogin": layout.load.bind(layout)
+//                        });
+
+//                        layout.isAuthentication = function(){
+//                            var returnValue = true;
+//                            this.authentication.isAuthenticated(function(json){
+//                                this.user = json.data;
+//                            }.bind(this), function(){
+//                                this.authentication.loadLogin(this.node);
+//                                returnValue = false;
+//                            }.bind(this));
+//                            return returnValue;
+//                        };
+
+//                        layout.getServiceAddress = function(callback){
+//                            var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
+//                            MWF.restful("get", uri, null, function(json){
+//                                this.serviceAddressList = json.data;
+//                                if (callback) callback();
+//                            }.bind(this));
+//                        };
+//
+//                        MWF.getJSON("res/config/config.json", function(config){
+//                            layout.config = config;
+//
+//                            layout.getServiceAddress(function(){
+//                                layout.load();
+//                            });
+//                        });
+
+                        layout.load();
+                    })();
+
+                });
+            });
+        });
+    </script>
+</head>
+<body style="overflow: auto">
+<div id="layout" style="overflow: auto">
+    <div id="layout_top">
+
+    </div>
+    <div id="layout_form">
+    </div>
+</div>
+</body>
+</html>

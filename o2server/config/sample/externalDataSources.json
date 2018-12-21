@@ -1,0 +1,32 @@
+[
+  {
+    "enable": false,
+    "url": "",
+    "username": "",
+    "password": "",
+    "includes": [],
+    "excludes": [],
+    "toolLevel": "ERROR",
+    "runtimeLevel": "ERROR",
+    "dataCacheLevel": "ERROR",
+    "metaDataLevel": "ERROR",
+    "enhanceLevel": "ERROR",
+    "queryLevel": "ERROR",
+    "sqlLevel": "ERROR",
+    "jdbcLevel": "ERROR",
+    "###enable": "是否启用,可以使用切片方式启用多个数据以提高性能,如果启用多个数据库,那么必须是相同类型的,不能混用,且用户名密码必须一致.###",
+    "###url": "jdbc连接地址###",
+    "###username": "数据库jdbc连接用户名###",
+    "###password": "数据库jdbc连接密码###",
+    "###includes": "设置此数据库存储的类,默认情况下存储所有类型,如果需要对每个类进行单独的控制以达到高性能,可以将不同的类存储到不同的节点上提高性能.可以使用通配符*###",
+    "###excludes": "在此节点上不存储的类,和includes一起设置实际存储的类,可以使用通配符*###",
+    "###toolLevel": "tool日志级别###",
+    "###runtimeLevel": "runtime日志级别###",
+    "###dataCacheLevel": "dataCache日志级别###",
+    "###metaDataLevel": "metaData日志级别###",
+    "###enhanceLevel": "enhance日志级别###",
+    "###queryLevel": "query日志级别###",
+    "###sqlLevel": "sql日志级别###",
+    "###jdbcLevel": "jdbc日志级别###"
+  }
+]

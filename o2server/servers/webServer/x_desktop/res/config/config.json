@@ -1,0 +1,19 @@
+{
+  "center": [
+    {
+      "port": "20030",
+      "host": ""
+    }
+  ],
+  "initManagerChanged": true,
+  "initManagerName": "",
+  "initManagerPassword": "",
+  "footer": "www.o2oa.net",
+  "title": "企业办公平台",
+  "app_protocol": "auto",
+  "loginPage": {
+    "enable": false,
+    "portal": "",
+    "page": ""
+  }
+}
