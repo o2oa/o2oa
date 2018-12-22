@@ -1,7 +1,0 @@
-{
-  "x_query_assemble_designer": "debug",
-  "x_processplatform_service_processing" :"debug",
-  "x_query_service_processing": "debug",
-  "x_query_assemble_surface": "debug",
-  "x_program_center" :"info"
-}
