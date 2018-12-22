@@ -62,7 +62,6 @@
 		<module>x_report_assemble_control</module>
 		<module>x_strategydeploy_assemble_control</module>
 		<module>x_program_center</module>
-		<module>x_build_and_scratch</module>
 		<module>x_console</module>
 	</modules>
 	<properties>
