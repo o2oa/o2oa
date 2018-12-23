@@ -2,8 +2,6 @@ package com.x.base.core.project.tools;
 
 import java.nio.charset.Charset;
 
-import org.junit.Test;
-
 public class DefaultCharset {
 
 	public static final Charset charset = Charset.forName("UTF-8");

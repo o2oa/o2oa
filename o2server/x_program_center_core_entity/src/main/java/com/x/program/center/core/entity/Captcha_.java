@@ -11,7 +11,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.program.center.core.entity.Captcha.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 21 15:32:10 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 12:00:28 CST 2018")
 public class Captcha_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Captcha,String> answer;
     public static volatile SingularAttribute<Captcha,String> id;
