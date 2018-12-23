@@ -16,7 +16,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.bbs.entity.BBSSubjectInfo.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 21 15:30:12 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 11:58:33 CST 2018")
 public class BBSSubjectInfo_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<BBSSubjectInfo,String> acceptReplyId;
     public static volatile ListAttribute<BBSSubjectInfo,String> attachmentList;

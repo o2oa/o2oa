@@ -11,7 +11,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.processplatform.core.entity.element.TemplateForm.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 21 15:31:44 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 12:00:01 CST 2018")
 public class TemplateForm_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<TemplateForm,String> alias;
     public static volatile SingularAttribute<TemplateForm,String> category;

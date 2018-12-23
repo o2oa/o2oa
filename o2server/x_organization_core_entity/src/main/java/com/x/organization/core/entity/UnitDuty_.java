@@ -13,7 +13,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.organization.core.entity.UnitDuty.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 21 15:31:30 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 11:59:46 CST 2018")
 public class UnitDuty_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<UnitDuty,String> description;
     public static volatile SingularAttribute<UnitDuty,String> distinguishedName;
