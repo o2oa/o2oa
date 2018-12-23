@@ -13,7 +13,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.portal.core.entity.File.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 21 15:31:37 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 11:59:52 CST 2018")
 public class File_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<File,String> alias;
     public static volatile SingularAttribute<File,String> data;

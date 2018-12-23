@@ -13,7 +13,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.strategydeploy.core.entity.KeyworkInfo.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 21 15:32:04 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 12:00:22 CST 2018")
 public class KeyworkInfo_ extends SliceJpaObject_  {
     public static volatile ListAttribute<KeyworkInfo,String> attachmentList;
     public static volatile SingularAttribute<KeyworkInfo,String> id;
