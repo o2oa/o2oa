@@ -5,5 +5,6 @@
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.base.core.entity.StorageObject</class>
+    <class>com.x.hotpic.entity.HotPictureInfo</class>
   </persistence-unit>
 </persistence>

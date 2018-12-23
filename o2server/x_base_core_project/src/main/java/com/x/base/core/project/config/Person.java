@@ -49,6 +49,8 @@ public class Person extends ConfigObject {
 	private static final String DEFAULT_PASSWORD = "(person.getMobile())";
 	private static final Integer DEFAULT_PASSWORDPERIOD = 0;
 
+	public Integer MAX_PASSWORDPERIOD = 365 * 10;
+
 	@FieldDescribe("是否启用oauth登录,如果启用将读取token.json中的oauthClients内容作为auth登录内容,默认值:false")
 	private Boolean oauthLogin;
 
@@ -78,6 +80,16 @@ public class Person extends ConfigObject {
 
 	@FieldDescribe("定制登录页面设置.")
 	private LoginPage loginPage;
+
+	public Integer getPasswordPeriod() {
+		if ((null == this.passwordPeriod) || (this.passwordPeriod < 0)) {
+			return 0;
+		} else if (this.passwordPeriod > MAX_PASSWORDPERIOD) {
+			return MAX_PASSWORDPERIOD;
+		} else {
+			return this.passwordPeriod;
+		}
+	}
 
 	public static class LoginPage extends ConfigObject {
 
@@ -130,10 +142,6 @@ public class Person extends ConfigObject {
 
 	public String getPassword() {
 		return StringUtils.isEmpty(this.password) ? DEFAULT_PASSWORD : this.password;
-	}
-
-	public Integer getPasswordPeriod() {
-		return (null == this.passwordPeriod || this.passwordPeriod < 0) ? 0 : this.passwordPeriod;
 	}
 
 	public Boolean getSuperPermission() {

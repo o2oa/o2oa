@@ -12,7 +12,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.query.core.entity.neural.mlp.InValue.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 21 15:30:26 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 11:58:45 CST 2018")
 public class InValue_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<InValue,Integer> count;
     public static volatile SingularAttribute<InValue,String> id;

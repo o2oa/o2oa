@@ -14,7 +14,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.report.core.entity.Report_C_WorkProg.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Fri Dec 21 15:31:57 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 12:00:14 CST 2018")
 public class Report_C_WorkProg_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Report_C_WorkProg,Boolean> completed;
     public static volatile SingularAttribute<Report_C_WorkProg,Date> date;
