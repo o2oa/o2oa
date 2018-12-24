@@ -15,7 +15,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.calendar.core.entity.Calendar_EventRepeatMaster.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 11:58:39 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Mon Dec 24 19:03:59 CST 2018")
 public class Calendar_EventRepeatMaster_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Calendar_EventRepeatMaster,Boolean> alarm;
     public static volatile SingularAttribute<Calendar_EventRepeatMaster,Date> alarmTime;

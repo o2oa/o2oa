@@ -59,6 +59,7 @@ import com.x.server.console.server.Servers;
 public class Main {
 
 	private static final String MANIFEST_FILENAME = "manifest.cfg";
+	private static final String GITIGNORE_FILENAME = ".gitignore";
 
 	public static void main(String[] args) throws Exception {
 		String base = getBasePath();
@@ -700,8 +701,7 @@ public class Main {
 	/**
 	 * 检查store目录下的war文件是否全部在manifest.cfg中
 	 * 
-	 * @param base
-	 *            o2server的根目录
+	 * @param base o2server的根目录
 	 */
 	private static void scanWar(String base) throws Exception {
 		File dir = new File(base, "store");
@@ -717,7 +717,11 @@ public class Main {
 			if (o.getName().equals(MANIFEST_FILENAME)) {
 				continue;
 			}
+			if (o.getName().equals(GITIGNORE_FILENAME)) {
+				continue;
+			}
 			if (!manifestNames.contains(o.getName())) {
+				System.out.println("扫描 store 过程中删除无效的文件:" + o.getName());
 				o.delete();
 			}
 		}
@@ -739,7 +743,7 @@ public class Main {
 			throw new Exception("commons/ext manifest is empty.");
 		}
 		for (File file : extDir.listFiles()) {
-			if (!file.getName().equals(MANIFEST_FILENAME)) {
+			if ((!file.getName().equals(MANIFEST_FILENAME)) && (!file.getName().equals(GITIGNORE_FILENAME))) {
 				if (!extDirManifestNames.remove(file.getName())) {
 					System.out.println("载入 commons/ext 过程中删除无效的文件:" + file.getName());
 					file.delete();
@@ -761,7 +765,7 @@ public class Main {
 		}
 		List<String> jarsDirManifestNames = readManifest(jarsDirManifest);
 		for (File file : jarsDir.listFiles()) {
-			if (!file.getName().equals(MANIFEST_FILENAME)) {
+			if ((!file.getName().equals(MANIFEST_FILENAME)) && (!file.getName().equals(GITIGNORE_FILENAME))) {
 				if (!jarsDirManifestNames.remove(file.getName())) {
 					System.out.println("载入 store/jars 过程中删除无效的文件:" + file.getName());
 					file.delete();

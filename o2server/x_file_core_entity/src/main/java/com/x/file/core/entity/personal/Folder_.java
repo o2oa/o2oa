@@ -11,7 +11,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.file.core.entity.personal.Folder.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 11:59:08 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Mon Dec 24 19:04:20 CST 2018")
 public class Folder_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Folder,String> id;
     public static volatile SingularAttribute<Folder,String> name;

@@ -14,7 +14,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.program.center.core.entity.PromptErrorLog.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 12:00:28 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Mon Dec 24 19:05:10 CST 2018")
 public class PromptErrorLog_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<PromptErrorLog,Boolean> collected;
     public static volatile SingularAttribute<PromptErrorLog,String> exceptionClass;

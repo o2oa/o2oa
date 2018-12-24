@@ -13,7 +13,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.attendance.entity.StatisticTopUnitForMonth.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 11:58:12 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Mon Dec 24 19:03:36 CST 2018")
 public class StatisticTopUnitForMonth_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<StatisticTopUnitForMonth,Long> abNormalDutyCount;
     public static volatile SingularAttribute<StatisticTopUnitForMonth,Double> absenceDayCount;
