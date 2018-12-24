@@ -122,6 +122,7 @@ public class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	void deleteData(Business business, Document document, String... paths) throws Exception {
 		List<Item> exists = business.itemFactory().listWithDocmentWithPath(document.getId(), paths);
 		if (exists.isEmpty()) {
