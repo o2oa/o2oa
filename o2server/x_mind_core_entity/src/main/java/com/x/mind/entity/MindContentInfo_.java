@@ -11,7 +11,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.mind.entity.MindContentInfo.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 11:59:30 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Mon Dec 24 19:04:37 CST 2018")
 public class MindContentInfo_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<MindContentInfo,String> content;
     public static volatile SingularAttribute<MindContentInfo,String> id;

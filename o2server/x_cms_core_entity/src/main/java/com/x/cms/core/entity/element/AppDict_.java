@@ -11,7 +11,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.cms.core.entity.element.AppDict.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 11:58:51 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Mon Dec 24 19:04:08 CST 2018")
 public class AppDict_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<AppDict,String> alias;
     public static volatile SingularAttribute<AppDict,String> appId;

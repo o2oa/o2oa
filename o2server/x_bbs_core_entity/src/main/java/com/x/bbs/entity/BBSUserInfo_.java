@@ -15,7 +15,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.bbs.entity.BBSUserInfo.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 11:58:33 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Mon Dec 24 19:03:55 CST 2018")
 public class BBSUserInfo_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<BBSUserInfo,String> cardId;
     public static volatile SingularAttribute<BBSUserInfo,Long> creamCount;

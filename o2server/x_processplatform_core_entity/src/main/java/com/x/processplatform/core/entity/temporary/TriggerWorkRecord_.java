@@ -11,7 +11,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.processplatform.core.entity.temporary.TriggerWorkRecord.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 12:00:01 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Mon Dec 24 19:04:55 CST 2018")
 public class TriggerWorkRecord_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<TriggerWorkRecord,String> id;
     public static volatile SingularAttribute<TriggerWorkRecord,String> lastSequence;

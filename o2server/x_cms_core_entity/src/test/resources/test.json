@@ -943,22 +943,6 @@
 		}
 	],
 
-	"com.x.attendance.entity.AttendanceDetailAppeal": 
-	[
-		{
-			"dataServer": "xd01",
-			"order": 1,
-			"toolLevel": "WARN",
-			"runtimeLevel": "WARN",
-			"dataCacheLevel": "WARN",
-			"metaDataLevel": "WARN",
-			"enhanceLevel": "WARN",
-			"queryLevel": "WARN",
-			"sqlLevel": "WARN",
-			"jdbcLevel": "WARN"
-		}
-	],
-
 	"com.x.cms.core.entity.element.View": 
 	[
 		{
@@ -1007,21 +991,6 @@
 		}
 	],
 
-	"com.x.attendance.entity.AttendanceAppealInfo": 
-	[
-		{
-			"dataServer": "xd01",
-			"order": 1,
-			"toolLevel": "WARN",
-			"runtimeLevel": "WARN",
-			"dataCacheLevel": "WARN",
-			"metaDataLevel": "WARN",
-			"enhanceLevel": "WARN",
-			"queryLevel": "WARN",
-			"sqlLevel": "WARN",
-			"jdbcLevel": "WARN"
-		}
-	],
 
 	"com.x.organization.core.entity.Custom": 
 	[
@@ -1295,21 +1264,6 @@
 		}
 	],
 
-	"com.x.attendance.entity.AttendanceDetailBakup": 
-	[
-		{
-			"dataServer": "xd01",
-			"order": 1,
-			"toolLevel": "WARN",
-			"runtimeLevel": "WARN",
-			"dataCacheLevel": "WARN",
-			"metaDataLevel": "WARN",
-			"enhanceLevel": "WARN",
-			"queryLevel": "WARN",
-			"sqlLevel": "WARN",
-			"jdbcLevel": "WARN"
-		}
-	],
 
 	"com.x.processplatform.core.entity.element.Merge": 
 	[
