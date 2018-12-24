@@ -28,7 +28,6 @@ import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
 import com.x.cms.core.entity.element.Form;
-import com.x.cms.core.entity.tools.LogUtil;
 
 /**
  * 直接发布文档内容
