@@ -2,6 +2,11 @@ package com.x.cms.assemble.control.jaxrs.permission.element;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 
+/**
+ * 信息权限信息结构
+ * @author O2LEE
+ *
+ */
 public class PermissionInfo {
 
 	@FieldDescribe( "权限类别：读者|阅读|作者|管理" )
