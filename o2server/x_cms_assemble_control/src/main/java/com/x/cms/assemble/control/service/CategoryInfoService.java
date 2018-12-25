@@ -23,14 +23,6 @@ import com.x.cms.core.entity.tools.LogUtil;
 import com.x.query.core.entity.Item;
 
 public class CategoryInfoService {
-
-//	public List<CategoryInfo> list(EntityManagerContainer emc, List<String> ids) throws Exception {
-//		if( ids == null || ids.isEmpty() ){
-//			return null;
-//		}
-//		Business business = new Business( emc );
-//		return business.getCategoryInfoFactory().list( ids );
-//	}
 	
 	public CategoryInfo get( EntityManagerContainer emc, String id ) throws Exception {
 		if( id == null || id.isEmpty() ){
@@ -130,6 +122,7 @@ public class CategoryInfoService {
 		return categoryInfo;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public CategoryInfo save( EntityManagerContainer emc, CategoryInfo temp_categoryInfo, String extContent ) throws Exception {
 		CategoryInfo categoryInfo = null;
 		CategoryExt categoryExt = null;
@@ -191,7 +184,7 @@ public class CategoryInfoService {
 			if( !oldCategoryName.equals( categoryInfo.getCategoryName() )){
 				emc.beginTransaction( Document.class );
 				//对该目录下所有的文档的栏目名称和分类别名进行调整
-				document_ids = business.getDocumentFactory().listByCategoryId( categoryInfo.getId() );
+				document_ids = business.getDocumentFactory().listByCategoryId( categoryInfo.getId(), 9999999 );
 				if( document_ids != null && !document_ids.isEmpty() ){
 					for( String docId : document_ids ){
 						document = emc.find( docId, Document.class );
@@ -259,6 +252,7 @@ public class CategoryInfoService {
 		return categoryExt;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void delete( EntityManagerContainer emc, String id ) throws Exception {
 		List<String> ids = null;
 		CategoryInfo categoryInfo = null;
@@ -299,7 +293,7 @@ public class CategoryInfoService {
 		}
 		
 		//还有文档以及文档权限需要删除
-		ids = business.getDocumentFactory().listByCategoryId( id );
+		ids = business.getDocumentFactory().listByCategoryId( id, 9999999 );
 		if( ids != null && !ids.isEmpty()  ){
 			for( String del_id : ids ){
 				document = emc.find( del_id, Document.class );
