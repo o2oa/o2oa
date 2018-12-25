@@ -23,14 +23,6 @@ import com.x.query.core.entity.Item;
 
 public class AppInfoService {
 
-//	public List<AppInfo> list( EntityManagerContainer emc, List<String> ids ) throws Exception {
-//		if( ids == null || ids.isEmpty() ){
-//			return null;
-//		}
-//		return emc.list( AppInfo.class,  ids );
-//		Business business = new Business( emc );
-//		return business.getAppInfoFactory().list( ids );
-//	}
 	public List<String> listAllIds(EntityManagerContainer emc, String documentType ) throws Exception {
 		Business business = new Business( emc );
 		return business.getAppInfoFactory().listAllIds(documentType);
@@ -170,6 +162,7 @@ public class AppInfoService {
 		return business.getCategoryInfoFactory().countByAppId( id, documentType );
 	}
 	
+	@SuppressWarnings("unchecked")
 	public AppInfo save( EntityManagerContainer emc, AppInfo wrapIn ) throws Exception {
 		AppInfo appInfo = null;
 		if( wrapIn.getId() == null ){
@@ -191,6 +184,7 @@ public class AppInfoService {
 			appInfo.setAppAlias( appInfo.getAppName() );
 			emc.persist( appInfo, CheckPersistType.all);
 		}else{
+			//如果用户修改了栏目的名称
 			if( !wrapIn.getAppName().equals(appInfo.getAppName() )){
 				emc.beginTransaction( CategoryInfo.class );
 				emc.beginTransaction( Document.class );
@@ -202,10 +196,10 @@ public class AppInfoService {
 						categoryInfo = emc.find( categoryId, CategoryInfo.class );
 						categoryInfo.setAppName( wrapIn.getAppName() );
 						categoryInfo.setCategoryAlias( wrapIn.getAppName() + "-" + categoryInfo.getCategoryName() );
-						emc.check( categoryInfo, CheckPersistType.all );
+						emc.check( categoryInfo, CheckPersistType.all );						
 						
 						//对该目录下所有的文档的栏目名称和分类别名进行调整
-						document_ids = business.getDocumentFactory().listByCategoryId( categoryId );
+						document_ids = business.getDocumentFactory().listByCategoryId( categoryId, 9999999 );
 						if( document_ids != null && !document_ids.isEmpty() ){
 							for( String docId : document_ids ){
 								document = emc.find( docId, Document.class );

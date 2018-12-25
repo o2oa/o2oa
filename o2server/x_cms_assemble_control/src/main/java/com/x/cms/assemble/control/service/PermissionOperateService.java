@@ -224,7 +224,7 @@ public class PermissionOperateService {
 						emc.commit();
 						continue;
 					}
-					documentIds = business.getDocumentFactory().listByCategoryId( categoryInfo.getId() );
+					documentIds = business.getDocumentFactory().listByCategoryId( categoryInfo.getId(), 9999999 );
 					if( ListTools.isNotEmpty( documentIds )) {
 						documentList = emc.list( Document.class,  documentIds );
 //						documentList = business.getDocumentFactory().list( documentIds );
@@ -286,7 +286,7 @@ public class PermissionOperateService {
 				return;
 			}
 			appInfo = emc.find( categoryInfo.getAppId(), AppInfo.class );
-			documentIds = business.getDocumentFactory().listByCategoryId( categoryInfo.getId() );
+			documentIds = business.getDocumentFactory().listByCategoryId( categoryInfo.getId(), 9999999 );
 			if( ListTools.isNotEmpty( documentIds )) {
 				documentList = emc.list( Document.class,  documentIds );
 //				documentList = business.getDocumentFactory().list( documentIds );
