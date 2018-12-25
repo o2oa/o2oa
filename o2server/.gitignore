@@ -1,0 +1,6 @@
+.project
+/.settings/
+/local/
+/logs/
+/target/
+/x_build_and_scratch/

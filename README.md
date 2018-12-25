@@ -13,14 +13,14 @@ O2OA 是一套现代企业级的办公平台。有以下特点\:
 
 5. 高可扩展性，用户通过简单的学习后，可以自定义配置门户、流程应用、内容管理应用
 
-更多的产品介绍、使用说明、下载、在线体验、API及讨论请移步至[http://o2oa.io/](http://www.o2oa.io/)
+更多的产品介绍、使用说明、下载、在线体验、API及讨论请移步至[http://www.o2oa.net/](http://www.o2oa.net/)
 
 ![o2oa](http://muliba.u.qiniudn.com/post/20180801-225850@2x.png)
 
 
 ## 官方网站\:
 项目主页 : https://www.oschina.net/p/o2oa
-下载地址 : http://www.o2oa.io
+下载地址 : http://www.o2oa.net
 
 ## 最新版本\:
 ## v4 build 11.02更新内容\:
@@ -165,6 +165,6 @@ o2oa软件遵守双重协议，一个是AGPL授权协议，一个是商用授权
 
 1、o2oa是开源软件，您可以修改源码及免费使用；这时需遵守AGPL协议。  
 
-2、当使用者使用o2oa软件提供收费服务，或者对o2oa进行分发、销售时需进行商业授权。具体请查看：[http://www.o2oa.io/product.html](http://www.o2oa.io/product.html)。  
+2、当使用者使用o2oa软件提供收费服务，或者对o2oa进行分发、销售时需进行商业授权。具体请查看：[http://www.o2oa.net/product.html](http://www.o2oa.net/product.html)。  
 
 3、使用者下载本软件即表示愿遵守此项协议。  

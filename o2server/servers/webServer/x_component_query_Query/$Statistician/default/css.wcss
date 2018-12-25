@@ -1,0 +1,158 @@
+{
+    "node": {
+        "min-height": "100px",
+        "background": "#ffffff",
+        "overflow": "hidden"
+    },
+    "statChartAreaNode": {
+        "height": "350px",
+        "overflow": "hidden",
+        "border": "1px solid #999"
+    },
+    "statTableAreaNode": {
+        "margin-top": "10px",
+        "max-height": "600px",
+        "overflow": "auto"
+    },
+    "viewLoadingAreaNode": {
+        "height": "40px",
+        "margin-top": "20px"
+    },
+    "viewLoadingNode": {
+        "border-radius": "3px",
+        "background": "#DDD",
+        "height": "26px",
+        "width": "100px",
+        "margin": "auto",
+        "border": "1px solid #CCC",
+        "line-height": "26px",
+        "color": "#666"
+    },
+    "viewLoadingIconNode": {
+        "height": "26px",
+        "width": "28px",
+        "background": "url("+"/x_component_query_Query/$Statistician/default/icon/loading.gif) center center no-repeat",
+        "float": "left"
+    },
+    "viewLoadingTextNode": {
+        "margin-left": "28px"
+    },
+    "statChartNode": {
+        //"margin-left": "180px",
+        "height": "350px",
+        "background-color": "#FFF",
+        "overflow": "hidden"
+    },
+    "statChartToolbarNode": {
+        "overflow": "hidden"
+    },
+    "statTableNode": {
+        "border-left": "1px solid #DFDFDF",
+        "border-top": "1px solid #DFDFDF",
+        "background-color": "#FFF",
+        "width": "100%"
+    },
+    "statHeadTh": {
+        "height": "30px",
+        "line-height": "30px",
+        "background-color": "#f0f8ff",
+        "border-right": "1px solid #DFDFDF",
+        "border-bottom": "1px solid #DFDFDF"
+    },
+    "statContentTdNode": {
+        "text-align": "center",
+        "padding": "3px",
+        "background-color": "#fff",
+        "border-right": "1px solid #DFDFDF",
+        "border-bottom": "1px solid #DFDFDF"
+    },
+    "statContentTdNode_selected": {
+        "background-color":"#faebd7"
+    },
+
+    "statChartFlagAreaNode": {
+        "width": "180px",
+        "height": "300px",
+        "float": "left",
+        "margin-right": "5px",
+        "background-color": "#EEE",
+        "overflow": "auto",
+        "padding": " 10px 10px 15px 20px"
+    },
+    "statChartNode": {
+        //"margin-left": "180px",
+        "height": "300px",
+        "background-color": "#FFF",
+        "overflow": "hidden"
+    },
+    "statAllSelectTd": {
+        "border-right": "1px solid #DFDFDF",
+        "border-bottom": "1px solid #DFDFDF",
+        "height": "20px",
+        "width": "30px",
+        "overflow": "hidden",
+        "cursor": "pointer",
+        "background": "url(/x_component_query_Query/$Statistician/default/icon/checkAll.png) center center no-repeat",
+        "padding": "3px"
+    },
+    "statAllColSelectTd": {
+        "border-right": "1px solid #DFDFDF",
+        "border-bottom": "1px solid #DFDFDF",
+        "height": "20px",
+        "cursor": "pointer",
+        "background": "url(/x_component_query_Query/$Statistician/default/icon/checkAllCol.png) center center no-repeat",
+        "padding": "3px"
+    },
+    "statColSelectTd": {
+        "border-right": "1px solid #DFDFDF",
+        "border-bottom": "1px solid #DFDFDF",
+        "background": "url(/x_component_query_Query/$Statistician/default/icon/check.png) center center no-repeat",
+        "cursor": "pointer",
+        "height": "20px",
+        "padding": "3px"
+    },
+    "statAllRowSelectTd": {
+        "border-right": "1px solid #DFDFDF",
+        "border-bottom": "1px solid #DFDFDF",
+        "height": "20px",
+        "cursor": "pointer",
+        "background": "url(/x_component_query_Query/$Statistician/default/icon/checkAllRow.png) center center no-repeat",
+        "padding": "3px"
+    },
+    "statRowSelectTd": {
+        "border-right": "1px solid #DFDFDF",
+        "border-bottom": "1px solid #DFDFDF",
+        "background": "url(/x_component_query_Query/$Statistician/default/icon/check.png) center center no-repeat",
+        "cursor": "pointer",
+        "width": "30px",
+        "padding": "3px"
+    },
+    "statTableSelectedTd": {
+        "background": "url(/x_component_query_Query/$Statistician/default/icon/checked.png) center center no-repeat"
+    },
+    "statTableSelectTd": {
+        "background": "url(/x_component_query_Query/$Statistician/default/icon/check.png) center center no-repeat"
+    },
+    "ststChartFlagNode": {
+        "height": "30x",
+        "margin": "5px 5px 0px 0px",
+        "background-color": "#EEE",
+        "cursor": "default"
+    },
+    "ststChartFlagColorNode": {
+        "height": "24px",
+        "width": "24px",
+        "float": "left",
+        "box-shadow": "0px 0px 0px #FFF"
+    },
+    "ststChartFlagColorNode_over": {
+        "box-shadow": "2px 2px 5px #333"
+    },
+    "ststChartFlagNameNode": {
+        "height": "24px",
+        "line-height": "24px",
+        "font-size": "14px",
+        "margin-left": "34px",
+        "overflow": "hidden"
+    }
+}

@@ -1,0 +1,35 @@
+{
+  "enable": false,
+  "name": "",
+  "icon": "",
+
+  "clientId": "",
+  "clientSecret": "",
+
+  "authAddress": "",
+  "authParameter": {
+    "client_id": "{$clientId}",
+    "client_secret": "{$clientSecret}"
+  },
+  "authMethod": "GET",
+
+  "tokenAddress": "",
+  "tokenParameter": {
+    "client_id": "{$clientId}",
+    "client_secret": "{$clientSecret}",
+    "code": "{$code}"
+  },
+  "tokenMethod": "POST",
+  "tokenType": "json",
+
+  "infoAddress": "",
+  "infoParameter": {
+    "client_id": "{$clientId}",
+    "client_secret": "{$clientSecret}",
+    "token": "{$access_token}"
+  },
+  "infoMethod": "GET",
+  "infoType": "json",
+
+  "infoCredentialField": "username"
+}

@@ -1,0 +1,112 @@
+{
+	"container": {
+		"background-color": "#f9f9f9",
+		"padding-left": "10px",
+		"padding-right": "2px",
+		"word-wrap" : "normal",
+		"word-break" : "keep-all",
+		"cursor": "pointer",
+		"overflow": "hidden",
+		"height": "59px",
+		"display":"block",
+		"font-size": "14px",
+		"border-top": "1px solid #3c76b7"
+	},
+	"toolbarSeparator": {
+		"display":"block",
+		"float": "left",
+		"margin-bottom": "5px",
+		"margin-top": "5px",
+		"height": "48px",
+		"width": "1px",
+		"background-color": "#888888",
+		"border-right": "1px solid #FFFFFF",
+		"overflow": "hidden"
+	},
+
+	"button": {
+		"display":"block",
+		"position": "static",
+		"float": "left",
+		"height": "50px",
+        "width": "50px",
+		"border": "1px solid #f9f9f9",
+		"background-color": "#f9f9f9",
+		"height": "50px",
+		"width": "50px",
+		"margin-right": "8px",
+		"margin-top": "5px",
+		"padding-left": "2px",
+		"padding-right": "2px",
+		"cursor": "pointer",
+		"color": "#333333",
+		"border-radius": "5px"
+	},
+	"buttonImgDiv": {
+		"display":"block",
+		"padding-top": "2px",
+		"padding-bottom": "1px",
+		"padding-left": "1px",
+		"padding-right": "1px",
+		"height": "24px",
+        "width": "24px",
+        "margin": "auto",
+		"cursor": "pointer"
+	},
+	"buttonImg": {
+		"height": "24px",
+		"width": "24px",
+		"cursor": "pointer",
+		"margin-top": "0px"
+	},
+	"buttonTextDiv": {
+	    "color": "#333333",
+		"display":"block",
+		"height": "23px",
+		"line-height": "20px",
+		"text-align": "center",
+		"cursor": "pointer"
+	},
+
+	"buttonDisable": {
+	    "background-color": "#f9f9f9",
+		"color": "#999"
+	},
+	"buttonImgDivDisable": {
+		"color": "#999"
+	},
+	"buttonTextDivDisable": {
+		"color": "#999"
+	},
+	"buttonTextDivDown": {
+        "color": "#ffffff"
+    },
+
+	"buttonOver": {
+		"background-color": "#e7e7e7",
+		"color": "#333333"
+	},
+	"buttonOut": {
+		"background-color": "#f9f9f9",
+		"color": "#333333"
+	},
+	"buttonDown": {
+		"background-color": "#666666",
+		//"background-color": "#1f77b4",
+		"color": "#ffffff"
+	},
+	"buttonUp": {
+		"background-color": "#e7e7e7",
+		"color": "#333333"
+	},
+	"toolbarButtonDownNode": {
+		"display":"block",
+		"float": "left",
+		"padding-left": "2px",
+		"padding-right": "2px",
+		"padding-top": "5px",
+		"height": "18px",
+		"color": "#ff0000",
+		"cursor": "pointer"
+	}
+}

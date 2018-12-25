@@ -1,0 +1,1 @@
+sudo $(cd "$(dirname "$0")"; pwd)/jvm/macos/bin/java -cp $(cd "$(dirname "$0")"; pwd)/console.jar com.x.server.console.swapcommand.Exit

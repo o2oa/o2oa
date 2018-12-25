@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="com.sun.tools.visualvm.host/0">
+    <module_version install_time="1410360595748" last="true" origin="installer" specification_version="1.0">
+        <file crc="2355645449" name="config/Modules/com-sun-tools-visualvm-host.xml"/>
+        <file crc="1320444198" name="modules/com-sun-tools-visualvm-host.jar"/>
+    </module_version>
+</module>

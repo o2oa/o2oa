@@ -1,0 +1,129 @@
+{
+  "viewSetting": {
+    "html": "<div styles='replyListNode'></div>"
+  },
+  "documentSetting": {
+    "html": "<div styles='replyNode'></div>",
+    "action": "open"
+  },
+  "items": [
+    {
+      "name": "replyContent",
+      "content": {
+        "html": "<div styles='itemNode'>"+
+        " <div styles='itemLeftNode'>"+
+        //"   <div styles='itemLeftArrow'></div>"+
+        "   <div styles='itemSatisfied' item='satisfiedReply'>"+
+        "   </div>"+
+        "   <div styles='itemUserName' item='creatorName'>"+
+        "   </div>"+
+        "   <div styles='itemUserFace' item='userFace'>"+
+        "     <div styles='itemUserIcon'>"+
+        "       <img styles='itemUserIcon2' item='userIcon'/>"+
+        "     </div>"+
+        "     <div styles='itemUserStat'>"+
+        "       <div styles='itemUserStatInfor'>"+
+        "         <div styles='itemUserStatCount' item='subject'></div>"+
+        "         <div styles='itemUserStatText' lable='subject'></div>"+
+        "       </div>"+
+        "       <div styles='itemUserStatInfor'>"+
+        "         <div styles='itemUserStatCount' item='reply'></div>"+
+        "         <div styles='itemUserStatText' lable='reply'></div>"+
+        "       </div>"+
+        "       <div styles='itemUserStatInforRight'>"+
+        "         <div styles='itemUserStatCount' item='prime'></div>"+
+        "         <div styles='itemUserStatText' lable='prime'></div>"+
+        "       </div>"+
+        "     </div>"+
+        "   </div>"+
+        "   <div styles='itemUserStat2'>"+
+        "     <div styles='itemUserStat2text' lable='todaySubject'></div>"+
+        "     <div styles='itemUserStat2count' item='todaySubject'></div>"+
+        "   </div>"+
+        "   <div styles='itemUserStat2'>"+
+        "     <div styles='itemUserStat2text' lable='todayReply'></div>"+
+        "     <div styles='itemUserStat2count' item='todayReply'></div>"+
+        "   </div>"+
+        "   <div styles='itemToolsLeft'>"+
+        "       <div styles='messageAction' item='messageAction'></div>"+
+        "   </div>"+
+        " </div>"+
+        " <div styles='itemRightNode'>"+
+        "   <div styles='itemRightTop'>"+
+        "     <div styles='itemTime' lable='publishAt'></div>"+
+        "     <div styles='itemTime' item='createTime'></div>"+
+        "     <div styles='itemFloor'></div><div styles='itemFloor' item='index'></div>"+
+        "   </div>"+
+        "   <div styles='itemRightMidle_satisfied'>"+
+        "     <div item='quoteContent'></div>"+
+        "     <div styles='itemBody' item='content'></div>"+
+        "     <div styles='itemSignature' item='signatureContainer'>"+
+        "       <div styles='itemSignatureIcon'></div>"+
+        "       <div styles='itemSignatureText' item='signature'></div>"+
+        "     </div>"+
+        "   </div>"+
+        "   <div styles='itemRightBottom'>"+
+        "     <div styles='itemTools'>"+
+        "       <div styles='replyAction' item='replyAction'></div>"+
+        "       <div styles='editAction' item='editAction'></div>"+
+        "       <div styles='deleteAction' item='deleteAction'></div>"+
+        "     </div>"+
+        "   </div>"+
+        " </div>"+
+        "</div>",
+        "items": {
+          "satisfiedReply" : {
+            "text" : "satisfiedAnswer"
+          },
+          "creatorName" : {
+            "value" : "function( d ){ return d.creatorName.split('@')[0]; }",
+            "styles" : "person",
+            "mouseoverStyles": "person_over",
+            "event" : "click^^function(node){ this.app.openPerson( this.data.creatorName ) }"
+          },
+//          "subject": { "value" : "function(d){ return 8 }" },
+//          "reply" : { "value" : "function(d){ return 66 }"},
+//          "accessed": { "value" : "function(d){ return 333 }" },
+//          "experience": { "value" : "function(d){ return 9 }" },
+//          "prime": { "value" : "function(d){ return 6 }" },
+          "createTime" : {"value" : "function( d ){ return MWFForum.getDateDiff2( d.createTime || d.updateTime )}" , "title" : "function( d ){ return d.createTime || d.updateTime }" },
+          "quoteContent" : {
+            "value": "",
+            "show": "function( d ){ return ( d.parentId && d.parentId!='' ) ? true : false }"
+          },
+          "content": { "type" : "html" },
+          "remove" : { "action" : "remove" },
+          "userIcon" : {
+            "value": "",
+            "attr" : "src^^function( d ){ if( d.userIcon ){ return d.userIcon }else{ return '/x_component_ForumDocument/$Main/default/icon/noavatar_big.gif' } }"
+          },
+          "index" : { "value" : "function(){ return '满意回复'}" },
+          "messageAction": {
+            "text" : "sendMessage",
+            "action": "sendMessage",
+            "condition": "function( d ){ return d.creatorName != this.app.userName && !this.app.access.isAnonymous() && !this.app.inBrowser }",
+            "event" : "mouseover^^function( itemNode, ev ){ itemNode.setStyles( this.css.messageAction_over ) }##mouseout^^function( itemNode, ev ){ itemNode.setStyles( this.css.messageAction ) }"
+          },
+          "replyAction": {
+            "text" : "reply",
+            "action": "createReply",
+            "condition": "function( d ){ return !d.stopReply && this.explorer.isReplyPublisher }",
+            "event" : "mouseover^^function( itemNode, ev ){ itemNode.setStyles( this.css.replyAction_over ) }##mouseout^^function( itemNode, ev ){ itemNode.setStyles( this.css.replyAction ) }"
+          },
+          "editAction": {
+            "text" : "edit",
+            "action": "editReply",
+            "condition" : "function( d ){ return layout.desktop.session.user.distinguishedName == d.creatorName }",
+            "event" : "mouseover^^function( itemNode, ev ){ itemNode.setStyles( this.css.editAction_over ) }##mouseout^^function( itemNode, ev ){ itemNode.setStyles( this.css.editAction ) }"
+          },
+          "deleteAction": {
+            "text" : "delete",
+            "action": "deleteReply",
+            "condition" : "function( d ){ return layout.desktop.session.user.distinguishedName == d.creatorName }",
+            "event" : "mouseover^^function( itemNode, ev ){ itemNode.setStyles( this.css.deleteAction_over ) }##mouseout^^function( itemNode, ev ){ itemNode.setStyles( this.css.deleteAction ) }"
+          }
+        }
+      }
+    }
+  ]
+}

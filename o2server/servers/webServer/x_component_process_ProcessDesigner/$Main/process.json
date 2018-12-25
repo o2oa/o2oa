@@ -1,0 +1,88 @@
+{
+  "name": "新建流程",
+  "alias": "",
+  "description": "",
+  "application": "",
+  "id": "",
+  "autoList": [],
+  "begin": {
+    "process": "",
+    "name":"开始",
+    "alias":"",
+    "description":"",
+    "position": "200,60",
+    "route": "b184a187-13e1-431c-81d5-1cccadb4c85d",
+    "id":"a14f0970-a70f-4c4e-a092-634814772330",
+    "createTime":"",
+    "type": "begin",
+
+    "beforeArriveScript": "",
+    "afterArriveScript": "",
+    "beforeExecuteScript": "",
+    "afterExecuteScript": "",
+    "afterInquiryScript": ""
+  },
+  "conditionList": [],
+  "embedList": [],
+  "endList": [
+    {
+      "id": "ea30593c-2170-4a09-91aa-69bef6d6b715",
+      "process": "",
+      "name":"结束",
+      "alias":"",
+      "description":"",
+      "position": "200,330",
+      "createTime":"",
+      "type": "end",
+
+      "beforeArriveScript": "",
+      "afterArriveScript": "",
+      "beforeExecuteScript": "",
+      "afterExecuteScript": ""
+    }
+  ],
+  "invokeList": [],
+  "manualList": [],
+  "mergeList": [],
+  "routeList": [
+    {
+      "id": "b184a187-13e1-431c-81d5-1cccadb4c85d",
+      "createTime": "2014-01-20 14:29:52",
+      "updateTime": "2014-01-20 14:24:09",
+      "process": "",
+      "activityType": "end",
+      "activity": "ea30593c-2170-4a09-91aa-69bef6d6b715",
+      "name": "开始",
+      "alias": "",
+      "description": "",
+      "track": "",
+      "routeScriptIdList": [
+
+      ],
+      "position": ""
+    }
+  ],
+  "splitList": [],
+  "cancelList": [],
+
+  "scriptList": [],
+
+  "manageIdentityList": [],
+  "manageDepartmentList": [],
+  "manageScriptList": [],
+
+  "availableMode": "assign",
+  "availableIdentityList": [],
+  "availableDepartmentList": [],
+  "availableCompanyList": [],
+
+  "reviewIdentityList": [],
+  "reviewDepartmentList": [],
+  "reviewScriptList": [],
+
+  "beforeBeginScriptList": "",
+  "afterBeginScriptList": "",
+  "beforeEndScriptIdList": "",
+  "afterEndScriptIdList": "",
+  "categoryName": ""
+}

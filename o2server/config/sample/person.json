@@ -1,0 +1,28 @@
+{
+  "oauthLogin": false,
+  "codeLogin": true,
+  "bindLogin": true,
+  "faceLogin": true,
+  "password": "(person.getMobile())",
+  "passwordPeriod": 0.0,
+  "register": "disable",
+  "superPermission": true,
+  "###oauthLogin": "是否启用oauth登录,如果启用将读取token.json中的oauthClients内容作为auth登录内容,默认值:false###",
+  "###codeLogin": "是否启用验证码登录,默认值:true###",
+  "###bindLogin": "是否启用扫描二维码登录,默认值:false###",
+  "###faceLogin": "是否启用刷脸登录,默认值:false###",
+  "###password": "注册初始密码,使用()调用脚本生成初始密码,默认为:(person.getMobile())###",
+  "###passwordPeriod": "密码过期时间,0表示不过期,默认值:0###",
+  "###register": "是否允许用户自注册,disable:不允许,captcha通过验证码注册,code:通过短信注册,默认值:disable###",
+  "###superPermission": "是否启用超级管理员权限,默认值:true###",
+  "###mobileRegex": "手机号码校验正则表达式,()表示脚本内容,默认值:^1(3|4|5|7|8)\\\\d{9}$###",
+  "###loginPage": "定制登录页面设置.###",
+  "loginPage": {
+    "enable": false,
+    "portal": "",
+    "page": "",
+    "###enable": "是否启用定制登录页面.###",
+    "###portal": "指定登录页面所属的portal,可以用id,name,alias.###",
+    "###page": "指定的登录页面,可以使用name,alias,id###"
+  }
+}

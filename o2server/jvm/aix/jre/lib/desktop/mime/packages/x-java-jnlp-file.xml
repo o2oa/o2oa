@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--===========================================================================
+  - Licensed Materials - Property of IBM
+  - "Restricted Materials of IBM"
+  - 
+  - IBM SDK, Java(tm) Technology Edition, v8
+  - (C) Copyright IBM Corp. 2014, 2014. All Rights Reserved
+  -
+  - US Government Users Restricted Rights - Use, duplication or disclosure
+  - restricted by GSA ADP Schedule Contract with IBM Corp.
+  -===========================================================================
+-->
+
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/x-java-jnlp-file">
+    <sub-class-of type="text/xml"/>
+    <comment>Java Network Launched Application</comment>
+    <glob pattern="*.jnlp"/>
+    <magic priority="85">
+      <match type="string" value="&lt;jnlp" offset="0:64"/>
+    </magic>
+  </mime-type>
+</mime-info>

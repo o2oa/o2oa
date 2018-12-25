@@ -1,0 +1,67 @@
+#
+#=========================================================================
+#
+# XL XML Processor for Java
+# Licensed Materials - Property of IBM
+# (C) Copyright IBM Corp. 2006. All Rights Reserved.
+# US Government Users Restricted Rights - Use, duplication or disclosure 
+# restricted by GSA ADP Schedule Contract with IBM Corp.
+#
+#=========================================================================
+# Copyright 2004 The Apache Software Foundation.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#=========================================================================
+#
+#  StAX provides a mechanism for applications to parse and serialize 
+#  XML documents independent of any given XML processing implementation.  
+#  An application can swap between different implementations without 
+#  having to change any code. This is accomplished, in part by using
+#  "Factory Finders" to locate a particular implementation, using a
+#  prescribed ordered lookup procedure.
+#
+#  The IBM XL XML Processor for Java uses the following procedure to 
+#  determine which implementations to use for the XMLInputFactory, 
+#  XMLOutputFactory and XMLEventFactory.
+#
+#  * first, it will examine the system properties for the 
+#    following keys:
+#      - javax.xml.stream.XMLInputFactory
+#      - javax.xml.stream.XMLOutputFactory
+#      - javax.xml.stream.XMLEventFactory
+#  * next, it will try to find a file called stax.properties in
+#    the lib subdirectory of your JRE installation and look
+#    for the keys above
+#  * next, it will examine all the jars on your classpath to
+#    try and find one with the appropriate entries in its
+#    META-INF/services directory
+#  * if all else fails, it will use a hardcoded default. The
+#    defaults for the XL XML Processor for Java are:
+#      - com.ibm.xml.xlxp.api.stax.XMLInputFactoryImpl
+#      - com.ibm.xml.xlxp.api.stax.XMLOutputFactoryImpl
+#      - com.ibm.xml.xlxp.api.stax.XMLEventFactoryImpl
+#
+#  The third step can be quite time-consuming, especially if you
+#  have a lot of jars on your classpath and run applications which
+#  require the creation of lots of transformer and parser factories.
+#
+#  To improve XML parsing and processing performance, rename this 
+#  file to stax.properties and copy it into your JRE's lib directory.
+#  You will also need to uncomment the entries below that you want
+#  to use. 
+#
+#  ====================================================================
+#
+#javax.xml.stream.XMLInputFactory=com.ibm.xml.xlxp.api.stax.XMLInputFactoryImpl
+#javax.xml.stream.XMLOutputFactory=com.ibm.xml.xlxp.api.stax.XMLOutputFactoryImpl
+#javax.xml.stream.XMLEventFactory=com.ibm.xml.xlxp.api.stax.XMLEventFactoryImpl

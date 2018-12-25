@@ -1,3 +1,6 @@
-.DS_Store
-jvm/*
-webserver/x_desktop_web/.idea/*
+/o2cloud/
+.classpath
+.project
+/.settings/
+/target/
+*_.java

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="javadoc">
-    <target name="javadoc">
-        <javadoc access="protected" additionalparam="-encoding utf-8 -charset utf-8   " author="true" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="com.x.collaboration.core.message,com.x.collaboration.core.message.notification,com.x.collaboration.core.message.operation,com.x.collaboration.core.message.transfer,com.x.collaboration.core.message.dialog" source="1.8" sourcepath="src/main/resources;src/test/java;src/main/java;src/test/resources" splitindex="true" use="true" version="true"/>
-    </target>
-</project>

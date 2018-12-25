@@ -1,0 +1,90 @@
+{
+  //根据人员获取部门
+  "listDepartmentByPerson": {"uri": "/jaxrs/department/list/person/{name}"},
+  //根据人员获取所在公司
+  "listCompanyByPerson": {"uri": "/jaxrs/company/list/person/{name}"},
+  //获取公司的一级部门
+  "listDepartmentByCompany": {"uri": "/jaxrs/department/list/company/{companyName}/top"},
+
+  //根据身份获取人员
+  "getPersonByIdentity": {"uri": "/jaxrs/person/identity/{name}"},
+  //根据人员获取身份
+  "listIdentityByPerson": {"uri": "/jaxrs/identity/list/person/{name}"},
+  //获取人员
+  "getPerson": {"uri": "/jaxrs/person/{name}"},
+  "getPersonIcon": {"uri": "/jaxrs/person/{flag}/icon"},
+  "getDepartmentGather" : {"uri":"/jaxrs/okrtask/unit/reportTaskCollect/{id}","method":"GET"},
+  //获取顶层组织名称
+  "getTopUnit":{"uri":"/jaxrs/unit/list/top"},
+
+
+  ///////////////////////////////////////////////新的组织//////////////////////////////////
+  //data: {"personList": []}
+  "listIdentityWithPerson": {"uri": "/jaxrs/identity/list/person/object", "method": "POST"}, //查询人员的身份对象
+  //data: {"identityList":[]}
+  "listUnitWithIdentity": {"uri": "/jaxrs/unit/list/identity/object", "method": "POST"}, //获取身份所在的组织
+  //data: {"identityList":[]}
+  "listWithIdentityObject": {"uri": "/jaxrs/person/list/identity/object", "method": "POST"}, //获取身份对应的人员
+
+  //data:{"name":"部门正值","unit":"xxxx@0458bd06-00c7-448a-9ca1-f9178d4b2234@U"}
+  "getUnitDuty":{"uri":"/jaxrs/unitduty/list/identity/unit/name","method":"POST"},
+
+  //获取当前用户的战略部门
+  "listDeptList2" : {"uri":"/jaxrs/strategydeploy/listunitlevel2/{level}","method":"GET"},
+  ///////////////////////////////////////////////新的组织////////////////////////////////////////////
+
+
+  ///////////////////////////////////////公司工作重点//////////////////////////////////////////////////
+  "getKeyWorkListYear" : {"uri" : "/jaxrs/strategydeploy/listyears","method":"GET"},
+  "getKeyWorkDepartmentByYear" : {"uri" : "/jaxrs/strategydeploy/listdepts/{year}","method":"GET"},
+  "getKeyWorkListNext" : {"uri" : "/jaxrs/strategydeploy/filter/list/{id}/next/{count}", "method": "PUT"},
+  "getKeyWorkListPage" : {"uri" : "/jaxrs/strategydeploy/filter/list/{page}/asc/{count}", "method": "PUT"},
+  "getKeyWorkById":{"uri" : "/jaxrs/strategydeploy/{id}", "method": "GET"},
+  "saveKeyWork":{"uri" : "/jaxrs/strategydeploy/save", "method":"POST"},
+  "deleteKeyWork":{"uri":"/jaxrs/strategydeploy/{id}","method":"DELETE"},
+  "deleteKeyWorkAll":{"uri":"/jaxrs/strategydeploy/{id}","method":"DELETE"},
+  "changeKeyWorkPosition":{"uri":"/jaxrs/strategydeploy/updatesequencenumber","method":"POST"},
+  "getKeyWorkAddAuthorize":{"uri":"/jaxrs/strategydeploy/isadd","method":"GET"},
+
+  ///////////////////////////////////////公司工作重点//////////////////////////////////////////////////
+
+  ///////////////////////////////////////举措//////////////////////////////////////////////////
+  "getMeasureListYear" : {"uri" : "/jaxrs/measures/listyears","method":"GET"},
+  "getMeasureDepartmentByYear" : {"uri" : "/jaxrs/measures/listdept/{year}","method":"GET"},
+  "getMeasureListNext" : {"uri" : "/jaxrs/measures/filter/list/{id}/next/{count}", "method": "PUT"},
+  "getMeasureListPage" : {"uri" : "/jaxrs/measures/filter/list/page/{page}/count/{count}", "method": "PUT"},
+  "getMeasureById":{"uri" : "/jaxrs/measures/{id}", "method": "GET"},
+  "saveMeasure":{"uri" : "/jaxrs/measures/save", "method":"POST"},
+  "deleteMeasure":{"uri":"/jaxrs/measures/{id}","method":"DELETE"},
+  "getMeasureAddAuthorize":{"uri":"/jaxrs/measures/isadd","method":"GET"},
+  "getMeasureMaxNumber":{"uri":"/jaxrs/measures/getmaxsn/parentid/{parentid}","method":"GET"},
+  "importMeasure" : {"uri" : "/jaxrs/measuresimport/measures","method":"POST", "enctype": "formData"},
+  "getErrorImportExcel":{"uri":"/jaxrs/measuresimport/result/flag/{flag}","method":"GET"},
+  "changeMeasurePosition":{"uri":"/jaxrs/measures/updatesequencenumber","method":"POST"},
+  "getMeasureByParentId":{"uri" : "/jaxrs/measures/filter/list/parentid/{parentid}", "method": "GET"},
+  "exportMeasure":{"uri":"/jaxrs/exportcontent/export/year/{year}","method":"GET"},
+  "downloadFile":{"uri":"/jaxrs/exportcontent/result/flag/{flag}","method":"GET"},
+  ///////////////////////////////////////举措//////////////////////////////////////////////////
+
+  //////////////////////////////////五项重点工作//////////////////////////////////////////////////
+  "getPriorityDepartments":{"uri" : "/jaxrs/keywork/dept/listdepts","method":"GET"},
+  "getYearsByDepartment":{"uri" : "/jaxrs/keywork/listyearsbydept","method":"POST"},
+  "getPriorityListNext":{"uri" : "/jaxrs/keywork/filter/list/{id}/next/{count}","method":"PUT"},
+  "getPriorityById":{"uri" : "/jaxrs/keywork/{id}", "method": "GET"},
+  "savePriority":{"uri" : "/jaxrs/keywork/save", "method":"POST"},
+  "deletePriority":{"uri":"/jaxrs/keywork/{id}","method":"DELETE"},
+  "getPriorityAddAuthorize":{"uri":"/jaxrs/keywork/isadd","method":"GET"},
+
+
+  "listPriorityAttachment" : {"uri":"/jaxrs/attachment/list/work/{workId}"},
+  "getPriorityAttachment": {"uri": "/jaxrs/attachment/{id}/work/{workId}"},
+  "deletePriorityAttachment": {"uri": "/jaxrs/attachment/{id}/work/{workId}", "method": "DELETE"},
+  "uploadPriorityAttachment": {"uri": "/jaxrs/attachment/upload/keywork/{workId}", "method": "POST", "enctype": "formData"},
+  "getPriorityAttachmentData": {"uri": "/jaxrs/attachment/download/{id}/keywork/{workId}", "method": "GET"},
+  "getPriorityAttachmentStream": {"uri": "/jaxrs/attachment/download/{id}/work/{workId}/stream/{stream}", "method": "GET"},
+
+  "listHomepageNaviPower": {"uri":"/jaxrs/strategydeploy/listhomepagenavipower"},
+
+  //////////////////////////////////五项重点工作//////////////////////////////////////////////////
+  "clazz": "x_strategydeploy_assemble_control"
+}
