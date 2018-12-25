@@ -63,7 +63,7 @@ public class ActionTransferAllDocumentInfoPermission extends BaseAction {
 					
 					//查询该分类下所有的文档ID列表
 					try {
-						documentIds = documentServiceAdv.listIdsByCategoryId(categoryId);
+						documentIds = documentServiceAdv.listIdsByCategoryId(categoryId, 9999999);
 						if( ListTools.isEmpty( documentIds ) ){
 							continue;
 						}
