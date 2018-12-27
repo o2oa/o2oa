@@ -22,7 +22,7 @@ O2OA 是一套现代企业级的办公平台。有以下特点\:
 项目主页 : https://www.oschina.net/p/o2oa
 下载地址 : http://www.o2oa.net
 
-## v4 build 11.02\:
+## v4 build 12.26\:
 
 2018-12-26 新增功能:[表单设计]表单和页面增加导入功能，支持HTML、JSON格式。
 
