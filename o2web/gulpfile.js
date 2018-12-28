@@ -104,10 +104,10 @@ var apps = [
 ];
 
 var uploadOptions = {
-    'location': '',
-    'host': '',
-    'user': '',
-    'pass': '',
+    'location': 'E:/o2server/servers/webServer/',
+    'host': 'dev.o2oa.net',
+    'user': 'xadmin',
+    'pass': 'xadmin',
     "remotePath": "/"
 };
 var options = minimist(process.argv.slice(2), {//upload: local ftp or sftp
