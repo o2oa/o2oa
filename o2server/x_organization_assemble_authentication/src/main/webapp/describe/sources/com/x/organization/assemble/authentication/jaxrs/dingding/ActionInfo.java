@@ -103,14 +103,6 @@ class ActionInfo extends BaseAction {
 			this.nonceStr = nonceStr;
 		}
 
-		public String getCorpId() {
-			return corpId;
-		}
-
-		public void setCorpId(String corpId) {
-			this.corpId = corpId;
-		}
-
 		public String getAgentid() {
 			return agentid;
 		}
@@ -126,6 +118,15 @@ class ActionInfo extends BaseAction {
 		public void setTimeStamp(Long timeStamp) {
 			this.timeStamp = timeStamp;
 		}
+
+		public String getCorpId() {
+			return corpId;
+		}
+
+		public void setCorpId(String corpId) {
+			this.corpId = corpId;
+		}
+
 
 	}
 

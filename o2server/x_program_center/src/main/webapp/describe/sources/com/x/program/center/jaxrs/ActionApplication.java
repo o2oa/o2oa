@@ -29,6 +29,7 @@ import com.x.program.center.jaxrs.schedule.ScheduleAction;
 import com.x.program.center.jaxrs.storagemappings.StorageMappingsAction;
 import com.x.program.center.jaxrs.test.TestAction;
 import com.x.program.center.jaxrs.unexpectederrorlog.UnexpectedErrorLogAction;
+import com.x.program.center.jaxrs.validation.ValidationAction;
 import com.x.program.center.jaxrs.warnlog.WarnLogAction;
 import com.x.program.center.jaxrs.zhengwudingding.ZhengwuDingdingAction;
 
@@ -62,6 +63,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(QiyeweixinAction.class);
 		classes.add(ScheduleAction.class);
 		classes.add(AuthenticationAction.class);
+		classes.add(ValidationAction.class);
 		return classes;
 	}
 }

@@ -12,6 +12,7 @@ import javax.persistence.FlushModeType;
 
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.StringValueMap;
 
 public abstract class EntityManagerContainerBasic implements AutoCloseable {
 
@@ -124,7 +125,35 @@ public abstract class EntityManagerContainerBasic implements AutoCloseable {
 				return FieldType.booleanValueList;
 			}
 		}
-		if (field.getType().isEnum()){
+		if (StringValueMap.class.isAssignableFrom(field.getType())) {
+			return FieldType.stringValueMap;
+		}
+		if (Map.class.isAssignableFrom(field.getType())) {
+			ParameterizedType parameterized = (ParameterizedType) field.getGenericType();
+			Class<?> actualClass = (Class<?>) parameterized.getActualTypeArguments()[1];
+			if (String.class.isAssignableFrom(actualClass)) {
+				return FieldType.stringValueMap;
+			}
+			if (Integer.class.isAssignableFrom(actualClass)) {
+				return FieldType.integerValueMap;
+			}
+			if (Double.class.isAssignableFrom(actualClass)) {
+				return FieldType.doubleValueMap;
+			}
+			if (Long.class.isAssignableFrom(actualClass)) {
+				return FieldType.longValueMap;
+			}
+			if (Float.class.isAssignableFrom(actualClass)) {
+				return FieldType.floatValueMap;
+			}
+			if (Date.class.isAssignableFrom(actualClass)) {
+				return FieldType.dateValueMap;
+			}
+			if (Boolean.class.isAssignableFrom(actualClass)) {
+				return FieldType.booleanValueMap;
+			}
+		}
+		if (field.getType().isEnum()) {
 			return FieldType.enumValue;
 		}
 		throw new Exception("unknow filed type{name:" + field.getName() + "}.");

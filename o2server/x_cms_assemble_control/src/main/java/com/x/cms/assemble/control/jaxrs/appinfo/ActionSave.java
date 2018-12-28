@@ -15,7 +15,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
@@ -26,11 +25,6 @@ import com.x.cms.core.entity.element.View;
 import com.x.cms.core.entity.element.ViewCategory;
 import com.x.cms.core.entity.element.ViewFieldConfig;
 
-/**
- * 保存CMS栏目信息设置
- * @author O2LEE
- *
- */
 public class ActionSave extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionSave.class);
@@ -56,15 +50,7 @@ public class ActionSave extends BaseAction {
 		}
 		
 		if (check) {
-			if( "cipher".equalsIgnoreCase( effectivePerson.getDistinguishedName() )) {
-				identityName = "cipher";
-				unitName = "cipher";
-				topUnitName = "cipher";
-			}else if( "xadmin".equalsIgnoreCase( effectivePerson.getDistinguishedName() )) {
-				identityName = "xadmin";
-				unitName = "xadmin";
-				topUnitName = "xadmin";
-			}else {
+			if ( !"xadmin".equalsIgnoreCase( effectivePerson.getDistinguishedName()) ) {
 				try {
 					identityName = userManagerService.getPersonIdentity( effectivePerson.getDistinguishedName(), identityName );
 				} catch (Exception e) {
@@ -73,51 +59,56 @@ public class ActionSave extends BaseAction {
 					result.error(exception);
 					logger.error(e, effectivePerson, request, null);
 				}
+			}else {
+				identityName = "xadmin";
+				unitName = "xadmin";
+				topUnitName = "xadmin";
 			}
 		}
 
-		if (check && !"xadmin".equals(identityName)&& !"cipher".equals(identityName)) {
+		if (check && !"xadmin".equals(identityName)) {
 			try {
 				unitName = userManagerService.getUnitNameByIdentity( identityName );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ExceptionAppInfoProcess(e, "系统在根据用户身份信息查询所属组织名称时发生异常。Identity:" + identityName);
+				Exception exception = new ExceptionAppInfoProcess(e,
+						"系统在根据用户身份信息查询所属组织名称时发生异常。Identity:" + identityName);
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		if (check && !"xadmin".equals(identityName)&& !"cipher".equals(identityName)) {
+		if (check && !"xadmin".equals(identityName)) {
 			try {
 				topUnitName = userManagerService.getTopUnitNameByIdentity( identityName );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ExceptionAppInfoProcess(e, "系统在根据用户身份信息查询所属顶层组织名称时发生异常。Identity:" + identityName);
+				Exception exception = new ExceptionAppInfoProcess(e,
+						"系统在根据用户身份信息查询所属顶层组织名称时发生异常。Identity:" + identityName);
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
 
 		if (check) {
-			if ( StringUtils.isEmpty( wi.getAppName() ) ) {
+			if ( wi.getAppName() == null || wi.getAppName().isEmpty()) {
 				check = false;
 				Exception exception = new ExceptionAppInfoNameEmpty();
 				result.error(exception);
 			}
 		}
-		
 		if (check) {
-			if( "数据".equals( wi.getDocumentType() )) {
-				wi.setDocumentType( "数据" );
-			}else {
+			if( StringUtils.isEmpty( wi.getDocumentType() ) ) {
 				wi.setDocumentType( "信息" );
+			}else {
+				if( !"信息".equals(wi.getDocumentType()) && !"数据".equals( wi.getDocumentType() )) {
+					wi.setDocumentType( "信息" );
+				}
 			}
 		}
-		
 		if (check) {
 			try {
-				//判断栏目信息是否已经存在，栏目信息不允许重名
 				ids = appInfoServiceAdv.listByAppName( wi.getAppName());
-				if ( ListTools.isNotEmpty( ids ) ) {
+				if (ids != null && !ids.isEmpty()) {
 					for (String tmp : ids) {
 						if (tmp != null && !tmp.trim().equals( wi.getId())) {
 							check = false;
@@ -128,7 +119,8 @@ public class ActionSave extends BaseAction {
 				}
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ExceptionAppInfoProcess(e, "系统根据应用栏目名称查询应用栏目信息对象时发生异常。AppName:" + wi.getAppName());
+				Exception exception = new ExceptionAppInfoProcess(e,
+						"系统根据应用栏目名称查询应用栏目信息对象时发生异常。AppName:" + wi.getAppName());
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
@@ -140,7 +132,6 @@ public class ActionSave extends BaseAction {
 			wi.setCreatorTopUnitName( topUnitName );
 			
 			try {
-				//保存CMS栏目信息
 				appInfo = appInfoServiceAdv.save( wi, effectivePerson );
 
 				// 更新缓存
@@ -168,9 +159,7 @@ public class ActionSave extends BaseAction {
 	}
 
 	public static class Wi extends AppInfo {
-		
 		private static final long serialVersionUID = -6314932919066148113L;
-		
 		private String identity = null;
 
 		public String getIdentity() {

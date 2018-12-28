@@ -21,6 +21,7 @@ public class x_program_center extends AssembleC {
 		containerEntities.add("com.x.program.center.core.entity.UnexpectedErrorLog");
 		containerEntities.add("com.x.program.center.core.entity.Structure");
 		containerEntities.add("com.x.program.center.core.entity.WarnLog");
+		containerEntities.add("com.x.program.center.core.entity.validation.Meta");
 		containerEntities.add("com.x.portal.core.entity.Page");
 		containerEntities.add("com.x.portal.core.entity.Portal");
 		containerEntities.add("com.x.organization.core.entity.Group");
