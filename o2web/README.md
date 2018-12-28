@@ -8,8 +8,6 @@ O2平台Web端应用。
 [![last-commit](https://img.shields.io/github/last-commit/o2oa/o2oa.svg)](https://github.com/o2oa/o2oa)
 ---
 
-[sss](http://ddd)
-
 ## 简介
 
 O2平台Web端应用，它将会随o2server一起编译。您也可以单独编译，并将它部署到任意的WEB服务器。
@@ -68,9 +66,6 @@ O2平台Web端应用，它将会随o2server一起编译。您也可以单独编�
 	    "page": ""
 	  }
 	}
-
-![o2oa](http://muliba.u.qiniudn.com/post/20180801-225850@2x.png)
-
 
 ## 官方网站\:
 
