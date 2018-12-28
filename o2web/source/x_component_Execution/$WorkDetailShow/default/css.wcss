@@ -1,0 +1,428 @@
+{
+  "formMaskNode": {
+    "width": "100%",
+    "height": "100%",
+    "opacity": 0.6,
+    "position": "absolute",
+    "background-color": "#CCC",
+    "top": "0px",
+    "left": "0px"
+  },
+  "formAreaNode": {
+    "position": "absolute",
+    "opacity": 0,
+    "top": "0px" //,
+    //"z-index" : "105"
+  },
+  "formNode": {
+    "background-color": "#FFF",
+    "box-shadow": "0px 0px 10px #999",
+    "margin": "auto",
+    "border": "1px solid #fff",
+    "overflow": "hidden"
+  },
+  "formTopNode": {
+    "color" : "#fff",
+    "height": "60px",
+    "background-color": "#3d77c1",
+    "border-top": "1px solid #ddd",
+    "border-bottom": "1px solid #b6b6b6",
+    "line-height": "60px",
+    "font-size": "16px",
+    "padding-left" : "5px",
+    "text-align": "left"
+    //"margin-right":"10px"
+  },
+  "formTopIconNode" : {
+    "width": "28px",
+    "margin-top" : "10px",
+    "height": "32px",
+    "float": "left",
+    "background": "url(/x_component_Execution/$WorkDetail/default/icon/document.png) no-repeat center 4px"
+  },
+  "formTopTextNode" : {
+    "font-size": "18px",
+    "float": "left",
+    "width" : "1100px",
+    "text-align" : "center",
+    "overflow" : "hidden",
+    "text-overflow" : "ellipsis",
+    "white-space":"nowrap"
+  },
+  "formTopCloseActionNode": {
+    "width": "32px",
+    "height": "32px",
+    "margin-top" : "10px",
+    "float": "right",
+    "padding-left" : "30px",
+    "padding-right" : "10px",
+    "background": "url(/x_component_Execution/$WorkDetail/default/icon/close.png) no-repeat center 4px",
+    "cursor": "pointer"
+  },
+  "formTopContentNode" : {
+    "float" : "right",
+    "padding-right" : "10px",
+    "text-align" : "right"
+  },
+  "formTopContentTitle" : {
+  },
+  "formTopContentValue" : {
+    "padding-right" : "20px",
+    "font-size": "14px"
+  },
+  "formNewNode": {
+    "width": "47px",
+    "height": "47px",
+    "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+  },
+  "formIconNode": {
+    "width": "47px",
+    "height": "47px"
+  },
+  "formEditNode": {
+    "width": "47px",
+    "height": "47px"
+  },
+  "formContentNode": {
+    "border": "0px solid #666",
+    "width": "100%",
+    "margin": "auto",
+    "font-size": "14px",
+    "color": "#666",
+    "font-family": "微软雅黑",
+    "overflow" : "hidden"
+  },
+  "formTableContainer" : {
+    //"margin": "0px 10px",
+    "overflow" : "hidden",
+    "positon" : "static"
+  },
+  "formBottomNode" : {
+    "height" : "50px",
+    "line-height" : "50px",
+    "border-top" : "1px solid #3d77c1",
+    "background-color" : "#fff",
+    "overflow" : "hidden"
+  },
+  "formOkActionNode": {
+    "margin-top" : "5px",
+    "height": "35px",
+    "width": "75px",
+    "cursor": "pointer",
+    "float": "right",
+    "line-height": "35px",
+    "text-align": "center",
+    "font-size": "16px",
+    "font-family": "微软雅黑",
+    "border": "1px solid #3d77c1",
+    "background-color" : "#3d77c1",
+    "color": "#FFF",
+    "margin-right": "20px",
+    "box-shadow": "3px 3px 3px #999"
+  },
+  "formCancelActionNode": {
+    "margin-top" : "5px",
+    "height": "35px",
+    "width": "75px",
+    "cursor": "pointer",
+    "float": "right",
+    "line-height": "35px",
+    "text-align": "center",
+    "font-size": "16px",
+    "font-family": "微软雅黑",
+    "border": "1px solid #3d77c1",
+    "background-color" : "#3d77c1",
+    "color": "#FFF",
+    "margin-right": "20px",
+    "box-shadow": "3px 3px 3px #999"
+  },
+  "formTableArea" : {
+    //"height" : "100%",
+    //"width" : "100%",
+    "overflow" : "hidden"
+  },
+  "formTableValueDiv":{
+    "line-height":"",
+    "margin-left":"10px",
+    "min-height":"50px"
+  },
+  "formTableTitleDiv":{
+    "height":"auto"
+  },
+  "workSplitAndDescriptionDiv":{
+
+  },
+  "leftArea" : {
+    "width" : "265px",
+    "background-color": "#2b445d"
+  },
+  "reportArea" : {
+    "border": "1px solid #fff"
+    //"height" : "50%"
+  },
+  "reportTopNode": {
+    "color" : "#fff",
+    "height": "40px",
+    "background-color": "#006666",
+    "line-height": "40px",
+    "font-size": "14px",
+    "padding-left" : "10px",
+    "text-align": "left"
+  },
+  "reportTopIconNode" : {
+    "margin-top" : "4px",
+    "width": "32px",
+    "height": "32px",
+    "float": "left",
+    "background": "url(/x_component_Execution/$WorkDetail/default/icon/report.png) no-repeat 4px 4px"
+  },
+  "reportTopTextNode" : {
+    "margin-left" : "5px",
+    "font-size": "16px",
+    "float": "left"
+  },
+  "startReport":{
+    "float":"right",
+    "margin-right":"10px",
+    "cursor":"pointer"
+  },
+  "reportContentNode":{
+    "color" : "#fff",
+    "min-height" : "260px",
+    "background-color" : "#2b445d",
+    //"padding-top" : "10px",
+    "overflow" : "hidden"
+  },
+  "reportItemNode" : {
+    "height" : "32px",
+    "line-height" : "32px",
+    "padding-left":"10px",
+    "background-color" : "#2b445d"
+  },
+  "reportItemNode_over" : {
+    "background-color" : "#3c76c1"
+  },
+  "reportItemIconNode" : {
+    "width": "32px",
+    "height": "32px",
+    "float": "left",
+    "background": "url(/x_component_Execution/$WorkDetail/default/icon/rep.png) no-repeat 4px 4px"
+  },
+  "reportItemTextNode":{
+    "float": "left",
+    "cursor":"pointer"
+  },
+
+  "questionArea" : {
+    "border-top": "1px solid #ddd",
+    "border-left": "1px solid #ddd",
+    "border-right": "1px solid #ddd"
+    //"height" : "50%"
+  },
+  "questionTopNode": {
+    "color" : "#fff",
+    "height": "40px",
+    "background-color": "#006666",
+    "line-height": "40px",
+    "font-size": "14px",
+    "padding-left" : "10px",
+    "text-align": "left"
+  },
+  "questionTopIconNode" : {
+    "margin-top" : "4px",
+    "width": "32px",
+    "height": "32px",
+    "float": "left",
+    "background": "url(/x_component_Execution/$WorkDetail/default/icon/question.png) no-repeat 4px 4px"
+  },
+  "questionTopTextNode" : {
+    "margin-left" : "5px",
+    "font-size": "16px",
+    "float": "left"
+  },
+  "questionContentNode":{
+    "color" : "#fff",
+    "min-height" : "260px",
+    "background-color" : "#2b445d",
+    //"padding-top" : "10px",
+    "overflow" : "hidden"
+  },
+  "questionItemNode" : {
+    "height" : "32px",
+    "line-height" : "32px",
+    "padding-left":"10px"
+  },
+  "questionItemIconNode" : {
+    "width": "32px",
+    "height": "32px",
+    "float": "left",
+    "background": "url(/x_component_Execution/$WorkDetail/default/icon/que.png) no-repeat 4px 4px"
+  },
+  "questionItemTextNode":{
+    "float": "left",
+    "cursor":"pointer"
+  },
+
+  "detailArea" : {
+    "width":"630px"
+  },
+  "detailTopNode": {
+    "color" : "#fff",
+    "height": "40px",
+    "background-color": "#006666",
+    "border": "1px solid #ddd",
+    "line-height": "40px",
+    "font-size": "14px",
+    "padding-left" : "15px",
+    "text-align": "left"
+  },
+  "detailTopIconNode" : {
+    "margin-top" : "4px",
+    "width": "32px",
+    "height": "32px",
+    "float": "left",
+    "background": "url(/x_component_Execution/$WorkDetail/default/icon/detail.png) no-repeat center center"
+  },
+  "detailTopTextNode" : {
+    "margin-left" : "5px",
+    "font-size": "16px",
+    "float": "left"
+  },
+  "archiveTextDiv":{
+    "float":"right",
+    "margin-right":"5px",
+    "color":"#ffff00"
+  },
+  "detailContentNode" : {
+    "overflow" : "hidden",
+    "margin-right" : "6px"
+  },
+  "checkArea":{
+    "padding-left":"5px"
+  },
+  "checkTitle":{
+    "font-weight":"bold"
+  },
+  "checkContent":{
+    "margin-top":"5px",
+    "margin-left":"10px",
+    "padding-right":"5px",
+    "margin-bottom":"20px",
+    "font-size":"12px"
+  },
+  "processInfoDiv":{
+    "padding-left":"5px"
+  },
+  "processInfoTitleDiv":{
+    "font-weight":"bold"
+  },
+  "processInfoContent":{
+    "margin-left":"10px",
+    "padding-right":"5px",
+    "margin-bottom":"20px",
+    "font-size":"12px"
+  },
+  "processTable":{
+    "margin-top":"10px",
+    "width":"100%",
+    "border-collapse":"collapse",
+    "border-spacing":"0",
+    "border":"solid #cccccc",
+    "border-width":"1px 0px 0px 1px"
+  },
+  "processTH":{
+    "border":"solid #cccccc",
+    "border-width":"0px 1px 1px 0px",
+    "font-weight":"bold",
+    "text-align":"center",
+    "padding":"5px 5px"
+  },
+  "processTD":{
+    "border":"solid #cccccc",
+    "border-width":"0px 1px 1px 0px",
+    "padding":"5px 5px"
+  },
+  "chatArea" : {
+    "width" : "365px",
+    "background-color":"#f2f2f2"
+  },
+  "chatTopNode": {
+    "color" : "#fff",
+    "height": "40px",
+    "background-color": "#006666",
+    "border": "1px solid #ddd",
+    "line-height": "40px",
+    "font-size": "14px",
+    "padding-left" : "15px",
+    "text-align": "left"
+  },
+  "chatTopIconNode" : {
+    "margin-top" : "4px",
+    "width": "32px",
+    "height": "32px",
+    "float": "left",
+    "background": "url(/x_component_Execution/$WorkDetail/default/icon/chat.png) no-repeat 4px 4px"
+  },
+  "chatTopTextNode" : {
+    "margin-left" : "5px",
+    "font-size": "16px",
+    "float": "left"
+  },
+  "chatContentNode":{
+    //"min-height" : "580px",
+    "background-color" : "#f2f2f2"
+  },
+  "chatContentListNode":{
+    "padding-top" : "10px",
+    "overflow" : "hidden",
+    "margin-right" : "6px"
+  },
+  "chatEditorNode":{
+    "height" : "180px"
+  },
+
+  "prevReportInforDiv":{
+  //"width":"800px",
+    "height":"100%","background-color":"#006699","position":"absolute","left":"266px","top":"64px","z-index":"2"
+},
+  "prevReportInforTopDiv":{
+    "width":"800px","height":"40px"
+  },
+  "prevReportInforTopCloseDiv":{
+    "width": "32px",
+    "height": "32px",
+    "float": "right",
+    "padding-left" : "30px",
+    "padding-right" : "10px",
+    "background": "url(/x_component_Execution/$WorkReport/default/icon/close.png) no-repeat center 4px",
+    "cursor": "pointer"
+  },
+  "prevContentDiv":{
+    "list-style":"none",
+    "width":"800px",
+    "font-size":"14px",
+    "color":"#ffffff",
+    "margin":"10px"
+  },
+
+  "prevContentTitleDiv":{
+    "font-size":"16px",
+    "font-weight":"bold",
+    "height":"30px",
+    "line-height":"30px"
+  },
+  "prevContentValueDiv":{
+    "margin":"0px 20px"
+  },
+  "reportLeaderContentDiv":{
+    "border-bottom":"1px dashed #3c76c1",
+    "padding-top":"10px"
+  },
+  "prevReportInforListDiv":{
+    "height":"562px",
+    "overflow" : "hidden"
+  },
+  "authDiv":{
+    "width":"100%","color":"#f6ac0d","font-weight":"bold","margin-left":"10px","margin-top":"5px"
+  }
+}

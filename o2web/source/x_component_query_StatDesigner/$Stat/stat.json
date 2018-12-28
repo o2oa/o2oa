@@ -1,0 +1,20 @@
+{
+  "application": "",
+  "name": "",
+  "alias": "",
+  "description": "",
+  "availableIdentityList": [],
+  "availableDepartmentList": [],
+  "availableCompanyList": [],
+  "data": {
+//    "customWhere": false,
+//    "customFilter": false,
+//    "customDaterange": false,
+    "calculate": {
+      "chart": ["bar"],
+      "isGroup": false,
+      "isAmount": false,
+      "calculateList": []
+    }
+  }
+}

@@ -1,0 +1,98 @@
+{
+	"pageNode": {
+		"border": "1px dashed #333",
+		"overflow": "hidden",
+		"line-height": "2px",
+		"float": "left",
+		"min-width": "99.9%"
+	},
+	"moduleNode": {
+		"border": "1px dashed #333",
+		"overflow": "hidden",
+		"line-height": "2px"
+	},
+	"propertyTabNode": {
+		"font-size": "12px",
+		"margin-top": "5px"
+	},
+	"editNode": {
+		"font-size": "12px",
+		"padding": "5px",
+		"margin": "5px",
+		"border": "1px solid #CCC"
+	},
+	"editTable": {
+		
+	},
+	"editTableTitle": {
+		"width": "60px",
+		"font-weight": "bold",
+		"font-size": "12px",
+		"height": "24px",
+		"line-height": "24px",
+		"border-bottom": "1px dashed #CCC"
+	},
+	"editTableValue": {
+		"height": "24px",
+		"line-height": "24px",
+		"border-bottom": "1px dashed #CCC"
+	},
+	"editTableInput": {
+		"width": "98%",
+		"border-top": "1px solid #DDD",
+		"border-left": "1px solid #DDD",
+		"border-bottom": "1px solid #EEE",
+		"border-right": "1px solid #EEE"
+	},
+	"editTableInputNoWidth": {
+		"border-top": "1px solid #DDD",
+		"border-left": "1px solid #DDD",
+		"border-bottom": "1px solid #EEE",
+		"border-right": "1px solid #EEE"
+	},
+	"editTableTextarea": {
+		"width": "98%",
+		"height": "100px",
+		"border-top": "1px solid #DDD",
+		"border-left": "1px solid #DDD",
+		"border-bottom": "1px solid #EEE",
+		"border-right": "1px solid #EEE"
+	},
+	propertyRefreshFormNode: {
+	    "width": "24px",
+	    "height": "24px",
+	    "float": "right",
+	    "background": "url("+"/x_component_process_FormDesigner/Module/Form/default/icon/refresh.png) no-repeat center center",
+	    "cursor": "pointer"
+	},
+	"processIconNode": {
+        "width": "32px",
+        "height": "32px",
+        "line-height": "32px",
+        "text-align": "center",
+        "float": "left"
+    },
+    "processIconSelectNode": {
+        "padding": "0px 5px",
+        "height": "24px",
+        "line-height": "24px",
+        "text-align": "center",
+        "border": "1px solid #999",
+        "background-color": "#EEE",
+        "color": "#777",
+        "border-radius": "3px",
+        "float": "right",
+        "margin-top": "4px",
+        "margin-right": "5px",
+        "cursor": "pointer"
+    },
+    "labelFlagNode": {
+        "width": "32px",
+        "height": "32px",
+        "line-height": "32px",
+        "text-align": "center",
+        "float": "left",
+        "background-repeat": "no-repeat",
+        "background-position": "center center"
+    },
+}

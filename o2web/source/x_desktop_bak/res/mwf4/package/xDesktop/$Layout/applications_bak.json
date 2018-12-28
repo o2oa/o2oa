@@ -1,0 +1,182 @@
+[
+  {
+    "name": "ControlPanel",
+    "path": "ControlPanel",
+    "title": "控制面板",
+    "iconPath": "appicon.png"
+  },
+//  {
+//    "name": "Collect",
+//    "path": "Collect",
+//    "title": "连接到O2云",
+//    "iconPath": "appicon.png",
+//    "allowList": ["xadmin", "Manager"]
+//  },
+//  {
+//    "name": "AppMarket",
+//    "path": "AppMarket",
+//    "title": "应用市场",
+//    "iconPath": "appicon.png",
+//    "allowList": ["xadmin", "Manager"]
+//  },
+
+//  {
+//    "name": "Deployment",
+//    "path": "Deployment",
+//    "title": "部署管理",
+//    "iconPath": "appicon.png"
+//  },
+//  {
+//    "name": "Setting",
+//    "path": "Setting",
+//    "title": "平台管理",
+//    "iconPath": "appicon.png"
+//  },
+//  {
+//    "name": "Org",
+//    "path": "Org",
+//    "title": "组织管理",
+//    "iconPath": "appicon.png"
+//  },
+  {
+    "name": "DesignCenter",
+    "path": "DesignCenter",
+    "title": "设计中心",
+    "iconPath": "appicon.png"
+  },
+//  {
+//    "name": "ApplicationExplorer",
+//    "path": "process.ApplicationExplorer",
+//    "title": "流程应用管理",
+//    "iconPath": "appicon.png"
+//  },
+//  {
+//    "name": "PortalExplorer",
+//    "path": "portal.PortalExplorer",
+//    "title": "门户管理",
+//    "iconPath": "appicon.png"
+//  },
+//  {
+//    "name": "cmsManager",
+//    "path": "cms.Column",
+//    "title": "内容管理配置",
+//    "iconPath": "appicon.png"
+//  },
+//  {
+//    "name": "DataExplorer",
+//    "path": "query.QueryExplorer",
+//    "title": "数据中心",
+//    "iconPath": "appicon.png"
+//  },
+
+//  {
+//    "name": "Profile",
+//    "path": "Profile",
+//    "title": "个人设置",
+//    "iconPath": "appicon.png"
+//  },
+//  {
+//    "name": "BAM",
+//    "path": "BAM",
+//    "title": "流程监控",
+//    "iconPath": "appicon.png"
+//  },
+  {
+    "name": "TaskCenter",
+    "path": "process.TaskCenter",
+    "title": "办公中心",
+    "iconPath": "appicon.png",
+    "widgetName": "TaskWidget",
+    "widgetTitle": "待办列表",
+    "widgetIconPath": "widgeticon.png"
+  },
+  {
+    "name": "cms",
+    "path": "cms.Index",
+    "title": "信息平台",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "File",
+    "path": "File",
+    "title": "云文件",
+    "iconPath": "appicon.png"
+  },
+//  {
+//    "name": "IM",
+//    "path": "IM",
+//    "title": "在线交流",
+//    "iconPath": "appicon.png",
+////    "widgetName": "IMWidget",
+////    "widgetTitle": "IMWidget",
+////    "widgetIconPath": "widgeticon.png",
+//    "widgetStart": false
+//  },
+  {
+    "name": "Note",
+    "path": "Note",
+    "title": "备忘录",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "Meeting",
+    "path": "Meeting",
+    "title": "会议管理",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "Execution",
+    "path": "Execution",
+    "title": "执行力管理",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "Attendance",
+    "path": "Attendance",
+    "title": "考勤管理",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "Forum",
+    "path": "Forum",
+    "title": "论坛",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "HotArticle",
+    "path": "HotArticle",
+    "title": "热点",
+    "iconPath": "appicon.png"
+  }
+
+
+
+
+
+//  {
+//    "name": "Console",
+//    "path": "Console",
+//    "title": "控制台",
+//    "iconPath": "appicon.png"
+//  },
+
+//  {
+//    "name": "AppDesigner",
+//    "path": "AppDesigner",
+//    "title": "组件开发工具",
+//    "iconPath": "appicon.png",
+//    "visible": true
+//  },
+//  {
+//    "name": "VsettanMail",
+//    "path": "VsettanMail",
+//    "title": "邮件",
+//    "iconPath": "appicon.png",
+//    "widgetName": "MailWidget",
+//    "widgetTitle": "定时获取新邮件",
+//    "widgetIconPath": "widgeticon.png",
+//    "widgetStart": true,
+//    "widgetVisible": false,
+//    "visible": true
+//  }
+]

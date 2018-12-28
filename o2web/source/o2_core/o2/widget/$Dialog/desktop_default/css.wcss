@@ -1,0 +1,58 @@
+{
+	"from": {
+		"width": "1px",
+		"height": "1px",
+		"position": "absolute",
+		"top": $(document.body).getSize().y/2,
+		"left": $(document.body).getSize().x/2,
+		"border-style": "solid",
+		"border-color": "#999",
+		"border-width": "1",
+		
+		"background-color": "#fff",
+		"border-radius": "8px",
+		"box-shadow": "5px 5px 20px #333", 
+		"z-index": "20000",
+		
+		"padding": "3px",
+	
+		"opacity": 0,
+		"background-image": "url("+o2.session.path+"/widget/$Dialog/desktop_default/img/window.jpg)"
+	},
+	"to": {
+		"background-color": "#fff",
+		"border-style": "solid",
+		"border-color": "#999",
+		"border-width": "1",
+		"box-shadow": "0px 7px 20px #999", 
+		"z-index": "20000",
+		
+		"font-size": "12px",
+		"height": "60",
+		"padding": "3px",
+		"width": "300",
+		"position": "absolute",
+		"top": "0",
+		"left": "0",
+		"opacity": 1,
+		"background-image": "url("+o2.session.path+"/widget/$Dialog/desktop_default/img/window.jpg)"
+		
+	},
+	"mark": {
+		"height": "0",
+		"width": "0",
+		"opacity": 0.3,
+		"position": "absolute",
+		"top": "0px",
+		"left": "0px",
+		"z-index": "19999",
+		"border-style": "none",
+		"border-width": "0",
+		"background-color": "#CCC"
+	},
+	"button": {
+		"border": "1px solid #999",
+		"color": "#333",
+		"margin": "0px 5px"
+	}
+}

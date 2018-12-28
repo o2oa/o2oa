@@ -1,0 +1,40 @@
+{
+  "navi": [
+    //		{
+    //			"title": "流程管理",
+    //			"action": "process.ApplicationExplorer",
+    //			"icon": "process.png"
+    //		},
+    {
+      "title": "办公中心",
+      "action": "process.TaskCenter",
+      "icon": "task.png"
+    },
+    //    {
+    //      "title": "内容管理",
+    //      "action": "cms.Index",
+    //      "icon": "cms.png"
+    //    },
+    {
+      "title": "云文件",
+      "action": "File",
+      "icon": "file.png"
+    },
+
+    //        {
+    //          "title": "邮件系统",
+    //          "action": "VsettanMail",
+    //          "icon": "mail.png"
+    //        },
+    {
+      "title": "组织管理",
+      "action": "Organization",
+      "icon": "org.png"
+    },
+    {
+      "title": "个人设置",
+      "action": "Profile",
+      "icon": "profile.png"
+    }
+  ]
+}

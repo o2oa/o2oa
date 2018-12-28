@@ -1,0 +1,12 @@
+[
+  {
+    "title": "新建管理员",
+    "id": "1.1",
+    "action": "createDocument",
+    "icon": "create.png",
+    "expand": false,
+    "position" : "left",
+    "styles" : "toolbarItemNode",
+    "sub": []
+  }
+]

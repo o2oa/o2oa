@@ -1,0 +1,7 @@
+{
+  "createComponent": {"uri": "/jaxrs/component", "method": "POST"},
+  "getComponent": {"uri": "/jaxrs/component/{id}"},
+  "updateComponent": {"uri": "/jaxrs/component/{id}", "method": "PUT"},
+  "removeComponent": {"uri": "/jaxrs/component/{id}", "method": "DELETE"},
+  "listComponent": {"uri": "/jaxrs/component/list/all"}
+}

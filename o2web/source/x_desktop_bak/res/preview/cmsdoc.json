@@ -1,0 +1,41 @@
+{
+  "document": {
+    "id": "08b5fd7a-7c34-41ed-80a2-8f25eabc04ef",
+    "createTime": (new Date()).format("db"),
+    "updateTime": (new Date()).format("db"),
+    "sequence": "2017030317260908b5fd7a-7c34-41ed-80a2-8f25eabc04ef",
+    "title": "文档标题（预览）",
+    "appId": "34c79bc8-7de8-40f2-b138-bce7ab406042",
+    "appName": "应用（预览）",
+    "categoryId": "48ea1fe3-dca9-4487-b6b8-986aa90dd876",
+    "categoryName": "分类（预览）",
+    "form": "b3d1eea1-4181-42d2-ae77-1a30e5199c5e",
+    "formName": "表单（预览）",
+    "creatorPerson": "创建用户（预览）",
+    "creatorIdentity": "创建身份（预览）",
+    "creatorUnitName": "创建部门（预览）",
+    "creatorTopUnitName": "创建公司（预览）",
+    "creatorPersonShort": "创建用户（预览）",
+    "creatorUnitNameShort": "创建部门（预览）",
+    "creatorTopUnitNameShort": "创建公司（预览）",
+    "docStatus": "draft",
+    "viewCount": 0,
+    "publishTime": (new Date()).format("db"),
+    "attachmentList": [],
+    "distributeFactor": 574
+  },
+  "attachmentList": [],
+  "data": {
+    "explain": "文档说明（预览）"
+  },
+  "control": {
+    "allowRead": true,
+    "allowPublishDocument": true,
+    "allowArchiveDocument" : true,
+    "allowRedraftDocument" : true,
+    "allowSave": true,
+    "allowPopularDocument": true,
+    "allowEditDocument":  true,
+    "allowDeleteDocument":  true
+  }
+}

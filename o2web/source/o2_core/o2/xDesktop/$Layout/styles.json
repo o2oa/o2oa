@@ -1,0 +1,46 @@
+[
+  {
+    "title": "O2",
+    "style": "o2"
+  },
+  {
+    "title": MWF.LP.desktop.styleMenu.default,
+    "style": "default"
+  },
+  {
+    "title": MWF.LP.desktop.styleMenu.black,
+    "style": "black"
+  },
+  {
+    "title": MWF.LP.desktop.styleMenu.color,
+    "style": "color"
+  },
+//  {
+//    "title": "荷花",
+//    "style": "lotus"
+//  },
+//  {
+//    "title": "仙鹤",
+//    "style": "crane"
+//  },
+  {
+    "title": MWF.LP.desktop.styleMenu.peony,
+    "style": "peony"
+  },
+  {
+    "title": MWF.LP.desktop.styleMenu.car,
+    "style": "car"
+  },
+  {
+    "title": MWF.LP.desktop.styleMenu.dock,
+    "style": "dock"
+  },
+  {
+    "title": MWF.LP.desktop.styleMenu.panda,
+    "style": "panda"
+  },
+  {
+    "title": MWF.LP.desktop.styleMenu.star,
+    "style": "star"
+  }
+]

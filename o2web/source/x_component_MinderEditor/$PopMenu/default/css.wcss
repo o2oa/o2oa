@@ -1,0 +1,78 @@
+{
+  "readNode" : {
+
+  },
+  "selectArrowNode":{
+    "width":"30px",
+    "height":"30px",
+    "float":"right",
+    "background":"url(/x_component_Template/$MSelector/default/icon/arrow.png) no-repeat center"
+  },
+  "selectArrowNode_up":{
+    "width":"30px",
+    "height":"30px",
+    "float":"right",
+    "background":"url(/x_component_Template/$MSelector/default/icon/arrow-up.png) no-repeat center"
+  },
+  "tooltipNode":{
+    "width" : "200px",
+    "font-size" : "14px",
+    "max-width" : "700px",
+    "min-width" : "100px",
+    "position" : "absolute",
+    "min-height":"100px",
+    "max-height":"1000px",
+    "z-index" : "11",
+    "margin-top" : "1px",
+    "background-color" : "#fff",
+    "-webkit-user-select": "text",
+    "-moz-user-select": "text",
+    "border":"1px solid #ccc",
+    "border-radius":"2px",
+    "padding" : "0px",
+    "box-shadow" : "0px 0px 6px #ccc",
+    "list-style-type":"none",
+    "overflow":"hidden"
+  },
+  "listContentNode":{
+    "background-color":"#fff",
+    "list-style-type":"none",
+    "overflow":"hidden"
+  },
+  "listNode":{
+    "overflow":"hidden"
+  },
+  "listItemNode":{
+    "background-color" : "#fff",
+    "font-size" : "14px",
+    "color" : "#333",
+    "height" : "30px",
+    "line-height" : "30px",
+    "background-repeat" : "no-repeat",
+    "background-position-y" : "7px",
+    "background-position-x" : "7px",
+    "padding" : "0px 10px 0px 30px",
+    "cursor" : "pointer"
+  },
+  "listItemNode_over" : {
+    "background-color" : "#3d77c1",
+    "color" : "#fff",
+    "cursor" : "pointer"
+  },
+  "listItemNode_disable" : {
+    "background-color" : "#fff",
+    "color" : "#999",
+    "cursor" : "default"
+  },
+  "listItemKeyNode" : {
+      "float":"right",
+      "font-size" : "12px",
+      "color" : "#666"
+  },
+  "listItemKeyNode_over" : {
+    "color" : "#fff"
+  },
+  "listItemKeyNode_disable" : {
+    "color" : "#999"
+  }
+}

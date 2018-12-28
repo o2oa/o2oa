@@ -1,0 +1,77 @@
+{
+  "inputText": {
+    "width": "99%",
+    "border":"1px solid #ccc",
+    "background-color":"#FFF",
+    "height": "24px"
+  },
+  "inputTime" : {
+    "width": "99%",
+    "border":"1px solid #ccc",
+    "background-color":"#FFF",
+    "height": "24px",
+    "background" : "url(/x_component_Template/$MForm/default/icon/calendar.png) 98% center no-repeat"
+  },
+  "inputPerson" : {
+    "width": "99%",
+    "border":"1px solid #ccc",
+    "background-color":"#FFF",
+    "min-height": "24px",
+    "overflow" : "hidden",
+    "background" : "url(/x_component_Template/$MForm/default/icon/selectperson.png) 98% center no-repeat"
+  },
+  "inputTextarea" : {
+    "width": "99%",
+    "border":"1px solid #ccc",
+    "background-color":"#FFF",
+    "height": "40px"
+  },
+  "inputSelect" : {
+    "width": "99%",
+    "border":"1px solid #ccc",
+    "background-color":"#FFF",
+    "height": "26px"
+  },
+  "inputRadio" : {
+    "float" : "left"
+  },
+  "inputSelectUnformatWidth" : {
+    "margin-right":"5px",
+    "border":"1px solid #ccc",
+    "background-color":"#FFF",
+    "height": "24px"
+  },
+
+  "formTable" : {
+    "margin-top" : "10px"
+  },
+  "formTableHead" : {
+    "height": "50px",
+    "line-height": "50px",
+    "text-align": "center",
+    "min-width": "80px",
+    "font-size":"20px",
+    "font-weight": "bold"
+  },
+  "formTableTitle" : {
+    "height": "22px",
+    //"line-height": "30px",
+    "text-align": "left",
+    "font-weight" : "bold"
+  },
+  "formTableValue" : {
+    "text-align": "left"
+  },
+  "formTableTitleDiv" : {
+    "font-weight" : "bold"
+  },
+  "formTableValueDiv" : {
+    "min-height" : "40px",
+    "line-height" : "22px"
+  },
+  "formTableInlineValueDiv" : {
+    "float" : "left",
+    "margin-right" : "10px"
+  }
+}
+

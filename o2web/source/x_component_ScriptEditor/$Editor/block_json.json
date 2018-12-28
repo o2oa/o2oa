@@ -1,0 +1,55 @@
+[
+  {
+    "name": "json.new",
+    "contents": [
+      "创建一个JSON对象，并赋值给",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "json.New", "extend": "$Around"
+  },
+  {
+    "name": "json.newKey",
+    "contents": [
+      "键",
+      {"type": "input","default": ""},
+      " : 值",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "json.NewKey", "extend": "$Enumerate"
+  },
+  {
+    "name": "json.newArray",
+    "contents": [
+      "创建一个JSON数组对象，并赋值给",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "json.NewArray", "extend": "$Around"
+  },
+  {
+    "name": "json.newValue",
+    "contents": [
+      "值",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "json.NewKey", "extend": "$Operation"
+  },
+
+  {
+    "name": "json.encode",
+    "contents": [
+      "将JSON对象",
+      {"type": "mortise", "tenonTypes": []},
+      "编码为字符串"
+    ],
+    "class": "array.encode", "extend": "$Expression"
+  },
+  {
+    "name": "json.encode",
+    "contents": [
+      "将字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "解码为JSON对象"
+    ],
+    "class": "array.encode", "extend": "$Expression"
+  }
+]

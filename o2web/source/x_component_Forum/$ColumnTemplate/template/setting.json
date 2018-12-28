@@ -1,0 +1,76 @@
+{
+  "type_1_0" : {
+      "column" : 1,
+      "image" : false,
+      "itemCount" : 6,
+      "preview" : "/x_component_Forum/$ColumnTemplate/template/type_1_0.png",
+      "template" : "/x_component_Forum/$ColumnTemplate/template/type_1_0.json"
+  },
+  "type_1_1" : {
+    "column" : 1,
+    "image" : true,
+    "itemCount" : 6,
+    "preview" : "/x_component_Forum/$ColumnTemplate/template/type_1_1.png",
+    "template" : "/x_component_Forum/$ColumnTemplate/template/type_1_1.json"
+  },
+  "type_2_0" : {
+    "column" : 2,
+    "image" : false,
+    "itemCount" : 3,
+    "preview" : "/x_component_Forum/$ColumnTemplate/template/type_2_0.png",
+    "template" : "/x_component_Forum/$ColumnTemplate/template/type_2_0.json"
+  },
+  "type_2_0_2" : {
+    "column" : 2,
+    "image" : false,
+    "itemCount" : 8,
+    "preview" : "/x_component_Forum/$ColumnTemplate/template/type_2_0_2.png",
+    "template" : "/x_component_Forum/$ColumnTemplate/template/type_2_0_2.json"
+  },
+  "type_2_1" : {
+    "column" : 2,
+    "image" : true,
+    "itemCount" : 11,
+    "preview" : "/x_component_Forum/$ColumnTemplate/template/type_2_1.png",
+    "template" : "/x_component_Forum/$ColumnTemplate/template/type_2_1.json"
+  },
+  "type_2_1_2" : {
+    "column" : 2,
+    "image" : true,
+    "itemCount" : 4,
+    "preview" : "/x_component_Forum/$ColumnTemplate/template/type_2_1_2.png",
+    "template" : "/x_component_Forum/$ColumnTemplate/template/type_2_1_2.json"
+  },
+  "type_3_0" : {
+    "column" : 3,
+    "image" : false,
+    "itemCount" : 3,
+    "hasBorder" : true,
+    "preview" : "/x_component_Forum/$ColumnTemplate/template/type_3_0.png",
+    "template" : "/x_component_Forum/$ColumnTemplate/template/type_3_0.json"
+  },
+  "type_3_1" : {
+    "column" : 3,
+    "image" : true,
+    "itemCount" : 3,
+    "hasBorder" : true,
+    "preview" : "/x_component_Forum/$ColumnTemplate/template/type_3_1.png",
+    "template" : "/x_component_Forum/$ColumnTemplate/template/type_3_1.json"
+  },
+  "type_4_0" : {
+    "column" : 4,
+    "image" : false,
+    "itemCount" : 3,
+    "hasBorder" : true,
+    "preview" : "/x_component_Forum/$ColumnTemplate/template/type_4_0.png",
+    "template" : "/x_component_Forum/$ColumnTemplate/template/type_4_0.json"
+  },
+  "type_4_1" : {
+    "column" : 4,
+    "image" : true,
+    "itemCount" : 3,
+    "hasBorder" : true,
+    "preview" : "/x_component_Forum/$ColumnTemplate/template/type_4_1.png",
+    "template" : "/x_component_Forum/$ColumnTemplate/template/type_4_1.json"
+  }
+}

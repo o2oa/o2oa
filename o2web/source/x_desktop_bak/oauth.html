@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+<head lang="en">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="res/css/style.css" charset="UTF-8" />
+    <link rel="stylesheet" href="res/css/mBoxNotice.css" charset="UTF-8" />
+    <link rel="stylesheet" href="res/css/mBoxTooltip.css" charset="UTF-8" />
+    <!--<script src="res/framework/mootools/mootools-core-1.4.5-full-nocompat.js"></script>-->
+    <!--<script src="res/framework/mootools/mootools-more-1.4.0.1-all_2.js"></script>-->
+    <script src="res/framework/mootools/mootools-1.6.0.min.js"></script>
+    <script src="res/common.js?v=1.1.7"></script>
+    <script>
+        
+        layout = window.layout || {};
+        layout.desktop = layout;
+
+        var locate = window.location;
+        var protocol = locate.protocol;
+        var href = locate.href;
+
+        var uri = new URI(href);
+        var oauth = uri.getData("oauth");
+        var redirect = uri.getData("redirect");
+        var code = uri.getData("code");
+        var method = uri.getData("method");
+
+        layout.load = function () {
+            
+//                    layout.authentication = new MWF.xDesktop.Authentication({
+//                        "onLogin": layout.loadOauth.bind(layout)
+//                    });
+//
+//                    layout.authentication.isAuthenticated(function (json) {
+//                        layout.loadOauth();
+//                        //this.user = json.data;
+//                    }.bind(this), function () {
+//                        layout.loadOauth();
+//                        //layout.authentication.loadLogin($("layout"));
+//                    }.bind(this));
+            if (code){
+                layout.loginOauth();
+            }else if(oauth){
+                layout.loadOauth();
+            }
+
+        };
+        layout.loginOauth = function () {
+            var r = protocol+"//"+location.host+location.pathname;
+            r = r+"?oauth="+oauth;
+            if (redirect) r = r+"&redirect="+redirect;
+
+            var action = MWF.Actions.get("x_organization_assemble_authentication");
+            var logMethod = method || "loginOauthServer";
+
+            action[logMethod](oauth, code, encodeURIComponent(r), function(){
+                if (method==="oauthBind"){
+                    alert("用户绑定已成功！");
+                    window.close();
+                }else{
+                    if (redirect){
+                        window.location = redirect;
+                    }else{
+                        window.location = "/";
+                    }
+                }
+
+            }.bind(this));
+        };
+        layout.loadOauth = function () {
+            
+            var action = MWF.Actions.get("x_organization_assemble_authentication");
+            action.getOauthServer(oauth, function(json){
+                var url = json.data.authAddress;
+                var p = json.data.authParameter;
+                var r = protocol+"//"+location.host+location.pathname;
+                r = r+"?oauth="+oauth;
+                if (method) r = r+"&method="+method;
+                if (redirect) r = r+"&redirect="+redirect;
+                p = (p) ? p+"&redirect_uri="+encodeURIComponent(r) : "&redirect_uri="+encodeURIComponent(r);
+                url = (url.indexOf("?"===-1)) ? url+"?"+p : url+"&"+p;
+
+                window.location = url;
+            }.bind(this));
+        };
+
+        COMMON.setContentPath("/x_desktop");
+        COMMON.AjaxModule.load("mwf", function(){
+            MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
+            MWF.loadLP("zh-cn");
+            MWF.require("MWF.xDesktop.Common", null, false);
+            MWF.require("MWF.xAction.RestActions", null, false);
+            COMMON.AjaxModule.load("/x_desktop/res/framework/mootools/plugin/mBox.Notice.js", null, false);
+            COMMON.AjaxModule.load("/x_desktop/res/framework/mootools/plugin/mBox.Tooltip.js", null, false);
+            MWF.getJSON("res/config/config.json", function (config) {
+                layout.config = config;
+                MWF.xDesktop.getServiceAddress(config, function (service, center) {
+                    layout.serviceAddressList = service;
+                    layout.centerServer = center;
+                    layout.load();
+                }.bind(this));
+            }.bind(this));
+
+
+
+//            MWF.require("MWF.xDesktop.Layout", function() {
+//                MWF.require("MWF.xDesktop.Authentication", null, false);
+//                MWF.getJSON("res/config/config.json", function (config) {
+//                    layout.config = config;
+//                    MWF.xDesktop.getServiceAddress(config, function (service, center) {
+//                        layout.serviceAddressList = service;
+//                        layout.centerServer = center;
+//                        layout.load();
+//                    }.bind(this));
+//                });
+//
+//
+//            });
+        });
+    </script>
+</head>
+<body>
+<!--<body bgcolor="#faebd7" bgcolor="#ffc0cb" style="height: 100%; overflow: auto; margin:0px; background-size: cover; background-image: url(res/mwf4/package/xDesktop/$Layout/default/desktop.jpg);">-->
+<!--<div id="layout" style="overflow: auto; height:100%"></div>-->
+</body>
+</html>

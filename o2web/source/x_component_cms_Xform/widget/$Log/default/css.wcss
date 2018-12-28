@@ -1,0 +1,97 @@
+{
+  "container" : {
+      "border" : "1px solid #ccc"
+  },
+  "titleNode": {
+    "height": "30px",
+    "background-color": "#ddd",
+    "border-top": "1px solid #FFF",
+    "border-bottom": "1px solid #b6b6b6",
+    "line-height": "30px",
+    "font-size": "14px",
+    "font-weight": "bold",
+    "padding-left": "10px",
+    "text-align": "left"
+  },
+  "titleCountNode" : {
+    "float" : "right",
+    "height" : "30px",
+    "line-height" : "30px",
+    "font-size" : "12px",
+    "margin-right" : "11px",
+    "font-weight": "normal"
+  },
+  "contentScrollNode" : {
+    "overflow" : "hidden"
+  },
+  "contentWrapNode" : {
+
+  },
+  "defaultItemNode" : {
+    "overflow" : "hidden",
+    "font-size" : "12px",
+    "height" :"25px",
+    "line-height" : "25px",
+    "padding-left" : "10px"
+  },
+  "defaultItemTextNode" : {
+    "float" : "left"
+  },
+  "defaultItemPersonNode" : {
+    "float" : "left",
+    "color" : "#00f"
+  },
+  "defaultItemDepartmentNode" : {
+    "float" : "left"
+  },
+  "defaultItemTimeNode" : {
+    "float" : "left",
+    "color" : "#00f"
+  },
+  "defaultItemCountNode":{
+    "float" : "left",
+    "color" : "#00f"
+  },
+  "logTable" : {
+    //"width" : "980px",
+    "margin-left" : "10px",
+    "margin-right" : "10px"
+    //"border-left": "1px solid #CCC",
+    //"border-top": "1px solid #CCC"
+  },
+  "logTableTitleTr" : {
+    "background-color": "#edf3f9"
+  },
+  "logTableTitle" : {
+    "height" : "24px",
+    "text-align" : "center",
+    //"border-right": "1px solid #CCC",
+    "border-bottom": "1px solid #CCC"
+  },
+  "logTableContentTr" : {
+    "background-color": "#fff"
+  },
+  "logTableContent" : {
+    "height" : "24px",
+    "text-align" : "center",
+    //"border-right": "1px solid #CCC",
+    "border-bottom": "1px solid #CCC"
+  },
+  "bottomNode" : {
+    "height": "20px",
+    "background-color": "#e8e9e8",
+    "overflow" : "hidden"
+  },
+  "bottomResizeNode" : {
+    "margin-top" : "2px",
+    "padding-top" : "2px",
+    "height" : "16px",
+    "line-height" : "16px",
+    "font-size" : "16px",
+    "width" : "20px",
+    "text-align" : "right",
+    "float" : "right",
+    "padding-right" : "2px",
+    "cursor" : "se-resize"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "tooltipNode":{
+    "font-size" : "12px",
+    "max-width" : "500px",
+    "min-width" : "10px",
+    "padding" : "0px",
+    "position" : "absolute",
+    "max-height":"500px",
+    "z-index" : "11",
+    "margin-top" : "1px",
+    "background-color" : "#fff",
+    "-webkit-user-select": "text",
+    "-moz-user-select": "text",
+    "border-radius":"8px",
+    "box-shadow" : "0 0 18px 0 #999999",
+    "list-style-type":"none"
+  },
+  "listContentNode":{
+    "background-color":"#fff",
+    "border-radius":"8px",
+    "list-style-type":"none",
+    "max-height":"500px",
+    "overflow":"hidden"
+  },
+  "listNode":{
+    "overflow":"hidden",
+    "max-height":"500px",
+    "padding" : "5px"
+  },
+  "listItemNode":{
+    "float" : "left",
+    "margin" : "5px",
+    "width":"80px",
+    "height":"30px",
+    "line-height":"30px",
+    "text-align":"center"
+  },
+  "listItemNode_over" : {
+    "float" : "left",
+    "margin" : "5px",
+    "width":"80px",
+    "height":"30px",
+    "line-height":"30px",
+    "text-align":"center"
+  },
+  "listItemNode_current" : {
+    "float" : "left",
+    "margin" : "5px",
+    "width":"80px",
+    "height":"30px",
+    "line-height":"30px",
+    "text-align":"center"
+  }
+}

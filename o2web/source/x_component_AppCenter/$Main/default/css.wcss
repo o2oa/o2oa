@@ -1,0 +1,346 @@
+{
+    "titleBar": {
+        "overflow": "hidden",
+        "height": "50px",
+        "margin": "0px 0px",
+        "background-color": "#000",
+        "opacity": "0.7"
+    },
+    "titleTextNode": {
+        "padding-right": "20px",
+        "color": "#FFF",
+        "font-size": "18px",
+        "line-height": "50px",
+        "font-weight": "bold",
+        "width": "160px",
+        "float": "right",
+        "text-align": "right"
+    },
+    "contentNode": {
+        "overflow": "auto",
+        "background-color": "#ffffff"
+    },
+    "contentModuleArea": {
+        "width": "90%",
+        "margin": "20px auto",
+        "overflow": "hidden"
+    },
+    "createApplicationNode": {
+        "float": "left",
+        "width": "50px",
+        "height": "50px",
+        "background": "url(/x_component_AppCenter/$Main/default/icon/create.png) no-repeat center center",
+        "cursor": "pointer",
+        "border-right": "1px solid #EEE",
+        "border-left": "0px solid #EEE"
+    },
+    "emptyNode": {
+        "height": "60px",
+        "width": "80%",
+        "margin": "auto",
+        "margin-top": "40px",
+        "text-align": "center",
+        "font-size": "18px",
+        "color": "#999999",
+        "cursor": "pointer"
+    },
+    "moduleIconNode": {
+        "width": "100px",
+        "height": "100px",
+        "float": "left",
+        "background": "url(/x_component_AppMarket/$Main/default/icon/default.png) center center no-repeat"
+    },
+    "moduleSetupContentNode": {
+        "width": "90%",
+        "margin": "auto",
+        "overflow": "hidden"
+    },
+    "moduleSetupTitleNode": {
+        "margin-top": "10px",
+        "height": "100px",
+        "background-color": "#f1f1f1"
+    },
+    "moduleSetupTitleContentNode": {
+        "margin-left": "110px",
+        "padding-top": "6px",
+        "padding-bottom": "2px",
+        "height": "86px"
+    },
+    "moduleSetupNameNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "font-size": "12px",
+        "font-weight": "bold",
+        "color": "#333333"
+    },
+    "moduleSetupCategoryNode": {
+        "height": "28px",
+        "line-height": "28px",
+        "font-size": "12px",
+        "font-weight": "bold",
+        "color": "#333333"
+    },
+    "moduleSetupDescriptionNode": {
+        "height": "28px",
+        "line-height": "28px",
+        "font-size": "12px",
+        "font-weight": "bold",
+        "color": "#333333"
+    },
+    "moduleInputTitleNode":{
+        "height": "28px",
+        "line-height": "28px",
+        "width": "60px",
+        "float": "left"
+    },
+    "moduleInputContentNode": {
+        "margin-left": "60px",
+        "height": "100%"
+    },
+    "moduleInputNode": {
+        "height": "20px",
+        "line-height": "20px",
+        "width": "90%",
+        "border": "1px solid #cccccc"
+    },
+
+    "moduleSetupCompareContentNode": {
+        //"border": "1px solid #cccccc",
+        "margin-top": "10px",
+        "overflow": "auto"
+    },
+
+
+    "moduleLoadingAreaNode": {
+        "margin": "auto",
+        "width": "100px"
+    },
+    "moduleLoadingImgNode": {
+        "margin-top": "60px",
+        "margin-bottom": "60px",
+        "width": "100px",
+        "height": "100px",
+        "border": "0px"
+    },
+    "moduleSetupContentInforNode": {
+        "height": "36px",
+        "line-height": "36px",
+        "color": "#666666",
+        "font-size": "14px",
+        "padding-left": "6px"
+    },
+    "moduleSetupListAreaTitleNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "background-color": "#eeeeee",
+        "color": "#333333",
+        "padding-left": "10px",
+        "font-weight": "bold",
+        "font-size": "14px"
+    },
+    "moduleSetupListAreaContentNode": {
+        "min-height": "30px"
+    },
+
+    "moduleSetupListContentNode": {
+        "height": "36px",
+        "line-height": "36px",
+        "margin": "0px 10px",
+        "font-size": "14px",
+        "color": "#666666",
+        "background": "transparent",
+        "border-bottom": "1px solid #eeeeee"
+    },
+    "moduleSetupListContentNode_over": {
+        "height": "36px",
+        "line-height": "36px",
+        "margin": "0px 10px",
+        "font-size": "14px",
+        "color": "#666666",
+        "background": "#f3f9ff",
+        "border-bottom": "1px solid #eeeeee"
+    },
+    "moduleSetupListIconNode": {
+        "height": "36px",
+        "float": "left",
+        "width": "36px"
+    },
+    "moduleSetupListNameNode": {
+        "height": "36px",
+        "margin-right": "160px",
+        "margin-left": "36px",
+        "overflow": "hidden",
+        "cursor": "pointer"
+    },
+    "moduleSetupListActionNode": {
+        "height": "36px",
+        "float": "right",
+        "width": "60px"
+    },
+    "moduleSetupListInforNode": {
+        "height": "36px",
+        "float": "right",
+        "width": "100px"
+    },
+
+    "moduleSelectActionNode": {
+        "height": "18px",
+        "line-height": "18px",
+        "margin-top": "8px",
+        "width": "40px",
+        "border-radius": "6px",
+        "border": "1px solid #999",
+        "color": "#333",
+        "text-align": "center",
+        "font-size": "12px",
+        "cursor": "pointer"
+    },
+    "moduleSelectContentAreaNode": {
+        "background-color": "#ffffff",
+        "height": "36px",
+        "border-radius": "6px",
+        "position": "absolute"
+    },
+    "moduleSelectTitleNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "font-size": "14px",
+        "color": "#666666",
+        "border-radius": "6px",
+        "text-align": "center",
+    },
+    "moduleSelectContentNode": {
+        "border-top": "1px solid #999999",
+        "border-left": "1px solid #999999",
+        "border-bottom": "1px solid #cccccc",
+        "border-right": "1px solid #cccccc",
+        "background-color": "#ffffff",
+        "width": "95%",
+        "margin": "0px auto",
+        "overflow": "auto"
+    },
+    "moduleSelectButtonNode": {
+        "height": "40px",
+        "overflow": "hidden"
+    },
+    "moduleSelectButtonActionNode": {
+        "height": "20px",
+        "width": "50px",
+        "text-align": "center",
+        "line-height": "20px",
+        "font-size": "12px",
+        "border": "1px solid #999999",
+        "border-radius": "5px",
+        "float": "right",
+        "margin-right": "10px",
+        "margin-top": "10px",
+        "background-color": "#ffffff",
+        "cursor": "pointer"
+    },
+    "moduleSelectContentTitleNode": {
+        "height": "24px",
+        "line-height": "24px",
+        "font-size": "12px",
+        "padding": "0px 5px",
+        "background-color": "#e7eaed",
+        "border-bottom": "1px solid #cccccc"
+    },
+    "moduleSelectContentTitleTextNode": {
+        "height": "24px",
+        "margin-right": "120px"
+    },
+    "moduleSelectContentTitleButtonNode": {
+        "height": "24px",
+        "width": "115px",
+        "float": "right"
+    },
+    "moduleSelectContentTitleButtonActionNode": {
+        "height": "18px",
+        "width": "45px",
+        "text-align": "center",
+        "line-height": "18px",
+        "font-size": "12px",
+        "border": "1px solid #999999",
+        "border-radius": "5px",
+        "float": "right",
+        "margin-left": "3px",
+        "margin-top": "3px",
+        "background-color": "#ffffff",
+        "cursor": "pointer"
+    },
+    "moduleSelectContentListNode": {
+        "min-height": "20px"
+    },
+    "moduleSelectContentListItemNode": {
+        "height": "20px",
+        "line-height": "20px",
+        "padding-left": "20px",
+        "color": "#555555"
+    },
+
+    "moduleStatusInforNode1": {
+        "height": "24px",
+        "line-height": "24px",
+        "font-size": "12px",
+        "padding": "0px 5px",
+        "background-color": "#e7eaed",
+        "border-bottom": "1px solid #cccccc"
+    },
+    "moduleStatusInforNode2": {
+        "height": "24px",
+        "line-height": "24px",
+        "font-size": "12px",
+        "padding": "0px 15px",
+    },
+
+    "moduleNode": {
+        "width": "300px",
+        "height": "100px",
+        "float": "left",
+        "margin": "20px 10px"
+    },
+    "moduleIconNode": {
+        "width": "100px",
+        "height": "100px",
+        "float": "left",
+        "background": "url(/x_component_AppCenter/$Main/default/icon/default.png) center center no-repeat"
+    },
+    "moduleContentNode": {
+        "margin-left": "110px",
+        "margin-top": "2px",
+        "margin-bottom": "2px",
+        "height": "96px"
+    },
+    "moduleNameNode": {
+        "height": "24px",
+        "line-height": "24px",
+        "font-size": "14px",
+        "font-weight": "bold",
+        "color": "#333333"
+    },
+    "moduleCategoryNode": {
+        "height": "18px",
+        "line-height": "18px",
+        "font-size": "12px",
+        "color": "#777777"
+    },
+    "moduleDescriptionNode": {
+        "height": "36px",
+        "line-height": "18px",
+        "font-size": "12px",
+        "color": "#999999"
+    },
+    "moduleActionNode": {
+        "height": "16px",
+        "width": "60px",
+        "border": "1px solid #999999",
+        "line-height": "16px",
+        "font-size": "12px",
+        "border-radius": "8px",
+        "color": "#ffffff",
+        "background-color": "#4c6b87",
+        "cursor": "pointer",
+        "text-align": "center"
+    }
+
+}

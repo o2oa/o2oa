@@ -1,0 +1,51 @@
+[
+  {
+    "title": "页面配置",
+    "id": "1.1",
+    "action": "pageConfig",
+    "icon": "portal_page.png",
+    "expand": false,
+    "sub": []
+  },
+//  {
+//    "title": "菜单配置",
+//    "id": "1.1",
+//    "action": "menuConfig",
+//    "icon": "portal_menu.png",
+//    "expand": false,
+//    "sub": []
+//  },
+
+//  {
+//    "title": "部件配置",
+//    "id": "1.1",
+//    "action": "widgetConfig",
+//    "icon": "portal_widget.png",
+//    "expand": false,
+//    "sub": []
+//  },
+  {
+    "title": "脚本配置",
+    "id": "1.1",
+    "action": "scriptConfig",
+    "icon": "portal_script.png",
+    "expand": false,
+    "sub": []
+  },
+  {
+    "title": "附件配置",
+    "id": "1.1",
+    "action": "fileConfig",
+    "icon": "portal_file.png",
+    "expand": false,
+    "sub": []
+  },
+  {
+    "title": "门户属性",
+    "id": "1.1",
+    "action": "applicationProperty",
+    "icon": "portal_property.png",
+    "expand": false,
+    "sub": []
+  }
+]

@@ -1,0 +1,237 @@
+{
+  "getId" : {"uri":"/jaxrs/uuid/random"},
+  "login" : {"uri":"/jaxrs/login","method":"POST"},
+  "logout" : {"uri":"/jaxrs/logout","method":"POST"},
+  //启动流程
+  "startWork": {"uri": "/jaxrs/work/process/{processId}", "method": "POST"},
+  //已阅
+  "setReaded": {"uri": "/jaxrs/read/{id}/processing", "method": "POST"},
+  //考核绑定
+  "bindCheck": {"uri": "/jaxrs/okrworkbaseinfo/appraise/{id}/wf_workid/{wid}"},
+  //找到已完成id
+  "findProcessCompleteId":{"uri":"/jaxrs/job/{job}/find/work/workcompleted"},
+  //发送短信
+  "smsSend":{"uri":"/jaxrs/okrtask/sms/send/{workId}", "method": "PUT"},
+  //与考核流程同步数据
+  "syncStatus": {"uri": "/jaxrs/okrworkappraise", "method": "POST"},
+
+  //根据人员获取部门
+  "listDepartmentByPerson": {"uri": "/jaxrs/department/list/person/{name}"},
+  //根据人员获取所在公司
+  "listCompanyByPerson": {"uri": "/jaxrs/company/list/person/{name}"},
+  //获取公司的一级部门
+  "listDepartmentByCompany": {"uri": "/jaxrs/department/list/company/{companyName}/top"},
+
+  //根据身份获取人员
+  "getPersonByIdentity": {"uri": "/jaxrs/person/identity/{name}"},
+  //根据人员获取身份
+  "listIdentityByPerson": {"uri": "/jaxrs/identity/list/person/{name}"},
+  //获取人员
+  "getPerson": {"uri": "/jaxrs/person/{name}"},
+  "getPersonIcon": {"uri": "/jaxrs/person/{flag}/icon"},
+  "getDepartmentGather" : {"uri":"/jaxrs/okrtask/unit/reportTaskCollect/{id}","method":"GET"},
+
+
+  ///////////////////////////////////////////////新的组织//////////////////////////////////
+  //data: {"personList": []}
+  "listIdentityWithPerson": {"uri": "/jaxrs/identity/list/person/object", "method": "POST"}, //查询人员的身份对象
+  //data: {"identityList":[]}
+  "listUnitWithIdentity": {"uri": "/jaxrs/unit/list/identity/object", "method": "POST"}, //获取身份所在的组织
+  //data: {"identityList":[]}
+  "listWithIdentityObject": {"uri": "/jaxrs/person/list/identity/object", "method": "POST"}, //获取身份对应的人员
+
+  //data:{"name":"部门正值","unit":"xxxx@0458bd06-00c7-448a-9ca1-f9178d4b2234@U"}
+  "getUnitDuty":{"uri":"/jaxrs/unitduty/list/identity/unit/name","method":"POST"},
+  ///////////////////////////////////////////////新的组织////////////////////////////////////////////
+
+
+  "getMyStat": {"uri":"/jaxrs/okrworkbaseinfo/statistic/my"},
+
+  "getWorkConditionListNext": {"uri": "/jaxrs/okrworkdynamics/filter/list/{id}/next/{count}","method":"put"},
+  "getWorkConditionListPrev": {"uri": "/okrworkdynamics/filter/list/{id}/prev/{count}","method":"put"},
+  "getTaskListNext": {"uri": "/jaxrs/okrtask/filter/my/{id}/next/{count}","method":"put"},
+  "getTaskListPrev": {"uri": "/jaxrs/okrtask/filter/my/{id}/prev/{count}","method":"put"},
+  "readDone" : {"uri":"/jaxrs/okrtask/process/read/{id}","method":"GET"},
+
+  "listDetailFilterNext" : {"uri" : "/jaxrs/attendancedetail/filter/list/{id}/next/{count}", "method": "PUT"},
+  "listDetailFilterPrev" : {"uri" : "jaxrs/attendancedetail/filter/list/{id}/prev/{count}", "method": "PUT"},
+
+  "getCenterWorkDrafterListNext" : {"uri" : "/jaxrs/okrcenterworkinfo/draft/list/{id}/next/{count}", "method": "PUT"},
+  "getCenterWorkDrafterListPrev" : {"uri" : "/jaxrs/okrcenterworkinfo/draft/list/{id}/prev/{count}", "method": "PUT"},
+  "getCenterWorkDeployListNext" : {"uri" : "/jaxrs/okrcenterworkinfo/deployed/list/{id}/next/{count}", "method": "PUT"},
+  "getCenterWorkDDeployListPrev" : {"uri" : "/jaxrs/okrcenterworkinfo/deployed/list/{id}/prev/{count}", "method": "PUT"},
+
+  "getProfileByCode" : {"uri":"/jaxrs/okrconfigsystem/code","method":"PUT"},
+  "getCenterWorkListNext" : {"uri" : "/jaxrs/okrcenterworkinfo/filter/list/{id}/next/{count}", "method": "PUT"},
+  "getCenterTaskListPrev" : {"uri" : "/jaxrs/okrcenterworkinfo/filter/list/{id}/prev/{count}", "method": "PUT"},
+  "getCenterWorkArchiveListNext" : {"uri" : "/jaxrs/okrcenterworkinfo/archive/list/{id}/next/{count}", "method": "PUT"},
+  "saveMainTask" : {"uri" : "/jaxrs/okrcenterworkinfo", "method": "POST"},
+  "getMainTask" : {"uri":"/jaxrs/okrcenterworkinfo/{id}","method":"GET"},
+  "archiveMainTask" : {"uri":"/jaxrs/okrcenterworkinfo/archive/{id}","method":"GET"},
+  "deleteCenterWork" : {"uri":"/jaxrs/okrcenterworkinfo/{id}","method": "DELETE"},
+  "saveTask" : {"uri" : "/jaxrs/okrworkbaseinfo","method" : "POST"},
+  "getTask" : {"uri" : "/jaxrs/okrworkbaseinfo/{id}","method":"GET"},
+  "getUserBaseWork" : {"uri" : "/jaxrs/okrworkbaseinfo/form/center/{id}","method": "GET"},
+  "getUserNestBaseWork" : {"uri" : "/jaxrs/okrworkbaseinfo/center/{id}","method": "GET"},
+  "deleteBaseWork" : {"uri":"/jaxrs/okrworkbaseinfo/{id}","method": "DELETE"},
+  "getUserProcessBaseWork" : {"uri":"/jaxrs/okrworkbaseinfo/process/form/center/{id}","method":"GET"},
+  "getUserDeployBaseWork" : {"uri":"/jaxrs/okrworkbaseinfo/deploy/form/center/{id}","method":"GET"},
+
+
+  "appointBaseWork" : {"uri" : "/jaxrs/okrauthorize/work", "method": "PUT"},
+  "unAppointBaseWork" : {"uri" : "/jaxrs/okrauthorize/takeback", "method": "PUT"},
+
+  //"importBaseWork" : {"uri" : "/servlet/import/center/{centerId}","method":"POST", "enctype": "formData"},
+  "importBaseWork" : {"uri" : "	/jaxrs/import/center/{centerId}","method":"POST", "enctype": "formData"},
+  "deployBaseWork" : {"uri" : "/jaxrs/okrworkbaseinfo/deploy", "method": "PUT"},
+
+  "getBaseWorkActions" : {"uri":"/jaxrs/okrworkbaseinfo/getOperation/{id}","method":"GET"},
+  "getBaseWorkDetails" : {"uri":"/jaxrs/okrworkdetailinfo/{id}","method":"GET"},
+  "getBaseWorksByParentId" : {"uri":"/jaxrs/okrworkbaseinfo/list/sub/{id}","method":"GET"},
+
+  "getBaseWorkListMyDrafterNext" : {"uri" : "/jaxrs/okrworkbaseinfo/draft/list/{id}/next/{count}", "method": "PUT"},
+  "getBaseWorkListMyDrafterPrev" : {"uri" : "/jaxrs/okrworkbaseinfo/draft/list/{id}/prev/{count}", "method": "PUT"},
+
+  "getBaseWorkListMyDeployNext" : {"uri" : "/jaxrs/okrworkbaseinfo/deployed/list/{id}/next/{count}", "method": "PUT"},
+  "getBaseWorkListMyDeployPrev" : {"uri" : "/jaxrs/okrworkbaseinfo/deployed/list/{id}/prev/{count}", "method": "PUT"},
+
+  "getBaseWorkListMyDoNext" : {"uri" : "/jaxrs/okrworkbaseinfo/responsibility/list/{id}/next/{count}", "method": "PUT"},
+  "getBaseWorkListMyDoPrev" : {"uri" : "/jaxrs/okrworkbaseinfo/responsibility/list/{id}/prev/{count}", "method": "PUT"},
+
+  "getBaseWorkListMyAssistNext" : {"uri" : "/jaxrs/okrworkbaseinfo/cooperate/list/{id}/next/{count}", "method": "PUT"},
+  "getBaseWorkListMyAssistPrev" : {"uri" : "/jaxrs/okrworkbaseinfo/cooperate/list/{id}/prev/{count}", "method": "PUT"},
+
+  "getBaseWorkListMyReadNext" : {"uri" : "/jaxrs/okrworkbaseinfo/read/list/{id}/next/{count}", "method": "PUT"},
+  "getBaseWorkListMyReadPrev" : {"uri" : "/jaxrs/okrworkbaseinfo/read/list/{id}/prev/{count}", "method": "PUT"},
+
+  "getBaseWorkListMyAppointNext" : {"uri" : "/jaxrs/okrworkbaseinfo/delegate/list/{id}/next/{count}", "method": "PUT"},
+  "getBaseWorkListMyAppointPrev" : {"uri" : "/jaxrs/okrworkbaseinfo/delegate/list/{id}/prev/{count}", "method": "PUT"},
+
+  "getBaseWorkListMyArchiveNext" : {"uri" : "/jaxrs/okrworkbaseinfo/archive/list/{id}/next/{count}", "method": "PUT"},
+  //chat
+  "submitChat" :{"uri" : "/jaxrs/okrworkchat","method" : "POST"},
+  "getChatListNext" :{"uri" : "/jaxrs/okrworkchat/filter/list/{id}/next/{count}", "method": "PUT"},
+  "getChatListPrev" :{"uri" : "/jaxrs/okrworkchat/filter/list/{id}/prev/{count}", "method": "PUT"},
+
+  //工作汇报
+  "workReportDrafter":{"uri": "/jaxrs/okrworkreportbaseinfo/draft/{workId}", "method": "GET"},
+  "getWorkReport" : {"uri":"/jaxrs/okrworkreportbaseinfo/{id}","method":"GET"},
+  "saveWorkReport" :{"uri":"/jaxrs/okrworkreportbaseinfo","method":"POST"},
+  "submitWorkReport" : {"uri":"/jaxrs/okrworkreportbaseinfo/submit","method":"PUT"},
+  "deleteWortReport" : {"uri":"/jaxrs/okrworkreportbaseinfo/{id}","method": "DELETE"},
+  "getWorkReportList" : {"uri":"/jaxrs/okrworkreportbaseinfo/list/work/{workId}","method":"GET"},
+  "getWorkReportDrafterNext" : {"uri" : "/jaxrs/okrworkreportbaseinfo/draft/list/{id}/next/{count}", "method": "PUT"},
+  "getWorkReportDrafterPrev" : {"uri" : "/jaxrs/okrworkreportbaseinfo/draft/list/{id}/prev/{count}", "method": "PUT"},
+  "getWorkReportTodoNext" : {"uri" : "/jaxrs/okrworkreportbaseinfo/task/list/{id}/next/{count}", "method": "PUT"},
+  "getWorkReportTodoPrev" : {"uri" : "/jaxrs/okrworkreportbaseinfo/task/list/{id}/prev/{count}", "method": "PUT"},
+  "getWorkReportDoneNext" : {"uri" : "/jaxrs/okrworkreportbaseinfo/process/list/{id}/next/{count}", "method": "PUT"},
+  "getWorkReportDonePrev" : {"uri" : "/jaxrs/okrworkreportbaseinfo/process/list/{id}/prev/{count}", "method": "PUT"},
+  "getWorkReportOpinion" : {"uri":"/jaxrs/okrworkreportbaseinfo/process","method":"PUT"},
+  "getWorkReportArchiveNext" : {"uri" : "/jaxrs/okrworkreportbaseinfo/archive/list/{id}/next/{count}", "method": "PUT"},
+  //系统设置
+  "deleteConfig" : {"uri":"/jaxrs/okrconfigsystem/{id}","method": "DELETE"},
+  "saveConfig" : {"uri" : "/jaxrs/okrconfigsystem","method" : "POST"},
+  "getConfig" : {"uri" : "/jaxrs/okrconfigsystem/{id}","method":"GET"},
+  "listConfigAll" : {"uri" : "/jaxrs/okrconfigsystem/all"},
+  //根据当前人员获取可能替代的身份
+  "listMyRelief": {"uri": "/jaxrs/okrconfigsecretary/list/my"},
+  "deleteSecretary" : {"uri":"/jaxrs/okrconfigsecretary/{id}","method": "DELETE"},
+  "saveSecretary" : {"uri" : "/jaxrs/okrconfigsecretary","method" : "POST"},
+  "getSecretary" : {"uri" : "/jaxrs/okrconfigsecretary/{id}","method":"GET"},
+  "listSecretaryNext" : {"uri" : "/jaxrs/okrconfigsecretary/filter/list/{id}/next/{count}","method":"PUT"},
+  "listSecretaryPerv" : {"uri" : "/jaxrs/okrconfigsecretary/filter/list/{id}/prev/{count}","method":"PUT"},
+
+  "deleteCategory" : {"uri":"/jaxrs/okrconfigworktype/{id}","method": "DELETE"},
+  "saveCategory" : {"uri" : "/jaxrs/okrconfigworktype","method" : "POST"},
+  "getCategory" : {"uri" : "/jaxrs/okrconfigworktype/{id}","method":"GET"},
+  "listCategoryAll" : {"uri" : "/jaxrs/okrconfigworktype/all"},
+  "getCategoryCountAll" : {"uri" : "/jaxrs/okrconfigworktype/countAll","method":"GET"},  //查询所有工作类别信息并且统计中心工作数量（统计所有中心工作）
+  "getCategoryMyCountAll" : {"uri" : "/jaxrs/okrconfigworktype/my/countAll","method":"GET"},  //查询所有工作类别信息并且统计中心工作数量（带权限）
+
+  "listAttachment" : {"uri":"/jaxrs/okrattachmentfileinfo/list/work/{documentid}"},
+  "getAttachment": {"uri": "/jaxrs/okrattachmentfileinfo/{id}"},
+  "deleteAttachment": {"uri": "/jaxrs/okrattachmentfileinfo/work/attachment/{id} ", "method": "DELETE"},
+  //"uploadAttachment": {"uri": "/servlet/upload/work/{documentid}", "method": "POST", "enctype": "formData"},
+  "uploadAttachment": {"uri": "/jaxrs/okrattachmentfileinfo/upload/work/{id}/site/{site}", "method": "POST", "enctype": "formData"},
+  //"replaceAttachment": {"uri": "/servlet/download/{id}/stream", "method": "POST", "enctype": "formData"},
+  "getAttachmentData": {"uri": "/jaxrs/okrattachmentfileinfo/download/work/{id}", "method": "GET"},
+  "getAttachmentStream": {"uri": "/jaxrs/okrattachmentfileinfo/download/work/{id}/stream/{stream}", "method": "GET"},
+  "getStatListForCenterWork" :{"uri": "/jaxrs/workreportstatistic/filter/center", "method": "PUT"},
+  "getStatByWorkId" :{"uri":"/jaxrs/workreportstatistic/statistic/{id}/{parentWorkId}","method":"GET"},
+
+  "deleteReportAttachment": {"uri": "/jaxrs/okrattachmentfileinfo/report/attachment/{id} ", "method": "DELETE"},
+  "getReportAttachmentData": {"uri": "/jaxrs/okrattachmentfileinfo/download/report/{id}", "method": "GET"},
+  "getReportAttachmentStream": {"uri": "/jaxrs/okrattachmentfileinfo/download/report/{id}/stream/{stream}", "method": "GET"},
+  "listReportAttachment" : {"uri":"/jaxrs/okrattachmentfileinfo/list/report/{documentid}"},
+  "uploadReportAttachment": {"uri": "/jaxrs/okrattachmentfileinfo/upload/report/{id}/site/{site}", "method": "POST", "enctype": "formData"},
+
+
+  //*****************tidy*******************************
+  //*******************中心工作*******************
+  //创建中心工作权限
+  "createCenterWorkAuthorization" : {"uri" : "/jaxrs/okrconfigsystem/allowed/deploy","method":"GET"},
+  //获取中心工作内容
+  "getCenterWorkInfo" : {"uri":"/jaxrs/okrcenterworkinfo/{id}","method":"GET"},
+  //中心工作保存
+  "saveCenterWork" : {"uri" : "/jaxrs/okrcenterworkinfo", "method": "POST"},
+  //中心工作部署
+  "deployCenterWork" : {"uri" : "/jaxrs/okrcenterworkinfo/deploy/{centerId}", "method" : "GET"},
+
+  //*******************中心工作*******************
+  //*******************具体工作*******************
+  //具体工作信息
+  "getBaseWorkInfo" : {"uri" : "/jaxrs/okrworkbaseinfo/view/{id}","method":"GET"},
+  //获取全部具体工作
+  "getBaseWorkListAllNext" : {"uri" : "/jaxrs/okrworkbaseinfo/filter/list/{id}/next/{count}", "method": "PUT"},
+  "getBaseWorkListAllPrev" : {"uri" : "/jaxrs/okrworkbaseinfo/filter/list/{id}/prev/{count}", "method": "PUT"},
+  //在部署界面获取全部自己部署的工作
+  "getMyDeployWork" : {"uri":"/jaxrs/okrworkbaseinfo/deploy/form/center/{id}","method":"GET"},
+  //在部署界面获取全部自己相关的工作
+  "getMyRelativeWork" : {"uri":"/jaxrs/okrworkbaseinfo/process/form/center/{id}","method":"GET"},
+  //具体工作归档
+  "archiveBaseWork" : {"uri":"/jaxrs/okrworkbaseinfo/archive/{id}","method":"GET"},
+  //修改具体工作进展
+  "progressBaseWork":{"uri":"/jaxrs/okrworkbaseinfo/progress/{id}/{percent}","method":"GET"},
+  //*******************具体工作*******************
+  //*******************工作汇报*******************
+
+
+  //*******************工作汇报*******************
+  //*******************主页*******************
+
+  //*******************主页*******************
+
+  //*******************统计*******************
+  //获取时间段内的统计信息
+  "getStatType" : {"uri" : "/jaxrs/streportstatus/filter/list", "method": "PUT"},
+  //获取时间段内所有汇报周期列表
+  "getStatDateList" : {"uri" : "/jaxrs/streportcontent/date/list", "method": "PUT"},
+  //获取单个时间的统计信息
+  "getStatDate" : {"uri" : "/jaxrs/streportcontent/filter/list", "method": "PUT"},
+  //导出单个时间得EXCEL
+  "exportByCenterWork" : {"uri" : "/jaxrs/streportcontent/export", "method": "PUT"},
+  //导出按部门
+  "exportByDeptWork" : {"uri" : "/jaxrs/streportstatus/export", "method": "PUT"},
+
+  //
+  "statisticreportstatus":{"uri":"/jaxrs/export/statisticreportstatus/{flag}/stream","method":"GET"},
+  //*******************统计*******************
+
+  //*******************脑图*******************
+  "getUserMind" : {"uri" : "/jaxrs/mind/center/{id}","method": "GET"},
+  //*******************脑图*******************
+
+  //******************tidy******************************
+
+  "getTodoListNext" : {"uri" : "/jaxrs/admin/okrtask/filter/{id}/next/{count}", "method": "PUT"},
+  "deleteTodoWork" : {"uri":"/jaxrs/admin/okrtask/{id}","method": "DELETE"},
+  "getBaseWorkListNext" : {"uri" : "/jaxrs/admin/okrworkbaseinfo/filter/list/{id}/next/{count}", "method": "PUT"},
+  "getReportWorkListNext" :{"uri" : "/jaxrs/admin/okrworkreportbaseinfo/filter/list/{id}/next/{count}","method": "PUT"},
+  "deleteWorkReport":{"uri" : "/jaxrs/admin/okrworkreportbaseinfo/{id}","method": "DELETE"},
+  "getErrorIndentitytNext":{"uri":"/jaxrs/error/identity/filter/list/{id}/next/{count}","method":"PUT"},
+
+  "getErrorIdentityDetail" : {"uri":"/jaxrs/error/identity/detail","method":"PUT"},
+  "replaceErrorIdentity" :{"uri":"/jaxrs/error/identity/change","method":"PUT"},
+
+  "clazz": "x_okr_assemble_control"
+}
