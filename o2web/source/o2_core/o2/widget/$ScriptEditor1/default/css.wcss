@@ -1,0 +1,103 @@
+{
+	"actionAreaNode":{
+		"height": "24px"
+	},
+	"contentAreaNode": {
+		"border-top": "1px solid #EEE",
+		"overflow": "hidden",
+		"line-height": "24px"
+	},
+	"addScriptActionNode":{
+		"background": "url("+o2.session.path+"/widget/ScriptEditor/default/script_add.png) no-repeat center center",
+		"width": "24px",
+		"height": "24px",
+		"float": "right",
+		"cursor": "pointer" 
+	},
+	"scriptEditNode": {
+		"overflow": "hidden"
+	},
+	"newScriptBaseNode": {
+		"overflow": "hidden"
+	},
+	"newScriptCodeNode": {
+		"overflow": "hidden",
+		"margin": "10px",
+		"border": "1px solid #999",
+		"background": "#FFF",
+		"border-radius": "3px",
+		"margin-left": "46px"
+	},
+	"newScriptCodeToolbarNode": {
+		"overflow": "hidden",
+		"float": "left",
+		"margin": "10px 5px",
+		"width": "36px"
+	},
+	"scriptCodeInputNode": {
+		"margin": "3px",
+		"width": "99%",
+		"height": "100%"
+	},
+	"editBody": {
+		"word-break": "keep-all",
+		"word-wrap": "normal"
+	},
+	"saveScriptNode": {
+		"width": "36px",
+		"height": "40px",
+		"background": "url("+o2.session.path+"/widget/ScriptEditor/default/icon/save.png) no-repeat center center",
+		"cursor": "pointer"
+	},
+	"helpScriptNode": {
+		"width": "36px",
+		"height": "40px",
+		"background": "url("+o2.session.path+"/widget/ScriptEditor/default/icon/help.png) no-repeat center center",
+		"cursor": "pointer"
+	},
+	"insertScriptNode": {
+		"width": "36px",
+		"height": "40px",
+		"background": "url("+o2.session.path+"/widget/ScriptEditor/default/icon/insert.png) no-repeat center center",
+		"cursor": "pointer"
+	},
+	"checkScriptNode": {
+		"width": "36px",
+		"height": "40px",
+		"background": "url("+o2.session.path+"/widget/ScriptEditor/default/icon/check.png) no-repeat center center",
+		"cursor": "pointer"
+	},
+	"scriptItemNode": {
+		"height": "26px",
+		"border-bottom": "1px solid #EEE"
+	},
+	"scriptItemSummaryNode": {
+		"height": "26px",
+		"line-height": "26px",
+		"padding-left": "3px",
+		"margin-right": "54px",
+		"color": "#0000FF",
+		"overflow": "hidden"
+	//	"whiteSpace": "nowrap",
+	//	"text-overflow": "ellipsis"
+	},
+	"scriptItemActionNode": {
+		"width": "52px",
+		"height": "26px",
+		"float": "right"
+	},
+	"scriptItemEditActionNode": {
+		"background": "url("+o2.session.path+"/widget/ScriptEditor/default/script_edit.png) no-repeat center center",
+		"width": "26px",
+		"height": "26px",
+		"float": "left",
+		"cursor": "pointer"
+	},
+	"scriptItemDeleteActionNode": {
+		"background": "url("+o2.session.path+"/widget/ScriptEditor/default/script_delete.png) no-repeat center center",
+		"width": "26px",
+		"height": "26px",
+		"float": "left",
+		"cursor": "pointer"
+	}
+}

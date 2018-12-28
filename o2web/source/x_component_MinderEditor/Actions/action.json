@@ -1,0 +1,11 @@
+{
+  "getId" : {"uri":"/jaxrs/uuid/random"},
+
+  "getHoliday" : {"uri":"/jaxrs/attendanceworkdayconfig/{id}"},
+  "listHolidayAll": {"uri" : "/jaxrs/attendanceworkdayconfig/list/all"},
+  /*{'q_Year':'2016','q_Name':'五一劳动节','q_Month':'03'}*/
+  "listHolidayFilter" : {"uri" : "/jaxrs/attendanceworkdayconfig/filter", "method": "PUT"},
+  "saveHoliday": {"uri" : "/jaxrs/attendanceworkdayconfig", "method": "POST"},
+  "deleteHoliday" : {"uri":"/jaxrs/attendanceworkdayconfig/{id}","method": "DELETE"},
+
+}

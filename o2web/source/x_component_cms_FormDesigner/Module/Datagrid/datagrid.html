@@ -1,0 +1,63 @@
+<div style="background-color: #FFF; overflow: hidden">
+    <div title="基本" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">标识:</td>
+                <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">名称:</td>
+                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">描述:</td>
+                <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+            </tr>
+        </table>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">边框:</td>
+                <td class="editTableValue"><input type="text" name="border" value="text{$.border}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">背景颜色:</td>
+                <td class="editTableValue"><input type="color" name="backgroundColor" value="text{$.backgroundColor}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">交替行:</td>
+                <td class="editTableValue"><input type="color" name="zebraColor" value="text{$.zebraColor}" class="editTableInput"/></td>
+            </tr>
+            <!--<tr>-->
+                <!--<td class="editTableTitle">序号:</td>-->
+                <!--<td class="editTableValue">-->
+                    <!--<input type="radio" name="sequence" value="yes" text{($.sequence=='yes')?'checked':''}/>显示-->
+                    <!--<input type="radio" name="sequence" value="no" text{($.sequence=='no')?'checked':''}/>不显示-->
+                <!--</td>-->
+            <!--</tr>-->
+        </table>
+
+        <div class="MWFMaplist" name="styles" collapse="true" title="样式"></div>
+        <div class="MWFMaplist" name="tableStyles" collapse="true" title="表格样式"></div>
+
+        <div class="MWFMaplist" name="properties" collapse="true" title="属性"></div>
+        <div class="MWFScriptArea" name="defaultData" title="默认数据(S)"></div>
+        <div class="MWFScriptArea" name="editableScript" title="是否可编辑(S)"></div>
+
+        <div class="MWFValidation" name="validationConfig"></div>
+        <div class="MWFScriptArea" name="validation" title="校验脚本 (S)"></div>
+    </div>
+    <div title="样式" class="MWFTab">
+        <div class="MWFMaplist" name="titleStyles" collapse="true" title="标题单元格样式"></div>
+        <div class="MWFMaplist" name="contentStyles" collapse="true" title="内容单元格样式"></div>
+        <div class="MWFMaplist" name="actionStyles" collapse="true" title="操作单元格样式"></div>
+        <div class="MWFMaplist" name="editStyles" collapse="true" title="编辑单元格样式"></div>
+        <div class="MWFMaplist" name="amountStyles" collapse="true" title="总计单元格样式"></div>
+        <div class="MWFMaplist" name="itemTitleStyles" collapse="true" title="条目标题样式（仅移动端）"></div>
+    </div>
+    <div title="事件"  class="MWFTab">
+        <div class="MWFEventsArea" name="events"></div>
+    </div>
+    <div title="HTML"  class="MWFTab">
+        <div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+</div>

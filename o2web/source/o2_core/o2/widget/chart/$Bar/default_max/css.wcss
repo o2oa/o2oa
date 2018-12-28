@@ -1,0 +1,45 @@
+{
+    "svgNode": {
+        "width": "100%",
+        "height": "100%"
+    },
+    "rect": {
+	},
+
+	"xxais_text": {
+	    "transform": function(d, text){ var size = o2.getTextSize(text.textContent, {'font-size': '10px'}); return "translate("+(0-(size.x/2))+", 0) rotate(-30 "+size.x/2+" 0)";},
+
+        //"transform": function(d, text){ return "rotate(-30)";},
+
+        "width": "100",
+        "font-size": "12px",
+        "text-anchor": "middle",
+        "text-align": "right"
+    },
+    "xxais_path": {
+
+    },
+    "xxais_line": {
+
+    },
+    "rectText": {
+        //"textLength": function(d, text){ return this.xScale.bandwidth()/this.barsData.length},
+        "width": function(d, text){ return o2.getTextSize((this.options.dataFormat) ? d3.format(this.options.dataFormat)(d.data) : d.data).x },
+        "font-size": "12px",
+        "display": "none"
+    },
+
+    colors: [
+        "#1f77b4",
+        "#ff7f0e",
+        "#2ca02c",
+        "#d62728",
+        "#9467bd",
+        "#8c564b",
+        "#e377c2",
+        "#7f7f7f",
+        "#bcbd22",
+        "#17becf"
+    ]
+	
+}

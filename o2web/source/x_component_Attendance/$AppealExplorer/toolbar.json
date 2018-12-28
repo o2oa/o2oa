@@ -1,0 +1,35 @@
+[
+  {
+    "title": "考勤申诉审批已被停用",
+    "id": "1.1",
+    "position" : "left",
+    "styles" : "toolbarTextNode",
+    "condition" : "onlock",
+    "sub": []
+  },
+  {
+    "title": "批量处理：",
+    "id": "1.1",
+    "position" : "left",
+    "styles" : "toolbarTextNode",
+    "sub": []
+  },
+  {
+    "title": "同意",
+    "id": "1.2",
+    "action": "agreeAppeals",
+    "icon": "agree.png",
+    "position" : "left",
+    "styles" : "toolbarItemNode",
+    "sub": []
+  },
+  {
+    "title": "不同意",
+    "id": "1.3",
+    "action": "denyAppeals",
+    "icon": "deny.png",
+    "position" : "left",
+    "styles" : "toolbarItemNode",
+    "sub": []
+  }
+]

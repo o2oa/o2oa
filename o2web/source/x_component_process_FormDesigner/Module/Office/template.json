@@ -1,0 +1,126 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Office",
+	"description": "",
+	"officeType": "word",
+	"template": "",
+	"productCaption": "O2",
+	"productKey": "EDCC626CB85C9A1D3E0D7BDDDC2637753C596725",
+//	"makerCaption": "浙江兰德纵横网络技术股份有限公司",
+//	"makerKey": "E138DABB4AC26C2D8E09FAE59AB3BDE87AFB9D7B",
+//	"version": "5.0.3.1",
+//	"clsid": "A64E3073-2016-4baf-A89D-FFE1FAA10EC0",
+//	"codeBase": "/x_desktop/res/framework/officecontrol/OfficeControl.cab",
+//	"clsid64": "A64E3073-2016-4baf-A89D-FFE1FAA10EC0",
+//	"codeBase64": "/x_desktop/res/framework/officecontrol/OfficeControl.cab",
+	"isNotLoadNow": false,
+	"script": {
+		"code": "",
+		"html": ""
+	},
+	"ntkoEditProperties": {
+		"Titlebar": "0",
+		"Menubar": "0",
+		"ToolBars": "1",
+		"Statusbar": "0",
+		"BorderStyle": "1",
+		"IsNoCopy": "0"
+	},
+	"ntkoReadProperties": {
+		"Titlebar": "0",
+		"Menubar": "0",
+		"ToolBars": "0",
+		"Statusbar": "0",
+		"BorderStyle": "0",
+		"IsNoCopy": "0"
+	},
+	"menuReadButtons": ["revisions","fullscreen","preview"],
+	"menuEditButtons": ["revisions","fullscreen","toolbar","preview"],
+	"events": {
+		"redFile": {
+			"code": "",
+			"html": ""
+		},
+		"afterOpen": {
+			"code": "",
+			"html": ""
+		},
+		"afterOpenOffice": {
+			"code": "",
+			"html": ""
+		},
+		"afterCreate": {
+			"code": "",
+			"html": ""
+		},
+		"seal": {
+			"code": "",
+			"html": ""
+		},
+		"beforeSave": {
+			"code": "",
+			"html": ""
+		},
+		"afterSave": {
+			"code": "",
+			"html": ""
+		},
+		"afterCloseOffice": {
+			"code": "",
+			"html": ""
+		},
+		"click": {
+			"code": "",
+			"html": ""
+		},
+		"dblclick": {
+			"code": "",
+			"html": ""
+		},
+		"keydown": {
+			"code": "",
+			"html": ""
+		},
+		"keypress": {
+			"code": "",
+			"html": ""
+		},
+		"keyup": {
+			"code": "",
+			"html": ""
+		},
+		"mousedown": {
+			"code": "",
+			"html": ""
+		},
+		"mousemove": {
+			"code": "",
+			"html": ""
+		},
+		"mouseout": {
+			"code": "",
+			"html": ""
+		},
+		"mouseover": {
+			"code": "",
+			"html": ""
+		},
+		"mouseup": {
+			"code": "",
+			"html": ""
+		},
+		"focus": {
+			"code": "",
+			"html": ""
+		},
+		"blur": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"container": ""
+}

@@ -1,0 +1,110 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="基本" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">列标题:</td>
+                <td class="editTableValue"><input type="text" name="displayName" value="text{$.displayName}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">列名:</td>
+                <td class="editTableValue"><input type="text" name="column" value="text{$.column}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">默认值:</td>
+                <td class="editTableValue"><input type="text" name="defaultValue" value="text{$.defaultValue}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">打开文档:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="allowOpen" text{($.allowOpen===true)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="allowOpen" text{($.allowOpen!==true)?'checked':''} type="radio" value="false"/>否
+                </td>
+            </tr>
+        </table>
+
+        <div style="border-top: 1px solid #999; margin-top:10px">
+            <div style="background-color: #EEE; height:24px; line-height: 24px; text-align: center; font-weight: bold">数据</div>
+            <div>
+                <input class="MWFWorkDataCheck" name="selectType" type="radio" onclick="if (this.checked){ $('text{$.pid}workDataEditor').setStyle('display', 'block'); $('text{$.pid}dataDataEditor').setStyle('display', 'none')}" value="attribute" text{($.selectType)!='path'?'checked':''}/>流程实例数据
+                <input class="MWFDataDataCheck" name="selectType" type="radio" onclick="if (this.checked){ $('text{$.pid}workDataEditor').setStyle('display', 'none'); $('text{$.pid}dataDataEditor').setStyle('display', 'block')}" value="path" text{($.selectType)=='path'?'checked':''}/>业务数据
+            </div>
+            <div class="MWFWorkData" id="text{$.pid}workDataEditor" style="display: text{($.selectType=='attribute')?'block':'none'}">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">选择数据:</td>
+                        <td class="editTableValue"><select name="attribute">
+                            <option value="" selected>(请选择)</option>
+                            <option text{($.attribute)=='title'?'selected':''} value="title">标题(title)</option>
+                            <option text{($.attribute)=='startTime'?'selected':''} value="startTime">创建时间(startTime)</option>
+                            <option text{($.attribute)=='startTimeMonth'?'selected':''} value="startTimeMonth">创建月份(startTimeMonth)</option>
+                            <option text{($.attribute)=='completedTime'?'selected':''} value="completedTime">完成时间(completedTime)</option>
+                            <option text{($.attribute)=='completedTimeMonth'?'selected':''} value="completedTimeMonth">完成月份(completedTimeMonth)</option>
+                            <option text{($.attribute)=='creatorPerson'?'selected':''} value="creatorPerson">拟稿人(creatorPerson)</option>
+                            <option text{($.attribute)=='creatorIdentity'?'selected':''} value="creatorIdentity">拟稿人身份(creatorIdentity)</option>
+                            <option text{($.attribute)=='creatorUnit'?'selected':''} value="creatorUnit">拟稿组织(creatorUnit)</option>
+                            <option text{($.attribute)=='creatorCompany'?'selected':''} value="creatorCompany">拟稿公司(creatorCompany)</option>
+                            <option text{($.attribute)=='application'?'selected':''} value="application">应用ID(application)</option>
+                            <option text{($.attribute)=='applicationName'?'selected':''} value="applicationName">应用名称(applicationName)</option>
+                            <option text{($.attribute)=='applicationAlias'?'selected':''} value="applicationAlias">应用别名(applicationAlias)</option>
+                            <option text{($.attribute)=='process'?'selected':''} value="process">流程ID(process)</option>
+                            <option text{($.attribute)=='processName'?'selected':''} value="processName">流程名称(processName)</option>
+                            <option text{($.attribute)=='processAlias'?'selected':''} value="processAlias">流程别名(processAlias)</option>
+                            <option text{($.attribute)=='serial'?'selected':''} value="serial">编号(serial)</option>
+                            <option text{($.attribute)=='activityType'?'selected':''} value="activityType">活动类型(activityType)</option>
+                            <option text{($.attribute)=='activityName'?'selected':''} value="activityName">活动名称(activityName)</option>
+                            <option text{($.attribute)=='activityArrivedTime'?'selected':''} value="activityArrivedTime">活动到达时间(activityArrivedTime)</option>
+                            <option text{($.attribute)=='id'?'selected':''} value="id">工作ID(id)</option>
+                            <option text{($.attribute)=='workCompleted'?'selected':''} value="workCompleted">已完成工作ID(workCompleted)</option>
+                            <option text{($.attribute)=='job'?'selected':''} value="job">JOB的ID(job)</option>
+                            <option text{($.attribute)=='completed'?'selected':''} value="completed">是否已完成(completed)</option>
+                        </select></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="MWFDataData" id="text{$.pid}dataDataEditor" style="display: text{($.path)?'block':'none'}">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">数据路径:</td>
+                        <td class="editTableValue"><input type="text" name="path" value="text{$.path}" class="editTableInput"/></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div style="border-top: 1px solid #999; margin-top:10px">
+            <div class="MWFColumnExport" id="text{$.pid}columnExportEditor">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">排序:</td>
+                        <td class="editTableValue"><select name="orderType">
+                            <option value="none" text{(($.orderType)!='asc' && ($.orderType)!='desc') ?'selected':''}>无</option>
+                            <option value="asc" text{($.orderType)=='asc' ?'selected':''}>升序</option>
+                            <option value="desc" text{($.orderType)=='desc' ?'selected':''}>降序</option>
+                        </select></td>
+                    </tr>
+                    <tr class="MWFColumnExportGroup">
+                        <td class="editTableTitle">分类:</td>
+                        <td class="editTableValue">
+                            <input class="MWFWorkDataCheck" name="groupEntry" type="radio" value="true" text{($.groupEntry)===true?'checked':''}/>是
+                            <input class="MWFWorkDataCheck" name="groupEntry" type="radio" value="false" text{($.groupEntry)!==true?'checked':''}/>否
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr class="MWFColumnExportHide">
+                    <td class="editTableTitle">隐藏:</td>
+                    <td class="editTableValue">
+                        <input class="MWFWorkDataCheck" name="hideColumn" type="radio" value="true" text{($.hideColumn)===true?'checked':''}/>是
+                        <input class="MWFWorkDataCheck" name="hideColumn" type="radio" value="false" text{($.hideColumn)!==true?'checked':''}/>否
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="MWFFormulaArea" name="code" title="显示脚本 (S)"></div>
+
+	</div>
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

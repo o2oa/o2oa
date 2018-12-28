@@ -1,0 +1,42 @@
+<div id="MWFProcessToolbar">
+	<span MWFnodetype="MWFToolBarSeparator"></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="save.gif" title="保存流程" MWFButtonAction="saveProcess" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="saveNew.gif" title="保存为新流程" MWFButtonAction="saveNewProcess" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="processProperty.gif" title="流程属性" MWFButtonAction="editProcess" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="print.gif" title="打印流程" MWFButtonAction="printProcess" MWFButtonText=""></span>
+	
+	<span MWFnodetype="MWFToolBarSeparator"></span>
+	
+	<!-- <span MWFnodetype="MWFToolBarButton" MWFButtonImage="newActivity.gif" title="新建活动" MWFButtonAction="createActivity" MWFButtonText=""></span> -->
+	<span MWFnodetype="MWFToolBarMenu" MWFButtonImage="newActivity.gif" title="新建活动" MWFButtonAction="" MWFButtonText="">
+		<span MWFnodetype="MWFToolBarMenuItem" MWFButtonImage="manual.gif" title="新建人工活动" MWFButtonAction="createManualActivity" MWFButtonText="人工活动"></span>
+		<span MWFnodetype="MWFToolBarMenuItem" MWFButtonImage="condition.gif" title="新建条件活动" MWFButtonAction="createConditionActivity" MWFButtonText="条件活动"></span>
+		<span MWFnodetype="MWFToolBarMenuItem" MWFButtonImage="auto.gif" title="新建自动活动" MWFButtonAction="createAutoActivity" MWFButtonText="自动活动"></span>
+		<span MWFnodetype="MWFToolBarMenuItem" MWFButtonImage="split.gif" title="新建拆分活动" MWFButtonAction="createSplitActivity" MWFButtonText="拆分活动"></span>
+		<span MWFnodetype="MWFToolBarMenuItem" MWFButtonImage="merge.gif" title="新建合并活动" MWFButtonAction="createMergeActivity" MWFButtonText="合并活动"></span>
+		<span MWFnodetype="MWFToolBarMenuItem" MWFButtonImage="embed.gif" title="新建子流程活动" MWFButtonAction="createEmbedActivity" MWFButtonText="子流程活动"></span>
+		<span MWFnodetype="MWFToolBarMenuItem" MWFButtonImage="invoke.gif" title="新建WS调用活动" MWFButtonAction="createInvokesActivity" MWFButtonText="调用活动"></span>
+		<span MWFnodetype="MWFToolBarMenuItem" MWFButtonImage="begin.gif" title="新建开始活动" MWFButtonAction="createBeginActivity" MWFButtonText="开始活动"></span>
+		<span MWFnodetype="MWFToolBarMenuItem" MWFButtonImage="end.gif" title="新建结束活动" MWFButtonAction="createEndActivity" MWFButtonText="结束活动"></span>
+	</span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="editActivity.gif" title="编辑活动" MWFButtonAction="editActivity" MWFButtonText="" MWFButtonDisable="true"></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="deleteActivity.gif" title="删除活动" MWFButtonAction="deleteActivity" MWFButtonText="" MWFButtonDisable="true"></span>
+	
+	<span MWFnodetype="MWFToolBarSeparator"></span>
+	
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="newRouter.gif" title="新建路由" MWFButtonAction="createRoute" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="editRouter.gif" title="编辑路由" MWFButtonAction="editRoute" MWFButtonText="" MWFButtonDisable="true"></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="deleteRouter.gif" title="删除路由" MWFButtonAction="deleteRoute" MWFButtonText="" MWFButtonDisable="true"></span>
+	
+	<span MWFnodetype="MWFToolBarSeparator"></span>
+	
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="checkProcess.gif" title="流程检查" MWFButtonAction="checkProcess" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="processExplode.gif" title="流程导出" MWFButtonAction="processExplode" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="processImplode.gif" title="流程导入" MWFButtonAction="processImplode" MWFButtonText=""></span>
+	
+	样式：<select onchange="changeStyle(this)">
+		<option value="default">default</option>
+		<option value="style1">style1</option>
+		<option value="flat">flat</option>
+	</select>
+</div>

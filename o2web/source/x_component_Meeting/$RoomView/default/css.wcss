@@ -1,0 +1,294 @@
+{
+    "node": {
+        "margin": "50px 0px 10px 0px",
+        "overflow": "hidden",
+        "background-color": "#f0f0f0",
+        "position": "absolute",
+        "width": "100%",
+        "top": "0px",
+        "left": "200px",
+        "display": "block",
+        "opacity": "0"
+    },
+
+    "scrollNode" : {
+        "overflow-x": "scroll",
+        "overflow-y": "scroll"
+    },
+    "contentWarpNode" : {
+        //"width": "1170px",
+        "margin" : "0px 0px 20px 0px",
+        "overflow" : "hidden"
+    },
+    "contentContainerNode" : {
+        "height" : "100%",
+        "overflow": "hidden"
+    },
+    "contentNode" : {
+        "background-color": "#FFF"
+//        "-webkit-user-select": "none",
+//        "-moz-user-select": "none"
+    },
+
+
+    "roomArea": {
+        "width": "100%",
+        "min-width": "430px",
+        "height": "100%"
+//        "overflow": "hidden",
+//        "overflow-x": "auto",
+      //  "float": "left"
+    },
+    "infoArea": {
+        "width": "29%",
+        "min-width": "160px",
+        "height": "100%"
+        //"background-color": "#FFF",
+    //    "float": "right"
+    },
+    "roomDateArea": {
+        "height": "50px"
+        //"background-color": "#fff",
+//        "border-bottom": "1px solid #CCC",
+//        "border-right": "1px solid #CCC"
+    },
+    "roomDateNode": {
+        "height": "50px",
+        "width": "340px",
+        "font-size": "20px",
+        "color": "#333",
+        "line-height": "50px",
+        "cursor": "pointer",
+        "margin-left": "10px",
+        "float": "left",
+        "text-align": "center",
+        "background": "url(/x_component_Meeting/$RoomView/default/icon/down16_gray.png) no-repeat 290px center"
+    },
+    "roomDateNode_over": {
+        "color": "#4990E2",
+        "background": "url(/x_component_Meeting/$RoomView/default/icon/down16_blue.png) no-repeat 290px center"
+    },
+    "roomDateNode_down": {
+        "color": "#4990E2",
+        "background": "url(/x_component_Meeting/$RoomView/default/icon/down16_blue.png) no-repeat 290px center"
+    },
+
+    "roomHourRangeNode": {
+        "width": "240px",
+        "float": "left",
+        "line-height": "50px",
+        "margin-right": "20px",
+        "color": "#333",
+        "font-size": "16px",
+        "text-align": "right"
+    },
+    "roomHourRangeSelectNode": {
+        "border-radius" : "4px",
+        "border" : "1px solid #ccc",
+        "font-size": "16px",
+        "height": "28px",
+        "color": "#666"
+    },
+    "roomHelpNode" : {
+        "float" : "right",
+        "margin-right" : "25px",
+        "margin-top" : "10px",
+        "width" : "24px",
+        "height" : "30px",
+        "line-height" : "30px",
+        "background": "url(/x_component_Meeting/$Main/default/icon/icon_wen.png) no-repeat center center"
+    },
+    "roomHelpNode_over" : {
+        "background": "url(/x_component_Meeting/$Main/default/icon/icon_wen_click.png) no-repeat center center"
+    },
+
+    "roomTopArea" : {
+        "width" : "100%",
+        "height" : "50px",
+        "background-color" : "#fff",
+        "overflow" : "hidden",
+        "margin-bottom" : "5px"
+    },
+    "roomTopItemNode" : {
+        "float" : "left",
+        "font-size" : "18px",
+        "color" : "#333",
+        "height" : "48px",
+        "padding" : "0px 30px",
+        "line-height" : "48px",
+        "border-bottom" : "2px solid #fff",
+        "cursor" : "pointer"
+    },
+    "roomTopItemNode_over" : {
+        "color" : "#3C76B7",
+        "border-bottom" : "2px solid #fff"
+    },
+    "roomTopItemNode_current" : {
+        "color" : "#3C76B7",
+        "border-bottom" : "2px solid #3C76B7"
+    },
+
+    "actionBar" : {
+        "margin-top" : "10px",
+        "overflow" : "hidden"
+    },
+    "action_edit" : {
+        "float" : "left",
+        "padding" : "0px 5px",
+        "width" : "16px",
+        "height" : "16px",
+        "background" : "url(/x_component_Meeting/$Main/default/icon/icon_bianji.png) no-repeat center center"
+    },
+    "action_edit_over" : {
+        "background" : "url(/x_component_Meeting/$Main/default/icon/icon_bianji_click.png) no-repeat center center"
+    },
+    "action_remove" : {
+        "float" : "left",
+        "padding" : "0px 5px",
+        "width" : "16px",
+        "height" : "16px",
+        "background" : "url(/x_component_Meeting/$Main/default/icon/icon_delete_grey.png) no-repeat center center"
+    },
+    "action_remove_over" : {
+        "background" : "url(/x_component_Meeting/$Main/default/icon/icon_delete_blue_click.png) no-repeat center center"
+    },
+
+
+    "roomBuildingsArea": {
+        "height": "100%",
+        "margin" : "0px 15px"
+    },
+
+    "roomItemNode" : {
+        "width" : "300px",
+        //"height" : "800px",
+        "margin-top" : "20px",
+        "margin-left" : "15px",
+        "margin-right" : "15px",
+        "border-radius" : "4px",
+        "background" : "#fff",
+        "float" : "left",
+        "box-shadow": "none"
+    },
+    "roomItemNode_over" : {
+        "box-shadow": "0 0 8px 0 rgba(0,0,0,0.25)"
+    },
+    "roomItemTitleNode" : {
+        "padding" : "30px 20px 0px 20px",
+        "background" : "#fff",
+        "width" : "260px",
+        //"height" : "60px",
+        "border-radius" : "4px 4px 0 0",
+        "position" : "relative",
+        "cursor" : "pointer"
+    },
+    "roomItemTitleTopNode" : {
+        "height" : "32px",
+        "line-height" : "32px",
+        "overflow" : "hidden"
+    },
+    "roomItemTitleTextNode" : {
+        "background" : "transparent",
+        "font-size" : "24px",
+        "color" : "#333"
+    },
+    "roomItemTitleTextNode_over" : {
+        "color" : "#3C76B7"
+    },
+    "roomItemTitleTextNode_disable" : {
+        "background" : "transparent",
+        "font-size" : "24px",
+        "color" : "#ccc"
+    },
+    "roomItemTitleCountNode" : {
+        "font-size" : "12px",
+        "color" : "#999",
+        "float" : "right"
+    },
+    "roomItemTitleCountNode_disable" : {
+        "font-size" : "12px",
+        "color" : "#ccc",
+        "float" : "right"
+    },
+    "roomItemBuildingTextNode" : {
+        "font-size" : "16px",
+        "color" : "#666",
+        "margin-top" : "10px"
+    },
+    "roomItemBuildingTextNode_disable" : {
+        "font-size" : "16px",
+        "color" : "#ccc",
+        "margin-top" : "10px"
+    },
+    "roomItemTitleMiddleNode" : {
+        "overflow" : "hidden",
+        "margin-top" : "10px"
+    },
+    "roomItemTitleActionsNode" : {
+        "overflow" : "hidden",
+        "float" : "right"
+    },
+    "createMeetingAction" : {
+        "float" : "left",
+        "padding-left" : "5px",
+        "width" : "16px",
+        "height" : "16px",
+        "background" : "url(/x_component_Meeting/$Main/default/icon/icon_newapply.png) no-repeat center center"
+    },
+    "createMeetingAction_over" : {
+        "background" : "url(/x_component_Meeting/$Main/default/icon/icon_newapply_click.png) no-repeat center center"
+    },
+    "roomAction_edit" : {
+        "float" : "left",
+        "padding-left" : "5px",
+        "width" : "16px",
+        "height" : "16px",
+        "background" : "url(/x_component_Meeting/$Main/default/icon/icon_bianji.png) no-repeat center center"
+    },
+    "roomAction_edit_over" : {
+        "background" : "url(/x_component_Meeting/$Main/default/icon/icon_bianji_click.png) no-repeat center center"
+    },
+    "roomAction_remove" : {
+        "float" : "left",
+        "padding-left" : "5px",
+        "width" : "16px",
+        "height" : "16px",
+        "background" : "url(/x_component_Meeting/$Main/default/icon/icon_delete_grey.png) no-repeat center center"
+    },
+    "roomAction_remove_over" : {
+        "background" : "url(/x_component_Meeting/$Main/default/icon/icon_delete_blue_click.png) no-repeat center center"
+    },
+    "roomItemTitleIconsNode" : {
+        "overflow" : "hidden",
+        "float" : "left"
+    },
+    "roomItemIconNode" : {
+        "float":"left",
+        "width" : "16px",
+        "height" : "16px",
+        "margin-right" : "5px"
+    },
+    "roomItemContentNode" : {
+        "background-color" : "#fff",
+        "width" : "300px",
+        "padding-top" : "10px"
+    },
+    "noMeetingNode" : {
+        "border": "1px solid #ccc",
+        "border-radius": "4px",
+        "margin" : "20px",
+        "width" : "260px",
+        "text-align" : "center",
+        "font-size" : "16px",
+        "color" : "#999"
+    },
+    "noMeetingNode_disable" : {
+        "border": "1px solid #eee",
+        "border-radius": "4px",
+        "margin" : "20px",
+        "width" : "260px",
+        "text-align" : "center",
+        "font-size" : "16px",
+        "color" : "#ccc"
+    }
+}

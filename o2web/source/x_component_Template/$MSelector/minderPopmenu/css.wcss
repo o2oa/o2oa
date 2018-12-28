@@ -1,0 +1,93 @@
+{
+  "readNode" : {
+
+  },
+  "selectNode":{
+    "min-width":"100px",
+    "height":"30px",
+    "line-height":"30px",
+    "display":"block",
+    "cursor":"pointer"
+  },
+
+  "selectValueNode":{
+    "height":"30px",
+    "line-height":"30px",
+    "margin-left":"5px",
+    "float":"left",
+    "overflow":"hidden"
+  },
+  "inputNode" : {
+    "border" : "0px",
+    "width" : "98%"
+  },
+  "selectArrowNode":{
+    "width":"30px",
+    "height":"30px",
+    "float":"right",
+    "background":"url(/x_component_Template/$MSelector/minderPopmenu/icon/arrow-left.png) no-repeat center"
+  },
+  "selectArrowNode_up":{
+    "width":"30px",
+    "height":"30px",
+    "float":"right",
+    "background":"url(/x_component_Template/$MSelector/minderPopmenu/icon/arrow-right.png) no-repeat center"
+  },
+  "tooltipNode":{
+    "font-size" : "14px",
+    "max-width" : "500px",
+    "min-width" : "10px",
+    "padding" : "0px",
+    "position" : "absolute",
+    "max-height":"300px",
+    "z-index" : "11",
+    "margin-top" : "1px",
+    "background-color" : "#fff",
+    "-webkit-user-select": "text",
+    "-moz-user-select": "text",
+    "border":"1px solid #ccc",
+    "border-radius":"2px",
+    "box-shadow" : "0px 0px 6px #ccc",
+    "list-style-type":"none",
+    "overflow":"hidden"
+  },
+  "listContentNode":{
+    "background-color":"#fff",
+    "list-style-type":"none",
+    "max-height":"300px",
+    "overflow":"hidden"
+  },
+  "listNode":{
+    "overflow":"hidden",
+    "max-height":"300px"
+  },
+  "listItemNode":{
+    "width":"100%",
+    "background-color" : "#fff",
+    "font-size" : "14px",
+    "color" : "#333",
+    "height" : "30px",
+    "line-height" : "30px",
+    "background-repeat" : "no-repeat",
+    "background-position-y" : "2px",
+    "background-position-x" : "left",
+    "padding" : "0px 5px 5px 23px",
+    "cursor" : "pointer"
+  },
+  "listItemNode_over" : {
+    "width":"100%",
+    "background-repeat" : "no-repeat",
+    "background-position-y" : "2px",
+    "background-position-x" : "left",
+    "background-color" : "#3d77c1",
+    "color" : "#fff"
+  },
+  "listItemNode_disable" : {
+    "width":"100%",
+    "background-repeat" : "no-repeat",
+    "background-position-y" : "2px",
+    "background-position-x" : "left",
+    "background-color" : "#3d77c1",
+    "color" : "#fff"
+  }
+}

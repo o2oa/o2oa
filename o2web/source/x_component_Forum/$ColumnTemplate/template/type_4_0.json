@@ -1,0 +1,62 @@
+{
+  "viewSetting": {
+    "html": "<div styles='listNode'></div>"
+  },
+  "documentSetting": {
+    "html": "<div styles='node_list_type_4_0'></div>",
+    //"mouseoverStyles": "documentNode_list_over",
+    "action": "open",
+    "event" : "mouseover^^function( documentNode, ev ){ this.mouseoverDocument() }##mouseout^^function( documentNode, ev ){ this.mouseoutDocument() }"
+  },
+  "items": [
+    {
+      "name": "work",
+      "content": {
+        "html": "<div styles='itemNode'>"+
+        "<div styles='itemLeftNode_type_4_0'>"+
+        " <div styles='itemLeftIconNode_type_4_0'>"+
+        "   <img styles='itemLeftIcon' item='icon'>"+
+        " </div>"+
+        " <div styles='itemLeftContent_type_4_0'>"+
+        "   <div styles='itemTopDiv'><div styles='itemTitleNode' item='sectionName'></div><div styles='itemToday' item='totalToday'></div></div>"+
+        "   <div styles='itemTopDiv'>"+
+        "     <div styles='itemTopInfor' item='subjectTotalLable'></div><div styles='itemTopInfor' item='subjectTotalColon'>：</div><div styles='itemTopInfor' item='subjectTotal'></div>"+
+        "     <div styles='itemTopInfor'>，</div><div styles='itemTopInfor' lable='replyCount'></div><div styles='itemTopInfor'>：</div><div styles='itemTopInfor' item='replyTotal'></div>"+
+        "   </div>"+
+        "   <div styles='itemTopDiv'><div styles='itemTopInfor' lable='moderatorNames'></div><div styles='itemTopInfor'>：</div><div styles='itemTopInfor' item='moderatorNames'></div></div>"+
+        " </div>"+
+        "</div>"+
+        "<div item='itemListNode' styles='itemListNode_type_4_0'>"+
+        "</div>"+
+        "</div>",
+        "items": {
+          "totalToday" : {
+            "value" : "function(d){ return this.lp.today + ':'+ ( d.subjectTotalToday + d.replyTotalToday) }"
+          },
+          "sectionName": {
+            "value" : "function(d){ return d.sectionName.length > 8 ? d.sectionName.substr(0,8)+'...' : d.sectionName }",
+            "event" : "click^^function( documentNode, ev ){ this.openSection() }"
+          },
+          "subjectTotal" : {
+            "styles" : "function(d){ var formSetting = MWF.xApplication.Forum.ForumSetting[ d.forumId ]; return { 'color' : formSetting ? formSetting.forumColor : '#666' } }"
+          },
+          "subjectTotalLable" : {
+            "value" : "function(){ return this.lp.subject }",
+            "styles" : "function(d){ var formSetting = MWF.xApplication.Forum.ForumSetting[ d.forumId ]; return { 'color' : formSetting ? formSetting.forumColor : '#666' } }"
+          },
+          "subjectTotalColon" : {
+            "value" : "function(){ return '：' }",
+            "styles" : "function(d){ var formSetting = MWF.xApplication.Forum.ForumSetting[ d.forumId ]; return { 'color' : formSetting ? formSetting.forumColor : '#666' } }"
+          },
+          "replyTotal" : {},
+          //          "moderatorNames": {},
+          "sectionDescription": {},
+          "icon" : {
+            "attr" : "src^^function( d ){ if( d.icon ){ return 'data:image/png;base64,'+ d.icon }else{ return '/x_component_Forum/$Setting/default/sectionIcon/forum_icon.png' } }",
+            "event" : "click^^function(documentNode, ev){ this.openSection() }"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+	"from": {
+		"width": "1px",
+		"height": "1px",
+		"position": "absolute",
+		"top": "0px",
+		"left": "0px",
+		"border-style": "solid",
+		"border-color": "#D7DBE4",
+		"border-width": "0",
+		"z-index": "100",
+		"opacity": 1
+	},
+	"to": {
+		"background-color": "#ffffff",
+		"border-style": "solid",
+		"border-color": "#D7DBE4",
+		"border-width": "3px",
+		"padding": "0",
+		"heigth" : "150",
+		"width": "300",
+		"position": "absolute",
+		"top": "0",
+		"left": "0",
+		"z-index": "100",
+		"opacity": 1
+	},
+	"mark": {
+		"height": $(document.body).getSize().y,
+		"width": $(document.body).getSize().x,
+		"opacity": 0.3,
+		"position": "absolute",
+		"top": "0",
+		"left": "0",
+		"z-index": "99",
+		"border-style": "none",
+		"border-width": "0",
+		"background-color": "#ddd"
+	},
+	"button": {
+		"border": "1px solid #999",
+		"color": "#333",
+		"margin": "0px 5px"
+	}
+}

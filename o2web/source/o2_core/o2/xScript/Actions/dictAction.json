@@ -1,0 +1,6 @@
+{
+  "getDict": {"uri": "/jaxrs/applicationdict/{applicationDict}/application/{application}/{path}/data"},
+  "setDict": {"uri": "/jaxrs/applicationdict/{applicationDict}/application/{application}/{path}/data", "method": "PUT"},
+  "addDict": {"uri": "/jaxrs/applicationdict/{applicationDict}/application/{application}/{path}/data", "method": "POST"},
+  "deleteDict": {"uri": "/jaxrs/applicationdict/{applicationDict}/application/{application}/{path}/data", "method": "DELETE"}
+}

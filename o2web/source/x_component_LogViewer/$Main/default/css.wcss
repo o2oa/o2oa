@@ -1,0 +1,95 @@
+{
+	"contentNode": {
+	    "height": "100%",
+	    "width": "100%",
+	    "background-color": "#CCC"
+	},
+
+	"toolbarButton":{
+        "height": "32px",
+        "line-height": "32px",
+        "margin": "3px 10px 3px 3px",
+        "float": "left",
+        "border": "1px solid #CCC",
+        "background-color": "#CCC",
+        "cursor": "pointer"
+	},
+	"toolbarButton_over": {
+        "border-top": "1px solid #f7f7f7",
+        "border-left": "1px solid #f7f7f7",
+        "border-right": "1px solid #999",
+        "border-bottom": "1px solid #999",
+        "background-color": "#CCC"
+    },
+    "toolbarButton_down": {
+        "border-top": "1px solid #999",
+        "border-left": "1px solid #999",
+        "border-right": "1px solid #f7f7f7",
+        "border-bottom": "1px solid #f7f7f7",
+        "background-color": "#eeeeee"
+    },
+    "toolbarIconButton": {
+        "background-repeat": "no-repeat",
+        "background-position": "center center",
+        "height": "32px",
+        "width": "30px",
+        "float": "left"
+    },
+    "toolbarTextButton": {
+        "background-repeat": "no-repeat",
+        "background-position": "center center",
+        "height": "32px",
+        "padding-right": "5px",
+        "margin-left": "30px"
+    },
+
+    "toolbarDateSelect": {
+        "height": "24px",
+        "line-height": "24px",
+        "margin": "8px 10px 6px 3px",
+        "float": "right"
+    },
+
+    "toolbarNode":{
+        "height": "40px"
+    },
+
+    "screenNode": {
+        "overflow": "hidden",
+        "background-color": "#333",
+        "color": "#FFF"
+    },
+    "bottomNode": {
+        "height": "30px"
+    },
+
+
+    "screenInforAreaNode": {
+        "overflow": "auto",
+        "height": "100%",
+        "-webkit-user-select": "text",
+        "-moz-user-select": "text",
+    },
+
+
+    "logItemNode": {
+        "overflow": "visible",
+        "padding": "2px 10px",
+        "background-color": "#333333",
+        "margin": "5px 0px",
+        "color": "#cccccc",
+        "font-size": "14px",
+        "line-height": "22px"
+    },
+    "logItemNode_over": {
+        "clear": "both",
+        "color": "#eeeeee",
+        "background-color": "#3C3C3C"
+    },
+
+
+
+
+
+
+}

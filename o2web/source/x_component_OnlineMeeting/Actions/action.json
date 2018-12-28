@@ -1,0 +1,9 @@
+{
+  "addRoom": {"uri": "/jaxrs/openmeeting","method": "POST"},
+  "listRoom": {"uri": "/jaxrs/openmeeting/list/room"},
+  "getOpenMeeting": {"uri": "/jaxrs/openmeeting"},
+  "removeRoom": {"uri": "/jaxrs/room/{id}","method": "DELETE"},
+
+  "login": {"uri": "/jaxrs/oauth/auth?redirect_uri={uri}&client_id=openmeeting&response_type=code"},
+  "room": {"uri": "/openmeetings/#room/{id}"}
+}

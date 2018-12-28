@@ -1,0 +1,67 @@
+{
+	"inputUploadAreaNode": {
+        "width": "450px",
+        "height": "160px",
+        "border-radius": "5px",
+        "box-shadow": "0px 0px 10px #FFF",
+        "position": "absolute",
+        "border": "2px solid #999",
+        "border-top": "4px solid #5290e5",
+        "background-color": "#FFF",
+        "z-index": 100
+    },
+    "inputUploadAreaTitleNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "text-align": "center",
+        "font-weight": "bold",
+        "font-family": "微软雅黑",
+        "font-size": "14px"
+    },
+    "inputUploadAreaInforNode": {
+        "height": "24px",
+        "line-height": "24px",
+        "text-align": "center",
+        "color": "#666",
+        "font-family": "微软雅黑",
+        "font-size": "12px",
+        "text-align": "left",
+        "margin": "10px 20px 0px 20px"
+    },
+    "inputUploadAreaInputAreaNode": {
+        "margin": "0px 20px 20px 20px",
+        "height": "24px"
+    },
+    "inputUploadAreaInputNode": {
+        "width": "407px",
+        "height": "23px",
+        "border": "1px solid #666",
+    },
+    "inputUploadActionNode": {
+        "margin": "0px 20px",
+        "border-top": "1px solid #999",
+    },
+    "inputUploadOkButton": {
+        "height": "24px",
+        "width": "80px",
+        "color": "#FFF",
+        "background-color": "#42699e",
+        "border": "1px solid #1e3d67",
+        "border-radius": "3px",
+        "float": "right",
+        "margin-top": "10px",
+        "margin-left": "10px"
+    },
+    "inputUploadCancelButton": {
+        "height": "24px",
+        "width": "80px",
+        "color": "#666",
+        "background-color": "#DFDFDF",
+        "border": "1px solid #666",
+        "border-radius": "3px",
+        "float": "right",
+        "margin-top": "10px",
+        "margin-left": "10px"
+    }
+	
+}

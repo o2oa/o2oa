@@ -1,0 +1,201 @@
+{
+  "getId" : {"uri":"/jaxrs/uuid/random"},
+
+  "getCurrentPerson" : {"uri": "/jaxrs/person"},
+
+  //根据人员获取部门/
+  //data: {"personList":[]}
+  "listUnitWithPerson": {"uri": "/jaxrs/unit/list/person/object", "method": "POST"}, //获取人员所在的所有组织
+  //data: {"unitList": []}
+  "listUnitSubDirect": {"uri": "/jaxrs/unit/list/unit/sub/direct/object", "method": "POST"}, //查询指定组织的直接下级组织
+  //获取人员属性
+  //data: {"name":"","person":""}
+  "getPersonAttribute": {"uri": "/jaxrs/personattribute/list/attribute/person/name", "method": "POST"}, //查询人员属性的值
+  //根据身份获取人员
+  //{"identityList":[]}
+  "listPersonWithIdentity": {"uri": "/jaxrs/person/list/identity","method": "POST"},
+  //获取部门职位
+  //{"name":"","unit":""}
+  "listIdentityWithUnitWithName" : {"uri": "/jaxrs/unitduty/list/identity/unit/name","method": "POST"},
+  //批量查询个人所在的组织,并递归查找其上级组织.
+  //{"identityList":[]}
+  "listUnitWithPersonSupNested" : {"uri": "/jaxrs/unit/list/person/sup/nested/object","method": "POST"},
+  //获取汇报对象
+  //{"personList":[]}
+  "listPersonWithPersonSupDirect" : {"uri": "/jaxrs/person/list/person/sup/direct","method": "POST"},
+
+  //"getDocument" : {"uri" : "/jaxrs/document/{id}"},
+
+  "getHoliday" : {"uri":"/jaxrs/attendanceworkdayconfig/{id}"},
+  "listHolidayAll": {"uri" : "/jaxrs/attendanceworkdayconfig/list/all"},
+  /*{'q_Year':'2016','q_Name':'五一劳动节','q_Month':'03'}*/
+  "listHolidayFilter" : {"uri" : "/jaxrs/attendanceworkdayconfig/filter", "method": "PUT"},
+  "saveHoliday": {"uri" : "/jaxrs/attendanceworkdayconfig", "method": "POST"},
+  "deleteHoliday" : {"uri":"/jaxrs/attendanceworkdayconfig/{id}","method": "DELETE"},
+
+
+  "getSelfHoliday" : {"uri":"/jaxrs/attendanceselfholiday/{id}"},
+  "listSelfHoliday": {"uri" : "/jaxrs/attendanceselfholiday/list/all"},
+  "saveSelfHoliday": {"uri" : "/jaxrs/attendanceselfholiday", "method": "POST"},
+  "deleteSelfHoliday" : {"uri":"/jaxrs/attendanceselfholiday/{id}","method": "DELETE"},
+  "exportSelfHoliday" : {"uri":"/jaxrs/file/export/selfholiday/{startdate}/{enddate}/stream/true", "method": "GET"},
+  //private String q_empName \ private String q_topUnitName; \ private String q_unitName;
+  "listSelfHolidayFilterNext" : {"uri" : "/jaxrs/attendanceselfholiday/filter/list/{id}/next/{count}", "method": "PUT"},
+
+  "getSchedule" : {"uri":"/jaxrs/attendanceschedulesetting/{id}"},
+  "listSchedule": {"uri" : "/jaxrs/attendanceschedulesetting/list/all"},
+  "saveSchedule": {"uri" : "/jaxrs/attendanceschedulesetting", "method": "POST"},
+  "deleteSchedule" : {"uri":"/jaxrs/attendanceschedulesetting/{id}","method": "DELETE"},
+  "listScheduleByUnit" : {"uri":"/jaxrs/attendanceschedulesetting/list/unit/{name}"},
+  "listScheduleByTopUnit" : {"uri":"/jaxrs/attendanceschedulesetting/list/topUnit/{name}"},
+
+  "getCycle" : {"uri":"/jaxrs/attendancestatisticalcycle/{id}"},
+  "saveCycle": {"uri" : "/jaxrs/attendancestatisticalcycle", "method": "POST"},
+  "deleteCycle" : {"uri":"/jaxrs/attendancestatisticalcycle/{id}","method": "DELETE"},
+  "listCycle" : {"uri":"/jaxrs/attendancestatisticalcycle/list/all"},
+  "getCyclePerson" : {"uri":"/jaxrs/attendancestatisticalcycle/cycleDetail/{year}/{month}"},
+
+  "getPermission" : {"uri":"/jaxrs/attendanceadmin/{id}"},
+  "listPermission": {"uri" : "/jaxrs/attendanceadmin/list/all"},
+  "savePermission": {"uri" : "/jaxrs/attendanceadmin", "method": "POST"},
+  "deletePermission" : {"uri":"/jaxrs/attendanceadmin/{id}","method": "DELETE"},
+
+  "uploadAttachment": {"uri": "/jaxrs/file/upload", "method": "POST", "enctype": "formData"},
+  //"replaceAttachment": {"uri": "/servlet/update/{id}/document/{documentid}", "method": "POST", "enctype": "formData"},
+  //"getAttachmentData": {"uri": "/servlet/download/{id}/document/{documentid}", "method": "GET"},
+  "getAttachmentStream": {"uri": "/jaxrs/file/download/{id}/stream", "method": "GET"},
+  "listAttachmentInfo" : {"uri" : "/jaxrs/attendanceimportfileinfo/list/all"},
+  "deleteAttachment" : {"uri":"/jaxrs/attendanceimportfileinfo/{id}","method": "DELETE"},
+  "getAttachmentInfo" : {"uri":"/jaxrs/attendanceimportfileinfo/{id}"},
+//  "importAttachment" : {"uri":"/jaxrs/fileimport/import/{file_id}"},
+//  "checkAttachment" : {"uri":"/jaxrs/fileimport/check/{file_id}"},
+  "getImportStatus" : {"uri":"/jaxrs/fileimport/getStatus/{file_id}"},
+  "getImportStatusAll" : {"uri":"/jaxrs/fileimport/getStatus/all"},
+  "getImportStatusDetail" : {"uri":"/jaxrs/fileimport/getStatus/{file_id}/detail"},
+
+  "exportAbnormalAttachment" : {"uri":"/jaxrs/file/export/abnormaldetails/year/{year}/month/{month}", "method": "GET"},
+
+  "listDetail" : {"uri":"/jaxrs/attendancedetail/list/all"},
+  "getDetail" : {"uri":"/jaxrs/attendancedetail/{id}"},
+  "deleteDetail" : {"uri":"/jaxrs/attendancedetail/{id}","method": "DELETE"},
+
+  "listSetting" : {"uri":"/jaxrs/attendancesetting/list/all"},
+  "getSetting" : {"uri":"/jaxrs/attendancesetting/{id}"},
+  "saveSetting" : {"uri":"/jaxrs/attendancesetting", "method": "POST"},
+  "deleteSetting" : {"uri":"/jaxrs/attendancesetting/{id}","method": "DELETE"},
+  "getSettingCode" : {"uri":"/jaxrs/attendancesetting/code/{code}"},
+
+  "listPersonSetting" : {"uri":"/jaxrs/attendanceemployeeconfig/list/all"},
+  "getPersonSetting" : {"uri":"/jaxrs/attendanceemployeeconfig/{id}"},
+  "savePersonSetting" : {"uri":"/jaxrs/attendanceemployeeconfig", "method": "POST"},
+  "deletePersonSetting" : {"uri":"/jaxrs/attendanceemployeeconfig/{id}","method": "DELETE"},
+
+  /*
+  获取指定年月的打卡数据列表
+  Data：{'q_empName':'林玲','q_year':'2016','q_month':'03'}
+     备注：
+  1、q_empName如果不传则取所有用户的数据
+  2、如果未指定年份或者月份，则获取数据库里最近一个月份的数据
+    */
+  "listDetailFilter" : {"uri" : "/jaxrs/attendancedetail/filter/list", "method": "PUT"},
+
+  /*8、查询打卡数据 下一页（分页）.
+URL：x_attendance_assemble_control/jaxrs/attendancedetail/filter/list/{id}/next/{count}
+   Method： GET
+   Data：{'q_topUnitName':'兰德纵横','q_year':'2016','q_month':'03','q_date':''2016-03-31',order':'DESC','key':'recordDateString'}
+备注：key 排序列，q_topUnitName|q_empName|q_unitName
+*/
+  "listDetailFilterNext" : {"uri" : "/jaxrs/attendancedetail/filter/list/{id}/next/{count}", "method": "PUT"},
+  /*
+9、查询打卡数据 上一页（分页）.
+URL：x_attendance_assemble_control/jaxrs/attendancedetail/filter/list/{id}/prev/{count}
+   Method： GET
+   Data：{'q_topUnitName':'兰德纵横','q_year':'2016','q_month':'03','q_date':''2016-03-31','order':'DESC','key':'recordDateString'}
+备注：key 排序列，q_topUnitName|q_empName|q_unitName
+*/
+  "listDetailFilterPrev" : {"uri" : "jaxrs/attendancedetail/filter/list/{id}/prev/{count}", "method": "PUT"},
+
+  /*
+ Data：{'q_empName':'林玲','q_year':'2016','q_month':'03'}
+   备注：
+1、q_empName如果不传则取当前登录用户的数据
+2、如果未指定年份或者月份，则获取数据库里最近一个月份的数据
+  */
+  "listDetailFilterUser" : {"uri" : "/jaxrs/attendancedetail/filter/list/user", "method": "PUT"},
+  /*Data：{'q_unitName':'开发部','q_year':'2016','q_month':'03'}
+   备注：如果未指定年份或者月份，则获取数据库里最近一个月份的数据*/
+  "listUnitDetailFilter" : {"uri" : "/jaxrs/attendancedetail/filter/list/unit", "method": "PUT"},
+
+  /*Data：{'q_topUnitName':'兰德纵横','q_year':'2016','q_month':'03'}
+备注：如果未指定年份或者月份，则获取数据库里最近一个月份的数据*/
+  "listTopUnitDetailFilter" : {"uri" : "/jaxrs/attendancedetail/filter/list/topUnit", "method": "PUT"},
+
+  /*Data：String file_id
+     备注：file_id为指定的导入文件ID，在导入过程，导入文件的ID会被记录到打卡记录的batchName属性中*/
+  "listDetailByAttachment" : {"uri" : "/jaxrs/attendancedetail/list/{file_id}"},
+
+
+  "checkDetail" : {"uri" :"/jaxrs/attendancedetail/checkDetailWithPersonByCycle/{cycleYear}/{cycleMonth}"},
+  //{'startDate':'2016-03-12','endDate':'2016-03-29'}
+  "analyseDetail" : {"uri" :"/jaxrs/attendancedetail/analyse/{startDate}/{endDate}"},
+  //统计考勤记录,如果year或者month为(0)，那么会统计当年所有月份的数据
+  "staticDetail" : {"uri" : "/jaxrs/statistic/do/{year}/{month}"},
+
+  "staticAllDetail" : {"uri" : "/jaxrs/statistic/do"},
+
+  //每月个人考勤统计 Method： Servlet - GET Data： String name, String year, String month
+  "listStaticMonthPerson" : {"uri" :"/jaxrs/statisticshow/person/{name}/{year}/{month}"},
+  // 查询指定月份里每天部门考勤统计  Method： Servlet - GET Data： String name, String year, String month
+  "listStaticDayUnit" : {"uri" :"/jaxrs/statisticshow/unit/day/{name}/{year}/{month}"},
+  //  查询指定日期部门考勤统计  Method： Servlet - GET Data： String name, String year, String month
+  "listStaticDateUnit" : {"uri" :"/jaxrs/statisticshow/unit/day/{name}/{date}"},
+  //每月部门考勤统计(如果查全年，month可以以(0)代替) GET Data： String name, String year, String month
+  "listStaticMonthUnit" : {"uri" :"/jaxrs/statisticshow/unit/{name}/{year}/{month}"},
+
+  //每月部门及子部门考勤统计(如果查全年，month可以以(0)代替) GET Data： String name, String year, String month
+  "listStaticMonthUnitSum" : {"uri" :"/jaxrs/statisticshow/unit/sum/{name}/{year}/{month}"},
+
+  //指定月份里每天公司考勤统计 Method： Servlet - GET Data： String name, String year, String month
+  "listStaticDayTopUnit" : {"uri" :"/jaxrs/statisticshow/topUnit/day/{name}/{year}/{month}"},
+  //每月公司考勤统计(如果查全年，month可以以(0)代替) - GET Data： String name, String year, String month
+  "listStaticMonthTopUnit" : {"uri" :"/jaxrs/statisticshow/topUnit/{name}/{year}/{month}"},
+  //查询部门里所有人员的月统计
+  "listStaticMonthPersonByUnit" : {"uri":"/jaxrs/statisticshow/persons/unit/{name}/{year}/{month}"},
+  //查询部门及子部门的所有人员月统计
+  "listStaticMonthPersonByUnitNested" : {"uri":"/jaxrs/statisticshow/persons/unit/subnested/{name}/{year}/{month}"},
+
+  //根据公司查询公司下所有部门的统计数据信息：
+  "listUnitDateStaticByTopUnit" : {"uri":"/jaxrs/statisticshow/unit/day/topUnit/{name}/{date}"},
+  //根据公司查询公司下所有部门的统计数据信息：
+  "listUnitMonthStaticByTopUnit" : {"uri":"/jaxrs/statisticshow/unit/topUnit/{name}/{year}/{month}"},
+  //根据部门查询部门下所有员工的统计数据信息：
+  "listPersonMonthStaticByUnit" : {"uri":"/jaxrs/statisticshow/persons/unit/subnested/{name}/{year}/{month}"},
+
+  //发起申诉  { 'appealReason':'', 'appealDescription:'', 'processPerson1':'', 'processPerson2':''}
+  "createAppeal" : {"uri":"/jaxrs/attendanceappealInfo/appeal/{detailId}","method" : "PUT"},
+  //第一次审批 ids(申诉ID列表)，opinion(审核意见)， status(审核状态:1-通过;2-需要进行复核;-1-不通过)
+  "processAppeal" : {"uri":"/jaxrs/attendanceappealInfo/audit","method" :"PUT"},
+  //第二次审批 ids(申诉ID列表)，opinion(审核意见)， status(审核状态:1-通过;-1-不通过)
+  "process2Appeal" : {"uri":"/jaxrs/attendanceappealInfo/check ","method" :"PUT"},
+  //获取申诉记录
+  "getAppeal" :{"uri":"/jaxrs/attendanceappealInfo/{id}"},
+  /*分页查询
+   detailId:  打卡记录ID
+   empName:  员工姓名，打卡和申诉应该是同一个人
+   unitName:  打卡员工所在部门
+   topUnitName:  打卡员工所在公司
+   yearString:   打卡年份
+   monthString:   打卡月份
+   status:    审批状态:0-待处理，1-审批通过，-1-审批不能过，2-需要下一次审批
+   appealReason:   申诉理由
+   processPerson1:   第一审批人
+   processPerson2:   第二审批人*/
+  "listAppealFilterNext": {"uri" : "/jaxrs/attendanceappealInfo/filter/list/{id}/next/{count}","method" :"PUT"},
+  "listAppealFilterPrev": {"uri" : "/jaxrs/attendanceappealInfo/filter/list/{id}/prev/{count}","method" :"PUT"},
+  "deleteAppeal" : {"uri":"/jaxrs/attendanceappealInfo/{id}","method": "DELETE"},
+
+  "listWorkplace" : {"uri":"/jaxrs/workplace/list/all"},
+  "getWorkplace" : {"uri":"jaxrs/workplace/{id}"},
+  "saveWorkplace" : {"uri":"/jaxrs/workplace", "method": "POST"},
+  "deleteWorkplace" : {"uri":"/jaxrs/workplace/{id}","method": "DELETE"}
+}

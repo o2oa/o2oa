@@ -1,0 +1,8 @@
+{
+  "listDevice": {"uri": "/jaxrs/device/list"},
+  "addDevice": {"uri": "/jaxrs/device", "method": "POST"},
+  "updateDevice": {"uri": "/jaxrs/device", "method": "PUT"},
+  "getDevice": {"uri": "/jaxrs/device/{id}"},
+  "removeDevice": {"uri": "/jaxrs/device/{id}", "method": "DELETE"},
+  "clazz": "x_smartoffice_control"
+}

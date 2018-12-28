@@ -1,0 +1,376 @@
+{
+
+  "middleNode" : {
+    "width": "100%", "height": "100%", "overflow": "hidden"
+  },
+  "contentDiv":{
+    "background-color":"#ffffff","min-width":"1000px",
+    //"margin-top" : "10px",
+    "padding" : "10px",
+    "-webkit-user-select": "text",
+    "-moz-user-select": "text",
+    "user-select" : "text",
+    "-ms-user-select" : "text"
+  },
+  "subjectListNode" : {
+    "padding-top" : "10px",
+    "border-bottom" : "1px solid #eee"
+  },
+  "subjectNode" : {
+    "background-color" : "#f5f5f5"
+  },
+  "itemReplyTitleArea" : {
+    "margin-bottom" : "10px",
+    "border-bottom" : "1px solid #f2f2f2"
+  },
+  "itemReplyTitle_accepted" : {
+    "font-size" : "16px",
+    "text-align" : "left",
+    "width" : "80px",
+    "margin-top" : "20px",
+    "padding-left" : "10px",
+    "padding-bottom" : "10px",
+    "margin-left" : "10px",
+    "letter-spacing":"2px",
+    "border-bottom" : "1px solid #FB4747"
+  },
+  "itemReplyTitle" : {
+    "font-size" : "16px",
+    "text-align" : "left",
+    "width" : "108px",
+    "margin-top" : "20px",
+    "padding-left" : "10px",
+    "padding-bottom" : "10px",
+    "margin-left" : "10px",
+    "letter-spacing":"2px",
+    "border-bottom" : "1px solid #FB4747"
+  },
+  "replyListNode" : {
+    "margin-bottom" : "10px"
+  },
+  "replyNode" : {
+    "background-color" : "#f5f5f5"
+  },
+  "itemNode" : {
+    "overflow" : "hidden",
+    "background-color" : "#fff",
+    "border-bottom" : "1px solid #f2f2f2"
+  },
+  "itemTopNode" : {
+    "overflow" : "hidden",
+    "position" : "relative",
+    "border" : "1px solid #f2f2f2",
+    "margin" : "10px",
+    "border-radius" : "6px",
+    "padding" : "5px"
+  },
+  "itemUserName_subject" : {
+
+  },
+  "itemBottomNode" : {
+    "padding" : "10px"
+  },
+  "itemLeftNode" : {
+    "position" : "relative",
+    "float" : "left",
+    "width" : "50px",
+    "margin" : "0px 10px 0px 10px"
+  },
+  "itemLeftArrow" : {
+    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/pl_bg.png) no-repeat",
+    "background-position" : "0 -20px",
+    "height" : "20px",
+    "width" : "20px",
+    "position" : "absolute",
+    "left" : "100%",
+    "top" : "10px"
+  },
+  "itemUserAction" : {
+    "margin-right": "5px",
+    "float": "left",
+    "background-color": "#FFF",
+    "border": "1px solid #43aafa",
+    "font-size": "14px",
+    "color": "#43aafa",
+    "cursor": "pointer",
+    "margin-left" : "15px",
+    "height": "24px"
+
+  },
+
+  "itemUserFace_subject" : {
+    "position" : "relative",
+    "float" : "left",
+    "width" : "50px",
+    "margin" : "0px 10px 0px 10px"
+  },
+  "itemUserIcon_subject" : {
+    "border" : "1px solid #fcfcfc"
+  },
+  "itemUserInfor_subject" : {
+    "position" : "relative",
+    "margin-left" : "70px",
+    "background-color" : "#fff",
+    "padding-right" : "10px",
+    "padding-top" : "5px"
+  },
+  "itemUserName_subject" : {
+    "color" : "#333",
+    "font-size" : "14px",
+    //"float" : "left",
+    "margin-right" : "10px"
+  },
+  "itemUserLabel" : {
+    "margin-top" : "1px",
+    "line-height" : "16px",
+    "float" : "left",
+    "color" : "#fff",
+    "font-size" : "10px",
+    "width" : "50px",
+    "text-align" : "center",
+    "background-color" : "#FB4747",
+    "border-radius" : "100px",
+    "margin-right" : "10px"
+  },
+  "itemReplyCount" : {
+    "position" : "absolute",
+    "top" : "25px",
+    "right" : "30px",
+    "height" : "16px",
+    "color" : "#999",
+    "font-size" : "12px"
+  },
+  "itemTime_subject" : {
+    "color" : "#999",
+    "font-size" : "12px",
+    "padding-top" : "5px"
+    //"float" : "left",
+  },
+  "itemUserName" : {
+    "float" : "left",
+    "color" : "#bbb",
+    "margin-right" : "10px",
+    "font-size": "14px",
+    "color": "#3C76B7"
+  },
+  "itemUserFace" : {
+    "background-color" : "#fff",
+    "margin-top" : "10px"
+  },
+  "itemUserIcon" : {
+    "border" : "1px solid #fcfcfc"
+  },
+  "itemUserIcon2" : {
+    "border-radius" : "24px",
+    "width" : "48px",
+    "height" : "48px"
+  },
+  "itemPrime" : {
+    "position" : "absolute",
+    "top" : 0,
+    "right" : 0,
+    "width" : "37px",
+    "height" : "33px",
+    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/jing.gif) no-repeat center center"
+  },
+  "itemRightNode" : {
+    "position" : "relative",
+    "margin-left" : "70px",
+    "background-color" : "#fff",
+    "padding-right" : "10px",
+    "padding-top" : "10px"
+  },
+  "itemRightTop" : {
+    "overflow" : "hidden",
+    "font-size" : "12px"
+  },
+  "itemTime" : {
+    "float" : "left",
+    "margin-right" : "10px",
+    "color" : "#999",
+    "margin-top" : "5px"
+  },
+  "itemFloor" : {
+    "float" : "right",
+    "color" : "#999",
+    "line-height" : "22px"
+  },
+  "itemRightMidle" : {
+    "-webkit-user-select": "text",
+    "-moz-user-select": "text",
+    "user-select" : "text"
+  },
+  "itemSummaryContainer" : {
+    "color" : "#777",
+    "line-height" : "24px",
+    "word-break":"break-all",
+    "word-wrap":"break-word",
+    "padding-top" : "10px",
+    "overflow" : "hidden",
+    "font-size" : "14px",
+    "padding" : "5px",
+    "background-color" : "#fafafa",
+    "border" : "1px solid #eee"
+  },
+  "itemSummaryLabel" : {
+
+  },
+  "itemSummary" : {
+
+  },
+  "itemBody" : {
+    "font-size" : "14px",
+    "color" : "#333",
+    "word-break":"break-all",
+    "word-wrap":"break-word"
+
+  },
+  "itemAttachment" : {
+    "padding-top" : "20px"
+  },
+  "itemRightBottom" : {
+    "height" : "30px"
+  },
+
+  "replyAction" : {
+    "float" : "right",
+    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/icon_xinxi2.png ) no-repeat center center",
+    "width" : "24px",
+    "height" : "22px",
+    "line-height" : "22px",
+    "margin-left" : "5px",
+    "cursor" : "pointer",
+    "color" : "#999"
+//    "padding-left" : "18px",
+//    "margin-top" : "5px",
+//    "margin-right" : "15px",
+//    "font-size" : "14px"
+  },
+  "quoteContent" : {
+    "word-break":"break-all",
+    "word-wrap":"break-word"
+  },
+  "quoteTop" : {
+    "margin-top" : "10px",
+    "overflow" : "hidden"
+  },
+  "quoteBottom" : {
+    "overflow" : "hidden"
+  },
+  "itemQuote" : {
+    "background-color" : "#fafafa",
+    "padding" : "10px 5px 10px 0px",
+    "margin-top" : "10px",
+    "overflow" : "hidden"
+  },
+  "quoteLeft" : {
+    "float" : "left",
+    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/quoteLeft.gif) no-repeat center center",
+    "width" : "14px",
+    "height" : "10px"
+  },
+  "quoteRight" : {
+    "float" : "left",
+    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/quoteRight.gif) no-repeat center center",
+    "width" : "14px",
+    "height" : "10px"
+  },
+  "quoteInfor" : {
+    "float" : "left",
+    "font-size" : "12px",
+    "color" : "#999",
+    "margin-left" : "10px"
+  },
+  "quoteText" : {
+    "font-size" : "12px",
+    "margin-left" : "14px",
+    "float" : "left",
+    "color" : "#333"
+  },
+  "quoteLeftBig" : {
+    "float" : "left",
+    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/quoteLeft_big.gif) no-repeat center center",
+    "width" : "28px",
+    "height" : "27px",
+    "margin-left" : "10px",
+    "margin-top" : "10px"
+  },
+  "quoteRightBig" : {
+    "float" : "left",
+    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/quoteRight_big.gif) no-repeat center center",
+    "width" : "28px",
+    "height" : "27px",
+    "margin-left" : "15px",
+    "margin-top" : "10px"
+  },
+  "quoteAreaBig" : {
+    "float" : "left",
+    "max-width" : "830px"
+  },
+  "quoteInforBig" : {
+    "font-size" : "14px",
+    "color" : "#999",
+    "margin-left" : "15px",
+    "text-decoration" : "underline",
+    "cursor" : "pointer"
+    //"margin-top" : "5px"
+  },
+  "quoteTextBig" : {
+    "margin-left" : "15px",
+    "font-size" : "14px",
+    "color" : "#666",
+    "margin-top" : "5px"
+  },
+  "replyBeinngDelete" : {
+    "font-size" : "12px",
+    "margin-top" : "10px",
+    "padding" : "10px 0px 10px 35px",
+    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/cross.png) no-repeat 9px center",
+    "background-color" : "#fafafa",
+    //"border" : "1px dotted #8ca53e",
+    "color" : "#999"
+  },
+  "iconNode": {
+    "width": "230px",
+    "height": "230px",
+    "border-bottom-left-radius": "5px",
+    "border-bottom-right-radius": "5px",
+    "border-top-left-radius": "5px",
+    "border-top-right-radius": "5px",
+    "float" : "left"
+  },
+  "pagingContainer" : {
+    "overflow" : "hidden",
+    "text-align" : "center"
+  },
+  "prevPageNode" : {
+    "float" : "left",
+    "font-size" : "16px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "text-align" : "center",
+    "border" : "1px solid #DCDCDC",
+    "margin-top" : "10px",
+    "cursor" : "pointer",
+    "color" : "#666",
+    "background-color" : "#EEE"
+  },
+  "prevPageNode_over" : {
+    "background-color" : "#EEE"
+  },
+  "nextPageNode" : {
+    "float" : "left",
+    "font-size" : "16px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "text-align" : "center",
+    "border" : "1px solid #DCDCDC",
+    "margin-top" : "10px",
+    "cursor" : "pointer",
+    "color" : "#666",
+    "background-color" : "#EEE"
+  },
+  "nextPageNode_over" : {
+    "background-color" : "#EEE"
+  }
+}

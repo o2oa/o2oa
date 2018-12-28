@@ -1,0 +1,78 @@
+{
+  "begin": {
+    "icon": "begin24.png",
+    "text": "开始",
+    "className": "Begin"
+  },
+  "end": {
+    "icon": "end24.png",
+    "text": "结束",
+    "className": "End"
+  },
+  "cancel": {
+    "icon": "cancel24.png",
+    "text": "取消",
+    "className": "Cancel"
+  },
+  "manual": {
+    "icon": "manual24.png",
+    "text": "人工活动",
+    "className": "Manual"
+  },
+  "choice": {
+    "icon": "choice24.png",
+    "text": "选择活动",
+    "className": "Choice"
+  },
+//  "condition": {
+//    "icon": "condition24.png",
+//    "text": "条件活动",
+//    "className": "Condition"
+//  },
+  "split": {
+    "icon": "split24.png",
+    "text": "拆分活动",
+    "className": "Split"
+  },
+  "parallel": {
+    "icon": "parallel24.png",
+    "text": "并行活动",
+    "className": "Parallel"
+  },
+  "merge": {
+    "icon": "merge24.png",
+    "text": "合并活动",
+    "className": "Merge"
+  },
+  "embed": {
+    "icon": "embed24.png",
+    "text": "流程调用",
+    "className": "Embed"
+  },
+  "delay": {
+    "icon": "delay24.png",
+    "text": "定时活动",
+    "className": "Delay"
+  },
+  "invoke": {
+    "icon": "invoke24.png",
+    "text": "服务调用",
+    "className": "Invoke"
+  },
+//  "service": {
+//    "icon": "service24.png",
+//    "text": "服务",
+//    "className": "Service"
+//  },
+//  "message": {
+//    "icon": "message24.png",
+//    "text": "消息",
+//    "className": "Message"
+//  },
+  "agent": {
+    "icon": "agent24.png",
+    "text": "脚本",
+    "className": "Agent"
+  }
+
+}

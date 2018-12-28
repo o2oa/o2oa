@@ -1,0 +1,57 @@
+<div style="background-color: #FFF; overflow: hidden">
+    <div title="基本" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">标识:</td>
+                <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">名称:</td>
+                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">描述:</td>
+                <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">系统操作:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="hideSystemTools" value="false" text{(!$.hideSystemTools)?'checked':''}/>显示
+                    <input type="radio" name="hideSystemTools" value="true" text{($.hideSystemTools)?'checked':''}/>不显示
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">位置:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="barPosition" value="right" text{(!$.hideSystemTools)?'checked':''}/>右
+                    <input type="radio" name="barPosition" value="left" text{($.hideSystemTools)?'checked':''}/>左
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle"></td>
+                <td class="editTableValue">
+                    <input class="MWFSidebarReposition" type="button" value="重新定位"/>
+                </td>
+            </tr>
+
+            <!--<tr>-->
+                <!--<td class="editTableTitle">意见字段名:</td>-->
+                <!--<td class="editTableValue"><input type="text" name="opinion" value="text{$.opinion}" class="editTableInput"/></td>-->
+            <!--</tr>-->
+
+        </table>
+        <div class="MWFMaplist" name="styles" title="样式"></div>
+        <div class="MWFMaplist" name="properties" title="属性"></div>
+
+    </div>
+    <div title="操作"  class="MWFTab" style="overflow: hidden">
+        <div class="MWFDefaultActionArea" name="defaultTools"></div>
+        <div class="MWFActionArea" name="tools"></div>
+    </div>
+    <div title="HTML"  class="MWFTab">
+        <div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+    <div title="JSON"  class="MWFTab">
+        <div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+</div>

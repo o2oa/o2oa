@@ -4,5 +4,4 @@
 .project
 /.settings/
 /target/
-*_.java
 /.svn/
