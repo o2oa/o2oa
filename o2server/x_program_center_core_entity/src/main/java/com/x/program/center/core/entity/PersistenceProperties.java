@@ -64,4 +64,9 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static final String table = "CTE_INVOKE";
 	}
 
+	public static class Validation {
+		public static class Meta {
+			public static final String table = "VAL_META";
+		}
+	}
 }
