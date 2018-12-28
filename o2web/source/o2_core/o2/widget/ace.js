@@ -6,10 +6,10 @@ o2.widget.ace = {
         if (!window.ace){
             var jsLoaded = false;
             var cssLoaded = false;
-            COMMON.AjaxModule.loadDom("ace", function(){
-                COMMON.AjaxModule.loadDom("ace-tools", function(){
+            o2.load("ace", function(){
+                //COMMON.AjaxModule.loadDom("ace-tools", function(){
                     if (callback) callback();
-                }.bind(this))
+                //}.bind(this))
             }.bind(this));
         }else{
             if (callback) callback();

@@ -7,12 +7,8 @@ if (href.indexOf("debugger")!=-1) layout.debugger = true;
 layout.mobile = true;
 layout.desktop = layout;
 layout.desktop.session = {};
-COMMON.DOM.addReady(function(){
-    COMMON.AjaxModule.load("/x_desktop/res/framework/mootools/plugin/mBox.Notice.js", null, false);
-    COMMON.AjaxModule.load("/x_desktop/res/framework/mootools/plugin/mBox.Tooltip.js", null, false);
-
-    COMMON.setContentPath("/x_desktop");
-    COMMON.AjaxModule.load("mwf", function(){
+o2.addReady(function(){
+    o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], function(){
         MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
         MWF.loadLP("zh-cn");
 
@@ -178,7 +174,7 @@ COMMON.DOM.addReady(function(){
                     return null;
                 };
                 layout.parseData = function(data){
-                 //   this.setTitle(this.options.title+"-"+data.work.title);
+                    //   this.setTitle(this.options.title+"-"+data.work.title);
 
                     this.activity = data.activity;
                     this.data = data.data;

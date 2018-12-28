@@ -1,26 +1,28 @@
 layout = window.layout || {};
-var locate = window.location;
-layout.protocol = locate.protocol;
-var href = locate.href;
-if (href.indexOf("debugger")!=-1) layout["debugger"] = true;
-layout.session = layout.session || {};
+layout.desktop = layout;
+
+o2.addReady(function(){
+
+    var locate = window.location;
+    layout.protocol = locate.protocol;
+    var href = locate.href;
+    if (href.indexOf("debugger")!=-1) layout["debugger"] = true;
+    layout.session = layout.session || {};
 //layout.session.user = {};
-layout.desktop = layout;
+    layout.desktop = layout;
 
-var uri = new URI(href);
-var appNames = "portal.Portal";
-var id = uri.getData("id");
-var page = uri.getData("page");
-var statusObj = {"portalId": id, "pageId": page};
-var options = null;
+    var uri = new URI(href);
+    var appNames = "portal.Portal";
+    var id = uri.getData("id");
+    var page = uri.getData("page");
+    var statusObj = {"portalId": id, "pageId": page};
+    var options = null;
 
-layout.desktop = layout;
-COMMON.DOM.addReady(function(){
-    COMMON.AjaxModule.load("/x_desktop/res/framework/mootools/plugin/mBox.Notice.js", null, false);
-    COMMON.AjaxModule.load("/x_desktop/res/framework/mootools/plugin/mBox.Tooltip.js", null, false);
-    COMMON.setContentPath("/x_desktop");
-    //COMMON.AjaxModule.load("ie_adapter", function(){
-        COMMON.AjaxModule.load("mwf", function(){
+    // COMMON.AjaxModule.load("/x_desktop/res/framework/mootools/plugin/mBox.Notice.js", null, false);
+    // COMMON.AjaxModule.load("/x_desktop/res/framework/mootools/plugin/mBox.Tooltip.js", null, false);
+
+    o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], function(){
+        //COMMON.AjaxModule.load("mwf", function(){
             MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
             MWF.loadLP("zh-cn");
 
@@ -189,5 +191,10 @@ COMMON.DOM.addReady(function(){
 
             });
         });
+    //});
+
+    //COMMON.setContentPath("/x_desktop");
+    //COMMON.AjaxModule.load("ie_adapter", function(){
+
     //}.bind(this));
 });
