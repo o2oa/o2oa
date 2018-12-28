@@ -1,7 +1,10 @@
 package com.x.meeting.assemble.control.jaxrs.attachment;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.http.ActionResult;
@@ -26,8 +29,10 @@ public class ActionDownload extends BaseAction {
 			if (null == meeting) {
 				throw new ExceptionMeetingNotExist(attachment.getMeeting());
 			}
-			if (!business.meetingReadAvailable(effectivePerson, meeting)) {
-				throw new ExceptionMeetingAccessDenied(effectivePerson, meeting.getSubject());
+			if (BooleanUtils.isNotTrue(Config.meeting().getAnonymousAccessAttachment())) {
+				if (!business.meetingReadAvailable(effectivePerson, meeting)) {
+					throw new ExceptionMeetingAccessDenied(effectivePerson, meeting.getSubject());
+				}
 			}
 			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 					attachment.getStorage());
