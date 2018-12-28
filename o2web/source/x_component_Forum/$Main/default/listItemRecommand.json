@@ -1,0 +1,49 @@
+{
+  "viewSetting": {
+    "html": "<div styles='documentListNode_rcm'></div>"
+  },
+  "documentSetting": {
+    "html": "<div styles='documentNode_rcm'></div>",
+    //"mouseoverStyles": "documentNode_over",
+    "event" : "mouseover^^function( documentNode, ev ){ this.mouseoverDocument() }##mouseout^^function( documentNode, ev ){ this.mouseoutDocument() }"
+  },
+  "items": [
+    {
+      "name": "work",
+      "content": {
+        "html": "<div styles='documentItemNode_rcm'>"+
+          "<div item='index' styles='documentItemNode_rcm_index'></div>"+
+          "<div item='sectionName' styles='documentItemNode_rcm_section'></div>"+
+          "<div styles='documentItemNode_rcm_arrow'>＞</div>"+
+          "<div item='title' styles='documentItemNode_rcm_title'></div>"+
+          "<div styles='documentItemNode_rcm_right'>"+
+          " <div item='creatorName' styles='documentItemNode_rcm_person'></div>"+
+          " <div item='createTime' styles='documentItemNode_rcm_time'></div>"+
+          "</div>"+
+        "</div>",
+        "items": {
+          "index" : {"value" : "function(d){ return this.index + 1 }",
+            "styles" : "function(d){ var forumSetting = MWF.xApplication.Forum.ForumSetting[ d.forumId ]; return { 'background-color' :  forumSetting ? forumSetting.forumColor : '#eee' } }"
+          },
+          "title" : {
+            "event" : "click^^function( node, ev ){ this.open() }##mouseover^^function( node, ev ){ node.setStyles( this.css.documentItemNode_rcm_title_over ) }##mouseout^^function( node, ev ){ node.setStyles( this.css.documentItemNode_rcm_title ) }"
+          },
+          "createTime" : {
+            "value" : "function(d){ return MWFForum.getDateDiff( d.createTime ) }",
+            "attr" : "title^^function(d){ return d.createTime }"
+          },
+          "creatorName" : {
+            "value" : "function(d){ return d.creatorName.split('@')[0] }",
+            "event" : "mouseover^^function( node, ev ){ node.setStyles( this.css.documentItemNode_rcm_person_over ) }##mouseout^^function( node, ev ){ node.setStyles( this.css.documentItemNode_rcm_person )}##click^^function(){this.app.openPerson( this.data.creatorName ) }"
+          },
+          "sectionName": {
+            "value" : "function(d){ return d.sectionName.length > 8 ? d.sectionName.substr(0,8)+'...' : d.sectionName }",
+            "styles" : "function(d){ var formSetting = MWF.xApplication.Forum.ForumSetting[ d.forumId ]; return { 'color' : formSetting ? formSetting.forumColor : '#666' } }",
+            "event" : "click^^function( node, ev ){ this.openSection( ev ) }"
+          }
+        }
+      }
+   }
+  ]
+}
+

@@ -1,0 +1,40 @@
+.importInfor {
+    margin: 10px 20px 5px 20px;
+    padding: 5px 5px;
+    font-size: 14px;
+    line-height: 24px;
+    height:48px;
+    color: #666666;
+}
+.importContent {
+    border: 1px solid #999999;
+    height: 480px;
+    margin: 10px 20px;
+    background-color: #FFFFFF;
+}
+.importBottom {
+    height: 35px;
+    padding-top: 5px;
+    margin: 10px 20px;
+}
+.importOkButton {
+    float: right;
+    margin-right:20px;
+    height: 30px;
+    background-color: #4c6b87;
+    border-radius: 6px;
+    color: #FFFFFF;
+    width: 120px;
+    border: 1px solid #000000;
+    cursor: pointer;
+}
+.importCancelButton {
+    float: right;
+    height: 30px;
+    background-color: #dddddd;
+    border-radius: 6px;
+    color: #333333;
+    width: 80px;
+    border: 1px solid #999999;
+    cursor: pointer;
+}

@@ -1,0 +1,187 @@
+{
+
+
+  "node": {
+    "margin": "10px 0px",
+    "overflow": "hidden",
+    "background-color": "#fff",
+//    "position": "absolute",
+    "width": "100%",
+//    "top": "0px",
+//    "left": "200px",
+    "display": "block",
+    "opacity": "0"
+  },
+
+  "scrollNode" : {
+    "overflow-x": "hidden",
+    "overflow-y": "scroll"
+  },
+  "scrollNode_inContainer" : {
+    "overflow-x": "hidden",
+    "overflow-y": "hidden",
+    "background-color" : "#f0f0f0"
+  },
+  "contentWarpNode" : {
+    //"width": "1170px",
+    "margin" : "0px auto 20px auto",
+    "overflow" : "hidden"
+  },
+  "contentContainerNode" : {
+    "height" : "100%",
+    "overflow": "hidden"
+  },
+  "contentNode" : {
+    "background-color": "#FFF",
+    "-webkit-user-select": "none",
+    "-moz-user-select": "none"
+  },
+
+  "calendarTitleNode": {
+    "height": "50px",
+    "overflow": "hidden",
+    "border-bottom": "1px solid #CCC"
+  },
+  "calendarBodyNode": {
+    "overflow": "hidden"
+  },
+
+  "calendarPrevDayNode": {
+    "height": "30px",
+    "width": "40px",
+    "margin": "10px 0px 10px 40px",
+    "background": "url(/x_component_Calendar/$WeekView/default/icon/left24_gray.png) no-repeat center center",
+    "cursor": "pointer",
+    "float": "left"
+  },
+  "calendarPrevDayNode_over": {
+    "background": "url(/x_component_Calendar/$WeekView/default/icon/left24_blue.png) no-repeat center center"
+  },
+  "calendarPrevDayNode_down": {
+    "background": "url(/x_component_Calendar/$WeekView/default/icon/left24_blue.png) no-repeat center center"
+  },
+  "calendarNextDayNode": {
+    "height": "30px",
+    "width": "40px",
+    "margin": "10px 0px",
+    "background": "url(/x_component_Calendar/$WeekView/default/icon/right24_gray.png) no-repeat center center",
+    "cursor": "pointer",
+    "float": "left"
+  },
+  "calendarNextDayNode_over": {
+    "background": "url(/x_component_Calendar/$WeekView/default/icon/right24_blue.png) no-repeat center center"
+  },
+  "calendarNextDayNode_down": {
+    "background": "url(/x_component_Calendar/$WeekView/default/icon/right24_blue.png) no-repeat center center"
+  },
+  "calendarTitleTextNode": {
+    "line-height": "48px",
+    "color" : "#333",
+    "margin": "0px 10px",
+    "font-size": "20px",
+    "float": "left",
+    "cursor": "pointer"
+  },
+  "calendarTitleTextNode_over": {
+    "color": "#4990e2"
+  },
+  "calendarTitleTextNode_down": {
+    "color": "#4990e2"
+  },
+
+
+  "titleTable" : {
+    "margin" : "0px auto 0px 12px",
+    "width": "100%",
+    "table-layout" : "fixed",
+    "font-size" : "12px"
+  },
+  "calendarTable": {
+    "width": "100%",
+    "table-layout" : "fixed",
+    "font-size" : "12px"
+  },
+  "calendarTableTitleTr": {
+    "height": "50px"
+  },
+  "calendarTableTh_hour": {
+    "background-color" : "#f0f0f0",
+    "color": "#333",
+    "font-size": "18px",
+    "font-weight" : "normal",
+    "border-bottom": "1px solid #CCC",
+    "border-left": "1px solid #f0f0f0",
+    "text-align" : "center",
+    "overflow" : "hidden"
+  },
+  "calendarTableTh": {
+    "background-color" : "#f0f0f0",
+    "color": "#333",
+    "font-size": "18px",
+    "font-weight" : "normal",
+    "min-width": "120px",
+    "border-bottom": "1px solid #CCC",
+    "border-left": "1px solid #f0f0f0",
+    "text-align" : "center",
+    "overflow" : "hidden"
+  },
+  "calendarTableThDay" : {
+    "font-size": "18px",
+    "font-weight" : "normal"
+  },
+  "calendarTableThDate" : {
+    "float" : "right",
+    "font-size": "14px",
+    "font-weight" : "normal"
+
+  },
+  "calendarTableCell_hour" : {
+    "overflow": "hidden",
+    "background-color": "#fff",
+    "border-bottom": "1px solid #dfdfdf",
+    "border-left": "1px solid #dfdfdf",
+    "width" : "50px",
+    "text-align" : "center",
+    "height" : "47px"
+  },
+  "calendarTableCell" : {
+    "overflow": "hidden",
+    "background-color": "#fff",
+    "border-bottom": "1px solid #dfdfdf",
+    "border-left": "1px solid #dfdfdf",
+    "height" : "47px"
+  },
+  "calendarTableCell_thisWeek": {
+    "overflow": "hidden",
+    "background-color": "#fff",
+    "border-bottom": "1px solid #dfdfdf",
+    "border-left": "1px solid #dfdfdf",
+    "height" : "47px"
+  },
+  "calendarTableCell_otherWeek": {
+    "overflow": "hidden",
+    "color" : "#ccc",
+    "background-color": "#fff",
+    "border-bottom": "1px solid #dfdfdf",
+    "height" : "47px"
+  },
+  "calendarTableCell_today": {
+    "overflow": "hidden",
+    "background-color": "#F8FBFF",
+    "border-bottom": "1px solid #dfdfdf",
+    "height" : "47px"
+  },
+
+
+  "createCalendarAction" : {
+    "float" : "left",
+    "padding-left" : "5px",
+    "width" : "16px",
+    "height" : "16px",
+    "background" : "url(/x_component_Calendar/$Main/default/icon/icon_newapply.png) no-repeat center center"
+  },
+  "createCalendarAction_over" : {
+    "background" : "url(/x_component_Calendar/$Main/default/icon/icon_newapply_click.png) no-repeat center center"
+  }
+
+}

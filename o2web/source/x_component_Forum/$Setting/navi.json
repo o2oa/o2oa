@@ -1,0 +1,27 @@
+[
+  {
+    "title" : "系统设置",
+    "icon" :"systemSetting.png",
+    "action" : "openSystemSetting"
+  },
+  {
+    "title" : "分区设置",
+    "icon" :"categorize.png",
+    "action" : "openCategorySetting"
+  },
+  {
+    "title" : "板块设置",
+    "icon" :"squared.png",
+    "action" : "openSectionSetting"
+  }
+//  {
+//    "title" : "权限设置",
+//    "icon" :"permission.png",
+//    "action" : "openPermissionSetting"
+//  },
+//  {
+//    "title" : "角色设置",
+//    "icon" :"role.png",
+//    "action" : "openRoleSetting"
+//  }
+]

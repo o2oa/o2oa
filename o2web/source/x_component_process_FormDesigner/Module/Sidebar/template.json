@@ -1,0 +1,14 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Sidebar",
+	"description": "",
+	"tools":[],
+	"style": "xform_side_blue_simple",
+	"hideSystemTools": false,
+	"barPosition": "right",
+	"properties": {},
+	"styles": {},
+	"opinion": "opinion",
+	"container": ""
+}

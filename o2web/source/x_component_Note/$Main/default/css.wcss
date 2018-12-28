@@ -1,0 +1,67 @@
+{
+    "itemNode": {
+        "background-color": "#fdfdc8",
+        "position": "absolute",
+        "-webkit-user-select": "none",
+        "-moz-user-select": "none",
+        "box-shadow": "0px 0px 10px #333",
+        "border": "1px solid #000",
+        "z-index": 100
+    },
+    "itemTitleNode": {
+        "height": "30px",
+        "background-color": "#f8f7b6",
+        "line-height": "20px"
+    },
+    "itemTextarea": {
+        "border": "0px",
+        "overflow": "auto",
+        "margin": "5px",
+        "font-size": "14px",
+        "font-family": "微软雅黑",
+        "-webkit-user-select": "text",
+        "-moz-user-select": "text",
+        "resize": "none",
+        "outline": "none",
+        "background": "transparent"
+    },
+    "itemBottomNode": {
+        "height": "10px"
+    },
+    "addActionNode": {
+        "float": "left",
+        "height": "16px",
+        "width": "16px",
+        "border": "1px solid #f8f7b6",
+        "text-align": "center",
+        "cursor": "pointer",
+        "background": "url("+"/x_component_Note/$Main/default/icon/add.png) no-repeat center center",
+        "margin": "6px auto 6px 6px"
+    },
+    "addActionNode_over": {
+        "border": "1px solid #CCC"
+    },
+    "closeActionNode": {
+        "float": "right",
+        "height": "16px",
+        "width": "16px",
+        "border": "1px solid #f8f7b6",
+        "cursor": "pointer",
+        "background": "url("+"/x_component_Note/$Main/default/icon/close.png) no-repeat center center",
+        "margin": "6px 6px auto 6px"
+    },
+    "closeActionNode_over":{
+        "border": "1px solid #CCC"
+    },
+
+    "resizeActionNode":{
+        "float": "right",
+        "height": "8px",
+        "width": "8px",
+        "-webkit-user-select": "none",
+        "-moz-user-select": "none",
+        "cursor": "nw-resize",
+        "background": "url("+"/x_component_Note/$Main/default/icon/resize.png) no-repeat center center",
+        "margin": "0px 2px 2px 0px"
+    }
+}

@@ -1,0 +1,62 @@
+{
+  "moduleNodeMove": {
+	"border": "1px dashed #333",
+	"overflow": "hidden",
+	"margin": "3px",
+	"-webkit-user-select": "none",
+	"-moz-user-select": "none",
+	"position": "absolute",
+	"z-index": 10002,
+	"opacity": 0.7,
+	"cursor": "move",
+	"min-height": "26px",
+	"display": "inline-block"
+  },
+  "moduleNodeShow": {
+	"border": "1px dashed #333",
+	"margin": "3px",
+	"-webkit-user-select": "none",
+	"-moz-user-select": "none",
+	"position": "static",
+	"top": "auto",
+	"left": "auto",
+	"width": "18px",
+	"height": "2px",
+	"opacity": 0.5,
+	"min-height": "2px",
+	"display": "inline-block",
+	"background": "#ffa200"
+  },
+  "moduleNode": {
+	"border": "1px dashed #333",
+	"overflow": "hidden",
+	"cursor": "pointer",
+	"margin": "3px",
+	"-webkit-user-select": "none",
+	"-moz-user-select": "none",
+	"position": "static",
+	"top": "auto",
+	"left": "auto",
+	"opacity": 1,
+	"min-height": "26px",
+	"display": "inline-block"
+  },
+  "buttonIcon": {
+	"border-radius": "5px",
+	"border-top": "1px solid #999",
+	"border-left": "1px solid #999",
+	"border-right": "1px solid #999",
+	"border-bottom": "1px solid #999",
+	"overflow": "hidden",
+	"cursor": "pointer",
+	"margin-left": "3px",
+	"height": "26px",
+	"display": "inline-block"
+  },
+  "imageNode" : {
+	"border": "1px dashed #ccc",
+	"opacity": 1,
+	"display": "inline-block"
+  }
+	
+}

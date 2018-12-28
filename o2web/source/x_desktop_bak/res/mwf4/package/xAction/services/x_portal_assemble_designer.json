@@ -1,0 +1,75 @@
+{
+  "getId": {"uri": "/jaxrs/id/{count}"},
+
+  "listApplication": {"uri": "/jaxrs/portal/list"},
+  "listApplicationSummary": {"uri": "/jaxrs/portal/list/summary"},
+  "listApplicationByCategorySummary": {"uri": "/jaxrs/portal/list/summary/portalcategory/{applictionCategory}"},
+  "listApplicationCategory": {"uri": "/jaxrs/portalcategory/list"},
+  "listApplicationByCategory": {"uri": "/jaxrs/portal/list/portalcategory/{applicationCategory}"},
+
+  "addApplication": {"uri": "/jaxrs/portal","method": "POST"},
+  "updateApplication": {"uri": "/jaxrs/portal/{id}","method": "PUT"},
+  "updateApplicationIcon": {
+    "uri": "/jaxrs/portal/{id}/icon",
+    "method": "PUT",
+    "enctype": "formData"
+  },
+  "getApplication": {"uri": "/jaxrs/portal/{id}"},
+  "removeApplication": {"uri": "/jaxrs/portal/{id}","method": "DELETE"},
+  "deleteApplication": {"uri": "/jaxrs/portal/{id}","method": "DELETE"},
+
+  "listPage": {"uri": "/jaxrs/page/list/portal/{id}"},
+  "listSource": {"uri": "/jaxrs/source/list/portal/{id}"},
+  "listScript": {"uri": "/jaxrs/script/list/portal/{id}"},
+  "listMenu": {"uri": "/jaxrs/menu/list/portal/{id}"},
+  "listWidget": {"uri": "/jaxrs/menu/list/portal/{id}"},
+  "listFile": {"uri": "/jaxrs/file/list/application/{id}"},
+
+  "getPage": {"uri": "/jaxrs/page/{id}"},
+  "addPage": {"uri": "/jaxrs/page","method": "POST"},
+  "removePage": {"uri": "/jaxrs/page/{id}","method": "DELETE"},
+  "deletePage": {"uri": "/jaxrs/page/{id}","method": "DELETE"},
+  "updatePage": {"uri": "/jaxrs/page/{id}","method": "PUT"},
+
+  "getPageTemplate": {"uri": "/jaxrs/templatepage/{id}"},
+  "deletePageTemplate": {"uri": "/jaxrs/templatepage/{id}","method": "DELETE"},
+  "addPageTemplate": {"uri": "/jaxrs/templatepage","method": "POST"},
+  "listPageTemplate": {"uri": "/jaxrs/templatepage/list"},
+  "listPageTemplateCategory": {"uri": "/jaxrs/templatepage/list/category"},
+  "listPageTemplateByCategory": {"uri": "/jaxrs/templatepage/list/category","method": "PUT"},
+  
+  "getSource": {"uri": "/jaxrs/source/{id}"},
+  "addSource": {"uri": "/jaxrs/source", "method": "POST"},
+  "removeSource": {"uri": "/jaxrs/source/{id}","method": "DELETE"},
+  "updataSource": {"uri": "/jaxrs/source/{id}","method": "PUT"},
+
+  "getScript": {"uri": "/jaxrs/script/{id}"},
+  "addScript": {"uri": "/jaxrs/script", "method": "POST"},
+  "removeScript": {"uri": "/jaxrs/script/{id}", "method": "DELETE"},
+  "deleteScript": {"uri": "/jaxrs/script/{id}", "method": "DELETE"},
+  "updataScript": {"uri": "/jaxrs/script/{id}", "method": "PUT"},
+  "getScriptByName": {"uri": "/jaxrs/script/application/{applicationId}/name/{name}"},
+
+  "getMenu": {"uri": "/jaxrs/menu/{id}"},
+  "addMenu": {"uri": "/jaxrs/menu", "method": "POST"},
+  "removeMenu": {"uri": "/jaxrs/menu/{id}", "method": "DELETE"},
+  "updataMenu": {"uri": "/jaxrs/menu/{id}", "method": "PUT"},
+
+  "getWidget": {"uri": "/jaxrs/widget/{id}"},
+  "addWidget": {"uri": "/jaxrs/widget","method": "POST"},
+  "removeWidget": {"uri": "/jaxrs/widget/{id}","method": "DELETE"},
+  "deleteWidget": {"uri": "/jaxrs/widget/{id}","method": "DELETE"},
+  "updateWidget": {"uri": "/jaxrs/widget/{id}","method": "PUT"},
+
+  "getFile": {"uri": "/jaxrs/file/{id}"},
+  "addFile": {"uri": "/jaxrs/file", "method": "POST"},
+  "removeFile": {"uri": "/jaxrs/file/{id}", "method": "DELETE"},
+  "deleteFile": {"uri": "/jaxrs/file/{id}", "method": "DELETE"},
+  "updataFile": {"uri": "/jaxrs/file/{id}", "method": "PUT"},
+  "getFileByName": {"uri": "/jaxrs/file/application/{applicationId}/name/{name}"},
+  "downloadFile": {"uri": "/jaxrs/file/{id}/download"},
+  "readFile": {"uri": "/jaxrs/file/{id}/content"},
+  "uploadFile": {"uri": "/jaxrs/file/{id}/upload", "method": "POST", "enctype": "formData"},
+
+  "clazz": "x_portal_assemble_designer"
+}

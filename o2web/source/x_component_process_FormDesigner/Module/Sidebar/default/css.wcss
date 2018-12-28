@@ -1,0 +1,53 @@
+{
+	"moduleNodeMove": {
+		"border": "2px dashed #ffa200",
+		"height": "30px",
+		"width": "80px",
+		"overflow": "hidden",
+		"margin": "3px",
+		"display": "block",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "absolute",
+		"z-index": 10002,
+		"opacity": 0.7,
+		"width": "100px",
+		"cursor": "move"
+	},
+	"moduleNodeShow": {
+		"border": "1px dashed #333",
+		"height": "2px",
+		"cursor": "pointer",
+		"line-height": "22px",
+		"overflow": "hidden",
+		"margin": "3px 3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "static",
+		"display": "block",
+		"top": "auto",
+		"left": "auto",
+		"width": "auto",
+		"opacity": 0.5,
+		"background": "#ffa200"
+	},
+	"moduleNode": {
+		"border": "1px dashed #333",
+		"min-height": "30px",
+		"cursor": "pointer",
+		"line-height": "2px",
+		"overflow": "hidden",
+		"margin": "3px 3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "static",
+		"display": "block",
+		"top": "auto",
+		"left": "auto",
+		"width": "120px",
+		"opacity": 1,
+		"border-radius": "8px",
+		"background": "transparent"
+	}
+	
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "title" : "年度",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "configYear",
+    "name" : "configYear",
+    "width" : "20%"
+  },
+  {
+    "title" : "假期名称",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "configName",
+    "name" : "configName",
+    "width" : "20%"
+  },
+  {
+    "title" : "日期",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "configDate",
+    "name" : "configDate",
+    "width" : "20%"
+  },
+  {
+    "title" : "类型",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "function(data){ return data.configType == 'Holiday' ? '假日' : '补班'  }",
+    "name" : "configType",
+    "width" : "20%"
+  },
+  {
+    "access" : "admin",
+    "title" : "操作",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "actions",
+    "name" : "actions",
+    "width" : "5%",
+    "sub" : [{
+      "title" : "删除文件",
+      "action" : "remove",
+      "styles" : "actionDeleteNode",
+      "overStyles" : "actionDeleteNode_over",
+      "downStyles" : "actionDeleteNode_down"
+    }]
+  }
+]

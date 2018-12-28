@@ -1,0 +1,42 @@
+{
+	"container": {
+		"position": "absolute",
+		"opacity": 1,
+		"width": "100%",
+		"height": "100%",
+		"top": "0px",
+		"left": "0px"
+	},
+	"backgroundBar": {
+		"position": "absolute",
+		"opacity": 0.5,
+		"width": "100%",
+		"height": "100%",
+		"top": "0px",
+		"background-color": "#999",
+		"left": "0px"
+	},
+	"mask": {
+		"position": "absolute",
+		"opacity": 1,
+		"width": "100%",
+		"height": "100%",
+		"top": "0px",
+		"border": "0",
+		"left": "0px"
+	},
+	"loadingBar": {
+		"width": "120px",
+		"height": "30px",
+		"border": "1px solid #CCC",
+		"border-radius": "5px",
+		"position": "absolute",
+		"background-color": "#666",
+		"text-align": "center",
+		"top": "0px",
+		"left": "0px",
+		"display": "none",
+		"font-size": "12px",
+		"color": "#FFF"
+	}
+}

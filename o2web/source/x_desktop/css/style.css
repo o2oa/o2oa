@@ -1,0 +1,24 @@
+@CHARSET "UTF-8";
+html{
+	overflow: hidden;
+	height: 100%;
+	margin:0px;
+	padding:0px;
+}
+body {
+	margin:0px;
+	padding:0px;
+	height: 100%;
+	font-family: "Microsoft YaHei","微软雅黑","SimSun","宋体";
+    font-size:14px;
+	-webkit-overflow-scrolling: touch;
+	/*background-color: #F1F1F1;*/
+}
+/*
+.table-tr-selected {
+	background-color: #FFFFDD;
+}*/
+
+select.script::-ms-expand { display: none; }
+::-ms-clear, ::-ms-reveal{display: none;}
+

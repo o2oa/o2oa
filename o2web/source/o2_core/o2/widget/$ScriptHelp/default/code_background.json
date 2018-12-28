@@ -1,0 +1,44 @@
+[
+  {"name": "data", "value": "this.data"},
+  {
+    "name": "workContext",
+    "value":[
+      {"name": "getTask()", "value": "this.workContext.getTask();"},
+      {"name": "getWork()", "value": "this.workContext.getWork();"},
+      {"name": "getActivity()", "value": "this.workContext.getActivity();"},
+      {"name": "getTaskList()", "value": "this.workContext.getTaskList();"},
+      {"name": "getWorkLogList()", "value": "this.workContext.getWorkLogList();"},
+      {"name": "getAttachmentList()", "value": "this.workContext.getAttachmentList();"},
+      {"name": "getRouteList()", "value": "this.workContext.getRouteList();"},
+      {"name": "getInquiredRouteList()", "value": "this.workContext.getInquiredRouteList();"},
+      {"name": "setTitle(title)", "value": "this.workContext.setTitle(title);"}
+    ]
+  },
+  {"name": "org", "value": "this.org"},
+  {
+    "name": "service",
+    "value": [
+      {"name": "jaxwsClient", "value": "this.service.jaxwsClient.invoke(url, method, [par]);"},
+      {"name": "jaxrsClient", "value": "this.service.jaxrsClient.invoke(url, method, [par]);"}
+    ]
+  },
+  "-",
+  {"name": "include(name, callback)", "value": "this.include(name, callback);"},
+  {"name": "define(name, fun)", "value": "this.define(name, fun);"},
+  "-",
+  {
+    "name": "Dict",
+    "value": [
+      {"name": "new(name)", "value": "var dict = new this.Dict(name)"},
+      {"name": "get(path)", "value": "var value = dict.get(path);"},
+      {"name": "set(path, value, callback)", "value": "dict.set(path, value, callback);"},
+      {"name": "add(path, value, callback)", "value": "dict.add(path, value, callback);"},
+      {"name": "delete(path, callback)", "value": "dict.delete(path, callback);"}
+    ]
+  }
+
+]
+
+
+
+

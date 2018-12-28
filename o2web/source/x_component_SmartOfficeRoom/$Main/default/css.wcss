@@ -1,0 +1,192 @@
+{
+    "contentNode": {
+        "height": "100%",
+        "width": "100%",
+        "overflow": "auto"
+    },
+    "itemNode": {
+        "height": "150px",
+        "float": "left",
+        "padding": "10px",
+        "padding-top": "15px",
+        "border-top": "1px solid #ffffff",
+        "border-left": "1px solid #ffffff",
+        "border-right": "1px solid #dddddd",
+        "border-bottom": "1px solid #dddddd"
+    },
+    "addActionTextNode": {
+        "color": "#999999",
+        "height": "40px",
+        "line-height": "30px",
+        "text-align": "center",
+        "font-size": "18px",
+        "font-weight": "bold"
+    },
+    "addActionIconNode": {
+        "cursor": "pointer",
+        "height": "80px",
+        "width": "80px",
+        "margin": "auto",
+        "background-color": "#EEE",
+        "margin-bottom": "10px",
+        "border-radius": "10px",
+        "box-shadow": "0px 0px 0px #CCC",
+        "border": "3px solid #C3C3C3",
+        "background-repeat": "no-repeat",
+        "background-position": "center center",
+        "background-image": "url(/x_component_SmartOfficeRoom/$Main/default/icon/add.png)"
+    },
+    "addActionIconNode_over": {
+        "background-image": "url(/x_component_SmartOfficeRoom/$Main/default/icon/add_over.png)",
+        "border": "3px solid #3498db",
+        "box-shadow": "0px 0px 5px #666"
+    },
+
+    "selectDeviceNode": {
+        "height": "80px",
+        "overflow": "hidden",
+        "border-top": "1px solid #ffffff",
+        "border-bottom": "1px solid #cccccc",
+        "cursor": "pointer",
+        "background": "transparent"
+    },
+    "selectDeviceNode_over": {
+        "background": "#ffffff"
+    },
+
+    "selectDeviceIconNode": {
+        "height": "80px",
+        "width": "80px",
+        "background-repeat": "no-repeat",
+        "background-position": "center center",
+        "float": "left"
+    },
+    "selectDeviceFlagNode": {
+        "height": "80px",
+        "width": "80px",
+        "background-repeat": "no-repeat",
+        "background-position": "center center",
+        "background-image": "url(/x_component_SmartOfficeRoom/$Main/default/icon/right.png)",
+        "float": "right"
+    },
+    "selectDeviceContentNode": {
+        "height": "80px",
+        "padding": "10px 0px",
+        "margin-left": "85px"
+    },
+    "selectDeviceTextNode": {
+        "height": "30px",
+        "line-height": "35px",
+        "font-size": "16px",
+        "color": "#333333"
+    },
+    "selectDeviceDesNode": {
+        "height": "20px",
+        "line-height": "20px",
+        "font-size": "14px",
+        "color": "#999999"
+    },
+
+    "createContentNode": {
+        "height": "100%",
+        "width": "100%",
+        "overflow": "auto",
+        "position": "absolute",
+        "z-index": 10000,
+        "top": "0px",
+        "background-color": "#ffffff"
+    },
+    "configContentNode": {
+        "margin": "0px",
+        "overflow": "auto"
+    },
+    "configContentTitleNode": {
+        "height": "50px",
+        "background-color": "#535357",
+        "margin": "auto",
+        "color": "#eeeeee"
+    },
+    "configContentIconNode": {
+        "height": "50px",
+        "width": "50px",
+        "background-repeat": "no-repeat",
+        "background-position": "center center",
+        "float": "left"
+    },
+    "configContentTextNode": {
+        "height": "50px",
+        "line-height":"50px",
+        "margin-left": "50px",
+        "font-size": "18px"
+    },
+    "configContentItemTitleNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "color": "#666666",
+        "width": "77%",
+        "margin": "auto",
+        "font-size": "14px",
+        "margin-top": "20px"
+    },
+
+    "configContentItemInputAreaNode": {
+        "height": "34px",
+        "line-height": "34px",
+        "border": "1px solid #999999",
+        "border-radius": "5px",
+        "width": "77%",
+        "margin": "auto",
+        "overflow": "hidden"
+    },
+    "configContentItemInputNode": {
+        "color": "#999999",
+        "font-size": "14px",
+        "height": "30px",
+        "border": "0px",
+        "width": "99%"
+    },
+    "configContentItemTextareaAreaNode": {
+        "height": "80px",
+        "line-height": "20px",
+        "border": "1px solid #999999",
+        "border-radius": "5px",
+        "width": "77%",
+        "margin": "auto",
+        "overflow": "hidden"
+    },
+    "configContentItemTextareaNode": {
+        "color": "#999999",
+        "font-size": "14px",
+        "border": "0px",
+        "width": "99%",
+        "height": "80px"
+    },
+    "configActionAreaNode": {
+        "height": "50px",
+        "width": "100%",
+        "position": "absolute",
+        "bottom": "0px",
+        "background-color": "#535357"
+    },
+
+    "configSaveActionNode": {
+        "text-align": "center",
+        "line-height": "50px",
+        "font-size": "18px",
+        "width": "50%",
+        "color": "#dddddd",
+        "cursor": "pointer",
+        "float": "left"
+    },
+    "configCancelActionNode": {
+        "text-align": "center",
+        "line-height": "50px",
+        "font-size": "18px",
+        "width": "49%",
+        "border-left": "1px solid #cccccc",
+        "color": "#dddddd",
+        "cursor": "pointer",
+        "float": "right"
+    }
+
+}

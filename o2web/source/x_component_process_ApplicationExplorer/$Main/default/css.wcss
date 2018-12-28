@@ -1,0 +1,340 @@
+{
+	"toolbarAreaNode": {
+	    "height": "50px",
+	    "margin": "0px 0px",
+	    "background-color": "#000",
+	    "overflow": "hidden",
+	    "width": "100%",
+	    "opacity": "0.7"
+	},
+	"createApplicationNode": {
+        "float": "left",
+        "width": "50px",
+        "height": "50px",
+        "background": "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/createCategory.png) no-repeat center center",
+        "cursor": "pointer",
+        "border-right": "1px solid #EEE",
+        "border-left": "0px solid #EEE"
+    },
+    "searchApplicationNode": {
+        "margin-left": "81px",
+        "overflow": "hidden"
+    },
+    "searchApplicationButtonNode": {
+        "float": "right",
+        "width": "50px",
+        "height": "50px",
+        "margin-right": "10px",
+        "background": "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/searchCategory.png) no-repeat center center",
+        "cursor": "pointer"
+    },
+    "searchApplicationInputAreaNode": {
+        "margin-right": "80px",
+        "text-align": "right"
+    },
+    "searchApplicationInputBoxNode": {
+        "margin-top": "13px",
+        "width": "50%",
+        "max-width": "400px",
+        "height": "24px",
+        "border-radius": "5px",
+        "background-color": "#EEE",
+        "float": "right",
+        "text-align": "center"
+    },
+    "searchApplicationInputNode": {
+        "width": "96%",
+        "height": "22px",
+        "border": "0px",
+        "font-family": "微软雅黑",
+        "font-size": "14px",
+        "color": "#999",
+        "background": "transparent",
+        "-webkit-user-select": "auto",
+        "-moz-user-select": "auto"
+    },
+    "categoryAreaNode":{
+        "height": "50px",
+        "overflow": "hidden",
+        "background-color": "#FFF"
+    },
+    "allCategoryItemNode": {
+        "padding": "10px",
+        "line-height": "30px",
+        "height": "28px",
+        "overflow": "hidden",
+        "font-size": "18px",
+        "font-family": "微软雅黑",
+        "font-weight": "bold",
+        "float": "left",
+        "cursor": "pointer",
+        "border-bottom": "2px solid #FFF"
+    },
+    "allCategoryItemNode_over": {
+        "border-bottom": "2px solid #4d71eb"
+    },
+    "allCategoryItemNode_current": {
+        "border-bottom": "2px solid #2b2b2b"
+    },
+    "categoryItemNode": {
+        "padding": "10px",
+        "line-height": "30px",
+        "height": "28px",
+        "overflow": "hidden",
+        "font-size": "14px",
+        "font-family": "微软雅黑",
+        "float": "left",
+        "cursor": "pointer",
+        "border-bottom": "2px solid #FFF"
+    },
+    "categoryActionNode": {
+        "float": "right",
+        "margin-right": "20px",
+        "padding": "4px 14px",
+        "border": "1px solid #666",
+        "border-radius": "3px",
+        "margin-top": "10px",
+        "font-size": "14px",
+        "color": "#666",
+        "cursor": "pointer"
+    },
+    "importActionNode": {
+        "float": "right",
+        "margin-right": "20px",
+        "padding": "4px 14px",
+        "border": "1px solid #666",
+        "border-radius": "3px",
+        "margin-top": "10px",
+        "font-size": "14px",
+        "color": "#666",
+        "cursor": "pointer"
+    },
+    "categoryItemNode_over": {
+        "border-bottom": "2px solid #4d71eb"
+    },
+    "categoryItemNode_current": {
+        "border-bottom": "2px solid #2b2b2b"
+    },
+    "applicationAreaNode": {
+        "overflow": "auto"
+    },
+    "applicationContentNode": {
+        "overflow": "hidden",
+        "margin": "auto",
+        "padding-bottom": "20px"
+    },
+
+    "applicationCreateMarkNode": {
+        "opacity": 0.6,
+        "position": "absolute",
+        "background-color": "#CCC",
+        "top": "0px",
+        "left": "0px"
+    },
+    "applicationCreateAreaNode": {
+        "position": "absolute",
+        "opacity": 0,
+        "top": "0px"
+    },
+    "applicationCreateNode": {
+		"background-color": "#FFF",
+		"width": "80%",
+		"max-width": "600px",
+		"box-shadow": "0px 0px 20px #999",
+		"margin": "auto",
+		"border-radius": "8px",
+		"border": "6px solid #666",
+		"overflow": "hidden"
+	},
+	"applicationCreateNewNode": {
+		"width": "47px",
+		"height": "47px",
+		"background": "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/new.png) no-repeat"
+	},
+	"applicationCreateFormNode": {
+		"border-radius": "8px",
+		"border": "0px solid #666",
+		"width": "70%",
+		"margin": "auto",
+		"font-size": "16px",
+		"color": "#666",
+		"font-family": "微软雅黑"
+	},
+	"applicationCreateOkActionNode": {
+		"height": "30px",
+		"width": "85px",
+		"cursor": "pointer",
+		"float": "right",
+		"line-height": "30px",
+		"padding-left": "65px",
+		"font-size": "16px",
+		"font-family": "微软雅黑",
+		"border-radius": "3px",
+		"border": "1px solid #354f67",
+		"color": "#FFF",
+		"margin-right": "20px",
+		"margin-top": "20px",
+		"box-shadow": "0px 0px 0px #666",
+		"background": "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/editOk_bg.png) no-repeat"
+	},
+	"applicationCreateCancelActionNode": {
+		"height": "30px",
+		"width": "60px",
+		"cursor": "pointer",
+		"float": "right",
+		"line-height": "30px",
+		"padding-left": "40px",
+		"font-size": "16px",
+		"font-family": "微软雅黑",
+		"border-radius": "3px",
+		"color": "#FFF",
+		"margin-top": "20px",
+		"box-shadow": "0px 0px 0px #666",
+		"border": "1px solid #999",
+		"background": "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/editCancel_bg.png) no-repeat"
+	},
+
+    "applicationItemNode": {
+        "width": "260px",
+        "overflow": "hidden",
+        "float": "left",
+        "margin-left": "20px",
+        "margin-top": "20px",
+        "border": "1px solid #BBB",
+        "box-shadow": "0px 0px 0px #BBB",
+        "background-color": "#FFF"
+    },
+    "applicationItemNode_select": {
+        "border": "1px solid #e97070",
+        "box-shadow": "0px 0px 10px #e97070"
+    },
+
+
+    "applicationItemTopNode": {
+        "height": "80px",
+        "cursor": "pointer"
+    },
+    "applicationItemTopNode_select": {
+        "background-color": "#e97070"
+    },
+    "applicationItemNewNode": {
+        "width": "47px",
+        "height": "47px",
+        "position": "relative",
+        "top": "-80px",
+        "background": "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/new.png) no-repeat right"
+    },
+    "applicationItemIconNode": {
+        "width": "80px",
+        "height": "80px",
+        "float": "left",
+        "background-repeat": "no-repeat",
+        "background-position": "center center"
+    },
+    "applicationItemTitileNode": {
+        "margin-left": "80px",
+        "margin-right": "26px",
+        "height": "80px"
+    },
+    "applicationItemDelActionNode": {
+        "width": "22px",
+        "height": "26px",
+        "float": "right",
+        "opacity": 0,
+        "background": "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/delete.png) no-repeat center center"
+    },
+    "applicationItemExportActionNode": {
+        "width": "22px",
+        "height": "26px",
+        "float": "right",
+        "opacity": 0,
+        "background": "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/export.png) no-repeat center center"
+    },
+
+    "applicationItemDelActionNode_select": {
+        "opacity": 1,
+        "background": "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/delete_red.png) no-repeat center center"
+    },
+    "deleteElementsNode":{
+        "position": "absolute",
+        "background-color": "#c04444",
+        "border": "2px solid #FFF",
+        "border-radius": "5px",
+        "box-shadow": "0px 0px 10px #999",
+        "cursor": "pointer",
+        "color": "#FFF",
+        "padding": "5px 10px"
+    },
+
+
+
+    "applicationItemNameNode": {
+        "overflow": "hidden",
+        "height": "30px",
+        "font-size": "18px",
+        "font-family": "微软雅黑",
+        "font-weight": "bold",
+        "line-height": "40px",
+        "overflow": "hidden",
+        "color": "#FFF"
+    },
+    "applicationItemTypeNode": {
+        "height": "30px",
+        "font-size": "14px",
+        "font-family": "微软雅黑",
+        "line-height": "40px",
+        "color": "#EEE"
+    },
+    "applicationItemInforNode": {
+        "border-top": "1px solid #BBB",
+        "overflow": "hidden"
+    },
+    "applicationItemDescriptionNode": {
+        "overflow": "hidden",
+        "color": "#999",
+        "padding": "5px"
+    },
+    "applicationItemElNode": {
+        "overflow": "hidden"
+    },
+    "applicationItemElTitleNode": {
+        "font-size": "14px",
+        "font-weight": "bold",
+        "font-family": "微软雅黑",
+        "color": "#333",
+        "padding": "0px 5px 5px 5px"
+    },
+    "applicationItemElListNode": {
+        "color": "#666",
+        "height": "40px",
+        "line-height": "20px",
+        "padding": "0px 5px 5px 15px"
+    },
+    "noApplicationNode": {
+        "text-align": "center",
+        "padding": "20px",
+        "height": "60px",
+        "line-height": "60px",
+        "margin-top": "10px",
+        "margin-left": "0px",
+        "color": "#888",
+        "cursor": "pointer",
+        "font-size": "16px"
+    },
+    "applicationItemDateNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "color": "#999",
+        "text-align": "right",
+        "margin-right": "20px"
+    },
+    "listItemNode": {
+        "height": "20px",
+        "width": "110px",
+        "float": "left",
+        "line-height": "20px",
+        "cursor": "pointer",
+        "overflow": "hidden",
+        "margin-right": "10px"
+    }
+}

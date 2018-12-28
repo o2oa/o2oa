@@ -1,0 +1,287 @@
+[
+  {"name": "赋值运算符","type": "category"},
+//  {
+//    "name": "operator.assign",
+//    "contents":[
+//      {"type": "mortise", "tenonTypes": []},
+//      {"type": "select", "options": ["=", "+=", "-=", "*=", "/=", "%=", "**="], "default": "="},
+//      {"type": "inputMortise", "default": "", "tenonTypes": []}
+//    ],
+//    "class": "operator.Assign"
+//  },
+  {
+    "name": "operator.assign",
+    "contents":[
+      {"type": "mortise", "tenonTypes": []},
+      "=",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.Assign"
+  },
+  {
+    "name": "operator.addAssign",
+    "contents":[
+      {"type": "mortise", "tenonTypes": []},
+      "+=",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.AddAssign"
+  },
+  {
+    "name": "operator.subAssign",
+    "contents":[
+      {"type": "mortise", "tenonTypes": []},
+      "-=",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.SubAssign"
+  },
+  {
+    "name": "operator.mulAssign",
+    "contents":[
+      {"type": "mortise", "tenonTypes": []},
+      "*=",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.MulAssign"
+  },
+  {
+    "name": "operator.divAssign",
+    "contents":[
+      {"type": "mortise", "tenonTypes": []},
+      "/=",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.DivAssign"
+  },
+  {
+    "name": "operator.modAssign",
+    "contents":[
+      {"type": "mortise", "tenonTypes": []},
+      "%=",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.ModAssign"
+  },
+  {
+    "name": "operator.expAssign",
+    "contents":[
+      {"type": "mortise", "tenonTypes": []},
+      "**=",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.ExpAssign"
+  },
+
+  {"name": "算术运算符","type": "category"},
+  {
+    "name": "operator.add",
+    "contents":[
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "+",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.Add"
+  },
+  {
+    "name": "operator.sub",
+    "contents":[
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "-",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.Sub"
+  },
+  {
+    "name": "operator.mul",
+    "contents":[
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "*",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.Mul"
+  },
+  {
+    "name": "operator.div",
+    "contents":[
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "/",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.Div"
+  },
+  {
+    "name": "operator.increment",
+    "contents":[
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "++",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.Increment"
+  },
+  {
+    "name": "operator.decrement",
+    "contents":[
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "--",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.Decrement"
+  },
+  {
+    "name": "operator.exponentiation",
+    "contents":[
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "**",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.Exponentiation"
+  },
+
+  {"name": "比较运算符","type": "category"},
+  {
+    "name": "operator.gt",
+    "contents":[
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      ">",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.Gt"
+  },
+  {
+    "name": "operator.gtEqual",
+    "contents":[
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      ">=",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.GtEqual"
+  },
+  {
+    "name": "operator.lt",
+    "contents":[
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "<",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.Lt"
+  },
+  {
+    "name": "operator.ltEqual",
+    "contents":[
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "<=",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.LtEqual"
+  },
+  {
+    "name": "operator.equal",
+    "contents":[
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "==",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.Equal"
+  },
+  {
+    "name": "operator.inequal",
+    "contents":[
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "!=",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.Inequal"
+  },
+  {
+    "name": "operator.strictEqual",
+    "contents":[
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "===",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.StrictEqual"
+  },
+  {
+    "name": "operator.strictInequal",
+    "contents":[
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "!==",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.StrictInequal"
+  },
+
+  {"name": "逻辑运算符","type": "category"},
+  {
+    "name": "operator.and",
+    "contents":[
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "与",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.And"
+  },
+  {
+    "name": "operator.or",
+    "contents":[
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "或",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.Or"
+  },
+  {
+    "name": "operator.not",
+    "contents":[
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "不成立"
+    ],
+    "class": "operator.Not"
+  },
+
+  {"name": "其他运算符","type": "category"},
+  {
+    "name": "operator.grouping",
+    "contents":[
+      "(",
+      {"type": "mortise", "tenonTypes": []},
+      ")"
+    ],
+    "class": "operator.Grouping"
+  },
+  {
+    "name": "operator.ternary",
+    "contents":[
+      "如果",
+      {"type": "mortise", "tenonTypes": []},
+      "成立，那么,",
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "否则",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.Ternary"
+  },
+  {
+    "name": "operator.random",
+    "contents":[
+      "从",
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "到",
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "随机选择一个数"
+    ],
+    "class": "operator.Random"
+  },
+  {
+    "name": "operator.dot",
+    "contents":[
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      ".",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "operator.Dot"
+  }
+
+
+]

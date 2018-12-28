@@ -1,0 +1,296 @@
+{
+    "contentNode": {
+        "width": "100%",
+        "height": "100%",
+        "overflow": "auto"
+    },
+    "node": {
+        "width": "1200px",
+        "margin": "auto",
+        "overflow": "hidden"
+    },
+    "tabNode": {
+        "overflow": "hidden"
+    },
+    "summaryNode": {
+        "overflow": "hidden",
+        "background-color": "#EEE"
+    },
+    "monthlyNode": {
+        "overflow": "auto",
+        "background-color": "#EEE"
+    },
+
+    "overviewAreaNode": {
+        "overflow": "hidden",
+        "background-color": "#FFF",
+        "border-bottom": "1px solid #666",
+        //"box-shadow": "0px 0px 20px #999",
+    },
+    "taskAreaNode": {
+        "margin-top": "10px",
+        "overflow": "hidden",
+        "border-bottom": "1px solid #999"
+    },
+    "taskDashboardAreaNode": {
+        "margin-top": "10px",
+        "width": "690px",
+        "height": "280px",
+        "float": "left",
+        "overflow": "hidden"
+    },
+    "taskRankAreaNode": {
+        "margin-left": "690px",
+        "height": "280px",
+        "overflow": "hidden"
+    },
+    "taskRankContentAreaNode": {
+        "margin": "20px 0px 20px 20px",
+        "height": "240px",
+        "overflow": "hidden"
+    },
+
+    "taskRankHeadNode": {
+        "height": "26px",
+        "line-height": "26px",
+        "background-color": "#DDD",
+        "overflow": "hidden"
+    },
+    "taskRankCategoryNode": {
+        "height": "26px",
+        "width": "150px",
+        "float": "right"
+    },
+    "taskRankActionNode": {
+        "height": "26px",
+        "width": "26px",
+        "float": "left",
+        "cursor": "pointer",
+        "background": "url(/x_component_BAM/$Main/default/max.png) center center no-repeat"
+    },
+    "taskRankActionNode_max": {
+        "background": "url(/x_component_BAM/$Main/default/min.png) center center no-repeat"
+    },
+    "taskRankTitleNode": {
+        "height": "26px",
+        "padding": "0px 10px",
+        "font-size": "14px",
+        "color": "#333",
+        "font-weight": "bold",
+        "margin-right": "150px"
+    },
+    "taskRankChartAreaNode": {
+        "height": "214px",
+        "overflow": "hidden"
+    },
+    "taskRankTabAreaNode": {
+        "height": "190px",
+        "overflow": "hidden"
+    },
+
+
+    "countAreaNode": {
+        "padding": "20px 0px 0px 0px",
+        "overflow": "hidden",
+        "border-bottom": "1px solid #999"
+    },
+
+    //taskDashboard
+    "taskDashboardNode": {
+        "margin": "20px 0px 20px 10px",
+        "height": "240px",
+        "overflow": "hidden"
+    },
+
+    "taskChartNode": {
+        "width": "170px",
+        "height": "240px",
+        "margin-right": "0px",
+        "float": "left"
+    },
+    "taskChartTitleNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "text-align": "center",
+        "font-weight": "bold",
+        "color": "#333",
+        "font-size": "14px"
+    },
+    "taskChartChartNode": {
+        "height": "170px"
+    },
+    "taskChartActionNode": {
+        "height": "30px",
+    },
+
+    "taskChartProportionAction": {
+        "width": "50px",
+        "height": "18px",
+        "line-height": "18px",
+        "border": "1px solid #999",
+        "text-align": "center",
+        "margin-top": "6px",
+        "color": "#666",
+        "border-radius": "3px",
+        "cursor": "pointer",
+        "background": "#FFF",
+        "float": "left",
+        "margin-left": "30px"
+    },
+    "taskChartProportionAction_one": {
+        "width": "50px",
+        "height": "18px",
+        "line-height": "18px",
+        "border": "1px solid #999",
+        "text-align": "center",
+        "margin": "6px auto",
+        "color": "#666",
+        "border-radius": "3px",
+        "cursor": "pointer",
+        "background": "#FFF"
+    },
+    "taskChartProportionAction_current": {
+        "border": "1px solid #999",
+        "background": "#4c6b87",
+        "color": "#FFF"
+    },
+    "taskChartProportionAction_back": {
+        "border": "1px solid #999",
+        "background": "#FFF",
+        "color": "#666"
+    },
+    "taskChartDistributionAction": {
+        "width": "50px",
+        "height": "18px",
+        "line-height": "18px",
+        "border": "1px solid #999",
+        "text-align": "center",
+        "margin-top": "6px",
+        "color": "#666",
+        "border-radius": "3px",
+        "cursor": "pointer",
+        "background": "#FFF",
+        "float": "right",
+        "margin-right": "30px"
+    },
+    "taskChartDistributionAction_current": {
+        "border": "1px solid #999",
+        "background": "#4c6b87",
+        "color": "#FFF"
+    },
+
+    "taskContentAreaNode": {
+        "height": "300px",
+        "width": "49%",
+        "float": "left",
+        "margin-bottom": "20px"
+    },
+    "taskCompletedContentAreaNode": {
+        "height": "300px",
+        "width": "49%",
+        "float": "right",
+        "margin-bottom": "20px"
+    },
+    "workContentAreaNode": {
+        "height": "300px",
+        "width": "49%",
+        "float": "left",
+        "margin-bottom": "20px"
+    },
+    "workCompletedContentAreaNode": {
+        "height": "300px",
+        "width": "49%",
+        "float": "right",
+        "margin-bottom": "20px"
+    },
+    "contentTitleNode": {
+        "height": "26px",
+        "text-align": "center",
+        "line-height": "26px",
+        "font-size": "14px",
+        "color": "#333",
+        "font-weight": "bold",
+        "background-color": "#DDD"
+    },
+    "taskContentNode": {
+        "width": "100%",
+        "height": "100%",
+        "background": "transparent",
+        "margin": "0px"
+    },
+    "taskContentNode_max": {
+        "width": "90%",
+        "height": "70%",
+        "background": "#EEE",
+        "margin": "5% auto"
+    },
+    "contentChartAreaNode": {
+        "height": "274px",
+        "overflow": "hidden"
+    },
+    "contentChartAreaNode_max":{
+        "height": "100%",
+        "overflow": "hidden"
+    },
+    "contentTabAreaNode": {
+        "height": "250px",
+        "overflow": "hidden"
+    },
+    "contentChartMaxAreaNode": {
+        "height": "500px",
+        "position": "absolute",
+        "z-index": "10000",
+        "border": "4px solid #AAA",
+        "background-color": "#FFF",
+        "box-shadow": "0px 0px 30px #CCC",
+    },
+
+    "monthTabAreaNode": {
+        "overflow": "hidden",
+        "background-color": "#FFF",
+        "border-bottom": "1px solid #666",
+        "padding": "10px 0px",
+        //"box-shadow": "0px 0px 20px #999",
+    },
+    "monthContentAreaNode": {
+        "margin-top": "8px",
+        "overflow": "hidden"
+    },
+
+    "monthTabTableNode": {
+        "width": "96%",
+        "height": "40px"
+    },
+    "monthTabCellNode": {
+        "width": "16%",
+        "text-align": "center",
+        "border-left": "1px solid #CCC",
+    },
+    "monthTabItemNode": {
+        "width": "90%",
+        "margin": "auto",
+        "overflow": "hidden",
+        "height": "40px",
+        "color": "#999",
+        "cursor": "pointer"
+    },
+    "monthTabItemNode_current":{
+        "color": "#1f77b4",
+    },
+    "monthTabItemIconNode": {
+        "width": "50px",
+        "height": "40px",
+        "float": "left",
+        "background-repeat": "no-repeat",
+        "background-position": "center center"
+    },
+     "monthTabItemTextNode": {
+         "text-align": "center",
+         "margin-left": "50px",
+         "line-height": "40px",
+         "height": "40px",
+         "font-size": "18px",
+         "font-weight": "bold"
+     }
+
+}

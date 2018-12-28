@@ -1,0 +1,81 @@
+{
+    "titleBar": {
+        "overflow": "hidden",
+        "height": "50px",
+        "background-color": "#4c6b87"
+    },
+    "titleTextNode": {
+        "padding-left": "20px",
+        "color": "#FFF",
+        "font-size": "18px",
+        "line-height": "50px",
+        "font-weight": "bold",
+        "width": "160px",
+        "float": "left"
+    },
+    "contentNode": {
+        "overflow": "hidden",
+        "background-color": "#dddddd",
+        "position": "absolute",
+        "border-radius": "10px",
+        //"background-color": "#f1f1f1",
+        "box-shadow": "0px 0px 30px #333333",
+        "border": "5px solid #666666",
+        "width": "1px",
+        "height": "1px",
+        "-webkit-user-select": "none",
+        "-moz-user-select": "none"
+    },
+    "contentNodeTo": {
+        "width": "800px",
+        "height": "220px"
+    },
+    "titleAreaNode": {
+        "height": "70px",
+        "line-height": "70px"
+    },
+    "titleAreaTextNode": {
+        "height": "70px",
+        "line-height": "70px",
+        "font-size": "18px",
+        "color": "#333333",
+        "text-align": "center",
+        "margin-right": "60px",
+    },
+    "closeNode": {
+        "height": "70px",
+        "width": "60px",
+        "background": "url("+"/x_component_DesignCenter/$Main/default/close.png) center center no-repeat",
+        "cursor": "pointer",
+        "float": "right"
+    },
+    "contentAreaNode": {
+        "padding": "0px 0px 20px 0px",
+        "width": "620px",
+        "margin": "auto",
+        "overflow": "auto",
+        //"background-color": "#ffffff"
+    },
+    "applicationMenuNode": {
+        "float": "left",
+        "margin": "10px",
+        "width": "100px",
+        "height": "120px",
+        "text-align": "center",
+        "cursor": "pointer"
+    },
+    "applicationMenuIconNode": {
+        "width": "100px",
+        "height": "80px",
+        "background-repeat": "no-repeat",
+        "background-position": "center center"
+    },
+    "applicationMenuTextNode": {
+        "height": "40px",
+        "line-height": "20px",
+        "font-family": "微软雅黑",
+        "font-size": "14px",
+        "color": "#333333"
+    }
+
+}

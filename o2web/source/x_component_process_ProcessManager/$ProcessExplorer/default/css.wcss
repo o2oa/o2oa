@@ -1,0 +1,352 @@
+{
+	"toolbarNode": {
+		"overflow": "hidden",
+		"height": "80px",
+		"border-bottom-left-radius": "0px",
+		"border-bottom-right-radius": "0px",
+		"border-bottom": "1px solid #314e69",
+		"border-right": "1px solid #314e69",
+		"border-left": "1px solid #314e69",
+		"margin-right": "0px",
+		"margin-left": "0px",
+		"background-color": "#4c6b87",
+		"position": "block"
+	},
+	"createCategoryNode": {
+		"float": "left",
+		"width": "80px",
+		"height": "80px",
+		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/createCategory.png) no-repeat center center",
+		"cursor": "pointer",
+		"border-right": "1px solid #EEE",
+		"border-left": "0px solid #EEE"
+	},
+	"searchCategoryNode": {
+		"margin-left": "81px",
+		"overflow": "hidden"
+	},
+	"searchCategoryButtonNode": {
+		"float": "right",
+		"width": "80px",
+		"height": "80px",
+		"margin-right": "40px",
+		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/searchCategory.png) no-repeat center center",
+		"cursor": "pointer"
+	},
+	"searchCategoryInputAreaNode": {
+		"margin-right": "120px",
+		"text-align": "right",
+	},
+	"searchCategoryInputBoxNode": {
+		"margin-top": "25px",
+		"width": "60%",
+		"max-width": "500px",
+		"height": "30px",
+		"border-radius": "5px",
+		"background-color": "#EEE",
+		"float": "right",
+		"text-align": "center",
+	},
+	"searchCategoryInputNode": {
+		"width": "96%",
+		"height": "28px",
+		"border": "0px",
+		"font-family": "微软雅黑",
+		"font-size": "14px",
+		"color": "#999",
+		"background": "transparent",
+		"-webkit-user-select": "auto",
+		"-moz-user-select": "auto"
+	},
+	"categoryCreateMarkNode": {
+		"opacity": 0.6,
+		"position": "relative",
+		"background-color": "#CCC"
+	},
+	"categoryCreateAreaNode": {
+		"position": "absolute",
+		"margin-left": "140px",
+		"opacity": 0,
+		"top": "0px"
+	},
+	"categoryCreateNode": {
+		"background-color": "#FFF",
+		"width": "80%",
+		"max-width": "600px",
+		"box-shadow": "0px 0px 20px #999", 
+		"margin": "auto",
+		"border-radius": "8px",
+		"border": "6px solid #666",
+		"overflow": "hidden"
+	},
+	"categoryCreateNewNode": {
+		"width": "47px",
+		"height": "47px",
+		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/new.png) no-repeat"
+	},
+	"categoryCreateFormNode": {
+		"border-radius": "8px",
+		"border": "0px solid #666",
+		"width": "70%",
+		"margin": "auto",
+		"font-size": "16px",
+		"color": "#666",
+		"font-family": "微软雅黑"
+	},
+	"categoryCreateOkActionNode": {
+		"height": "30px",
+		"width": "85px",
+		"cursor": "pointer",
+		"float": "right",
+		"line-height": "30px",
+		"padding-left": "65px",
+		"font-size": "16px",
+		"font-family": "微软雅黑",
+		"border-radius": "3px",
+		"border": "1px solid #354f67",
+		"color": "#FFF",
+		"margin-right": "20px",
+		"margin-top": "20px",
+		"box-shadow": "0px 0px 0px #666", 
+		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/editOk_bg.png) no-repeat"
+	},
+	"categoryCreateCancelActionNode": {
+		"height": "30px",
+		"width": "60px",
+		"cursor": "pointer",
+		"float": "right",
+		"line-height": "30px",
+		"padding-left": "40px",
+		"font-size": "16px",
+		"font-family": "微软雅黑",
+		"border-radius": "3px",
+		"color": "#FFF",
+		"margin-top": "20px",
+		"box-shadow": "0px 0px 0px #666", 
+		"border": "1px solid #999",
+		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/editCancel_bg.png) no-repeat"
+	},
+	
+	
+	"categoryContentNode": {
+		"overflow": "hidden",
+		"position": "block"
+	},
+	"categoryContentListNode": {
+		"overflow": "hidden",
+		"padding-bottom": "20px"
+	},
+	"categoryLoadding": {
+		"height": "60px",
+		"line-height": "60px",
+		"color": "#666",
+		"text-align": "center",
+		"font-size": "18px",
+		"font-family": "微软雅黑",
+		"margin-top": "20px"
+	},
+	"categoryLoaded": {
+		"height": "40px",
+		"line-height": "40px",
+		"color": "#666",
+		"text-align": "center",
+		"font-size": "18px",
+		"font-family": "微软雅黑",
+		"margin-top": "20px"
+	},
+	
+	"categoryAreaNode": {
+		"height": "120px",
+		"margin": "20px 20px 0px 20px",
+		"opacity": 0,
+		"width": "auto"
+	},
+	"categoryNode": {
+		"width": "200px",
+		"height": "120px",
+		"float": "left",
+		"color": "#FFF"
+	},
+	"processListAreaNode": {
+		"margin-left": "200px",
+		"height": "120px",
+		"background-color": "#FFF",
+		"overflow": "hidden",
+		"width": "1px"
+	},
+	"processListNode": {
+		"overflow": "hidden",
+		"height": "120px",
+		"white-space": "nowrap"
+	},
+	"categoryIconNode": {
+		"width": "60px",
+		"height": "60px",
+		"background-repeat": "no-repeat",
+		"background-position": "center center",
+		"float": "left"
+	},
+	"categoryNewNode_expand": {
+		"width": "47px",
+		"height": "47px",
+		"position": "relative",
+		"top": "-60px",
+		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/new.png) no-repeat right"
+	},
+	"categoryNewNode": {
+		"width": "47px",
+		"height": "47px",
+		"position": "relative",
+		"top": "-120px",
+		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/new.png) no-repeat right"
+	},
+	"categoryCountNode": {
+		"opacity": 0.6,
+		"font-size": "48px",
+		"font-family": "Bernard MT Condensed",
+		"width": "90px",
+		"height": "60px",
+		"line-height": "60px",
+		"text-align": "right",
+		"margin-right": "10px",
+		"float": "right"
+	},
+	"categoryTitleNode": {
+		"height": "30px",
+		"line-height": "22px",
+		"margin": "0px 10px",
+		"overflow": "hidden",
+		"font-size": "18px",
+		"font-family": "微软雅黑",
+		"clear": "both",
+		"font-weight": "bold"
+	},
+	
+	"categoryTitleNode_expand": {
+		"height": "60px",
+		"line-height": "60px",
+		"margin-left": "60px",
+		"margin-right": "100px",
+		"overflow": "hidden",
+		"font-size": "18px",
+		"font-family": "微软雅黑",
+		"clear": "none",
+		"font-weight": "bold"
+	},
+	"categoryExpandActionNode": {
+		"height": "30px",
+		"width": "30px",
+		"float": "right",
+		"cursor": "pointer",
+		"position": "static",
+		"margin-right": "0px",
+		"top": "0px",
+		"display": "block",
+		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/expand.png) no-repeat center center"
+	},
+	"categoryExpandActionNode_expand": {
+		"height": "30px",
+		"width": "30px",
+		"float": "right",
+		"cursor": "pointer",
+		"position": "relative",
+		"margin-right": "90px",
+		"top": "-45px",
+		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/collapse.png) no-repeat center center"
+	},
+	"categoryActionNode": {
+		"margin-right": "30px",
+		"margin-left": "6px",
+		"height": "30px",
+		"width": "auto",
+		"float": "none",
+		"top": "0px",
+		"position": "static"
+	},
+	"categoryActionNode_expand": {
+		"height": "30px",
+		"top": "-45px",
+		"position": "relative",
+		"float": "right",
+		"width": "auto"
+	},
+	"categoryAddProcessActionNode": {
+		"height": "30px",
+		"width": "24px",
+		"float": "left",
+		"cursor": "pointer",
+		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/addProcess.png) no-repeat center center"
+	},
+	"categoryEditActionNode": {
+		"height": "30px",
+		"width": "24px",
+		"float": "left",
+		"cursor": "pointer",
+		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/editCategory.png) no-repeat center center"
+	},
+	"categoryDeleteActionNode": {
+		"height": "30px",
+		"width": "24px",
+		"float": "left",
+		"cursor": "pointer",
+		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/deleteCategory.png) no-repeat center center"
+	},
+	noProcessNoticeNode: {
+		"text-align": "left",
+		"padding": "20px",
+		"height": "60px",
+		"line-height": "60px",
+		"margin-top": "10px",
+		"margin-left": "0px",
+		"color": "#888",
+		"cursor": "pointer",
+		"font-size": "16px"
+	},
+	processNode: {
+		"width": "200px",
+		"padding": "10px",
+		"height": "80px",
+		"margin-top": "10px",
+		"margin-left": "10px",
+		"border-left": "1px solid #CCC",
+		"float": "left",
+		"cursor": "default"
+	},
+	"processIconNode": {
+		"padding": "0px",
+		"float": "left",
+		"width": "32px",
+		"height": "32px"
+	},
+	"processTextTitleNode": {
+		"margin-left": "40px",
+		"margin-right": "12px",
+		"height": "32px",
+		"line-height": "32px",
+		"font-size": "14px",
+		"font-weight": "bold",
+		"overflow": "hidden",
+		"cursor": "pointer",
+		"color": "#333"
+	},
+	"processRankNode": {
+		"padding": "0px",
+		"float": "right",
+		"width": "12px",
+		"height": "32px",
+		"text-align": "right",
+		"color": "#999",
+		"opacity": 0.6,
+		"font-size": "18px",
+		"font-family": "Bernard MT Condensed"
+	},
+	"processTextDescriptionNode": {
+		"font-size": "12px",
+		"line-height": "20px",
+		"margin-top": "8px",
+		"height": "40px",
+		"color": "#777",
+		"overflow": "hidden",
+		"white-space": "normal"
+	}
+}

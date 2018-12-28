@@ -1,0 +1,329 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="基本" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">标识:</td>
+                <td class="editTableValue">text{$.id}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">名称:</td>
+                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">别名:</td>
+                <td class="editTableValue"><input type="text" name="alias" value="text{$.alias}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">描述:</td>
+                <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">隐藏视图:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="display" text{($.display===false)?'checked':''} type="radio" value="false"/>是
+                    <input class="editTableRadio" name="display" text{($.display!==false)?'checked':''} type="radio" value="true"/>否
+                </td>
+            </tr>
+            <!--<tr>-->
+                <!--<td class="editTableTitle">最大行数:</td>-->
+                <!--<td class="editTableValue"><input type="text" name="max" value="text{$.max}" class="editTableInput"/></td>-->
+            <!--</tr>-->
+        </table>
+
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">权限</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">
+            <tr>
+                <td class="editTableTitle">可执行人:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonIdentity" name="availableIdentityList"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">执行组织:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonUnit" name="availableUnitList"></div>
+                </td>
+            </tr>
+            <!--<tr>-->
+                <!--<td class="editTableTitle">执行部门:</td>-->
+                <!--<td class="editTableValue">-->
+                    <!--<div class="MWFSelectDepartment" name="availableDepartmentList"></div>-->
+                <!--</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<td class="editTableTitle">执行公司:</td>-->
+                <!--<td class="editTableValue">-->
+                    <!--<div class="MWFSelectCompany" name="availableCompanyList"></div>-->
+                <!--</td>-->
+            <!--</tr>-->
+        </table>
+
+
+
+		<!--<div class="MWFApplicationSelect" title="选择应用"></div>-->
+		<!--<div class="MWFProcessSelect" title="选择流程"></div>-->
+        <!--<div class="MWFCompanySelect" title="选择公司"></div>-->
+        <!--<div class="MWFDepartmentSelect" title="选择部门"></div>-->
+        <!--<div class="MWFPersonSelect" title="选择人员"></div>-->
+        <!--<div class="MWFIdentitySelect" title="选择身份"></div>-->
+	</div>
+
+
+    <div title="范围"  class="MWFTab">
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">范围</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">权限:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="text{$.id}*data.restrictAccessible" text{($.data.restrictAccessible)?'checked':''} type="radio" value="true"/>带权限
+                    <input class="editTableRadio" name="text{$.id}*data.restrictAccessible" text{(!$.data.restrictAccessible)?'checked':''} type="radio" value="false"/>忽略
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">流转状态:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}dateEffectTypeTable').setStyle('display', 'none');}" name="text{$.id}*data.scopeType" text{($.data.scopeType!='workCompleted')?'checked':''} type="radio" value="work"/>流转中
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}dateEffectTypeTable').setStyle('display', 'block');}" name="text{$.id}*data.scopeType" text{($.data.scopeType=='workCompleted')?'checked':''} type="radio" value="workCompleted"/>已完成
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">选择应用:</td>
+                <td class="editTableValue">
+                    <div class="MWFSelectApplication" name="data.restrictWhereEntry.applicationList"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">选择流程:</td>
+                <td class="editTableValue">
+                    <div class="MWFSelectProcess" name="data.restrictWhereEntry.processList"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">选择组织:</td>
+                <td class="editTableValue">
+                    <div class="MWFSelectUnit" name="data.restrictWhereEntry.unitList"></div>
+                </td>
+            </tr>
+            <!--<tr>-->
+                <!--<td class="editTableTitle">选择公司:</td>-->
+                <!--<td class="editTableValue">-->
+                    <!--<div class="MWFSelectCompany" name="data.restrictWhereEntry.companyList"></div>-->
+                <!--</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<td class="editTableTitle">选择部门:</td>-->
+                <!--<td class="editTableValue">-->
+                    <!--<div class="MWFSelectDepartment" name="data.restrictWhereEntry.departmentList"></div>-->
+                <!--</td>-->
+            <!--</tr>-->
+            <tr>
+                <td class="editTableTitle">选择人员:</td>
+                <td class="editTableValue">
+                    <div class="MWFSelectPerson" name="data.restrictWhereEntry.personList"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">选择身份:</td>
+                <td class="editTableValue">
+                    <div class="MWFSelectIdentity" name="data.restrictWhereEntry.identityList"></div>
+                </td>
+            </tr>
+        </table>
+
+
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">时段</div>
+        <div id="text{$.id}dateEffectTypeTable" style="display: text{($.data.scopeType!='workCompleted')?'none':'block'}">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr><td class="editTableTitle">时间依据:</td><td class="editTableValue">
+                    <input class="editTableRadio" name="text{$.id}*data.restrictDateRangeEntry.dateEffectType" type="radio" text{($.data.restrictDateRangeEntry.dateEffectType!='completed')?'checked':''} value="start"/>创建时间
+                    <input class="editTableRadio" name="text{$.id}*data.restrictDateRangeEntry.dateEffectType" type="radio" text{($.data.restrictDateRangeEntry.dateEffectType=='completed')?'checked':''} value="completed"/>完成时间
+                </td></tr>
+            </table>
+        </div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr><td class="editTableTitle">时段类型:</td><td class="editTableValue">
+                <input class="editTableRadio" name="text{$.id}*data.restrictDateRangeEntry.dateRangeType"
+                       onclick="if (this.checked){ $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_DateArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_YearArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none'); }"
+                       type="radio" text{(['year','season','month','week','date','season'].indexOf($.data.restrictDateRangeEntry.dateEffectType)==-1)?'checked':''} value="none"/>全部
+
+                <input class="editTableRadio" name="text{$.id}*data.restrictDateRangeEntry.dateRangeType"
+                       onclick="if (this.checked){ $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_DateArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_YearArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none'); }"
+                       type="radio" text{($.data.restrictDateRangeEntry.dateEffectType=='season')?'range':''} value="range"/>范围<br/>
+
+                <input class="editTableRadio" name="text{$.id}*data.restrictDateRangeEntry.dateRangeType"
+                       onclick="if (this.checked){ $('text{$.id}dateRangeType_YearArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_DateArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none'); }"
+                       type="radio" text{($.data.restrictDateRangeEntry.dateEffectType=='year')?'checked':''} value="year"/>年度
+                <input class="editTableRadio" name="text{$.id}*data.restrictDateRangeEntry.dateRangeType"
+                       onclick="if (this.checked){ $('text{$.id}dateRangeType_YearArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_DateArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none');}"
+                       type="radio" text{($.data.restrictDateRangeEntry.dateEffectType=='season')?'checked':''} value="season"/>季度
+                <input class="editTableRadio" name="text{$.id}*data.restrictDateRangeEntry.dateRangeType"
+                       onclick="if (this.checked){ $('text{$.id}dateRangeType_YearArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_DateArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none');}"
+                       type="radio" text{($.data.restrictDateRangeEntry.dateEffectType=='month')?'checked':''} value="month"/>月度
+                <input class="editTableRadio" name="text{$.id}*data.restrictDateRangeEntry.dateRangeType"
+                       onclick="if (this.checked){ $('text{$.id}dateRangeType_YearArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_DateArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none');}"
+                       type="radio" text{($.data.restrictDateRangeEntry.dateEffectType=='week')?'checked':''} value="week"/>周
+                <input class="editTableRadio" name="text{$.id}*data.restrictDateRangeEntry.dateRangeType"
+                       onclick="if (this.checked){ $('text{$.id}dateRangeType_YearArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_DateArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none');}"
+                       type="radio" text{($.data.restrictDateRangeEntry.dateEffectType=='date')?'checked':''} value="date"/>日
+            </td></tr>
+        </table>
+        <div id="text{$.id}dateRangeType_RangeArea" style="display: text{($.data.restrictDateRangeEntry.dateRangeType=='range')?'block':'none'}">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">开始日期:</td>
+                    <td class="editTableValue"><input readonly type="text" name="data.restrictDateRangeEntry.start" value="text{$.data.restrictDateRangeEntry.start}" class="editTableInputDate"/></td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">结束日期:</td>
+                    <td class="editTableValue"><input readonly type="text" name="data.restrictDateRangeEntry.completed" value="text{$.data.restrictDateRangeEntry.completed}" class="editTableInputDate"/></td>
+                </tr>
+            </table>
+        </div>
+        <div id="text{$.id}dateRangeType_YearArea" style="display: text{(['year','season','month'].indexOf($.data.restrictDateRangeEntry.dateRangeType)!=-1)?'block':'none'}">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">年度:</td>
+                    <td class="editTableValue"><select name="data.restrictDateRangeEntry.year">
+                        <option value="">当前年度</option>
+                        fun{var y=(new Date()).getFullYear(); var html = ""; for (var i=0; i<10; i++)html+="<option value='"+(y-i)+"'>"+(y-i)+"</option>"; return html;}
+                    </select></td>
+                </tr>
+            </table>
+        </div>
+        <div id="text{$.id}dateRangeType_SeasonArea" style="display: text{($.data.restrictDateRangeEntry.dateRangeType=='season')?'block':'none'}">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">季度:</td>
+                    <td class="editTableValue"><select name="data.restrictDateRangeEntry.season">
+                        <option value="">当前季度</option>
+                        <option value="1">第一季度</option>
+                        <option value="2">第二季度</option>
+                        <option value="3">第三季度</option>
+                        <option value="4">第四季度</option>
+                    </select></td>
+                </tr>
+            </table>
+        </div>
+        <div id="text{$.id}dateRangeType_MonthArea" style="display: text{($.data.restrictDateRangeEntry.dateRangeType=='month')?'block':'none'}">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">月份:</td>
+                    <td class="editTableValue"><select name="data.restrictDateRangeEntry.month">
+                        <option value="">当前月份</option>
+                        <option value="1">1月</option>
+                        <option value="2">2月</option>
+                        <option value="3">3月</option>
+                        <option value="4">4月</option>
+                        <option value="5">5月</option>
+                        <option value="6">6月</option>
+                        <option value="7">7月</option>
+                        <option value="8">8月</option>
+                        <option value="9">9月</option>
+                        <option value="10">10月</option>
+                        <option value="11">11月</option>
+                        <option value="12">12月</option>
+                    </select></td>
+                </tr>
+            </table>
+        </div>
+        <div id="text{$.id}dateRangeType_WeekArea" style="display: text{($.data.restrictDateRangeEntry.dateRangeType=='week')?'block':'none'}">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">周:</td>
+                    <td class="editTableValue"><select name="data.restrictDateRangeEntry.week">
+                        <option value="">当前周</option>
+                        fun{var html = ""; for (var i=1; i<56; i++)html+="<option value='"+i+"'>第"+i+"周</option>"; return html;}
+                    </select></td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="text{$.id}dateRangeType_DateArea" style="display: text{($.data.restrictDateRangeEntry.dateRangeType=='week')?'block':'none'}">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">日期:</td>
+                    <td class="editTableValue"><select name="data.restrictDateRangeEntry.date">
+                        <option value="">当天</option>
+                        fun{var html = ""; for (var i=1; i<32; i++)html+="<option value='"+i+"'>"+i+"日</option>"; return html;}
+                    </select></td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+
+    <div title="过滤"  class="MWFTab">
+        <div class="MWFViewFilter">
+            <div>
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">标题:</td>
+                        <td class="editTableValue"><input type="text" class="editTableInput"/></td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">路径:</td>
+                        <td class="editTableValue"><input type="text" class="editTableInput"/></td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">数据类型:</td>
+                        <td class="editTableValue"><select>
+                            <option value="textValue" selected>文本</option>
+                            <option value="numberValue">数字</option>
+                            <option value="datetimeValue">日期</option>
+                            <option value="booleanValue">布尔</option>
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle"></td>
+                        <td class="editTableValue">
+                            <input type="radio" value="restrict" name="text{$.id}viewFilterType" onclick="if (this.checked){ $('text{$.id}viewFilterRestrict').setStyle('display', 'block');}"/>作为默认过滤条件<br>
+                            <input type="radio" value="custom" name="text{$.id}viewFilterType" onclick="if (this.checked){ $('text{$.id}viewFilterRestrict').setStyle('display', 'none');}" checked/>作为自定义过滤数据
+                        </td>
+                    </tr>
+                </table>
+                <table id="text{$.id}viewFilterRestrict" style="display: none" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">逻辑:</td>
+                        <td class="editTableValue"><select><option selected value="and">并且(and)</option><option value="or">或者(or)</option></select></td>
+                    </tr>
+
+                    <tr>
+                        <td class="editTableTitle">比较:</td>
+                        <td class="editTableValue"><select>
+                            <option value="equals" selected>等于(==)</option>
+                            <option value="notEquals">不等于(!=)</option>
+                            <option value="greaterThan">大于(>)</option>
+                            <option value="greaterThanOrEqualTo">大于等于(>=)</option>
+                            <option value="lessThan">小于(<)</option>
+                            <option value="lessThanOrEqualTo">小于等于(<=)</option>
+                            <option value="like">匹配(like)</option>
+                            <option value="notLike">不匹配(not-like)</option>
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">值:</td>
+                        <td class="editTableValue">
+                            <input type="text" class="editTableInput" style="display: block"/>
+                            <input type="number" class="editTableInput" style="display: none"/>
+                            <input type="text" class="editTableInput" style="display: none" readonly/>
+                            <select style="display: none">
+                                <option value="true" selected>是(True)</option>
+                                <option value="false">否(False)</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div></div>
+            <div style="height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">默认过滤条件</div>
+            <div style="min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
+            <div style="height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">自定义过滤数据</div>
+            <div style="min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
+        </div>
+    </div>
+
+
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

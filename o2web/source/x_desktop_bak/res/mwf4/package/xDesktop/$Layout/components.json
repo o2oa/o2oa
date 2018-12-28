@@ -1,0 +1,111 @@
+[
+  {
+    "name": "ControlPanel",
+    "path": "ControlPanel",
+    "title": "控制面板",
+    "visible": true,
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "DesignCenter",
+    "path": "DesignCenter",
+    "title": "设计中心",
+    "visible": true,
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "TaskCenter",
+    "path": "process.TaskCenter",
+    "title": "办公中心",
+    "iconPath": "appicon.png",
+    "visible": true,
+  },
+  {
+    "name": "cms",
+    "path": "cms.Index",
+    "title": "信息平台",
+    "visible": true,
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "Setting",
+    "path": "Setting",
+    "title": "系统设置",
+    "iconPath": "appicon.png",
+    "visible": true,
+    "allowList": ["xadmin", "Manager"]
+  },
+  {
+    "name": "AppMarket",
+    "path": "AppMarket",
+    "title": "应用市场",
+    "iconPath": "appicon.png",
+    "visible": true,
+    "allowList": ["xadmin", "Manager"]
+  },
+//  {
+//    "name": "Deployment",
+//    "path": "Deployment",
+//    "title": "部署管理",
+//    "iconPath": "appicon.png",
+//    "visible": true,
+//    "allowList": ["xadmin", "Manager"]
+//  },
+  {
+    "name": "Org",
+    "path": "Org",
+    "title": "组织管理",
+    "visible": true,
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "Profile",
+    "path": "Profile",
+    "title": "个人设置",
+    "visible": true,
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "BAM",
+    "path": "BAM",
+    "title": "流程监控",
+    "visible": true,
+    "iconPath": "appicon.png"
+  },
+
+  {
+    "name": "ApplicationExplorer",
+    "path": "process.ApplicationExplorer",
+    "title": "流程管理平台",
+    "visible": true,
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "PortalExplorer",
+    "path": "portal.PortalExplorer",
+    "title": "门户管理平台",
+    "visible": true,
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "cmsManager",
+    "path": "cms.Column",
+    "title": "内容管理平台",
+    "visible": true,
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "DataExplorer",
+    "path": "query.QueryExplorer",
+    "title": "数据中心平台",
+    "visible": true,
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "AppCenter",
+    "path": "AppCenter",
+    "title": "应用中心",
+    "visible": true,
+    "iconPath": "appicon.png"
+  }
+]

@@ -1,0 +1,121 @@
+{
+	"container": {
+		"border-top": "1px solid #999",
+		"border-left": "1px solid #999",
+		"border-right": "1px solid #999",
+		"border-bottom": "1px solid #999",
+		
+	//	"border-right": "0px\9\0",
+	//	"border-bottom": "0px\9\0",
+		
+		"border-radius": "8px",
+		"padding": "2px",
+		"background-color": "#fff",
+		
+		"opacity": 0,
+
+		"box-shadow": "0px 7px 20px #999", 
+		
+		"z-index": "10000"
+	},
+	"container": {
+		"border-top": "1px solid #999",
+		"border-left": "1px solid #999",
+		"border-right": "1px solid #999",
+		"border-bottom": "1px solid #999",
+		
+		"border-radius": "8px",
+		"padding": "2px",
+		"background-color": "#fff",
+		
+		"opacity": 1,
+
+		"box-shadow": "0px 7px 20px #999", 
+		
+		"z-index": "10000"
+	},
+	"panelTitleNode": {
+	
+	//	"border-top": "3px solid #a3998d",
+	//	"border-top-left-radius": "5px",
+	//	"border-top-right-radius": "5px",
+		"border-radius": "8px",
+		"display":"block",
+		"height": "30px",
+		"line-height": "30px",
+		//"margin": "2px 2px",
+		"border-bottom": "2px solid #fff",
+		"background-color": "#979797"
+		//"background-image": "url("+o2.session.path+"/widget/$Panel/default/icon/titlebg.png)"
+	},
+	"panelTextNode": {
+		"opacity": 1,
+		"color": "#FFF",
+		"display":"block",
+		"height": "30px",
+		"line-height": "30px",
+		"font-size": "12px",
+		"font-weight": "bold",
+		"margin-right": "72px",
+		"padding-left": "10px"
+	},
+	"panelActionNode": {
+		"height": "30px",
+		"float": "right",
+		"display":"block",
+		"height": "24px",
+		"line-height": "24px",
+		"width": "70px"
+	},
+	"closeAction": {
+		"width": "16px",
+		"height": "16px",
+		"cursor": "pointer", 
+		"float": "right",
+		"margin-right": "3px",
+		"margin-top": "6px",
+		"background-image": "url("+o2.session.path+"/widget/$Panel/default/icon/close.gif)"
+	},
+	"maxAction": {
+		"width": "16px",
+		"height": "16px",
+		"cursor": "pointer", 
+		"float": "right",
+		"margin-right": "3px",
+		"margin-top": "6px",
+		"background-image": "url("+o2.session.path+"/widget/$Panel/default/icon/max.gif)"
+	},
+	"explandAction": {
+		"width": "16px",
+		"height": "16px",
+		"cursor": "pointer", 
+		"float": "right",
+		"margin-right": "3px",
+		"margin-top": "6px",
+		"background-image": "url("+o2.session.path+"/widget/$Panel/default/icon/up.gif)"
+	},
+	
+	"panelContent": {
+		"border-top-left-radius": "8px",
+		"border-top-right-radius": "8px",
+		"background-color": "#EEEEEE",
+		"overflow": "auto"
+	},
+	
+	"bottomNode": {
+		"border-bottom": "0px solid #FFF",
+		"height": "20px",
+		"background-color": "#EEEEEE",
+		"border-bottom-left-radius": "5px",
+		"border-bottom-right-radius": "5px"
+	},
+	"resizeAction": {
+		"width": "16px",
+		"height": "16px",
+		"cursor": "se-resize", 
+		"float": "right",
+		"margin-right": "1px",
+		"margin-top": "1px",
+		"background-image": "url("+o2.session.path+"/widget/$Panel/default/icon/resize.gif)"
+	}
+}

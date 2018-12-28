@@ -1,0 +1,24 @@
+{
+  "authentication": { "uri": "/jaxrs/authentication",  "method": "GET" },
+  "login": { "uri": "/jaxrs/authentication", "method": "POST" },
+  "loginAdmin": { "uri": "/jaxrs/authentication/administrator", "method": "POST" },
+  "logout" : { "uri" : "/jaxrs/authentication", "method": "DELETE" },
+  "getLoginMode" : {"uri":"/jaxrs/authentication/mode"}, //图片验证码默认可用，mode获取扫描二维码和手机验证码是否可用
+  "getAuthentication" : { "uri" : "/jaxrs/authentication" }, //获取当前登录用户
+  "loginByPassword" : { "uri" : "/jaxrs/authentication", "method": "POST" }, //用户登录.credential=xxxx,password=xxxx
+  "getLoginCaptcha" : {"uri":"/jaxrs/authentication/captcha/width/{width}/height/{height}"}, //验证码
+  "loginByCaptcha" : {"uri":"/jaxrs/authentication/captcha", "method": "POST"},
+  "createCredentialCode" : {"uri":"/jaxrs/authentication/code/credential/{credential}"}, //发送短信验证码
+  "checkCredential" : {"uri": "/jaxrs/authentication/check/credential/{credential}"}, //检查用户名是否存在
+  "loginByCode" : {"uri":"/jaxrs/authentication/code", "method": "POST"}, //使用短信验证码登录
+  "getLoginBind" : {"uri":"/jaxrs/authentication/bind"}, //扫描的二维码
+  "checkBindStatus" : {"uri" : "/jaxrs/authentication/bind/meta/{meta}"}, //通过二维码进行登录，轮询判断是否登录
+
+  "getOauthServer": { "uri": "/jaxrs/authentication/oauth/name/{name}",  "method": "GET" },
+  "listOauthServer": { "uri": "/jaxrs/authentication/oauth/list",  "method": "GET" },
+  "loginOauthServer": { "uri": "/jaxrs/authentication/oauth/login/name/{name}/code/{code}/redirecturi/{redirectUri}",  "method": "GET" },
+  "oauthBind": { "uri": "/jaxrs/authentication/oauth/bind/name/{name}/code/{code}/redirecturi/{redirectUri}",  "method": "GET" },
+
+
+  "clazz": "x_organization_assemble_authentication"
+}

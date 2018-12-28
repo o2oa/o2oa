@@ -1,0 +1,70 @@
+{
+  "naviNode":{
+	"width" : "70px",
+	"background-color" : "#000",
+	"float" : "left"
+  },
+  "naviTopNode" : {
+	"width" : "70px",
+	"height" : "70px",
+	"background" : "url(/x_component_Minder/$Main/default/icon/navi_top.png) no-repeat center center",
+	"background-color" : "#000"
+  },
+  "naviItemNode" : {
+	"width" : "70px",
+	"height" : "28px",
+	"padding-top" : "42px",
+	"font-size" : "12px",
+	"text-align" : "center",
+	"color" : "#3C76B7",
+	"background-repeat" : "no-repeat",
+	"background-position" : "center 8px",
+	"background-color" : "#000",
+	"cursor" : "pointer"
+  },
+  "naviItemNode_selected" : {
+  	"background-color" : "#F8F8F8"
+  },
+  "contentNode" : {
+	"float" : "left"
+  },
+
+  "historyNode" : {
+	"overflow" : "hidden",
+	"padding" : "10px",
+	"background-color" : "#fff"
+  },
+  "undoNode" : {
+	"float" : "left",
+	"width" : "30px",
+	"height" : "30px",
+	"background" : "url(/x_component_Minder/$Main/default/icon/undo.png) no-repeat center center"
+  },
+  "undoNode_active" : {
+	"float" : "left",
+	"width" : "30px",
+	"height" : "30px",
+	"background" : "url(/x_component_Minder/$Main/default/icon/undo_active.png) no-repeat center center"
+  },
+  "redoNode" : {
+	"float" : "left",
+	"width" : "30px",
+	"height" : "30px",
+	"background" : "url(/x_component_Minder/$Main/default/icon/redo.png) no-repeat center center"
+  },
+  "redoNode_active" : {
+	"float" : "left",
+	"width" : "30px",
+	"height" : "30px",
+	"background" : "url(/x_component_Minder/$Main/default/icon/redo_active.png) no-repeat center center"
+  },
+  "patchNode" : {
+	"float" : "left",
+	"width" : "500px",
+	"height" : "30px",
+	"border-radius" : "4px",
+	"background" : "#fff",
+	"border" : "1px solid #ccc"
+  }
+	
+}

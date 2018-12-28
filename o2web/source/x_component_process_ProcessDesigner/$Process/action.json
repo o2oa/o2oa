@@ -1,0 +1,55 @@
+{
+  "default": [
+    {
+      "icon": "router.png",
+      "text": "创建路由",
+      "action": "quickCreateRouter"
+    },
+    {
+      "icon": "copy.png",
+      "text": "拷贝活动",
+      "action": "quickCopyActivity"
+    },
+    {
+      "icon": "delete.png",
+      "text": "删除活动",
+      "action": "quickDeletActivity"
+    },
+    {
+      "icon": "parallel.png",
+      "text": "创建并行活动",
+      "action": "quickParallelActivity"
+    },
+    {
+      "icon": "series.png",
+      "text": "创建串行活动",
+      "action": "quickSeriesActivity"
+    }
+  ],
+  "manual": [
+    {
+      "icon": "form.png",
+      "text": "设置表单",
+      "action": "quickSetForm"
+    },
+    {
+      "icon": "target.png",
+      "text": "设置处理人",
+      "action": "quickSetTask"
+    }
+  ],
+  "begin": [],
+  "end": [],
+  "cancel": [],
+  "condition": [],
+  "choice": [],
+  "split": [],
+  "parallel": [],
+  "merge": [],
+  "embed": [],
+  "delay": [],
+  "invoke": [],
+  "service": [],
+  "agent": [],
+  "message": []
+}

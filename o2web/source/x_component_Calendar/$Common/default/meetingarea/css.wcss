@@ -1,0 +1,111 @@
+{
+  "calendarNode" : {
+    "border": "1px solid #ccc",
+    //    "border-top" : "1px solid #ccc",
+    //    "border-right" : "1px solid #ccc",
+    //    "border-bottom" : "1px solid #ccc",
+    "border-radius": "4px",
+    "margin" : "20px",
+    "width" : "260px",
+    "overflow" : "hidden",
+    "cursor" : "pointer",
+    "box-shadow" : "none"
+  },
+  "calendarNode_over" : {
+    //"box-shadow": "0 0 6px 0 rgba(0,0,0,0.25)"
+  },
+  "calendarColorNode" : {
+    "border-top-left-radius" : "4px",
+    "border-bottom-left-radius" : "4px",
+    "background-color" : "#ccc",
+    "width" : "10px",
+    "height" : "100px",
+    "float" : "left"
+  },
+  "calendarContentNode" : {
+    "border-top-right-radius" : "4px",
+    "border-bottom-right-radius" : "4px",
+    "width" : "229px",
+    "float" : "left"
+  },
+  "calendarTimeNode" : {
+    "margin-top" : "20px",
+    "padding-left" : "20px",
+    "margin-bottom" : "20px",
+    "color" : "#999",
+    "font-size" : "20px",
+    "line-height" : "20px"
+  },
+  "calendarSubjectNode" : {
+    "color" : "#333",
+    "padding-left" : "20px",
+    "font-size" : "16px"
+  },
+  "calendarSubjectNode_over" : {
+    "color" : "#3C76B7"
+  },
+  "calendarDescriptionNode" : {
+    "margin-top" : "20px",
+    "padding-left" : "20px",
+    "margin-bottom" : "20px",
+    "margin-right" : "20px",
+    "color" : "#666",
+    "font-size" : "14px"
+  },
+  "actionBar" : {
+    "margin-top" : "10px",
+    "padding-left" : "15px",
+      "margin-bottom" : "10px",
+      "overflow" : "hidden"
+  },
+  "action_view" : {
+    "float" : "left",
+    "padding" : "0px 5px",
+    "width" : "16px",
+    "height" : "16px",
+    "background" : "url(/x_component_Calendar/$Main/default/icon/icon_chakan.png) no-repeat center center"
+  },
+  "action_view_over" : {
+    "background" : "url(/x_component_Calendar/$Main/default/icon/icon_chakan_click.png) no-repeat center center"
+  },
+  "action_edit" : {
+    "float" : "left",
+    "padding" : "0px 5px",
+    "width" : "16px",
+    "height" : "16px",
+    "background" : "url(/x_component_Calendar/$Main/default/icon/icon_bianji.png) no-repeat center center"
+  },
+  "action_edit_over" : {
+    "background" : "url(/x_component_Calendar/$Main/default/icon/icon_bianji_click.png) no-repeat center center"
+  },
+  "action_remove" : {
+    "float" : "left",
+    "padding" : "0px 5px",
+    "width" : "16px",
+    "height" : "16px",
+    "background" : "url(/x_component_Calendar/$Main/default/icon/icon_delete_grey.png) no-repeat center center"
+  },
+  "action_remove_over" : {
+    "background" : "url(/x_component_Calendar/$Main/default/icon/icon_delete_blue_click.png) no-repeat center center"
+  },
+  "action_accept" : {
+    "float" : "left",
+    "padding" : "0px 5px",
+    "width" : "16px",
+    "height" : "16px",
+    "background" : "url(/x_component_Calendar/$Main/default/icon/icon_ok2.png) no-repeat center center"
+  },
+  "action_accept_over" : {
+    "background" : "url(/x_component_Calendar/$Main/default/icon/icon_ok2_click.png) no-repeat center center"
+  },
+  "action_reject" : {
+    "float" : "left",
+    "padding" : "0px 5px",
+    "width" : "16px",
+    "height" : "16px",
+    "background" : "url(/x_component_Calendar/$Main/default/icon/icon_off_round.png) no-repeat center center"
+  },
+  "action_reject_over" : {
+    "background" : "url(/x_component_Calendar/$Main/default/icon/icon_off_round_click.png) no-repeat center center"
+  }
+}

@@ -1,0 +1,22 @@
+{
+	"moduleNodeMove": {
+
+	},
+	"moduleNodeShow": {
+		"border": "1px dashed #333",
+		"width": "2px",
+		"height": "20px",
+		"overflow": "hidden",
+		"display": "block",
+		"opacity": 1,
+		"position": "relative",
+		"float": "left",
+		"background": "#ffa200",
+		"margin-left": "2px",
+		"margin-top": "6px"
+	},
+	"moduleNode": {
+
+	}
+	
+}

@@ -1,0 +1,210 @@
+{
+	"propertyNode": {
+		"width": "300px",
+		"overflow": "hidden",
+		"float": "right",
+		"-webkit-user-select": "text",
+		"-moz-user-select": "text" 
+	},
+	"dictionaryListNode": {
+        "width": "260px",
+        "overflow": "hidden",
+        "border": "1px solid #505050",
+        "height": "100%",
+        "float": "left",
+        "background-color": "#EEE"
+    },
+
+	"contentNode": {
+	    "margin-left": "261px",
+		"margin-right": "301px",
+		"border-right": "1px solid #505050",
+		"border-left": "1px solid #505050",
+		"background-color": "#FFF",
+		"-webkit-user-select": "text",
+		"-moz-user-select": "text"
+	},
+
+    "dictionaryListResizeNode": {
+        "width": "3px",
+        "float": "right",
+        "background-color": "#505050",
+        "margin-right": "2px",
+        "cursor": "col-resize"
+    },
+    "dictionaryListAreaSccrollNode": {
+        "margin": "4px",
+        "margin-right": "8px",
+        "overflow": "hidden",
+        "background-color": "#FFF",
+        "border-top": "1px solid #999",
+        "border-left": "1px solid #999",
+        "border-bottom": "1px solid #DDD",
+        "border-right": "1px solid #DDD"
+    },
+    "dictionaryListAreaNode": {
+        "overflow": "hidden"
+    },
+	"dictionaryListTitleNode": {
+        "height": "26px",
+        "background-color": "#505050",
+        "border-radius": "0px",
+        "margin": "2px",
+        "color": "#FFF",
+        "line-height": "26px",
+        "font-size": "12px",
+        "font-weight": "bold",
+        "padding-left": "10px",
+        "clear": "both"
+    },
+    "listDictionaryItem": {
+        "height": "24px",
+        "line-height": "24px",
+        "margin": "3px 10px 0px 10px",
+        "cursor": "pointer",
+        "background": "#FFF",
+        "color": "#333"
+    },
+    "listDictionaryItem_over": {
+        "background": "#e8eef7"
+    },
+    "listDictionaryItem_current": {
+        "background": "#48638f",
+        "color": "#FFF"
+    },
+    "listDictionaryItemIcon": {
+        "height": "24px",
+        "width": "26px",
+        "background": "url("+"/x_component_cms_DictionaryDesigner/$Main/default/dictionary.png) no-repeat center center",
+        "float": "left"
+    },
+    "listDictionaryItemText": {
+        "height": "24px",
+        "margin-left": "28px",
+        "white-space": "nowrap"
+    },
+
+
+	"contentToolbarNode": {
+		"height": "30px",
+		"background-color": "#EEE"
+	},
+	"editContentNode": {
+		"overflow": "hidden",
+		"background": "#CCC",
+		"-webkit-user-select": "text",
+		"-moz-user-select": "text"
+	},
+	"designFrame": {
+		"width": "100%",
+		"height": "100%",
+		"border": "0px"
+	},
+	"designBody": {
+		"margin": "0px"
+	},
+	"designNode": {
+		//"height": "100%",
+		"margin": "15px",
+		"box-shadow": "0px 0px 20px #606060", 
+		"background": "#FFF",
+		"-webkit-user-select": "text",
+		"overflow": "hidden",
+		"-moz-user-select": "text"
+	},
+	"propertyTitleNode": {
+		"height": "26px",
+		"background-color": "#505050",
+		"border-radius": "0px",
+		"margin": "2px",
+		"color": "#FFF",
+		"line-height": "26px",
+		"font-size": "12px",
+		"font-weight": "bold",
+		"padding-left": "10px",
+		"clear": "both"
+	},
+	"propertyResizeBar": {
+		"width": "3px",
+		"float": "left",
+		"background-color": "#505050",
+		"margin-left": "2px",
+		"cursor": "col-resize"
+	},
+	"propertyContentNode": {
+		"background-color": "#EEE",
+		"border-radius": "0px",
+		"margin": "2px",
+		"margin-left": "7px",
+		"padding-right": "0px",
+		"overflow": "hidden"
+	},
+	"propertyContentResizeNode": {
+		"height": "3px",
+		"background-color": "#505050",
+		"cursor": "row-resize"
+	},
+	"propertyDomArea": {
+		"overflow": "hidden",
+		"background": "#FFF",
+		"margin": "2px",
+		"font-family": "Verdana, Geneva, sans-serif",
+		"border-top": "1px solid #999",
+		"border-left": "1px solid #999",
+		"border-bottom": "1px solid #DDD",
+		"border-right": "1px solid #DDD"
+	},
+	"propertyContentArea": {
+		"overflow": "hidden",
+		"margin-bottom": "2px"
+	},
+	"dictionaryPropertyNode": {
+        "overflow": "hidden",
+        "background": "#FFF",
+        "height": "100%"
+    },
+    "propertyTitleNode": {
+        "height": "24px",
+        "line-height": "24px",
+        "font-size": "12px",
+        "font-weight": "bold",
+        "margin": "10px 10px 0px 10px"
+    },
+    "propertyTextNode": {
+        "height": "24px",
+        "line-height": "24px",
+        "font-size": "12px",
+        "margin": "0px 10px",
+        "color": "#666"
+    },
+    "propertyInputNode": {
+        "display": "block",
+        "width": "90%",
+        "margin": "0px 10px",
+        "border": "1px solid #999",
+        "height": "20px",
+        "line-height": "20px"
+    },
+    "propertyInputAreaNode": {
+        "display": "block",
+        "width": "90%",
+        "margin": "0px 10px",
+        "border": "1px solid #999",
+        "height": "60px",
+        "overflow": "auto"
+    },
+    "jsonDomNode": {
+        "overflow": "hidden",
+        "background": "#FFF",
+        "min-height": "500px"
+    },
+    "jsonTextNode": {
+        "overflow": "hidden",
+        "background": "#FFF"
+    },
+    "jsonTextAreaNode": {
+        "border": "0px",
+        "width": "100%",
+        "height": "500px"
+    }
+}

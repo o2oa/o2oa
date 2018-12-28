@@ -1,0 +1,39 @@
+{
+  "container": {
+    "-webkit-user-select": "none",
+    "-moz-user-select": "none",
+    "user-select" : "none"
+  },
+  "gumVideo" : {
+    "background-color" : "#222",
+    "margin" : "0px 20px 15px 0px"
+  },
+  "recordedVideo" : {
+    "background-color" : "#222",
+    "margin" : "0 0 15px 0"
+  },
+  "recordButton" : {
+    "width" : "100px",
+    "height" : "30px",
+    "color" : "#fff",
+    "background-color" : "rgb(102, 129, 165)",
+    "margin-right" : "20px",
+    "border-radius" : "5px"
+  },
+  "playButton" : {
+    "width" : "60px",
+    "height" : "30px",
+    "color" : "#fff",
+    "background-color" : "rgb(102, 129, 165)",
+    "margin-right" : "20px",
+    "border-radius" : "5px"
+  },
+  "downloadButton" : {
+    "width" : "60px",
+    "height" : "30px",
+    "color" : "#fff",
+    "background-color" : "rgb(102, 129, 165)",
+    "margin-right" : "20px",
+    "border-radius" : "5px"
+  }
+}
