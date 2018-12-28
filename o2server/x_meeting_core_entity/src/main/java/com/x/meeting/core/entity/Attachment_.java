@@ -14,7 +14,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.meeting.core.entity.Attachment.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 11:59:20 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Thu Dec 27 11:40:37 CST 2018")
 public class Attachment_ extends StorageObject_  {
     public static volatile SingularAttribute<Attachment,String> extension;
     public static volatile SingularAttribute<Attachment,String> id;

@@ -19,12 +19,12 @@ public class x_query_assemble_designer extends AssembleA {
 		containerEntities.add("com.x.query.core.entity.View");
 		containerEntities.add("com.x.query.core.entity.Stat");
 		containerEntities.add("com.x.query.core.entity.Reveal");
-		containerEntities.add("com.x.query.core.entity.neural.mlp.Entry");
-		containerEntities.add("com.x.query.core.entity.neural.mlp.InText");
-		containerEntities.add("com.x.query.core.entity.neural.mlp.OutText");
-		containerEntities.add("com.x.query.core.entity.neural.mlp.InValue");
-		containerEntities.add("com.x.query.core.entity.neural.mlp.OutValue");
-		containerEntities.add("com.x.query.core.entity.neural.mlp.Project");
+		containerEntities.add("com.x.query.core.entity.neural.Entry");
+		containerEntities.add("com.x.query.core.entity.neural.InText");
+		containerEntities.add("com.x.query.core.entity.neural.OutText");
+		containerEntities.add("com.x.query.core.entity.neural.InValue");
+		containerEntities.add("com.x.query.core.entity.neural.OutValue");
+		containerEntities.add("com.x.query.core.entity.neural.Project");
 		containerEntities.add("com.x.processplatform.core.entity.content.Review");
 		containerEntities.add("com.x.processplatform.core.entity.content.Work");
 		containerEntities.add("com.x.processplatform.core.entity.content.WorkCompleted");

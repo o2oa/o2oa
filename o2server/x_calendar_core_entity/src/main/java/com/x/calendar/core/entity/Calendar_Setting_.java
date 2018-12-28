@@ -13,7 +13,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.calendar.core.entity.Calendar_Setting.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 11:58:39 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Thu Dec 27 11:39:53 CST 2018")
 public class Calendar_Setting_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Calendar_Setting,String> configCode;
     public static volatile SingularAttribute<Calendar_Setting,String> configName;

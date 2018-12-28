@@ -4,29 +4,29 @@
   <persistence-unit name="com.x.report.core.entity.Report_C_WorkPlan" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>com.x.base.core.entity.JpaObject</class>
-    <class>com.x.base.core.entity.SliceJpaObject</class>
     <class>com.x.report.core.entity.Report_C_WorkPlan</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.report.core.entity.Report_C_WorkPlanDetail" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.report.core.entity.Report_C_WorkPlanDetail</class>
     <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.report.core.entity.Report_C_WorkPlanDetail</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.report.core.entity.Report_C_WorkPlanNext" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.report.core.entity.Report_C_WorkPlanNext</class>
     <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
-    <class>com.x.report.core.entity.Report_C_WorkPlanNext</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.report.core.entity.Report_C_WorkPlanNextDetail" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>com.x.base.core.entity.JpaObject</class>
-    <class>com.x.base.core.entity.SliceJpaObject</class>
     <class>com.x.report.core.entity.Report_C_WorkPlanNextDetail</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.report.core.entity.Report_C_WorkProg" transaction-type="RESOURCE_LOCAL">
@@ -52,8 +52,8 @@
   </persistence-unit>
   <persistence-unit name="com.x.report.core.entity.Report_I_Detail" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.report.core.entity.Report_I_Detail</class>
     <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.report.core.entity.Report_I_Detail</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
@@ -73,37 +73,37 @@
   </persistence-unit>
   <persistence-unit name="com.x.report.core.entity.Report_I_WorkInfo" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.report.core.entity.Report_I_WorkInfo</class>
     <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.report.core.entity.Report_I_WorkInfo</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.report.core.entity.Report_I_WorkInfoDetail" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>com.x.base.core.entity.JpaObject</class>
-    <class>com.x.base.core.entity.SliceJpaObject</class>
     <class>com.x.report.core.entity.Report_I_WorkInfoDetail</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.report.core.entity.Report_I_WorkTag" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>com.x.base.core.entity.JpaObject</class>
-    <class>com.x.base.core.entity.SliceJpaObject</class>
     <class>com.x.report.core.entity.Report_I_WorkTag</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.report.core.entity.Report_I_WorkTagUnit" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.report.core.entity.Report_I_WorkTagUnit</class>
     <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
-    <class>com.x.report.core.entity.Report_I_WorkTagUnit</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.report.core.entity.Report_P_MeasureInfo" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>com.x.base.core.entity.JpaObject</class>
-    <class>com.x.base.core.entity.SliceJpaObject</class>
     <class>com.x.report.core.entity.Report_P_MeasureInfo</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.report.core.entity.Report_P_Permission" transaction-type="RESOURCE_LOCAL">
@@ -116,15 +116,15 @@
   <persistence-unit name="com.x.report.core.entity.Report_P_Profile" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>com.x.base.core.entity.JpaObject</class>
-    <class>com.x.base.core.entity.SliceJpaObject</class>
     <class>com.x.report.core.entity.Report_P_Profile</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.report.core.entity.Report_P_ProfileDetail" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>com.x.base.core.entity.JpaObject</class>
-    <class>com.x.base.core.entity.SliceJpaObject</class>
     <class>com.x.report.core.entity.Report_P_ProfileDetail</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.report.core.entity.Report_R_CreateTime" transaction-type="RESOURCE_LOCAL">
@@ -136,22 +136,22 @@
   </persistence-unit>
   <persistence-unit name="com.x.report.core.entity.Report_R_View" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.report.core.entity.Report_R_View</class>
     <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.report.core.entity.Report_R_View</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.report.core.entity.Report_S_Setting" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>com.x.base.core.entity.JpaObject</class>
-    <class>com.x.base.core.entity.SliceJpaObject</class>
     <class>com.x.report.core.entity.Report_S_Setting</class>
+    <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.report.core.entity.Report_S_SettingLobValue" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-    <class>com.x.report.core.entity.Report_S_SettingLobValue</class>
     <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.report.core.entity.Report_S_SettingLobValue</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <properties/>
   </persistence-unit>

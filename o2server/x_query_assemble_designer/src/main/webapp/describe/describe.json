@@ -1138,16 +1138,16 @@
       ]
     },
     {
-      "name": "MlpAction",
-      "className": "com.x.query.assemble.designer.jaxrs.neural.mlp.MlpAction",
+      "name": "NeuralAction",
+      "className": "com.x.query.assemble.designer.jaxrs.neural.NeuralAction",
       "description": "神经网络多层感知机",
       "methods": [
         {
           "name": "createProject",
-          "className": "com.x.query.assemble.designer.jaxrs.neural.mlp.ActionProjectCreate",
+          "className": "com.x.query.assemble.designer.jaxrs.neural.ActionProjectCreate",
           "description": "创建项目.",
           "type": "POST",
-          "path": "jaxrs/neural/mlp/project",
+          "path": "jaxrs/neural/project",
           "contentType": "application/json",
           "resultContentType": "application/json; charset\u003dUTF-8",
           "useJsonElementParameter": false,
@@ -1163,10 +1163,17 @@
               "isBaseType": true
             },
             {
+              "name": "neuralNetworkType",
+              "type": "String",
+              "isCollection": false,
+              "description": "mlp",
+              "isBaseType": true
+            },
+            {
               "name": "type",
               "type": "String",
               "isCollection": false,
-              "description": "类型,processPlatform或者cms",
+              "description": "cms,processPlatform",
               "isBaseType": true
             },
             {
@@ -1247,7 +1254,7 @@
               "isBaseType": true
             },
             {
-              "name": "validEntryCount",
+              "name": "effectiveEntryCount",
               "type": "Integer",
               "isCollection": false,
               "description": "有效条目数量",
@@ -1258,20 +1265,6 @@
               "type": "String",
               "isCollection": false,
               "description": "状态,generating or learning",
-              "isBaseType": true
-            },
-            {
-              "name": "learningRate",
-              "type": "Double",
-              "isCollection": false,
-              "description": "学习率",
-              "isBaseType": true
-            },
-            {
-              "name": "momentum",
-              "type": "Double",
-              "isCollection": false,
-              "description": "动量",
               "isBaseType": true
             },
             {
@@ -1289,13 +1282,6 @@
               "isBaseType": true
             },
             {
-              "name": "maxIteration",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "最大学习遍数",
-              "isBaseType": true
-            },
-            {
               "name": "generatingPercent",
               "type": "Integer",
               "isCollection": false,
@@ -1307,13 +1293,6 @@
               "type": "Double",
               "isCollection": false,
               "description": "学习总错误,当前均方误差",
-              "isBaseType": true
-            },
-            {
-              "name": "maxError",
-              "type": "Double",
-              "isCollection": false,
-              "description": "最大错误,使用的是均方误差",
               "isBaseType": true
             },
             {
@@ -1338,13 +1317,6 @@
               "isBaseType": true
             },
             {
-              "name": "testRate",
-              "type": "Double",
-              "isCollection": false,
-              "description": "测试比例",
-              "isBaseType": true
-            },
-            {
               "name": "learnEntryCount",
               "type": "Integer",
               "isCollection": false,
@@ -1352,14 +1324,14 @@
               "isBaseType": true
             },
             {
-              "name": "testEntryCount",
+              "name": "validationEntryCount",
               "type": "Integer",
               "isCollection": false,
               "description": "测试条目数量",
               "isBaseType": true
             },
             {
-              "name": "testMeanSquareError",
+              "name": "validationMeanSquareError",
               "type": "Double",
               "isCollection": false,
               "description": "测试比例",
@@ -1387,10 +1359,10 @@
               "isBaseType": true
             },
             {
-              "name": "hiddenLayerCount",
-              "type": "Integer",
+              "name": "propertyMap",
+              "type": "StringValueMap",
               "isCollection": false,
-              "description": "隐层数量",
+              "description": "神经网络参数.",
               "isBaseType": true
             }
           ],
@@ -1405,10 +1377,10 @@
         },
         {
           "name": "deleteProject",
-          "className": "com.x.query.assemble.designer.jaxrs.neural.mlp.ActionProjectDelete",
+          "className": "com.x.query.assemble.designer.jaxrs.neural.ActionProjectDelete",
           "description": "删除项目.",
           "type": "DELETE",
-          "path": "jaxrs/neural/mlp/project/{projectFlag}",
+          "path": "jaxrs/neural/project/{projectFlag}",
           "contentType": "application/json",
           "resultContentType": "application/json; charset\u003dUTF-8",
           "useJsonElementParameter": false,
@@ -1430,10 +1402,16 @@
               "description": "数据库主键,自动生成."
             },
             {
+              "name": "neuralNetworkType",
+              "type": "String",
+              "isCollection": false,
+              "description": "mlp"
+            },
+            {
               "name": "type",
               "type": "String",
               "isCollection": false,
-              "description": "类型,processPlatform或者cms"
+              "description": "cms,processPlatform"
             },
             {
               "name": "name",
@@ -1502,7 +1480,7 @@
               "description": "条目数量"
             },
             {
-              "name": "validEntryCount",
+              "name": "effectiveEntryCount",
               "type": "Integer",
               "isCollection": false,
               "description": "有效条目数量"
@@ -1512,18 +1490,6 @@
               "type": "String",
               "isCollection": false,
               "description": "状态,generating or learning"
-            },
-            {
-              "name": "learningRate",
-              "type": "Double",
-              "isCollection": false,
-              "description": "学习率"
-            },
-            {
-              "name": "momentum",
-              "type": "Double",
-              "isCollection": false,
-              "description": "动量"
             },
             {
               "name": "nnet",
@@ -1538,12 +1504,6 @@
               "description": "方案二进制代码"
             },
             {
-              "name": "maxIteration",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "最大学习遍数"
-            },
-            {
               "name": "generatingPercent",
               "type": "Integer",
               "isCollection": false,
@@ -1554,12 +1514,6 @@
               "type": "Double",
               "isCollection": false,
               "description": "学习总错误,当前均方误差"
-            },
-            {
-              "name": "maxError",
-              "type": "Double",
-              "isCollection": false,
-              "description": "最大错误,使用的是均方误差"
             },
             {
               "name": "inValueCount",
@@ -1580,25 +1534,19 @@
               "description": "最大输出值"
             },
             {
-              "name": "testRate",
-              "type": "Double",
-              "isCollection": false,
-              "description": "测试比例"
-            },
-            {
               "name": "learnEntryCount",
               "type": "Integer",
               "isCollection": false,
               "description": "学习条目数量"
             },
             {
-              "name": "testEntryCount",
+              "name": "validationEntryCount",
               "type": "Integer",
               "isCollection": false,
               "description": "测试条目数量"
             },
             {
-              "name": "testMeanSquareError",
+              "name": "validationMeanSquareError",
               "type": "Double",
               "isCollection": false,
               "description": "测试比例"
@@ -1622,16 +1570,10 @@
               "description": "训练字段最大数量"
             },
             {
-              "name": "hiddenLayerCount",
-              "type": "Integer",
+              "name": "propertyMap",
+              "type": "StringValueMap",
               "isCollection": false,
-              "description": "隐层数量"
-            },
-            {
-              "name": "testMap",
-              "type": "LinkedHashMap\u003cString,String\u003e",
-              "isCollection": false,
-              "description": "待阅群组名称,存储group,多值."
+              "description": "神经网络参数."
             },
             {
               "name": "createTime",
@@ -1649,10 +1591,10 @@
         },
         {
           "name": "generate",
-          "className": "com.x.query.assemble.designer.jaxrs.neural.mlp.ActionGenerate",
+          "className": "com.x.query.assemble.designer.jaxrs.neural.ActionGenerate",
           "description": "创建条目.",
           "type": "GET",
-          "path": "jaxrs/neural/mlp/generate/project/{projectFlag}",
+          "path": "jaxrs/neural/generate/project/{projectFlag}",
           "contentType": "application/json",
           "resultContentType": "application/json; charset\u003dUTF-8",
           "useJsonElementParameter": false,
@@ -1677,10 +1619,10 @@
         },
         {
           "name": "getProject",
-          "className": "com.x.query.assemble.designer.jaxrs.neural.mlp.ActionProjectGet",
+          "className": "com.x.query.assemble.designer.jaxrs.neural.ActionProjectGet",
           "description": "获取项目.",
           "type": "GET",
-          "path": "jaxrs/neural/mlp/project/{projectFlag}",
+          "path": "jaxrs/neural/project/{projectFlag}",
           "contentType": "application/json",
           "resultContentType": "application/json; charset\u003dUTF-8",
           "useJsonElementParameter": false,
@@ -1702,10 +1644,16 @@
               "description": "数据库主键,自动生成."
             },
             {
+              "name": "neuralNetworkType",
+              "type": "String",
+              "isCollection": false,
+              "description": "mlp"
+            },
+            {
               "name": "type",
               "type": "String",
               "isCollection": false,
-              "description": "类型,processPlatform或者cms"
+              "description": "cms,processPlatform"
             },
             {
               "name": "name",
@@ -1774,7 +1722,7 @@
               "description": "条目数量"
             },
             {
-              "name": "validEntryCount",
+              "name": "effectiveEntryCount",
               "type": "Integer",
               "isCollection": false,
               "description": "有效条目数量"
@@ -1784,18 +1732,6 @@
               "type": "String",
               "isCollection": false,
               "description": "状态,generating or learning"
-            },
-            {
-              "name": "learningRate",
-              "type": "Double",
-              "isCollection": false,
-              "description": "学习率"
-            },
-            {
-              "name": "momentum",
-              "type": "Double",
-              "isCollection": false,
-              "description": "动量"
             },
             {
               "name": "nnet",
@@ -1810,12 +1746,6 @@
               "description": "方案二进制代码"
             },
             {
-              "name": "maxIteration",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "最大学习遍数"
-            },
-            {
               "name": "generatingPercent",
               "type": "Integer",
               "isCollection": false,
@@ -1826,12 +1756,6 @@
               "type": "Double",
               "isCollection": false,
               "description": "学习总错误,当前均方误差"
-            },
-            {
-              "name": "maxError",
-              "type": "Double",
-              "isCollection": false,
-              "description": "最大错误,使用的是均方误差"
             },
             {
               "name": "inValueCount",
@@ -1852,25 +1776,19 @@
               "description": "最大输出值"
             },
             {
-              "name": "testRate",
-              "type": "Double",
-              "isCollection": false,
-              "description": "测试比例"
-            },
-            {
               "name": "learnEntryCount",
               "type": "Integer",
               "isCollection": false,
               "description": "学习条目数量"
             },
             {
-              "name": "testEntryCount",
+              "name": "validationEntryCount",
               "type": "Integer",
               "isCollection": false,
               "description": "测试条目数量"
             },
             {
-              "name": "testMeanSquareError",
+              "name": "validationMeanSquareError",
               "type": "Double",
               "isCollection": false,
               "description": "测试比例"
@@ -1894,16 +1812,10 @@
               "description": "训练字段最大数量"
             },
             {
-              "name": "hiddenLayerCount",
-              "type": "Integer",
+              "name": "propertyMap",
+              "type": "StringValueMap",
               "isCollection": false,
-              "description": "隐层数量"
-            },
-            {
-              "name": "testMap",
-              "type": "LinkedHashMap\u003cString,String\u003e",
-              "isCollection": false,
-              "description": "待阅群组名称,存储group,多值."
+              "description": "神经网络参数."
             },
             {
               "name": "createTime",
@@ -1921,10 +1833,10 @@
         },
         {
           "name": "learn",
-          "className": "com.x.query.assemble.designer.jaxrs.neural.mlp.ActionLearn",
+          "className": "com.x.query.assemble.designer.jaxrs.neural.ActionLearn",
           "description": "学习.",
           "type": "GET",
-          "path": "jaxrs/neural/mlp/learn/project/{projectFlag}",
+          "path": "jaxrs/neural/learn/project/{projectFlag}",
           "contentType": "application/json",
           "resultContentType": "application/json; charset\u003dUTF-8",
           "useJsonElementParameter": false,
@@ -1949,10 +1861,10 @@
         },
         {
           "name": "resetStatus",
-          "className": "com.x.query.assemble.designer.jaxrs.neural.mlp.ActionResetStatus",
+          "className": "com.x.query.assemble.designer.jaxrs.neural.ActionResetStatus",
           "description": "重置状态.",
           "type": "GET",
-          "path": "jaxrs/neural/mlp/project/{projectFlag}/reset/status",
+          "path": "jaxrs/neural/project/{projectFlag}/reset/status",
           "contentType": "application/json",
           "resultContentType": "application/json; charset\u003dUTF-8",
           "useJsonElementParameter": false,
@@ -1977,10 +1889,10 @@
         },
         {
           "name": "stopGenerating",
-          "className": "com.x.query.assemble.designer.jaxrs.neural.mlp.ActionStopGenerating",
+          "className": "com.x.query.assemble.designer.jaxrs.neural.ActionStopGenerating",
           "description": "停止创建条目.",
           "type": "GET",
-          "path": "jaxrs/neural/mlp/stop/generating/project/{projectFlag}",
+          "path": "jaxrs/neural/stop/generating/project/{projectFlag}",
           "contentType": "application/json",
           "resultContentType": "application/json; charset\u003dUTF-8",
           "useJsonElementParameter": false,
@@ -2005,10 +1917,10 @@
         },
         {
           "name": "stopLearning",
-          "className": "com.x.query.assemble.designer.jaxrs.neural.mlp.ActionStopLearning",
+          "className": "com.x.query.assemble.designer.jaxrs.neural.ActionStopLearning",
           "description": "停止学习.",
           "type": "GET",
-          "path": "jaxrs/neural/mlp/stop/learn/project/{projectFlag}",
+          "path": "jaxrs/neural/stop/learn/project/{projectFlag}",
           "contentType": "application/json",
           "resultContentType": "application/json; charset\u003dUTF-8",
           "useJsonElementParameter": false,
@@ -2033,10 +1945,10 @@
         },
         {
           "name": "updateProject",
-          "className": "com.x.query.assemble.designer.jaxrs.neural.mlp.ActionProjectUpdate",
+          "className": "com.x.query.assemble.designer.jaxrs.neural.ActionProjectUpdate",
           "description": "更新项目.",
           "type": "PUT",
-          "path": "jaxrs/neural/mlp/project/{projectFlag}",
+          "path": "jaxrs/neural/project/{projectFlag}",
           "contentType": "application/json",
           "resultContentType": "application/json; charset\u003dUTF-8",
           "useJsonElementParameter": false,
@@ -2051,10 +1963,17 @@
           "queryParameters": [],
           "ins": [
             {
+              "name": "neuralNetworkType",
+              "type": "String",
+              "isCollection": false,
+              "description": "mlp",
+              "isBaseType": true
+            },
+            {
               "name": "type",
               "type": "String",
               "isCollection": false,
-              "description": "类型,processPlatform或者cms",
+              "description": "cms,processPlatform",
               "isBaseType": true
             },
             {
@@ -2135,7 +2054,7 @@
               "isBaseType": true
             },
             {
-              "name": "validEntryCount",
+              "name": "effectiveEntryCount",
               "type": "Integer",
               "isCollection": false,
               "description": "有效条目数量",
@@ -2146,20 +2065,6 @@
               "type": "String",
               "isCollection": false,
               "description": "状态,generating or learning",
-              "isBaseType": true
-            },
-            {
-              "name": "learningRate",
-              "type": "Double",
-              "isCollection": false,
-              "description": "学习率",
-              "isBaseType": true
-            },
-            {
-              "name": "momentum",
-              "type": "Double",
-              "isCollection": false,
-              "description": "动量",
               "isBaseType": true
             },
             {
@@ -2177,13 +2082,6 @@
               "isBaseType": true
             },
             {
-              "name": "maxIteration",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "最大学习遍数",
-              "isBaseType": true
-            },
-            {
               "name": "generatingPercent",
               "type": "Integer",
               "isCollection": false,
@@ -2195,13 +2093,6 @@
               "type": "Double",
               "isCollection": false,
               "description": "学习总错误,当前均方误差",
-              "isBaseType": true
-            },
-            {
-              "name": "maxError",
-              "type": "Double",
-              "isCollection": false,
-              "description": "最大错误,使用的是均方误差",
               "isBaseType": true
             },
             {
@@ -2226,13 +2117,6 @@
               "isBaseType": true
             },
             {
-              "name": "testRate",
-              "type": "Double",
-              "isCollection": false,
-              "description": "测试比例",
-              "isBaseType": true
-            },
-            {
               "name": "learnEntryCount",
               "type": "Integer",
               "isCollection": false,
@@ -2240,14 +2124,14 @@
               "isBaseType": true
             },
             {
-              "name": "testEntryCount",
+              "name": "validationEntryCount",
               "type": "Integer",
               "isCollection": false,
               "description": "测试条目数量",
               "isBaseType": true
             },
             {
-              "name": "testMeanSquareError",
+              "name": "validationMeanSquareError",
               "type": "Double",
               "isCollection": false,
               "description": "测试比例",
@@ -2275,10 +2159,10 @@
               "isBaseType": true
             },
             {
-              "name": "hiddenLayerCount",
-              "type": "Integer",
+              "name": "propertyMap",
+              "type": "StringValueMap",
               "isCollection": false,
-              "description": "隐层数量",
+              "description": "神经网络参数.",
               "isBaseType": true
             }
           ],

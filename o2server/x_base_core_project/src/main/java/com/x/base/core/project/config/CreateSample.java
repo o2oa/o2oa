@@ -22,12 +22,17 @@ import com.google.gson.JsonElement;
 import com.x.base.core.project.Packages;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.FileTools;
 
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
 
 public class CreateSample {
+
+	private static Logger logger = LoggerFactory.getLogger(CreateSample.class);
 
 	@Test
 	public void test() throws Exception {
@@ -74,7 +79,8 @@ public class CreateSample {
 			map = this.describe(cls, map);
 			String name = StringUtils.lowerCase(cls.getSimpleName().substring(0, 1)) + cls.getSimpleName().substring(1)
 					+ ".json";
-			File file = new File("D:/o2server/config/sample", name);
+			File file = new File(FileTools.parent(FileTools.parent(new File("./"))), "config/sample/" + name);
+			logger.print("create file:{}.", file.getAbsoluteFile());
 			FileUtils.write(file, XGsonBuilder.toJson(map), DefaultCharset.charset);
 		}
 		this.convertExternalDataSource2ExternalDataSources();
@@ -83,8 +89,10 @@ public class CreateSample {
 	}
 
 	private void convertExternalDataSource2ExternalDataSources() throws Exception, IOException {
-		File file_externalDataSource = new File("D:/o2server/config/sample", "externalDataSource.json");
-		File file_externalDataSources = new File("D:/o2server/config/sample", "externalDataSources.json");
+		File file_externalDataSource = new File(FileTools.parent(FileTools.parent(new File("./"))),
+				"config/sample/externalDataSource.json");
+		File file_externalDataSources = new File(FileTools.parent(FileTools.parent(new File("./"))),
+				"config/sample/externalDataSources.json");
 		JsonElement jsonElement = XGsonBuilder.instance().fromJson(FileUtils.readFileToString(file_externalDataSource),
 				JsonElement.class);
 		List<JsonElement> list = new ArrayList<>();
@@ -94,8 +102,9 @@ public class CreateSample {
 	}
 
 	private void renameNode() throws Exception, IOException {
-		File file_node = new File("D:/o2server/config/sample", "node.json");
-		File file_node_local = new File("D:/o2server/config/sample", "node_127.0.0.1.json");
+		File file_node = new File(FileTools.parent(FileTools.parent(new File("./"))), "config/sample/node.json");
+		File file_node_local = new File(FileTools.parent(FileTools.parent(new File("./"))),
+				"config/sample/node_127.0.0.1.json");
 		if (file_node_local.exists()) {
 			file_node_local.delete();
 		}

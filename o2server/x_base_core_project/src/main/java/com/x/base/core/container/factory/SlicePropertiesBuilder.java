@@ -168,7 +168,7 @@ public class SlicePropertiesBuilder {
 	/* 使用DBCP2连接池时产生的属性 */
 	protected static String getConnectionPropertiesDBCP2(DataMapping dataMapping) throws Exception {
 		try {
-			String str = "maxTotal=5, maxIdle=2, minIdle=0, maxWaitMillis=30000, timeBetweenEvictionRunsMillis=300000, minEvictableIdleTimeMillis=300000, maxConnLifetimeMillis=1200000, Username="
+			String str = "maxTotal=4, maxIdle=2, minIdle=0, maxWaitMillis=30000, timeBetweenEvictionRunsMillis=300000, minEvictableIdleTimeMillis=300000, maxConnLifetimeMillis=1200000, Username="
 					+ dataMapping.getUsername() + ", Password=" + dataMapping.getPassword();
 			if (StringUtils.equals(determineDBDictionary(dataMapping), dictionary_db2)) {
 				str += ",validationQuery=" + validationQuery_db2 + ", driverClassName=" + driver_db2 + ", url="
@@ -210,13 +210,8 @@ public class SlicePropertiesBuilder {
 	/* 使用Druid连接池时产生的属性 */
 	protected static String getConnectionPropertiesDruid(DataMapping dataMapping) throws Exception {
 		try {
-			String str = "filters=stat, poolPreparedStatements=true, maxActive=5, minIdle=0, testOnBorrow=true, Username="
+			String str = "filters=stat, poolPreparedStatements=true, maxActive=4, minIdle=0, testOnBorrow=true, Username="
 					+ dataMapping.getUsername() + ", Password=" + dataMapping.getPassword();
-			// String str = "filters=stat, poolPreparedStatements=true,
-			// maxActive=20, minIdle=0, timeBetweenEvictionRunsMillis=100000,
-			// minEvictableIdleTimeMillis=300000, Username="
-			// + dataMapping.getUsername() + ", Password=" +
-			// dataMapping.getPassword();
 			if (StringUtils.equals(determineDBDictionary(dataMapping), dictionary_db2)) {
 				str += ", validationQuery=" + validationQuery_db2 + ", driverClassName=" + driver_db2 + ", url="
 						+ dataMapping.getUrl();

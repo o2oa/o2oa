@@ -11,7 +11,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.collaboration.core.entity.SMSMessage.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 11:59:00 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Thu Dec 27 11:40:15 CST 2018")
 public class SMSMessage_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<SMSMessage,String> id;
     public static volatile SingularAttribute<SMSMessage,String> message;

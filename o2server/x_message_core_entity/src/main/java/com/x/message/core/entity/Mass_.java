@@ -12,7 +12,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.message.core.entity.Mass.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 11:59:26 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Thu Dec 27 11:40:43 CST 2018")
 public class Mass_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Mass,String> body;
     public static volatile SingularAttribute<Mass,String> creatorPerson;

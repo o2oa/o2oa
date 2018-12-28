@@ -12,7 +12,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.query.core.entity.segment.Word.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 11:58:45 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Thu Dec 27 11:39:59 CST 2018")
 public class Word_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Word,String> bundle;
     public static volatile SingularAttribute<Word,Integer> count;

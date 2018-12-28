@@ -390,18 +390,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.hyperic</groupId>
-			<artifactId>sigar</artifactId>
-			<version>1.6.4</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>nl.captcha</groupId>
-			<artifactId>simplecaptcha</artifactId>
-			<version>1.1.1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>net.fortuna.ical4j</groupId>
 			<artifactId>ical4j</artifactId>
 			<version>2.2.0</version>
@@ -624,7 +612,7 @@
 					<artifactId>openjpa-maven-plugin</artifactId>
 					<version>3.0.0</version>
 					<configuration>
-						<includes>**/entity/*.class</includes>
+						<includes>**/entity/**/*.class</includes>
 						<addDefaultConstructor>true</addDefaultConstructor>
 						<enforcePropertyRestrictions>true</enforcePropertyRestrictions>
 					</configuration>

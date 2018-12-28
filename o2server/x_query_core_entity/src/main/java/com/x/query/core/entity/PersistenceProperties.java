@@ -38,38 +38,35 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 
 	public static class Neural {
 
-		public static class Mlp {
+		public static class Project {
 
-			public static class Project {
-
-				public static final String table = "QRY_NRL_MLP_PROJECT";
-			}
-
-			public static class OutValue {
-
-				public static final String table = "QRY_NRL_MLP_OUTVALUE";
-			}
-
-			public static class InValue {
-
-				public static final String table = "QRY_NRL_MLP_INVALUE";
-			}
-
-			public static class Entry {
-
-				public static final String table = "QRY_NRL_MLP_ENTRY";
-			}
-
-			public static class InText {
-
-				public static final String table = "QRY_NRL_MLP_INTEXT";
-			}
-
-			public static class OutText {
-
-				public static final String table = "QRY_NRL_MLP_OUTTEXT";
-			}
-
+			public static final String table = "QRY_NRL_PROJECT";
 		}
+
+		public static class OutValue {
+
+			public static final String table = "QRY_NRL_OUTVALUE";
+		}
+
+		public static class InValue {
+
+			public static final String table = "QRY_NRL_INVALUE";
+		}
+
+		public static class Entry {
+
+			public static final String table = "QRY_NRL_ENTRY";
+		}
+
+		public static class InText {
+
+			public static final String table = "QRY_NRL_INTEXT";
+		}
+
+		public static class OutText {
+
+			public static final String table = "QRY_NRL_OUTTEXT";
+		}
+
 	}
 }

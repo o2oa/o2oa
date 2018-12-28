@@ -12,7 +12,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.cms.core.entity.element.ViewFieldConfig.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 11:58:51 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Thu Dec 27 11:40:05 CST 2018")
 public class ViewFieldConfig_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<ViewFieldConfig,String> description;
     public static volatile SingularAttribute<ViewFieldConfig,String> editor;

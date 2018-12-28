@@ -187,7 +187,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (matcher.matches()) {
 			String eval = matcher.group(1);
 			ScriptEngineManager factory = new ScriptEngineManager();
-			ScriptEngine engine = factory.getEngineByName("nashorn");
+			ScriptEngine engine = factory.getEngineByName("JavaScript");
 			engine.put("person", person);
 			String pass = engine.eval(eval).toString();
 			return pass;
