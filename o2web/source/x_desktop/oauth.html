@@ -4,13 +4,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta charset="UTF-8">
     <title></title>
-    <link rel="stylesheet" type="text/css" href="res/css/style.css" charset="UTF-8" />
-    <link rel="stylesheet" href="res/css/mBoxNotice.css" charset="UTF-8" />
-    <link rel="stylesheet" href="res/css/mBoxTooltip.css" charset="UTF-8" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" charset="UTF-8" />
+    <link rel="stylesheet" href="css/mBoxNotice.css" charset="UTF-8" />
+    <link rel="stylesheet" href="css/mBoxTooltip.css" charset="UTF-8" />
     <!--<script src="res/framework/mootools/mootools-core-1.4.5-full-nocompat.js"></script>-->
     <!--<script src="res/framework/mootools/mootools-more-1.4.0.1-all_2.js"></script>-->
-    <script src="res/framework/mootools/mootools-1.6.0.min.js"></script>
-    <script src="res/common.js?v=1.1.7"></script>
+    <script src="../o2_core/o2.js?v=2.0.0"></script>
+    <script src="../o2_core/compatible.js?v=2.0.0"></script>
     <script>
         
         layout = window.layout || {};
@@ -85,38 +85,22 @@
             }.bind(this));
         };
 
-        COMMON.setContentPath("/x_desktop");
-        COMMON.AjaxModule.load("mwf", function(){
+        o2.load("mwf", function(){
             MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
             MWF.loadLP("zh-cn");
             MWF.require("MWF.xDesktop.Common", null, false);
             MWF.require("MWF.xAction.RestActions", null, false);
-            COMMON.AjaxModule.load("/x_desktop/res/framework/mootools/plugin/mBox.Notice.js", null, false);
-            COMMON.AjaxModule.load("/x_desktop/res/framework/mootools/plugin/mBox.Tooltip.js", null, false);
-            MWF.getJSON("res/config/config.json", function (config) {
-                layout.config = config;
-                MWF.xDesktop.getServiceAddress(config, function (service, center) {
-                    layout.serviceAddressList = service;
-                    layout.centerServer = center;
-                    layout.load();
+
+            o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], function(){
+                o2.JSON.get("res/config/config.json", function (config) {
+                    layout.config = config;
+                    MWF.xDesktop.getServiceAddress(config, function (service, center) {
+                        layout.serviceAddressList = service;
+                        layout.centerServer = center;
+                        layout.load();
+                    }.bind(this));
                 }.bind(this));
-            }.bind(this));
-
-
-
-//            MWF.require("MWF.xDesktop.Layout", function() {
-//                MWF.require("MWF.xDesktop.Authentication", null, false);
-//                MWF.getJSON("res/config/config.json", function (config) {
-//                    layout.config = config;
-//                    MWF.xDesktop.getServiceAddress(config, function (service, center) {
-//                        layout.serviceAddressList = service;
-//                        layout.centerServer = center;
-//                        layout.load();
-//                    }.bind(this));
-//                });
-//
-//
-//            });
+            });
         });
     </script>
 </head>
