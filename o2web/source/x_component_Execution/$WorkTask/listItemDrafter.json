@@ -1,0 +1,125 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='editTable'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='documentNode'></tr>",
+    "mouseoverStyles": "documentNode_over",
+    "action": "open"
+  },
+  "items": [
+
+    {
+      "name": "title",
+      "head": {
+        "html": "<th styles='normalThNode' lable='title'></th>",
+        "width": "40%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>" +
+        " <div item='title' styles='documentSubject'></div>" +
+//        " <div>" +
+//        "   <div item='defaultWorkType' styles='itemInLine'></div><div item='defaultWorkLevel' styles='itemInLine'></div>" +
+//        " </div>" +
+        "</td>",
+        "items": {
+          "title": {},
+          "defaultWorkType": {},
+          "defaultWorkLevel": {}
+        }
+      }
+    },
+//    {
+//      "name": "workType",
+//      "head": {
+//        "html": "<th styles='normalThNode' lable='workType'></th>",
+//        "width": "20%"
+//      },
+//      "content": {
+//        "html": "<td styles='normalTdCenterNode'>"  +
+//          "<div styles='itemBlock' item='defaultWorkType'></div>"+
+////        " <div styles='itemBlock'><div styles='itemInLine' lable='dutyDepartent' colon='true'></div><div styles='itemInLine' item='dutyDepartent'></div></div>" +
+////        " <div styles='itemBlock'><div styles='itemInLine' lable='doDepartment' colon='true'></div><div styles='itemInLine' item='doDepartment'></div></div>" +
+////        " <div styles='itemBlock'><div styles='itemInLine' lable='secondDepartment' colon='true'></div><div styles='itemInLine' item='secondDepartment'></div></div>" +
+//        "</td>",
+//        "items": {
+//          "defaultWorkType": {
+//
+//          },
+//          "doDepartment": {},
+//          "secondDepartment": {}
+//        }
+//      }
+//    },
+//    {
+//      "name": "workLevel",
+//      "head": {
+//        "html": "<th styles='normalThNode' lable='workLevel'></th>",
+//        "width": "15%"
+//      },
+//      "content": {
+//        "html": "<td styles='normalTdCenterNode'>" +
+//        "<div styles='itemBlock' item='defaultWorkLevel'></div>"+
+////        " <div styles='itemBlock'><div styles='itemInLine' lable='dutyPerson' colon='true'></div><div styles='itemInLine' item='dutyPerson'></div></div>" +
+////        " <div styles='itemBlock'><div styles='itemInLine' lable='doPerson' colon='true'></div><div styles='itemInLine' item='doPerson'></div></div>" +
+////        " <div styles='itemBlock'><div styles='itemInLine' lable='secondPerson' colon='true'></div><div styles='itemInLine' item='secondPerson'></div></div>" +
+//        "</td>",
+//        "items": {
+//          "defaultWorkLevel": {},
+//          "doPerson": {},
+//          "secondPerson": {}
+//        }
+//      }
+//    },
+    {
+      "name": "completeDateLimit",
+      "head": {
+        "html": "<th styles='normalThNode' lable='completeDateLimit'></th>",
+        "width": "15%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' item='defaultCompleteDateLimitStr'></td>",
+        "items": {
+          "defaultCompleteDateLimitStr" : {}
+        }
+      }
+    },
+    {
+      //"access": "admin",
+      "head": {
+        "html": "<th styles='normalThNode' lable='action'></th>",
+        "width": "10%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode'>" +
+        " <span styles='documentActionNode' item='action_open'></span>" +
+        " <span styles='documentActionNode' item='remove'></span>" +
+        "</td>",
+        "items": {
+          "action_open": {
+            "title": "open",
+            "text": "open",
+            "action": "action_open",
+            "condition": "function( d ){ return true }",
+            "styles": "documentActionNode",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "remove": {
+            "title": "remove",
+            "text": "remove",
+            "action": "remove",
+            "condition": "function( d ){ return this.removeCenterWork(d) }",
+            "styles": "documentActionNode",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          }
+        }
+      }
+    }
+  ]
+}
+

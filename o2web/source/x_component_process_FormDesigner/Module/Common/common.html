@@ -1,0 +1,71 @@
+<div style="background-color: #FFF; overflow: hidden">
+    <div title="基本" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">标识:</td>
+                <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">名称:</td>
+                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">描述:</td>
+                <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">外观类型:</td>
+                <td class="editTableValue"><select class="MWFDivTemplate" name="templateType"></select></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">选择标签:</td>
+                <td class="editTableValue">
+                    <select onchange="if (this.options[this.selectedIndex].value){ $('text{$.pid}tagName').set('value', this.options[this.selectedIndex].value); $('text{$.pid}tagName').focus();}">
+                        <option value=""></option>
+                        <option text{($.tagName.toLowerCase()=='div')?'selected':''} value="div">&lt;div&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='a')?'selected':''} value="a">&lt;a&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='button')?'selected':''} value="button">&lt;button&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='center')?'selected':''} value="center">&lt;center&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='dl')?'selected':''} value="dl">&lt;dl&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='dt')?'selected':''} value="dt">&lt;dt&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='dd')?'selected':''} value="dd">&lt;dd&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='h1')?'selected':''} value="h1">&lt;h1&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='h2')?'selected':''} value="h2">&lt;h2&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='h3')?'selected':''} value="h3">&lt;h3&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='h4')?'selected':''} value="h4">&lt;h4&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='h5')?'selected':''} value="h5">&lt;h5&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='h6')?'selected':''} value="h6">&lt;h6&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='ul')?'selected':''} value="ul">&lt;ul&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='ol')?'selected':''} value="ol">&lt;ol&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='li')?'selected':''} value="li">&lt;li&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='p')?'selected':''} value="p">&lt;p&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='pre')?'selected':''} value="pre">&lt;pre&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='span')?'selected':''} value="span">&lt;span&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='audio')?'selected':''} value="audio">&lt;audio&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='video')?'selected':''} value="video">&lt;video&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='source')?'selected':''} value="source">&lt;source&gt;</option>
+                        <option text{($.tagName.toLowerCase()=='canvas')?'selected':''} value="canvas">&lt;canvas&gt;</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">元素标签:</td>
+                <td class="editTableValue"><input type="text" id="text{$.pid}tagName" name="tagName" value="text{$.tagName}" class="editTableInput"/></td>
+            </tr>
+        </table>
+
+        <div class="MWFMaplist" name="styles" title="样式"></div>
+        <div class="MWFMaplist" name="properties" title="属性"></div>
+
+        <div class="MWFHtmlEditorArea" name="innerHTML" title="内置HTML (H)"></div>
+    </div>
+    <div title="事件"  class="MWFTab">
+        <div class="MWFEventsArea" name="events"></div>
+    </div>
+    <div title="HTML"  class="MWFTab">
+        <div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+    <div title="JSON"  class="MWFTab">
+        <div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+</div>

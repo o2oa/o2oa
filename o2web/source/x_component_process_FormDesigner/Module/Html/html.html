@@ -1,0 +1,28 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="基本" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		  <tr>
+		    <td class="editTableTitle">标识:</td>
+		    <td class="editTableValue"><input id="editHtmlId"  type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">名称:</td>
+		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">描述:</td>
+		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">Class:</td>
+		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+		  </tr>
+		</table>
+	
+		
+		<div id="labelEditTextValue" title="HTML" style="border-top:1px solid #999; height:18px; line-height:18px; background:#CCC; font-size:12px; padding-left:5px">HTML</div>
+		<textarea id="editHtmlText" name="text" class="editTableTextarea" style="height:300px;" onkeyup="var id=$('editHtmlId').get('value');var node=$(id).getFirst('textarea'); if (node) node.set('text', this.get('value'))">text{$.text}</textarea>
+		
+		
+	</div>
+</div>

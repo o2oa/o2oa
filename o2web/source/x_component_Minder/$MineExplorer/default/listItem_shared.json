@@ -1,0 +1,140 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='listViewTable'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='listViewTableTr'></tr>",
+    "mouseoverStyles": "listViewTableTr_over",
+    "action": "open"
+  },
+  "items": [
+        {
+          "name": "$checkbox",
+          "head": {
+            "html": "<th styles='listViewTableTh'></th>",
+            "width": "5%"
+          },
+          "content": {
+            "html": "<td styles='listViewTableTd'></td>",
+            //"condition": "function(d){ return d.status==0 ? true : false }",
+            "value": ""
+          }
+        },
+
+    {
+      "name": "thumbnail",
+      "head": {
+        "html": "<th styles='listViewTableCenterTh' lable='thumbnail' ></th>",
+        "width": "14%"
+      },
+      "content": {
+        "html": "<td styles='listViewTableImgTd' valign='middle' align='center'><img src='' item='thumbnail' style='width:72px;'/></td>",
+        "items": {
+          "thumbnail" : {}
+        }
+      }
+    },
+    {
+      "name": "name",
+      "defaultSort" : "desc",
+      "sort" : "asc",
+      "head": {
+        "html": "<th styles='listViewTableTh' lable='filename'></th>"
+      },
+      "content": {
+        "html": "<td styles='listViewTableTd' name='name' item='name'></td>",
+        "items": {
+          "name" : {}
+        }
+      }
+    },
+    {
+      "name": "createTime",
+      //"sort" : "asc",
+      "head": {
+        "html": "<th styles='listViewTableTh' lable='createTime'></th>"
+      },
+      "content": {
+        "html": "<td styles='listViewTableTd' item='createTime'></td>",
+        "items": {
+          "createTime" : {
+            "value" : "function(d){ return this.app.getDateDiff(d.createTime) }",
+            "title" : "function(d){ return d.createTime }"
+          }
+        }
+      }
+    },
+    {
+      "name": "updateTime",
+      //"sort" : "asc",
+      "head": {
+        "html": "<th styles='listViewTableTh' lable='updateTime'></th>"
+      },
+      "content": {
+        "html": "<td styles='listViewTableTd' item='updateTime'></td>",
+        "items": {
+          "updateTime" : {
+            "value" : "function(d){ return this.app.getDateDiff(d.updateTime) }",
+            "title" : "function(d){ return d.updateTime }"
+          }
+        }
+      }
+    },
+
+    {
+      "name": "分享对象",
+      "head": {
+        "html": "<th styles='listViewTableTh' lable='shareTarget'></th>"
+      },
+      "content": {
+        "html": "<td styles='listViewTableTd'><div item='sharedIcon' styles='listSharedIcon' style='float:left;margin-top:8px;margin-right:5px;'></div><div item='shareTarget' style='float:left;'></div></td>",
+        "items": {
+          "shareTarget" : {
+            "value" : "function(d, ev){ return (d.sharePersonList || []).combine(d.shareUnitList || []).combine(d.shareGroupList || []).map( function(item){ return item.split('@')[0] } ).join('、'); }",
+            "event" : "click^^function(d, ev){ this.showShareRecord(ev) }"
+          },
+          "sharedIcon" : {
+            "attr" : "title^^已分享",
+            "event" : "click^^function(d, ev){ this.showShareRecord(ev) }"
+          }
+        }
+      }
+    }
+    //    {
+    //      "head": {
+    //        "html": "<th styles='listViewTableTh' lable='action'></th>",
+    //        "width": "8%"
+    //      },
+    //      "content": {
+    //        "html": "<td styles='listViewTableTd'>" +
+    //        " <span styles='documentActionNode' item='remove'></span>" +
+    //        " <span styles='documentActionNode' item='edit'></span>" +
+    //        "</td>",
+    //        "items": {
+    //          "edit": {
+    //            //"access": "admin",
+    //            "title": "edit",
+    //            //"text": "edit",
+    //            "action": "edit",
+    //            "condition": "function( d ){ return this.app.isAdmin || ( this.app.userName == d.targetPerson  ) }",
+    //            "styles": "actionEditNode",
+    //            "mouseoverStyles": "actionEditNode_over",
+    //            "mousedownStyles": "actionEditNode_over"
+    //          },
+    //          "remove": {
+    //            "title": "remove",
+    //            //"text": "remove",
+    //            "action": "remove",
+    //            "condition": "function( d ){ return this.app.isAdmin || (this.app.userName == d.targetPerson ) }",
+    //            "styles": "actionDeleteNode",
+    //            "mouseoverStyles": "actionDeleteNode_over",
+    //            "mousedownStyles": "actionDeleteNode_down"
+    //          }
+    //        }
+    //      }
+    //    }
+  ]
+}

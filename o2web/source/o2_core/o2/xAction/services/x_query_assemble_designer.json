@@ -1,0 +1,56 @@
+{
+  "getId": {"uri": "/jaxrs/id/{count}"},
+  "addApplication": {"uri": "/jaxrs/query","method": "POST"},
+
+  "listApplication": {"uri": "/jaxrs/query/list/all"},
+  "listApplicationSummary": {"uri": "/jaxrs/query/list/all"},
+  "listApplicationByCategorySummary": {"uri": "/jaxrs/query/list/querycategory/{queryCategory}"},
+
+  "listApplicationCategory": {"uri": "/jaxrs/query/querycategory/list"},
+  "listApplicationByCategory": {"uri": "/jaxrs/query/list/querycategory/{queryCategory}"},
+
+  "updateApplication": {"uri": "/jaxrs/query/{flag}","method": "PUT"},
+  "updateApplicationIcon": {
+    "uri": "/jaxrs/query/{id}/icon",
+    "method": "PUT",
+    "enctype": "formData"
+  },
+  "getApplication": {"uri": "/jaxrs/query/{id}"},
+  "removeApplication": {"uri": "/jaxrs/query/{id}","method": "DELETE"},
+  "deleteApplication": {"uri": "/jaxrs/query/{id}","method": "DELETE"},
+
+
+  "listSelect": {"uri": "/jaxrs/select/list/query/{id}"},
+  "listView": {"uri": "/jaxrs/view/list/query/{id}"},
+  "listStat": {"uri": "/jaxrs/stat/list/query/{id}"},
+  "listReveal": {"uri": "/jaxrs/reveal/list/query/{id}"},
+
+  "getSelect": {"uri": "/jaxrs/select/{id}"},
+  "addSelect": {"uri": "/jaxrs/select","method": "POST"},
+  "removeSelect": {"uri": "/jaxrs/select/{id}","method": "DELETE"},
+  "deleteSelect": {"uri": "/jaxrs/select/{id}","method": "DELETE"},
+  "updateSelect": {"uri": "/jaxrs/select/{id}","method": "PUT"},
+
+  "getView": {"uri": "/jaxrs/view/{id}"},
+  "addView": {"uri": "/jaxrs/view","method": "POST"},
+  "removeView": {"uri": "/jaxrs/view/{id}","method": "DELETE"},
+  "deleteView": {"uri": "/jaxrs/view/{id}","method": "DELETE"},
+  "updateView": {"uri": "/jaxrs/view/{id}","method": "PUT"},
+  "loadView": {"uri": "/jaxrs/view/{id}/simulate", "method": "PUT"},
+
+  "getStat": {"uri": "/jaxrs/stat/{id}"},
+  "addStat": {"uri": "/jaxrs/stat","method": "POST"},
+  "removeStat": {"uri": "/jaxrs/stat/{id}","method": "DELETE"},
+  "deleteStat": {"uri": "/jaxrs/stat/{id}","method": "DELETE"},
+  "updateStat": {"uri": "/jaxrs/stat/{id}","method": "PUT"},
+  "loadStat": {"uri": "/jaxrs/stat/{id}/simulate", "method": "PUT"},
+
+  "getReveal": {"uri": "/jaxrs/reveal/{id}"},
+  "addReveal": {"uri": "/jaxrs/reveal","method": "POST"},
+  "removeReveal": {"uri": "/jaxrs/reveal/{id}","method": "DELETE"},
+  "deleteReveal": {"uri": "/jaxrs/reveal/{id}","method": "DELETE"},
+  "updateReveal": {"uri": "/jaxrs/reveal/{id}","method": "PUT"},
+
+
+  "clazz": "x_query_assemble_designer"
+}

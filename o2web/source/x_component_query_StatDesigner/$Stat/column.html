@@ -1,0 +1,59 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="基本" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">ID:</td>
+                <td class="editTableValue">text{$.id}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">名称:</td>
+                <td class="editTableValue"><input type="text" name="displayName" value="text{$.displayName}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">视图:</td>
+                <td class="editTableValue"><div class="MWFQueryViewSelect" name="view"></div></td>
+            </tr>
+            <!--<tr>-->
+                <!--<td class="editTableTitle">选择视图:</td>-->
+                <!--<td class="editTableValue"><div class="MWFViewSelect" name="view"></div></td>-->
+            <!--</tr>-->
+            <tr>
+                <td class="editTableTitle">视图列:</td>
+                <td class="editTableValue"><select class="MWFViewColumnSelect" name="column">
+                    <option>请先为统计选择视图</option>
+                </select></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">计算类型:</td>
+                <td class="editTableValue"><select name="calculateType">
+                    <option value="sum" text{($.calculateType)=='sum'?'selected':''}>总和(sum)</option>
+                    <option value="average" text{($.calculateType)=='average'?'selected':''}>平均(average)</option>
+                    <option value="count" text{($.calculateType)=='count'?'selected':''}>数量(count)</option>
+                    <!--<option value="groupSum" text{($.calculateType)=='groupSum'?'selected':''}>分类总和(groupSum)</option>-->
+                    <!--<option value="groupAverage" text{($.calculateType)=='groupAverage'?'selected':''}>分类平均(groupAverage)</option>-->
+                    <!--<option value="groupCount" text{($.calculateType)=='groupCount'?'selected':''}>分类数量(groupCount)</option>-->
+                </select></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">格式:</td>
+                <td class="editTableValue"><select name="formatType">
+                    <option value="number" text{($.formatType=='number')?'selected':''}>数字</option>
+                    <option value="percent" text{($.formatType=='percent')?'selected':''}>百分比</option>
+                    <option value="currency" text{($.formatType=='currency')?'selected':''}>货币</option>
+                </select></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">小数点位数:</td>
+                <td class="editTableValue"><input type="number" name="decimal" value="text{$.decimal}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">默认值:</td>
+                <td class="editTableValue"><input type="text" name="defaultValue" value="text{$.defaultValue}" class="editTableInput"/></td>
+            </tr>
+        </table>
+        <div class="MWFFormulaArea" name="code" title="显示脚本 (S)"></div>
+	</div>
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

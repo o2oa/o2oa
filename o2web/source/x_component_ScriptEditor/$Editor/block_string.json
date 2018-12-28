@@ -1,0 +1,184 @@
+[
+  {
+    "name": "string.new",
+    "contents": [
+      "新建一个字符串",
+      {"type": "input","default": ""}
+    ],
+    "class": "string.New", "extend": "$Expression"
+  },
+  {
+    "name": "string.indexOf",
+    "contents": [
+      "字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "中出现子字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的位置"
+    ],
+    "class": "string.IndexOf", "extend": "$Expression"
+  },
+  {
+    "name": "string.lastIndexOf",
+    "contents": [
+      "字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "中出现子字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的最后位置"
+    ],
+    "class": "string.LastIndexOf", "extend": "$Expression"
+  },
+  {
+    "name": "string.includes",
+    "contents": [
+      "字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "中是否包含子字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的最后位置"
+    ],
+    "class": "string.Includes", "extend": "$Expression"
+  },
+  {
+    "name": "string.concat",
+    "contents": [
+      "连接字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      ",",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "string.Concat", "extend": "$Expression"
+  },
+  {
+    "name": "string.split",
+    "contents": [
+      "分割字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "分隔符",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "string.Split", "extend": "$Expression"
+  },
+  {
+    "name": "string.slice",
+    "contents": [
+      "截取",
+      {"type": "select", "options": ["slice", "substr", "substring"], "default": "slice"},
+      "字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "从",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "到",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "string.Slice", "extend": "$Expression"
+  },
+  {
+    "name": "string.replace",
+    "contents": [
+      "字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "将子字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "替换为",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "string.Replace", "extend": "$Expression"
+  },
+  {
+    "name": "string.toCase",
+    "contents": [
+      "将字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "转换为",
+      {"type": "select", "options": ["小写|toLowerCase", "大写|toUpperCase"], "default": "slice"},
+    ],
+    "class": "string.ToCase", "extend": "$Expression"
+  },
+  {
+    "name": "string.trim",
+    "contents": [
+      "将字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "两端去空"
+    ],
+    "class": "string.Trim", "extend": "$Expression"
+  },
+  {
+    "name": "string.uniqueID",
+    "contents": ["唯一ID"],
+    "class": "string.UniqueID", "extend": "$Expression"
+  },
+
+  {
+    "name": "string.clean",
+    "contents": [
+      "去除字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的多余空格"
+    ],
+    "class": "string.Clean", "extend": "$Expression"
+  },
+  {
+    "name": "string.capitalize",
+    "contents": [
+      "将字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "首字母大写"
+    ],
+    "class": "string.Capitalize", "extend": "$Expression"
+  },
+  {
+    "name": "string.toInt",
+    "contents": [
+      "将字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "转换为整数"
+    ],
+    "class": "string.ToInt", "extend": "$Expression"
+  },
+  {
+    "name": "string.toFloat",
+    "contents": [
+      "将字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "转换为浮点数"
+    ],
+    "class": "string.ToFloat", "extend": "$Expression"
+  },
+  {
+    "name": "string.charAt",
+    "contents": [
+      "字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "中的字符",
+      {"type": "select", "options": ["charAt", "charCodeAt", "codePointAt"], "default": "charAt"},
+      "位置",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "string.CharAt", "extend": "$Expression"
+  },
+  {
+    "name": "string.startEndWith",
+    "contents": [
+      "子字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "在字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的",
+      {"type": "select", "options": ["开头|startsWith", "结尾|endsWith"], "default": "startsWith"}
+    ],
+    "class": "string.StartEndWith", "extend": "$Expression"
+  },
+  {
+    "name": "string.match",
+    "contents": [
+      "字符串",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "匹配正则表达式",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "string.Match", "extend": "$Expression"
+  }
+]

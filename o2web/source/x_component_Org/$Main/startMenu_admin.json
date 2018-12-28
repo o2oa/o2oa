@@ -1,0 +1,26 @@
+[
+	{
+		"title": "组织架构",
+		"id": "1.1",
+		"action": "orgConfig",
+		"icon": "org"
+	},
+	{
+		"title": "群组管理",
+		"id": "1.1",
+		"action": "groupConfig",
+		"icon": "group"
+	},
+	{
+		"title": "角色管理",
+		"id": "1.1",
+		"action": "roleConfig",
+		"icon": "role"
+	},
+	{
+		"title": "个人管理",
+		"id": "1.1",
+		"action": "personConfig",
+		"icon": "person"
+	}
+]

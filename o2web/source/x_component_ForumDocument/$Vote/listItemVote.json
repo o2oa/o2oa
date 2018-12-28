@@ -1,0 +1,16 @@
+{
+  "viewSetting": {
+    "html": "<div></div>"
+  },
+  "documentSetting": {
+    "html": "<div></div>"
+  },
+  "items": [
+    {
+      "name": "content",
+      "content": {
+        "html": "<div style='display:none;'></div>"
+        }
+      }
+  ]
+}

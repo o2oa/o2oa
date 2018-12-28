@@ -1,0 +1,234 @@
+[
+  {
+    "name": "ajax.new",
+    "contents": [
+      "创建一个请求对象，并赋值给",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "ajax.New", "extend": "$Around"
+  },
+  {
+    "name": "ajax.new",
+    "contents": [
+      "创建一个请求JSON对象，并赋值给",
+      {"type": "inputMortise","default": ""}
+    ],
+    "class": "ajax.New", "extend": "$Around"
+  },
+  {
+    "name": "ajax.newO2",
+    "contents": [
+      "请求平台服务",
+      {"type": "select", "options": [], "default": "false"}
+    ],
+    "class": "ajax.NewO2", "extend": "$Around"
+  },
+  {
+    "name": "ajax.url",
+    "contents": [
+      "请求地址",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "ajax.Url", "extend": "$Enumerate"
+  },
+  {
+    "name": "ajax.data",
+    "contents": [
+      "请求内容",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "ajax.Data", "extend": "$Enumerate"
+  },
+  {
+    "name": "ajax.parameter",
+    "contents": [
+      "参数",
+      {"type": "input","default": ""},
+      "值",
+      {"type": "inputMortise","default": "0","tenonTypes": []}
+    ],
+    "class": "ajax.Parameter", "extend": "$Enumerate"
+  },
+
+  {
+    "name": "ajax.method",
+    "contents": [
+      "请求方法",
+      {"type": "select", "options": ["GET|get", "POST|post", "PUT|put", "DELETE|delete", "HEAD|head", "OPTION|option"], "default": "get"}
+    ],
+    "class": "ajax.Method", "extend": "$Enumerate"
+  },
+  {
+    "name": "ajax.async",
+    "contents": [
+      "请求",
+      {"type": "select", "options": ["异步|true", "同步|false"], "default": "true"}
+    ],
+    "class": "ajax.Async", "extend": "$Enumerate"
+  },
+  {
+    "name": "ajax.timeout",
+    "contents": [
+      "超时",
+      {"type": "inputMortise","default": "0","tenonTypes": []}
+    ],
+    "class": "ajax.Timeout", "extend": "$Enumerate"
+  },
+  {
+    "name": "ajax.headers",
+    "contents": [
+      "HTTP头",
+      {"type": "mortise", "tenonTypes": []}
+    ],
+    "class": "ajax.Headers", "extend": "$Enumerate"
+  },
+  {
+    "name": "ajax.encoding",
+    "contents": [
+      "编码",
+      {"type": "input","default": "utf-8"}
+    ],
+    "class": "ajax.Encoding", "extend": "$Enumerate"
+  },
+  {
+    "name": "ajax.noCache",
+    "contents": [
+      "缓存",
+      {"type": "select", "options": ["是|true", "否|false"], "default": "false"}
+    ],
+    "class": "ajax.NoCache", "extend": "$Enumerate"
+  },
+  {
+    "name": "ajax.user",
+    "contents": [
+      "用户名",
+      {"type": "inputMortise","default": "0","tenonTypes": []}
+    ],
+    "class": "ajax.User", "extend": "$Enumerate"
+  },
+  {
+    "name": "ajax.password",
+    "contents": [
+      "密码",
+      {"type": "inputMortise","default": "0","tenonTypes": []}
+    ],
+    "class": "ajax.Password", "extend": "$Enumerate"
+  },
+  {
+    "name": "ajax.withCredentials",
+    "contents": [
+      "withCredentials",
+      {"type": "select", "options": ["是|true", "否|false"], "default": "false"}
+    ],
+    "class": "ajax.WithCredentials", "extend": "$Enumerate"
+  },
+  {
+    "name": "ajax.onSuccess",
+    "contents": [
+      "onSuccess",
+      {"type": "input","default": "responseText"},
+      {"type": "input","default": "responseXML"}
+    ],
+    "class": "ajax.OnSuccess", "extend": "$EnumerateAround"
+  },
+  {
+    "name": "ajax.onJsonSuccess",
+    "contents": [
+      "onSuccess",
+      {"type": "input","default": "responseJSON"},
+      {"type": "input","default": "responseText"}
+    ],
+    "class": "ajax.OnJsonSuccess", "extend": "$EnumerateAround"
+  },
+  {
+    "name": "ajax.onRequest",
+    "contents": [
+      "onRequest"
+    ],
+    "class": "ajax.OnRequest", "extend": "$EnumerateAround"
+  },
+  {
+    "name": "ajax.onLoadstart",
+    "contents": [
+      "onLoadstart",
+      {"type": "input","default": "event"},
+      {"type": "input","default": "xhr"}
+    ],
+    "class": "ajax.OnLoadstart", "extend": "$EnumerateAround"
+  },
+  {
+    "name": "ajax.onProgress",
+    "contents": [
+      "onProgress",
+      {"type": "input","default": "event"},
+      {"type": "input","default": "xhr"}
+    ],
+    "class": "ajax.OnProgress", "extend": "$EnumerateAround"
+  },
+  {
+    "name": "ajax.onComplete",
+    "contents": [
+      "onComplete"
+    ],
+    "class": "ajax.OnComplete", "extend": "$EnumerateAround"
+  },
+  {
+    "name": "ajax.onCancel",
+    "contents": [
+      "onCancel"
+    ],
+    "class": "ajax.OnCancel", "extend": "$EnumerateAround"
+  },
+  {
+    "name": "ajax.onFailure",
+    "contents": [
+      "onFailure",
+      {"type": "input","default": "xhr"}
+    ],
+    "class": "ajax.OnFailure", "extend": "$EnumerateAround"
+  },
+  {
+    "name": "ajax.onException",
+    "contents": [
+      "onException",
+      {"type": "input","default": "headerName"},
+      {"type": "input","default": "value"}
+    ],
+    "class": "ajax.OnException", "extend": "$EnumerateAround"
+  },
+  {
+    "name": "ajax.onTimeout",
+    "contents": [
+      "onTimeout"
+    ],
+    "class": "ajax.OnTimeout", "extend": "$EnumerateAround"
+  },
+  {
+    "name": "ajax.onError",
+    "contents": [
+      "onError",
+      {"type": "input","default": "text"},
+      {"type": "input","default": "error"}
+    ],
+    "class": "ajax.OnError", "extend": "$EnumerateAround"
+  },
+
+  {
+    "name": "ajax.cancel",
+    "contents": [
+      "停止请求",
+      {"type": "input","default": ""}
+    ],
+    "class": "ajax.Cancel", "extend": "$Operation"
+  },
+  {
+    "name": "ajax.isRunning",
+    "contents": [
+      "请求",
+      {"type": "input","default": ""},
+      "是否正在执行"
+    ],
+    "class": "ajax.IsRunning", "extend": "$Expression"
+  }
+
+]

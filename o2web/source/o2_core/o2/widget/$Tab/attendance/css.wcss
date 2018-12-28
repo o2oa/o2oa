@@ -1,0 +1,89 @@
+{
+	"tabNodeContainer": {
+		"height": "38px",
+	  	"margin-left" : "1px",
+	  	"padding-left" : "20px",
+		"background-color": "#365775",
+		"border-top": "1px solid #365775",
+		"border-bottom": "1px solid #365775",
+	  	"font-size" : "14px"
+	},
+	"contentNodeContainer": {
+		"overflow": "hidden",
+		"clear": "both"
+	},
+	"contentNodeArea": {
+		"overflow": "hidden",
+		"display": "none",
+		"opacity": 0
+	},
+	"tabNode": {
+	  	"padding-left" : "5px",
+	  	"padding-right" : "5px",
+		"position": "static",
+		"margin-left": "5px",
+		"margin-top": "0px",
+		"float": "left",
+		"height": "38px",
+		"cursor": "pointer",
+		"background": "rgba(240, 242, 251, 1)",
+		
+		"border-top-left-radius": "0px",
+		"border-top-right-radius": "0px",
+		"-webkit-border-top-left-radius":"0px",
+		"-webkit-border-top-right-radius":"0px",
+		"-moz-border-radius-topleft":"0px",
+		"-moz-border-radius-topright":"0px",
+
+		"border": "1px none #CCC"
+	},
+	"tabTextNode": {
+	  "line-height": "38px",
+		"text-align": "center",
+		"color": "#333333",
+		"margin-right": "8px",
+		"margin-top": "0px",
+		"font-weight": "normal",
+		"margin-left": "8px"
+	},
+	"tabCloseNode": {
+		"height": "30px",
+		"width": "20px",
+		"background": "url("+o2.session.path+"/widget/$Tab/default/close.gif) center center"
+	},
+	"tabNodeCurrent": {
+	  "padding-left" : "5px",
+	  "padding-right" : "5px",
+		"position": "relative",
+		"top": "-5px",
+		"margin-left": "2px",
+		"float": "left",
+		"height": "43px",
+		"background": "#fff",
+		
+		"border-top-left-radius": "5px",
+		"border-top-right-radius": "5px",
+		"-webkit-border-top-left-radius":"5px",
+		"-webkit-border-top-right-radius":"5px",
+		"-moz-border-radius-topleft":"5px",
+		"-moz-border-radius-topright":"5px",
+
+		"border": "1px solid #CCC",
+		"border-bottom": "0px solid #CCC"
+	},
+	"tabTextNodeCurrent": {
+		"line-height": "38px",
+		"text-align": "center",
+		"color": "#333",
+		"margin-right": "8px",
+		"margin-left": "8px",
+		"font-weight": "bold",
+		"margin-top": "5px"
+	},
+
+	"tabCloseNodeCurrent": {
+		"height": "30px",
+		"width": "20px",
+		"background": "url("+o2.session.path+"/widget/$Tab/default/close.gif) center center"
+	}
+}

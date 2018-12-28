@@ -1,0 +1,68 @@
+<div style="background-color: #FFF; overflow: hidden">
+    <div title="基本" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">标识:</td>
+                <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">名称:</td>
+                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">描述:</td>
+                <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">值分隔符:</td>
+                <td class="editTableValue"><input type="text" name="splitStr" value="text{$.splitStr}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">显示分隔符:</td>
+                <td class="editTableValue"><input type="text" name="splitShow" value="text{$.splitShow}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">可选数量:</td>
+                <td class="editTableValue"><input title="0 表示不限制数量" type="text" name="count" value="text{$.count}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">可选值:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}selectEditItemValues').setStyle('display', 'block'); $('text{$.pid}selectEditItemScript').setStyle('display', 'none'); $('text{$.pid}selectEditItemDynamic').setStyle('display', 'none')}" name="itemType" text{($.itemType=='values')?'checked':''} type="radio" value="values"/>固定值
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}selectEditItemScript').setStyle('display', 'block'); $('text{$.pid}selectEditItemValues').setStyle('display', 'none'); $('text{$.pid}selectEditItemDynamic').setStyle('display', 'none')}" name="itemType" text{($.itemType=='script')?'checked':''} type="radio" value="script"/>脚本
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}selectEditItemScript').setStyle('display', 'none'); $('text{$.pid}selectEditItemValues').setStyle('display', 'none'); $('text{$.pid}selectEditItemDynamic').setStyle('display', 'block')}" name="itemType" text{($.itemType=='dynamic')?'checked':''} type="radio" value="dynamic"/>动态计算
+                </td>
+            </tr>
+        </table>
+
+        <div id="text{$.pid}selectEditItemValues" style="display: text{($.itemType=='values')?'block':'none'}" class="MWFArraylist" name="itemValues" title="可选值"></div>
+        <div id="text{$.pid}selectEditItemScript" style="display: text{($.itemType=='script')?'block':'none'}" class="MWFScriptArea" name="itemScript" title="可选值脚本 (S)"></div>
+        <div id="text{$.pid}selectEditItemDynamic" style="display: text{($.itemType=='script')?'block':'none'}" class="MWFScriptArea" name="itemDynamic" title="可选值动态脚本 (S)"></div>
+
+        <div class="MWFMaplist" name="styles" title="样式"></div>
+        <div class="MWFMaplist" name="inputStyles" title="Combox样式"></div>
+        <div class="MWFMaplist" name="properties" title="属性"></div>
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">计算:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="compute" value="create" text{($.compute.indexOf('create')!=-1)?'checked':''}/>创建
+                    <input type="radio" name="compute" value="save" text{($.compute.indexOf('save')!=-1)?'checked':''}/>保存
+                    <input type="radio" name="compute" value="show" text{($.compute.indexOf('show')!=-1)?'checked':''}/>显示
+                </td>
+            </tr>
+        </table>
+        <div class="MWFScriptArea" name="defaultValue" title="默认值 (S)"></div>
+
+        <div class="MWFValidation" name="validationConfig"></div>
+        <div class="MWFScriptArea" name="validation" title="校验脚本 (S)"></div>
+
+    </div>
+    <div title="事件"  class="MWFTab">
+        <div class="MWFEventsArea" name="events"></div>
+    </div>
+    <div title="HTML"  class="MWFTab">
+        <div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+</div>

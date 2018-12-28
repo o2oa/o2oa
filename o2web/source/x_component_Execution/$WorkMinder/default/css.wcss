@@ -1,0 +1,143 @@
+{
+  "formMaskNode": {
+    "width": "100%",
+    "height": "100%",
+    "opacity": 0.6,
+    "position": "absolute",
+    "background-color": "#CCC",
+    "top": "0px",
+    "left": "0px"
+  },
+  "formAreaNode": {
+    "position": "absolute",
+    "opacity": 0,
+    "top": "0px" //,
+    //"z-index" : "102"
+  },
+  "formNode": {
+    "background-color": "#FFF",
+    "box-shadow": "0px 0px 10px #999",
+    "margin": "auto",
+    "border": "1px solid #fff",
+    "overflow": "hidden"
+  },
+  "formTopNode": {
+    "color" : "#fff",
+    "height": "40px",
+    "background-color": "#3d77c1",
+    "border-top": "1px solid #ddd",
+    "border-bottom": "1px solid #b6b6b6",
+    "line-height": "40px",
+    "font-size": "14px",
+    "padding-left" : "5px",
+    "text-align": "left"
+  },
+  "formTopIconNode" : {
+    "padding-top" : "5px",
+    "padding-left" : "5px",
+    "width": "32px",
+    "height": "32px",
+    "float": "left",
+    "background": "url(/x_component_Execution/$Minder/default/icon/mind.png) no-repeat center center"
+  },
+  "formTopTextNode" : {
+    "font-size": "16px",
+    "float": "left",
+    "width" : "480px",
+    "overflow" : "hidden",
+    "text-overflow" : "ellipsis",
+    "white-space":"nowrap"
+  },
+  "formTopCloseActionNode": {
+    "width": "32px",
+    "height": "32px",
+    "float": "right",
+    "padding-left" : "30px",
+    "padding-right" : "10px",
+    "background": "url(/x_component_Execution/$Minder/default/icon/close.png) no-repeat center 4px",
+    "cursor": "pointer"
+  },
+  "formTopContentNode" : {
+    "float" : "right",
+    "padding-right" : "10px",
+    "text-align" : "right"
+  },
+  "formTopContentTitle" : {
+  },
+  "formTopContentValue" : {
+    "padding-right" : "20px",
+    "font-size": "12px"
+  },
+  "formNewNode": {
+    "width": "47px",
+    "height": "47px",
+    "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+  },
+  "formIconNode": {
+    "width": "47px",
+    "height": "47px"
+  },
+  "formEditNode": {
+    "width": "47px",
+    "height": "47px"
+  },
+  "formContentNode": {
+    "border": "0px solid #666",
+    "width": "100%",
+    "margin": "auto",
+    "font-size": "12px",
+    "color": "#666",
+    "font-family": "微软雅黑",
+    "overflow" : "hidden"
+  },
+  "formTableContainer" : {
+    "overflow" : "hidden",
+    "positon" : "static",
+    "background-color" : "#fbfbfb"
+  },
+  "formBottomNode" : {
+    "height" : "50px",
+    "line-height" : "50px",
+    "border-top" : "1px solid #3d77c1",
+    "background-color" : "#fff",
+    "overflow" : "hidden"
+  },
+  "formOkActionNode": {
+    "margin-top" : "5px",
+    "height": "35px",
+    "width": "75px",
+    "cursor": "pointer",
+    "float": "right",
+    "line-height": "35px",
+    "text-align": "center",
+    "font-size": "16px",
+    "font-family": "微软雅黑",
+    "border": "1px solid #3d77c1",
+    "background-color" : "#3d77c1",
+    "color": "#FFF",
+    "margin-right": "20px",
+    "box-shadow": "3px 3px 3px #999"
+  },
+  "formCancelActionNode": {
+    "margin-top" : "5px",
+    "height": "35px",
+    "width": "75px",
+    "cursor": "pointer",
+    "float": "right",
+    "line-height": "35px",
+    "text-align": "center",
+    "font-size": "16px",
+    "font-family": "微软雅黑",
+    "border": "1px solid #3d77c1",
+    "background-color" : "#3d77c1",
+    "color": "#FFF",
+    "margin-right": "20px",
+    "box-shadow": "3px 3px 3px #999"
+  },
+  "inforBoxArrow" : {
+    "width":"17px",
+    "height" : "9px",
+    "position":"absolute",
+    "background" : "no-repeat url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAlCAYAAACgc9J8AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAP9JREFUeNq01oENhCAMBdCWuIgTuP8WOoGj9GhSDaeUfjiuCSEm+iKFVllESGNdVzrPk55xHIfewHnItm1MrVDMG/u+i0aeyWZp3R9CJRaBIWRB5YUHItAL80AEqmI1EIFcrAQ1rwjUxEoQgULsAue+2ayc/W83p5+z6RXggOO1WQGhrsFXP/Oip58tAaQTZ4QMbEbyEB2GCKEBdtpmru4NsC4aHg8PLJ/3lim2xDv02jYDz1kNQsGEQgiYeqAQBPuZQF1jFKqBYTn1RLK1D4+v3E3NGfgNkJlfdKi0XrUZgc1OWyt0Dwz/z37tGhA20s+WR4t+1iBbzTJyaD8CDAB7WgNSzh/AnwAAAABJRU5ErkJggg==)"
+  }
+}

@@ -1,0 +1,17 @@
+{
+	"scrollVAreaNode": {
+		"opacity": 0,
+		"left": "132px",
+		"width": "10px",
+		"border-radius": "5px",
+		"background": "#CCC",
+		"float": "right"
+	},
+	"scrollVNode": {
+		"width": "10px",
+		"height": "80px",
+		"background": "#888",
+		"border-radius": "5px",
+		"cursor": "pointer"
+	}
+}

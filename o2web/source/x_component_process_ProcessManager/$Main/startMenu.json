@@ -1,0 +1,67 @@
+[
+  {
+    "title": "表单配置",
+    "id": "1.1",
+    "action": "formConfig",
+    "icon": "process_form.png",
+    "expand": false,
+    "sub": []
+  },
+  {
+    "title": "流程配置",
+    "id": "1.1",
+    "action": "processConfig",
+    "icon": "process_flow.png",
+    "expand": false,
+    "sub": []
+  },
+
+//  {
+//    "title": "视图配置",
+//    "id": "1.1",
+//    "action": "viewConfig",
+//    "icon": "process_view.png",
+//    "expand": false,
+//    "sub": []
+//  },
+//  {
+//    "title": "统计配置",
+//    "id": "1.1",
+//    "action": "statConfig",
+//    "icon": "process_stat.png",
+//    "expand": false,
+//    "sub": []
+//  },
+  {
+    "title": "数据配置",
+    "id": "1.1",
+    "action": "dataConfig",
+    "icon": "process_data.png",
+    "expand": false,
+    "sub": []
+  },
+  {
+    "title": "脚本配置",
+    "id": "1.1",
+    "action": "scriptConfig",
+    "icon": "process_script.png",
+    "expand": false,
+    "sub": []
+  },
+  {
+    "title": "附件配置",
+    "id": "1.1",
+    "action": "fileConfig",
+    "icon": "process_file.png",
+    "expand": false,
+    "sub": []
+  },
+  {
+    "title": "应用属性",
+    "id": "1.1",
+    "action": "applicationProperty",
+    "icon": "process_property.png",
+    "expand": false,
+    "sub": []
+  }
+]

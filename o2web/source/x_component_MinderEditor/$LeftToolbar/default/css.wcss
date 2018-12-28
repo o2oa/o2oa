@@ -1,0 +1,31 @@
+{
+  "nav" : {
+    "position": "absolute",
+    "width": "35px",
+    "height": "381px",
+    "padding": "5px 0",
+    "left": "10px",
+    "bottom": "10px",
+    "background": "#5c97e1",
+    "color": "#fff",
+    "border-radius": "4px",
+    //"z-index": "10",
+    "box-shadow": "3px 3px 10px rgba(0, 0, 0, 0.2)",
+    "transition": "-webkit-transform 0.7s 0.1s ease",
+    "transition": "transform .7s 0.1s ease"
+  },
+  "navButton" : {
+    "width": "35px",
+    "height": "24px",
+    "line-height": "24px",
+    "text-align": "center",
+    "margin-top" : "3px",
+    "background-repeat": "no-repeat",
+    "background-position-x": "center",
+    "background-position-y": "center",
+    "background-color": "#5c97e1"
+  },
+  "navButton_over": {
+    "background-color": "#5A6378"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "listCity": {"uri": "/jaxrs/area/list/province/{province}"},
+  "listDistrict": {"uri": "/jaxrs/area/list/province/{province}/city/{city}"},
+  "listProvince": {"uri": "/jaxrs/area/list"},
+  "listStreet": {"uri": "/jaxrs/area/list/province/{province}/city/{city}/district/{district}"},
+
+  "convertHtml": {"uri": "/jaxrs/office", "method": "POST", "enctype": "formData", "progress": false},
+
+  "ecnetCheck": {"uri": "/jaxrs/ecnet/check", "method": "POST"}
+
+}

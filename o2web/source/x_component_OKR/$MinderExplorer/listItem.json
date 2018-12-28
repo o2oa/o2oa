@@ -1,0 +1,68 @@
+[
+  {
+    "title" : "配置类型",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "function(d){ return d.configType == 'NOTREQUIRED' ? '不需要考勤' : '需要考勤' }",
+    "name" : "configType",
+    "width" : "10%"
+  },
+  {
+    "title" : "公司名称",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "companyName",
+    "name" : "companyName",
+    "width" : "20%"
+  },
+  {
+    "title" : "部门名称",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "organizationName",
+    "name" : "organizationName",
+    "width" : "20%"
+  },
+  {
+    "title" : "员工姓名",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "employeeName",
+    "name" : "employeeName",
+    "width" : "10%"
+  },
+  {
+    "title" : "员工编码",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "employeeNumber",
+    "name" : "employeeNumber",
+    "width" : "10%"
+  },
+  {
+    "title" : "入职日期",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "empInCompanyTime",
+    "name" : "empInCompanyTime",
+    "width" : "15%"
+  },
+  {
+    "access" : "admin",
+    "title" : "操作",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "actions",
+    "name" : "actions",
+    "width" : "5%",
+    "sub" : [{
+      "title" : "删除配置",
+      "action" : "remove",
+      "styles" : "documentActionNode",
+      "overStyles" : "documentActionNode_over",
+      "downStyles" : "documentActionNode_down",
+      "icon" : "delete.png",
+      "overIcon" : "delete_over.png"
+    }]
+  }
+]

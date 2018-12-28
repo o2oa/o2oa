@@ -1,0 +1,64 @@
+{
+  "middleContent":{
+    "width":"100%",
+    "min-width":"1000px",
+    "margin-top" : "5px",
+    "height":"60px",
+    "line-height":"60px",
+    "background-color" : "#fff"
+  },
+  "naviContent":{
+    "float":"left",
+    "width" : "240px",
+    "padding-left":"20px",
+    "height":"32px",
+    "background-color":"#fff"
+  },
+  "naviRightContent":{
+    "margin-left":"260px",
+    "background-color":"#fff"
+  },
+  "naviNode" : {
+    "margin-top" : "15px",
+    "font-size":"14px",
+    "color":"#666666",
+    "border":"1px solid #CCCCCC",
+    "border-radius":"3px",
+    "text-align":"center",
+    "cursor":"pointer",
+    "float":"left",
+    "height":"30px",
+    "padding-left" : "10px",
+    "padding-right" : "10px",
+    "line-height":"30px",
+    "margin-right":"10px",
+    "background-color":"#fff"
+  },
+  "naviNode_current" : {
+    "color":"#fff",
+    "background-color":"#4990E2"
+  },
+  "yearSelectorArea" : {
+    "padding-top" : "15px" ,
+    "float" : "left",
+    "padding-left" : "10px",
+    "font-size" : "14px"
+  },
+  "action" : {
+    "display" : "block",
+    "margin-top" : "15px",
+    "font-size":"14px",
+    "color":"#666666",
+    "border":"1px solid #CCCCCC",
+    "border-radius":"3px",
+    "text-align":"center",
+    "cursor":"pointer",
+    "float":"left",
+    "height":"30px",
+    "padding-left" : "10px",
+    "padding-right" : "10px",
+    "line-height":"30px",
+    "margin-left":"20px",
+    "background-color":"#eee"
+  }
+}

@@ -1,0 +1,80 @@
+{
+	"tabNodeContainer": {
+		"height": "30px",
+		"background": "url("+o2.session.path+"/widget/$Tab/processlayout/tabAreaBg.gif)",
+		"border-top": "1px solid #CCC",
+		"border-bottom": "1px solid #CCC"
+	},
+	"contentNodeContainer": {
+		"overflow": "hidden",
+		"clear": "left"
+	},
+	"contentNodeArea": {
+		"overflow": "hidden",
+		"display": "none",
+		"opacity": 0
+	},
+	"tabNode": {
+		"position": "static",
+		"margin-left": "0px",
+		"margin-right": "-1px",
+		"margin-top": "1px",
+		"float": "left",
+		"height": "28px",
+		"cursor": "pointer",
+		"background": "url("+o2.session.path+"/widget/$Tab/processlayout/tabAreaBg.gif) center center",
+
+		"border": "1px solid #CCC",
+		"border-bottom": "0px"
+	},
+	"tabTextNode": {
+		"font-size": "12px",
+		"line-height": "28px",
+		"text-align": "center",
+		"color": "#333333",
+		"margin-right": "8px",
+		"margin-top": "0px",
+		"font-weight": "bold",
+		"margin-left": "8px",
+		"display": "inline"
+	},
+	"tabCloseNode": {
+		"height": "28px",
+		"width": "16px",
+		"background": "url("+o2.session.path+"/widget/$Tab/processlayout/close_gray.png) left center",
+		"background-repeat": "no-repeat" ,
+		"float": "right"
+	},
+	"tabNodeCurrent": {
+		"position": "static",
+		"margin-left": "0px",
+		"margin-right": "-1px",
+		"margin-top": "1px",
+		"float": "left",
+		"height": "29px",
+		"background": "url("+o2.session.path+"/widget/$Tab/processlayout/tabNodeCurrentBg.gif) center center",
+		
+		"border": "1px solid #CCC",
+		"border-bottom": "0px solid #CCC"
+	},
+	"tabTextNodeCurrent": {
+		"font-size": "12px",
+		"line-height": "29px",
+		"text-align": "center",
+		"color": "#bf6364",
+		"margin-right": "8px",
+		"margin-left": "8px",
+		"font-weight": "bold",
+		"margin-top": "0px",
+		"float": "left",
+		"display": "inline"
+	},
+
+	"tabCloseNodeCurrent": {
+		"height": "28px",
+		"width": "16px",
+		"background": "url("+o2.session.path+"/widget/$Tab/processlayout/close.png) left center",
+		"background-repeat": "no-repeat",
+		"float": "left"
+	}
+}

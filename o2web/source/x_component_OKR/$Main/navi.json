@@ -1,0 +1,53 @@
+[
+  {
+    "title": "脑图",
+    "id": "10",
+    "action" : "openMinder"
+  },
+  {
+    "access" :"admin_dept",
+    "type" :"sep"
+  },
+  {
+    "title": "主体工作",
+    "id": "15",
+    "action" : "opeCoreWork",
+    "target" : "_blank"
+  },
+  {
+    "title": "工作详情",
+    "id": "20",
+    "action" : "opeWorkForm",
+    "target" : "_blank"
+  },
+  {
+    "title": "工作细节",
+    "id": "20",
+    "action" : "opeWorkDetail",
+    "target" : "_blank"
+  },
+  {
+    "title": "图片剪切",
+    "id": "25",
+    "action" : "openImageCliper",
+    "target" : "_blank"
+  }
+//  {
+//    "access" :"admin_dept",
+//    "type" :"sep"
+//  },
+//  {
+//    "access" :"admin",
+//    "title": "维护",
+//    "id": "20",
+//    "expand": false,
+//    "sub": [
+//      {
+//        "id" : "20.1",
+//        "access" : "admin",
+//        "title" : "法定假期",
+//        "action" : "openHolidaySetting"
+//      }
+//    ]
+//  }
+]

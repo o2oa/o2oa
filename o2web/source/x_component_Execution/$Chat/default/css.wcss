@@ -1,0 +1,97 @@
+{
+  "dialogNode" : {
+    "overflow" : "hidden",
+    "margin-right" : "6px"
+  },
+  "msg_li" : {
+    "margin":"0 10px 16px 20px"
+  },
+  "msg_item":{
+    "zoom":"1",
+    "overflow" : "hidden"
+  },
+  "msg_face" : {
+    "width" : "40px",
+    "height" : "40px"
+  },
+  "msg_person_name" : {
+    "text-align" : "center",
+    "font-size" : "12px"
+  },
+  "msg_person_left":{
+    "float":"left"
+  },
+  "msg_person_right":{
+    "float":"right"
+  },
+  "msg_arrow_left":{
+    "float":"left",
+    "width":"8px",
+    "height":"38px",
+    "z-index":"1",
+    "position":"relative",
+    "margin":"11px -1px auto 5px",
+    "background":"url(/x_component_Execution/$Chat/default/icon/msg_box_arrow_left.png) no-repeat"
+  },
+  "msg_arrow_right":{
+    "float":"right",
+    "width":"8px",
+    "height":"38px",
+    "z-index":"1",
+    "position":"relative",
+    "margin":"11px 5px auto -1px",
+    "background":"url(/x_component_Execution/$Chat/default/icon/msg_box_arrow_right.png) no-repeat"
+  },
+  "msg_content_body_left":{
+    "min-width":"200px",
+    "max-width":"260px",
+    "border":"1px solid #e1e9ed",
+    "float":"left",
+    "font-size" : "12px",
+    "background-color":"rgb(242, 248, 251)",
+    "position":"relative"
+  },
+  "msg_content_body_right":{
+    "min-width":"200px",
+    "max-width":"260px",
+    "font-size" : "12px",
+    "border":"1px solid #eceadb",
+    "float":"right",
+    "background-color":"rgb(251, 250, 242)",
+    "position":"relative"
+  },
+  "msg_del":{
+    "top":"5px",
+    "right":"5px",
+    "width":"10px",
+    "height":"9px",
+    "position":"absolute",
+    "background-image":"url(/x_component_Execution/$Chat/default/icon/icon_buttons.gif)",
+    "background-repeat":"no-repeat",
+    "background-position-x":"-176px",
+    "background-position-y":"-32px",
+    "cursor":"pointer"
+  }
+,"msg_content_area":{
+  "padding":"12px 12px 5px 12px"
+},
+  "msg_content_text":{
+    "padding":"0",
+    "margin":"0",
+    "line-height":"24px"
+  },
+  "msg_content_time":{
+    "padding":"0",
+    "margin":"0",
+    "text-align":"right",
+    "padding-top":"10px",
+    "color":"#aeaeae"
+  },
+  "chat_receiver":{
+    "vertical-align":"middle",
+    "border":"1px solid #cbecb0",
+    "width":"600px",
+    "line-height":"30px",
+    "height":"30px",
+  }
+}

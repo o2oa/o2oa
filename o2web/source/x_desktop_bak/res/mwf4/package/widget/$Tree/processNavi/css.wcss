@@ -1,0 +1,57 @@
+{
+	"areaNode": {
+		"cursor": "pointer",
+		"margin": "0px"
+	},
+	"treeNode": {
+		"line-height": "40px"
+	},
+	
+	"treeItemNode":{
+		"border-top": "1px solid #404040",
+		"height": "40px",
+		"background-color": "#4a8bc3"
+	},
+	"treeChildrenNode": {
+	},
+	"blankLevelNode": {
+		"width": "15px"
+	},
+	"operateNode": {
+		"height": "20px",
+		"width": "20px",
+		"background-position": "center center",
+		"background-repeat": "no-repeat",
+		"opacity": 0
+	},
+	"nodeTable": {
+		"float": "right",
+		"height": "40px"
+	},
+	
+	"iconNode": {
+		"width": "20px",
+		"background-position": "center center"
+	},
+	"textNode": {
+		"height": "40px"
+	},
+	"textDivNode": {
+		"font-size":"14px",
+		"word-break": "keep-all",
+		"white-space": "nowrap",
+		"padding-left": "5px",
+		"padding-right": "5px",
+		"background": "transparent",
+		"color": "#FFF"
+	},
+	"textDivNodeSelected": {
+		"font-size":"14px",
+		"word-break": "keep-all",
+		"white-space": "nowrap",
+		"padding-left": "5px",
+		"padding-right": "5px",
+		"background": "#4a8bc2",
+		"color": "#FFF"
+	}
+}

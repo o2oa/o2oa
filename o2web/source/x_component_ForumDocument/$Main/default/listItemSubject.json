@@ -1,0 +1,133 @@
+{
+  "viewSetting": {
+    "html": "<div styles='subjectListNode'></div>"
+  },
+  "documentSetting": {
+    "html": "<div styles='subjectNode'></div>",
+    "action": "open"
+  },
+  "items": [
+    {
+      "name": "subjectContent",
+      "content": {
+        "html": "<div styles='itemNode'>"+
+        " <div styles='itemLeftNode'>"+
+        //"   <div styles='itemLeftArrow'></div>"+
+        "   <div styles='itemUserName' item='creatorName'>"+
+        "   </div>"+
+        "   <div styles='itemUserFace' item='userFace'>"+
+        "     <div styles='itemUserIcon'>"+
+        "       <img styles='itemUserIcon2' item='userIcon'/>"+
+        "     </div>"+
+        "     <div styles='itemUserStat'>"+
+        "       <div styles='itemUserStatInfor'>"+
+        "         <div styles='itemUserStatCount' item='subject'></div>"+
+        "         <div styles='itemUserStatText' lable='subject'></div>"+
+        "       </div>"+
+        "       <div styles='itemUserStatInfor'>"+
+        "         <div styles='itemUserStatCount' item='reply'></div>"+
+        "         <div styles='itemUserStatText' lable='reply'></div>"+
+        "       </div>"+
+        "       <div styles='itemUserStatInforRight'>"+
+        "         <div styles='itemUserStatCount' item='prime'></div>"+
+        "         <div styles='itemUserStatText' lable='prime'></div>"+
+        "       </div>"+
+        "     </div>"+
+        "   </div>"+
+        "   <div styles='itemUserStat2'>"+
+        "     <div styles='itemUserStat2text' lable='todaySubject'></div>"+
+        "     <div styles='itemUserStat2count' item='todaySubject'></div>"+
+        "   </div>"+
+        "   <div styles='itemUserStat2'>"+
+        "      <div styles='itemUserStat2text' lable='todayReply'></div>"+
+        "      <div styles='itemUserStat2count' item='todayReply'></div>"+
+        "   </div>"+
+        "   <div styles='itemToolsLeft'>"+
+        "       <div styles='messageAction' item='messageAction'></div>"+
+        "   </div>"+
+        " </div>"+
+        " <div styles='itemRightNode'>"+
+        //"    <div styles='itemPrime' item='isPrime'></div>"+
+        "   <div styles='itemRightTop'>"+
+        "     <div styles='itemTime' lable='publishAt'></div>"+
+        "     <div styles='itemTime' item='createTime'></div>"+
+        "     <div styles='itemFloor' lable='mainFloor'></div><div styles='itemFloor' item='index'></div>"+
+        "     <div styles='itemSubjectTools' item='itemSubjectTools'></div>"+
+        "   </div>"+
+        "   <div styles='itemRightMidle'>"+
+       "      <div style='padding-bottom:60px'>" +
+        "       <div styles='itemSummaryContainer' item='summaryContainer'>"+
+        "         <span styles='itemSummaryLabel' item='summaryLabel'></span>"+
+        "         <span styles='itemSummary' item='summary'></span>"+
+        "       </div>"+
+        "       <div styles='itemBody' item='content'></div>"+
+        "       <div styles='itemAttachment' item='attachment'></div>"+
+        "       <div styles='itemVote' item='vote'></div>"+
+       "      </div>"+
+        "     <div styles='itemSignature' item='signatureContainer'>"+
+        "       <div styles='itemSignatureIcon'></div>"+
+        "       <div styles='itemSignatureText' item='signature'></div>"+
+        "     </div>"+
+        "   </div>"+
+        "   <div styles='itemRightBottom'>"+
+        "     <div styles='itemTools'>"+
+        "       <div styles='replyAction' item='replyAction'></div>"+
+        "     </div>"+
+        "   </div>"+
+        " </div>"+
+        "</div>",
+        "items": {
+          "isPrime" : {
+            "value": "",
+            "attr" : "title^^function( d ){ if( d.isCreamSubject ){ return (d.screamSetterName || '').split('@')[0] + this.lp.at + d.screamSetterTime + this.lp.setPrime } }",
+            "show": "function( d ){ return d.isCreamSubject ? true : false }"
+          },
+          "creatorName" : {
+            "value" : "function( d ){ return d.creatorName.split('@')[0]; }",
+            "styles" : "person",
+            "mouseoverStyles": "person_over",
+            "event" : "click^^function(node){ this.app.openPerson( this.data.creatorName ) }"
+          },
+          "subject": {},
+          "reply" : {},
+          "accessed": {},
+          "prime": {},
+          "todaySubject": {},
+          "todayReply": {},
+          "createTime" : {  "value" : "function( d ){ return MWFForum.getDateDiff2( d.createTime || d.updateTime )}" ,
+            "title" : "function( d ){ return d.createTime || d.updateTime }" },
+          "summaryContainer" : {
+            "value": "",
+            "show": "function( d ){ return ( d.summary && d.summary!='' ) ? true : false }"
+          },
+          "signatureContainer" : {
+            "value": "",
+            "show": "function( d ){ return ( d.signature && d.signature!='' ) ? true : false }"
+          },
+          "signature" : {},
+          "summaryLabel" : { "value" : "function(d){ return ( d.summary && d.summary!='' ) ? (this.lp.summary + '：' ): ''  }" },
+          "summary" : {  },
+          "content": { "type" : "html" },
+          "remove" : { "action" : "remove" },
+          "userIcon" : {
+            "value": "",
+            "attr" : "src^^function( d ){ if( d.userIcon ){ return d.userIcon }else{ return '/x_component_ForumDocument/$Main/default/icon/noavatar_big.gif' } }"
+          },
+          //"index" : { "value" : "function(d){ return d.index + 1 }" },
+          "messageAction": {
+            "text" : "sendMessage",
+            "action": "sendMessage",
+            "condition": "function( d ){ return d.creatorName != this.app.userName  && !this.app.access.isAnonymous() && !this.app.inBrowser }",
+            "event" : "mouseover^^function( itemNode, ev ){ itemNode.setStyles( this.css.messageAction_over ) }##mouseout^^function( itemNode, ev ){ itemNode.setStyles( this.css.messageAction ) }"
+          },
+          "replyAction": {
+            "text" : "reply",
+            "condition": "function( d ){ return !d.stopReply && this.explorer.isReplyPublisher }",
+            "action": "createReply",
+            "event" : "mouseover^^function( itemNode, ev ){ itemNode.setStyles( this.css.replyAction_over ) }##mouseout^^function( itemNode, ev ){ itemNode.setStyles( this.css.replyAction ) }"
+          }
+        }
+      }
+    }
+  ]
+}

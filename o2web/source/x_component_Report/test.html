@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script>addZero = function( str, length ){
+        var zero = "";
+        str = str.toString();
+        for( var i=0; i<length; i++ ){
+            zero = zero + "0";
+        }
+        var s = zero + str;
+        return s.substr(s.length - length, length );
+    };
+    alert(addZero( "123", 5 ))
+    alert(addZero( "17", 5 ))
+    </script>
+</head>
+<body>
+
+</body>
+</html>

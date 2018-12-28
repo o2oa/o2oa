@@ -1,0 +1,22 @@
+[
+//  {
+//    "title": "筛选",
+//    "id": "1.1",
+//    "action": "loadFileter",
+//    "icon": "publish.png",
+//    "expand": false,
+//    "positon" : "right",
+//    "styles" : "toolbarItemRightNode",
+//    "sub": []
+//  },
+//  {
+//    "title": "新建",
+//    "id": "1.1",
+//    "action": "createDocument",
+//    "icon": "create.png",
+//    "expand": false,
+//    "position" : "left",
+//    "styles" : "toolbarItemRightNode",
+//    "sub": []
+//  }
+]
