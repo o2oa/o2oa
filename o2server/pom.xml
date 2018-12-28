@@ -389,18 +389,14 @@
 			<version>1.4.197</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.hyperic</groupId>
-			<artifactId>sigar</artifactId>
-			<version>1.6.4</version>
-			<scope>provided</scope>
-		</dependency>
+		
 		<!-- https://mvnrepository.com/artifact/org.mnode.ical4j/ical4j -->
 		<dependency>
 		    <groupId>org.mnode.ical4j</groupId>
 		    <artifactId>ical4j</artifactId>
 		    <version>2.2.0</version>
 		</dependency>
+
 		<dependency>
 			<groupId>CheckPasswordStrength</groupId>
 			<artifactId>CheckPasswordStrength</artifactId>
@@ -617,7 +613,7 @@
 					<artifactId>openjpa-maven-plugin</artifactId>
 					<version>3.0.0</version>
 					<configuration>
-						<includes>**/entity/*.class</includes>
+						<includes>**/entity/**/*.class</includes>
 						<addDefaultConstructor>true</addDefaultConstructor>
 						<enforcePropertyRestrictions>true</enforcePropertyRestrictions>
 					</configuration>
