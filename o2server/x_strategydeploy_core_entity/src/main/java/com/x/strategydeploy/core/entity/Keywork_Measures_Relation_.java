@@ -11,7 +11,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.strategydeploy.core.entity.Keywork_Measures_Relation.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Mon Dec 24 19:05:06 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Thu Dec 27 11:41:31 CST 2018")
 public class Keywork_Measures_Relation_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Keywork_Measures_Relation,String> id;
     public static volatile SingularAttribute<Keywork_Measures_Relation,String> keyworkid;

@@ -80,7 +80,9 @@ public class WebServerTools extends JettySeverTools {
 	}
 
 	private static void updateCenterConfigJson() throws Exception {
-		File file = new File(Config.base(), "servers/webServer/x_desktop/res/config/config.json");
+		File dir = new File(Config.base(), "servers/webServer/x_desktop/res/config");
+		FileUtils.forceMkdir(dir);
+		File file = new File(dir, "config.json");
 		Gson gson = XGsonBuilder.instance();
 		LinkedHashMap<String, Object> map = new LinkedHashMap<>();
 		/** 覆盖掉配置的参数 */
@@ -174,5 +176,4 @@ public class WebServerTools extends JettySeverTools {
 			FileUtils.write(file, buffer.toString(), DefaultCharset.name);
 		}
 	}
-
 }

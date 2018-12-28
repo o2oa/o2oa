@@ -14,6 +14,7 @@ public class Meeting extends ConfigObject {
 		this.host = "127.0.0.1";
 		this.user = "xadmin";
 		this.pass = "";
+		this.anonymousAccessAttachment = false;
 	}
 
 	public static Meeting defaultInstance() {
@@ -34,6 +35,8 @@ public class Meeting extends ConfigObject {
 	private String pass;
 	@FieldDescribe("openMeeting协议")
 	private String httpProtocol;
+	@FieldDescribe("匿名用户是否可以访问附件")
+	private Boolean anonymousAccessAttachment;
 
 	public String getHttpProtocol() {
 		return StringUtils.equalsIgnoreCase("https", this.httpProtocol) ? "https" : "http";
@@ -89,6 +92,14 @@ public class Meeting extends ConfigObject {
 
 	public void setEnable(Boolean enable) {
 		this.enable = enable;
+	}
+
+	public Boolean getAnonymousAccessAttachment() {
+		return anonymousAccessAttachment;
+	}
+
+	public void setAnonymousAccessAttachment(Boolean anonymousAccessAttachment) {
+		this.anonymousAccessAttachment = anonymousAccessAttachment;
 	}
 
 }

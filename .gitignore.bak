@@ -1,0 +1,11 @@
+/o2cloud/
+/.settings/
+.classpath
+.project
+/.settings/
+/target/
+<<<<<<< HEAD
+=======
+*_.java
+>>>>>>> upstream/master
+/.svn/
