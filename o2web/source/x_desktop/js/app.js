@@ -14,7 +14,7 @@ o2.addReady(function(){
     var options = (optionsStr) ? JSON.decode(optionsStr) : null;
     var statusObj = (statusStr) ? JSON.decode(statusStr) : null;
 
-    o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], function(){
+    o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], {"sequence": true}, function(){
         MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
         MWF.loadLP("zh-cn");
 
@@ -66,11 +66,18 @@ o2.addReady(function(){
 
                     var topWindow = window.opener;
                     if (topWindow){
-                        topWindow.layout.desktop.openBrowserStatus = status;
-                        var appName = topWindow.layout.desktop.openBrowserApp || appNames;
-                        var m_status = status;
-                        var option = topWindow.layout.desktop.openBrowserOption || options;
-                        window.location.reload();
+                        try{
+                            topWindow.layout.desktop.openBrowserStatus = status;
+                            var appName = topWindow.layout.desktop.openBrowserApp || appNames;
+                            var m_status = status;
+                            var option = topWindow.layout.desktop.openBrowserOption || options;
+                            window.location.reload();
+                        }catch(e){
+                            statusStr = JSON.encode(status);
+                            var port = uri.get("port");
+                            var url = uri.get("scheme")+"://"+uri.get("host")+((port) ? ":"+port+"/" : "")+uri.get("directory ")+"?app="+appNames+"&status="+statusStr;
+                            window.location = url;
+                        }
                     }else{
                         statusStr = JSON.encode(status);
                         var port = uri.get("port");
@@ -122,10 +129,17 @@ o2.addReady(function(){
                         this.node = $("layout");
                         var topWindow = window.opener;
                         if (topWindow){
-                            var appName = topWindow.layout.desktop.openBrowserApp || appNames;
-                            var m_status = topWindow.layout.desktop.openBrowserStatus || statusObj;
-                            var option = topWindow.layout.desktop.openBrowserOption || options;
-                            layout.openApplication(null, appName, option||{}, m_status);
+                            try{
+                                var appName = topWindow.layout.desktop.openBrowserApp || appNames;
+                                var m_status = topWindow.layout.desktop.openBrowserStatus || statusObj;
+                                var option = topWindow.layout.desktop.openBrowserOption || options;
+                                layout.openApplication(null, appName, option||{}, m_status);
+                            }catch(e){
+                                var appName = appNames;
+                                var m_status = statusObj;
+                                var option = options;
+                                layout.openApplication(null, appName, option||{}, m_status);
+                            }
                             //topWindow.layout.desktop.openBrowserApp = null;
                             //topWindow.layout.desktop.openBrowserStatus = null;
                             //topWindow.layout.desktop.openBrowserOption = null;

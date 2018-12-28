@@ -91,7 +91,7 @@
             MWF.require("MWF.xDesktop.Common", null, false);
             MWF.require("MWF.xAction.RestActions", null, false);
 
-            o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], function(){
+            o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], {"sequence": true}, function(){
                 o2.JSON.get("res/config/config.json", function (config) {
                     layout.config = config;
                     MWF.xDesktop.getServiceAddress(config, function (service, center) {

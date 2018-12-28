@@ -1297,7 +1297,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 
 
 				this.setTitle(this.options.appTitle + "-"+this.formData.json.name);
-				this.taskitem.setText(this.options.appTitle + "-"+this.formData.json.name);
+				if (this.taskitem) this.taskitem.setText(this.options.appTitle + "-"+this.formData.json.name);
 				this.options.appTitle = this.options.appTitle + "-"+this.formData.json.name;
 
                 if (!this.application){
