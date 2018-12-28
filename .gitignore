@@ -4,3 +4,5 @@
 /.settings/
 /target/
 *_.java
+/.svn/
+.gitignore
