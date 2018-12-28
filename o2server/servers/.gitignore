@@ -1,7 +1,6 @@
-/o2cloud/
 .classpath
 .project
 /.settings/
 /target/
-*_.java
-/.svn/
+/applicationServer/
+/centerServer/
