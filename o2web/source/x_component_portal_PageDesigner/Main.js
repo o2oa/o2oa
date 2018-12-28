@@ -1324,7 +1324,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 
 
 				this.setTitle(this.options.appTitle + "-"+this.pageData.json.name);
-				this.taskitem.setText(this.options.appTitle + "-"+this.pageData.json.name);
+				if (this.taskitem) this.taskitem.setText(this.options.appTitle + "-"+this.pageData.json.name);
 				this.options.appTitle = this.options.appTitle + "-"+this.pageData.json.name;
 
                 if (!this.application){

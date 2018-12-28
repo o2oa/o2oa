@@ -6,7 +6,7 @@ o2.widget.ace = {
         if (!window.ace){
             var jsLoaded = false;
             var cssLoaded = false;
-            o2.load("ace", function(){
+            o2.load("ace", {"sequence": true}, function(){
                 //COMMON.AjaxModule.loadDom("ace-tools", function(){
                     if (callback) callback();
                 //}.bind(this))
