@@ -76,7 +76,7 @@ public class ActionView extends BaseAction {
 		} else {
 			if (check) {
 				try {
-					document = documentInfoServiceAdv.get(id);
+					document = documentInfoServiceAdv.view( id, effectivePerson );
 					if ( document == null ) {
 						check = false;
 						Exception exception = new ExceptionDocumentNotExists(id);

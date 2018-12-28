@@ -1,0 +1,10 @@
+{
+  "indexType": "default",
+  "indexPortal": "",
+  "nativeAppList": [],
+  "images": [],
+  "###indexType": "首页展现类型,default是移动端原来的首页,portal是门户.###",
+  "###indexPortal": "门户首页.###",
+  "###nativeAppList": "导航设置###",
+  "###images": "图片设置.###"
+}

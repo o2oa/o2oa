@@ -13,8 +13,8 @@ import com.hankcs.hanlp.model.crf.CRFLexicalAnalyzer;
 import com.x.base.core.project.Context;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.query.service.processing.jaxrs.neural.mlp.GenerateQueue;
-import com.x.query.service.processing.jaxrs.neural.mlp.LearnQueue;
+import com.x.query.service.processing.jaxrs.neural.GenerateQueue;
+import com.x.query.service.processing.jaxrs.neural.LearnQueue;
 import com.x.query.service.processing.schedule.CrawlCms;
 import com.x.query.service.processing.schedule.CrawlWork;
 import com.x.query.service.processing.schedule.CrawlWorkCompleted;
@@ -73,7 +73,7 @@ public class ThisApplication {
 		}
 	}
 
-	private static void setupHanLP(Context context) throws Exception {
+	public static void setupHanLP(Context context) throws Exception {
 		File hamLPProperties = new File(context.path(), "/WEB-INF/classes/hanlp.properties");
 		/*
 		 * 本配置文件中的路径的根目录，根目录+其他路径=完整路径（支持相对路径，请参考：https://github.com/hankcs/HanLP/pull/

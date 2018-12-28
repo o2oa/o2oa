@@ -20,7 +20,6 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 
 import com.x.base.core.project.gson.XGsonBuilder;
 
-
 public class ListTools {
 
 	public static <T> List<T> add(List<T> list, boolean ignoreNull, boolean unique,
@@ -293,12 +292,9 @@ public class ListTools {
 
 	/**
 	 * 
-	 * @param list
-	 *            原始字符串List
-	 * @param includes
-	 *            需要包含的字符串List,可以使用*在结尾作为通配符
-	 * @param excludes
-	 *            需要剔除的字符串List,可以使用*在结尾作为通配符
+	 * @param list     原始字符串List
+	 * @param includes 需要包含的字符串List,可以使用*在结尾作为通配符
+	 * @param excludes 需要剔除的字符串List,可以使用*在结尾作为通配符
 	 * @return
 	 */
 	public static List<String> includesExcludesWildcard(List<String> list, List<String> includes,
@@ -353,13 +349,6 @@ public class ListTools {
 		}
 		return result;
 	}
-
-	// @SuppressWarnings("unchecked")
-	// public static <T> List<T> toList(boolean ignoreNull, boolean unique, T... ts)
-	// {
-	// List<T> list = toList(ts);
-	// return trim(list, ignoreNull, unique);
-	// }
 
 	public static <T> List<T> toList(T... ts) {
 		List<T> list = new ArrayList<>();
@@ -486,7 +475,5 @@ public class ListTools {
 		}
 		return os;
 	}
-
- 
 
 }

@@ -68,10 +68,6 @@ public class ApplicationServerTools extends JettySeverTools {
 				}
 			}
 		}
-		// ArrayBlockingQueue<Runnable> queue = new
-		// ArrayBlockingQueue<Runnable>(1000);
-		// QueuedThreadPool threadPool = new QueuedThreadPool(10, 50, 60000,
-		// queue);
 		QueuedThreadPool threadPool = new QueuedThreadPool();
 		threadPool.setMinThreads(APPLICATIONSERVER_THREAD_POOL_SIZE_MIN);
 		threadPool.setMaxThreads(APPLICATIONSERVER_THREAD_POOL_SIZE_MAX);

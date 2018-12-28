@@ -14,23 +14,10 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.core.entity.Document;
 
-/**
- * 根据ID列表批量修改文档数据操作类
- * @author O2LEE
- *
- */
 public class ActionBatchModifyDataWithIds extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionBatchModifyDataWithIds.class);
 
-	/**
-	 * 根据ID列表批量修改文档数据操作
-	 * @param request
-	 * @param jsonElement  传入的Json
-	 * @param effectivePerson
-	 * @return
-	 * @throws Exception
-	 */
 	protected ActionResult<Wo> execute(HttpServletRequest request, JsonElement jsonElement, EffectivePerson effectivePerson) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Boolean check = true;
@@ -86,11 +73,6 @@ public class ActionBatchModifyDataWithIds extends BaseAction {
 		}
 	}
 	
-	/**
-	 * 数据修改信息结构
-	 * @author O2LEE
-	 *
-	 */
 	public static class WiDataChange{
 		
 		@FieldDescribe( "数据路径或者属性名." )

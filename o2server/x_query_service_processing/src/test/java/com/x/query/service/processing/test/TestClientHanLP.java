@@ -6,6 +6,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import com.hankcs.hanlp.HanLP;
+import com.hankcs.hanlp.dictionary.CoreSynonymDictionary;
 import com.x.query.service.processing.helper.ExtractTextHelper;
 import com.x.query.service.processing.helper.LanguageProcessingHelper;
 
@@ -21,5 +22,10 @@ public class TestClientHanLP {
 		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!");
 		System.out.println(HanLP.extractKeyword(text, 30));
 		System.out.println(HanLP.extractWords(text, 30));
+	}
+
+	@Test
+	public void test3() {
+		System.out.println(CoreSynonymDictionary.similarity("西红柿", "番茄"));
 	}
 }

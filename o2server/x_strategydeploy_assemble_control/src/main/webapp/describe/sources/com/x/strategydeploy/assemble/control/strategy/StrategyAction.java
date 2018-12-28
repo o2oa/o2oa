@@ -17,6 +17,8 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -567,22 +569,27 @@ public class StrategyAction extends StandardJaxrsAction {
 	@Path("relationlistbystrategyyearandmeasuresdept")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void relationlistbyStrategyyearAndMeasuresDept(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, @JaxrsParameterDescribe("Json信息") JsonElement jsonElement) {
+	public void relationlistbyStrategyyearAndMeasuresDept(@Suspended final AsyncResponse asyncResponse, 
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("Json信息") JsonElement jsonElement) {
 		ActionResult<List<ActionListIncludeMeasuresByStrategyYearAndMeasuresDept.WoIncludeMeasures>> result = new ActionResult<>();
 		WiAppendMeasuresDept wrapIn = null;
-		EffectivePerson effectivePerson = this.effectivePerson(request);
 		boolean ispass = true;
 
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
+		if( jsonElement == null ) {
+			System.out.println(">>>>>>>>>>>>>>>>>>>>jsonElement is null !!!" );
+		}else {
+			System.out.println(">>>>>>>>>>>>>>>>>>>>jsonElement:" + jsonElement.toString());
+		}
+		
+		try {
 			wrapIn = this.convertToWrapIn(jsonElement, WiAppendMeasuresDept.class);
-			//result = new ActionListIncludeMeasures().execute(wrapIn);
 		} catch (Exception e) {
 			logger.warn("strategydeployextra iswork a error!");
 			logger.error(e);
 			result.error(e);
 		}
-		if (null == wrapIn.getStrategydeployyear() || wrapIn.getStrategydeployyear().isEmpty()) {
+		
+		if ( wrapIn == null || StringUtils.isEmpty(wrapIn.getStrategydeployyear())) {
 			Exception e = new Exception("strategydeployyear can not be blank");
 			result.error(e);
 			ispass = false;
