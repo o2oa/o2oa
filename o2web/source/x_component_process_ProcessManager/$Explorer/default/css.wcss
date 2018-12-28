@@ -1,0 +1,391 @@
+{
+	"toolbarNode": {
+		"overflow": "hidden",
+		"height": "80px",
+		"border-bottom-left-radius": "0px",
+		"border-bottom-right-radius": "0px",
+		"border-bottom": "1px solid #314e69",
+		"border-right": "1px solid #314e69",
+		"border-left": "1px solid #314e69",
+		"margin-right": "0px",
+		"margin-left": "0px",
+		"background-color": "#4c6b87",
+		"position": "static"
+	},
+	"iconElementNode": {
+        "float": "left",
+        "width": "80px",
+        "height": "80px",
+        "background-position": "center center",
+        "background-repeat": "no-repeat",
+        "cursor": "pointer"
+
+    },
+	"createElementNode": {
+		"float": "left",
+		"width": "80px",
+		"height": "80px",
+		"background": "url("+"/x_component_process_ProcessManager/$Explorer/default/icon/createProcess.png) no-repeat center center",
+		"cursor": "pointer",
+		"border-right": "1px solid #EEE",
+		"border-left": "0px solid #EEE"
+	},
+	"titleElementNode": {
+        "float": "left",
+        "width": "180px",
+        "height": "80px",
+        "line-height": "80px",
+        "color": "#FFF",
+        "font-weight": "bold",
+        "font-family": "微软雅黑",
+        "font-size": "18px",
+        "margin-left": "5px"
+	},
+	"searchElementNode": {
+		"margin-left": "362px",
+		"overflow": "hidden"
+	},
+	"searchElementButtonNode": {
+		"float": "right",
+		"width": "80px",
+		"height": "80px",
+		"margin-right": "40px",
+		"background": "url("+"/x_component_process_ProcessManager/$Explorer/default/categoryIcon/searchCategory.png) no-repeat center center",
+		"cursor": "pointer"
+	},
+	"searchElementInputAreaNode": {
+		"margin-right": "120px",
+		"text-align": "right"
+	},
+	"searchElementInputBoxNode": {
+		"margin-top": "25px",
+		"width": "80%",
+		"max-width": "500px",
+		"height": "30px",
+		"border-radius": "5px",
+		"background-color": "#EEE",
+		"float": "right",
+		"text-align": "center"
+	},
+	"searchElementInputNode": {
+		"width": "96%",
+		"height": "28px",
+		"border": "0px",
+		"font-family": "微软雅黑",
+		"font-size": "14px",
+		"color": "#999",
+		"background": "transparent",
+		"-webkit-user-select": "auto",
+		"-moz-user-select": "auto"
+	},
+    "elementContentNode": {
+        "overflow": "hidden",
+        "position": "static"
+    },
+    "elementContentListNode": {
+        "overflow": "hidden",
+        "padding-bottom": "20px"
+    },
+    "noElementNode": {
+        "text-align": "center",
+        "padding": "20px",
+        "height": "60px",
+        "line-height": "60px",
+        "margin-top": "10px",
+        "margin-left": "0px",
+        "color": "#888",
+        "cursor": "pointer",
+        "font-size": "16px"
+    },
+
+
+	"deleteItemsAction": {
+		"width": "140px",
+		"height": "30px",
+		"cursor": "pointer",
+		"position": "absolute",
+		"background-color": "#c04444",
+		"border": "1px solid #FFF",
+		"line-height": "30px",
+		"font-size": "14px",
+		"font-family": "微软雅黑",
+		"color": "#FFF",
+		"text-align": "center",
+		"border-radius": "0px",
+		"opacity": 0,
+		"box-shadow": "0px 2px 5px #666"
+	},
+	
+	"noItemNoticeNode": {
+		"text-align": "left",
+		"padding": "20px",
+		"height": "60px",
+		"line-height": "60px",
+		"margin-top": "10px",
+		"margin-left": "0px",
+		"color": "#888",
+		"cursor": "pointer",
+		"font-size": "16px"
+	},
+	"itemNode": {
+		"width": "240px",
+		"padding": "10px",
+		"height": "60px",
+		"margin-top": "20px",
+		"margin-left": "20px",
+		"border": "1px solid #CCC",
+		"float": "left",
+		"background-color": "#FFF",
+		"cursor": "default"
+	},
+	"itemNode_selected": {
+	    "background-color": "#b7d0e6",
+	},
+	"itemIconNode": {
+		"padding": "0px",
+		"float": "left",
+		"width": "40px",
+		"height": "60px",
+		"cursor": "pointer"
+	},
+	"itemTextTitleNode": {
+		"margin-left": "50px",
+		"margin-right": "20px",
+		"height": "20px",
+		"line-height": "20px",
+		"font-size": "14px",
+		"font-weight": "bold",
+		"overflow": "hidden",
+		"cursor": "pointer",
+		"color": "#333"
+	},
+	"deleteActionNode": {
+		"padding": "0px",
+		"float": "right",
+		"width": "16px",
+		"height": "16px",
+		"opacity": 0,
+		"cursor": "pointer",
+		"background": "url("+"/x_component_process_ProcessManager/$Explorer/default/processIcon/deleteProcess.png) no-repeat center center"
+	},
+	"saveasActionNode": {
+	    "padding": "0px",
+        "float": "right",
+        "width": "16px",
+        "height": "16px",
+        "margin-right": "5px",
+        "opacity": 0,
+        "cursor": "pointer",
+        "background": "url("+"/x_component_process_ProcessManager/$Explorer/default/processIcon/copy.png) no-repeat center center"
+	},
+	"itemTextDescriptionNode": {
+	    "margin-left": "50px",
+    	"margin-right": "20px",
+		"font-size": "12px",
+		"line-height": "20px",
+		"height": "20px",
+		"color": "#777",
+		"overflow": "hidden",
+		"white-space": "normal"
+	},
+	"itemTextDateNode": {
+	    "margin-left": "50px",
+	    "font-size": "12px",
+        "line-height": "20px",
+        "height": "20px",
+        "color": "#777",
+        "text-align": "right"
+	},
+	"itemNewNode": {
+        "width": "47px",
+        "height": "47px",
+        "position": "relative",
+        "top": "-70px",
+        "left": "-10px",
+        "background": "url("+"/x_component_process_ProcessManager/$Explorer/default/icon/new.png) no-repeat right"
+    },
+
+    "createTemplateMaskNode": {
+        "width": "100%",
+        "height": "100%",
+        "background-color": "#666",
+        "position": "absolute",
+        "top": "0px",
+        "left": "0px",
+        "opacity": 0.4,
+        "z-index":100
+    },
+    "createTemplateAreaNode": {
+        "width": "688px",
+        "height": "226",
+        "border": "3px solid #999",
+        "border-radius": "12px",
+        "box-shadow": "0px 0px 10px #999",
+        "position": "absolute",
+        "top": "20%",
+        "left": "10%",
+        "z-index": "30000",
+        "background-color": "#FFF",
+        "opacity": 0
+    },
+    "createFormTemplateAreaNode": {
+        "width": "90%",
+        "height": "90%",
+        "border": "3px solid #999",
+        "border-radius": "12px",
+        "box-shadow": "0px 0px 10px #999",
+        "position": "absolute",
+        "top": "0px",
+        "left": "0px",
+        "z-index": "200",
+        "background-color": "#F7F7F7",
+        "opacity": 0
+    },
+    "createTemplateFormTitleNode": {
+        "height": "50px",
+        "line-height": "50px",
+        "padding": "0px 30px",
+        "color": "#666666",
+        "font-size": "28px",
+        "margin-top": "10px",
+        "font-weight": "bold"
+    },
+    "createTemplateFormCategoryNode": {
+        "margin-top": "10px",
+        "padding": "0px 30px",
+        "overflow": "hidden",
+    },
+    "createTemplateFormCategoryTitleNode": {
+        "float": "left",
+        "height": "24px",
+        "line-height": "24px",
+        "font-size": "16px",
+        "color": "#666",
+        "font-weight": "bold",
+        "margin-right": "10px"
+    },
+    "createTemplateFormCategoryItemNode":{
+        "float": "left",
+        "height": "24px",
+        "line-height": "24px",
+        "font-size": "16px",
+        "color": "#666",
+        "font-weight": "bold",
+        "margin-right": "10px",
+        "cursor": "pointer"
+    },
+    "createTemplateFormCategoryItemNode_current": {
+        "color": "#0000FF",
+    },
+    "createTemplateFormContentNode": {
+        "overflow": "auto"
+    },
+    "formTemplateNode": {
+        "margin-top": "30px",
+        "margin-left": "30px",
+        "float": "left",
+        "width": "160px",
+        "height": "180px",
+        "cursor": "pointer",
+        "border": "2px solid #F7F7F7",
+        //"border-radius": "10px",
+        "box-shadow": "0px 0px 0px #999",
+        "background-color": "#F7F7F7"
+    },
+    "formTemplateNode_over": {
+        "border": "2px solid #bbb",
+        "box-shadow": "0px 0px 5px #999",
+        "background-color": "#bbb"
+    },
+    "formTemplateNode_down": {
+        "border-top": "2px solid #bbb",
+        "border-left": "2px solid #bbb",
+        "border-bottom": "2px solid #F7F7F7",
+        "border-right": "2px solid #F7F7F7",
+        "box-shadow": "0px 0px 0px #999"
+    },
+    "formTemplateIconNode": {
+        "height": "135px",
+        "width": "150px",
+        "margin": "5px auto 0px auto"
+    },
+    "formTemplatePreviewNode": {
+        "height": "135px",
+        "width": "150px",
+        "margin": "5px auto 0px auto",
+        "position": "relative",
+        "overflow": "hidden"
+    },
+    "formTemplateActionNode":{
+        "width": "16px",
+        "height": "16px",
+        "position": "absolute",
+        "top": "0px",
+        "right": "0px",
+        "background": "url("+"/x_component_process_ProcessManager/$Explorer/default/formIcon/delete.png) no-repeat center center",
+        "display": "none"
+    },
+
+    "formTemplateTitleNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "text-align": "center",
+        "font-size": "14px"
+    },
+    "formTemplateIconImgNode": {
+        "width": "100%",
+        "height": "100%",
+        //"border-radius": "10px"
+    },
+
+
+
+    "createTemplateScrollNode": {
+        "margin-right": "0px",
+        "height": "100%",
+        "overflow": "hidden"
+    },
+    "createTemplateContentNode": {
+        "overflow": "hidden",
+        "padding": "10px 40px 40px 10px"
+    },
+    "templateNode": {
+        "margin-top": "30px",
+        "margin-left": "30px",
+        "float": "left",
+        "width": "120px",
+        "height": "140px",
+        "cursor": "pointer",
+        "border": "2px solid #FFF",
+        "border-radius": "10px",
+        "box-shadow": "0px 0px 0px #999",
+        "background-color": "#FFF"
+    },
+    "templateNode_over": {
+        "border": "2px solid #999",
+        "box-shadow": "0px 0px 5px #999"
+    },
+    "templateNode_down": {
+        "border-top": "2px solid #999",
+        "border-left": "2px solid #999",
+        "border-bottom": "2px solid #FFF",
+        "border-right": "2px solid #FFF",
+        "box-shadow": "0px 0px 0px #999"
+    },
+
+
+    "templateIconNode": {
+        "height": "110px"
+    },
+    "templateTitleNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "text-align": "center",
+        "font-size": "14px"
+    },
+    "templateIconImgNode": {
+        "width": "100%",
+        "height": "100%",
+        "border-radius": "10px"
+    }
+}

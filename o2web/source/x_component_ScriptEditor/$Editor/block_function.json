@@ -1,0 +1,73 @@
+[
+  {
+    "name": "function.eval",
+    "contents": [
+      "执行语句",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "function.Eval"
+  },
+  {
+    "name": "function.isNaN",
+    "contents": [
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "是否为NaN"
+    ],
+    "class": "function.IsNaN"
+  },
+  {
+    "name": "function.parseFloat",
+    "contents": [
+      "将",
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "转换为浮点数"
+    ],
+    "class": "function.ParseFloat"
+  },
+  {
+    "name": "function.parseInt",
+    "contents": [
+      "将",
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "转换为整数"
+    ],
+    "class": "function.ParseInt"
+  },
+  {
+    "name": "function.encodeURI",
+    "contents": [
+      "对",
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "进行URI编码"
+    ],
+    "class": "function.EncodeURI"
+  },
+  {
+    "name": "function.encodeURIComponent",
+    "contents": [
+      "对",
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "进行URI组件编码"
+    ],
+    "class": "function.EncodeURIComponent"
+  },
+  {
+    "name": "function.decodeURI",
+    "contents": [
+      "对",
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "进行URI解码"
+    ],
+    "class": "function.DecodeURI"
+  },
+  {
+    "name": "function.decodeURIComponent",
+    "contents": [
+      "对",
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "进行URI组件解码"
+    ],
+    "class": "function.DecodeURIComponent"
+  }
+
+]

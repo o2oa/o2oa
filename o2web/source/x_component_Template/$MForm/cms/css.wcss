@@ -1,0 +1,104 @@
+{
+  "inputText": {
+    "width": "95%",
+    "border":"1px solid #999",
+    "background-color":"#FFF",
+    "height": "24px",
+    "border-radius": "3px",
+    "box-shadow": "0px 0px 6px #CCC"
+  },
+  "inputTime" : {
+    "width": "95%",
+    "border":"1px solid #999",
+    "background-color":"#FFF",
+    "height": "24px",
+    "border-radius": "3px",
+    "box-shadow": "0px 0px 6px #CCC",
+    "background" : "url(/x_component_Template/$MForm/default/icon/calendar.png) 98% center no-repeat"
+  },
+  "inputPerson" : {
+    "width": "95%",
+    "border":"1px solid #999",
+    "background-color":"#FFF",
+    "height": "24px",
+    "border-radius": "3px",
+    "box-shadow": "0px 0px 6px #CCC",
+    "background" : "url(/x_component_Template/$MForm/default/icon/selectperson.png) 98% center no-repeat"
+  },
+  "inputTextarea" : {
+    "width": "95%",
+    "border":"1px solid #999",
+    "background-color":"#FFF",
+    "border-radius": "3px",
+    "box-shadow": "0px 0px 6px #CCC",
+    "height": "40px"
+  },
+  "inputCheckbox" : {
+    "float" : "left",
+    "font-size" : "14px",
+    "cursor" : "pointer"
+  },
+  "inputSelect" : {
+    "width": "99%",
+    "border":"1px solid #ccc",
+    "background-color":"#FFF",
+    "height": "26px"
+  },
+  "inputSelectUnformatWidth" : {
+    "margin-right":"5px",
+    "border":"1px solid #ccc",
+    "background-color":"#FFF",
+    "height": "24px"
+  },
+  "inputButton" : {
+    "float": "left",
+    "background-color": "#FFF",
+    "padding": "4px 14px",
+    "border": "1px solid #999",
+    "border-radius": "3px",
+    "font-size": "14px",
+    "color": "#666",
+    "cursor": "pointer"
+  },
+
+
+  "formTable" : {
+    "margin-top" : "10px"
+  },
+  "formTableHead" : {
+    "height": "50px",
+    "line-height": "50px",
+    "text-align": "center",
+    "min-width": "80px",
+    "font-size":"20px",
+    "font-weight": "bold"
+  },
+  "formTableTitle" : {
+    "font-size" : "16px",
+    "height": "40",
+    //"line-height": "30px",
+    "text-align": "left",
+    "min-width" : "60px",
+    "width" : "20px"
+  },
+  "formTableValue" : {
+    "min-height": "40px",
+    "text-align": "left"
+  },
+  "formTableTitleDiv" : {
+    "font-weight" : "bold"
+  },
+  "formTableValueDiv" : {
+    "min-height" : "40px",
+    "line-height" : "22px"
+  },
+  "formTableInlineValueDiv" : {
+    "float" : "left",
+    "margin-right" : "10px"
+  },
+  "formItemSpan" : {
+//    "padding-bottom" : "10px",
+//    "padding-right" : "10px"
+  }
+}
+

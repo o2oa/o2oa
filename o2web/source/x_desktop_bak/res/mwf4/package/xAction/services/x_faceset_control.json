@@ -1,0 +1,14 @@
+{
+  "detect": {"uri":"/face/detect/{name}/{id}", "method": "POST", "enctype": "formData"},
+  "addface": {"uri":"/faceset/addface/{faceset}", "method": "POST"},
+  "removeface": {"uri":"/faceset/removeface/{faceset}", "method": "POST"},
+  "search": {"uri":"/search/{faceset}", "method": "POST", "enctype": "formData"},
+  "compare": {"uri":"/compare", "method": "POST"},
+  "analyze": {"uri":"/face/analyze", "method": "POST"},
+  "detectattr": {"uri":"/face/detectattr/{attr}", "method": "POST", "enctype": "formData"},
+  "getFaceSet": {"uri":"/faceset/getFaceSet/{faceset}"},
+  "createFaceSet": {"uri":"/faceset/createfaceset/{faceset}"},
+
+
+  "clazz": "x_faceset_control"
+}

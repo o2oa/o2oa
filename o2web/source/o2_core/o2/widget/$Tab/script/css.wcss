@@ -1,0 +1,98 @@
+{
+	"tabNodeContainer": {
+		"height": "30px",
+		"overflow": "hidden",
+		"background": "#eeeeee",
+		"border-top": "1px solid #CCC",
+		"border-bottom": "1px solid #CCC"
+	},
+	"contentNodeContainer": {
+		"overflow": "hidden"
+	},
+	"contentNodeArea": {
+		"overflow": "hidden",
+		"display": "none",
+		"opacity": 0
+	},
+	"tabNode": {
+		"position": "static",
+		"margin-left": "0px",
+		"margin-right": "-1px",
+		"margin-top": "1px",
+		"float": "left",
+		"height": "28px",
+		"cursor": "pointer",
+		"background": "url("+o2.session.path+"/widget/$Tab/script/tabAreaBg.gif) center center",
+
+		"border": "1px solid #CCC",
+		"border-bottom": "0px"
+	},
+	"tabTextNode": {
+		"font-size": "12px",
+		"line-height": "28px",
+		"text-align": "center",
+		"color": "#333333",
+		"margin-right": "8px",
+		"margin-top": "0px",
+		"font-weight": "bold",
+		"margin-left": "8px",
+		"display": "inline"
+	},
+	"tabCloseNode": {
+		"height": "28px",
+		"width": "16px",
+		"background": "url("+o2.session.path+"/widget/$Tab/script/close_gray.png) left center",
+		"background-repeat": "no-repeat" ,
+		"float": "right"
+	},
+	"tabNodeCurrent": {
+		"position": "static",
+		"margin-left": "0px",
+		"margin-right": "-1px",
+		"margin-top": "1px",
+		"float": "left",
+		"height": "29px",
+		"background": "#FFF",
+		
+		"border": "1px solid #CCC",
+		"border-bottom": "0px solid #CCC"
+	},
+	"tabTextNodeCurrent": {
+		"font-size": "12px",
+		"line-height": "29px",
+		"text-align": "center",
+		"color": "#bf6364",
+		"margin-right": "8px",
+		"margin-left": "8px",
+		"font-weight": "bold",
+		"margin-top": "0px",
+		"float": "left",
+		"display": "inline"
+	},
+
+	"tabCloseNodeCurrent": {
+		"height": "28px",
+		"width": "16px",
+		"background": "url("+o2.session.path+"/widget/$Tab/script/close.png) left center",
+		"background-repeat": "no-repeat",
+		"float": "left"
+	},
+	"tabNodeContainerRight": {
+	    "width": "10px",
+	    "height": "22px",
+	    "margin-top": "3px",
+	    "border": "1px solid #eeeeee",
+	    "margin-right": "3px",
+	    "float": "right",
+	    "background": "url("+o2.session.path+"/widget/$Tab/script/down.png) center center no-repeat",
+        "cursor": "pointer"
+	},
+	"tabNodeContainerRight_over": {
+	    "border": "1px solid #cccccc",
+	},
+
+	"tabNodeContainerLeft": {
+	    "margin-right": "15px",
+        "height": "30px"
+	}
+}

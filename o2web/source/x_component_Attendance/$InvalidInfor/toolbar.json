@@ -1,0 +1,12 @@
+[
+  {
+    "title": "删除选中文件",
+    "id": "1.1",
+    "action": "removeSelectedDocument",
+    "icon": "delete.png",
+    "expand": false,
+    "position" : "left",
+    "styles" : "toolbarItemNode",
+    "sub": []
+  }
+]

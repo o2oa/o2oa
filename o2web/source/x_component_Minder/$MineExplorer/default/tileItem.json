@@ -1,0 +1,39 @@
+{
+  "viewSetting": {
+    "html": "<div styles='tileListNode'></div>"
+  },
+  "headSetting": {
+    "html": "<div styles='tileToolbar'><div styles='tileSelectAllNode' item='selectAll'>全选</div></div>"
+  },
+  "documentSetting": {
+    "html": "<div styles='tileNode'></div>",
+    "mouseoverStyles": "tileNode_over",
+    "action": "open",
+    "event" : "mouseover^^function( documentNode, ev ){ this.mouseoverDocument() }##mouseout^^function( documentNode, ev ){ this.mouseoutDocument() }"
+  },
+  "items": [
+    {
+      "name": "work",
+      "content": {
+        "html": "<div styles='tileItemNode'>"  +
+        "    <div styles='tileItemSelectNode' item='select'></div>"+
+        "    <div styles='tileItemIconNode'><img src='' item='thumbnail' style='max-width:156px;max-height:156px;'/></div>" +
+        "    <div item='name' styles='tileItemTitleNode'></div>"+
+        "   <div item='sharedIcon' styles='tileSharedIcon' style=''></div>"+
+        "</div>",
+        "items": {
+          "name": {
+            "value" : "function(d){ return d.name.length > 50 ? d.name.substr(0,50)+'...' : d.name }"
+          },
+          "thumbnail" : {
+          },
+          "sharedIcon" : {
+            "attr" : "title^^已分享",
+            "show" : "function(d){ return d.shared }",
+            "event" : "click^^function(d, ev){ this.showShareRecord(ev) }"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+    "itemNode": {
+        "background-color": "#3d414a",
+        "border-top": "0px solid #208fa3",
+        "height": "76px",
+        "position": "static",
+        "margin-bottom": "8px"
+    },
+    "itemIconNode": {
+        "width": "40px",
+        "height": "76px",
+        "float": "left",
+        "background-position": "center center",
+        "background-repeat": "no-repeat",
+        "background-image": "url("+"/x_component_process_TaskCenter/$TaskWidget/default/task2.png)"
+    },
+    "itemActionAreaNode": {
+        "width": "30px",
+        "height": "76px",
+        "float": "right",
+        "background-position": "center center",
+        "background-repeat": "no-repeat",
+        "background-image": "url("+"/x_component_process_TaskCenter/$TaskWidget/default/go.png)"
+    },
+    "itemContentNode": {
+        "height": "76px",
+        "margin": "0px 38px 0px 48px",
+        "overflow": "hidden",
+        "cursor": "pointer"
+    },
+    "itemInforTopNode": {
+        "margin-top": "6px",
+        "height": "18px",
+        "overflow": "hidden"
+    },
+    "itemInforTopActivityNode": {
+        "float": "left",
+        "line-height": "18px",
+        "font-size": "12px",
+        "color": "#999",
+        "width": "49%"
+    },
+    "itemInforTopTimeNode": {
+        "float": "right",
+        "line-height": "18px",
+        "font-size": "12px",
+        "color": "#999",
+        "width": "49%",
+        "text-align": "right"
+    },
+    "itemTitleNode": {
+        "font-size": "13px",
+        "font-weight": "bold",
+        "height": "28px",
+        "line-height": "28px",
+        "color": "#FFF",
+        "overflow": "hidden",
+        "white-space": "nowrap",
+        "word-break": "keep-all",
+        "text-overflow": "ellipsis"
+    },
+    "itemInforBottomNode": {
+        "height": "18px",
+        "line-height": "18px",
+        "font-size": "12px",
+        "color": "#999",
+        "text-align": "left",
+        "margin-bottom": "6px"
+    }
+
+}
+
+
+

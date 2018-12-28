@@ -1,0 +1,76 @@
+[
+  {
+    "title" : "部门",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "function(d){ return d.unitName.split('@')[0] }",
+    "name" : "unitName",
+    "width" : "17%"
+  },
+  {
+    "title" : "员工姓名",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "function(d){ return d.employeeName.split('@')[0] }",
+    "name" : "employeeName",
+    "width" : "13.5%"
+  },
+  {
+    "title" : "员工编号",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "employeeNumber",
+    "name" : "employeeNumber",
+    "width" : "13.5%"
+  },
+
+  {
+    "title" : "休假类型",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "leaveType",
+    "name" : "leaveType",
+    "width" : "13.5%"
+  },
+
+  {
+    "title" : "开始时间",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "startTime",
+    "name" : "startTime",
+    "width" : "13.5%"
+  },
+  {
+    "title" : "结束时间",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "endTime",
+    "name" : "endTime",
+    "width" : "13.5%"
+  },
+  {
+    "title" : "休假天数",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "leaveDayNumber",
+    "name" : "leaveDayNumber",
+    "width" : "10%"
+  }//,
+//  {
+//    "access" : "admin",
+//    "title" : "操作",
+//    "headStyles" : "normalThNode",
+//    "contentStyles" : "normalTdNode",
+//    "item" : "actions",
+//    "name" : "actions",
+//    "width" : "5%",
+//    "sub" : [{
+//      "title" : "删除文件",
+//      "action" : "remove",
+//      "styles" : "actionDeleteNode",
+//      "overStyles" : "actionDeleteNode_over",
+//      "downStyles" : "actionDeleteNode_down"
+//    }]
+//  }
+]

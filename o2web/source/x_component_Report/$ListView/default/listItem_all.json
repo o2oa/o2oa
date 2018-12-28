@@ -1,0 +1,185 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='listViewTable'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='listViewTableTr'></tr>",
+    "event" : "mouseover^^function( documentNode, ev ){ this.mouseoverDocument() }##mouseout^^function( documentNode, ev ){ this.mouseoutDocument() }",
+    "action": "open"
+  },
+  "items": [
+    //    {
+    //      "name": "$checkbox",
+    //      "head": {
+    //        "html": "<th styles='normalThNode'></th>",
+    //        "width": "5%"
+    //      },
+    //      "content": {
+    //        "html": "<td styles='normalTdNode'></td>",
+    //        //"condition": "function(d){ return d.status==0 ? true : false }",
+    //        "value": ""
+    //      }
+    //    },
+    {
+      "name": "title",
+      "defaultSort" : "desc",
+      "sort" : "asc",
+      "head": {
+        "html": "<th styles='listViewTableTh' lable='subject'></th>",
+        "width": "48%"
+      },
+      "content": {
+        "html": "<td styles='listViewTableTd' name='title' item='title'></td>",
+        "items": {
+          "title" : {}
+        }
+      }
+    },
+    {
+      "name": "unitManager",
+      //"sort" : "asc",
+      "head": {
+        "html": "<th styles='listViewTableTh'>部主管</th>",
+        "width": "10%"
+      },
+      "content": {
+        "html": "<td styles='listViewTableTd' item='unitManager'></td>",
+        "items": {
+          "unitManager" : {
+            "value" : "function(d){ return d.unitManager ? d.unitManager.split('@')[0] : '' }"
+          }
+        }
+      }
+    },
+    {
+      "name": "targetUnit",
+      //"sort" : "asc",
+      "head": {
+        "html": "<th styles='listViewTableTh' lable='targetUnit'></th>",
+        "width": "10%"
+      },
+      "content": {
+        "html": "<td styles='listViewTableTd' item='targetUnit'></td>",
+        "items": {
+          "targetUnit" : {
+            "value" : "function(d){ return d.targetUnit ? d.targetUnit.split('@')[0] : '' }"
+          }
+        }
+      }
+    },
+
+    {
+      "name": "lastSubmitTime",
+      "head": {
+        "html": "<th styles='listViewTableTh'>最近提交时间</th>",
+        "width": "14%"
+      },
+      "content": {
+        "html": "<td styles='listViewTableTd' item='lastSubmitTime'></td>",
+        "items": {
+          "lastSubmitTime" : {
+
+          }
+        }
+      }
+    },
+//    {
+//      "name": "reportObjType",
+//      "head": {
+//        "html": "<th styles='listViewTableTh' lable='reportObjType'></th>",
+//        "width": "8%"
+//      },
+//      "content": {
+//        "html": "<td styles='listViewTableTd' item='reportObjType'></td>",
+//        "items": {
+//          "reportObjType" : {
+//            "value" : "function(d){ return this.app.lp[d.reportObjType] }"
+//          }
+//        }
+//      }
+//    },
+//    {
+//      "name": "reportType",
+//      "head": {
+//        "html": "<th styles='listViewTableTh' lable='reportType'></th>",
+//        "width": "8%"
+//      },
+//      "content": {
+//        "html": "<td styles='listViewTableTd' item='reportType'></td>",
+//        "items": {
+//          "reportType" : {
+//            "value" : "function(d){ return this.app.lp[d.reportType] }"
+//          }
+//        }
+//      }
+//    },
+
+//    {
+//      "name": "currentPersonName",
+//      "head": {
+//        "html": "<th styles='listViewTableTh' lable='currentPersonName'></th>",
+//        "width": "8%"
+//      },
+//      "content": {
+//        "html": "<td styles='listViewTableTd' item='currentPersonName'></td>",
+//        "items": {
+//          "currentPersonName" : {
+//            "value" : "function(d){ return d.currentPersonName ? d.currentPersonName.split('@')[0] : '' }"
+//          }
+//        }
+//      }
+//    },
+
+    {
+      "name": "activityName",
+      "head": {
+        "html": "<th styles='listViewTableTh' lable='activityName'></th>",
+        "width": "10%"
+      },
+      "content": {
+        "html": "<td styles='listViewTableTd' item='activityName'></td>",
+        "items": {
+          "activityName" : {
+            "value" : "function(d){ return d.reportStatus || d.activityName}" 
+          }
+        }
+      }
+    }
+    //    {
+    //      "head": {
+    //        "html": "<th styles='listViewTableTh' lable='action'></th>",
+    //        "width": "8%"
+    //      },
+    //      "content": {
+    //        "html": "<td styles='listViewTableTd'>" +
+    //        " <span styles='documentActionNode' item='remove'></span>" +
+    //        " <span styles='documentActionNode' item='edit'></span>" +
+    //        "</td>",
+    //        "items": {
+    //          "edit": {
+    //            //"access": "admin",
+    //            "title": "edit",
+    //            //"text": "edit",
+    //            "action": "edit",
+    //            "condition": "function( d ){ return this.app.isAdmin || ( this.app.userName == d.targetPerson  ) }",
+    //            "styles": "actionEditNode",
+    //            "mouseoverStyles": "actionEditNode_over",
+    //            "mousedownStyles": "actionEditNode_over"
+    //          },
+    //          "remove": {
+    //            "title": "remove",
+    //            //"text": "remove",
+    //            "action": "remove",
+    //            "condition": "function( d ){ return this.app.isAdmin || (this.app.userName == d.targetPerson ) }",
+    //            "styles": "actionDeleteNode",
+    //            "mouseoverStyles": "actionDeleteNode_over",
+    //            "mousedownStyles": "actionDeleteNode_down"
+    //          }
+    //        }
+    //      }
+    //    }
+  ]
+}

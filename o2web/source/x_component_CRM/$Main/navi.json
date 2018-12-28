@@ -1,0 +1,69 @@
+[
+  {
+    "title" : "我的工作台",
+    "type":"menu",
+    "icon" :"default/icons/workBench.png",
+    "iconFill":"default/icons/workBench-fill.png",
+    "action" : "openHomePage",
+    "items":[
+        {
+          "title" : "首页",
+          "type":"item",
+          "icon" :"default/icons/home.png",
+          "iconFill":"default/icons/home-fill.png",
+          "action" : "homePage"
+        },
+        {
+          "title" : "信息",
+          "type":"item",
+          "icon" :"default/icons/infor.png",
+          "iconFill":"default/icons/infor-fill.png",
+          "action" : "message"
+        },
+        {
+          "title" : "线索",
+          "type":"item",
+          "icon" :"default/icons/clue.png",
+          "iconFill":"default/icons/clue-fill.png",
+          "action" : "clue"
+        },
+        {
+          "title" : "客户",
+          "type":"item",
+          "icon" :"default/icons/customer.png",
+          "iconFill":"default/icons/customer-fill.png",
+          "action" : "customer"
+        },
+        {
+          "title" : "联系人",
+          "type":"item",
+          "icon" :"default/icons/contact.png",
+          "iconFill":"default/icons/contact-fill.png",
+          "action" : "contact"
+        },
+        {
+          "title" : "商机",
+          "type":"item",
+          "icon" :"default/icons/chance.png",
+          "iconFill":"default/icons/chance-fill.png",
+          "action" : "chance"
+        }
+    ]
+  },
+  {
+    "title":"数据分析",
+    "type":"menu",
+    "icon" :"default/icons/home.png",
+    "iconFill":"default/icons/home-fill.png",
+    "action" : "openHomePage",
+    "items":[
+      {
+        "title" : "报表",
+        "type":"item",
+        "icon" :"default/icons/home.png",
+        "iconFill":"default/icons/home-fill.png",
+        "action" : "openHomePage"
+      }
+    ]
+  }
+]

@@ -1,0 +1,36 @@
+{
+	"from": {
+		"height": "0px",
+		"position": "absolute",
+		"background-color": "#fff",
+		"z-index": "20000",
+		"overflow": "hidden",
+		"padding": "3px"
+	},
+	"to": {
+		"background-color": "#fff",
+		"z-index": "20000",
+		"font-size": "12px",
+		"position": "absolute",
+		"overflow": "hidden",
+		"padding": "3px"
+	},
+	"mark": {
+		"height": "0",
+		"width": "0",
+		"opacity": 0.3,
+		"position": "absolute",
+		"top": "0px",
+		"left": "0px",
+		"z-index": "19999",
+		"border-style": "none",
+		"border-width": "0",
+		"background-color": "#CCC"
+	},
+	"button": {
+		"border": "1px solid #FFF",
+		"background-color": "#3678b1",
+		"color": "#FFF",
+		"margin": "0px 5px"
+	}
+}

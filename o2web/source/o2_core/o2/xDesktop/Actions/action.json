@@ -1,0 +1,48 @@
+{
+	"authentication": {
+		"uri": "/jaxrs/authentication",
+		"method": "GET"
+	},
+	"login": {
+		"uri": "/jaxrs/authentication",
+		"method": "POST"
+	},
+    "loginAdmin": {
+      "uri": "/jaxrs/authentication/administrator",
+      "method": "POST"
+    },
+
+	"logout": {
+		"uri": "/jaxrs/authentication",
+		"method": "DELETE"
+	},
+    "listApplication": {"uri": "/jaxrs/application/list"},
+    "listComponent": {"uri": "/jaxrs/component/list/all"},
+
+    "getUserData": {"uri": "/jaxrs/custom/{name}"},
+    "putUserData": {"uri": "/jaxrs/custom/{name}", "method": "PUT"},
+    "deleteUserData": {"uri": "/jaxrs/custom/{name}", "method": "DELETE"},
+
+    "getPublicUserData": {"uri": "/jaxrs/definition/{name}"},
+    "putPublicUserData": {"uri": "/jaxrs/definition/{name}", "method": "PUT"},
+    "deletePublicUserData": {"uri": "/jaxrs/definition/{name}", "method": "DELETE"},
+
+    "listOnline": {"uri": "/jaxrs/online/all"},
+    "personOnline": {"uri": "/jaxrs/online/person/{person}"},
+
+    "getTask": {"uri": "/jaxrs/task/{id}"},
+    "getRead": {"uri": "/jaxrs/read/{id}"},
+    "getReview": {"uri": "/jaxrs/review/{id}"},
+
+    "listCMSApplication": {"uri": "/jaxrs/appinfo/list/user/view/all" },
+    "listPortalApplication": {"uri": "/jaxrs/portal/list" },
+
+    "collectConnected": {"uri": "/jaxrs/collect/connect"},
+    "getCollectConfig": {"uri": "/jaxrs/collect"},
+    "collectValidate": {"uri": "/jaxrs/collect/validate"},
+
+    "uploadImage": {"uri": "/jaxrs/file/upload/referencetype/{referencetype}/reference/{reference}/scale/0", "method": "PUT", "enctype": "formData"},
+    "uploadImageByScale": {"uri": "/jaxrs/file/upload/referencetype/{referencetype}/reference/{reference}/scale/{scale}", "method" : "PUT", "enctype": "formData" },
+    "copyImage" : {"uri":"/jaxrs/file/copy/attachment/{attachmentId}/referencetype/{referencetype}/reference/{reference}/scale/{scale}"}
+
+}

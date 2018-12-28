@@ -1,0 +1,124 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='0' cellspacing='0' styles='editTable' id='tabList'></table>"
+  },
+  "viewHeadSetting":{
+    "html":"<thead></thead>"
+  },
+  "viewBodySetting":{
+    "html":"<tbody id='tabBody'></tbody>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='documentNode'></tr>",
+    "mouseoverStyles": "documentNode_over",
+    "action": "open"
+  },
+  "items": [
+    {
+      "name": "NO",
+      "head": {
+        "html": "<th styles='NOThNode' lable='NO'></th>",
+        "width": "80px"
+      },
+      "content": {
+        "html": "<td styles='NOTdNode' class='dragTr'>" +
+        " <div item='sequencenumber' styles='documentNOTitle'></div>" +
+        "</td>",
+        "width":"80px",
+        "items": {
+          "sequencenumber": {}
+        }
+      }
+    },
+    {
+      "name": "title",
+      "head": {
+        "html": "<th styles='normalThNode' lable='title'></th>",
+        "width": "250px"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>" +
+        " <div item='title' styles='documentSubject'></div>" +
+        "</td>",
+        "width":"250px",
+        "items": {
+          "title": {"value":"function(d){return d.measuresinfotitle}"}
+        }
+      }
+    },
+    {
+      "name": "department",
+      "head": {
+        "html": "<th styles='normalThNode' lable='department'></th>",
+        "width": "250px"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>" +
+        " <div item='deptlist' styles='documentSubject'></div>" +
+        "</td>",
+        "width": "250px",
+        "items": {
+          "deptlist": {"value":"function(d){var r='';var vs=d.deptlist;for(i=0;i<vs.length;i++){if(r==''){r=vs[i].split('@')[0]}else{r=r+','+vs[i].split('@')[0]}}return r}"}
+        }
+      }
+    },
+    {
+      "name": "content",
+      "head": {
+        "html": "<th styles='normalThNode' lable='content'></th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>" +
+        " <div item='measuresinfodescribe' styles='documentSubject'></div>" +
+        "</td>",
+        "items": {
+          "measuresinfodescribe": {}
+        }
+      }
+    },
+    {
+      "head": {
+        "html": "<th styles='normalThNode' lable='action'></th>",
+        "width": "100px"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>" +
+        " <div styles='documentOpenActionNode' id='openDiv' item='action_open'></div>" +
+        " <div styles='documentEditActionNode' item='action_edit'></div>" +
+        " <div styles='documentDeleteActionNode' item='action_delete'></div>" +
+        "</td>",
+        "width": "100px",
+        "items": {
+          "action_open": {
+            "title": "action_open",
+            "action": "action_open",
+            "styles": "documentOpenActionNode",
+            "condition": "function( d ){return this.openActionReturn(d) }",
+            "mouseoverStyles": "documentOpenActionNode_over",
+            "mouseoutStyles": "documentOpenActionNode_out"
+          },
+          "action_edit": {
+            "title": "action_edit",
+            "action": "action_edit",
+            "styles": "documentEditActionNode",
+            "condition": "function( d ){ return this.editActionReturn(d) }",
+            "mouseoverStyles": "documentEditActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "action_delete": {
+            "title": "action_delete",
+            "action": "action_delete",
+            "styles": "documentDeleteActionNode",
+            "condition": "function( d ){ return this.deleteActionReturn(d) }",
+            "mouseoverStyles": "documentDeleteActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          }
+        }
+      }
+    }
+  ]
+}

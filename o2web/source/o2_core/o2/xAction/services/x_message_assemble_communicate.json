@@ -1,0 +1,7 @@
+{
+  "create": {"uri": "/jaxrs/mass", "method": "POST"},
+  "delete": {"uri": "/jaxrs/mass/{id}", "method": "DELETE"},
+  "get": {"uri": "/jaxrs/mass/{id}"},
+  "list": {"uri": "/jaxrs/mass/list/{id}/next/{count}"},
+  "enableType": {"uri": "/jaxrs/mass/enable/type"}
+}

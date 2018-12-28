@@ -1,0 +1,117 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="基本" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">标识:</td>
+                <td class="editTableValue">text{$.id}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">名称:</td>
+                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">别名:</td>
+                <td class="editTableValue"><input type="text" name="alias" value="text{$.alias}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">描述:</td>
+                <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">选择视图:</td>
+                <td class="editTableValue"><div class="MWFViewSelect" name="queryView"></div></td>
+            </tr>
+        </table>
+
+        <div class="MWFIsGroupArea" style="display: none">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">分类统计:</td>
+                    <td class="editTableValue">
+                        <input class="editTableRadio" name="data.calculate.isGroup" type="radio" onclick="if (this.checked) $('text{$.id}isAmountArea').setStyle('display', 'block');" value="true" text{($.data.calculate.isGroup)===true?'checked':''}/>是
+                        <input class="editTableRadio" name="data.calculate.isGroup" type="radio" onclick="if (this.checked) $('text{$.id}isAmountArea').setStyle('display', 'none');" value="false" text{($.data.calculate.isGroup)!==true?'checked':''}/>否
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="text{$.id}isAmountArea" style="display: text{($.data.calculate.isGroup)?'block':'none'}">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">分类标题:</td>
+                    <td class="editTableValue">
+                        <input class="editTableRadio" name="data.calculate.title" type="text" value="text{$.data.calculate.title || '分类'}"/>
+                    </td>
+                </tr>
+            </table>
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">合计:</td>
+                    <td class="editTableValue">
+                        <input class="editTableRadio" name="data.calculate.isAmount" type="radio" value="true" text{($.data.calculate.isAmount)===true?'checked':''}/>是
+                        <input class="editTableRadio" name="data.calculate.isAmount" type="radio" value="false" text{($.data.calculate.isAmount)!==true?'checked':''}/>否
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="MWFTab" title="权限">
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">过滤范围</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableValue" style="width:80px"><b>允许添加范围:</b></td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="data.customWhere" type="radio" value="true" text{($.data.customWhere)===true?'checked':''}/>是
+                    <input class="editTableRadio" name="data.customWhere" type="radio" value="false" text{($.data.customWhere)!==true?'checked':''}/>否
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableValue"><b>允许添加过滤:</b></td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="data.customFilter" type="radio" value="true" text{($.data.customFilter)===true?'checked':''}/>是
+                    <input class="editTableRadio" name="data.customFilter" type="radio" value="false" text{($.data.customFilter)!==true?'checked':''}/>否
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableValue"><b>允许添加时间:</b></td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="data.customDaterange" type="radio" value="true" text{($.data.customDaterange)===true?'checked':''}/>是
+                    <input class="editTableRadio" name="data.customDaterange" type="radio" value="false" text{($.data.customDaterange)!==true?'checked':''}/>否
+                </td>
+            </tr>
+        </table>
+
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">执行权限</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">
+            <tr>
+                <td class="editTableTitle">可执行人:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonIdentity" name="availableIdentityList"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">执行组织:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonUnit" name="availableUnitList"></div>
+                </td>
+            </tr>
+            <!--<tr>-->
+                <!--<td class="editTableTitle">执行部门:</td>-->
+                <!--<td class="editTableValue">-->
+                    <!--<div class="MWFSelectDepartment" name="availableDepartmentList"></div>-->
+                <!--</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<td class="editTableTitle">执行公司:</td>-->
+                <!--<td class="editTableValue">-->
+                    <!--<div class="MWFSelectCompany" name="availableCompanyList"></div>-->
+                <!--</td>-->
+            <!--</tr>-->
+        </table>
+    </div>
+
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

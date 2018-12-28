@@ -1,0 +1,56 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="基本" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		  <tr>
+		    <td class="editTableTitle">标识:</td>
+		    <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">名称:</td>
+		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">描述:</td>
+		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">Class:</td>
+		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+		  </tr>
+		</table>
+		
+		<div class="MWFMaplist" name="styles" title="样式"></div>
+		<div class="MWFMaplist" name="properties" title="属性"></div>
+		
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		  <tr>
+		    <td class="editTableTitle">数据:</td>
+		    <td class="editTableValue">
+		    	<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}treeEditDataValue').setStyle('display', 'block'); $('text{$.pid}treeEditScriptValue').setStyle('display', 'none')}" name="dataType" text{($.dataType=='data')?'checked':''} type="radio" value="data"/>固定
+		    	<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}treeEditScriptValue').setStyle('display', 'block'); $('text{$.pid}treeEditDataValue').setStyle('display', 'none')}"  name="dataType" text{($.dataType=='script')?'checked':''} type="radio" value="script"/>脚本
+		    </td>
+		  </tr>
+		</table>
+		<div id="text{$.pid}treeEditDataValue" class="MWFTreeData" name="data" title="数据" style="display: text{($.dataType=='data')?'block':'none'}"></div>
+		<div id="text{$.pid}treeEditScriptValue" class="MWFScriptArea" name="dataScript" title="数据(S)" style="display: text{($.dataType=='script')?'block':'none'}"></div>
+		
+	</div>
+	<div title="样式"  class="MWFTab">
+		<div class="MWFMaplist" name="areaNodeStyle" collapse="true" title="tree区域样式"></div>
+		<div class="MWFMaplist" name="treeItemNodeStyle" collapse="true" title="tree节点样式"></div>
+		<div class="MWFMaplist" name="textDivNodeStyle" collapse="true" title="tree节点字体样式"></div>
+		<div class="MWFMaplist" name="textDivNodeSelectedStyle" collapse="true" title="当前tree节点字体样式"></div>
+	</div>
+	
+	
+	
+	<div title="事件"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

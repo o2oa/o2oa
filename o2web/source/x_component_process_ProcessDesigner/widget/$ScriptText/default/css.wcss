@@ -1,0 +1,42 @@
+{
+    "areaNode": {
+        "height": "220px",
+        "position": "static",
+        "width": "auto"
+    },
+	"editorNode": {
+	    "height": "200px"
+	},
+	"titleNode": {
+	    "height": "20px",
+	    "background-color": "#DDD"
+	},
+	"actionMaxNode": {
+	    "width": "20px",
+        "height": "20px",
+        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptText/default/icon/max.png) no-repeat center center",
+        "float": "right",
+        "cursor": "pointer"
+	},
+	"actionReturnNode": {
+	    "width": "20px",
+        "height": "20px",
+        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptText/default/icon/return.png) no-repeat center center",
+        "float": "right",
+        "cursor": "pointer",
+        "display": "none"
+	},
+	"actionReferenceNode": {
+        "width": "20px",
+        "height": "20px",
+        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptText/default/icon/reference.png) no-repeat center center",
+        "float": "left",
+        "cursor": "pointer"
+    },
+    "inforNode": {
+        "padding": "0px 10px",
+        "height": "30px",
+        "color": "#999",
+        "line-height": "30px"
+    }
+}

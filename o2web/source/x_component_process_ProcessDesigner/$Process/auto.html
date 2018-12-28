@@ -1,0 +1,26 @@
+<div>
+	<div class="editNode">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		  <tr>
+		    <td class="editTableTitle">标识:</td>
+		    <td class="editTableValue">text{$.id}</td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">类型:</td>
+		    <td class="editTableValue">text{$.type}</td>
+		  </tr>
+			<tr>
+				<td class="editTableTitle">名称:</td>
+				<td class="editTableValue"><input type="text" name="name" jsondata="name" value="text{$.name}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">别名:</td>
+				<td class="editTableValue"><input type="text" name="alias" jsondata="alias" value="text{$.alias}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">描述:</td>
+				<td class="editTableValue"><textarea name="description" jsondata="description" class="editTableTextarea">text{$.description}</textarea></td>
+			</tr>
+		</table>
+	</div>
+</div>

@@ -1,0 +1,711 @@
+{
+  "naviDiv":{
+    "position":"absolute","width":"130px","background-color":"#203140"
+  },
+  "naviTitleDiv":{
+    "background-color":"#006666", "color":"#008f8f","font-size":"18px","text-align":"center","height":"65px","line-height":"65px"
+  },
+  "naviContentLi":{
+    "margin-top":"20px",
+    "cursor":"pointer",
+    "background-color":"#203140",
+    "margin" : "10px 10px 0px 10px",
+    "padding" : "10px"
+  },
+  "naviContentLi_over":{
+    "margin-top":"20px",
+    "cursor":"pointer",
+    "background-color":"#006666",
+    "margin" : "10px 10px 0px 10px",
+    "padding" : "10px"
+  },
+  "naviContentLi_current":{
+    "margin-top":"20px",
+    "cursor":"pointer",
+    "background-color":"#006666",
+    "margin" : "10px 10px 0px 10px",
+    "padding" : "10px"
+  },
+  "naviContentImg":{
+    "width":"70px","height":"70px","display":"block","margin":"0px auto"
+  },
+  "naviContentSpan":{
+    "display":"block","text-align":"center"
+  },
+  "naviContentDiv":{
+    "height":"480px","list-style-type":"none","color":"#ffffff","font-size":"14px"
+  },
+  "contentDiv":{
+    "margin-left":"130px","height":"616px", "background-color":"#ffffff","min-width":"1000px"
+  },
+  "toolbar" : {
+    "padding-top" : "15px",
+    "height" : "50px",
+    "border-bottom" : "1px solid #dedede",
+    "padding-left" : "15px"
+  },
+  "toolbarTextNode" : {
+    "margin" : "6px 40px 6px 20px",
+    "color" : "#999",
+    "font-size" : "18px",
+    "font-weight" : "bold",
+    "float" : "left",
+    "text-align" : "center"
+  },
+  "toolbarActionNode" : {
+    "margin": "5px 20px 5px 10px",
+    "color" : "#fff",
+    "border":"0px",
+    "cursor": "pointer" ,
+    "background-color":"#5c97e1",
+    "box-shadow": "0px 0px 5px #2a5c95",
+    "padding" : "5px 15px 5px 15px",
+    "font-size" : "14px",
+    "float":"left"
+  },
+  "categoryBar":{
+    "width":"100%","min-width":"1000px","padding-top":"8px","margin-bottom":"10px","padding-left":"10px",
+    "border-bottom" : "1px dashed #dedede", "overflow" : "hidden"
+  },
+  "categoryNode":{
+    "list-style" : "none",
+    "padding": "10px",
+    "height": "20px",
+    "line-height": "20px",
+    "overflow": "hidden",
+    "font-family": "微软雅黑",
+    "font-size": "16px",
+    "font-weight" : "normal",
+    "float": "left",
+    "cursor": "pointer",
+    "color":"#3c76c1",
+    "border-bottom" : "2px solid #fff"
+    //border-bottom-color: rgb(255, 255, 255); border-bottom-width: 2px; border-bottom-style: solid;
+    //"display":"inline-block","width":"80px","height":"30px","text-align":"center","line-height":"30px","cursor":"pointer","color":"#3c76c1","font-size":"14px","margin-right" : "10px"
+  },
+  "categoryNode_over" : {
+    "font-size": "16px",
+    "font-weight": "normal",
+    "border-bottom" : "2px solid #5c97e1"
+  },
+  "categoryNode_current" : {
+    "font-size": "16px",
+    "font-weight": "bold",
+    "border-bottom" : "2px solid #124c93"
+  },
+  "fileterNode" : {
+    "float" : "left"
+  },
+  "filterTableTitle":{
+    "text-align":"right"
+  },
+  "filterTableValue":{
+    "text-align":"left"
+  },
+  "filterTitle":{
+    "width" : "200px",
+    "color" : "#bbb"
+  },
+  "filterButton":{
+    "color" : "#fff",
+    "border":"0px",
+    "cursor": "pointer" ,
+    "background-color":"#5c97e1",
+    "box-shadow": "0px 0px 5px #2a5c95",
+    "height" : "26px",
+    "padding-left" : "15px",
+    "padding-right" : "15px"
+  },
+  "viewContainer" : {
+    "padding-top" : "10px",
+    "margin-right" : "10px",
+    "overflow" : "hidden"
+  },
+  "viewHeadNode": {
+    "width":"100%",
+    "height": "20px",
+    "background-color": "#fff",
+    "color": "#666666",
+    "line-height": "30px",
+    "font-family": "微软雅黑",
+    "font-size": "14px"
+  },
+
+  "normalThNode" : {
+    "background-color" : "#fff",
+    "text-align":"center",
+    "border-bottom": "1px solid #cfecf5",
+    "font-weight" : "normal"
+  },
+  "sortIconNode" : {
+    "height": "16px",
+    "width": "16px",
+    "line-height": "20px",
+    "margin-top": "5px",
+    //"float": "left",
+    "display":"inline-block",
+    "margin-right": "5px",
+    "background-position" : "center center",
+    "background-repeat" : "no-repeat",
+    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dblsort.gif)"
+  },
+  "sortIconNode_asc" : {
+    "height": "16px",
+    "width": "16px",
+    "line-height": "20px",
+    "margin-top": "5px",
+    //"float": "left",
+    "display":"inline-block",
+    "margin-right": "5px",
+    "background-position" : "center center",
+    "background-repeat" : "no-repeat",
+    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dblasc.gif)"
+  },
+  "sortIconNode_desc" : {
+    "height": "16px",
+    "width": "16px",
+    "line-height": "20px",
+    "margin-top": "5px",
+    //"float": "left",
+    "display":"inline-block",
+    "margin-right": "5px",
+    "background-position" : "center center",
+    "background-repeat" : "no-repeat",
+    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dbldesc.gif)"
+  },
+
+
+  "documentNode":{
+    "min-height": "29px",
+    "overflow": "hidden",
+    "color": "#666666",
+    //"line-height": "39px",
+    "cursor": "pointer",
+    "font-family": "微软雅黑",
+    "font-size": "12px",
+    "background-color": "#fff"
+  },
+  "documentNode_noread": {
+    "background-color": "#fcfcfc"
+  },
+  "documentNode_over": {
+    "background-color": "#f5f6f7"
+  },
+  "documentNode_remove": {
+    "background-color": "#ffcccc"
+  },
+
+  "documentActionNode": {
+    "height": "20px",
+    "width": "20px",
+    "line-height": "20px",
+    "color": "#0066cc",
+    "cursor": "pointer",
+    "margin-right": "5px"
+  },
+  "documentActionNode_over":{
+    "color": "#003399"
+  },
+  "documentActionNode_down":{
+    "color": "#000"
+  },
+
+  //section 样式开始
+  "sectionNode" : {
+    "margin" : "0px 0px 10px 10px",
+    "border" : "1px solid #dedede",
+    "width" : "330px",
+    "height" : "110px",
+    "box-shadow" :"none",
+    "font-size" : "12px",
+    "float" : "left"//,
+    //"cursor":"pointer"
+
+  },
+  "sectionNode_over" : {
+    "box-shadow" :"3px 3px 3px #999"
+  },
+  "sectionItemNode" : {
+    "background-color" : "#fff",
+    "position" : "relative"
+  },
+  "sectionItemTopNode":{
+    "overflow": "hidden",
+    "cursor": "pointer"
+  },
+  "sectionItemTopIconNode" : {
+    "padding-top": "10px",
+    "padding-left": "10px",
+    "float": "left"
+  },
+  "sectionItemTopIcon" : {
+    "margin-top" : "10px",
+    "border-radius": "10px",
+    "width": "64px",
+    "height": "64px"
+  },
+  "sectionItemTopContent" : {
+    "height": "110px",
+    "margin-right": "5px",
+    "margin-left": "80px"
+  },
+  "sectionRemoveNode" : {
+    "position" : "absolute",
+    "right" : "5px",
+    "width": "22px",
+    "height": "26px",
+    "top": "5px",
+    "opacity": 0,
+    "cursor" : "pointer",
+    "background": "url(/x_component_Forum/$Setting/default/icon/delete.png) no-repeat center center"
+  },
+  "sectionItemTopDiv" : {
+    "overflow":"hidden","padding-top":"7px"
+  },
+  "sectionItemTopLable" : {
+    "height" : "15px",
+    "line-height" : "15px",
+    "color" : "#9f9f9f",
+    "float" : "left"
+  },
+  "sectionItemTopInfor" : {
+    "height" : "15px",
+    "line-height" : "15px",
+    "color" : "#666",
+    "float" : "left"
+  },
+  "sectionItemTitleNode" : {
+    "margin-top" : "5px",
+    "height": "20px", "color": "rgb(51, 51, 51)", "line-height": "20px", "font-family": "微软雅黑", "font-size": "16px","font-weight" : "bold",
+    "float" : "left"
+  },
+  "sectionItemTitleNode_over" : {
+    "color" : "rgb(51, 51, 51)"
+  },
+  "forumNameLabel" : {
+    "margin-top" : "5px",
+    "margin-left" : "10px",
+    "padding" : "0px 5px",
+    "background-color" : "#8ca3b5",
+    "height" : "20px",
+    "line-height" : "20px",
+    "color" : "#fff",
+    "float" : "left"
+  },
+  "sectionItemListNode" : {
+    "height" : "159px",
+    "padding-top" : "5px",
+    "margin-top" : "5px",
+    "margin-left" : "10px",
+    "margin-right" : "10px",
+    "border-top" : "1px solid #dedede"
+  },
+  "sectionItemListItemNode" : {
+    "color" : "#666",
+    "height" : "24px",
+    "line-height" : "24px",
+    "font-size" : "14px",
+    "cursor" : "pointer"
+  },
+  "sectionItemListItemNode_over" : {
+    "color" : "#0258ad"
+  },
+  //section 样式结束
+
+  "normalTdNode" : {
+    "min-height": "30px",
+    "padding-left" : "10px",
+    "text-align":"left",
+    "overflow" : "hidden",
+    //"font-weight" : "bold",
+    //"border-top": "1px solid #FFF",
+    "border-top": "1px dashed #cfecf5"
+  },
+  "normalTdCenterNode" : {
+    "min-height": "30px",
+    "padding-left" : "10px",
+    "text-align":"center",
+    "overflow" : "hidden",
+    //"font-weight" : "bold",
+    //"border-top": "1px solid #FFF",
+    "border-top": "1px dashed #cfecf5"
+  },
+  "documentSubject" : {
+    "font-size" : "14px",
+    "font-weight" : "bold",
+    "color" : "#003399"
+  },
+  "itemBlock" : {
+    "overflow" : "hidden",
+    "display" : "block"
+  },
+  "itemInLine" : {
+    "float" : "left",
+    "font-color" : "#888",
+    "padding-right" : "10px",
+    "padding-top" : "5px"
+  },
+  "titleTdNode" : {
+    "font-size" : "16px",
+    "font-weight" : "bold",
+    "color" : "#ec6a1a",
+    "border-top": "1px dashed #cfecf5"
+  },
+
+  "formMaskNode": {
+    "width": "100%",
+    "height": "100%",
+    "opacity": 0.6,
+    "position": "absolute",
+    "background-color": "#CCC",
+    "top": "0px",
+    "left": "0px"
+  },
+  "formAreaNode": {
+    "position": "absolute",
+    "opacity": 0,
+    "top": "0px" //,
+    //"z-index" : "105"
+  },
+  "formNode": {
+    "background-color": "#FFF",
+    "box-shadow": "0px 0px 10px #999",
+    "margin": "auto",
+    "border": "1px solid #fff",
+    "overflow": "hidden"
+  },
+  "formTopNode": {
+    "color" : "#fff",
+    "height": "40px",
+    "background-color": "#3d77c1",
+    "border-top": "1px solid #ddd",
+    "border-bottom": "1px solid #b6b6b6",
+    "line-height": "40px",
+    "font-size": "14px",
+    "padding-left" : "5px",
+    "text-align": "left"
+  },
+  "formTopIconNode" : {
+    "width": "28px",
+    "height": "32px",
+    "float": "left",
+    "background": "url(/x_component_Execution/$WorkForm/default/icon/document.png) no-repeat center 4px"
+  },
+  "formTopTextNode" : {
+    "font-size": "16px",
+    "float": "left",
+    "width" : "480px",
+    "overflow" : "hidden",
+    "text-overflow" : "ellipsis",
+    "white-space":"nowrap"
+  },
+  "formTopCloseActionNode": {
+    "width": "32px",
+    "height": "32px",
+    "float": "right",
+    "padding-left" : "30px",
+    "padding-right" : "10px",
+    "background": "url(/x_component_Execution/$WorkForm/default/icon/close.png) no-repeat center 4px",
+    "cursor": "pointer"
+  },
+  "formTopContentNode" : {
+    "float" : "right",
+    "padding-right" : "10px",
+    "text-align" : "right"
+  },
+  "formTopContentTitle" : {
+  },
+  "formTopContentValue" : {
+    "padding-right" : "20px",
+    "font-size": "12px"
+  },
+  "formNewNode": {
+    "width": "47px",
+    "height": "47px",
+    "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+  },
+  "formIconNode": {
+    "width": "47px",
+    "height": "47px"
+  },
+  "formEditNode": {
+    "width": "47px",
+    "height": "47px"
+  },
+  "formToolbar" : {
+    "padding-top" : "20px",
+    "height" : "35px",
+    "border-bottom" : "2px solid #999",
+    "padding-left" : "15px"
+  },
+  "formCategoryNode":{
+    "list-style" : "none",
+    "padding": "0px 10px 7px 10px",
+    "margin-left" : "10px",
+    "height": "20px",
+    "line-height": "20px",
+    "overflow": "hidden",
+    "font-family": "微软雅黑",
+    "font-size": "18px",
+    "font-weight" : "normal",
+    "float": "left",
+    "cursor": "pointer",
+    "color":"#3c76c1",
+    "border-bottom" : "2px solid #fff"
+    //border-bottom-color: rgb(255, 255, 255); border-bottom-width: 2px; border-bottom-style: solid;
+    //"display":"inline-block","width":"80px","height":"30px","text-align":"center","line-height":"30px","cursor":"pointer","color":"#3c76c1","font-size":"14px","margin-right" : "10px"
+  },
+  "formCategoryNode_over" : {
+    "font-size": "18px",
+    "font-weight": "normal",
+    "border-bottom" : "2px solid #5c97e1"
+  },
+  "formCategoryNode_current" : {
+    "font-size": "18px",
+    "font-weight": "bold",
+    "border-bottom" : "2px solid #124c93"
+  },
+  "formContentNode": {
+    "border": "0px solid #666",
+    "width": "100%",
+    "margin": "auto",
+    "font-size": "14px",
+    "color": "#666",
+    "font-family": "微软雅黑",
+    "overflow" : "hidden"
+  },
+  "formTableContainer" : {
+    "margin": "0px 10px",
+    "overflow" : "hidden",
+    "positon" : "static"
+  },
+  "formBottomNode" : {
+    "height" : "50px",
+    "line-height" : "50px",
+    "border-top" : "1px solid #3d77c1",
+    "background-color" : "#fff",
+    "overflow" : "hidden"
+  },
+  "formOkActionNode": {
+    "margin-top" : "5px",
+    "height": "35px",
+    "width": "75px",
+    "cursor": "pointer",
+    "float": "right",
+    "line-height": "35px",
+    "text-align": "center",
+    "font-size": "16px",
+    "font-family": "微软雅黑",
+    "border": "1px solid #3d77c1",
+    "background-color" : "#3d77c1",
+    "color": "#FFF",
+    "margin-right": "20px",
+    "box-shadow": "3px 3px 3px #999"
+  },
+  "formCancelActionNode": {
+    "margin-top" : "5px",
+    "height": "35px",
+    "width": "75px",
+    "cursor": "pointer",
+    "float": "right",
+    "line-height": "35px",
+    "text-align": "center",
+    "font-size": "16px",
+    "font-family": "微软雅黑",
+    "border": "1px solid #3d77c1",
+    "background-color" : "#3d77c1",
+    "color": "#FFF",
+    "margin-right": "20px",
+    "box-shadow": "3px 3px 3px #999"
+  },
+  "iconNode": {
+    "width": "64px",
+    "height": "64px",
+    "border-bottom-left-radius": "10px",
+    "border-bottom-right-radius": "10px",
+    "border-top-left-radius": "10px",
+    "border-top-right-radius": "10px",
+    "float" : "left"
+  },
+  "selectActionNode" : {
+    "float": "left",
+    "background-color": "#FFF",
+    "padding": "4px 14px",
+    "border": "1px solid #999",
+    "border-radius": "3px",
+    "font-size": "14px",
+    "color": "#666",
+    "cursor": "pointer",
+    "margin-right" : "10px"
+  },
+  "changeIconActionNode":{
+    "margin-left": "20px",
+    "float": "left",
+    "background-color": "#FFF",
+    "padding": "4px 14px",
+    "border": "1px solid #999",
+    "border-radius": "3px",
+    "margin-top": "30px",
+    "font-size": "14px",
+    "color": "#666",
+    "cursor": "pointer"
+  },
+  "iconSelectNode" : {
+    "margin" : "7px",
+    "width": "64px",
+    "height": "64px",
+    "border-bottom-left-radius": "10px",
+    "border-bottom-right-radius": "10px",
+    "border-top-left-radius": "10px",
+    "border-top-right-radius": "10px"
+  },
+  "iconAreaNode" : {
+    "cursor" : "pointer",
+    "background-color" : "#fff",
+    "float" : "left"
+  },
+  "iconAreaNodeOver" : {
+    "background-color" : "#f3f3f3"
+  },
+
+
+  "createTemplateMaskNode": {
+    "width": "100%",
+    "height": "100%",
+    "background-color": "#666",
+    "position": "absolute",
+    "top": "0px",
+    "left": "0px",
+    "opacity": 0.4,
+    "z-index":100
+  },
+  "createTemplateAreaNode": {
+    "width": "688px",
+    "height": "226",
+    "border": "3px solid #999",
+    "border-radius": "12px",
+    "box-shadow": "0px 0px 10px #999",
+    "position": "absolute",
+    "top": "20%",
+    "left": "10%",
+    "z-index": "30000",
+    "background-color": "#FFF",
+    "opacity": 0
+  },
+  "createTypeTemplateAreaNode": {
+    "width": "90%",
+    "height": "90%",
+    "border": "3px solid #999",
+    "border-radius": "12px",
+    "box-shadow": "0px 0px 10px #999",
+    "position": "absolute",
+    "top": "0px",
+    "left": "0px",
+    "z-index": "200",
+    "background-color": "#F7F7F7",
+    "opacity": 0
+  },
+  "createTemplateFormTitleNode": {
+    "height": "50px",
+    "line-height": "50px",
+    "padding": "0px 30px",
+    "color": "#666666",
+    "font-size": "28px",
+    "margin-top": "10px",
+    "font-weight": "bold"
+  },
+  "createTemplateFormCategoryNode": {
+    "margin-top": "10px",
+    "padding": "0px 30px",
+    "overflow": "hidden"
+  },
+  "createTemplateFormCategoryTitleNode": {
+    "float": "left",
+    "height": "24px",
+    "line-height": "24px",
+    "font-size": "16px",
+    "color": "#666",
+    "font-weight": "bold",
+    "margin-right": "10px"
+  },
+  "createTemplateFormCategoryItemNode":{
+    "float": "left",
+    "height": "24px",
+    "line-height": "24px",
+    "font-size": "16px",
+    "color": "#666",
+    "font-weight": "bold",
+    "margin-right": "10px",
+    "cursor": "pointer"
+  },
+  "createTemplateFormCategoryItemNode_current": {
+    "color": "#0000FF"
+  },
+  "createTemplateFormContentNode": {
+    "overflow": "auto"
+  },
+  "typeTemplateNode": {
+    "margin-top": "30px",
+    "margin-left": "30px",
+    //"float": "left",
+    "width": "90%",
+    "max-width" : "1200px",
+    //"height": "180px",
+    "cursor": "pointer",
+    "border": "2px solid #F7F7F7",
+    //"border-radius": "10px",
+    "box-shadow": "0px 0px 0px #999",
+    "background-color": "#F7F7F7"
+  },
+  "typeTemplateNode_over": {
+    "border": "2px solid #bbb",
+    "box-shadow": "0px 0px 5px #999",
+    "background-color": "#bbb"
+  },
+  "typeTemplateNode_down": {
+    "border-top": "2px solid #bbb",
+    "border-left": "2px solid #bbb",
+    "border-bottom": "2px solid #F7F7F7",
+    "border-right": "2px solid #F7F7F7",
+    "box-shadow": "0px 0px 0px #999"
+  },
+  "typeTemplateIconNode": {
+    //"height": "135px",
+    "width": "100%",
+    "max-width" : "1200px",
+    "margin": "5px auto 0px auto"
+  },
+  "typeTemplatePreviewNode": {
+    //"height": "135px",
+    "width": "100%",
+    "max-width" : "1200px",
+    "margin": "5px auto 0px auto",
+    "position": "relative",
+    "overflow": "hidden"
+  },
+  "typeTemplateActionNode":{
+    "width": "16px",
+    "height": "16px",
+    "position": "absolute",
+    "top": "0px",
+    "right": "0px",
+    "background": "url("+"/x_component_process_ProcessManager/$Explorer/default/formIcon/delete.png) no-repeat center center",
+    "display": "none"
+  },
+
+  "typeTemplateTitleNode": {
+    "height": "30px",
+    "line-height": "30px",
+    "text-align": "center",
+    "font-size": "14px"
+  },
+  "typeTemplateIconImgNode": {
+    "width": "100%",
+    "height": "100%"
+    //"border-radius": "10px"
+  },
+  "indexListStylePreview" : {
+    "width" : "90%",
+    "max-width" : "1200px"
+  }
+}

@@ -1,0 +1,4491 @@
+{
+  "pcData": {
+    "json": {
+      "id": "",
+      "name": "数据录入表单",
+      "type": "Form",
+      "mode": "PC",
+      "description": "",
+      "application": "",
+      "styles": {
+        "background-color": "#f0f0f0"
+      },
+      "properties": {},
+      "cssLinks": [],
+      "scriptSrc": [],
+      "jsheader": {
+        "code": "",
+        "html": ""
+      },
+      "events": {
+        "postLoad": {
+          "code": "",
+          "html": ""
+        },
+        "afterLoad": {
+          "code": "",
+          "html": ""
+        },
+        "beforeSave": {
+          "code": "",
+          "html": ""
+        },
+        "afterSave": {
+          "code": "",
+          "html": ""
+        },
+        "beforeClose": {
+          "code": "",
+          "html": ""
+        },
+        "beforePublish": {
+          "code": "",
+          "html": ""
+        },
+        "afterPublish": {
+          "code": "",
+          "html": ""
+        },
+        "help": {
+          "code": "",
+          "html": ""
+        },
+        "load": {
+          "code": "",
+          "html": ""
+        },
+        "unload": {
+          "code": "",
+          "html": ""
+        },
+        "click": {
+          "code": "",
+          "html": ""
+        },
+        "dblclick": {
+          "code": "",
+          "html": ""
+        },
+        "keydown": {
+          "code": "",
+          "html": ""
+        },
+        "keypress": {
+          "code": "",
+          "html": ""
+        },
+        "keyup": {
+          "code": "",
+          "html": ""
+        },
+        "mousedown": {
+          "code": "",
+          "html": ""
+        },
+        "mousemove": {
+          "code": "",
+          "html": ""
+        },
+        "mouseout": {
+          "code": "",
+          "html": ""
+        },
+        "mouseover": {
+          "code": "",
+          "html": ""
+        },
+        "mouseup": {
+          "code": "",
+          "html": ""
+        },
+        "focus": {
+          "code": "",
+          "html": ""
+        },
+        "blur": {
+          "code": "",
+          "html": ""
+        },
+        "submit": {
+          "code": "",
+          "html": ""
+        },
+        "reset": {
+          "code": "",
+          "html": ""
+        }
+      },
+      "moduleList": {
+        "div": {
+          "id": "div",
+          "name": "",
+          "type": "Div",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "width": "1000px",
+            "margin": "auto",
+            "border": "1px solid #D9D9D9",
+            "border-radius": "2px",
+            "background-color": "#fff",
+            "padding": "20px"
+          },
+          "container": "",
+          "moduleName": "div"
+        },
+        "actionbar": {
+          "id": "actionbar",
+          "name": "",
+          "type": "Actionbar",
+          "description": "",
+          "sysTools": {
+            "editTools": [
+              {
+                "type": "MWFToolBarButton",
+                "img": "close.png",
+                "img_over": "close_over.png",
+                "title": "关闭文档",
+                "action": "closeDocument",
+                "text": "关闭",
+                "id": "action_close",
+                "condition": "reutrn true"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "save.png",
+                "img_over": "save_over.png",
+                "title": "保存文档",
+                "action": "saveDocument",
+                "text": "保存",
+                "id": "action_saveData",
+                "control": "allowSave",
+                "condition": "reutrn this.power.isEditor"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "submit.png",
+                "img_over": "submit_over.png",
+                "title": "发布文件",
+                "action": "publishDocument",
+                "text": "发布",
+                "id": "action_publishDocument",
+                "control": "allowPublishDocument",
+                "condition": "reutrn this.power.isOwner"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "del.png",
+                "img_over": "del_over.png",
+                "title": "删除文件",
+                "action": "deleteDocument",
+                "text": "删除",
+                "id": "action_delete",
+                "control": "allowDeleteDocument",
+                "condition": "reutrn this.power.isDelete"
+              }
+            ],
+            "readTools": [
+              {
+                "type": "MWFToolBarButton",
+                "img": "close.png",
+                "img_over": "close_over.png",
+                "title": "关闭窗口",
+                "action": "closeDocument",
+                "id": "action_close",
+                "text": "关闭",
+                "condition": "reutrn true"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "edit.png",
+                "img_over": "edit_over.png",
+                "title": "编辑文档",
+                "action": "editDocument",
+                "id": "action_edit",
+                "text": "编辑",
+                "control": "allowEditDocument",
+                "condition": "reutrn this.power.isEdit"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "popular.png",
+                "img_over": "popular_over.png",
+                "title": "设置热点",
+                "action": "setPopularDocument",
+                "id": "action_popular",
+                "text": "设置热点",
+                "control": "allowPopularDocument",
+                "condition": "this.power.isPopular"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "del.png",
+                "img_over": "del_over.png",
+                "title": "删除文件",
+                "action": "deleteDocument",
+                "text": "删除",
+                "id": "action_delete",
+                "control": "allowDeleteDocument",
+                "condition": "reutrn this.power.isDelete"
+              }
+            ]
+          },
+          "tools": [],
+          "style": "xform_blue_simple",
+          "container": "",
+          "moduleName": "actionbar"
+        },
+        "label": {
+          "id": "label",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "script",
+          "moduleName": "label",
+          "templateType": "title",
+          "text": "",
+          "script": {
+            "code": "return this.documentContext.getDocument().categoryName",
+            "html": "return this.documentContext.getDocument().categoryName"
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "text-align": "center",
+            "font-weight": "bold",
+            "color": "#3c76b7",
+            "font-size": "24px",
+            "text-shadow": "0px 0px 3px #fff",
+            "padding-top" : "30px",
+            "min-height": "32px"
+          },
+          "container": ""
+        },
+        "label_1": {
+          "id": "label_1",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "text": "录入人：",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "moduleName": "label"
+        },
+        "label_2": {
+          "id": "label_2",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "script",
+          "text": "",
+          "script": {
+            "code": "return this.documentContext.getDocument().creatorPersonShort\n",
+            "html": "return this.documentContext.getDocument().creatorPersonShort\n"
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "moduleName": "label"
+        },
+        "label_1_1": {
+          "id": "label_1_1",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "text": "录入时间：",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "moduleName": "label"
+        },
+        "label_2_1": {
+          "id": "label_2_1",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "script",
+          "text": "",
+          "script": {
+            "code": "return this.documentContext.getDocument().createTime\n",
+            "html": "return this.documentContext.getDocument().createTime\n"
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "moduleName": "label"
+        },
+        "table": {
+          "id": "table",
+          "name": "",
+          "type": "Table",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {
+            "width": "100%",
+            "border": "0",
+            "cellpadding": "3",
+            "cellspacing": "5",
+            "align": "center"
+          },
+          "class": "",
+          "styles": {
+            "border": "1px solid #ddd",
+            "font-size": "14px",
+            "color": "#555",
+            "min-height": "32px",
+            "line-height": "32px",
+            "background-color": "#FFF",
+            "margin": "10px 0px"
+          },
+          "titleTdStyles": {
+            "border-collapse": "collapse",
+            "background-color": "#fff",
+            "color": "#333",
+            "text-align": "right",
+            "font-weight": "bold",
+            "width": "20%",
+            "height": "30px",
+            "line-height": "30px"
+          },
+          "contentTdStyles": {
+            "border-collapse": "collapse",
+            "background-color": "#FFFFFF",
+            "color": "#333",
+            "min-width": "140px"
+          },
+          "layoutTdStyles": {},
+          "container": "",
+          "moduleName": "table"
+        },
+        "table_table$Td": {
+          "id": "table_table$Td",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "title",
+          "moduleName": "table$Td"
+        },
+        "label_3": {
+          "id": "label_3",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "text": "标题：",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "moduleName": "label"
+        },
+        "table_table$Td_1": {
+          "id": "table_table$Td_1",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {
+            "colspan": 3
+          },
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "content",
+          "moduleName": "table$Td"
+        },
+        "subject": {
+          "id": "subject",
+          "name": "",
+          "type": "Textfield",
+          "description": "",
+          "defaultValue": {
+            "code": "return this.documentContext.getDocument().title",
+            "html": "return this.documentContext.getDocument().title"
+          },
+          "compute": "create",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "change": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "inputType": "text",
+          "properties": {},
+          "class": "",
+          "styles": {
+            "border-bottom": "1px solid #ccc",
+            "border-top": "0px",
+            "border-left": "0px",
+            "border-right": "0px",
+            "min-height": "20px"
+          },
+          "container": "",
+          "inputStyles": {
+            "height": "26px",
+            "color": "#666"
+          },
+          "moduleName": "textfield"
+        },
+        "table_table$Td_16": {
+          "id": "table_table$Td_16",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "title",
+          "moduleName": "table$Td"
+        },
+        "label_10": {
+          "id": "label_10",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "text": "描述：",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "moduleName": "label"
+        },
+        "table_table$Td_17": {
+          "id": "table_table$Td_17",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {
+            "colspan": 3
+          },
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "content",
+          "moduleName": "table$Td"
+        },
+        "explain": {
+          "id": "explain",
+          "name": "",
+          "type": "Textarea",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "compute": "create",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "change": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "border-bottom": "1px solid #ccc",
+            "border-top": "0px",
+            "border-left": "0px",
+            "border-right": "0px",
+            "min-height": "20px"
+          },
+          "container": "",
+          "inputStyles": {
+            "color": "#666"
+          },
+          "moduleName": "textarea"
+        },
+        "attachment": {
+          "id": "attachment",
+          "name": "",
+          "type": "Attachment",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "upload": {
+              "code": "",
+              "html": ""
+            },
+            "delete": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "size": "max",
+          "isSizeChange": "true",
+          "attachmentCount": "0",
+          "resize": "false",
+          "listStyle": "icon",
+          "readonly": "false",
+          "isUpload": "y",
+          "isDelete": "y",
+          "isReplace": "y",
+          "isDownload": "y",
+          "class": "",
+          "styles": {},
+          "container": "",
+          "toolbarGroupHidden" : [],
+          "moduleName": "attachment"
+        },
+        "actionbar_1": {
+          "id": "actionbar_1",
+          "name": "",
+          "type": "Actionbar",
+          "description": "",
+          "sysTools": {
+            "editTools": [
+              {
+                "type": "MWFToolBarButton",
+                "img": "close.png",
+                "img_over": "close_over.png",
+                "title": "关闭文档",
+                "action": "closeDocument",
+                "text": "关闭",
+                "id": "action_close",
+                "condition": "reutrn true"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "save.png",
+                "img_over": "save_over.png",
+                "title": "保存文档",
+                "action": "saveDocument",
+                "text": "保存",
+                "id": "action_saveData",
+                "control": "allowSave",
+                "condition": "reutrn this.power.isEditor"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "submit.png",
+                "img_over": "submit_over.png",
+                "title": "发布文件",
+                "action": "publishDocument",
+                "text": "发布",
+                "id": "action_publishDocument",
+                "control": "allowPublishDocument",
+                "condition": "reutrn this.power.isOwner"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "del.png",
+                "img_over": "del_over.png",
+                "title": "删除文件",
+                "action": "deleteDocument",
+                "text": "删除",
+                "id": "action_delete",
+                "control": "allowDeleteDocument",
+                "condition": "reutrn this.power.isDelete"
+              }
+            ],
+            "readTools": [
+              {
+                "type": "MWFToolBarButton",
+                "img": "close.png",
+                "img_over": "close_over.png",
+                "title": "关闭文档",
+                "action": "closeDocument",
+                "id": "action_close",
+                "text": "关闭",
+                "condition": "reutrn true"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "edit.png",
+                "img_over": "edit_over.png",
+                "title": "编辑文档",
+                "action": "editDocument",
+                "id": "action_edit",
+                "text": "编辑",
+                "control": "allowEditDocument",
+                "condition": "reutrn this.power.isEdit"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "popular.png",
+                "img_over": "popular_over.png",
+                "title": "设置热点",
+                "action": "setPopularDocument",
+                "id": "action_popular",
+                "text": "设置热点",
+                "control": "allowPopularDocument",
+                "condition": "this.power.isPopular"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "del.png",
+                "img_over": "del_over.png",
+                "title": "删除文件",
+                "action": "deleteDocument",
+                "text": "删除",
+                "id": "action_delete",
+                "control": "allowDeleteDocument",
+                "condition": "reutrn this.power.isDelete"
+              }
+            ]
+          },
+          "tools": [],
+          "style": "xform_blue_simple",
+          "container": "",
+          "moduleName": "actionbar"
+        },
+        "table_table$Td_2": {
+          "id": "table_table$Td_2",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "title",
+          "moduleName": "table$Td"
+        },
+        "table_table$Td_3": {
+          "id": "table_table$Td_3",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "content",
+          "moduleName": "table$Td"
+        },
+        "table_table$Td_4": {
+          "id": "table_table$Td_4",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "title",
+          "moduleName": "table$Td"
+        },
+        "table_table$Td_5": {
+          "id": "table_table$Td_5",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "content",
+          "moduleName": "table$Td"
+        },
+        "table_table$Td_6": {
+          "id": "table_table$Td_6",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "title",
+          "moduleName": "table$Td"
+        },
+        "table_table$Td_7": {
+          "id": "table_table$Td_7",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "moduleName": "table$Td"
+        },
+        "table_table$Td_8": {
+          "id": "table_table$Td_8",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "title",
+          "moduleName": "table$Td"
+        },
+        "table_table$Td_9": {
+          "id": "table_table$Td_9",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "moduleName": "table$Td"
+        },
+        "label_4": {
+          "id": "label_4",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "hiddenCondition": "none",
+          "text": "日期：",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "moduleName": "label"
+        },
+        "calendar": {
+          "id": "calendar",
+          "name": "",
+          "type": "Calendar",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "range": "single",
+          "selectType": "date",
+          "format": "",
+          "compute": "create",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "change": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "border-bottom": "1px solid #ccc",
+            "border-top": "0px",
+            "border-left": "0px",
+            "border-right": "0px",
+            "min-height": "20px"
+          },
+          "container": "",
+          "inputStyles": {
+            "height": "26px",
+            "color": "#666"
+          },
+          "moduleName": "calendar"
+        },
+        "label_5": {
+          "id": "label_5",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "hiddenCondition": "none",
+          "text": "地点：",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "moduleName": "label"
+        },
+        "address": {
+          "id": "address",
+          "name": "",
+          "type": "Textfield",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "compute": "create",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "change": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "inputType": "text",
+          "properties": {},
+          "class": "",
+          "styles": {
+            "border-bottom": "1px solid #ccc",
+            "border-top": "0px",
+            "border-left": "0px",
+            "border-right": "0px",
+            "min-height": "20px"
+          },
+          "container": "",
+          "inputStyles": {
+            "height": "26px",
+            "color": "#666"
+          },
+          "moduleName": "textfield"
+        }
+      },
+      "fieldList": {},
+      "formStyleType": "blue-simple",
+      "applicationName": "新表单测试"
+    },
+    "html": "<div id=\"93455de0-9955-4d5f-a520-829d303404cb\" mwftype=\"form\"><div id=\"div\" mwftype=\"div\"><div id=\"actionbar\" mwftype=\"actionbar\"><div><div title=\"关闭文档\" MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/close.png\" MWFButtonImageOver=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/close_over.png\" MWFButtonAction=\"closeDocument\" MWFButtonText=\"关闭\"><span><img src=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/close.png\"></span><span>关闭</span></div><div title=\"编辑文档\" MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/edit.png\" MWFButtonImageOver=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/edit_over.png\" MWFButtonAction=\"editDocument\" MWFButtonText=\"编辑\"><span><img src=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/edit.png\"></span><span>编辑</span></div><div title=\"保存文档\" MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/save.png\" MWFButtonImageOver=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/save_over.png\" MWFButtonAction=\"saveDocument\" MWFButtonText=\"保存\"><span><img src=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/save.png\"></span><span>保存</span></div><div title=\"发布文档\" MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/submit.png\" MWFButtonImageOver=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/submit_over.png\" MWFButtonAction=\"publishDocument\" MWFButtonText=\"发布\"><span><img src=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/submit.png\"></span><span>发布</span></div><div title=\"设置热点\" MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/popular.png\" MWFButtonImageOver=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/popular_over.png\" MWFButtonAction=\"setPopularDocument\" MWFButtonText=\"设置热点\"><span><img src=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/popular.png\"></span><span>设置热点</span></div><div title=\"删除文件\" MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/del.png\" MWFButtonImageOver=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/del_over.png\" MWFButtonAction=\"deleteDocument\" MWFButtonText=\"删除\"><span><img src=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/del.png\"></span><span>删除</span></div></div></div><div id=\"label\" mwftype=\"label\">(C)Text</div><div id=\"table\" mwftype=\"table\"><table width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"5\" cellpadding=\"3\"><tbody><tr><td id=\"table_table$Td_2\" mwftype=\"table$Td\"><div id=\"label_1\" mwftype=\"label\">录入人：</div></td><td id=\"table_table$Td_3\" mwftype=\"table$Td\"><div id=\"label_2\" mwftype=\"label\">(C)Text</div></td><td id=\"table_table$Td_4\" mwftype=\"table$Td\"><div id=\"label_1_1\" mwftype=\"label\">录入时间：</div></td><td id=\"table_table$Td_5\" mwftype=\"table$Td\"><div id=\"label_2_1\" mwftype=\"label\">(C)Text</div></td></tr><tr><td id=\"table_table$Td\" mwftype=\"table$Td\"><div id=\"label_3\" mwftype=\"label\">标题：</div></td><td id=\"table_table$Td_1\" rowspan=\"1\" colspan=\"3\" mwftype=\"table$Td\"><div id=\"subject\" mwftype=\"textfield\"><div></div><div>subject</div></div></td></tr><tr><td id=\"table_table$Td_6\" mwftype=\"table$Td\"><div id=\"label_4\" mwftype=\"label\">日期：</div></td><td id=\"table_table$Td_7\" mwftype=\"table$Td\"><div id=\"calendar\" mwftype=\"calendar\"><div></div><div>calendar</div></div></td><td id=\"table_table$Td_8\" mwftype=\"table$Td\"><div id=\"label_5\" mwftype=\"label\">地点：</div></td><td id=\"table_table$Td_9\" mwftype=\"table$Td\"><div id=\"address\" mwftype=\"textfield\"><div></div><div>address</div></div></td></tr><tr><td id=\"table_table$Td_16\" mwftype=\"table$Td\"><div id=\"label_10\" mwftype=\"label\">描述：</div></td><td id=\"table_table$Td_17\" rowspan=\"1\" colspan=\"3\" mwftype=\"table$Td\"><div id=\"explain\" mwftype=\"textarea\"><div></div><div>explain</div></div></td></tr></tbody></table></div><div id=\"attachment\" mwftype=\"itmleditor\"><div><div><div><div><div title=\"上传\"><div></div></div><div title=\"删除\"><div></div></div><div title=\"替换\"><div></div></div><div></div><div title=\"下载\"><div></div></div></div></div><div><div><div title=\"列表\"><div></div></div><div title=\"图标\"><div></div></div><div title=\"预览\"><div></div></div></div></div><div><div><div title=\"简洁模式\"><div></div></div></div></div></div><div class=\"contentScrollNode\"><div class=\"content\"></div></div><div><div></div></div></div></div><div id=\"actionbar_1\" mwftype=\"actionbar\"><div><div title=\"关闭文档\" MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/close.png\" MWFButtonImageOver=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/close_over.png\" MWFButtonAction=\"closeDocument\" MWFButtonText=\"关闭\"><span><img src=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/close.png\"></span><span>关闭</span></div><div title=\"编辑文档\" MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/edit.png\" MWFButtonImageOver=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/edit_over.png\" MWFButtonAction=\"editDocument\" MWFButtonText=\"编辑\"><span><img src=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/edit.png\"></span><span>编辑</span></div><div title=\"保存文档\" MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/save.png\" MWFButtonImageOver=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/save_over.png\" MWFButtonAction=\"saveDocument\" MWFButtonText=\"保存\"><span><img src=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/save.png\"></span><span>保存</span></div><div title=\"发布文档\" MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/submit.png\" MWFButtonImageOver=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/submit_over.png\" MWFButtonAction=\"publishDocument\" MWFButtonText=\"发布\"><span><img src=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/submit.png\"></span><span>发布</span></div><div title=\"设置热点\" MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/popular.png\" MWFButtonImageOver=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/popular_over.png\" MWFButtonAction=\"setPopularDocument\" MWFButtonText=\"设置热点\"><span><img src=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/popular.png\"></span><span>设置热点</span></div><div title=\"删除文件\" MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/del.png\" MWFButtonImageOver=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/del_over.png\" MWFButtonAction=\"deleteDocument\" MWFButtonText=\"删除\"><span><img src=\"/x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_blue_simple/del.png\"></span><span>删除</span></div></div></div></div></div>",
+    "id": "",
+    "isNewForm": true
+  },
+  "mobileData": {
+    "json": {
+      "id": "",
+      "name": "数据录入表单",
+      "type": "Form",
+      "mode": "Mobile",
+      "description": "",
+      "application": "",
+      "applicationName": "新表单测试",
+      "styles": {
+        "background-color": "#f0f0f0"
+      },
+      "properties": {},
+      "cssLinks": [],
+      "scriptSrc": [],
+      "jsheader": {
+        "code": "",
+        "html": ""
+      },
+      "events": {
+        "postLoad": {
+          "code": "",
+          "html": ""
+        },
+        "afterLoad": {
+          "code": "",
+          "html": ""
+        },
+        "beforeSave": {
+          "code": "",
+          "html": ""
+        },
+        "afterSave": {
+          "code": "",
+          "html": ""
+        },
+        "beforeClose": {
+          "code": "",
+          "html": ""
+        },
+        "beforePublish": {
+          "code": "",
+          "html": ""
+        },
+        "afterPublish": {
+          "code": "",
+          "html": ""
+        },
+        "help": {
+          "code": "",
+          "html": ""
+        },
+        "load": {
+          "code": "",
+          "html": ""
+        },
+        "unload": {
+          "code": "",
+          "html": ""
+        },
+        "click": {
+          "code": "",
+          "html": ""
+        },
+        "dblclick": {
+          "code": "",
+          "html": ""
+        },
+        "keydown": {
+          "code": "",
+          "html": ""
+        },
+        "keypress": {
+          "code": "",
+          "html": ""
+        },
+        "keyup": {
+          "code": "",
+          "html": ""
+        },
+        "mousedown": {
+          "code": "",
+          "html": ""
+        },
+        "mousemove": {
+          "code": "",
+          "html": ""
+        },
+        "mouseout": {
+          "code": "",
+          "html": ""
+        },
+        "mouseover": {
+          "code": "",
+          "html": ""
+        },
+        "mouseup": {
+          "code": "",
+          "html": ""
+        },
+        "focus": {
+          "code": "",
+          "html": ""
+        },
+        "blur": {
+          "code": "",
+          "html": ""
+        },
+        "submit": {
+          "code": "",
+          "html": ""
+        },
+        "reset": {
+          "code": "",
+          "html": ""
+        }
+      },
+      "moduleList": {
+        "div": {
+          "id": "div",
+          "name": "",
+          "type": "Div",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "margin": "auto",
+            "border": "1px solid #D9D9D9",
+            "border-radius": "2px",
+            "background-color": "#fff",
+            "padding": "1px"
+          },
+          "container": "",
+          "moduleName": "div"
+        },
+        "actionbar": {
+          "id": "actionbar",
+          "name": "",
+          "type": "Actionbar",
+          "description": "",
+          "sysTools": {
+            "editTools": [
+              {
+                "type": "MWFToolBarButton",
+                "img": "close.png",
+                "img_over": "close_over.png",
+                "title": "关闭文档",
+                "action": "closeDocument",
+                "text": "关闭",
+                "id": "action_close",
+                "condition": "reutrn true"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "save.png",
+                "img_over": "save_over.png",
+                "title": "保存文档",
+                "action": "saveDocument",
+                "text": "保存",
+                "id": "action_saveData",
+                "control": "allowSave",
+                "condition": "reutrn this.power.isEditor"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "submit.png",
+                "img_over": "submit_over.png",
+                "title": "发布文件",
+                "action": "publishDocument",
+                "text": "发布",
+                "id": "action_publishDocument",
+                "control": "allowPublishDocument",
+                "condition": "reutrn this.power.isOwner"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "del.png",
+                "img_over": "del_over.png",
+                "title": "删除文件",
+                "action": "deleteDocument",
+                "text": "删除",
+                "id": "action_delete",
+                "control": "allowDeleteDocument",
+                "condition": "reutrn this.power.isDelete"
+              }
+            ],
+            "readTools": [
+              {
+                "type": "MWFToolBarButton",
+                "img": "close.png",
+                "img_over": "close_over.png",
+                "title": "关闭窗口",
+                "action": "closeDocument",
+                "id": "action_close",
+                "text": "关闭",
+                "condition": "reutrn true"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "edit.png",
+                "img_over": "edit_over.png",
+                "title": "编辑文档",
+                "action": "editDocument",
+                "id": "action_edit",
+                "text": "编辑",
+                "control": "allowEditDocument",
+                "condition": "reutrn this.power.isEdit"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "popular.png",
+                "img_over": "popular_over.png",
+                "title": "设置热点",
+                "action": "setPopularDocument",
+                "id": "action_popular",
+                "text": "设置热点",
+                "control": "allowPopularDocument",
+                "condition": "this.power.isPopular"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "del.png",
+                "img_over": "del_over.png",
+                "title": "删除文件",
+                "action": "deleteDocument",
+                "text": "删除",
+                "id": "action_delete",
+                "control": "allowDeleteDocument",
+                "condition": "reutrn this.power.isDelete"
+              }
+            ]
+          },
+          "tools": [],
+          "style": "xform_blue_simple",
+          "container": "",
+          "moduleName": "actionbar"
+        },
+        "label": {
+          "id": "label",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "script",
+          "moduleName": "label",
+          "templateType": "title",
+          "text": "",
+          "script": {
+            "code": "return this.documentContext.getDocument().categoryName",
+            "html": "return this.documentContext.getDocument().categoryName"
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "text-align": "center",
+            "font-weight": "bold",
+            "color": "#fb4747",
+            "font-size": "24px",
+            "text-shadow": "0px 0px 3px #fff",
+            "min-height": "50px",
+            "margin-bottom": "20px"
+          },
+          "container": ""
+        },
+        "label_1": {
+          "id": "label_1",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "text": "录入人：",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "moduleName": "label"
+        },
+        "label_2": {
+          "id": "label_2",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "script",
+          "text": "",
+          "script": {
+            "code": "return this.documentContext.getDocument().creatorPersonShort\n",
+            "html": "return this.documentContext.getDocument().creatorPersonShort\n"
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "moduleName": "label"
+        },
+        "label_1_1": {
+          "id": "label_1_1",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "text": "录入时间：",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "moduleName": "label"
+        },
+        "label_2_1": {
+          "id": "label_2_1",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "script",
+          "text": "",
+          "script": {
+            "code": "return this.documentContext.getDocument().createTime\n",
+            "html": "return this.documentContext.getDocument().createTime\n"
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "moduleName": "label"
+        },
+        "table": {
+          "id": "table",
+          "name": "",
+          "type": "Table",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {
+            "width": "90%",
+            "border": "0",
+            "cellpadding": "5",
+            "cellspacing": "0",
+            "align": "center"
+          },
+          "class": "",
+          "styles": {
+            "border": "1px solid #ddd",
+            "font-size": "14px",
+            "color": "#555",
+            "min-height": "32px",
+            "line-height": "32px",
+            "margin-bottom": "10px",
+            "margin-top": "10px"
+          },
+          "titleTdStyles": {
+            "border-collapse": "collapse",
+            "background-color": "#ffffff",
+            "color": "#333",
+            "text-align": "left",
+            "font-weight": "bold",
+            "width": "30%",
+            "border-bottom": "1px solid #cccccc",
+            "height": "36px",
+            "font-size": "16px",
+            "line-height": "36px"
+          },
+          "contentTdStyles": {
+            "border-collapse": "collapse",
+            "background-color": "#FFFFFF",
+            "color": "#666",
+            "min-width": "140px",
+            "font-size": "18px",
+            "border-bottom": "1px solid #cccccc",
+            "text-align": "right"
+          },
+          "layoutTdStyles": {},
+          "container": "",
+          "moduleName": "table"
+        },
+        "table_table$Td": {
+          "id": "table_table$Td",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "title",
+          "moduleName": "table$Td"
+        },
+        "label_3": {
+          "id": "label_3",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "text": "标题：",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "moduleName": "label"
+        },
+        "table_table$Td_1": {
+          "id": "table_table$Td_1",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {
+            "colspan": 3
+          },
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "content",
+          "moduleName": "table$Td"
+        },
+        "subject": {
+          "id": "subject",
+          "name": "",
+          "type": "Textfield",
+          "description": "",
+          "defaultValue": {
+            "code": "return this.documentContext.getDocument().title",
+            "html": "return this.documentContext.getDocument().title"
+          },
+          "compute": "create",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "change": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "inputType": "text",
+          "properties": {},
+          "class": "",
+          "styles": {
+            "border": "0px solid #ccc",
+            "color": "#666"
+          },
+          "container": "",
+          "inputStyles": {
+            "height": "26px",
+            "color": "#666",
+            "font-size": "18px",
+            "float": "right",
+            "text-align": "right"
+          },
+          "moduleName": "textfield"
+        },
+        "table_table$Td_16": {
+          "id": "table_table$Td_16",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "title",
+          "moduleName": "table$Td"
+        },
+        "label_10": {
+          "id": "label_10",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "text": "描述：",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "moduleName": "label"
+        },
+        "table_table$Td_17": {
+          "id": "table_table$Td_17",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {
+            "colspan": 3
+          },
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "content",
+          "moduleName": "table$Td"
+        },
+        "explain": {
+          "id": "explain",
+          "name": "",
+          "type": "Textarea",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "compute": "create",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "change": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "border": "0px solid #ccc",
+            "color": "#666"
+          },
+          "container": "",
+          "inputStyles": {
+            "height": "26px",
+            "color": "#666",
+            "font-size": "18px",
+            "float": "right",
+            "text-align": "right"
+          },
+          "moduleName": "textarea"
+        },
+        "attachment": {
+          "id": "attachment",
+          "name": "",
+          "type": "Attachment",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "upload": {
+              "code": "",
+              "html": ""
+            },
+            "delete": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "size": "max",
+          "isSizeChange": "true",
+          "attachmentCount": "0",
+          "resize": "false",
+          "listStyle": "icon",
+          "readonly": "false",
+          "isUpload": "y",
+          "isDelete": "y",
+          "isReplace": "y",
+          "isDownload": "y",
+          "class": "",
+          "styles": {},
+          "container": "",
+          "toolbarGroupHidden" : [],
+          "moduleName": "attachment"
+        },
+        "actionbar_1": {
+          "id": "actionbar_1",
+          "name": "",
+          "type": "Actionbar",
+          "description": "",
+          "sysTools": {
+            "editTools": [
+              {
+                "type": "MWFToolBarButton",
+                "img": "close.png",
+                "img_over": "close_over.png",
+                "title": "关闭文档",
+                "action": "closeDocument",
+                "text": "关闭",
+                "id": "action_close",
+                "condition": "reutrn true"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "save.png",
+                "img_over": "save_over.png",
+                "title": "保存文档",
+                "action": "saveDocument",
+                "text": "保存",
+                "id": "action_saveData",
+                "control": "allowSave",
+                "condition": "reutrn this.power.isEditor"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "submit.png",
+                "img_over": "submit_over.png",
+                "title": "发布文件",
+                "action": "publishDocument",
+                "text": "发布",
+                "id": "action_publishDocument",
+                "control": "allowPublishDocument",
+                "condition": "reutrn this.power.isOwner"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "del.png",
+                "img_over": "del_over.png",
+                "title": "删除文件",
+                "action": "deleteDocument",
+                "text": "删除",
+                "id": "action_delete",
+                "control": "allowDeleteDocument",
+                "condition": "reutrn this.power.isDelete"
+              }
+            ],
+            "readTools": [
+              {
+                "type": "MWFToolBarButton",
+                "img": "close.png",
+                "img_over": "close_over.png",
+                "title": "关闭文档",
+                "action": "closeDocument",
+                "id": "action_close",
+                "text": "关闭",
+                "condition": "reutrn true"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "edit.png",
+                "img_over": "edit_over.png",
+                "title": "编辑文档",
+                "action": "editDocument",
+                "id": "action_edit",
+                "text": "编辑",
+                "control": "allowEditDocument",
+                "condition": "reutrn this.power.isEdit"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "popular.png",
+                "img_over": "popular_over.png",
+                "title": "设置热点",
+                "action": "setPopularDocument",
+                "id": "action_popular",
+                "text": "设置热点",
+                "control": "allowPopularDocument",
+                "condition": "this.power.isPopular"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "del.png",
+                "img_over": "del_over.png",
+                "title": "删除文件",
+                "action": "deleteDocument",
+                "text": "删除",
+                "id": "action_delete",
+                "control": "allowDeleteDocument",
+                "condition": "reutrn this.power.isDelete"
+              }
+            ]
+          },
+          "tools": [],
+          "style": "xform_blue_simple",
+          "container": "",
+          "moduleName": "actionbar"
+        },
+        "table_table$Td_2": {
+          "id": "table_table$Td_2",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "title",
+          "moduleName": "table$Td"
+        },
+        "table_table$Td_3": {
+          "id": "table_table$Td_3",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "content",
+          "moduleName": "table$Td"
+        },
+        "table_table$Td_4": {
+          "id": "table_table$Td_4",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "title",
+          "moduleName": "table$Td"
+        },
+        "table_table$Td_5": {
+          "id": "table_table$Td_5",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "content",
+          "moduleName": "table$Td"
+        },
+        "table_table$Td_6": {
+          "id": "table_table$Td_6",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "title",
+          "moduleName": "table$Td"
+        },
+        "table_table$Td_7": {
+          "id": "table_table$Td_7",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "moduleName": "table$Td",
+          "cellType": "content"
+        },
+        "table_table$Td_8": {
+          "id": "table_table$Td_8",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "title",
+          "moduleName": "table$Td"
+        },
+        "table_table$Td_9": {
+          "id": "table_table$Td_9",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "moduleName": "table$Td",
+          "cellType": "content"
+        },
+        "label_4": {
+          "id": "label_4",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "hiddenCondition": "none",
+          "text": "日期：",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "moduleName": "label"
+        },
+        "calendar": {
+          "id": "calendar",
+          "name": "",
+          "type": "Calendar",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "range": "single",
+          "selectType": "date",
+          "format": "",
+          "compute": "create",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "change": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "border": "0px solid #ccc",
+            "color": "#666"
+          },
+          "container": "",
+          "inputStyles": {
+            "height": "26px",
+            "color": "#666",
+            "font-size": "18px",
+            "float": "right",
+            "text-align": "right"
+          },
+          "moduleName": "calendar"
+        },
+        "label_5": {
+          "id": "label_5",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "hiddenCondition": "none",
+          "text": "地点：",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "moduleName": "label"
+        },
+        "address": {
+          "id": "address",
+          "name": "",
+          "type": "Textfield",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "compute": "create",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "change": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "inputType": "text",
+          "properties": {},
+          "class": "",
+          "styles": {
+            "border": "0px solid #ccc",
+            "color": "#666"
+          },
+          "container": "",
+          "inputStyles": {
+            "height": "26px",
+            "color": "#666",
+            "font-size": "18px",
+            "float": "right",
+            "text-align": "right"
+          },
+          "moduleName": "textfield"
+        }
+      },
+      "fieldList": {},
+      "formStyleType": "defaultMobile"
+    },
+    "html": "<div id=\"93455de0-9955-4d5f-a520-829d303404cb_undefined\" mwftype=\"form\"><div id=\"div\" mwftype=\"div\"><div id=\"actionbar\" mwftype=\"actionbar\">移动端不支持此组件(actionbar)</div><div id=\"label\" mwftype=\"label\">(C)Text</div><div id=\"table\" mwftype=\"table\"><table width=\"90%\" align=\"center\" border=\"0\" cellspacing=\"0\" cellpadding=\"5\"><tbody><tr><td id=\"table_table$Td_2\" mwftype=\"table$Td\"><div id=\"label_1\" mwftype=\"label\">录入人：</div></td><td id=\"table_table$Td_3\" colspan=\"3\" mwftype=\"table$Td\"><div id=\"label_2\" mwftype=\"label\">(C)Text</div></td></tr><tr><td id=\"table_table$Td_4\" mwftype=\"table$Td\"><div id=\"label_1_1\" mwftype=\"label\">录入时间：</div></td><td id=\"table_table$Td_5\" colspan=\"3\" mwftype=\"table$Td\"><div id=\"label_2_1\" mwftype=\"label\">(C)Text</div></td></tr><tr><td id=\"table_table$Td\" mwftype=\"table$Td\"><div id=\"label_3\" mwftype=\"label\">标题：</div></td><td id=\"table_table$Td_1\" rowspan=\"1\" colspan=\"3\" mwftype=\"table$Td\"><div id=\"subject\" mwftype=\"textfield\"><div></div><div>subject</div></div></td></tr><tr><td id=\"table_table$Td_6\" mwftype=\"table$Td\"><div id=\"label_4\" mwftype=\"label\">日期：</div></td><td id=\"table_table$Td_7\" colspan=\"3\" mwftype=\"table$Td\"><div id=\"calendar\" mwftype=\"calendar\"><div></div><div>calendar</div></div></td></tr><tr><td id=\"table_table$Td_8\" mwftype=\"table$Td\"><div id=\"label_5\" mwftype=\"label\">地点：</div></td><td id=\"table_table$Td_9\" colspan=\"3\" mwftype=\"table$Td\"><div id=\"address\" mwftype=\"textfield\"><div></div><div>address</div></div></td></tr><tr><td id=\"table_table$Td_16\" mwftype=\"table$Td\"><div id=\"label_10\" mwftype=\"label\">描述：</div></td><td id=\"table_table$Td_17\" rowspan=\"1\" colspan=\"3\" mwftype=\"table$Td\"><div id=\"explain\" mwftype=\"textarea\"><div></div><div>explain</div></div></td></tr></tbody></table></div><div id=\"attachment\" mwftype=\"itmleditor\"><div><div><div><div><div title=\"上传\"><div></div></div><div title=\"删除\"><div></div></div><div title=\"替换\"><div></div></div><div></div><div title=\"下载\"><div></div></div></div></div><div><div><div title=\"列表\"><div></div></div><div title=\"图标\"><div></div></div><div title=\"预览\"><div></div></div></div></div><div><div><div title=\"简洁模式\"><div></div></div></div></div></div><div class=\"contentScrollNode\"><div class=\"content\"></div></div><div><div></div></div></div></div><div id=\"actionbar_1\" mwftype=\"actionbar\">移动端不支持此组件(actionbar)</div></div></div>",
+    "id": "",
+    "isNewForm": true
+  }
+}
