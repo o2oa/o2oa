@@ -14,7 +14,7 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.component.core.entity.Component.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Mon Dec 24 19:04:17 CST 2018")
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Thu Dec 27 11:40:20 CST 2018")
 public class Component_ extends SliceJpaObject_  {
     public static volatile ListAttribute<Component,String> allowList;
     public static volatile ListAttribute<Component,String> denyList;

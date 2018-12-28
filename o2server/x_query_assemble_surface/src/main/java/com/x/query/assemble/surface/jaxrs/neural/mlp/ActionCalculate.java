@@ -12,7 +12,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.query.assemble.surface.ThisApplication;
-import com.x.query.core.entity.neural.mlp.Project;
+import com.x.query.core.entity.neural.Project;
 
 class ActionCalculate extends BaseAction {
 

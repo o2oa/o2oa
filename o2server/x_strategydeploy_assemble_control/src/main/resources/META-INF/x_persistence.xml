@@ -5,8 +5,8 @@
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>com.x.base.core.entity.StorageObject</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
-    <class>com.x.base.core.entity.JpaObject</class>
     <class>com.x.strategydeploy.core.entity.Attachment</class>
+    <class>com.x.base.core.entity.JpaObject</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.strategydeploy.core.entity.KeyworkInfo" transaction-type="RESOURCE_LOCAL">
@@ -26,15 +26,15 @@
   <persistence-unit name="com.x.strategydeploy.core.entity.StrategyConfigSys" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>com.x.base.core.entity.SliceJpaObject</class>
-    <class>com.x.strategydeploy.core.entity.StrategyConfigSys</class>
     <class>com.x.base.core.entity.JpaObject</class>
+    <class>com.x.strategydeploy.core.entity.StrategyConfigSys</class>
     <properties/>
   </persistence-unit>
   <persistence-unit name="com.x.strategydeploy.core.entity.StrategyDeploy" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.x.strategydeploy.core.entity.StrategyDeploy</class>
     <class>com.x.base.core.entity.SliceJpaObject</class>
     <class>com.x.base.core.entity.JpaObject</class>
-    <class>com.x.strategydeploy.core.entity.StrategyDeploy</class>
     <properties/>
   </persistence-unit>
 </persistence>

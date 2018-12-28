@@ -16,7 +16,11 @@ import javax.persistence.metamodel.SingularAttribute;
 @javax.persistence.metamodel.StaticMetamodel
 (value=com.x.query.core.entity.neural.mlp.Project.class)
 @javax.annotation.Generated
-(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Mon Dec 24 19:04:03 CST 2018")
+<<<<<<< HEAD:o2server/x_query_core_entity/src/main/java/com/x/query/core/entity/neural/Project_.java
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Thu Dec 27 11:39:59 CST 2018")
+=======
+(value="org.apache.openjpa.persistence.meta.AnnotationProcessor6",date="Sun Dec 23 11:58:45 CST 2018")
+>>>>>>> parent of 56d40c07... 更新hanlp1.7.1:o2server/x_query_core_entity/src/main/java/com/x/query/core/entity/neural/mlp/Project_.java
 public class Project_ extends SliceJpaObject_  {
     public static volatile SingularAttribute<Project,String> alias;
     public static volatile SingularAttribute<Project,String> analyzeType;
