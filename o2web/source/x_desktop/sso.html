@@ -4,10 +4,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta charset="UTF-8">
     <title></title>
-    <!--<script src="res/framework/mootools/mootools-core-1.4.5-full-nocompat.js"></script>-->
-    <!--<script src="res/framework/mootools/mootools-more-1.4.0.1-all_2.js"></script>-->
-    <script src="res/framework/mootools/mootools-1.6.0.min.js"></script>
-    <script src="res/common.js?v=1.1.7"></script>
+    <script src="../o2_core/o2.js?v=2.0.0"></script>
+    <script src="../o2_core/compatible.js?v=2.0.0"></script>
     <script>
         function getServiceAddress(config, callback){
             if (typeOf(config.center)=="object"){
@@ -71,29 +69,8 @@
             }.bind(this));
         }
 
-//        function getServiceAddress(config, callback){
-//            var host = config.center.host || window.location.host;
-//            var port = config.center.port;
-//            var uri = "";
-//            if (!port || port=="80"){
-//                uri = "http://"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
-//            }else{
-//                uri = "http://"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
-//            }
-//            var currenthost = window.location.hostname;
-//            uri = uri.replace(/{source}/g, currenthost);
-//            //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
-//            MWF.restful("get", uri, null, function(json){
-//                var serviceAddressList = json.data;
-//                var addressObj = serviceAddressList["x_organization_assemble_authentication"];
-//                var address = "http://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
-//
-//                if (callback) callback(address);
-//            }.bind(this));
-//        }
-        COMMON.setContentPath("/x_desktop");
-        COMMON.AjaxModule.load("mwf", function(){
-            MWF.getJSON("res/config/config.json", function(config){
+        o2.addReady(function(){
+            o2.JSON.get("res/config/config.json", function(config){
                 getServiceAddress(config, function(address){
                     var uri = new URI(window.location.toString());
                     var xtoken = uri.getData("xtoken");
@@ -126,12 +103,7 @@
                 });
             });
 
-
-            //	MWF.require("MWF.process.RestActions", function(){
-            //		layout.restActions = new MWF.process.RestActions(Properties.action);
-            //	});
         });
-
 
     </script>
 </head>

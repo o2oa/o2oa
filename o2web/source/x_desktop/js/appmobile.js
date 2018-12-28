@@ -1,25 +1,23 @@
 layout = window.layout || {};
-var locate = window.location;
-layout.protocol = locate.protocol;
-var href = locate.href;
-if (href.indexOf("debugger")!=-1) layout.debugger = true;
-layout.mobile = true;
 layout.desktop = layout;
-layout.desktop.session = {};
-var uri = new URI(href);
-var appNames = uri.getData("app");
-var optionsStr = (uri.getData("option"));
-var statusStr = (uri.getData("status"));
 
-var options = (optionsStr) ? JSON.decode(optionsStr) : null;
-var statusObj = (statusStr) ? JSON.decode(statusStr) : null;
+o2.addReady(function(){
+    var locate = window.location;
+    layout.protocol = locate.protocol;
+    var href = locate.href;
+    if (href.indexOf("debugger")!=-1) layout.debugger = true;
+    layout.mobile = true;
 
-COMMON.DOM.addReady(function(){
-    COMMON.AjaxModule.load("/x_desktop/res/framework/mootools/plugin/mBox.Notice.js", null, false);
-    COMMON.AjaxModule.load("/x_desktop/res/framework/mootools/plugin/mBox.Tooltip.js", null, false);
+    layout.desktop.session = {};
+    var uri = new URI(href);
+    var appNames = uri.getData("app");
+    var optionsStr = (uri.getData("option"));
+    var statusStr = (uri.getData("status"));
 
-    COMMON.setContentPath("/x_desktop");
-    COMMON.AjaxModule.load("mwf", function(){
+    var options = (optionsStr) ? JSON.decode(optionsStr) : null;
+    var statusObj = (statusStr) ? JSON.decode(statusStr) : null;
+
+    o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], function(){
         MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
         MWF.loadLP("zh-cn");
 
