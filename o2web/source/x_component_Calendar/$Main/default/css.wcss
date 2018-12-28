@@ -1,0 +1,964 @@
+{
+    "rightContentNode": {
+        "height": "100%",
+        "margin-left": "200px",
+        "overflow": "hidden",
+        "background-color" : "#fff",
+        "opacity": 1
+    },
+    "naviContainerNode": {
+        "border-top" : "1px solid #fff",
+        "border-right" : "1px solid #ddd",
+        "float": "left",
+        "overflow": "hidden",
+        "width": "193px",
+        "height": "100%",
+        "background-color" : "#f7f7f7"
+    },
+    "leftTitleNode" : {
+        "height" : "60px",
+        "border-bottom" : "1px solid #ccc"
+    },
+    "titleIconAreaNode" : {
+        "float": "left",
+        "padding-top" :"15px",
+        "margin-left" :"10px"
+    },
+    "titleIconNode": {
+        "width": "32px",
+        "height": "32px",
+        "border-radius": "10px"
+    },
+    "titleContentNode" : {
+        "width": "160px"
+    },
+    "titleTextNode": {
+        "color": "#333",
+        "font-size": "20px",
+        "padding-top": "15px",
+        "line-height": "30px",
+        "height": "30px",
+        "margin-left" : "50px",
+        "width": "100px",
+        "overflow" : "hidden"
+    },
+    "naviNode": {
+        "position": "relative",
+        "overflow": "hidden"
+    },
+    "newCalendarNode" : {
+        "color" : "#666",
+        "border" : "1px solid #ccc",
+        "height" : "40px",
+        "line-height" : "40px",
+        "width" : "100px",
+        "margin" : "15px 20px 0px 20px",
+        "font-size" : "14px",
+        "padding-left" : "50px",
+        "background" : "url(/x_component_Calendar/$Main/default/icon/createCalendar.png) no-repeat 25px 12px",
+        "cursor" : "pointer"
+    },
+    "newCalendarNode_over" : {
+        "background" : "url(/x_component_Calendar/$Main/default/icon/createCalendar_over.png) no-repeat 25px 12px",
+        "background-color" : "#fff",
+        "color" : "#3c76b7"
+    },
+    "categoryNaviNode": {
+        "overflow" : "hidden",
+        "cursor" : "pointer",
+        "color" : "#333",
+        "height" : "40px",
+        "font-weight" : "normal",
+        "line-height" : "40px",
+        "font-family": "微软雅黑",
+        "font-size": "15px",
+        "background-color": "#f7f7f7"
+    },
+    "categoryNaviTextNode" : {
+        "float" : "left",
+        "font-size" : "16px",
+        "margin-left" : "10px"
+    },
+    "categoryExpendNode" : {
+        "height" : "40px",
+        "width" : "16px",
+        "float" : "left",
+        //"margin-top" : "12px",
+        "margin-left" : "15px",
+        "background": "url(/x_component_cms_Module/$Main/default/icon/arrow_down.png) no-repeat 0px 12px"
+    },
+    "categoryCollapseNode" : {
+        "height" : "40px",
+        "width" : "16px",
+        "float" : "left",
+        //"margin-top" : "12px",
+        "margin-left" : "15px",
+        "background": "url(/x_component_cms_Module/$Main/default/icon/arrow_right.png) no-repeat 0px 12px"
+    },
+    "naviItemNode" : {
+        "cursor" : "pointer",
+        "color" : "#333",
+        "height" : "30px",
+        "line-height" : "30px",
+        "overflow" : "hidden",
+        "font-family": "微软雅黑",
+        "font-size": "14px",
+        "background-color": "#f7f7f7"
+    },
+
+    "naviItemActionNode" : {
+        "height" : "16px",
+        "width" : "16px",
+        "margin-top" : "7px",
+        "margin-right" : "6px",
+        "float" : "right",
+        "opacity" : "0",
+        "background": "url(/x_component_Calendar/$Main/default/icon/more_over.png) no-repeat 0px 0px"
+    },
+    "naviItemTextNode" : {
+        "word-break":"break-all",
+        "margin-left" : "70px",
+        "width" : "100px"
+    },
+    "naviItemNode_selected" : {
+        "background-color" : "#3C76B7",
+        "color" : "#fff"
+    },
+    "naviItemNode_over" : {
+        "background-color" : "#F0F0F0",
+        "color" : "#3C76B7"
+    },
+    "naviItemSepartorNode" : {
+        //    "margin" : "0 auto",
+        //    "height" : "1px",
+        //    "width" : "180px",
+        //    "border-bottom" : "1px solid rgba(240, 242, 251, 1)"
+    },
+    "naviItemBottom" : {
+        //    "width" : "200px",
+        //    "height" : "88px",
+        //    "position" : "absolute",
+        //    "bottom" : "88px",
+        //    "left" : "0px",
+        //    "background-image" : "url(/x_component_cms_Module/$Main/default/icon/titleBackground2.png)",
+        //    "background-position" : "-538px -508px"
+    },
+    "naviColorNode" : {
+        "float" : "left",
+        "border-radius" : "40px",
+        "width" : "16px",
+        "height" : "16px",
+        "margin-top" : "6px",
+        "margin-left" : "41px",
+        "cursor" : "pointer",
+        "border" : "1px solid #dfdfdf",
+        "background-image" : "none",
+        "background-repeat" : "no-repeat",
+        "background-position" : " 50%"
+    },
+    "naviColorNode_selected" : {
+        "background-image" : "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAKCAYAAACE2W/HAAAABGdBTUEAALGPC/xhBQAAAK1JREFUKBWVjzEKwkAURBMiimBvY2NjZWWVU+RU1mnTpkhhm0YsvYaNIDYpUgRygM2bsLuoZCEOPPbv/JkNiaI/ZIzZwh1Os2uEd/AA6TqrSHAPTzWQvrgZiwzL0AvsDvAG6QZrV8q4vOD4W5YHDUg1rHyGSyUXteB/WrP1OMwFFr6kASOBEqQOUotmSbvkq+QuLGIoQOotmuXFLhc8CeVKW+XB4NSC0llM7T69AcWO0hZLcgV4AAAAAElFTkSuQmCC)",
+        "background-repeat" : "no-repeat",
+        "background-position" : " 50%"
+    },
+//    "seeMoreNode": {
+//        "overflow" : "hidden",
+//        "cursor" : "pointer",
+//        "color" : "#666",
+//        "height" : "40px",
+//        "font-weight" : "normal",
+//        "line-height" : "40px",
+//        "font-family": "微软雅黑",
+//        "font-size": "15px",
+//        "padding-left" : "65px",
+//        "background": "url(/x_component_Calendar/$Main/default/icon/plazz.png) no-repeat 40px 12px",
+//        "background-color": "#f7f7f7"
+//    },
+//    "seeMoreNode_over" : {
+//        "color" : "#3c76b7"
+//    },
+    "seeMoreNode" : {
+        "position" : "absolute",
+        "color" : "#666",
+        "bottom" : "0px",
+        "left" : "0px",
+        "border-top" : "1px solid #bbb",
+        "border-bottom" : "1px solid #bbb",
+        "height" : "40px",
+        "line-height" : "40px",
+        "width" : "120px",
+        "font-size" : "14px",
+        "padding-left" : "70px",
+        "background" : "url(/x_component_Calendar/$Main/default/icon/plazz.png) no-repeat 45px 12px",
+        "background-color" : "#f7f7f7",
+        "cursor" : "pointer"
+    },
+    "seeMoreNode_over" : {
+        "background" : "url(/x_component_Calendar/$Main/default/icon/plazz_over.png) no-repeat 45px 12px",
+        "background-color" : "#f7f7f7",
+        "color" : "#3c76b7"
+    },
+
+
+	"topMenu": {
+	    "height": "50px",
+//	    "position": "absolute",
+//	    "top": "0px",
+	    "width": "100%",
+	    "color": "#FFF",
+	    "line-height": "50px",
+	    "font-size": "14px",
+	    "font-family": "微软雅黑",
+	    "background-color": "#fff",
+        "overflow" : "hidden"
+	},
+    "topMenuRight" : {
+        "float" : "right",
+        "margin-right" : "20px"
+    },
+	"contentNode": {
+	    "height": "100%",
+	    "overflow": "hidden"
+	},
+	"bottomMenu": {
+        "height": "60px",
+        "position": "absolute",
+        "bottom": "0px",
+        "width": "100%",
+        "color": "#FFF",
+        "font-family": "微软雅黑",
+        "background-color": "#365775"
+    },
+    "topMenuNode": {
+        "height": "50px",
+        "color" : "#333",
+        "font-size" : "16px",
+        "line-height": "50px",
+        "float": "left",
+        "cursor": "pointer",
+        "padding-left" : "15px",
+        "padding-right" : "15px",
+        "overflow" : "hidden"
+    },
+    "topMenuNode_right" : {
+        "height": "50px",
+        "color" : "#333",
+        "font-size" : "16px",
+        "line-height": "50px",
+        "padding-left" : "10px",
+        "padding-right" : "10px",
+        "float": "left",
+        "cursor": "pointer"
+    },
+    "topMenuNode_over": {
+        "color" : "#3C76B7"
+    },
+    "topMenuNode_down": {
+        "color" : "#3C76B7"
+    },
+    "topMenuIconNode": {
+        "height": "50px",
+        "width": "30px",
+        "float": "left"
+    },
+    "topMenuTextNode": {
+        "line-height": "50px",
+        "height": "50px",
+        "float": "left"
+    },
+    "bottomMenuNode": {
+        "height": "40px",
+        "width": "40px",
+        "margin": "10px",
+        "float": "left",
+        "cursor": "pointer"
+    },
+
+    "topMenuPoint": {
+        "height": "10px",
+        "color": "#FFF",
+        "position": "absolute",
+        "bottom": "0px",
+        "width": "100%",
+        "color": "#FFF",
+        "line-height": "6px",
+        "font-size": "14px",
+        "font-weight": "bold",
+        "text-align": "center"
+    },
+    "menuPointAction":{
+        "width": "30px",
+        "height": "10px",
+        "margin": "auto",
+        "background": "url(/x_component_Calendar/$Main/default/icon/point.png) no-repeat center center"
+    },
+
+    "bottomMenuPoint": {
+        "height": "10px",
+        "color": "#FFF",
+        "position": "absolute",
+        "top": "0px",
+        "width": "100%",
+        "color": "#FFF",
+        "line-height": "6px",
+        "font-size": "14px",
+        "font-weight": "bold",
+        "text-align": "center"
+    },
+
+//    "popupformTopNode": {
+//        "color" : "#333",
+//        "height": "30px",
+//        "background-color": "#eee",
+//        "border-top": "1px solid #ddd",
+//        "border-bottom": "1px solid #b6b6b6",
+//        "line-height": "30px",
+//        "font-size": "14px",
+//        "font-weight": "bold",
+//        "padding-left": "20px",
+//        "text-align": "left"
+//    },
+//    "popupformTopIconNode" : {
+//        "width": "28px",
+//        "height": "32px",
+//        "float": "left",
+//        "background": "url(/x_component_Execution/$WorkForm/default/icon/document.png) no-repeat center 4px"
+//    },
+//    "popupformTopTextNode" : {
+//        "font-size": "16px",
+//        "float": "left",
+//        "width" : "480px",
+//        "overflow" : "hidden",
+//        "text-overflow" : "ellipsis",
+//        "white-space":"nowrap"
+//    },
+//    "popupformTopContentNode" : {
+//        "float" : "right",
+//        "padding-right" : "10px",
+//        "text-align" : "right"
+//    },
+//    "popupformTopCloseActionNode": {
+//        "width": "30px",
+//        "height": "30px",
+//        "float": "right",
+//        "background": "url(/x_component_Template/$Explorer/default/icon/close.png) no-repeat center center",
+//        "cursor": "pointer"
+//    },
+
+
+
+    "createRoomNode": {
+        "overflow": "auto",
+        "background-color": "#EEE",
+        "position": "absolute",
+        "width": "60%",
+        "height": "60%",
+        "top": "0px",
+        "opacity": 0,
+        "z-index": "100"
+    },
+    "createRoomAreaNode": {
+        "width": "70%",
+        "max-width": "800px",
+        "min-width": "500px",
+        "margin": "0px auto",
+        "padding": "20px"
+    },
+    "createRoomTitleNode": {
+        "font-size": "36px",
+        "color": "#666",
+        "height": "80px",
+        "line-height": "80px",
+        "padding": "0px 40px",
+        "border-bottom": "3px solid #666"
+    },
+    "createRoomContentNode": {
+        "overflow": "hidden",
+        "padding": "10px 20px"
+    },
+    "createRoomBottomNode": {
+        "overflow": "hidden",
+        "padding": "10px",
+        "width": "280px",
+        "margin": "auto"
+    },
+    "createRoomFormNode": {
+        "clear": "both",
+        "overflow": "hidden",
+        "margin-bottom": "10px"
+    },
+    "createRoomFormNode2": {
+        "overflow": "hidden",
+        "margin-bottom": "10px",
+        "width": "48%",
+        "float": "left"
+    },
+    "createRoomFormNode3": {
+        "overflow": "hidden",
+        "margin-bottom": "10px",
+        "width": "48%",
+        "float": "right"
+    },
+
+    "createRoomFormTitleNode": {
+        "font-size": "18px",
+        "color": "#555",
+        "height": "30px",
+        "line-height": "30px"
+    },
+    "createRoomFormContentNode": {
+        "height": "30px",
+        "font-size": "14px",
+        "color": "#333"
+    },
+    "createRoomFormAuditorNode": {
+        "height": "24px",
+        "margin-bottom": "6px",
+        "overflow": "hidden",
+        "border": "1px solid #999",
+        "font-size": "14px",
+        "background-color": "#FFF",
+        "color": "#666",
+        "cursor": "pointer",
+        "width": "98%"
+    },
+    "createRoomFormContentNode2": {
+        "padding-top": "2px",
+        "min-height": "22px",
+        "font-size": "14px",
+        "background": "#FFF",
+        "overflow": "hidden",
+        "border": "1px solid #999",
+        "width": "98%",
+        "color": "#333"
+    },
+    "createRoomFormInput": {
+        "height": "22px",
+        "border": "1px solid #999",
+        "font-size": "14px",
+        "color": "#666",
+        "width": "98%"
+    },
+    "createRoomFormSelect": {
+        "height": "26px",
+        "font-size": "14px",
+        "color": "#666",
+        "border": "1px solid #999",
+        "width": "98%"
+    },
+    "createRoomOkActionNode": {
+        "height": "30px",
+        "width": "85px",
+        "cursor": "pointer",
+        "float": "right",
+        "line-height": "30px",
+        "padding-left": "65px",
+        "font-size": "16px",
+        "font-family": "微软雅黑",
+        "border-radius": "3px",
+        "border": "1px solid #354f67",
+        "color": "#FFF",
+        "margin-right": "20px",
+        "margin-top": "20px",
+        "box-shadow": "0px 0px 0px #666",
+        "background": "url(/x_component_process_ApplicationExplorer/$Main/default/icon/editOk_bg.png) no-repeat"
+    },
+    "createRoomCancelActionNode": {
+        "height": "30px",
+        "width": "60px",
+        "cursor": "pointer",
+        "float": "right",
+        "line-height": "30px",
+        "padding-left": "40px",
+        "font-size": "16px",
+        "font-family": "微软雅黑",
+        "border-radius": "3px",
+        "color": "#FFF",
+        "margin-top": "20px",
+        "box-shadow": "0px 0px 0px #666",
+        "border": "1px solid #999",
+        "background": "url(/x_component_process_ApplicationExplorer/$Main/default/icon/editCancel_bg.png) no-repeat"
+    },
+
+    "createRoomSelectBuildingNode": {
+        "border-left": "1px solid #999",
+        "border-right": "1px solid #999",
+        "border-bottom": "1px solid #999",
+        "min-height": "50px",
+        "max-height": "300px",
+        "overflow": "auto",
+        "background-color": "#FFF",
+        "position": "absolute"
+    },
+    "createRoomBuildingSelectItem": {
+        "height": "50px",
+        "cursor": "default",
+        "margin-bottom": "0px",
+        "overflow": "hidden"
+    },
+    "createRoomBuildingSelectItem_over": {
+        "background-color": "#bacae8"
+    },
+    "createRoomBuildingSelectItemName": {
+        "height": "24px",
+        "line-height": "24px",
+        "overflow": "hidden",
+        "color": "#333",
+        "margin": "5px 10px 0px 10px",
+        "font-size": "19px"
+    },
+    "createRoomBuildingSelectItemAddr": {
+        "height": "16px",
+        "lin-height": "16px",
+        "overflow": "hidden",
+        "color": "#999",
+        "margin": "0px 10px 5px 10px",
+        "font-size": "12px"
+    },
+
+    "createRoomErrorInfoNode": {
+        "color": "#FF0000",
+        "height": "20px",
+        "line-height": "20px",
+        "position": "relative",
+        "text-align": "right",
+        "padding-right": "20px",
+        "top": "-50px"
+    },
+
+    "createCalendarInfoTitleNode": {
+        "margin-left": "60px",
+        "font-size": "28px"
+    },
+    "createCalendarInfoContentNode": {
+        "overflow": "hidden",
+        "padding": "0px 30px"
+    },
+    "createCalendarInfoLineNode": {
+//        "height": "60px",
+//        "margin": "10px 0px"
+    },
+    "createCalendarInfoItemTitleNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "font-size": "18px"
+    },
+    "createCalendarInfoItemEditNode": {
+        "height": "30px"
+    },
+    "createCalendarInfoItemInputNode": {
+        "border": "2px solid #CCC",
+        "height": "22px",
+        "font-size": "14px",
+        "color": "#666",
+        "line-height": "22px",
+        "width": "100%"
+    },
+    "createCalendarInfoItemSelectNode": {
+        "border": "2px solid #CCC",
+        "height": "22px",
+        "font-size": "14px",
+        "color": "#666",
+        "line-height": "22px",
+        "margin-right": "10px",
+        "min-width": "80px"
+    },
+    "createCalendarInfoItemDivNode": {
+        "border": "1px solid #CCC",
+        "border-radius" : "4px",
+        "background-color": "#FFF",
+        "height": "30px",
+        "font-size": "16px",
+        "color": "#333",
+        "line-height": "30px",
+        "width": "99%",
+        "background" : "url(/x_component_Calendar/$Main/default/apply/down.png) 98% center no-repeat"
+    },
+    "createCalendarInfoSelectRoomNode": {
+        "background-color": "#FFF",
+        //"min-height": "30px",
+        "max-height": "400px",
+        "overflow-y": "auto",
+        "border": "1px solid #999",
+        "position": "absolute"
+    },
+    "createCalendarInfoSelectRoomItem1Node": {
+        "height": "50px",
+        "padding": "5px 5px",
+        "overflow": "hidden",
+        "background-color": "#DDD"
+    },
+    "createCalendarInfoSelectRoomItem1NameNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "font-size": "24px",
+        "font-weight": "bold",
+        "color": "#333"
+    },
+    "createCalendarInfoSelectRoomItem1AddrNode": {
+        "height": "20px",
+        "line-height": "20px",
+        "font-size": "12px",
+        "color": "#999"
+    },
+    "createCalendarInfoSelectRoomItemRoomNode": {
+        "height": "20px",
+        "line-height": "20px",
+        "font-size": "12px",
+        "color": "#999"
+    },
+    "roomTitleNode": {
+        "height": "40px",
+        "cursor": "pointer",
+        "color": "#333",
+        "padding": "5px 20px",
+        "background-color": "#FFF",
+        "overflow": "hidden"
+    },
+
+    "roomTitleCapacityNode": {
+        "width": "40px",
+        "margin-right": "10px",
+        "height": "40px",
+        "float": "right",
+        "color": "#999",
+        "line-height": "40px",
+        "font-size": "14px",
+        "text-align": "right"
+    },
+    "roomTitleInforNode": {
+        "margin-right": "50px",
+        "height": "40px"
+    },
+    "roomTitleNumberNode": {
+        "height": "20px",
+        "line-height": "20px",
+        "padding-left": "5px",
+        "color": "#444",
+        "float": "left"
+    },
+    "roomTitleNameNode":{
+        "height": "20px",
+        "line-height": "20px",
+        "padding-left": "5px",
+        "font-weight": "bold",
+        "font-size": "14px",
+        "float": "left"
+    },
+    "roomTitleIconsNode": {
+        "height": "20px"
+    },
+    "roomTitleIconNode": {
+        "height": "20px",
+        "width": "18px",
+        "float": "left",
+        "background-repeat": "no-repeat",
+        "background-position": "center center"
+    },
+    "roomTitleDisabledIconNode": {
+        "width": "40px",
+        "height": "40px",
+        "background": "url(/x_component_Calendar/$Main/default/apply/disabled.png) no-repeat center center",
+        "position": "relative",
+        "top": "-40px",
+        "margin-right": "50px",
+        "float": "right"
+    },
+    "createCalendarContentHeadNode": {
+        "height": "80px",
+        "line-height": "80px",
+        "padding": "0px 20px",
+        "overflow": "hidden",
+        "border-bottom": "2px solid #31369e",
+        "margin": "0px 20px"
+    },
+    "createCalendarSaveNode": {
+        "height": "80px",
+        "width": "60px",
+        "float": "right",
+        "background": "url(/x_component_Calendar/$Main/default/apply/save.png) no-repeat center center",
+        "cursor": "pointer"
+    },
+    "createCalendarSaveNode_over": {
+        "background": "url(/x_component_Calendar/$Main/default/apply/save_over.png) no-repeat center center"
+    },
+    "createCalendarSaveNode_down": {
+        "background": "url(/x_component_Calendar/$Main/default/apply/save_down.png) no-repeat center center"
+    },
+    "createCalendarSubjectNode": {
+        "height": "80px",
+        "margin-right": "60px"
+    },
+
+    "createCalendarSubjectInputNode": {
+        "height": "80px",
+        "font-size": "32px",
+        "width": "99%",
+        "color": "#555",
+        "border": "0px",
+        "background": "transparent"
+    },
+    "createCalendarAttachmentNode": {
+        "min-height": "40px",
+        "overflow": "hidden",
+        "margin": "10px 0px"
+    },
+    "createCalendarAttachmentTitleNode": {
+        "width": "200px",
+        "margin-left": "20px",
+        "font-size": "18px",
+        "color": "#666",
+        "float": "left",
+        "height": "40px",
+        "line-height": "40px"
+    },
+    "createCalendarAttachmentContentNode": {
+        "margin-left": "220px",
+        "margin-right": "20px",
+        "min-height": "40px",
+        "overflow": "hidden"
+    },
+
+    "createCalendarDescriptionNode": {
+        "overflow": "hidden",
+        "border-top": "2px solid #31369e",
+        "margin": "0px 20px",
+        "padding": "20px 0px"
+    },
+    "createCalendarDescriptionAreaNode": {
+        "overflow": "hidden",
+        "margin": "0px 20px"
+    },
+    "createCalendarDescriptionInputNode": {
+        "border": "0px",
+        "width": "100%",
+        "font-size": "14px",
+        "overflow": "auto",
+        "font-family": "微软雅黑",
+        "color": "#666"
+    },
+    "configNode": {
+        "box-shadow": "inset 1px 0 0 0 #CCCCCC",
+        "background": "#F8F8F8",
+        "width": "300px",
+        "position": "absolute",
+        "right": "0px",
+        "top": "50px",
+        "opacity": "0",
+        "overflow": "auto"
+    },
+    "configContentNode": {
+        "margin": "20px",
+        "overflow": "hidden"
+    },
+    "configContentLine": {
+        "height": "1px",
+        "border-bottom": "1px dashed #ccc",
+        "margin-top" : "20px",
+        "margin-bottom" : "20px"
+    },
+    "configProcessNode": {
+        "height": "30px",
+        "border-bottom": "1px dashed #ccc",
+        "background": "url(/x_component_Calendar/$Main/default/icon/addPerson.png) no-repeat right center",
+        "margin-top" : "10px",
+        "cursor": "pointer",
+        "margin-bottom" : "20px"
+    },
+    "configCalendarViewerNode" : {
+        "min-height": "30px",
+        "overflow" : "hidden",
+        "border-bottom": "1px dashed #ccc",
+        "background": "url(/x_component_Calendar/$Main/default/icon/addPerson.png) no-repeat right center",
+        "margin-top" : "10px",
+        "cursor": "pointer",
+        "margin-bottom" : "20px"
+    },
+    "configTitleDiv": {
+        "height": "30px",
+        "width": "180px", 
+        "color": "#333",
+        "font-size": "18px",
+        "margin-bottom" : "10px"
+    },
+
+    "configActionNode": {
+        "height": "50px",
+        "margin": "20px"
+    },
+    "configActionSaveNode": {
+        "background": "#3C76B7",
+        "border-radius": "4px",
+        "width" : "120px",
+        "height" : "40px",
+        "line-height" : "40px",
+        "border" : "0px",
+        "color" : "#fff",
+        "cursor" : "pointer",
+        "text-align"  : "center",
+        "margin-right" : "20px",
+        "font-size" : "18px",
+        "float" : "right"
+    },
+    "configActionCancelNode": {
+        "background": "#f0f0f0",
+        "border-radius": "4px",
+        "width" : "80px",
+        "height" : "40px",
+        "line-height" : "40px",
+        "margin-right" : "20px",
+        "color" : "#666",
+        "border" : "0px",
+        "font-size" : "18px",
+        "text-align"  : "center",
+        "cursor" : "pointer",
+        "float" : "right"
+    },
+    "dealStartedWorkAction": {
+        "color": "#0000FF",
+        "cursor": "pointer"
+    },
+
+    //marketItem 样式开始
+    "marketNode" : {
+        "margin" : "0px 0px 20px 20px",
+        "border" : "1px solid #dedede",
+        "border-left" : "8px solid #dedede",
+        "border-radius" : "6px",
+        "width" : "320px",
+        "height" : "174px",
+        "box-shadow" :"none",
+        "position" : "relative",
+        "float" : "left"//,
+        //"cursor":"pointer"
+
+    },
+    "marketNode_over" : {
+        "box-shadow" :"3px 3px 3px #999"
+    },
+    "marketItemNode" : {
+        "background-color" : "#fff",
+        "position" : "relative"
+    },
+    "marketItemTopNode":{
+        "padding-top" : "10px",
+        "padding-left" : "15px",
+        "overflow": "hidden"
+    },
+    "marketItemMiddleNode":{
+        "padding-top" : "8px",
+        "padding-left" : "15px",
+        "overflow": "hidden"
+    },
+    "marketItemColorNode" : {
+        "margin-top": "2px",
+        "float" : "left",
+        "border-radius" : "4px",
+        "width" : "16px",
+        "height" : "16px",
+        "margin-right" : "10px",
+        "cursor" : "pointer",
+        "background-image" : "none",
+        "background-repeat" : "no-repeat",
+        "background-position" : " 50%"
+    },
+    "marketItemTopLable" : {
+        "font-size" : "14px",
+        "height" : "20px",
+        "line-height" : "20px",
+        "color" : "#999",
+        "float" : "left"
+    },
+    "marketItemTopInfor" : {
+        "font-size" : "14px",
+        "height" : "20px",
+        "line-height" : "20px",
+        "color" : "#333",
+        "float" : "left",
+        "max-width" : "165px"
+    },
+    "marketItemTitleNode" : {
+        "height": "20px", "color": "rgb(51, 51, 51)", "line-height": "20px", "font-family": "微软雅黑", "font-size": "16px","font-weight" : "bold",
+        "float" : "left","margin-top" : "5px", "max-width" : "200px"
+    },
+    "marketItemDescriptiontInfor" : {
+        "font-size" : "14px",
+        "width" : "245px",
+        "line-height" : "20px",
+        "color" : "#666",
+        "float" : "left",
+        "max-height" : "60px"
+    },
+    "marketItemTitleNode_over" : {
+        "color" : "rgb(51, 51, 51)"
+    },
+    "marketTypleLabel" : {
+        "margin-top" : "2px",
+        "margin-left" : "10px",
+        "padding" : "0px 5px",
+        "background-color" : "#8ca3b5",
+        "height" : "20px",
+        "line-height" : "20px",
+        "color" : "#fff",
+        "float" : "left"
+    },
+    "marketItemListNode" : {
+        "height" : "159px",
+        "padding-top" : "5px",
+        "margin-top" : "5px",
+        "margin-left" : "10px",
+        "margin-right" : "10px",
+        "border-top" : "1px solid #dedede"
+    },
+    "marketItemListItemNode" : {
+        "color" : "#666",
+        "height" : "24px",
+        "line-height" : "24px",
+        "font-size" : "14px"
+    },
+    "marketItemListItemNode_over" : {
+        "color" : "#0258ad"
+    },
+    "marketItemFollowAction" : {
+        "border" : "1px solid #DEDEDE",
+        "width" : "39px",
+        "line-height" : "20px",
+        "height" : "20px",
+        "font-size" : "12px",
+        "position" : "absolute",
+        "top" : "15px",
+        "right" : "20px",
+        "border-radius" : "100px",
+        "padding-left" : "35px",
+        "cursor" : "pointer",
+        "background" : "url(/x_component_Calendar/$Main/default/icon/plus.png) no-repeat 13px center"
+    },
+    "marketItemFollowedAction" : {
+        "border" : "1px solid #DEDEDE",
+        "width" : "46px",
+        "line-height" : "20px",
+        "height" : "20px",
+        "font-size" : "12px",
+        "position" : "absolute",
+        "top" : "15px",
+        "right" : "20px",
+        "border-radius" : "100px",
+        "padding-left" : "28px",
+        "cursor" : "pointer",
+        "background" : "url(/x_component_Calendar/$Main/default/icon/checked.png) no-repeat 8px center"
+    },
+    "noCalendarNode" : {
+        "border": "1px solid #ccc",
+        "border-radius": "4px",
+        "margin" : "50px auto",
+        "width" : "500px",
+        "height" : "200px",
+        "line-height" : "200px",
+        "text-align" : "center",
+        "font-size" : "20px",
+        "color" : "#999",
+        "background-color" : "#fff"
+    }
+    //marketItem 样式结束
+
+}

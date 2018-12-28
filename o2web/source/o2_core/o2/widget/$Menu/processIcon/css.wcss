@@ -1,0 +1,111 @@
+{
+	"container": {
+		"border-top": "2px solid #999",
+		"border-left": "2px solid #999",
+		"border-right": "2px solid #999",
+		"border-bottom": "2px solid #999",
+		"background-color": "#FFF",
+		"padding": "5px",
+		"overflow": "hidden",
+		"font-size": "12px",
+		"display": "none",
+		"z-index": "999",
+		"opacity": 0,
+		"position": "absolute",
+		"float": "left",
+		"width": "310px",
+		"box-shadow": "3px 3px 10px #AAA", 
+		"cursor": "default"
+	},
+	"menuItem": {
+		"display":"block",
+		"position": "static",
+		"height": "44px",
+		"width": "44px",
+		"line-height": "24px",
+		"border": "0px solid #FFF",
+		"background-color": "#FFF",
+		"float": "left"
+	},
+
+	"menuItemImgDiv": {
+		"display":"block",
+		"float": "left",
+		"width": "2px",
+		"height": "24px",
+		"text-align": "center"
+	},
+	"menuItemImg": {
+		"height": "32px",
+		"width": "32px",
+		"margin-top": "5px",
+		"margin-left": "5px"
+	},
+	"menuItemSeparator": {
+		"display":"block",
+		"float": "left",
+		"height": "28px",
+		"width": "0px",
+		"background-color": "#CCCCCC",
+		"border-right": "0px solid #FFFFFF",
+		"overflow": "hidden"
+	},
+	"menuItemText": {
+		"display":"block",
+		"position": "static",
+		"height": "28px",
+		"margin-left": "12px",
+		"margin-right": "14px",
+		"line-height": "24px"
+	},
+	"menuLine": {
+		"position": "static",
+		"display":"block",
+		"height": "1px",
+		"overflow": "hidden",
+		"margin-left": "0px",
+		"margin-top": "3px",
+		"margin-bottom": "3px",
+		"background-color": "#CCCCCC",
+		"border-bottom": "1px solid #FFFFFF"
+	},
+	"menuItemDisable": {
+		"color": "#999"
+	},
+
+	"menuOver": {
+		"border": "0px solid #8d9cc3",
+		//"background-color": "#b5bed6"
+		"background-color": "#e3e7f1"
+	},
+	"menuOut": {
+		"border": "0px solid #FFF",
+		"background-color": "#FFF"
+	},
+	"menuDown": {
+		"border": "0px solid #000000",
+		"background-color": "#c6cde0"
+	},
+	"menuUp": {
+		"border": "0px solid #8d9cc3",
+		//"background-color": "#b5bed6"
+		"background-color": "#e3e7f1"
+	},
+	"toolbarButtonDownNode": {
+		"display":"block",
+		"float": "left",
+		"padding-left": "2px",
+		"padding-right": "2px",
+		"padding-top": "0px",
+		"height": "18px",
+		"color": "#ff0000",
+		"cursor": "pointer"
+	},
+	"menuItemSubmenuIcon":{
+		"background-image": "url("+o2.session.path+"/widget/$Menu/default/submenu.png)",
+		"height": "16px",
+		"width": "16px",
+		"margin-top": "4px",
+		"float": "right"
+	}
+}

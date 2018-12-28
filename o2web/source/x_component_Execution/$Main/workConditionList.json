@@ -1,0 +1,38 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='todoTable' class='todoTable'></table>"
+  },
+
+  "documentSetting": {
+    "html": "<tr class='documentTr' styles='documentTr'></tr>",
+    "mouseoverStyles": "documentTr_over",
+    "action": "open"
+  },
+  "items": [
+    {
+      "name": "dynamicObjectTitle",
+      "content": {
+        "html": "<td class='workConditionTd' styles='workConditionTd'>" +
+        "<div styles='workConditionDiv'>"+
+        "   <div styles='workConditionTime' item='dateTimeStr'></div>"+
+        "   <div styles='workConditionContent' item='content'></div>"+
+        "   <div>"+
+        "   <span styles='workConditionPerson' item='targetName'></span><span styles='workConditionAction' item='description'></span>"+
+        "   </div>"+
+        "</div>"+
+        "</td>",
+        "items": {
+          "dynamicObjectTitle": {},
+          "dateTimeStr":{},
+          "content":{ "type" : "html" },
+          "targetName":{
+            "value":"function(d){if(d.targetName=='SYSTEM'){return '系统自动'}else{return d.targetName.split('@')[0]}}"
+          },
+          "description":{}
+
+        }
+      }
+    }
+  ]
+}
+

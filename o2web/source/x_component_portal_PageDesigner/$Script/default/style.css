@@ -1,0 +1,133 @@
+.node {
+    height: 100%;
+    overflow: hidden;
+}
+.listAreaNode {
+    height: 100%;
+    width: 240px;
+    overflow: hidden;
+    float: left;
+
+    border-right:1px solid #999999;
+}
+.scriptAreaNode {
+    height: 100%;
+    margin-left:245px;
+}
+.separatorNode {
+    width: 2px;
+    background-color: #666666;
+    float: right;
+    margin-top: 5px;
+    margin-right:2px;
+    cursor: col-resize;
+}
+.listNode {
+    border: 1px solid #999999;
+    border-right-color: #dddddd;
+    border-bottom-color: #dddddd;
+    background-color: #ffffff;
+    margin: 2px 6px 5px 5px;
+    overflow: auto;
+}
+.listActionNode {
+    height: 24px;
+    margin: 5px 6px 0 5px;
+}
+.listActionButton {
+    border: 1px solid #eeeeee;
+    height: 20px;
+    padding: 0px 5px;
+    line-height: 20px;
+    float: left;
+    margin: 2px 3px 2px 0;
+    cursor: pointer;
+}
+.listActionButton_over {
+    background-color: #ffffff;
+}
+.listActionButton_select {
+    border: 1px solid #999999;
+    border-right-color: #dddddd;
+    border-bottom-color: #dddddd;
+    background-color: #ffffff;
+    color: #bf6364;
+}
+.listContentNode {
+    overflow: hidden;
+}
+.scriptNode {
+    margin: 15px 10px;
+    box-shadow: 0 0 20px #606060;
+    background-color: #ffffff;
+}
+
+.itemCategory {
+    min-height: 22px;
+    line-height: 22px;
+    padding: 0px 5px;
+    overflow: hidden;
+}
+.itemCategoryTitle {
+    margin: 2px 0px;
+    height: 22px;
+    line-height: 22px;
+    font-size: 12px;
+    overflow: hidden;
+    cursor: pointer;
+}
+.itemCategoryTitle_over {
+    background-color: #e8eef7;
+}
+.itemCategoryTitleIcon {
+    height: 22px;
+    width:20px;
+    float: left;
+    background: url("/x_component_portal_PageDesigner/$Script/default/collapse.gif") no-repeat center center;
+}
+.itemCategoryTitleIcon_expand {
+    background: url("/x_component_portal_PageDesigner/$Script/default/expand.gif") no-repeat center center;
+}
+.itemCategoryTitleName {
+    height: 22px;
+    word-break: break-all;
+}
+.itemCategoryChildren {
+    margin-left: 20px;
+    overflow: hidden;
+    display: none;
+}
+
+
+
+.item {
+     height: 24px;
+     line-height: 24px;
+     cursor: pointer;
+     margin: 3px 10px 3px 10px;
+}
+.itemIcon {
+    height: 24px;
+    width: 26px;
+    float: left;
+    background: url("/x_component_portal_PageDesigner/$Script/default/script.png") no-repeat center center;
+}
+.itemText {
+    margin-left: 28px;
+    white-space: nowrap;
+}
+.item_over {
+     background-color: #e8eef7;
+ }
+.item_select {
+    background-color: #48638f;
+}
+.itemText_select {
+    color: #ffffff;
+}
+.scriptTabNode {
+    height: 100%;
+}
+.scriptContentNode {
+    height:100%;
+}

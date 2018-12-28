@@ -1,0 +1,134 @@
+{
+	"node": {
+	    "min-height": "24px",
+	    "overflow": "hidden",
+	    "margin-right": "26px"
+	},
+	"addPersonNode": {
+        "float": "right",
+        "height": "24px",
+        "width": "24px",
+        "cursor": "pointer",
+        "background": "url("+"/x_component_process_ProcessDesigner/widget/$PersonSelector/default/icon/addPerson.png)  center center no-repeat"
+    },
+
+    "dutyMaskNode": {
+        "background-color": "#666",
+        "opacity": 0.6,
+        "z-index":1000
+    },
+    "dutyInputArea": {
+        "height": "510px",
+        "width": "355px",
+        "background-color": "#FFF",
+        "overflow": "hidden",
+        "border": "3px solid #666",
+        "border-radius": "10px",
+        "box-shadow": "0px 0px 15px #666",
+        "position": "absolute",
+        "z-index":1001
+    },
+    "dutyTitleNode": {
+        "height": "30px",
+        "background-color": "#EEE",
+        "border-bottom": "1px solid #CCC"
+    },
+
+    "dutyTitleTextNode": {
+        "margin-right": "30px",
+        "height": "30px",
+        "padding": "0px 10px",
+        "color": "#666",
+        "font-weight": "bold",
+        "font-size": "14px",
+        "line-height": "30px"
+    },
+    "dutyTitleActionNode": {
+        "width": "30px",
+        "height": "30px",
+        "float": "right",
+        "background": "url("+"/x_component_Organization/Selector/$Selector/default/icon/close.png) no-repeat center center",
+        "cursor": "pointer"
+    },
+
+    "dutyContentNode": {
+        "overflow": "hidden",
+        "height": "410px",
+        "padding": "12px"
+    },
+    "dutyContentAreaNode": {
+        "height": "410px"
+    },
+    "dutyActionNode": {
+        "height": "40px",
+        "width": "310px",
+        "margin": "auto"
+    },
+    "dutyOkActionNode": {
+        "width": "150px",
+        "height": "30px",
+        "background": "url("+"/x_component_Organization/Selector/$Selector/default/icon/editOk_bg.png) no-repeat center center",
+        "border": "0px",
+        "color": "#FFF",
+        "font-size": "18px",
+        "padding-left": "35px",
+        "border-radius": "4px",
+        "cursor": "pointer"
+    },
+    "dutyCancelActionNode": {
+        "width": "100px",
+        "height": "30px",
+        "background": "url("+"/x_component_Organization/Selector/$Selector/default/icon/editCancel_bg.png) no-repeat center center",
+        "border": "0px",
+        "color": "#FFF",
+        "font-size": "18px",
+        "padding-left": "20px",
+        "border-radius": "4px",
+        "margin-left": "10px",
+        "cursor": "pointer"
+    },
+    "dutyTextNode": {
+        "color": "#444",
+        "font-size": "14px",
+        "font-weight": "bold",
+        "height": "26px",
+        "margin-bottom": "6px",
+        "line-height": "26px"
+    },
+    "dutyReferenceAreaNode": {
+        "height": "28px",
+        "padding": "4px 0px 0px 0px",
+        "overflow": "hidden"
+    },
+    "dutyReferenceItemNode":{
+        "margin": "0px 4px 4px 0px",
+        "height": "24px",
+        "line-height": "24px",
+        "border": "1px solid #CCC",
+        "border-radius": "4px",
+        "background": "#f3f4ff",
+        "color": "#666",
+        "float": "left",
+        "cursor": "pointer",
+        "font-size": "14px",
+        "padding": "0px 10px"
+    },
+    "dutyReferenceItemNode_over": {
+        "background": "#e7eaff",
+        "border": "1px solid #999",
+        "color": "#666",
+    },
+    "dutyReferenceItemNode_down": {
+        "background": "#626ca6",
+        "border": "1px solid #FFF",
+        "color": "#FFF",
+    },
+    "dutyScriptAreaNode": {
+        "height": "316px",
+        "padding": "10px 0px"
+    },
+    "dutyScriptNode": {
+        "height": "316px",
+        "border": "1px solid #EEE"
+    }
+}

@@ -1,0 +1,55 @@
+{
+	"moduleNodeMove": {
+		"border": "2px dashed #ffa200",
+		"height": "22px",
+		"line-height": "22px",
+		"overflow": "hidden",
+		"margin": "3px",
+		"display": "block",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "absolute",
+		"z-index": 10002,
+		"opacity": 0.7,
+		"color": "#666",
+		"width": "100px",
+	//	"padding-left": "22px",
+	//	"background": "url("+"/x_component_process_FormDesigner/Module/Tree/default/icon/tree1.png) 3px center no-repeat",
+		"cursor": "move"
+	},
+	"moduleNodeShow": {
+		"border": "1px dashed #333",
+		"height": "2px",
+		"cursor": "pointer",
+		"line-height": "22px",
+		"overflow": "hidden",
+		"margin": "3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "static",
+		"display": "block",
+		"top": "auto",
+		"left": "auto",
+		"width": "auto",
+		"opacity": 0.5,
+		"background": "#ffa200"
+	},
+	"moduleNode": {
+		"border": "1px dashed #333",
+		"height": "auto",
+		"cursor": "pointer",
+		"line-height": "22px",
+		"overflow": "hidden",
+		"margin": "3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "static",
+		"display": "block",
+		"top": "auto",
+		"left": "auto",
+		"width": "auto",
+		"opacity": 1
+	//	"background": "url("+"/x_component_process_FormDesigner/Module/Tree/default/icon/tree1.png) 3px center no-repeat"
+	}
+	
+}

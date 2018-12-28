@@ -1,0 +1,104 @@
+{
+  "getId" : {"uri":"/jaxrs/uuid/random"},
+
+  "listSetting" : {"uri":"/jaxrs/setting/list/all"},
+  "saveSetting" : {"uri":"/jaxrs/setting", "method": "POST"},
+  "getSettingWithCode" : {"uri":"/jaxrs/setting/code/{code}"},
+
+  "isAdmin" : {"uri":"/jaxrs/setting/ismanager"},
+
+  "createImmediately" : {"uri":"/jaxrs/report/createImmediately", "method": "POST"},
+
+  "listReportByYear" : {"uri":"/jaxrs/report/filter/list/{year}"},
+  "listReportNextWithFilter" : {"uri":"/jaxrs/report/filter/list/{id}/next/{count}", "method": "PUT"},
+  "listMyAuditNextWithFilter" : {"uri":"/jaxrs/report/filter/list/{id}/next/{count}/audit", "method": "PUT"},
+  "getReport" : {"uri":"/jaxrs/report/{id}"},
+  "listDayByYearMonth" : {"uri":"/jaxrs/report/list/date/year/{year}/month/{month}"},
+  "listDayForPage" : {"uri":"/jaxrs/report/list/date/page/{page}/{count}"},
+  "getPageNumberForDay": {"uri":"/jaxrs/report/page/date/{date}/count/{count}"},
+  "saveWorkPerson" : {"uri":"/jaxrs/report/workperson/save", "method": "POST"},
+  "submitWorkPerson" : {"uri":"/jaxrs/report/workperson/submit", "method": "POST"},
+
+  "listUnitWorkWithReport" : {"uri":"/jaxrs/reportworkinfo/list/report/{reportId}/unitwork"},
+  "listWorkTagWithUnit": {"uri":"/jaxrs/reportworkinfo", "method": "PUT"},
+  "saveWorkInfor" : {"uri":"/jaxrs/reportworkinfo", "method": "POST"},
+  //in {workPlanSummaryList:workPlanSummaryList}
+  "saveWorkPlanSummaries" : {"uri":"/jaxrs/reportworkinfo/planSummaries", "method": "POST"},
+  //in { id:workInfoId , workPlanSummary:工作计划汇总信息 }
+  "saveWorkPlanSummary" : {"uri":"/jaxrs/reportworkinfo/planSummaruy", "method": "POST"},
+  //in {workProgSummaryList:workProgSummaryList}
+  "saveWorkProgSummaries" : {"uri":"/jaxrs/reportworkinfo/progSummaries", "method": "POST"},
+  //in { id:workInfoId , workProgSummary:工作计划汇总信息 }
+  "saveWorkProgSummary" : {"uri":"/jaxrs/reportworkinfo/progSummaruy", "method": "POST"},
+
+  "listPlan" : {"uri":"/jaxrs/workplan/listWithReport/{reportId}"},
+  "savePlan" : {"uri":"/jaxrs/workplan", "method": "POST"},
+  "getPlan" : {"uri":"/jaxrs/workplan/{id}", "method": "GET"},
+  "deletePlan" : {"uri":"/jaxrs/workplan/{id}", "method": "DELETE"},
+  "updatePlanOrder" : {"uri":"/jaxrs/workplan/order/update","method":"PUT"},
+
+  "listPlanNext" : {"uri":"/jaxrs/workplannext/listWithReport/{reportId}"},
+  "savePlanNext" : {"uri":"/jaxrs/workplannext", "method": "POST"},
+  "getPlanNext" : {"uri":"/jaxrs/workplannext/{id}", "method": "GET"},
+  "deletePlanNext" : {"uri":"/jaxrs/workplannext/{id}", "method": "DELETE"},
+  "updatePlanNextOrder" : {"uri":"/jaxrs/workplannext/order/update","method":"PUT"},
+
+  "listWorkInfoByYear" : {"uri":"/jaxrs/stat/stat/work/year/{year}","method":"PUT"},
+  "listWork" : {"uri":"/jaxrs/workprog/listWithReport/{reportId}"},
+  "listWithPriority" : {"uri":"/jaxrs/workprog/listWithWorks/{year}", "method": "PUT"},
+  "saveWork" : {"uri":"/jaxrs/workprog", "method": "POST"},
+  "getWork" : {"uri":"/jaxrs/workprog/{id}", "method": "GET"},
+  "deleteWork" : {"uri":"/jaxrs/workprog/{id}", "method": "DELETE"},
+  "updateWorkOrder" : {"uri":"/jaxrs/workprog/order/update","method":"PUT"},
+
+  //{identity:身份标识}
+  "listKeyWork" : {"uri":"/jaxrs/workconfig/list/{reportId}/person"},
+  "getKeyWork" : {"uri":"/jaxrs/workconfig/work/{reportId}/{workId}"},
+
+  "listStartProfileByYear" : {"uri":"/jaxrs/profiles/list/{year}"},
+  "deleteStartProfile" : {"uri":"/jaxrs/profiles/{profileId}", "method" : "DELETE"}, //删除启动记录并删除相关的工作汇报、
+
+  "statByKeyWork" : { "uri" : "/jaxrs/export/strategydeploy/{year}/stream" },
+  "statByUnit" : { "uri" : "/jaxrs/export/unitreport/stream", "method" : "PUT" },
+  "exportStatResult" : {"uri":"/jaxrs/export/file/{id}/stream"},
+
+  "listUnitNamesForReport" :  { "uri" : "/jaxrs/report/list/units", "method" : "PUT" },
+
+  "getExtWork" : { "uri" : "/jaxrs/ext/{id}" },
+  "saveExtWork" : { "uri" : "/jaxrs/ext/save/{reportId}","method":"POST" },
+  "deleteExtWork" : { "uri" : "/jaxrs/ext/{reportId}/{id}","method":"DELETE" },
+  //{  infoLevel : infoLevel , targetPerson : targetPerson }
+  "listExtWorkWithReportId" : { "uri" : "/jaxrs/ext/filter/list/{reportId}","method":"PUT" },
+  "updateExtWorkOrder" : { "uri" : "/jaxrs/ext/order/update/{reportId}","method":"PUT" },
+
+  "listFuwuWithReportId" : { "uri" : "/jaxrs/ext/fuwu/list/report/{reportId}" },
+  "listGuanaiWithReportId" : { "uri" : "/jaxrs/ext/guanai/list/report/{reportId}" },
+  "listYijianWithReportId" : { "uri" : "/jaxrs/ext/yijian/list/report/{reportId}" },
+
+  "listFuwuWithCategoryId" : { "uri" : "/jaxrs/ext/fuwu/list/category/{categoryId}" },
+  "listGuanaiWithCategoryId" : { "uri" : "/jaxrs/ext/guanai/list/category/{categoryId}" },
+  "listYijianWithCategoryId" : { "uri" : "/jaxrs/ext/yijian/list/category/{categoryId}" },
+
+  "saveFuwu" : { "uri" : "/jaxrs/ext/fuwu","method":"POST" },
+  "saveGuanai" : { "uri" : "/jaxrs/ext/guanai","method":"POST" },
+  "saveYijian" : { "uri" : "/jaxrs/ext/yijian","method":"POST" },
+
+  "deleteFuwu" : { "uri" : "/jaxrs/ext/fuwu/{id}","method":"DELETE" },
+  "deleteGuanai" : { "uri" : "/jaxrs/ext/guanai/{id}","method":"DELETE" },
+  "deleteYijian" : { "uri" : "/jaxrs/ext/yijian/{id}","method":"DELETE" },
+
+  "updateFuwuOrder" : { "uri" : "/jaxrs/ext/fuwu/order/update","method":"PUT" },
+  "updateGuanaiOrder" : { "uri" : "/jaxrs/ext/guanai/order/update","method":"PUT" },
+  "updateYijianOrder" : { "uri" : "/jaxrs/ext/yijian/order/update","method":"PUT" },
+
+  "saveOpinion" : { "uri" : "/jaxrs/report/opinion/{reportId}","method":"PUT" },
+
+  "syncWorkFlow" : { "uri" : "/jaxrs/report/wfsync/{id}","method":"POST" },
+  "modifyReportStatus" : { "uri" : "/jaxrs/report/status/{id}/modify","method":"POST" },
+
+  "checkStarted" : { "uri" : "/jaxrs/profiles/{profileId}/check","method":"GET" },
+  "supplemental" : { "uri" : "/jaxrs/profiles/{profileId}/supplemental","method":"GET" },
+
+  "clazz": "x_report_assemble_control"
+
+}

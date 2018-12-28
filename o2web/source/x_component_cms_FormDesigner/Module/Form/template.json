@@ -1,0 +1,198 @@
+{
+  "pcData": {
+    "json": {
+      "id": "",
+      "name": "新建表单",
+      "type": "Form",
+      "mode": "PC",
+      "description": "",
+      "application": "",
+      "applicationName": "",
+
+      "styles": {},
+      "properties": {},
+      "cssLinks": [],
+      "scriptSrc": [],
+      "jsheader": {
+        "code": "",
+        "html": ""
+      },
+
+      "events": {
+        "help": {
+          "code": "",
+          "html": ""
+        },
+        "load": {
+          "code": "",
+          "html": ""
+        },
+        "unload": {
+          "code": "",
+          "html": ""
+        },
+        "click": {
+          "code": "",
+          "html": ""
+        },
+        "dblclick": {
+          "code": "",
+          "html": ""
+        },
+        "keydown": {
+          "code": "",
+          "html": ""
+        },
+        "keypress": {
+          "code": "",
+          "html": ""
+        },
+        "keyup": {
+          "code": "",
+          "html": ""
+        },
+
+        "mousedown": {
+          "code": "",
+          "html": ""
+        },
+        "mousemove": {
+          "code": "",
+          "html": ""
+        },
+        "mouseout": {
+          "code": "",
+          "html": ""
+        },
+        "mouseover": {
+          "code": "",
+          "html": ""
+        },
+        "mouseup": {
+          "code": "",
+          "html": ""
+        },
+        "focus": {
+          "code": "",
+          "html": ""
+        },
+        "blur": {
+          "code": "",
+          "html": ""
+        },
+        "submit": {
+          "code": "",
+          "html": ""
+        },
+        "reset": {
+          "code": "",
+          "html": ""
+        }
+
+      },
+
+      "moduleList": {},
+      "fieldList": {}
+    },
+    "html":"<div MWFType=\"form\" id=\"\"></div>"
+  },
+  "mobileData": {
+    "json": {
+      "id": "",
+      "name": "新建表单",
+      "type": "Form",
+      "mode": "Mobile",
+      "description": "",
+      "application": "",
+      "applicationName": "",
+
+      "styles": {},
+      "properties": {},
+      "cssLinks": [],
+      "scriptSrc": [],
+      "jsheader": {
+        "code": "",
+        "html": ""
+      },
+
+      "events": {
+        "help": {
+          "code": "",
+          "html": ""
+        },
+        "load": {
+          "code": "",
+          "html": ""
+        },
+        "unload": {
+          "code": "",
+          "html": ""
+        },
+        "click": {
+          "code": "",
+          "html": ""
+        },
+        "dblclick": {
+          "code": "",
+          "html": ""
+        },
+        "keydown": {
+          "code": "",
+          "html": ""
+        },
+        "keypress": {
+          "code": "",
+          "html": ""
+        },
+        "keyup": {
+          "code": "",
+          "html": ""
+        },
+
+        "mousedown": {
+          "code": "",
+          "html": ""
+        },
+        "mousemove": {
+          "code": "",
+          "html": ""
+        },
+        "mouseout": {
+          "code": "",
+          "html": ""
+        },
+        "mouseover": {
+          "code": "",
+          "html": ""
+        },
+        "mouseup": {
+          "code": "",
+          "html": ""
+        },
+        "focus": {
+          "code": "",
+          "html": ""
+        },
+        "blur": {
+          "code": "",
+          "html": ""
+        },
+        "submit": {
+          "code": "",
+          "html": ""
+        },
+        "reset": {
+          "code": "",
+          "html": ""
+        }
+
+      },
+
+      "moduleList": {},
+      "fieldList": {}
+    },
+    "html":"<div MWFType=\"form\" id=\"\"></div>"
+  }
+
+}
+

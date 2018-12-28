@@ -1,0 +1,147 @@
+{
+	"moduleAreaNode": {
+	    "width": "420px",
+	    "float": "left",
+	    "height": "100%",
+	    "background-color": "#eeeeee"
+	},
+	"resizeAreaNode": {
+	    "width": "2px",
+	    "height": "100%",
+	    "float": "left",
+	    "background-color": "#cccccc",
+	    "cursor": "col-resize"
+	},
+	"scriptAreaNode": {
+	    "height": "100%",
+	    "margin-left": "422px",
+        "background-color": "#ffffff",
+	},
+	"moduleTypeAreaNode": {
+	    "margin": "0px",
+	    "height": "100%",
+	    "background-color": "#ffffff",
+	    "border-right": "1px solid #cccccc",
+	    "float": "left",
+	    "padding": "0px 0px",
+	    "width": "86px",
+	    "overflow": "hidden"
+	},
+	"moduleBlockAreaNode": {
+	    "margin": "0px",
+	    "height": "100%",
+	    "margin-left": "86px",
+	    "overflow": "auto"
+	},
+	"moduleTypeNode": {
+	    "height": "36px",
+	    //"width": "47%",
+	    //"float": "left",
+	    "margin-top": "0px",
+	    "cursor": "pointer"
+	},
+	"moduleTypeColorNode": {
+	    "height": "36px",
+	    "width": "36px",
+	    "float": "left"
+	},
+	"moduleTypeIconNode":{
+	    "height": "36px",
+        "width": "36px",
+        "background-repeat": "no-repeat",
+        "background-position": "center center"
+	},
+	"moduleTypeTextNode": {
+	    "height": "36px",
+        "line-height": "36px",
+        "margin-left": "42px",
+        "font-size": "12px",
+        "color": "#8f9193"
+	},
+	"moduleBlocksNode": {
+	    "padding": "10px",
+	    "overflow": "hidden",
+	    "float": "left"
+	},
+	"scriptAreaTitleNode": {
+        "height": "30px",
+        //"border-bottom": "1px solid #cccccc",
+        "background-color": "#eeeeee"
+	},
+	"scriptAreaBlockNode": {
+	    "overflow": "auto",
+	    "position": "relative"
+	},
+    "scriptAreaScriptNode": {
+        "overflow": "auto",
+        "display": "none"
+    },
+    "scriptAreaTitleBlockNode": {
+        "height": "30px",
+        //"margin": "4px",
+        "float": "left",
+        //"border": "1px solid #cccccc",
+        "width": "60px",
+        "text-align": "center",
+        "line-height": "30px",
+        "font-size": "12px",
+        "cursor": "pointer",
+        "background": "#eeeeee"
+    },
+    "scriptAreaTitleScriptNode": {
+        "height": "30px",
+        //"margin": "4px",
+        "float": "right",
+        //"border": "1px solid #cccccc",
+        "width": "60px",
+        "text-align": "center",
+        "line-height": "30px",
+        "font-size": "12px",
+        "cursor": "pointer",
+        "background": "#eeeeee"
+    },
+    "titleActionNode_current": {
+        "background": "#ffffff"
+    },
+    "moduleBlocksSplitLineNode": {
+        "height": "30px",
+        "clear": "both",
+        "margin-bottom": "10px"
+    },
+    "moduleBlocksSplitLineLeftNode": {
+        "height": "14px",
+        "width": "20px",
+        "float": "left",
+        "border-bottom": "1px solid #aaaaaa"
+    },
+    "moduleBlocksSplitLineTextNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "padding": "0px 5px",
+        "color": "#777777",
+        "font-size": "12px",
+        "background": "#eeeeee",
+        "float": "left",
+    },
+    "moduleBlocksSplitLineRightNode": {
+        "height": "14px",
+        "border-bottom": "1px solid #aaaaaa"
+    },
+
+
+
+
+
+	"moduleNode": {
+	    "height": "26px",
+	    "color": "#ffffff",
+	    "line-height": "26px",
+	    "border-radius": "3px",
+	    "box-shadow": "2px 2px 5px #333",
+	    "margin-bottom": "10px",
+	    "padding": "0px 10px",
+	    "float": "left",
+	    "clear": "both",
+	    "cursor": "pointer"
+	}
+}

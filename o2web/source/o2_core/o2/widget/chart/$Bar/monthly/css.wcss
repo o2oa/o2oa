@@ -1,0 +1,92 @@
+{
+    "svgNode": {
+        "width": "100%",
+        "height": "100%"
+    },
+    "rect": {
+	},
+	"rect_over_defs": {
+        "tag": "filter",
+        "attrs": {
+            "x1": "0",
+            "y1": "0",
+            "width": "200%",
+            "height": "200%"
+        },
+        "subs": [
+            {
+                "tag": "feOffset",
+                "attrs": {
+                    "result": "offOut",
+                    "in": "SourceAlpha",
+                    "dx": "3",
+                    "dy": "3"
+                }
+            },
+            {
+                "tag": "feGaussianBlur",
+                "attrs": {
+                    "result": "offOut",
+                    "in": "offOut",
+                    "stdDeviation": "3"
+                }
+            },
+            {
+                "tag": "feBlend",
+                "attrs": {
+                    "in": "SourceGraphic",
+                    "in2": "blurOut",
+                    "mode": "normal"
+                }
+            }
+        ],
+        "urlAttr": "filter"
+	},
+
+	"xxais_text": {
+	    "transform": function(d, text){ var size = o2.getTextSize(text.textContent, {'font-size': '10px'}); return "translate("+(0-(size.x/2))+", 0) rotate(-30 "+size.x/2+" 0)";},
+
+        //"transform": function(d, text){ return "rotate(-30)";},
+
+        "width": "100",
+        "font-size": "10px",
+        "text-anchor": "middle",
+        "text-align": "right"
+    },
+    "xxais_path": {
+
+    },
+    "xxais_line": {
+
+    },
+    "rectText": {
+        //"textLength": function(d, text){ return this.xScale.bandwidth()/this.barsData.length},
+        "width": function(d, text){ return o2.getTextSize((this.options.dataFormat) ? d3.format(this.options.dataFormat)(d.data) : d.data).x },
+        "font-size": "12px",
+        "display": "none"
+    },
+
+    colors: [
+        "#1f77b4",
+        "#aec7e8",
+        "#ff7f0e",
+        "#ffbb78",
+        "#2ca02c",
+        "#98df8a",
+        "#d62728",
+        "#ff9896",
+        "#9467bd",
+        "#c5b0d5",
+        "#8c564b",
+        "#c49c94",
+        "#e377c2",
+        "#f7b6d2",
+        "#7f7f7f",
+        "#c7c7c7",
+        "#bcbd22",
+        "#dbdb8d",
+        "#17becf",
+        "#9edae5"
+    ]
+	
+}

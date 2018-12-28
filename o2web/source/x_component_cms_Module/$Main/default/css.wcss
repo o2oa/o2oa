@@ -1,0 +1,275 @@
+{
+  "node": {
+    "width": "100%",
+    "height": "100%",
+    "overflow": "hidden",
+    "background-color":"#fff",
+    "-webkit-user-select": "text",
+    "-moz-user-select": "text"
+  },
+  "rightContentNode": {
+    "height": "100%",
+    "margin-left": "300px",
+    "overflow": "hidden",
+    "background-color" : "#fff",
+    "opacity": 1
+  },
+  "naviContainerNode": {
+    "border-top" : "1px solid #fff",
+    "border-right" : "1px solid #ddd",
+    "float": "left",
+    "overflow": "hidden",
+    "width": "293px",
+    "height": "100%",
+    "background-color" : "#f7f7f7"
+  },
+  "leftTitleNode" : {
+    "height" : "100px",
+    "border-bottom" : "3px solid #3c76b7"
+  },
+  "titleIconAreaNode" : {
+    "float": "left",
+    "padding-top" :"17px",
+    "padding-left" : "20px"
+  },
+  "titleIconNode": {
+    "width": "64px",
+    "height": "64px",
+    "border-bottom-left-radius": "10px",
+    "border-bottom-right-radius": "10px",
+    "border-top-left-radius": "10px",
+    "border-top-right-radius": "10px"
+  },
+  "titleContentNode" : {
+    "padding-left": "15px",
+    "float": "left",
+    "width": "170px"
+  },
+  "titleTextNode": {
+    "color": "#333",
+    "font-size": "20px",
+    "padding-top": "20px",
+    "line-height": "30px",
+    "height": "30px",
+    "width": "170px",
+    "overflow" : "hidden"
+  },
+  "titleDescriptionNode": {
+    "color": "#999",
+    "font-size": "12px",
+    "padding-top": "5px",
+    "padding-bottom": "5px",
+    "line-height" : "20px",
+    "height": "40px",
+    "width": "170px",
+    "overflow" : "hidden"
+  },
+  "moduleContent" : {
+
+  },
+
+  "titleBar": {
+    "margin-left" : "13px",
+    "margin-right" : "20px",
+    "overflow": "hidden",
+    "mine-height": "50px",
+    "border-bottom" : "1px solid #ccc"
+  },
+
+
+  "createDocumentAction": {
+    "height": "50px",
+    "line-height": "50px",
+    "color" : "#666",
+    "font-size" : "15px",
+    "background": "url(/x_component_cms_Index/$Main/default/icon/createDocument.png) 20px center no-repeat",
+    "float": "right",
+    "padding-left" : "40px",
+    "cursor": "pointer"
+  },
+  "createDocumentAction_over": {
+    "color" : "#3c76b7",
+    "background": "url(/x_component_cms_Index/$Main/default/icon/createDocument_over.png) 20px center no-repeat"
+  },
+
+  "importAction": {
+    "height": "50px",
+    "line-height": "50px",
+    "color" : "#666",
+    "font-size" : "15px",
+    "background": "url(/x_component_cms_Module/$Main/default/icon/import.png) 20px center no-repeat",
+    "float": "right",
+    "padding-left" : "40px",
+    "cursor": "pointer"
+  },
+  "importAction_over": {
+    "color" : "#3c76b7",
+    "background": "url(/x_component_cms_Module/$Main/default/icon/import_blue.png) 20px center no-repeat"
+  },
+
+  "exportAction": {
+    "height": "50px",
+    "line-height": "50px",
+    "color" : "#666",
+    "font-size" : "15px",
+    "background": "url(/x_component_cms_Module/$Main/default/icon/export.png) 20px center no-repeat",
+    "float": "right",
+    "padding-left" : "40px",
+    "cursor": "pointer"
+  },
+  "exportAction_over": {
+    "color" : "#3c76b7",
+    "background": "url(/x_component_cms_Module/$Main/default/icon/export_blue.png) 20px center no-repeat"
+  },
+
+
+
+  "naviNode": {
+//    "border": "0px",
+//    "border-radius": "0px",
+    "position": "relative",
+    "overflow": "hidden"
+    //"margin-right" : "-7px",
+  },
+//  "categoryNaviNode": {
+//    "cursor" : "pointer",
+//    "display" : "block",
+//    "height": "35px",
+//    "margin": "0px",
+//    "background": "url(/x_component_cms_Module/$Main/default/icon/category.png) no-repeat 20px center",
+//    "background-color" : "#f1f8ff",
+//    "line-height" :"35px",
+//    "font-family": "微软雅黑",
+//    "font-size": "14px",
+//    "color" : "#3587d7",
+//    "padding-left" : "40px"
+//  },
+
+  "categoryNaviNode": {
+    "overflow" : "hidden",
+    "cursor" : "pointer",
+    "color" : "#333",
+    "height" : "40px",
+    "font-weight" : "normal",
+    "line-height" : "40px",
+    "font-family": "微软雅黑",
+    "font-size": "15px",
+    "background" : "url(/x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 38px 12px",
+    "background-color": "#f7f7f7"
+  },
+  "categoryNaviNode_selected" : {
+    "color" : "#fff",
+    "background": "url(/x_component_cms_Module/$Main/default/icon/category_folder_selected.png) no-repeat 38px 12px",
+    "background-color" : "#3C76B7"
+  },
+  "categoryNaviNode_over" : {
+    "background": "url(/x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 38px 12px",
+    "background-color" : "#f0f0f0",
+    "color" : "#333"
+  },
+  "categoryNaviTextNode" : {
+    "float" : "left",
+    "margin-left" : "33px"
+  },
+  "emptyExpendNode" : {
+    "height" : "40px",
+    "width" : "16px",
+    "float" : "left",
+    //"margin-top" : "12px",
+    "margin-left" : "16px"
+  },
+  "categoryExpendNode" : {
+    "height" : "40px",
+    "width" : "16px",
+    "float" : "left",
+    //"margin-top" : "12px",
+    "margin-left" : "16px",
+    "background": "url(/x_component_cms_Module/$Main/default/icon/arrow_down.png) no-repeat 0px 12px"
+  },
+  "categoryExpendNode_selected" : {
+    "height" : "40px",
+    "width" : "16px",
+    "float" : "left",
+    //"margin-top" : "12px",
+    "margin-left" : "16px",
+    "background": "url(/x_component_cms_Module/$Main/default/icon/arrow_down_selected.png) no-repeat 0px 12px"
+  },
+  "categoryCollapseNode" : {
+    "height" : "40px",
+    "width" : "16px",
+    "float" : "left",
+    //"margin-top" : "12px",
+    "margin-left" : "16px",
+    "background": "url(/x_component_cms_Module/$Main/default/icon/arrow_right.png) no-repeat 0px 12px"
+  },
+  "categoryCollapseNode_selected" : {
+    "height" : "40px",
+    "width" : "16px",
+    "float" : "left",
+    //"margin-top" : "12px",
+    "margin-left" : "16px",
+    "background": "url(/x_component_cms_Module/$Main/default/icon/arrow_right_selected.png) no-repeat 0px 12px"
+  },
+
+  "viewNaviListNode" : {
+  },
+  "viewNaviListNode_all" : {
+//    "padding-top" : "10px"
+  },
+  "viewNaviNode_all" : {
+    "cursor" : "pointer",
+    "color" : "#333",
+    "padding-left" : "65px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "font-family": "微软雅黑",
+    "font-size": "15px",
+    "background" : "url(/x_component_cms_Module/$Main/default/icon/category_all3.png) no-repeat 38px 12px",
+    "background-color": "#f7f7f7"
+  },
+  "viewNaviNode_all_selected" : {
+    "background": "url(/x_component_cms_Module/$Main/default/icon/category_all_selected.png) no-repeat 38px 12px",
+    "background-color" : "#3C76B7",
+    "color" : "#fff"
+  },
+  "viewNaviNode_all_over" : {
+    "background" : "url(/x_component_cms_Module/$Main/default/icon/category_all3.png) no-repeat 38px 12px",
+    "background-color" : "#f0f0f0",
+    "color" : "#333"
+  },
+
+
+  "viewNaviNode" : {
+    "cursor" : "pointer",
+    "color" : "#666",
+    "padding-left" : "65px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "font-family": "微软雅黑",
+    "font-size": "14px",
+    "background-color": "#f7f7f7"
+  },
+  "viewNaviNode_selected" : {
+    "background-color" : "#3C76B7",
+    "color" : "#fff"
+  },
+  "viewNaviNode_over" : {
+    "background-color" : "#f0f0f0",
+    "color" : "#666"
+  },
+  "viewNaviSepartorNode" : {
+//    "margin" : "0 auto",
+//    "height" : "1px",
+//    "width" : "180px",
+//    "border-bottom" : "1px solid rgba(240, 242, 251, 1)"
+  },
+  "viewNaviBottom" : {
+//    "width" : "200px",
+//    "height" : "88px",
+//    "position" : "absolute",
+//    "bottom" : "88px",
+//    "left" : "0px",
+//    "background-image" : "url(/x_component_cms_Module/$Main/default/icon/titleBackground2.png)",
+//    "background-position" : "-538px -508px"
+  }
+}

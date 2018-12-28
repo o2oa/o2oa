@@ -1,0 +1,303 @@
+{
+  "addVoteGroupNode" : {
+    "margin-top" : "5px",
+    "margin-right": "5px",
+    "float": "left",
+    "background-color": "#FFF",
+    "padding": "5px 14px",
+    "border": "1px solid #999",
+    "border-radius": "3px",
+    "font-size": "14px",
+    "color": "#666",
+    "cursor": "pointer"
+  },
+  "removeVoteGroupNode" : {
+    "margin-left": "15px",
+    "background-color": "#FFF",
+    "padding": "3px 14px",
+    "border": "1px solid #999",
+    "border-radius": "3px",
+    "font-size": "14px",
+    "color": "#666",
+    "cursor": "pointer"
+  },
+  "inforNode" : {
+    "font-size" : "18px"
+  },
+  "infor2Node" : {
+    "font-size" : "14px"
+  },
+  "submitButton" : {
+    "cursor" : "pointer",
+    "color" : "#fff",
+    "padding" : "5px 20px",
+    "font-size" : "14px",
+    "background-color" : "#3C76B7",
+    "margin-right" : "10px",
+    "border" : "1px solid #3C76B7"
+  },
+  "submitButton_over" : {
+    "background-color" : "#43aafa",
+    "border" : "1px solid #43aafa"
+  },
+  "groupContainer" : {
+    "margin":"15px 0px"
+  },
+  "showPersonNode" : {
+    "margin-left":"10px"
+  },
+  "groupTitle" : {
+    "font-size" : "14px",
+    "margin-top" : "15px",
+    "margin-bottom" : "10px"
+  },
+  "optionContainer" : {
+    "margin-bottom" : "15px",
+    "overflow" : "hidden"
+  },
+  "optionsDiv" : {
+    "font-size" : "14px",
+    "padding" : "10px 0px",
+    "border-bottom" : "1px solid #ccc",
+    "max-width" : "85%"
+  },
+
+  "optionPictureContainer" : {
+    "margin-bottom" : "15px",
+    "overflow" : "hidden"
+  },
+  "optionsPictureDiv" : {
+    "font-size" : "14px",
+    "width" : "260px",
+    "padding" : "10px",
+    "text-align" : "center"
+  },
+  "optionsInput" : { "margin-right":"10px" },
+  "optionsPictureInput" : {},
+  "optionsPictureDiv_mobile" : {
+    "font-size" : "14px",
+    "width" : "90%",
+    "border-bottom" : "1px solid #f0f0f0",
+    "margin" : "0px auto",
+    "padding" : "10px",
+    "text-align" : "center"
+  },
+  "optionPictureArea_mobile" : {
+//    "margin-top" : "5px",
+//    "width" : "100%",
+//    "height" : "173px",
+//    "border" : "1px solid #ccc",
+//    "text-align" : "center",
+//    "vertical-align" : "middle"
+  },
+  "optionPicture_mobile" : {
+    "max-width" : "100%"
+//    "max-height" : "173px",
+//    "cursor" : "pointer"
+  },
+  "optionItem" : {
+    "margin" : "10px 0px",
+    "overflow" : "hidden"
+  },
+  "optionItemBack" : {
+    "float":"left",
+    "background-color" : "#f4f4f4",
+    "height" : "16px",
+    "margin-right" : "10px"
+  },
+  "optionItemFront" : {
+    "height" : "16px"
+  },
+  "uploadActionNode":{
+    "margin": "10px 10px 10px 0px",
+    "background-color": "#FFF",
+    "padding": "4px 14px",
+    "border": "1px solid #999",
+    "border-radius": "3px",
+    "font-size": "14px",
+    "color": "#666",
+    "cursor": "pointer"
+  },
+  "optionPictureArea" : {
+    "margin-top" : "5px",
+    "width" : "260px",
+    "height" : "173px",
+    "border" : "1px solid #ccc",
+    "text-align" : "center",
+    "vertical-align" : "middle",
+    "display" : "table-cell"
+  },
+  "optionPicture" : {
+    "max-width" : "260px",
+    "max-height" : "173px",
+    "cursor" : "pointer"
+  },
+  "presentDiv" : {
+    "background-color" : "#f4f4f4"
+  },
+  "presentNode" : {
+      "float" : "left",
+      "margin-right" : "10px"
+  },
+  "checkedOption" : {
+    "float" : "left",
+    "width" : "16px",
+    "height" : "16px",
+    "background": "url(/x_component_ForumDocument/$Vote/default/icon/checked.png) no-repeat center center"
+  },
+  "formMaskNode": {
+    "width": "100%",
+    "height": "100%",
+    "opacity": 0.4,
+    "position": "absolute",
+    "background-color": "#CCC",
+    "top": "0px",
+    "left": "0px"
+  },
+  "formAreaNode": {
+    "position": "absolute",
+    "opacity": 0,
+    "top": "0px" //,
+    //"z-index" : "105"
+  },
+  "formNode": {
+    "background-color": "#FFF",
+    "box-shadow": "0px 0px 10px #999",
+    "margin": "auto",
+    "border": "1px solid #fff",
+    "overflow": "hidden"
+  },
+  "formTopNode": {
+    "color" : "#fff",
+    "height": "40px",
+    "background-color": "#3d77c1", //798d9e
+    "border-top": "1px solid #ddd",
+    "border-bottom": "1px solid #b6b6b6",
+    "line-height": "40px",
+    "font-size": "14px",
+    "padding-left" : "5px",
+    "text-align": "left"
+  },
+  "formTopTextNode" : {
+    "font-size": "16px",
+    "float": "left",
+    "width" : "480px",
+    "overflow" : "hidden",
+    "text-overflow" : "ellipsis",
+    "white-space":"nowrap"
+  },
+  "formTopTextNodeTopSetting" : {
+    "font-size": "16px",
+    "float": "left",
+    "width" : "80px",
+    "overflow" : "hidden",
+    "text-overflow" : "ellipsis",
+    "white-space":"nowrap"
+  },
+  "formTopTextNodeImageLink" : {
+    "font-size": "16px",
+    "float": "left",
+    "width" : "280px",
+    "overflow" : "hidden",
+    "text-overflow" : "ellipsis",
+    "white-space":"nowrap"
+  },
+  "formTopCloseActionNode": {
+    "width": "32px",
+    "height": "32px",
+    "float": "right",
+    "padding-left" : "30px",
+    "padding-right" : "10px",
+    "background": "url(/x_component_Execution/$WorkForm/default/icon/close.png) no-repeat center 4px",
+    "cursor": "pointer"
+  },
+  "formTopContentNode" : {
+    "float" : "right",
+    "padding-right" : "10px",
+    "text-align" : "right"
+  },
+  "formTopContentTitle" : {
+  },
+  "formTopContentValue" : {
+    "padding-right" : "20px",
+    "font-size": "12px"
+  },
+  "formNewNode": {
+    "width": "47px",
+    "height": "47px",
+    "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+  },
+  "formIconNode": {
+    "width": "47px",
+    "height": "47px"
+  },
+  "formEditNode": {
+    "width": "47px",
+    "height": "47px"
+  },
+  "formContentNode": {
+    "border": "0px solid #666",
+    "width": "100%",
+    "margin": "auto",
+    "font-size": "12px",
+    "color": "#666",
+    "font-family": "微软雅黑",
+    "overflow" : "hidden"
+  },
+  "formTableContainer" : {
+    "margin": "0px 10px",
+    "overflow" : "hidden",
+    "positon" : "static"
+  },
+  "formTableValue14" : {
+    "text-align": "left",
+    "font-size" : "14px"
+  },
+  "portalImageAre" : {
+    "width" : "600px"
+  },
+  "formBottomNode" : {
+    "height" : "50px",
+    "line-height" : "50px",
+    "background-color" : "#eee",
+    "overflow" : "hidden",
+    "padding-left" : "20px"
+  },
+  "formOkActionNode": {
+    "height": "30px",
+    "line-height": "30px",
+    "text-align" : "center",
+    "width": "90px",
+    "margin-top" : "10px",
+    "margin-right" : "10px",
+    "cursor": "pointer",
+    "float": "left",
+    "font-size": "14px",
+    "font-family": "微软雅黑",
+    "background-color":"#5c97e1",
+    "color": "#FFF",
+    "box-shadow": "0px 0px 5px #2a5c95"
+  },
+  "formCancelActionNode": {
+    "height": "30px",
+    "line-height": "30px",
+    "text-align" : "center",
+    "width": "50px",
+    "margin-top" : "10px",
+    "margin-right" : "10px",
+    "cursor": "pointer",
+    "float": "left",
+    "font-size": "14px",
+    "font-family": "微软雅黑",
+    "background-color":"#5c97e1",
+    "color": "#FFF",
+    "box-shadow": "0px 0px 5px #2a5c95"
+  },
+  "logArea" : {
+    "font-size" : "14px",
+    "color" : "#333",
+    "margin-right" : "10px",
+    "height" : "450px",
+    "width" : "560px"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "viewSetting": {
+    "html": "<div styles='listNode'></div>"
+  },
+  "documentSetting": {
+    "html": "<div></div>",
+    "action": "open"
+  },
+  "items": [
+    {
+      "name": "content",
+      "content": {
+        "html": "<div styles='itemNode'><div style='display:none;' item='id'></div>"+
+        " <div styles='itemContentNode'>"+
+        "   <div styles='itemPersonNode' item='targetPerson'></div>"+
+        "   <div styles='itemTitleNode' item='workTitle'></div>"+
+        "   <div styles='itemTagNode' item='workTag'></div>"+
+        " </div>"+
+        " <div styles='itemContentNode'>"+
+        "   <div styles='itemDescriptionNode2' item='workDescribe'></div>"+
+        "   <div styles='itemDescriptionNode2' item='progressContent'></div>"+
+        " </div>"+
+        " <div styles='itemActionBar' item='itemActionBar'>"+
+        "  <div item='editAction'></div>"+
+        "  <div item='deleteAction'></div>"+
+        " </div>"+
+        "<div>",
+        "items": {
+          "id" : {
+            "value" : "function( d ){ return d.id; }"
+          },
+          "targetPerson" : {
+            "styles" : "function(d){ return ( d.targetPerson == this.view.userName ) ? { color : '#4a90e2' } : {} }",
+            "value" : "function(d){ return !d.targetPerson ? '' : d.targetPerson.split('@')[0] + '：' }"
+          },
+          "workTitle" : {
+            "value" : "function( d ){ return d.workTitle }"
+          },
+          "workTag" : {
+          },
+          "workDescribe" : {
+            "value" : "function( d ){ return '工作内容：' + d.workDescribe }"
+          },
+          "progressContent" : {
+            "type" : "html",
+            "value" : "function(d){ return '完成情况：' + this.app.common.replaceWithBr( d.progressContent )  }"
+          },
+          "index" : { "value" : "function(d){ return d.orderNumber || (d.index + 2) }" },
+
+          "itemActionBar" : {
+            "show" : "function( d ){ return this.view.options.isEdited }"
+          },
+          "editAction": {
+            "title" : "edit",
+            "action": "edit",
+            "styles" : "action_edit",
+            "condition" : "function( d ){ return this.view.options.isEdited }",
+            "event" : "mouseover^^function( itemNode, ev ){ itemNode.setStyles( this.css.action_edit_over ) }##mouseout^^function( itemNode, ev ){ itemNode.setStyles( this.css.action_edit ) }"
+          },
+          "deleteAction": {
+            "title" : "delete",
+            "action": "delete",
+            "styles" : "action_remove",
+            "condition" : "function( d ){ return this.view.options.isEdited }",
+            "event" : "mouseover^^function( itemNode, ev ){ itemNode.setStyles( this.css.action_remove_over ) }##mouseout^^function( itemNode, ev ){ itemNode.setStyles( this.css.action_remove ) }"
+          }
+        }
+      }
+    }
+  ]
+}

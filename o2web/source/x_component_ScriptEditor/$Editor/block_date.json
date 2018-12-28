@@ -1,0 +1,157 @@
+[
+  {
+    "name": "date.new",
+    "contents": [
+      "新建一个日期对象",
+      {"type": "input","default": ""}
+    ],
+    "class": "date.New", "extend": "$Expression"
+  },
+  {
+    "name": "date.parse",
+    "contents": [
+      "解析日期",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+    ],
+    "class": "date.Parse", "extend": "$Expression"
+  },
+  {
+    "name": "date.parseDate",
+    "contents": [
+      "为对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "解析日期",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+    ],
+    "class": "date.ParseDate", "extend": "$Expression"
+  },
+  {
+    "name": "date.get",
+    "contents": [
+      "日期",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的",
+      {"type": "select", "options": [
+        "周几|Day",
+        "年份|FullYear",
+        "月份|Month",
+        "日|Date",
+        "小时|Hours",
+        "分|Minutes",
+        "秒|Seconds",
+        "毫秒|Milliseconds",
+        "几周|Week",
+        "时间数|Time",
+        "时区|Timezone",
+        "时区差(分)|TimezoneOffset"
+      ], "default": "Hours"}
+    ],
+    "class": "date.Get", "extend": "$Expression"
+  },
+  {
+    "name": "date.set",
+    "contents": [
+      "设置日期",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的",
+      {"type": "select", "options": [
+        "周几|Day",
+        "年份|FullYear",
+        "月份|Month",
+        "日|Date",
+        "小时|Hours",
+        "分|Minutes",
+        "秒|Seconds",
+        "毫秒|Milliseconds",
+        "时间数|Time"
+      ], "default": "Hours"},
+      "为",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "date.Set", "extend": "$Operation"
+  },
+  {
+    "name": "date.clone",
+    "contents": [
+      "克隆日期",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+    ],
+    "class": "date.Clone", "extend": "$Expression"
+  },
+  {
+    "name": "date.increment",
+    "contents": [
+      "为时间",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "增加",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      {"type": "select", "options": [
+        "年|year",
+        "月|month",
+        "日|day",
+        "时|hour",
+        "分|minute",
+        "秒|second",
+        "毫秒|ms"
+      ], "default": "hour"}
+    ],
+    "class": "date.Increment", "extend": "$Operation"
+  },
+  {
+    "name": "date.decrement",
+    "contents": [
+      "为时间",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "减少",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      {"type": "select", "options": [
+        "年|year",
+        "月|month",
+        "日|day",
+        "时|hour",
+        "分|minute",
+        "秒|second",
+        "毫秒|ms"
+      ], "default": "hour"}
+    ],
+    "class": "date.Decrement", "extend": "$Operation"
+  },
+  {
+    "name": "date.isLeapYear",
+    "contents": [
+      "日期",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "是否是闰年"
+    ],
+    "class": "date.LsLeapYear", "extend": "$Expression"
+  },
+  {
+    "name": "date.clearTime",
+    "contents": [
+      "日期",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "去除时间部分"
+    ],
+    "class": "date.ClearTime", "extend": "$Expression"
+  },
+  {
+    "name": "date.clearTime",
+    "contents": [
+      "日期",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "与日期",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的差距，单位",
+      {"type": "select", "options": [
+        "年|year",
+        "月|month",
+        "日|day",
+        "时|hour",
+        "分|minute",
+        "秒|second",
+        "毫秒|ms"
+      ], "default": "hour"}
+    ],
+    "class": "date.ClearTime", "extend": "$Expression"
+  }
+]

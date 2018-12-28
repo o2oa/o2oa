@@ -1,0 +1,29 @@
+{
+	"tabNode" : {
+	  "overflow" : "hidden",
+	  "padding-left" : "20px",
+	  "border-bottom" : "1px solid #ccc"
+	},
+  	"tab" :{
+	  "float" : "left",
+	  "padding" : "10px",
+	  "font-size" : "16px",
+	  "cursor" : "pointer",
+	  "color" : "#666"
+	},
+  "tab_current" :{ "color" : "#3c76b7" },
+  "tab_over" :{ "color" : "#3c76b7" },
+  "moduleNode" : {
+	"width" : "450px",
+	"height" : "300px",
+	"display" : "none"
+  },
+  "helpNode" : {
+	"margin" : "10px",
+	"width" : "16px",
+	"height" : "16px",
+	"float" : "right",
+	"cursor" : "pointer",
+	"background" : "url(/x_component_Template/$MPopupForm/report/icon/icon_wen.png) no-repeat center center"
+  }
+}

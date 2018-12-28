@@ -1,0 +1,51 @@
+[
+//  {
+//    "title": "选择器配置",
+//    "id": "1.1",
+//    "action": "selectConfig",
+//    "icon": "query_select.png",
+//    "expand": false,
+//    "sub": []
+//  },
+//  {
+//    "title": "菜单配置",
+//    "id": "1.1",
+//    "action": "menuConfig",
+//    "icon": "portal_menu.png",
+//    "expand": false,
+//    "sub": []
+//  },
+
+  {
+    "title": "视图配置",
+    "id": "1.1",
+    "action": "viewConfig",
+    "icon": "query_view.png",
+    "expand": false,
+    "sub": []
+  },
+  {
+    "title": "统计配置",
+    "id": "1.1",
+    "action": "statConfig",
+    "icon": "query_stat.png",
+    "expand": false,
+    "sub": []
+  },
+//  {
+//    "title": "展示配置",
+//    "id": "1.1",
+//    "action": "revealConfig",
+//    "icon": "portal_reveal.png",
+//    "expand": false,
+//    "sub": []
+//  },
+  {
+    "title": "数据应用属性",
+    "id": "1.1",
+    "action": "queryProperty",
+    "icon": "query_property.png",
+    "expand": false,
+    "sub": []
+  }
+]

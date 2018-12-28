@@ -1,0 +1,52 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="基本" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">标识:</td>
+                <td class="editTableValue">text{$.id}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">名称:</td>
+                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">描述:</td>
+                <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+            </tr>
+            <!--<tr>-->
+                <!--<td class="editTableTitle">标题字段</td>-->
+                <!--<td class="editTableValue">-->
+                    <!--<select class="" name="titleField"></select>-->
+                <!--</td>-->
+            <!--</tr>-->
+            <tr>
+                <td class="editTableTitle">样式:</td>
+                <td class="editTableValue">
+                    <select class="MWFFormStyle" name="formStyleType"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">图标:</td>
+                <td class="editTableValue"><div class="MWFIcon" name="formIcon"></div></td>
+            </tr>
+        </table>
+		
+		<!--<div class="MWFArraylist" name="cssLinks" title="CSS引用"></div>-->
+		<!--<div class="MWFArraylist" name="scriptSrc" title="JS引用"></div>-->
+		
+		<div class="MWFMaplist" name="styles" title="样式"></div>
+		<div class="MWFMaplist" name="properties" title="属性"></div>
+        <div class="MWFCssArea" name="css" title="CSS"></div>
+        <div class="MWFScriptArea" name="jsheader" title="JS Header"></div>
+
+	</div>
+	<div title="事件"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

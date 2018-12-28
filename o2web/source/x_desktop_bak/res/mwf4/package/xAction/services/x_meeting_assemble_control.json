@@ -1,0 +1,75 @@
+{
+  "getCurrentPerson" : {"uri": "/jaxrs/person"},
+
+  "listUnitWithPerson": {"uri": "/jaxrs/unit/list/person/object", "method": "POST"}, //获取人员所在的组织
+  "listUnitWithPersonSupNested" :  {"uri": "/jaxrs/unit/list/person/sup/nested", "method": "POST"}, //获取人员所在的所有组织
+
+  "addBuilding": {"uri": "/jaxrs/building","method": "POST"},
+  "listBuilding": {"uri": "/jaxrs/building/list"},
+  "listBuildingByRange": {"uri": "/jaxrs/building/list/start/{start}/completed/{completed}"},
+
+  "listBuildingByPinyin": {"uri": "/jaxrs/building/list/like/pinyin/{key}"},
+  "listBuildingByKey": {"uri": "/jaxrs/building/list/like/{key}"},
+  "listBuildingByPinyininitial": {"uri": "/jaxrs/building/list/pinyininitial/{key}"},
+
+  "getBuilding": {"uri": "/jaxrs/building/{id}"},
+  "removeBuilding": {"uri": "/jaxrs/building/{id}","method": "DELETE"},
+  "deleteBuilding": {"uri": "/jaxrs/building/{id}","method": "DELETE"},
+  "updateBuilding": {"uri": "/jaxrs/building/{id}","method": "PUT"},
+
+  "addRoom": {"uri": "/jaxrs/room","method": "POST"},
+  "listRoomByPinyin": {"uri": "/jaxrs/room/list/like/pinyin/{key}"},
+  "listRoomByKey": {"uri": "/jaxrs/room/list/like/{key}"},
+  "listRoomByPinyininitial": {"uri": "/jaxrs/room/list/pinyininitial/{key}"},
+  "getRoom": {"uri": "/jaxrs/room/{id}"},
+  "removeRoom": {"uri": "/jaxrs/room/{id}","method": "DELETE"},
+  "deleteRoom": {"uri": "/jaxrs/room/{id}","method": "DELETE"},
+  "updateRoom": {"uri": "/jaxrs/room/{id}","method": "PUT"},
+
+
+  "addMeeting": {"uri": "/jaxrs/meeting","method": "POST"},
+  "listMeetingDays": {"uri": "/jaxrs/meeting/list/coming/day/{count}"},
+  "listMeetingMonths": {"uri": "/jaxrs/meeting/list/coming/month/{count}"},
+  "listMeetingWaitAccept": {"uri": "/jaxrs/meeting/list/wait/accept"},
+  "listMeetingWaitConfirm": {"uri": "/jaxrs/meeting/list/wait/confirm"},
+  "listMeetingMonth": {"uri": "/jaxrs/meeting/list/year/{year}/month/{month}"},
+  "listMeetingDay": {"uri": "/jaxrs/meeting/list/year/{year}/month/{month}/day/{day}"},
+  "listMeetingDayAll": {"uri": "/jaxrs/meeting/list/year/{year}/month/{month}/day/{day}/all"},
+  "listMeetingNext": {"uri": "/jaxrs/meeting/list/{id}/next/{count}"},
+  "listMeetingPrev": {"uri": "/jaxrs/meeting/list/{id}/prev/{count}"},
+
+  "listMeetingApplyCompleted": {"uri": "/jaxrs/meeting/list/applied/completed"},
+  "listMeetingApplyProcessing": {"uri": "/jaxrs/meeting/list/applied/processing"},
+  "listMeetingApplyWait": {"uri": "/jaxrs/meeting/list/applied/wait"},
+
+  "listMeetingInvitedWait": {"uri": "/jaxrs/meeting/list/invited/wait"},
+  "listMeetingInvitedCompleted": {"uri": "/jaxrs/meeting/list/invited/completed"},
+  "listMeetingInvitedProcessing": {"uri": "/jaxrs/meeting/list/invited/processing"},
+  "listMeetingInvitedRejected": {"uri": "/jaxrs/meeting/list/invited/rejected"},
+
+
+  "getMeeting": {"uri": "/jaxrs/meeting/{id}"},
+  "removeMeeting": {"uri": "/jaxrs/meeting/{id}","method": "DELETE"},
+  "deleteMeeting": {"uri": "/jaxrs/meeting/{id}","method": "DELETE"},
+  "updateMeeting": {"uri": "/jaxrs/meeting/{id}","method": "PUT"},
+
+  "acceptMeeting": {"uri": "/jaxrs/meeting/{id}/accept"},
+  "rejectMeeting": {"uri": "/jaxrs/meeting/{id}/reject"},
+  "addMeetingInvite": {"uri": "/jaxrs/meeting/{id}/add/invite","method": "PUT"},
+  "allowMeeting": {"uri": "/jaxrs/meeting/{id}/confirm/allow"},
+  "denyMeeting": {"uri": "/jaxrs/meeting/{id}/confirm/deny"},
+  "completedMeeting": {"uri": "/jaxrs/meeting/{id}/manual/completed"},
+
+  "addAttachment": {
+    "uri": "/jaxrs/attachment/meeting/{id}/upload/false",
+    "method": "POST",
+    "enctype": "formData"
+  },
+  "getAttachment": {"uri": "/jaxrs/attachment/{id}"},
+  "removeAttachment": {"uri": "/jaxrs/attachment/{id}", "method": "DELETE"},
+  "deleteFile": {"uri": "/jaxrs/attachment/{id}", "method": "DELETE"},
+
+  "getAttachmentData": {"uri": "/jaxrs/attachment/{id}/download/false"},
+  "getAttachmentStream": {"uri": "/jaxrs/attachment/{id}/download/true"},
+  "clazz": "x_meeting_assemble_control"
+}

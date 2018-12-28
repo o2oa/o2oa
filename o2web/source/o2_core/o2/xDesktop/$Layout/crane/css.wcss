@@ -1,0 +1,665 @@
+{
+    "desktop": {
+        "background": "url("+MWF.defaultPath+"/xDesktop/$Layout/crane/desktop.jpg)"
+    },
+	"layoutNode": {
+		"height": "100%",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"-moz-background-size": "cover",
+		"-webkit-background-size": "cover",
+		"-o-background-size": "cover",
+		"background-size": "cover"
+	},
+	layoutTopShimNode: {
+        "height": "50px",
+        "background-color": "#d7d7d7",
+        "border-bottom": "2px solid #333",
+        "opacity": 1
+    },
+	"layoutTopNode": {
+		"height": "50px",
+		"position": "absolute",
+        "width": "100%",
+        "top": "0px",
+        "left": "0px"
+	},
+	"desktopNode": {
+		"overflow": "hidden"
+	},
+	"contentNode": {
+		"overflow": "hidden"
+	},
+	"naviNode": {
+		"height": "100px",
+		"overflow": "hidden",
+		"text-align": "center"
+	},
+	"loadMenuAction": {
+		"width": "40px",
+		"height": "40px",
+		"background": "url("+MWF.defaultPath+"/xDesktop/$Layout/default/top/menu.png) no-repeat center center",
+		"margin": "5px",
+		"cursor": "pointer",
+		"float": "left"
+	},
+	"showDesktopAction": {
+        "float": "right",
+        "width": "8px",
+        "height": "50px",
+        "background": "transparent",
+        "cursor": "pointer"
+    },
+    "showDesktopAction_over": {
+        "background": "#646464"
+    },
+	"configActionNode": {
+		"width": "40px",
+		"height": "40px",
+		"background": "url("+MWF.defaultPath+"/xDesktop/$Layout/crane/top/config.png) no-repeat center center",
+		"margin": "5px",
+		"cursor": "pointer",
+		"float": "left"
+	},
+	"separateNode": {
+		"float": "left",
+		"height": "40px",
+		"width": "1px",
+		"margin": "5px",
+		"border-right": "1px solid #EEE",
+		"background-color": "#999"
+	},
+	"taskbar": {
+		"margin-left": "65px",
+		"margin-right": "323px",
+		"height": "50px"
+	},
+	"userChatNode": {
+		"width": "40px",
+		"height": "40px",
+		"background": "url("+MWF.defaultPath+"/xDesktop/$Layout/crane/top/user.png) no-repeat center center",
+		"margin": "5px",
+		"cursor": "pointer",
+		"float": "right"
+	},
+	"styleActionNode": {
+		"width": "40px",
+		"height": "40px",
+		"background": "url("+MWF.defaultPath+"/xDesktop/$Layout/default/top/style.png) no-repeat center center",
+		"margin": "5px",
+		"cursor": "pointer",
+		"float": "right"
+	},
+	"userMenuNode": {
+		"width": "40px",
+		"height": "40px",
+		"background": "url("+MWF.defaultPath+"/xDesktop/$Layout/crane/top/usermenu.png) no-repeat center center",
+		"margin": "5px",
+		"cursor": "pointer",
+		"float": "right"
+	},
+	"messageActionNode": {
+		"width": "40px",
+		"height": "40px",
+		"background": "url("+MWF.defaultPath+"/xDesktop/$Layout/default/top/message.png) no-repeat center center",
+		"margin": "5px",
+		"cursor": "pointer",
+		"float": "right"
+	},
+	"clockNode": {
+		"width": "80px",
+		"height": "34px",
+		"line-height": "16px",
+		"font-family": "微软雅黑",
+		"font-size": "12px",
+		"float": "right",
+		"text-align": "center",
+		"color": "#333333",
+		"margin": "8px"
+	},
+	"naviNodeBottomArea": {
+		"width": "580px",
+		"height": "80px",
+		"margin": "10px auto",
+		"background-color": "#000",
+		"opacity": 0.7,
+		"border-radius": "8px",
+		"box-shadow": "0px 0px 10px #FFF", 
+		"border": "1px solid #EEE"
+	},
+	"naviNodeArea": {
+		"width": "560px",
+		"height": "80px",
+		"padding": "0px 10px",
+		"margin": "0px auto",
+		"border-radius": "8px",
+		"position": "relative",
+		"top": "-90px" 
+	},
+	"mainNaviNode": {
+		"width": "100px",
+		"height": "70px",
+		"margin": "5px 20px",
+		"cursor": "pointer",
+		"text-align": "center",
+		"border-radius": "3px",
+		"opacity": 1,
+		"float": "left"
+	},
+	"mainNaviIconNode": {
+		"width": "40px",
+		"height": "40px",
+		"background-repeat": "no-repeat",
+		"margin": "5px auto 0px auto"
+	},
+	"mainNaviTextNode": {
+		"height": "20px",
+		"line-height": "20px",
+		"font-family": "微软雅黑",
+		"color": "#FFFFFF"
+	},
+	"taskItemNode": {
+		"border": "1px solid #FFF",
+		"border-radius": "3px",
+		"box-shadow": "0px 0px 10px #999", 
+		"height": "40px",
+		"margin-top": "5px",
+		"margin-left": "3px",
+		"background": "url("+MWF.defaultPath+"/xDesktop/$Layout/crane/taskbar/taskbg.png)",
+		"float": "left",
+		"cursor": "pointer",
+		"opacity": 0.8
+	},
+	"taskItemNode_over": {
+		"background": "url("+MWF.defaultPath+"/xDesktop/$Layout/crane/taskbar/taskbg_over.png)",
+		"box-shadow": "0px 0px 0px #456686", 
+		"border": "1px solid #FFF"
+	},
+	"taskItemNode_down": {
+		"background": "url("+MWF.defaultPath+"/xDesktop/$Layout/crane/taskbar/taskbg_down.png)",
+		"box-shadow": "0px 0px 10px #999", 
+		"border": "1px solid #deefff"
+	},
+	"taskItemNode_current": {
+		"background": "url("+MWF.defaultPath+"/xDesktop/$Layout/crane/taskbar/taskbg_down.png)",
+		"box-shadow": "0px 0px 10px #999"
+	},
+	"taskItemIconNode": {
+		"width": "30px",
+		"height": "40px",
+		"margin": "0px 3px",
+		"float": "left",
+		"background-repeat": "no-repeat",
+		"background-position": "center center"
+	},
+	"taskItemCloseNode": {
+        "width": "20px",
+        "height": "40px",
+        "margin": "0px",
+        "float": "right",
+        "opacity": 0,
+        "background-repeat": "no-repeat",
+        "background-position": "center center",
+        "background-image": "url("+MWF.defaultPath+"/xDesktop/$Layout/default/taskbar/close1.png)"
+    },
+	"taskItemTextNode": {
+		"font-family": "微软雅黑",
+		"font-size": "14px",
+		"color": "#FFF",
+		//"float": "left",
+		//"margin-left": "30px",
+		"height": "30px",
+		"overflow": "hidden",
+		"padding": "5xp",
+		"line-height": "40px",
+		"white-space": "nowrap",
+        "text-overflow": "ellipsis",
+        "word-break": "keep-all"
+	},
+	"dsektopLnkArea": {
+		"width": "120px",
+		"height": "100%",
+		"overflow": "hidden",
+		"margin-left": "0px",
+		"float": "left"
+	},
+	"dsektopLnkArea_current": {
+		"width": "auto",
+		"height": "100%",
+		"overflow": "hidden",
+		"float": "none"
+	},
+	
+	"lnkMoveNode": {
+		"padding": "10px",
+		"background-color": "#eaf6fc",
+		"border": "2px solid #4e99be",
+		"box-shadow": "0px 0px 10px #000", 
+		"border-radius": "4px",
+		"opacity": 0.6,
+		"position": "absolute"
+	},
+	"dsektoplnkMarkNode": {
+		"width": "80px",
+		"height": "1px",
+		"margin": "0px 20px",
+		"background-color": "#FFF",
+		"position": "absolute",
+		"border": "1px solid #FFF"
+	},
+	"desktopLnkNode": {
+		"width": "80px",
+		"height": "110px",
+		"overflow": "hidden",
+		"margin": "20px 20px",
+		"text-align": "center",
+		"border": "0px solid red",
+		"background": "transparent ",
+		"border-radius": "0px",
+		"cursor": "pointer"
+	},
+	"desktopLnkNode_current": {
+		"width": "80px",
+		"height": "110px",
+		"overflow": "hidden",
+		"margin": "20px 20px",
+		"text-align": "center",
+		"border": "0px solid red",
+		"background-color": "#7c96a6",
+		"border-radius": "4px",
+		"cursor": "pointer"
+	},
+	"desktopLnkIconNode": {
+		"background-repeat": "no-repeat",
+		"background-position": "center center",
+		"width": "80px",
+		"height": "80px",
+		"margin": "auto"
+	},
+	"desktopLnkTitleNode": {
+		"width": "80px",
+		"height": "30px",
+		"line-height": "15px",
+		"font-family": "微软雅黑",
+		"font-size": "14px",
+		"color": "#FFF",
+		"text-shadow" : "1px 1px 1px #000",
+		"overflow": "hidden"
+	},
+	"desktopLnkTitleNode": {
+        "width": "80px",
+        "height": "30px",
+        "line-height": "15px",
+        "font-family": "微软雅黑",
+        "font-size": "14px",
+        "color": "#FFF",
+        "overflow": "hidden"
+    },
+    "applicationMenuAreaMark": {
+        "width": "100%",
+        "height": "100%",
+        "opacity": 0,
+        "background-color": "#000",
+        "position": "absolute",
+        "top": "0px",
+        "left": "0px",
+        "overflow": "hidden"
+    },
+    "applicationMenuArea": {
+        "width": "100%",
+        "height": "100%",
+        "position": "absolute",
+        "top": "0px",
+        "left": "0px",
+        "opacity": 0,
+        "overflow": "hidden"
+    },
+    "applicationMenuLeftAction": {
+        "width": "10%",
+        "min-width": "64px",
+        "height": "100%",
+        "float": "left",
+        "cursor": "pointer",
+        "background": "url("+MWF.defaultPath+"/xDesktop/$Layout/default/menu/left.png) no-repeat center center"
+    },
+    "applicationMenuRightAction": {
+        "width": "10%",
+        "min-width": "64px",
+        "height": "100%",
+        "float": "right",
+        "cursor": "pointer",
+        "background": "url("+MWF.defaultPath+"/xDesktop/$Layout/default/menu/right.png) no-repeat center center"
+    },
+    "applicationMenuScrollArea": {
+        "height": "100%",
+        "margin-left": "10%",
+        "margin-right": "10%",
+        "overflow": "hidden"
+    },
+    "applicationMenuContentArea": {
+        "width": "300%",
+        "height": "100%",
+        "overflow": "hidden"
+    },
+
+    "applicationMemuAppContent": {
+        "width": "100%",
+        "height": "100%",
+        "float": "left"
+    },
+    "applicationMenuAppTitleArea": {
+        "margin-top": "40px",
+        "width": "100%",
+        "text-align": "center",
+        "height": "60px",
+        "line-height": "60px",
+        "font-size": "24px",
+        "font-weight": "bold",
+        "color": "#FFF"
+    },
+    "applicationMenuAppIconScrollArea": {
+        "margin-bottom": "80px",
+        "margin-top": "10px",
+        "overflow": "hidden"
+    },
+    "applicationMenuAppIconArea": {
+        "margin-left": "10px",
+        "overflow": "hidden"
+    },
+
+    "applicationMemuWidgetContent": {
+        "width": "100%",
+        "height": "100%",
+        "float": "left"
+    },
+    "applicationMenuWidgetTitleArea": {
+        "margin-top": "40px",
+        "text-align": "center",
+        "height": "60px",
+        "line-height": "60px",
+        "font-size": "24px",
+        "font-weight": "bold",
+        "color": "#FFF"
+    },
+    "applicationMenuWidgetScrollArea": {
+        "margin-bottom": "80px",
+        "margin-top": "10px",
+        "overflow": "hidden"
+    },
+    "applicationMenuWidgetArea": {
+        "margin-left": "10px",
+        "overflow": "hidden"
+    },
+
+    "applicationMemuProcessContent": {
+        "width": "100%",
+        "height": "100%",
+        "float": "left"
+    },
+    "applicationMenuProcessTitleArea": {
+        "margin-top": "40px",
+        "text-align": "center",
+        "height": "60px",
+        "line-height": "60px",
+        "font-size": "24px",
+        "font-weight": "bold",
+        "color": "#FFF"
+    },
+    "applicationMenuProcessScrollArea": {
+        "margin-bottom": "80px",
+        "margin-top": "10px",
+        "overflow": "hidden"
+    },
+    "applicationMenuProcessArea": {
+        "margin-left": "10px",
+        "overflow": "hidden"
+    },
+
+
+
+
+    "applicationMenuNode": {
+        "float": "left",
+        "margin": "10px",
+        "width": "100px",
+        "height": "120px",
+        "text-align": "center",
+        "cursor": "pointer"
+    },
+    "applicationMenuIconNode": {
+        "width": "100px",
+        "height": "80px",
+        "background-repeat": "no-repeat",
+        "background-position": "center center"
+    },
+    "widgetMenuNode": {
+        "float": "left",
+        "margin": "10px",
+        "width": "150px",
+        "height": "140px",
+        "text-align": "center",
+        "cursor": "pointer"
+    },
+    "widgetMenuIconNode": {
+        "width": "150px",
+        "height": "100px",
+        "background-repeat": "no-repeat",
+        "background-position": "top left"
+    },
+    "applicationMenuTextNode": {
+        "height": "40px",
+        "line-height": "20px",
+        "font-family": "微软雅黑",
+        "font-size": "14px",
+        "color": "#FFF"
+    },
+    "messageContainerMaskNode": {
+        "width": "360px",
+        "background-color": "#FFF",
+        "position": "absolute",
+        "z-index": 20,
+        "opacity": 1,
+        "display": "none"
+    },
+    "messageContainerNode": {
+        "width": "360px",
+        "position": "absolute",
+        "overflow": "hidden",
+        "display": "none",
+        "border-left": "1px solid #999",
+        "z-index": 20
+
+    },
+    "messageContainersScrollNode":{
+        "overflow": "hidden",
+        "margin-right": "12px"
+    },
+    "messageContainerContentNode": {
+        "padding": "5px",
+        "overflow": "hidden"
+    },
+    "messageUnreadCountNode": {
+        "width": "20px",
+        "height": "20px",
+        "background": "#e90000",
+        "color": "#FFF",
+        "text-align": "center",
+        "font-size": "12px",
+        "line-height": "20px",
+        "border-radius": "10px",
+        "position": "relative",
+        "top": "-3px",
+        "left": "25px",
+        "-webkit-user-select": "none",
+        "-moz-user-select": "none"
+    },
+    "messageItemNode": {
+        "padding": "5px",
+        "overflow": "hidden",
+        "border-bottom": "1px solid #CCC",
+        "background": "transparent",
+        "cursor": "default"
+    },
+    "messageItemTopNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "font-size": "16px",
+        "color": "#4387cd"
+    },
+    "messageItemCloseNode": {
+        "height": "30px",
+        "width": "16px",
+        "float": "right",
+        "cursor": "pointer",
+        "background": "url("+MWF.defaultPath+"/xDesktop/$Layout/default/message/close.png) no-repeat center center"
+    },
+    "messageItemSubjectNode": {
+        "height": "30px",
+        "margin-right": "18px"
+    },
+    "messageItemContentNode": {
+        "overflow": "hidden",
+
+        "color": "#333",
+        "font-size": "12px",
+        "line-height": "20px"
+    },
+    "messageItemBottomNode": {
+        "height": "24px",
+        "font-size": "12px",
+        "line-height": "24px"
+    },
+    "messageItemDateNode": {
+        "width": "120px",
+        "color": "#666",
+        "float": "left"
+    },
+    "messageItemActionsNode": {
+        "margin-left": "130px"
+    },
+    "messageTooltipAreaNode": {
+        "position": "absolute",
+        "width": "310px",
+        "overflow": "hidden",
+        "z-index": 500000
+    },
+    "messageTooltipNode": {
+        "margin": "10px 10px 0px 0px",
+        "box-shadow": "0px 0px 10px #333",
+        "width": "300px",
+        "padding": "5px",
+        "overflow": "hidden",
+        "border": "1px solid #CCC",
+        "background": "#FFF",
+        "cursor": "default"
+    },
+    "messageContainersOperationNode": {
+        "height": "40px",
+        "overflow": "hidden"
+    },
+    "messageContainersClearActionNode": {
+        "height": "24px",
+        "line-height": "24px",
+        "width": "120px",
+        "margin": "4px auto 12px auto",
+        "border": "1px solid #999",
+        "text-align": "center",
+        "border-radius": "3px",
+        "box-shadow": "1px 1px 3px #666",
+        "cursor": "pointer",
+        "background-color": "#FFF",
+        "color": "#666"
+    },
+    "messageContainersClearActionNode_over": {
+        "border": "1px solid #333",
+        "background-color": "#666",
+        "box-shadow": "1px 1px 3px #666",
+        "color": "#FFF"
+    },
+    "messageContainersClearActionNode_down": {
+        "border": "1px solid #333",
+        "background-color": "#666",
+        "box-shadow": "0px 0px 0px #333",
+        "color": "#FFF"
+    },
+
+    "widgetNode": {
+        "border": "0px solid #EEE",
+        "background-color": "#292c31",
+        "position": "absolute"
+    },
+    "widgetTitleNode": {
+        "height": "36px",
+        "line-height": "36px",
+        "border-bottom": "1px solid #555",
+        "margin": "0px"
+    },
+    "widgetContentScrollNode": {
+        "margin": "8px",
+        "overflow": "hidden"
+    },
+    "widgetContentNode": {
+        "overflow": "hidden"
+    },
+    "widgetTitleOpenNode": {
+        "height": "36px",
+        "width": "36px",
+        "float": "left",
+        "cursor": "pointer",
+        "background": "url("+MWF.defaultPath+"/xDesktop/$Layout/default/widget/open1.png) no-repeat center center"
+    },
+    "widgetTitleCloseNode": {
+        "height": "36px",
+        "width": "36px",
+        "float": "right",
+        "cursor": "pointer",
+        "background": "url("+MWF.defaultPath+"/xDesktop/$Layout/default/widget/close2.png) no-repeat center center"
+    },
+    "widgetTitleTextNode": {
+        "height": "36px",
+        "font-size": "16px",
+        "font-weight": "bold",
+        "text-align": "center",
+        "color": "#cccccc",
+        "cursor": "default",
+        "margin": "0px 36px 0px 36px"
+    },
+	"applicationMenuSearchBar": {
+        "height": "120px",
+        "width": "100%",
+        "top": "0px",
+        "left": "0px",
+        "position": "absolute"
+    },
+    "applicationMenuSearchBarBox": {
+        "height": "40px",
+        "width": "80%",
+        "margin": "40px auto",
+        "border": "1px solid #CCCCCC",
+        "background-color": "#EEEEEE",
+        "color": "#666666",
+        "border-radius": "8px"
+    },
+    "applicationMenuSearchBarClose": {
+        "width": "40px",
+        "height": "40px",
+        "float": "right",
+        "background": "url("+MWF.defaultPath+"/xDesktop/$Layout/o2/top/close.png) no-repeat center center",
+        "cursor": "pointer"
+    },
+    applicationMenuSearchBarInputBox: {
+        "height": "40px",
+        "margin-right": "40px"
+    },
+    "applicationMenuSearchBarInput": {
+        "border": "0px solid #000000",
+        "height": "38px",
+        "width": "99%",
+        "background": "transparent",
+        "line-height": "38px",
+        "display": "block",
+        "margin": "auto",
+        "border-radius": "8px",
+        "font-size": "18px"
+    }
+}

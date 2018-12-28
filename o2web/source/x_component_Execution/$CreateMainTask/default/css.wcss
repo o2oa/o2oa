@@ -1,0 +1,393 @@
+{
+  "naviDiv":{
+    "position":"absolute","width":"130px","height":"616px","background-color":"#203140"
+  },
+  "naviTitleDiv":{
+    "background-color":"#006666", "color":"#008f8f","font-size":"18px","text-align":"center","height":"65px","line-height":"65px"
+  },
+  "naviContentLi":{
+    "margin-top":"20px",
+    "cursor":"pointer"
+  },
+  "naviContentImg":{
+    "width":"70px","height":"70px","display":"block","margin":"0px auto"
+  },
+  "naviContentSpan":{
+    "display":"block","text-align":"center"
+  },
+  "naviContentDiv":{
+    "height":"480px","list-style-type":"none","color":"#ffffff","font-size":"14px"
+  },
+  "contentDiv":{
+    "margin-left":"130px","height":"616px", "background-color":"#ffffff","min-width":"1000px"
+  },
+  "rightCategoryDiv":{
+    "width":"100%","height":"65px","border":"0px solid #f00","min-width":"1000px","border-bottom":"1px dashed #cccccc"
+  },
+  "rightCategoryNewDiv":{
+    "position":"absolute","width":"145px","height":"45px","margin":"10px", "background-color":"#3d77c1","height":"45px","line-height":"45px","text-align":"center","color":"#ffffff","font-size":"14px",
+    "cursor":"pointer"
+  },
+  "rightCategoryItemDiv":{
+    "margin-left":"165px","height":"45px","min-width":"950px","list-style-type":"none","color":"#3c76c1","font-size":"16px"
+  },
+  "rightCategoryItemLi":{
+    "margin":"0 50px","line-height":"65px","width":"100px","text-align":"center","float":"left","cursor":"pointer"
+  },
+  "rightCategoryItemCurrentLi":{
+    "margin":"0 50px","line-height":"65px","width":"100px","border-bottom":"2px solid #124c93","text-align":"center","float":"left","cursor":"pointer"
+  },
+  "rightSearchDiv":{
+    "width":"100%","border":"0px solid #f00","min-width":"1000px","float":"left","margin-bottom":"10px"
+  },
+  "rightSearchBarDiv":{
+    "margin-left":"165px",  "height":"45px","padding-top":"10px","min-width":"950px"
+  },
+  "rightSearchBarSpan":{
+    "height":"45px","line-height":"45px","margin-left":"10px","font-size":"12px","color":"#999999"
+  },
+  "rightSearchBarSelect":{
+    "color":"#999999","border":"1px solid #999999","height":"25px","line-height":"25px"
+  },
+  "rightSearchBarInput":{
+    "height":"30px","line-height":"30px","border":"1px solid #999999","width":"250px","color":"#999999","font-size":"14px"
+  },
+  "rightContentDiv":{
+    "height":"500px"
+  },
+  "taskTable":{
+    "border":"0px","border-collapse":"collapse","margin":"0 auto","width":"99%"
+  },
+  "naviBottomDiv":{
+
+  },
+
+
+
+  "topTitleLi":{
+    "float":"left","margin-left":"5px"
+
+  },
+  "topInforLi":{
+    "float":"right","margin-right":"50px","font-size":"14px"
+  },
+  "topInforSpan":{
+    "margin-right":"10px"
+  },
+
+  "mainTaskDiv":{
+    "height":"165px","width":"98%","min-width":"1000px","margin":"10px auto","border":"1px solid #cccccc","font-size":"14px","color":"#999999"
+
+  },
+  "mainTaskTitleDiv":{
+    "width":"130px","height":"25px","margin-top":"-5px","margin-left":"50px","background-color":"#ffffff","text-align":"center"
+  },
+
+  "mainTaskTitle":{
+    "width":"150px",
+    "text-align":"right"
+  },
+  "mainTaskCategory":{
+    "width":"150px",
+    "text-align":"right"
+  },
+  "mainTaskLevel":{
+    "width":"150px",
+    "text-align":"right"
+  },
+  "mainTaskLimit":{
+    "width":"150px",
+    "text-align":"right"
+  },
+  "mainTaskDescription":{
+    "width":"150px",
+    "text-align":"right"
+  },
+
+  "subTaskDiv":{
+    "width":"98%","margin":"10px auto","border":"1px solid #cccccc","font-size":"14px","color":"#999999","position":"relative"
+  },
+  "subTaskTitleDiv":{
+    "width":"130px","height":"25px","margin-top":"-6px","margin-left":"50px","background-color":"#ffffff","text-align":"center","position":"absolute"
+  },
+  "subTaskContentDiv":{
+    "height":"auto","margin-top":"20px"
+  },
+
+
+
+  "bottomDiv":{
+    "list-style-type":"none","width":"100%","height":"60px","background-color":"#3d77c1","color":"#ffffff","line-height":"60px"
+  },
+  "bottomActionLi":{
+    "float":"left","font-size":"18px"
+  },
+  "bottomNewWorkSpan":{
+    "margin-left":"50px","cursor":"pointer"
+  },
+  "bottomDraftWorkSpan":{
+    "margin-left":"50px","cursor":"pointer"
+  },
+  "bottomDoWork":{
+    "margin-left":"50px","cursor":"pointer"
+  },
+  "bottomIconLi":{
+    "float":"right"
+  },
+  "bottomIconImg":{
+    "width":"60px","height":"50px","margin-right":"10px","margin-top":"-7px"
+  },
+
+
+  "formMaskNode": {
+    "width": "100%",
+    "height": "100%",
+    "opacity": 0.6,
+    "position": "absolute",
+    "background-color": "#CCC",
+    "top": "0px",
+    "left": "0px"
+  },
+  "formTableContainer" : {
+    "overflow" : "hidden",
+    "margin-right" : "10px"
+  },
+  "formAreaNode": {
+    "position": "absolute",
+    "opacity": 0,
+    "top": "0px"
+  },
+  "formNode": {
+    "background-color": "#FFF",
+    "box-shadow": "0px 0px 20px #999",
+    "margin": "auto",
+    "border-radius": "8px",
+    "border": "1px solid #f2f2f2",
+    "overflow": "hidden"
+  },
+  "formTopNode": {
+    "color" : "#fff",
+    "height": "50px",
+    "background-color": "#3d77c1",
+    "border-top": "1px solid #f2f2f2",
+    "border-bottom": "1px solid #f2f2f2",
+    "border-top-left-radius" : "10px",
+    "border-top-right-radius" : "10px",
+    "line-height": "50px",
+    "font-size": "16px",
+    "text-align": "left",
+    "list-style-type":"none","min-width":"800px","width":"100%","height":"50px", "background-color":"#3d77c1","color":"#ffffff", "line-height":"50px"
+  },
+  "formTopImg":{
+    "width":"25px",
+    "height":"25px",
+    "float":"left",
+    "margin-top":"10px"
+  },
+  "formTopSpan":{
+    "margin-left":"5px",
+    "font-size":"18px"
+  },
+  "formTopCloseActionNode": {
+    "width": "30px",
+    "height": "30px",
+    "float": "right",
+    "margin":"10px",
+    "background": "url(/x_component_Execution/$Main/default/icon/DeleteFilled-100.png) no-repeat center center",
+    "cursor": "pointer"
+  },
+  "formNewNode": {
+    "width": "47px",
+    "height": "47px",
+    "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+  },
+  "formIconNode": {
+    "width": "47px",
+    "height": "47px"
+  },
+  "formEditNode": {
+    "width": "47px",
+    "height": "47px"
+  },
+  "formContentNode": {
+    "border-radius": "8px",
+    "border": "0px solid #666",
+    "width": "100%",
+    "margin": "auto",
+    "font-size": "16px",
+    "color": "#666",
+    "font-family": "微软雅黑"
+  },
+  "formBottomNode" : {
+    "height" : "70px",
+    "line-height" : "70px",
+    "background-color" : "#e8eff8",
+    "overflow" : "hidden",
+    "border-top" : "1px solid #e8eff8",
+    "border-bottom-left-radius" : "10px",
+    "border-bottom-right-radius" : "10px",
+    "padding-top" : "0px"
+  },
+  "formOkActionNode": {
+    "height": "30px",
+    "width": "85px",
+    "cursor": "pointer",
+    "float": "right",
+    "line-height": "30px",
+    "padding-left": "65px",
+    "font-size": "16px",
+    "font-family": "微软雅黑",
+    "border-radius": "3px",
+    "border": "1px solid #354f67",
+    "color": "#FFF",
+    "margin-right": "20px",
+    "margin-top": "20px",
+    "box-shadow": "0px 0px 0px #666",
+    "background": "url(/x_component_Template/$Explorer/default/icon/editOk_bg.png) no-repeat"
+  },
+  "formCancelActionNode": {
+    "height": "30px",
+    "width": "60px",
+    "cursor": "pointer",
+    "float": "right",
+    "line-height": "30px",
+    "padding-left": "40px",
+    "font-size": "16px",
+    "font-family": "微软雅黑",
+    "border-radius": "3px",
+    "color": "#FFF",
+    "margin-right": "20px",
+    "margin-top": "20px",
+    "box-shadow": "0px 0px 0px #666",
+    "border": "1px solid #999",
+    "background": "url(/x_component_Template/$Explorer/default/icon/editCancel_bg.png) no-repeat"
+  },
+
+
+
+
+  "viewHeadNode": {
+    "width":"100%",
+    "height": "20px",
+    "background-color": "#fff",
+    "color": "#666666",
+    "line-height": "30px",
+    "font-family": "微软雅黑",
+    "font-size": "14px"
+  },
+
+  "normalThNode" : {
+    "background-color" : "#fff",
+    "text-align":"center",
+    "border-bottom": "1px solid #cfecf5",
+    "font-weight" : "normal"
+  },
+  "sortIconNode" : {
+    "height": "16px",
+    "width": "16px",
+    "line-height": "20px",
+    "margin-top": "5px",
+    //"float": "left",
+    "display":"inline-block",
+    "margin-right": "5px",
+    "background-position" : "center center",
+    "background-repeat" : "no-repeat",
+    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dblsort.gif)"
+  },
+  "sortIconNode_asc" : {
+    "height": "16px",
+    "width": "16px",
+    "line-height": "20px",
+    "margin-top": "5px",
+    //"float": "left",
+    "display":"inline-block",
+    "margin-right": "5px",
+    "background-position" : "center center",
+    "background-repeat" : "no-repeat",
+    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dblasc.gif)"
+  },
+  "sortIconNode_desc" : {
+    "height": "16px",
+    "width": "16px",
+    "line-height": "20px",
+    "margin-top": "5px",
+    //"float": "left",
+    "display":"inline-block",
+    "margin-right": "5px",
+    "background-position" : "center center",
+    "background-repeat" : "no-repeat",
+    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dbldesc.gif)"
+  },
+
+
+  "documentNode":{
+    "min-height": "29px",
+    "overflow": "hidden",
+    "color": "#666666",
+    //"line-height": "39px",
+    "cursor": "pointer",
+    "font-family": "微软雅黑",
+    "font-size": "12px",
+    "background-color": "#fff"
+  },
+  "documentNode_noread": {
+    "background-color": "#fcfcfc"
+  },
+  "documentNode_over": {
+    "background-color": "#f5f6f7"
+  },
+  "documentNode_remove": {
+    "background-color": "#ffcccc"
+  },
+
+  "documentActionNode": {
+    "height": "20px",
+    "width": "20px",
+    "line-height": "20px",
+    "color": "#0066cc",
+    "cursor": "pointer",
+    "margin-right": "5px"
+  },
+  "documentActionNode_over":{
+    "color": "#003399"
+  },
+  "documentActionNode_down":{
+    "color": "#000"
+  },
+
+  "normalTdNode" : {
+    "min-height": "30px",
+    "padding-left" : "10px",
+    "text-align":"left",
+    "overflow" : "hidden",
+    //"font-weight" : "bold",
+    //"border-top": "1px solid #FFF",
+    "border-top": "1px dashed #cfecf5"
+  },
+  "normalTdCenterNode" : {
+    "min-height": "30px",
+    "padding-left" : "10px",
+    "text-align":"center",
+    "overflow" : "hidden",
+    //"font-weight" : "bold",
+    //"border-top": "1px solid #FFF",
+    "border-top": "1px dashed #cfecf5"
+  },
+  "documentSubject" : {
+    "font-size" : "14px",
+    "font-weight" : "normal",
+    "color" : "#003399"
+  },
+  "itemBlock" : {
+    "overflow" : "hidden",
+    "display" : "block"
+  },
+  "itemInLine" : {
+    "float" : "left",
+    "font-color" : "#888",
+    "padding-right" : "10px",
+    "padding-top" : "5px"
+  }
+
+
+}

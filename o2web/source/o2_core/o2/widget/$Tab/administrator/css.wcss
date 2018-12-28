@@ -1,0 +1,91 @@
+{
+	"tabNodeContainer": {
+		"height": "50px",
+		"overflow": "hidden",
+		"background-color": "#4c6b87",
+		"border-top": "0px solid #CCC",
+		"border-bottom": "0px solid #000",
+		//"box-shadow": "0px 3px 10px #666",
+	},
+	"contentNodeContainer": {
+		"overflow": "hidden",
+		"background-color": "#4c6b87",
+		"clear": "left"
+	},
+	"contentNodeArea": {
+		"overflow": "hidden",
+		"display": "none",
+		"opacity": 0
+	},
+	"tabNode": {
+		"position": "static",
+		"margin-left": "10px",
+		"margin-right": "-1px",
+		"margin-top": "6px",
+		"float": "left",
+		"height": "42px",
+		"cursor": "pointer",
+		"background-color": "#4c6b87",
+        //"border-top-left-radius": "20px",
+        //"border-top-right-radius": "20px",
+		"border": "0px solid #CCC",
+		"border-bottom": "0px"
+	},
+	"tabTextNode": {
+		"font-size": "18px",
+		"line-height": "42px",
+		"text-align": "center",
+		"color": "#ccc",
+		"margin-right": "8px",
+		"margin-top": "0px",
+		"font-weight": "bold",
+		"margin-left": "8px",
+		"padding": "0px 20px",
+		"background": "#4c6b87",
+		"display": "inline"
+	},
+	"tabCloseNode": {
+		"height": "48px",
+		"width": "16px",
+		"background": "url("+o2.session.path+"/widget/$Tab/administrator/close_gray.png) left center",
+		"background-repeat": "no-repeat" ,
+		"float": "right"
+	},
+	"tabNodeCurrent": {
+		"position": "static",
+		"margin-left": "10px",
+		"margin-right": "-1px",
+		"margin-top": "6px",
+		"float": "left",
+		"height": "43px",
+		//"border-top-left-radius": "20px",
+        //"border-top-right-radius": "20px",
+		"background": "#4c6b87",
+		
+		"border": "0px solid #CCC",
+		"border-bottom": "0px solid #EEE"
+	},
+	"tabTextNodeCurrent": {
+		"font-size": "18px",
+		"line-height": "32px",
+		"text-align": "center",
+		"color": "#fff",
+		"margin-right": "8px",
+		"margin-left": "8px",
+		"font-weight": "bold",
+		"margin-top": "5px",
+		"float": "left",
+		"padding": "0px 20px",
+		"background": "#718fab",
+		"border-radius": "10px",
+		"display": "inline"
+	},
+
+	"tabCloseNodeCurrent": {
+		"height": "48px",
+		"width": "16px",
+		"background": "url("+o2.session.path+"/widget/$Tab/administrator/close.png) left center",
+		"background-repeat": "no-repeat",
+		"float": "left"
+	}
+}

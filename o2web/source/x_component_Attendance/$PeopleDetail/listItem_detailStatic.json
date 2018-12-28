@@ -1,0 +1,114 @@
+[
+  {
+    "title" : "部门",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "function( d ){ return d.unitName.split('@')[0] }",
+    "name" : "unitName",
+    "width" : "10%"
+  },
+  {
+    "title" : "姓名",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "function( d ){ return d.employeeName.split('@')[0] }",
+    "name" : "employeeName",
+    "width" : "10%"
+  },
+  {
+    "title" : "月份",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "function( data ){ return data.statisticYear + '-' + data.statisticMonth }",
+    "name" : "statisticMonth",
+    "width" : "8%"
+  },
+  {
+    "title" : "上班打卡次数",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "onDutyTimes",
+    "name" : "onDutyTimes",
+    "width" : "8%"
+  },
+  {
+    "title" : "下班打卡次数",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "offDutyTimes",
+    "name" : "offDutyTimes",
+    "width" : "8%"
+  },
+  {
+    "title" : "出勤人天数",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "onDutyDayCount",
+    "name" : "onDutyDayCount",
+    "width" : "8%"
+  },
+  {
+    "title" : "请假或外出报备人天数",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "onSelfHolidayCount",
+    "name" : "onSelfHolidayCount",
+    "width" : "8%"
+  },
+  {
+    "title" : "缺勤人天数",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "absenceDayCount",
+    "name" : "absenceDayCount",
+    "width" : "8%"
+  },
+  {
+    "title" : "迟到次数",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "lateTimes",
+    "name" : "lateTimes",
+    "width" : "8%"
+  },
+//  {
+//    "title" : "早退次数",
+//    "headStyles" : "normalThNode",
+//    "contentStyles" : "normalTdNode",
+//    "item" : "leaveEarlyTimes",
+//    "name" : "leaveEarlyTimes",
+//    "width" : "8%"
+//  },
+  {
+    "title" : "工时不足人次",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "lackOfTimeCount",
+    "name" : "lackOfTimeCount",
+    "width" : "8%"
+  },
+  {
+    "title" : "异常打卡人次",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "abNormalDutyCount",
+    "name" : "abNormalDutyCount",
+    "width" : "8%"
+  }
+//  {
+//    "access" : "admin",
+//    "title" : "操作",
+//    "headStyles" : "normalThNode",
+//    "contentStyles" : "normalTdNode",
+//    "item" : "actions",
+//    "name" : "actions",
+//    "width" : "10%",
+//    "sub" : [{
+//      "title" : "删除文件",
+//      "action" : "remove",
+//      "styles" : "actionDeleteNode",
+//      "overStyles" : "actionDeleteNode_over",
+//      "downStyles" : "actionDeleteNode_down"
+//    }]
+//  }
+]

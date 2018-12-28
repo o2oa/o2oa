@@ -1,0 +1,192 @@
+{
+  "topContainerNode" : {
+    "background-color": "#3c76b7",
+    "overflow" : "hidden"
+  },
+  "topNode": {
+    "margin" : "0px auto",
+    "width" : "1182px",
+    "color" : "#333",
+    "height": "60px",
+    "background-color": "#3c75b7",
+    "line-height": "60px",
+    "font-size": "14px",
+    "font-weight": "bold",
+    "text-align": "left"
+  },
+  "topIconNode" : {
+    "width": "200px",
+    "height": "60px",
+    "float": "left",
+    "background": "url(/x_component_Forum/$Main/default/icon/pic_o2shequ.png) no-repeat center 14px"
+  },
+  "topTextNode" : {
+    "color" : "#fff",
+    "padding-left" : "5px",
+    "font-size": "20px",
+    "float": "left",
+    "overflow" : "hidden",
+    "text-overflow" : "ellipsis",
+    "white-space":"nowrap",
+    "letter-spacing" : "4px"
+  },
+  "topContentNode" : {
+    "float" : "right",
+    "padding-right" : "5px"
+  },
+  "searchDiv" : {
+    "overflow" : "hidden",
+    "float" : "right",
+    "margin-right" : "15px",
+    "margin-top" : "18px",
+    "border-radius" : "3px"
+  },
+  "searchInput" : {
+    "padding-left" : "10px",
+    "float" : "left",
+    "height" : "24px",
+    "line-height" : "24px",
+    "width" : "320px",
+    "border" : "0px",
+    "color" : "#999",
+    "background-color" : "#f5f5f5"
+  },
+  "searchInput_over" : {
+    "background-color" : "#fff"
+  },
+  "searchAction" : {
+    "padding-right" : "10px",
+    "float" : "left",
+    "height" : "26px",
+    "line-height" : "26px",
+    "background": "url(/x_component_Forum/$Main/default/icon/search-20.png) no-repeat center center",
+    "width" : "26px",
+    "background-color" : "#f5f5f5",
+    "cursor" : "pointer"
+  },
+  "searchAction_over" : {
+    "background": "url(/x_component_Forum/$Main/default/icon/search-20-over.png) no-repeat center center",
+    "background-color" : "#fff"
+  },
+  "searchAction_over2" : {
+    "background": "url(/x_component_Forum/$Main/default/icon/search-20-color.png) no-repeat center center",
+    "background-color" : "#fff"
+  },
+  "topSepNode" : {
+    "float" : "right",
+    "margin-top" : "18px",
+    "margin-left" : "13px",
+    "overflow" : "hidden",
+    "height": "24px",
+    "line-height" : "24px",
+    "float": "right",
+    "color" : "#fff",
+    "font-size" : "16px",
+    "font-weight" : "normal"
+  },
+  "signupNode" : {
+    "float" : "right",
+    "margin-top" : "18px",
+    "margin-left" : "13px",
+    "overflow" : "hidden",
+    "cursor" : "pointer"
+  },
+  "signupIconNode" : {
+    "width": "24px",
+    "height": "24px",
+    "float": "left",
+    "background": "url(/x_component_Forum/$Main/default/icon/signup.png) no-repeat center center"
+  },
+  "signupTextNode" : {
+    "height": "24px",
+    "line-height" : "24px",
+    "float": "left",
+    "color" : "#fff",
+    "font-size" : "16px",
+    "font-weight" : "normal"
+  },
+  "logoutNode" : {
+    "margin-top" : "18px",
+    "margin-left" : "13px",
+    "overflow" : "hidden",
+    "float" : "right",
+    "cursor" : "pointer"
+  },
+  "logoutIconNode" : {
+    "width": "24px",
+    "height": "24px",
+    "float": "left",
+    "background": "url(/x_component_Forum/$Main/default/icon/logout.png) no-repeat center center"
+  },
+  "logoutTextNode" : {
+    "height": "24px",
+    "line-height" : "24px",
+    "float": "left",
+    "color" : "#fff",
+    "font-size" : "16px",
+    "font-weight" : "normal"
+  },
+  "loginNode" : {
+    "margin-top" : "18px",
+    "margin-left" : "13px",
+    "overflow" : "hidden",
+    "cursor" : "pointer",
+    "float" : "right"
+  },
+  "loginIconNode" : {
+    "width": "24px",
+    "height": "24px",
+    "float": "left",
+    "background": "url(/x_component_Forum/$Main/default/icon/user.png) no-repeat center center"
+  },
+  "loginTextNode" : {
+    "height": "24px",
+    "line-height" : "24px",
+    "float": "left",
+    "color" : "#fff",
+    "font-size" : "16px",
+    "font-weight" : "normal"
+  },
+  "settingNode" : {
+    "float" : "right",
+    "margin-top" : "18px",
+    "margin-left" : "13px",
+    "overflow" : "hidden",
+    "cursor" : "pointer"
+  },
+  "settingIconNode" : {
+    "float" : "right",
+    "width": "24px",
+    "height": "24px",
+    "float": "left",
+    "background": "url(/x_component_Forum/$Main/default/icon/settings.png) no-repeat center center"
+  },
+  "settingTextNode" : {
+    "height": "24px",
+    "line-height" : "24px",
+    "float": "left",
+    "color" : "#fff",
+    "font-size" : "16px",
+    "font-weight" : "normal"
+  },
+  "personNode" : {
+    "margin-top" : "18px",
+    "margin-left" : "13px",
+    "overflow" : "hidden",
+    "cursor" : "pointer"
+  },
+  "personIconNode" : {
+    "width": "24px",
+    "height": "24px",
+    "float": "left",
+    "background": "url(/x_component_Forum/$Main/default/icon/user.png) no-repeat center center"
+  },
+  "personTextNode" : {
+    "height": "24px",
+    "line-height" : "24px",
+    "float": "left",
+    "color" : "#fff",
+    "font-size" : "16px",
+    "font-weight" : "normal"
+  }
+}

@@ -1,0 +1,58 @@
+{
+	"tabNodeContainer": {
+	    "text-align": "center",
+		"height": "24px",
+		"border-top": "0px solid #CCC",
+		"border-bottom": "1px solid #CCC"
+	},
+	"contentNodeContainer": {
+		"overflow": "hidden",
+		"clear": "both"
+	},
+	"contentNodeArea": {
+		"overflow": "hidden",
+		"display": "none",
+		"opacity": 0
+	},
+	"tabNode": {
+		"position": "static",
+		"margin-left": "0px",
+		"margin-top": "0px",
+		//"float": "left",
+	    "display": "inline-table",
+		"height": "24px",
+		"cursor": "pointer"
+	},
+	"tabTextNode": {
+		"line-height": "24px",
+		"text-align": "center",
+		"color": "#333333",
+		"margin-right": "8px",
+		"margin-top": "0px",
+		"margin-left": "8px"
+	},
+	"tabCloseNode": {
+		"height": "24px",
+		"width": "20px",
+		"background": "url("+o2.session.path+"/widget/$Tab/default/close.gif) center center"
+	},
+	"tabNodeCurrent": {
+		"position": "relative",
+		"top": "0px",
+		"margin-left": "0px",
+		//"float": "left",
+		"display": "inline-table",
+		"height": "24px"
+	},
+	"tabTextNodeCurrent": {
+		"line-height": "24px",
+		"text-align": "center",
+		"color": "#bf6364"
+	},
+
+	"tabCloseNodeCurrent": {
+		"height": "24px",
+		"width": "20px",
+		"background": "url("+o2.session.path+"/widget/$Tab/default/close.gif) center center"
+	}
+}

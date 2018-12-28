@@ -1,0 +1,55 @@
+{
+    "node": {
+        "margin": "20px",
+        "overflow": "hidden",
+        "min-width": "800px"
+    },
+    "table": {
+        "width": "95%",
+        "height": "140px"
+    },
+    "cells": {
+        "width": "12.5%",
+        "text-align": "center",
+        "border-right": "1px solid #CCC",
+        "border-left": "1px solid #FFF",
+        "border-bottom": "1px solid #CCC",
+        "border-top": "1px solid #FFF",
+    },
+
+    "itemNode": {
+        "width": "160px",
+        "height": "70px",
+        "margin": "auto",
+        "overflow": "hidden"
+    },
+    "itemIconNode": {
+        "height": "70px",
+        "width": "60px",
+        "float": "left",
+        "background-repeat": "no-repeat",
+        "background-position": "center center"
+    },
+    "itemTextNode": {
+        "margin-left": "60px",
+        "height": "70px",
+        "overflow": "hidden"
+    },
+    "itemNumberNode": {
+        "height": "40px",
+        "text-align": "center",
+        "line-height": "60px",
+        "font-family": "Microsoft Sans Serif",
+        "color": "#0582d2",
+        "font-weight": "bold",
+        "font-size": "32px"
+    },
+    "itemTitleNode": {
+        "height": "20px",
+        "text-align": "center",
+        "line-height": "30px",
+        "font-size": "14px",
+        "color": "#666"
+    }
+
+}

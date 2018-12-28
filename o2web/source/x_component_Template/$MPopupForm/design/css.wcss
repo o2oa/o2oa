@@ -1,0 +1,183 @@
+{
+  "formMaskNode": {
+    "width": "100%",
+    "height": "100%",
+    "opacity": 0.6,
+    "position": "absolute",
+    "background-color": "#666",
+    "top": "0px",
+    "left": "0px"
+  },
+  "formAreaNode": {
+    "position": "absolute",
+    "opacity": 0,
+    "top": "0px"
+  },
+  "formNode": {
+    "background-color": "#FFF",
+    "border": "3px solid #666",
+    "box-shadow": "0px 0px 15px #666",
+    "margin": "auto",
+    "border-radius" : "10px",
+    "overflow": "hidden"
+  },
+  "formTopNode": {
+    "color" : "#666",
+    "height" : "30px",
+    "background-color": "#EEE",
+    "border-bottom": "1px solid #CCC",
+    "line-height": "30px",
+    "font-size": "14px",
+    "padding": "0px 10px",
+    "text-align": "left"
+  },
+  "formTopIconNode" : {
+    "width" : "30px",
+    "height" : "30px",
+    "float": "left"
+  },
+  "formTopTextNode" : {
+    "font-weight": "bold",
+    "font-size": "14px",
+    "line-height": "30px",
+    "padding": "0px 10px",
+    "float": "left",
+    "overflow" : "hidden",
+    "text-overflow" : "ellipsis",
+    "white-space":"nowrap"
+  },
+  "formTopCloseActionNode": {
+    "width": "30px",
+    "height": "30px",
+    "float": "right",
+    "background": "url("+"/x_component_Selector/$Selector/default/icon/close.png) no-repeat center center",
+    "cursor": "pointer"
+  },
+  "formTopMaxActionNode": {
+    "width": "30px",
+    "height": "30px",
+    "float": "right",
+    "background": "url(/x_component_Template/$MPopupForm/blue/icon/icon_max_square_pre.png) no-repeat center center",
+    "cursor": "pointer"
+  },
+  "formTopRestoreActionNode": {
+    "display" : "none",
+    "width": "30px",
+    "height": "30px",
+    "float": "right",
+    "background": "url(/x_component_Template/$MPopupForm/blue/icon/icon_restore_square_pre.png) no-repeat center center",
+    "cursor": "pointer"
+  },
+  "resizeNode" : {
+    "position": "absolute",
+    "height": "15px",
+    "width": "15px",
+    "bottom": "0px",
+    "right": "0px",
+    "cursor" : "se-resize"
+  },
+  "formTopContentNode" : {
+    "float" : "right",
+    "padding-right" : "10px",
+    "text-align" : "right"
+  },
+  "formTopContentNode" : {
+    "overflow" : "hidden",
+    "float" : "right",
+    "padding-right" : "10px",
+    "text-align" : "right"
+  },
+  "formTopContentCustomNode" : {
+    "float" : "right",
+    "margin-right" : "10px",
+    "font-size" : "16px",
+    "cursor" : "pointer"
+  },
+  "formTopContentTitle" : {
+  },
+  "formTopContentValue" : {
+    "padding-right" : "20px",
+    "font-size": "12px"
+  },
+  "formNewNode": {
+    "width": "47px",
+    "height": "47px",
+    "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+  },
+  "formIconNode": {
+    "width": "47px",
+    "height": "47px"
+  },
+  "formEditNode": {
+    "width": "47px",
+    "height": "47px"
+  },
+  "formToolbar" : {
+    "padding-top" : "20px",
+    "height" : "35px",
+    "border-bottom" : "2px solid #999",
+    "padding-left" : "15px"
+  },
+  "formContentNode": {
+    "border": "0px solid #fff",
+    "width": "100%",
+    "margin": "auto",
+    "font-size": "14px",
+    "color": "#666",
+    "font-family": "微软雅黑",
+    "overflow" : "hidden",
+    "position" : "relative"
+  },
+  "formTableContainer" : {
+    //"width" : "460px",
+    "margin": "20px auto 0px auto",
+    "overflow" : "hidden",
+    "positon" : "static"
+  },
+  "formTableContainer2" : {
+    "width" : "600px",
+    "margin": "20px auto 0px auto",
+    "overflow" : "hidden",
+    "positon" : "static"
+  },
+  "formBottomNode" : {
+    "height" : "60px",
+    "line-height" : "60px",
+    "width" : "300px",
+    "margin" : "0px auto",
+    "overflow" : "hidden"
+  },
+  "formOkActionNode": {
+    "height": "30px",
+    "width": "85px",
+    "cursor": "pointer",
+    "float": "right",
+    "line-height": "30px",
+    "padding-left": "65px",
+    "font-size": "16px",
+    "font-family": "微软雅黑",
+    "border-radius": "3px",
+    "border": "1px solid #354f67",
+    "color": "#FFF",
+    "margin-right": "30px",
+    "margin-top": "10px",
+    "box-shadow": "0px 0px 0px #666",
+    "background": "url("+"/x_component_Template/$MPopupForm/blue/icon/editOk_bg.png) no-repeat"
+  },
+  "formCancelActionNode": {
+    "height": "30px",
+    "width": "60px",
+    "cursor": "pointer",
+    "float": "right",
+    "line-height": "30px",
+    "padding-left": "40px",
+    "font-size": "16px",
+    "font-family": "微软雅黑",
+    "border-radius": "3px",
+    "color": "#FFF",
+    "margin-top": "10px",
+    "box-shadow": "0px 0px 0px #666",
+    "border": "1px solid #999",
+    "background": "url("+"/x_component_Template/$MPopupForm/blue/icon/editCancel_bg.png) no-repeat"
+  }
+}

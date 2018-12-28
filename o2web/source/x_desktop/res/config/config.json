@@ -1,0 +1,23 @@
+{
+  "center": [
+    {
+      "port": "20030",
+      "host": ""
+    },
+    {
+      "port": "20030",
+      "host": "127.0.0.1"
+    }
+  ],
+  "initManagerChanged": true,
+  "initManagerName": "",
+  "initManagerPassword": "",
+  "footer": "开发系统Local",
+  "title": "o2oa开发平台local",
+  "app_protocol": "auto",
+  "loginPage": {
+    "enable": false,
+    "portal": "b82d7669-85d6-4c10-8151-c4d1f18ba6ef",
+    "page": ""
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "getId" : {"uri":"/jaxrs/uuid/random"},
+
+  //根据人员获取部门
+  "listDepartmentByPerson": {"uri": "/jaxrs/department/list/person/{name}"},
+  //根据人员获取所在公司
+  "listCompanyByPerson": {"uri": "/jaxrs/company/list/person/{name}"},
+  //获取公司的一级部门
+  "listDepartmentByCompany": {"uri": "/jaxrs/department/list/company/{companyName}/top"},
+  //获取人员
+  "getPerson": {"uri": "/jaxrs/person/{name}"},
+
+  "getDepartmentDuty": {"uri": "/jaxrs/departmentduty/{name}/department/{departmentName}"},
+  //根据身份获取人员
+  "getPersonByIdentity": {"uri": "/jaxrs/person/identity/{name}"},
+
+  //"getRow" : {"uri" : "/jaxrs/row/{id}"},
+
+  "getHoliday" : {"uri":"/jaxrs/OKRworkdayconfig/{id}"},
+  "listHolidayAll": {"uri" : "/jaxrs/OKRworkdayconfig/list/all"},
+  /*{'q_Year':'2016','q_Name':'五一劳动节','q_Month':'03'}*/
+  "listHolidayFilter" : {"uri" : "/jaxrs/OKRworkdayconfig/filter", "method": "PUT"},
+  "saveHoliday": {"uri" : "/jaxrs/OKRworkdayconfig", "method": "POST"},
+  "deleteHoliday" : {"uri":"/jaxrs/OKRworkdayconfig/{id}","method": "DELETE"},
+
+  "uploadAttachment": {"uri": "/servlet/upload", "method": "POST", "enctype": "formData"},
+  "getAttachmentStream": {"uri": "/servlet/download/{id}/stream", "method": "GET"},
+  "listAttachmentInfo" : {"uri" : "/jaxrs/OKRimportfileinfo/list/all"},
+  "deleteAttachment" : {"uri":"/jaxrs/OKRimportfileinfo/{id}","method": "DELETE"},
+
+  "listDetailFilterNext" : {"uri" : "/jaxrs/OKRdetail/filter/list/{id}/next/{count}", "method": "PUT"},
+  "listDetailFilterPrev" : {"uri" : "jaxrs/OKRdetail/filter/list/{id}/prev/{count}", "method": "PUT"},
+
+
+  "getCenterWorkListNext" : {"uri" : "/jaxrs/okrcenterworkinfo/filter/list/{id}/next/{count}", "method": "PUT"},
+  "getCenterTaskListPrev" : {"uri" : "/jaxrs/okrcenterworkinfo/filter/list/{id}/prev/{count}", "method": "PUT"},
+  "saveMainTask" : {"uri" : "/jaxrs/okrcenterworkinfo", "method": "POST"},
+  "getMainTask" : {"uri":"/jaxrs/okrcenterworkinfo/{id}","method":"GET"},
+  "deleteCenterWork" : {"uri":"/jaxrs/okrcenterworkinfo/{id}","method": "DELETE"},
+  "saveTask" : {"uri" : "/jaxrs/okrworkbaseinfo","method" : "POST"},
+  "getTask" : {"uri" : "/jaxrs/okrworkbaseinfo/{id}","method":"GET"},
+  "getUserBaseWork" : {"uri" : "/jaxrs/okrworkbaseinfo/form/center/{id}","method": "GET"},
+  "deleteBaseWork" : {"uri":"/jaxrs/okrworkbaseinfo/{id}","method": "DELETE"},
+  //{
+  //"deployerIdentity":"开发部经理",
+  //"workIds":["id","id","id"]
+  //}
+  "deployBaseWork" : {"uri" : "/jaxrs/okrworkbaseinfo/deploy", "method": "PUT"},
+
+  "getBaseWorkDetails" : {"uri":"/jaxrs/okrworkdetailinfo/{id}","method":"GET"},
+
+  "getWorksById" : {"uri":"/jaxrs/okrworkbaseinfo/center/{id}","method":"GET"}
+
+
+}

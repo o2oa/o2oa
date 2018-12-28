@@ -1,0 +1,175 @@
+{
+  "naviDiv":{
+    "position":"absolute","width":"130px","height":"616px","background-color":"#203140"
+  },
+  "naviTitleDiv":{
+    "background-color":"#006666", "color":"#008f8f","font-size":"18px","text-align":"center","height":"65px","line-height":"65px"
+  },
+  "naviContentLi":{
+    "margin-top":"20px",
+    "cursor":"pointer",
+    "background-color":"#203140",
+    "margin" : "10px 10px 0px 10px",
+    "padding" : "10px"
+  },
+  "naviContentLi_over":{
+    "margin-top":"20px",
+    "cursor":"pointer",
+    "background-color":"#006666",
+    "margin" : "10px 10px 0px 10px",
+    "padding" : "10px"
+  },
+  "naviContentLi_current":{
+    "margin-top":"20px",
+    "cursor":"pointer",
+    "background-color":"#006666",
+    "margin" : "10px 10px 0px 10px",
+    "padding" : "10px"
+  },
+  "naviContentImg":{
+    "width":"70px","height":"70px","display":"block","margin":"0px auto"
+  },
+  "naviContentSpan":{
+    "display":"block","text-align":"center"
+  },
+  "naviContentDiv":{
+    "height":"480px","list-style-type":"none","color":"#ffffff","font-size":"14px"
+  },
+  "contentDiv":{
+    "margin-left":"130px","height":"616px", "background-color":"#ffffff","min-width":"1000px"
+  },
+  "categoryBar":{
+    "width":"100%","min-width":"1000px","padding-top":"8px","margin-bottom":"10px","padding-left":"10px",
+    "border-bottom" : "1px dashed #dedede", "overflow" : "hidden"
+  },
+  "categoryNode":{
+    "list-style" : "none",
+    "padding": "10px",
+    "height": "20px",
+    "line-height": "20px",
+    "overflow": "hidden",
+    "font-family": "微软雅黑",
+    "font-size": "14px",
+    "font-weight" : "normal",
+    "float": "left",
+    "cursor": "pointer",
+    "color":"#3c76c1",
+    "border-bottom" : "2px solid #fff"
+    //border-bottom-color: rgb(255, 255, 255); border-bottom-width: 2px; border-bottom-style: solid;
+    //"display":"inline-block","width":"80px","height":"30px","text-align":"center","line-height":"30px","cursor":"pointer","color":"#3c76c1","font-size":"14px","margin-right" : "10px"
+  },
+  "categoryNode_over" : {
+    "font-size": "14px",
+    "font-weight": "normal",
+    "border-bottom" : "2px solid #5c97e1"
+  },
+  "categoryNode_current" : {
+    "font-size": "14px",
+    "font-weight": "bold",
+    "border-bottom" : "2px solid #124c93"
+  },
+  "toolbar" : {
+//    "padding-top" : "15px",
+//    "height" : "50px",
+//    "border-bottom" : "1px solid #dedede"
+    "padding-left" : "20px",
+    "height" : "40px",
+    "overflow" : "hidden"
+  },
+  "toolbarTextNode" : {
+    "margin" : "6px 40px 6px 20px",
+    "color" : "#999",
+    "font-size" : "18px",
+    "font-weight" : "bold",
+    "float" : "left",
+    "text-align" : "center"
+  },
+  "fileterNode" : {
+    "float" : "left"
+  },
+  "filterTableTitle":{
+    "text-align":"right"
+  },
+  "filterTableValue":{
+    "text-align":"left"
+  },
+  "filterTitle":{
+    "width" : "180px",
+    "color" : "#bbb"
+  },
+  "filterButton":{
+    "color" : "#fff",
+    "border":"0px",
+    "cursor": "pointer" ,
+    "background-color":"#5c97e1",
+    "box-shadow": "0px 0px 5px #2a5c95",
+    "height" : "26px",
+    "padding-left" : "15px",
+    "padding-right" : "15px"
+  },
+  "viewContainer" : {
+    "overflow" : "hidden"
+  },
+  "documentListNode" : {
+    "margin" : "5px 20px 0px 10px"
+  },
+  "documentNode" : {
+    "margin" : "10px 10px 10px 10px",
+    "border" : "1px solid #dedede",
+    "width" : "250px",
+    "height" : "250px",
+    "box-shadow" :"none",
+    "float" : "left",
+    "cursor":"pointer"
+
+  },
+  "documentNode_over" : {
+    "box-shadow" :"3px 3px 3px #999"
+  },
+  "documentItemNode" : {
+  },
+  "documentItemTopNode":{
+    "position" : "relative"
+  },
+  "documentItemTitleNode" : {
+    "color" : "#7e89a6",
+    "font-size" : "18px",
+    "font-weight" : "bold",
+    "background-color" : "#e1e6ef",
+    "height" : "130px",
+    "padding" : "10px 10px 10px 10px"
+  },
+  "documentItemTitleNode_over" : {
+    "color" : "#fff",
+    "background-color" : "#3d77c1"
+  },
+  "documentItemIconNode" : {
+    "top" : "112px",
+    "left" : "92px",
+    "width" : "68px",
+    "height" : "68px",
+    "background": "url(/x_component_Execution/$MinderExplorer/default/icon/xmind68.png) no-repeat center center",
+    "position" : "absolute"
+  },
+  "documentItemIconNode_over" : {
+    "background": "url(/x_component_Execution/$MinderExplorer/default/icon/xmind_over68.png) no-repeat center center"
+  },
+  "documentItemStatNode" : {
+    "float" : "left",
+    "margin-top" : "20px",
+    "padding" : "20px",
+    "color": "#cccccc",
+    "line-height" : "20px"
+  },
+  "documentItemStatNode_over" : {
+    "color": "#7d88a6"
+  },
+  "documentItemStatCountNode" :{
+    "font-weight" : "bold",
+    "font-size" : "32px",
+    "padding-bottom" : "10px"
+  },
+  "documentItemStatTextNode":{
+    "font-size" : "12px"
+  }
+}

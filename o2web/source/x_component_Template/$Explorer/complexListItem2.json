@@ -1,0 +1,57 @@
+{
+  "viewSetting": {
+    "html": "<div styles='sectionListNode'></div>"
+  },
+  "documentSetting": {
+    "html": "<div styles='sectionNode'></div>",
+    "mouseoverStyles": "sectionNode_over",
+    "action": "open",
+    "event" : "mouseover^^function( sectionNode, ev ){ this.mouseoverSection(sectionNode, ev) }##mouseout^^function( sectionNode, ev ){ this.mouseoutSection(sectionNode, ev) }"
+  },
+  "items": [
+    {
+      "name": "work",
+      "content": {
+        "html": "<div styles='sectionItemNode'>"+
+        "<div styles='sectionRemoveNode' item='remove' title='删除版块'></div>"+
+        "<div styles='sectionItemTopNode'>"+
+        " <div styles='sectionItemTopIconNode'>"+
+        "   <img styles='sectionItemTopIcon' item='icon'>"+
+        " </div>"+
+        " <div styles='sectionItemTopContent'>"+
+        "   <div styles='sectionItemTopDiv'><div styles='sectionItemTitleNode' item='sectionName'></div><div styles='forumNameLabel' item='forumName'></div></div>"+
+        "   <div styles='sectionItemTopDiv'>"+
+        "     <div styles='sectionItemTopLable' lable='create'></div><div styles='sectionItemTopInfor'>：</div><div styles='sectionItemTopInfor' item='creatorName'></div><div styles='sectionItemTopInfor'>，&nbsp;</div>"+
+        "     <div styles='sectionItemTopLable' lable='time'></div><div styles='sectionItemTopInfor'>：</div><div styles='sectionItemTopInfor' item='createTime'></div>"+
+        "   </div>"+
+        "   <div styles='sectionItemTopDiv'>"+
+        "     <div styles='sectionItemTopLable' lable='sectionType'></div><div styles='sectionItemTopInfor'>：</div><div styles='sectionItemTopInfor' item='sectionType'></div><div styles='sectionItemTopInfor'>，&nbsp;</div>"+
+        "     <div styles='sectionItemTopLable' lable='sectionStatus'></div><div styles='sectionItemTopInfor'>：</div><div styles='sectionItemTopInfor' item='sectionStatus'></div>"+
+        "   </div>"+
+        "   <div styles='sectionItemTopDiv'>"+
+        "     <div styles='sectionItemTopLable' lable='moderatorNames'></div><div styles='sectionItemTopInfor'>：</div><div styles='sectionItemTopInfor' item='moderatorNames'></div>"+
+        "   </div>"+
+        " </div>"+
+        "</div>"+
+        "</div>",
+        "items": {
+          "sectionName" : {},
+          "forumName": {},
+          "moderatorNames" : {},
+          "createTime" : { "value" : "function(d){ return d.createTime.split(' ')[0] }" },
+          "creatorName": {},
+          "sectionType": {  },
+          "sectionStatus": { "styles" : "function(d){ return d.sectionStatus == '启用' ? {'color':'green'} : {'color':'#845a5a'} }" },
+          "remove" : {
+            "condition" : "function(d){ return this.explorer.forumAdminObj[d.forumId] || this.app.access.isSectionManager( d ) || this.app.access.isAdmin() }",
+            "action" : "remove"
+          },
+          "icon" : {
+            "value": "",
+            "attr" : "src^^function( d ){ if( d.icon ){ return 'data:image/png;base64,'+ d.icon }else{ return '/x_component_Forum/$Setting/default/sectionIcon/forum_icon.png' } }"
+          }
+        }
+      }
+    }
+  ]
+}

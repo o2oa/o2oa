@@ -1,0 +1,47 @@
+{
+	"topNode": {
+		"padding": "3px",
+		"margin": "0px 0px",
+		"height": "30px",
+		"overflow": "hidden"
+	},
+	"refreshNode": {
+		"height": "24px",
+		"width": "24px",
+		"margin-left": "0px",
+		"cursor": "pointer",
+		"float": "left",
+		"border": "1px solid #999",
+		"border-radius": "3px",
+		"background": "url("+"/x_component_File/$Main/default/icon/refresh.png) center center no-repeat",
+	},
+	"searchNode": {
+		"height": "24px",
+		"width": "190px",
+		"background-color": "#FFF",
+		"border-radius": "3px",
+		"border": "1px solid #999",
+		"float": "right"
+	},
+	"pathNode": {
+		"height": "24px",
+		"margin-right": "200px",
+		"margin-left": "30px",
+		"background-color": "#FFF",
+		"border": "1px solid #999",
+		"border-radius": "3px",
+	},
+	"fileContentNode": {
+		"overflow": "hidden"
+	},
+	"folderTreeAreaNode": {
+		"width": "260px",
+		"height": "100%",
+		"border-right": "1px solid #999"
+	},
+	"folderTreeNode": {
+		"padding": "0px",
+		"overflow": "hidden"
+	}
+	
+}

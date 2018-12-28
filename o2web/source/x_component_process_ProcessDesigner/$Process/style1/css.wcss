@@ -1,0 +1,639 @@
+{
+	"activity": {
+		"begin": {
+			"shadow": {
+				"cursor": "pointer",
+				"fill": "120-#fff-#eee",
+				"stroke-width": "0",
+				"z-index": 100
+			},
+			"shap": {
+				"width": 40,
+				"height": 40,
+				"radius": 20,
+				"cursor": "pointer",
+				"fill":"90-#FFF-#c8ffbe:5-#85ea60:50-#94f17c:53-#b3f699:97:#FFF",
+				"stroke-width": "1",
+				"stroke": "#60c743",
+				"z-index": 100
+			},
+			"text":{
+				"display": "none",
+				"fill": "#FFF",
+				"stroke-width": 0,
+				"font-size": 14,
+				"cursor": "pointer",
+				"z-index": 100
+			},
+			"icon":{
+				"src": MWF.defaultPath+"/process/ProcessChart/$Process/style1/icon/begin.gif",
+				"attr": {
+					"cursor": "pointer",
+					"z-index": 100
+				}
+			},
+			"listIcon": {
+				"width": "30px",
+				"height": "24px",
+				"background-image": "url("+MWF.defaultPath+"/process/ProcessChart/$Process/default/icon/begin.gif"+")",
+				"background-position": "center center",
+				"background-repeat": "no-repeat",
+				"border-bottom": "1px dashed #CCC",
+				"cursor": "pointer"
+			}
+		},
+		"end":{
+			"shadow": {
+				"cursor": "pointer",
+				"fill": "120-#fff-#eee",
+				"stroke-width": "0",
+				"z-index": 100
+			},
+			"shap": {
+				"width": 41,
+				"height": 41,
+				"radius": 20,
+				"cursor": "pointer",
+				"fill":"90-#FFF-#ffaa96:5-#db7163:50-#ea8d7c:53-#f0cdc7:97:#FFF",
+				"stroke-width": "1",
+				"stroke": "#c73f27",
+				"z-index": 100
+			},
+			"text":{
+				"display": "none",
+				"font-size": 14,
+				"cursor": "pointer",
+				"z-index": 100
+			},
+			"icon":{
+				"src": MWF.defaultPath+"/process/ProcessChart/$Process/style1/icon/end.gif",
+				"attr": {
+					"cursor": "pointer",
+					"z-index": 100
+				}
+			},
+			"listIcon": {
+				"width": "30px",
+				"height": "24px",
+				"background-image": "url("+MWF.defaultPath+"/process/ProcessChart/$Process/default/icon/end.gif"+")",
+				"background-position": "center center",
+				"background-repeat": "no-repeat",
+				"border-bottom": "1px dashed #CCC",
+				"cursor": "pointer"
+			}
+		},
+		"manual":{
+			"shadow": {
+				"cursor": "pointer",
+				"fill": "90-#fff-#999:30-#fff",
+				"stroke-width": "0",
+				"z-index": 100
+			},
+			"shap": {
+				"cursor": "pointer",
+				"fill": "90-#FFF-#77c1ee:5-#49a0d5:50-#68b6e4:53-#bdddec:97:#FFF",
+				"stroke-width": "1",
+				"stroke": "#5da2c9",
+				"radius": 3,
+				"z-index": 100
+			},
+			"text":{
+				"fill": "#FFF",
+				"stroke-width": 0,
+				"font-size": 14,
+				"cursor": "pointer",
+				"z-index": 100
+			},
+			"icon":{
+				"src": MWF.defaultPath+"/process/ProcessChart/$Process/style1/icon/manual.gif",
+				"attr": {
+					"cursor": "pointer",
+					"z-index": 100
+				}
+			},
+			"listIcon": {
+				"width": "30px",
+				"height": "24px",
+				"background-image": "url("+MWF.defaultPath+"/process/ProcessChart/$Process/default/icon/manual.gif"+")",
+				"background-position": "center center",
+				"background-repeat": "no-repeat",
+				"border-bottom": "1px dashed #CCC",
+				"cursor": "pointer"
+			}
+		}, 
+		"condition":{
+			"shadow": {
+				"cursor": "pointer",
+				"fill": "120-#fff-#eee",
+				"stroke-width": "0",
+				"z-index": 100
+			},
+			"shap": {
+				"cursor": "pointer",
+				"fill": "90-#FFF-#efad8a:5-#f19a6f:50-#fcae87:53-#fddeca:97:#FFF",
+				"stroke-width": "1",
+				"stroke": "#d87849",
+				"radiusX": 10,
+				"radiusY": 10,
+				"z-index": 100
+			},
+			"text":{
+				"fill": "#FFF",
+				"stroke-width": 0,
+				"font-size": 14,
+				"cursor": "pointer",
+				"z-index": 100
+			},
+			"icon":{
+				"src": MWF.defaultPath+"/process/ProcessChart/$Process/style1/icon/condition.gif",
+				"attr": {
+					"cursor": "pointer",
+					"z-index": 100
+				}
+			},
+			"listIcon": {
+				"width": "30px",
+				"height": "24px",
+				"background-image": "url("+MWF.defaultPath+"/process/ProcessChart/$Process/default/icon/condition.gif"+")",
+				"background-position": "center center",
+				"background-repeat": "no-repeat",
+				"border-bottom": "1px dashed #CCC",
+				"cursor": "pointer"
+			}
+		},
+		"auto":{
+			"shadow": {
+				"cursor": "pointer",
+				"fill": "90-#fff-#999:30-#fff",
+				"stroke-width": "0",
+				"z-index": 100
+			},
+			"shap": {
+				"cursor": "pointer",
+				"fill": "90-#FFF-#ecc55c:5-#ddb039:50-#e6c053:53-#f4e2ba:97:#FFF",
+				"stroke-width": "1",
+				"stroke": "#c59135",
+				"radius": 3,
+				"z-index": 100
+			},
+			"text":{
+				"fill": "#FFF",
+				"stroke-width": 0,
+				"font-size": 14,
+				"cursor": "pointer",
+				"z-index": 100
+			},
+			"icon":{
+				"src": MWF.defaultPath+"/process/ProcessChart/$Process/style1/icon/auto.gif",
+				"attr": {
+					"cursor": "pointer",
+					"z-index": 100
+				}
+			},
+			"listIcon": {
+				"width": "30px",
+				"height": "24px",
+				"background-image": "url("+MWF.defaultPath+"/process/ProcessChart/$Process/default/icon/auto.gif"+")",
+				"background-position": "center center",
+				"background-repeat": "no-repeat",
+				"border-bottom": "1px dashed #CCC",
+				"cursor": "pointer"
+			}
+		}, 
+		"split":{
+			"shadow": {
+				"cursor": "pointer",
+				"fill": "120-#fff-#eee",
+				"stroke-width": "0",
+				"z-index": 100
+			},
+			"shap": {
+				"width": 41,
+				"height": 41,
+				"radius": 20,
+				"cursor": "pointer",
+				"fill": "90-#FFF-#9a9a9a:5-#777777:50-#929292:53-#d1d1d1:97:#FFF",
+				//"fill": "90-#FFF-#7ebcb0:5-#70aea1:50-#8dbeb4:53-#d5e5e2:97:#FFF",
+				"stroke-width": "1",
+				"stroke": "#616161",
+				"z-index": 100
+			},
+			"text":{
+				"display": "none",
+				"font-size": 14,
+				"cursor": "pointer",
+				"z-index": 100
+			},
+			"icon":{
+				"src": MWF.defaultPath+"/process/ProcessChart/$Process/style1/icon/split.png",
+				"attr": {
+					"cursor": "pointer",
+					"z-index": 100
+				}
+			},
+			"listIcon": {
+				"width": "30px",
+				"height": "24px",
+				"background-image": "url("+MWF.defaultPath+"/process/ProcessChart/$Process/default/icon/split.gif"+")",
+				"background-position": "center center",
+				"background-repeat": "no-repeat",
+				"border-bottom": "1px dashed #CCC",
+				"cursor": "pointer"
+			}
+		},
+		"merge":{
+			"shadow": {
+				"cursor": "pointer",
+				"fill": "120-#fff-#eee",
+				"stroke-width": "0",
+				"z-index": 100
+			},
+			"shap": {
+				"width": 41,
+				"height": 41,
+				"radius": 20,
+				"cursor": "pointer",
+				"fill": "90-#FFF-#9a9a9a:5-#777777:50-#929292:53-#d1d1d1:97:#FFF",
+				//"fill": "90-#FFF-#7ebcb0:5-#70aea1:50-#8dbeb4:53-#d5e5e2:97:#FFF",
+				"stroke-width": "1",
+				"stroke": "#616161",
+				"z-index": 100
+			},
+			"text":{
+				"display": "none",
+				"font-size": 14,
+				"cursor": "pointer",
+				"z-index": 100
+			},
+			"icon":{
+				"src": MWF.defaultPath+"/process/ProcessChart/$Process/style1/icon/merger.png",
+				"attr": {
+					"cursor": "pointer",
+					"z-index": 100
+				}
+			},
+			"listIcon": {
+				"width": "30px",
+				"height": "24px",
+				"background-image": "url("+MWF.defaultPath+"/process/ProcessChart/$Process/default/icon/merger.gif"+")",
+				"background-position": "center center",
+				"background-repeat": "no-repeat",
+				"border-bottom": "1px dashed #CCC",
+				"cursor": "pointer"
+			}
+		}, 
+		"invoke":{
+			"shadow": {
+				"cursor": "pointer",
+				"fill": "120-#fff-#eee",
+				"stroke-width": "0",
+				"z-index": 100
+			},
+			"shap": {
+				"cursor": "pointer",
+				"fill": "90-#FFF-#7551cf:5-#6241b4:50-#8262cd:53-#d1c6e6:97:#FFF",
+				"stroke-width": "1",
+				"stroke": "#5532ad",
+				"radius": 3,
+				"z-index": 100
+			},
+			"text":{
+				"fill": "#FFF",
+				"stroke-width": 0,
+				"font-size": 14,
+				"cursor": "pointer",
+				"z-index": 100
+			},
+			"icon":{
+				"src": MWF.defaultPath+"/process/ProcessChart/$Process/style1/icon/invoke.gif",
+				"attr": {
+					"cursor": "pointer",
+					"z-index": 100
+				}
+			},
+			"listIcon": {
+				"width": "30px",
+				"height": "24px",
+				"background-image": "url("+MWF.defaultPath+"/process/ProcessChart/$Process/default/icon/invoke.gif"+")",
+				"background-position": "center center",
+				"background-repeat": "no-repeat",
+				"border-bottom": "1px dashed #CCC",
+				"cursor": "pointer"
+			}
+		},
+		"embed":{
+			"shadow": {
+				"cursor": "pointer",
+				"fill": "120-#fff-#eee",
+				"stroke-width": "0",
+				"z-index": 100
+			},
+			"shap": {
+				"cursor": "pointer",
+				//"fill": "90-#FFF-#9a9a9a:5-#777777:50-#929292:53-#d1d1d1:97:#FFF",
+				"fill": "90-#FFF-#7ebcb0:5-#70aea1:50-#8dbeb4:53-#d5e5e2:97:#FFF",
+				"stroke-width": "1",
+				"stroke": "#72afa3",
+				"radius": 3,
+				"z-index": 100
+			},
+			"text":{
+				"fill": "#FFF",
+				"stroke-width": 0,
+				"font-size": 14,
+				"cursor": "pointer",
+				"z-index": 100
+			},
+			"icon":{
+				"src": MWF.defaultPath+"/process/ProcessChart/$Process/style1/icon/embed.gif",
+				"attr": {
+					"cursor": "pointer",
+					"z-index": 100
+				}
+			},
+			"listIcon": {
+				"width": "30px",
+				"height": "24px",
+				"background-image": "url("+MWF.defaultPath+"/process/ProcessChart/$Process/default/icon/embed.gif"+")",
+				"background-position": "center center",
+				"background-repeat": "no-repeat",
+				"border-bottom": "1px dashed #CCC",
+				"cursor": "pointer"
+			}
+		},
+		"box": {
+			"stroke": "#ffa200",
+			"stroke-dasharray": "-",
+			"stroke-width": 2
+		}
+	},
+	"route": {
+		"line":{
+			"normal":{
+				"cursor": "pointer",
+				"stroke-width": "1",
+				"stroke": "#333333",
+				"z-index": 50
+			},
+			"selected": {
+				"cursor": "pointer",
+				"stroke-width": "2",
+				"stroke": "#ffa200",
+				"z-index": 50
+			},
+			"no-checked": {
+				"cursor": "pointer",
+				"stroke-width": "1",
+				"stroke": "#f00",
+				"z-index": 50
+			}
+		},
+		"linetext": {
+			"normal":{
+				"font-size": 12,
+				"cursor": "pointer",
+				"z-index": 100,
+				"stroke-width": "0",
+				"fill": "#999999"
+			},
+			"selected":{
+				"font-size": 12,
+				"cursor": "pointer",
+				"z-index": 100,
+				"stroke-width": "0",
+				"fill": "#ffa200"
+			},
+			"no-checked":{
+				"font-size": 12,
+				"cursor": "pointer",
+				"z-index": 100,
+				"stroke-width": "0",
+				"fill": "#f00"
+			}
+		},
+		"decision": {
+			"normal":{
+				"cursor": "pointer",
+				"fill": "#999999",
+				"stroke-width": "0",
+				"z-index": 100
+			},
+			"selected":{
+				"cursor": "pointer",
+				"fill": "#ffa200",
+				"stroke-width": "0",
+				"z-index": 100
+			},
+			"no-checked":{
+				"cursor": "pointer",
+				"fill": "#f00",
+				"stroke-width": "0",
+				"z-index": 100
+			}
+		},
+		"arrow": {
+			"normal":{
+				"cursor": "pointer",
+				"fill": "#999999",
+				"stroke-width": "0",
+				"z-index": 100
+			},
+			"selected":{
+				"cursor": "pointer",
+				"fill": "#ffa200",
+				"stroke-width": "0",
+				"z-index": 100
+			},
+			"no-checked":{
+				"cursor": "pointer",
+				"fill": "#f00",
+				"stroke-width": "0",
+				"z-index": 100
+			}
+		},
+		"corner":{
+			"default": {
+				"cursor": "pointer",
+				"stroke-width": "0.5",
+				"stroke": "#999999",
+				"fill": "#EEE",
+				"fill-opacity": "100",
+				"z-index": 50
+			},
+			"hide": {
+				"cursor": "pointer",
+				"stroke-width": "0",
+				"stroke": "#999999",
+				"fill": "#EEE",
+				"fill-opacity": "0",
+				"z-index": 50
+			}
+		},
+		"icon": {
+			"width": "30px",
+			"height": "24px",
+			"background-position": "center center",
+			"background-repeat": "no-repeat",
+			"border-bottom": "1px dashed #CCC",
+			"cursor": "pointer",
+			"background-image": "url("+MWF.defaultPath+"/process/ProcessChart/$Process/default/icon/route.gif"+")"
+		}
+	},
+	"list": {
+		"listText":{
+			"border-bottom": "1px dashed #CCC",
+			"cursor": "default"
+		},
+		"listTextDescription": {
+			"border-bottom": "1px dashed #CCC",
+			"cursor": "default",
+			"color": "#666",
+			"padding": "3px 0px",
+			"line-height": "20px"
+		},
+		"listRow": {
+			"background-color": "transparent"
+		},
+		"listRowSelected": {
+			"background-color": "#eaedf4"
+		},
+		"listIcon":{
+			"width": "20px",
+			"cursor": "pointer",
+			"border-bottom": "1px dashed #CCC"
+		}
+	},
+	"panelResizeNode": {
+		"overflow": "hidden",
+		"height": "1px",
+		"background-color": "#CCC",
+		"border-top": "1px solid #999999",
+		"border-bottom": "1px solid #f5f5f5",
+		"margin": "2px 0px",
+		"cursor": "row-resize",
+		"display": "block"
+	},
+	"panelResizeNodeHide": {
+		"overflow": "hidden",
+		"height": "1px",
+		"background-color": "#CCC",
+		"border-top": "1px solid #999999",
+		"border-bottom": "1px solid #f5f5f5",
+		"margin": "0px 0px",
+		"cursor": "row-resize",
+		"display": "none"
+	},
+	"propertyListContent": {
+		"overflow": "hidden",
+		"border": "0px solid red"
+	},
+	"propertyListNode": {
+	
+	},
+	"moduleListContent": {
+		"overflow": "hidden",
+		"border": "0px solid red"
+	},
+	"activityListNode": {
+	},
+	"listActivityNode": {
+		"height": "24px",
+		"line-height": "24px",
+		"font-size": "12px",
+		"margin": "3px 3px"
+	},
+	"activityListTable":{
+		"width": "96%",
+		"align": "center",
+		"styles": {
+			"margin": "5px 0",
+			"font-size": "12px"
+		}
+	},
+	"routeListTable":{
+		"width": "96%",
+		"align": "center",
+		"styles": {
+			"margin": "5px 0",
+			"font-size": "12px"
+		}
+	},
+	"propertyListTable": {
+		"width": "100%",
+		"align": "center",
+		"styles": {
+			"margin": "0px 0",
+			"font-size": "12px",
+			"border-top": "1px solid #CCC",
+			"border-left": "1px solid #CCC"
+		}
+	},
+	"propertyName": {
+		"font-weight": "bold",
+		"width": "80px",
+		"height": "20px",
+		"line-height": "20px",
+		"text-align": "center",
+		"border-bottom": "1px solid #999",
+		"border-right": "1px solid #999"
+	},
+	"propertyValue": {
+		"height": "20px",
+		"line-height": "20px",
+		"border-bottom": "1px solid #999",
+		"border-right": "1px solid #999"
+	},
+	"editNode": {
+		"font-size": "12px",
+		"padding": "5px",
+		"margin": "5px",
+		"border": "1px solid #CCC"
+	},
+	"editTable": {
+		
+	},
+	"editTableTitle": {
+		"width": "70px",
+		"font-weight": "bold",
+		"font-size": "12px",
+		"height": "24px",
+		"line-height": "24px",
+		"border-bottom": "1px dashed #CCC"
+	},
+	"editTableValue": {
+		"height": "24px",
+		"line-height": "24px",
+		"border-bottom": "1px dashed #CCC"
+	},
+	"editTableInput": {
+		"width": "98%",
+		"border-top": "1px solid #DDD",
+		"border-left": "1px solid #DDD",
+		"border-bottom": "1px solid #EEE",
+		"border-right": "1px solid #EEE"
+	},
+	"editTableTextarea": {
+		"width": "98%",
+		"border-top": "1px solid #DDD",
+		"border-left": "1px solid #DDD",
+		"border-bottom": "1px solid #EEE",
+		"border-right": "1px solid #EEE"
+	},
+	"multiActivityNode": {
+		"height": "20px",
+		"line-height": "20px",
+		"margin-top": "10px",
+		"margin-left": "20px",
+		"font-size": "12px",
+		"cursor": "pointer",
+		"text-decoration": "underline",
+		"color": "#0000FF"
+	},
+     propertyRefreshFormNode: {
+         "width": "24px",
+         "height": "24px",
+         "float": "right",
+         "background": "url("+"/x_component_process_ProcessDesigner/$Process/style1/icon/refresh.png) no-repeat center center",
+         "cursor": "pointer"
+     }
+}

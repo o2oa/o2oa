@@ -1,0 +1,37 @@
+{
+  "name": "",
+  "id": "",
+  "application": "",
+  "alias": "",
+  "description": "",
+  "display": true,
+
+  "data": {
+    "exportGrid": true,
+    "exportGoupGrid": true,
+    "scopeType": "published",
+    "selectEntryList": [],
+    "restrictWhereEntry": {
+      "appInfoList": [],
+      "categoryList": [],
+      "unitList": [],
+      "personList": [],
+      "identityList": []
+    },
+    "restrictFilterEntryList": [],
+    "restrictDateRangeEntry": {
+      "dateRangeType": "none",
+      "dateEffectType": "start",
+      "year": "",
+      "month": "",
+      "date": "",
+      "season": 0,
+      "week": 0,
+      "adjust": 0
+    },
+    "orderEntryList": [],
+    "groupEntry": {}
+  },
+  "availableIdentityList": [],
+  "availableUnitList": []
+}
