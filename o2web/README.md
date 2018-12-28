@@ -69,7 +69,7 @@ O2平台Web端应用，它将会随o2server一起编译。您也可以单独编�
 
 ## 官方网站\:
 
-官方网站 : [https://www.o2oa.net](https://www.o2oa.net)
+官方网站 : [http://www.o2oa.net](http://www.o2oa.net)
 
 oschina项目主页 : [https://www.oschina.net/p/o2oa](https://www.oschina.net/p/o2oa)
 
