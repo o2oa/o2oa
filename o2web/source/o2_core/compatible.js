@@ -3,7 +3,7 @@ o2.addReady(function(){
         "setContentPath": function(path){
             COMMON.contentPath = path;
         },
-        "JSON": o2.JSON,
+        "JSON": o2.json,
         "Browser": Browser,
         "Class": o2.Class,
         "XML": o2.xml,
