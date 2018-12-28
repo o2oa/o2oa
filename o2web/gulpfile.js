@@ -104,12 +104,12 @@ var apps = [
 ];
 
 var uploadOptions = {
-    'location': 'E:/o2server/servers/webServer/',
-    'host': 'dev.o2oa.net',
-    'user': 'xadmin',
-    'pass': 'xadmin',
+    'location': '',
+    'host': '',
+    'user': '',
+    'pass': '',
     "remotePath": "/"
-}
+};
 var options = minimist(process.argv.slice(2), {//upload: local ftp or sftp
     string: ["upload", "location", "host", "user", "pass", "port", "remotePath"]
 });
@@ -194,7 +194,7 @@ function cleanRemoteFtp(f, cb){
         host: options.host,
         user: options.user || 'anonymous',
         pass: options.pass || null,
-        port: options.port || 21,
+        port: options.port || 21
     });
 
     ftp.raw('dele '+file, function(err) {
@@ -320,43 +320,3 @@ gulp.task("sync", gulp.series(
     gulp.parallel(minTasks, moveTasks)
 ));
 gulp.task("watch", gulp.parallel(watchTasks));
-
-// gulp.task("watch", function(){
-//     watcher = gulp.watch('source/x_desktop/**/*');
-//     var log = console.log.bind(console);
-//     watcher
-//         .on('add', function(path) { log('File', path, 'has been added'); })
-//         .on('addDir', function(path) { log('Directory', path, 'has been added'); })
-//         .on('change', function(path) { log('File', path, 'has been changed'); })
-//         .on('unlink', function(path) { log('File', path, 'has been removed'); })
-//         .on('unlinkDir', function(path) { log('Directory', path, 'has been removed'); })
-//         .on('error', function(error) { log('Error happened', error); })
-//         .on('ready', function() { log('Initial scan complete. Ready for changes.'); })
-//         //.on('raw', function(event, path, details) { log('Raw event info:', event, path, details); })
-// });
-
-gulp.task("upload", function(cb){
-    var dest = 'dest/**/*';
-    console.log(options.upload);
-    console.log(options.user);
-    console.log(options.pass);
-    console.log(options.host);
-    console.log(options.remotePath);
-    gulp.src(dest)
-        .pipe(gulpif((options.upload=='local'&&options.location!=''), gulp.dest(options.location+'/')))
-        .pipe(gulpif((options.upload=='ftp'&&options.host!=''), ftp({
-            host: options.host,
-            user: options.user || 'anonymous',
-            pass: options.pass || '@anonymous',
-            port: options.port || 21,
-            remotePath: (options.remotePath || '/')
-        })))
-        .pipe(gulpif((options.upload=='sftp'&&options.host!=''), ftp({
-            host: options.host,
-            user: options.user || 'anonymous',
-            pass: options.pass || null,
-            port: options.port || 22,
-            remotePath: (options.remotePath || '/')
-        })));
-    cb();
-});
