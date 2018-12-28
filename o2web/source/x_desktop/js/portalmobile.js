@@ -17,7 +17,7 @@ o2.addReady(function(){
     var statusObj = {"portalId": id, "pageId": page};
     var options = null;
 
-    o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], function(){
+    o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], {"sequence": true}, function(){
         MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
         MWF.loadLP("zh-cn");
 
@@ -206,11 +206,18 @@ o2.addReady(function(){
                         this.node = $("layout");
                         var topWindow = window.opener;
                         if (topWindow){
+                            try{
+                                var appName = topWindow.layout.desktop.openBrowserApp || appNames;
+                                var m_status = topWindow.layout.desktop.openBrowserStatus || statusObj;
+                                var option = topWindow.layout.desktop.openBrowserOption || options;
+                                layout.openApplication(null, appName, option||{}, m_status);
+                            }catch(e){
+                                var appName = appNames;
+                                var m_status = statusObj;
+                                var option = options;
+                                layout.openApplication(null, appName, option||{}, m_status);
+                            }
 
-                            var appName = topWindow.layout.desktop.openBrowserApp || appNames;
-                            var m_status = topWindow.layout.desktop.openBrowserStatus || statusObj;
-                            var option = topWindow.layout.desktop.openBrowserOption || options;
-                            layout.openApplication(null, appName, option||{}, m_status);
                             //topWindow.layout.desktop.openBrowserApp = null;
                             //topWindow.layout.desktop.openBrowserStatus = null;
                             //topWindow.layout.desktop.openBrowserOption = null;

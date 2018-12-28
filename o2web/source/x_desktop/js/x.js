@@ -26,8 +26,8 @@ o2.addReady(function(){
 
     //COMMON.setContentPath("/x_desktop");
     //COMMON.AjaxModule.load("ie_adapter", function(){
-    o2.load("../o2_lib/mootools/plugin/mBox.Notice.js", function(){
-        o2.load("../o2_lib/mootools/plugin/mBox.Tooltip.js", function(){
+    o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], {"sequence": true}, function(){
+        //o2.load("../o2_lib/mootools/plugin/mBox.Tooltip.js", function(){
             //o2.load("mwf", function(){
 
             o2.JSON.get("res/config/config.json", function(config){
@@ -65,7 +65,7 @@ o2.addReady(function(){
 
             }, false);
             //});
-        });
+        //});
     });
     //});
 });

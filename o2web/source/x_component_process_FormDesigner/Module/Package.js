@@ -1,3 +1,4 @@
+MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.APPFD = MWF.xApplication.process.FormDesigner = MWF.xApplication.process.FormDesigner || {};
 MWF.xApplication.process.FormDesigner.Module = MWF.xApplication.process.FormDesigner.Module || {};
 MWF.xDesktop.requireApp("process.FormDesigner", "lp."+MWF.language, null, false);
