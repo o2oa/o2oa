@@ -39,6 +39,8 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 	}
 
 	abstract public void onPersist() throws Exception;
+	
+	public static final String default_schema = "X";
 
 	public static final String ColumnNamePrefix = "x";
 
