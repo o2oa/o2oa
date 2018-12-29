@@ -245,7 +245,10 @@ MWF.xApplication.Common.Main = new Class({
     openInNewBrowser: function(){
 		this.desktop.openBrowserApp = this.options.name;
 		this.desktop.openBrowserStatus = (this.recordStatus) ? this.recordStatus() : null;
-		window.open("app.html", "_blank");
+		var status = (this.desktop.openBrowserStatus) ? JSON.encode(this.desktop.openBrowserStatus) : "";
+
+		var url = "app.html?app="+this.options.name+"&status="+status;
+		window.open(url, "_blank");
 		if (!this.inBrowser) this.close();
     },
     openInNewWindow: function(){

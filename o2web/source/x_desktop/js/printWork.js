@@ -5,12 +5,8 @@ var href = locate.href;
 if (href.indexOf("debugger")!=-1) layout.debugger = true;
 layout.desktop = layout;
 layout.session = layout.session || {};
-COMMON.DOM.addReady(function(){
-    COMMON.AjaxModule.load("/x_desktop/res/framework/mootools/plugin/mBox.Notice.js", null, false);
-    COMMON.AjaxModule.load("/x_desktop/res/framework/mootools/plugin/mBox.Tooltip.js", null, false);
-
-    COMMON.setContentPath("/x_desktop");
-    COMMON.AjaxModule.load("mwf", function(){
+o2.addReady(function(){
+    o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], {"sequence": true}, function(){
         MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
         MWF.loadLP("zh-cn");
 
@@ -168,7 +164,7 @@ COMMON.DOM.addReady(function(){
                     return null;
                 };
                 layout.parseData = function(data){
-                 //   this.setTitle(this.options.title+"-"+data.work.title);
+                    //   this.setTitle(this.options.title+"-"+data.work.title);
 
                     this.activity = data.activity;
                     this.data = data.data;
@@ -184,30 +180,30 @@ COMMON.DOM.addReady(function(){
                     this.form = JSON.decode(MWF.decodeJsonString(data.form.data));
                 };
                 layout.fireEvent = function(){},
-                layout.openWork = function(){
-                    MWF.xDesktop.requireApp("process.Xform", "Form", function(){
-                        this.options.readonly = true;
-                        this.appForm = new MWF.APPForm(this.node, this.form, {"readonly": this.options.readonly});
-                        this.appForm.businessData = {
-                            "data": this.data,
-                            "taskList": this.taskList,
-                            "work": this.work,
-                            "workCompleted": this.workCompleted,
-                            "control": this.control,
-                            "activity": this.activity,
-                            "task": this.currentTask,
-                            "workLogList": this.workLogList,
-                            "attachmentList": this.attachmentList,
-                            "inheritedAttachmentList": this.inheritedAttachmentList,
-                            "status": {
-                                "readonly": (this.options.readonly) ? true : false
-                            }
-                        };
-                        this.appForm.workAction = this.action;
-                        this.appForm.app = this;
-                        this.appForm.load();
-                    }.bind(this))
-                };
+                    layout.openWork = function(){
+                        MWF.xDesktop.requireApp("process.Xform", "Form", function(){
+                            this.options.readonly = true;
+                            this.appForm = new MWF.APPForm(this.node, this.form, {"readonly": this.options.readonly});
+                            this.appForm.businessData = {
+                                "data": this.data,
+                                "taskList": this.taskList,
+                                "work": this.work,
+                                "workCompleted": this.workCompleted,
+                                "control": this.control,
+                                "activity": this.activity,
+                                "task": this.currentTask,
+                                "workLogList": this.workLogList,
+                                "attachmentList": this.attachmentList,
+                                "inheritedAttachmentList": this.inheritedAttachmentList,
+                                "status": {
+                                    "readonly": (this.options.readonly) ? true : false
+                                }
+                            };
+                            this.appForm.workAction = this.action;
+                            this.appForm.app = this;
+                            this.appForm.load();
+                        }.bind(this))
+                    };
 
                 layout.isAuthentication = function(){
                     layout.authentication = new MWF.xDesktop.Authentication({

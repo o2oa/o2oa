@@ -1,9 +1,10 @@
 o2.addReady(function(){
     COMMON = {
+        "DOM":{},
         "setContentPath": function(path){
             COMMON.contentPath = path;
         },
-        "JSON": o2.json,
+        "JSON": o2.JSON,
         "Browser": Browser,
         "Class": o2.Class,
         "XML": o2.xml,
@@ -21,6 +22,7 @@ o2.addReady(function(){
         "Request": Request,
         "typeOf": o2.typeOf
     };
+    COMMON.DOM.addReady = o2.addReady;
     MWF = o2;
     MWF.getJSON = o2.JSON.get;
     MWF.getJSONP = o2.JSON.getJsonp;

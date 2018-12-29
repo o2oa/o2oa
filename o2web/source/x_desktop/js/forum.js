@@ -5,12 +5,8 @@ layout.protocol = locate.protocol;
 var href = locate.href;
 layout.session = layout.session || {};
 if (href.indexOf("debugger")!=-1) layout.debugger = true;
-COMMON.DOM.addReady(function(){
-    COMMON.AjaxModule.load("/x_desktop/res/framework/mootools/plugin/mBox.Notice.js", null, false);
-    COMMON.AjaxModule.load("/x_desktop/res/framework/mootools/plugin/mBox.Tooltip.js", null, false);
-
-    COMMON.setContentPath("/x_desktop");
-    COMMON.AjaxModule.load("mwf", function(){
+o2.addReady(function(){
+    o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], {"sequence": true}, function(){
         MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
         MWF.loadLP("zh-cn");
 
@@ -140,7 +136,7 @@ COMMON.DOM.addReady(function(){
                             var id = urlParams.id;
                             //alert(sessionStorage.getItem( appName+id+"options").id)
                             //alert(sessionStorage.getItem( appName+id+"status").id)
-                           var opt = sessionStorage[ appName+ (id ? id : "") +"options" ];
+                            var opt = sessionStorage[ appName+ (id ? id : "") +"options" ];
                             if(opt){
                                 option = JSON.parse(opt)
                             }else if(id){
