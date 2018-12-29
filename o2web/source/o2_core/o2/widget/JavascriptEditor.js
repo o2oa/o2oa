@@ -86,7 +86,7 @@ o2.widget.JavascriptEditor = new Class({
             //添加自动完成列表
             o2.require("o2.xScript.Macro", function(){
                 var json = null;
-                o2.getJSON("/x_desktop/res/mwf4/package/widget/$JavascriptEditor/environment.json", function(data){ json = data; }, false);
+                o2.getJSON("/o2_core/o2/widget/$JavascriptEditor/environment.json", function(data){ json = data; }, false);
                 this.Macro = new o2.Macro.FormContext(json);
                 exports.addCompleter({
                     identifierRegexps: [
