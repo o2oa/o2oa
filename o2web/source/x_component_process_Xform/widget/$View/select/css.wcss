@@ -1,0 +1,89 @@
+{
+    "searchNode": {
+        "height": "20px",
+        "border": "1px solid #CCCCCC",
+        "margin-bottom": "3px 10px 6px 10px",
+        "overflow": "hidden"
+    },
+    "searchButtonNode": {
+        "height": "20px",
+        "width": "30px",
+        "overflow": "hidden",
+        "float": "right",
+        "cursor": "pointer",
+        "background": "url(/x_component_process_Xform/widget/$View/select/icon/search.png) center center no-repeat"
+    },
+    "searchInputNode": {
+        "border": "0px",
+        "height": "20px",
+        "display": "block",
+        "padding": "0px 5px",
+        "width": "90%"
+    },
+    "contentAreaNode": {
+        "overflow": "auto",
+        "height": "273px"
+    },
+    "viewNode": {
+        "height": "100%",
+        "overflow": "hidden"
+    },
+    "viewTitleTableNode": {
+        "width": "100%"
+    },
+    "viewTitleLineNode": {
+        "line-height": "30px",
+        "height": "30px",
+        "background-color": "#EEE"
+    },
+    "viewTitleCellNode": {
+        "font-weight": "bold",
+        "padding": "0px 10px",
+        "border-bottom": "1px solid #CCC"
+    },
+    "viewContentTrNode": {
+        "background": "transparent"
+    },
+    "viewContentTrNode_selected": {
+        "background": "#ecf5ff"
+    },
+    "viewContentTdNode": {
+        "padding": "5px 5px",
+        "border-bottom": "1px solid #CCC"
+    },
+    "viewContentCategoryTdNode": {
+        "padding": "5px 5px",
+        "border-bottom": "1px solid #CCC",
+        "font-weight": "bold",
+        "background-color": "#F6F6F6",
+        "cursor": "pointer"
+    },
+
+
+    "viewLoadingAreaNode": {
+        "background": "#F9F9F9",
+        "height": "40px",
+        "border-left": "1px solid #CCC",
+        "border-right": "1px solid #CCC",
+        "border-bottom": "1px solid #CCC"
+    },
+    "viewLoadingNode": {
+        "border-radius": "3px",
+        "background": "#DDD",
+        "height": "26px",
+        "width": "100px",
+        "margin": "auto",
+        "border": "1px solid #CCC",
+        "line-height": "26px",
+        "color": "#666"
+    },
+    "viewLoadingIconNode": {
+        "height": "26px",
+        "width": "28px",
+        "background": "url("+"/x_component_process_Xform/widget/$View/default/icon/loading.gif) center center no-repeat",
+        "float": "left"
+    },
+    "viewLoadingTextNode": {
+        "margin-left": "28px"
+    }
+}

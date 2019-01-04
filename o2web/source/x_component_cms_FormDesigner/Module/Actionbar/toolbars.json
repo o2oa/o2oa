@@ -1,0 +1,73 @@
+[
+  {
+    "type": "MWFToolBarButton",
+    "img": "close.png",
+    "img_over": "close_over.png",
+    "title": "关闭文档",
+    "action": "closeDocument",
+    "text": "关闭",
+    "id": "action_close",
+    "read": true,
+    "edit" : true
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "edit.png",
+    "img_over": "edit_over.png",
+    "title": "编辑文档",
+    "action": "editDocument",
+    "id": "action_edit",
+    "text": "编辑",
+    "control": "allowEditDocument",
+    "read": true,
+    "edit" : false
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "save.png",
+    "img_over": "save_over.png",
+    "title": "保存文档",
+    "action": "saveDocument",
+    "text": "保存",
+    "id": "action_saveData",
+    "control": "allowSave",
+    "read": false,
+    "edit" : true
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "submit.png",
+    "img_over": "submit_over.png",
+    "title": "发布文档",
+    "action": "publishDocument",
+    "text": "发布",
+    "id": "action_publishDocument",
+    "control": "allowPublishDocument",
+    "read": false,
+    "edit" : true
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "popular.png",
+    "img_over": "popular_over.png",
+    "title": "设置热点",
+    "action": "setPopularDocument",
+    "id": "action_popular",
+    "text": "设置热点",
+    "control": "allowPopularDocument",
+    "read": true,
+    "edit" : true
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "del.png",
+    "img_over": "del_over.png",
+    "title": "删除文件",
+    "action": "deleteDocument",
+    "text": "删除",
+    "id": "action_delete",
+    "control": "allowDeleteDocument",
+    "read": true,
+    "edit" : true
+  }
+]

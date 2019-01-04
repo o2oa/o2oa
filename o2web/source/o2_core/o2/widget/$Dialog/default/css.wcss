@@ -1,0 +1,45 @@
+{
+	"from": {
+		"width": "1px",
+		"height": "1px",
+		"position": "fixed",
+		"top": "0px",
+		"left": "0px",
+		"border-style": "dashed",
+		"border-color": "#333",
+		"border-width": "1",
+		"z-index": "400",
+		"opacity": 0
+	},
+	"to": {
+		"background-color": "#d5e2f0",
+		"border-style": "dashed",
+		"border-color": "#333",
+		"border-width": "1",
+		"font-size": "28px",
+		"height": "60",
+		"padding": "0",
+		"width": "300",
+		"position": "fixed",
+		"top": "0",
+		"left": "0",
+		"z-index": "400",
+		"opacity": 1
+	},
+	"mark": {
+		"opacity": 0.7,
+		"position": "absolute",
+		"top": "0",
+		"left": "0",
+		"z-index": "301",
+		"border-style": "none",
+		"border-width": "0",
+		"background-color": "#ddd"
+	},
+	"button": {
+		"border": "1px solid #999",
+		"font-size": "12px",
+		"color": "#333",
+		"margin": "0px 5px"
+	}
+}

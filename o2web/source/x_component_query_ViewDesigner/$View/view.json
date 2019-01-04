@@ -1,0 +1,46 @@
+{
+  "name": "",
+  "id": "",
+  "query": "",
+  "alias": "",
+  "description": "",
+  "display": true,
+  "type": "process",
+
+  "data": {
+    "exportGrid": true,
+    "exportGoupGrid": true,
+    "where": {
+      "accessible": false,
+      "scope": "work",
+      "applicationList": [],
+      "processList": [],
+      "dateRange": {
+        "dateRangeType": "none",
+        "dateEffectType": "start",
+        "year": "",
+        "month": "",
+        "date": "",
+        "season": 0,
+        "week": 0,
+        "adjust": 0,
+        "start": "",
+        "completed": ""
+      },
+      "creatorPersonList": [],
+      "creatorUnitList": [],
+      "creatorIdentityList": []
+    },
+    "selectList": [],
+    "filterList": [],
+    "orderList": [],
+    "group": {},
+    "columnList": [],
+    "calculate": {},
+    "afterGridScriptText": "",
+    "afterGroupGridScriptText": "",
+    "afterCalculateGridScriptText": ""
+  },
+  "availableIdentityList": [],
+  "availableUnitList": []
+}

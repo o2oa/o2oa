@@ -1,0 +1,222 @@
+{
+  "formMaskNode": {
+    "width": "100%",
+    "height": "100%",
+    "opacity": 0.6,
+    "position": "absolute",
+    "background-color": "#ccc",
+    "top": "0px",
+    "left": "0px"
+  },
+  "formAreaNode": {
+    "position": "absolute",
+    "opacity": 0,
+    "top": "0px"
+  },
+  "formNode": {
+    "background-color": "#f4f4f5",
+    "box-shadow": "0px 0px 10px #999",
+    "margin": "auto",
+    "border-radius" : "8px",
+    "overflow": "hidden"
+  },
+  "formTopNode": {
+    "color" : "#fff",
+    "height" : "58px",
+    "background-color": "#3c75b7",
+    "line-height": "40px",
+    "font-size": "14px",
+    "padding-left" : "5px",
+    "text-align": "left"
+  },
+  "formTopIconNode" : {
+    "width" : "36px",
+    "height" : "36px",
+    "margin" : "22px 18px 22px 30px",
+    "float": "left",
+    "background": "url("+MWF.defaultPath+"/xDesktop/$Authentication/default/icon/o2_logo.png) no-repeat center center"
+  },
+  "formTopTextNode" : {
+    //"font-family" : "PingFang-SC-Medium",
+    "margin-top" : "10px",
+    "padding-left" : "20px",
+    "font-size": "20px",
+    "float": "left",
+    "overflow" : "hidden",
+    "text-overflow" : "ellipsis",
+    "white-space":"nowrap"
+  },
+  "formTopCloseActionNode": {
+    "width": "32px",
+    "height": "32px",
+    "float": "right",
+    "margin-top" : "13px",
+    "margin-right" : "20px",
+    "background": "url(/x_component_Template/$MPopupForm/blue/icon/icon_close_square_pre.png) no-repeat center center",
+    "cursor": "pointer"
+  },
+  "formTopMaxActionNode": {
+    "width": "32px",
+    "height": "32px",
+    "float": "right",
+    "margin-top" : "13px",
+    "background": "url(/x_component_Template/$MPopupForm/blue/icon/icon_max_square_pre.png) no-repeat center center",
+    "cursor": "pointer"
+  },
+  "formTopRestoreActionNode": {
+    "display" : "none",
+    "width": "32px",
+    "height": "32px",
+    "float": "right",
+    "margin-top" : "13px",
+    "background": "url(/x_component_Template/$MPopupForm/blue/icon/icon_restore_square_pre.png) no-repeat center center",
+    "cursor": "pointer"
+  },
+  "resizeNode" : {
+    "position": "absolute",
+    "height": "15px",
+    "width": "15px",
+    "bottom": "0px",
+    "right": "0px",
+    "cursor" : "se-resize"
+  },
+  "formTopContentNode" : {
+    "float" : "right",
+    "padding-right" : "10px",
+    "text-align" : "right"
+  },
+  "formTopContentSepNode" : {
+    "float" : "right",
+    "width" : "1px",
+    "margin-top" : "33px",
+    "margin-right" : "10px",
+    "height" : "16px",
+    "border-left" : "1px solid #fff"
+  },
+  "formTopContentNode" : {
+    "overflow" : "hidden",
+    "float" : "right",
+    "padding-right" : "10px",
+    "text-align" : "right"
+  },
+  "formTopContentCustomNode" : {
+    "float" : "right",
+    "margin-top" : "20px",
+    "margin-right" : "10px",
+    "font-size" : "16px",
+    "cursor" : "pointer"
+  },
+  "formTopContentTitle" : {
+  },
+  "formTopContentValue" : {
+    "padding-right" : "20px",
+    "font-size": "12px"
+  },
+  "formNewNode": {
+    "width": "47px",
+    "height": "47px",
+    "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+  },
+  "formIconNode": {
+    "width": "47px",
+    "height": "47px"
+  },
+  "formEditNode": {
+    "width": "47px",
+    "height": "47px"
+  },
+  "formToolbar" : {
+    "padding-top" : "20px",
+    "height" : "35px",
+    "border-bottom" : "2px solid #999",
+    "padding-left" : "15px"
+  },
+  "formCategoryNode":{
+    "list-style" : "none",
+    "padding": "0px 10px 7px 10px",
+    "margin-left" : "10px",
+    "height": "20px",
+    "line-height": "20px",
+    "overflow": "hidden",
+    "font-family": "微软雅黑",
+    "font-size": "18px",
+    "font-weight" : "normal",
+    "float": "left",
+    "cursor": "pointer",
+    "color":"#3c76c1",
+    "border-bottom" : "2px solid #fff"
+    //border-bottom-color: rgb(255, 255, 255); border-bottom-width: 2px; border-bottom-style: solid;
+    //"display":"inline-block","width":"80px","height":"30px","text-align":"center","line-height":"30px","cursor":"pointer","color":"#3c76c1","font-size":"14px","margin-right" : "10px"
+  },
+  "formCategoryNode_over" : {
+    "font-size": "18px",
+    "font-weight": "normal",
+    "border-bottom" : "2px solid #5c97e1"
+  },
+  "formCategoryNode_current" : {
+    "font-size": "18px",
+    "font-weight": "bold",
+    "border-bottom" : "2px solid #124c93"
+  },
+  "formContentNode": {
+    "border": "0px solid #666",
+    "width": "100%",
+    "margin": "auto",
+    "font-size": "14px",
+    "color": "#666",
+    "font-family": "微软雅黑",
+    "overflow" : "hidden",
+    "position" : "relative"
+  },
+  "formTableContainer" : {
+    //"width" : "460px",
+    "margin": "20px auto 0px auto",
+    "overflow" : "hidden",
+    "positon" : "static"
+  },
+  "formTableContainer2" : {
+    "width" : "600px",
+    "margin": "20px auto 0px auto",
+    "overflow" : "hidden",
+    "positon" : "static"
+  },
+  "formBottomNode" : {
+    "height" : "70px",
+    "line-height" : "70px",
+    "padding-right" : "30px",
+    "overflow" : "hidden"
+  },
+  "formOkActionNode": {
+    "height": "30px",
+    "width": "85px",
+    "cursor": "pointer",
+    "float": "right",
+    "line-height": "30px",
+    "padding-left": "65px",
+    "font-size": "16px",
+    "font-family": "微软雅黑",
+    "border-radius": "3px",
+    "border": "1px solid #354f67",
+    "color": "#FFF",
+    "margin-right": "30px",
+    "margin-top": "20px",
+    "box-shadow": "0px 0px 0px #666",
+    "background": "url("+"/x_component_Template/$MPopupForm/blue/icon/editOk_bg.png) no-repeat"
+  },
+  "formCancelActionNode": {
+    "height": "30px",
+    "width": "60px",
+    "cursor": "pointer",
+    "float": "right",
+    "line-height": "30px",
+    "padding-left": "40px",
+    "font-size": "16px",
+    "font-family": "微软雅黑",
+    "border-radius": "3px",
+    "color": "#FFF",
+    "margin-top": "20px",
+    "box-shadow": "0px 0px 0px #666",
+    "border": "1px solid #999",
+    "background": "url("+"/x_component_Template/$MPopupForm/blue/icon/editCancel_bg.png) no-repeat"
+  }
+}

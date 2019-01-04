@@ -1,0 +1,222 @@
+{
+    "node": {
+        "margin": "10px 0px",
+        "overflow": "hidden",
+        "background-color": "#fff",
+        "position": "absolute",
+        "width": "100%",
+        "top": "0px",
+        "left": "200px",
+        "display": "block",
+        "opacity": "0"
+    },
+    "leftNode": {
+        "width": "240px",
+        "height": "100%",
+        "background-color": "#F8F8F8",
+        "float": "left"
+    },
+    "contentAreaNode":{
+        "margin-left": "240px",
+        "height": "100%",
+        "overflow": "auto"
+    },
+    "contentNode": {
+        "margin": "20px",
+        "overflow": "hidden"
+    },
+    "menuNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "padding": "0px 20px",
+        "margin": "20px 0px 5px 0px",
+        "color": "#333",
+        "font-size": "16px",
+        "cursor": "pointer",
+        "padding-left" : "46px",
+        "background" : "url(/x_component_Meeting/$ListView/default/icon/icon_triangle_down.png) no-repeat 20px center"
+    },
+    "menuItemNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "padding": "0px 46px",
+        "margin": "0px 0px 0px 0px",
+        "color": "#666",
+        "font-size": "14px",
+        "background": "transparent",
+        "cursor": "pointer"
+    },
+    "menuItemNode_over": {
+        "color": "#666",
+        "background": "#f0f0f0"
+    },
+    "menuItemNode_current": {
+        "color": "#fff",
+        "background": "#3C76B7"
+    },
+
+    "listViewTable": {
+        "width": "100%"
+    },
+    "listViewTableTh": {
+        "height": "40px",
+        "font-size": "14px",
+        "background-color": "#F0F0F0",
+        "text-align": "left",
+        "padding": "0px 10px",
+        "font-weight" : "normal",
+        "color": "#333"
+    },
+    "listViewTableTd": {
+        "height": "50px",
+        "line-height": "50px",
+        "border-bottom": "1px solid #CCC",
+        "background-color": "#FFF",
+        "color": "#666",
+        "padding": "0px 10px",
+        "font-size": "14px",
+        "cursor": "pointer"
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    "dayAreaNode": {
+        "height": "100%",
+        "overflow": "hidden",
+        "float": "left"
+    },
+
+    "dayNode": {
+        "height": "100%",
+        "overflow": "hidden"
+    },
+    "dayTitleNode": {
+        "height": "40px",
+        "padding": "20px 40px 10px 40px",
+        "font-size": "36px",
+        "color": "#444",
+        "line-height": "40px"
+    },
+    "dayTitleNode_over": {
+        "color": "#d34b4b"
+    },
+    "dayTitleNode_down": {
+        "color": "#e28888"
+    },
+    "dayTitleDownNode": {
+        "height": "30px",
+        "width": "30px",
+        "cursor": "pointer",
+        "position": "relative",
+        "top": "-36px",
+        "margin-left": "140px",
+        "background": "url(/x_component_Meeting/$DayView/default/icon/down.png) no-repeat center center"
+    },
+    "dayTitleDownNode_over": {
+        "background": "url(/x_component_Meeting/$DayView/default/icon/down_over.png) no-repeat center center"
+    },
+    "dayTitleDownNode_down": {
+        "background": "url(/x_component_Meeting/$DayView/default/icon/down_down.png) no-repeat center center"
+    },
+
+    "dayTitleDateNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "padding": "0px 40px",
+        "font-size": "16px",
+        "color": "#666"
+    },
+    "dayTitleDateNode_today": {
+        "color": "#FFF",
+        "background-color": "#666"
+    },
+
+    "dayTimeAreaNode": {
+        "overflow": "auto"
+    },
+    "dayTimeContentNode": {
+        "overflow": "hidden"
+    },
+
+    "timeTitleAreaNode": {
+        "width": "40px",
+        "float": "left",
+        "overflow": "hidden"
+    },
+    "timeBodyAreaNode": {
+        "margin-left": "40px",
+        "overflow": "hidden"
+    },
+
+
+    "hourTitleNode": {
+        "width": "39px",
+        "height": "49px",
+        "border-right": "1px solid #FFF",
+        "border-bottom": "1px solid #FFF",
+        "line-height": "39px",
+        "color": "#666",
+        "font-size": "16px",
+        "text-align": "center",
+        "cursor": "pointer"
+    },
+    "hourContentNode": {
+        "height": "49px",
+        "border-right": "1px solid #FFF",
+        "border-bottom": "1px solid #FFF"
+    },
+
+
+
+    "meetingNode": {
+        "overflow": "hidden",
+        "float": "left",
+        "cursor": "pointer",
+        "box-shadow": "0px 0px 0px #666"
+    },
+    "meetingNode_over": {
+        "box-shadow": "2px 2px 5px #999"
+    },
+    "meetingNode_down": {
+        "box-shadow": "0px 0px 0px #999"
+    },
+    "meetingColorNode": {
+        "background-color": "#2968cf",
+        "width": "8px",
+        "float": "left"
+    },
+    "meetingContentNode": {
+        "height": "100%",
+        "overflow": "hidden",
+        "margin-left": "8px",
+        "min-height": "30px",
+        "background-color": "#FFF",
+        "border-bottom": "1px solid #ccc"
+    },
+    "meetingSubjectNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "padding": "0px 5px",
+        "color": "#2968cf",
+        "font-size": "16px",
+        "font-weight": "bold"
+    }
+
+
+
+}

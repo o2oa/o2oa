@@ -1,0 +1,217 @@
+{
+  "formMaskNode": {
+    "width": "100%",
+    "height": "100%",
+    "opacity": 0.6,
+    "position": "absolute",
+    "background-color": "#CCC",
+    "top": "0px",
+    "left": "0px"
+  },
+  "formAreaNode": {
+    "position": "absolute",
+    "opacity": 0,
+    "top": "0px"
+  },
+  "formNode": {
+    "background-color": "#fff",
+    "box-shadow": "0px 0px 10px #999",
+    "margin": "auto",
+    "border-radius" : "8px",
+    "overflow": "hidden",
+    "-webkit-user-select": "text",
+    "-moz-user-select": "text"
+  },
+  "formTopNode": {
+    "color" : "#fff",
+    "height" : "50px",
+    "background-color": "#3c75b7",
+    "line-height": "40px",
+    "font-size": "14px",
+    "padding-left" : "5px",
+    "text-align": "left"
+  },
+  "formTopTextNode" : {
+    //"font-family" : "PingFang-SC-Medium",
+    "height" : "50px",
+    "line-height" : "50px",
+    "padding-left" : "18px",
+    "font-size": "18px",
+    "float": "left",
+    "overflow" : "hidden",
+    "text-overflow" : "ellipsis",
+    "white-space":"nowrap"
+  },
+  "formTopCloseActionNode": {
+    "width": "24px",
+    "height" : "50px",
+    "line-height" : "50px",
+    "float": "right",
+    "margin-right" : "20px",
+    "background": "url(/x_component_Template/$MPopupForm/meeting/icon/icon_off_2.png) no-repeat center center",
+    "cursor": "pointer"
+  },
+  "formTopMaxActionNode": {
+    "width": "24px",
+    "height" : "50px",
+    "line-height" : "50px",
+    "float": "right",
+    "background": "url(/x_component_Template/$MPopupForm/meeting/icon/icon_max_2.png) no-repeat center center",
+    "cursor": "pointer"
+  },
+  "formTopRestoreActionNode": {
+    "display" : "none",
+    "width": "24px",
+    "height" : "50px",
+    "line-height" : "50px",
+    "float": "right",
+    "background": "url(/x_component_Template/$MPopupForm/meeting/icon/icon_restore_2.png) no-repeat center center",
+    "cursor": "pointer"
+  },
+  "resizeNode" : {
+    "position": "absolute",
+    "height": "15px",
+    "width": "15px",
+    "bottom": "0px",
+    "right": "0px",
+    "cursor" : "se-resize"
+  },
+  "formTopContentNode" : {
+    "float" : "right",
+    "padding-right" : "10px",
+    "text-align" : "right"
+  },
+  "formTopContentSepNode" : {
+    "float" : "right",
+    "width" : "1px",
+    "margin-top" : "33px",
+    "margin-right" : "10px",
+    "height" : "16px",
+    "border-left" : "1px solid #fff"
+  },
+  "inputActive" : {
+    "border" : "1px solid #3c75b7"
+  },
+  "formTopContentNode" : {
+    "overflow" : "hidden",
+    "float" : "right",
+    "padding-right" : "10px",
+    "text-align" : "right"
+  },
+  "formTopContentCustomNode" : {
+    "float" : "right",
+    "margin-top" : "20px",
+    "margin-right" : "10px",
+    "font-size" : "16px",
+    "cursor" : "pointer"
+  },
+  "formTopContentTitle" : {
+  },
+  "formTopContentValue" : {
+    "padding-right" : "20px",
+    "font-size": "12px"
+  },
+  "formContentNode": {
+    "border": "0px solid #666",
+    "width": "100%",
+    "margin": "auto",
+    "font-size": "14px",
+    "color": "#666",
+    "font-family": "微软雅黑",
+    "overflow" : "hidden",
+    "position" : "relative"
+  },
+  "formTableContainer" : {
+    "width" : "700px",
+    "margin": "0px auto 20px auto",
+    "padding-top" : "40px",
+    "overflow" : "hidden",
+    "positon" : "static"
+  },
+  "formTableContainer2" : {
+    "width" : "600px",
+    "margin": "20px auto 0px auto",
+    "overflow" : "hidden",
+    "positon" : "static"
+  },
+  "formBottomNode" : {
+    "height" : "90px",
+    //"border-top" : "1px solid #3d77c1",
+    "background-color" : "#fff",
+    "overflow" : "hidden"
+  },
+  "acceptIconNode": {
+    "height": "20px",
+    "width": "14px",
+    "margin-right": "3px",
+    "float": "left",
+    "background": "url(/x_component_Template/$MPopupForm/meeting/icon/accept.png) no-repeat center center"
+  },
+  "rejectIconNode": {
+    "height": "20px",
+    "width": "14px",
+    "margin-right": "3px",
+    "float": "left",
+    "background": "url(/x_component_Template/$MPopupForm/meeting/icon/reject.png) no-repeat center center"
+  },
+  "acceptTextNode": {
+    "height": "20px",
+    "line-height": "20px",
+    "margin-top": "10px",
+    "font-size": "12px",
+    "color": "#1fbf04",
+    "text-align": "center"
+  },
+  "rejectTextNode": {
+    "height": "20px",
+    "line-height": "20px",
+    "margin-top": "10px",
+    "font-size": "12px",
+    "color": "#FF0000",
+    "text-align": "center"
+  },
+  "formOkActionNode" : {
+    "background": "#3C76B7",
+    "border-radius": "4px",
+    "padding-left" : "30px",
+    "padding-right" : "30px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "border" : "0px",
+    "color" : "#fff",
+    "cursor" : "pointer",
+    "font-size" : "18px",
+    "float" : "right"
+  },
+  "formCancelActionNode" : {
+    "background": "#f0f0f0",
+    "border-radius": "4px",
+    "padding-left" : "30px",
+    "padding-right" : "30px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "color" : "#666",
+    "border" : "0px",
+    "margin-left" : "20px",
+    "font-size" : "18px",
+    "cursor" : "pointer",
+    "margin-right" : "40px",
+    "float" : "right"
+  },
+  "colorNode" : {
+    "float" : "left",
+    "border-radius" : "4px",
+    "width" : "20px",
+    "height" : "20px",
+    "margin-right" : "10px",
+    "cursor" : "pointer",
+    "background-image" : "none",
+    "background-repeat" : "no-repeat",
+    "background-position" : " 50%"
+  },
+  "colorNode_current" : {
+    "background-image" : "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAKCAYAAACE2W/HAAAABGdBTUEAALGPC/xhBQAAAK1JREFUKBWVjzEKwkAURBMiimBvY2NjZWWVU+RU1mnTpkhhm0YsvYaNIDYpUgRygM2bsLuoZCEOPPbv/JkNiaI/ZIzZwh1Os2uEd/AA6TqrSHAPTzWQvrgZiwzL0AvsDvAG6QZrV8q4vOD4W5YHDUg1rHyGSyUXteB/WrP1OMwFFr6kASOBEqQOUotmSbvkq+QuLGIoQOotmuXFLhc8CeVKW+XB4NSC0llM7T69AcWO0hZLcgV4AAAAAElFTkSuQmCC)",
+    "background-repeat" : "no-repeat",
+    "background-position" : " 50%"
+  }
+}

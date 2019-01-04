@@ -1,0 +1,123 @@
+{
+  "inputText": {
+    "width": "99%",
+    "border":"1px solid #ccc",
+    "background-color":"#FFF",
+    "height": "24px"
+  },
+  "inputTime" : {
+    "width": "99%",
+    "border":"1px solid #ccc",
+    "background-color":"#FFF",
+    "height": "24px",
+    "background" : "url(/x_component_Template/$MForm/default/icon/calendar.png) 98% center no-repeat"
+  },
+  "inputPerson" : {
+    "width": "99%",
+    "border":"1px solid #ccc",
+    "background-color":"#FFF",
+    "min-height": "24px",
+    "overflow" : "hidden",
+    "background" : "url(/x_component_Template/$MForm/default/icon/selectperson.png) 98% center no-repeat"
+  },
+  "inputTextarea" : {
+    "width": "99%",
+    "border":"1px solid #ccc",
+    "background-color":"#FFF",
+    "height": "40px"
+  },
+  "inputCheckbox" : {
+    "float" : "left",
+    "font-size" : "14px",
+    "cursor" : "pointer"
+  },
+  "inputSelect" : {
+    "width": "99%",
+    "border":"1px solid #ccc",
+    "background-color":"#FFF",
+    "height": "26px"
+  },
+  "inputSelectUnformatWidth" : {
+    "margin-right":"5px",
+    "border":"1px solid #ccc",
+    "background-color":"#FFF",
+    "height": "24px"
+  },
+  "inputButton" : {
+    "margin-right": "5px",
+    "float": "left",
+    "background-color": "#FFF",
+    "padding": "2px 14px",
+    "border": "1px solid #999",
+    "border-radius": "3px",
+    "font-size": "14px",
+    "color": "#666",
+    "cursor": "pointer"
+  },
+
+  "formTable" : {
+    "margin-top" : "10px"
+  },
+  "formTableHead" : {
+    "height": "50px",
+    "line-height": "50px",
+    "text-align": "center",
+    "min-width": "80px",
+    "font-size":"20px",
+    "font-weight": "bold"
+  },
+  "formTableTitle" : {
+    "height": "22px",
+    //"line-height": "30px",
+    "text-align": "left",
+    "font-size" : "14px",
+    "font-weight" : "normal"
+  },
+  "formTableValue" : {
+    "text-align": "left"
+  },
+  "formTableTitleRight" : {
+    "font-size" : "14px",
+    "text-align" : "right"
+  },
+  "formTableTitleDiv" : {
+    "font-weight" : "bold"
+  },
+  "formTableValueDiv" : {
+    "min-height" : "40px",
+    "line-height" : "22px"
+  },
+  "formTableInlineValueDiv" : {
+    "float" : "left",
+    "margin-right" : "10px"
+  },
+  "formItemSpan" : {
+//    "padding-bottom" : "10px",
+//    "padding-right" : "10px"
+  },
+
+  "actionRemove" : {
+    "width" : "24px",
+    "height" : "24px",
+    "background" : "url(/x_component_Template/$MGrid/forum/icon/remove.png) center center no-repeat"
+  },
+  "actionRemove_over" : {
+    "background-color" : "#e1edf7"
+  },
+  "actionAdd" : {
+    "width" : "24px",
+    "height" : "24px",
+    "background" : "url(/x_component_Template/$MGrid/forum/icon/add.png) center center no-repeat"
+  },
+  "actionAdd_over" : {
+    "background-color" : "#e1edf7"
+  },
+  "warningMessageNode" : {
+    "margin-top" : "10px",
+    "font-size": "14px",
+    "color":"#ff5c42",
+    "padding-left": "20px",
+    "background" : "url(/x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
+  }
+}
+

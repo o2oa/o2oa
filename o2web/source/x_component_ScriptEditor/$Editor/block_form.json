@@ -1,0 +1,236 @@
+[
+  {
+    "name": "form.getApp",
+    "contents": ["获取表单的APP对象"],
+    "class": "form.GetApp", "extend": "$Expression"
+  },
+  {
+    "name": "form.node",
+    "contents": ["获取表单的DOM对象"],
+    "class": "form.Node", "extend": "$Expression"
+  },
+  {
+    "name": "form.readonly",
+    "contents": ["表单是否只读"],
+    "class": "form.Readonly", "extend": "$Expression"
+  },
+  {
+    "name": "form.getDesktop",
+    "contents": ["获取桌面对象"],
+    "class": "form.GetDesktop", "extend": "$Expression"
+  },
+  {
+    "name": "form.getData",
+    "contents": ["获取表单数据"],
+    "class": "form.GetData", "extend": "$Expression"
+  },
+
+  {
+    "name": "object.getField",
+    "contents": [
+      "获取表单输入元素",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "object.GetField", "extend": "$Expression"
+  },
+  {
+    "name": "object.get",
+    "contents": [
+      "获取表单元素",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "object.Get", "extend": "$Expression"
+  },
+  {
+    "name": "form.save",
+    "contents": ["保存表单数据"],
+    "class": "form.Save", "extend": "$Operation"
+  },
+  {
+    "name": "form.close",
+    "contents": ["关闭表单页面"],
+    "class": "form.Cclose", "extend": "$Operation"
+  },
+
+  {
+    "name": "object.process",
+    "contents": [
+      "流转工作，路由：",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "意见：",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "回调函数：",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "object.Process", "extend": "$Operation"
+  },
+
+
+
+
+
+  {
+    "name": "object.each",
+    "contents": [
+      "遍历对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      " 值",
+      {"type": "input","default": "v"},
+      "键",
+      {"type": "input","default": "k"},
+      "绑定对象",
+      {"type": "mortise","tenonTypes": []}
+    ],
+    "class": "object.Each"
+  },
+  {
+    "name": "object.merge",
+    "contents": [
+      "合并对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "object.Merge"
+  },
+  {
+    "name": "object.clone",
+    "contents": [
+      "克隆对象",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "object.Clone"
+  },
+  {
+    "name": "object.append",
+    "contents": [
+      "给对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "添加属性",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "object.Append"
+  },
+  {
+    "name": "object.subset",
+    "contents": [
+      "获取对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的子集",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "object.Subset"
+  },
+  {
+    "name": "object.map",
+    "contents": [
+      "map",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "方法",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "，绑定对象",
+      {"type": "mortise", "tenonTypes": []}
+    ],
+    "class": "object.Map", "extend": "$Expression"
+  },
+  {
+    "name": "object.filter",
+    "contents": [
+      "过滤对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "方法",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "，绑定对象",
+      {"type": "mortise", "tenonTypes": []}
+    ],
+    "class": "object.Filter", "extend": "$Expression"
+  },
+  {
+    "name": "object.every",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的每个属性值都满足方法",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "，绑定对象",
+      {"type": "mortise", "tenonTypes": []}
+    ],
+    "class": "object.Every", "extend": "$Expression"
+  },
+  {
+    "name": "object.some",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的一些属性值满足方法",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "，绑定对象",
+      {"type": "mortise", "tenonTypes": []}
+    ],
+    "class": "object.Some", "extend": "$Expression"
+  },
+  {
+    "name": "object.keys",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的所有属性名"
+    ],
+    "class": "object.Keys"
+  },
+  {
+    "name": "object.values",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的所有属性值"
+    ],
+    "class": "object.Values"
+  },
+  {
+    "name": "object.getLength",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的属性个数"
+    ],
+    "class": "object.GetLength"
+  },
+  {
+    "name": "object.keyOf",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "中，值为",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的属性名"
+    ],
+    "class": "object.KeyOf"
+  },
+  {
+    "name": "object.contains",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "中，是否包含值",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "object.Contains"
+  },
+  {
+    "name": "object.toQueryString",
+    "contents": [
+      "Object.toQueryString",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "object.ToQueryString"
+  },
+  {
+    "name": "object.toString",
+    "contents": [
+      "将",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "转换为字符串"
+    ],
+    "class": "object.ToString"
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "title": "我的考勤月报",
+    "id": "10",
+    "expand": false,
+    "action" : "openExplorer"
+  },
+  {
+    "access" :"admin_dept",
+    "type" :"sep"
+  },
+  {
+    "access" :"admin_dept",
+    "title": "部门考勤月报",
+    "id": "15",
+    "expand": false,
+    "action" : "openDepartmentIndex"
+  },
+  {
+    "access" :"admin_dept",
+    "type" :"sep"
+  },
+  {
+    "access" :"admin",
+    "title": "维护",
+    "id": "20",
+    "expand": false,
+    "sub": [
+      {
+        "id" : "20.1",
+        "access" : "admin",
+        "title" : "法定假期",
+        "action" : "openHolidaySetting"
+      }
+    ]
+  }
+]

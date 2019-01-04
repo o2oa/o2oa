@@ -1,0 +1,219 @@
+{
+    "titleBar": {
+        "overflow": "hidden",
+        "height": "50px",
+        "background-color": "#4c6b87"
+    },
+    "titleTextNode": {
+        "padding-left": "20px",
+        "color": "#FFF",
+        "font-size": "18px",
+        "line-height": "50px",
+        "font-weight": "bold",
+        "width": "160px",
+        "float": "left"
+    },
+    "appDeploymentContent": {
+        "overflow": "auto"
+    },
+    "componentsContent": {
+        "padding": "0px"
+    },
+	"componentItemNode": {
+	    "width": "140px",
+	    "height": "170px",
+	    "overflow": "hidden",
+	    "padding": "10px",
+	    "padding-top": "15px",
+	    "float": "left",
+	    "background-color": "#EEE",
+	    "border-right": "1px solid #CCC",
+	    "border-bottom": "1px solid #CCC",
+	    "border-top": "1px solid #FFF",
+        "border-left": "1px solid #FFF",
+	    "margin": "0px"
+	},
+	"userComponentItemNode": {
+        "width": "140px",
+        "height": "170px",
+        "overflow": "hidden",
+        "padding": "10px",
+        "padding-top": "15px",
+        "float": "left",
+        "background-color": "#F9F9F9",
+        "border-right": "1px solid #CCC",
+        "border-bottom": "1px solid #CCC",
+        "border-top": "1px solid #FFF",
+        "border-left": "1px solid #FFF",
+        "margin": "0px"
+    },
+	"iconNode": {
+        "height": "90px",
+        "background-repeat": "no-repeat",
+        "background-position": "center center"
+	},
+	"addIconNode": {
+        "cursor": "pointer",
+        "height": "90px",
+        "width": "90px",
+        "margin": "auto",
+        "background-color": "#EEE",
+        "margin-bottom": "10px",
+        "border-radius": "10px",
+        "box-shadow": "0px 0px 0px #CCC",
+        "border": "3px solid #C3C3C3",
+        "background-repeat": "no-repeat",
+        "background-position": "center center",
+        "background-image": "url(/x_component_Deployment/$Main/default/icon/add.png)"
+	},
+	"addIconNode_over": {
+	    "background-image": "url(/x_component_Deployment/$Main/default/icon/add_over.png)",
+	    "border": "3px solid #3498db",
+	    "box-shadow": "0px 0px 5px #666"
+	},
+	"contentNode": {
+	    "text-align": "center",
+	    "height": "50px"
+	},
+	"titleNode": {
+	    "height": "30px",
+	    "line-height": "30px",
+	    "font-weight": "bold",
+	    "font-size": "18px"
+	},
+	"nameNode": {
+        "height": "20px",
+        "line-height": "20px",
+        "color": "#666",
+        "font-size": "14px"
+    },
+    "actionAreaNode": {
+        "height": "30px",
+        "text-align": "center"
+    },
+    "actionNode": {
+        "height": "20px",
+        "width": "60px",
+        "line-height": "20px",
+        "border": "1px solid #999",
+        "background-color": "#FFF",
+        "border-radius": "5px",
+        "box-shadow": "0px 0px 3px #999",
+        "text-align": "center",
+        "color": "#777",
+        "cursor": "pointer",
+        "margin": "auto"
+    },
+    "actionNode_over":{
+        "background-color": "#6288a2",
+        "color": "#FFF",
+        "border": "1px solid #666",
+    },
+    "flagNode": {
+        "position": "relative",
+        "top": "-185px",
+        "left": "-10px",
+        "width": "32px",
+        "height": "32px",
+        "background": "url(/x_component_Deployment/$Main/default/icon/flag.png) no-repeat center center",
+    },
+    "newDeployNode": {
+        "overflow": "hidden"
+    },
+    "deployContentNode": {
+        "margin": "30px auto",
+        "width": "80%",
+        "max-width": "600px",
+        "overflow": "hidden"
+    },
+    "deployLineNode": {
+        "height": "36px",
+        "line-height": "36px"
+    },
+    "deployTitleNode": {
+        "height": "36px",
+        "width": "100px",
+        "float": "left",
+        "color": "#db7a33",
+        "font-size": "14px"
+    },
+    "deployvalueNode": {
+        "height": "36px",
+        "margin-left": "100px",
+    },
+    "deployInputNode": {
+        "height": "18px",
+        "width": "95%"
+    },
+    "deployOkAction": {
+        "height": "32px",
+        "width": "220px",
+        "line-height": "32px",
+        "font-size": "18px",
+        "border-radius": "5px",
+        "box-shadow": "0px 0px 5px #999",
+        "text-align": "center",
+        "cursor": "pointer",
+        "margin": "10px auto",
+        "background-color": "#6288a2",
+        "color": "#FFF",
+        "border": "1px solid #666",
+    },
+
+    "action2Node": {
+        "height": "20px",
+        "width": "40px",
+        "line-height": "20px",
+        "border": "1px solid #999",
+        "background-color": "#FFF",
+        "border-radius": "5px",
+        "box-shadow": "0px 0px 3px #999",
+        "text-align": "center",
+        "color": "#777",
+        "cursor": "pointer",
+        "margin-right": "6px",
+        "float": "left"
+    },
+    "action3Node": {
+        "height": "20px",
+        "width": "40px",
+        "line-height": "20px",
+        "border": "1px solid #999",
+        "background-color": "#FFF",
+        "border-radius": "5px",
+        "box-shadow": "0px 0px 3px #999",
+        "text-align": "center",
+        "color": "#777",
+        "cursor": "pointer",
+        "margin-right": "0px",
+        "float": "right"
+    },
+    "action4Node": {
+        "height": "20px",
+        "width": "60px",
+        "line-height": "20px",
+        "border": "1px solid #999",
+        "background-color": "#FFF",
+        "border-radius": "5px",
+        "box-shadow": "0px 0px 3px #999",
+        "text-align": "center",
+        "color": "#777",
+        "cursor": "pointer",
+        "margin-left": "4px",
+        "float": "left"
+    },
+    "action5Node": {
+        "height": "20px",
+        "width": "60px",
+        "line-height": "20px",
+        "border": "1px solid #999",
+        "background-color": "#FFF",
+        "border-radius": "5px",
+        "box-shadow": "0px 0px 3px #999",
+        "text-align": "center",
+        "color": "#777",
+        "cursor": "pointer",
+        "margin-right": "4px",
+        "float": "right"
+    }
+}

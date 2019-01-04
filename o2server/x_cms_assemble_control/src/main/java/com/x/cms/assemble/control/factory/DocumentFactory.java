@@ -75,17 +75,14 @@ public class DocumentFactory<T> extends AbstractFactory {
 	}
 	
 	//@MethodDescribe("根据ID列示指定分类所有Document信息列表")
-	public List<String> listByCategoryId( String categoryId, Integer maxCount ) throws Exception {
-		if( maxCount == null || maxCount == 0 ) {
-			maxCount = 10000;
-		}
+	public List<String> listByCategoryId( String categoryId ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery( String.class );
 		Root<Document> root = cq.from( Document.class );
 		Predicate p = cb.equal(root.get( Document_.categoryId ), categoryId );
 		cq.select(root.get( Document_.id)).where(p);
-		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
+		return em.createQuery( cq ).setMaxResults(10000).getResultList();
 	}
 	
 	//@MethodDescribe("根据ID列示指定分类所有Document信息数量")

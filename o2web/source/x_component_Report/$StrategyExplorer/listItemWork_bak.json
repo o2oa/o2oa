@@ -1,0 +1,58 @@
+{
+  "viewSetting": {
+    "html": "<table styles='listNode'></table>"
+  },
+  "documentSetting": {
+    "html": "<tr></tr>",
+    "action": "open"
+  },
+  "items": [
+    {
+      "name": "content",
+      "content": {
+        "html":
+        "   <td>"+
+        "     <div style='display:none;' item='id'></div><div style='display:none;' item='keyworkid'></div>"+
+        "     <div styles='itemPersonNode' item='targetPerson'></div>"+
+        " </td>"+
+        "   <td styles='itemDescriptionNode' item='progressContent'></td>"
+        ,
+        "items": {
+          "itemNode" : {
+            "styles" : "function(d){ return ( d.targetPerson == this.view.userName ) ? { display : 'none' } : {} }",
+            "value" : ""
+          },
+          "keyworkid" : {
+            "value" : "function(d){ return this.view.explorer.data.id }"
+          },
+          "id" : {
+            "value" : "function( d ){ return d.id; }"
+          },
+          "targetPerson" : {
+            "styles" : "function(d){ return ( d.targetPerson == this.view.userName ) ? { color : '#4a90e2' } : {} }",
+            "value" : "function(d){ return !d.targetPerson ? '' : d.targetPerson.split('@')[0] + '：' }"
+          },
+          "title" : {
+            "value" : "function( d ){ return d.title }",
+            "styles" : "itemTitleNode",
+            "mouseoverStyles": "itemTitleNode_over"
+          },
+          "keyWork" : {
+          },
+          "workContent" : {
+          },
+          "progressContent" : {
+            "type" : "html",
+             "value" : "function(d){ return this.app.common.replaceWithBr( d.progressContent )  }"
+            //"show" : "function( d ){ return d.progressContent && d.progressContent!='暂无内容' ? true : false }"
+          },
+          "index" : { "value" : "function(d){ return d.orderNumber || (d.index + 2) }" },
+
+          "itemActionBar" : {
+            "show" : "function( d ){ return this.view.options.isEdited }"
+          }
+        }
+      }
+    }
+  ]
+}

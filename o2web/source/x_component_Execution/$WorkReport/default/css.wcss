@@ -1,0 +1,331 @@
+{
+  "reportLinksDiv":{
+    "width":"130px","height":"25px","margin-top":"10px","margin-left":"0px","background-color":"#ffffff","text-align":"center",
+    "cursor":"pointer","color":"#0066cc"
+  },
+  "titleDiv":{
+    "height":"40px","line-height":"40px","width":"100%","font-size":"16px","text-align":"center"
+  },
+  "tabTitleDiv":{
+    "width":"130px","height":"40px","line-height":"40px","margin-left":"10px","text-align":"center","background-color":"#3d77c1","color":"#ffffff"
+  },
+  "reportContentInfor":{
+    "margin":"10px 40px"
+  },
+  "contentTextarea":{
+    "width":"95%","height":"100px","border":"1px solid #cccccc","margin":"10px 0px"
+  },
+  "contentTitle":{
+    "font-weight":"bold"
+  },
+  "appointContentInfor":{
+    "margin":"10px 40px",
+    "font-size":"13px"
+  },
+  "appointRecordDiv":{
+    "margin":"5px 0px"
+  },
+  "contentTextStr":{"margin":"0 10px"},
+
+  "reportLeaderContentDiv":{
+    "margin-top":"5px","margin-bottom":"5px"
+  },
+  "reportLeaderTitleDiv":{
+    "float":"left",
+    "width":"250px"
+  },
+  "reportLeaderValueDiv":{
+    "margin-left":"250px"
+  },
+
+  "completeDiv":{
+    "font-weight":"bold",
+    "margin":"10px 0px",
+    "height":"30px"
+  },
+  "completeSelect":{
+    "margin-left":"10px"
+  },
+  "completePercentRateSpan":{
+    "margin-left":"5px",
+    "width":"40px",
+    "display":"inline-block"
+  },
+  "completePercentSpan":{
+    "margin":"0 5px"
+  },
+  "completeProgressDiv":{
+    "width":"600px",
+    "height":"20px",
+    "display":"inline-block"
+  },
+  "completeProgressContentDiv":{
+    "height":"10px",
+    "position": "relative"
+  },
+  "completeProgressPointDiv":{
+    "width": "8px",
+    "height": "8px",
+    "background": "#369",
+    "border-radius":"8px",
+    "position": "absolute",
+    "top": "-2px",
+    "z-index":9,
+    "cursor": "pointer"
+  },
+  "completeProgressLineDiv":{
+    "width":"50px",
+    "height":"5px",
+    "position": "absolute",
+//    "top": "-2px",
+    "background": "#ccc",
+    "cursor": "pointer",
+    "z-index":8,
+    "display":"inline-block"
+  },
+  "completeProgressTextDiv":{
+    "height":"10px"
+  },
+  "tmpCompletePercentTextSpan":{
+    "width":"50px",
+    "font-weight":"normal",
+    "display":"inline-block"
+  },
+//  "completeScrollDiv":{
+//    //"margin":"50px 0",
+//    "width":"500px",
+//    "height":"5px",
+//    "background":"#cccccc",
+//    "position": "relative",
+//    "cursor":"pointer",
+//    "display":"inline-block"
+//  },
+//  "completeBarDiv":{
+//    "width": "10px",
+//    "height": "20px",
+//    "background": "#369",
+//    "position": "absolute",
+//    "top": "-7px",
+//    "left": "0px",
+//    "cursor": "pointer"
+//  },
+//  "completeMaskDiv":{
+//    "position": "absolute",
+//    "left": "0",
+//    "top": "0",
+//    "background": "#369",
+//    "width": "0px",
+//    "height": "5px"
+//  },
+  "prevReportDiv":{
+    "z-index":"10",
+    "width":"300px","height":"100%","background-color":"#203140","position":"absolute","left":"0px","top":"0px"
+  },
+  "prevReportTopDiv":{
+    "width":"300px","height":"40px"
+  },
+  "prevReportTopTitleDiv":{
+    "float":"left","color":"#ffffff","font-weight":"bold","height":"40px","line-height":"40px","margin-left":"10px","font-size":"16px"
+  },
+  "prevReportTopCloseDiv":{
+    "width": "32px",
+    "height": "32px",
+    "float": "right",
+    "padding-left" : "30px",
+    "padding-right" : "10px",
+    "background": "url(/x_component_Execution/$WorkReport/default/icon/close.png) no-repeat center 4px",
+    "cursor": "pointer"
+  },
+  "prevReportListDiv":{
+    "list-style":"none",
+    "width":"300px"
+  },
+  "prevReportListLi":{
+    "color":"#ffffff","font-size":"14px","margin":"2px 10px","cursor":"pointer","padding":"5px 0"
+  },
+  "prevReportInforDiv":{
+    "z-index":"10",
+    "height":"100%","background-color":"#006699","position":"absolute","left":"300px","top":"0px","display":"none"
+  },
+  "prevReportInforTopDiv":{
+    "width":"800px","height":"40px"
+  },
+  "prevReportInforTopCloseDiv":{
+    "width": "32px",
+    "height": "32px",
+    "float": "right",
+    "padding-left" : "30px",
+    "padding-right" : "10px",
+    "background": "url(/x_component_Execution/$WorkReport/default/icon/close.png) no-repeat center 4px",
+    "cursor": "pointer"
+  },
+  "prevContentDiv":{
+    "list-style":"none",
+    "width":"800px",
+    "font-size":"14px",
+    "color":"#ffffff",
+    "margin":"10px"
+  },
+
+  "prevContentTitleDiv":{
+    "font-size":"16px",
+    "font-weight":"bold",
+    "height":"30px",
+    "line-height":"30px"
+  },
+  "prevContentValueDiv":{
+    "margin":"0px 20px"
+  },
+  "prevReportInforListDiv":{
+    "height":"562px",
+    "overflow" : "hidden"
+  },
+
+
+
+  "formMaskNode": {
+    "width": "100%",
+    "height": "100%",
+    "opacity": 0.6,
+    "position": "absolute",
+    "background-color": "#CCC",
+    "top": "0px",
+    "left": "0px"
+  },
+  "formAreaNode": {
+    "position": "absolute",
+    "opacity": 0,
+    "top": "0px"
+  },
+  "formNode": {
+    "background-color": "#FFF",
+    "box-shadow": "0px 0px 10px #999",
+    "margin": "auto",
+    "border": "1px solid #fff",
+    "overflow": "hidden"
+  },
+  "formTopNode": {
+    "color" : "#fff",
+    "height": "40px",
+    "background-color": "#3d77c1",
+    "border-top": "1px solid #ddd",
+    "border-bottom": "1px solid #b6b6b6",
+    "line-height": "40px",
+    "font-size": "14px",
+    "padding-left" : "5px",
+    "text-align": "left"
+  },
+  "formTopIconNode" : {
+    "width": "32px",
+    "height": "32px",
+    "float": "left",
+    "background": "url(/x_component_Execution/$WorkReport/default/icon/document.png) no-repeat center 4px"
+  },
+  "formTopTextNode" : {
+    "font-size": "16px",
+    "float": "left"
+  },
+  "formTopCloseActionNode": {
+    "width": "32px",
+    "height": "32px",
+    "float": "right",
+    "padding-left" : "30px",
+    "padding-right" : "10px",
+    "background": "url(/x_component_Execution/$WorkReport/default/icon/close.png) no-repeat center 4px",
+    "cursor": "pointer"
+  },
+  "formTopContentNode" : {
+    "float" : "right",
+    "padding-right" : "10px",
+    "text-align" : "right"
+  },
+  "formTopContentTitle" : {
+  },
+  "formTopContentValue" : {
+    "padding-right" : "20px",
+    "font-size": "12px"
+  },
+  "formNewNode": {
+    "width": "47px",
+    "height": "47px",
+    "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+  },
+  "formIconNode": {
+    "width": "47px",
+    "height": "47px"
+  },
+  "formEditNode": {
+    "width": "47px",
+    "height": "47px"
+  },
+  "formContentNode": {
+    "border": "0px solid #666",
+    "width": "100%",
+    "margin": "auto",
+    "font-size": "12px",
+    "color": "#666",
+    "font-family": "微软雅黑",
+    "overflow" : "hidden"
+  },
+  "formTableContainer" : {
+    "margin": "0px 10px",
+    "overflow" : "hidden",
+    "positon" : "static"
+  },
+
+  "formBottomNode" : {
+    "height" : "40px",
+    "line-height" : "40px",
+    "background-color" : "#3d77c1",
+    "overflow" : "hidden",
+    "padding-top" : "10px"
+  },
+  "formOkActionNode": {
+    //"margin-top" : "5px",
+    "height": "30px",
+    "width": "75px",
+    "cursor": "pointer",
+    "float": "right",
+    "line-height": "30px",
+    "text-align": "center",
+    "font-size": "16px",
+    "font-family": "微软雅黑",
+    "border": "1px solid #3d77c1",
+    "background-color" : "#5d97e1",
+    "color": "#FFF",
+    "margin-right": "20px",
+    "box-shadow": "0px 0px 3px #5d97e1"
+  },
+  "formCancelActionNode": {
+    //"margin-top" : "5px",
+    "height": "30px",
+    "width": "75px",
+    "cursor": "pointer",
+    "float": "left",
+    "line-height": "30px",
+    "text-align": "center",
+    "font-size": "16px",
+    "font-family": "微软雅黑",
+    "border": "0px solid #3d77c1",
+//    "background-color" : "#5d97e1",
+    "color": "#FFF",
+    "margin-left": "20px"
+
+//    "box-shadow": "0px 0px 3px #5d97e1"
+  },
+  "formActionNode": {
+    //"margin-top" : "5px",
+    "height": "30px",
+    "width": "75px",
+    "cursor": "pointer",
+    "float": "left",
+    "line-height": "30px",
+    "text-align": "center",
+    "font-size": "16px",
+    "font-family": "微软雅黑",
+    "color": "#FFF",
+    "margin-left": "10px",
+    "margin-right": "20px"
+  }
+
+}

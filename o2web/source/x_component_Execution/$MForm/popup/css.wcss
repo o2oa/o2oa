@@ -1,0 +1,63 @@
+{
+  "inputText": {
+    "width": "99%",
+    "border":"1px solid #999",
+    "background-color":"#FFF",
+    "border-radius": "3px",
+    "height": "18px"
+  },
+  "inputTime" : {
+    "width": "99%",
+    "border":"1px solid #999",
+    "background-color":"#FFF",
+    "border-radius": "3px",
+    "height": "18px",
+    "background" : "url(/x_component_Execution/$MForm/default/icon/calendar.png) 99% center no-repeat"
+  },
+  "inputPerson" : {
+    "width": "99%",
+    "border":"1px solid #999",
+    "background-color":"#FFF",
+    "border-radius": "3px",
+    "height": "18px",
+    "background" : "url(/x_component_Execution/$MForm/default/icon/selectperson.png)  99% center no-repeat"
+  },
+  "inputTextarea" : {
+    "width": "99%",
+    "border":"1px solid #999",
+    "background-color":"#FFF",
+    "border-radius": "3px",
+    "height": "32px"
+  },
+
+  "formTable" : {
+    "border" : "1px solid #ccc",
+    "border-collapse" : "collapse",
+    "font-size" : "12px"
+  },
+  "formTableHead" : {
+    "height": "50px",
+    "line-height": "50px",
+    "text-align": "center",
+    "min-width": "80px",
+    "font-size":"20px",
+    "font-weight": "bold",
+    "border" : "1px solid #ccc",
+    "border-collapse" : "collapse"
+  },
+  "formTableTitle" : {
+    "height": "30px",
+    "background-color" : "#eee",
+    "line-height": "30px",
+    "text-align": "left",
+    "border" : "1px solid #ccc",
+    "border-collapse" : "collapse"
+  },
+  "formTableValue" : {
+    "text-align": "left",
+    "border" : "1px solid #ccc",
+    "border-collapse" : "collapse",
+    "min-width" : "60px"
+  }
+}
+

@@ -1,0 +1,140 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='editTable'></table>"
+  },
+  "viewHeadSetting":{
+    "html":"<thead></thead>"
+  },
+  "viewBodySetting":{
+    "html":"<tbody></tbody>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='documentNode'></tr>",
+    "mouseoverStyles": "documentNode_over",
+    "action": "open"
+  },
+  "items": [
+//    {
+//      "name": "$checkbox",
+//      "head": {
+//        "html": "<th styles='normalThNode'></th>",
+//        "width": "5%"
+//      },
+//      "content": {
+//        "html": "<td styles='normalTdNode'></td>",
+//        //"condition": "function(d){ return d.status==0 ? true : false }",
+//        "value": ""
+//      }
+//    },
+    {
+      "name": "subject",
+      "head": {
+        "html": "<th styles='normalThNode' lable='subject'></th>",
+        "width": "40%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>" +
+        " <div item='subject' styles='documentSubject'></div>" +
+        " <div>" +
+        "   <div item='defaultWorkType' styles='itemInLine'></div><div item='defaultWorkLevel' styles='itemInLine'></div>" +
+        " </div>" +
+        "</td>",
+        "items": {
+          "subject": {},
+          "defaultWorkType": {},
+          "defaultWorkLevel": {}
+        }
+      }
+    },
+    {
+      "name": "relativeDepartment",
+      "head": {
+        "html": "<th styles='normalThNode' lable='relativeDepartment'></th>",
+        "width": "20%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>"  +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='dutyDepartent' colon='true'></div><div styles='itemInLine' item='dutyDepartent'></div></div>" +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='doDepartment' colon='true'></div><div styles='itemInLine' item='doDepartment'></div></div>" +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='secondDepartment' colon='true'></div><div styles='itemInLine' item='secondDepartment'></div></div>" +
+        "</td>",
+        "items": {
+          "dutyDepartent": {
+            "value": "function(d){ return d.dutyDepartent }"
+          },
+          "doDepartment": {},
+          "secondDepartment": {}
+        }
+      }
+    },
+    {
+      "name": "relativePerson",
+      "head": {
+        "html": "<th styles='normalThNode' lable='relativePerson'></th>",
+        "width": "15%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'>" +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='dutyPerson' colon='true'></div><div styles='itemInLine' item='dutyPerson'></div></div>" +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='doPerson' colon='true'></div><div styles='itemInLine' item='doPerson'></div></div>" +
+        " <div styles='itemBlock'><div styles='itemInLine' lable='secondPerson' colon='true'></div><div styles='itemInLine' item='secondPerson'></div></div>" +
+        "</td>",
+        "items": {
+          "dutyPerson": {},
+          "doPerson": {},
+          "secondPerson": {}
+        }
+      }
+    },
+    {
+      "name": "timeLimit",
+      "head": {
+        "html": "<th styles='normalThNode' lable='timeLimit'></th>",
+        "width": "15%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' item='timeLimit'></td>",
+        "items": {
+          "timeLimit" : {}
+        }
+      }
+    },
+    {
+      //"access": "admin",
+      "head": {
+        "html": "<th styles='normalThNode' lable='action'></th>",
+        "width": "10%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode'>" +
+        " <span styles='documentActionNode' item='action_comfirm'></span>" +
+        " <span styles='documentActionNode' item='action_split'></span>" +
+        "</td>",
+        "items": {
+          "action_comfirm": {
+            //"access": "admin",
+            "title": "comfirm",
+            "text": "comfirm",
+            "action": "action_comfirm",
+            "styles": "documentActionNode",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "action_split": {
+            "title": "split",
+            "text": "split",
+            "action": "action_split",
+            "condition": "function( d ){ return true }",
+            "styles": "documentActionNode",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          }
+        }
+      }
+    }
+  ]
+}
+

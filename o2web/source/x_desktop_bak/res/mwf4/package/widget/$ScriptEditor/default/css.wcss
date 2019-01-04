@@ -1,0 +1,25 @@
+{
+	"keywords": {
+		"keys": ["function", "if", "else", "case", "switch", "for", "in", "do", 
+				 "while", "with", "var", "this", "break", "continue", "return", 
+				 "true", "false", "throw", "try", "catch", "finally", "debugger", 
+				 "new", "delete"],
+		"color": "#AB0055"
+	},
+	"string": {
+		"color": "#2A00FF"
+	},
+	"number": {
+		"color": "#800080"
+	},
+	"comment":{
+		"color": "#3F7F5F"
+	},
+	"contentEditArea": {
+		"width": "100%",
+		"height": "100%",
+		"overflow": "hidden",
+		"word-break": "keep-all",
+		"word-wrap": "normal"
+	}
+}

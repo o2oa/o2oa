@@ -1,0 +1,63 @@
+{
+  "viewSetting": {
+    "html": "<div styles='listNode'></div>"
+  },
+  "documentSetting": {
+    "html": "<div></div>",
+    "action": "open"
+  },
+  "items": [
+    {
+      "name": "content",
+      "content": {
+        "html": "<div styles='itemNode'>"+
+        " <div styles='itemTitleNode' item='title'></div>"+
+        " <div styles='itemContentNode' item='workContent'></div>"+
+        " <div style='overflow:hidden'>"+
+        "   <div styles='itemDescriptionNode' item='planContent' style='float:left'></div>"+
+        "   <div styles='itemDateNode' item='time' style='float:left'></div>"+
+        " </div>"+
+        " <div styles='itemActionBar' item='itemActionBar'>"+
+        "  <div item='editAction'></div>"+
+        "  <div item='deleteAction'></div>"+
+        " </div>"+
+        "<div>",
+        "items": {
+          "title" : {
+            "value" : "function( d ){ return d.title }",
+            "styles" : "itemTitleNode",
+            "mouseoverStyles": "itemTitleNode_over"
+          },
+          "keyWork" : {
+          },
+          "workContent" : {
+          },
+          "planContent" : {
+          },
+          "time" : {
+            "value" : "function(d){ return '预计(' + d.startTime + ' 至 ' + d.endTime + ')'  }"
+          },
+          "endTime" : {},
+          "index" : { "value" : "function(d){ return d.orderNumber || (d.index + 2) }" },
+          "itemActionBar" : {
+            "show" : "function( d ){ return this.explorer.isEdited }"
+          },
+          "editAction": {
+            "title" : "edit",
+            "action": "edit",
+            "styles" : "action_edit",
+            "condition" : "function( d ){ return this.explorer.isEdited }",
+            "event" : "mouseover^^function( itemNode, ev ){ itemNode.setStyles( this.css.action_edit_over ) }##mouseout^^function( itemNode, ev ){ itemNode.setStyles( this.css.action_edit ) }"
+          },
+          "deleteAction": {
+            "title" : "delete",
+            "action": "delete",
+            "styles" : "action_remove",
+            "condition" : "function( d ){ return this.explorer.isEdited }",
+            "event" : "mouseover^^function( itemNode, ev ){ itemNode.setStyles( this.css.action_remove_over ) }##mouseout^^function( itemNode, ev ){ itemNode.setStyles( this.css.action_remove ) }"
+          }
+        }
+      }
+    }
+  ]
+}

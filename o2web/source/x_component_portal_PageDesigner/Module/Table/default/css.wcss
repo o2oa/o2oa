@@ -1,0 +1,48 @@
+{
+	"moduleNodeMove": {
+		"border": "2px dashed #ffa200",
+		"width": "210px",
+		"overflow": "hidden",
+		"margin": "3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "absolute",
+		"display": "table",
+		"z-index": 10002,
+		"opacity": 0.7,
+		"cursor": "move"
+	},
+	"moduleNodeMoveTd": {
+		"border-right": "1px dashed #ffa200",
+		"border-bottom": "1px dashed #ffa200",
+		"height": "16px"
+	},
+	"moduleNodeShow": {
+		"border": "1px dashed #333",
+		"height": "2px",
+		"cursor": "pointer",
+		"line-height": "22px",
+		"overflow": "hidden",
+		"margin": "3px 3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "static",
+		"display": "table",
+		"top": "auto",
+		"left": "auto",
+		"width": "auto",
+		"opacity": 0.5,
+		"background": "#ffa200"
+	},
+	"moduleNode": {
+		"border": "1px dashed #CCC",
+		"cursor": "pointer",
+		"line-height": "22px",
+		"overflow": "hidden",
+		"margin": "3px 3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"display": "block",
+	}
+	
+}

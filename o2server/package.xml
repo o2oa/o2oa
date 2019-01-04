@@ -7,30 +7,37 @@
 	<target name="default">
 		<delete dir="target" />
 		<mkdir dir="target/o2server" />
+		<mkdir dir="target/o2server/commons" />
+		<mkdir dir="target/o2server/store" />
 		<mkdir dir="target/o2server/logs" />
-		<copy todir="target/o2server/commons/">
-			<fileset dir="./commons/" />
-		</copy>
-		<copy todir="target/o2server/config/sample">
-			<fileset dir="./config/sample">
-				<exclude name="**/.gitignore" />
-				<exclude name="**/.classpath" />
-				<exclude name="**/.project" />
-				<exclude name="**/.settings/" />
-			</fileset>
-		</copy>
-		<copy todir="target/o2server/local/sample">
-			<fileset dir="./local/sample">
-				<exclude name="**/.gitignore" />
-				<exclude name="**/.classpath" />
-				<exclude name="**/.project" />
-				<exclude name="**/.settings/" />
-			</fileset>
-		</copy>
+		<mkdir dir="target/o2server/config" />
+		<mkdir dir="target/o2server/local" />
+		<mkdir dir="target/o2server/configSample" />
+		<mkdir dir="target/o2server/localSample" />
 		<mkdir dir="target/o2server/servers/centerServer/webapps" />
 		<mkdir dir="target/o2server/servers/centerServer/work" />
 		<mkdir dir="target/o2server/servers/applicationServer/webapps" />
 		<mkdir dir="target/o2server/servers/applicationServer/work" />
+		<copy todir="target/o2server/commons/">
+			<fileset dir="./commons/" />
+		</copy>
+		<copy todir="target/o2server/configSample">
+			<fileset dir="./configSample">
+				<exclude name="**/.gitignore" />
+				<exclude name="**/.classpath" />
+				<exclude name="**/.project" />
+				<exclude name="**/.settings/" />
+			</fileset>
+		</copy>
+		<copy todir="target/o2server/localSample">
+			<fileset dir="./localSample">
+				<exclude name="**/.gitignore" />
+				<exclude name="**/.classpath" />
+				<exclude name="**/.project" />
+				<exclude name="**/.settings/" />
+			</fileset>
+		</copy>
+
 		<copy todir="target/o2server/servers/webServer/">
 			<fileset dir="./servers/webServer/">
 				<exclude name="**/.settings/" />
@@ -69,12 +76,16 @@
 				<exclude name="**/.gitignore" />
 				<exclude name="**/.classpath" />
 				<exclude name="**/.project" />
+				<exclude name="x_report_assemble_control.war" />
+				<exclude name="jars/x_report_core_entity.jar" />
+				<exclude name="x_strategydeploy_assemble_control.war" />
+				<exclude name="jars/x_strategydeploy_core_entity.jar" />
 			</fileset>
 		</copy>
-		<copy todir="target/jvm/">
+		<copy todir="target/o2server/jvm/">
 			<fileset dir="./jvm/">
 				<exclude name="**/.gitignore" />
-					<exclude name="**/.settings/" />
+				<exclude name="**/.settings/" />
 			</fileset>
 		</copy>
 		<copy todir="target/o2server">
@@ -96,7 +107,7 @@
 				<exclude name="**/.gitignore" />
 				<exclude name="**/.classpath" />
 				<exclude name="**/.project" />
-					<exclude name="**/.settings/" />
+				<exclude name="**/.settings/" />
 			</fileset>
 		</copy>
 		<echo message="${VERSION}" file="target/o2server/version.o2" append="false" />

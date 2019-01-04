@@ -1,0 +1,101 @@
+{
+  "attachment_editor": {
+    "consumers": [
+      "im",
+      "pms",
+      "dingding",
+      "zhengwuDingding",
+      "qiyeweixin"
+    ]
+  },
+  "attachment_editorCancel": {
+    "consumers": [
+      "im",
+      "pms",
+      "dingding",
+      "zhengwuDingding",
+      "qiyeweixin"
+    ]
+  },
+  "attachment_editorModify": {
+    "consumers": [
+      "im",
+      "pms",
+      "dingding",
+      "zhengwuDingding",
+      "qiyeweixin"
+    ]
+  },
+  "attachment_share": {
+    "consumers": [
+      "im",
+      "pms",
+      "dingding",
+      "zhengwuDingding",
+      "qiyeweixin"
+    ]
+  },
+  "attachment_shareCancel": {
+    "consumers": [
+      "im",
+      "pms",
+      "dingding",
+      "zhengwuDingding",
+      "qiyeweixin"
+    ]
+  },
+  "meeting_delete": {
+    "consumers": [
+      "im",
+      "pms",
+      "dingding",
+      "zhengwuDingding",
+      "qiyeweixin"
+    ]
+  },
+  "meeting_invite": {
+    "consumers": [
+      "im",
+      "pms",
+      "dingding",
+      "zhengwuDingding",
+      "qiyeweixin"
+    ]
+  },
+  "readCompleted_create": {
+    "consumers": []
+  },
+  "readCompleted_delete": {
+    "consumers": []
+  },
+  "read_create": {
+    "consumers": [
+      "im",
+      "pms",
+      "dingding",
+      "zhengwuDingding",
+      "qiyeweixin"
+    ]
+  },
+  "read_delete": {
+    "consumers": []
+  },
+  "taskCompleted_create": {
+    "consumers": []
+  },
+  "taskCompleted_delete": {
+    "consumers": []
+  },
+  "task_create": {
+    "consumers": [
+      "im",
+      "pms",
+      "dingding",
+      "zhengwuDingding",
+      "qiyeweixin"
+    ]
+  },
+  "task_delete": {
+    "consumers": []
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "viewSetting": {
+    "html": "<div styles='documentListNode'></div>"
+  },
+  "documentSetting": {
+    "html": "<div styles='documentNode'></div>",
+    "mouseoverStyles": "documentNode_over",
+    "action": "open",
+    "event" : "mouseover^^function( documentNode, ev ){ this.mouseoverDocument(documentNode, ev) }##mouseout^^function( documentNode, ev ){ this.mouseoutDocument(documentNode, ev) }"
+  },
+  "items": [
+    {
+      "name": "work",
+      "content": {
+        "html": "<div styles='documentItemNode'>"+
+        "<div styles='removeNode' item='remove' title='取消热点'></div>"+
+        " <div styles='documentItemIconNode'>"+
+        "   <img styles='documentItemIcon' item='icon'>"+
+        " </div>"+
+        " <div styles='documentItemTextNode'>"+
+        "   <div item='title' styles='documentItemText'>"+
+        " </div>"+
+        " <div styles='documentItemInforNode'>"+
+        "   <div style='float:left'>来自</div><div item='from' style='float:left'></div> <div item='createTime' style='float:right;margin-right:20px'></div>"+
+        " </div>"+
+        "</div>",
+        "items": {
+          "remove" : {
+            "condition" : "function(d){ return this.getRemovePermission(d) }",
+            "action" : "remove"
+          },
+          "createTime" : {},
+          "from" : {
+            "value" : "function(d){ return (d.application == 'CMS' ?  '内容管理' : '论坛') }"
+          },
+          "title" : {
+            "value" : "function(d){ return d.title }",
+            "title" : "function(d){ return d.title }"
+          },
+          "date" : {
+            "value" : "function(d){ return this.lp.today + ':'+ getDateDiff( d.createTime ) }"
+          },
+          "icon" : {
+            "attr" : "src^^function( d ){ return MWF.xDesktop.getImageSrc( d.picId ) }"
+          }
+        }
+      }
+   }
+  ]
+}
+

@@ -1,0 +1,67 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='editTable'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='documentNode'></tr>",
+    "mouseoverStyles": "documentNode_over",
+    "action": "open"
+  },
+  "items": [
+    {
+      "name": "permissionType",
+      "head": {
+        "html": "<th styles='normalThNode' lable='permissionType'></th>",
+        "width": "20%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' item='permissionType'></td>",
+        "items": {
+          "permissionType" : {}
+        }
+      }
+    },
+    {
+      "name": "permissionName",
+      "head": {
+        "html": "<th styles='normalThNode' lable='permissionName'></th>",
+        "width": "20%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' item='permissionName'></td>",
+        "items": {
+          "permissionName" : {}
+        }
+      }
+    },
+    {
+      "name": "permissionCode",
+      "head": {
+        "html": "<th styles='normalThNode' lable='permissionCode'></th>",
+        "width": "20%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' item='permissionCode'></td>",
+        "items": {
+          "permissionCode" : {}
+        }
+      }
+    },
+    {
+      "name": "description",
+      "head": {
+        "html": "<th styles='normalThNode' lable='description'></th>",
+        "width": "40%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' item='description'></td>",
+        "items": {
+          "description" : {}
+        }
+      }
+    }
+  ]
+}

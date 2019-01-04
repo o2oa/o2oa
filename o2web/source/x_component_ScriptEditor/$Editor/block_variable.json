@@ -1,0 +1,95 @@
+[
+  {
+    "name": "variable.var",
+    "contents": [
+      "定义一个",
+      {"type": "select", "options": ["字符串|string", "数字|number", "数组|array", "对象|object", "布尔|boolean"], "default": "string"},
+      "变量",
+      {"type": "input", "default": "名称"}
+    ],
+    "class": "variable.Var"
+  },
+  {
+    "name": "variable.var",
+    "contents": [
+      "定义一个变量",
+      {"type": "input", "default": "名称"},
+      "并赋值",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "variable.Var", "extend": "$Operation"
+  },
+  {
+    "name": "variable.set",
+    "contents":[
+      "给",
+      {"type": "mortise", "tenonTypes": []},
+      "赋值",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "variable.Set", "extend": "$Operation"
+  },
+  {
+    "name": "variable.variable",
+    "contents":[
+      "变量",
+      {"type": "input", "default": "名称"}
+    ],
+    "class": "variable.Variable"
+  },
+  {
+    "name": "variable.new",
+    "contents":[
+      "创建新对象",
+      {"type": "input", "default": "名称"},
+      "(",
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      ")"
+    ],
+    "class": "variable.New"
+  },
+  {
+    "name": "variable.this",
+    "contents":["this"],
+    "class": "variable.This"
+  },
+  {
+    "name": "variable.typeof",
+    "contents":[
+      {"type": "mortise", "tenonTypes": []},
+      "的数据类型"
+    ],
+    "class": "variable.Typeof"
+  },
+  {
+    "name": "variable.instanceof",
+    "contents":[
+      {"type": "inputMortise", "default": "", "tenonTypes": []},
+      "instanceof",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "variable.Instanceof"
+  },
+  {
+    "name": "variable.in",
+    "contents":[
+      {"type": "input", "default": "", "tenonTypes": []},
+      "in",
+      {"type": "mortise", "tenonTypes": []}
+    ],
+    "class": "variable.In"
+  },
+  {
+    "name": "variable.delete",
+    "contents":[
+      "删除对象",
+      {"type": "mortise", "tenonTypes": []}
+    ],
+    "class": "variable.Delete"
+  },
+  {
+    "name": "variable.NaN",
+    "contents":["NaN"],
+    "class": "variable.NaN"
+  }
+]

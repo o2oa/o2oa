@@ -1,0 +1,37 @@
+{
+  "previewArea" : {
+	"overflow" : "hidden"
+  },
+	"previewNode" : {
+	  "float" : "left",
+	  "width" : "130px",
+	  "height" : "20px",
+	  "border" : "1px solid #d3d3d3"
+	},
+  "previewValueNode" : {
+	"margin-left" : "5px",
+	"float" : "left",
+	"width" : "30px",
+	"height" : "22px",
+	"line-height" : "22px"
+  },
+  	"titleNode" : {
+	  "width" : "90%",
+	  "margin-top" : "10px",
+	  "height" : "20px",
+	  "line-height" : "20px",
+	  "font-size" : "14px",
+	  "color" : "#000"
+	},
+  "colorContainer" : {
+	"overflow" : "hidden",
+	"width" : "200px",
+	"margin-top" : "5px"
+  },
+  "colorNode" : {
+	"float" : "left",
+	"margin" : "0px 2px",
+	"height" : "14px",
+	"width" : "14px"
+  }
+}

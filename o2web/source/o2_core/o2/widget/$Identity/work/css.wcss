@@ -1,0 +1,56 @@
+{
+    "identityNode": {
+        "padding": "5px",
+        "float": "left",
+        "margin-right": "10px",
+        "margin-top": "5px",
+        "background": "transparent",
+        "border-radius":"3px",
+        "color": "#666",
+        "line-height": "20px",
+        "cursor": "pointer"
+    },
+    "identityNode_over": {
+        "padding": "5px",
+        "float": "left",
+        "margin-right": "10px",
+        "margin-top": "3px",
+        "background-color": "#da7429",
+        "border-radius":"0px",
+        "line-height": "20px",
+        "color": "#FFF",
+        "cursor": "pointer"
+    },
+    "identityRemoveNode": {
+        "background": "url("+o2.session.path+"/widget/$Identity/default/icon/del.png) center center no-repeat",
+        "width": "16px",
+        "margin-left": "5px",
+        "height": "20px",
+        "float": "right"
+    },
+    "identityInforNode": {
+        "overflow": "hidden"
+    },
+    "identityInforNameNode": {
+        "height": "40px"
+    },
+    "identityInforPicNode": {
+        "height": "40px",
+        "width": "40px",
+        "float": "left"
+    },
+    "identityInforNameTextNode": {
+        "height": "40px",
+        "float": "left",
+        "margin-left": "20px",
+        "width": "100px",
+        "color": "#da7429",
+        "font-size": "14px",
+        "font-weight": "bold"
+    },
+    "identityInforPhoneNode": {
+        "padding": "0px",
+        "margin-top": "15px",
+        "height": "10px"
+    }
+}

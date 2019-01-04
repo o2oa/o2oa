@@ -1,0 +1,106 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='0' cellspacing='0' styles='editTable'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='documentNode'></tr>",
+    "mouseoverStyles": "documentNode_over",
+    "action": "open"
+  },
+  "items": [
+    {
+      "name": "title",
+      "head": {
+        "html": "<th styles='normalThNode' lable='customerName'></th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='customername'></td>",
+        "items": {
+          "customername":{"value":"function(d){ return (d.customername == undefined || d.customername=='') ? '--': d.customername}"}
+        }
+      }
+    },
+    {
+      "name": "createTime",
+      "head": {
+        "html": "<th styles='normalThNode' lable='createTime'></th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='createTime'></td>",
+        "items": {
+          "createTime":{"value":"function(d){ return (d.createTime == undefined || d.createTime=='') ? '--': d.createTime}"}
+        }
+      }
+    },
+    {
+      "name": "customerType",
+      "head": {
+        "html": "<th styles='normalThNode' lable='customerType'></th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='customertype'></td>",
+        "items": {
+          "customertype":{"value":"function(d){ return (d.customertype == undefined || d.customertype=='') ? '--': d.customertype}"}
+        }
+      }
+    },
+    {
+      "name": "customerSource",
+      "head": {
+        "html": "<th styles='normalThNode' lable='customerSource'></th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='source'></td>",
+        "items": {
+          "source": {"value":"function(d){ return (d.source == undefined || d.source=='') ? '--': d.source}"}
+        }
+      }
+    },
+    {
+      "name": "customerLevel",
+      "head": {
+        "html": "<th styles='normalThNode' lable='customerLevel'></th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='level'></td>",
+        "items": {
+          "level": {"value":"function(d){ return (d.level == undefined || d.level=='') ? '--': d.level}"}
+        }
+      }
+    },
+    {
+      "name": "customerStatus",
+      "head": {
+        "html": "<th styles='normalThNode' lable='customerStatus'></th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='customerStatus'></td>",
+        "items": {
+          "customerStatus": {"value":"function(d){ return (d.state == undefined || d.state=='') ? '--': d.state}"}
+        }
+      }
+    },
+    {
+      "name": "customerGrade",
+      "head": {
+        "html": "<th styles='normalThNode' lable='customerGrade'></th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='customerGrade'></td>",
+        "items": {
+          "customerGrade": {"value":"function(d){ return (d.rank == undefined || d.rank=='') ? '--': d.rank}"}
+        }
+      }
+    }
+  ]
+}

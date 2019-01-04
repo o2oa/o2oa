@@ -1,0 +1,221 @@
+{
+	"panelNode": {
+		"width": "420px",
+		"height": "420px",
+		"border": "2px solid #999",
+		"border-radius": "0px",
+		"box-shadow": "0px 0px 20px #333",
+		"position": "absolute",
+		"top": "10px",
+		"right": "10px",
+		"background-color": "#545454",
+		"background-image": "url("+MWF.defaultPath+"/xDesktop/$Layout/black/desktop.jpg)"
+	},
+	"titleNode": {
+        "height": "20px"
+	},
+	"closeActionNode": {
+	    "height": "20px",
+	    "width": "20px",
+	    "background": "url("+MWF.defaultPath+"/xDesktop/$UserPanel/default/icon/close.png) no-repeat center center",
+	    "cursor": "pointer",
+	    "float": "right"
+	},
+	"userInforNode": {
+        "height": "72px"
+	},
+	"userIconAreaNode": {
+        "width": "72px",
+        "height": "72px",
+        "float": "left"
+	},
+	"userIconNode": {
+        "width": "64px",
+        "height": "64px",
+        "margin": "4px",
+        "border": "0px"
+    },
+	"userTextInforNode": {
+	    "padding": "8px 4px",
+	    "margin-left": "72px",
+        "height": "56px"
+	},
+	"userNameInforNode": {
+	    "line-height": "28px",
+        "height": "28px"
+	},
+	"userNameTextInforNode": {
+        "width": "80px",
+        "float": "left",
+        "font-size": "14px",
+        "color": "#FFF",
+        "text-shadow" : "1px 1px 1px #000"
+    },
+    "userDutyTextInforNode": {
+        "margin-left": "80px",
+        "color": "#BBB",
+        "text-shadow" : "1px 1px 1px #000"
+    },
+    "userSignInforNode": {
+        "line-height": "28px",
+        "height": "28px",
+        "color": "#BBB",
+        "text-shadow" : "1px 1px 1px #000"
+    },
+    "userSearchNode": {
+        "height": "26px",
+        "background-color": "#444444",
+        "color": "#CCC",
+        "text-align": "center"
+    },
+    "searchInput": {
+        "height": "24px",
+        "line-height": "24px",
+        "border": "0px",
+        "background-color": "#444444",
+        "width": "98%",
+        "color": "#CCC"
+    },
+	"userListNode": {
+        "overflow": "hidden",
+        "background-color": "#EEE"
+	},
+	"userListTitleNode": {
+	    "height": "30px",
+	    "background-color": "#CCC"
+	},
+	"userListChatTab": {
+	    "height": "30px",
+	    "width": "33%",
+	    "float": "left",
+	    "background": "url("+MWF.defaultPath+"/xDesktop/$UserPanel/default/icon/chat_gray.png) no-repeat center center"
+	},
+	"userListChatTab_over": {
+	    "background": "url("+MWF.defaultPath+"/xDesktop/$UserPanel/default/icon/chat_over.png) no-repeat center center"
+	},
+	"userListChatTab_current": {
+        "background": "url("+MWF.defaultPath+"/xDesktop/$UserPanel/default/icon/chat.png) no-repeat center center"
+    },
+	"userListOnlineTab": {
+        "height": "30px",
+        "width": "33%",
+        "float": "left",
+        "background": "url("+MWF.defaultPath+"/xDesktop/$UserPanel/default/icon/online_gray.png) no-repeat center center"
+    },
+    "userListOnlineTab_over": {
+        "background": "url("+MWF.defaultPath+"/xDesktop/$UserPanel/default/icon/online_over.png) no-repeat center center"
+    },
+    "userListOnlineTab_current": {
+        "background": "url("+MWF.defaultPath+"/xDesktop/$UserPanel/default/icon/online.png) no-repeat center center"
+    },
+    "userListSearchTab": {
+        "height": "30px",
+        "width": "33%",
+        "float": "right",
+        "background": "url("+MWF.defaultPath+"/xDesktop/$UserPanel/default/icon/search_gray.png) no-repeat center center"
+    },
+    "userListSearchTab_over": {
+        "background": "url("+MWF.defaultPath+"/xDesktop/$UserPanel/default/icon/search_over.png) no-repeat center center"
+    },
+    "userListSearchTab_current": {
+        "background": "url("+MWF.defaultPath+"/xDesktop/$UserPanel/default/icon/search.png) no-repeat center center"
+    },
+
+
+
+
+	"userListScrollNode": {
+	    "overflow": "hidden",
+	    "height": "100%"
+	},
+	"userListAreaNode": {
+        "overflow": "hidden"
+	},
+	"userMenuNode": {
+        "height": "20px"
+	},
+	"chatUserNode": {
+	    "height": "56px",
+	    "overflow": "hidden",
+	    "border-bottom": "1px solid #CCC",
+	    "cursor": "default",
+	    "background": "transparent"
+	},
+	"chatUserNode_over": {
+        "background": "#fcf0c1"
+    },
+
+	"userListIconAreaNode": {
+        "width": "56px",
+        "height": "56px",
+        "float": "left"
+    },
+	"userListIconNode": {
+        "width": "48px",
+        "height": "48px",
+        "margin": "4px",
+        "border": "0px"
+    },
+    "userListTextInforNode": {
+        "padding": "8px 4px",
+        "margin-left": "56px",
+        "height": "48px"
+    },
+    "userListNameInforNode": {
+        "line-height": "23px",
+        "height": "23px"
+    },
+
+	"userListNameTextInforNode": {
+        "width": "62px",
+        "float": "left",
+        "font-size": "14px",
+        "color": "#333"
+    },
+    "userListGenderFlagNode": {
+        "width": "20px",
+        "height": "23px",
+        "float": "right",
+        "background-repeat": "no-repeat",
+        "background-position": "center center"
+    },
+    "userListDutyTextInforNode": {
+        "margin-left": "70px",
+        "margin-right": "20px",
+        "color": "#999"
+    },
+    "userListSignInforNode": {
+        "line-height": "23px",
+        "height": "23px",
+        "color": "#999"
+    },
+
+    "personInforNode": {
+        "width": "200px",
+        "border-radius": "3px",
+        "border": "1px solid #999",
+        "box-shadow": "0px 0px 0px #EEE",
+        "background-color": "#555",
+        "position": "absolute",
+        "font-size": "12px",
+        "padding": "5px",
+        "color": "#FFF"
+    },
+
+    "userListUnreadNode": {
+        "top": "-64px",
+        "left": "44px",
+        "float": "left",
+        "height": "12px",
+        "min-width": "10px",
+        "padding": "1px 2px",
+        "font-size": "9px",
+        "position": "relative",
+        "border-radius": "7px",
+        "background-color": "#F00",
+        "color": "#FFF",
+        "text-align": "center"
+    }
+
+
+}
