@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <TextureView
+        android:id="@+id/mTextureView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <jiguang.chat.utils.photovideo.takevideo.camera.CameraView
+        android:id="@+id/mCameraView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_camera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:paddingLeft="36dp"
+        android:paddingRight="36dp">
+
+        <TextView
+            android:id="@+id/tv_flash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:drawableLeft="@drawable/btn_camera_flash"
+            android:drawablePadding="2dp"
+            android:gravity="center_vertical"
+            android:textColor="#ffffff"
+            android:textSize="9sp"/>
+
+        <ImageView
+            android:id="@+id/iv_facing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/camera_facing"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/take_photo"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp">
+
+        <ImageView
+            android:id="@+id/iv_close"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/camera_close"/>
+
+        <ImageView
+            android:id="@+id/iv_choice"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:src="@drawable/camera_choice"
+            android:visibility="invisible"/>
+
+        <jiguang.chat.utils.photovideo.takevideo.camera.CameraProgressBar
+            android:id="@+id/mProgressbar"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:innerRadio="3dp"
+            app:isLongScale="true"
+            app:progressWidth="4dp"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_tack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/take_photo"
+        android:layout_centerHorizontal="true"
+        android:text="点击拍照,长按录制小视频"/>
+
+
+</RelativeLayout>

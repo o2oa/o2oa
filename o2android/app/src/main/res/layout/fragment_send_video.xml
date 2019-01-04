@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jiguang.chat.view.SendVideoView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/send_video_view"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ListView
+        android:id="@+id/video_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@null">
+
+    </ListView>
+
+</jiguang.chat.view.SendVideoView>

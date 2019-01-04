@@ -1,0 +1,71 @@
+{
+    "type": "success",
+    "data": {
+        "attachmentList": [
+                           {
+                           "id": "7b2596d1-b3fa-4410-bdc9-609fb385ff16",
+                           "createTime": "2017-12-08 14:26:22",
+                           "updateTime": "2017-12-08 14:34:42",
+                           "person": "刘振兴@100009@P",
+                           "name": "720_concurrent_programming_with_gcd_in_swift_3.pdf",
+                           "extension": "pdf",
+                           "storage": "251",
+                           "length": 999188,
+                           "shareList": [
+                                         "程剑@chengjain@P"
+                                         ],
+                           "editorList": [],
+                           "folder": "",
+                           "lastUpdateTime": "2017-12-08 14:34:42",
+                           "lastUpdatePerson": "刘振兴@100009@P"
+                           },
+                           {
+                           "id": "b87abc2e-b18d-4937-94b4-adff4be09285",
+                           "createTime": "2017-12-08 14:26:44",
+                           "updateTime": "2017-12-08 14:26:44",
+                           "person": "刘振兴@100009@P",
+                           "name": "wallpaper_mbp_peaceful-home_large.jpg",
+                           "extension": "jpg",
+                           "storage": "251",
+                           "length": 5280072,
+                           "shareList": [],
+                           "editorList": [],
+                           "folder": "",
+                           "lastUpdateTime": "2017-12-08 14:26:44",
+                           "lastUpdatePerson": "刘振兴@100009@P"
+                           }
+                           ],
+        "folderList": [
+                       {
+                       "id": "aa3daa82-f130-4eec-b79d-a2c3b5c30de6",
+                       "createTime": "2017-12-08 14:25:54",
+                       "updateTime": "2017-12-08 14:25:54",
+                       "person": "刘振兴@100009@P",
+                       "name": "aa",
+                       "superior": ""
+                       },
+                       {
+                       "id": "7bd15a6f-8b81-49d7-bb97-adb1f3030149",
+                       "createTime": "2017-12-08 14:25:56",
+                       "updateTime": "2017-12-08 14:25:56",
+                       "person": "刘振兴@100009@P",
+                       "name": "bb",
+                       "superior": ""
+                       },
+                       {
+                       "id": "5298a2f4-60ad-48a5-89ee-3d1517f46973",
+                       "createTime": "2017-12-08 14:25:59",
+                       "updateTime": "2017-12-08 14:25:59",
+                       "person": "刘振兴@100009@P",
+                       "name": "dd",
+                       "superior": ""
+                       }
+                       ]
+    },
+    "message": "",
+    "date": "2017-12-08 14:44:06",
+    "spent": 15,
+    "size": -1,
+    "count": 0,
+    "position": 0
+}

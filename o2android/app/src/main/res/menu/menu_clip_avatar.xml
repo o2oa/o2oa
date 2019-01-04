@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".app.main.activity.ClipAvatarActivity">
+    <item android:id="@+id/menu_clip_avatar_save"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="90"
+        android:icon="@mipmap/menu_save"
+        android:title="@string/clip_avatar_save" />
+</menu>

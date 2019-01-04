@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="OOAppMainCollectionHeaderView" customModule="O2Platform" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="160"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pic-lunbo-1" translatesAutoresizingMaskIntoConstraints="NO" id="jYd-0A-eJx">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="160"/>
+                </imageView>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="jYd-0A-eJx" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="NTb-y0-8Kj"/>
+                <constraint firstItem="jYd-0A-eJx" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="UqU-Yz-dMV"/>
+                <constraint firstItem="jYd-0A-eJx" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="VeC-AL-iP0"/>
+                <constraint firstItem="jYd-0A-eJx" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="tgD-hR-5En"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <point key="canvasLocation" x="34.5" y="-134"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="pic-lunbo-1" width="375" height="160"/>
+    </resources>
+</document>

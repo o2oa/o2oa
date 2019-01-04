@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".app.meeting.apply.MeetingApplyActivity">
+    <item android:id="@+id/menu_meeting_invited"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="90"
+        android:icon="@mipmap/icon_menu_setting"
+        android:title="@string/meeting_invited_list" />
+</menu>

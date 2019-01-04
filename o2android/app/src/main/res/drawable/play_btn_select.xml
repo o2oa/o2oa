@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/music_icon_play_press" android:state_pressed="false"></item>
+    <item android:drawable="@drawable/music_icon_play_focuse" android:state_focused="false"></item>
+    <item android:drawable="@drawable/music_icon_play_press" android:state_pressed="true"></item>
+    <item android:drawable="@drawable/music_icon_play_focuse" android:state_focused="true"></item>
+    <item android:drawable="@drawable/music_icon_play_focuse"></item>
+
+</selector>

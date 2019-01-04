@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinator_attendance_appeal_approval_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/z_color_background"
+    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.attendance.approval.AttendanceAppealApprovalActivity">
+
+    <android.support.design.widget.AppBarLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:theme="@style/XBPMTheme.AppBarOverlay">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_attendance_appeal_approval_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/z_color_primary"
+            app:popupTheme="@style/XBPMTheme.PopupOverlay">
+
+            <CheckBox
+                android:id="@+id/button_attendance_appeal_approval_choose_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginLeft="@dimen/spacing_normal"
+                android:visibility="gone"/>
+            <ImageView
+                android:id="@+id/button_attendance_appeal_approval_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="left"
+                android:layout_marginLeft="@dimen/spacing_normal"
+                android:src="@mipmap/ic_back_mtrl_white_alpha"
+                />
+            <TextView
+                android:id="@+id/tv_attendance_appeal_approval_top_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="标题" />
+            <ImageView
+                android:id="@+id/image_attendance_appeal_approval_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:src="@mipmap/icon_menu_edit_pencil_white"
+                />
+            <ImageView
+                android:id="@+id/image_attendance_appeal_approval_close"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:src="@mipmap/icon_menu_window_close"
+                android:visibility="gone"
+                />
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+
+    <include layout="@layout/content_attendance_appeal_approval" />
+
+
+
+</android.support.design.widget.CoordinatorLayout>

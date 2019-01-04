@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="250dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical|center_horizontal"
+              android:background="@drawable/jmui_dialog_default_style"
+              android:orientation="vertical">
+
+
+    <Button
+        style="?android:attr/borderlessButtonStyle"
+        android:id="@+id/jmui_copy_msg_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#2C2C2C"
+        android:paddingLeft="25dp"
+        android:textSize="16sp"
+        android:gravity="left|center_vertical"
+        android:background="@drawable/jmui_dialog_top_btn_bg"
+        android:text="@string/jmui_copy"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#E9EDED"/>
+
+    <Button
+        style="?android:attr/borderlessButtonStyle"
+        android:id="@+id/jmui_delete_msg_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#2C2C2C"
+        android:paddingLeft="25dp"
+        android:textSize="16sp"
+        android:gravity="left|center_vertical"
+        android:background="@drawable/jmui_dialog_bottom_btn_bg"
+        android:text="@string/jmui_delete"/>
+</LinearLayout>

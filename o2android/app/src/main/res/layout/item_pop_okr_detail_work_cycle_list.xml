@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/spacing_small">
+    <TextView
+        android:id="@+id/tv_item_pop_okr_detail_work_cycle_title"
+        android:layout_width="match_parent"
+        android:textSize="@dimen/font_normal"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

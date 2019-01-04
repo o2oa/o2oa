@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="64dp"
+    android:layout_height="64dp">
+
+    <RelativeLayout
+        android:id="@+id/relative_bbs_subject_image_upload_grid_top"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        >
+        <ImageView
+            android:id="@+id/image_bbs_subject_image_upload_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerInParent="true"
+            android:contentDescription="@string/contact_icon_label"
+            android:src="@mipmap/icon_file_img" />
+        <ImageView
+            android:id="@+id/image_bbs_subject_image_upload_delete_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/bbs_subject_image_delete_bg"
+            android:visibility="visible" />
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/linear_bbs_subject_image_upload_loading"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:gravity="center"
+        android:background="@color/z_color_mask">
+        <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleProgressBar
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:mlpb_progress_color="@color/z_color_primary"
+            />
+    </LinearLayout>
+</RelativeLayout>

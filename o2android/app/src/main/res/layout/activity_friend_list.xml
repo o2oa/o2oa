@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/contacts_view"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#ffffff"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bar_height"
+        android:background="@color/jmui_jpush">
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingLeft="14dp"
+            android:text="取消"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:text="发送名片"
+            android:textColor="@android:color/white"
+            android:textSize="17sp"/>
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <jiguang.chat.view.listview.StickyListHeadersListView
+                android:id="@+id/friend_listView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:divider="@drawable/main_list_divider_line"
+                android:dividerHeight="0.1dp"/>
+
+            <TextView
+                android:id="@+id/group_dialog"
+                android:layout_width="80.0dip"
+                android:layout_height="80.0dip"
+                android:layout_centerInParent="true"
+                android:background="@drawable/rc_bg_toast"
+                android:gravity="center"
+                android:textColor="#ffffffff"
+                android:textSize="30.0dip"
+                android:visibility="invisible"/>
+        </RelativeLayout>
+
+        <jiguang.chat.utils.sidebar.SideBar
+            android:id="@+id/sidebar"
+            android:layout_width="11.33dip"
+            android:layout_height="fill_parent"
+            android:layout_gravity="right|center"
+            android:layout_marginBottom="33dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginTop="50dp"
+            android:visibility="visible"/>
+    </FrameLayout>
+
+
+</LinearLayout>

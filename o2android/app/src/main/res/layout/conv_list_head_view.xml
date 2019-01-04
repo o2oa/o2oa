@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/conv_list_header"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:background="#FFDFE0"
+    android:visibility="visible"
+    android:clickable="false">
+
+    <ImageView
+        android:id="@+id/network_disconnected_iv"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/send_message_failed"
+        />
+
+    <TextView
+        android:id="@+id/check_network_hit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="#2C2C2C"
+        android:layout_marginLeft="10dp"
+        android:padding="10dp"
+        android:text="@string/network_disconnected_hint"/>
+
+</LinearLayout>

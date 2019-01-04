@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout style="@style/jmui_chat_item_receive_layout"
+              xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <TextView
+        android:id="@+id/jmui_send_time_txt"
+        style="@style/jmui_chat_text_date_style"/>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
+
+        <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
+            android:id="@+id/jmui_avatar_iv"
+            style="@style/jmui_chat_item_receiver_avatar_style"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="53dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/jmui_display_name_tv"
+                style="@style/jmui_chat_display_name_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/jmui_avatar_iv"/>
+
+            <TextView
+                android:id="@+id/jmui_msg_content"
+                style="@style/jmui_msg_text_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/jmui_display_name_tv"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="3dp"
+                android:layout_toRightOf="@id/jmui_avatar_iv"
+                android:autoLink="web"
+                android:background="@drawable/jmui_msg_receive_bg"
+                android:paddingLeft="15dp"
+                android:paddingRight="10dp"
+                android:textColor="#363333"
+                android:textColorLink="#157BFB"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_businessCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="53dp"
+            android:background="@drawable/jmui_msg_receive_bg"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/business_head"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="12.33dp"
+                    android:layout_marginLeft="11dp"
+                    android:layout_marginTop="13.33dp"
+                    android:background="@drawable/jmui_head_icon"
+                    android:scaleType="fitXY"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_nickUser"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="11.33dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="#2C2C2C"
+                        android:textSize="15sp"/>
+
+                    <TextView
+                        android:id="@+id/tv_userName"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="11.33dp"
+                        android:layout_marginTop="4dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="#999999"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="183dp"
+                android:layout_height="0.33dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="16.67dp"
+                android:background="#DCDCDC"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="3dp"
+                android:text="个人名片"
+                android:textColor="#989898"
+                android:textSize="10sp"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

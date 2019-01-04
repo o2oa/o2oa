@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relative_item_meeting_create_building_room_layout"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:background="@color/z_color_accent"
+    android:layout_marginLeft="@dimen/spacing_small"
+    android:layout_marginTop="@dimen/spacing_small">
+
+    <TextView
+        android:id="@+id/tv_item_meeting_create_building_room_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="@dimen/spacing_tiny"
+        android:layout_marginLeft="@dimen/spacing_tiny"
+        android:textSize="@dimen/font_small"
+        android:textColor="@android:color/white"/>
+    <TextView
+        android:id="@+id/tv_item_meeting_create_building_room_capacity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/spacing_tiny"
+        android:layout_marginTop="@dimen/spacing_tiny"
+        android:textSize="@dimen/font_normal"
+        android:textColor="@android:color/white"
+        />
+    <TextView
+        android:id="@+id/tv_item_meeting_create_building_room_name"
+        android:layout_below="@id/tv_item_meeting_create_building_room_capacity"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/font_large"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        />
+    <HorizontalScrollView
+        android:id="@+id/scroll_item_meeting_create_building_room_info"
+        android:layout_below="@id/tv_item_meeting_create_building_room_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/linear_item_meeting_create_building_room_info_device"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/spacing_small"
+            android:paddingBottom="@dimen/spacing_small"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+    </HorizontalScrollView>
+</RelativeLayout>

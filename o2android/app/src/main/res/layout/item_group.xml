@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+	android:orientation="vertical">
+	
+
+    <FrameLayout
+        android:layout_width="50dp"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:id="@+id/grid_avatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/jmui_head_icon"
+            android:scaleType="centerCrop"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/grid_delete_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="top|left"
+            android:background="@drawable/delete_member"
+            android:visibility="gone"/>
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/grid_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:ems="4"
+        android:singleLine="true"
+        android:layout_marginTop="3dp"
+        android:textColor="@color/gray"
+        android:visibility="visible" />
+
+
+
+</LinearLayout>

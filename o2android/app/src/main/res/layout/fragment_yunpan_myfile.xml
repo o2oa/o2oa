@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_refresh_myFile_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+
+        <HorizontalScrollView
+            android:id="@+id/breadcrumb_scroll_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp">
+
+            <LinearLayout
+                android:id="@+id/breadcrumb_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/spacing_small"
+                android:paddingLeft="@dimen/spacing_normal"
+                android:paddingTop="@dimen/spacing_small">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_activity_yunpan"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <View
+            android:id="@+id/view_my_file_split"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/breadcrumb_scroll_id"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:layout_marginRight="@dimen/spacing_normal"
+            android:background="@color/z_color_split_line_ddd" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/view_my_file_split"
+            android:orientation="vertical">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view_yunpan_myfile_list"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@android:color/white" />
+            <TextView
+                android:id="@+id/tv_yunpan_myfile_empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/recycler_no_data_cool"
+                android:textColor="@color/z_color_subtitle_font"
+                android:textSize="@dimen/font_large"
+                android:visibility="gone" />
+            
+            <LinearLayout
+                android:id="@+id/linear_my_file_operation_bar"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@color/z_color_background"
+                android:visibility="gone"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
+                <Button
+                    android:id="@+id/btn_my_file_rename"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="29dp"
+                    android:text="@string/yunpan_rename"
+                    style="@style/whiteButtonStyle"
+                    android:enabled="false"
+                    />
+                <Button
+                    android:id="@+id/btn_my_file_delete"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="29dp"
+                    android:layout_marginLeft="6dp"
+                    style="@style/whiteButtonStyle"
+                    android:enabled="false"
+                    android:text="@string/yunpan_delete"
+                    />
+                <Button
+                    android:id="@+id/btn_my_file_share"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="29dp"
+                    android:layout_marginLeft="6dp"
+                    style="@style/whiteButtonStyle"
+                    android:enabled="false"
+                    android:text="@string/yunpan_share"
+                    />
+                <Button
+                    android:id="@+id/btn_my_file_send"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="29dp"
+                    android:layout_marginLeft="6dp"
+                    style="@style/whiteButtonStyle"
+                    android:enabled="false"
+                    android:text="@string/yunpan_send"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

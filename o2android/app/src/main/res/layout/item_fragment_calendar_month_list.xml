@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="48dp">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_item_fragment_calendar_month_list_color"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_margin="@dimen/spacing_normal"
+        app:cardBackgroundColor="@color/z_color_primary"
+        app:cardCornerRadius="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/relativeLayout"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@+id/cv_item_fragment_calendar_month_list_color"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_item_fragment_calendar_month_list_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textColor="@color/z_color_text_primary"
+            android:textSize="@dimen/font_normal"
+            tools:text="事件标题"/>
+
+
+        <LinearLayout
+            android:id="@+id/ll_item_fragment_calendar_month_list_time_block"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/spacing_normal"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv_item_fragment_calendar_month_list_start_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/z_color_text_hint"
+                android:textSize="@dimen/font_small"
+                tools:text="10:00"/>
+            <TextView
+                android:id="@+id/tv_item_fragment_calendar_month_list_end_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_tiny"
+                android:textColor="@color/z_color_text_hint"
+                android:textSize="@dimen/font_small"
+                tools:text="20:00"/>
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_item_fragment_calendar_month_list_all_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/spacing_normal"
+            android:textColor="@color/z_color_text_hint"
+            android:textSize="@dimen/font_small"
+            android:text="@string/calendar_all_day"
+            android:visibility="gone"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_alignParentBottom="true"
+            android:background="@color/divider"/>
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/easy_alert_dialog_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@color/white" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <include
+            android:id="@+id/easy_dialog_title_view"
+            layout="@layout/easy_alert_dialog_title" />
+
+        <TextView
+            android:id="@+id/easy_dialog_message_text_view"
+            style="@style/dialog_message_text_style"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/easy_dialog_message_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:paddingBottom="@dimen/dialog_text_margin_horizontal"
+            android:paddingRight="@dimen/dialog_text_margin_horizontal"
+            android:textColor="@color/color_black_333333"
+            android:textSize="@dimen/very_samll_text_size"
+            android:visibility="gone" />
+
+        <include layout="@layout/easy_alert_dialog_bottom_button" />
+    </LinearLayout>
+
+</ScrollView>

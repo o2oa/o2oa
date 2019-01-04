@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout style="@style/jmui_chat_item_receive_layout"
+              xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/jmui_send_time_txt"
+        style="@style/jmui_chat_text_date_style"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
+
+        <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
+            android:id="@+id/jmui_avatar_iv"
+            style="@style/jmui_chat_item_receiver_avatar_style"/>
+
+        <TextView
+            android:id="@+id/jmui_display_name_tv"
+            style="@style/jmui_chat_display_name_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/jmui_avatar_iv"/>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/jmui_display_name_tv"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/jmui_avatar_iv"
+            android:background="@drawable/jmui_msg_receive_bg"
+            android:maxWidth="200.0dip">
+
+
+            <ImageView
+                android:id="@+id/jmui_picture_iv"
+                android:layout_width="100dp"
+                android:layout_height="159dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginTop="2dp"
+                android:scaleType="centerCrop"/>
+
+            <LinearLayout
+                android:id="@+id/message_item_video_play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription=""
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:scaleType="center"
+                    android:src="@drawable/play_btn_select"/>
+            </LinearLayout>
+
+
+        </FrameLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/tv_pop_meeting_room_info_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_large"
+        android:textSize="@dimen/font_large"
+        android:gravity="center"/>
+
+    <HorizontalScrollView
+        android:id="@+id/scroll_pop_meeting_room_info"
+        android:layout_below="@id/tv_pop_meeting_room_info_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/linear_pop_meeting_room_info_device"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/spacing_small"
+            android:paddingBottom="@dimen/spacing_small"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <ListView
+        android:id="@+id/listView_pop_meeting_room_info_list"
+        android:layout_below="@id/scroll_pop_meeting_room_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="#eee3d9"
+        android:dividerHeight="1px">
+    </ListView>
+
+    <include layout="@layout/snippet_bottom_operate_single_button" />
+</RelativeLayout>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_marginTop="@dimen/spacing_tiny"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+   <RadioGroup
+       android:id="@+id/group_dialog_calendar_event_update_type"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:layout_marginStart="@dimen/spacing_normal"
+       android:layout_marginEnd="@dimen/spacing_normal">
+       <RadioButton
+           android:id="@+id/radio_dialog_calendar_event_update_type_single"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="@dimen/spacing_small"
+           android:button="@null"
+           android:drawableStart="@drawable/radio_background_primary"
+           android:drawablePadding="10dp"
+           android:textColor="@color/z_color_text_primary"
+           android:text="@string/calendar_update_type_single"
+           android:checked="true"/>
+       <RadioButton
+           android:id="@+id/radio_dialog_calendar_event_update_type_after"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="@dimen/spacing_small"
+           android:button="@null"
+           android:drawableStart="@drawable/radio_background_primary"
+           android:drawablePadding="10dp"
+           android:textColor="@color/z_color_text_primary"
+           android:text="@string/calendar_update_type_after" />
+       <RadioButton
+           android:id="@+id/radio_dialog_calendar_event_update_type_all"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="@dimen/spacing_small"
+           android:button="@null"
+           android:drawableStart="@drawable/radio_background_primary"
+           android:drawablePadding="10dp"
+           android:textColor="@color/z_color_text_primary"
+           android:text="@string/calendar_update_type_all"/>
+   </RadioGroup>
+
+</LinearLayout>

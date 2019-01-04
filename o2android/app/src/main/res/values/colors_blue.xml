@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary_blue">#ff008be6</color>
+    <color name="colorPrimaryDark_blue">#ff008be6</color>
+    <color name="colorAccent_blue">#ff2ECC71</color>
+    <!--blue-->
+    <color name="z_color_primary_blue">#ff008be6</color>
+    <color name="z_color_primary_press_blue">#0441c4</color>
+    <color name="z_color_primary_blur_blue">#6d94f7</color>
+    <color name="z_color_primary_dark_blue">#008be6</color>
+
+    <color name="z_color_input_line_blur_blue">#73B8E6</color>
+    <color name="z_color_input_line_focus_blue">#ff008be6</color>
+
+    <color name="jmui_jpush_blue">#ff008be6</color>
+
+</resources>

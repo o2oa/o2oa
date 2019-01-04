@@ -1,0 +1,9 @@
+/build
+
+# VsCode
+.vscode/
+
+# RELEASE
+O2PLATFORM/
+huawei/
+xiaomi/

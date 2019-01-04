@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scroll_fragment_calendar_month"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+            android:id="@+id/mcv_fragment_calendar_month"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            app:mcv_calendarMode="month"
+            app:mcv_dateTextAppearance="@style/TextAppearance.MaterialCalendarWidget.Date"
+            app:mcv_firstDayOfWeek="sunday"
+            app:mcv_headerTextAppearance="@style/TextAppearance.MaterialCalendarWidget.Header"
+            app:mcv_weekDayLabels="@array/custom_weekdays"
+            app:mcv_horizontal_gap="8dp"
+            app:mcv_weekDayTextAppearance="@style/TextAppearance.MaterialCalendarWidget.WeekDay"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"/>
+
+        <TextView
+            android:id="@+id/tv_fragment_calendar_month_current_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_small"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:textColor="@color/z_color_text_hint"
+            android:textSize="@dimen/font_small"
+            tools:text="2018-06-19" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_fragment_calendar_month_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white" />
+    </LinearLayout>
+</ScrollView>

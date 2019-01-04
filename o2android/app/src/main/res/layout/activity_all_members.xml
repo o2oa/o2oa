@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/white"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/title_bar_rl"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bar_height"
+        android:background="@color/jmui_jpush">
+
+        <ImageButton
+            android:id="@+id/return_btn"
+            android:layout_width="@dimen/title_bar_height"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/jmui_back_btn_bg"
+            android:src="@drawable/back"/>
+
+        <TextView
+            android:id="@+id/members_in_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/return_btn"
+            android:text="删除成员"
+            android:textColor="#ffffff"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:layout_marginRight="14.33dp"
+            android:id="@+id/tv_selNum"
+            android:gravity="center_vertical"
+            android:textSize="16sp"
+            android:textColor="#fff"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/right_btn"
+            android:layout_toLeftOf="@+id/tv_selNum"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:background="@drawable/send_picture_btn_bg"
+            android:paddingLeft="10dp"
+            android:text="@string/add"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_medium_size"/>
+
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/rlCtrl"
+            android:layout_width="240dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:background="#fff"
+            android:visibility="visible">
+
+            <HorizontalScrollView
+                android:id="@+id/contact_select_area"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_weight="1"
+                android:fillViewport="true"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:paddingLeft="14dip">
+
+                    <GridView
+                        android:id="@+id/contact_select_area_grid"
+                        style="@style/grid_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:horizontalSpacing="0dip"
+                        android:listSelector="@android:color/transparent"
+                        android:numColumns="5"
+                        android:paddingTop="6dp"
+                        android:verticalSpacing="0dip"/>
+                </LinearLayout>
+            </HorizontalScrollView>
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/search_et"
+            style="?android:attr/textViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:hint="搜索"
+            android:paddingLeft="8dp"
+            android:textColor="#555555"
+            android:textColorHint="#C2C0C0"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="#E8EDF3"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/members_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:cacheColorHint="#00000000"
+            android:divider="@null">
+        </ListView>
+
+        <TextView
+            android:id="@+id/letter_hint_tv"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:background="@drawable/letter_hint_bg"
+            android:gravity="center"
+            android:textColor="#ffffffff"
+            android:textSize="30dp"
+            android:visibility="invisible"/>
+
+        <jiguang.chat.utils.sidebar.SideBar
+            android:id="@+id/sidebar"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:visibility="gone"
+            />
+    </FrameLayout>
+</LinearLayout>

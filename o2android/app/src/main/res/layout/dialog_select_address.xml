@@ -1,0 +1,73 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E9E9E9"
+    android:orientation="vertical"
+    android:paddingTop="12dip" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dip" >
+    <Button
+        android:id="@+id/btn_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="确定"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:background="@null"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/colorBlack_Three" />
+
+     <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+         android:background="@null"
+        android:text="取消"
+        android:textColor="@color/colorBlack_Three"  />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:orientation="horizontal" >
+
+        <jiguang.chat.utils.citychoose.view.WheelView
+            android:id="@+id/id_province"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+        </jiguang.chat.utils.citychoose.view.WheelView>
+
+        <jiguang.chat.utils.citychoose.view.WheelView
+            android:id="@+id/id_city"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+        </jiguang.chat.utils.citychoose.view.WheelView>
+
+        <jiguang.chat.utils.citychoose.view.WheelView
+            android:id="@+id/id_district"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+        </jiguang.chat.utils.citychoose.view.WheelView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/view_none"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+    </LinearLayout>
+
+
+</LinearLayout>

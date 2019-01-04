@@ -1,0 +1,268 @@
+PODS:
+  - Alamofire (4.7.3)
+  - AlamofireImage (3.4.1):
+    - Alamofire (~> 4.7)
+  - AlamofireNetworkActivityIndicator (2.3.0):
+    - Alamofire (~> 4.7)
+  - AlamofireObjectMapper (5.1.0):
+    - Alamofire (~> 4.1)
+    - ObjectMapper (~> 3.3)
+  - BetterSegmentedControl (0.9)
+  - BSGridCollectionViewLayout (1.2.2)
+  - BSImagePicker (2.9.0):
+    - BSGridCollectionViewLayout (= 1.2.2)
+    - BSImageView (= 1.0.2)
+  - BSImageView (1.0.2)
+  - Bugly (2.5.0)
+  - BWSwipeRevealCell (2.0.2)
+  - Charts (3.2.1):
+    - Charts/Core (= 3.2.1)
+  - Charts/Core (3.2.1)
+  - CocoaLumberjack/Default (3.4.2)
+  - CocoaLumberjack/Swift (3.4.2):
+    - CocoaLumberjack/Default
+  - CYLTabBarController (1.17.17)
+  - DatePickerDialogSwift (0.1.2):
+    - Hue (~> 3.0.0)
+  - EmptyDataSet-Swift (4.0.5)
+  - Eureka (4.3.0)
+  - EZSwiftExtensions (1.11)
+  - FMDB (2.6.2):
+    - FMDB/standard (= 2.6.2)
+  - FMDB/standard (2.6.2)
+  - FSCalendar (2.8.0)
+  - GradientCircularProgress (3.10.1)
+  - HandyJSON (4.2.0)
+  - Hue (3.0.1)
+  - ImageSlideshow (1.7.0):
+    - ImageSlideshow/Core (= 1.7.0)
+  - ImageSlideshow/Alamofire (1.7.0):
+    - AlamofireImage (~> 3.0)
+    - ImageSlideshow/Core
+  - ImageSlideshow/Core (1.7.0)
+  - JGProgressHUD (2.0.3)
+  - JHTAlertController (0.2.4)
+  - JTCalendar (2.2.3)
+  - JZCalendarWeekView (0.5.4)
+  - MBProgressHUD (1.0.0)
+  - MIBlurPopup (0.1.3)
+  - Moya (11.0.2):
+    - Moya/Core (= 11.0.2)
+  - Moya/Core (11.0.2):
+    - Alamofire (~> 4.1)
+    - Result (~> 3.0)
+  - Moya/RxSwift (11.0.2):
+    - Moya/Core
+    - RxSwift (~> 4.0)
+  - ObjectMapper (3.3.0)
+  - ProgressHUDSwift (0.2.0)
+  - PromiseKit (4.5.2):
+    - PromiseKit/Foundation (= 4.5.2)
+    - PromiseKit/QuartzCore (= 4.5.2)
+    - PromiseKit/UIKit (= 4.5.2)
+  - PromiseKit/CorePromise (4.5.2)
+  - PromiseKit/Foundation (4.5.2):
+    - PromiseKit/CorePromise
+  - PromiseKit/QuartzCore (4.5.2):
+    - PromiseKit/CorePromise
+  - PromiseKit/UIKit (4.5.2):
+    - PromiseKit/CorePromise
+  - PromisesObjC (1.2.3)
+  - PromisesSwift (1.2.3):
+    - PromisesObjC (= 1.2.3)
+  - ReactiveCocoa (7.2.0):
+    - ReactiveSwift (~> 3.1)
+  - ReactiveSwift (3.1.0):
+    - Result (~> 3.2)
+  - Result (3.2.4)
+  - RxAtomic (4.4.0)
+  - RxCocoa (4.3.1):
+    - RxSwift (~> 4.0)
+  - RxSwift (4.4.0):
+    - RxAtomic (~> 4.4)
+  - SDWebImage (4.4.2):
+    - SDWebImage/Core (= 4.4.2)
+  - SDWebImage/Core (4.4.2)
+  - SnapKit (4.0.1)
+  - swiftScan (1.1.5)
+  - SwiftValidator (4.0.0)
+  - SwiftyJSON (3.1.4)
+  - SwiftyTimer (2.1.0)
+  - SwiftyUserDefaults (3.0.1)
+  - Whisper (6.0.2)
+  - YHPhotoKit (0.2.1)
+  - YHPopupView (0.3.0)
+
+DEPENDENCIES:
+  - Alamofire (~> 4.7)
+  - AlamofireImage (~> 3.3)
+  - AlamofireNetworkActivityIndicator (~> 2.0)
+  - AlamofireObjectMapper (~> 5.1)
+  - BetterSegmentedControl (~> 0.9)
+  - BSImagePicker
+  - Bugly
+  - BWSwipeRevealCell (~> 2.0)
+  - Charts
+  - CocoaLumberjack/Swift
+  - CYLTabBarController (~> 1.17.4)
+  - DatePickerDialogSwift (from `/Users/fancy/ios/dependence/DatePickerDialogSwift`)
+  - EmptyDataSet-Swift (~> 4.0.2)
+  - Eureka
+  - EZSwiftExtensions (from `/Users/fancy/ios/dependence/EZSwiftExtensions`)
+  - FMDB (~> 2.6.2)
+  - FSCalendar
+  - GradientCircularProgress (from `https://github.com/keygx/GradientCircularProgress.git`)
+  - HandyJSON (~> 4.2.0)
+  - ImageSlideshow (~> 1.5)
+  - ImageSlideshow/Alamofire
+  - JGProgressHUD
+  - JHTAlertController (from `/Users/fancy/ios/dependence/JHTAlertController`)
+  - JTCalendar (~> 2.0)
+  - JZCalendarWeekView (~> 0.4)
+  - MBProgressHUD (~> 1.0.0)
+  - MIBlurPopup
+  - Moya (~> 11.0.2)
+  - Moya/RxSwift (~> 11.0.2)
+  - ProgressHUDSwift (~> 0.2)
+  - PromiseKit (~> 4.4)
+  - PromisesSwift (~> 1.0)
+  - ReactiveCocoa (~> 7.0)
+  - ReactiveSwift (~> 3.0)
+  - RxCocoa (~> 4.0)
+  - SDWebImage (~> 4.0)
+  - SnapKit (~> 4.0.0)
+  - swiftScan (~> 1.1.2)
+  - SwiftValidator (from `https://github.com/jpotts18/SwiftValidator.git`, branch `master`)
+  - SwiftyJSON (~> 3.1)
+  - SwiftyTimer
+  - SwiftyUserDefaults (~> 3.0)
+  - Whisper
+  - YHPhotoKit
+  - YHPopupView
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - Alamofire
+    - AlamofireImage
+    - AlamofireNetworkActivityIndicator
+    - AlamofireObjectMapper
+    - BetterSegmentedControl
+    - BSGridCollectionViewLayout
+    - BSImagePicker
+    - BSImageView
+    - Bugly
+    - BWSwipeRevealCell
+    - Charts
+    - CocoaLumberjack
+    - CYLTabBarController
+    - EmptyDataSet-Swift
+    - Eureka
+    - FMDB
+    - FSCalendar
+    - HandyJSON
+    - Hue
+    - ImageSlideshow
+    - JGProgressHUD
+    - JTCalendar
+    - JZCalendarWeekView
+    - MBProgressHUD
+    - MIBlurPopup
+    - Moya
+    - ObjectMapper
+    - ProgressHUDSwift
+    - PromiseKit
+    - PromisesObjC
+    - PromisesSwift
+    - ReactiveCocoa
+    - ReactiveSwift
+    - Result
+    - RxAtomic
+    - RxCocoa
+    - RxSwift
+    - SDWebImage
+    - SnapKit
+    - swiftScan
+    - SwiftyJSON
+    - SwiftyTimer
+    - SwiftyUserDefaults
+    - Whisper
+    - YHPhotoKit
+    - YHPopupView
+
+EXTERNAL SOURCES:
+  DatePickerDialogSwift:
+    :path: "/Users/fancy/ios/dependence/DatePickerDialogSwift"
+  EZSwiftExtensions:
+    :path: "/Users/fancy/ios/dependence/EZSwiftExtensions"
+  GradientCircularProgress:
+    :git: https://github.com/keygx/GradientCircularProgress.git
+  JHTAlertController:
+    :path: "/Users/fancy/ios/dependence/JHTAlertController"
+  SwiftValidator:
+    :branch: master
+    :git: https://github.com/jpotts18/SwiftValidator.git
+
+CHECKOUT OPTIONS:
+  GradientCircularProgress:
+    :commit: 29abd46666f370255ae859717e82f907acf21cb4
+    :git: https://github.com/keygx/GradientCircularProgress.git
+  SwiftValidator:
+    :commit: c0ee801a2d107eca5f748d07932b449666d8effd
+    :git: https://github.com/jpotts18/SwiftValidator.git
+
+SPEC CHECKSUMS:
+  Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
+  AlamofireImage: 78d67ccbb763d87ba44b21583d2153500a195630
+  AlamofireNetworkActivityIndicator: 18346ff6d770d9513d0ac6f2d99706f40f93dbaa
+  AlamofireObjectMapper: 3395e698901d8b0e6f48b7d0c43bd47875325102
+  BetterSegmentedControl: 40b2b6a08bbc59663149624d1b5235efa8d43a3c
+  BSGridCollectionViewLayout: 3e6f23b3a2b4f0ca9afae09ca01389d1057f7b32
+  BSImagePicker: 553707de1adaad42eac252e0b84d20dbdba83fe9
+  BSImageView: ab22ff8cae61f1ae17a3c9efeeb216af3cf84a09
+  Bugly: 3ca9f255c01025582df26f9222893b383c7e4b4e
+  BWSwipeRevealCell: 42504c963b67bf57ec6955bd435f6904f4bffa88
+  Charts: f122fb70b19847fa5817d018b77d6c5a2296ab25
+  CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
+  CYLTabBarController: ed3184222048f6e7a57f9b175934580ff6e8d6fb
+  DatePickerDialogSwift: 38fca4a93bcd89ef2295fc9770677ac572388d76
+  EmptyDataSet-Swift: a25810f50c3adfaa3840aa33ae8b5ba12ac29279
+  Eureka: 6d711cb30ca333b4bc893110285a722ae3840114
+  EZSwiftExtensions: d83b4719cd665c7a1556c95a02fcf29e877ced34
+  FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
+  FSCalendar: 3a5ed3636e2ba1b83ebebfcf0c2603105a6f5efe
+  GradientCircularProgress: 7f3638d14b34b8181888d3a96e6bc045b6c0c184
+  HandyJSON: 9dfc026c7d7adc1f0f8ba8b181495f0e0763b0f4
+  Hue: 93e852fa6211ab35922ad8c293f51c43d6c79eb2
+  ImageSlideshow: f8eec5e37a980f60923b585ff23b0e140fd24018
+  JGProgressHUD: 12b20a8f4ffe05258f8635c1ab92816e451f904d
+  JHTAlertController: ef2822083029b44c3adeba626b9904d805591c95
+  JTCalendar: f54975f1426facc38d112f372f0d3d955aae8d86
+  JZCalendarWeekView: 6a2e05ce2ae77d98c719d4236385edcef3da28e0
+  MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
+  MIBlurPopup: e0834e469074cabf65a0ca6e6d900c84d48f8a4f
+  Moya: a725035953bc1c0eb1be505ab903984501d82440
+  ObjectMapper: b612bf8c8e99c4dc0bb6013a51f7c27966ed5da9
+  ProgressHUDSwift: 7cf2ea84a0fc10fbcc12e545ea84b0899b34d239
+  PromiseKit: 743e497a5f505a470d3bbbf4ce0663c1268af0a4
+  PromisesObjC: a3a4263d8a9260214267e0b3788d0f83466ad449
+  PromisesSwift: f7f45c21986419e85f7c5b645ed8c6a2c10c04b4
+  ReactiveCocoa: 476dae7ca790f40d30d186a1bd7ebae4290395d5
+  ReactiveSwift: 5b26d2e988fe0eed2daf48c4054d1de74db50184
+  Result: d2d07204ce72856f1fd9130bbe42c35a7b0fea10
+  RxAtomic: eacf60db868c96bfd63320e28619fe29c179656f
+  RxCocoa: 78763c7b07d02455598d9fc3c1ad091a28b73635
+  RxSwift: 5976ecd04fc2fefd648827c23de5e11157faa973
+  SDWebImage: 624d6e296c69b244bcede364c72ae0430ac14681
+  SnapKit: 0de968a9fec17499afa29683b05d0c775b6d1c29
+  swiftScan: bc6dbf74e6a579c45a861691afc44628d8d9f6ab
+  SwiftValidator: 25ded5ca1f10c05adf57f6ac82a72d28ac8d91af
+  SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
+  SwiftyTimer: 02dd6cf10cbc71cbf67cec494f6e5eb782102543
+  SwiftyUserDefaults: 3d273b1739b68ada3145dc754a70ec775bc5c8be
+  Whisper: 169760fc4bab0abf24d5529f9276f95c25cf1025
+  YHPhotoKit: e88368af1fca0a110d41b88417088f7e49876981
+  YHPopupView: 96d9c05c79a2a17cf69c3def09e5305cfae9e8e8
+
+PODFILE CHECKSUM: 15da6aaf4fb7608d2b32c368075e0dfaa5f482d9
+
+COCOAPODS: 1.5.0

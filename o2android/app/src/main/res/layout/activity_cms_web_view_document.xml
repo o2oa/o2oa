@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_cms_web_view_document"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/z_color_background"
+    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.cms.view.CMSWebViewActivity">
+
+    <include layout="@layout/snippet_appbarlayout_toolbar"/>
+    <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.NestedProgressWebView
+        android:id="@+id/web_view_cms_document_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    </net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.NestedProgressWebView>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_cms_document_attach"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@mipmap/icon_attach_white_24dp"
+        app:backgroundTint="@color/z_color_primary"
+        android:visibility="gone"/>
+
+</android.support.design.widget.CoordinatorLayout>

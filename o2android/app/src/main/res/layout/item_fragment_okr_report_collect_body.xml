@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:padding="@dimen/activity_horizontal_margin">
+    <TextView
+        android:id="@+id/tv_item_fragment_okr_report_collect_body_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/z_color_title_font"
+        android:textSize="@dimen/font_large"
+        />
+    <TextView
+        android:id="@+id/tv_item_fragment_okr_report_collect_body_action"
+        android:layout_below="@id/tv_item_fragment_okr_report_collect_body_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:textColor="@color/z_color_subtitle_font"
+        />
+    <LinearLayout
+        android:layout_below="@id/tv_item_fragment_okr_report_collect_body_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_item_fragment_okr_report_collect_body_progress_description"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/z_color_subtitle_font"/>
+        <TextView
+            android:id="@+id/tv_item_fragment_okr_report_collect_body_work_plan"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/z_color_subtitle_font"/>
+    </LinearLayout>
+
+</RelativeLayout>

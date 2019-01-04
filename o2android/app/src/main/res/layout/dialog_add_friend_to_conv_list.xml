@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="260dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical|center_horizontal"
+    android:orientation="vertical"
+    android:background="@drawable/jmui_dialog_default_style">
+
+    <TextView
+        android:id="@+id/dialog_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_gravity="center"
+        android:text="@string/add_friend"
+        android:textSize="18sp"
+        android:textColor="#000"
+        />
+
+    <View
+        android:id="@+id/divide_view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="10dp"
+        android:background="@color/jmui_chat_detail_split_line_color" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="@color/gray"
+        android:text="@string/input_friend_username_hint"/>
+
+    <EditText
+        android:id="@+id/user_name_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:cursorVisible="true"
+        android:textCursorDrawable="@drawable/jmui_text_cursor_bg"
+        style="@style/default_input_style_with_bg"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/jmui_cancel_btn"
+            android:layout_height="50dp"
+            android:layout_width="0dip"
+            android:layout_weight="1"
+            android:text="@string/jmui_cancel"
+            android:textColor="#808080"
+            android:background="@drawable/jmui_dialog_bottom_left_btn"
+            />
+
+        <Button
+            android:id="@+id/jmui_commit_btn"
+            android:layout_height="50dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/jmui_confirm"
+            android:textColor="#808080"
+            android:background="@drawable/jmui_dialog_bottom_right_btn"
+            />
+    </LinearLayout>
+
+</LinearLayout>

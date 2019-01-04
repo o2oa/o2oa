@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_alignParentBottom="true"
+    android:layout_height="50dp"
+    android:padding="@dimen/spacing_small"
+    android:background="@android:color/white"
+    android:visibility="gone"
+    android:id="@+id/bottom_operate_button_layout">
+    <TextView
+        android:id="@+id/tv_bottom_button_first"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/z_color_primary"
+        android:textSize="@dimen/font_large"
+        android:text="保存"
+        />
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/z_color_split_line"/>
+    <TextView
+        android:id="@+id/tv_bottom_button_second"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/z_color_primary"
+        android:textSize="@dimen/font_large"
+        android:text="保存"/>
+</LinearLayout>

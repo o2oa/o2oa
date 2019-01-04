@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".app.okr.activity.OkrMainActivity">
+    <item android:id="@+id/menu_okr_main_change_identity"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="90"
+        android:icon="@mipmap/menu_renew"
+        android:title="@string/okr_main_menu_change_identity" />
+</menu>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_marginLeft="@dimen/spacing_normal"
+              android:layout_marginRight="@dimen/spacing_normal"
+              android:layout_height="50dp"
+                android:layout_gravity="top">
+    <TextView
+        android:id="@+id/tv_item_meeting_clock_time"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/z_color_subtitle_font"
+        android:textSize="@dimen/font_small"
+        android:text="9:00"/>
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:background="@color/z_color_gray_light" />
+
+</LinearLayout>

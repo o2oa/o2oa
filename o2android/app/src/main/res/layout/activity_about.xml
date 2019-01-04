@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:clipToPadding="false"
+    tools:context=".app.o2.about.AboutActivity">
+
+    <include layout="@layout/snippet_appbarlayout_toolbar" />
+
+    <include layout="@layout/content_about" />
+
+
+
+</android.support.design.widget.CoordinatorLayout>

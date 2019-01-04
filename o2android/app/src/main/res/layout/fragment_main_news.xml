@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/z_color_background">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/null_conversation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:text="@string/null_conversation"
+            android:textColor="#999999"
+            android:textSize="16sp"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/tv_conversation_log_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:text="@string/conversation_log_error"
+            android:textColor="#999999"
+            android:textSize="16sp"
+            android:visibility="gone"/>
+
+        <ListView
+            android:id="@+id/conv_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="0dp"
+            android:divider="@drawable/main_list_divider_line"
+            android:dividerHeight="0.3dp"
+            android:headerDividersEnabled="false"/>
+
+    </FrameLayout>
+</RelativeLayout>

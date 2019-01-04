@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_attendance_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/z_color_background"
+    android:orientation="vertical"
+    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.attendance.main.AttendanceMainActivity">
+
+    <include layout="@layout/snippet_appbarlayout_toolbar" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager_attendance_main_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"></android.support.v4.view.ViewPager>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/z_color_split_line"></LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="@color/z_color_bottom_bar_background"
+            android:orientation="horizontal"
+            android:padding="0dp">
+
+            <LinearLayout
+                android:id="@+id/linear_attendance_main_check_in_tab"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_horizontal">
+                <ImageView
+                    android:id="@+id/image_attendance_main_check_in_tab_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/attendance_check_in_gray"/>
+                <TextView
+                    android:id="@+id/tv_attendance_main_check_in_tab_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/z_color_text_primary"
+                    android:textSize="@dimen/font_small"
+                    android:text="@string/tab_check_in"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/linear_attendance_main_statistic_tab"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_horizontal">
+                <ImageView
+                    android:id="@+id/image_attendance_main_statistic_tab_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/attendance_statistic_gray"/>
+                <TextView
+                    android:id="@+id/tv_attendance_main_statistic_tab_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textSize="@dimen/font_small"
+                    android:textColor="@color/z_color_text_primary"
+                    android:text="@string/tab_statistic"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
