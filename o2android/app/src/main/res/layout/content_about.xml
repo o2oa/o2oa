@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/z_color_background"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".app.o2.about.AboutActivity"
+    tools:showIn="@layout/activity_about">
+
+    <LinearLayout
+        android:id="@+id/linear_about_top_logo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:paddingTop="@dimen/spacing_large"
+        android:paddingBottom="@dimen/spacing_large">
+        <ImageView
+            android:id="@+id/image_about_logo"
+            android:layout_width="@dimen/avatar_width_64"
+            android:layout_height="@dimen/avatar_width_64"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:src="@mipmap/launch_logo"
+            />
+        <TextView
+            android:id="@+id/tv_about_version_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:textSize="@dimen/font_normal"
+            android:text="版本:V0.2"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_below="@id/linear_about_top_logo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_large"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+        <!--检查更新-->
+        <RelativeLayout
+            android:id="@+id/relative_about_check_version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_normal"
+            android:background="@drawable/white_background_selector">
+            <TextView
+                android:id="@+id/tv_about_check_version_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/check_update"
+                android:textSize="@dimen/font_normal"
+                android:textColor="@color/z_color_text_primary_dark"/>
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/icon_arrow_22dp"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tv_about_reserved"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_large"
+        android:gravity="center"
+        android:textColor="@color/z_color_subtitle_font"
+        android:textSize="@dimen/font_small"
+        android:text="copy right"/>
+</RelativeLayout>

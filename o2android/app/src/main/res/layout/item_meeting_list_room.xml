@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/spacing_small"
+    android:paddingBottom="@dimen/spacing_small">
+    <TextView
+        android:id="@+id/tv_meeting_list_item_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:textSize="@dimen/font_normal"
+        android:textColor="@color/z_color_text_primary_dark"/>
+    <TextView
+        android:id="@+id/tv_meeting_list_item_invite_person"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_meeting_list_item_title"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:textSize="@dimen/font_small"
+        android:textColor="@color/z_color_title_font"/>
+    <TextView
+        android:id="@+id/tv_meeting_list_item_start_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_meeting_list_item_invite_person"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:textSize="@dimen/font_small"
+        android:textColor="@color/z_color_title_font"/>
+    <TextView
+        android:id="@+id/tv_meeting_list_item_start_end_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_meeting_list_item_invite_person"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:textSize="@dimen/font_small"
+        android:textColor="@color/z_color_title_font"/>
+
+</RelativeLayout>

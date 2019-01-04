@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/spacing_small">
+
+    <ImageView
+        android:id="@+id/image_item_attendance_check_in_title_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="@dimen/spacing_small"
+        android:layout_marginRight="@dimen/spacing_small"
+        android:src="@mipmap/icon_check_in_time" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginRight="@dimen/spacing_small"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/attendance_check_in_time_label"
+                android:textColor="@color/z_color_text_primary"
+                android:textSize="@dimen/font_large" />
+
+            <TextView
+                android:id="@+id/tv_item_attendance_check_in_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/z_color_text_primary"
+                android:textSize="@dimen/font_large"
+                tools:text="12:09:00"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_tiny"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/font_normal"
+                android:layout_height="@dimen/font_normal"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/icon_location" />
+
+            <TextView
+                android:id="@+id/tv_item_attendance_check_in_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_tiny"
+                android:textColor="@color/z_color_text_hint"
+                android:textSize="@dimen/font_small"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                tools:text="杭州市"/>
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:background="@color/z_color_bottom_bar_background" />
+    </LinearLayout>
+
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_margin="@dimen/spacing_large">-->
+    <!--<LinearLayout-->
+    <!--android:id="@+id/linear_item_attendance_check_in_update_button"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="horizontal"-->
+    <!--android:gravity="center_vertical"-->
+    <!--android:visibility="gone"-->
+    <!--android:background="@drawable/attendance_check_in_update_button_bg">-->
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="@string/attendance_check_in_update"-->
+    <!--android:textColor="@android:color/white"/>-->
+    <!--<ImageView-->
+    <!--android:layout_width="@dimen/font_normal"-->
+    <!--android:layout_height="@dimen/font_normal"-->
+    <!--android:layout_marginLeft="@dimen/spacing_small"-->
+    <!--android:src="@mipmap/icon_refresh"/>-->
+    <!--</LinearLayout>-->
+
+    <!--</LinearLayout>-->
+</LinearLayout>

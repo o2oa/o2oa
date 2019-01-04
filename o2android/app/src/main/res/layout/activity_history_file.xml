@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jiguang.chat.activity.historyfile.view.HistoryFileView android:id="@+id/send_file_view"
+                                                        xmlns:android="http://schemas.android.com/apk/res/android"
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="match_parent"
+                                                        android:background="#ffffff"
+                                                        android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/menu_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="48.5dp"
+        android:background="@color/jmui_jpush">
+
+        <ImageButton
+            android:id="@+id/return_btn"
+            android:layout_width="@dimen/title_bar_height"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/jmui_back_btn_bg"
+            android:src="@drawable/back"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/return_btn"
+            android:text="聊天文件"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tv_choose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="14dp"
+            android:text="选择"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/action_bar_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/menu_title_bar"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/actionbar_album_btn"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:background="#fff"
+                android:text="@string/album"
+                android:textColor="@color/send_file_action_bar"/>
+
+            <ImageView
+                android:id="@+id/slipping_1"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:src="@drawable/slipping"
+                android:visibility="invisible"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/actionbar_file_btn"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:background="#fff"
+                android:text="@string/document"
+                android:textColor="@color/send_file_action_bar"/>
+
+            <ImageView
+                android:id="@+id/slipping_2"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:src="@drawable/slipping"
+                android:visibility="invisible"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/actionbar_video_btn"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:background="#fff"
+                android:text="@string/jmui_video"
+                android:textColor="@color/send_file_action_bar"/>
+
+            <ImageView
+                android:id="@+id/slipping_3"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:src="@drawable/slipping"
+                android:visibility="invisible"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/actionbar_audio_btn"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:background="#fff"
+                android:text="@string/audio"
+                android:textColor="@color/send_file_action_bar"
+                android:textSize="@dimen/send_file_title_size"/>
+
+            <ImageView
+                android:id="@+id/slipping_4"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:src="@drawable/slipping"
+                android:visibility="invisible"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/actionbar_other_btn"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:background="#fff"
+                android:text="@string/other"
+                android:textColor="@color/send_file_action_bar"
+                android:textSize="@dimen/send_file_title_size"/>
+
+            <ImageView
+                android:id="@+id/slipping_5"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_gravity="bottom"
+                android:scaleType="fitXY"
+                android:src="@drawable/slipping"
+                android:visibility="invisible"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <jiguang.chat.view.ScrollControlViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/send_file_rl"
+        android:layout_below="@+id/action_bar_ll">
+    </jiguang.chat.view.ScrollControlViewPager>
+
+    <RelativeLayout
+        android:id="@+id/delete_file_rl"
+        android:layout_width="match_parent"
+        android:layout_height="45.33dp"
+        android:layout_alignParentBottom="true"
+        android:background="#FFF"
+        android:visibility="gone">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.33dp"
+            android:background="#D2D2D2"/>
+
+        <TextView
+            android:id="@+id/size_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:ems="10"
+            android:textColor="#999999"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:textSize="14sp"/>
+
+        <Button
+            android:id="@+id/delete_file_btn"
+            android:layout_width="72dp"
+            android:layout_height="29.33dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="13.67dp"
+            android:background="@drawable/red_btn_selector"
+            android:text="删除"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"/>
+
+    </RelativeLayout>
+
+</jiguang.chat.activity.historyfile.view.HistoryFileView>

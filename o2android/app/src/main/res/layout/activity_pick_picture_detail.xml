@@ -1,0 +1,24 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF" >
+    
+    <include layout="@layout/base_bar_without_title" />
+
+    <GridView
+        android:id="@+id/child_grid"
+        android:padding="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:listSelector="@android:color/transparent"
+        android:cacheColorHint="@android:color/transparent"
+        android:stretchMode="columnWidth"
+        android:horizontalSpacing="5dp"
+        android:gravity="center"
+        android:verticalSpacing="5dp"
+        android:columnWidth="100dp"
+        android:numColumns="auto_fit" >
+    </GridView>
+
+</LinearLayout>

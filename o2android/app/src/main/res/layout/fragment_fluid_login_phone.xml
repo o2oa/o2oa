@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/z_color_primary">
+
+    <TextView
+        android:id="@+id/tv_bind_phone_step_one_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/bind_phone_validate_number"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/font_larger"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        />
+
+    <ImageView
+        android:id="@+id/image_bind_phone_step_one"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:src="@mipmap/pic_bind_phone_step_one"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_bind_phone_step_one_title" />
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_bind_phone_step_one">
+
+        <ImageView
+            android:id="@+id/image_login_phone_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="20dp"
+            android:src="@mipmap/icon_phone_focus"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.ClearTextEdit
+            android:id="@+id/edit_login_phone"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="20dp"
+            android:background="@null"
+            android:hint="@string/login_phone"
+            android:inputType="phone"
+            android:maxLines="1"
+            android:textColor="@color/z_color_text_primary"
+            android:textColorHint="@color/z_color_text_hint"
+            android:textSize="15sp"
+            android:gravity="center_vertical"
+            app:layout_constraintLeft_toRightOf="@+id/image_login_phone_icon"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"></net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.ClearTextEdit>
+
+        <View
+            android:id="@+id/view_bind_phone_step_one_number_bottom"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/z_color_input_line_focus"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_login_phone_icon" />
+
+        <ImageView
+            android:id="@+id/image_login_phone_code_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="20dp"
+            android:src="@mipmap/icon_verification_code_normal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view_bind_phone_step_one_number_bottom"
+            />
+
+        <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.ClearTextEdit
+            android:id="@+id/edit_login_code"
+            android:layout_width="156dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:background="@null"
+            android:hint="@string/login_code"
+            android:inputType="number"
+            android:maxLines="1"
+            android:textColor="@color/z_color_text_primary"
+            android:textColorHint="@color/z_color_text_hint"
+            android:textSize="15sp"
+            android:gravity="center_vertical"
+            app:layout_constraintLeft_toRightOf="@+id/image_login_phone_code_icon"
+            app:layout_constraintTop_toBottomOf="@+id/view_bind_phone_step_one_number_bottom" />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@color/z_color_split_meeting_line"
+            app:layout_constraintLeft_toRightOf="@+id/edit_login_code"
+            app:layout_constraintTop_toBottomOf="@+id/view_bind_phone_step_one_number_bottom"/>
+
+        <Button
+            android:id="@+id/button_login_phone_code"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@null"
+            android:text="@string/login_button_code"
+            android:textColor="@color/z_color_primary"
+            android:textSize="15sp"
+            app:layout_constraintLeft_toRightOf="@+id/edit_login_code"
+            app:layout_constraintTop_toBottomOf="@+id/view_bind_phone_step_one_number_bottom" />
+
+        <View
+            android:id="@+id/view_bind_phone_step_one_code_bottom"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/z_color_input_line_blur"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_login_phone_code_icon" />
+
+
+        <Button
+            android:id="@+id/button_login_phone_next"
+            android:layout_width="348dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/button_background_44dp"
+            android:text="@string/login_button_next"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view_bind_phone_step_one_code_bottom"
+             />
+
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.constraint.ConstraintLayout>

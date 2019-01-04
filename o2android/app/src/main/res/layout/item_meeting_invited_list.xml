@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:paddingLeft="@dimen/meeting_padding"
+    android:paddingRight="@dimen/meeting_padding"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:background="?android:attr/selectableItemBackground">
+
+    <View
+        android:id="@+id/view_meeting_list_split"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/split_line"
+        android:background="@color/z_color_split_line_ddd"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+
+    <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
+        android:id="@+id/meeting_card_view_icon_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/icon_process_app_default"
+        android:layout_marginTop="@dimen/meeting_padding"
+        app:layout_constraintTop_toBottomOf="@id/view_meeting_list_split"
+        app:layout_constraintLeft_toLeftOf="@id/view_meeting_list_split"
+        />
+
+    <TextView
+        android:id="@+id/meeting_card_view_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="这里是会议时间"
+        android:textSize="@dimen/font_meeting_time"
+        android:textColor="@color/z_color_text_hint"
+        app:layout_constraintTop_toTopOf="@id/meeting_card_view_icon_id"
+        app:layout_constraintLeft_toRightOf="@id/meeting_card_view_icon_id"
+        android:layout_marginStart="@dimen/meeting_padding"/>
+
+    <ImageView
+        android:id="@+id/meeting_card_view_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/pic_deal"
+        android:contentDescription="@null"
+        app:layout_constraintTop_toTopOf="@id/meeting_card_view_icon_id"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        android:id="@+id/meeting_card_view_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="这里是会议标题"
+        android:textSize="@dimen/font_meeting_time"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/z_color_text_primary_dark"
+        app:layout_constraintTop_toBottomOf="@id/meeting_card_view_time"
+        app:layout_constraintLeft_toLeftOf="@id/meeting_card_view_time"/>
+
+    <TextView
+        android:id="@+id/meeting_card_view_room_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="会议地点"
+        android:maxLines="1"
+        android:textSize="@dimen/font_normal"
+        android:textColor="@color/z_color_text_primary"
+        app:layout_constraintTop_toBottomOf="@id/meeting_card_view_title"
+        app:layout_constraintLeft_toLeftOf="@id/meeting_card_view_title"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:id="@+id/meeting_card_view_participants_id"
+        android:layout_width="225dp"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
+        tools:text="参加人"
+        android:textColor="@color/z_color_text_primary"
+        android:textSize="@dimen/font_meeting_participants"
+        app:layout_constraintTop_toBottomOf="@id/meeting_card_view_room_id"
+        app:layout_constraintLeft_toLeftOf="@id/meeting_card_view_room_id"
+        android:layout_marginTop="@dimen/spacing_tiny"/>
+
+    <TextView
+        android:id="@+id/meeting_card_view_originator_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/z_color_text_primary"
+        android:textSize="@dimen/font_meeting_participants"
+        android:paddingRight="18dp"
+        tools:text="叶子"
+        app:layout_constraintEnd_toEndOf="@id/meeting_card_view_status"
+        app:layout_constraintBottom_toBottomOf="@id/meeting_card_view_participants_id"/>
+
+    <ImageView
+        android:id="@+id/meeting_card_view_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/icon_arrow"
+        android:contentDescription="@null"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/meeting_card_view_originator_id"
+        app:layout_constraintBottom_toBottomOf="@id/meeting_card_view_originator_id"/>
+
+</android.support.constraint.ConstraintLayout>

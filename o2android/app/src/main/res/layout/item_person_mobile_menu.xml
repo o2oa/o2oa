@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical|center"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/person_info_mobile_menu_text_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:textColor="@color/z_color_text_primary"
+        android:textSize="18sp"
+        android:layout_gravity="center"
+        android:gravity="center|center_horizontal" />
+</LinearLayout>

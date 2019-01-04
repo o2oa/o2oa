@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_marginTop="@dimen/spacing_small"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground">
+
+    <FrameLayout
+        android:id="@+id/rl_circle_view"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_centerHorizontal="true">
+
+        <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
+            android:id="@+id/circle_image_avatar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"/>
+
+        <ImageView
+            android:id="@+id/delete_people_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_delete_people"
+            android:layout_gravity="end|top"/>
+    </FrameLayout>
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_circle_view"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/spacing_tiny"
+        tools:text="楼国栋"
+        />
+
+</RelativeLayout>

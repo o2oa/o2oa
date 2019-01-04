@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".app.meeting.activity.MeetingEditFormActivity">
+    <item android:id="@+id/menu_meeting_edit_delete"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="90"
+        android:icon="@mipmap/icon_add"
+        android:title="@string/meeting_add" />
+</menu>

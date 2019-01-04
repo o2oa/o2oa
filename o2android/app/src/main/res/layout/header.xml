@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#E8EDF3">
+
+    <jiguang.chat.view.UnderlineTextView
+        android:id="@+id/section_tv"
+        android:background="#E8EDF3"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginLeft="14dp"
+        android:clickable="false"
+        android:gravity="center_vertical"
+        android:text="A"
+        android:textColor="#808080"
+        android:textSize="14sp"/>
+</RelativeLayout>

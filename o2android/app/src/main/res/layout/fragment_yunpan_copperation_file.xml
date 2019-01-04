@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_refresh_cooperation_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+
+        <LinearLayout
+            android:id="@+id/linear_cooperation_file_reply"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/spacing_small"
+            android:paddingBottom="@dimen/spacing_small"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+        <View
+            android:id="@+id/view_my_file_split"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/linear_cooperation_file_reply"
+            android:background="@color/z_color_split_line_ddd"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:layout_marginRight="@dimen/spacing_normal"/>
+        <ListView
+            android:id="@+id/lv_cooperation_file_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/view_my_file_split"
+            android:divider="@null"
+            android:background="@android:color/white"
+            ></ListView>
+        <TextView
+            android:id="@+id/tv_cooperation_file_empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/view_my_file_split"
+            android:textColor="@color/z_color_subtitle_font"
+            android:textSize="@dimen/font_large"
+            android:gravity="center"
+            android:text="@string/recycler_no_data_cool"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

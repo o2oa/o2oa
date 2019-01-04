@@ -1,0 +1,7 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/menu_okr_report_confirm_read"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="90"
+        android:title="@string/okr_report_read" />
+</menu>

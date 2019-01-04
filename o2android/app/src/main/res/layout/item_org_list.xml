@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
+        android:id="@+id/contact_list_icon_id"
+        android:contentDescription="@string/contact_icon_label"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:layout_marginBottom="@dimen/spacing_small"
+        android:layout_marginLeft="@dimen/spacing_large"
+        android:layout_marginStart="@dimen/spacing_large"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:transitionName="@string/transition_person_img"
+        android:src="@mipmap/icon_org"
+        />
+    <TextView
+        android:id="@+id/contact_list_name_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_small"
+        android:layout_marginStart="@dimen/spacing_small"
+        android:layout_toRightOf="@id/contact_list_icon_id"
+        android:layout_centerVertical="true"
+        android:textSize="@dimen/font_normal"
+        android:textColor="@color/z_color_text_primary_dark"
+        android:text="@string/contact_list_name_text"/>
+    <TextView
+        android:id="@+id/contact_list_item_right_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="@dimen/spacing_small"
+        android:text="@string/fa_angle_right"
+        android:textSize="@dimen/font_larger"
+        android:textColor="@color/z_color_text_primary"
+        android:visibility="gone"
+        />
+    <TextView
+        android:id="@+id/contact_sub_list_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_marginEnd="@dimen/spacing_normal"
+        android:layout_centerVertical="true"
+        android:textSize="@dimen/font_normal"
+        android:textColor="@color/z_color_text_primary_dark"
+        android:layout_toLeftOf="@id/contact_list_item_right_arrow"
+        android:layout_toStartOf="@id/contact_list_item_right_arrow"
+        android:text="0"
+        android:visibility="gone"/>
+
+</RelativeLayout>

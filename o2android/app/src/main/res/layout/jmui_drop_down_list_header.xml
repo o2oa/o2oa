@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#E8EDF3">
+
+    <LinearLayout
+        android:id="@+id/loading_view"
+        android:visibility="gone"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+        <ImageView
+            android:id="@+id/jmui_loading_img"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/loadingheader"/>
+
+        <TextView
+            android:id="@+id/jmui_loading_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="加载中"
+            android:textColor="#7e7d7d"/>
+    </LinearLayout>
+
+</RelativeLayout>

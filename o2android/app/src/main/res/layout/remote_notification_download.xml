@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:padding="5dp">
+    <ImageView
+        android:id="@+id/iv_remote_notification_download_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@mipmap/logo"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/iv_remote_notification_download_logo">
+        <ProgressBar
+            android:id="@+id/progressBar_remote_notification_download"
+            android:max="100"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:progressDrawable="@drawable/progress_bar_color"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_centerVertical="true"/>
+        <TextView
+            android:id="@+id/tv_remote_notification_download_note"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginRight="6dp"
+            android:textSize="12sp"
+            tools:text="正在下载 12%"
+            android:textColor="@color/z_color_text_primary"
+            android:layout_marginBottom="4dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+           />
+    </RelativeLayout>
+</RelativeLayout>

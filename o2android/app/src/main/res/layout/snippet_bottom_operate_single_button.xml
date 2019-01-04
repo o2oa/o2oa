@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tv_bottom_operate_single_button"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:layout_alignParentBottom="true"
+    android:padding="@dimen/spacing_small"
+    android:background="@color/z_color_white_translucent"
+    android:gravity="center"
+    android:textColor="@color/z_color_primary"
+    android:textSize="@dimen/font_large"
+    android:text="按钮"
+    android:visibility="gone"
+    />

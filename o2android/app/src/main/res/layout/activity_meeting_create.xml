@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/z_color_background"
+    tools:context=".app.meeting.activity.MeetingCreateActivity">
+
+    <include layout="@layout/snippet_appbarlayout_tablayout_toolbar" ></include>
+
+    <include layout="@layout/content_meeting_create" />
+
+</android.support.design.widget.CoordinatorLayout>

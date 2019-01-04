@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".app.yunpan.activity.YunpanActivity">
+
+    <item android:id="@+id/yunpan_menu_choose_cancel"
+        android:title="@string/yunpan_menu_choose_cancel"
+        android:orderInCategory="900" />
+
+</menu>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_invite_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:background="@color/z_color_background_normal"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_receive_invite_title"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_receive_invite_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/spacing_small"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:text="@string/meeting_receive_list"
+                android:textColor="@color/z_color_primary"
+                android:textSize="@dimen/font_large" />
+
+            <View
+                android:id="@+id/view_receive_invite_title_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/z_color_primary" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_originator_invite_title"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_originator_invite_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/spacing_small"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:text="@string/meeting_originator_list"
+                android:textColor="@color/z_color_text_primary"
+                android:textSize="@dimen/font_large" />
+
+            <View
+                android:id="@+id/view_originator_invite_title_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/z_color_primary"
+                android:visibility="gone" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/z_color_split_meeting_line"/>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/sr_meeting_invited_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/scroll_meeting_invited_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--<android.support.v7.widget.RecyclerView
+                android:background="@android:color/white"
+                android:id="@+id/receive_invite_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>-->
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/originator_invite_list"
+                android:background="@android:color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
+                android:id="@+id/receive_invite_list"
+                android:background="@android:color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:id="@+id/ll_empty_meeting"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/icon_no_meeting"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/meeting_tip_info"
+                    android:textColor="@color/z_color_meeting_text"
+                    android:textSize="@dimen/font_large"/>
+
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="@string/meeting_tip"-->
+                    <!--android:textColor="@color/z_color_meeting_text"-->
+                    <!--android:textSize="@dimen/font_meeting_participants"/>-->
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</LinearLayout>
+
+
+

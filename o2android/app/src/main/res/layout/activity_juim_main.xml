@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jiguang.chat.view.MainView android:id="@+id/main_view"
+                            xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:id="@+id/actionbar_layout_tmp"
+            android:layout_width="match_parent"
+            android:layout_height="53.33dp"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/actionbar_msg_btn"
+                    style="@style/ActionBarItem"
+                    android:drawableTop="@drawable/actionbar_msg_drawable_bg"
+                    android:text="@string/actionbar_msg"/>
+
+                <TextView
+                    android:id="@+id/all_unread_number"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginLeft="12dp"
+                    android:textSize="10sp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/unread_msg_red"
+                    android:gravity="center"
+                    android:text="99+"
+                    android:textColor="@android:color/white"
+                    android:elevation="7dp"
+                    android:visibility="gone"/>
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/actionbar_contact_btn"
+                    style="@style/ActionBarItem"
+                    android:drawableTop="@drawable/actionbar_contact_drawable_bg"
+                    android:text="@string/actionbar_contact"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/actionbar_me_btn"
+                    style="@style/ActionBarItem"
+                    android:drawableTop="@drawable/actionbar_me_drawable_bg"
+                    android:text="@string/actionbar_me"/>
+
+            </FrameLayout>
+        </LinearLayout>
+
+        <jiguang.chat.view.ScrollControlViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/actionbar_layout_tmp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true">
+
+        </jiguang.chat.view.ScrollControlViewPager>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.33dp"
+            android:layout_above="@+id/actionbar_layout_tmp"
+            android:background="#D2D2D2"/>
+
+    </RelativeLayout>
+</jiguang.chat.view.MainView>

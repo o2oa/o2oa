@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:paddingTop="8dp"
+    android:background="?android:attr/selectableItemBackground">
+    <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
+        android:id="@+id/todo_card_view_icon_id"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@mipmap/process_default"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/view_todo_list_split"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/todo_card_view_content_id"
+        android:layout_width="201dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:textColor="@color/z_color_text_primary_dark"
+        android:textSize="15sp"
+        app:layout_constraintLeft_toRightOf="@+id/todo_card_view_icon_id"
+        app:layout_constraintTop_toTopOf="parent"
+        android:maxLines="1"
+        android:ellipsize="end"
+        tools:text="这里是applicationNamedddddddddddddd" />
+
+    <TextView
+        android:id="@+id/todo_card_view_title_id"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/z_color_text_primary"
+        android:textSize="14sp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        app:layout_constraintBottom_toTopOf="@+id/view_todo_list_split"
+        app:layout_constraintLeft_toRightOf="@+id/todo_card_view_icon_id"
+        app:layout_constraintTop_toBottomOf="@+id/todo_card_view_content_id"
+        tools:text="待办标题某某某密密麻麻密密麻麻密密麻麻密密麻麻密密麻麻蛋蛋顶顶顶顶顶顶顶顶" />
+
+    <TextView
+        android:id="@+id/todo_card_view_time_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="2015-11-22 16:11:00"
+        android:textColor="@color/z_color_text_hint"
+        android:textSize="12sp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/todo_card_view_node_id"
+        android:layout_width="76dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/z_color_text_primary"
+        android:textSize="12sp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:gravity="end"
+        app:layout_constraintBottom_toTopOf="@+id/view_todo_list_split"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/todo_card_view_time_id"
+        tools:text="申请顶顶蚩的的"
+        />
+
+
+    <View
+        android:id="@+id/view_todo_list_split"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/z_color_split_line_ddd"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="0dp" />
+</android.support.constraint.ConstraintLayout>

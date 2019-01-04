@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
+
+            <ImageView
+                android:id="@+id/meeting_file_list_icon_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/contact_icon_label"
+                android:src="@mipmap/icon_file_unkown"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"/>
+
+            <TextView
+                android:id="@+id/meeting_file_list_name_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="200dp"
+                android:layout_marginStart="10dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/z_color_text_primary_dark"
+                android:textSize="15sp"
+                android:layout_toEndOf="@id/meeting_file_list_icon_id"
+                android:layout_centerVertical="true"
+                tools:text="文件名"/>
+
+            <ImageView
+                android:id="@+id/meeting_file_delete"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@mipmap/icon_delete_people"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/view_file_list_split"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/z_color_split_line_ddd" />
+
+</LinearLayout>
+
+

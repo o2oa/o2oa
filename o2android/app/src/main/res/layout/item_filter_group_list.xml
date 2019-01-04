@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="64dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:orientation="horizontal"
+        android:background="#ffffff">
+        <jiguang.chat.utils.photochoose.SelectableRoundedImageView
+            android:id="@+id/item_iv_group_image"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="14dp"
+            android:layout_marginRight="12dp"
+            android:layout_gravity="center_vertical"
+            android:scaleType="centerCrop"
+            android:src="@drawable/rc_default_portrait"
+            app:sriv_left_bottom_corner_radius="3dip"
+            app:sriv_left_top_corner_radius="3dip"
+            app:sriv_right_bottom_corner_radius="3dip"
+            app:sriv_right_top_corner_radius="3dip" />
+
+        <TextView
+            android:id="@+id/item_tv_group_name_single"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:layout_marginTop="11dp"
+            android:layout_marginBottom="11dp"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="16sp"
+            android:textColor="#353535"/>
+    </LinearLayout>
+    <View
+        style="@style/ac_search_list_view_divider"/>
+</LinearLayout>

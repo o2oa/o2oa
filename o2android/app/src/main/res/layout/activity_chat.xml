@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jiguang.chat.view.ChatView android:id="@+id/chat_view"
+                            xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fitsSystemWindows="true"
+                            android:orientation="vertical">
+
+
+    <jiguang.chat.utils.keyboard.XhsEmoticonsKeyBoard
+        android:id="@+id/ek_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/jmui_menu_title_bar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/title_bar_height"
+                android:background="@color/jmui_jpush">
+
+                <ImageButton
+                    android:id="@+id/jmui_return_btn"
+                    android:layout_width="@dimen/title_bar_height"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/jmui_back_btn_bg"
+                    android:src="@drawable/back"/>
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/jmui_return_btn"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/jmui_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxWidth="190dp"
+                        android:singleLine="true"
+                        android:text="昵称"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp"/>
+
+                    <TextView
+                        android:id="@+id/jmui_group_num_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp"/>
+
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/jmui_right_btn"
+                    android:layout_width="@dimen/title_bar_height"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/jmui_back_btn_bg"
+                    android:src="@drawable/jmui_chat_detail"/>
+            </RelativeLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <jiguang.chat.view.listview.DropDownListView
+                    android:background="#E8EDF3"
+                    android:id="@+id/lv_chat"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:cacheColorHint="#00000000"
+                    android:divider="@null"
+                    android:fadingEdge="none"
+                    android:fitsSystemWindows="true"
+                    android:listSelector="#00000000"
+                    android:scrollbarStyle="outsideOverlay"
+                    android:scrollingCache="false"
+                    android:smoothScrollbar="true"
+                    android:transcriptMode="normal"/>
+
+                <Button
+                    android:id="@+id/jmui_at_me_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="100dp"
+                    android:background="#2DD0CF"
+                    android:text="有人@我"
+                    android:textColor="#fff"
+                    android:visibility="gone"/>
+            </FrameLayout>
+        </LinearLayout>
+
+
+    </jiguang.chat.utils.keyboard.XhsEmoticonsKeyBoard>
+
+</jiguang.chat.view.ChatView>
+

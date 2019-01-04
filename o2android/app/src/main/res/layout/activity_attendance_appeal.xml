@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/z_color_background"
+    android:orientation="vertical"
+    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.attendance.appeal.AttendanceAppealActivity">
+
+    <include layout="@layout/snippet_appbarlayout_toolbar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fadingEdge="vertical"
+        android:scrollbars="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_attendance_appeal_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:gravity="center"
+                android:text="@string/attendance_appeal_form_title"
+                android:textColor="@color/z_color_text_primary_dark"
+                android:textSize="@dimen/font_larger" />
+
+            <LinearLayout
+                android:id="@+id/linear_attendance_appeal_form_line1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_small"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/attendance_appeal_form_name"
+                    android:textColor="@color/z_color_text_primary"
+                    android:textSize="@dimen/font_large" />
+
+                <TextView
+                    android:id="@+id/tv_attendance_appeal_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="胡起"
+                    android:textColor="@color/z_color_text_primary"
+                    android:textSize="@dimen/font_large" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_attendance_appeal_form_line2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_small"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/attendance_appeal_form_record_date"
+                    android:textColor="@color/z_color_text_primary"
+                    android:textSize="@dimen/font_large" />
+
+                <TextView
+                    android:id="@+id/tv_attendance_appeal_record_day"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="2016-04-08"
+                    android:textColor="@color/z_color_text_primary"
+                    android:textSize="@dimen/font_large" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_attendance_appeal_form_line3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_small"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/attendance_appeal_form_on_duty_time"
+                    android:textColor="@color/z_color_text_primary"
+                    android:textSize="@dimen/font_large" />
+
+                <TextView
+                    android:id="@+id/tv_attendance_appeal_on_duty_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="09:00:00"
+                    android:textColor="@color/z_color_text_primary"
+                    android:textSize="@dimen/font_large" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_attendance_appeal_form_line4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_small"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/attendance_appeal_form_off_duty_time"
+                    android:textColor="@color/z_color_text_primary"
+                    android:textSize="@dimen/font_large" />
+
+                <TextView
+                    android:id="@+id/tv_attendance_appeal_off_duty_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/z_color_text_primary"
+                    android:textSize="@dimen/font_large"
+                    tools:text="19:00:00" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_attendance_appeal_form_line5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_small"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView9"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/attendance_appeal_form_status"
+                    android:textColor="@color/z_color_text_primary"
+                    android:textSize="@dimen/font_large" />
+
+                <TextView
+                    android:id="@+id/tv_attendance_appeal_status"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/z_color_text_primary"
+                    android:textSize="@dimen/font_large"
+                    tools:text="异常打卡" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_attendance_appeal_form_identity_line"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_small"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/attendance_appeal_form_department"
+                    android:textColor="@color/z_color_text_primary"
+                    android:textSize="@dimen/font_large" />
+
+                <Spinner
+                    android:id="@+id/spinner_attendance_appeal_identity"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_attendance_appeal_form_line6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_small"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView11"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/attendance_appeal_form_reason"
+                    android:textColor="@color/z_color_text_primary"
+                    android:textSize="@dimen/font_large" />
+
+                <Spinner
+                    android:id="@+id/spinner_attendance_appeal_reason"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_attendance_appeal_form_dynamic_line"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/linear_attendance_appeal_form_line7_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/spacing_small"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/textView12"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/attendance_appeal_form_type"
+                        android:textColor="@color/z_color_text_primary"
+                        android:textSize="@dimen/font_large" />
+
+                    <Spinner
+                        android:id="@+id/spinner_attendance_appeal_type"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/linear_attendance_appeal_form_line8_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/spacing_small"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/edit_attendance_appeal_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/attendance_appeal_form_address" />
+                </android.support.design.widget.TextInputLayout>
+
+                <RelativeLayout
+                    android:id="@+id/linear_attendance_appeal_form_line_time_day"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/spacing_small"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/edit_attendance_appeal_start_day_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/attendance_appeal_form_time_day"
+                        android:textSize="@dimen/font_large" />
+
+                    <TextView
+                        android:id="@+id/edit_attendance_appeal_time_day"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/edit_attendance_appeal_start_day_label"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:background="@drawable/bottom_border"
+                        android:textSize="@dimen/font_large" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/linear_attendance_appeal_form_line9_startTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/spacing_small"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/edit_attendance_appeal_start_time_label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/attendance_appeal_form_start_time"
+                            android:textSize="@dimen/font_large" />
+
+                        <TextView
+                            android:id="@+id/edit_attendance_appeal_start_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/edit_attendance_appeal_start_time_label"
+                            android:layout_marginTop="@dimen/spacing_small"
+                            android:background="@drawable/bottom_border"
+                            android:textSize="@dimen/font_large" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/edit_attendance_appeal_end_time_label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/attendance_appeal_form_end_time"
+                            android:textSize="@dimen/font_large" />
+
+                        <TextView
+                            android:id="@+id/edit_attendance_appeal_end_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/edit_attendance_appeal_end_time_label"
+                            android:layout_marginTop="@dimen/spacing_small"
+                            android:background="@drawable/bottom_border"
+                            android:textSize="@dimen/font_large" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/linear_attendance_appeal_form_line11_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/spacing_small"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/edit_attendance_appeal_desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/attendance_appeal_form_desc" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/bottom_operate_button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:background="@android:color/white"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_bottom_button_first"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/positive"
+            android:textColor="@color/z_color_primary"
+            android:textSize="@dimen/font_large" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/z_color_split_line" />
+
+        <TextView
+            android:id="@+id/tv_bottom_button_second"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/cancel"
+            android:textColor="@color/z_color_subtitle_font"
+            android:textSize="@dimen/font_large" />
+    </LinearLayout>
+</LinearLayout>

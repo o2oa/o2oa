@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:layout_marginBottom="@dimen/spacing_small"
+        android:textColor="@color/z_color_title_font"
+        android:text="@string/choose_router"/>
+
+    <RadioGroup
+        android:id="@+id/radio_group_approve_router_choose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white">
+
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:layout_marginBottom="@dimen/spacing_small"
+        android:textColor="@color/z_color_title_font"
+        android:text="@string/dialog_opinion_label"/>
+    <EditText
+        android:id="@+id/edit_approve_router_opinion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_tiny"
+        android:inputType="textMultiLine"
+        android:minLines="3"
+        android:gravity="left|top"
+        android:hint="@string/dialog_opinion_hint"
+        android:textColorHint="@color/z_color_subtitle_font" />
+
+
+</LinearLayout>

@@ -1,0 +1,4 @@
+{
+	"bg_main":"0xD7DCE2",
+    "bg_testview":"0x2da4af"
+}

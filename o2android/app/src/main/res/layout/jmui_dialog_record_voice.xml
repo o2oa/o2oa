@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout style="@style/jmui_record_voice_dialog"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical|center_horizontal"
+              android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="136dp"
+        android:layout_height="136dp"
+        android:alpha="0.5"
+        android:background="#000000">
+
+
+        <TextView
+            android:id="@+id/time_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="22.67dp"
+            android:text="10"
+            android:textColor="#2DD0CF"
+            android:textSize="60sp"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/time_short"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="3.33dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="22.67dp"
+                android:background="#2DD0CF"/>
+
+            <TextView
+                android:layout_width="4.33dp"
+                android:layout_height="4dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:background="#2DD0CF"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="21dp"
+                android:text="说话时间太短"
+                android:textColor="#fff"
+                android:textSize="12sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mic_show"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/jmui_volume_hint_iv"
+                android:layout_width="41dp"
+                android:layout_height="59dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="21.67dp"
+                android:src="@drawable/jmui_mic"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="34dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="•••••• "
+                    android:textColor="#2DD0CF"
+                    android:textSize="12sp"/>
+
+                <Chronometer
+                    android:id="@+id/voice_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:format="%s"
+                    android:textColor="#2DD0CF"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" ••••••"
+                    android:textColor="#2DD0CF"
+                    android:textSize="12sp"/>
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/jmui_record_voice_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="10dp"
+            android:text="手指上滑,取消发送"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"/>
+
+    </FrameLayout>
+
+</LinearLayout>

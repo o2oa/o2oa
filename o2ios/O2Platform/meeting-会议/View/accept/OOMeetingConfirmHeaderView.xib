@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="OOMeetingConfirmHeaderView" customModule="o2app" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="40"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HxS-pN-Ncb" customClass="BetterSegmentedControl" customModule="BetterSegmentedControl">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="40"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="color" keyPath="selectedTitleColor">
+                            <color key="value" red="0.98431372549019602" green="0.27843137254901962" blue="0.27843137254901962" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="color" keyPath="indicatorViewBackgroundColor">
+                            <color key="value" red="0.96078431369999995" green="0.96078431369999995" blue="0.96078431369999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="betterSegmentedControlClick:" destination="iN0-l3-epB" eventType="valueChanged" id="IqG-Jn-C0r"/>
+                    </connections>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cqg-LY-uCE">
+                    <rect key="frame" x="0.0" y="39.5" width="375" height="0.5"/>
+                    <color key="backgroundColor" red="0.98431372549019602" green="0.27843137254901962" blue="0.27843137254901962" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="0.5" id="eLD-v1-zL1"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="HxS-pN-Ncb" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="1An-Ix-42k"/>
+                <constraint firstAttribute="trailing" secondItem="Cqg-LY-uCE" secondAttribute="trailing" id="52b-gq-Zpk"/>
+                <constraint firstItem="HxS-pN-Ncb" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="8a1-Lx-gg2"/>
+                <constraint firstItem="Cqg-LY-uCE" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="ZYa-8g-Ozp"/>
+                <constraint firstItem="Cqg-LY-uCE" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="lCO-SL-grj"/>
+                <constraint firstItem="HxS-pN-Ncb" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="oe0-4Q-B3S"/>
+                <constraint firstItem="HxS-pN-Ncb" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="zk3-Lg-5WL"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <connections>
+                <outlet property="control1" destination="HxS-pN-Ncb" id="QU5-hP-U95"/>
+            </connections>
+            <point key="canvasLocation" x="-11.5" y="-88"/>
+        </view>
+    </objects>
+</document>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="PingFang.ttc">
+            <string>PingFangSC-Regular</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="OOLinkManInfoHeader" customModule="o2app" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="324"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pic_beijing2" translatesAutoresizingMaskIntoConstraints="NO" id="vKZ-Ua-tql">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="230"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="230" id="AHy-VE-MHo"/>
+                    </constraints>
+                </imageView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4H8-bi-fcu">
+                    <rect key="frame" x="0.0" y="230" width="375" height="94"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="zce-bT-9h9">
+                            <rect key="frame" x="0.0" y="10" width="375" height="74"/>
+                            <subviews>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="8DX-Ij-2gA">
+                                    <rect key="frame" x="0.0" y="1.5" width="118.5" height="71"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DyK-Xe-YiO">
+                                            <rect key="frame" x="34" y="0.0" width="50" height="50"/>
+                                            <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
+                                            <state key="normal" image="icon_boy_1">
+                                                <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                                            </state>
+                                            <state key="selected" image="icon_boy_2"/>
+                                        </button>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="男" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NY5-Sf-ehf">
+                                            <rect key="frame" x="51.5" y="50" width="15" height="21"/>
+                                            <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </stackView>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="9O4-p9-fHY">
+                                    <rect key="frame" x="128.5" y="1.5" width="118" height="71"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sJN-PV-D6v">
+                                            <rect key="frame" x="34" y="0.0" width="50" height="50"/>
+                                            <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
+                                            <state key="normal" image="icon_girl_1">
+                                                <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                                            </state>
+                                            <state key="selected" image="icon_girl_2"/>
+                                        </button>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="女" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cDc-UG-leW">
+                                            <rect key="frame" x="51.5" y="50" width="15" height="21"/>
+                                            <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </stackView>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="HZm-MC-PTU">
+                                    <rect key="frame" x="256.5" y="1.5" width="118.5" height="71"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dwv-TP-2Sg">
+                                            <rect key="frame" x="34.5" y="0.0" width="50" height="50"/>
+                                            <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
+                                            <state key="normal" image="icon_collection_nor">
+                                                <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                                            </state>
+                                            <state key="selected" image="icon_collection_pro"/>
+                                        </button>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="收藏" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2aa-wU-sfp">
+                                            <rect key="frame" x="44.5" y="50" width="30" height="21"/>
+                                            <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </stackView>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="94" id="213-jq-00S"/>
+                        <constraint firstItem="zce-bT-9h9" firstAttribute="top" secondItem="4H8-bi-fcu" secondAttribute="top" constant="10" id="Dmk-nl-Mbx"/>
+                        <constraint firstAttribute="trailing" secondItem="zce-bT-9h9" secondAttribute="trailing" id="RrV-JF-BEG"/>
+                        <constraint firstItem="zce-bT-9h9" firstAttribute="leading" secondItem="4H8-bi-fcu" secondAttribute="leading" id="Xte-JN-jZm"/>
+                        <constraint firstAttribute="bottom" secondItem="zce-bT-9h9" secondAttribute="bottom" constant="10" id="tqe-yW-ymr"/>
+                    </constraints>
+                </view>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="oy6-1L-H08">
+                    <rect key="frame" x="150" y="69" width="75" height="75"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="75" id="34u-jt-Y8Y"/>
+                        <constraint firstAttribute="height" constant="75" id="zal-Nj-dvn"/>
+                    </constraints>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="名字" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="12B-bV-Up8">
+                    <rect key="frame" x="8" y="152" width="359" height="21"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="21" id="iZG-c8-KUo"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="12B-bV-Up8" secondAttribute="trailing" constant="8" id="0GA-iy-UWE"/>
+                <constraint firstItem="vKZ-Ua-tql" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="EVY-t4-LQ6"/>
+                <constraint firstItem="4H8-bi-fcu" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="JX7-AT-R9U"/>
+                <constraint firstItem="12B-bV-Up8" firstAttribute="top" secondItem="oy6-1L-H08" secondAttribute="bottom" constant="8" id="Ptk-hE-TZq"/>
+                <constraint firstItem="vKZ-Ua-tql" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="TVL-sT-yIz"/>
+                <constraint firstItem="12B-bV-Up8" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="8" id="U9H-aQ-Ro0"/>
+                <constraint firstItem="4H8-bi-fcu" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="aSA-zX-olb"/>
+                <constraint firstItem="oy6-1L-H08" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="69" id="afZ-ri-MF3"/>
+                <constraint firstItem="vKZ-Ua-tql" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="nOk-DT-v8F"/>
+                <constraint firstItem="12B-bV-Up8" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="qkH-Be-G9H"/>
+                <constraint firstItem="4H8-bi-fcu" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="s6H-6O-938"/>
+                <constraint firstItem="oy6-1L-H08" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="u3g-57-9Ca"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <connections>
+                <outlet property="iconImageView" destination="oy6-1L-H08" id="15z-bk-VMA"/>
+                <outlet property="manButton" destination="DyK-Xe-YiO" id="EcS-Y4-Klu"/>
+                <outlet property="nameLabel" destination="12B-bV-Up8" id="YwJ-dq-DMf"/>
+                <outlet property="oftenLinkManButton" destination="dwv-TP-2Sg" id="D7d-2Z-1Yr"/>
+                <outlet property="womenButton" destination="sJN-PV-D6v" id="HFk-ti-Xh2"/>
+            </connections>
+            <point key="canvasLocation" x="25.5" y="-109"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="icon_boy_1" width="50" height="50"/>
+        <image name="icon_boy_2" width="50" height="50"/>
+        <image name="icon_collection_nor" width="50" height="50"/>
+        <image name="icon_collection_pro" width="50" height="50"/>
+        <image name="icon_girl_1" width="50" height="50"/>
+        <image name="icon_girl_2" width="50" height="50"/>
+        <image name="pic_beijing2" width="375" height="230"/>
+    </resources>
+</document>

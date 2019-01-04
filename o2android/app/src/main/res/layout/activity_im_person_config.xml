@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/z_color_background"
+    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.openim.IMPersonConfigActivity">
+
+
+    <include layout="@layout/snippet_appbarlayout_toolbar"></include>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout_snippet"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:orientation="vertical"
+        android:background="@android:color/white">
+        <RelativeLayout
+            android:id="@+id/rl_im_person_arrow_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
+                android:id="@+id/img_person_icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:layout_marginBottom="@dimen/spacing_small"
+                android:layout_centerVertical="true"/>
+            <TextView
+                android:id="@+id/tv_person_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/img_person_icon"
+                android:layout_marginLeft="@dimen/spacing_small"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/font_large"
+                android:textColor="@color/z_color_text_primary_dark"
+                />
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@mipmap/icon_arrow_22dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/spacing_normal"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider"/>
+        <RelativeLayout
+            android:id="@+id/rl_im_person_tribe_create_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_tribe_create"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:layout_marginBottom="@dimen/spacing_normal"
+                android:layout_alignParentLeft="true"
+                android:text="@string/menu_tribe_create"
+                android:textSize="@dimen/font_large"
+                android:textColor="@color/z_color_text_primary_dark"
+                />
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@mipmap/icon_arrow_22dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/spacing_normal"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

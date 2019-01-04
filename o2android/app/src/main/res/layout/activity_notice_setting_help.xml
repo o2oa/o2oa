@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:clipToPadding="false"
+    android:background="@color/z_color_background"
+    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.notice.NoticeSettingHelpActivity">
+    <include layout="@layout/snippet_appbarlayout_toolbar" ></include>
+    <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.NestedProgressWebView
+        android:id="@+id/web_view_notice_setting_help_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"></net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.NestedProgressWebView>
+</android.support.design.widget.CoordinatorLayout>

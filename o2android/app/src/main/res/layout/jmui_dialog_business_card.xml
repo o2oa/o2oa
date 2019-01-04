@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical|center_horizontal"
+              android:layout_marginLeft="30dp"
+              android:layout_marginRight="30dp"
+              android:background="@drawable/jmui_dialog_default_style"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="26dp"
+        android:layout_marginRight="23dp"
+        android:layout_marginTop="24.67dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="发送给: "
+            android:textColor="#2C2C2C"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tv_businessCardTo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="#2C2C2C"
+            android:textSize="18sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_businessHead"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="27dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/jmui_head_icon"
+            android:scaleType="fitXY"/>
+
+        <TextView
+            android:id="@+id/tv_businessCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="11.67dp"
+            android:textColor="#2C2C2C"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="0dip"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@drawable/jmui_dialog_bottom_left_btn"
+            android:text="@string/jmui_cancel"
+            android:textColor="#2C2C2C"
+            android:textSize="18sp"/>
+
+        <Button
+            android:id="@+id/btn_sure"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@drawable/jmui_dialog_bottom_right_btn"
+            android:text="确定"
+            android:textColor="#2C2C2C"
+            android:textSize="18sp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

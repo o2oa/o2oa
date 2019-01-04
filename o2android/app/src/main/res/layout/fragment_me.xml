@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jiguang.chat.view.MeView android:id="@+id/me_view"
+                          xmlns:android="http://schemas.android.com/apk/res/android"
+                          android:layout_width="match_parent"
+                          android:layout_height="match_parent"
+                          android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48.5dp"
+        android:background="#2DD0CF">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="14dp"
+            android:text="JChat"
+            android:textColor="#FFF"
+            android:textSize="18sp"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFE8EDF3"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/rl_personal"
+            android:layout_width="match_parent"
+            android:layout_height="80.67dp"
+            android:background="#fff">
+
+            <jiguang.chat.utils.photochoose.SelectableRoundedImageView
+                android:id="@+id/take_photo_iv"
+                android:scaleType="centerCrop"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginLeft="14dp"/>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="17.33dp"
+                android:layout_toRightOf="@id/take_photo_iv"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/nickName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginRight="50dp"
+                    android:layout_marginTop="16.33dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="昵称"
+                    android:textColor="#FF2C2C2C"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/signature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="17.33dp"
+                    android:layout_marginRight="50dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="签名"
+                    android:textColor="#FF999999"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="16.27dp"
+                android:background="@drawable/arrow"/>
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:id="@+id/set_pwd"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:background="#ffffff"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/setPassword"
+                style="@style/SettingItemStyle">
+
+                <TextView
+                    style="@style/info_left_style"
+                    android:text="修改密码"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="13.93dp"
+                    android:background="@drawable/arrow"/>
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginRight="14dp"
+                android:background="#FFE8EDF3"/>
+
+            <RelativeLayout
+                style="@style/SettingItemStyle">
+
+                <TextView
+                    style="@style/info_left_style"
+                    android:text="免打扰"/>
+
+                <jiguang.chat.view.SlipButton
+                    android:id="@+id/btn_noDisturb"
+                    android:layout_width="46dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="14dp"/>
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginRight="14dp"
+                android:background="#FFE8EDF3"/>
+
+            <RelativeLayout
+                android:id="@+id/opinion"
+                style="@style/SettingItemStyle">
+
+                <TextView
+                    android:id="@+id/logout_tv"
+                    style="@style/info_left_style"
+                    android:text="意见反馈"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="13.93dp"
+                    android:background="@drawable/arrow"/>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginRight="14dp"
+                android:background="#FFE8EDF3"/>
+
+            <RelativeLayout
+                android:id="@+id/about"
+                style="@style/SettingItemStyle">
+
+                <TextView
+                    android:id="@+id/tv_about"
+                    style="@style/info_left_style"
+                    android:text="关于JChat"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="13.93dp"
+                    android:background="@drawable/arrow"/>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:background="#FFE8EDF3"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FFE8EDF3"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/exit"
+                    android:layout_marginLeft="26dp"
+                    android:layout_marginRight="26dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/blue_btn_selector">
+
+                    <TextView
+                        android:id="@+id/tv_exit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="退出登录"
+                        android:textColor="@drawable/blue_text_selector"
+                        android:textSize="18sp"/>
+                </RelativeLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</jiguang.chat.view.MeView>

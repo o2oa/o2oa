@@ -1,0 +1,45 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.opengl.GLSurfaceView
+        android:id="@+id/opengl_layout_surfaceview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <ImageView
+        android:id="@+id/opengl_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_back_mtrl_white_alpha"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="14dp"
+        android:layout_marginStart="14dp"
+        />
+
+    <TextView
+        android:id="@+id/opengl_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="14dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="#ffffffff"
+        android:textSize="18sp"
+        android:text="人脸识别登录"/>
+
+    <TextView
+        android:id="@+id/opengl_layout_debugPrinttext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="48dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="#ffffffff"
+        android:textSize="18sp"
+        tools:text="1111111"/>
+
+
+</RelativeLayout>

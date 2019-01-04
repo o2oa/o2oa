@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#E8EDF3"
+              android:orientation="vertical">
+
+    <include layout="@layout/menu_title_bar_with_button"/>
+
+    <EditText
+        android:id="@+id/et_reason"
+        android:layout_width="match_parent"
+        android:layout_height="47dp"
+        android:background="#fff"
+        android:ellipsize="end"
+        android:imeOptions="actionSend"
+        android:maxLines="1"
+        android:paddingLeft="14dp"
+        android:textColor="#2C2C2C"
+        android:textSize="16sp"/>
+</LinearLayout>

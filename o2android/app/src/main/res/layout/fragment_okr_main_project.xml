@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tab_okr_main_project_project_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/z_color_background"
+            app:tabIndicatorColor="@color/z_color_primary"
+            app:tabSelectedTextColor="@color/z_color_primary"></android.support.design.widget.TabLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/z_color_split_line"
+            android:padding="0dp"></LinearLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager_okr_main_project_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></android.support.v4.view.ViewPager>
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_okr_main_project_create"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:src="@mipmap/icon_add_people"
+        android:visibility="gone"/>
+</android.support.design.widget.CoordinatorLayout>

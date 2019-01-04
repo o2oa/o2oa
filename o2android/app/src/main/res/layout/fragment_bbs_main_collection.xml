@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/z_color_background_normal">
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:id="@+id/recycler_bbs_main_collection_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+    <TextView
+        android:id="@+id/tv_bbs_main_collection_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textColor="@color/z_color_subtitle_font"
+        android:textSize="@dimen/font_large"
+        android:gravity="center"
+        android:text="@string/bbs_main_collection_empty"
+        android:visibility="gone"/>
+</LinearLayout>

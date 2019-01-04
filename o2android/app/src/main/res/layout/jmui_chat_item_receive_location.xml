@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout style="@style/jmui_chat_item_receive_layout"
+              xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/jmui_send_time_txt"
+        style="@style/jmui_chat_text_date_style"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
+
+        <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
+            android:id="@+id/jmui_avatar_iv"
+            style="@style/jmui_chat_item_receiver_avatar_style"/>
+
+        <TextView
+            android:id="@+id/jmui_display_name_tv"
+            style="@style/jmui_chat_display_name_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/jmui_avatar_iv"/>
+
+        <FrameLayout
+            android:id="@+id/jmui_layout_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/jmui_display_name_tv"
+            android:layout_marginLeft="3dp"
+            android:layout_toRightOf="@id/jmui_avatar_iv"
+            android:background="@drawable/receive_msg_normal"
+            android:orientation="vertical"
+            android:paddingBottom="3dp"
+            android:paddingLeft="9dp"
+            android:paddingRight="3dp">
+
+
+            <ImageView
+                android:id="@+id/jmui_picture_iv"
+                android:layout_width="163dp"
+                android:layout_height="90dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:scaleType="fitXY"
+                android:src="@drawable/jmui_location_default"/>
+
+            <View
+                android:id="@+id/location_view"
+                android:layout_width="163dp"
+                android:layout_height="30dp"
+                android:layout_gravity="bottom"
+                android:alpha="0.6"
+                android:background="#000000"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/jmui_loc_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:ellipsize="end"
+                android:ems="10"
+                android:gravity="center"
+                android:maxLines="2"
+                android:textColor="@color/white"
+                android:textSize="12sp"/>
+        </FrameLayout>
+
+
+    </RelativeLayout>
+
+</LinearLayout>

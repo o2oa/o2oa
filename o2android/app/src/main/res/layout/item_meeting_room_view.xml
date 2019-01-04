@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/meeting_padding"
+    android:paddingStart="@dimen/meeting_padding"
+    android:paddingEnd="@dimen/meeting_padding"
+    android:background="@android:color/white"
+    android:clickable="true"
+    android:focusable="true">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/z_color_split_meeting_line"/>
+
+    <TextView
+        android:id="@+id/tv_meeting_room_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:textSize="@dimen/font_meeting_time"
+        android:textColor="@color/z_color_text_hint"
+        tools:text="大会议室"/>
+
+    <ImageView
+        android:id="@+id/iv_meeting_room_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/pic_deal"
+        android:layout_alignParentEnd="true"
+        android:layout_alignEnd="@id/tv_meeting_room_name"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:contentDescription="@null"/>
+
+    <TextView
+        android:id="@+id/tv_meeting_room_floor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_meeting_room_name"
+        android:layout_marginTop="@dimen/spacing_meeting"
+        android:textSize="@dimen/font_normal"
+        android:textColor="@color/z_color_text_primary_dark"
+        tools:text="楼层："/>
+
+    <TextView
+        android:id="@+id/tv_meeting_room_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_meeting_room_name"
+        android:layout_toEndOf="@id/tv_meeting_room_floor"
+        android:layout_marginStart="@dimen/meeting_padding"
+        android:layout_marginTop="@dimen/spacing_meeting"
+        android:textSize="@dimen/font_normal"
+        android:textColor="@color/z_color_text_primary_dark"
+        tools:text="房间："/>
+
+    <TextView
+        android:id="@+id/tv_meeting_list_item_meeting_room"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_meeting_room_floor"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:textSize="@dimen/font_normal"
+        android:textColor="@color/z_color_text_primary"
+        tools:text="容纳人数："/>
+
+    <LinearLayout
+        android:id="@+id/ll_meeting_room_device"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_meeting_list_item_meeting_room"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_meeting_room_device"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_normal"
+            android:textColor="@color/z_color_text_primary"
+            android:text="会议设备:"/>
+
+        <ImageView
+            android:id="@+id/iv_icon_wifi"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:src="@mipmap/icon__wifi"
+            android:contentDescription="@null"
+            android:layout_marginStart="5dp"/>
+
+        <ImageView
+            android:id="@+id/iv_icon_tv"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:src="@mipmap/icon__tv"
+            android:contentDescription="@null"
+            android:layout_marginStart="5dp"/>
+
+        <ImageView
+            android:id="@+id/iv_icon_projector"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:src="@mipmap/icon__projector"
+            android:contentDescription="@null"
+            android:layout_marginStart="5dp"/>
+
+        <ImageView
+            android:id="@+id/iv_icon_video"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:src="@mipmap/icon__video"
+            android:contentDescription="@null"
+            android:layout_marginStart="5dp"/>
+
+        <ImageView
+            android:id="@+id/iv_icon_camera"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:src="@mipmap/icon__camera"
+            android:contentDescription="@null"
+            android:layout_marginStart="5dp"/>
+
+        <ImageView
+            android:id="@+id/iv_icon_phone"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:src="@mipmap/icon__phone"
+            android:contentDescription="@null"
+            android:layout_marginStart="5dp"/>
+
+        <ImageView
+            android:id="@+id/iv_icon_board"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:src="@mipmap/icon__board"
+            android:contentDescription="@null"
+            android:layout_marginStart="5dp"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_meeting_list_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/font_meeting_participants"
+        android:textColor="@color/z_color_text_primary"
+        tools:text="叶子"
+        android:layout_alignTop="@+id/ll_meeting_room_device"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/spacing_twenty"/>
+
+    <ImageView
+        android:id="@+id/image_meeting_list_item_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/icon_arrow"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/tv_meeting_list_size"
+        android:layout_alignTop="@+id/tv_meeting_list_size"
+        android:contentDescription="@null"/>
+
+
+
+</RelativeLayout>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#fff"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
+
+        <LinearLayout
+            android:id="@+id/ac_iv_press_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="20dp"
+                android:src="@drawable/black_back"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="6.5dp"
+            android:layout_marginTop="6.5dp"
+            android:background="#D9D9D9"
+            />
+
+        <EditText
+            android:id="@+id/ac_et_search"
+            style="?android:attr/textViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:drawableLeft="@drawable/search1"
+            android:drawablePadding="8dp"
+            android:focusableInTouchMode="true"
+            android:imeActionLabel=""
+            android:imeOptions="actionSearch"
+            android:inputType="textNoSuggestions"
+            android:maxLines="1"
+            android:textColor="#99999999"
+            android:textSize="16sp"/>
+
+        <ImageView
+            android:id="@+id/iv_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="14dp"
+            android:src="@drawable/clear"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="#E8EDF3"/>
+
+    <TextView
+        android:id="@+id/no_connect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="51.33dp"
+        android:text="当前网络不可用"
+        android:textColor="#999999"
+        android:textSize="16sp"
+        android:visibility="gone"/>
+    <TextView
+        android:id="@+id/ac_tv_search_no_results"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="45dp"
+        android:ellipsize="middle"
+        android:maxLines="1"
+        android:textColor="#999999"
+        android:textSize="14sp"
+        android:visibility="gone"/>
+
+    <ListView
+        android:id="@+id/lv_searchGroup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@drawable/main_list_divider_line"
+        android:dividerHeight="1px">
+    </ListView>
+</LinearLayout>

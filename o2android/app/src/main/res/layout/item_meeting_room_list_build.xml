@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/spacing_small"
+              android:paddingTop="@dimen/spacing_small">
+
+    <android.support.v7.widget.CardView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/z_color_subtitle_font"
+        >
+
+        <TextView
+            android:id="@+id/tv_item_meeting_room_list_build_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_small"
+            android:layout_marginLeft="@dimen/spacing_normal"
+            android:layout_marginRight="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:text="test"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_normal"/>
+    </android.support.v7.widget.CardView>
+
+
+</LinearLayout>

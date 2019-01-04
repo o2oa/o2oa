@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:background="@android:color/white">
+
+
+    <CheckBox
+        android:id="@+id/cb_item_fragment_calendar_dialog_list_body_choose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_small"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:checked="true" />
+
+    <TextView
+        android:id="@+id/tv_item_fragment_calendar_dialog_list_body_title"
+        android:layout_width="271dp"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textColor="@color/z_color_text_primary"
+        android:textSize="@dimen/font_normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/cb_item_fragment_calendar_dialog_list_body_choose"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5"
+        tools:text="一个日历要是很如果有很多多东渡偶哦多多多多字" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_item_fragment_calendar_dialog_list_body_color"
+        android:layout_width="4dp"
+        android:layout_height="42dp"
+        app:cardBackgroundColor="@color/z_color_primary"
+        app:cardCornerRadius="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/image_tem_fragment_calendar_dialog_list_body_edit"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:padding="8dp"
+        android:layout_marginEnd="@dimen/spacing_small"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cv_item_fragment_calendar_dialog_list_body_color"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/menu_edit"
+        android:src="@mipmap/icon_edit_meeting"
+        android:visibility="gone"/>
+
+    <View
+        android:id="@+id/view_item_fragment_calendar_dialog_list_body_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/divider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/cb_item_fragment_calendar_dialog_list_body_choose" />
+
+</android.support.constraint.ConstraintLayout>

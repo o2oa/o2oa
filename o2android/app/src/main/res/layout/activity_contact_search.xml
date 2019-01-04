@@ -1,0 +1,57 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/z_color_background"
+    tools:context=".app.o2.organization.OrganizationSearchActivity">
+
+    <android.support.design.widget.AppBarLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/app_bar_contact_search"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:theme="@style/XBPMTheme.AppBarOverlay">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_snippet_search_top_bar"
+            android:paddingTop="@dimen/toolbar_padding_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/z_color_primary"
+            app:popupTheme="@style/XBPMTheme.PopupOverlay">
+            <EditText
+                android:id="@+id/search_edit_id"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/activity_contact_search_hint"/>
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+    <ListView
+        android:layout_below="@id/app_bar_contact_search"
+        android:id="@+id/search_contact_result_list_id"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
+    <LinearLayout
+        android:id="@+id/linear_contact_search_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:gravity="center">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_search_person"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:textColor="@color/z_color_subtitle_font"
+            android:text="@string/search_contact"
+            android:textSize="@dimen/font_normal"/>
+    </LinearLayout>
+
+
+</RelativeLayout>

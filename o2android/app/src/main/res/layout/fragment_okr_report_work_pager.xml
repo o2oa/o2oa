@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/canrefresh_okr_report_work_pager_fragment"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.RecyclerViewSwipeRefreshLayout
+        android:id="@+id/recycler_okr_report_work_pager_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_okr_report_work_pager_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+    </net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.RecyclerViewSwipeRefreshLayout>
+</LinearLayout>

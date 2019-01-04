@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/title_bar_rl"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/title_bar_height"
+    android:background="@color/colorPrimary">
+
+        <ImageButton
+            android:id="@+id/return_btn"
+            android:layout_width="@dimen/title_bar_height"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/back"
+            android:background="@drawable/jmui_back_btn_bg" />
+
+        <TextView
+            android:id="@+id/number_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/return_btn"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:textSize="20sp"
+            android:textColor="#FFFFFF"
+            android:visibility="gone"
+            />
+
+        <Button
+            android:id="@+id/pick_picture_send_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/send_picture_btn_bg"
+            android:text="@string/jmui_send"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_normal_size"/>
+</RelativeLayout>

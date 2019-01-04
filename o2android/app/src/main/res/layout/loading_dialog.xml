@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@null"
+    android:gravity="center">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleProgressBar
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/image_loading_view"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:mlpb_progress_color="@color/colorPrimary"
+            />
+        <TextView
+            android:id="@+id/tv_loading_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/spacing_tiny"
+            android:textSize="@dimen/font_large"
+            android:textColor="@android:color/white"/>
+    </LinearLayout>
+
+</LinearLayout>

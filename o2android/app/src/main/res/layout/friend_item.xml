@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:background="#FFFFFFFF"
+              android:gravity="center_vertical"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/frienditem"
+        android:layout_width="fill_parent"
+        android:layout_height="52dp"
+        android:background="@drawable/btn_list_item_bg"
+        android:orientation="horizontal"
+        android:paddingRight="12dp">
+
+        <CheckBox
+            android:layout_marginLeft="10dp"
+            android:id="@+id/selected_cb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/pictures_select_icon"
+            android:button="@null" />
+
+        <jiguang.chat.utils.photochoose.SelectableRoundedImageView
+            android:id="@+id/friend_photo"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="14.67dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/rc_default_portrait"/>
+
+        <TextView
+            android:id="@+id/friendname"
+            android:text="用户名"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="14dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:maxLength="32"
+            android:textColor="#2C2C2C"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/friend_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="14dp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+    <!--<View
+        android:layout_width="wrap_content"
+        android:layout_height="1px"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="15dp"
+        android:background="#D9D9D9"/>-->
+
+</LinearLayout>

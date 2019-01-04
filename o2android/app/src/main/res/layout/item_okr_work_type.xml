@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:id="@+id/linear_item_okr_work_type_base"
+    android:layout_width="wrap_content"
+    android:layout_height="36dp">
+    <TextView
+        android:id="@+id/tv_item_okr_work_type_name"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:padding="@dimen/spacing_small"
+        android:gravity="center"
+        android:text="dddd"/>
+</LinearLayout>

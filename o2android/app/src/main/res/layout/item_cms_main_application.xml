@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:paddingBottom="@dimen/spacing_small"
+    android:paddingTop="@dimen/spacing_small">
+
+    <ImageView
+        android:id="@+id/image_cms_main_application_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/icon_cms_application_default" />
+
+    <TextView
+        android:id="@+id/tv_cms_main_application_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:layout_below="@id/image_cms_main_application_icon"
+        tools:text="标题"
+        android:textColor="@color/primary_text"
+        android:textSize="@dimen/font_large" />
+
+</RelativeLayout>

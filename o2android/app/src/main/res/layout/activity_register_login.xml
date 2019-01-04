@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#fff">
+
+    <RelativeLayout
+        android:id="@+id/titlebar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#2DD0CF"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:clickable="true"
+            android:text="JChat"
+            android:textColor="#fff"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/new_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="12.33dp"
+            android:clickable="true"
+            android:text="新用户"
+            android:textColor="#fff"
+            android:textSize="14sp"/>
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_name_psw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/translate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="78.67dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/de_login_logo"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="52.67dp"
+                android:text="Welcome"/>
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:background="#fff"
+                android:visibility="gone"/>
+
+            <RelativeLayout
+                android:id="@+id/liner1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dip"
+                android:layout_marginRight="30dip"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/login_userLogo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15.67dp"
+                    android:src="@drawable/login_user_normal"/>
+
+                <jiguang.chat.utils.ClearWriteEditText
+                    android:id="@+id/login_userName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="46dp"
+                    android:background="@null"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:hint="请输入用户名"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="#2C2C2C"
+                    android:textColorHint="#808080"
+                    android:textSize="16sp"/>
+
+                <View
+                    android:id="@+id/user_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.67dp"
+                    android:layout_below="@id/login_userName"
+                    android:layout_marginTop="10dp"
+                    android:background="#57D9D9"/>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/liner2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dip"
+                android:layout_marginRight="30dip"
+                android:layout_marginTop="23dip"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/login_pswLogo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15.67dp"
+                    android:src="@drawable/login_psw_normal"/>
+
+                <jiguang.chat.utils.ClearWriteEditText
+                    android:id="@+id/login_passWord"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="46dp"
+                    android:background="@null"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:hint="请输入密码"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:textColor="#2C2C2C"
+                    android:textColorHint="#808080"
+                    android:textSize="16sp"/>
+
+                <View
+                    android:id="@+id/psw_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.67dp"
+                    android:layout_below="@id/login_passWord"
+                    android:layout_marginTop="10dp"
+                    android:background="#57D9D9"/>
+
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="30dip"
+                android:layout_marginRight="30dip"
+                android:layout_marginTop="36dip"
+                android:background="@drawable/blue_btn_selector"
+                android:text="@string/login"
+                android:textColor="@drawable/blue_text_selector"
+                android:textSize="16sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/rg_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_name_psw"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_release"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:buttonTintMode="src_atop"
+            android:text="生产环境"
+            android:textColor="#808080"/>
+
+        <RadioButton
+            android:id="@+id/rb_test"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:buttonTintMode="src_atop"
+            android:text="测试环境"
+            android:textColor="#808080"/>
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="38dp">
+
+        <TextView
+            android:id="@+id/login_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:text="还没有账号?"
+            android:textColor="#999999"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/login_register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:text="立即注册"
+            android:textColor="#57D9D9"
+            android:textSize="12sp"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
