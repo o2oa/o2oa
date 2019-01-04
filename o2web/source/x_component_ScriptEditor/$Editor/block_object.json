@@ -1,0 +1,171 @@
+[
+  {
+    "name": "object.new",
+    "contents": ["新建一个Object对象"],
+    "class": "object.New"
+  },
+  {
+    "name": "object.each",
+    "contents": [
+      "遍历对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      " 值",
+      {"type": "input","default": "v"},
+      "键",
+      {"type": "input","default": "k"},
+      "绑定对象",
+      {"type": "mortise","tenonTypes": []}
+    ],
+    "class": "object.Each"
+  },
+  {
+    "name": "object.merge",
+    "contents": [
+      "合并对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "object.Merge"
+  },
+  {
+    "name": "object.clone",
+    "contents": [
+      "克隆对象",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "object.Clone"
+  },
+  {
+    "name": "object.append",
+    "contents": [
+      "给对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "添加属性",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "object.Append"
+  },
+  {
+    "name": "object.subset",
+    "contents": [
+      "获取对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的子集",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "object.Subset"
+  },
+  {
+    "name": "object.map",
+    "contents": [
+      "map",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "方法",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "，绑定对象",
+      {"type": "mortise", "tenonTypes": []}
+    ],
+    "class": "object.Map", "extend": "$Expression"
+  },
+  {
+    "name": "object.filter",
+    "contents": [
+      "过滤对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "方法",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "，绑定对象",
+      {"type": "mortise", "tenonTypes": []}
+    ],
+    "class": "object.Filter", "extend": "$Expression"
+  },
+  {
+    "name": "object.every",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的每个属性值都满足方法",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "，绑定对象",
+      {"type": "mortise", "tenonTypes": []}
+    ],
+    "class": "object.Every", "extend": "$Expression"
+  },
+  {
+    "name": "object.some",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的一些属性值满足方法",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "，绑定对象",
+      {"type": "mortise", "tenonTypes": []}
+    ],
+    "class": "object.Some", "extend": "$Expression"
+  },
+  {
+    "name": "object.keys",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的所有属性名"
+    ],
+    "class": "object.Keys"
+  },
+  {
+    "name": "object.values",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的所有属性值"
+    ],
+    "class": "object.Values"
+  },
+  {
+    "name": "object.getLength",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的属性个数"
+    ],
+    "class": "object.GetLength"
+  },
+  {
+    "name": "object.keyOf",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "中，值为",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "的属性名"
+    ],
+    "class": "object.KeyOf"
+  },
+  {
+    "name": "object.contains",
+    "contents": [
+      "对象",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "中，是否包含值",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "object.Contains"
+  },
+  {
+    "name": "object.toQueryString",
+    "contents": [
+      "Object.toQueryString",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "object.ToQueryString"
+  },
+  {
+    "name": "object.toString",
+    "contents": [
+      "将",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      "转换为字符串"
+    ],
+    "class": "object.ToString"
+  }
+]

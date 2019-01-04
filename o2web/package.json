@@ -1,0 +1,44 @@
+{
+  "name": "o2oa_web",
+  "version": "1.1.7",
+  "description": "a javascript library",
+  "main": "o2.js",
+  "scripts": {
+    "test": "gulp",
+    "report-coverage": "codecov"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/huqi1980/o2oa_client_web.git"
+  },
+  "keywords": [
+    "oa",
+    "office",
+    "workflow",
+    "process",
+    "cms",
+    "bpm",
+    "portal"
+  ],
+  "author": "Tommy-O2OA",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/huqi1980/o2oa_client_web/issues"
+  },
+  "homepage": "https://github.com/huqi1980/o2oa_client_web#readme",
+  "devDependencies": {
+    "gulp": "^4.0.0",
+    "gulp-changed": "^3.2.0",
+    "gulp-deleted": "0.0.2",
+    "gulp-ftp": "^1.1.0",
+    "gulp-if": "^2.0.2",
+    "gulp-rename": "^1.4.0",
+    "gulp-sftp": "^0.1.5",
+    "gulp-uglify": "^3.0.1",
+    "karma": "^3.1.4",
+    "karma-jasmine": "^2.0.1",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "merge-stream": "^1.0.1",
+    "minimist": "^1.2.0"
+  }
+}

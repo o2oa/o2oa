@@ -1,0 +1,89 @@
+{
+  "nodeStyles" : {
+    "font-size" : "12px",
+    "position" : "absolute",
+    "max-width" : "500px",
+    "min-width" : "260px",
+    "z-index" : "11",
+    "background-color" : "#fff",
+    "padding" : "10px",
+    "border-radius" : "8px",
+    "box-shadow": "0 0 18px 0 #999999",
+    "-webkit-user-select": "text",
+    "-moz-user-select": "text"
+  },
+  "contentStyles" : {
+    "width" : "100%",
+    "height" : "100%"
+  },
+  "closeActionStyles" : {
+    "width": "24px",
+    "height" : "24px",
+    "position" : "absolute",
+    "top": "0px",
+    "right" : "0px",
+    "background": "url(/x_component_Template/$MTooltips/default/icon/off_gray.png) no-repeat center center",
+    "cursor": "pointer"
+  },
+  "maskStyles" : {
+    "width": "100%",
+    "height": "100%",
+    "opacity": 0,
+    "position": "absolute",
+    "background-color": "#fff",
+    "top": "0px",
+    "left": "0px"
+  },
+  "formTable" : {
+    "border-collapse" : "collapse",
+    "margin-bottom" : "10px"
+    //"margin-top" : "10px"
+  },
+  "formTableHead" : {
+    "height": "50px",
+    "line-height": "50px",
+    "text-align": "center",
+    "min-width": "80px",
+    "font-size":"20px",
+    "font-weight": "bold"
+  },
+
+  "formTableTitle" : {
+    "border":"1px solid #d8d5d5",
+    "background-color" : "#effafe",
+    "color" : "#444",
+    "font-size": "12px",
+    "height" : "30px",
+    "line-height" : "30px",
+    "font-weight" : "bold",
+    "text-align": "center"
+  },
+
+  "formTableValue" : {
+    "border" : "1px solid #d8d5d5",
+    "color" : "#444",
+    "font-weight" : "400",
+    "text-align": "left",
+    "font-size" : "12px"
+  },
+  "formTableValue14" : {
+    "text-align": "left",
+    "font-size" : "12px",
+    "line-height" : "26px"
+  },
+  "formTableValueTop20" : {
+    "padding-top" : "20px",
+    "text-align": "left"
+  },
+  "formTableTitleDiv" : {
+    "font-weight" : "bold"
+  },
+  "formTableValueDiv" : {
+    "min-height" : "40px",
+    "line-height" : "22px"
+  },
+  "formTableInlineValueDiv" : {
+    "float" : "left",
+    "margin-right" : "10px"
+  }
+}

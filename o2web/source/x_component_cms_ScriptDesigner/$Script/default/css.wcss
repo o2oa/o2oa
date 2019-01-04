@@ -1,0 +1,54 @@
+{
+    "scriptPropertyNode": {
+        "overflow": "hidden",
+        "background": "#FFF",
+        "height": "100%"
+    },
+    "propertyTitleNode": {
+        "height": "24px",
+        "line-height": "24px",
+        "font-size": "12px",
+        "font-weight": "bold",
+        "margin": "10px 10px 0px 10px"
+    },
+    "propertyTextNode": {
+        "height": "24px",
+        "line-height": "24px",
+        "font-size": "12px",
+        "margin": "0px 10px",
+        "color": "#666"
+    },
+    "propertyInputNode": {
+        "display": "block",
+        "width": "90%",
+        "margin": "0px 10px",
+        "border": "1px solid #999",
+        "height": "20px",
+        "line-height": "20px"
+    },
+    "propertyInputAreaNode": {
+        "display": "block",
+        "width": "90%",
+        "margin": "0px 10px",
+        "border": "1px solid #999",
+        "height": "60px",
+        "overflow": "auto"
+    },
+    "includeTitleNode": {
+        "height": "24px",
+        "background-color": "#EEE",
+        "border-bottom": "#999",
+        "line-height": "24px"
+    },
+    "includeTitleActionNode": {
+        "height": "24px",
+        "width": "30px",
+        "background": "url("+"/x_component_cms_ScriptDesigner/$Script/default/icon/add.png) no-repeat center center",
+        "float": "right",
+        "cursor": "pointer"
+    },
+    "includeTitleTextNode": {
+        "margin": "0px 35px 0px 5px",
+        "height": "24px"
+    }
+}

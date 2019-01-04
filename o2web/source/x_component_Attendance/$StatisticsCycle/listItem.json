@@ -1,0 +1,66 @@
+[
+  {
+    "title" : "公司名称",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "function(d){ return d.topUnitName.split('@')[0] }",
+    "name" : "topUnitName",
+    "width" : "15%"
+  },
+  {
+    "title" : "部门名称",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "function(d){ return d.unitName.split('@')[0] }",
+    "name" : "unitName",
+    "width" : "15%"
+  },
+  {
+    "title" : "年度",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "cycleYear",
+    "name" : "cycleYear",
+    "width" : "10%"
+  },
+  {
+    "title" : "月份",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "cycleMonth",
+    "name" : "cycleMonth",
+    "width" : "10%"
+  },
+  {
+    "title" : "开始日期",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "cycleStartDateString",
+    "name" : "cycleStartDateString",
+    "width" : "15%"
+  },
+  {
+    "title" : "结束日期",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "cycleEndDateString",
+    "name" : "cycleEndDateString",
+    "width" : "15%"
+  },
+  {
+    "access" : "admin",
+    "title" : "操作",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "actions",
+    "name" : "actions",
+    "width" : "5%",
+    "sub" : [{
+      "title" : "删除文件",
+      "action" : "remove",
+      "styles" : "actionDeleteNode",
+      "overStyles" : "actionDeleteNode_over",
+      "downStyles" : "actionDeleteNode_down"
+    }]
+  }
+]

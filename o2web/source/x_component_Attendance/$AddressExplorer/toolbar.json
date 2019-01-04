@@ -1,0 +1,18 @@
+[
+  {
+    "title": "新建工作场所",
+    "text" : "点击后移到地图相应位置再次点击可创建",
+    "id": "1.1",
+    "action": "createDocument",
+    "icon": "create.png",
+    "expand": false,
+    "position" : "left",
+    "styles" : "toolbarItemNode",
+    "sub": []
+  }, {
+    "styles" : "toolbarSep"
+  },{
+  "id": "wpContent",
+  "styles" : "toolbarContent"
+  }
+]

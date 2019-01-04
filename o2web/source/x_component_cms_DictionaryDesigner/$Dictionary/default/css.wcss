@@ -1,0 +1,353 @@
+{
+	"searchNode": {
+        "height": "36px",
+        "width": "100%",
+        "background-color": "#DDD",
+        "border-bottom": "1px solid #999",
+        "border-top": "1px solid #AAA"
+	},
+	"searchInputNode": {
+	    "width": "300px",
+	    "height": "22px",
+	    "float": "left",
+	    "background-color": "#FFF",
+	    "border": "1px solid #AAA",
+	    "margin": "6px 0px 6px 6px",
+	    "overflow": "hidden"
+	},
+	"searchInput": {
+        "height": "22px",
+        "width": "300px",
+        "border": "0px"
+	},
+	"searchAction": {
+	    "height": "22px",
+        "float": "left",
+        "border": "0px solid #AAA",
+        "margin": "6px 0px 6px 6px",
+        "cursor": "pointer"
+	},
+	"searchLineNode": {
+	    "width": "1px",
+	    "height": "22px",
+	    "background-color": "#FFF",
+	    "border-left": "1px solid #CCC",
+	    "float": "left",
+	    "margin": "6px 0px 6px 6px"
+	},
+	"searchNextAction": {
+        "height": "22px",
+        "float": "left",
+        "color": "#333",
+        "border": "0px solid #AAA",
+        "margin": "6px 0px 6px 6px",
+        "cursor": "pointer"
+	},
+	"itemsNode": {
+		"width": "35%",
+		"overflow": "hidden",
+		"float": "left"
+	},
+	"typesNode": {
+        "width": "20%",
+        "overflow": "hidden",
+        "float": "left"
+    },
+    "valuesNode": {
+        "width": "45%",
+        "overflow": "hidden",
+        "float": "left"
+    },
+    "itemTitleNode": {
+        "height": "30px",
+        "background-color": "#DDD",
+        "cursor": "default",
+        "line-height": "30px"
+    },
+    "typeTitleNode": {
+        "height": "30px",
+        "background-color": "#DDD",
+        "cursor": "default",
+        "line-height": "30px"
+    },
+    "valueTitleNode": {
+        "height": "30px",
+        "background-color": "#DDD",
+        "cursor": "default",
+        "line-height": "30px"
+    },
+    "itemResizeNode": {
+        "width": "1px",
+        "background-color": "#EEE",
+        "border-right": "1px solid #999",
+        "height": "30px",
+        "float": "right"
+    },
+    "typeResizeNode": {
+        "width": "1px",
+        "background-color": "#EEE",
+        "border-right": "1px solid #999",
+        "height": "30px",
+        "float": "right"
+    },
+    "itemTitleTextNode": {
+        "margin-right": "2px",
+        "height": "30px",
+        "text-align": "center",
+        "font-weight": "bold",
+        "font-size": "12px"
+    },
+    "typeTitleTextNode": {
+        "margin-right": "2px",
+        "height": "30px",
+        "text-align": "center",
+        "font-weight": "bold",
+        "font-size": "12px"
+    },
+    "valueTitleTextNode": {
+        "height": "30px",
+        "text-align": "center",
+        "font-weight": "bold",
+        "font-size": "12px"
+    },
+    "dataListItemNode": {
+        "margin": "0px 5px",
+        "hegiht": "24px",
+        "border-bottom": "1px solid #CCC",
+        "line-height": "24px",
+        "overflow": "hidden"
+    },
+    "dataListItemKeyNode": {
+        "float": "left",
+        "width": "49%",
+        "color": "#333",
+        "cursor": "default",
+        "overflow": "hidden"
+    },
+    "dataListItemValueNode": {
+        "float": "right",
+        "width": "49%",
+        "color": "#999",
+        "cursor": "default",
+        "overflow": "hidden"
+    },
+
+    "dictionaryPropertyNode": {
+        "overflow": "hidden",
+        "background": "#FFF",
+        "height": "100%"
+    },
+    "propertyTitleNode": {
+        "height": "24px",
+        "line-height": "24px",
+        "font-size": "12px",
+        "font-weight": "bold",
+        "margin": "10px 10px 0px 10px"
+    },
+    "propertyTextNode": {
+        "height": "24px",
+        "line-height": "24px",
+        "font-size": "12px",
+        "margin": "0px 10px",
+        "color": "#666"
+    },
+    "propertyInputNode": {
+        "display": "block",
+        "width": "90%",
+        "margin": "0px 10px",
+        "border": "1px solid #999",
+        "height": "20px",
+        "line-height": "20px"
+    },
+    "propertyInputAreaNode": {
+        "display": "block",
+        "width": "90%",
+        "margin": "0px 10px",
+        "border": "1px solid #999",
+        "height": "60px",
+        "overflow": "auto"
+    },
+    "jsonDomNode": {
+        "overflow": "hidden",
+        "background": "#FFF",
+        "min-height": "500px"
+    },
+    "jsonTextNode": {
+        "overflow": "hidden",
+        "background": "#FFF"
+    },
+    "jsonTextAreaNode": {
+        "border": "0px",
+        "width": "100%",
+        "height": "500px"
+    },
+
+    "itemNode": {
+        "height": "24px",
+        "line-height": "24px",
+        "padding-right": "10px",
+        "border-bottom": "1px solid #CCC",
+        "background-color": "#FFF"
+    },
+    "itemNode_selected": {
+        "background-color": "#e6ebf5"
+    },
+    "typeNode": {
+        "height": "24px",
+        "line-height": "24px",
+        "padding": "0px 10px",
+        "border-bottom": "1px solid #CCC",
+        "background-color": "#FFF"
+    },
+    "typeNode_selected": {
+        "background-color": "#e6ebf5"
+    },
+    "valueNode": {
+        "height": "24px",
+        "line-height": "24px",
+        "padding": "0px 10px",
+        "border-bottom": "1px solid #CCC",
+        "background-color": "#FFF",
+        "overflow": "hidden"
+    },
+    "valueNode_selected": {
+        "background-color": "#e6ebf5"
+    },
+    "itemActionsAreaNode": {
+        "width": "40px",
+        "height": "24px",
+        "float": "right",
+        "opacity": 0
+    },
+    "itemAddActionNode": {
+        "width": "20px",
+        "height": "24px",
+        "float": "left",
+        "background": "url("+"/x_component_cms_DictionaryDesigner/$Dictionary/default/icon/add.png) center center no-repeat",
+        "cursor": "pointer"
+    },
+    "itemDelActionNode": {
+        "width": "20px",
+        "height": "24px",
+        "float": "right",
+        "background": "url("+"/x_component_cms_DictionaryDesigner/$Dictionary/default/icon/del.png) center center no-repeat",
+        "cursor": "pointer"
+    },
+    "itemExpColActionNode": {
+        "width": "20px",
+        "height": "24px",
+        "float": "left",
+        "background-position": "center center",
+        "background-repeat": "no-repeat",
+        "cursor": "pointer"
+    },
+
+    "typeActionsAreaNode": {
+        "width": "20px",
+        "height": "24px",
+        "float": "right",
+        "opacity": 1
+    },
+    "typeSelActionNode": {
+        "width": "20px",
+        "height": "24px",
+        "background": "url("+"/x_component_cms_DictionaryDesigner/$Dictionary/default/icon/sel.png) center center no-repeat",
+        "cursor": "pointer"
+    },
+    "valueActionsAreaNode": {
+        "width": "20px",
+        "height": "24px",
+        "float": "right",
+        "opacity": 1
+    },
+    "valueSelActionNode": {
+        "width": "20px",
+        "height": "24px",
+        "background": "url("+"/x_component_cms_DictionaryDesigner/$Dictionary/default/icon/sel.png) center center no-repeat",
+        "cursor": "pointer"
+    },
+    "itemTextNode": {
+        "margin-right": "40px",
+        "margin-left": "20px",
+        "height": "24px",
+        "line-height": "24px",
+        "color": "#333"
+    },
+    "typeTextNode": {
+        "margin-right": "20px",
+        "height": "24px",
+        "line-height": "24px",
+        "color": "#999"
+    },
+    "valueTextNode": {
+        "overflow" : "hidden",
+        "margin-right": "20px",
+        "height": "24px",
+        "line-height": "24px",
+        "cursor": "default",
+        "color": "#999"
+    },
+    "valueTextNode_edit": {
+        "cursor": "auto",
+        "color": "#333"
+    },
+
+    "typeSelectNode": {
+        "position": "absolute",
+        "height": "125px",
+        "width": "100px",
+        "background-color": "#DDD",
+        "border": "1px solid #999",
+        "box-shadow": "0px 0px 8px #777",
+        "border-radius": "0px",
+        "display": "none"
+    },
+    "typeSelectItemNode": {
+        "height": "25px",
+        "line-height": "25px",
+        "padding": "0px 8px",
+        "color": "#333",
+        "background-color": "#EEE",
+        "cursor": "pointer"
+    },
+    "typeSelectItemNode_over": {
+        "color": "#FFF",
+        "background-color": "#45556e"
+    },
+    "booleanSelectNode": {
+        "position": "absolute",
+        "height": "50px",
+        "width": "100px",
+        "background-color": "#DDD",
+        "border": "1px solid #999",
+        "box-shadow": "0px 0px 8px #777",
+        "border-radius": "0px",
+        "display": "none"
+    },
+
+
+    "itemEditValueNode": {
+        "float" : "left",
+        "width": "90%",
+        "height": "20px",
+        "line-height": "20px",
+        "border": "1px solid #999"
+    },
+    "itemEditValueNode_error": {
+        "height": "20px",
+        "border": "1px solid red"
+    },
+    "itemSelectOrgNode": {
+        "background": "url("+"/x_component_cms_Xform/$Form/default/icon/selectorg.png) center center no-repeat",
+        "width": "18px",
+        "height": "18px",
+        "margin-left" : "5px",
+        "margin-top" : "3px",
+        //"position": "relative",
+        //"top": "-18px",
+        //"display": "inline-block",
+        "float": "left",
+        "cursor": "pointer"
+    }
+
+}

@@ -1,0 +1,1209 @@
+{}
+//{
+//  "default": {
+//    "name": "默认样式",
+//    "form": {
+//      "styles":{
+//        "background-color": "#f0f0f0"
+//      }
+//    },
+//    "label": {
+//      "banner": {
+//        "name": "横幅",
+//        "styles": {
+//          "background-color": "#3c76b7",
+//          "height": "40px",
+//          "line-height": "40px",
+//          "color": "#ffffff",
+//          "font-size": "18px",
+//          "padding": "0px 10px",
+//          "font-weight": "bold"
+//        }
+//      },
+//
+//      "title": {
+//        "name": "标题",
+//        "styles": {
+//          "text-align": "center",
+//          "font-size": "24px",
+//          "line-height": "60px",
+//          "font-weight": "bold",
+//          "color": "#3c76b7",
+//          "height": "60px"
+//        }
+//      },
+//
+//      "section": {
+//        "name": "区段标题",
+//        "styles": {
+//          "height": "40px",
+//          "background-color": "#666666",
+//          "line-height": "40px",
+//          "padding": "0px 20px",
+//          "font-weight": "bold",
+//          "color": "#fff",
+//          "border-bottom": "1px solid #cccccc"
+//        }
+//      }
+//    },
+//
+//    "div": {
+//      "banner": {
+//        "name": "横幅",
+//        "styles": {
+//          "background-color": "#3c76b7",
+//          "height": "40px",
+//          "line-height": "40px",
+//          "color": "#ffffff",
+//          "font-size": "18px",
+//          "padding": "0px 10px",
+//          "font-weight": "bold"
+//        }
+//      },
+//
+//      "title": {
+//        "name": "标题",
+//        "styles": {
+//          "text-align": "center",
+//          "font-size": "24px",
+//          "line-height": "60px",
+//          "font-weight": "bold",
+//          "color": "#3c76b7",
+//          "height": "60px"
+//        }
+//      },
+//      "section": {
+//        "name": "区段",
+//        "styles": {
+//          "background-color": "#FFF",
+//          "border": "1px solid #cccccc"
+//        }
+//      }
+//    },
+//
+//    "tab": {
+//      "styles": {},
+//      "tabAreaStyles": {
+//        "height": "40px",
+//        "border-bottom": "2px solid #3c76b7"
+//      },
+//      "contentAreaStyles": {
+//        "line-height": "normal",
+//        "clear": "both",
+//        "overflow": "hidden"
+//      },
+//      "tabStyles": {
+//        "position": "relative",
+//        "margin-left": "4px",
+//        "margin-top": "0px",
+//        "margin-right": "0px",
+//        "float": "left",
+//        "height": "40px",
+//        "cursor": "pointer",
+//        "min-width": "100px",
+//        "background": "transparent ",
+//        "border-top-left-radius": "5px",
+//        "border-top-right-radius": "5px",
+//        "border": "0px solid #f0f0f0",
+//        "border-bottom": "1px solid #3c76b7"
+//      },
+//      "tabTextStyles": {
+//        "color": "#666",
+//        "font-weight": "bold",
+//        "line-height": "40px",
+//        "text-align": "center",
+//        "margin-right": "8px",
+//        "margin-top": "0px",
+//        "margin-left": "8px"
+//      },
+//      "tabCurrentStyles": {
+//        "position": "relative",
+//        "margin-top": "0px",
+//        "margin-left": "2px",
+//        "margin-right": "0px",
+//        "float": "left",
+//        "height": "40px",
+//        "min-width": "100px",
+//        "background": "#3c76b7",
+//        "border-top-left-radius": "5px",
+//        "border-top-right-radius": "5px",
+//        "border-top": "0px solid #f0f0f0",
+//        "border-left": "0px solid #f0f0f0",
+//        "border-right": "0px solid #f0f0f0",
+//        "border-bottom": "1px solid #3c76b7"
+//      },
+//      "tabCurrentTextStyles": {
+//        "color": "#FFF",
+//        "font-weight": "bold",
+//        "line-height": "40px",
+//        "text-align": "center",
+//        "margin-right": "8px",
+//        "margin-left": "8px",
+//        "margin-top": "0px"
+//      }
+//    },
+//    "tab$Content": {
+//      "styles": {
+//        "padding": "20px 0px"
+//      }
+//    },
+//    "table": {
+//      "styles": {
+//        "background-color": "#FFF",
+//        "border": "1px solid #666666"
+//      },
+//      "titleStyles":{
+//        "background-color": "#dedede",
+//        "color": "#333",
+//        "font-weight": "bold",
+//        "height": "30px",
+//        "line-height": "30px",
+//        "text-align": "left"
+//      },
+//      "contentStyles": {
+//        "background-color": "#FFFFFF",
+//        "color": "#333"
+//      },
+//      "layoutStyles": {},
+//      "properties": {
+//        "width": "100%",
+//        "border": "0",
+//        "cellpadding": "3",
+//        "cellspacing": "3",
+//        "align": "center"
+//      }
+//    },
+//    "datagrid": {
+//      "styles": {},
+//      "tableStyles": {
+//        "border-top": "1px solid #666666",
+//        "border-left": "1px solid #666666"
+//      },
+//      "titleStyles": {
+//        "height": "28px",
+//        "cursor": "pointer",
+//        "line-height": "28px",
+//        "overflow": "hidden",
+//        "opacity": 1,
+//        "border-bottom": "1px solid #666666",
+//        "background-color": "#dedede",
+//        "border-right": "1px solid #666666"
+//      },
+//      "contentStyles": {
+//        "text-align": "center",
+//        "height": "30px",
+//        "line-height": "30px",
+//        "color": "#666",
+//        "border-right": "1px solid #666666",
+//        "border-bottom": "1px solid #666666"
+//      },
+//      "actionStyles": {
+//        "border-right": "1px solid #666666",
+//        "borderbottom": "1px solid #666666"
+//      },
+//      "editStyles": {
+//        "background-color": "#fff6f6",
+//        "text-align": "center",
+//        "height": "30px",
+//        "line-height": "30px",
+//        "border-right": "1px solid #666666",
+//        "border-bottom": "1px solid #666666"
+//      },
+//      "amountStyles": {
+//        "font-weight": "bold",
+//        "height": "30px",
+//        "line-height": "30px",
+//        "text-align": "center",
+//        "background-color": "#dedede",
+//        "border-right": "1px solid #666666",
+//        "border-bottom": "1px solid #666666"
+//      },
+//      "itemTitleStyles": {
+//        "height": "40px",
+//        "background-color": "#ffffff",
+//        "line-height": "30px",
+//        "padding": "0px 15px",
+//        "color": "#fb4747",
+//        "font-size": "18px",
+//        "font-weight": "bold",
+//        "border-bottom": "0px solid #cccccc"
+//      },
+//      "properties": {
+//        "width": "100%",
+//        "border": "0",
+//        "cellpadding": "3",
+//        "cellspacing": "0",
+//        "align": "center"
+//      }
+//    },
+//    "datagrid$Title": {
+//      "styles": {
+//        "background-color": "#dedede"
+//      }
+//    },
+//    "textfield": {
+//      "styles": {
+//        "border": "1px solid #ccc"
+//      },
+//      "inputStyles": {
+//        "height": "20px",
+//        "color": "#666"
+//      }
+//    },
+//    "calendar": {
+//      "styles": {
+//        "border": "1px solid #ccc"
+//      },
+//      "inputStyles": {
+//        "height": "20px",
+//        "color": "#666"
+//      }
+//    },
+//    "number": {
+//      "styles": {
+//        "border": "1px solid #ccc"
+//      },
+//      "inputStyles": {
+//        "height": "20px",
+//        "color": "#666"
+//      }
+//    },
+//    "personfield": {
+//      "styles": {
+//        "border": "1px solid #ccc"
+//      },
+//      "inputStyles": {
+//        "height": "20px",
+//        "color": "#666"
+//      }
+//    },
+//    "select": {
+//      "styles": {
+//        "border": "1px solid #ccc",
+//        "margin-top": "0px",
+//        "height": "26px",
+//        "color": "#666"
+//      }
+//    },
+//    "textarea": {
+//      "styles": {
+//        "border": "1px solid #ccc"
+//      },
+//      "inputStyles": {
+//        "color": "#666"
+//      }
+//    },
+//    "actionbar": {
+//      "style": "xform_blue_simple"
+//    }
+//  },
+//  "red-simple": {
+//    "name": "红色简洁",
+//    "form": {
+//      "styles":{
+//        "background-color": "#f0f0f0"
+//      }
+//    },
+//    "label": {
+//      "banner": {
+//        "name": "横幅",
+//        "styles": {
+//          "background-color": "#cc3d3d",
+//          "height": "40px",
+//          "line-height": "40px",
+//          "color": "#ffffff",
+//          "font-size": "18px",
+//          "padding": "0px 10px",
+//          "font-weight": "bold"
+//        }
+//      },
+//
+//      "title": {
+//        "name": "标题",
+//        "styles": {
+//          "text-align": "center",
+//          "font-size": "24px",
+//          "line-height": "60px",
+//          "font-weight": "bold",
+//          "color": "#cc3d3d",
+//          "height": "60px"
+//        }
+//      },
+//
+//      "section": {
+//        "name": "区段标题",
+//        "styles": {
+//          "height": "40px",
+//          "background-color": "#f7f7f7",
+//          "line-height": "40px",
+//          "padding": "0px 20px",
+//          "font-weight": "bold",
+//          "color": "#666",
+//          "border-bottom": "1px solid #cccccc"
+//        }
+//      }
+//    },
+//
+//    "div": {
+//      "banner": {
+//        "name": "横幅",
+//        "styles": {
+//          "background-color": "#cc3d3d",
+//          "height": "40px",
+//          "line-height": "40px",
+//          "color": "#ffffff",
+//          "font-size": "18px",
+//          "padding": "0px 10px",
+//          "font-weight": "bold"
+//        }
+//      },
+//
+//      "title": {
+//        "name": "标题",
+//        "styles": {
+//          "text-align": "center",
+//          "font-size": "24px",
+//          "line-height": "60px",
+//          "font-weight": "bold",
+//          "color": "#cc3d3d",
+//          "height": "60px"
+//        }
+//      },
+//      "section": {
+//        "name": "区段",
+//        "styles": {
+//          "padding": "20px 0px",
+//          "background-color": "#FFF",
+//          "border": "1px solid #cccccc"
+//        }
+//      }
+//    },
+//
+//    "tab": {
+//      "styles": {},
+//      "tabAreaStyles": {
+//        "height": "40px",
+//        "border-bottom": "2px solid #cc3d3d"
+//      },
+//      "contentAreaStyles": {
+//        "line-height": "normal",
+//        "clear": "both",
+//        "overflow": "hidden"
+//      },
+//      "tabStyles": {
+//        "position": "relative",
+//        "margin-left": "4px",
+//        "margin-top": "0px",
+//        "margin-right": "0px",
+//        "float": "left",
+//        "height": "40px",
+//        "cursor": "pointer",
+//        "min-width": "100px",
+//        "background": "transparent ",
+//        "border-top-left-radius": "5px",
+//        "border-top-right-radius": "5px",
+//        "border": "0px solid #f0f0f0",
+//        "border-bottom": "1px solid #cc3d3d"
+//      },
+//      "tabTextStyles": {
+//        "color": "#666",
+//        "font-weight": "bold",
+//        "line-height": "40px",
+//        "text-align": "center",
+//        "margin-right": "8px",
+//        "margin-top": "0px",
+//        "margin-left": "8px"
+//      },
+//      "tabCurrentStyles": {
+//        "position": "relative",
+//        "margin-top": "0px",
+//        "margin-left": "2px",
+//        "margin-right": "0px",
+//        "float": "left",
+//        "height": "40px",
+//        "min-width": "100px",
+//        "background": "#cc3d3d",
+//        "border-top-left-radius": "5px",
+//        "border-top-right-radius": "5px",
+//        "border-top": "0px solid #f0f0f0",
+//        "border-left": "0px solid #f0f0f0",
+//        "border-right": "0px solid #f0f0f0",
+//        "border-bottom": "1px solid #cc3d3d"
+//      },
+//      "tabCurrentTextStyles": {
+//        "color": "#FFF",
+//        "font-weight": "bold",
+//        "line-height": "40px",
+//        "text-align": "center",
+//        "margin-right": "8px",
+//        "margin-left": "8px",
+//        "margin-top": "0px"
+//      }
+//    },
+//    "tab$Content": {
+//      "styles": {
+//        "padding": "20px 0px"
+//      }
+//    },
+//    "table": {
+//      "styles": {
+//        "background-color": "#FFF",
+//        "margin": "10px 0px"
+//      },
+//      "titleStyles":{
+//        "background-color": "#fff",
+//        "color": "#333",
+//        "font-weight": "bold",
+//        "height": "30px",
+//        "line-height": "30px",
+//        "text-align": "right"
+//      },
+//      "contentStyles": {
+//        "background-color": "#FFFFFF",
+//        "color": "#333"
+//      },
+//      "layoutStyles": {},
+//      "properties": {
+//        "width": "90%",
+//        "border": "0",
+//        "cellpadding": "3",
+//        "cellspacing": "5",
+//        "align": "center"
+//      }
+//    },
+//    "datagrid": {
+//      "styles": {},
+//      "tableStyles": {
+//        "border": "1px solid #cccccc"
+//      },
+//      "titleStyles": {
+//        "height": "28px",
+//        "cursor": "pointer",
+//        "line-height": "28px",
+//        "overflow": "hidden",
+//        "opacity": 1,
+//        "border-bottom": "1px solid #ccc",
+//        "background-color": "#f0f0f0"
+//      },
+//      "contentStyles": {
+//        "text-align": "center",
+//        "height": "30px",
+//        "line-height": "30px",
+//        "color": "#666"
+//      },
+//      "actionStyles": {
+//        "background-color": "#f7f7f7"
+//      },
+//      "editStyles": {
+//        "background-color": "#fff6f6",
+//        "text-align": "center",
+//        "height": "30px",
+//        "line-height": "30px"
+//      },
+//      "amountStyles": {
+//        "border-top": "1px solid #ccc",
+//        "font-weight": "bold",
+//        "height": "30px",
+//        "line-height": "30px",
+//        "text-align": "center",
+//        "background-color": "#f0f0f0"
+//      },
+//      "itemTitleStyles": {
+//        "height": "40px",
+//        "background-color": "#ffffff",
+//        "line-height": "30px",
+//        "padding": "0px 15px",
+//        "color": "#fb4747",
+//        "font-size": "18px",
+//        "font-weight": "bold",
+//        "border-bottom": "0px solid #cccccc"
+//      },
+//      "properties": {
+//        "width": "90%",
+//        "border": "0",
+//        "cellpadding": "3",
+//        "cellspacing": "0",
+//        "align": "center"
+//      }
+//    },
+//    "datagrid$Title": {
+//      "styles": {
+//        "background-color": "#f0f0f0"
+//      }
+//    },
+//    "textfield": {
+//      "styles": {
+//        "border-bottom": "1px solid #ccc",
+//        "border-top": "0px",
+//        "border-left": "0px",
+//        "border-right": "0px"
+//      },
+//      "inputStyles": {
+//        "height": "26px",
+//        "color": "#666"
+//      }
+//    },
+//    "calendar": {
+//      "styles": {
+//        "border-bottom": "1px solid #ccc",
+//        "border-top": "0px",
+//        "border-left": "0px",
+//        "border-right": "0px"
+//      },
+//      "inputStyles": {
+//        "height": "26px",
+//        "color": "#666"
+//      }
+//    },
+//    "number": {
+//      "styles": {
+//        "border-bottom": "1px solid #ccc",
+//        "border-top": "0px",
+//        "border-left": "0px",
+//        "border-right": "0px"
+//      },
+//      "inputStyles": {
+//        "height": "26px",
+//        "color": "#666"
+//      }
+//    },
+//    "personfield": {
+//      "styles": {
+//        "border-bottom": "1px solid #ccc",
+//        "border-top": "0px",
+//        "border-left": "0px",
+//        "border-right": "0px"
+//      },
+//      "inputStyles": {
+//        "height": "26px",
+//        "color": "#666"
+//      }
+//    },
+//    "select": {
+//      "styles": {
+//        "border-bottom": "1px solid #999",
+//        "border-top": "0px",
+//        "border-left": "0px",
+//        "border-right": "0px",
+//        "margin-top": "5px",
+//        "color": "#666"
+//      }
+//    },
+//    "textarea": {
+//      "styles": {
+//        "border-bottom": "1px solid #ccc",
+//        "border-top": "0px",
+//        "border-left": "0px",
+//        "border-right": "0px"
+//      },
+//      "inputStyles": {
+//        "color": "#666"
+//      }
+//    },
+//    "actionbar": {
+//      "style": "xform_red_simple"
+//    }
+//  },
+//
+//  "blue-simple": {
+//    "name": "蓝色简洁",
+//    "form": {
+//      "styles":{
+//        "background-color": "#f0f0f0"
+//      }
+//    },
+//    "label": {
+//      "banner": {
+//        "name": "横幅",
+//        "styles": {
+//          "background-color": "#3c76b7",
+//          "height": "40px",
+//          "line-height": "40px",
+//          "color": "#ffffff",
+//          "font-size": "18px",
+//          "padding": "0px 10px",
+//          "font-weight": "bold"
+//        }
+//      },
+//
+//      "title": {
+//        "name": "标题",
+//        "styles": {
+//          "text-align": "center",
+//          "font-size": "24px",
+//          "line-height": "60px",
+//          "font-weight": "bold",
+//          "color": "#3c76b7",
+//          "height": "60px"
+//        }
+//      },
+//
+//      "section": {
+//        "name": "区段标题",
+//        "styles": {
+//          "height": "40px",
+//          "background-color": "#f7f7f7",
+//          "line-height": "40px",
+//          "padding": "0px 20px",
+//          "font-weight": "bold",
+//          "color": "#666",
+//          "border-bottom": "1px solid #cccccc"
+//        }
+//      }
+//    },
+//
+//    "div": {
+//      "banner": {
+//        "name": "横幅",
+//        "styles": {
+//          "background-color": "#3c76b7",
+//          "height": "40px",
+//          "line-height": "40px",
+//          "color": "#ffffff",
+//          "font-size": "18px",
+//          "padding": "0px 10px",
+//          "font-weight": "bold"
+//        }
+//      },
+//
+//      "title": {
+//        "name": "标题",
+//        "styles": {
+//          "text-align": "center",
+//          "font-size": "24px",
+//          "line-height": "60px",
+//          "font-weight": "bold",
+//          "color": "#3c76b7",
+//          "height": "60px"
+//        }
+//      },
+//      "section": {
+//        "name": "区段",
+//        "styles": {
+//          "padding": "20px 0px",
+//          "background-color": "#FFF",
+//          "border": "1px solid #cccccc"
+//        }
+//      }
+//    },
+//
+//    "tab": {
+//      "styles": {},
+//      "tabAreaStyles": {
+//        "height": "40px",
+//        "border-bottom": "2px solid #3c76b7"
+//      },
+//      "contentAreaStyles": {
+//        "line-height": "normal",
+//        "clear": "both",
+//        "overflow": "hidden"
+//      },
+//      "tabStyles": {
+//        "position": "relative",
+//        "margin-left": "4px",
+//        "margin-top": "0px",
+//        "margin-right": "0px",
+//        "float": "left",
+//        "height": "40px",
+//        "cursor": "pointer",
+//        "min-width": "100px",
+//        "background": "transparent ",
+//        "border-top-left-radius": "5px",
+//        "border-top-right-radius": "5px",
+//        "border": "0px solid #f0f0f0",
+//        "border-bottom": "1px solid #3c76b7"
+//      },
+//      "tabTextStyles": {
+//        "color": "#666",
+//        "font-weight": "bold",
+//        "line-height": "40px",
+//        "text-align": "center",
+//        "margin-right": "8px",
+//        "margin-top": "0px",
+//        "margin-left": "8px"
+//      },
+//      "tabCurrentStyles": {
+//        "position": "relative",
+//        "margin-top": "0px",
+//        "margin-left": "2px",
+//        "margin-right": "0px",
+//        "float": "left",
+//        "height": "40px",
+//        "min-width": "100px",
+//        "background": "#3c76b7",
+//        "border-top-left-radius": "5px",
+//        "border-top-right-radius": "5px",
+//        "border-top": "0px solid #f0f0f0",
+//        "border-left": "0px solid #f0f0f0",
+//        "border-right": "0px solid #f0f0f0",
+//        "border-bottom": "1px solid #3c76b7"
+//      },
+//      "tabCurrentTextStyles": {
+//        "color": "#FFF",
+//        "font-weight": "bold",
+//        "line-height": "40px",
+//        "text-align": "center",
+//        "margin-right": "8px",
+//        "margin-left": "8px",
+//        "margin-top": "0px"
+//      }
+//    },
+//    "tab$Content": {
+//      "styles": {
+//        "padding": "20px 0px"
+//      }
+//    },
+//    "table": {
+//      "styles": {
+//        "background-color": "#FFF",
+//        "margin": "10px 0px"
+//      },
+//      "titleStyles":{
+//        "background-color": "#fff",
+//        "color": "#333",
+//        "font-weight": "bold",
+//        "height": "30px",
+//        "line-height": "30px",
+//        "text-align": "right"
+//      },
+//      "contentStyles": {
+//        "background-color": "#FFFFFF",
+//        "color": "#333"
+//      },
+//      "layoutStyles": {},
+//      "properties": {
+//        "width": "90%",
+//        "border": "0",
+//        "cellpadding": "3",
+//        "cellspacing": "5",
+//        "align": "center"
+//      }
+//    },
+//    "datagrid": {
+//      "styles": {},
+//      "tableStyles": {
+//        "border": "1px solid #cccccc"
+//      },
+//      "titleStyles": {
+//        "height": "28px",
+//        "cursor": "pointer",
+//        "line-height": "28px",
+//        "overflow": "hidden",
+//        "opacity": 1,
+//        "border-bottom": "1px solid #ccc",
+//        "background-color": "#f0f0f0"
+//      },
+//      "contentStyles": {
+//        "text-align": "center",
+//        "height": "30px",
+//        "line-height": "30px",
+//        "color": "#666"
+//      },
+//      "actionStyles": {
+//        "background-color": "#f7f7f7"
+//      },
+//      "editStyles": {
+//        "background-color": "#fff6f6",
+//        "text-align": "center",
+//        "height": "30px",
+//        "line-height": "30px"
+//      },
+//      "amountStyles": {
+//        "border-top": "1px solid #ccc",
+//        "font-weight": "bold",
+//        "height": "30px",
+//        "line-height": "30px",
+//        "text-align": "center",
+//        "background-color": "#f0f0f0"
+//      },
+//      "itemTitleStyles": {
+//        "height": "40px",
+//        "background-color": "#ffffff",
+//        "line-height": "30px",
+//        "padding": "0px 15px",
+//        "color": "#fb4747",
+//        "font-size": "18px",
+//        "font-weight": "bold",
+//        "border-bottom": "0px solid #cccccc"
+//      },
+//      "properties": {
+//        "border": "0",
+//        "cellpadding": "3",
+//        "cellspacing": "0",
+//        "align": "center"
+//      }
+//    },
+//    "datagrid$Title": {
+//      "styles": {
+//        "background-color": "#f0f0f0"
+//      }
+//    },
+//    "textfield": {
+//      "styles": {
+//        "border-bottom": "1px solid #ccc",
+//        "border-top": "0px",
+//        "border-left": "0px",
+//        "border-right": "0px"
+//      },
+//      "inputStyles": {
+//        "height": "26px",
+//        "color": "#666"
+//      }
+//    },
+//    "calendar": {
+//      "styles": {
+//        "border-bottom": "1px solid #ccc",
+//        "border-top": "0px",
+//        "border-left": "0px",
+//        "border-right": "0px"
+//      },
+//      "inputStyles": {
+//        "height": "26px",
+//        "color": "#666"
+//      }
+//    },
+//    "number": {
+//      "styles": {
+//        "border-bottom": "1px solid #ccc",
+//        "border-top": "0px",
+//        "border-left": "0px",
+//        "border-right": "0px"
+//      },
+//      "inputStyles": {
+//        "height": "26px",
+//        "color": "#666"
+//      }
+//    },
+//    "personfield": {
+//      "styles": {
+//        "border-bottom": "1px solid #ccc",
+//        "border-top": "0px",
+//        "border-left": "0px",
+//        "border-right": "0px"
+//      },
+//      "inputStyles": {
+//        "height": "26px",
+//        "color": "#666"
+//      }
+//    },
+//    "select": {
+//      "styles": {
+//        "border-bottom": "1px solid #999",
+//        "border-top": "0px",
+//        "border-left": "0px",
+//        "border-right": "0px",
+//        "margin-top": "5px",
+//        "color": "#666"
+//      }
+//    },
+//    "textarea": {
+//      "styles": {
+//        "border-bottom": "1px solid #ccc",
+//        "border-top": "0px",
+//        "border-left": "0px",
+//        "border-right": "0px"
+//      },
+//      "inputStyles": {
+//        "color": "#666"
+//      }
+//    },
+//    "actionbar": {
+//      "style": "xform_blue_simple"
+//    }
+//  },
+//
+//  "defaultMobile": {
+//    "name": "手机样式",
+//    "form": {
+//      "styles":{
+//        "background-color": "#f0f0f0"
+//      }
+//    },
+//    "label": {
+//      "title": {
+//        "name": "标题",
+//        "styles": {
+//          "text-align": "center",
+//          "font-size": "24px",
+//          "line-height": "50px",
+//          "font-weight": "bold",
+//          "color": "#fb4747",
+//          "height": "50px",
+//          "margin-bottom": "20px"
+//        }
+//      },
+//
+//      "section": {
+//        "name": "区段标题",
+//        "styles": {
+//          "height": "40px",
+//          "background-color": "#ffffff",
+//          "line-height": "40px",
+//          "padding": "0px 15px",
+//          "color": "#fb4747",
+//          "font-size": "18px",
+//          "font-weight": "bold",
+//          "border-bottom": "0px solid #cccccc"
+//        }
+//      }
+//    },
+//
+//    "div": {
+//      "title": {
+//        "name": "标题",
+//        "styles": {
+//          "height": "40px",
+//          "background-color": "#ffffff",
+//          "line-height": "40px",
+//          "padding": "0px 15px",
+//          "color": "#fb4747",
+//          "font-size": "18px",
+//          "font-weight": "bold",
+//          "border-bottom": "0px solid #cccccc"
+//        }
+//      },
+//      "section": {
+//        "name": "区段",
+//        "styles": {
+//          "margin": "20px auto",
+//          "background-color": "#ffffff",
+//          "padding": "10px 0px"
+//        }
+//      }
+//    },
+//
+//    "tab": {
+//      "styles": {},
+//      "tabAreaStyles": {
+//        "height": "40px",
+//        "background": "#ffffff",
+//        "border-top": "0px solid #CCC",
+//        "border-bottom": "0px solid #CCC"
+//      },
+//      "contentAreaStyles": {
+//        "line-height": "normal",
+//        "clear": "both",
+//        "overflow": "hidden"
+//      },
+//      "tabStyles": {
+//        "position": "relative",
+//        "margin-left": "2px",
+//        "margin-right": "0px",
+//        "float": "left",
+//        "height": "40px",
+//        "cursor": "pointer",
+//        "min-width": "70px",
+//        "background": "#ffffff",
+//        "border": "0px"
+//      },
+//      "tabTextStyles": {
+//        "color": "#666666",
+//        "line-height": "40px",
+//        "text-align": "center",
+//        "margin-right": "4px",
+//        "margin-top": "0px",
+//        "margin-left": "4px",
+//        "font-size": "14px"
+//      },
+//      "tabCurrentStyles": {
+//        "position": "relative",
+//        "margin-top": "0px",
+//        "margin-left": "2px",
+//        "margin-right": "0px",
+//        "float": "left",
+//        "height": "40px",
+//        "min-width": "70px",
+//        "background": "#ffffff",
+//        "border-bottom": "2px solid #bf6364"
+//      },
+//      "tabCurrentTextStyles": {
+//        "color": "#fb4747",
+//        "line-height": "40px",
+//        "text-align": "center",
+//        "margin-right": "4px",
+//        "margin-left": "4px",
+//        "font-size": "14px"
+//      }
+//    },
+//    "tab$Content": {
+//      "styles": {
+//        "padding": "10px 0px"
+//      }
+//    },
+//    "table": {
+//      "styles": {
+//        "margin-bottom": "10px",
+//        "margin-top": "10px"
+//      },
+//      "titleStyles":{
+//        "background-color": "#ffffff",
+//        "color": "#333",
+//        "border-bottom": "1px solid #cccccc",
+//        "height": "36px",
+//        "font-size": "16px",
+//        "width": "30%",
+//        //"font-weight": "400",
+//        "line-height": "36px",
+//        "text-align": "left",
+//        "font-weight": "bold"
+//      },
+//      "contentStyles": {
+//        "background-color": "#FFFFFF",
+//        "color": "#666",
+//        "font-size": "18px",
+//        "border-bottom": "1px solid #cccccc",
+//        "text-align": "right"
+//      },
+//      "layoutStyles": {},
+//      "properties": {
+//        "width": "90%",
+//        "border": "0",
+//        "cellpadding": "5",
+//        "cellspacing": "0",
+//        "align": "center"
+//      }
+//    },
+//    "datagrid": {
+//      "styles": {
+//        "margin": "10px auto",
+//        "width": "90%"
+//      },
+//      "tableStyles": {},
+//      "titleStyles": {
+//        "height": "36px",
+//        "cursor": "pointer",
+//        "line-height": "36px",
+//        "overflow": "hidden",
+//        "border-bottom": "1px solid #cccccc",
+//        "background-color": "#ffffff",
+//        "font-weight": "400",
+//        "text-align": "left",
+//        "font-size": "16px"
+//      },
+//      "contentStyles": {
+//        "text-align": "right",
+//        "height": "36px",
+//        "line-height": "26px",
+//        "color": "#666",
+//        "border-bottom": "1px solid #cccccc"
+//      },
+//      "actionStyles": {},
+//      "editStyles": {
+//        "background-color": "#ffffff",
+//        "text-align": "right",
+//        "height": "36px",
+//        "border-bottom": "1px solid #cccccc"
+//      },
+//      "amountStyles": {
+//        "border-top": "0px solid #cccccc",
+//        "font-weight": "bold",
+//        "height": "36px",
+//        "line-height": "36px",
+//        "text-align": "right",
+//        "background-color": "#ffffff",
+//        "border-bottom": "1px solid #cccccc"
+//      },
+//      "itemTitleStyles": {
+//        "height": "40px",
+//        "background-color": "#ffffff",
+//        "line-height": "30px",
+//        "padding": "0px 15px",
+//        "color": "#fb4747",
+//        "font-size": "18px",
+//        "font-weight": "bold",
+//        "border-bottom": "0px solid #cccccc"
+//      },
+//      "properties": {
+//        "border": "0",
+//        "cellpadding": "5",
+//        "cellspacing": "0",
+//        "align": "center",
+//        "width": "100%"
+//      }
+//    },
+//    "datagrid$Title": {
+//      "styles": {
+//        "background-color": "#ffffff"
+//      }
+//    },
+//    "textfield": {
+//      "styles": {
+//        "border": "0px solid #ccc",
+//        "color": "#666"
+//      },
+//      "inputStyles": {
+//        "height": "26px",
+//        "color": "#666",
+//        "font-size": "18px",
+//        "float": "right",
+//        "text-align": "right"
+//      }
+//    },
+//    "calendar": {
+//      "styles": {
+//        "border": "0px solid #ccc",
+//        "color": "#666"
+//      },
+//      "inputStyles": {
+//        "height": "26px",
+//        "color": "#666",
+//        "font-size": "18px",
+//        "float": "right",
+//        "text-align": "right"
+//      }
+//    },
+//    "number": {
+//      "styles": {
+//        "border": "0px solid #ccc",
+//        "color": "#666"
+//      },
+//      "inputStyles": {
+//        "height": "26px",
+//        "color": "#666",
+//        "font-size": "18px",
+//        "float": "right",
+//        "text-align": "right"
+//      }
+//    },
+//    "personfield": {
+//      "styles": {
+//        "border": "0px solid #ccc",
+//        "color": "#666"
+//      },
+//      "inputStyles": {
+//        "height": "26px",
+//        "color": "#666",
+//        "font-size": "18px",
+//        "float": "right",
+//        "text-align": "right"
+//      }
+//    },
+//    "select": {
+//      "styles": {
+//        "border": "0px solid #ccc",
+//        "color": "#666",
+//        "font-size": "18px",
+//        "margin-top": "5px",
+//        "height": "26px",
+//        "text-align": "right"
+//      }
+//    },
+//    "textarea": {
+//      "styles": {
+//        "border": "0px solid #ccc",
+//        "color": "#666"
+//      },
+//      "inputStyles": {
+//        "height": "26px",
+//        "color": "#666",
+//        "font-size": "18px",
+//        "float": "right",
+//        "text-align": "right"
+//      }
+//    },
+//    "actionbar": {
+//      "style": "xform_blue_simple"
+//    }
+//  }
+//
+//}

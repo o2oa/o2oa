@@ -1,0 +1,241 @@
+{
+
+  "treeContentNode" : {
+	"cursor" : "pointer",
+	"color" : "#666",
+	"font-family": "微软雅黑",
+	"font-size": "14px",
+	"background-color": "#F8F8F8"
+  },
+  "treeItemNode": {
+	"overflow" : "hidden",
+	"cursor" : "pointer",
+	"color" : "#333",
+	"height" : "40px",
+	"font-weight" : "normal",
+	"line-height" : "40px",
+	"font-family": "微软雅黑",
+	"font-size": "15px",
+	"position" : "relative",
+	"background-color": "#F8F8F8"
+  },
+  "treeItemNode_selected" : {
+	"color" : "#fff",
+	"background-color" : "#3C76B7"
+  },
+  "treeItemNode_over" : {
+	"background-color" : "#f0f0f0",
+	"color" : "#333"
+  },
+  "treeItemIconNode" : {
+	"height" : "40px",
+	"width" : "16px",
+	"float" : "left",
+	"margin-left" : "6px",
+	"background" : "url(/x_component_Minder/$Common/default/icon/folder.png) no-repeat 0px 12px"
+  },
+  "treeItemIconNode_selected" : {
+	"height" : "40px",
+	"width" : "16px",
+	"float" : "left",
+	"margin-left" : "6px",
+	"background" : "url(/x_component_Minder/$Common/default/icon/folder_selected.png) no-repeat 0px 12px"
+  },
+  "treeItemIconNode_over" : {
+	"height" : "40px",
+	"width" : "16px",
+	"float" : "left",
+	"margin-left" : "6px",
+	"background" : "url(/x_component_Minder/$Common/default/icon/folder.png) no-repeat 0px 12px"
+  },
+  "treeItemTextNode" : {
+	"float" : "left",
+	"margin-left" : "6px"
+  },
+  "emptyExpendNode" : {
+	"height" : "40px",
+	"width" : "16px",
+	"float" : "left",
+	"margin-left" : "6px"
+  },
+  "treeItemExpendNode" : {
+	"height" : "40px",
+	"width" : "16px",
+	"float" : "left",
+	"margin-left" : "6px",
+	"background": "url(/x_component_Minder/$Common/default/icon/arrow_down.png) no-repeat 0px 12px"
+  },
+  "treeItemExpendNode_selected" : {
+	"height" : "40px",
+	"width" : "16px",
+	"float" : "left",
+	"margin-left" : "6px",
+	"background": "url(/x_component_Minder/$Common/default/icon/arrow_down_selected.png) no-repeat 0px 12px"
+  },
+  "treeItemCollapseNode" : {
+	"height" : "40px",
+	"width" : "16px",
+	"float" : "left",
+	"margin-left" : "6px",
+	"background": "url(/x_component_Minder/$Common/default/icon/arrow_right.png) no-repeat 0px 12px"
+  },
+  "treeItemCollapseNode_selected" : {
+	"height" : "40px",
+	"width" : "16px",
+	"float" : "left",
+	"margin-left" : "6px",
+	"background": "url(/x_component_Minder/$Common/default/icon/arrow_right_selected.png) no-repeat 0px 12px"
+  },
+
+  "toolbarNode" : {
+	//	"margin-left" : "10px",
+	//	"margin-top" : "10px",
+	"overflow" : "hidden",
+	"padding" : "20px 20px 20px 20px",
+	"background-color" : "#fff",
+	"font-size" : "14px",
+	"color" : "#666",
+	"border-bottom" : "1px solid #ccc"
+  },
+  "toolgroupNode" : {
+	"padding-right" : "10px",
+	"float" : "left"
+  },
+  "toolItemNode_single" : {
+	"padding" : "5px 10px 5px 32px",
+	"border" : "1px solid #ccc",
+	"border-radius" : "4px",
+	"color" : "#666",
+	"background-repeat" : "no-repeat",
+	"background-position" : "8px center",
+	"float" : "left",
+	"cursor" : "pointer"
+  },
+  "toolItemNode_left" : {
+	"padding" : "5px 10px 5px 32px",
+	"border" : "1px solid #ccc",
+	"border-top-left-radius" : "4px",
+	"border-bottom-left-radius" : "4px",
+	"color" : "#666",
+	"background-repeat" : "no-repeat",
+	"background-position" : "8px center",
+	"float" : "left",
+	"cursor" : "pointer"
+  },
+  "toolItemNode_center" : {
+	"padding" : "5px 10px 5px 32px",
+	"border-top" : "1px solid #ccc",
+	"border-right" : "1px solid #ccc",
+	"border-bottom" : "1px solid #ccc",
+	"color" : "#666",
+	"background-repeat" : "no-repeat",
+	"background-position" : "8px center",
+	"float" : "left",
+	"cursor" : "pointer"
+  },
+  "toolItemNode_right" : {
+	"padding" : "5px 10px 5px 32px",
+	"border-top" : "1px solid #ccc",
+	"border-right" : "1px solid #ccc",
+	"border-bottom" : "1px solid #ccc",
+	"border-top-right-radius" : "4px",
+	"border-bottom-right-radius" : "4px",
+	"color" : "#666",
+	"background-repeat" : "no-repeat",
+	"background-position" : "8px center",
+	"float" : "left",
+	"cursor" : "pointer"
+  },
+  "toolItemNode_over" : {
+	"background-color" : "#3C76B7",
+	"border" : "1px solid #3D6899",
+	"color" : "#fff"
+  },
+  "toolItemNode_normal" : {
+	"background-color" : "#fff",
+	"border" : "1px solid #ccc",
+	"color" : "#666"
+  },
+
+  "toolabrRightNode" : {
+	"float" : "right",
+	"overflow" : "hidden"
+  },
+
+  "searchBarAreaNode": {
+	//"margin": "0px 20px 0px 20px",
+	"height": "30px",
+	"overflow": "hidden",
+	"float" : "left"
+  },
+  "searchBarNode": {
+	"border-radius": "4px",
+	"max-width": "250px",
+	"height": "28px",
+	"background-color": "#FFF",
+	"border": "1px solid #ccc",
+	//"border-radius":"10px",
+	"float": "left"
+  },
+  "searchBarActionNode": {
+	"width": "40px",
+	"height": "28px",
+	"background": "url(/x_component_Minder/$Common/default/icon_tool/search.png) center center no-repeat",
+	"float": "left",
+	"cursor": "pointer"
+  },
+  "searchBarResetActionNode": {
+	"position" : "absolute",
+	"top" : "0px",
+	"right" : "0px",
+	"width": "40px",
+	"height": "28px",
+	"background": "url(/x_component_Minder/$Common/default/icon_tool/icon_off.png) center center no-repeat",
+	"cursor": "pointer"
+  },
+  "searchBarInputBoxNode": {
+	"position" : "relative",
+	"height": "28px",
+	"line-height": "28px",
+	"padding-left": "10px",
+	"float" : "left",
+	"width" : "160px"
+  },
+  "searchBarInputNode": {
+	"-webkit-user-select": "text",
+	"-moz-user-select": "text",
+	"width": "100%",
+	"height": "24px",
+	"border": "0px",
+	"color": "#666"
+  },
+  "listViewTypeNode": {
+	"width": "24px",
+	"height": "30px",
+	"background": "url(/x_component_Minder/$Common/default/icon_tool/listview.png) center right no-repeat",
+	"float": "left",
+	"cursor": "pointer"
+  },
+  "listViewTypeNode_active": {
+	"width": "24px",
+	"height": "30px",
+	"background": "url(/x_component_Minder/$Common/default/icon_tool/listview_active.png) center right no-repeat",
+	"float": "left",
+	"cursor": "pointer"
+  },
+  "tileViewTypeNode": {
+	"width": "24px",
+	"height": "30px",
+	"background": "url(/x_component_Minder/$Common/default/icon_tool/tileview.png) center right no-repeat",
+	"float": "left",
+	"cursor": "pointer"
+  },
+  "tileViewTypeNode_active": {
+	"width": "24px",
+	"height": "30px",
+	"background": "url(/x_component_Minder/$Common/default/icon_tool/tileview_active.png) center right no-repeat",
+	"float": "left",
+	"cursor": "pointer"
+  }
+	
+}

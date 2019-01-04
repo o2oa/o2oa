@@ -1,0 +1,62 @@
+[
+  {
+    "title": "下载EXCEL模板",
+    "id": "1.1",
+    "action": "downloadTemplate",
+    "icon": "download.png",
+    "expand": false,
+    "position": "left",
+    "styles": "toolbarItemNode",
+    "sub": []
+  },
+  {
+    "title": "导入考勤数据",
+    "id": "1.2",
+    "action": "importExcel",
+    "icon": "import.png",
+    "expand": false,
+    "position": "left",
+    "styles": "toolbarItemNode",
+    "sub": []
+  },
+  {
+    "title": "核对考勤数据",
+    "id": "1.3",
+    "action": "checkData",
+    "icon": "check.png",
+    "expand": false,
+    "position": "left",
+    "styles": "toolbarItemNode",
+    "sub": []
+  },
+  {
+    "title": "分析考勤数据",
+    "id": "1.4",
+    "action": "analyseData",
+    "icon": "analysis.png",
+    "expand": false,
+    "position": "left",
+    "styles": "toolbarItemNode",
+    "sub": []
+  },
+  {
+    "title": "统计考勤数据",
+    "id": "1.5",
+    "action": "staticData",
+    "icon": "statistics.png",
+    "expand": false,
+    "position": "left",
+    "styles": "toolbarItemNode",
+    "sub": []
+  },
+  {
+    "title": "查看说明",
+    "id": "2.1",
+    "action": "showDescription",
+    "icon": "help.png",
+    "expand": false,
+    "position": "left",
+    "styles": "toolbarItemRightNode",
+    "sub": []
+  }
+]

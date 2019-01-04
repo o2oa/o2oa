@@ -1,0 +1,94 @@
+{
+	"markNode": {
+        "opacity": 0.6,
+        "position": "absolute",
+        "background-color": "#CCC",
+        "top": "0px",
+        "left": "0px"
+    },
+    "areaNode": {
+        "position": "absolute",
+        "opacity": 0,
+        "top": "0px"
+    },
+    "createNode": {
+        "background-color": "#FFF",
+        "width": "80%",
+        "max-width": "800px",
+        "box-shadow": "0px 0px 20px #999",
+        "margin": "auto",
+        "border-radius": "8px",
+        "border": "6px solid #666",
+        "overflow": "hidden"
+    },
+    "createNewNode": {
+        "width": "47px",
+        "height": "47px",
+        "background": "url("+"/x_component_cms_Index/$Starter/default/new.png) no-repeat"
+    },
+    "formNode": {
+        "border-radius": "8px",
+        "border": "0px solid #666",
+        "width": "70%",
+        "margin": "auto",
+        "font-size": "16px",
+        "color": "#666",
+        "font-family": "微软雅黑"
+    },
+    "startOkActionNode": {
+        "height": "30px",
+        "width": "85px",
+        "cursor": "pointer",
+        "float": "right",
+        "line-height": "30px",
+        "padding-left": "65px",
+        "font-size": "16px",
+        "font-family": "微软雅黑",
+        "border-radius": "3px",
+        "border": "1px solid #354f67",
+        "color": "#FFF",
+        "margin-right": "20px",
+        "margin-top": "20px",
+        "box-shadow": "0px 0px 0px #666",
+        "background": "url("+"/x_component_cms_Index/$Starter/default/editOk_bg.png) no-repeat"
+    },
+    "cancelActionNode": {
+        "height": "30px",
+        "width": "60px",
+        "cursor": "pointer",
+        "float": "right",
+        "line-height": "30px",
+        "padding-left": "40px",
+        "font-size": "16px",
+        "font-family": "微软雅黑",
+        "border-radius": "3px",
+        "color": "#FFF",
+        "margin-top": "20px",
+        "box-shadow": "0px 0px 0px #666",
+        "border": "1px solid #999",
+        "background": "url("+"/x_component_cms_Index/$Starter/default/editCancel_bg.png) no-repeat"
+    },
+    "departSelNode": {
+        "padding": "5px",
+        "margin-right": "10px",
+        "float": "left",
+        "background-color": "#DDD",
+        "border-radius": "3px",
+        "color": "#000",
+        "cursor": "pointer"
+    },
+    "departSelNode_over": {
+        "background-color": "#fecfb7"
+    },
+    "departSelNode_out": {
+        "background-color": "#EEE"
+    },
+    "departSelNode_selected": {
+        "background-color": "#ea621f",
+        "color": "#FFF"
+    },
+    "dealStartedWorkAction": {
+        "color": "#0000FF",
+        "cursor": "pointer"
+    }
+}

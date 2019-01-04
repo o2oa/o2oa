@@ -1,0 +1,60 @@
+{
+	"inputAreaNode": {
+	    "overflow": "hidden",
+	    "margin": "5px"
+	},
+	"actionAreaNode": {
+	    "height": "20px",
+	    "background": "#EEE",
+	    "border-top": "1px solid #CCC",
+	    "border-bottom": "1px solid #CCC",
+	    "cursor": "pointer"
+	},
+	"actionNode": {
+	    "height": "20px",
+	    "background": "url("+"/x_component_cms_QueryViewDesigner/widget/$ViewFilter/default/down.png) no-repeat center -2px"
+	},
+	"verificationNode": {
+	    "background-color": "#fbe8e8",
+	    "color": "#ff0000",
+	    "height": "24px",
+	    "line-height": "24px"
+	},
+	"verificationTextNode": {
+	    "background": "url("+"/x_component_cms_QueryViewDesigner/widget/$ViewFilter/default/icon/error.png) no-repeat 5px center",
+	    "padding-left": "26px"
+	},
+
+	"itemNode": {
+        "cursor": "pointer",
+        "height": "24px",
+        "margin": "2px 4px",
+        "background-color": "#f4f7fe",
+        "border": "1px solid #999999"
+    },
+    "itemNode_current": {
+        "cursor": "pointer",
+        "height": "24px",
+        "margin": "2px 4px",
+        "background-color": "#e1e9ff",
+        "border": "1px solid #999999"
+    },
+    "itemDeleteNode": {
+        "width": "20px",
+        "height": "24px",
+        "float": "right",
+        "background": "url("+"/x_component_cms_QueryViewDesigner/widget/$ViewFilter/default/icon/delete1.png) no-repeat center center",
+        "cursor": "pointer"
+    },
+    "itemContentNode": {
+        "padding-left": "5px",
+        "padding-right": "3px",
+        "margin-right": "20px",
+        "height": "24px",
+        "line-height": "24px",
+        "overflow": "hidden",
+        "text-overflow": "ellipsis",
+        "white-space": "nowrap"
+    }
+
+}

@@ -7030,6 +7030,113 @@
       ]
     },
     {
+      "name": "ValidationAction",
+      "className": "com.x.program.center.jaxrs.validation.ValidationAction",
+      "description": "验证",
+      "methods": [
+        {
+          "name": "meta",
+          "className": "com.x.program.center.jaxrs.validation.ActionMeta",
+          "description": "测试数据库对象存储.",
+          "type": "GET",
+          "path": "jaxrs/validation/meta",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "数据库主键,自动生成."
+            },
+            {
+              "name": "stringValue",
+              "type": "String",
+              "isCollection": false,
+              "description": "文本字段."
+            },
+            {
+              "name": "stringLobValue",
+              "type": "String",
+              "isCollection": false,
+              "description": "长文本."
+            },
+            {
+              "name": "booleanValue",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            },
+            {
+              "name": "dateTimeValue",
+              "type": "Date",
+              "isCollection": false,
+              "description": "日期和时间值."
+            },
+            {
+              "name": "dateValue",
+              "type": "Date",
+              "isCollection": false,
+              "description": "日期值."
+            },
+            {
+              "name": "timeValue",
+              "type": "Date",
+              "isCollection": false,
+              "description": "时间值."
+            },
+            {
+              "name": "integerValue",
+              "type": "Integer",
+              "isCollection": false,
+              "description": "整型."
+            },
+            {
+              "name": "longValue",
+              "type": "Long",
+              "isCollection": false,
+              "description": "长整型."
+            },
+            {
+              "name": "doubleValue",
+              "type": "Double",
+              "isCollection": false,
+              "description": "双精度浮点数."
+            },
+            {
+              "name": "listValueList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "List类型."
+            },
+            {
+              "name": "mapValueMap",
+              "type": "StringValueMap",
+              "isCollection": false,
+              "description": "Map类型."
+            },
+            {
+              "name": "createTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "创建时间,自动生成,索引创建在约束中."
+            },
+            {
+              "name": "updateTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "修改时间,自动生成,索引创建在约束中."
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "WarnLogAction",
       "className": "com.x.program.center.jaxrs.warnlog.WarnLogAction",
       "description": "警告",

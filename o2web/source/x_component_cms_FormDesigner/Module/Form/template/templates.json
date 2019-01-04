@@ -1,0 +1,22 @@
+[
+  {
+    "name": "form.json",
+    "title": "空白表单",
+    "icon": "form.png"
+  },
+  {
+    "name": "form_publish_edit.json",
+    "title": "发布类编辑表单",
+    "icon": "form_publish_edit.png"
+  },
+  {
+    "name": "form_publish_read.json",
+    "title": "发布类阅读表单",
+    "icon": "form_publish_read.png"
+  },
+  {
+    "name": "form_input.json",
+    "title": "数据录入类表单",
+    "icon": "form_input.png"
+  }
+]

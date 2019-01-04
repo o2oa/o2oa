@@ -1,0 +1,113 @@
+MWF.xApplication.OKR.LP = {
+	"title": "工作分派管理",
+	"delete" : "删除",
+	"deleteDocumentTitle": "删除确认",
+	"deleteDocument": "您确定要删除该信息吗?",
+	"deleteDocumentOK": "删除成功",
+	"createSuccess" : "创建成功",
+	"updateSuccess" : "更新成功",
+	"inputName" : "请输入名称",
+
+	"dateFormatMonth": "%Y年%m月",
+	"dateFormatOnlyMonth": "%m",
+	"dateFormatDay": "%Y-%m-%d",
+	"dateFormatMonthDayLocal": "%m月%d日",
+	"dateFormat": "db",
+
+	"month" : "月",
+	"today" : "今天",
+	"day" : "天",
+
+	"cancel" : "取消",
+	"ok" : "确定",
+
+	"name" : "姓名",
+	"create_cancel_title": "取消新建确认",
+	"create_cancel": "您确定要取消新建吗?",
+
+	"index" : {
+
+	},
+
+
+	"deleteAttachmentTitle":"删除附件确认",
+	"deleteAttachment": "是否确定要删除您选中的附件？",
+
+	"replaceAttachmentTitle":"替换附件确认",
+	"replaceAttachment": "是否确定要替换您选中的附件？",
+	"notValidation": "数据校验未通过",
+
+	"centerWorkDeployer" : {
+		title : "部署中心工作",
+		drafter : "拟稿人",
+		draftDepartment : "拟稿部门",
+		draftDate : "拟稿日期",
+		centerWorkInfor: "中心工作信息",
+		centerWorkTitle : "中心工作标题",
+		defaultWorkType: "默认工作类别",
+		defaultWorkLevel: "默认工作级别",
+		workCompletedLimit: "工作完成时限",
+		centerWorkMemo: "中心工作描述",
+		myWorkInfor : "具体工作信息",
+
+		splitWorkInfor : "工作拆解过程",
+
+		subject : "标题",
+		relativeDepartment : "相关部门",
+		relativePerson : "干系人",
+		completeDateLimitStr : "完成时限",
+		action : "操作",
+
+		responsibilityOrganizationName : "责任部门",
+		deployerOrganizationName : "部署部门",
+		cooperateOrganizationName : "协助部门",
+		responsibilityEmployeeName : "责任人",
+		deployerName : "部署人",
+		cooperateEmployeeName : "协助人",
+		comfirm : "确认",
+		split : "拆分",
+		edit : "编辑",
+		remove : "删除",
+		deployeSuccess : "部署成功",
+		noWordNeedDeployed : "没有需要部署的工作"
+	},
+	"workForm" : {
+		title : "工作详情",
+		workType : "工作类别",
+		workTypeValue : ",深化改革",
+		workLevel : "工作等级",
+		workLevelValue : ",公司重点工作,部门重点工作",
+		timeLimit : "完成时限",
+		reportCycle : "汇报周期",
+		reportCycleText : "每周汇报,每月汇报",
+		reportCycleValue : "week,month",
+		weekDayValue : ",2,3,4,5,6,7,1",
+		weekDayText : ",周一,周二,周三,周四,周五,周六,周日",
+		monthDayValue :"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31",
+		monthDayText : ",一号,二号,三号,四号,五号,六号,七号,八号,九号,十号,十一号,十二号,十三号,十四号,十五号,十六号,十七号,十八号,十九号,二十号,二十一号,二十二号,二十三号,二十四号,二十五号,二十六号,二十七号,二十八号,二十九号,三十号,三十一号",
+		dutyDepartment : "责任部门",
+		dutyPerson : "责任人",
+		secondDepartment : "协助部门",
+		secondPerson : "协助人",
+		readReader : "阅知领导",
+		subject : "标题",
+		workSplitAndDescription : "事项分解及描述",
+		specificActionInitiatives  : "具体行动举措",
+		cityCompanyDuty : "地市公司职责",
+		milestoneMark : "预期里程碑（阶段性）结果标志",
+		importantMatters  : "重要事项",
+		attachment : "附件",
+		save : "保存",
+		cancel : "取消"
+	},
+	"workDetailTitle" : "工作详情",
+	"workChatTitle" : "工作交流",
+	"workQuestionTitle" : "问题请示",
+	"workReportTitle" : "工作汇报",
+	"departmentLeader" : "正职领导",
+	"cancel" : "取消",
+	"ok" : "保存",
+	"close" : "关闭",
+	"goonDeploy" : "继续部署",
+	"draft" : "草稿"
+};

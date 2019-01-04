@@ -1,0 +1,52 @@
+{
+	"contentNode": {
+	    "height": "100%",
+	    "width": "100%",
+	    "background-color": "#CCC"
+	},
+
+	"toolbarNode":{
+	    "height": "40px"
+	},
+
+	"screenNode": {
+	    "overflow": "hidden",
+	    "background-color": "#333",
+	    "color": "#FFF"
+	},
+	"bottomNode": {
+	    "height": "50px"
+	},
+	"toolbarButton": {
+	    "width": "32px",
+	    "height": "32px",
+	    "float": "left",
+	    "margin": "3px 0px 3px 3px",
+	    "border": "1px solid #CCC",
+	    "cursor": "pointer",
+	    "background-repeat": "no-repeat",
+	    "background-position": "center center"
+	},
+	"toolbarButton_over": {
+	    "border-top": "1px solid #EEE",
+	    "border-left": "1px solid #EEE",
+	    "border-right": "1px solid #999",
+	    "border-bottom": "1px solid #999"
+	},
+	"toolbarButton_down": {
+        "border-top": "1px solid #999",
+        "border-left": "1px solid #999",
+        "border-right": "1px solid #EEE",
+        "border-bottom": "1px solid #EEE"
+    },
+
+    "screenScrollNode": {
+        "overflow": "hidden",
+        "height": "100%",
+        "margin-right": "8px"
+    },
+    "screenInforAreaNode": {
+        "overflow": "hidden",
+        "padding": "10px"
+    }
+}

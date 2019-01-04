@@ -1,0 +1,31 @@
+[
+  {
+    "name": "ControlPanel",
+    "path": "ControlPanel",
+    "title": "控制面板",
+    "iconPath": "appicon.png",
+//    "allowList": ["系统管理员","张三"],
+//    "denyList": []
+  },
+  {
+    "name": "DesignCenter",
+    "path": "DesignCenter",
+    "title": "设计中心",
+    "iconPath": "appicon.png"
+  },
+  {
+    "name": "TaskCenter",
+    "path": "process.TaskCenter",
+    "title": "办公中心",
+    "iconPath": "appicon.png",
+    "widgetName": "TaskWidget",
+    "widgetTitle": "待办列表",
+    "widgetIconPath": "widgeticon.png"
+  },
+  {
+    "name": "cms",
+    "path": "cms.Index",
+    "title": "信息平台",
+    "iconPath": "appicon.png"
+  }
+]

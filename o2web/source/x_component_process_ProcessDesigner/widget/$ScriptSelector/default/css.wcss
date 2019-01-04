@@ -1,0 +1,113 @@
+{
+	"selScriptNode": {
+        "float": "right",
+        "height": "24px",
+        "width": "24px",
+        "cursor": "pointer",
+        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/script_add.png)  center center no-repeat"
+    },
+    "delScriptNode": {
+        "float": "right",
+        "height": "24px",
+        "width": "20px",
+        "cursor": "pointer",
+        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/script_delete.png)  center center no-repeat"
+    },
+    "addScriptNode": {
+        "height": "20px",
+        "width": "40px",
+        "border-radius": "3px",
+        "background-color": "#FFF",
+        "border": "1px solid #999",
+        "line-height": "20px",
+        "text-align": "center",
+        "cursor": "pointer",
+        "float": "right",
+        "margin": "3px 2px 0px 0px"
+    },
+    "contentNode": {
+        "height": "24px",
+        "margin-right": "100px"
+    },
+
+
+    "maskNode": {
+        "background-color": "#666",
+        "opacity": 0.6,
+        "z-index":10002
+    },
+    "containerNode": {
+		"height": "510px",
+		"width": "700px",
+		"background-color": "#FFF",
+		"overflow": "hidden",
+		"border": "3px solid #666",
+		"border-radius": "10px",
+		"box-shadow": "0px 0px 15px #666",
+		"position": "absolute",
+		"z-index":10003
+	},
+	"titleNode": {
+        "height": "30px",
+        "background-color": "#EEE",
+        "border-bottom": "1px solid #CCC"
+    },
+    "titleTextNode": {
+        "margin-right": "30px",
+        "height": "30px",
+        "padding": "0px 10px",
+        "color": "#666",
+        "font-weight": "bold",
+        "font-size": "14px",
+        "line-height": "30px"
+    },
+    "titleActionNode": {
+        "width": "30px",
+        "height": "30px",
+        "float": "right",
+        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/close.png) no-repeat center center",
+        "cursor": "pointer"
+    },
+    "windowContentNode": {
+        "overflow": "hidden",
+        "height": "455px",
+        "padding": "5px",
+        "margin-bottom": "5px"
+    },
+    "actionNode": {
+        "height": "40px",
+        "width": "280px",
+        "float": "right",
+        "margin": "auto"
+    },
+    "okActionNode": {
+        "width": "150px",
+        "height": "30px",
+        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/editOk_bg.png) no-repeat center center",
+        "border": "0px",
+        "color": "#FFF",
+        "font-size": "18px",
+        "padding-left": "35px",
+        "border-radius": "4px",
+        "cursor": "pointer"
+    },
+    "cancelActionNode": {
+        "width": "100px",
+        "height": "30px",
+        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/editCancel_bg.png) no-repeat center center",
+        "border": "0px",
+        "color": "#FFF",
+        "font-size": "18px",
+        "padding-left": "20px",
+        "border-radius": "4px",
+        "margin-left": "10px",
+        "cursor": "pointer"
+    },
+    "scriptListNode": {
+        "width": "160px"
+    },
+
+    "editorNode": {
+        "height": "200px"
+    }
+}

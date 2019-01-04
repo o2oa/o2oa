@@ -1,0 +1,79 @@
+[
+  {
+    "title" : "员工姓名",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "function(d){ return d.empName.split('@')[0] }",
+    "name" : "empName",
+    "width" : "10%"
+  },
+  {
+    "title" : "考勤日期",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "recordDateString",
+    "name" : "recordDateString",
+    "width" : "10%"
+  },
+  //  {
+  //    "title": "考勤状态",
+  //    "headStyles": "normalThNode",
+  //    "contentStyles": "normalTdNode",
+  //    "item": "function( d ){  var status=''; if(d.isGetSelfHolidays){ status = '请假' }else if(d.isAbsent){ status = '缺勤' }else if(d.isLate){ status = '迟到' }else if(d.isLeaveEarlier){ status = '早退' }else{ status = '正常' }; return status; }",
+  //    "name" : "status",
+  //    "width" : "10%"
+  //  },
+  {
+    "title" : "申诉原因",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "appealReason",
+    "name" : "appealReason",
+    "width" : "15%"
+  },
+  {
+    "title": "申述日期",
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "function( d ){ var date = d.appealDateString.split(' '); return date[0] }",
+    "name" : "appealDateString",
+    "width" : "10%"
+  },
+  {
+    "title": "审批状态",
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "function( d ){  if(d.status==0){ return '待处理' }else if(d.status==-1){ return '未通过' }else if(d.status==1){ return '通过' }else{ return '' } }",
+    "name" : "status",
+    "width" : "10%"
+  },
+  {
+    "title" : "审批意见",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "opinion1",
+    "name" : "opinion1",
+    "width" : "15%"
+  }
+  //  {
+  //    "title" : "操作",
+  //    "headStyles" : "normalThNode",
+  //    "contentStyles" : "normalTdNode",
+  //    "item" : "actions",
+  //    "name" : "actions",
+  //    "width" : "10%",
+  //    "sub" : [{
+  //      "title" : "同意",
+  //      "action" : "agree",
+  //      "styles" : "actionAgreeNode",
+  //      "overStyles" : "actionAgreeNode_over",
+  //      "downStyles" : "actionAgreeNode_down"
+  //    }, {
+  //      "title" : "不同意",
+  //      "action" : "deny",
+  //      "styles" : "actionDenyNode",
+  //      "overStyles" : "actionDenyNode_over",
+  //      "downStyles" : "actionDenyNode_down"
+  //    }]
+  //  }
+]

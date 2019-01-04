@@ -2,19 +2,19 @@ package com.x.base.core.container;
 
 public enum FieldType {
 	/* string */
-	stringValue, stringValueList,
+	stringValue, stringValueList, stringValueMap,
 	/* boolean */
-	booleanValue, booleanValueList,
+	booleanValue, booleanValueList, booleanValueMap,
 	/* integer */
-	integerValue, integerValueList,
+	integerValue, integerValueList, integerValueMap,
 	/* double */
-	doubleValue, doubleValueList,
+	doubleValue, doubleValueList, doubleValueMap,
 	/* long */
-	longValue, longValueList,
+	longValue, longValueList, longValueMap,
 	/* float */
-	floatValue, floatValueList,
+	floatValue, floatValueList, floatValueMap,
 	/* date */
-	dateValue, dateValueList,
+	dateValue, dateValueList, dateValueMap,
 	/* byte */
 	byteValueArray,
 	/* enum */

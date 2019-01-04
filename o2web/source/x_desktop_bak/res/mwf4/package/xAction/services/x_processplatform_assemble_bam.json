@@ -1,0 +1,44 @@
+{
+  "summary": {"uri": "/jaxrs/state/summary"},
+
+  "loadCategory": {"uri": "/jaxrs/state/category"},
+  "loadRunning": {"uri": "/jaxrs/state/running"},
+  "loadOrganization": {"uri": "/jaxrs/state/organization"},
+
+  "loadMonthlyTaskByApplication":  {"uri": "/jaxrs/period/list/count/start/task/unit/{unit}/person/{personName}/by/application"},
+  "loadMonthlyTaskByProcess":  {"uri": "/jaxrs/period/list/count/start/task/application/{applicationId}/unit/{unit}/person/{personName}/by/process"},
+  "loadMonthlyTaskByActivity":  {"uri": "/jaxrs/period/list/count/start/task/application/{applicationId}/process/{processId}/unit/{unit}/person/{personName}/by/activity"},
+  "loadMonthlyTaskByTopUnit":  {"uri": "/jaxrs/period/list/count/start/task/application/{applicationId}/process/{processId}/activity/{activityId}/by/unit"},
+  "loadMonthlyTaskByUnit":  {"uri": "/jaxrs/period/list/count/start/task/application/{applicationId}/process/{processId}/activity/{activityId}/unit/{unit}/by/unit"},
+
+  "loadMonthlyTaskCompletedByApplication":  {"uri": "/jaxrs/period/list/count/completed/task/unit/{unit}/person/{personName}/by/application"},
+  "loadMonthlyTaskCompletedByProcess":  {"uri": "/jaxrs/period/list/count/completed/task/application/{applicationId}/unit/{unit}/person/{personName}/by/process"},
+  "loadMonthlyTaskCompletedByActivity":  {"uri": "/jaxrs/period/list/count/completed/task/application/{applicationId}/process/{processId}/unit/{unit}/person/{personName}/by/activity"},
+  "loadMonthlyTaskCompletedByTopUnit":  {"uri": "/jaxrs/period/list/count/completed/task/application/{applicationId}/process/{processId}/activity/{activityId}/by/unit"},
+  "loadMonthlyTaskCompletedByUnit":  {"uri": "/jaxrs/period/list/count/completed/task/application/{applicationId}/process/{processId}/activity/{activityId}/unit/{unit}/by/unit"},
+
+  "loadMonthlyWorkByApplication":  {"uri": "/jaxrs/period/list/count/start/work/unit/{unit}/person/{personName}/by/application"},
+  "loadMonthlyWorkByProcess":  {"uri": "/jaxrs/period/list/count/start/work/application/{applicationId}/unit/{unit}/person/{personName}/by/process"},
+  "loadMonthlyWorkByActivity":  {"uri": "/jaxrs/period/list/count/start/work/application/{applicationId}/process/{processId}/unit/{unit}/person/{personName}/by/activity"},
+  "loadMonthlyWorkByTopUnit":  {"uri": "/jaxrs/period/list/count/start/work/application/{applicationId}/process/{processId}/activity/{activityId}/by/unit"},
+  "loadMonthlyWorkByUnit":  {"uri": "/jaxrs/period/list/count/start/work/application/{applicationId}/process/{processId}/activity/{activityId}/unit/{unit}/by/unit"},
+
+  "loadMonthlyWorkCompletedByApplication":  {"uri": "/jaxrs/period/list/count/completed/work/unit/{unit}/person/{personName}/by/application"},
+  "loadMonthlyWorkCompletedByProcess":  {"uri": "/jaxrs/period/list/count/completed/work/application/{applicationId}/unit/{unit}/person/{personName}/by/process"},
+  "loadMonthlyWorkCompletedByActivity":  {"uri": "/jaxrs/period/list/count/completed/work/application/{applicationId}/process/{processId}/unit/{unit}/person/{personName}/by/activity"},
+  "loadMonthlyWorkCompletedByTopUnit":  {"uri": "/jaxrs/period/list/count/completed/work/application/{applicationId}/process/{processId}/activity/{activityId}/by/unit"},
+  "loadMonthlyWorkCompletedByUnit":  {"uri": "/jaxrs/period/list/count/completed/work/application/{applicationId}/process/{processId}/activity/{activityId}/unit/{unit}/by/unit"},
+
+  "loadMonthlyTaskExpiredByApplication":  {"uri": "/jaxrs/period/list/count/expired/task/unit/{unit}/person/{personName}/by/application"},
+  "loadMonthlyTaskExpiredByProcess":  {"uri": "/jaxrs/period/list/count/expired/task/application/{applicationId}/unit/{unit}/person/{personName}/by/process"},
+  "loadMonthlyTaskExpiredByActivity":  {"uri": "/jaxrs/period/list/count/expired/task/application/{applicationId}/process/{processId}/unit/{unit}/person/{personName}/by/activity"},
+  "loadMonthlyTaskExpiredByTopUnit":  {"uri": "/jaxrs/period/list/count/expired/task/application/{applicationId}/process/{processId}/activity/{activityId}/by/unit"},
+  "loadMonthlyTaskExpiredByUnit":  {"uri": "/jaxrs/period/list/count/expired/task/application/{applicationId}/process/{processId}/activity/{activityId}/unit/{unit}/by/unit"},
+
+  "loadMonthlyWorkExpiredByApplication":  {"uri": "/jaxrs/period/list/count/expired/work/unit/{unit}/person/{personName}/by/application"},
+  "loadMonthlyWorkExpiredByProcess":  {"uri": "/jaxrs/period/list/count/expired/work/application/{applicationId}/unit/{unit}/person/{personName}/by/process"},
+  "loadMonthlyWorkExpiredByActivity":  {"uri": "/jaxrs/period/list/count/expired/work/application/{applicationId}/process/{processId}/unit/{unit}/person/{personName}/by/activity"},
+  "loadMonthlyWorkExpiredByTopUnit":  {"uri": "/jaxrs/period/list/count/expired/work/application/{applicationId}/process/{processId}/activity/{activityId}/by/unit"},
+  "loadMonthlyWorkExpiredByUnit":  {"uri": "/jaxrs/period/list/count/expired/work/application/{applicationId}/process/{processId}/activity/{activityId}/unit/{unit}/by/unit"},
+  "clazz": "x_processplatform_assemble_bam"
+}

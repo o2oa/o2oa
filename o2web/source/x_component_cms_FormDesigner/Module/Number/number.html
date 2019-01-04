@@ -1,0 +1,57 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="基本" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		  <tr>
+		    <td class="editTableTitle">标识:</td>
+		    <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">名称:</td>
+		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">描述:</td>
+		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+		  </tr>
+          <tr>
+            <td class="editTableTitle">小数点:</td>
+            <td class="editTableValue"><input type="text" name="decimals" value="text{$.decimals || '*'}" class="editTableInput"/></td>
+          </tr>
+            <tr>
+                <td class="editTableTitle">显示图标:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="showIcon" value="yes" text{($.showIcon!='no')?'checked':''}/>是
+                    <input type="radio" name="showIcon" value="no" text{($.showIcon=='no')?'checked':''}/>否
+                </td>
+            </tr>
+		</table>
+		
+		<div class="MWFMaplist" name="styles" title="样式"></div>
+        <div class="MWFMaplist" name="inputStyles" title="Input样式"></div>
+		<div class="MWFMaplist" name="properties" title="属性"></div>
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">计算:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="compute" value="create" text{($.compute.indexOf('create')!=-1)?'checked':''}/>创建
+                    <input type="radio" name="compute" value="save" text{($.compute.indexOf('save')!=-1)?'checked':''}/>保存
+                    <input type="radio" name="compute" value="show" text{($.compute.indexOf('show')!=-1)?'checked':''}/>显示
+                </td>
+            </tr>
+        </table>
+		
+		<div class="MWFScriptArea" name="defaultValue" title="默认值 (S)"></div>
+
+        <div class="MWFValidation" name="validationConfig"></div>
+        <div class="MWFScriptArea" name="validation" title="校验脚本 (S)"></div>
+		
+	</div>
+
+	<div title="事件"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

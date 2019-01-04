@@ -1,0 +1,50 @@
+{
+  "getCalendar": {"uri": "/jaxrs/calendar/{id}"},
+  "deleteCalendar": {"uri": "/jaxrs/calendar/{id}","method": "DELETE"},
+  "saveCalendar": {"uri": "/jaxrs/calendar","method": "POST"},
+  "followCalendar" : {"uri": "/jaxrs/calendar/follow/{id}","method": "GET"},
+  "followCalendarCancel" : {"uri": "/jaxrs/calendar/follow/{id}/cancel","method": "GET"},
+
+  "isCalendarManager": {"uri": "/jaxrs/calendar/ismanager/calendar/{calendarId}"},
+  "isManager": {"uri": "/jaxrs/calendar/ismanager"},
+  "listMyCalendar": {"uri": "/jaxrs/calendar/list/my"},
+  "listPublicCalendar": {"uri": "/jaxrs/calendar/list/public"},
+  "listCalendarWithFilter": {"uri": "/jaxrs/calendar/list/filter","method": "PUT"},
+
+
+  "getEvent": {"uri": "/jaxrs/event/{id}"},
+
+  "deleteAfterEvent": {"uri": "/jaxrs/event/after/{eventId}","method": "DELETE"},
+  "deleteAllEventsWithRepeatMaster": {"uri": "/jaxrs/event/all/{eventId}","method": "DELETE"},
+  "deleteSingleEvent": {"uri": "/jaxrs/event/single/{eventId}","method": "DELETE"},
+
+  "addEvent": {"uri": "/jaxrs/event","method": "POST"},
+  "updateAfterEvent": {"uri": "/jaxrs/event/update/after/{eventId}","method": "PUT"},
+  "updateAllEventsWithRepeatMaster": {"uri": "/jaxrs/event/update/all/{eventId}","method": "PUT"},
+  "updateSingleEvent": {"uri": "/jaxrs/event/update/single/{eventId}","method": "PUT"},
+
+
+//  calendarIds:日历账号ID
+//  eventType:信息类别: CALENDAR | EVENT
+//  source:信息来源: PERSONAL| LEADER | UNIT | MEETTING | BUSINESS_TRIP | HOLIDAY
+//  key:事件标题 或者 备注信息 模糊搜索
+//  startTime:查询开始时间
+//  endTime:查询结束时间
+//  createPerson:创建者
+  "listEventWithFilter": {"uri": "/jaxrs/event/list/filter","method": "PUT"},
+
+  "getRFC": {"uri": "/jaxrs/event/rfc/{id}"} //,
+
+//  "addAttachment": {
+//    "uri": "/jaxrs/attachment/meeting/{id}/upload/false",
+//    "method": "POST",
+//    "enctype": "formData"
+//  },
+//  "getAttachment": {"uri": "/jaxrs/attachment/{id}"},
+//  "removeAttachment": {"uri": "/jaxrs/attachment/{id}", "method": "DELETE"},
+//  "deleteFile": {"uri": "/jaxrs/attachment/{id}", "method": "DELETE"},
+//
+//  "getAttachmentData": {"uri": "/jaxrs/attachment/{id}/download/false"},
+//  "getAttachmentStream": {"uri": "/jaxrs/attachment/{id}/download/true"},
+//  "clazz": "x_calendar_assemble_control"
+}

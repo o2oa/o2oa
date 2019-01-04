@@ -1,0 +1,8 @@
+{
+  "inforBoxArrow" : {
+    "width":"17px",
+    "height" : "9px",
+    "position":"absolute",
+    "background" : "no-repeat url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAlCAYAAACgc9J8AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAP9JREFUeNq01oENhCAMBdCWuIgTuP8WOoGj9GhSDaeUfjiuCSEm+iKFVllESGNdVzrPk55xHIfewHnItm1MrVDMG/u+i0aeyWZp3R9CJRaBIWRB5YUHItAL80AEqmI1EIFcrAQ1rwjUxEoQgULsAue+2ayc/W83p5+z6RXggOO1WQGhrsFXP/Oip58tAaQTZ4QMbEbyEB2GCKEBdtpmru4NsC4aHg8PLJ/3lim2xDv02jYDz1kNQsGEQgiYeqAQBPuZQF1jFKqBYTn1RLK1D4+v3E3NGfgNkJlfdKi0XrUZgc1OWyt0Dwz/z37tGhA20s+WR4t+1iBbzTJyaD8CDAB7WgNSzh/AnwAAAABJRU5ErkJggg==)"
+  }
+}

@@ -1,0 +1,6 @@
+/.idea/
+/dest/
+/node_modules/
+npm-debug.log
+/.svn/
+gulpfile.js

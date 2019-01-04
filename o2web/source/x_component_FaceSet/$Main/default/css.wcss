@@ -1,0 +1,58 @@
+{
+    "node": {
+        "height": "100%",
+        "width": "100%",
+        "overflow": "auto"
+    },
+    "contentNode":{
+        "overflow": "hidden",
+        "margin": "20px",
+        "margin-right": "20px"
+    },
+    "picAreaNode": {
+        "overflow": "hidden",
+        "margin": "0px 0px 20px 20px"
+    },
+    "videoAreaNode": {
+        "overflow": "hidden",
+        "float": "left"
+    },
+
+    "video": {
+        "height": "225px",
+        "width": "308px",
+        "background": "#000000"
+    },
+    "actionAreaNode": {
+        "margin-left": "308px",
+        "overflow": "hidden"
+    },
+    "actionNode": {
+        "margin-left": "20px",
+        "border": "1px solid #999999",
+        "font-size": "16px",
+        "padding": "10px",
+        "width": "150px",
+        "float": "left",
+        "cursor": "pointer"
+    },
+    "inforNode": {
+        "margin-left": "328px",
+        "padding": "20px 0px",
+        "color": "#666666",
+        "font-size": "18px"
+    },
+
+    "canvasAreaNode": {
+        "overflow": "hidden",
+        "float": "left",
+        "height": "225px",
+        "width": "308px",
+        "margin-right": "20px",
+        "background": "#000000"
+    },
+    "canvas": {
+
+    }
+
+}

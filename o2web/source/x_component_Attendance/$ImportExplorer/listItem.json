@@ -1,0 +1,72 @@
+[
+  {
+    "title" : "文件名",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "fileName",
+    "name" : "fileName",
+    "width" : "40%"
+  },
+  {
+    "title" : "文件大小",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "function(data){ return (parseInt(data.length) / 1024).toFixed(2) + 'K' }",
+    "name" : "length",
+    "width" : "10%"
+  },
+  {
+    "title" : "上传时间",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "createTime",
+    "name" : "createTime",
+    "width" : "20%"
+  },
+  {
+    "title" : "上传人",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "function(d){ return d.creatorUid.split('@')[0] }",
+    "name" : "creatorUid",
+    "width" : "20%"
+  },
+  {
+    "access" : "admin",
+    "title" : "操作",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "actions",
+    "name" : "actions",
+    "width" : "10%",
+    "sub" : [{
+      "title" : "删除文件",
+      "action" : "remove",
+      "styles" : "actionDeleteNode",
+      "overStyles" : "actionDeleteNode_over",
+      "downStyles" : "actionDeleteNode_down"
+    },
+      {
+        "title": "下载文件",
+        "action": "openDocument",
+        "styles": "actionDownloadNode",
+        "overStyles": "actionDownloadNode_over",
+        "downStyles": "actionDownloadNode_down"
+      },
+      {
+        "title": "查看导入结果",
+        "action": "openResult",
+        "styles": "actionOpenNode",
+        "overStyles": "actionOpenNode_over",
+        "downStyles": "actionOpenNode_down"
+      }
+//    },{
+//      "title" : "查看校验结果",
+//      "action" : "openVaild",
+//      "styles" : "actionOpenVaildNode",
+//      "overStyles" : "actionOpenVaildNode_over",
+//      "downStyles" : "actionOpenVaildNode_down"
+//    }
+    ]
+  }
+]

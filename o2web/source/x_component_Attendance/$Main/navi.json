@@ -1,0 +1,143 @@
+[
+  {
+    "title": "我的考勤月报",
+    "id": "10",
+    "action" : "openMyIndex"
+  },
+  {
+    "title": "我的考勤统计",
+    "id": "11",
+    "action" : "openMyDetail"
+  },
+  {
+    "title": "我的申诉申请",
+    "id": "12",
+    "action" : "openMyAppealDeal"
+  },
+  {
+    "title": "员工考勤申诉审批",
+    "id": "13",
+    "action" : "openAppealDeal"
+  },
+  {
+    "access" :"admin_dept",
+    "type" :"sep"
+  },
+  {
+    "access" :"admin_dept",
+    "title": "部门考勤月报",
+    "id": "15",
+    "action" : "openUnitIndex"
+  },
+  {
+    "access" :"admin_dept",
+    "title": "个人考勤统计",
+    "id": "16",
+    "action" : "openPeopleDetail"
+  },
+  {
+    "access" :"admin_dept",
+    "title": "部门考勤统计",
+    "id": "17",
+
+    "action" : "openUnitDetail"
+  },
+  {
+    "access" :"admin",
+    "title": "公司考勤统计",
+    "id": "18",
+    "action" : "openTopUnitDetail"
+  },
+  {
+    "access" :"admin",
+    "type" :"sep"
+  },
+  {
+    "access" :"admin",
+    "title": "维护",
+    "id": "20",
+    "sub": [
+      {
+        "access" :"admin",
+        "title": "数据导入",
+        "id": "20.3",
+        "action" : "openImporting"
+      },
+      {
+        "access" :"admin",
+        "title": "导入错误信息",
+        "id": "20.4",
+        "action" : "openImportedInvalidInfor"
+      },
+      {
+        "access" :"admin",
+        "title": "非正常出勤数据导出",
+        "id": "20.42",
+        "action" : "openAbnormalExport"
+      },
+      {
+        "access" :"admin",
+        "title": "员工休假记录",
+        "id": "20.1",
+        "action" : "openSelfHoliday"
+      }
+    ]
+  },
+  {
+    "access" :"admin",
+    "title": "权限和人员",
+    "id": "30",
+    "sub": [
+      {
+        "id" : "30.10",
+        "access" : "admin",
+        "title" : "管理员设置",
+        "action" : "openPermissionSetting"
+      },
+      {
+        "id" : "30.20",
+        "access" : "admin",
+        "title" : "考勤人员配置",
+        "action" : "openPersonSetting"
+      }
+    ]
+  },
+  {
+    "access" :"admin",
+    "title": "配置",
+    "id": "40",
+    "sub": [
+      {
+        "id" : "40.10",
+        "access" : "admin",
+        "title" : "排班设置",
+        "action" : "openScheduleSetting"
+      },
+      {
+        "id" : "40.20",
+        "access" : "admin",
+        "title" : "统计周期设置",
+        "action" : "openStaticsCycleExplorer"
+      },
+      {
+        "id" : "40.15",
+        "access" : "admin",
+        "title" : "法定假期",
+        "action" : "openHolidaySetting"
+      },
+      {
+        "id" : "40.35",
+        "access" : "admin",
+        "title" : "工作场所设置",
+        "action" : "openAddressSetting"
+      },
+      {
+        "id" : "40.25",
+        "access" : "admin",
+        "target" : "_blank",
+        "title" : "申诉设置",
+        "action" : "openAppSetting"
+      }
+    ]
+  }
+]

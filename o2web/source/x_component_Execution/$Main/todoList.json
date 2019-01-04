@@ -1,0 +1,45 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='todoTable' class='todoTable'></table>"
+  },
+
+  "documentSetting": {
+    "html": "<tr class='documentTr' styles='documentTr'></tr>",
+    "mouseoverStyles": "documentTr_over",
+    "action": "open"
+  },
+  "items": [
+
+    {
+      "name": "dynamicObjectTitle",
+      "content": {
+        "html": "<td class='titleTd' styles='titleTd'>" +
+        "<div styles='titleDiv' class='titleDiv'>" +
+          "<span class='categorySpan' styles='categorySpan' item='activityName'></span>" +
+          "<span class='titleSpan' styles='titleSpan' item='dynamicObjectTitle'></span>" +
+        "</div>"+
+        "</td>",
+        "items": {
+          "dynamicObjectTitle": {},
+          "activityName":{
+            "value":"function(d){return '['+d.activityName +']'}"
+          }
+        }
+      }
+    },
+    {
+      "name": "createTime",
+      "content": {
+        "html": "<td styles='createTd' class='createTd'>"  +
+          "<div styles='createDiv' class='createDiv' item='createTime'></div>"+
+        "</td>",
+        "items": {
+          "createTime": {
+            "value": "function(d){return d.createTime.substring(0,10) }"
+          }
+        }
+      }
+    }
+  ]
+}
+

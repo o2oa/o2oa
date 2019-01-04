@@ -1,0 +1,71 @@
+{
+	"moduleNodeMove": {
+		"border": "2px solid #ffa200",
+		"height": "40px",
+		"overflow": "hidden",
+		"margin": "3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "absolute",
+		"z-index": 10002,
+		"opacity": 0.7,
+		"width": "100px",
+		"display": "inline-block",
+		"cursor": "move"
+	},
+	"moduleNodeShow": {
+		"border": "1px solid #333",
+		"height": "2px",
+		"cursor": "pointer",
+		"overflow": "hidden",
+		"margin": "3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "static",
+		"top": "auto",
+		"left": "auto",
+		"width": "18px",
+		"opacity": 0.5,
+		"background": "#ffa200",
+		"display": "inline-block",
+		"line-height": "2px",
+		"font-size": "2px"
+	},
+	"moduleNode": {
+		"border": "1px solid #333",
+		"height": "40px",
+		"cursor": "pointer",
+		"overflow": "hidden",
+		"margin": "3px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "static",
+		"top": "auto",
+		"left": "auto",
+		"width": "200px",
+		"opacity": 1,
+		"color": "#777",
+		"font-family": "Verdana, Geneva, sans-serif",
+		"font-size": "12px",
+		"display": "inline-block",
+		"background": "#FFF"
+	},
+	"textareaIcon": {
+		"background": "url("+"/x_component_process_FormDesigner/Module/Opinion/default/icon/opinion.png) center center no-repeat",
+		"width": "18px",
+		"height": "18px",
+		"float": "right"
+	},
+	"moduleText": {
+		"white-space": "nowrap",
+		"margin-right": "18px",
+		"overflow": "hidden",
+		"margin-left": "2px",
+		"line-height": "18px",
+		"color": "#777",
+		"font-family": "Verdana, Geneva, sans-serif",
+		"font-size": "12px",
+		"text-overflow": "ellipsis"
+	}
+	
+}

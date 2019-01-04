@@ -991,7 +991,6 @@
 		}
 	],
 
-
 	"com.x.organization.core.entity.Custom": 
 	[
 		{
@@ -1263,7 +1262,6 @@
 			"jdbcLevel": "WARN"
 		}
 	],
-
 
 	"com.x.processplatform.core.entity.element.Merge": 
 	[

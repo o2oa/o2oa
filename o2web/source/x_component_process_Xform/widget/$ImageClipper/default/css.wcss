@@ -1,0 +1,57 @@
+{
+	"eventsContainer":{
+		
+	},
+	"itemContainer": {
+	
+	},
+	"itemTitleContainer": {
+		"background-color": "#F3F3F3",
+		"height": "20px",
+		"border-bottom": "1px solid #999",
+		"cursor": "pointer"
+	},
+	"iconNode": {
+		"width": "20px",
+		"height": "20px",
+		"background": "url("+"/x_component_process_FormDesigner/widget/$EventsEditor/default/icon/code_empty.png) center center no-repeat",
+		"float": "left"
+	},
+	"actionNode": {
+		"width": "45px",
+		"height": "20px",
+		"float": "right",
+		"opacity": 0
+	},
+	"textNode": {
+		"height": "20px",
+		"line-height": "20px",
+		"font-family": "Verdana, Geneva, sans-serif",
+		"font-size": "12px",
+		"margin-left": "22px",
+		"margin-right": "49px"
+	},
+	"actionNodeDelete": {
+		"width": "20px",
+		"height": "20px",
+		"background": "url("+"/x_component_process_FormDesigner/widget/$EventsEditor/default/icon/delete1.png) center center no-repeat",
+		"float": "right"
+	},
+	"actionNodeAdd": {
+		"width": "20px",
+		"height": "20px",
+		"background": "url("+"/x_component_process_FormDesigner/widget/$EventsEditor/default/icon/add2.png) center center no-repeat",
+		"float": "right"
+	},
+	"codeNode": {
+		"padding": "2px",
+		"height": "1px",
+		"display": "none"
+	},
+	"createInput": {
+		"height": "12px",
+		"width": "98%",
+		"font-size": "12px",
+		"border": "1px solid #CCC"
+	}
+}

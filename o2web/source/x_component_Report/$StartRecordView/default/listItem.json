@@ -1,0 +1,140 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='listViewTable'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='listViewTableTr'></tr>",
+    "event" : "mouseover^^function( documentNode, ev ){ this.mouseoverDocument() }##mouseout^^function( documentNode, ev ){ this.mouseoutDocument() }",
+    "action": "open"
+  },
+  "items": [
+    //    {
+    //      "name": "$checkbox",
+    //      "head": {
+    //        "html": "<th styles='normalThNode'></th>",
+    //        "width": "5%"
+    //      },
+    //      "content": {
+    //        "html": "<td styles='normalTdNode'></td>",
+    //        //"condition": "function(d){ return d.status==0 ? true : false }",
+    //        "value": ""
+    //      }
+    //    },
+    {
+      "name": "reportYear",
+      "head": {
+        "html": "<th styles='listViewTableTh'>汇报年份</th>",
+        "width": "15%"
+      },
+      "content": {
+        "html": "<td styles='listViewTableTd' name='reportYear' item='reportYear'></td>",
+        "items": {
+          "reportYear" : {}
+        }
+      }
+    },
+    {
+      "name": "reportMonth",
+      "head": {
+        "html": "<th styles='listViewTableTh'>汇报月份</th>",
+        "width": "15%"
+      },
+      "content": {
+        "html": "<td styles='listViewTableTd' item='reportMonth'></td>",
+        "items": {
+          "reportMonth" : {
+          }
+        }
+      }
+    },
+    {
+      "name": "createDocumentCount",
+      "head": {
+        "html": "<th styles='listViewTableTh'>工作汇报数量</th>",
+        "width": "15%"
+      },
+      "content": {
+        "html": "<td styles='listViewTableTd' item='createDocumentCount'></td>",
+        "items": {
+          "createDocumentCount" : {
+          }
+        }
+      }
+    },
+    {
+      "name": "createSuccess",
+      "head": {
+        "html": "<th styles='listViewTableTh'>是否全部启动成功</th>",
+        "width": "15%"
+      },
+      "content": {
+        "html": "<td styles='listViewTableTd' item='createSuccess'></td>",
+        "items": {
+          "createSuccess" : {
+            "value" : "function(d){ return d.createSuccess ? '是' : '否' }"
+          }
+        }
+      }
+    },
+    {
+      "name": "createTime",
+      "head": {
+        "html": "<th styles='listViewTableTh'>启动时间</th>",
+        "width": "20%"
+      },
+      "content": {
+        "html": "<td styles='listViewTableTd' item='createTime'></td>",
+        "items": {
+          "createTime" : {
+
+          }
+        }
+      }
+    },
+    {
+      "head": {
+        "html": "<th styles='listViewTableTh' lable='action'></th>",
+        "width": "20%"
+      },
+      "content": {
+        "html": "<td styles='listViewTableTd'>" +
+        " <span styles='documentActionNode' item='remove'></span>" +
+        " <span styles='documentActionNode' item='supplement'></span>" +
+        "</td>",
+        "items": {
+          "edit": {
+            //"access": "admin",
+            "title": "edit",
+            //"text": "edit",
+            "action": "edit",
+            "condition": "function( d ){ return this.app.isAdmin || ( this.app.userName == d.targetPerson  ) }",
+            "styles": "actionEditNode",
+            "mouseoverStyles": "actionEditNode_over",
+            "mousedownStyles": "actionEditNode_over"
+          },
+          "remove": {
+            "title": "remove",
+            //"text": "remove",
+            "action": "remove",
+            "condition": "function( d ){ return true;  }",
+            "styles": "actionDeleteNode",
+            "mouseoverStyles": "actionDeleteNode_over",
+            "mousedownStyles": "actionDeleteNode_down"
+          },
+          "supplement": {
+            "title": "supplement",
+            //"text": "remove",
+            "action": "supplement",
+            "condition": "function( d ){ return true;  }",
+            "styles": "actionSupplementNode",
+            "mouseoverStyles": "actionSupplementNode_over",
+            "mousedownStyles": "actionSupplementNode_down"
+          }
+        }
+      }
+    }
+  ]
+}

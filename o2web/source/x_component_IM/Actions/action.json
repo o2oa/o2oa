@@ -1,0 +1,16 @@
+{
+  //获取顶层公司，并获取顶层公司下属的子公司数量和顶层部门数量。
+  "listTopCompany": {"uri": "/jaxrs/company/list/top"},
+  //获公司下属的直接分公司和直接部门，并计算下级的下级数量，用于级联显示。
+  "listCompanySub": {"uri": "/jaxrs/complex/company/{id}"},
+  //获取部门的下属部门和下属Identity.并计算下级的下级数量，用于级联显示。
+  "listDepartmentSub": {"uri": "/jaxrs/complex/department/{id}"},
+  //根据Person取得所有的身份和对应的部门.以及所有的CompanyDuty和DepartmentDuty
+  "getPersonComplex": {"uri": "/jaxrs/complex/person/{id}"},
+  "getPerson": {"uri": "/jaxrs/person/{id}"},
+  "listPersonByKey": {"uri": "/jaxrs/person/list/like/{key}"},
+
+  "personOnline": {"uri": "/jaxrs/online/person/{person}"},
+
+  "listChat": {"uri": "/jaxrs/talk/list"}
+}

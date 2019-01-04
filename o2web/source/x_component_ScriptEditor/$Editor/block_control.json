@@ -1,0 +1,136 @@
+[
+  {
+    "name": "control.mainFunction",
+    "contents": ["主程序"],
+    "class": "control.MainFunction"
+  },
+  {
+    "name": "control.defineFunction",
+    "contents": [
+      "方法（函数）",
+      {"type": "input", "default": "方法名"},
+      {"type": "input", "default": "参数"}
+    ],
+    "class": "control.DefineFunction"
+  },
+  {
+    "name": "control.call",
+    "contents": [
+      "运行函数",
+      {"type": "input", "default": "方法名"},
+      "绑定对象",
+      {"type": "mortise","tenonTypes": []}
+    ],
+    "class": "control.Call"
+  },
+  {
+    "name": "control.execute",
+    "contents": [
+      "执行",
+      {"type": "mortise", "tenonTypes": []}
+    ],
+    "class": "control.Execute"
+  },
+  {
+    "name": "control.function",
+    "contents": [
+      "方法（函数）",
+      {"type": "input", "default": "方法名"},
+      "绑定对象",
+      {"type": "inputMortise","default": "","tenonTypes": []}
+    ],
+    "class": "control.Function", "extend": "$Expression"
+  },
+//  {
+//    "name": "control.function",
+//    "contents": [
+//      "方法（函数）",
+//      {"type": "input", "default": "方法名"}
+//    ],
+//    "class": "control.Function"
+//  },
+  {
+    "name": "control.if",
+    "contents": [
+      "如果",
+      {"type": "mortise", "tenonTypes": []},
+      "那么"
+    ],
+    "class": "control.If"
+  },
+  {
+    "name": "control.ifelse",
+    "contents": [
+      "如果",
+      {"type": "mortise", "tenonTypes": []},
+      "那么"
+    ],
+    "contents2": ["否则"],
+    "class": "control.IfElse"
+  },
+  {
+    "name": "control.each",
+    "contents": [
+      "遍历",
+      {"type": "inputMortise","default": "","tenonTypes": []},
+      " 值",
+      {"type": "input","default": "v"},
+      "索引",
+      {"type": "input","default": "i"},
+      "绑定对象",
+      {"type": "mortise","default": "","tenonTypes": []}
+    ],
+    "class": "control.Each"
+  },
+  {
+    "name": "control.for",
+    "contents": [
+      "循环",
+      {"type": "inputMortise", "default": "10", "tenonTypes": []},
+      "次"
+    ],
+    "class": "control.For"
+  },
+  {
+    "name": "control.while",
+    "contents": [
+      "循环执行直到",
+      {"type": "mortise", "tenonTypes": []}
+    ],
+    "class": "control.While"
+  },
+
+  {
+    "name": "control.break",
+    "contents":["终止循环(break)"],
+    "class": "control.Break"
+  },
+  {
+    "name": "control.continue",
+    "contents":["继续循环(continue)"],
+    "class": "control.Continue"
+  },
+  {
+    "name": "control.try",
+    "contents": ["try"],
+    "contents2": ["catch"],
+    "contents3": ["finally"],
+    "class": "control.Try"
+  },
+  {
+    "name": "control.throw",
+    "contents": [
+      "抛出异常",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "control.Throw"
+  },
+  {
+    "name": "control.return",
+    "contents":[
+      "返回",
+      {"type": "inputMortise", "default": "", "tenonTypes": []}
+    ],
+    "class": "control.Return"
+  }
+]

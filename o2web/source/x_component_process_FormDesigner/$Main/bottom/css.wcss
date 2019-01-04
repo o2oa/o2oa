@@ -1,0 +1,363 @@
+{
+	"toolbarNode": {
+		"width": "140px",
+		"overflow": "hidden",
+		"float": "left",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none" 
+	//	"background-color": "#cfebaa"
+	},
+	"propertyNode": {
+		//"width": "300px",
+		"overflow": "hidden",
+		"float": "none",
+		"border-left": "1px solid #505050",
+		"margin-left": "141px",
+		"-webkit-user-select": "text",
+		"-moz-user-select": "text" 
+	},
+	"formNode": {
+		"margin-left": "141px",
+		"margin-right": "auto",
+		"border-right": "1px solid #505050",
+		"border-left": "1px solid #505050",
+		"background-color": "#FFF",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none" 
+	},
+	"toolbarTitleNode": {
+		"height": "26px",
+		"background-color": "#505050",
+		"border-radius": "0px",
+		"margin": "2px",
+		"color": "#FFF",
+		"line-height": "26px",
+		"font-size": "12px",
+		"font-weight": "bold",
+		"padding-left": "10px"
+	},
+	"toolbarTitleActionNode": {
+		"width": "22px",
+		"height": "22px",
+		"margin-top": "-26px",
+		"background": "url("+"/x_component_process_FormDesigner/$Main/default/left.png) no-repeat center center",
+		"float": "right",
+		"cursor": "pointer"
+	},
+	"toolbarTitleActionNodeRight": {
+		"width": "22px",
+		"height": "22px",
+		"margin-top": "-26px",
+		"background": "url("+"/x_component_process_FormDesigner/$Main/default/right.png) no-repeat center center",
+		"float": "right",
+		"cursor": "pointer"
+	},
+	"toolbarContentNode": {
+		"background-color": "#DDD",
+		"border-radius": "0px",
+		"margin": "2px",
+		"padding-right": "4px",
+		"overflow": "hidden"
+	},
+	"toolbarToolNode": {
+		"margin-top": "3px",
+		"background": "#DDD",
+		"border": "2px solid #DDD",
+		"height": "42px",
+		"color": "#000",
+		"cursor": "move",
+		"border-radius": "8px"
+	},
+	"toolbarToolNodeOver": {
+		"margin-top": "3px",
+		"border": "2px solid #8daed5",
+		"height": "42px",
+		"color": "#000",
+		"cursor": "move",
+		"background": "#b0c9e7",
+		"border-radius": "8px",
+		"background": "linear-gradient(#e5eef9, #b0c9e7 35%, #b0c9e7 65%, #e5eef9)"
+	},
+	"toolbarToolNodeOverCSS2": {
+		"margin-top": "3px",
+		"border": "2px solid #8daed5",
+		"height": "42px",
+		"color": "#000",
+		"cursor": "move",
+		"background": "#b0c9e7"
+	},
+	"toolbarToolNodeDown": {
+		"margin-top": "3px",
+		"border": "2px solid #6390c6",
+		"height": "42px",
+		"color": "#000",
+		"cursor": "move",
+		"background": "#d1e2f7",
+		"border-radius": "8px",
+		"background": "linear-gradient(#d1e2f7, #eef4fb 35%, #eef4fb 65%, #d1e2f7)"
+	},
+	"toolbarToolNodeDownCSS2": {
+		"margin-top": "3px",
+		"border": "2px solid #6390c6",
+		"height": "42px",
+		"color": "#000",
+		"cursor": "move",
+		"background": "#d1e2f7"
+	},
+	"toolbarToolNodeUp": {
+		"margin-top": "3px",
+		"border": "2px solid #8daed5",
+		"height": "42px",
+		"color": "#000",
+		"cursor": "move",
+		"background": "#b0c9e7",
+		"border-radius": "8px",
+		"background": "linear-gradient(#e5eef9, #b0c9e7 35%, #b0c9e7 65%, #e5eef9)"
+	},
+	"toolbarToolNodeUpCSS2": {
+		"margin-top": "3px",
+		"border": "2px solid #8daed5",
+		"height": "42px",
+		"color": "#000",
+		"cursor": "move",
+		"background": "#b0c9e7"
+	},
+	"toolbarToolIconNode": {
+		"width": "42px",
+		"height": "42px",
+		"background-position": "center center",
+		"background-repeat": "no-repeat",
+		"float": "left"
+	},
+	"toolbarToolTextNode": {
+		"margin-left": "46px",
+		"height": "42px",
+		"line-height": "42px",
+		"font-size": "12px"
+		//"font-weight": "bold"
+	},
+	"scrollNode": {
+		"width": "4px",
+		"height": "40px",
+		"background": "#999",
+		"position": "absolute"
+	},
+	"formToolbarNode": {
+		"height": "30px"
+	},
+	"formContentNode": {
+		"overflow": "hidden",
+		"background": "#CCC",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none" 
+	},
+	"designFrame": {
+		"width": "100%",
+		"height": "100%",
+		"border": "0px"
+	},
+	"designBody": {
+		"margin": "0px"
+	},
+	"designNode": {
+		//"height": "100%",
+		"margin": "15px",
+		"box-shadow": "0px 0px 20px #606060", 
+		"background": "url("+"/x_component_process_FormDesigner/$Main/default/designerBg.png)",
+		"-webkit-user-select": "none",
+		"overflow": "auto",
+		"-moz-user-select": "none" 
+	},
+	"designMobileNode": {
+	    "margin": "15px",
+	    "width": "360px",
+	    "height": "580px",
+        "box-shadow": "0px 0px 20px #606060",
+        "background": "url("+"/x_component_process_FormDesigner/$Main/default/designerBg.png)",
+        "font-siez": "12px",
+        "-webkit-user-select": "none",
+        "overflow": "auto",
+        "-moz-user-select": "none",
+        "display": "none"
+	},
+	"propertyTitleActionNode": {
+        "width": "30px",
+        "height": "26px",
+        "float": "right",
+        "cursor": "pointer",
+        "background": "url("+"/x_component_process_FormDesigner/$Main/bottom/icon/toRight.png) center center no-repeat"
+	},
+	"propertyTitleNode": {
+		"height": "26px",
+		"background-color": "#505050",
+		"border-radius": "0px",
+		"margin": "0px",
+		"margin-right": "30px",
+		"color": "#FFF",
+		"line-height": "26px",
+		"font-size": "12px",
+		"font-weight": "bold",
+		"padding-left": "10px"
+	},
+	"propertyResizeBar": {
+		"width": "3px",
+		"float": "left",
+		"background-color": "#505050",
+		"margin-left": "2px",
+		"display": "none",
+		"cursor": "col-resize"
+	},
+	"propertyContentNode": {
+		"background-color": "#EEE",
+		"border-radius": "0px",
+		"margin": "0px",
+		"margin-left": "0px",
+		"padding-right": "0px",
+		"overflow": "hidden"
+	},
+	"propertyContentResizeNode": {
+		"width": "3px",
+		"margin-left": "3px",
+		"background-color": "#505050",
+		"float": "left",
+		"cursor": "col-resize"
+	},
+	"propertyDomArea": {
+		"overflow": "hidden"
+	},
+	"propertyDomScrollArea": {
+        "overflow": "hidden",
+        "margin-right": "6px"
+	},
+	"propertyDomContentArea": {
+        "overflow": "hidden",
+        "background": "#FFF",
+        "margin": "2px",
+        "width": "300px",
+        "float": "left",
+        "font-family": "Verdana, Geneva, sans-serif",
+	},
+	"propertyContentArea": {
+		"overflow": "hidden",
+		"margin-left": "309px",
+		"margin-bottom": "2px"
+	},
+	"designerActionNode":{
+	    "float": "right",
+	    "margin-right": "20px",
+	    "margin-left": "-15px",
+	    "height": "24px",
+	    "line-height": "24px",
+	    "background": "#eeeeee",
+	    "border": "1px solid #eeeeee",
+	    "margin-top": "-4px"
+	},
+	"designerActionNode_current":{
+        "float": "right",
+        "margin-right": "20px",
+        "margin-left": "-15px",
+        "height": "24px",
+        "line-height": "24px",
+        "background": "#FFF",
+        "border-top": "1px solid #999",
+        "border-left": "1px solid #999",
+        "border-bottom": "1px solid #EEE",
+        "border-right": "1px solid #EEE",
+        "margin-top": "-4px"
+    },
+    "designerActionPcIconNode":{
+        "float": "left",
+        "width": "22px",
+        "height": "24px",
+        "background": "url("+"/x_component_process_FormDesigner/$Main/default/formtoolbar/pc.png) no-repeat center center",
+    },
+    "designerActionMobileIconNode":{
+        "float": "left",
+        "width": "22px",
+        "height": "24px",
+        "background": "url("+"/x_component_process_FormDesigner/$Main/default/formtoolbar/mobile.png) no-repeat center center",
+    },
+    "designerActiontextNode": {
+        "margin-left": "22px",
+        "width": "40px",
+        "height": "24px",
+        "padding": "0px 5px 0px 0px",
+        "line-height": "24px"
+    },
+    "templateMarkNode": {
+            "opacity": 0.6,
+            "position": "absolute",
+            "background-color": "#CCC",
+            "top": "0px",
+            "left": "0px",
+            "width": "100%",
+            "height": "100%"
+        },
+        "templateAreaNode": {
+            "position": "absolute",
+            "opacity": 1,
+            "top": "0px",
+            "width": "100%",
+            "height": "100%"
+        },
+        "templateInfoNode": {
+            "background-color": "#FFF",
+            "width": "80%",
+            "max-width": "800px",
+            "box-shadow": "0px 0px 20px #999",
+            "margin": "5% auto",
+            "border-radius": "8px",
+            "border": "6px solid #666",
+            "overflow": "auto"
+        },
+        "templateFormNode": {
+            "border-radius": "8px",
+            "border": "0px solid #666",
+            "width": "80%",
+            "margin": "30px auto",
+            "font-size": "16px",
+            "color": "#666",
+            "overflow": "hidden",
+            "font-family": "微软雅黑"
+        },
+        "templateActionNode": {
+            "width": "280px",
+            "margin": "0px auto",
+            "overflow": "hidden"
+        },
+        "templateSaveActionNode": {
+            "height": "30px",
+            "width": "85px",
+            "cursor": "pointer",
+            "float": "right",
+            "line-height": "30px",
+            "padding-left": "65px",
+            "font-size": "16px",
+            "font-family": "微软雅黑",
+            "border-radius": "3px",
+            "border": "1px solid #354f67",
+            "color": "#FFF",
+            "margin-right": "20px",
+            "margin-top": "20px",
+            "margin-bottom": "0px",
+            "box-shadow": "0px 0px 0px #666",
+            "background": "url("+"/x_component_process_FormDesigner/$Main/bottom/editOk_bg.png) no-repeat"
+        },
+        "templateCancelActionNode": {
+            "height": "30px",
+            "width": "60px",
+            "cursor": "pointer",
+            "float": "right",
+            "line-height": "30px",
+            "padding-left": "40px",
+            "font-size": "16px",
+            "font-family": "微软雅黑",
+            "border-radius": "3px",
+            "color": "#FFF",
+            "margin-top": "20px",
+            "margin-bottom": "0px",
+            "box-shadow": "0px 0px 0px #666",
+            "border": "1px solid #999",
+            "background": "url("+"/x_component_process_FormDesigner/$Main/bottom/editCancel_bg.png) no-repeat"
+        },
+}

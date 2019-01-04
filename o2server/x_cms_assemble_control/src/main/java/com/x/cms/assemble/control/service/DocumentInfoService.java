@@ -17,13 +17,21 @@ import com.x.query.core.entity.Item;
 
 public class DocumentInfoService {
 
+//	public List<Document> list( EntityManagerContainer emc, List<String> ids ) throws Exception {
+//		if( ids == null || ids.isEmpty() ){
+//			return null;
+//		}
+//		Business business = new Business( emc );
+//		return business.getDocumentFactory().list( ids );
+//	}
+	
 	@SuppressWarnings("unchecked")
-	public List<String> listByCategoryId( EntityManagerContainer emc, String categoryId, Integer maxCount ) throws Exception {
+	public List<String> listByCategoryId( EntityManagerContainer emc, String categoryId ) throws Exception {
 		if( categoryId == null || categoryId.isEmpty() ){
 			return null;
 		}
 		Business business = new Business( emc );
-		return business.getDocumentFactory().listByCategoryId( categoryId, maxCount );
+		return business.getDocumentFactory().listByCategoryId( categoryId );
 	}
 
 	public Document get(EntityManagerContainer emc, String id) throws Exception {
