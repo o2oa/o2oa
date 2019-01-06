@@ -198,7 +198,7 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
                     itemObj.load()
                 }.bind(this));
             }else{
-                var noElementNode = new Element("div", {
+                var noElementNode = new Element("div.noElementNode", {
                     "styles": this.css.noElementNode,
                     "text": this.options.tooltip.noElement
                 }).inject(this.elementContentListNode);

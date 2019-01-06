@@ -639,6 +639,10 @@ MWF.xScript.PageEnvironment = function(ev){
                     "filter": view.filter
                 };
                 if (!options) options = {};
+                options.width = view.width;
+                options.height = view.height;
+                options.title = view.caption;
+
                 var width = options.width || "700";
                 var height = options.height || "400";
 
@@ -999,5 +1003,6 @@ MWF.xScript.PageEnvironment = function(ev){
     this.event = ev.event;
     this.status = ev.status;
     this.session = layout.desktop.session;
+    this.Actions = o2.Actions;
 };
 

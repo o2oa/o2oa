@@ -8,8 +8,9 @@ layout.mobile = true;
 layout.desktop = layout;
 layout.desktop.session = {};
 o2.addReady(function(){
+    debugger;
     o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], {"sequence": true}, function(){
-        MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
+        //MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
         MWF.loadLP("zh-cn");
 
         // MWF.require("MWF.widget.Mask", null, false);
@@ -216,11 +217,13 @@ o2.addReady(function(){
                             this.appForm.app = this;
                             this.appForm.load();
 
-                            if (window.o2 && window.o2.appFormLoaded){
-                                window.o2.appFormLoaded('true');
+                            if (window.o2android && window.o2android.appFormLoaded){
+                                window.o2android.appFormLoaded('true');
                             }
                             if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.appFormLoaded){
-                                window.webkit.messageHandlers.appFormLoaded.postMessage('true')
+                                console.log("begin run appFormLoaded ios");
+                                window.webkit.messageHandlers.appFormLoaded.postMessage('true');
+                                console.log("end run appFormLoaded ios");
                             }
                         }.bind(this));
                     }

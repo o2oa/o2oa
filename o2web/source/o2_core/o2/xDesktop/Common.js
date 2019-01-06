@@ -409,18 +409,23 @@ MWF.org = {
             "unitLevel": data.unitLevel,
             "unitLevelName": data.unitLevelName
         };
-        if (!flat){
-            var woPerson = data.woPerson;
-            if (!data.woPerson){
-                MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
-                this.action = new MWF.xDesktop.Actions.RestActions("", "x_organization_assemble_control_alpha");
-                var uri = "/jaxrs/person/{flag}";
-                uri = uri.replace("{flag}", data.person);
+        var woPerson = data.woPerson;
+        if (!data.woPerson){
+            MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
+            this.action = new MWF.xDesktop.Actions.RestActions("", "x_organization_assemble_control_alpha");
+            var uri = "/jaxrs/person/{flag}";
+            uri = uri.replace("{flag}", data.person);
 
-                this.action.invoke({"uri": uri, "success": function(json){
-                    woPerson = json.data;
-                }.bind(this)});
-            }
+            this.action.invoke({"uri": uri, "success": function(json){
+                woPerson = json.data;
+            }.bind(this)});
+        }
+        rData.personName = woPerson.name;
+        rData.personEmployee = woPerson.employee;
+        rData.personUnique = woPerson.unique;
+        rData.personDn = woPerson.distinguishedName;
+
+        if (!flat){
             rData.woPerson = {
                 "id": woPerson.id,
                 "genderType": woPerson.genderType,

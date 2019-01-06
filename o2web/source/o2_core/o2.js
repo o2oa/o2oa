@@ -168,38 +168,46 @@
     this.o2.runCallback = _runCallback;
 
     var _getAllOptions = function(options){
+        var doc = (options && options.doc) || document;
+        if (!doc.unid) doc.unid = _uuid();
         return {
             "noCache": !!(options && options.nocache),
             "reload": !!(options && options.reload),
             "sequence": !!(options && options.sequence),
-            "doc": (options && options.doc) || document,
+            "doc": doc,
             "dom": (options && options.dom) || document.body,
             "position": "beforeend" //'beforebegin' 'afterbegin' 'beforeend' 'afterend'
         }
     };
     var _getCssOptions = function(options){
+        var doc = (options && options.doc) || document;
+        if (!doc.unid) doc.unid = _uuid();
         return {
             "noCache": !!(options && options.nocache),
             "reload": !!(options && options.reload),
             "sequence": !!(options && options.sequence),
-            "doc": (options && options.doc) || document,
+            "doc": doc,
             "dom": (options && options.dom) || null
         }
     };
     var _getJsOptions = function(options){
+        var doc = (options && options.doc) || document;
+        if (!doc.unid) doc.unid = _uuid();
         return {
             "noCache": !!(options && options.nocache),
             "reload": !!(options && options.reload),
-            "sequence": !!(options && options.sequence),
-            "doc": (options && options.doc) || document
+            "sequence": (!(options && options.sequence == false)),
+            "doc": doc
         }
     };
     var _getHtmlOptions = function(options){
+        var doc = (options && options.doc) || document;
+        if (!doc.unid) doc.unid = _uuid();
         return {
             "noCache": !!(options && options.nocache),
             "reload": !!(options && options.reload),
             "sequence": !!(options && options.sequence),
-            "doc": (options && options.doc) || document,
+            "doc": doc,
             "dom": (options && options.dom) || null,
             "position": "beforeend" //'beforebegin' 'afterbegin' 'beforeend' 'afterend'
         }
@@ -263,14 +271,17 @@
         "o2.more": ["/o2_core/o2/o2.more.js"],
         "ie_adapter": ["/o2_lib/o2/ie_adapter.js"],
         "jquery": ["/o2_lib/jquery/jquery.min.js"],
-        "mootools": ["/o2_lib/mootools/mootools-1.6.0.js"],
+        "mootools": ["/o2_lib/mootools/mootools-1.6.0_all.js"],
         "ckeditor": ["/o2_lib/htmleditor/ckeditor/ckeditor.js"],
         "raphael": ["/o2_lib/raphael/raphael.js"],
         "d3": ["/o2_lib/d3/d3.min.js"],
         "ace": ["/o2_lib/ace/src-noconflict/ace.js","/o2_lib/ace/src-noconflict/ext-language_tools.js"],
         "JSBeautifier": ["/o2_lib/JSBeautifier/beautify.js"],
         "JSBeautifier_css": ["/o2_lib/JSBeautifier/beautify-css.js"],
-        "JSBeautifier_html": ["/o2_lib/JSBeautifier/beautify-html.js"]
+        "JSBeautifier_html": ["/o2_lib/JSBeautifier/beautify-html.js"],
+        "JSONTemplate": ["/o2_lib/mootools/plugin/Template.js"],
+        "kity": ["/o2_lib/kityminder/kity/kity.min.js"],
+        "kityminder": ["/o2_lib/kityminder/core/dist/kityminder.core.js"]
     };
     var _loaded = {};
     var _loadedCss = {};
@@ -280,8 +291,10 @@
         var url = module;
         var uuid = _uuid();
         if (op.noCache) url = (url.indexOf("?")!==-1) ? url+"&v="+uuid : addr_uri+"?v="+uuid;
-        var key = encodeURIComponent(url);
-        if (!op.reload) if (_loaded[key]){ if (callback)callback(); return; }
+        var key = encodeURIComponent(url+op.doc.unid);
+        if (!op.reload) if (_loaded[key]){
+            if (callback)callback(); return;
+        }
 
         var head = (op.doc.head || op.doc.getElementsByTagName("head")[0] || op.doc.documentElement);
         var s = op.doc.createElement('script');
@@ -346,7 +359,7 @@
         var uid = _uuid();
         if (op.noCache) url = (url.indexOf("?")!==-1) ? url+"&v="+uid : url+"?v="+uid;
 
-        var key = encodeURIComponent(url);
+        var key = encodeURIComponent(url+op.doc.unid);
         if (!op.reload) if (_loadedCss[key]){ if (callback)callback(_loadedCss[key]); return; }
 
         var success = function(xhr){
@@ -426,8 +439,9 @@
             _loadDisarray(ms, cb, op, thisLoaded, _loadSingleCss, uuid);
         }
     };
-    var _removeCss = function(module){
-        var k = encodeURIComponent(module);
+    var _removeCss = function(module, doc){
+        var thisDoc = doc || document;
+        var k = encodeURIComponent(module+(thisDoc.unid||""));
         var removeCss = _loadedCss[k];
         if (!removeCss) for (key in _loadedCss){
             if (_loadedCss[key].id==module){
@@ -456,7 +470,7 @@
         var url = module;
         var uid = _uuid();
         if (op.noCache) url = (url.indexOf("?")!==-1) ? url+"&v="+uid : url+"?v="+uid;
-        var key = encodeURIComponent(url);
+        var key = encodeURIComponent(url+op.doc.unid);
         if (!op.reload) if (_loadedHtml[key]){ if (callback)callback(_loadedHtml[key]); return; }
 
         var success = function(xhr){
@@ -579,6 +593,10 @@
 
     if (_dom.shouldPoll) _dom.poll();
 
-    if (!window.MooTools) this.o2.load("mootools", function(){ _loadO2(); _dom.check(); });
+    if (!window.MooTools){
+        this.o2.load("mootools", function(){ _loadO2(); _dom.check(); });
+    }else{
+        _loadO2();
+    }
     this.o2.addReady = function(fn){ _dom.addReady.call(_dom, fn); };
 })();

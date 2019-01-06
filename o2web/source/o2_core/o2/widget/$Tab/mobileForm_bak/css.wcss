@@ -22,7 +22,7 @@
         "height": "30px",
         "cursor": "pointer",
         "min-width": "70px",
-        "background": "url(/x_desktop/res/mwf4/package/widget/$Tab/default/tabAreaBg.gif) center center",
+        "background": "url(/o2_core/o2/widget/$Tab/default/tabAreaBg.gif) center center",
         "border": "0px"
     },
 	"tabTextNode": {
@@ -47,7 +47,7 @@
         "float": "left",
         "height": "30px",
         "min-width": "70px",
-        "background": "url(/x_desktop/res/mwf4/package/widget/$Tab/default/tabAreaBg.gif) center center",
+        "background": "url(/o2_core/o2/widget/$Tab/default/tabAreaBg.gif) center center",
         "border-bottom": "2px solid #bf6364"
     },
 	"tabTextNodeCurrent": {

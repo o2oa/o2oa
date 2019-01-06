@@ -20,6 +20,10 @@ MWF.xApplication.portal.PageDesigner.Module.Common = MWF.PCCommon = new Class({
 		this.form = form;
 	},
 
+    _setNodeProperty: function(){
+	    this._setEditStyle_custom("innerHTML");
+    },
+
     _setEditStyle_custom: function(name, obj, oldValue){
         if (name==="tagName"){
             var tagName = this.json.tagName.toString().toLowerCase();
@@ -43,7 +47,30 @@ MWF.xApplication.portal.PageDesigner.Module.Common = MWF.PCCommon = new Class({
                 var text = text = this.json.tagName+"(Common)";
                 this.treeNode.setText("<"+text+"> "+title);
 			}
-
+        }
+        if (name==="innerHTML"){
+            try{
+                if (this.json.innerHTML){
+                    var nodes = this.node.childNodes;
+                    for (var i=0; i<nodes.length; i++){
+                        if (nodes[i].nodeType===Node.ELEMENT_NODE){
+                            if (!nodes[i].get("MWFtype")){
+                                nodes[i].destroy();
+                                i--;
+                            }
+                        }else{
+                            if (nodes[i].removeNode){
+                                nodes[i].removeNode();
+                            }else{
+                                nodes[i].parentNode.removeChild(nodes[i]);
+                            }
+                            i--;
+                            //nodes[i]
+                        }
+                    }
+                    this.node.appendHTML(this.json.innerHTML);
+                }
+            }catch(e){}
         }
     },
     setPropertiesOrStyles: function(name, oldData){

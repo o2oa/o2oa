@@ -142,7 +142,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                             "styles": {"display": "none"},
                             "html": html
                         }).inject(this.content);
-
+debugger;
                         //var pid = "";
                         Object.each(json, function (moduleJson) {
                             var oid = moduleJson.id;
@@ -408,7 +408,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
         }
         this.form.unSelectedMulti();
 
-        if (this.page.designTabPageScriptAreaNode) this.page.designTabPageScriptAreaNode.hide();
+        if (this.form.designTabPageScriptAreaNode) this.form.designTabPageScriptAreaNode.hide();
         this.form = this.pcForm;
 
         if ((this.scriptPage && this.scriptPage.isShow) || this.scriptPanel){

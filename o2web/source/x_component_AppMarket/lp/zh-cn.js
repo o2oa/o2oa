@@ -1,7 +1,8 @@
 MWF.xApplication.AppMarket.LP = {
 	"title": "应用市场",
+    "implodeLocal": "从本地导入",
     "download": "免费下载",
-    "setupTitle": "即将下载安装",
+    "setupTitle": "即将安装",
     "ok": "确定",
     "cancel": "取消",
 
@@ -19,5 +20,6 @@ MWF.xApplication.AppMarket.LP = {
     "cover": "覆盖",
     "name": "名称",
     "id": "ID",
-    "setupSuccess": "应用安装成功！"
+    "setupSuccess": "应用安装成功！",
+    "localApp": "本地应用"
 };

@@ -49,7 +49,11 @@ MWF.xDesktop.LnkMaker = new Class({
 		var moveNode = new Element("div", {
 			"styles": this.desktop.css.lnkMoveNode
 		}).inject(this.desktop.desktopNode);
-		
+		var size = this.node.getSize();
+        moveNode.setStyles({
+			"width": ""+size.x+"px",
+            "height": ""+size.y+"px"
+		});
 		this.node.clone().inject(moveNode);
 		moveNode.position({"relativeTo": this.node});
 		
@@ -392,31 +396,34 @@ MWF.xDesktop.Lnk = new Class({
 	},
 	open: function(e){
 		if (!this.isSwing){
-			var parList = this.par.split("#");
-			var appName = parList[0];
-			var statusStr = parList[1] || ""; 
-			var status = JSON.decode(statusStr, false);
+            var parList = this.par.split("#");
+            var appName = parList[0];
+            var statusStr = parList[1] || "";
+            if (appName.toLowerCase()==="@url"){
+                window.open(statusStr);
+            }else{
+                var status = JSON.decode(statusStr, false);
 
-            var options = {};
-            if (status){
-                if (status.appId){
-                    options = {
-                        "appId": status.appId,
-                        "onQueryLoad": function(){
-                            this.status = status;
-                        }
-                    };
-                }else{
-                    options = {
-                        "onQueryLoad": function(){
-                            this.status = status;
-                        }
-                    };
+                var options = {};
+                if (status){
+                    if (status.appId){
+                        options = {
+                            "appId": status.appId,
+                            "onQueryLoad": function(){
+                                this.status = status;
+                            }
+                        };
+                    }else{
+                        options = {
+                            "onQueryLoad": function(){
+                                this.status = status;
+                            }
+                        };
+                    }
                 }
+                this.desktop.openApplication(e, appName, options);
             }
 
-
-			this.desktop.openApplication(e, appName, options);
 		}else{
 			this.stopSwingFun = function(){
 				this.lnkMove.stopSwing();

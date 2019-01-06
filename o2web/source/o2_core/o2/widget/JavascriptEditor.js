@@ -186,6 +186,17 @@ o2.widget.JavascriptEditor = new Class({
                 readOnly: false // false if this command should not apply in readOnly mode
             });
 
+            this.editor.commands.addCommand({
+                name: "showKeyboardShortcuts",
+                bindKey: {win: "Ctrl-Alt-h", mac: "Command-Alt-h"},
+                exec: function(editor) {
+                    ace.config.loadModule("ace/ext/keybinding_menu", function(module) {
+                        module.init(editor);
+                        editor.showKeyboardShortcuts()
+                    })
+                }.bind(this)
+            });
+
             this.node.addEvent("keydown", function(e){
                 e.stopPropagation();
             });

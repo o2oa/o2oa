@@ -12,6 +12,19 @@
 		"background-color": "#4c6b87",
 		"position": "static"
 	},
+	"titleActionNode": {
+        "float": "right",
+        "margin-right": "20px",
+        "height": "30px",
+        "border": "1px solid #ffffff",
+        "border-radius": "5px",
+        "line-height": "30px",
+        "text-align": "center",
+        "padding": "0 20px",
+        "margin-top": "25px",
+        "cursor": "pointer",
+        "color": "#ffffff"
+    },
 	"iconElementNode": {
         "float": "left",
         "width": "80px",

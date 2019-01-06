@@ -557,7 +557,7 @@
             "height": "25px",
             "cursor": "pointer",
             "min-width": "60px",
-            "background": "url(/x_desktop/res/mwf4/package/widget/$Tab/default/tabAreaBg.gif) center center",
+            "background": "url(/o2_core/o2/widget/$Tab/default/tabAreaBg.gif) center center",
             "border-top-left-radius": "5px",
             "border-top-right-radius": "5px",
             "border": "1px solid #999"
@@ -579,7 +579,7 @@
             "float": "left",
             "height": "30px",
             "min-width": "60px",
-            "background": "url(/x_desktop/res/mwf4/package/widget/$Tab/default/tabNodeCurrentBg.gif) center center",
+            "background": "url(/o2_core/o2/widget/$Tab/default/tabNodeCurrentBg.gif) center center",
             "border-top-left-radius": "5px",
             "border-top-right-radius": "5px",
             "border-top": "1px solid #999",
