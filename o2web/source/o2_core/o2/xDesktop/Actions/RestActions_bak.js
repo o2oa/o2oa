@@ -215,12 +215,12 @@ MWF.xDesktop.Actions.RestActions = new Class({
 			status = (status == 1223) ? 204 : status;
 			
 			if ((status >= 200 && status < 300)){
-				MWF.runCallback(callback, "onSuccess", [{
+				MWF.runCallback(callback, "success", [{
 					"type": "success",
                     "id": dataId
 				}, xhr.responseText]);
 			}else{
-				MWF.runCallback(callback, "onFailure", [xhr]);
+				MWF.runCallback(callback, "failure", [xhr]);
 			}
 		};
 		if (xhr.upload){

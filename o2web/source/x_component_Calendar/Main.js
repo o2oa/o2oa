@@ -628,17 +628,20 @@ MWF.xApplication.Calendar.Navi = new Class({
             this.followCalendars =json.data.followCalendars;
             this.loadNode();
         }.bind(this));
-        this.scrollBar = new MWF.widget.ScrollBar(this.naviContainer, {
-            "indent": false,
-            "style": "default",
-            "where": "before",
-            "distance": 60,
-            "friction": 4,
-            "axis": {"x": false, "y": true},
-            "onScroll": function (y) {
 
-            }.bind(this)
-        });
+        o2.require("MWF.widget.ScrollBar", function(){
+            this.scrollBar = new MWF.widget.ScrollBar(this.naviContainer, {
+                "indent": false,
+                "style": "default",
+                "where": "before",
+                "distance": 60,
+                "friction": 4,
+                "axis": {"x": false, "y": true},
+                "onScroll": function (y) {
+
+                }.bind(this)
+            });
+        }.bind(this));
     },
     loadNode: function(){
         this.loadMyCalendar();

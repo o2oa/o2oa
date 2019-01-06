@@ -350,6 +350,11 @@ MWF.xApplication.File.Main = new Class({
             });
         }.bind(this));
     },
+    getAttachmentLinkUrl: function(attachment){
+        debugger;
+        var url = o2.Actions.get("x_file_assemble_control").action.actions.getAttachmentData.uri;
+        return url.replace("{id}", encodeURIComponent(attachment.data.id));
+    },
 	downloadCurrentFile: function(){
 		if (this.selectedItem){
 			if (this.selectedItem.type=="file"){

@@ -144,4 +144,5 @@
   "listUnitAttributeName": {"uri": "/jaxrs/unitattribute/list/name/unit", "method": "POST"}, //列出组织所有属性的名称
   "listUnitAllAttribute": {"uri": "/jaxrs/unitattribute/list/unit/object", "method": "POST"} //列出组织的所有属性
   //******************************************************************
+
 }

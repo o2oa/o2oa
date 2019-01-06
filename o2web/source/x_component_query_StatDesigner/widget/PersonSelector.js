@@ -1,6 +1,5 @@
 MWF.xApplication.query.StatDesigner = MWF.xApplication.query.StatDesigner || {};
 MWF.xApplication.query.StatDesigner.widget = MWF.xApplication.query.StatDesigner.widget || {};
-MWF.xDesktop.requireApp("Organization", "Selector.package", null, false);
 MWF.require("MWF.xAction.org.express.RestActions", null,false);
 MWF.require("MWF.widget.Identity", null, false);
 

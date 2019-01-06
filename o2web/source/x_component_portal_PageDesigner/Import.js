@@ -5,6 +5,7 @@ MWF.xApplication.portal.PageDesigner.Import = MWF.FormImport = MWF.PageImport = 
     Implements: [Options, Events],
     options: {
         "style": "default",
+        "type": "portal",
         "stylePath": "/x_component_portal_PageDesigner/$Import/{style}/style.css",
         "viewPath": "/x_component_portal_PageDesigner/$Import/{style}/view.html"
     },
@@ -191,7 +192,9 @@ MWF.FormImport.Html = new Class({
         try{
             var iframe = new Element("iframe").inject(document.body);
             var doc = iframe.contentWindow.document;
-            o2.load("mootools", function(){
+            debugger;
+            o2.load("mootools", {"doc": doc}, function(){
+                debugger;
                 var oldNodeHtml = this.form.node.get("html");
                 var oldModuleList = this.form.json.moduleList;
                 var oldHtml = this.form.data.html;
@@ -204,9 +207,12 @@ MWF.FormImport.Html = new Class({
                     var styleNodes = doc.body.getElements("style");
                     if (styleNodes) this.loadStyles(styleNodes);
 
+                    var css = "";
                     if (this.cssArea){
-                        var css = this.cssArea.editor.getValue();
-                        if (css) this.form.json.css.code += css;
+                        css = this.cssArea.editor.getValue();
+                        if (css) this.form.json.css.code += this.parseImplodeCSS(css, doc);
+
+                        //if (css) this.form.json.css.code += css;
                     }
 
                     this.parseImplodeHTML(doc.body, moduleList, doc, readyDeleteNodes);
@@ -242,13 +248,36 @@ MWF.FormImport.Html = new Class({
                     oldModuleList = null;
                 }
 
-            }.bind(this), true, doc);
+            }.bind(this));
         }catch(e){
             this.form.designer.notice(e.message, "error", this.node);
             mask.hide();
         }
 
     },
+
+    parseImplodeCSS: function(css, doc, callback){
+        var rex = /(url\(.*\))/g;
+        var match;
+        while ((match = rex.exec(css)) !== null) {
+            var pic = match[0];
+            var len = pic.length;
+            var s = pic.substring(pic.length-2, pic.length-1);
+            var n = (s==="'" || s==="\"") ? 2 : 1;
+            pic = pic.substring(pic.lastIndexOf("/")+1, pic.length-n);
+            var root = (this.options.type==="portal") ? "x_portal_assemble_surface" : "x_processplatform_assemble_surface";
+            var url = root + o2.Actions.get(root).action.actions.readFile.uri;
+            url = url.replace("{flag}", pic);
+            url = url.replace("{applicationFlag}", this.form.json.application || this.form.json.portal);
+            url = "url('"+url+"')";
+            var len2 = url.length;
+
+            css = css.substring(0, match.index) + url + css.substring(rex.lastIndex, css.length);
+            rex.lastIndex = rex.lastIndex + (len2-len);
+        }
+        return css;
+    },
+
     loadStyles: function(styleNodes){
         var cssText = "";
         styleNodes.each(function(node){
@@ -339,10 +368,11 @@ MWF.FormImport.Html = new Class({
             if (tag==="p"){
                 var node = new Element("div#"+id, {"mwftype": "div"}).inject(subNode, "before");
                 node.set("html", subNode.get("html"));
+                node.set("MWFOriginalTag", "p");
                 subNode.destroy();
                 subNode = node;
             }else{
-                subNode.set({"mwftype": "div", "id": id});
+                 subNode.set({"mwftype": "div", "id": id});
             }
         }.bind(this));
         return subNode;
@@ -364,6 +394,17 @@ MWF.FormImport.Html = new Class({
     },
     convertImgNode: function(subNode, moduleList){
         this.getImplodeModuleJson(moduleList, "Image", (subNode.get("id") || "image"), subNode, function(id, moduleData){
+            debugger;
+            var src = subNode.get("src");
+            if (src){
+                var root = (this.options.type==="portal") ? "x_portal_assemble_surface" : "x_processplatform_assemble_surface";
+                var pic = src.substring(src.lastIndexOf("/")+1, src.length);
+                var url = root + o2.Actions.get(root).action.actions.readFile.uri;
+                url = url.replace("{flag}", pic);
+                url = url.replace("{applicationFlag}", this.form.json.application || this.form.json.portal);
+                moduleData.properties.src = url;
+                subNode.set("src", url);
+            }
             subNode.set({"mwftype": "img", "id": id});
         }.bind(this));
         return subNode;
@@ -407,7 +448,7 @@ MWF.FormImport.Html = new Class({
             var value = subNode.get("text");
             if (value){
                 if (!moduleData.defaultValue) moduleData.defaultValue = {"code": "", "html": ""};
-                var v = moduleData.properties.value.replace(/\"/g, "\\\"");
+                var v = value.replace(/\"/g, "\\\"");
                 moduleData.defaultValue.code = "return \""+v+"\"";
             }
             var textareaNode = new Element("div#"+id, {"mwftype": "textarea"}).inject(subNode, "before");
@@ -532,10 +573,11 @@ MWF.FormImport.Html = new Class({
     },
     convertCommonTextNode: function(subNode, moduleList, tag){
         this.getImplodeModuleJson(moduleList, "Common", (subNode.get("id") || "common"), subNode, function(id, moduleData){
-            moduleData.styles.display = subNode.getStyle("display");
+            //moduleData.styles.display = subNode.getStyle("display");
             moduleData.innerHTML = subNode.get("text");
             moduleData.tagName = tag;
             subNode.set({"mwftype": "common", "id": id});
+            subNode.empty();
         }.bind(this));
         return subNode;
     },
@@ -599,9 +641,9 @@ MWF.FormImport.Html = new Class({
                 }
                 if (subNode.readyDelete) continue;
                 switch (tag){
-                    case "figure":
-                    case "figcaption":
-                    case "p":
+                    //case "figure":
+                    //case "figcaption":
+                    //case "p":
                     case "div":
                         if (subNode.childNodes.length===1 && subNode.childNodes[0].nodeType===Node.TEXT_NODE && subNode.childNodes[0].nodeValue.trim()){
                             subNode = this.convertLabelNode(subNode, moduleList, tag);
@@ -659,7 +701,8 @@ MWF.FormImport.Html = new Class({
                             case "reset":
                             case "submit":
                             case "button":
-                                subNode = this.convertButtonNode(subNode, moduleList);
+                                subNode = this.convertCommonNode(subNode, moduleList, tag);
+                                //subNode = this.convertButtonNode(subNode, moduleList);
                                 break;
                             case "datetime":
                             case "datetime-local":
@@ -689,11 +732,12 @@ MWF.FormImport.Html = new Class({
                     case "thead":
                     case "tfoot": break;
                     default:
+                        debugger;
                         if (subNode.childNodes.length===1 && subNode.childNodes[0].nodeType===Node.TEXT_NODE && subNode.childNodes[0].nodeValue.trim()){
                             subNode = this.convertCommonTextNode(subNode, moduleList, tag);
                             nextNode = false;
                         }else{
-                            subNode = this.convertCommonNode(subNode, moduleList, tag);
+                             subNode = this.convertCommonNode(subNode, moduleList, tag);
                         }
                 }
             }
@@ -754,6 +798,6 @@ MWF.FormImport.Office = new Class({
         }.bind(this));
     }
 });
-MWF.FormImport.create = function(type, form){
-    return new MWF.FormImport[type.capitalize()](form);
+MWF.FormImport.create = function(type, form, options){
+    return new MWF.FormImport[type.capitalize()](form, options);
 };

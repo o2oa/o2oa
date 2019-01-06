@@ -89,8 +89,8 @@ MWF.xApplication.process.ProcessManager.widget.ApplicationSelector = new Class({
     },
 
     loadContent: function(){
-        MWF.xDesktop.requireApp("process.ProcessManager", "Actions.RestActions", function(){
-            if (!this.restActions) this.restActions = new MWF.xApplication.process.ProcessManager.Actions.RestActions();
+        //MWF.xDesktop.requireApp("process.ProcessManager", "Actions.RestActions", function(){
+            if (!this.restActions) this.restActions = MWF.Actions.get("x_processplatform_assemble_designer");
 
             this.restActions.listApplication("", function(json){
                 json.data.each(function(app){
@@ -103,7 +103,7 @@ MWF.xApplication.process.ProcessManager.widget.ApplicationSelector = new Class({
                 }.bind(this));
             }.bind(this));
 
-        }.bind(this));
+        //}.bind(this));
     },
     //selected: function(script){
     //    this.scriptData = script.data;

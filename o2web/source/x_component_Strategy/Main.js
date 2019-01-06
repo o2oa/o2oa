@@ -1,6 +1,6 @@
 MWF.xApplication.Strategy = MWF.xApplication.Strategy || {};
 MWF.require("MWF.widget.Identity", null,false);
-MWF.xDesktop.requireApp("Strategy", "Actions.RestActions", null, false);
+//MWF.xDesktop.requireApp("Strategy", "Actions.RestActions", null, false);
 MWF.xDesktop.requireApp("Template", "Explorer", null, false);
 MWF.xDesktop.requireApp("Template", "MDomItem", null, false);
 MWF.xApplication.Strategy.options.multitask = true;

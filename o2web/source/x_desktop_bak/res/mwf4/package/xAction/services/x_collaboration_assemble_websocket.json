@@ -1,4 +1,0 @@
-{
-  "personOnline": {"uri": "/jaxrs/online/person/{person}"},
-  "listChat": {"uri": "/jaxrs/talk/list"}
-}

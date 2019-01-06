@@ -253,13 +253,26 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
             return this.getScriptSelectUnit();
         }
         if (this.json.range==="draftUnit"){
-            return this.getNextSelectUnit((this.form.businessData.work || this.form.businessData.workCompleted).creatorIdentityDn);
+            debugger;
+            var dn = (this.form.businessData.work || this.form.businessData.workCompleted).creatorIdentityDn;
+            if (!dn){
+                if (layout.session.user.identityList.length){
+                    var ids = [];
+                    layout.session.user.identityList.each(function(id){ ids.push(id.id); });
+                    return this.getNextSelectUnit(ids);
+                }else{
+                    return [];
+                }
+            }else{
+                return this.getNextSelectUnit((this.form.businessData.work || this.form.businessData.workCompleted).creatorIdentityDn);
+            }
         }
         if (this.json.range==="currentUnit"){
+            debugger;
             if (this.form.app.currentTask){
                 return this.getNextSelectUnit(this.form.app.currentTask.identity);
             }else{
-                if (this.form.app.taskList.length){
+                if (this.form.app.taskList && this.form.app.taskList.length){
                     var ids = [];
                     this.form.app.taskList.each(function(task){ ids.push(task.identity); });
                     return this.getNextSelectUnit(ids);
