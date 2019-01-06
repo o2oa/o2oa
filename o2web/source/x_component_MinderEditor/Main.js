@@ -222,7 +222,7 @@ MWF.xApplication.MinderEditor.Main = new Class({
         this.commands.mainMenu.show( actionName );
     },
     loadResource: function (callback) {
-        var kityminderPath = "/x_desktop/res/framework/kityminder/";
+        var kityminderPath = "/o2_lib/kityminder/";
 
         COMMON.AjaxModule.loadCss("/x_component_MinderEditor/$Main/default/kityminder.editor.css", function () {
             COMMON.AjaxModule.loadCss(kityminderPath + "core/src/kityminder.css", function () {
@@ -235,8 +235,8 @@ MWF.xApplication.MinderEditor.Main = new Class({
         }.bind(this))
     },
     loadExtentResource : function (callback) {
-        var kityminderPath = "/x_desktop/res/framework/kityminder/";
-        COMMON.AjaxModule.load("/x_desktop/res/framework/jquery/jquery-2.2.4.min.js", function () {
+        var kityminderPath = "/o2_lib/kityminder/";
+        COMMON.AjaxModule.load("/o2_lib/jquery/jquery-2.2.4.min.js", function () {
             COMMON.AjaxModule.load(kityminderPath + "core/dist/kityminder.core.extend.js", function () {
                 var jquery = jQuery.noConflict();
                 if (callback)callback();
@@ -554,8 +554,8 @@ MWF.xApplication.MinderEditor.Main = new Class({
             if( callback )callback();
             return;
         }
-        var codeMirrorPath = COMMON.contentPath + "/res/framework/codemirror";
-        var markedPath = COMMON.contentPath + "/res/framework/marked";
+        var codeMirrorPath = "/o2_lib/codemirror";
+        var markedPath = "/o2_lib/marked";
 
         var jsModules = {
             codemirror : codeMirrorPath + "/lib/codemirror.js",
@@ -697,7 +697,7 @@ MWF.xApplication.MinderEditor.Converter = new Class({
         }.bind(this))
     },
     loadCanvgResource: function (callback) {
-        var canvgPath = "/x_desktop/res/framework/canvg/";
+        var canvgPath = "/o2_lib/framework/canvg/";
         COMMON.AjaxModule.load(canvgPath + "canvg.js", function () {
             if (callback)callback();
         }.bind(this))

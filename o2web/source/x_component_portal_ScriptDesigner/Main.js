@@ -2,7 +2,7 @@ MWF.xApplication.portal.ScriptDesigner.options = {
 	"multitask": true,
 	"executable": false
 };
-MWF.xDesktop.requireApp("portal.PortalManager", "Actions.RestActions", null, false);
+//MWF.xDesktop.requireApp("portal.PortalManager", "Actions.RestActions", null, false);
 MWF.xDesktop.requireApp("portal.ScriptDesigner", "Script", null, false);
 MWF.require("MWF.xDesktop.UserData", null, false);
 MWF.xApplication.portal.ScriptDesigner.Main = new Class({

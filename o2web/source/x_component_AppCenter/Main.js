@@ -160,6 +160,7 @@ MWF.xApplication.AppCenter.Exporter = new Class({
         var height = size.y*0.9;
         var x = (size.x-width)/2;
         var y = (size.y-height)/2;
+        if (y<80) y = 80;
 
         var _self = this;
         MWF.require("MWF.xDesktop.Dialog", function(){

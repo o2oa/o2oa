@@ -27,8 +27,8 @@ MWF.xApplication.process.ProcessManager.widget.ProcessSelector = new Class({
         this.loadContent();
     },
     loadContent: function(){
-        MWF.xDesktop.requireApp("process.ProcessManager", "Actions.RestActions", function(){
-            if (!this.restActions) this.restActions = new MWF.xApplication.process.ProcessManager.Actions.RestActions();
+        //MWF.xDesktop.requireApp("process.ProcessManager", "Actions.RestActions", function(){
+            if (!this.restActions) this.restActions = MWF.Actions.get("x_processplatform_assemble_designer");
 
             this.applicationIds.each(function(id){
 
@@ -42,7 +42,7 @@ MWF.xApplication.process.ProcessManager.widget.ProcessSelector = new Class({
 
             }.bind(this));
 
-        }.bind(this));
+        //}.bind(this));
     },
     clearSelected: function(){
         this.processes.each(function(pro){

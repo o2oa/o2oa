@@ -585,10 +585,14 @@ MWF.xScript.CMSEnvironment = function(ev){
                 var viewJson = {
                     "application": view.application || _form.json.application,
                     "viewName": view.view || "",
-                    "isTitle": view.isTitle || "yes",
-                    "select": view.select || "multi"
+                    "isTitle": (view.isTitle===false) ? "no" : "yes",
+                    "select": (view.isMulti===false) ? "single" : "multi",
+                    "filter": view.filter
                 };
                 if (!options) options = {};
+                options.width = view.width;
+                options.height = view.height;
+                options.title = view.caption;
                 var width = options.width || "700";
                 var height = options.height || "400";
 
@@ -1060,6 +1064,7 @@ MWF.xScript.CMSEnvironment = function(ev){
     this.event = ev.event;
     this.status = ev.status;
     this.session = layout.desktop.session;
+    this.Actions = o2.Actions;
 };
 
 MWF.xScript.CMSJSONData = function(data, callback, key, parent){

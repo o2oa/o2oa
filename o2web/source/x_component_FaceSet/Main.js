@@ -26,7 +26,7 @@ MWF.xApplication.FaceSet.Main = new Class({
 		this.node = new Element("div", {"styles": this.css.node}).inject(this.content);
         this.contentNode = new Element("div", {"styles": this.css.contentNode}).inject(this.node);
         this.picAreaNode = new Element("div", {"styles": this.css.picAreaNode}).inject(this.node);
-        COMMON.AjaxModule.loadDom(COMMON.contentPath+"/res/framework/adapter/adapter.js", function(){
+        COMMON.AjaxModule.loadDom("/o2_lib/adapter/adapter.js", function(){
 			this.createVideo();
 			this.createAction();
             this.createInfor();

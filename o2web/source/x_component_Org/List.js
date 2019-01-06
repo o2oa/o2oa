@@ -227,7 +227,7 @@ MWF.xApplication.Org.List.Item = new Class({
                 if (at.events){
                     td.removeEvents("click");
                     Object.each(at.events, function(v, k){
-                        if (key.toLowerCase!=="init") td.addEvent(k, v.bind({"data": this.data, "td": td, "item": this}));
+                        if (k.toLowerCase!=="init") td.addEvent(k, v.bind({"data": this.data, "td": td, "item": this}));
                     }.bind(this));
                     if (at.events["init"]) at.events["init"].apply({"item": this, "data": this.data, "td": td, "item": this});
                 }

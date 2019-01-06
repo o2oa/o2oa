@@ -1348,7 +1348,7 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
         this.jsonStringNode.set("text", JSON.stringify(json,null,2));
 
         MWF.widget.ace.load(function(){
-            COMMON.AjaxModule.loadDom(COMMON.contentPath+"/res/framework/ace/src-min-noconflict/ext-static_highlight.js", function(){
+            COMMON.AjaxModule.loadDom("/o2_lib/ace/src-min-noconflict/ext-static_highlight.js", function(){
                 var highlight = ace.require("ace/ext/static_highlight");
                 highlight(this.jsonStringNode, {mode: "ace/mode/json", theme: "ace/theme/tomorrow", "fontSize": 16});
             }.bind(this));
