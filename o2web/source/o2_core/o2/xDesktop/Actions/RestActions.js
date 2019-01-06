@@ -266,7 +266,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
                             dataId = json.data.id;
                         }
 
-                        MWF.runCallback(callback, "onSuccess", [{
+                        MWF.runCallback(callback, "success", [{
                             "type": "success",
                             "id": dataId,
                             "data": json.data
@@ -283,20 +283,20 @@ MWF.xDesktop.Actions.RestActions = new Class({
                         if (t=="object"){
                             dataId = json.data.id;
                         }
-                        MWF.runCallback(callback, "onSuccess", [{
+                        MWF.runCallback(callback, "success", [{
                             "type": "success",
                             "id": dataId
                         }, xhr.responseText]);
                         break;
                     case "error":
-                        MWF.runCallback(callback, "onFailure", [xhr]);
+                        MWF.runCallback(callback, "failure", [xhr]);
                         break;
                 }
             }else{
-                MWF.runCallback(callback, "onFailure", [xhr]);
+                MWF.runCallback(callback, "failure", [xhr]);
             }
         }else{
-            MWF.runCallback(callback, "onFailure", [xhr]);
+            MWF.runCallback(callback, "failure", [xhr]);
         }
     },
 

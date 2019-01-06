@@ -366,8 +366,8 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment =  new Class({
         // }.bind(this));
     },
     uploadAttachment: function(e, node){
-        if (window.o2 && window.o2.uploadAttachment){
-            window.o2.uploadAttachment(this.json.id);
+        if (window.o2android && window.o2android.uploadAttachment){
+            window.o2android.uploadAttachment(this.json.id);
         }else if(window.webkit && window.webkit.messageHandlers) {
             window.webkit.messageHandlers.uploadAttachment.postMessage({"site": this.json.id});
         }else{
@@ -413,8 +413,8 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment =  new Class({
     },
 
     replaceAttachment: function(e, node, attachment){
-        if (window.o2 && window.o2.replaceAttachment){
-            window.o2.replaceAttachment(attachment.data.id, this.json.id);
+        if (window.o2android && window.o2android.replaceAttachment){
+            window.o2android.replaceAttachment(attachment.data.id, this.json.id);
         }else if(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.replaceAttachment) {
             window.webkit.messageHandlers.replaceAttachment.postMessage({"id": attachment.data.id, "site": this.json.id});
         }else {
@@ -474,8 +474,8 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment =  new Class({
     downloadAttachment: function(e, node, attachments){
         if (this.form.businessData.document){
             attachments.each(function(att){
-                if (window.o2 && window.o2.downloadAttachment){
-                    window.o2.downloadAttachment(att.data.id);
+                if (window.o2android && window.o2android.downloadAttachment){
+                    window.o2android.downloadAttachment(att.data.id);
                 }else if(window.webkit && window.webkit.messageHandlers) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage({"id": att.data.id, "site": this.json.id});
                 }else{
@@ -487,8 +487,8 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment =  new Class({
     openAttachment: function(e, node, attachments){
         if (this.form.businessData.document){
             attachments.each(function(att){
-                if (window.o2 && window.o2.downloadAttachment){
-                    window.o2.downloadAttachment(att.data.id);
+                if (window.o2android && window.o2android.downloadAttachment){
+                    window.o2android.downloadAttachment(att.data.id);
                 }else if(window.webkit && window.webkit.messageHandlers) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage({"id": att.data.id, "site": this.json.id});
                 }else {

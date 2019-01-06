@@ -110,7 +110,8 @@ MWF.xApplication.process.ProcessManager.LP = {
         "saveSuccess": "附件已保存！",
         "saveConfirm": "保存确认",
         "saveConfirmText": "附件已被修改，您是否要保存修改的内容？",
-        "uploadSuccess": "附件已上传"
+        "uploadSuccess": "附件已上传",
+        "loadFiles": "批量上传附件"
     },
     
     "application": {

@@ -1,6 +1,5 @@
 MWF.xApplication.process.ProcessDesigner = MWF.xApplication.process.ProcessDesigner || {};
 MWF.xApplication.process.ProcessDesigner.widget = MWF.xApplication.process.ProcessDesigner.widget || {};
-MWF.xDesktop.requireApp("Organization", "Selector.package", null, false);
 MWF.require("MWF.xAction.org.express.RestActions", null,false);
 MWF.require("MWF.widget.Identity", null, false);
 

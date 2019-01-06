@@ -376,8 +376,8 @@ MWF.xApplication.cms.Xform.Office = MWF.CMSOffice =  new Class({
             icon.addEvent("click", function(){
                 var url = this.getOfficeFileUrl();
                 if (url){
-                    if (window.o2){
-                        window.o2.openDocument(url);
+                    if (window.o2android){
+                        window.o2android.openDocument(url);
                     }else if(window.webkit){
                         window.webkit.messageHandlers.openDocument.postMessage(url);
                     }else{

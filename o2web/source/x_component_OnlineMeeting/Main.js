@@ -1,4 +1,4 @@
-MWF.xDesktop.requireApp("OnlineMeeting", "Actions.RestActions", null, false);
+//MWF.xDesktop.requireApp("OnlineMeeting", "Actions.RestActions", null, false);
 MWF.xApplication.OnlineMeeting.options.multitask = false;
 MWF.xApplication.OnlineMeeting.Main = new Class({
 	Extends: MWF.xApplication.Common.Main,

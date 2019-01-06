@@ -209,6 +209,7 @@
     };
 
     _restful = function(method, address, data, callback, async, withCredentials){
+        debugger;
         var loadAsync = (async !== false);
         var credentials = (withCredentials !== false);
         address = (address.indexOf("?")!==-1) ? address+"&v="+o2.version.v : address+"?v="+o2.version.v;
@@ -222,13 +223,14 @@
             async: loadAsync,
             withCredentials: credentials,
             onSuccess: function(responseJSON, responseText){
-                var xToken = this.getHeader("x-token");
-                if (xToken){
-                    if (layout){
-                        if (!layout.session) layout.session = {};
-                        layout.session.token = xToken;
-                    }
-                }
+                // var xToken = this.getHeader("authorization");
+                // if (!xToken) xToken = this.getHeader("x-token");
+                // if (xToken){
+                //     if (layout){
+                //         if (!layout.session) layout.session = {};
+                //         layout.session.token = xToken;
+                //     }
+                // }
                 o2.runCallback(callback, "success", [responseJSON])
             },
             onFailure: function(xhr){

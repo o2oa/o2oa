@@ -4,6 +4,19 @@
         "height": "50px",
         "background-color": "#4c6b87"
     },
+    "titleActionNode": {
+        "float": "right",
+        "margin-right": "20px",
+        "height": "26px",
+        "border": "1px solid #ffffff",
+        "border-radius": "5px",
+        "line-height": "26px",
+        "text-align": "center",
+        "padding": "0 20px",
+        "margin-top": "12px",
+        "cursor": "pointer",
+        "color": "#ffffff"
+    },
     "titleTextNode": {
         "padding-left": "20px",
         "color": "#FFF",

@@ -21,6 +21,44 @@ MWF.xApplication.portal.PortalManager.FileExplorer = new Class({
         // this.app.desktop.openApplication(e, "process.FileDesigner", options);
         new MWF.xApplication.portal.PortalManager.FileDesigner(this);
     },
+    getNewData: function(){
+        return {
+            "id": "",
+            "name": "",
+            "alias": "",
+            "description": "",
+            "portal": (this.app.options.application || this.app.application).id,
+            "fileName": ""
+        }
+    },
+    implodeFiles: function(){
+        MWF.require("MWF.widget.Upload", function(){
+            new MWF.widget.Upload(this.app.content, {
+                "action": MWF.Actions.get("x_portal_assemble_designer").action,
+                "multiple": true,
+                "method": "uploadFile",
+                "parameter": {"id": ""},
+                "onBeforeUploadEntry": function(file, up){
+                    var data = this.getNewData();
+                    data.name = file.name;
+                    data.fileName = file.name;
+                    data.description = file.name+" "+this.getSizeText(file.size);
+                    data.updateTime = (new Date()).format("db");
+                    MWF.Actions.get("x_portal_assemble_designer").saveFile(data, function(json){
+                        up.options.parameter = {"id": json.data.id};
+
+                        var node = this.elementContentListNode.getFirst();
+                        if (node) if (node.hasClass("noElementNode")){
+                            node.destroy();
+                        }
+
+                        var itemObj = this._getItemObject(data);
+                        itemObj.load();
+                    }.bind(this), null, false);
+                }.bind(this)
+            }).load();
+        }.bind(this));
+    },
     _getItemObject: function(item){
         return new MWF.xApplication.portal.PortalManager.FileExplorer.File(this, item)
     }
@@ -113,14 +151,14 @@ MWF.xApplication.portal.PortalManager.FileDesigner = new Class({
 
     upload: function(){
         if (!this.data.id){
-            var data = this.getData();
-            this.data = Object.merge(this.data, data);
-            MWF.Actions.get("x_portal_assemble_designer").saveFile(this.data, function(){
-                this.explorer.reload();
+            // var data = this.getData();
+            // this.data = Object.merge(this.data, data);
+            // MWF.Actions.get("x_portal_assemble_designer").saveFile(this.data, function(){
+            //     this.explorer.reload();
                 this.uploadFile(function(){
                     this.app.notice(this.lp.file.uploadSuccess, "success");
                 }.bind(this));
-            }.bind(this));
+            // }.bind(this));
         }else{
             this.uploadFile(function(){
                 this.app.notice(this.lp.file.uploadSuccess, "success");
@@ -138,8 +176,20 @@ MWF.xApplication.portal.PortalManager.FileDesigner = new Class({
                     this.modifyContentFileUrl();
                     if (callback) callback();
                 }.bind(this),
+                "onBeforeUpload": function(files, up){
+                    var name = files[0].name;
+                    this.nameInput.set("value", name);
+                    var data = this.getData();
+                    this.data = Object.merge(this.data, data);
+                    MWF.Actions.get("x_portal_assemble_designer").saveFile(this.data, function(json){
+                        this.explorer.reload();
+                        up.options.parameter = {"id": json.data.id};
+                    }.bind(this), null, false);
+                }.bind(this),
                 "onEvery": function(json, current, count, file){
+                    debugger;
                     //this.data.description = file.name+" "+this.getSizeText(file.size);
+                    //this.data.id = json.data.id;
                     this.data.fileName = file.name;
                     this.data.description = file.name+" "+this.getSizeText(file.size);
                     this.descriptionInput.set("value", this.data.description);

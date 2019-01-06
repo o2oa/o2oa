@@ -9,6 +9,69 @@ MWF.xApplication.process.ProcessManager.FileExplorer = new Class({
         "noElement": MWF.APPPM.LP.file.noDictionaryNoticeText
     },
 
+    createSearchElementNode: function(){
+        this.titleActionNodeNode = new Element("div", {
+            "styles": this.css.titleActionNode,
+            "text": MWF.APPPM.LP.file.loadFiles
+        }).inject(this.toolbarNode);
+        this.titleActionNodeNode.addEvent("click", function(){
+            this.implodeFiles();
+        }.bind(this));
+    },
+    getNewData: function(){
+        return {
+            "id": "",
+            "name": "",
+            "alias": "",
+            "description": "",
+            "application": (this.app.options.application || this.app.application).id,
+            "fileName": ""
+        }
+    },
+    getSizeText: function(s){
+        var o = [
+            {"t": "K", "i": 1024},
+            {"t": "M", "i": 1024*1024},
+            {"t": "G", "i": 1024*1024*1024}
+        ];
+        var i = 0;
+        var n = s/o[i].i;
+        while (n>1000 && i<2){
+            i++;
+            n = s/o[i].i;
+        }
+        n = Math.round(n*100)/100;
+        return ""+n+" "+o[i].t;
+    },
+    implodeFiles: function(){
+        MWF.require("MWF.widget.Upload", function(){
+            new MWF.widget.Upload(this.app.content, {
+                "action": MWF.Actions.get("x_processplatform_assemble_designer").action,
+                "multiple": true,
+                "method": "uploadFile",
+                "parameter": {"id": ""},
+                "onBeforeUploadEntry": function(file, up){
+                    var data = this.getNewData();
+                    data.name = file.name;
+                    data.fileName = file.name;
+                    data.description = file.name+" "+this.getSizeText(file.size);
+                    data.updateTime = (new Date()).format("db");
+                    MWF.Actions.get("x_processplatform_assemble_designer").saveFile(data, function(json){
+                        up.options.parameter = {"id": json.data.id};
+
+                        var node = this.elementContentListNode.getFirst();
+                        if (node) if (node.hasClass("noElementNode")){
+                            node.destroy();
+                        }
+
+                        var itemObj = this._getItemObject(data);
+                        itemObj.load();
+                    }.bind(this), null, false);
+                }.bind(this)
+            }).load();
+        }.bind(this));
+    },
+
     _createElement: function(e){
         // var _self = this;
         // var options = {
@@ -288,7 +351,6 @@ MWF.xApplication.process.ProcessManager.FileDesigner = new Class({
     },
     upload: function(){
         if (!this.data.id){
-
             //MWF.Actions.get("x_processplatform_assemble_designer").saveFile(this.data, function(){
             //    this.explorer.reload();
                 this.uploadFile(function(){
@@ -326,6 +388,7 @@ MWF.xApplication.process.ProcessManager.FileDesigner = new Class({
                 }.bind(this),
                 "onEvery": function(json, current, count, file){
                     //this.data.description = file.name+" "+this.getSizeText(file.size);
+                    //this.data.id = json.data.id;
                     this.data.fileName = file.name;
                     this.data.description = file.name+" "+this.getSizeText(file.size);
                     this.descriptionInput.set("value", this.data.description);

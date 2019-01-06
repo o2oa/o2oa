@@ -10,7 +10,7 @@ MWF.xApplication.Setting.UILoginDocument = new Class({
         var defaultStyleData = {
             "title": this.lp.ui_login_default,
             "name": "default",
-            "url": "/x_desktop/res/mwf4/package/xDesktop/$Authentication/default",
+            "url": o2.session.path+"/xDesktop/$Authentication/default",
             "enabled": true
         };
 
