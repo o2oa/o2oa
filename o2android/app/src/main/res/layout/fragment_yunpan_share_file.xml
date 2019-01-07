@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_refresh_share_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/z_color_background">
+
+        <LinearLayout
+            android:id="@+id/share_file_reply_linear_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/spacing_small"
+            android:paddingBottom="@dimen/spacing_small"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/share_file_reply_id"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="@dimen/font_large"
+                android:textColor="@color/icon_blue"
+                android:text="@string/back_label"
+                android:visibility="invisible"
+                />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/share_file_list_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/share_file_reply_linear_id"
+            android:background="@android:color/white"
+            ></ListView>
+        <TextView
+            android:id="@+id/tv_share_file_empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/share_file_reply_linear_id"
+            android:textColor="@color/z_color_subtitle_font"
+            android:textSize="@dimen/font_large"
+            android:gravity="center"
+            android:text="@string/recycler_no_data_cool"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

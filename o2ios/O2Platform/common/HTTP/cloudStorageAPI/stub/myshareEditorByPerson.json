@@ -1,0 +1,29 @@
+{
+    "type": "success",
+    "data": [
+             {
+             "contentType": "application/octet-stream",
+             "id": "53643309-c384-4d7c-9ba8-a79c1e19d885",
+             "createTime": "2017-12-08 14:28:54",
+             "updateTime": "2017-12-08 14:30:02",
+             "person": "程剑@chengjain@P",
+             "name": "OOUnitModel.swift",
+             "extension": "swift",
+             "storage": "251",
+             "length": 6207,
+             "shareList": [
+                           "刘振兴@100009@P"
+                           ],
+             "editorList": [],
+             "folder": "",
+             "lastUpdateTime": "2017-12-08 14:30:02",
+             "lastUpdatePerson": "程剑@chengjain@P"
+             }
+             ],
+    "message": "",
+    "date": "2017-12-08 14:48:02",
+    "spent": 31,
+    "size": 1,
+    "count": 0,
+    "position": 0
+}

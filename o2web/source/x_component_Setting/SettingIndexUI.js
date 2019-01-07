@@ -8,7 +8,7 @@ MWF.xApplication.Setting.UIIndexDocument = new Class({
         this.titleName.set("text", this.lp.ui_indexSetting);
 
 
-        MWF.getJSON("/x_desktop/res/mwf4/package/xDesktop/$Layout/styles.json", function(json){
+        MWF.getJSON(o2.session.path+"/xDesktop/$Layout/styles.json", function(json){
             MWF.UD.getPublicData("indexThemes", function(themesJson){
                 var init = false;
                 if (themesJson){
@@ -103,9 +103,9 @@ MWF.xApplication.Setting.UIIndexDocument.Item = new Class({
     getCss: function(){
         var css = null;
         if (this.data.url){
-            var cssDesktopPath = "/x_desktop/res/mwf4/package/xDesktop/$Layout/"+this.data.url+"/css.wcss";
+            var cssDesktopPath = o2.session.path+"/xDesktop/$Layout/"+this.data.url+"/css.wcss";
             cssDesktopPath = (cssDesktopPath.indexOf("?")!=-1) ? cssDesktopPath+"&v="+COMMON.version : cssDesktopPath+"?v="+COMMON.version;
-            var cssWindowPath = "/x_desktop/res/mwf4/package/xDesktop/$Window/desktop_"+this.data.url+"/css.wcss";
+            var cssWindowPath = o2.session.path+"/xDesktop/$Window/desktop_"+this.data.url+"/css.wcss";
             cssWindowPath = (cssWindowPath.indexOf("?")!=-1) ? cssWindowPath+"&v="+COMMON.version : cssWindowPath+"?v="+COMMON.version;
 
             css = {};

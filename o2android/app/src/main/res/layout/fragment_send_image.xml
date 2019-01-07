@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jiguang.chat.view.SendImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/send_image_view"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <GridView
+        android:id="@+id/album_grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:listSelector="@android:color/transparent"
+        android:cacheColorHint="@android:color/transparent"
+        android:stretchMode="columnWidth"
+        android:horizontalSpacing="10dp"
+        android:gravity="center"
+        android:verticalSpacing="10dp"
+        android:columnWidth="100dp"
+        android:numColumns="auto_fit">
+    </GridView>
+
+</jiguang.chat.view.SendImageView>

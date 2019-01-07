@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_attendance_location_setting"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/z_color_background"
+    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.attendance.setting.AttendanceLocationSettingActivity">
+
+    <include layout="@layout/snippet_appbarlayout_toolbar" />
+
+    <com.baidu.mapapi.map.MapView
+        android:id="@+id/map_attendance_location_setting_baidu"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clickable="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:background="@android:color/white"
+            android:padding="@dimen/spacing_normal"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/z_color_title_font"
+                android:textSize="@dimen/font_normal"
+                android:text="@string/attendance_work_place"/>
+            <EditText
+                android:id="@+id/edit_attendance_location_setting_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:textSize="@dimen/font_small"
+                android:maxLines="1"
+                android:background="@null"
+                android:hint="@string/attendance_work_place_hint"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:background="@android:color/white"
+            android:padding="@dimen/spacing_normal"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/z_color_title_font"
+                android:textSize="@dimen/font_normal"
+                android:text="@string/attendance_work_place_error_range"/>
+            <EditText
+                android:id="@+id/edit_attendance_location_setting_error_range"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:textSize="@dimen/font_small"
+                android:background="@null"
+                android:maxLines="1"
+                android:inputType="number"
+                android:hint="@string/attendance_work_place_error_range_hint"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="40dp"
+    android:layout_marginTop="@dimen/spacing_small"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/z_color_split_line_ddd"/>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginLeft="15dp">
+       <ImageView
+           android:id="@+id/image_item_contact_fragment_header_icon"
+           android:layout_width="20dp"
+           android:layout_height="20dp"
+           android:layout_centerVertical="true"
+           android:src="@mipmap/icon_contact_my_department"/>
+        <TextView
+            android:id="@+id/tv_item_contact_fragment_header_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/image_item_contact_fragment_header_icon"
+            android:layout_marginLeft="@dimen/spacing_small"
+            tools:text="我的部门"
+            android:textSize="15sp"
+            android:textColor="@color/z_color_text_primary_dark"/>
+
+    </RelativeLayout>
+</LinearLayout>

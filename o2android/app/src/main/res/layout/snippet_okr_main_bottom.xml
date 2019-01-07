@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="69dp"
+    android:orientation="vertical"
+    android:padding="0dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/z_color_split_line"
+        android:padding="0dp"></LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="68dp"
+        android:background="@color/z_color_bottom_bar_background"
+        android:orientation="horizontal"
+        android:padding="0dp">
+
+        <RelativeLayout
+            android:id="@+id/tab_okr_main_bottom_home"
+            style="@style/main_bottom_RelativeLayout_style">
+            <ImageButton
+                android:id="@+id/tab_okr_main_bottom_home_image"
+                android:contentDescription="@string/okr_main_tab_home"
+
+                android:src="@mipmap/icon_okr_main_home_gray"
+                style="@style/okr_main_bottom_imageButton_style"/>
+            <TextView
+                android:id="@+id/tab_okr_main_bottom_home_name"
+                android:layout_below="@id/tab_okr_main_bottom_home_image"
+                android:text="@string/okr_main_tab_home"
+                style="@style/main_bottom_textView_style"
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/tab_okr_main_bottom_todo"
+            style="@style/main_bottom_RelativeLayout_style">
+            <ImageButton
+                android:id="@+id/tab_okr_main_bottom_todo_image"
+                android:contentDescription="@string/okr_main_tab_todo"
+                android:src="@mipmap/icon_okr_main_todo_gray"
+                style="@style/okr_main_bottom_imageButton_style"/>
+            <TextView
+                android:id="@+id/tab_okr_main_bottom_todo_name"
+                android:layout_below="@id/tab_okr_main_bottom_todo_image"
+                android:text="@string/okr_main_tab_todo"
+                style="@style/main_bottom_textView_style"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/tab_okr_main_bottom_work"
+            style="@style/main_bottom_RelativeLayout_style">
+            <ImageButton
+                android:id="@+id/tab_okr_main_bottom_work_image"
+                android:contentDescription="@string/okr_main_tab_work"
+                android:src="@mipmap/icon_okr_main_work_gray"
+                style="@style/okr_main_bottom_imageButton_style"/>
+            <TextView
+                android:id="@+id/tab_okr_main_bottom_work_name"
+                android:layout_below="@id/tab_okr_main_bottom_work_image"
+                android:text="@string/okr_main_tab_work"
+                style="@style/main_bottom_textView_style"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/tab_okr_main_bottom_project"
+            style="@style/main_bottom_RelativeLayout_style">
+            <ImageButton
+                android:id="@+id/tab_okr_main_bottom_project_image"
+                android:contentDescription="@string/okr_main_tab_project"
+                android:src="@mipmap/icon_okr_main_project_gray"
+                style="@style/okr_main_bottom_imageButton_style"/>
+            <TextView
+                android:id="@+id/tab_okr_main_bottom_project_name"
+                android:layout_below="@id/tab_okr_main_bottom_project_image"
+                android:text="@string/okr_main_tab_project"
+                style="@style/main_bottom_textView_style"/>
+        </RelativeLayout>
+
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/tab_okr_main_bottom_statistic"-->
+            <!--style="@style/main_bottom_RelativeLayout_style">-->
+            <!--<ImageButton-->
+                <!--android:id="@+id/tab_okr_main_bottom_statistic_image"-->
+                <!--android:contentDescription="@string/okr_main_tab_statistic"-->
+                <!--android:src="@mipmap/icon_okr_main_statistic_gray"-->
+                <!--style="@style/okr_main_bottom_imageButton_style"/>-->
+            <!--<TextView-->
+                <!--android:id="@+id/tab_okr_main_bottom_statistic_name"-->
+                <!--android:layout_below="@id/tab_okr_main_bottom_statistic_image"-->
+                <!--android:text="@string/okr_main_tab_statistic"-->
+                <!--style="@style/main_bottom_textView_style"/>-->
+        <!--</RelativeLayout>-->
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/z_color_primary"
+    android:paddingTop="@dimen/toolbar_padding_top">
+
+    <ScrollView
+        android:id="@+id/scroll_myInfo"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:fadingEdge="vertical"
+        android:scrollbars="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@android:color/white">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layout_myInfo_top_bar"
+                android:layout_width="match_parent"
+                android:layout_height="230dp"
+                android:background="@mipmap/pic_person_info_top_bar_bg">
+
+                <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
+                    android:id="@+id/image_myInfo_avatar"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:src="@mipmap/icon_avatar_men"
+                    app:border_color="@android:color/white"
+                    app:border_width="1dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="parent"
+                    app:layout_constraintVertical_bias="0.5" />
+
+                <TextView
+                    android:id="@+id/tv_myInfo_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/image_myInfo_avatar"
+                    tools:text="刘振兴" />
+
+                <TextView
+                    android:id="@+id/tv_myInfo_sign"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_myInfo_name"
+                    tools:text="个人签名" />
+
+                <ImageView
+                    android:id="@+id/image_myInfo_edit_avatar"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:visibility="gone"
+                    app:layout_constraintRight_toRightOf="@+id/image_myInfo_avatar"
+                    app:layout_constraintTop_toTopOf="@+id/image_myInfo_avatar"
+                    app:srcCompat="@mipmap/icon_edit_24dp" />
+            </android.support.constraint.ConstraintLayout>
+
+            <RelativeLayout
+                android:id="@+id/relative_myInfo_operation_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginBottom="@dimen/spacing_small"
+                android:layout_marginTop="@dimen/spacing_small">
+
+                <RelativeLayout
+                    android:id="@+id/linear_myInfo_gender_men_button"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="90dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/image_myInfo_gender_men"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerHorizontal="true"
+                        android:src="@mipmap/icon_gender_men_disable_50dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/image_myInfo_gender_men"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:text="男"
+                        android:textColor="@color/z_color_text_primary_dark"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:id="@+id/image_myInfo_gender_men_edit"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:visibility="gone"
+                        app:srcCompat="@mipmap/icon_radio_primary_on" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/linear_myInfo_gender_women_button"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="90dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/image_myInfo_gender_women"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerHorizontal="true"
+                        android:src="@mipmap/icon_gender_women_disable_50dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/image_myInfo_gender_women"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:text="女"
+                        android:textColor="@color/z_color_text_primary_dark"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:id="@+id/image_myInfo_gender_women_edit"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:visibility="gone"
+                        app:srcCompat="@mipmap/icon_radio_primary_on" />
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relative_myInfo_gap"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:background="@color/z_color_background">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentTop="true"
+                    android:background="@color/z_color_split_line_ddd" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/z_color_split_line_ddd" />
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="个性签名"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_myInfo_sign_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:textColor="@color/z_color_text_primary"
+                    android:textSize="@dimen/font_normal"
+                    android:visibility="visible" />
+
+                <EditText
+                    android:id="@+id/edit_myInfo_sign"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:layout_weight="2"
+                    android:background="@drawable/input_background_bottom_line"
+                    android:hint="请填入个性签名"
+                    android:textColor="@color/z_color_text_primary"
+                    android:textSize="@dimen/font_normal"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:background="@color/z_color_background">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentTop="true"
+                    android:background="@color/z_color_split_line_ddd" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/z_color_split_line_ddd" />
+            </RelativeLayout>
+
+            <!-- 基本信息 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/myInfo_name_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <!--姓名-->
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="姓名"
+                        android:textColor="@color/z_color_text_primary_dark"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/tv_myInfo_name_edit"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:textColor="@color/z_color_text_primary"
+                        android:textSize="@dimen/font_normal" />
+
+                    <EditText
+                        android:id="@+id/edit_myInfo_name"
+                        android:layout_width="0dp"
+                        android:layout_height="32dp"
+                        android:layout_weight="2"
+                        android:background="@drawable/input_background_bottom_line"
+                        android:hint="请填入姓名"
+                        android:textColor="@color/z_color_text_primary"
+                        android:textSize="@dimen/font_normal"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/z_color_split_line_ddd" />
+
+                <LinearLayout
+                    android:id="@+id/myInfo_mobile_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="联系电话"
+                        android:textColor="@color/z_color_text_primary_dark"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/myInfo_mobile_value_id"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:textColor="@color/z_color_text_primary"
+                        android:textSize="@dimen/font_normal" />
+
+                    <EditText
+                        android:id="@+id/edit_myInfo_mobile"
+                        android:layout_width="0dp"
+                        android:layout_height="32dp"
+                        android:layout_weight="2"
+                        android:background="@drawable/input_background_bottom_line"
+                        android:hint="请填入联系电话"
+                        android:textColor="@color/z_color_text_primary"
+                        android:textSize="@dimen/font_normal"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/z_color_split_line_ddd" />
+
+                <LinearLayout
+                    android:id="@+id/myInfo_email_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="电子邮件"
+                        android:textColor="@color/z_color_text_primary_dark"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/myInfo_email_value_id"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:textColor="@color/z_color_text_primary"
+                        android:textSize="@dimen/font_normal" />
+
+                    <EditText
+                        android:id="@+id/edit_myInfo_email"
+                        android:layout_width="0dp"
+                        android:layout_height="32dp"
+                        android:layout_weight="2"
+                        android:background="@drawable/input_background_bottom_line"
+                        android:hint="请填入电子邮件"
+                        android:textColor="@color/z_color_text_primary"
+                        android:textSize="@dimen/font_normal"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/z_color_split_line_ddd" />
+
+                <LinearLayout
+                    android:id="@+id/myInfo_qq_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="QQ"
+                        android:textColor="@color/z_color_text_primary_dark"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/myInfo_qq_value_id"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:textColor="@color/z_color_text_primary"
+                        android:textSize="@dimen/font_normal" />
+
+                    <EditText
+                        android:id="@+id/edit_myInfo_qq"
+                        android:layout_width="0dp"
+                        android:layout_height="32dp"
+                        android:layout_weight="2"
+                        android:background="@drawable/input_background_bottom_line"
+                        android:hint="请填入QQ"
+                        android:textColor="@color/z_color_text_primary"
+                        android:textSize="@dimen/font_normal"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/z_color_primary">
+
+        <TextView
+            android:id="@+id/tv_person_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/tab_my"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tv_myInfo_edit_save_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="14dp"
+            android:text="@string/menu_main_my_edit"
+            android:textSize="15sp"
+            android:textColor="@android:color/white"
+            android:shadowColor="@color/z_color_subtitle_font"
+            android:shadowDx="1.0"
+            android:shadowDy="1.0"
+            android:shadowRadius="2.0"/>
+    </RelativeLayout>
+
+
+</RelativeLayout>

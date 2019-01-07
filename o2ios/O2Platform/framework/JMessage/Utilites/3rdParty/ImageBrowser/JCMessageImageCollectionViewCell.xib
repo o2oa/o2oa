@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="JCMessageImageCollectionViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="170" height="184"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="170" height="184"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7qj-yu-oJl">
+                        <rect key="frame" x="0.0" y="0.0" width="170" height="184"/>
+                    </scrollView>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="7qj-yu-oJl" secondAttribute="bottom" id="0eE-xp-5uw"/>
+                <constraint firstItem="7qj-yu-oJl" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="2xo-pr-McK"/>
+                <constraint firstAttribute="trailing" secondItem="7qj-yu-oJl" secondAttribute="trailing" id="gBy-LY-a4t"/>
+                <constraint firstItem="7qj-yu-oJl" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="sD8-dV-J7r"/>
+            </constraints>
+            <size key="customSize" width="170" height="184"/>
+            <connections>
+                <outlet property="messageImageContent" destination="7qj-yu-oJl" id="0Sn-fo-Ndy"/>
+            </connections>
+            <point key="canvasLocation" x="446" y="394"/>
+        </collectionViewCell>
+    </objects>
+</document>

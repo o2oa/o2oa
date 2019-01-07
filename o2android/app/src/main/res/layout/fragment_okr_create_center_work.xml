@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/z_color_background">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:background="@android:color/white"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/spacing_normal"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/okr_center_work_title"
+                        android:textColor="@color/z_color_title_font"
+                        android:textSize="@dimen/font_normal"/>
+
+                    <EditText
+                        android:id="@+id/edit_okr_center_work_create_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:background="@null"
+                        android:hint="@string/okr_center_work_title"
+                        android:textSize="@dimen/font_small"
+                        />
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/z_color_gray_light"/>
+                <LinearLayout
+                    android:id="@+id/linear_okr_center_work_create_completed_time_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/spacing_normal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/okr_center_work_completed_time"
+                        android:textColor="@color/z_color_title_font"
+                        android:textSize="@dimen/font_normal"/>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2">
+                        <TextView
+                            android:id="@+id/edit_okr_center_work_create_completed_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/font_small"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            />
+                        <TextView
+                            android:id="@+id/tv_okr_center_work_create_completed_time_arrow"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/spacing_small"
+                            android:text="@string/fa_angle_right"
+                            android:textSize="@dimen/font_normal"/>
+                    </RelativeLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/linear_okr_center_work_create_audit_leader_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:background="@android:color/white"
+                android:orientation="horizontal"
+                android:padding="@dimen/spacing_normal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/okr_center_work_audit_leader"
+                    android:textColor="@color/z_color_title_font"
+                    android:textSize="@dimen/font_normal"/>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2">
+                    <TextView
+                        android:id="@+id/edit_okr_center_work_create_audit_leader"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_small"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        />
+                    <TextView
+                        android:id="@+id/tv_okr_center_work_create_audit_leader_arrow"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing_small"
+                        android:text="@string/fa_angle_right"
+                        android:textSize="@dimen/font_normal"/>
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_okr_center_work_create_type_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:background="@android:color/white"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/spacing_normal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/okr_center_work_type"
+                        android:textColor="@color/z_color_title_font"
+                        android:textSize="@dimen/font_normal"/>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2">
+                        <TextView
+                            android:id="@+id/edit_okr_center_work_create_type"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/font_small"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            />
+                        <TextView
+                            android:id="@+id/tv_okr_center_work_create_type_arrow"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/spacing_small"
+                            android:text="@string/fa_angle_right"
+                            android:textSize="@dimen/font_normal"/>
+                    </RelativeLayout>
+                </LinearLayout>
+                <View
+                    android:id="@+id/view_okr_center_work_create_type_split"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/z_color_gray_light"
+                    android:visibility="gone"/>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_okr_center_work_create_type_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:background="@android:color/white"
+                    android:scrollbars="none"
+                    android:visibility="gone"></android.support.v7.widget.RecyclerView>
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:background="@android:color/white"
+                android:orientation="horizontal"
+                android:padding="@dimen/spacing_normal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start|top"
+                    android:text="@string/okr_center_work_description"
+                    android:textColor="@color/z_color_title_font"
+                    android:textSize="@dimen/font_normal"/>
+
+                <EditText
+                    android:id="@+id/edit_okr_center_work_create_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:gravity="start|top"
+                    android:background="@null"
+                    android:hint="@string/okr_center_work_description"
+                    android:minLines="3"
+                    android:textSize="@dimen/font_small"
+                    />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/linear_okr_center_work_create_detail_work_list_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:background="@android:color/white"
+                android:padding="@dimen/spacing_normal"
+                android:visibility="gone">
+                <ImageView
+                    android:id="@+id/image_okr_center_work_create_detail_work_list_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/icon_list_gray"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"/>
+                <TextView
+                    android:layout_toRightOf="@id/image_okr_center_work_create_detail_work_list_icon"
+                    android:layout_centerVertical="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_small"
+                    android:text="@string/okr_detail_work_list"
+                    android:textColor="@color/z_color_title_font"
+                    android:textSize="@dimen/font_normal"/>
+                <TextView
+                    android:id="@+id/tv_okr_center_work_create_detail_work_list_arrow"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_small"
+                    android:text="@string/fa_angle_right"
+                    android:textColor="@color/z_color_title_font"
+                    android:textSize="@dimen/font_normal"/>
+            </RelativeLayout>
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/button_okr_center_work_create_submit"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:theme="@style/LoginButtonStyle"
+                android:text="@string/submit"></android.support.v7.widget.AppCompatButton>
+        </LinearLayout>
+
+
+    </RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

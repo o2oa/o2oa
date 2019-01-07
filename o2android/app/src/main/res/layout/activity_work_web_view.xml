@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    tools:context=".app.o2.webview.TaskWebViewActivity">
+
+    <include layout="@layout/snippet_appbarlayout_toolbar"></include>
+
+    <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.NestedProgressWebView
+        android:id="@+id/web_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@android:color/white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <LinearLayout
+        android:id="@+id/bottom_operate_button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/white"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_small"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_work_form_delete_btn"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/work_form_delete"
+            android:textColor="@color/z_color_primary"
+            android:textSize="@dimen/font_large"
+            android:gravity="center"
+            android:visibility="gone"
+            android:onClick="formDeleteBtnClick"
+            />
+        <TextView
+            android:id="@+id/tv_work_form_save_btn"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/work_form_save"
+            android:textColor="@color/z_color_primary"
+            android:textSize="@dimen/font_large"
+            android:gravity="center"
+            android:visibility="gone"
+            android:onClick="formSaveBtnClick"
+            />
+        <TextView
+            android:id="@+id/tv_work_form_go_next_btn"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/work_form_submit"
+            android:textColor="@color/z_color_primary"
+            android:textSize="@dimen/font_large"
+            android:gravity="center"
+            android:visibility="gone"
+            android:onClick="formGoNextBtnClick"
+            />
+        <TextView
+            android:id="@+id/tv_work_form_set_read_btn"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/work_form_set_read_button"
+            android:textColor="@color/z_color_primary"
+            android:textSize="@dimen/font_large"
+            android:gravity="center"
+            android:visibility="gone"
+            android:onClick="formSetReadBtnClick"
+            />
+        <TextView
+            android:id="@+id/tv_work_form_retract_btn"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/work_form_retract_button"
+            android:textColor="@color/z_color_primary"
+            android:textSize="@dimen/font_large"
+            android:gravity="center"
+            android:visibility="gone"
+            android:onClick="formRetractBtnClick"
+            />
+    </LinearLayout>
+
+
+</LinearLayout>

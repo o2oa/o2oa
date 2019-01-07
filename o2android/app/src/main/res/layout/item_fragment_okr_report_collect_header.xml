@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/z_color_accent">
+    <TextView
+        android:id="@+id/tv_item_fragment_okr_report_collect_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:layout_marginBottom="@dimen/spacing_small"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/font_large"
+        android:layout_gravity="center"
+        />
+</LinearLayout>

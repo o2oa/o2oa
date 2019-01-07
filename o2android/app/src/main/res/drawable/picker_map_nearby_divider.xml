@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:left="16dp"
+        android:right="16dp">
+        <shape>
+            <solid android:color="@color/picker_map_nearby_divider" />
+        </shape>
+    </item>
+
+</layer-list>

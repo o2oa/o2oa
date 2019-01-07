@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/linear_okr_deploy_work_center_sub_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.RecyclerViewSwipeRefreshLayout
+        android:id="@+id/recycler_okr_deploy_work_center_sub_list_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_okr_deploy_work_center_sub_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+    </net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.RecyclerViewSwipeRefreshLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_okr_deploy_work_center_sub_operation_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:padding="@dimen/spacing_tiny"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/spacing_small"
+        android:visibility="gone"
+        android:background="@drawable/white_translucent_background"
+        android:orientation="horizontal">
+    </LinearLayout>
+</RelativeLayout>

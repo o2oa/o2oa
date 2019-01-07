@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/linear_item_okr_deploy_work_center_sub_content"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center_vertical"
+              android:orientation="horizontal"
+              android:padding="@dimen/spacing_small">
+
+    <TextView
+        android:id="@+id/tv_item_okr_deploy_work_center_sub_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_weight="2"
+        android:textSize="@dimen/font_large"/>
+
+    <LinearLayout
+        android:id="@+id/tv_item_okr_deploy_work_center_sub_status"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:orientation="horizontal">
+    </LinearLayout>
+</LinearLayout>

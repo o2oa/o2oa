@@ -22,5 +22,11 @@
 		"id": "1.1",
 		"action": "personConfig",
 		"icon": "person"
+	},
+	{
+		"title": "人员导入",
+		"id": "1.1",
+		"action": "personImport",
+		"icon": "xls"
 	}
 ]

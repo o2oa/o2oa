@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/z_color_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="250dp">
+            <com.baidu.mapapi.map.MapView
+                android:id="@+id/map_baidu_attendance_check_in"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:clickable="true" />
+            <LinearLayout
+                android:id="@+id/ll_attendance_check_in_alert_banner"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="@color/z_color_white_translucent_af"
+                android:visibility="gone">
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@mipmap/icon_check_in_alert"
+                    android:layout_marginStart="@dimen/spacing_small"/>
+                <TextView
+                    android:id="@+id/tv_attendance_check_in_alert_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_tiny"
+                    android:textColor="@color/z_color_text_hint"
+                    android:textSize="@dimen/font_large"
+                    android:ellipsize="marquee"
+                    android:singleLine="true"
+                    android:layout_marginEnd="@dimen/spacing_small"
+                    tools:text="您已进入考勤范围：科技大厦"/>
+            </LinearLayout>
+        </RelativeLayout>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_attendance_check_in_record_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:background="@android:color/white" />
+
+    </LinearLayout>
+    <!--checkin button-->
+    <LinearLayout
+        android:id="@+id/ll_attendance_check_in_button"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="@dimen/spacing_small"
+        android:layout_marginEnd="@dimen/spacing_small"
+        android:background="@drawable/attendance_check_in_background"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_attendance_check_in_button_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/attendance_check_in_knock"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/tv_attendance_check_in_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            tools:text="12:09:00" />
+    </LinearLayout>
+</FrameLayout>
+
+

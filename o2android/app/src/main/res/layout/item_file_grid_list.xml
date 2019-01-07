@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/file_list_icon_id"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:contentDescription="@string/contact_icon_label"
+        android:src="@mipmap/icon_folder"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+    <CheckBox
+        android:id="@+id/file_list_choose_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/yunpan_file_check"
+        android:button="@null"
+        android:visibility="visible"
+        android:layout_marginRight="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="0dp" />
+    <TextView
+        android:id="@+id/file_list_name_id"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        tools:text="@string/contact_list_name_text"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textColor="@color/z_color_text_primary_dark"
+        android:textSize="15sp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/file_list_icon_id" />
+
+    <ImageView
+        android:id="@+id/image_file_list_arrow"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@mipmap/icon_arrow_22dp"
+        android:visibility="gone" />
+    <TextView
+        android:id="@+id/tv_file_list_size"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:textColor="@color/z_color_text_primary"
+        tools:text="128K"
+        android:visibility="gone"
+         />
+    <TextView
+        android:id="@+id/tv_file_list_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:textSize="12sp"
+        android:textColor="@color/z_color_text_hint"
+        tools:text="2017-04-12 12:22"
+        android:visibility="gone"
+         />
+</android.support.constraint.ConstraintLayout>

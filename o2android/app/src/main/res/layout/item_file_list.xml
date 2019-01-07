@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="60dp"
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="59dp"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/file_list_choose_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/yunpan_file_check"
+            android:button="@null"
+            android:visibility="gone" />
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/file_list_icon_id"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:contentDescription="@string/contact_icon_label"
+                android:src="@mipmap/icon_folder"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/file_list_name_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="200dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/z_color_text_primary_dark"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toRightOf="@+id/file_list_icon_id"
+                app:layout_constraintTop_toTopOf="@+id/file_list_icon_id"
+                tools:text="文件文件夹文件夹文件夹文件夹文件夹文件夹文件夹文件夹夹"/>
+
+            <TextView
+                android:id="@+id/tv_file_list_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="5dp"
+                android:maxLines="1"
+                android:textColor="@color/z_color_text_hint"
+                android:textSize="12sp"
+                app:layout_constraintLeft_toRightOf="@+id/file_list_icon_id"
+                app:layout_constraintTop_toBottomOf="@+id/file_list_name_id"
+                tools:text="2017-04-12 12:22" />
+
+            <ImageView
+                android:id="@+id/image_file_list_arrow"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@mipmap/icon_arrow_22dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_file_list_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/z_color_text_hint"
+                android:textSize="13sp"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="128 K" />
+
+        </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view_file_list_split"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/z_color_split_line_ddd" />
+
+</LinearLayout>
+
+

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout style="@style/jmui_chat_item_send_layout"
+              xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/jmui_send_time_txt"
+        style="@style/jmui_chat_text_date_style"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
+
+        <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
+            android:id="@+id/jmui_avatar_iv"
+            style="@style/jmui_chat_item_sender_avatar_style"/>
+
+        <FrameLayout
+            android:id="@+id/jmui_voice_fl"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/jmui_avatar_iv"
+            android:gravity="right">
+
+            <TextView
+                android:id="@+id/jmui_msg_content"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginRight="5.57dp"
+                android:background="@drawable/jmui_msg_send_bg"
+                android:maxWidth="220dp"/>
+
+            <ImageView
+                android:id="@+id/jmui_voice_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/jmui_voice_send"/>
+
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="14dp"
+                android:id="@+id/jmui_voice_length_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/jmui_voice_length"
+                android:textColor="#4D9999"
+                android:textSize="16sp"/>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/text_receipt"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="7dp"
+            android:textSize="12sp"
+            android:layout_toLeftOf="@id/jmui_voice_fl"
+            android:layout_width="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"/>
+
+        <ImageButton
+            android:id="@+id/jmui_fail_resend_ib"
+            android:layout_width="21dp"
+            android:layout_height="21dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="6.67dp"
+            android:layout_toLeftOf="@id/jmui_voice_fl"
+            android:background="@drawable/send_message_failed"
+            android:clickable="true"
+            android:scaleType="fitCenter"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/jmui_sending_iv"
+            android:layout_width="21dp"
+            android:layout_height="21dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="6.67dp"
+            android:layout_toLeftOf="@id/jmui_voice_fl"
+            android:src="@drawable/jmui_sending_img"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>

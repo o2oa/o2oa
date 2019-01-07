@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewmodel"
+            type="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.calendar.vm.CreateEventViewModel"/>
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/z_color_background"
+            tools:context=".app.calendar.CreateEventActivity">
+
+            <RelativeLayout
+                android:id="@+id/rl_create_calendar_event_top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/z_color_primary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/image_create_calendar_event_close_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="@dimen/spacing_small"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:onClick="clickClose"
+                    android:src="@mipmap/icon_menu_window_close" />
+
+                <TextView
+                    android:id="@+id/tv_create_calendar_event_save_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="@dimen/spacing_small"
+                    android:onClick="clickSaveBtn"
+                    android:padding="@dimen/spacing_small"
+                    android:text="@string/save"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/font_large" />
+
+                <EditText
+                    android:id="@+id/et_create_calendar_event_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/image_create_calendar_event_close_btn"
+                    android:layout_marginBottom="@dimen/spacing_small"
+                    android:layout_marginEnd="@dimen/spacing_small"
+                    android:layout_marginStart="@dimen/spacing_small"
+                    android:layout_marginTop="@dimen/spacing_large"
+                    android:background="@null"
+                    android:hint="@string/calendar_event_title_hint"
+                    android:text="@={viewmodel.eventTitle}"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@color/z_color_white_translucent_af"
+                    android:textSize="@dimen/font_larger" />
+            </RelativeLayout>
+
+            <CheckBox
+                android:id="@+id/cb_create_calendar_event_is_all_day"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:checked="@={viewmodel.isAllDayEvent()}"
+                android:text="@string/calendar_all_day"
+                android:button="@drawable/o2_checkbox"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rl_create_calendar_event_top" />
+
+            <ImageView
+                android:id="@+id/image_create_calendar_event_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:src="@mipmap/icon_calendar_time"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cb_create_calendar_event_is_all_day" />
+
+            <TextView
+                android:id="@+id/tv_create_calendar_event_start_time"
+                android:layout_width="325dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_small"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:onClick="chooseDay"
+                android:text="@={viewmodel.startTime}"
+                android:textColor="@color/z_color_text_primary_dark"
+                android:textSize="@dimen/font_large"
+                tools:text="2018年7月12日 12:50"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toEndOf="@id/image_create_calendar_event_time"
+                app:layout_constraintTop_toBottomOf="@+id/cb_create_calendar_event_is_all_day" />
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginEnd="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:src="@mipmap/icon_arrow_22dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toEndOf="@+id/tv_create_calendar_event_start_time"
+                app:layout_constraintTop_toBottomOf="@+id/cb_create_calendar_event_is_all_day" />
+
+            <TextView
+                android:id="@+id/tv_create_calendar_event_end_time"
+                android:layout_width="325dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_small"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:onClick="chooseDay"
+                android:text="@={viewmodel.endTime}"
+                android:textColor="@color/z_color_text_primary_dark"
+                android:textSize="@dimen/font_large"
+                tools:text="2018年7月12日 12:50"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toEndOf="@id/image_create_calendar_event_time"
+                app:layout_constraintTop_toBottomOf="@+id/tv_create_calendar_event_start_time" />
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginEnd="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:src="@mipmap/icon_arrow_22dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toEndOf="@+id/tv_create_calendar_event_end_time"
+                app:layout_constraintTop_toBottomOf="@+id/tv_create_calendar_event_start_time" />
+
+            <View
+                android:id="@+id/view_create_calendar_event_time_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:background="@color/divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_create_calendar_event_end_time" />
+
+            <ImageView
+                android:id="@+id/image_create_calendar_event_calendar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:src="@mipmap/icon_calendar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view_create_calendar_event_time_divider" />
+
+            <TextView
+                android:id="@+id/tv_create_calendar_event_calendar_name"
+                android:layout_width="325dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_small"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:onClick="chooseCalendar"
+                android:text="@={viewmodel.calendarName}"
+                android:textColor="@color/z_color_text_primary_dark"
+                android:textSize="@dimen/font_normal"
+                tools:text="这是日历名称"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toEndOf="@id/image_create_calendar_event_calendar"
+                app:layout_constraintTop_toBottomOf="@+id/view_create_calendar_event_time_divider" />
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginEnd="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:src="@mipmap/icon_arrow_22dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toEndOf="@+id/tv_create_calendar_event_calendar_name"
+                app:layout_constraintTop_toBottomOf="@+id/view_create_calendar_event_time_divider" />
+
+            <View
+                android:id="@+id/view_create_calendar_event_calendar_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:background="@color/divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_create_calendar_event_calendar_name" />
+
+
+            <LinearLayout
+                android:id="@+id/ll_create_calendar_event_color_layout"
+                android:layout_width="333dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="-10"
+                app:layout_constraintStart_toEndOf="@id/image_create_calendar_event_calendar"
+                app:layout_constraintTop_toBottomOf="@+id/view_create_calendar_event_calendar_divider">
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view_create_calendar_event_color_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ll_create_calendar_event_color_layout" />
+
+            <ImageView
+                android:id="@+id/image_create_calendar_event_remind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:src="@mipmap/icon_calendar_alarm"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view_create_calendar_event_color_divider" />
+
+            <TextView
+                android:id="@+id/tv_create_calendar_event_remind_name"
+                android:layout_width="325dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_small"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:onClick="chooseRemind"
+                android:text="@={viewmodel.remindName}"
+                android:textColor="@color/z_color_text_primary_dark"
+                android:textSize="@dimen/font_normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toEndOf="@id/image_create_calendar_event_remind"
+                app:layout_constraintTop_toBottomOf="@+id/view_create_calendar_event_color_divider" />
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginEnd="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:src="@mipmap/icon_arrow_22dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toEndOf="@+id/tv_create_calendar_event_remind_name"
+                app:layout_constraintTop_toBottomOf="@+id/view_create_calendar_event_color_divider" />
+
+            <View
+                android:id="@+id/view_create_calendar_event_remind_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:background="@color/divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_create_calendar_event_remind_name" />
+
+            <ImageView
+                android:id="@+id/image_create_calendar_event_repeat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:src="@mipmap/icon_calendar_repeat"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view_create_calendar_event_remind_divider" />
+
+            <TextView
+                android:id="@+id/tv_create_calendar_event_repeat_name"
+                android:layout_width="325dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_small"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:onClick="chooseRepeat"
+                android:text="@={viewmodel.repeatName}"
+                android:textColor="@color/z_color_text_primary_dark"
+                android:textSize="@dimen/font_normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toEndOf="@id/image_create_calendar_event_repeat"
+                app:layout_constraintTop_toBottomOf="@+id/view_create_calendar_event_remind_divider" />
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginEnd="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:src="@mipmap/icon_arrow_22dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toEndOf="@+id/tv_create_calendar_event_repeat_name"
+                app:layout_constraintTop_toBottomOf="@+id/view_create_calendar_event_remind_divider" />
+
+            <LinearLayout
+                android:id="@+id/ll_create_calendar_event_repeat_week_days"
+                visibleOrGone="@{viewmodel.repeatWeekDaysVisible}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/spacing_small"
+                android:layout_marginStart="@dimen/spacing_small"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_create_calendar_event_repeat_name"></LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_create_calendar_event_repeat_until_date"
+                visibleOrGone="@{viewmodel.repeatUntilDateVisibleable}"
+                android:layout_width="235dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_small"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:onClick="chooseRepeatUntilDate"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@+id/view_create_calendar_event_repeat_divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@id/image_create_calendar_event_repeat"
+                app:layout_constraintTop_toBottomOf="@+id/ll_create_calendar_event_repeat_week_days">
+
+                <TextView
+                    android:id="@+id/tv_create_calendar_event_repeat_until_date_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/calendar_until_date"
+                    android:textColor="@color/z_color_text_primary"
+                    android:textSize="@dimen/font_normal" />
+
+                <TextView
+                    android:id="@+id/tv_create_calendar_event_repeat_until_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@={viewmodel.untilDate}"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_normal"
+                    tools:text="2018年9月10日" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/image_create_calendar_event_repeat_until_date_clear_btn"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:src="@drawable/clear"
+                android:layout_marginEnd="@dimen/spacing_normal"
+                app:layout_constraintBottom_toTopOf="@+id/view_create_calendar_event_repeat_divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@id/ll_create_calendar_event_repeat_until_date"
+                app:layout_constraintTop_toBottomOf="@+id/ll_create_calendar_event_repeat_week_days"
+                visibleOrGone="@{viewmodel.untilDateClearBtnVisibleable}"
+                android:onClick="clearUntilDate"/>
+
+
+            <View
+                android:id="@+id/view_create_calendar_event_repeat_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:background="@color/divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ll_create_calendar_event_repeat_until_date" />
+
+
+            <ImageView
+                android:id="@+id/image_create_calendar_event_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:src="@mipmap/icon_calendar_comment"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view_create_calendar_event_repeat_divider" />
+
+            <EditText
+                android:id="@+id/et_create_calendar_event_comment"
+                android:layout_width="335dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_small"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:background="@null"
+                android:minLines="3"
+                android:hint="@string/calendar_comment"
+                android:gravity="top"
+                android:text="@={viewmodel.comment}"
+                android:textColor="@color/z_color_text_primary"
+                android:textColorHint="@color/z_color_text_hint"
+                android:textSize="@dimen/font_normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toEndOf="@id/image_create_calendar_event_comment"
+                app:layout_constraintTop_toBottomOf="@+id/view_create_calendar_event_repeat_divider" />
+
+
+            <Button
+                android:id="@+id/btn_login_submit"
+                android:layout_width="325dp"
+                android:layout_height="44dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_create_calendar_event_comment"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:layout_marginBottom="@dimen/spacing_normal"
+                android:background="@drawable/button_background_44dp"
+                android:text="@string/calendar_delete_event"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                visibleOrGone="@{viewmodel.deleteEventBtnVisibleable}"
+                android:onClick="clickDeleteBtn"
+                />
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+
+
+</layout>

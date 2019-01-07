@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OONoticationSettingController" customModule="O2Platform" customModuleProvider="target">
+            <connections>
+                <outlet property="containerView" destination="lSq-ub-a6N" id="wUQ-H6-GI1"/>
+                <outlet property="pageControl" destination="rGo-SL-2aF" id="VhN-pl-IIk"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lSq-ub-a6N">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                </scrollView>
+                <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="rGo-SL-2aF">
+                    <rect key="frame" x="0.0" y="637" width="375" height="20"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="20" id="jfq-wh-M9c"/>
+                    </constraints>
+                    <color key="pageIndicatorTintColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="currentPageIndicatorTintColor" red="0.98431372549019602" green="0.27843137254901962" blue="0.27843137254901962" alpha="1" colorSpace="calibratedRGB"/>
+                </pageControl>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="lSq-ub-a6N" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" id="9CS-ei-3yj"/>
+                <constraint firstItem="lSq-ub-a6N" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="GdK-Fg-kWc"/>
+                <constraint firstItem="lSq-ub-a6N" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="JBn-v4-K8t"/>
+                <constraint firstItem="rGo-SL-2aF" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="Mhb-8Z-0km"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="rGo-SL-2aF" secondAttribute="bottom" constant="10" id="Mxf-7c-cpq"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="rGo-SL-2aF" secondAttribute="trailing" id="YWK-Ti-Q6y"/>
+                <constraint firstItem="lSq-ub-a6N" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="jG3-zq-PIb"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <point key="canvasLocation" x="24.5" y="51.5"/>
+        </view>
+    </objects>
+</document>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/z_color_background"
+    tools:context=".app.o2.group.GroupActivity">
+
+    <include layout="@layout/snippet_appbarlayout_toolbar" ></include>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:orientation="vertical"
+        android:background="@android:color/white"
+        android:paddingLeft="15dp"
+        android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/group_name_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textColor="@color/z_color_primary"
+            tools:text="群组111111"/>
+        </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+
+        <ListView
+            android:id="@+id/group_list_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@null"
+            ></ListView>
+    </RelativeLayout>
+
+</LinearLayout>

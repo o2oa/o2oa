@@ -1,0 +1,195 @@
+//
+//  LoginViewController.swift
+//  O2Platform
+//
+//  Created by 刘振兴 on 16/6/28.
+//  Copyright © 2016年 zoneland. All rights reserved.
+//
+
+import UIKit
+import SwiftyUserDefaults
+import AlamofireObjectMapper
+import Alamofire
+import SwiftyTimer
+import SwiftyJSON
+import ObjectMapper
+import CocoaLumberjack
+import Promises
+
+class LoginViewController: UIViewController {
+    
+    @IBOutlet weak var iconImageView: UIImageView!
+    
+    
+    private var viewModel:OOLoginViewModel = {
+        return OOLoginViewModel()
+    }()
+    
+    @IBOutlet weak var startImage: UIImageView!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        //load image
+        iconImageView.image = OOCustomImageManager.default.loadImage(.launch_logo)
+        
+        switch PROJECTMODE {
+        case 1:
+            self.startImage.image = UIImage(named: "startImage_szslb")
+        case 2:
+            self.startImage.image = UIImage(named: "startImage_hzcgw")
+        case 3:
+            self.startImage.image = UIImage(named: "startImage_hljdx")
+        default:
+            self.startImage.image = UIImage(named: "startImage")
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(receiveBindCompleted(customNotification:)), name: OONotification.bindCompleted.notificationName, object: nil)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        //Defaults[.isFirstTime] = nil
+        if AppConfigSettings.shared.isFirstTime == true {
+            AppConfigSettings.shared.isFirstTime = false
+            let pVC = OOGuidePageController(nibName: "OOGuidePageController", bundle: nil)
+            //let navVC = ZLNavigationController(rootViewController: pVC)
+            self.presentVC(pVC)
+        }else{
+            self.startFlowForPromise()
+        }
+    }
+    
+<<<<<<< HEAD
+    // MARK:- 主流程执行
+    func startFlow() {
+        startPromise().then { (dData) -> Promise<String> in
+            return self.checkDataPromise(dData)
+            }.then { (checkResult) -> Promise<String> in
+                return  self.downConfigPromise()
+            }.then { (downResult) -> Promise<O2Account> in
+                return self.getUserInfoPromise()
+            }.then { (account) -> Promise<O2Account> in
+                return self.autoLoginPromise(account)
+            }.then { (account) -> Promise<Bool> in
+                return self.loginActionByCookie(account)
+            }.then { result in
+                //成功跳转到Main场景
+                let account = Defaults[.account]
+//                UMessage.addAlias((account?.id!)!, type: "UMengAlias", response: { (result, error) in
+//                    print("\(result),\(error)")
+//                })
+                self.forwardToSegue("autoLoginSegue")
+            }.catch { (loginErr) in
+                let err = loginErr as! OOLoginError
+=======
+    func startFlowForPromise() {
+        //本地 -> 校验 -> 下载NodeAPI -> 下载configInfo -> 自动登录
+        AppConfigSettings.shared.currentUpdate = nil
+        viewModel.verifiyLocalBindNode().then {
+            (model) -> Promise<OONodeModel> in
+            return self.viewModel.verifiyBindNode(model: model)
+            }.then { (model) -> Promise<OONodeModel> in
+                return self.viewModel.downloadNodeInfo(model: model)
+            }.then({ (model) -> Promise<(OONodeModel,Bool)> in
+                return self.viewModel.verConfigInfo(model: model)
+            }).then({ (result) -> Promise<Bool> in
+                if result.1 == true {
+                    return self.viewModel.downloadConfigInfo(model: result.0)
+                }else{
+                    return Promise {
+                        fulfill,reject in
+                        fulfill(true)
+                    }
+                }
+            })
+            .then { (result) -> Promise<Bool> in
+                if let _ =  AppConfigSettings.shared.account {
+                    return self.viewModel.loginWithToken()
+                }else{
+                    return self.viewModel.loginWithCrendentail(credential: AppConfigSettings.shared.unitModel?.mobile ?? "", codeAnswer: AppConfigSettings.shared.unitModel?.code ?? "")
+                }
+            }.then({ (result) in
+                //跳转到主页
+                //self.forwardToSegue("autoLoginSegue")
+                let destVC = OOTabBarController.genernateVC()
+                UIApplication.shared.keyWindow?.rootViewController = destVC
+                UIApplication.shared.keyWindow?.makeKeyAndVisible()
+            }).catch { loginError in
+                let err = loginError as! OOLoginError
+>>>>>>> v2.0
+                switch err {
+                case .verifiyBindNodeError(_):
+                    //校验绑定结点信息错误
+                    self.forwardToSegue("bindPhoneSegue")
+                    break
+                case .downloadNodeInfoError(_):
+                    //下载节点API信息错误
+                    self.forwardToSegue("bindPhoneSegue")
+                    break
+                case .defaultBindNodeInfoError:
+                    //是否已经绑定过，没有绑定过报此错
+                    self.forwardToSegue("bindPhoneSegue")
+                    break
+                case .loginWithCredentialError(_):
+                    self.forwardToSegue("loginSystemSegue")
+                    //自动登录出错
+                    break
+                case .loginWithCookieError(_):
+                    self.forwardToSegue("loginSystemSegue")
+                    //自动登录出错
+                    break
+                case .noAccountError:
+                    //没有此帐号，应该是使用用户名和密码登录
+                    self.forwardToSegue("loginSystemSegue")
+                    break
+                case .downloadConfigInfoError(let error):
+                    self.showError(title: error.errorDescription!)
+                    break
+                default:
+                    break
+                }
+                
+        }
+    }
+
+    
+
+    
+    // MARK:- 到不同的segue
+    func forwardToSegue(_ segueIdentitifer:String){
+        DispatchQueue.main.async {
+            self.performSegue(withIdentifier: segueIdentitifer, sender: nil)
+        }
+    }
+    
+    @objc func receiveBindCompleted(customNotification:Notification){
+        self.startFlowForPromise()
+    }
+    
+
+    @IBAction func unBindComplete(_ sender: UIStoryboardSegue){
+        //绑定完成，执行
+        self.startFlowForPromise()
+    }
+    
+    @IBAction func show(_ sender: UITapGestureRecognizer) {
+        //ProgressHUD.show("系统加截中，请稍候...", interaction: true)
+    }
+    
+    //登录后返回执行此方法
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+}
+
+

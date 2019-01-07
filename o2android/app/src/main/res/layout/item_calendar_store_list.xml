@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="52dp"
+    android:background="@android:color/white">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_item_calendar_store_color"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="@dimen/spacing_normal"
+        app:cardBackgroundColor="@color/z_color_primary"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/tv_item_calendar_store_title"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_small"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/z_color_text_primary"
+        android:textSize="@dimen/font_normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/cv_item_calendar_store_color"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.2"
+        tools:text="一个日历要是很如果有很多多东渡偶哦多多多多字" />
+
+    <TextView
+        android:id="@+id/tv_item_calendar_store_attention"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_small"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_item_calendar_store_title"
+        app:layout_constraintBottom_toTopOf="@+id/view_item_calendar_store_divider"
+        app:layout_constraintHorizontal_bias="1"
+        android:textColor="@color/z_color_text_hint"
+        android:textSize="@dimen/font_small"
+        android:background="@drawable/hint_border_radius_5"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        tools:text="关注"/>
+
+    <TextView
+        android:id="@+id/tv_item_calendar_store_creator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_small"
+        app:layout_constraintStart_toEndOf="@+id/cv_item_calendar_store_color"
+        app:layout_constraintTop_toBottomOf="@+id/tv_item_calendar_store_title"
+        app:layout_constraintBottom_toTopOf="@+id/view_item_calendar_store_divider"
+        app:layout_constraintVertical_bias="0.5"
+        android:textColor="@color/z_color_text_hint"
+        android:textSize="@dimen/font_small"
+        tools:text="创建人：李义"/>
+
+
+    <View
+        android:id="@+id/view_item_calendar_store_divider"
+        android:layout_width="350dp"
+        android:layout_height="1px"
+        android:layout_marginStart="@dimen/spacing_normal"
+        android:background="@color/divider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cv_item_calendar_store_color" />
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.bluetooth.BlueToothClientActivity">
+
+    <include layout="@layout/snippet_appbarlayout_toolbar" />
+
+    <TextView
+        android:id="@+id/receiveMessageTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout_snippet"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_normal"/>
+
+
+    <RelativeLayout
+        android:id="@+id/scanLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/receiveMessageTv">
+        <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.RadarView
+            android:id="@+id/radarInScan"
+            android:layout_width="196dp"
+            android:layout_height="196dp"
+            android:layout_centerInParent="true"></net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.RadarView>
+        <TextView
+            android:id="@+id/scanTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="正在扫描AI设备..."
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_normal" />
+    </RelativeLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/listWifi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/receiveMessageTv"
+        android:layout_marginLeft="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:visibility="gone"></android.support.v7.widget.RecyclerView>
+</android.support.constraint.ConstraintLayout>

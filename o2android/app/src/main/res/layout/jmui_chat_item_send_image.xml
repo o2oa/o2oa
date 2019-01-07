@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout style="@style/jmui_chat_item_send_layout"
+              xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/jmui_send_time_txt"
+        style="@style/jmui_chat_text_date_style"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
+
+        <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
+            android:id="@+id/jmui_avatar_iv"
+            style="@style/jmui_chat_item_sender_avatar_style"/>
+
+        <FrameLayout
+            android:id="@+id/jmui_msg_fl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
+            android:layout_toLeftOf="@id/jmui_avatar_iv"
+            android:background="@drawable/jmui_msg_send_bg"
+            android:maxWidth="200.0dip">
+
+            <ImageView
+                android:id="@+id/jmui_picture_iv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginTop="2dp"
+                android:scaleType="centerCrop"/>
+
+
+            <TextView
+                android:id="@+id/jmui_progress_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="0%"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:visibility="gone"/>
+        </FrameLayout>
+
+        <TextView
+            android:text="未读消息"
+            android:layout_centerVertical="true"
+            android:id="@+id/text_receipt"
+            android:layout_marginRight="7dp"
+            android:textSize="12sp"
+            android:layout_toLeftOf="@id/jmui_msg_fl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:id="@+id/jmui_sending_iv"
+            android:layout_width="21dp"
+            android:layout_height="21dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="3dp"
+            android:layout_toLeftOf="@id/jmui_msg_fl"
+            android:src="@drawable/jmui_sending_img"
+            android:visibility="gone"/>
+
+        <ImageButton
+            android:id="@+id/jmui_fail_resend_ib"
+            android:layout_width="21dp"
+            android:layout_height="21dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@id/jmui_msg_fl"
+            android:background="@drawable/send_message_failed"
+            android:clickable="true"
+            android:scaleType="fitCenter"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+</LinearLayout>

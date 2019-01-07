@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".app.o2.organization.NewOrganizationActivity">
+
+    <item android:id="@+id/org_menu_choose"
+        app:showAsAction="ifRoom"
+        android:title="@string/menu_choose"
+        android:orderInCategory="900" />
+
+</menu>

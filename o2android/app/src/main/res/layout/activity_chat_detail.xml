@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jiguang.chat.view.ChatDetailView android:id="@+id/chat_detail_view"
+                                  xmlns:android="http://schemas.android.com/apk/res/android"
+                                  android:layout_width="match_parent"
+                                  android:layout_height="match_parent"
+                                  android:background="#E8EDF3"
+                                  android:orientation="vertical">
+
+    <include layout="@layout/menu_title_bar"/>
+
+    <ScrollView
+        android:id="@+id/chat_detail_sv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fadingEdge="vertical"
+        android:scrollbars="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <jiguang.chat.view.GroupGridView
+                    android:id="@+id/chat_detail_group_gv"
+                    android:layout_width="match_parent"
+                    android:layout_height="47.33dp"
+                    android:layout_marginBottom="12.67dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginTop="19.67dp"
+                    android:background="#fff"
+                    android:horizontalSpacing="10dp"
+                    android:numColumns="5"
+                    android:stretchMode="columnWidth"
+                    android:verticalSpacing="10dp"/>
+
+                <LinearLayout
+                    android:id="@+id/tv_moreGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="19dp"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:text="查看更多群成员"
+                        android:textColor="#999999"
+                        android:textSize="14sp"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="6dp"
+                        android:background="@drawable/arrow"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/all_member_split_line1"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:background="#E8EDF3"/>
+
+
+            <RelativeLayout
+                android:id="@+id/rl_groupAvatar"
+                style="@style/ChatDetailItem">
+
+                <TextView
+                    style="@style/ChatDetailItemHit"
+                    android:text="群头像"/>
+
+                <ImageView
+                    style="@style/ChatDetailArrow"/>
+
+                <ImageView
+                    android:id="@+id/iv_groupAvatar"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="28dp"
+                    android:src="@drawable/group"/>
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/all_member_split_line"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#E8EDF3"/>
+
+            <LinearLayout
+                android:id="@+id/group_name_ll"
+                style="@style/ChatDetailItem">
+
+                <TextView
+                    style="@style/ChatDetailItemHit"
+                    android:text="@string/group_name_hit"/>
+
+                <TextView
+                    android:id="@+id/chat_detail_group_name"
+                    style="@style/ChatDetailItemContent"
+                    android:ellipsize="end"
+                    android:maxLines="2"/>
+
+                <ImageView
+                    android:id="@+id/arrow_iv"
+                    style="@style/ChatDetailArrow"/>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/all_member_split_line2"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#E8EDF3"/>
+
+            <LinearLayout
+                android:id="@+id/group_desc_ll"
+                style="@style/ChatDetailItem">
+
+                <TextView
+                    style="@style/ChatDetailItemHit"
+                    android:text="群描述"/>
+
+                <TextView
+                    android:id="@+id/chat_detail_group_desc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:gravity="right|center_vertical"
+                    android:lines="2"
+                    android:text="无描述"
+                    android:textColor="@color/gray"
+                    android:textSize="16sp"/>
+
+                <ImageView
+                    style="@style/ChatDetailArrow"/>
+            </LinearLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:background="#E8EDF3"/>
+
+            <LinearLayout
+                android:id="@+id/chat_file"
+                style="@style/ChatDetailItem">
+
+                <TextView
+                    style="@style/ChatDetailItemHit"
+                    android:text="聊天文件"/>
+
+                <TextView style="@style/ChatDetailItemContent"/>
+                <ImageView
+                    style="@style/ChatDetailArrow"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#E8EDF3"/>
+
+            <RelativeLayout
+                android:id="@+id/no_disturb_rl"
+                style="@style/ChatDetailItem">
+
+                <TextView
+                    style="@style/ChatDetailItemHit"
+                    android:text="@string/set_do_not_disturb"/>
+
+                <jiguang.chat.view.SlipButton
+                    android:id="@+id/no_disturb_slip_btn"
+                    android:layout_width="46dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
+                    />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#E8EDF3"/>
+
+            <RelativeLayout
+                android:id="@+id/block_rl"
+                style="@style/ChatDetailItem"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/ChatDetailItemHit"
+                    android:text="@string/set_to_block"/>
+
+                <jiguang.chat.view.SlipButton
+                    android:id="@+id/block_slip_btn"
+                    android:layout_width="46dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"/>
+
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/block_split_line"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#E8EDF3"
+                android:visibility="gone"/>
+
+
+            <RelativeLayout
+                android:id="@+id/clear_rl"
+                style="@style/ChatDetailItem">
+
+                <TextView
+                    style="@style/ChatDetailItemHit"
+                    android:text="清理缓存"/>
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#E8EDF3"/>
+
+
+            <LinearLayout
+                android:id="@+id/group_num_ll"
+                style="@style/ChatDetailItem"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/ChatDetailItemHit"
+                    android:text="@string/group_people_num_hit"/>
+
+                <TextView
+                    android:id="@+id/chat_detail_group_num"
+                    style="@style/ChatDetailItemContent"/>
+
+                <ImageView style="@style/ChatDetailArrow"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/jmui_chat_detail_split_line_color"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/group_my_name_ll"
+                style="@style/ChatDetailItem"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/ChatDetailItemHit"
+                    android:text="@string/group_my_name_hit"/>
+
+                <TextView
+                    android:id="@+id/chat_detail_my_name"
+                    style="@style/ChatDetailItemContent"/>
+
+                <ImageView style="@style/ChatDetailArrow"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/jmui_chat_detail_split_line_color"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/group_chat_record_ll"
+                style="@style/ChatDetailItem"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/ChatDetailItemHit"
+                    android:text="@string/group_chat_history_hit"/>
+
+                <TextView style="@style/ChatDetailItemContent"/>
+
+                <ImageView style="@style/ChatDetailArrow"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/group_chat_del_ll"
+                style="@style/ChatDetailItem">
+
+                <TextView
+                    style="@style/ChatDetailItemHit"
+                    android:text="@string/group_clear_history_hit"/>
+
+                <TextView style="@style/ChatDetailItemContent"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/jmui_chat_detail_split_line_color"/>
+
+            <LinearLayout
+                android:id="@+id/detail_add_friend"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="20dp"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/chat_detail_add_friend"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="14dp"
+                    android:layout_marginRight="14dp"
+                    android:background="@drawable/blue_btn_selector"
+                    android:text="添加好友"
+                    android:textColor="@drawable/blue_text_selector"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="20dp">
+
+                <Button
+                    android:id="@+id/chat_detail_del_group"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="14dp"
+                    android:layout_marginRight="14dp"
+                    android:background="@drawable/red_btn_selector"
+                    android:text="@string/group_exit_btn"
+                    android:textColor="@drawable/red_text_selector"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="20dp">
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</jiguang.chat.view.ChatDetailView>

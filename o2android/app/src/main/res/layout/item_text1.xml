@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@android:id/text1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    style="?android:attr/dropDownItemStyle"
+    android:ellipsize="marquee"
+    android:maxLines="1"
+    android:textAppearance="?android:attr/textAppearanceLargePopupMenu"
+    android:paddingTop="@dimen/spacing_small"
+    android:paddingBottom="@dimen/spacing_small"
+    tools:text="jkjk标题"
+    android:background="?android:attr/selectableItemBackground"/>

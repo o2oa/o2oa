@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/sll_main"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <jiguang.chat.view.SwipeLayoutConv
+        android:id="@+id/swp_layout"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        app:drag_edge="right">
+
+        <LinearLayout
+            android:id="@+id/layout_back"
+            android:layout_width="64dp"
+            android:layout_height="64dip"
+            android:background="#EB424C"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tv_delete"
+                style="@style/MMFontTitleInList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="删除"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/msg_item_ll"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:background="@drawable/jmui_list_item_bg"
+            android:focusable="false"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="14dp"
+                    android:gravity="center_vertical">
+
+                    <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
+                        android:id="@+id/msg_item_head_icon"
+                        android:layout_width="47.33dp"
+                        android:layout_height="47.33dp"
+                        android:scaleType="centerCrop"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/new_msg_number"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/unread_msg_red"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="10sp"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/new_group_msg_number"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/unread_msg_red"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="10sp"
+                    android:visibility="gone"/>
+
+                <ImageView
+                    android:id="@+id/new_msg_disturb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="56dp"
+                    android:layout_marginTop="7dp"
+                    android:src="@drawable/nodisturb_message"
+                    android:visibility="gone"/>
+
+                <ImageView
+                    android:id="@+id/new_group_msg_disturb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="56dp"
+                    android:layout_marginTop="7dp"
+                    android:src="@drawable/nodisturb_message"
+                    android:visibility="gone"/>
+
+            </FrameLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="74dp"
+                android:layout_marginTop="2dp">
+
+                <LinearLayout
+                    android:id="@+id/title_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="10.33dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/conv_item_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:singleLine="true"
+                        android:textColor="#2C2C2C"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:id="@+id/msg_item_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="12.67dp"
+                        android:gravity="top"
+                        android:textColor="#B3B3B3"
+                        android:textSize="11.33sp"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/msg_item_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/title_layout"
+                    android:layout_marginTop="1.33dp"
+                    android:ems="10"
+                    android:singleLine="true"
+                    android:textColor="#999999"
+                    android:textSize="14sp"/>
+
+                <ImageView
+                    android:id="@+id/iv_groupBlocked"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginRight="12.67dp"
+                    android:src="@drawable/no_disturb"
+                    android:visibility="gone"/>
+            </RelativeLayout>
+        </RelativeLayout>
+
+
+    </jiguang.chat.view.SwipeLayoutConv>
+</LinearLayout>

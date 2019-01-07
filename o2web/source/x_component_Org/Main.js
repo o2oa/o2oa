@@ -85,6 +85,9 @@ MWF.xApplication.Org.Main = new Class({
 			}
 			this.personConfiguratorContentNode.destroy();
 		}
+		if (this.importConfiguratorContentNode){
+            this.importConfiguratorContentNode.destroy();
+		}
         if (this.pingyinArea) this.pingyinArea.empty();
 	},
 	orgConfig: function(){
@@ -142,9 +145,9 @@ MWF.xApplication.Org.Main = new Class({
 	personConfig: function(){
 		this.clearContent();
 		this.personConfiguratorContentNode = new Element("div", {
-			"styles": this.css.rightContentNode
-		}).inject(this.node);
-		this.loadPersonConfig();
+            "styles": this.css.rightContentNode
+        }).inject(this.node);
+        this.loadPersonConfig();
 	},
 	loadPersonConfig: function(){
         MWF.xDesktop.requireApp("Org", "PersonExplorer", function(){
@@ -154,6 +157,51 @@ MWF.xApplication.Org.Main = new Class({
 				this.personConfigurator.app = this;
 				this.personConfigurator.load();
 			//}.bind(this));
+		}.bind(this));
+	},
+
+    personImport: function(){
+		debugger;
+		this.clearContent();
+        this.importConfiguratorContentNode = new Element("div", {
+            "styles": this.css.rightContentNode
+        }).inject(this.node);
+        this.importConfiguratorContentNode.set("load", {"onSuccess": function(){
+        	this.importPersonTitleNode = this.importConfiguratorContentNode.getElement(".importPersonTitleNode");
+            this.importPersonTemplateNode = this.importConfiguratorContentNode.getElement(".importPersonTemplateNode");
+            this.importPersonNode = this.importConfiguratorContentNode.getElement(".importPersonNode");
+            this.importPersonResultNode = this.importConfiguratorContentNode.getElement(".importPersonResultNode");
+            o2.loadCss(this.path+this.options.style+"/importCss.css", this.importConfiguratorContentNode, function(){
+                this.loadPersonImport();
+            }.bind(this));
+        }.bind(this)}).load(this.path+this.options.style+"/importView.html");
+	},
+    loadPersonImport: function(){
+    	var action = o2.Actions.get("x_organization_assemble_control");
+        var url = action.action.address + action.action.actions.getImportPersonTemplate.uri;
+        var infor = this.lp.importPersonInfor.replace("{url}", url);
+
+        this.importPersonTitleNode.set("text", this.lp.importPersonTitle);
+        this.importPersonTemplateNode.set("html", infor);
+        this.importPersonNode.set("text", this.lp.importPersonAction);
+
+
+        this.importPersonNode.addEvent("click", function(){
+            this.importPersonResultNode.hide();
+        	o2.require("o2.widget.Upload", function(){
+        		new o2.widget.Upload(this.content, {
+                    "action": "x_organization_assemble_control",
+                    "method": "importPerson",
+                    "multiple": false,
+                    "onCompleted": function(json){
+                        var url = action.action.address + action.action.actions.getImportPersonResault.uri;
+                        url = url.replace("{flag}", json.data.flag);
+                        var result = this.lp.importPersonResult.replace("{url}", url);
+                        this.importPersonResultNode.set("html", result);
+                        this.importPersonResultNode.show();
+                    }.bind(this)
+                }).load();
+			}.bind(this));
 		}.bind(this));
 	},
 

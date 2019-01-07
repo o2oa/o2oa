@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/broadcast_bar"
+    android:layout_width="match_parent"
+    android:layout_height="24dp"
+    android:background="@color/z_color_input_line_blur"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <TextView
+        android:id="@+id/tv_broadcast_bar_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/font_small"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        tools:text="这是广播消息" />
+</LinearLayout>

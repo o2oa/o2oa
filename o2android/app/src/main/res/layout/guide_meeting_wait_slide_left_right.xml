@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:focusable="true"
+    android:clickable="true"
+    android:id="@+id/guide_root"
+    android:background="@color/z_color_mask"
+    android:paddingBottom="@dimen/spacing_small"
+    >
+    <ImageView
+        android:id="@+id/image_guide_swipe_to_right"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@mipmap/swipe_to_right"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_centerHorizontal="true"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/image_guide_swipe_to_right"
+        android:gravity="center_horizontal"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:text="右滑进行操作"/>
+</RelativeLayout>

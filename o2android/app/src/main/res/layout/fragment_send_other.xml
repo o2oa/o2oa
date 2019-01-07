@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jiguang.chat.view.SendOtherView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/send_other_view"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff">
+
+    <ListView
+        android:id="@+id/other_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@null"/>
+
+</jiguang.chat.view.SendOtherView>

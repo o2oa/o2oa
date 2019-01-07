@@ -4,9 +4,10 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_designer"] = new Clas
     getId: function(count, success, failure, async){
         this.action.invoke({"name": "getId","async": async, "parameter": {"count": count},	"success": success,	"failure": failure});
     },
-    getUUID: function(success){
+    getUUID: function(success, async){
+        var sync = (async !== false);
         var id = "";
-        this.action.invoke({"name": "getId","async": false, "parameter": {"count": "1"}, "success": function(ids){
+        this.action.invoke({"name": "getId","async": sync, "parameter": {"count": "1"}, "success": function(ids){
             id = ids.data[0].id;
             if (success) success(id);
         },	"failure": null});
@@ -181,7 +182,7 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_designer"] = new Clas
             this.getUUID(function(id){
                 data.id = id;
                 this.addFile(data, success, failure, async);
-            }.bind(this));
+            }.bind(this), false);
 
         }
     },

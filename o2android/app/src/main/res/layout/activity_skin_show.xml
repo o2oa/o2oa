@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:clipToPadding="false"
+    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.skin.SkinShowActivity">
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/con_skin_show_content"
+        android:layout_width="match_parent"
+        android:layout_height="475dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="@mipmap/skin_show_background">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_snippet_top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_scrollFlags="scroll|snap|enterAlways"
+            app:popupTheme="@style/XBPMTheme.PopupOverlay">
+
+            <TextView
+                android:id="@+id/tv_snippet_top_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@android:color/white" />
+        </android.support.v7.widget.Toolbar>
+        <LinearLayout
+            android:id="@+id/linear_skin_show_banner"
+            android:layout_width="match_parent"
+            android:layout_height="375dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar_snippet_top_bar"
+            app:layout_constraintRight_toRightOf="parent"
+            android:orientation="vertical">
+            <com.bigkoo.convenientbanner.ConvenientBanner
+                android:id="@+id/convenientBanner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:canLoop="true"
+                app:coverMode="true"
+            />
+        </LinearLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.O2ProgressButton
+        android:id="@+id/button_skin_show_use"
+        android:layout_width="225dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="25dp"
+        android:text="@string/skin_show_use"
+        android:textColor="@android:color/white"
+        app:o2ButtonColor="@color/z_color_primary"
+        app:o2CornerRadius="22dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/con_skin_show_content" />
+
+</android.support.constraint.ConstraintLayout>

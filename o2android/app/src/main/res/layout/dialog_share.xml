@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/z_color_split_line_ddd">
+    <TextView
+        android:id="@+id/tv_share_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:text="@string/share"
+        android:textColor="@color/z_color_text_primary"
+        android:textSize="18sp"/>
+
+    <GridView
+        android:id="@+id/grid_view_share_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </GridView>
+
+
+</LinearLayout>

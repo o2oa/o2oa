@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:background="#FFF">
+
+    <LinearLayout
+        android:id="@+id/ac_iv_press_back"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/black_back"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="0.5dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="6.5dp"
+        android:layout_marginTop="6.5dp"
+        android:background="#D9D9D9"
+        />
+
+    <EditText
+        android:id="@+id/ac_et_search"
+        style="?android:attr/textViewStyle"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_weight="1"
+        android:background="@null"
+        android:drawableLeft="@drawable/search1"
+        android:drawablePadding="8dp"
+        android:paddingRight="6dp"
+        android:drawableRight="@drawable/search_cancel_icon"
+        android:focusableInTouchMode="true"
+        android:imeActionLabel=""
+        android:imeOptions="actionSearch"
+        android:inputType="textNoSuggestions"
+        android:maxLines="1"
+        android:textColor="#99999999"
+        android:textSize="16sp"/>
+</LinearLayout>

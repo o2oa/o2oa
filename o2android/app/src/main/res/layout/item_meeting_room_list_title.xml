@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_item_meeting_room_list_build_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:layout_marginTop="@dimen/spacing_meeting"
+        android:paddingTop="@dimen/meeting_padding"
+        android:paddingStart="@dimen/meeting_padding"
+        android:paddingEnd="@dimen/meeting_padding"
+        tools:text="公司本部"
+        android:textSize="@dimen/font_meeting_time"
+        android:textColor="@color/z_color_text_primary_dark"/>
+
+
+</LinearLayout>

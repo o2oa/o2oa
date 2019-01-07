@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:gravity="center_vertical">
+
+    <LinearLayout
+        android:id="@+id/audio_item_ll"
+        android:layout_width="match_parent"
+        android:layout_height="84dp"
+        android:gravity="center_vertical">
+        <CheckBox
+            android:id="@+id/audio_cb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="14dp"
+            android:background="@drawable/pictures_select_icon"
+            android:button="@null"/>
+
+        <jiguang.chat.view.MyImageView
+            android:id="@+id/audio_iv"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="13.33dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/jmui_audio"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="11.67dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/audio_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="@string/audio"
+                android:textSize="15sp"
+                android:textColor="#2C2C2C"/>
+
+            <TextView
+                android:id="@+id/audio_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="#999999"/>
+
+            <TextView
+                android:id="@+id/audio_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="#999999"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="0.33dp"
+        android:background="#D9D9D9" />
+
+</LinearLayout>

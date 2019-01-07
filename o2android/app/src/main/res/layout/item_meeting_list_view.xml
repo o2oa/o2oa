@@ -1,0 +1,89 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/meeting_padding"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true">
+
+    <TextView
+        android:id="@+id/tv_meeting_list_item_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/font_meeting_time"
+        android:textColor="@color/z_color_text_hint"
+        tools:text="9:30-10:20"/>
+
+    <ImageView
+        android:id="@+id/iv_meeting_list_item_deal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/pic_deal"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"/>
+
+    <TextView
+        android:id="@+id/tv_meeting_list_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_meeting_list_item_time"
+        android:layout_marginTop="@dimen/spacing_meeting"
+        android:textSize="@dimen/font_normal"
+        android:textColor="@color/z_color_text_primary_dark"
+        tools:text="会议标题"/>
+    <TextView
+        android:id="@+id/tv_meeting_list_item_meeting_room"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_meeting_list_item_title"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:textSize="@dimen/font_normal"
+        android:textColor="@color/z_color_text_primary"
+        tools:text="会议地点"/>
+
+    <TextView
+        android:id="@+id/tv_meeting_list_item_meeting_participants"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:layout_below="@id/tv_meeting_list_item_meeting_room"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:textSize="@dimen/font_meeting_participants"
+        android:textColor="@color/z_color_text_primary"
+        tools:text="参加人：..."/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/tv_meeting_list_item_meeting_participants"
+        android:layout_alignBottom="@+id/tv_meeting_list_item_meeting_participants">
+
+        <TextView
+            android:id="@+id/tv_meeting_list_item_meeting_originator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_meeting_participants"
+            android:textColor="@color/z_color_text_primary"
+            tools:text="叶子"/>
+
+        <ImageView
+            android:id="@+id/image_meeting_list_item_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_arrow"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/split_line"
+        android:background="@color/z_color_split_meeting_line"
+        android:layout_below="@id/tv_meeting_list_item_meeting_participants"
+        android:layout_marginTop="@dimen/spacing_normal"/>
+
+</RelativeLayout>

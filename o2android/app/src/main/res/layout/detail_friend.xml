@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_friendPhoto"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="26.67dp"
+        android:background="#000"/>
+
+    <TextView
+        android:id="@+id/tv_nickName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:text="昵称"
+        android:textColor="#2C2C2C"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/tv_sign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="17dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginTop="5dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="2"
+        android:text="个性签名"
+        android:textColor="#B6BAB9"
+        android:textSize="14sp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.53dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:background="#E8EDF3"/>
+
+    <TextView
+        android:id="@+id/tv_additionalMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="46.67dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="2"
+        android:text="附加消息:我是我是我是我是我是我是我是我是我是我是我是我是"
+        android:textSize="15sp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.53dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:background="#E8EDF3"/>
+
+    <RelativeLayout
+        style="@style/SettingItemStyle"
+        android:background="#fff">
+
+        <TextView
+            style="@style/info_left_txt_style"
+            android:text="用户名"/>
+
+        <TextView
+            android:id="@+id/tv_userName"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:ellipsize="end"
+            android:gravity="end"
+            android:maxLines="1"
+            android:paddingRight="14dp"
+            android:text="libai"
+            android:textColor="#999999"
+            android:textSize="14sp"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.53dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:background="#E8EDF3"/>
+
+    <RelativeLayout
+        style="@style/SettingItemStyle"
+        android:background="#fff">
+
+        <TextView
+            style="@style/info_left_txt_style"
+            android:text="性别"/>
+
+        <TextView
+            android:id="@+id/tv_gender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingRight="14dp"
+            android:text="男"
+            android:textColor="#999999"
+            android:textSize="14sp"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.53dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:background="#E8EDF3"/>
+
+    <RelativeLayout
+        style="@style/SettingItemStyle"
+        android:background="#fff">
+
+        <TextView
+            style="@style/info_left_txt_style"
+            android:text="生日"/>
+
+        <TextView
+            android:id="@+id/tv_birthday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingRight="14dp"
+            android:text="1999-01-01"
+            android:textColor="#999999"
+            android:textSize="14sp"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.53dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:background="#E8EDF3"/>
+
+    <RelativeLayout
+        style="@style/SettingItemStyle"
+        android:background="#fff">
+
+        <TextView
+            style="@style/info_left_txt_style"
+            android:text="地区"/>
+
+        <TextView
+            android:id="@+id/tv_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingRight="14dp"
+            android:text="广东-深圳-南山"
+            android:textColor="#999999"
+            android:textSize="14sp"/>
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/light_line_size"
+        android:background="@color/color_b3b3b3" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/easy_dialog_negative_btn"
+            style="@style/dialog_button_text_style"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:text="取消"
+            android:visibility="gone"/>
+
+        <View
+            android:id="@+id/easy_dialog_btn_divide_view"
+            android:layout_width="@dimen/light_line_size"
+            android:layout_height="match_parent"
+            android:background="@color/color_b3b3b3"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/easy_dialog_positive_btn"
+            style="@style/dialog_button_text_style"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:text="确定"/>
+    </LinearLayout>
+
+</LinearLayout>

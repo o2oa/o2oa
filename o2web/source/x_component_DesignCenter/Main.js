@@ -46,7 +46,7 @@ MWF.xApplication.DesignCenter.Main = new Class({
                 position: 'center',
                 edge: 'center',
                 "offset": {
-                    "y": "-240"
+                    "y": "-120"
                 }
             });
         }

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:orientation="vertical"
+    android:padding="0dp">
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/split_line"
+        android:background="@color/z_color_split_line"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="@color/z_color_bottom_bar_background"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/icon_meeting_tab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="2dp">
+            <ImageView
+                android:id="@+id/image_icon_meeting_tab"
+                android:layout_centerHorizontal="true"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@mipmap/icon_meeting_tab"/>
+            <TextView
+                android:id="@+id/tv_icon_meeting_tab"
+                android:layout_below="@id/image_icon_meeting_tab"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/z_color_text_primary"
+                android:text="@string/tab_meeting"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/icon_meeting_invited_tab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="2dp">
+            <ImageView
+                android:id="@+id/image_icon_meeting_invited_tab"
+                android:layout_centerHorizontal="true"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@mipmap/icon_meeting_invited_tab"/>
+            <TextView
+                android:id="@+id/tv_icon_meeting_invited_tab"
+                android:layout_below="@id/image_icon_meeting_invited_tab"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/z_color_text_primary"
+                android:text="@string/tab_meeting_invited"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/icon_meeting_room_tab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="2dp">
+            <ImageView
+                android:id="@+id/image_icon_meeting_room_tab"
+                android:layout_centerHorizontal="true"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@mipmap/icon_meeting_room_tab"/>
+            <TextView
+                android:id="@+id/tv_icon_meeting_room_tab"
+                android:layout_below="@id/image_icon_meeting_room_tab"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/z_color_text_primary"
+                android:text="@string/tab_meeting_room"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

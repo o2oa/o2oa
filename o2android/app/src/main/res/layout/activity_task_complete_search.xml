@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_task_complete_search"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/z_color_background"
+    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.process.TaskCompletedSearchActivity">
+    <android.support.design.widget.AppBarLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/app_bar_task_completed_search"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:theme="@style/XBPMTheme.AppBarOverlay">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_task_completed_search_top_bar"
+            android:paddingTop="@dimen/toolbar_padding_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/z_color_primary"
+            app:popupTheme="@style/XBPMTheme.PopupOverlay">
+            <EditText
+                android:id="@+id/edit_task_completed_search_key"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/activity_task_completed_search_hint"/>
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+    <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.RecyclerViewSwipeRefreshLayout
+        android:id="@+id/refresh_task_completed_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/app_bar_task_completed_search">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_task_completed_search_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/spacing_small"
+            ></android.support.v7.widget.RecyclerView>
+    </net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.RecyclerViewSwipeRefreshLayout>
+</RelativeLayout>

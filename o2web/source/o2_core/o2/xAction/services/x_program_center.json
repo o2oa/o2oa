@@ -18,6 +18,7 @@
   "listModule": {"uri": "/jaxrs/module/list", "method": "PUT"},
   "compareModule": {"uri": "/jaxrs/module/{id}/compare"},
   "importModule": {"uri": "/jaxrs/module/write/{flag}", "method": "PUT"},
+  "compareUpload": {"uri": "/jaxrs/module/compare/upload", "method": "PUT", "enctype": "formData"},
 
   "outputStructure": {"uri": "/jaxrs/module/output/structure"},
   "outputCreate": {"uri": "/jaxrs/module/output", "method": "PUT"},

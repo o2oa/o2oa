@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="net.zoneland.x.bpm.mobile.v1.zoneXBPM">
+
+    <!-- baidu需要 -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <!-- 获取网络状态 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <!-- 网络通信 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 获取设备信息 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- 读写sdcard，storage等等 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- 允许程序录制音频 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- 拨打电话 -->
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <!-- 拍照 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- 允许监听启动完成事件 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <!-- 允许访问震动器 -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- 选举使用，当应用有删除或者更新时需要重新选举，复用推送通道 -->
+    <uses-permission android:name="android.permission.BROADCAST_PACKAGE_CHANGED" />
+    <uses-permission android:name="android.permission.BROADCAST_PACKAGE_REPLACED" />
+    <uses-permission android:name="android.permission.RESTART_PACKAGES" />
+    <!-- 允许task重排序 -->
+    <uses-permission android:name="android.permission.REORDER_TASKS" />
+    <!-- 蓝牙 -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <!-- gps -->
+    <uses-feature android:name="android.hardware.location.gps" />
+    <!-- android 8.0 安装未知来源apk的权限问题 -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+
+    <!-- 获取logcat日志 -->
+    <application
+        android:name=".O2App"
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/logo"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/logo_round"
+        android:theme="@style/XBPMTheme.NoActionBar">
+        <activity
+            android:name=".app.o2.launch.LaunchActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/XBPMLauncherTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".app.o2.bind.BindPhoneActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/XBPMClearActivityTheme" />
+        <activity
+            android:name=".app.o2.login.LoginActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/XBPMClearActivityTheme"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+        <activity
+            android:name=".app.o2.main.MainActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/XBPMClearActivityTheme" />
+        <activity
+            android:name=".app.o2.group.GroupActivity"
+            android:label="@string/title_activity_group"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.o2.person.PersonActivity"
+            android:label="@string/title_activity_person_info"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="o2_person" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".app.o2.organization.NewOrganizationActivity"
+            android:label="@string/title_activity_contact"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.o2.my.MyInfoActivity"
+            android:label="@string/title_activity_my_info"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="o2_my_info" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".app.o2.my.ClipAvatarActivity"
+            android:label="@string/title_activity_clip_avatar"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.o2.security.AccountSecurityActivity"
+            android:label="@string/title_activity_account_security"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.o2.notice.NoticeSettingActivity"
+            android:label="@string/title_activity_notice_setting"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.o2.notice.NoticeSettingHelpActivity"
+            android:label="@string/title_activity_notice_setting"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.o2.about.AboutActivity"
+            android:label="@string/app_about"
+            android:screenOrientation="portrait" />
+        <!-- 扫描二维码 -->
+        <activity
+            android:name=".utils.zxing.activity.CaptureActivity"
+            android:label="@string/str_scan_title"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.o2.scanlogin.ScanLoginActivity"
+            android:label="@string/scan_login_confirm_title"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.o2.process.StartProcessActivity"
+            android:label="@string/title_activity_start_process"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.o2.webview.TaskWebViewActivity"
+            android:label="@string/title_activity_work_web_view"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.o2.webview.TaskCompletedWebViewActivity"
+            android:label="@string/title_activity_work_web_view"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.o2.webview.ReadWebViewActivity"
+            android:label="@string/title_activity_work_web_view"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.o2.webview.ReadCompletedWebViewActivity"
+            android:label="@string/title_activity_work_web_view"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.o2.process.TaskListActivity"
+            android:label="@string/title_activity_task_list"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.o2.process.TaskCompletedListActivity"
+            android:label="@string/title_activity_task_complete"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.o2.process.TaskCompletedSearchActivity"
+            android:label="@string/title_activity_task_complete"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.o2.process.ReadListActivity"
+            android:label="@string/title_activity_read_list"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.o2.process.ReadCompletedListActivity"
+            android:label="@string/title_activity_read_complete"
+            android:screenOrientation="portrait" />
+
+        <!-- bbs -->
+        <activity
+            android:name=".app.bbs.main.BBSMainActivity"
+            android:label="@string/bbs"
+            android:screenOrientation="portrait"
+            android:theme="@style/XBPMTheme.NoActionBar.Transparent" />
+        <activity
+            android:name=".app.bbs.section.BBSSectionActivity"
+            android:label="@string/title_activity_bbs_section"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.bbs.view.BBSWebViewSubjectActivity"
+            android:label="@string/title_activity_bbs_view"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".app.bbs.publish.BBSPublishSubjectActivity"
+            android:label="@string/title_activity_bbs_publish_subject"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.bbs.reply.BBSReplyActivity"
+            android:label="@string/title_activity_bbs_reply"
+            android:screenOrientation="portrait" />
+        <!-- cms -->
+        <activity
+            android:name=".app.cms.index.CMSIndexActivity"
+            android:label="@string/cms"
+            android:screenOrientation="portrait"
+            android:theme="@style/XBPMTheme.NoActionBar.Transparent" />
+        <activity
+            android:name=".app.cms.application.CMSApplicationActivity"
+            android:label="@string/title_cms_application"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.cms.view.CMSWebViewActivity"
+            android:label="@string/title_cms_view"
+            android:screenOrientation="portrait" />
+
+        <!-- cloud drive -->
+        <activity
+            android:name=".app.clouddrive.CloudDriveActivity"
+            android:label="@string/title_activity_yunpan"
+            android:screenOrientation="portrait"
+            android:theme="@style/XBPMTheme.NoActionBar.Transparent" />
+        <activity
+            android:name=".app.clouddrive.viewer.PictureViewActivity"
+            android:label="@string/title_activity_picture_viewer"
+            android:screenOrientation="portrait" />
+
+        <!-- meeting -->
+        <activity
+            android:name=".app.meeting.main.MeetingMainActivity"
+            android:label="@string/title_activity_meeting"
+            android:screenOrientation="portrait"
+            android:theme="@style/XBPMTheme.NoActionBar.Transparent" />
+        <activity
+            android:name=".app.meeting.room.MeetingRoomChooseActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.meeting.apply.MeetingApplyActivity"
+            android:label="@string/title_activity_meeting_create_form"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.meeting.edit.MeetingEditActivity"
+            android:label="@string/title_activity_meeting_edit_form"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.meeting.invited.MeetingDetailInfoActivity"
+            android:label="@string/meeting_detail"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.meeting.reserve.MeetingRoomDetailActivity"
+            android:label="@string/meeting_detail"
+            android:screenOrientation="portrait" />
+        <!-- attendance -->
+        <activity
+            android:name=".app.attendance.main.AttendanceMainActivity"
+            android:label="@string/attendance_check_in_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/XBPMTheme.NoActionBar.Transparent" />
+        <activity
+            android:name=".app.attendance.list.AttendanceListActivity"
+            android:label="@string/title_activity_attendance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.attendance.appeal.AttendanceAppealActivity"
+            android:label="@string/title_activity_attendance_appeal"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.attendance.approval.AttendanceAppealApprovalActivity"
+            android:label="@string/title_activity_attendance_appeal_approval"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.attendance.setting.AttendanceLocationSettingActivity"
+            android:label="@string/title_activity_attendance_location_setting"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.o2.main.MyAppActivity"
+            android:label="所有应用"
+            android:screenOrientation="portrait" />
+
+        <!-- ai -->
+        <activity android:name=".app.o2.ai.O2AIActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
+
+        <!-- calendar -->
+        <activity
+            android:name=".app.calendar.CalendarMainActivity"
+            android:label="@string/calendar_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/XBPMTheme.NoActionBar.Transparent" />
+        <activity android:name=".app.calendar.CreateEventActivity" />
+        <activity android:name=".app.calendar.CreateCalendarActivity" />
+        <activity android:name=".app.calendar.CalendarStoreActivity" />
+
+        <!-- portal -->
+        <activity
+            android:name=".app.o2.webview.PortalWebViewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/XBPMTheme.NoActionBar.Transparent" />
+
+        <!-- 换肤 -->
+        <activity
+            android:name=".app.o2.skin.SkinManagerActivity"
+            android:label="@string/skin_manager"
+            android:screenOrientation="portrait" />
+        <activity android:name=".app.o2.skin.SkinShowActivity" />
+
+        <!-- im -->
+        <activity
+            android:name=".app.o2.openim.IMTribeCreateActivity"
+            android:label="@string/activity_im_tribe_create_label"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+        <activity
+            android:name=".app.o2.openim.IMPersonConfigActivity"
+            android:label="@string/activity_im_person_config_label"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.o2.openim.IMTribeInfoActivity"
+            android:label="@string/activity_im_tribe_update_label"
+            android:screenOrientation="portrait" />
+
+        <!-- 蓝牙相关 -->
+        <activity android:name=".app.bluetooth.BlueToothClientActivity" />
+        <activity android:name=".app.bluetooth.BlueToothServerActivity" />
+        <activity android:name=".app.bluetooth.BlueToothBLEClientActivity" />
+        <activity android:name=".app.bluetooth.BlueToothBLEServerActivity" />
+
+        <!-- IM -->
+        <activity
+            android:name="jiguang.chat.activity.ChatActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/IMBaseThemes" />
+        <activity
+            android:name="jiguang.chat.activity.BrowserViewPagerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="jiguang.chat.activity.ForwardMsgActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/IMBaseThemes"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="jiguang.chat.activity.CreateGroupActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/IMBaseThemes"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="jiguang.chat.activity.GroupActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/IMBaseThemes" />
+        <activity
+            android:name="jiguang.chat.activity.MembersInChatActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/IMBaseThemes"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="jiguang.chat.activity.SearchContactsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/IMBaseThemes"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="jiguang.chat.activity.SearchMoreFriendsActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/IMBaseThemes"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="jiguang.chat.activity.SearchMoreGroupActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/IMBaseThemes"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="jiguang.chat.activity.ChatDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/IMBaseThemes" />
+        <activity
+            android:name="jiguang.chat.activity.NickSignActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/IMBaseThemes" />
+        <activity
+            android:name="jiguang.chat.activity.historyfile.activity.HistoryFileActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/IMBaseThemes" />
+        <activity
+            android:name="jiguang.chat.activity.DownLoadActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/IMBaseThemes" />
+        <activity
+            android:name="jiguang.chat.activity.SendFileActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/IMBaseThemes" />
+        <activity
+            android:name="jiguang.chat.activity.FriendListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/IMBaseThemes" />
+        <activity
+            android:name="jiguang.chat.location.activity.MapPickerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+
+        <!-- ```````````````````service```````````````````` -->
+        <!-- baidu -->
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote" />
+
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="${BAIDU_APPKEY}" />
+        <!-- baidu yuyin -->
+        <service
+            android:name="com.baidu.speech.VoiceRecognitionService"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.baidu.speech.APP_ID"
+            android:value="${BAIDU_APPID}" />
+        <meta-data
+            android:name="com.baidu.speech.API_KEY"
+            android:value="${BAIDU_APPKEY}" />
+        <meta-data
+            android:name="com.baidu.speech.SECRET_KEY"
+            android:value="${BAIDU_SECRET}" />
+
+        <!-- 删除临时文件任务 -->
+        <service
+            android:name=".core.service.ClearTempFileJobService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".core.service.CollectLogJobService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <!-- 下载apk -->
+        <service
+            android:name=".core.service.DownloadAPKService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="net.zoneland.x.bpm.mobile.v1.zoneXBPM.action.UPDATE" />
+            </intent-filter>
+        </service>
+
+        <!-- 重启应用的service -->
+        <service android:name=".core.service.RestartSelfService" />
+
+        <!-- jpush -->
+        <receiver
+            android:name=".core.receiver.JpushNoticeBroadReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="cn.jpush.android.intent.REGISTRATION" />
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" />
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />
+
+                <category android:name="net.zoneland.x.bpm.mobile.v1.zoneXBPM" />
+            </intent-filter>
+        </receiver>
+
+        <meta-data android:name="JM_IM_USER_PASSWORD"
+            android:value="${JM_IM_USER_PASSWORD}" />
+
+        <!-- ```````````````````meta```````````````````` -->
+        <!-- 蒲公英 appid -->
+        <meta-data
+            android:name="PGYER_APPID"
+            android:value="${PGY_APP_ID}" />
+
+        <!-- bugly -->
+        <!-- 配置APP ID -->
+        <meta-data
+            android:name="BUGLY_APPID"
+            android:value="${BUGLY_APPID}" />
+        <!-- 配置APP渠道号 -->
+        <meta-data
+            android:name="BUGLY_APP_CHANNEL"
+            android:value="${JPUSH_CHANNEL}" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="net.zoneland.x.bpm.mobile.v1.zoneXBPM.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+        <provider
+            android:name="cn.jpush.android.service.DataProvider"
+            android:authorities="net.zoneland.x.bpm.mobile.v1.zoneXBPM.DataProvider"
+            android:exported="true"
+            tools:replace="android:exported, android:authorities" />
+
+        <activity android:name=".app.tbs.FileReaderActivity"></activity>
+    </application>
+
+</manifest>

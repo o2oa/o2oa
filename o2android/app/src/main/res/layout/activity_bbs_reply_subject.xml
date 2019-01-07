@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_bbs_reply_subject"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.bbs.reply.BBSReplyActivity">
+    <include layout="@layout/snippet_appbarlayout_toolbar" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:id="@+id/relative_bbs_reply_subject_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/z_color_background"
+                    android:layout_margin="@dimen/spacing_normal"
+                    android:padding="@dimen/spacing_small"
+                    android:visibility="gone">
+                    <TextView
+                        android:id="@+id/tv_bbs_reply_subject_parent_creator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/z_color_subtitle_font"
+                        android:textSize="@dimen/font_small"/>
+                    <TextView
+                        android:id="@+id/tv_bbs_reply_subject_parent_time"
+                        android:layout_toRightOf="@id/tv_bbs_reply_subject_parent_creator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/z_color_subtitle_font"
+                        android:textSize="@dimen/font_small"
+                        android:layout_marginLeft="@dimen/spacing_small"/>
+                    <TextView
+                        android:id="@+id/tv_bbs_reply_subject_parent_content"
+                        android:layout_below="@id/tv_bbs_reply_subject_parent_creator"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/z_color_title_font"
+                        android:textSize="@dimen/font_normal"/>
+                </RelativeLayout>
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_normal"
+                    android:layout_marginRight="@dimen/spacing_normal"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:layout_marginBottom="@dimen/spacing_small">
+                    <EditText
+                        android:id="@+id/edit_bbs_reply_subject_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minLines="8"
+                        android:gravity="start"
+                        android:background="@null"
+                        android:hint="@string/bbs_reply_subject_content_label" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+        </ScrollView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/white"
+            android:orientation="vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/z_color_subtitle_font" />
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:id="@+id/layout_bbs_reply_subject_attachment_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                </LinearLayout>
+            </HorizontalScrollView>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/z_color_background"
+                android:paddingTop="@dimen/spacing_tiny"
+                android:paddingBottom="@dimen/spacing_tiny"
+                android:paddingLeft="@dimen/spacing_normal"
+                android:paddingRight="@dimen/spacing_normal">
+                <ImageView
+                    android:id="@+id/image_bbs_reply_subject_attachment_add_button"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_alignParentRight="true"
+                    android:src="@mipmap/icon_choose_image_gray"
+                    />
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

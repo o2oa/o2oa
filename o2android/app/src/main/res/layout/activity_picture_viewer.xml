@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/z_color_text_primary_dark"
+    tools:context=".app.clouddrive.viewer.PictureViewActivity">
+    <RelativeLayout
+        android:id="@+id/relative_picture_view_top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="@dimen/toolbar_padding_top"
+        android:padding="@dimen/spacing_small">
+        <ImageView
+            android:id="@+id/image_picture_view_back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/ic_back_mtrl_white_alpha"/>
+        <TextView
+            android:id="@+id/tv_picture_view_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@id/image_picture_view_back_btn"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_normal"
+            android:ellipsize="marquee"
+            android:maxLines="1"
+            tools:text="标题"/>
+    </RelativeLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager_picture_view"
+        android:layout_below="@id/relative_picture_view_top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </android.support.v4.view.ViewPager>
+
+</RelativeLayout>
