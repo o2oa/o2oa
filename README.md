@@ -72,4 +72,13 @@ o2oa软件遵守双重协议，一个是AGPL授权协议，一个是商用授权
 
 2019-01-08 BUG修复:[流程引擎]修正调度按钮显示条件的判断错误。
 
+## 最新版本服务器安装包下载\:
+
+windows 64Bit : https://obs-o2public.obs.cn-east-2.myhwclouds.com/o2server_20190108102250_windows.zip
+
+Linux 64Bit : https://obs-o2public.obs.cn-east-2.myhwclouds.com/o2server_20190108102250_linux.zip
+
+MacOS : https://obs-o2public.obs.cn-east-2.myhwclouds.com/o2server_20190108102250_macos.zip
+
+AIX : https://obs-o2public.obs.cn-east-2.myhwclouds.com/o2server_20190108102250_aix.zip
 
