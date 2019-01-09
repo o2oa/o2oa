@@ -17,5 +17,6 @@
   "getScriptByName": {"uri": "/jaxrs/script/portal/{applicationId}/name/{name}"},
   "getMenu": {"uri": "/jaxrs/menu/{id}"},
 
-  "readFile": {"uri": "/jaxrs/file/{flag}/portal/{applicationFlag}/content"}
+  "readFile": {"uri": "/jaxrs/file/{flag}/portal/{applicationFlag}/content"},
+  "listFile": {"uri": "/jaxrs/file/list/portal/{applicationFlag}"}
 }

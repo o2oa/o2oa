@@ -395,6 +395,7 @@ MWF.xDesktop.Lnk = new Class({
 		this.node.inject(node, where);
 	},
 	open: function(e){
+		debugger;
 		if (!this.isSwing){
             var parList = this.par.split("#");
             var appName = parList[0];

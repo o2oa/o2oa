@@ -7,6 +7,7 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "selectRole": "选择角色",
     "selectDuty": "选择职务",
     "selectField": "选择字段",
+    "selectFile": "选择资源文件",
     "selectAppliction": "选择流程应用",
     "selectProcess": "选择流程",
     "selectView": "选择视图",

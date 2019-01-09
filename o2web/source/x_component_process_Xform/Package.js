@@ -78,13 +78,18 @@ MWF.xApplication.process.Xform.Image = MWF.APPImage =  new Class({
             }catch(e){}
         }else if (this.json.srcfile && this.json.srcfile!="none"){
             value = this.json.srcfile;
-            var host = MWF.Actions.getHost("x_portal_assemble_surface");
-            var action = MWF.Actions.get("x_portal_assemble_surface");
-            var uri = action.action.actions.readFile.uri;
-            uri = uri.replace("{flag}", value);
-            uri = uri.replace("{applicationFlag}", this.form.json.application);
-            value = host+"/x_portal_assemble_surface"+uri;
-            this.node.set("src", value);
+            if (typeOf(value)==="object"){
+                var url = (value.portal) ? MWF.xDesktop.getPortalFileUr(value.id, value.portal) : MWF.xDesktop.getProcessFileUr(value.id, value.application);
+                this.node.set("src", url);
+            }else{
+                var host = MWF.Actions.getHost("x_portal_assemble_surface");
+                var action = MWF.Actions.get("x_portal_assemble_surface");
+                var uri = action.action.actions.readFile.uri;
+                uri = uri.replace("{flag}", value);
+                uri = uri.replace("{applicationFlag}", this.form.json.application);
+                value = host+"/x_portal_assemble_surface"+uri;
+                this.node.set("src", value);
+            }
         }else if (typeOf(this.json.src)=="object"){
             var src = MWF.xDesktop.getImageSrc( this.json.src.imageId );
             this.node.set("src", src);

@@ -49,7 +49,7 @@
     "sub": []
   },
   {
-    "title": "附件配置",
+    "title": "资源文件",
     "id": "1.1",
     "action": "fileConfig",
     "icon": "process_file.png",
