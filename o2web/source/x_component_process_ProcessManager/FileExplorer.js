@@ -160,10 +160,16 @@ MWF.xApplication.process.ProcessManager.FileExplorer.File = new Class({
         return "file.png";
     },
 	_getLnkPar: function(){
+        var url = MWF.Actions.get("x_processplatform_assemble_surface").action.actions.readFile.uri;
+        url = url.replace(/{flag}/, this.data.id);
+        url = url.replace(/{applicationFlag}/, this.data.application);
+        url = "/x_processplatform_assemble_surface"+url;
+        var href = MWF.Actions.getHost("x_processplatform_assemble_surface")+url;
+
 		return {
 			"icon": this.explorer.path+this.explorer.options.style+"/fileIcon/lnk.png",
 			"title": this.data.name,
-			"par": "process.FileDesigner#{\"id\": \""+this.data.id+"\", \"applicationId\": \""+this.explorer.app.options.application.id+"\"}"
+            "par": "@url#"+href
 		};
 	},
 //	deleteItem: function(e){

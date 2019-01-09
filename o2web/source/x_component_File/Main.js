@@ -1,4 +1,4 @@
-MWF.xDesktop.requireApp("File", "Actions.RestActions", null, false);
+//MWF.xDesktop.requireApp("File", "Actions.RestActions", null, false);
 MWF.xDesktop.requireApp("File", "AttachmentController", null, false);
 MWF.require("MWF.widget.Tree", null, false);
 MWF.xApplication.File.Main = new Class({

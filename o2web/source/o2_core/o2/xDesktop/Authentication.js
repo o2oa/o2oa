@@ -57,7 +57,7 @@ MWF.xDesktop.Authentication = new Class({
             layout.session.user = json.data;
             layout.session.token = layout.session.user.token;
             var user = layout.desktop.session.user;
-
+            if (!user.identityList) user.identityList = [];
             if (user.roleList) {
                 var userRoleName = [];
                 user.roleList.each(function(role){

@@ -71,5 +71,10 @@
 
   "getAttachmentData": {"uri": "/jaxrs/attachment/{id}/download/false"},
   "getAttachmentStream": {"uri": "/jaxrs/attachment/{id}/download/true"},
+
+
+
+
+
   "clazz": "x_meeting_assemble_control"
 }
