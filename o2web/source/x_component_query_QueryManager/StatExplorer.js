@@ -218,7 +218,7 @@ MWF.xApplication.query.QueryManager.StatExplorer.Stat= new Class({
 	},
 	_getLnkPar: function(){
 		return {
-			"icon": this.explorer.path+this.explorer.options.style+"/processIcon/lnk.png",
+			"icon": this.explorer.path+this.explorer.options.style+"/statIcon/lnk.png",
 			"title": this.data.name,
 			"par": "query.StatDesigner#{\"id\": \""+this.data.id+"\", \"applicationId\": \""+this.data.query+"\"}"
 		};

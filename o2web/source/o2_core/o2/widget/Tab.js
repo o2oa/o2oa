@@ -173,12 +173,12 @@ o2.widget.TabPage = new Class({
 	},
 	showTabIm: function(callback){
 		if (!this.isShow){
-			if (!this.tabNode.isIntoView()){
-                this.tab.pages.erase(this);
-                this.tab.pages.unshift(this);
-                this.tabNode.inject(this.tab.tabNodeContainerArea, "top");
-                this.tab.resize();
-			}
+			// if (!this.tabNode.isIntoView()){
+             //    this.tab.pages.erase(this);
+             //    this.tab.pages.unshift(this);
+             //    this.tabNode.inject(this.tab.tabNodeContainerArea, "top");
+             //    this.tab.resize();
+			// }
 			this.tab.pages.each(function(page){
 				if (page.isShow) page.hideIm();
 			});

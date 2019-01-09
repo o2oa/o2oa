@@ -78,10 +78,16 @@ MWF.xApplication.portal.PortalManager.FileExplorer.File = new Class({
         return "file.png";
     },
 	_getLnkPar: function(){
+        var url = MWF.Actions.get("x_portal_assemble_surface").action.actions.readFile.uri;
+        url = url.replace(/{flag}/, this.data.id);
+        url = url.replace(/{applicationFlag}/, this.data.portal);
+        url = "/x_portal_assemble_surface"+url;
+        var href = MWF.Actions.getHost("x_portal_assemble_surface")+url;
+
 		return {
 			"icon": this.explorer.path+this.explorer.options.style+"/fileIcon/lnk.png",
 			"title": this.data.name,
-			"par": "portal.FileDesigner#{\"id\": \""+this.data.id+"\", \"applicationId\": \""+this.explorer.app.options.application.id+"\"}"
+            "par": "@url#"+href
 		};
 	},
 

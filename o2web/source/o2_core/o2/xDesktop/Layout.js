@@ -1013,6 +1013,7 @@ MWF.xDesktop.Layout = new Class({
         this.appCurrentList.erase(app);
         //	if (this.appCurrentList.length) this.appCurrentList[this.appCurrentList.length-1].setCurrent();
         this.setTaskitemSize();
+        this.apps[appId] = null;
         delete this.apps[appId];
     },
     closeWidget: function(app){
@@ -1225,6 +1226,7 @@ MWF.xDesktop.Layout.Taskitem = new Class({
     },
     destroy: function(){
         this.node.destroy();
+        o2.release(this);
         //this.layout.setTaskitemSize();
     }
 });
