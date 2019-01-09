@@ -512,6 +512,7 @@ MWF.xDesktop.Window = new Class({
 			this.morph = new Fx.Morph(this.node, {duration: 100, link: "chain"});
 		}
 		this.morph.setOptions({duration: 50});
+		debugger;
 		this.getSpacer();
 		if (!this.spacerMorph){
 			this.spacerMorph = new Fx.Morph(this.spacer, {duration: 100, link: "chain"});
@@ -538,6 +539,7 @@ MWF.xDesktop.Window = new Class({
 				spacerFinish = true;
 				firePost();
 			}.bind(this));
+
 			this.contentMorph.start(contentSize).chain(function(){
 				contentFinish = true;
 				firePost();
@@ -554,6 +556,7 @@ MWF.xDesktop.Window = new Class({
 					this.isHide = false;
 					if (this.containerDrag) this.containerDrag.attach();
 					this.fireEvent("postShow");
+
 //					if (this.isMax){
 //						this.isMax = false;
 //						this.app.maxSize();
@@ -792,7 +795,7 @@ MWF.xDesktop.Window = new Class({
             this.node = null;
             if (callback) callback();
             this.fireEvent("postClose");
-
+			o2.release(this);
 		}
 	},
 	getAction: function(){

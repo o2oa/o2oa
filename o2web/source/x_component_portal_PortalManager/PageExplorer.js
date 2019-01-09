@@ -432,7 +432,7 @@ MWF.xApplication.portal.PortalManager.PageExplorer.Page= new Class({
 	},
 	_getLnkPar: function(){
 		return {
-			"icon": this.explorer.path+this.explorer.options.style+"/processIcon/lnk.png",
+			"icon": this.explorer.path+this.explorer.options.style+"/formIcon/lnk.png",
 			"title": this.data.name,
 			"par": "portal.PageDesigner#{\"id\": \""+this.data.id+"\"}"
 		};

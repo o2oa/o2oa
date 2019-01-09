@@ -11,7 +11,7 @@ o2.widget.Common = new Class({
         if (!reload && o2.widget.css[key]){
             this.css = o2.widget.css[key];
         }else{
-            this.cssPath = (this.cssPath.indexOf("?")!=-1) ? this.cssPath+"&v="+COMMON.version : this.cssPath+"?v="+COMMON.version;
+            this.cssPath = (this.cssPath.indexOf("?")!=-1) ? this.cssPath+"&v="+o2.version.v : this.cssPath+"?v="+o2.version.v;
             var r = new Request.JSON({
                 url: this.cssPath,
                 secure: false,

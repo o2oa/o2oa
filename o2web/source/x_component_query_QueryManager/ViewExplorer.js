@@ -219,7 +219,7 @@ MWF.xApplication.query.QueryManager.ViewExplorer.View= new Class({
 	},
 	_getLnkPar: function(){
 		return {
-			"icon": this.explorer.path+this.explorer.options.style+"/processIcon/lnk.png",
+			"icon": this.explorer.path+this.explorer.options.style+"/viewIcon/lnk.png",
 			"title": this.data.name,
 			"par": "query.ViewDesigner#{\"id\": \""+this.data.id+"\", \"applicationId\": \""+this.data.query+"\"}"
 		};

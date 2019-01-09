@@ -39,9 +39,10 @@ o2.widget.Menu = new Class({
 			if (this.options.event){
 				if (this.target) this.target.addEvent(this.options.event, this.showIm.bind(this));
 			}
-			this.node.inject(this.options.container || $(document.body));
+			//this.node.inject(this.options.container || $(document.body));
+            this.node.inject(this.options.container || this.target);
 
-			this.hide = this.hideMenu.bind(this);
+            this.hide = this.hideMenu.bind(this);
 			this.fireEvent("postLoad");
 		}
 	},
@@ -79,13 +80,19 @@ o2.widget.Menu = new Class({
 			left = this.options.left;
 		}
 		var size = this.node.getSize();
-		var bodySize = $(document.body).getSize();
+
+		var bodyNode = this.node.getOffsetParent();
+
+		//var bodySize = $(document.body).getSize();
+        var bodySize = bodyNode.getSize();
+
 		if (left+size.x>bodySize.x){
 			left = left-size.x-5;
 			if (left<0) left = 0;
 		}
 		
-		var scrollTop = ($(document.body).getScroll().y.toFloat()) || 0;
+		//var scrollTop = ($(document.body).getScroll().y.toFloat()) || 0;
+        var scrollTop = (bodyNode.getScroll().y.toFloat()) || 0;
 		
 		if (top+size.y>bodySize.y+scrollTop){
 			top = top-size.y-5;
@@ -187,7 +194,8 @@ o2.widget.Menu = new Class({
                 "opacity": 0
             });
         }
-        this.nodeFrame.inject(this.options.container || $(document.body));
+        //this.nodeFrame.inject(this.options.container || $(document.body));
+        this.nodeFrame.inject(this.options.container || this.target);
 	},
 	showMenu: function(e){
 		if (!this.show){
@@ -525,7 +533,10 @@ o2.widget.MenuMenu = new Class({
 		var size = this.item.getSize();
         this.subMenu.node.setStyle("display", "block");
 		var menuSize = this.subMenu.node.getSize();
-		var bodySize = $(document.body).getSize();
+
+		var bodyNode = this.subMenu.node.getOffsetParent();
+		//var bodySize = $(document.body).getSize();
+        var bodySize = bodyNode.getSize();
 		
 		top = position.y;
 		left = (position.x.toFloat()) + (size.x.toFloat())-3;
@@ -533,7 +544,9 @@ o2.widget.MenuMenu = new Class({
 			left = (position.x.toFloat()) - (menuSize.x.toFloat())+8;
 		}
 		
-		var scrollTop = ($(document.body).getScroll().y.toFloat()) || 0;
+		//var scrollTop = ($(document.body).getScroll().y.toFloat()) || 0;
+        var scrollTop = (bodyNode.getScroll().y.toFloat()) || 0;
+
 		if (top+menuSize.y>bodySize.y+scrollTop){
 			top = top-menuSize.y + size.y+3;
 			if (top<0) top = 0;

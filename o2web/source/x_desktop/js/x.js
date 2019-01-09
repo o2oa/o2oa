@@ -23,6 +23,7 @@ o2.addReady(function(){
         }
     }
     if (errorNode) errorNode.destroy();
+    errorNode = null;
 
     //COMMON.setContentPath("/x_desktop");
     //COMMON.AjaxModule.load("ie_adapter", function(){
@@ -50,6 +51,7 @@ o2.addReady(function(){
                             if (loadingNode){
                                 new Fx.Tween(loadingNode).start("opacity", 0).chain(function(){
                                     loadingNode.destroy();
+                                    loadingNode = null;
                                 });
                             }
                         },

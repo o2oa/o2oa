@@ -99,8 +99,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     destroy: function(){
         if (this.propertyContent){
             this.propertyContent.destroy();
-            MWF.release(this);
         }
+        MWF.release(this);
     },
 	
 	loadTreeData: function(){
@@ -424,26 +424,30 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     },
 
     loadImageFileSelect: function(){
-        var nodes = this.propertyContent.getElements(".MWFImageFileSelect");
-        if (nodes.length){
-            this.getFileList(function(){
-                nodes.each(function(node){
-                    var select = new Element("select").inject(node);
-                    select.addEvent("change", function(e){
-                        this.setValue(e.target.getParent("div").get("name"), e.target.options[e.target.selectedIndex].value, select);
-
-                    }.bind(this));
-                    this.setFileSelectOptions(node, select);
-
-                    var refreshNode = new Element("div", {"styles": this.form.css.propertyRefreshFormNode}).inject(node);
-                    refreshNode.addEvent("click", function(e){
-                        this.getFileList(function(){
-                            this.setFileSelectOptions(node, select);
-                        }.bind(this), true);
-                    }.bind(this));
-                }.bind(this));
-            }.bind(this));
-        }
+        // var nodes = this.propertyContent.getElements(".MWFImageFileSelect");
+        // if (nodes.length){
+        //
+        //
+        //
+        //
+        //     this.getFileList(function(){
+        //         nodes.each(function(node){
+        //             var select = new Element("select").inject(node);
+        //             select.addEvent("change", function(e){
+        //                 this.setValue(e.target.getParent("div").get("name"), e.target.options[e.target.selectedIndex].value, select);
+        //
+        //             }.bind(this));
+        //             this.setFileSelectOptions(node, select);
+        //
+        //             var refreshNode = new Element("div", {"styles": this.form.css.propertyRefreshFormNode}).inject(node);
+        //             refreshNode.addEvent("click", function(e){
+        //                 this.getFileList(function(){
+        //                     this.setFileSelectOptions(node, select);
+        //                 }.bind(this), true);
+        //             }.bind(this));
+        //         }.bind(this));
+        //     }.bind(this));
+        // }
     },
     setFileSelectOptions: function(node, select){
         var name = node.get("name");
@@ -523,7 +527,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         this.fileUploadNode.set("multiple", false);
 
         var fileNode = this.uploadFileAreaNode.getFirst();
-        fileNode.set("accept", "images/*");
+        fileNode.set("accept", ".png,.jpg,.bmp,.gif,.jpeg,.jpe");
         fileNode.click();
 
         //MWF.xDesktop.requireApp("process.FormDesigner", "widget.ImageClipper", function(){
@@ -854,6 +858,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         var cmsviewNodes = this.propertyContent.getElements(".MWFCMSViewSelect");
         var queryviewNodes = this.propertyContent.getElements(".MWFQueryViewSelect");
         var querystatNodes = this.propertyContent.getElements(".MWFQueryStatSelect");
+        var fileNodes = this.propertyContent.getElements(".MWFImageFileSelect");
+        var processFileNodes = this.propertyContent.getElements(".MWFProcessImageFileSelect");
+
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function(){
             personIdentityNodes.each(function(node){
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
@@ -921,10 +928,57 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 });
             }.bind(this));
 
+            fileNodes.each(function(node){
+                var d = this.data[node.get("name")];
+                var data = d || {};
+                //this.form
+                if (d && typeOf(d)==="string"){
+                    if (this.form.page){
+                        data = {"id": d, "portal": this.form.application}
+                    }else{
+                        data = {"id": d, "application": this.form.application}
+                    }
+                }
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                    "type": "PortalFile",
+                    "count": 1,
+                    "isImage": true,
+                    "values": (data.id) ? [data.id] : [],
+                    "onChange": function(ids){this.saveFileItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
 
+            processFileNodes.each(function(node){
+                var d = this.data[node.get("name")];
+                var data = d || {};
+                //this.form
+                if (d && typeOf(d)==="string"){
+                    if (this.form.page){
+                        data = {"id": d, "portal": this.form.application}
+                    }else{
+                        data = {"id": d, "application": this.form.application}
+                    }
+                }
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                    "type": "ProcessFile",
+                    "count": 1,
+                    "isImage": true,
+                    "values": (data.id) ? [data.id] : [],
+                    "onChange": function(ids){this.saveFileItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
 
 
         }.bind(this));
+    },
+    saveFileItem: function(node, ids){
+        if (ids[0]){
+            var file = ids[0].data;
+            this.data[node.get("name")] = file;
+        }else{
+            this.data[node.get("name")] = null;
+        }
+        this.changeData(node.get("name"));
     },
     saveViewItem: function(node, ids){
         if (ids[0]){

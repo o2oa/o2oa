@@ -27,6 +27,7 @@ MWF.xApplication.Selector.Person = new Class({
         this.orgAction = MWF.Actions.get("x_organization_assemble_control");
         this.processAction = MWF.Actions.get("x_processplatform_assemble_surface");
         this.designerAction = MWF.Actions.get("x_processplatform_assemble_designer");
+        this.portalAction = MWF.Actions.get("x_portal_assemble_surface");
         this.portalDesignerAction = MWF.Actions.get("x_portal_assemble_designer");
         this.cmsAction = MWF.Actions.get("x_cms_assemble_control");
         this.queryAction = MWF.Actions.get("x_query_assemble_designer");
@@ -1139,6 +1140,9 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
 
         this.check();
 
+        this.afterLoad();
+    },
+    afterLoad: function(){
         if (this.level===1) this.clickItem();
     },
     clickItem: function(){

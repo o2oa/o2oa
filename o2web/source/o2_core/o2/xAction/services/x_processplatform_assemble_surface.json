@@ -224,6 +224,7 @@
   "getProcessByName": {"uri": "/jaxrs/process/{flag}/application/{applicationFlag}"},
 
   "readFile": {"uri": "/jaxrs/file/{flag}/application/{applicationFlag}/content"},
+  "listFile": {"uri": "/jaxrs/file/list/application/{applicationFlag}"},
 
   "changeSite": {"uri": "/jaxrs/attachment/{id}/work/{workId}/change/site/{site}"},
   "clazz": "x_processplatform_assemble_surface"

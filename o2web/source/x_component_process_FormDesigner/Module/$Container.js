@@ -107,6 +107,7 @@ MWF.xApplication.process.FormDesigner.Module.$Container = MWF.FC$Container = new
             this.form.scriptDesigner.removeModule(this.json);
         }
 
+        if (this.property) this.property.destroy();
 		this.node.destroy();
 		this.actionArea.destroy();
 		
@@ -115,6 +116,7 @@ MWF.xApplication.process.FormDesigner.Module.$Container = MWF.FC$Container = new
 		delete this.json;
 		
 		this.treeNode.destroy();
+		o2.release(this);
 	},
     copy: function(e){
 

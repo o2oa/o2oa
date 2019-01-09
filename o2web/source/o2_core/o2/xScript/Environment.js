@@ -1400,10 +1400,10 @@ MWF.xScript.createDict = function(application){
 
         var encodePath = function( path ){
             var arr = path.split(/\./g);
-            // var ar = arr.map(function(v){
-            //     return encodeURIComponent(v);
-            // });
-            return arr.join("/");
+            var ar = arr.map(function(v){
+                return encodeURIComponent(v);
+            });
+            return ar.join("/");
         };
 
         this.get = function(path, success, failure){
