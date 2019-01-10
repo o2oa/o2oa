@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="com.sun.tools.visualvm.application.views/0">
-    <module_version install_time="1410360607736" last="true" origin="installer" specification_version="1.0">
-        <file crc="4274601765" name="config/Modules/com-sun-tools-visualvm-application-views.xml"/>
-        <file crc="1286010035" name="modules/com-sun-tools-visualvm-application-views.jar"/>
-    </module_version>
-</module>

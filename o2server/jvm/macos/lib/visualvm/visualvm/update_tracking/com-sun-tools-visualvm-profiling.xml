@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="com.sun.tools.visualvm.profiling/0">
-    <module_version install_time="1410360598004" last="true" origin="installer" specification_version="1.3">
-        <file crc="2462058565" name="config/Modules/com-sun-tools-visualvm-profiling.xml"/>
-        <file crc="3318327011" name="modules/com-sun-tools-visualvm-profiling.jar"/>
-    </module_version>
-</module>

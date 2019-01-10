@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="com.sun.tools.visualvm.charts/0">
-    <module_version install_time="1410360603096" last="true" origin="installer" specification_version="1.4">
-        <file crc="1395381734" name="config/Modules/com-sun-tools-visualvm-charts.xml"/>
-        <file crc="2573066903" name="modules/com-sun-tools-visualvm-charts.jar"/>
-    </module_version>
-</module>

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="com.sun.tools.visualvm.attach/0">
-    <module_version install_time="1410360601884" last="true" origin="installer" specification_version="1.1">
-        <file crc="2988007942" name="config/Modules/com-sun-tools-visualvm-attach.xml"/>
-        <file crc="3371193544" name="modules/com-sun-tools-visualvm-attach.jar"/>
-    </module_version>
-</module>
