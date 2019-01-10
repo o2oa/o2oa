@@ -2,6 +2,8 @@ package com.x.query.service.processing;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.organization.core.express.Organization;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.Reveal;
@@ -46,6 +48,17 @@ public class Business {
 			this.query = new QueryFactory(this);
 		}
 		return query;
+	}
+
+	public boolean isManager(EffectivePerson effectivePerson) throws Exception {
+		if (effectivePerson.isManager()) {
+			return true;
+		}
+		if (this.organization.person().hasRole(effectivePerson, OrganizationDefinition.QueryManager,
+				OrganizationDefinition.Manager)) {
+			return true;
+		}
+		return false;
 	}
 
 }

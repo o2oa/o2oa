@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="com.jrockit.mc.rjmx" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="com.jrockit.mc.rjmx" id="com.jrockit.mc.rjmx.syntheticnotification" name="Synthetic MBeans notification"/>
+      </appinfo>
+      <documentation>
+         This extension point is for extending what is visible through the client side MBean connection. This allows for the standardized widgets and tools to pick up data notifications synthesized client side.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="syntheticNotification"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="syntheticNotification">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The class which implements the notification behaviour.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":com.jrockit.mc.rjmx.ISyntheticNotification"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="type" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The class name of the objects that are returned for this notification.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="notificationName" type="string">
+            <annotation>
+               <documentation>
+                  The name of the notification (on the form objectName/notificationName). This is used for the metadata to be exposed by the mbean server connection.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  The description of this notification.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="message" type="string">
+            <annotation>
+               <documentation>
+                  The (optional) string message for the notification.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         5.3.0
+      </documentation>
+   </annotation>
+
+
+
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 1999, 2015, Oracle and/or its affiliates. All rights reserved.
+      </documentation>
+   </annotation>
+
+</schema>

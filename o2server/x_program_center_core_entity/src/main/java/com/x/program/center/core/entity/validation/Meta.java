@@ -30,7 +30,6 @@ import org.apache.openjpa.persistence.jdbc.KeyIndex;
 import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
-import com.x.base.core.entity.StringValueMap;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -164,7 +163,7 @@ public class Meta extends SliceJpaObject {
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + mapValueMap_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + mapValueMap_FIELDNAME + ElementIndexNameSuffix)
 	@KeyIndex(name = TABLE + IndexNameMiddle + mapValueMap_FIELDNAME + KeyIndexNameSuffix)
-	private StringValueMap mapValueMap;
+	private LinkedHashMap<String, String> mapValueMap;
 
 	public String getStringValue() {
 		return stringValue;
@@ -250,11 +249,11 @@ public class Meta extends SliceJpaObject {
 		this.stringLobValue = stringLobValue;
 	}
 
-	public StringValueMap getMapValueMap() {
+	public LinkedHashMap<String, String> getMapValueMap() {
 		return mapValueMap;
 	}
 
-	public void setMapValueMap(StringValueMap mapValueMap) {
+	public void setMapValueMap(LinkedHashMap<String, String> mapValueMap) {
 		this.mapValueMap = mapValueMap;
 	}
 

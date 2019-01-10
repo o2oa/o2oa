@@ -32,5 +32,7 @@ public class BaseAction extends StandardJaxrsAction{
 	protected Report_P_PermissionServiceAdv report_P_PermissionServiceAdv = new Report_P_PermissionServiceAdv();
 	
 	protected Report_P_ProfileOperationServiceAdv report_P_ProfileOperationServiceAdv = new Report_P_ProfileOperationServiceAdv();
+	
+	protected Report_P_ProfileServiceAdv report_R_CreateServiceAdv = new Report_P_ProfileServiceAdv();
 
 }

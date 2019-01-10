@@ -43,6 +43,8 @@ import com.google.gson.JsonElement;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 
@@ -50,6 +52,8 @@ import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
 
 public class Describe {
+
+	private static Logger logger = LoggerFactory.getLogger(Describe.class);
 
 	public static void main(String[] args) {
 		Describe describe = new Describe();
@@ -176,13 +180,13 @@ public class Describe {
 			PathParam pathParam = o.getAnnotation(PathParam.class);
 			QueryParam queryParam = o.getAnnotation(QueryParam.class);
 			if (null != formDataParam) {
-				jaxrsMethod.getFormParameters().add(this.jaxrsFormDataParameter(o));
+				jaxrsMethod.getFormParameters().add(this.jaxrsFormDataParameter(clz, method, o));
 			} else if (null != formParam) {
-				jaxrsMethod.getFormParameters().add(this.jaxrsFormParameter(o));
+				jaxrsMethod.getFormParameters().add(this.jaxrsFormParameter(clz, method, o));
 			} else if (null != queryParam) {
-				jaxrsMethod.getQueryParameters().add(this.jaxrsQueryParameter(o));
+				jaxrsMethod.getQueryParameters().add(this.jaxrsQueryParameter(clz, method, o));
 			} else if (null != pathParam) {
-				jaxrsMethod.getPathParameters().add(this.jaxrsPathParameter(o));
+				jaxrsMethod.getPathParameters().add(this.jaxrsPathParameter(clz, method, o));
 			}
 		}
 		jaxrsMethod.setFormParameters(jaxrsMethod.getFormParameters().stream().filter(Objects::nonNull)
@@ -197,7 +201,7 @@ public class Describe {
 		return jaxrsMethod;
 	}
 
-	private JaxrsFormParameter jaxrsFormDataParameter(Parameter parameter) {
+	private JaxrsFormParameter jaxrsFormDataParameter(Class<?> clz, Method method, Parameter parameter) {
 		JaxrsParameterDescribe jaxrsParameterDescribe = parameter.getAnnotation(JaxrsParameterDescribe.class);
 		FormDataParam formDataParam = parameter.getAnnotation(FormDataParam.class);
 		if (StringUtils.equalsIgnoreCase("file", formDataParam.value())) {
@@ -209,7 +213,8 @@ public class Describe {
 				if (null != jaxrsParameterDescribe) {
 					o.setDescription(jaxrsParameterDescribe.value());
 				} else {
-					System.err.println("[" + formDataParam.value() + "], 未设置JaxrsParameterDescribe");
+					logger.print("类: {}, 方法: {} ,未设置参数 {} 的JaxrsParameterDescribe.", clz.getName(), method.getName(),
+							formDataParam.value());
 					o.setDescription("");
 				}
 				return o;
@@ -221,7 +226,8 @@ public class Describe {
 			if (null != jaxrsParameterDescribe) {
 				o.setDescription(jaxrsParameterDescribe.value());
 			} else {
-				System.err.println("[" + formDataParam.value() + "], 未设置JaxrsParameterDescribe");
+				logger.print("类: {}, 方法: {} ,未设置参数 {} 的JaxrsParameterDescribe.", clz.getName(), method.getName(),
+						formDataParam.value());
 				o.setDescription("");
 			}
 			return o;
@@ -229,7 +235,7 @@ public class Describe {
 		return null;
 	}
 
-	private JaxrsFormParameter jaxrsFormParameter(Parameter parameter) {
+	private JaxrsFormParameter jaxrsFormParameter(Class<?> clz, Method method, Parameter parameter) {
 		JaxrsParameterDescribe jaxrsParameterDescribe = parameter.getAnnotation(JaxrsParameterDescribe.class);
 		FormParam formParam = parameter.getAnnotation(FormParam.class);
 		JaxrsFormParameter o = new JaxrsFormParameter();
@@ -238,20 +244,22 @@ public class Describe {
 		if (null != jaxrsParameterDescribe) {
 			o.setDescription(jaxrsParameterDescribe.value());
 		} else {
-			System.err.println("[" + formParam.value() + "], 未设置JaxrsParameterDescribe");
+			logger.print("类: {}, 方法: {} ,未设置参数 {} 的JaxrsParameterDescribe.", clz.getName(), method.getName(),
+					formParam.value());
 			o.setDescription("");
 		}
 		return o;
 	}
 
-	private JaxrsQueryParameter jaxrsQueryParameter(Parameter parameter) {
+	private JaxrsQueryParameter jaxrsQueryParameter(Class<?> clz, Method method, Parameter parameter) {
 		JaxrsParameterDescribe jaxrsParameterDescribe = parameter.getAnnotation(JaxrsParameterDescribe.class);
 		QueryParam queryParam = parameter.getAnnotation(QueryParam.class);
 		JaxrsQueryParameter o = new JaxrsQueryParameter();
 		if (null != jaxrsParameterDescribe) {
 			o.setDescription(jaxrsParameterDescribe.value());
 		} else {
-			System.err.println("[" + queryParam.value() + "], 未设置JaxrsParameterDescribe");
+			logger.print("类: {}, 方法: {} ,未设置参数 {} 的JaxrsParameterDescribe.", clz.getName(), method.getName(),
+					queryParam.value());
 			o.setDescription("");
 		}
 		o.setName(queryParam.value());
@@ -259,7 +267,7 @@ public class Describe {
 		return o;
 	}
 
-	private JaxrsPathParameter jaxrsPathParameter(Parameter parameter) throws Exception {
+	private JaxrsPathParameter jaxrsPathParameter(Class<?> clz, Method method, Parameter parameter) throws Exception {
 		JaxrsParameterDescribe jaxrsParameterDescribe = parameter.getAnnotation(JaxrsParameterDescribe.class);
 		PathParam pathParam = parameter.getAnnotation(PathParam.class);
 		JaxrsPathParameter o = new JaxrsPathParameter();
@@ -267,7 +275,8 @@ public class Describe {
 		if (null != jaxrsParameterDescribe) {
 			o.setDescription(jaxrsParameterDescribe.value());
 		} else {
-			System.err.println("[" + pathParam.value() + "], 未设置JaxrsParameterDescribe");
+			logger.print("类: {}, 方法: {} ,未设置参数 {} 的JaxrsParameterDescribe.", clz.getName(), method.getName(),
+					pathParam.value());
 			o.setDescription("");
 		}
 		o.setType(this.getJaxrsParameterType(parameter));

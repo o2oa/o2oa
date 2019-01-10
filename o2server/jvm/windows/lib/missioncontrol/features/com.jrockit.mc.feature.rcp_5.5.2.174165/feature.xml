@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="com.jrockit.mc.feature.rcp"
+      label="%name"
+      version="5.5.2.174165"
+      provider-name="%provider">
+
+   <description url="%descriptionUrl">
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="%licenseUrl">
+      %license
+   </license>
+
+   <includes
+         id="com.jrockit.mc.feature.console"
+         version="5.5.2.174165"/>
+
+   <includes
+         id="com.jrockit.mc.feature.rcp.ja"
+         version="5.5.2.174165"/>
+
+   <includes
+         id="com.jrockit.mc.feature.core"
+         version="5.5.2.174165"/>
+
+   <includes
+         id="com.jrockit.mc.feature.rcp.zh_CN"
+         version="5.5.2.174165"/>
+
+   <includes
+         id="com.jrockit.mc.feature.flightrecorder"
+         version="5.5.2.174165"/>
+
+   <requires>
+      <import feature="org.eclipse.rcp" version="3.8.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.help" version="1.4.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.equinox.p2.rcp.feature" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.core.filesystem"/>
+      <import plugin="org.eclipse.osgi.services"/>
+      <import plugin="org.eclipse.text"/>
+      <import plugin="org.eclipse.core.net"/>
+      <import plugin="org.eclipse.equinox.security"/>
+      <import plugin="org.eclipse.ui.intro"/>
+      <import plugin="org.eclipse.ui.net"/>
+      <import plugin="org.eclipse.equinox.event"/>
+      <import plugin="javax.el"/>
+      <import plugin="org.eclipse.equinox.p2.director.app"/>
+   </requires>
+
+   <plugin
+         id="com.jrockit.mc.rcp.application"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.rcp.application.ja"
+         nl="ja_JP,ja"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.rcp.application.zh_CN"
+         nl="zh_CN"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.rcp.intro"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.commands"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.simpleconfigurator"
+         download-size="0"
+         install-size="0"
+         version="1.0.301.v20120914-163612"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.update.configurator"
+         download-size="0"
+         install-size="0"
+         version="3.3.200.v20120912-142556"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.launcher"
+         download-size="0"
+         install-size="0"
+         version="1.3.0.v20140415-2008"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.runtime"
+         download-size="0"
+         install-size="0"
+         version="3.8.0.v20120521-2346"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.common"
+         download-size="0"
+         install-size="0"
+         version="3.6.100.v20120522-1841"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.ds"
+         download-size="0"
+         install-size="0"
+         version="1.4.1.v20120926-201320"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.reconciler.dropins"
+         download-size="0"
+         install-size="0"
+         version="1.1.200.v20120301-2145"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.p2.ui.overridden"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+</feature>

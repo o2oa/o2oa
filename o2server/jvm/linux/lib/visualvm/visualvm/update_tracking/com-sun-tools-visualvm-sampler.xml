@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="com.sun.tools.visualvm.sampler">
+    <module_version install_time="1484426046079" last="true" origin="installer" specification_version="2.1">
+        <file crc="1044223313" name="config/Modules/com-sun-tools-visualvm-sampler.xml"/>
+        <file crc="2922805472" name="modules/com-sun-tools-visualvm-sampler.jar"/>
+    </module_version>
+</module>

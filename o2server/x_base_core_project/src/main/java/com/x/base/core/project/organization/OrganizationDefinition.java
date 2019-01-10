@@ -46,6 +46,8 @@ public class OrganizationDefinition {
 
 	public final static String MessageManager = "MessageManager";
 
+	public final static String SearchPrivilege = "SearchPrivilege";
+
 	public final static String RoleDefinitionSuffix = "SystemRole";
 
 	public final static Pattern person_distinguishedName_pattern = Pattern.compile("^(\\S+)\\@(\\S+)\\@P$");
@@ -66,17 +68,7 @@ public class OrganizationDefinition {
 
 	public final static Pattern distinguishedName_pattern = Pattern.compile("^(\\S+)\\@(\\S+)\\@(P|PA|G|R|I|U|UA|UD)$");
 
-	// public static String isName(String distinguishedName) {
-	//
-	// if (StringUtils.contains(distinguishedName, "@")) {
-	// return StringUtils.substringBefore(distinguishedName, "@");
-	// }
-	// return distinguishedName;
-	//
-	// }
-
 	public static String name(String distinguishedName) {
-
 		if (StringUtils.contains(distinguishedName, "@")) {
 			return StringUtils.substringBefore(distinguishedName, "@");
 		}
