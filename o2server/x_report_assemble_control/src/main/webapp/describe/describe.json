@@ -889,7 +889,13 @@
               "name": "selectableMeasures",
               "type": "List\u003cWoMeasuresInfo\u003e",
               "isCollection": true,
-              "description": "组织关联的全部举措信息列表"
+              "description": "组织关联当月的全部举措信息列表"
+            },
+            {
+              "name": "nextMonth_selectableMeasures",
+              "type": "List\u003cWoMeasuresInfo\u003e",
+              "isCollection": true,
+              "description": "组织关联下月的全部举措信息列表"
             },
             {
               "name": "thisMonth_workList",
@@ -2691,6 +2697,27 @@
           "description": "根据汇报概要文件ID补充漏启的汇报，已经启动成功的组织跳过",
           "type": "GET",
           "path": "jaxrs/profiles/{profileId}/supplemental",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "pathParameters": [
+            {
+              "name": "profileId",
+              "type": "String",
+              "description": "汇报概要文件ID"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": []
+        },
+        {
+          "name": "updateDetail",
+          "className": "com.x.report.assemble.control.jaxrs.profile.ActionUpdateProfileDetail",
+          "description": "根据汇报概要文件ID更新详细内容",
+          "type": "GET",
+          "path": "jaxrs/profiles/update/{profileId}/detail",
           "contentType": "application/json",
           "resultContentType": "application/json; charset\u003dUTF-8",
           "useJsonElementParameter": false,

@@ -49,7 +49,7 @@ class ActionList extends BaseAction {
 					"processList");
 			ListTools.groupStick(wos, formList, Application.id_FIELDNAME, Form.application_FIELDNAME, "formList");
 			ListTools.groupStick(wos, scriptList, Application.id_FIELDNAME, Script.application_FIELDNAME, "scriptList");
-			ListTools.groupStick(wos, fileList, Application.id_FIELDNAME, File.application_FIELDNAME, "scriptList");
+			ListTools.groupStick(wos, fileList, Application.id_FIELDNAME, File.application_FIELDNAME, "fileList");
 			ListTools.groupStick(wos, applicationDictList, Application.id_FIELDNAME,
 					ApplicationDict.application_FIELDNAME, "applicationDictList");
 

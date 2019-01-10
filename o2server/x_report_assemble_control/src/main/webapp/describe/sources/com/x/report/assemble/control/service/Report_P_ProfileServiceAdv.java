@@ -3,8 +3,11 @@ package com.x.report.assemble.control.service;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.report.core.entity.Report_P_Profile;
 import com.x.report.core.entity.Report_P_ProfileDetail;
 
@@ -69,6 +72,21 @@ public class Report_P_ProfileServiceAdv{
 		}
 		return entity;
 	}
+	
+
+	public Report_P_Profile updateDetails(String id, List<Report_P_ProfileDetail> recordProfileDetailList) throws Exception {
+		if ( StringUtils.isEmpty( id )) {
+			throw new Exception("id is null.");
+		}
+		if( ListTools.isEmpty( recordProfileDetailList )) {
+			throw new Exception("recordProfileDetailList is null.");
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return  report_P_ProfileService.updateDetails( emc, id, recordProfileDetailList );			
+		} catch (Exception e) {
+			throw e;
+		}
+	}	
 	
 	public Report_P_Profile updateWithId(Report_P_Profile entity) throws Exception {
 		if ( entity == null) {
@@ -173,5 +191,6 @@ public class Report_P_ProfileServiceAdv{
 		} catch (Exception e) {
 			throw e;
 		}
-	}	
+	}
+
 }

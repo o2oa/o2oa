@@ -10087,6 +10087,76 @@
           "queryParameters": [],
           "ins": [
             {
+              "name": "identity",
+              "type": "String",
+              "isCollection": false,
+              "description": "文档操作者身份.",
+              "isBaseType": true
+            },
+            {
+              "name": "dataPaths",
+              "type": "String[]",
+              "isCollection": false,
+              "description": "数据的路径列表.",
+              "isBaseType": true
+            },
+            {
+              "name": "wf_jobId",
+              "type": "String",
+              "isCollection": false,
+              "description": "启动流程的JobId.",
+              "isBaseType": true
+            },
+            {
+              "name": "wf_workId",
+              "type": "String",
+              "isCollection": false,
+              "description": "启动流程的WorkId.",
+              "isBaseType": true
+            },
+            {
+              "name": "wf_attachmentIds",
+              "type": "String[]",
+              "isCollection": false,
+              "description": "启动流程的附件列表.",
+              "isBaseType": true
+            },
+            {
+              "name": "docData",
+              "type": "Map\u003c?,?\u003e",
+              "isCollection": false,
+              "description": "文档数据.",
+              "isBaseType": false
+            },
+            {
+              "name": "readerList",
+              "type": "List\u003cPermissionInfo\u003e",
+              "isCollection": true,
+              "description": "文档读者.",
+              "isBaseType": false
+            },
+            {
+              "name": "authorList",
+              "type": "List\u003cPermissionInfo\u003e",
+              "isCollection": true,
+              "description": "文档编辑者.",
+              "isBaseType": false
+            },
+            {
+              "name": "cloudPictures",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "图片列表.",
+              "isBaseType": true
+            },
+            {
+              "name": "skipPermission",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "不修改权限（跳过权限设置，保留原来的设置）.",
+              "isBaseType": true
+            },
+            {
               "name": "summary",
               "type": "String",
               "isCollection": false,
@@ -10354,6 +10424,76 @@
           "formParameters": [],
           "queryParameters": [],
           "ins": [
+            {
+              "name": "identity",
+              "type": "String",
+              "isCollection": false,
+              "description": "文档操作者身份.",
+              "isBaseType": true
+            },
+            {
+              "name": "dataPaths",
+              "type": "String[]",
+              "isCollection": false,
+              "description": "数据的路径列表.",
+              "isBaseType": true
+            },
+            {
+              "name": "wf_jobId",
+              "type": "String",
+              "isCollection": false,
+              "description": "启动流程的JobId.",
+              "isBaseType": true
+            },
+            {
+              "name": "wf_workId",
+              "type": "String",
+              "isCollection": false,
+              "description": "启动流程的WorkId.",
+              "isBaseType": true
+            },
+            {
+              "name": "wf_attachmentIds",
+              "type": "String[]",
+              "isCollection": false,
+              "description": "启动流程的附件列表.",
+              "isBaseType": true
+            },
+            {
+              "name": "docData",
+              "type": "Map\u003c?,?\u003e",
+              "isCollection": false,
+              "description": "文档数据.",
+              "isBaseType": false
+            },
+            {
+              "name": "readerList",
+              "type": "List\u003cPermissionInfo\u003e",
+              "isCollection": true,
+              "description": "文档读者.",
+              "isBaseType": false
+            },
+            {
+              "name": "authorList",
+              "type": "List\u003cPermissionInfo\u003e",
+              "isCollection": true,
+              "description": "文档编辑者.",
+              "isBaseType": false
+            },
+            {
+              "name": "cloudPictures",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "图片列表.",
+              "isBaseType": true
+            },
+            {
+              "name": "skipPermission",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "不修改权限（跳过权限设置，保留原来的设置）.",
+              "isBaseType": true
+            },
             {
               "name": "summary",
               "type": "String",
@@ -10655,6 +10795,13 @@
               "type": "List\u003cString\u003e",
               "isCollection": true,
               "description": "图片列表.",
+              "isBaseType": true
+            },
+            {
+              "name": "skipPermission",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "不修改权限（跳过权限设置，保留原来的设置）.",
               "isBaseType": true
             },
             {

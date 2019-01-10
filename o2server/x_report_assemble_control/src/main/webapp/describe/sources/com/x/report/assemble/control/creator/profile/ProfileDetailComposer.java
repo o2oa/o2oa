@@ -7,6 +7,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.report.assemble.control.EnumReportModules;
 import com.x.report.assemble.control.dataadapter.strategy.CompanyStrategyMeasure;
 import com.x.report.assemble.control.dataadapter.strategy.CompanyStrategyWorks;
+import com.x.report.assemble.control.dataadapter.strategy.CompanyStrategyMeasure.WoCompanyStrategy;
+import com.x.report.assemble.control.dataadapter.strategy.CompanyStrategyWorks.WoCompanyStrategyWorks;
 import com.x.report.assemble.control.schedule.bean.ReportCreateFlag;
 import com.x.report.core.entity.Report_P_Profile;
 import com.x.report.core.entity.Report_P_ProfileDetail;
@@ -27,12 +29,23 @@ public class ProfileDetailComposer {
 	 * （注意：目前只实现了战略管理相关内容）<br/>
 	 * 
 	 * @param recordProfile
+	 * @param companyStrategyMeasure_thisYear  当年举措信息列表
+	 * @param companyStrategyWorks_thisMonth  当月工作信息列表
+	 * @param companyStrategyMeasure_nextYear  次年举措信息列表
+	 * @param companyStrategyWorks_nextMonth  次年工作信息列表
 	 * @param moduleNames
 	 * @param flag
 	 * @return List<Report_P_ProfileDetail>
 	 * @throws Exception 
 	 */
-	public List<Report_P_ProfileDetail> profileDetailGetter(EffectivePerson effectivePerson, List<CompanyStrategyMeasure.WoCompanyStrategy> companyStrategyMeasure, List<CompanyStrategyWorks.WoCompanyStrategyWorks> companyStrategyWorks, Report_P_Profile recordProfile, String[] moduleNames, ReportCreateFlag flag) throws Exception {
+	public List<Report_P_ProfileDetail> profileDetailGetter( 
+			EffectivePerson effectivePerson, 
+			List<CompanyStrategyMeasure.WoCompanyStrategy> companyStrategyMeasure, 
+			List<CompanyStrategyWorks.WoCompanyStrategyWorks> companyStrategyWorks, 
+			List<WoCompanyStrategy> companyStrategyMeasure_nextMonth, 
+			List<WoCompanyStrategyWorks> companyStrategyWorks_nextMonth, 
+			Report_P_Profile recordProfile, 
+			String[] moduleNames, ReportCreateFlag flag) throws Exception {
 		if( moduleNames == null || moduleNames.length == 0 ) {
 			return null;
 		}
@@ -42,23 +55,26 @@ public class ProfileDetailComposer {
 		for( String moduleName : moduleNames ) {
 			if( EnumReportModules.STRATEGY.toString().equalsIgnoreCase( moduleName )) {
 				try{
-					recordProfileDetailList = new ProfileDetailComposerStrategyMeasures().compose( effectivePerson, companyStrategyMeasure, companyStrategyWorks, recordProfile, recordProfileDetailList, flag );
+					recordProfileDetailList = new ProfileDetailComposerStrategyMeasures().compose( 
+							effectivePerson, companyStrategyMeasure, companyStrategyWorks, companyStrategyMeasure_nextMonth, 
+							companyStrategyWorks_nextMonth, recordProfile, recordProfileDetailList, flag );
 				}catch( Exception e ) {
 					throw e;
 				}
-			}else if( EnumReportModules.BBS.toString().equalsIgnoreCase( moduleName )) {
-				//TODO(uncomplete) 查询BBS应用相关的统计信息
-			}else if( EnumReportModules.CMS.toString().equalsIgnoreCase( moduleName )) {
-				//TODO(uncomplete) 查询CMS应用相关的统计信息
-			}else if( EnumReportModules.MEETTING.toString().equalsIgnoreCase( moduleName )) {
-				//TODO(uncomplete) 查询会议管理应用相关的统计信息
-			}else if( EnumReportModules.OKR.toString().equalsIgnoreCase( moduleName )) {
-				//TODO(uncomplete) 查询OKR应用相关的统计信息
-			}else if( EnumReportModules.WORKFLOW.toString().equalsIgnoreCase( moduleName )) {
-				//TODO(uncomplete) 查询工作流待办已办等应用相关的统计信息
-			}else if( EnumReportModules.ATTENDANCE.toString().equalsIgnoreCase( moduleName )) {
-				//TODO(uncomplete) 查询考勤应用相关的统计信息
 			}
+//			else if( EnumReportModules.BBS.toString().equalsIgnoreCase( moduleName )) {
+//				//TODO(uncomplete) 查询BBS应用相关的统计信息
+//			}else if( EnumReportModules.CMS.toString().equalsIgnoreCase( moduleName )) {
+//				//TODO(uncomplete) 查询CMS应用相关的统计信息
+//			}else if( EnumReportModules.MEETTING.toString().equalsIgnoreCase( moduleName )) {
+//				//TODO(uncomplete) 查询会议管理应用相关的统计信息
+//			}else if( EnumReportModules.OKR.toString().equalsIgnoreCase( moduleName )) {
+//				//TODO(uncomplete) 查询OKR应用相关的统计信息
+//			}else if( EnumReportModules.WORKFLOW.toString().equalsIgnoreCase( moduleName )) {
+//				//TODO(uncomplete) 查询工作流待办已办等应用相关的统计信息
+//			}else if( EnumReportModules.ATTENDANCE.toString().equalsIgnoreCase( moduleName )) {
+//				//TODO(uncomplete) 查询考勤应用相关的统计信息
+//			}
 		}
 		return recordProfileDetailList;
 	}

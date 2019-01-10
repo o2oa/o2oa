@@ -235,7 +235,7 @@
             {
               "name": "job",
               "type": "String",
-              "description": ""
+              "description": "标识"
             }
           ],
           "formParameters": [],
@@ -587,7 +587,7 @@
             {
               "name": "id",
               "type": "String",
-              "description": ""
+              "description": "标识"
             }
           ],
           "formParameters": [],

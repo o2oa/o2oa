@@ -8,7 +8,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -24,6 +23,7 @@ import com.x.base.core.project.http.HttpToken;
 import com.x.base.core.project.http.TokenType;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.Crypto;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.Person;
@@ -82,7 +82,12 @@ class ActionGetLogin extends BaseAction {
 			Wo wo = Wo.copier.copy(person);
 			List<String> roles = business.organization().role().listWithPerson(person.getDistinguishedName());
 			wo.setRoleList(roles);
-			EffectivePerson effective = new EffectivePerson(wo.getDistinguishedName(), TokenType.user,
+			TokenType tokenType = TokenType.user;
+			if (business.organization().person().hasRole(person.getDistinguishedName(),
+					OrganizationDefinition.Manager)) {
+				tokenType = TokenType.manager;
+			}
+			EffectivePerson effective = new EffectivePerson(wo.getDistinguishedName(), tokenType,
 					Config.token().getCipher());
 			wo.setToken(effective.getToken());
 			HttpToken httpToken = new HttpToken();

@@ -34,6 +34,7 @@ import com.x.query.core.entity.segment.Entry;
 import com.x.query.core.entity.segment.Entry_;
 import com.x.query.core.entity.segment.Word;
 import com.x.query.service.processing.Business;
+import com.x.query.service.processing.helper.LanguageProcessingHelper;
 
 public class CrawlWork extends Crawl {
 
@@ -159,7 +160,7 @@ public class CrawlWork extends Crawl {
 				entry.setSummary(StringTools.utf8SubString(summary, JpaObject.length_255B));
 				Word word = null;
 				if (StringUtils.isNotEmpty(title)) {
-					for (WrapWord o : this.toWord(title)) {
+					for (LanguageProcessingHelper.Item o : this.toWord(title)) {
 						if (StringUtils.length(o.getValue()) < 31) {
 							/* 可能产生过长的字比如...................................... */
 							word = new Word();
@@ -169,13 +170,13 @@ public class CrawlWork extends Crawl {
 							word.setValue(o.getValue());
 							word.setLabel(o.getLabel());
 							word.setTag(Word.TAG_TITLE);
-							word.setCount(o.getCount());
+							word.setCount(o.getCount().intValue());
 							emc.persist(word, CheckPersistType.all);
 						}
 					}
 				}
 				if (StringUtils.isNotEmpty(body)) {
-					for (WrapWord o : this.toWord(body)) {
+					for (LanguageProcessingHelper.Item o : this.toWord(body)) {
 						if (StringUtils.length(o.getValue()) < 31) {
 							/* 可能产生过长的字比如...................................... */
 							word = new Word();
@@ -185,13 +186,13 @@ public class CrawlWork extends Crawl {
 							word.setValue(o.getValue());
 							word.setLabel(o.getLabel());
 							word.setTag(Word.TAG_BODY);
-							word.setCount(o.getCount());
+							word.setCount(o.getCount().intValue());
 							emc.persist(word, CheckPersistType.all);
 						}
 					}
 				}
 				if (StringUtils.isNotEmpty(attachment)) {
-					for (WrapWord o : this.toWord(attachment)) {
+					for (LanguageProcessingHelper.Item o : this.toWord(attachment)) {
 						if (StringUtils.length(o.getValue()) < 31) {
 							/* 可能产生过长的字比如...................................... */
 							word = new Word();
@@ -201,7 +202,7 @@ public class CrawlWork extends Crawl {
 							word.setValue(o.getValue());
 							word.setLabel(o.getLabel());
 							word.setTag(Word.TAG_ATTACHMENT);
-							word.setCount(o.getCount());
+							word.setCount(o.getCount().intValue());
 							emc.persist(word, CheckPersistType.all);
 						}
 					}

@@ -9,6 +9,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
@@ -20,6 +21,7 @@ import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
@@ -129,6 +131,7 @@ public class OauthAction extends StandardJaxrsAction {
 	@JaxrsMethodDescribe(value = "GET方法实现oauth认证info方法.", action = ActionInfo.class)
 	@GET
 	@Path("info")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	public void getInfo(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@Context HttpServletResponse response, @QueryParam("access_token") String access_token) {
 		ActionResult<ActionInfo.Wo> result = new ActionResult<>();

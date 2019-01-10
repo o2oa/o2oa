@@ -5,10 +5,10 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 
 import com.x.base.core.project.jaxrs.AbstractActionApplication;
-import com.x.query.assemble.surface.jaxrs.entry.EntryAction;
-import com.x.query.assemble.surface.jaxrs.neural.mlp.MlpAction;
+import com.x.query.assemble.surface.jaxrs.neural.NeuralAction;
 import com.x.query.assemble.surface.jaxrs.query.QueryAction;
 import com.x.query.assemble.surface.jaxrs.reveal.RevealAction;
+import com.x.query.assemble.surface.jaxrs.segment.SegmentAction;
 import com.x.query.assemble.surface.jaxrs.stat.StatAction;
 import com.x.query.assemble.surface.jaxrs.test.TestAction;
 import com.x.query.assemble.surface.jaxrs.view.ViewAction;
@@ -22,8 +22,8 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(StatAction.class);
 		classes.add(RevealAction.class);
 		classes.add(TestAction.class);
-		classes.add(EntryAction.class);
-		classes.add(MlpAction.class);
+		classes.add(SegmentAction.class);
+		classes.add(NeuralAction.class);
 		return classes;
 	}
 

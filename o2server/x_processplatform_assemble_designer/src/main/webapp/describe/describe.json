@@ -1382,6 +1382,38 @@
           ]
         },
         {
+          "name": "cpoy",
+          "className": "com.x.processplatform.assemble.designer.jaxrs.file.ActionCopy",
+          "description": "复制资源文件到新的应用.",
+          "type": "GET",
+          "path": "jaxrs/file/{flag}/application/{applicationFlag}",
+          "contentType": "application/json",
+          "useJsonElementParameter": false,
+          "pathParameters": [
+            {
+              "name": "applicationFlag",
+              "type": "String",
+              "description": "应用标识"
+            },
+            {
+              "name": "flag",
+              "type": "String",
+              "description": "标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
           "name": "create",
           "className": "com.x.processplatform.assemble.designer.jaxrs.file.ActionCreate",
           "description": "创建文件.",

@@ -574,17 +574,11 @@ public class StrategyAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListIncludeMeasuresByStrategyYearAndMeasuresDept.WoIncludeMeasures>> result = new ActionResult<>();
 		WiAppendMeasuresDept wrapIn = null;
 		boolean ispass = true;
-
-		if( jsonElement == null ) {
-			System.out.println(">>>>>>>>>>>>>>>>>>>>jsonElement is null !!!" );
-		}else {
-			System.out.println(">>>>>>>>>>>>>>>>>>>>jsonElement:" + jsonElement.toString());
-		}
 		
 		try {
 			wrapIn = this.convertToWrapIn(jsonElement, WiAppendMeasuresDept.class);
 		} catch (Exception e) {
-			logger.warn("strategydeployextra iswork a error!");
+			logger.warn("strategydeployextra iswork a error! JSON:" +  jsonElement.toString());
 			logger.error(e);
 			result.error(e);
 		}
@@ -594,6 +588,7 @@ public class StrategyAction extends StandardJaxrsAction {
 			result.error(e);
 			ispass = false;
 		}
+		
 		if (ispass) {
 			try {
 				result = new ActionListIncludeMeasuresByStrategyYearAndMeasuresDept().execute(wrapIn);

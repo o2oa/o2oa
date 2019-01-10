@@ -3108,6 +3108,7 @@
           "type": "GET",
           "path": "jaxrs/oauth/info",
           "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
           "useJsonElementParameter": false,
           "pathParameters": [],
           "formParameters": [],

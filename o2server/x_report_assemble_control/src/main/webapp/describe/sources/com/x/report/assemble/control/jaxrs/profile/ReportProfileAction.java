@@ -127,4 +127,23 @@ public class ReportProfileAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
+	
+	@JaxrsMethodDescribe(value = "根据汇报概要文件ID更新详细内容", action = ActionUpdateProfileDetail.class)
+	@GET
+	@Path("update/{profileId}/detail")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateDetail(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("汇报概要文件ID") @PathParam("profileId") String profileId) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<WrapOutMap> result = new ActionResult<>(); 
+		
+		try {
+			result = new ActionUpdateProfileDetail().execute(request, effectivePerson, profileId);
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			logger.error(e, effectivePerson, request, null);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
 }

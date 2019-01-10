@@ -2,16 +2,15 @@ package com.x.query.service.processing.helper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import com.hankcs.hanlp.corpus.document.sentence.Sentence;
-import com.hankcs.hanlp.corpus.document.sentence.word.IWord;
-import com.hankcs.hanlp.model.crf.CRFLexicalAnalyzer;
+import com.hankcs.hanlp.HanLP;
+import com.hankcs.hanlp.seg.common.Term;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -26,15 +25,14 @@ public class LanguageProcessingHelper {
 	public static String[] SKIP_END_WITH = new String[] { "~", "!", "#", "$", "%", "^", "&", "*", "(", ")", "<", ">",
 			"[", "]", "{", "}", "\\", "?" };
 
-	public Set<String> word(CRFLexicalAnalyzer analyzer, String content) {
+	public List<Item> word(String content) {
 		List<Item> items = new ArrayList<>();
 		if (StringUtils.isNotBlank(content)) {
-			Sentence sen = analyzer.analyze(content);
-			for (IWord w : sen.wordList) {
+			for (Term t : HanLP.segment(content)) {
 				Item item = new Item();
-				item.setLabel(w.getLabel());
+				item.setLabel(t.nature.toString());
 				/* 去掉中文空格和空格 */
-				item.setValue(StringUtils.trimToEmpty(StringUtils.replace(w.getValue(), "　", " ")));
+				item.setValue(StringUtils.trimToEmpty(StringUtils.replace(t.word, "　", " ")));
 				items.add(item);
 			}
 		}
@@ -59,11 +57,14 @@ public class LanguageProcessingHelper {
 						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "u"))
 						&& (!StringUtils.startsWithIgnoreCase(o.getLabel(), "w")) && (!label_skip_m(o)))
 				.collect(Collectors.toList());
-		TreeSet<String> set = new TreeSet<>();
-		for (Item o : items) {
-			set.add(o.getValue());
-		}
-		return set;
+		Map<Item, Long> map = items.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+		List<Item> list = new ArrayList<>();
+		map.entrySet().stream().sorted(Map.Entry.<Item, Long>comparingByValue().reversed()).forEach(o -> {
+			Item t = o.getKey();
+			t.setCount(o.getValue());
+			list.add(t);
+		});
+		return list;
 	}
 
 	private boolean label_skip_m(Item item) {
@@ -79,6 +80,8 @@ public class LanguageProcessingHelper {
 		private String value;
 
 		private String label;
+
+		private Long count;
 
 		public String getValue() {
 			return value;
@@ -96,11 +99,18 @@ public class LanguageProcessingHelper {
 			this.label = label;
 		}
 
+		public Long getCount() {
+			return count;
+		}
+
+		public void setCount(Long count) {
+			this.count = count;
+		}
+
 		@Override
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + ((label == null) ? 0 : label.hashCode());
 			result = prime * result + ((value == null) ? 0 : value.hashCode());
 			return result;
 		}
@@ -114,11 +124,6 @@ public class LanguageProcessingHelper {
 			if (getClass() != obj.getClass())
 				return false;
 			Item other = (Item) obj;
-			if (label == null) {
-				if (other.label != null)
-					return false;
-			} else if (!label.equals(other.label))
-				return false;
 			if (value == null) {
 				if (other.value != null)
 					return false;

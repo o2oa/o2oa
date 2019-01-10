@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
@@ -43,14 +44,18 @@ public class ActionInput extends BaseAction {
 	private static String DEPT_SEPARATOR = "、";
 	private static int beginRow = 3;
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, byte[] bytes, FormDataContentDisposition disposition) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create(); InputStream is = new ByteArrayInputStream(bytes); XSSFWorkbook workbook = new XSSFWorkbook(is); ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, byte[] bytes, FormDataContentDisposition disposition)
+			throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
+				InputStream is = new ByteArrayInputStream(bytes);
+				XSSFWorkbook workbook = new XSSFWorkbook(is);
+				ByteArrayOutputStream os = new ByteArrayOutputStream()) {
 			Business business = new Business(emc);
 			ActionResult<Wo> result = new ActionResult<>();
-			//this.scan(business, workbook);
+			// this.scan(business, workbook);
 			String name = "measuers_result_" + DateTools.formatDate(new Date()) + ".xlsx";
 			this.scanAndComment(business, workbook);
-			//this.TestNumber(business, workbook);
+			// this.TestNumber(business, workbook);
 			workbook.write(os);
 
 			CacheInputResult cacheInputResult = new CacheInputResult();
@@ -58,11 +63,11 @@ public class ActionInput extends BaseAction {
 			cacheInputResult.setBytes(os.toByteArray());
 			String flag = StringTools.uniqueToken();
 			cache.put(new Element(flag, cacheInputResult));
-			//			ApplicationCache.notify(Person.class);
-			//			ApplicationCache.notify(Group.class);
-			//			ApplicationCache.notify(Role.class);
-			//			ApplicationCache.notify(Identity.class);
-			//			ApplicationCache.notify(PersonAttribute.class);
+			// ApplicationCache.notify(Person.class);
+			// ApplicationCache.notify(Group.class);
+			// ApplicationCache.notify(Role.class);
+			// ApplicationCache.notify(Identity.class);
+			// ApplicationCache.notify(PersonAttribute.class);
 			Wo wo = new Wo();
 			wo.setFlag(flag);
 			result.setData(wo);
@@ -93,7 +98,7 @@ public class ActionInput extends BaseAction {
 				for (Cell cell : row) {
 					int ColumnIndex = cell.getColumnIndex();
 					if (ColumnIndex == 0) {
-						//序号校验
+						// 序号校验
 						isRightNumber = VerifySequenceNumberTools.VerifySequenceNumber(this.getCellValue(cell));
 						if (!isRightNumber) {
 							comment = creatComment(sheet, workbook, row, cell, "序号不符合格式");
@@ -102,7 +107,8 @@ public class ActionInput extends BaseAction {
 							tmpsn = this.getCellValue(cell);
 							if (SequenceNumberList.indexOf(tmpsn) >= 0) {
 								logger.info("CellType:" + cell.getCellType());
-								logger.info("SequenceNumberList:" + SequenceNumberList.get(SequenceNumberList.indexOf(tmpsn)) + "=" + tmpsn);
+								logger.info("SequenceNumberList:"
+										+ SequenceNumberList.get(SequenceNumberList.indexOf(tmpsn)) + "=" + tmpsn);
 								comment = creatComment(sheet, workbook, row, cell, "序号重复");
 								cell.setCellComment(comment);
 							} else {
@@ -114,7 +120,7 @@ public class ActionInput extends BaseAction {
 					}
 
 					if (ColumnIndex == 1) {
-						//关键举措校验
+						// 关键举措校验
 						measuresTitle = this.getCellValue(cell);
 						if (null == StringUtils.trimToNull(measuresTitle)) {
 							comment = creatComment(sheet, workbook, row, cell, "关键举措为空");
@@ -123,7 +129,7 @@ public class ActionInput extends BaseAction {
 					}
 
 					if (ColumnIndex == 2) {
-						//工作内容校验
+						// 工作内容校验
 						workContent = this.getCellValue(cell);
 						if (null == StringUtils.trimToNull(workContent)) {
 							comment = creatComment(sheet, workbook, row, cell, "工作内容为空");
@@ -131,7 +137,7 @@ public class ActionInput extends BaseAction {
 						}
 					}
 					if (ColumnIndex == 3) {
-						//目标值校验
+						// 目标值校验
 						targetValue = this.getCellValue(cell);
 						if (null == StringUtils.trimToNull(targetValue)) {
 							comment = creatComment(sheet, workbook, row, cell, "目标值为空");
@@ -139,10 +145,10 @@ public class ActionInput extends BaseAction {
 						}
 					}
 					if (ColumnIndex == 4) {
-						//牵头部门
+						// 牵头部门
 						deptStringList = this.getCellValue(cell);
 						if (StringUtils.isEmpty(StringUtils.trim(deptStringList))) {
-							//牵头部门，如果字段为空，就什么都不做。
+							// 牵头部门，如果字段为空，就什么都不做。
 						} else {
 							List<String> deptlist = new ArrayList<String>();
 							deptlist.addAll(Arrays.asList(deptStringList.split(DEPT_SEPARATOR)));
@@ -161,7 +167,7 @@ public class ActionInput extends BaseAction {
 					}
 
 					if (ColumnIndex == 5) {
-						//责任部门
+						// 责任部门
 						deptStringList = this.getCellValue(cell);
 						if (StringUtils.isEmpty(StringUtils.trim(deptStringList))) {
 							comment = creatComment(sheet, workbook, row, cell, "责任部门不能为空");
@@ -183,29 +189,30 @@ public class ActionInput extends BaseAction {
 						}
 					}
 
-					//					if (ColumnIndex == 6) {
-					//						//支撑部门
-					//						deptStringList = this.getCellValue(cell);
-					//						if (StringUtils.isEmpty(StringUtils.trim(deptStringList))) {
-					//							//支撑部门，如果字段为空，就什么都不做。
-					//						} else {
-					//							List<String> deptlist = new ArrayList<String>();
-					//							deptlist.addAll(Arrays.asList(deptStringList.split(DEPT_SEPARATOR)));
-					//							for (String deptstring : deptlist) {
-					//								deptstring = StringUtils.trim(deptstring);
-					//								try {
-					//									if (!checkUnitByUnitName(business, deptstring)) {
-					//										//throw new Exception("第:" + (j + 1) + "行，第:" + ColumnIndex + "列，支撑部门中的:" + deptstring + "名称与组织名称不对相应。");
-					//										comment = creatComment(sheet, workbook, row, cell, "名称与组织名称不对相应");
-					//										cell.setCellComment(comment);
-					//									}
-					//								} catch (Exception e) {
-					//									// TODO Auto-generated catch block
-					//									e.printStackTrace();
-					//								}
-					//							}
-					//						}
-					//					}
+					// if (ColumnIndex == 6) {
+					// //支撑部门
+					// deptStringList = this.getCellValue(cell);
+					// if (StringUtils.isEmpty(StringUtils.trim(deptStringList))) {
+					// //支撑部门，如果字段为空，就什么都不做。
+					// } else {
+					// List<String> deptlist = new ArrayList<String>();
+					// deptlist.addAll(Arrays.asList(deptStringList.split(DEPT_SEPARATOR)));
+					// for (String deptstring : deptlist) {
+					// deptstring = StringUtils.trim(deptstring);
+					// try {
+					// if (!checkUnitByUnitName(business, deptstring)) {
+					// //throw new Exception("第:" + (j + 1) + "行，第:" + ColumnIndex + "列，支撑部门中的:" +
+					// deptstring + "名称与组织名称不对相应。");
+					// comment = creatComment(sheet, workbook, row, cell, "名称与组织名称不对相应");
+					// cell.setCellComment(comment);
+					// }
+					// } catch (Exception e) {
+					// // TODO Auto-generated catch block
+					// e.printStackTrace();
+					// }
+					// }
+					// }
+					// }
 
 				}
 			}
@@ -215,11 +222,11 @@ public class ActionInput extends BaseAction {
 	}
 
 	XSSFComment creatComment(XSSFSheet sheet, XSSFWorkbook workbook, Row row, Cell cell, String commentStr) {
-		//https://www.songliguo.com/java-poi-excel-import-data.html
+		// https://www.songliguo.com/java-poi-excel-import-data.html
 		XSSFDrawing p = ((XSSFSheet) sheet).createDrawingPatriarch();
-		//XSSFCell cell = (XSSFCell) sheet.getRow(row).getCell(col);
+		// XSSFCell cell = (XSSFCell) sheet.getRow(row).getCell(col);
 		if (cell == null) {
-			//如果你获取的单元格是空进行创建新的cell，再追加批注，不然null指针
+			// 如果你获取的单元格是空进行创建新的cell，再追加批注，不然null指针
 			cell = row.createCell((short) 0);
 		}
 		XSSFComment comment = p.createCellComment(new XSSFClientAnchor(0, 0, 0, 0, (short) 3, 3, (short) 5, 6));
@@ -232,7 +239,7 @@ public class ActionInput extends BaseAction {
 
 	boolean checkUnitByUnitName(Business business, String unitName) throws Exception {
 		UnitFactory unitFactory = business.organization().unit();
-		//获取unitName的distinguishedName
+		// 获取unitName的distinguishedName
 		String distinguishedName = "";
 		distinguishedName = unitFactory.get(unitName);
 		if (StringUtils.isEmpty(distinguishedName)) {
@@ -245,13 +252,13 @@ public class ActionInput extends BaseAction {
 	String getCellValue(Cell cell) {
 		if (cell == null)
 			return "";
-		if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+		if (cell.getCellType() == CellType.STRING) {
 			return cell.getStringCellValue();
-		} else if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
+		} else if (cell.getCellType() == CellType.BOOLEAN) {
 			return String.valueOf(cell.getBooleanCellValue());
-		} else if (cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
+		} else if (cell.getCellType() == CellType.FORMULA) {
 			return cell.getCellFormula();
-		} else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+		} else if (cell.getCellType() == CellType.NUMERIC) {
 			DataFormatter formatter = new DataFormatter();
 			String _str = formatter.formatCellValue(cell);
 			return String.valueOf(_str);
@@ -295,7 +302,8 @@ public class ActionInput extends BaseAction {
 					if (ColumnIndex == 0) {
 						DataFormatter formatter = new DataFormatter();
 						tmpsn = formatter.formatCellValue(cell);
-						logger.info("页签：" + sheet.getSheetName() + "，行：" + j + "，列：" + ColumnIndex + "。序号：：" + String.valueOf(tmpsn) + "=");
+						logger.info("页签：" + sheet.getSheetName() + "，行：" + j + "，列：" + ColumnIndex + "。序号：："
+								+ String.valueOf(tmpsn) + "=");
 					}
 					if (ColumnIndex == 1) {
 					}

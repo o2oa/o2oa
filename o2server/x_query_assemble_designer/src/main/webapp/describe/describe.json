@@ -1144,7 +1144,7 @@
       "methods": [
         {
           "name": "createProject",
-          "className": "com.x.query.assemble.designer.jaxrs.neural.ActionProjectCreate",
+          "className": "com.x.query.assemble.designer.jaxrs.neural.ActionCreateProject",
           "description": "创建项目.",
           "type": "POST",
           "path": "jaxrs/neural/project",
@@ -1345,25 +1345,11 @@
               "isBaseType": true
             },
             {
-              "name": "generateInTextCutoffSize",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "单条生成字段最大数量",
-              "isBaseType": true
-            },
-            {
-              "name": "learnInTextCutoffSize",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "训练字段最大数量",
-              "isBaseType": true
-            },
-            {
               "name": "propertyMap",
-              "type": "StringValueMap",
+              "type": "LinkedHashMap\u003cString,String\u003e",
               "isCollection": false,
               "description": "神经网络参数.",
-              "isBaseType": true
+              "isBaseType": false
             }
           ],
           "outs": [
@@ -1377,7 +1363,7 @@
         },
         {
           "name": "deleteProject",
-          "className": "com.x.query.assemble.designer.jaxrs.neural.ActionProjectDelete",
+          "className": "com.x.query.assemble.designer.jaxrs.neural.ActionDeleteProject",
           "description": "删除项目.",
           "type": "DELETE",
           "path": "jaxrs/neural/project/{projectFlag}",
@@ -1558,20 +1544,8 @@
               "description": "分析类型,default,full,customized"
             },
             {
-              "name": "generateInTextCutoffSize",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "单条生成字段最大数量"
-            },
-            {
-              "name": "learnInTextCutoffSize",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "训练字段最大数量"
-            },
-            {
               "name": "propertyMap",
-              "type": "StringValueMap",
+              "type": "LinkedHashMap\u003cString,String\u003e",
               "isCollection": false,
               "description": "神经网络参数."
             },
@@ -1619,7 +1593,7 @@
         },
         {
           "name": "getProject",
-          "className": "com.x.query.assemble.designer.jaxrs.neural.ActionProjectGet",
+          "className": "com.x.query.assemble.designer.jaxrs.neural.ActionGetProject",
           "description": "获取项目.",
           "type": "GET",
           "path": "jaxrs/neural/project/{projectFlag}",
@@ -1800,20 +1774,8 @@
               "description": "分析类型,default,full,customized"
             },
             {
-              "name": "generateInTextCutoffSize",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "单条生成字段最大数量"
-            },
-            {
-              "name": "learnInTextCutoffSize",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "训练字段最大数量"
-            },
-            {
               "name": "propertyMap",
-              "type": "StringValueMap",
+              "type": "LinkedHashMap\u003cString,String\u003e",
               "isCollection": false,
               "description": "神经网络参数."
             },
@@ -1856,6 +1818,202 @@
               "type": "Boolean",
               "isCollection": false,
               "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "listProject",
+          "className": "com.x.query.assemble.designer.jaxrs.neural.ActionListProject",
+          "description": "列示所有项目.",
+          "type": "GET",
+          "path": "jaxrs/neural/list/project",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "数据库主键,自动生成."
+            },
+            {
+              "name": "neuralNetworkType",
+              "type": "String",
+              "isCollection": false,
+              "description": "mlp"
+            },
+            {
+              "name": "type",
+              "type": "String",
+              "isCollection": false,
+              "description": "cms,processPlatform"
+            },
+            {
+              "name": "name",
+              "type": "String",
+              "isCollection": false,
+              "description": "名称"
+            },
+            {
+              "name": "description",
+              "type": "String",
+              "isCollection": false,
+              "description": "说明"
+            },
+            {
+              "name": "alias",
+              "type": "String",
+              "isCollection": false,
+              "description": "别名."
+            },
+            {
+              "name": "inValueScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "输入值脚本,脚本中的操作对象是inValues,对象类型Set"
+            },
+            {
+              "name": "outValueScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "输出值脚本,脚本中的操作对象是outValues,对象类型Set"
+            },
+            {
+              "name": "attachmentScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "附件过滤脚本,脚本中的操作对象是attachments,对象类型List,内容是附件名称,可以删除不要进行分词的附件名."
+            },
+            {
+              "name": "processList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "包含流程."
+            },
+            {
+              "name": "applicationList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "包含应用."
+            },
+            {
+              "name": "startDate",
+              "type": "Date",
+              "isCollection": false,
+              "description": "开始时间"
+            },
+            {
+              "name": "endDate",
+              "type": "Date",
+              "isCollection": false,
+              "description": "开始时间"
+            },
+            {
+              "name": "entryCount",
+              "type": "Integer",
+              "isCollection": false,
+              "description": "条目数量"
+            },
+            {
+              "name": "effectiveEntryCount",
+              "type": "Integer",
+              "isCollection": false,
+              "description": "有效条目数量"
+            },
+            {
+              "name": "status",
+              "type": "String",
+              "isCollection": false,
+              "description": "状态,generating or learning"
+            },
+            {
+              "name": "nnet",
+              "type": "String",
+              "isCollection": false,
+              "description": "方案二进制代码"
+            },
+            {
+              "name": "intermediateNnet",
+              "type": "String",
+              "isCollection": false,
+              "description": "方案二进制代码"
+            },
+            {
+              "name": "generatingPercent",
+              "type": "Integer",
+              "isCollection": false,
+              "description": "当前条目生成进度"
+            },
+            {
+              "name": "totalError",
+              "type": "Double",
+              "isCollection": false,
+              "description": "学习总错误,当前均方误差"
+            },
+            {
+              "name": "inValueCount",
+              "type": "Integer",
+              "isCollection": false,
+              "description": "输入数量"
+            },
+            {
+              "name": "outValueCount",
+              "type": "Integer",
+              "isCollection": false,
+              "description": "输出数量"
+            },
+            {
+              "name": "maxResult",
+              "type": "Integer",
+              "isCollection": false,
+              "description": "最大输出值"
+            },
+            {
+              "name": "learnEntryCount",
+              "type": "Integer",
+              "isCollection": false,
+              "description": "学习条目数量"
+            },
+            {
+              "name": "validationEntryCount",
+              "type": "Integer",
+              "isCollection": false,
+              "description": "测试条目数量"
+            },
+            {
+              "name": "validationMeanSquareError",
+              "type": "Double",
+              "isCollection": false,
+              "description": "测试比例"
+            },
+            {
+              "name": "analyzeType",
+              "type": "String",
+              "isCollection": false,
+              "description": "分析类型,default,full,customized"
+            },
+            {
+              "name": "propertyMap",
+              "type": "LinkedHashMap\u003cString,String\u003e",
+              "isCollection": false,
+              "description": "神经网络参数."
+            },
+            {
+              "name": "createTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "创建时间,自动生成,索引创建在约束中."
+            },
+            {
+              "name": "updateTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "修改时间,自动生成,索引创建在约束中."
             }
           ]
         },
@@ -1945,7 +2103,7 @@
         },
         {
           "name": "updateProject",
-          "className": "com.x.query.assemble.designer.jaxrs.neural.ActionProjectUpdate",
+          "className": "com.x.query.assemble.designer.jaxrs.neural.ActionUpdateProject",
           "description": "更新项目.",
           "type": "PUT",
           "path": "jaxrs/neural/project/{projectFlag}",
@@ -2145,25 +2303,11 @@
               "isBaseType": true
             },
             {
-              "name": "generateInTextCutoffSize",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "单条生成字段最大数量",
-              "isBaseType": true
-            },
-            {
-              "name": "learnInTextCutoffSize",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "训练字段最大数量",
-              "isBaseType": true
-            },
-            {
               "name": "propertyMap",
-              "type": "StringValueMap",
+              "type": "LinkedHashMap\u003cString,String\u003e",
               "isCollection": false,
               "description": "神经网络参数.",
-              "isBaseType": true
+              "isBaseType": false
             }
           ],
           "outs": [
@@ -2723,7 +2867,7 @@
             {
               "name": "flag",
               "type": "String",
-              "description": ""
+              "description": "标识"
             }
           ],
           "formParameters": [],
@@ -2751,7 +2895,7 @@
             {
               "name": "flag",
               "type": "String",
-              "description": ""
+              "description": "标识"
             }
           ],
           "formParameters": [],
@@ -2843,7 +2987,7 @@
             {
               "name": "flag",
               "type": "String",
-              "description": ""
+              "description": "标识"
             }
           ],
           "formParameters": [],
@@ -3010,6 +3154,128 @@
           "outs": []
         },
         {
+          "name": "listSummary",
+          "className": "com.x.query.assemble.designer.jaxrs.query.ActionListSummary",
+          "description": "列示所有查询，同时附带视图简要信息和统计简要信息.",
+          "type": "GET",
+          "path": "jaxrs/query/list/summary",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "woViewList",
+              "type": "List\u003cWoView\u003e",
+              "isCollection": true,
+              "description": "视图对象"
+            },
+            {
+              "name": "woStatList",
+              "type": "List\u003cWoStat\u003e",
+              "isCollection": true,
+              "description": "统计对象"
+            },
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "数据库主键,自动生成."
+            },
+            {
+              "name": "name",
+              "type": "String",
+              "isCollection": false,
+              "description": "名称."
+            },
+            {
+              "name": "description",
+              "type": "String",
+              "isCollection": false,
+              "description": "描述."
+            },
+            {
+              "name": "queryCategory",
+              "type": "String",
+              "isCollection": false,
+              "description": "分类"
+            },
+            {
+              "name": "updateTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "修改时间,自动生成,索引创建在约束中."
+            }
+          ]
+        },
+        {
+          "name": "listSummaryWithApplicationCategory",
+          "className": "com.x.query.assemble.designer.jaxrs.query.ActionListSummaryWithQueryCategory",
+          "description": "根据查询分类获取查询的简要信息,同时附带视图简要信息和统计简要信息应用分类不为null.",
+          "type": "GET",
+          "path": "jaxrs/query/list/summary/querycategory/{queryCategory}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "pathParameters": [
+            {
+              "name": "queryCategory",
+              "type": "String",
+              "description": "查询分类"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "woViewList",
+              "type": "List\u003cWoView\u003e",
+              "isCollection": true,
+              "description": "视图对象"
+            },
+            {
+              "name": "woStatList",
+              "type": "List\u003cWoStat\u003e",
+              "isCollection": true,
+              "description": "统计对象"
+            },
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "数据库主键,自动生成."
+            },
+            {
+              "name": "name",
+              "type": "String",
+              "isCollection": false,
+              "description": "名称."
+            },
+            {
+              "name": "description",
+              "type": "String",
+              "isCollection": false,
+              "description": "描述."
+            },
+            {
+              "name": "queryCategory",
+              "type": "String",
+              "isCollection": false,
+              "description": "分类"
+            },
+            {
+              "name": "updateTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "修改时间,自动生成,索引创建在约束中."
+            }
+          ]
+        },
+        {
           "name": "listWithQueryCategory",
           "className": "com.x.query.assemble.designer.jaxrs.query.ActionListWithQueryCategory",
           "description": "列示指定分类的查询.",
@@ -3022,7 +3288,7 @@
             {
               "name": "queryCategory",
               "type": "String",
-              "description": ""
+              "description": "查询分类"
             }
           ],
           "formParameters": [],
@@ -3763,7 +4029,7 @@
             {
               "name": "id",
               "type": "String",
-              "description": ""
+              "description": "标识"
             }
           ],
           "formParameters": [],
@@ -3791,7 +4057,7 @@
             {
               "name": "id",
               "type": "String",
-              "description": ""
+              "description": "标识"
             }
           ],
           "formParameters": [],
@@ -3879,12 +4145,12 @@
             {
               "name": "count",
               "type": "Integer",
-              "description": ""
+              "description": "数量"
             },
             {
               "name": "id",
               "type": "String",
-              "description": ""
+              "description": "标识"
             }
           ],
           "formParameters": [],
@@ -3960,12 +4226,12 @@
             {
               "name": "count",
               "type": "Integer",
-              "description": ""
+              "description": "数量"
             },
             {
               "name": "id",
               "type": "String",
-              "description": ""
+              "description": "标识"
             }
           ],
           "formParameters": [],
@@ -4214,7 +4480,7 @@
             {
               "name": "id",
               "type": "String",
-              "description": ""
+              "description": "标识"
             }
           ],
           "formParameters": [],
@@ -4448,7 +4714,7 @@
             {
               "name": "id",
               "type": "String",
-              "description": ""
+              "description": "标识"
             }
           ],
           "formParameters": [],
@@ -4476,7 +4742,7 @@
             {
               "name": "id",
               "type": "String",
-              "description": ""
+              "description": "标识"
             }
           ],
           "formParameters": [],
@@ -4612,12 +4878,12 @@
             {
               "name": "count",
               "type": "Integer",
-              "description": ""
+              "description": "数量"
             },
             {
               "name": "id",
               "type": "String",
-              "description": ""
+              "description": "标识"
             }
           ],
           "formParameters": [],
@@ -4711,12 +4977,12 @@
             {
               "name": "count",
               "type": "Integer",
-              "description": ""
+              "description": "数量"
             },
             {
               "name": "id",
               "type": "String",
-              "description": ""
+              "description": "标识"
             }
           ],
           "formParameters": [],
@@ -4967,7 +5233,7 @@
             {
               "name": "id",
               "type": "String",
-              "description": ""
+              "description": "标识"
             }
           ],
           "formParameters": [],
