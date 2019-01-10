@@ -20,9 +20,9 @@ O2OA 是一套现代企业级的办公平台。有以下特点\:
 
 
 ## 官方网站\:
-项目主页 : https://www.oschina.net/p/o2oa
+开源主页 : https://www.oschina.net/p/o2oa
 
-下载地址 : http://www.o2oa.net
+官方网站 : http://www.o2oa.net
 
 
 ## 授权协议\
