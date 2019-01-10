@@ -3,6 +3,8 @@ package com.x.report.assemble.control.service;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -124,6 +126,44 @@ public class Report_P_ProfileService {
 		return save_entity;
 	}
 
+	public Report_P_Profile updateDetails(EntityManagerContainer emc, String id, List<Report_P_ProfileDetail> recordProfileDetailList) throws Exception {
+		if( StringUtils.isEmpty( id ) ){
+			throw new Exception( "id is null!" );
+		}
+		if( ListTools.isEmpty( recordProfileDetailList )) {
+			throw new Exception("recordProfileDetailList is null.");
+		}
+		Report_P_Profile update_entity = null;
+		List<Report_P_ProfileDetail> detailList_tmp = null;
+		
+		Business business = new Business(emc);
+		
+		//确定是否存在
+		update_entity = emc.find( id, Report_P_Profile.class );		
+		if( update_entity == null ){
+			throw new Exception("Report_P_Profile is not exists!");
+		}
+		
+		emc.beginTransaction( Report_P_Profile.class );
+		emc.beginTransaction( Report_P_ProfileDetail.class );
+		
+		//先根据ID删除原先有的详细信息
+		detailList_tmp = business.report_P_ProfileDetailFactory().listWithRecordId( id, null, null );
+		if( detailList_tmp != null && !detailList_tmp.isEmpty() ) {
+			for( Report_P_ProfileDetail detail : detailList_tmp ) {
+				emc.remove( detail, CheckRemoveType.all);
+			}
+		}
+		
+		//再保存新的详细信息
+		for( Report_P_ProfileDetail detail : recordProfileDetailList ) {
+			emc.persist( detail, CheckPersistType.all );
+		}
+		
+		emc.commit();		
+		return update_entity;
+	}
+	
 	public Report_P_Profile updateWithId( EntityManagerContainer emc, Report_P_Profile profile ) throws Exception {
 		if( profile == null ){
 			throw new Exception( "profile is null!" );
@@ -229,4 +269,6 @@ public class Report_P_ProfileService {
 		}
 		return null;
 	}
+
+	
 }

@@ -9,6 +9,7 @@ import com.x.base.core.project.tools.DateTools;
 public class Node extends ConfigObject {
 
 	public static final Integer default_nodeAgentPort = 20010;
+	public static final String default_banner = "O2OA";
 	public static final Integer default_logSize = 14;
 
 	public static Node defaultInstance() {
@@ -63,6 +64,8 @@ public class Node extends ConfigObject {
 	private Boolean nodeAgentEncrypt;
 	@FieldDescribe("是否使用快速应用部署")
 	private Boolean quickStartWebApp;
+	@FieldDescribe("服务器控制台启动标识")
+	private String banner;
 
 	public String getLogLevel() {
 		// "trace", "debug", "info", "warn", "error" or "off"
@@ -81,6 +84,10 @@ public class Node extends ConfigObject {
 		} else {
 			return "warn";
 		}
+	}
+
+	public String getBanner() {
+		return StringUtils.isBlank(this.banner) ? default_banner : this.banner;
 	}
 
 	public Integer logSize() {

@@ -103,9 +103,15 @@ public class ActionGet extends BaseAction {
 			}
 		}
 		if( check ) {
-			List<CompanyStrategyMeasure.WoMeasuresInfo> measureInfoList = 
-					new WorkConfigUtilService().getMeasureInfoWithUnit( report_base.getProfileId(),  report_base.getTargetUnit() );
-			wrap.setSelectableMeasures( measureInfoList );
+			List<CompanyStrategyMeasure.WoMeasuresInfo> measureInfoList_thisMonth =  new WorkConfigUtilService().getMeasureInfoWithUnit_thisMonth( report_base.getProfileId(),  report_base.getTargetUnit() );
+			wrap.setSelectableMeasures( measureInfoList_thisMonth );
+			
+			List<CompanyStrategyMeasure.WoMeasuresInfo> measureInfoList_nextMonth =  new WorkConfigUtilService().getMeasureInfoWithUnit_nextMonth( report_base.getProfileId(),  report_base.getTargetUnit() );
+			if( ListTools.isNotEmpty( measureInfoList_nextMonth )) {
+				wrap.setNextMonth_selectableMeasures( measureInfoList_nextMonth );
+			}else {
+				wrap.setNextMonth_selectableMeasures( measureInfoList_thisMonth );
+			}
 		}
 		//THISMONTH
 		//获取所有的工作和举措关联信息, 组织工作所有的工作计划，完成情况，下周期工作计划信息一并输出
@@ -296,8 +302,11 @@ public class ActionGet extends BaseAction {
 		private static final long serialVersionUID = -5076990764713538973L;
 		public static List<String> Excludes = new ArrayList<>();
 
-		@FieldDescribe("组织关联的全部举措信息列表")
+		@FieldDescribe("组织关联当月的全部举措信息列表")
 		private List<CompanyStrategyMeasure.WoMeasuresInfo> selectableMeasures = null;
+		
+		@FieldDescribe("组织关联下月的全部举措信息列表")
+		private List<CompanyStrategyMeasure.WoMeasuresInfo> nextMonth_selectableMeasures = null;
 		
 		@FieldDescribe("本月重点工作列表")
 		private List<WoReport_I_WorkInfo>thisMonth_workList = null;
@@ -355,6 +364,12 @@ public class ActionGet extends BaseAction {
 		}
 		public List<CompanyStrategyMeasure.WoMeasuresInfo> getSelectableMeasures() {
 			return selectableMeasures;
+		}		
+		public List<CompanyStrategyMeasure.WoMeasuresInfo> getNextMonth_selectableMeasures() {
+			return nextMonth_selectableMeasures;
+		}
+		public void setNextMonth_selectableMeasures(List<CompanyStrategyMeasure.WoMeasuresInfo> nextMonth_selectableMeasures) {
+			this.nextMonth_selectableMeasures = nextMonth_selectableMeasures;
 		}
 		public void setSelectableMeasures(List<CompanyStrategyMeasure.WoMeasuresInfo> selectableMeasures) {
 			this.selectableMeasures = selectableMeasures;

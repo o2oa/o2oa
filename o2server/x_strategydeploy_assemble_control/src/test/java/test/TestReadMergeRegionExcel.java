@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -37,8 +38,6 @@ public class TestReadMergeRegionExcel {
 		try {
 			wb = WorkbookFactory.create(new File(path));
 			readExcel(wb, 0, 0, 0);
-		} catch (InvalidFormatException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -198,19 +197,19 @@ public class TestReadMergeRegionExcel {
 		if (cell == null)
 			return "";
 
-		if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+		if (cell.getCellType() == CellType.STRING) {
 
 			return cell.getStringCellValue();
 
-		} else if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
+		} else if (cell.getCellType() == CellType.BOOLEAN) {
 
 			return String.valueOf(cell.getBooleanCellValue());
 
-		} else if (cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
+		} else if (cell.getCellType() == CellType.FORMULA) {
 
 			return cell.getCellFormula();
 
-		} else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+		} else if (cell.getCellType() == CellType.NUMERIC) {
 
 			return String.valueOf(cell.getNumericCellValue());
 

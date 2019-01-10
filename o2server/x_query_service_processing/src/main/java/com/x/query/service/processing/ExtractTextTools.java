@@ -47,7 +47,7 @@ public class ExtractTextTools {
 			ListTools.toList(".doc", ".docx", ".pdf", ".xls", ".xlsx", ".txt", ".jpg", ".png", ".gif"));
 
 	public static String extract(byte[] bytes, String name, Boolean office, Boolean pdf, Boolean txt, Boolean image) {
-		if ((null != bytes) && bytes.length > 0) {
+		if ((null != bytes) && bytes.length > 0 && bytes.length < 1024 * 1024 * 10) {
 			if (office) {
 				if (StringUtils.endsWithIgnoreCase(name, ".doc") || StringUtils.endsWithIgnoreCase(name, ".docx")) {
 					return word(bytes);

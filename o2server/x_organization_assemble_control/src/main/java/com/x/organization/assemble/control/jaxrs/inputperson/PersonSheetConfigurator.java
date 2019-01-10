@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -79,15 +80,15 @@ public class PersonSheetConfigurator extends GsonPropertyObject {
 	public String getCellStringValue(Cell cell) {
 		if (null != cell) {
 			switch (cell.getCellType()) {
-			case Cell.CELL_TYPE_BLANK:
+			case BLANK:
 				return "";
-			case Cell.CELL_TYPE_BOOLEAN:
+			case BOOLEAN:
 				return BooleanUtils.toString(cell.getBooleanCellValue(), "true", "false", "false");
-			case Cell.CELL_TYPE_ERROR:
+			case ERROR:
 				return "";
-			case Cell.CELL_TYPE_FORMULA:
+			case FORMULA:
 				return "";
-			case Cell.CELL_TYPE_NUMERIC:
+			case NUMERIC:
 				Double d = cell.getNumericCellValue();
 				Long l = d.longValue();
 				if (l.doubleValue() == d) {
@@ -95,7 +96,7 @@ public class PersonSheetConfigurator extends GsonPropertyObject {
 				} else {
 					return d.toString();
 				}
-			case Cell.CELL_TYPE_STRING:
+			default:
 				return cell.getStringCellValue();
 			}
 		}
