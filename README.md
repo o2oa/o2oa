@@ -31,7 +31,9 @@ o2oa软件遵守双重协议，一个是AGPL授权协议，一个是商用授权
 
 1、o2oa是开源软件，您可以修改源码及免费使用；这时需遵守AGPL协议。  
 
-2、当使用者使用o2oa软件提供收费服务，或者对o2oa进行分发、销售时需进行商业授权。具体请查看：[http://www.o2oa.net/product.html](http://www.o2oa.net/product.html)。  
+2、当使用者使用o2oa软件提供收费服务，或者对o2oa进行分发、销售时需进行商业授权。
+
+   具体请查看：[http://www.o2oa.net/product.html](http://www.o2oa.net/product.html)。  
 
 3、使用者下载本软件即表示愿遵守此项协议。  
 
@@ -74,11 +76,11 @@ o2oa软件遵守双重协议，一个是AGPL授权协议，一个是商用授权
 
 ## 最新版本服务器安装包下载\:
 
-windows 64Bit : https://obs-o2public.obs.cn-east-2.myhwclouds.com/o2server_20190108102250_windows.zip
+windows 64Bit : https://obs-o2public.obs.cn-east-2.myhwclouds.com/o2server_20190110095409_windows.zip
 
-Linux 64Bit : https://obs-o2public.obs.cn-east-2.myhwclouds.com/o2server_20190108102250_linux.zip
+Linux 64Bit : https://obs-o2public.obs.cn-east-2.myhwclouds.com/o2server_20190110095409_linux.zip
 
-MacOS : https://obs-o2public.obs.cn-east-2.myhwclouds.com/o2server_20190108102250_macos.zip
+MacOS : https://obs-o2public.obs.cn-east-2.myhwclouds.com/o2server_20190110095409_macos.zip
 
-AIX : https://obs-o2public.obs.cn-east-2.myhwclouds.com/o2server_20190108102250_aix.zip
+AIX : https://obs-o2public.obs.cn-east-2.myhwclouds.com/o2server_20190110095409_aix.zip
 
