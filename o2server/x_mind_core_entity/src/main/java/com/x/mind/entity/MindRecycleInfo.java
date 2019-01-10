@@ -55,6 +55,9 @@ public class MindRecycleInfo extends SliceJpaObject {
 	}
 
 	public void composeSequnces() throws Exception {
+		if( this.getCreateTime() == null ) {
+			this.setCreateTime( new Date() );
+		}
 		this.setSequence(StringUtils.join(DateTools.compact(this.getCreateTime()), this.getId()));
 		this.creator_sequence = StringUtils.join(this.creator, this.getSequence());
 		this.folder_sequence = StringUtils.join(this.getFolderId(), this.getSequence());

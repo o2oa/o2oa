@@ -8,6 +8,7 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.tools.ListTools;
+import com.x.processplatform.assemble.designer.jaxrs.file.ActionListNext.Wo;
 import com.x.processplatform.core.entity.element.File;
 
 class ActionListPrev extends BaseAction {
@@ -15,6 +16,9 @@ class ActionListPrev extends BaseAction {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		result = this.standardListPrev(Wo.copier, id, count, "sequence", null, null, null, null, null, null, null, null,
 				true, DESC);
+		for (Wo wo : result.getData()) {
+			wo.setContentType(this.contentType(false, wo.getName()));
+		}
 		return result;
 	}
 
@@ -28,6 +32,9 @@ class ActionListPrev extends BaseAction {
 		@FieldDescribe("排序号")
 		private Long rank;
 
+		@FieldDescribe("文件类型")
+		private String contentType;
+
 		public Long getRank() {
 			return rank;
 		}
@@ -36,5 +43,12 @@ class ActionListPrev extends BaseAction {
 			this.rank = rank;
 		}
 
+		public String getContentType() {
+			return contentType;
+		}
+
+		public void setContentType(String contentType) {
+			this.contentType = contentType;
+		}
 	}
 }

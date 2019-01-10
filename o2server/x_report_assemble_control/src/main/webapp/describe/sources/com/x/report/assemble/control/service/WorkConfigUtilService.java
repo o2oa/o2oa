@@ -175,7 +175,7 @@ public class WorkConfigUtilService{
 		return null;
 	}
 	
-	public List<WoMeasuresInfo> getMeasureInfoWithUnit(String profileId, String unitName ) throws Exception {
+	public List<WoMeasuresInfo> getMeasureInfoWithUnit_thisMonth(String profileId, String unitName ) throws Exception {
 		if( StringUtils.isEmpty( unitName )) {
 			throw new Exception("unitName is null!");
 		}
@@ -196,6 +196,24 @@ public class WorkConfigUtilService{
 		return woMeasureList;
 	}
 	
-	
-	
+	public List<WoMeasuresInfo> getMeasureInfoWithUnit_nextMonth(String profileId, String unitName ) throws Exception {
+		if( StringUtils.isEmpty( unitName )) {
+			throw new Exception("unitName is null!");
+		}
+		List<WoMeasuresInfo> woMeasureList = new ArrayList<>();
+		String work_json = report_P_ProfileServiceAdv.getDetailValue( profileId, "STRATEGY", "STRATEGY_MEASURE_NEXTMONTH" );
+		List<WoCompanyStrategy> allStrategies = gson.fromJson( work_json, new TypeToken<List<WoCompanyStrategy>>() {}.getType() );
+		if( ListTools.isNotEmpty( allStrategies ) ) {
+			for( WoCompanyStrategy strategy : allStrategies ) {
+				if( ListTools.isNotEmpty(strategy.getMeasureList()) ){
+					for( WoMeasuresInfo woMeasuresInfo : strategy.getMeasureList() ) {
+						if( ListTools.isNotEmpty( woMeasuresInfo.getDeptlist() ) &&  woMeasuresInfo.getDeptlist().contains( unitName ) ) {
+							woMeasureList.add(woMeasuresInfo);
+						}
+					}
+				}
+			}
+		}
+		return woMeasureList;
+	}
 }

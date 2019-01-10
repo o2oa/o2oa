@@ -1,6 +1,8 @@
 package com.x.base.core.project.config;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -52,6 +54,15 @@ public class Query extends ConfigObject {
 	@FieldDescribe("tess使用语言.")
 	private String tessLanguage = "chi_sim";
 
+//	@FieldDescribe("可使用搜索人员.")
+//	private List<String> searchPeople = new ArrayList<>();
+//
+//	@FieldDescribe("可使用搜索群组.")
+//	private List<String> searchGroups = new ArrayList<>();
+//
+//	@FieldDescribe("可使用角色.")
+//	private List<String> searchRoles = new ArrayList<>();
+
 	public static final Boolean default_extractOffice = true;
 	public static final Boolean default_extractPdf = true;
 	public static final Boolean default_extractText = true;
@@ -89,6 +100,18 @@ public class Query extends ConfigObject {
 	public CrawlWorkCompleted getCrawlWorkCompleted() {
 		return this.crawlWorkCompleted == null ? new CrawlWorkCompleted() : this.crawlWorkCompleted;
 	}
+
+//	public List<String> getSearchPeople() {
+//		return searchPeople == null ? new ArrayList<String>() : this.searchPeople;
+//	}
+//
+//	public List<String> getSearchGroups() {
+//		return searchGroups == null ? new ArrayList<String>() : this.searchGroups;
+//	}
+//
+//	public List<String> getSearchRoles() {
+//		return searchRoles == null ? new ArrayList<String>() : this.searchRoles;
+//	}
 
 	public void save() throws Exception {
 		File file = new File(Config.base(), Config.PATH_CONFIG_QUERY);
@@ -279,5 +302,17 @@ public class Query extends ConfigObject {
 	public void setTessLanguage(String tessLanguage) {
 		this.tessLanguage = tessLanguage;
 	}
+
+//	public void setSearchPeople(List<String> searchPeople) {
+//		this.searchPeople = searchPeople;
+//	}
+//
+//	public void setSearchGroups(List<String> searchGroups) {
+//		this.searchGroups = searchGroups;
+//	}
+//
+//	public void setSearchRoles(List<String> searchRoles) {
+//		this.searchRoles = searchRoles;
+//	}
 
 }

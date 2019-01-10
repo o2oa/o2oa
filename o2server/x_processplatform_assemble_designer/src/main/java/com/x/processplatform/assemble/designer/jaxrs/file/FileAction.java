@@ -219,4 +219,22 @@ public class FileAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
+	@JaxrsMethodDescribe(value = "复制资源文件到新的应用.", action = ActionCopy.class)
+	@GET
+	@Path("{flag}/application/{applicationFlag}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void cpoy(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("flag") String flag,
+			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag) {
+		ActionResult<ActionCopy.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCopy().execute(effectivePerson, flag, applicationFlag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
 }

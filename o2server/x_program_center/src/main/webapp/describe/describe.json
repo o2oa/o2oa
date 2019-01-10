@@ -7116,7 +7116,7 @@
             },
             {
               "name": "mapValueMap",
-              "type": "StringValueMap",
+              "type": "LinkedHashMap\u003cString,String\u003e",
               "isCollection": false,
               "description": "Map类型."
             },

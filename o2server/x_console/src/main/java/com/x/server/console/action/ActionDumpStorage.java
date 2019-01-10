@@ -97,13 +97,6 @@ public class ActionDumpStorage {
 				"dump storage completed, directory: {}, count: {}, normal: {}, empty: {}, invalidStorage: {}, size: {}M, elapsed: {} minutes.",
 				dir.getAbsolutePath(), this.count(), this.normal(), this.empty(), this.invalidStorage(),
 				(this.size() / 1024 / 1024), (new Date().getTime() - start.getTime()) / 1000 / 60);
-		// System.out.println("dump storage completed, directory: " +
-		// dir.getAbsolutePath() + ", count: " + this.count()
-		// + ", normal: " + this.normal() + ", empty: " + this.empty() + ",
-		// invalidStorage: "
-		// + this.invalidStorage() + ", size: " + (this.size() / 1024 / 1024) + "M,
-		// elapsed: "
-		// + (new Date().getTime() - start.getTime()) / 1000 / 60 + " minutes.");
 		return true;
 	}
 

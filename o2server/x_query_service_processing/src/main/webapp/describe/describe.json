@@ -411,6 +411,101 @@
       ]
     },
     {
+      "name": "SegmentAction",
+      "className": "com.x.query.service.processing.jaxrs.segment.SegmentAction",
+      "description": "分词",
+      "methods": [
+        {
+          "name": "clean",
+          "className": "com.x.query.service.processing.jaxrs.segment.ActionClean",
+          "description": "清空所有分词内容.",
+          "type": "GET",
+          "path": "jaxrs/segment/clean",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "cleanWithTypeCms",
+          "className": "com.x.query.service.processing.jaxrs.segment.ActionCleanWithTypeCms",
+          "description": "清空cms所有分词内容.",
+          "type": "GET",
+          "path": "jaxrs/segment/clean/type/cms",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "cleanWithTypeWork",
+          "className": "com.x.query.service.processing.jaxrs.segment.ActionCleanWithTypeWork",
+          "description": "清空cms所有分词内容.",
+          "type": "GET",
+          "path": "jaxrs/segment/clean/type/work",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "cleanWithTypeWorkCompleted",
+          "className": "com.x.query.service.processing.jaxrs.segment.ActionCleanWithTypeWorkCompleted",
+          "description": "清空cms所有分词内容.",
+          "type": "GET",
+          "path": "jaxrs/segment/clean/type/workcompleted",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "TestAction",
       "className": "com.x.query.service.processing.jaxrs.test.TestAction",
       "description": "测试",

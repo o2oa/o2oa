@@ -24,6 +24,7 @@ import com.x.processplatform.core.entity.element.Embed;
 import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.File;
 import com.x.processplatform.core.entity.element.Form;
+import com.x.processplatform.core.entity.element.FormField;
 import com.x.processplatform.core.entity.element.Invoke;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Merge;
@@ -43,6 +44,7 @@ import com.x.processplatform.core.entity.element.wrap.WrapEmbed;
 import com.x.processplatform.core.entity.element.wrap.WrapEnd;
 import com.x.processplatform.core.entity.element.wrap.WrapFile;
 import com.x.processplatform.core.entity.element.wrap.WrapForm;
+import com.x.processplatform.core.entity.element.wrap.WrapFormField;
 import com.x.processplatform.core.entity.element.wrap.WrapInvoke;
 import com.x.processplatform.core.entity.element.wrap.WrapManual;
 import com.x.processplatform.core.entity.element.wrap.WrapMerge;
@@ -81,6 +83,13 @@ class ActionPrepareCreate extends BaseAction {
 			Form exist_form = business.entityManagerContainer().find(wrap.getId(), Form.class);
 			if (null != exist_form) {
 				wos.add(new Wo(wrap.getId(), JpaObject.createId()));
+			}
+			for (WrapFormField wrapFormField : wrap.getFormFieldList()) {
+				FormField exist_formField = business.entityManagerContainer().find(wrapFormField.getId(),
+						FormField.class);
+				if (null != exist_formField) {
+					wos.add(new Wo(wrapFormField.getId(), JpaObject.createId()));
+				}
 			}
 		}
 		for (WrapScript wrap : wi.getScriptList()) {

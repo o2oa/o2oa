@@ -273,7 +273,8 @@ public class Context extends AbstractContext {
 				OrganizationDefinition.ProcessPlatformCreator, OrganizationDefinition.MeetingManager,
 				OrganizationDefinition.PortalManager, OrganizationDefinition.BBSManager,
 				OrganizationDefinition.CMSManager, OrganizationDefinition.OKRManager, OrganizationDefinition.CRMManager,
-				OrganizationDefinition.QueryManager, OrganizationDefinition.MessageManager);
+				OrganizationDefinition.QueryManager, OrganizationDefinition.MessageManager,
+				OrganizationDefinition.SearchPrivilege);
 		roles = roles.stream().sorted(Comparator.comparing(String::toString)).collect(Collectors.toList());
 		for (String str : roles) {
 			EntityManager em = emc.get(Role.class);
