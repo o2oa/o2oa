@@ -232,8 +232,6 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         this.videoStart();
     },
     videoStart: function(){
-        alert("??????");
-        debugger;
         this.video.addEventListener("canplay", function(){
             window.setTimeout(function(){
                 this.startCameraAuthentication();
