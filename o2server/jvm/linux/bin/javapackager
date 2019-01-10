@@ -1,0 +1,89 @@
+#!/bin/sh
+#
+# JavaFX Packager tool execution script for Linux/Solaris/OS X.
+#
+
+# resolve symlinks
+PRG=$0
+while [ -h "$PRG" ]; do
+    ls=`ls -ld "$PRG"`
+    link=`expr "$ls" : '^.*-> \(.*\)$' 2>/dev/null`
+    if expr "$link" : '^/' 2> /dev/null >/dev/null; then
+	PRG="$link"
+    else
+	PRG="`dirname "$PRG"`/$link"
+    fi
+done
+
+# detect Darwin and Cygwin environments
+darwin=false;
+cygwin=false;
+case "`uname`" in
+  Darwin*) darwin=true;
+           if [ -z "$JAVA_HOME" ] ; then
+               BIN_DIR=`dirname $PRG`
+               JAVA_HOME=`cd $BIN_DIR > /dev/null; pwd`/..
+           fi
+           ;;
+  CYGWIN*) cygwin=true;;
+esac
+
+if [ -n "$JAVA_HOME" -a -x "$JAVA_HOME/bin/javac" ] ; then
+    JAVA_CMD="$JAVA_HOME/bin/java"
+    export JAVA_HOME
+else
+  JAVAC_CMD=`which javac 2> /dev/null `
+  while [ -h "$JAVAC_CMD" ]; do
+    ls=`ls -ld "$JAVAC_CMD"`
+    link=`expr "$ls" : '^.*-> \(.*\)$' 2>/dev/null`
+    if expr "$link" : '^/' 2> /dev/null >/dev/null; then
+	JAVAC_CMD="$link"
+    else
+	JAVAC_CMD="`dirname "$JAVAC_CMD"`/$link"
+    fi
+  done
+  BIN_DIR=`dirname "$JAVAC_CMD"`
+  JAVA_HOME=`dirname "$BIN_DIR"`
+  if [ "m$JAVA_HOME" != "m." ]; then
+      JAVA_CMD="$JAVA_HOME/bin/java"
+      export JAVA_HOME
+  else
+    unset JAVA_HOME
+    JAVA_CMD=`which java 2> /dev/null `
+    if [ -z "$JAVA_CMD" ]; then
+      JAVA_CMD="java"
+    fi
+  fi
+fi
+
+
+if [ ! -x "$JAVA_CMD" ] ; then
+  echo 'Error: JAVA_HOME is not defined, cannot find "java" command.'
+  exit 1
+fi
+
+case "$PRG" in
+  *javafxpackager)
+  echo 'javafxpackager has been renamed javapackager';
+  echo 'The original file may be removed in a future release in lieu of javapackager.';
+  echo 'Please update your scripts.';
+  echo ;;
+esac
+
+javafx_home=`dirname "$PRG"`/..
+
+classpath=".:$javafx_home/lib/ant-javafx.jar"
+
+if [ -e "$javafx_home/jre/lib/ext/jfxrt.jar" ] ; then
+  classpath="$classpath:$javafx_home/jre/lib/ext/jfxrt.jar"
+elif [ -e "$javafx_home/rt/lib/ext/jfxrt.jar" ] ; then
+  classpath="$classpath:$javafx_home/rt/lib/ext/jfxrt.jar"
+fi
+
+if $cygwin ; then
+    classpath=`cygpath --path --windows "$classpath"`
+    javafx_home=`cygpath --windows "$javafx_home"`
+    JAVA_CMD=`cygpath --unix "$JAVA_CMD"`
+fi
+
+exec "$JAVA_CMD" -Xmx256M "-Djavafx.home=$javafx_home" -classpath "$classpath" com.sun.javafx.tools.packager.Main "$@"

@@ -1,0 +1,813 @@
+<?xml version="1.0"?>
+<schema
+xmlns="http://www.w3.org/2001/XMLSchema"
+targetNamespace="http://www.ibm.com/j9/verbosegc"
+elementFormDefault="qualified"
+xmlns:vgc="http://www.ibm.com/j9/verbosegc">
+
+	<element name="verbosegc" type="vgc:verbosegc" />
+	<element name="mem" type="vgc:mem" />
+	<element name="mem-info" type="vgc:mem-info" />
+	<element name="arraylet-reference" type="vgc:arraylet-reference" />
+	<element name="arraylet-primitive" type="vgc:arraylet-primitive" />
+	<element name="arraylet-unknown" type="vgc:arraylet-unknown" />	
+	<element name="numa" type="vgc:numa" />
+	<element name="vmarg" type="vgc:vmarg" />
+	<element name="vmargs" type="vgc:vmargs" />
+	<element name="attribute" type="vgc:attribute" />
+	<element name="system" type="vgc:system" />
+	<element name="initialized" type="vgc:initialized" />
+	<element name="remembered-set" type="vgc:remembered-set" />
+	<element name="response-info" type="vgc:response-info" />
+	<element name="exclusive-start" type="vgc:exclusive-start" />
+	<element name="exclusive-end" type="vgc:exclusive-end" />
+	<element name="sys-start" type="vgc:sys-start" />
+	<element name="sys-end" type="vgc:sys-end" />
+	<element name="af-start" type="vgc:af-start" />
+	<element name="af-end" type="vgc:af-end" />
+	<element name="allocation-taxation" type="vgc:allocation-taxation" />
+	<element name="concurrent-collection-start" type="vgc:concurrent-collection-start" />
+	<element name="concurrent-collection-end" type="vgc:concurrent-collection-end" />
+	<element name="cycle-start" type="vgc:cycle-start" />
+	<element name="cycle-end" type="vgc:cycle-end" />
+	<element name="allocation-stats" type="vgc:allocation-stats" />
+	<element name="allocated-bytes" type="vgc:allocated-bytes" />
+	<element name="largest-consumer" type="vgc:largest-consumer" />
+	<element name="gc-start" type="vgc:gc-start" />
+	<element name="gc-end" type="vgc:gc-end" />
+	<element name="concurrent-kickoff" type="vgc:concurrent-kickoff" />
+	<element name="kickoff" type="vgc:kickoff" />
+	<element name="concurrent-aborted" type="vgc:concurrent-aborted" />
+	<element name="percolate-collect" type="vgc:percolate-collect" />
+	<element name="reason" type="vgc:reason" />
+	<element name="gc-op" type="vgc:gc-op" />
+	<element name="references" type="vgc:references" />
+	<element name="pending-finalizers" type="vgc:pending-finalizers" />
+	<element name="trace-info" type="vgc:trace-info" />
+	<element name="cardclean-info" type="vgc:cardclean-info" />
+	<element name="finalization" type="vgc:finalization" />
+	<element name="ownableSynchronizers" type="vgc:ownableSynchronizers" />
+	<element name="stringconstants" type="vgc:stringconstants" />
+	<element name="classunload-info" type="vgc:classunload-info" />
+	<element name="warning" type="vgc:warning" />
+	<element name="remembered-set-cleared" type="vgc:remembered-set-cleared" />
+	<element name="compact-info" type="vgc:compact-info" />
+	<element name="scavenger-info" type="vgc:scavenger-info" />
+	<element name="memory-copied" type="vgc:memory-copied" />
+	<element name="copy-failed" type="vgc:copy-failed" />
+	<element name="scan" type="vgc:scan" />
+	<element name="card-cleaning" type="vgc:card-cleaning" />
+	<element name="trace" type="vgc:trace" />
+	<element name="halted" type="vgc:halted" />
+	<element name="traced" type="vgc:traced" />
+	<element name="cards" type="vgc:cards" />
+	<element name="concurrent-halted" type="vgc:concurrent-halted" />
+	<element name="cold-mem-info" type="vgc:cold-mem-info" />
+	<element name="event" type="vgc:event" />
+	<element name="memory-cardclean" type="vgc:memory-cardclean" />
+	<element name="memory-traced" type="vgc:memory-traced" />
+	<element name="heap-resize" type="vgc:heap-resize" />
+	<element name="concurrent-start" type="vgc:concurrent-start" />
+	<element name="concurrent-end" type="vgc:concurrent-end" />
+	<element name="concurrent-mark-start" type="vgc:concurrent-mark-start" />
+	<element name="concurrent-mark-end" type="vgc:concurrent-mark-end" />
+	<element name="region" type="vgc:region" />	
+	<element name="metronome" type="vgc:metronome" />
+	<element name="syncgc-info" type="vgc:syncgc-info" />
+	<element name="free-mem-delta" type="vgc:free-mem-delta" />
+	<element name="work-packet-overflow" type="vgc:work-packet-overflow" />
+	<element name="quanta" type="vgc:quanta" />
+	<element name="exclusiveaccess-info" type="vgc:exclusiveaccess-info" />
+	<element name="nondeterministic-sweep" type="vgc:nondeterministic-sweep" />
+	<element name="free-mem" type="vgc:free-mem" />
+	<element name="thread-priority" type="vgc:thread-priority" />
+	<element name="non-monotonic-time" type="vgc:non-monotonic-time" />
+	<element name="utilization-tracker-overflow" type="vgc:utilization-tracker-overflow" />
+	<element name="out-of-memory" type="vgc:out-of-memory" />
+	<element name="trigger-start" type="vgc:trigger-start" />
+	<element name="trigger-end" type="vgc:trigger-end" />
+	<element name="allocation-satisfied" type="vgc:allocation-satisfied" />
+	<element name="allocation-unsatisfied" type="vgc:allocation-unsatisfied" />
+
+	<attributeGroup name="mem">
+		<attribute name="free" type="integer" use="required" />
+		<attribute name="total" type="integer" use="required" />
+		<attribute name="percent" type="integer" use="required" />
+	</attributeGroup>
+	
+	<complexType name="verbosegc">
+		<sequence maxOccurs="1" minOccurs="1">
+			<element ref="vgc:initialized" maxOccurs="1" minOccurs="0" />
+			<choice maxOccurs="unbounded" minOccurs="0">
+				<element ref="vgc:exclusive-start" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:exclusive-end" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:sys-start" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:sys-end" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:af-start" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:af-end" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:allocation-taxation" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:concurrent-collection-start" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:concurrent-collection-end" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:cycle-start" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:cycle-end" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:allocation-stats" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:gc-start" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:gc-end" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:concurrent-kickoff" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:concurrent-aborted" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:concurrent-halted" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:concurrent-start" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:concurrent-end" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:percolate-collect" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:cold-mem-info" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:event" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:gc-op" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:non-monotonic-time" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:utilization-tracker-overflow" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:out-of-memory" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:trigger-start" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:trigger-end" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:heap-resize" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:allocation-satisfied" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:allocation-unsatisfied" maxOccurs="1" minOccurs="1" />
+				<element ref="vgc:warning" maxOccurs="1" minOccurs="1" />
+			</choice>
+		</sequence>
+		<attribute name="version" type="string" use="required" />
+	</complexType>
+
+	<complexType name="mem-info">
+		<sequence maxOccurs="1" minOccurs="1">
+			<element ref="vgc:mem" maxOccurs="unbounded" minOccurs="0" />
+			<element ref="vgc:arraylet-reference" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:arraylet-primitive" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:arraylet-unknown" maxOccurs="1" minOccurs="0" />			
+			<element ref="vgc:numa" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:pending-finalizers" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:remembered-set" maxOccurs="1" minOccurs="0" />
+		</sequence>
+		<attribute name="id" type="integer" use="required" />
+		<attributeGroup ref="vgc:mem"/>
+	</complexType>
+
+	<complexType name="mem">
+		<sequence maxOccurs="1" minOccurs="1">
+			<element ref="vgc:mem" maxOccurs="unbounded" minOccurs="0" />
+		</sequence>
+		<attribute name="type" type="string" use="required" />
+		<attributeGroup ref="vgc:mem"/>
+	</complexType>
+
+	<complexType name="vmargs">
+		<sequence maxOccurs="1" minOccurs="1">
+			<element ref="vgc:vmarg" maxOccurs="unbounded" minOccurs="0" />
+		</sequence>
+	</complexType>
+
+	<complexType name="vmarg">
+		<attribute name="name" type="string" use="required" />
+		<attribute name="value" type="hexBinary" use="optional" default="00" />
+	</complexType>
+
+	<complexType name="attribute">
+		<attribute name="name" type="string" />
+		<attribute name="value" type="string" />
+	</complexType>
+
+	<complexType name="system">
+		<sequence maxOccurs="1" minOccurs="1">
+			<element ref="vgc:attribute" maxOccurs="unbounded" minOccurs="0" />
+		</sequence>
+	</complexType>
+
+	<complexType name="initialized">
+		<sequence maxOccurs="1" minOccurs="1">
+			<element ref="vgc:attribute" maxOccurs="unbounded" minOccurs="0" />
+			<element ref="vgc:region" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:metronome" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:system" maxOccurs="1" minOccurs="1" />
+			<element ref="vgc:vmargs" maxOccurs="1" minOccurs="1" />
+		</sequence>
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+	</complexType>
+
+	<complexType name="remembered-set">
+		<attribute name="count" type="integer" use="required" />
+		<attribute name="freebytes" type="integer" use="optional" />
+		<attribute name="totalbytes" type="integer" use="optional" />
+		<attribute name="percent" type="integer" use="optional" />
+		<attribute name="regionsoverflowed" type="integer" use="optional" />
+		<attribute name="regionsstable" type="integer" use="optional" />
+		<attribute name="regionsrebuilding" type="integer" use="optional" />
+	</complexType>
+	
+	<complexType name="remembered-set-cleared">
+		<attribute name="processed" type="integer" use="required" />
+		<attribute name="cleared" type="integer" use="required" />
+		<attribute name="durationms" type="float" use="required" />
+	</complexType>
+
+	<complexType name="response-info">
+		<attribute name="timems" type="float" use="required" />
+		<attribute name="idlems" type="float" use="required" />
+		<attribute name="threads" type="integer" use="required" />
+		<attribute name="lastid" type="hexBinary" use="required" />
+		<attribute name="lastname" type="string" />
+	</complexType>
+
+	<complexType name="exclusive-start">
+		<sequence maxOccurs="1" minOccurs="1">
+			<element ref="vgc:response-info" maxOccurs="1" minOccurs="1" />
+		</sequence>
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+		<attribute name="intervalms" type="float" use="required" />
+	</complexType>
+
+	<complexType name="exclusive-end">
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+		<attribute name="durationms" type="float" use="required" />
+	</complexType>
+
+	<complexType name="sys-start">
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="reason" type="string" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+		<attribute name="intervalms" type="float" use="required" />
+	</complexType>
+
+	<complexType name="sys-end">
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+	</complexType>
+
+	<complexType name="af-start">
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="totalBytesRequested" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+		<attribute name="intervalms" type="float" use="required" />
+	</complexType>
+
+	<complexType name="af-end">
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+	</complexType>
+	
+	<complexType name="allocation-taxation">
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="taxation-threshold" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+		<attribute name="intervalms" type="float" use="required" />
+	</complexType>	
+
+	<complexType name="concurrent-collection-start">
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+		<attribute name="intervalms" type="float" use="required" />
+	</complexType>
+
+	<complexType name="concurrent-collection-end">
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+	</complexType>
+
+	<complexType name="cycle-start">
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="type" type="string" use="required" />
+		<attribute name="contextid" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+		<attribute name="intervalms" type="float" use="required" />
+	</complexType>
+
+	<complexType name="cycle-end">
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="type" type="string" use="optional" />
+		<attribute name="contextid" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+	</complexType>
+
+	<complexType name="allocation-stats">
+		<sequence maxOccurs="1" minOccurs="1">
+			<element ref="vgc:allocated-bytes" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:largest-consumer" maxOccurs="1" minOccurs="0" />
+		</sequence>
+		<attribute name="totalBytes" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="allocated-bytes">
+		<attribute name="non-tlh" type="integer" use="required" />
+		<attribute name="tlh" type="integer" use="optional" />
+		<attribute name="arrayletleaf" type="integer" use="optional" />
+	</complexType>
+
+	<complexType name="largest-consumer">
+		<attribute name="threadName" type="string" use="required" />
+		<attribute name="threadId" type="hexBinary" use="required" />
+		<attribute name="bytes" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="gc-start">
+		<sequence maxOccurs="1" minOccurs="1">
+			<element ref="vgc:mem-info" maxOccurs="1" minOccurs="0" />
+		</sequence>
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="type" type="string" use="optional" />
+		<attribute name="contextid" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+	</complexType>
+
+	<complexType name="gc-end">
+		<sequence maxOccurs="1" minOccurs="1">
+			<element ref="vgc:mem-info" maxOccurs="1" minOccurs="0" />
+		</sequence>
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="type" type="string" use="optional" />
+		<attribute name="contextid" type="integer" use="required" />
+		<attribute name="durationms" type="float" use="required" />
+		<attribute name="usertimems" type="float" use="required" />
+		<attribute name="systemtimems" type="float" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+		<attribute name="activeThreads" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="concurrent-kickoff">
+		<sequence maxOccurs="1" minOccurs="1">
+			<element ref="vgc:kickoff" maxOccurs="1" minOccurs="1" />
+		</sequence>
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+	</complexType>
+
+	<complexType name="kickoff">
+		<attribute name="reason" type="string" use="required" />
+		<attribute name="targetBytes" type="integer" use="required" />
+		<attribute name="thresholdFreeBytes" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="concurrent-aborted">
+		<sequence maxOccurs="1" minOccurs="1">
+			<element ref="vgc:reason" maxOccurs="1" minOccurs="1" />
+		</sequence>
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+	</complexType>
+
+	<complexType name="reason">
+		<attribute name="value" type="string" use="required" />
+	</complexType>
+
+	<complexType name="gc-op">
+		<sequence maxOccurs="1" minOccurs="1">
+			<choice maxOccurs="1" minOccurs="0">
+				<group ref="vgc:gc-op-mark" maxOccurs="1" minOccurs="1" />
+				<group ref="vgc:gc-op-classunload" maxOccurs="1" minOccurs="1" />
+				<group ref="vgc:gc-op-compact" maxOccurs="1" minOccurs="1" />
+				<group ref="vgc:gc-op-scavenge" maxOccurs="1" minOccurs="1" />
+				<group ref="vgc:gc-op-rs-scan" maxOccurs="1" minOccurs="1" />
+				<group ref="vgc:gc-op-card-cleaning" maxOccurs="1" minOccurs="1" />
+				<group ref="vgc:gc-op-tracing" maxOccurs="1" minOccurs="1" />
+				<group ref="vgc:gc-op-copy-forward" maxOccurs="1" minOccurs="1" />
+				<group ref="vgc:gc-op-syncgc" maxOccurs="1" minOccurs="1" />
+				<group ref="vgc:gc-op-heartbeat" maxOccurs="1" minOccurs="1" />
+			</choice>
+			<element ref="vgc:warning" maxOccurs="unbounded" minOccurs="0" />
+		</sequence>
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="type" type="string" use="required" />
+		<attribute name="timems" type="float" use="optional" />
+		<attribute name="contextid" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+	</complexType>
+
+	<complexType name="references">
+		<attribute name="type" type="string" use="required" />
+		<attribute name="candidates" type="integer" use="optional" />
+		<attribute name="cleared" type="integer" use="required" />
+		<attribute name="enqueued" type="integer" use="optional" />
+		<attribute name="dynamicThreshold" type="integer" use="optional" />
+		<attribute name="maxThreshold" type="integer" use="optional" />
+	</complexType>
+
+	<complexType name="pending-finalizers">
+		<attribute name="system" type="integer" use="required" />
+		<attribute name="default" type="integer" use="required" />
+		<attribute name="reference" type="integer" use="required" />
+		<attribute name="classloader" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="trace-info">
+		<attribute name="objectcount" type="integer" use="required" />
+		<attribute name="scancount" type="integer" use="required" />
+		<attribute name="scanbytes" type="integer" use="required" />
+	</complexType>
+	
+	<complexType name="cardclean-info">
+		<attribute name="objects" type="integer" use="required" />
+		<attribute name="bytes" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="finalization">
+		<attribute name="candidates" type="integer" use="optional" />
+		<attribute name="enqueued" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="ownableSynchronizers">
+		<attribute name="candidates" type="integer" use="optional" />
+		<attribute name="cleared" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="stringconstants">
+		<attribute name="candidates" type="integer" use="required" />
+		<attribute name="cleared" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="classunload-info">
+		<attribute name="classloadercandidates" type="integer" use="optional" />
+		<attribute name="classloadersunloaded" type="integer" use="required" />
+		<attribute name="classesunloaded" type="integer" use="required" />
+		<attribute name="anonymousclassesunloaded" type="integer" use="required" />
+		<attribute name="quiescems" type="float" use="optional" />
+		<attribute name="setupms" type="float" use="optional" />
+		<attribute name="scanms" type="float" use="optional" />
+		<attribute name="postms" type="float" use="optional" />
+	</complexType>
+
+	<complexType name="warning">
+		<attribute name="details" type="string" use="required" />
+	</complexType>
+
+	<complexType name="compact-info">
+		<attribute name="movecount" type="integer" use="optional" />
+		<attribute name="movebytes" type="integer" use="optional" />
+		<attribute name="reason" type="string" use="optional" />
+	</complexType>
+
+	<complexType name="scavenger-info">
+		<attribute name="tenureage" type="integer" use="required" />
+		<attribute name="tenuremask" type="hexBinary" use="required" />
+		<attribute name="tiltratio" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="memory-copied">
+		<attribute name="type" type="string" use="required" />
+		<attribute name="objects" type="integer" use="required" />
+		<attribute name="bytes" type="integer" use="required" />
+		<attribute name="bytesdiscarded" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="copy-failed">
+		<attribute name="type" type="string" use="required" />
+		<attribute name="objects" type="integer" use="required" />
+		<attribute name="bytes" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="percolate-collect">
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+		<attribute name="from" type="string" use="required" />
+		<attribute name="to" type="string" use="required" />
+		<attribute name="reason" type="string" use="required" />
+	</complexType>
+
+	<complexType name="scan">
+		<attribute name="objectsFound" type="integer" use="required" />
+		<attribute name="bytesTraced" type="integer" use="required" />
+		<attribute name="workStackOverflowCount" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="card-cleaning">
+		<attribute name="cardsCleaned" type="integer" use="required" />
+		<attribute name="bytesTraced" type="integer" use="required" />
+		<attribute name="workStackOverflowCount" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="trace">
+		<attribute name="bytesTraced" type="integer" use="required" />
+		<attribute name="workStackOverflowCount" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="halted">
+		<attribute name="state" type="string" use="required" />
+		<attribute name="status" type="string" use="required" />
+	</complexType>
+
+	<complexType name="traced">
+		<attribute name="bytesTarget" type="integer" use="required" />
+		<attribute name="bytesTotal" type="integer" use="required" />
+		<attribute name="bytesByMutator" type="integer" use="required" />
+		<attribute name="bytesByHelper" type="integer" use="required" />
+		<attribute name="percent" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="cards">
+		<attribute name="cleaned" type="integer" use="required" />
+		<attribute name="thresholdBytes" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="concurrent-halted">
+		<sequence maxOccurs="1" minOccurs="1">
+			<element ref="vgc:halted" maxOccurs="1" minOccurs="1" />
+			<element ref="vgc:traced" maxOccurs="1" minOccurs="1" />
+			<element ref="vgc:cards" maxOccurs="1" minOccurs="1" />
+		</sequence>
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+	</complexType>
+
+	<complexType name="cold-mem-info">
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="free" type="integer" use="required" />
+		<attribute name="total" type="integer" use="required" />
+		<attribute name="totalColdRegions" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="event">
+		<sequence>
+			<element ref="vgc:warning" maxOccurs="unbounded" minOccurs="0" />
+		</sequence>
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+	</complexType>
+
+	<complexType name="memory-cardclean">
+		<attribute name="objects" type="integer" use="required" />
+		<attribute name="bytes" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="memory-traced">
+		<attribute name="type" type="string" use="required" />
+		<attribute name="objects" type="integer" use="required" />
+		<attribute name="bytes" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="heap-resize">
+		<attribute name="id" type="integer" use="optional" />
+		<attribute name="type" type="string" use="required" />
+		<attribute name="space" type="string" use="required" />
+		<attribute name="amount" type="integer" use="required" />
+		<attribute name="count" type="integer" use="required" />
+		<attribute name="timems" type="float" use="required" />
+		<attribute name="reason" type="string" use="required" />
+		<attribute name="timestamp" type="dateTime" use="optional" />
+	</complexType>
+
+	<complexType name="concurrent-end">
+		<sequence>
+			<element ref="vgc:concurrent-mark-end" maxOccurs="1" minOccurs="1" />
+		</sequence>
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="type" type="string" use="required" />
+		<attribute name="contextid" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+	</complexType>
+
+	<complexType name="concurrent-start">
+		<sequence>
+			<element ref="vgc:concurrent-mark-start" maxOccurs="1" minOccurs="1" />
+		</sequence>
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="type" type="string" use="required" />
+		<attribute name="contextid" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+	</complexType>
+
+	<complexType name="concurrent-mark-end">
+		<attribute name="bytesScanned" type="integer" use="required" />
+		<attribute name="reasonForTermination" type="string" use="required" />
+	</complexType>
+
+	<complexType name="concurrent-mark-start">
+		<attribute name="scanTarget" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="metronome">
+		<sequence maxOccurs="1" minOccurs="1">
+			<element ref="vgc:attribute" maxOccurs="unbounded" minOccurs="0" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="region">
+		<sequence maxOccurs="1" minOccurs="1">
+			<element ref="vgc:attribute" maxOccurs="3" minOccurs="0" />
+		</sequence>
+	</complexType>	
+
+	<complexType name="syncgc-info">
+		<attribute name="reason" type="string" use="required" />
+		<attribute name="totalBytesRequested" type="integer" use="optional" />
+		<attribute name="exclusiveaccessTimeMs" type="float" use="required" />
+		<attribute name="threadPriority" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="free-mem-delta">
+		<attribute name="type" type="string" use="required" />
+		<attribute name="bytesBefore" type="integer" use="required" />
+		<attribute name="bytesAfter" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="work-packet-overflow">
+		<attribute name="packetCount" type="integer" use="required" />
+		<attribute name="directObjectCount" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="quanta">
+		<attribute name="quantumCount" type="integer" use="required" />
+		<attribute name="quantumType" type="string" use="required" />
+		<attribute name="minTimeMs" type="float" use="required" />
+		<attribute name="meanTimeMs" type="float" use="required" />
+		<attribute name="maxTimeMs" type="float" use="required" />
+		<attribute name="maxTimestampMs" type="float" use="required" />
+	</complexType>
+
+	<complexType name="exclusiveaccess-info">
+		<attribute name="minTimeMs" type="float" use="required" />
+		<attribute name="meanTimeMs" type="float" use="required" />
+		<attribute name="maxTimeMs" type="float" use="required" />
+	</complexType>
+
+	<complexType name="nondeterministic-sweep">
+		<attribute name="maxTimeMs" type="float" use="required" />
+		<attribute name="totalRegions" type="integer" use="required" />
+		<attribute name="maxRegions" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="free-mem">
+		<attribute name="type" type="string" use="required" />
+		<attribute name="minBytes" type="integer" use="required" />
+		<attribute name="meanBytes" type="integer" use="required" />
+		<attribute name="maxBytes" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="thread-priority">
+		<attribute name="maxPriority" type="integer" use="required" />
+		<attribute name="minPriority" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="non-monotonic-time">
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="timerDescription" type="string" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+	</complexType>
+
+	<complexType name="utilization-tracker-overflow">
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+		<attribute name="utilizationTrackerAddress" type="hexBinary" use="required" />
+		<attribute name="timeSliceDurationArrayAddress" type="hexBinary" use="required" />
+		<attribute name="timeSliceCursor" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="out-of-memory">
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+		<attribute name="memorySpaceName" type="string" use="required" />
+		<attribute name="memorySpaceAddress" type="hexBinary" use="required" />
+	</complexType>
+
+	<complexType name="trigger-start">
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+	</complexType>
+
+	<complexType name="trigger-end">
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="timestamp" type="dateTime" use="required" />
+	</complexType>
+	
+	<complexType name="arraylet-reference">
+		<attribute name="objects" type="integer" use="required" />
+		<attribute name="leaves" type="integer" use="required" />
+		<attribute name="largest" type="integer" use="required" />
+	</complexType>
+	
+	<complexType name="arraylet-primitive">
+		<attribute name="objects" type="integer" use="required" />
+		<attribute name="leaves" type="integer" use="required" />
+		<attribute name="largest" type="integer" use="required" />
+	</complexType>
+	
+	<complexType name="arraylet-unknown">
+		<attribute name="objects" type="integer" use="required" />
+		<attribute name="leaves" type="integer" use="required" />
+	</complexType>	
+	
+	<complexType name="allocation-satisfied">
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="threadId" type="hexBinary" use="required" />
+		<attribute name="bytesRequested" type="integer" use="required" />
+	</complexType>
+	
+	<complexType name="allocation-unsatisfied">
+		<attribute name="id" type="integer" use="required" />
+		<attribute name="threadId" type="hexBinary" use="required" />
+		<attribute name="bytesRequested" type="integer" use="required" />
+	</complexType>
+
+	<complexType name="numa">
+		<attribute name="common" type="integer" use="required" />
+		<attribute name="local" type="integer" use="required" />
+		<attribute name="non-local" type="integer" use="required" />
+		<attribute name="non-local-percent" type="integer" use="required" />
+	</complexType>
+
+	<group name="gc-op-mark">
+		<sequence>
+			<element ref="vgc:trace-info" maxOccurs="1" minOccurs="1" />
+			<element ref="vgc:cardclean-info" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:remembered-set-cleared" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:finalization" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:ownableSynchronizers" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:references" maxOccurs="unbounded" minOccurs="0" />
+			<element ref="vgc:stringconstants" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:pending-finalizers" maxOccurs="1" minOccurs="0" />
+		</sequence>
+	</group>
+
+	<group name="gc-op-classunload">
+		<sequence>
+			<element ref="vgc:classunload-info" maxOccurs="1" minOccurs="1" />
+		</sequence>
+	</group>
+
+	<group name="gc-op-compact">
+		<sequence>
+			<element ref="vgc:compact-info" maxOccurs="1" minOccurs="1" />
+			<element ref="vgc:remembered-set-cleared" maxOccurs="1" minOccurs="0" />
+		</sequence>
+	</group>
+
+	<group name="gc-op-scavenge">
+		<sequence>
+			<element ref="vgc:scavenger-info" maxOccurs="1" minOccurs="1" />
+			<element ref="vgc:memory-copied" maxOccurs="unbounded" minOccurs="0" />
+			<element ref="vgc:copy-failed" maxOccurs="unbounded" minOccurs="0" />
+			<element ref="vgc:finalization" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:ownableSynchronizers" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:references" maxOccurs="unbounded" minOccurs="0" />
+			<element ref="vgc:pending-finalizers" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:heap-resize" maxOccurs="1" minOccurs="0" />
+		</sequence>
+	</group>
+
+	<group name="gc-op-rs-scan">
+		<sequence>
+			<element ref="vgc:scan" maxOccurs="1" minOccurs="1" />
+		</sequence>
+	</group>
+
+	<group name="gc-op-card-cleaning">
+		<sequence>
+			<element ref="vgc:card-cleaning" maxOccurs="1" minOccurs="1" />
+		</sequence>
+	</group>
+
+	<group name="gc-op-tracing">
+		<sequence>
+			<element ref="vgc:trace" maxOccurs="1" minOccurs="1" />
+		</sequence>
+	</group>
+
+	<group name="gc-op-copy-forward">
+		<sequence>
+			<element ref="vgc:memory-copied" maxOccurs="unbounded" minOccurs="1" />
+			<element ref="vgc:memory-cardclean" maxOccurs="1" minOccurs="1" />
+			<element ref="vgc:memory-traced" maxOccurs="unbounded" minOccurs="0" />
+			<element ref="vgc:remembered-set-cleared" maxOccurs="1" minOccurs="1" />
+			<element ref="vgc:finalization" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:ownableSynchronizers" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:references" maxOccurs="unbounded" minOccurs="0" />
+			<element ref="vgc:stringconstants" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:heap-resize" maxOccurs="1" minOccurs="0" />
+		</sequence>
+	</group>
+
+	<group name="gc-op-syncgc">
+		<sequence>
+			<element ref="vgc:syncgc-info" maxOccurs="1" minOccurs="1" />
+			<element ref="vgc:free-mem-delta" maxOccurs="unbounded" minOccurs="0" />
+			<element ref="vgc:work-packet-overflow" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:classunload-info" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:references" maxOccurs="unbounded" minOccurs="0" />
+			<element ref="vgc:finalization" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:ownableSynchronizers" maxOccurs="1" minOccurs="0" />
+		</sequence>
+	</group>
+
+	<group name="gc-op-heartbeat">
+		<sequence>
+			<element ref="vgc:quanta" maxOccurs="1" minOccurs="1" />
+			<element ref="vgc:exclusiveaccess-info" maxOccurs="1" minOccurs="1" />
+			<element ref="vgc:classunload-info" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:references" maxOccurs="unbounded" minOccurs="0" />
+			<element ref="vgc:finalization" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:ownableSynchronizers" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:work-packet-overflow" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:nondeterministic-sweep" maxOccurs="1" minOccurs="0" />
+			<element ref="vgc:free-mem" maxOccurs="unbounded" minOccurs="0" />
+			<element ref="vgc:thread-priority" maxOccurs="1" minOccurs="1" />
+		</sequence>
+	</group>
+
+</schema>

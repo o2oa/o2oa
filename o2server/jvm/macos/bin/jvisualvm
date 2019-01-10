@@ -1,0 +1,202 @@
+#!/bin/sh
+#
+# Copyright (c) 2007, 2014, Oracle and/or its affiliates. All rights reserved.
+# ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+#
+# resolve symlinks
+#
+
+PRG=$0
+
+while [ -h "$PRG" ]; do
+    ls=`ls -ld "$PRG"`
+    link=`expr "$ls" : '^.*-> \(.*\)$' 2>/dev/null`
+    if expr "$link" : '^/' 2> /dev/null >/dev/null; then
+	PRG="$link"
+    else
+	PRG="`dirname "$PRG"`/$link"
+    fi
+done
+
+progdir=`dirname "$PRG"`
+old=`pwd`
+cd "$progdir"/..
+basedir=`pwd`
+cd "$old"
+
+case "`uname`" in
+    Darwin*)
+        # set default userdir and cachedir on Mac OS X
+        DEFAULT_USERDIR_ROOT="${HOME}/Library/Application Support/VisualVM"
+        DEFAULT_CACHEDIR_ROOT=${HOME}/Library/Caches/VisualVM
+        ;;
+    *)
+        # set default userdir and cachedir on unix systems
+        DEFAULT_USERDIR_ROOT=${HOME}/.visualvm
+        DEFAULT_CACHEDIR_ROOT=${HOME}/.cache/visualvm
+        ;;
+esac
+
+
+if [ -f "$progdir"/../lib/visualvm/etc/visualvm.conf ] ; then
+    visualvm_jdkhome="$basedir"
+    old=`pwd`
+    cd "$progdir/../lib/visualvm/"
+    basedir=`pwd`
+    cd "$old"
+    . "$progdir"/../lib/visualvm/etc/visualvm.conf
+elif [ -f "$progdir"/../etc/visualvm.conf ] ; then
+    . "$progdir"/../etc/visualvm.conf
+fi
+
+
+export DEFAULT_USERDIR_ROOT
+
+# #68373: look for userdir, but do not modify "$@"
+userdir="${visualvm_default_userdir}"
+cachedir="${visualvm_default_cachedir}"
+
+founduserdir=""
+for opt in "$@"; do
+    if [ "${founduserdir}" = "yes" ]; then
+        userdir="$opt"
+        break
+    elif [ "$opt" = "--userdir" ]; then
+        founduserdir="yes"
+    fi
+done
+foundcachedir=""
+for opt in "$@"; do
+    if [ "${foundcachedir}" = "yes" ]; then
+        cachedir="$opt"
+        break
+    elif [ "$opt" = "--cachedir" ]; then
+        foundcachedir="yes"
+    fi
+done
+
+if [ -f "${userdir}"/etc/visualvm.conf ] ; then
+    . "${userdir}"/etc/visualvm.conf
+fi
+
+
+if [ ! -f "$basedir"/etc/visualvm.clusters ]; then
+    echo Cannot read cluster file: "$basedir"/etc/visualvm.clusters 1>&2
+    exit 1
+fi
+
+readClusters() {
+    grep -v "^#" "$basedir"/etc/visualvm.clusters | grep -v "^$" | grep -v platform | while read X; do
+        if expr "$X" : "/.*" >/dev/null; then
+            echo "$X"
+        else
+            echo "$basedir/$X"
+        fi
+    done
+}
+
+absolutize_paths() {
+    while read path; do
+        if [ -d "$path" ]; then
+            (cd "$path" 2>/dev/null && pwd)
+        else
+            echo "$path"
+        fi
+    done
+}
+
+visualvm_clusters=`readClusters | absolutize_paths | tr '\012' ':'`
+
+if [ ! -z "$visualvm_extraclusters" ] ; then
+    visualvm_clusters ="$visualvm_clusters:$visualvm_extraclusters"
+fi
+
+heap_size () {
+    mem=640
+    case "`uname`" in
+        Linux*)
+        mem=`cat /proc/meminfo | grep MemTotal | tr -d [:space:][:alpha:]:`
+        mem=`expr $mem / 1024`
+        ;;
+    SunOS*)
+        mem=`/usr/sbin/prtconf | grep Memory | /usr/bin/tr -dc '[0-9]'`
+        ;;
+    Darwin*)
+        mem=`/usr/sbin/sysctl hw.memsize | tr -d [:alpha:][:space:].:`
+        mem=`expr $mem / 1048576`
+        ;;
+        *)
+        ;;
+    esac
+    if [ -z "$mem" ] ; then
+        mem=640
+    fi
+    mem=`expr $mem / 5`
+    if [ $mem -gt 1024 ] ; then
+        mem=1024
+    elif [ $mem -lt 96 ] ; then
+        mem=96
+    fi
+    max_heap_size=$mem
+    return 0
+}
+
+
+if grep -v -- "-J-Xmx" >/dev/null <<EOF ; then
+${visualvm_default_options}
+EOF
+        heap_size
+	visualvm_default_options="-J-Xmx${max_heap_size}m ${visualvm_default_options}"
+fi
+
+launchNbexec() {
+    nbexec=`grep -v "^#" "$basedir"/etc/visualvm.clusters | grep -v "^$" | grep platform | while read X; do
+        if expr "$X" : "/.*" >/dev/null; then
+           echo $X/lib/nbexec
+        elif [ -f "$basedir"/$X/lib/nbexec ]; then
+            echo "$basedir"/$X/lib/nbexec
+        fi
+    done | head -n 1`
+    if [ \! -n "$nbexec" ] ; then
+      nbexec="$basedir"/platform/lib/nbexec
+    fi
+    sh=sh
+    # #73162: Ubuntu uses the ancient Bourne shell, which does not implement trap well.
+    if [ -x /bin/bash ]
+    then
+        sh=/bin/bash
+    fi
+    if [ "${founduserdir}" = "yes" ]; then
+        exec $sh "$nbexec" "$@"
+    else
+        if [ "${foundcachedir}" = "yes" ]; then
+            exec $sh "$nbexec" --userdir "${userdir}" "$@"
+        else
+            exec $sh "$nbexec" --userdir "${userdir}" --cachedir "${cachedir}" "$@"
+        fi
+    fi
+}
+
+# in case of macosx, the apple.laf.useScreenMenuBar property should be ideally in the Info.plist file
+# but it doesn't get propagated into the executed java VM. 
+case "`uname`" in
+    Darwin*)
+        eval launchNbexec \
+            --jdkhome '"$visualvm_jdkhome"' \
+            -J-Dcom.apple.mrj.application.apple.menu.about.name=VisualVM \
+            -J-Xdock:name=VisualVM \
+            '"-J-Xdock:icon=$basedir/etc/visualvm.icns"' \
+            --branding visualvm \
+            --clusters '"$visualvm_clusters"' \
+            ${visualvm_default_options} \
+            '"$@"'
+        ;;
+    *)
+        eval launchNbexec \
+            --jdkhome '"$visualvm_jdkhome"' \
+            --branding visualvm \
+            --clusters '"$visualvm_clusters"' \
+            ${visualvm_default_options} \
+            '"$@"'
+        ;;
+esac

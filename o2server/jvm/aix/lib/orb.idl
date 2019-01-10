@@ -1,0 +1,306 @@
+//
+// %Z%%W% %I%
+// ===========================================================================
+// Licensed Materials - Property of IBM
+// "Restricted Materials of IBM"
+//
+// IBM Object Request Broker Edition, 2.00
+// (C) Copyright IBM Corp. 1998, 2015. All Rights Reserved
+//
+// US Government Users Restricted Rights - Use, duplication or disclosure
+// restricted by GSA ADP Schedule Contract with IBM Corp.
+// ===========================================================================
+//
+
+//Updated:  December 1999
+//This file contains OMG IDL from  CORBA V2.3 December 1999
+//
+// OMG IDL from Chapters 1 through 15 CORBA module
+//
+// Post CORBA 2.3 changes from core RTF bracketed
+// in #ifdef CORBA_2_5 ... #endif
+//
+// Stuff from Messaging specification are bracketed 
+// in #ifdef CORBA3 ... #endif
+
+#ifndef _ORB_IDL_
+#define _ORB_IDL_
+#pragma prefix "omg.org"
+
+#include "ir.idl" //ibm@10071 moved up top to remove duplicate decls
+
+module CORBA {
+// Chapter 3/4 OMG IDL Syntax and Semantics
+    const unsigned long OMGVMCID = 0x4f4d0000;
+
+// Chapter 4 ORB Interface
+
+    exception WrongTransaction {};
+
+    interface OperationDef;		// forward declaration
+
+    typedef short PolicyErrorCode;
+    // for the definition of consts see "PolicyErrorCode" on page 4-22
+
+// Not yet supported    native AbstractBase;
+
+    exception PolicyError {PolicyErrorCode reason;};
+
+    //typedef string RepositoryId;   //ibm@10071 duplicate decls removed, now in ir.idl only 
+    //typedef string Identifier;     //ibm@10071
+
+    // StructMemberSeq defined in Chapter 10
+    // UnionMemberSeq defined in Chapter 10
+    // EnumMemberSeq defined in Chapter 10
+
+    typedef unsigned short ServiceType;
+    typedef unsigned long ServiceOption;
+    typedef unsigned long ServiceDetailType;
+
+    const ServiceType Security = 1;
+
+    struct ServiceDetail {
+	ServiceDetailType service_detail_type;
+	sequence <octet> service_detail;
+    };
+
+    struct ServiceInformation {
+	sequence <ServiceOption> service_options;
+	sequence <ServiceDetail> service_details;
+    };
+
+// Not yet supported    native ValueFactory;
+
+    interface DomainManager;		// forward declaration
+    typedef sequence <DomainManager> DomainManagersList;
+    interface Policy;			// forward declaration
+    typedef sequence <Policy> PolicyList;
+    typedef unsigned long PolicyType;
+#ifdef CORBA3
+    typedef sequence <PolicyType> PolicyTypeSeq;
+    exception InvalidPolicies { seqeunce <unsigned short> indices;};
+#endif // CORBA3
+
+    typedef unsigned long Flags;
+
+    struct NamedValue {						
+	Identifier	name;		// argument name
+	any		argument;	// argument
+	long		len;		// length/count of argument value
+	Flags		arg_modes;	// argument mode flags
+    };
+
+    interface InterfaceDef;
+
+    enum SetOverrideType {SET_OVERRIDE, ADD_OVERRIDE};
+
+    // interface for the Current object
+    interface Current {};
+
+    // Basic IDL definition
+    interface Policy {
+	readonly attribute PolicyType policy_type;
+	Policy copy();
+	void destroy();
+    };
+
+    // typedef short PolicyErrorCode;
+	const PolicyErrorCode BAD_POLICY = 0;
+	const PolicyErrorCode UNSUPPORTED_POLICY = 1;
+	const PolicyErrorCode BAD_POLICY_TYPE = 2;
+	const PolicyErrorCode BAD_POLICY_VALUE = 3;
+	const PolicyErrorCode UNSUPPORTED_POLICY_VALUE = 4;
+
+    // exception PolicyError {PolicyErrorCode reason;};
+
+
+    interface DomainManager {
+	Policy get_domain_policy (
+	    in PolicyType policy_type
+	);
+    };
+
+    const PolicyType SecConstruction = 11;
+
+    interface ConstructionPolicy: Policy		{
+	void make_domain_manager(
+	    in CORBA::InterfaceDef object_type,
+	    in boolean constr_policy
+	); 
+    };
+
+
+// Chapter 5 Value Type Semantics
+
+    valuetype StringValue string;
+    valuetype WStringValue wstring;
+
+// Not yet supported    native ValueFactory;
+
+    typedef sequence<any> AnySeq;
+    typedef sequence<boolean> BooleanSeq;
+    typedef sequence<char> CharSeq;
+    typedef sequence<wchar> WCharSeq;
+    typedef sequence<octet> OctetSeq;
+    typedef sequence<short> ShortSeq;
+    typedef sequence<unsigned short> UShortSeq;
+    typedef sequence<long> LongSeq;
+    typedef sequence<unsigned long> ULongSeq;
+    typedef sequence<long long> LongLongSeq;
+    typedef sequence<unsigned long long> ULongLongSeq;
+    typedef sequence<float> FloatSeq;
+    typedef sequence<double> DoubleSeq;
+#ifdef CORERTF_2_5
+// Not yet supported    typedef sequence<long double> LongDoubleSeq;
+#endif
+
+    abstract valuetype DataOutputStream {
+	void write_any				(in any value);
+	void write_boolean			(in boolean value);
+	void write_char				(in char value);
+	void write_wchar			(in wchar value);
+	void write_octet			(in octet value);
+	void write_short			(in short value);
+	void write_ushort			(in unsigned short value);
+	void write_long				(in long value);
+	void write_ulong			(in unsigned long value);
+	void write_longlong			(in long long value);
+	void write_ulonglong			(in unsigned long long value);
+	void write_float			(in float value);
+	void write_double			(in double value);
+// Not yet supported	void write_longdouble			(in long double value);
+	void write_string			(in string value);
+	void write_wstring			(in wstring value);
+	void write_Object			(in Object value);
+// Not yet supported	void write_Abstract			(in AbstractBase value);
+	void write_Value			(in ValueBase value);
+	void write_TypeCode			(in TypeCode value);
+	void write_any_array(			in AnySeq seq,
+						in unsigned long offset,
+						in unsigned long length);
+	void write_boolean_array(		in BooleanSeq seq,
+						in unsigned long offset,
+						in unsigned long length);
+	void write_char_array(			in CharSeq seq,
+						in unsigned long offset,
+						in unsigned long length);
+	void write_wchar_array(			in WCharSeq seq,
+						in unsigned long offset,
+						in unsigned long length);
+	void write_octet_array(			in OctetSeq seq,
+						in unsigned long offset,
+						in unsigned long length);
+	void write_short_array(			in ShortSeq seq,
+						in unsigned long offset,
+						in unsigned long length);
+	void write_ushort_array(		in UShortSeq seq,
+						in unsigned long offset,
+						in unsigned long length);
+	void write_long_array(			in LongSeq seq,
+						in unsigned long offset,
+						in unsigned long length);
+	void write_ulong_array(			in ULongSeq seq,
+						in unsigned long offset,
+						in unsigned long length);
+	void write_ulonglong_array(		in ULongLongSeq seq,
+						in unsigned long offset,
+						in unsigned long length);
+	void write_longlong_array(		in LongLongSeq seq,
+						in unsigned long offset,
+						in unsigned long length);
+	void write_float_array(			in FloatSeq seq,
+						in unsigned long offset,
+						in unsigned long length);
+	void write_double_array(		in DoubleSeq seq,
+						in unsigned long offset,
+						in unsigned long length);
+#ifdef CORERTF_2_5
+	void write_long_double_array(		in LongDoubleSeq seq,
+						in unsigned long offset,
+						in unsigned long length);
+#endif 
+    };
+
+    abstract valuetype DataInputStream {
+	any read_any();
+	boolean read_boolean();
+	char read_char();
+	wchar read_wchar();
+	octet read_octet();
+	short read_short();
+	unsigned short read_ushort();
+	long read_long();
+	unsigned long read_ulong();
+	long long read_longlong();
+	unsigned long long read_ulonglong();
+	float read_float();
+	double read_double();
+// Not yet supported	long double read_longdouble();
+	string read_string();
+	wstring read_wstring();
+	Object read_Object();
+// Not yet supported	AbstractBase read_Abstract();
+	ValueBase read_Value();
+	TypeCode read_TypeCode();
+
+	void read_any_array(		inout AnySeq seq,
+					in unsigned long offset,
+					in unsigned long length);
+	void read_boolean_array(	inout BooleanSeq seq,
+					in unsigned long offset,
+					in unsigned long length);
+	void read_char_array(		inout CharSeq seq,
+					in unsigned long offset,
+					in unsigned long length);
+	void read_wchar_array(		inout WCharSeq seq,
+					in unsigned long offset,
+					in unsigned long length);
+	void read_octet_array(		inout OctetSeq seq,
+					in unsigned long offset,
+					in unsigned long length);
+	void read_short_array(		inout ShortSeq seq,
+					in unsigned long offset,
+					in unsigned long length);
+	void read_ushort_array(		inout UShortSeq seq,
+					in unsigned long offset,
+					in unsigned long length);
+	void read_long_array(		inout LongSeq seq,
+					in unsigned long offset,
+					in unsigned long length);
+	void read_ulong_array(		inout ULongSeq seq,
+					in unsigned long offset,
+					in unsigned long length);
+	void read_ulonglong_array(	inout ULongLongSeq seq,
+					in unsigned long offset,
+					in unsigned long length);
+	void read_longlong_array(	inout LongLongSeq seq,
+					in unsigned long offset,
+					in unsigned long length);
+	void read_float_array(		inout FloatSeq seq,
+					in unsigned long offset,
+					in unsigned long length);
+	void read_double_array(		inout DoubleSeq seq,
+					in unsigned long offset,
+					in unsigned long length);
+#ifdef CORERTF_2_5
+	void read_long_double_array(	inout LongDoubleSeq seq,
+					in unsigned long offset,
+					in unsigned long length);
+#endif
+    };
+
+    abstract valuetype CustomMarshal {
+	void marshal (in DataOutputStream os);
+	void unmarshal (in DataInputStream is);
+    };
+
+// Chapter 7 Dynamic Invocation Interface
+
+// Not yet supported    native OpaqueValue;
+};
+
+//ibm@10071 include ir.idl moved to top of module
+
+#pragma prefix ""
+
+#endif // _ORB_IDL_

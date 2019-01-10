@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.netbeans.modules.core.kit">
+    <module_version install_time="1410360506093" last="true" origin="installer" specification_version="1.25.1">
+        <file crc="2760253963" name="VERSION.txt"/>
+        <file crc="2391224559" name="config/Modules/org-netbeans-modules-core-kit.xml"/>
+        <file crc="3712568563" name="modules/org-netbeans-modules-core-kit.jar"/>
+    </module_version>
+</module>

@@ -1,0 +1,75 @@
+'\" t
+.\"  Copyright (c) 2008, 2013, Oracle and/or its affiliates. All rights reserved.
+.\"     Arch: generic
+.\"     Software: JDK 8
+.\"     Date: 21 November 2013
+.\"     SectDesc: Java Troubleshooting, Profiling, Monitoring and Management Tools
+.\"     Title: jvisualvm.1
+.\"
+.if n .pl 99999
+.TH jvisualvm 1 "21 November 2013" "JDK 8" "Java Troubleshooting, Profiling, Monitoring and Management Tools"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+
+.SH NAME    
+jvisualvm \- Visually monitors, troubleshoots, and profiles Java applications\&.
+.SH SYNOPSIS    
+.sp     
+.nf     
+
+\fBjvisualvm\fR [ \fIoptions\fR ]
+.fi     
+.sp     
+.TP     
+\fIoptions\fR
+The command-line options\&. See Options\&.
+.SH DESCRIPTION    
+Java VisualVM is an intuitive graphical user interface that provides detailed information about Java technology-based applications (Java applications) while they are running on a specified Java Virtual Machine (JVM)\&. The name Java VisualVM comes from the fact that Java VisualVM provides information about the JVM software visually\&.
+.PP
+Java VisualVM combines several monitoring, troubleshooting, and profiling utilities into a single tool\&. For example, most of the functionality offered by the standalone tools \f3jmap\fR, \f3jinfo\fR, \f3jstat,\fR and \f3jstack\fR were integrated into Java VisualVM\&. Other functionality, such as some that offered by the \f3jconsole\fR command, can be added as optional plug-ins\&.
+.PP
+Java VisualVM is useful to Java application developers to troubleshoot applications and to monitor and improve the applications\&' performance\&. Java VisualVM enables developers to generate and analyze heap dumps, track down memory leaks, perform and monitor garbage collection, and perform lightweight memory and CPU profiling\&. You can expand the Java VisualVM functionality with plug-ins\&. For example, most of the functionality of the \f3jconsole\fR command is available through the \fIMBeans\fR Tab and JConsole Plug-in Wrapper plug-ins\&. You can choose from a catalog of standard Java VisualVM plug-ins by selecting \fITools\fR and then \fIPlugins\fR in the Java VisualVM menus\&.
+.PP
+Start Java VisualVM with the following command:
+.sp     
+.nf     
+\f3%  jvisualvm <options>\fP
+.fi     
+.nf     
+\f3\fP
+.fi     
+.sp     
+.SH OPTIONS    
+The following option is available when you launch Java VisualVM
+.TP
+-J\fIjvm_option\fR
+.br
+Pass this \f3jvm_option\fR to the JVM software
+.SH SEE\ ALSO    
+.TP 0.2i    
+\(bu
+Java VisualVM developer\(cqs site http://visualvm\&.java\&.net/
+.TP 0.2i    
+\(bu
+Java VisualVM in Java SE documentation http://docs\&.oracle\&.com/javase/8/docs/technotes/guides/visualvm/index\&.html
+.RE
+.br
+'pl 8.5i
+'bp

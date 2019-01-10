@@ -1,0 +1,135 @@
+'\" t
+.\" Copyright (c) 1999, 2014, Oracle and/or its affiliates. All rights reserved.
+.\"
+.\" Title: jmc
+.\" Language: Japanese
+.\" Date: 2015年3月3日
+.\" SectDesc: Javaトラブルシューティング、プロファイリング、モニタリングおよび管理ツール
+.\" Software: JDK 8
+.\" Arch: 汎用
+.\" Part Number: E58104-01
+.\" Doc ID: JSSOR
+.\"
+.if n .pl 99999
+.TH "jmc" "1" "2015年3月3日" "JDK 8" "Javaトラブルシューティング、プロファイリング、モニタリン"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "名前"
+jmc \- Java Mission Controlは、プロファイリング、モニタリングおよび診断ツール・スイートです。
+.SH "概要"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\fBjmc\fR [ \fIoptions\fR ]
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+ 
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+オプションを使用する場合、コマンド名の直後に記述してください。オプションの指定順序に決まりはありません。\fBjmc\fRコマンドで使用されるオプションの詳細は、オプションを参照してください。
+.SH "説明"
+.PP
+Java Mission Controlは、HotSpot JVMの本番稼働時のプロファイリングおよび診断用のツールです。Java Mission Controlの2つの主要機能はManagement ConsoleとJava Flight Recorderですが、他にもいくつかの機能がプラグインとして提供されており、ツールからダウンロードできます。Java Mission Controlは、Eclipse IDEのプラグインのセットとしても使用可能です。
+.SH "オプション"
+.PP
+Java Mission Controlを起動する際に、次のオプションを使用できます。
+.PP
+\-help
+.RS 4
+\fBjmc\fRコマンドのヘルプを出力します。
+.RE
+.PP
+\-version
+.RS 4
+Java Mission Controlのバージョンを出力して終了します。
+.RE
+.PP
+\-showversion
+.RS 4
+Java Mission Controlのバージョンを出力して続行します。
+.RE
+.PP
+\-debug
+.RS 4
+デバッグ出力を有効にします。
+.RE
+.PP
+\-consoleLog
+.RS 4
+Eclipseログをコンソールに出力します。(Eclipseからのフラグ)。
+.RE
+.PP
+\-data \fIworkspace\fR
+.RS 4
+Java Mission Controlの実行中に使用される\fIワークスペース\fRを設定します。デフォルトのワークスペースは\fB$HOME/\&.jmc\fRです。(Eclipseからのフラグ)。
+.RE
+.PP
+\-open file
+.RS 4
+Java Mission Controlに\fIfile\fRを開きます。たとえば、Flight Recordingファイル(\fB\&.jfr\fRファイル)を開きます。
+.RE
+.PP
+\fIeclipse\-option\fR
+.RS 4
+この\fIeclipse\-option\fRを基礎となるEclipseプラットフォームに渡します。
+.RE
+.PP
+\-J\fIjvm\-option\fR
+.RS 4
+この\fIjvm\-option\fRを実行中のJava仮想マシンに渡します。
+.RE
+.SH "関連項目"
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Oracle Java SE AdvancedおよびOracle Java SE Suite (http://www\&.oracle\&.com/us/technologies/java/standard\-edition/advanced\-suite/overview/index\&.html)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Java Mission Controlユーザーズ・ガイド(http://docs\&.oracle\&.com/javacomponents/jmc\&.htm)
+.RE
+.br
+'pl 8.5i
+'bp

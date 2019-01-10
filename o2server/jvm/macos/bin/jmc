@@ -1,0 +1,21 @@
+#!/bin/sh
+
+#Resolve the full path to this script
+RELDIR=$(dirname "$0")
+pushd "$RELDIR" > /dev/null
+JDKBINDIR=`pwd -P` 
+popd > /dev/null
+
+RELDIR="$JDKBINDIR/../lib/missioncontrol/Java Mission Control.app/Contents/MacOS"
+pushd "$RELDIR" > /dev/null
+JMCAPPDIR=`pwd -P`
+popd > /dev/null
+
+# Escaping whitespace
+JMCAPPDIR=$(echo $JMCAPPDIR | sed 's/ /\\ /g')
+
+CMD="$JMCAPPDIR/jmc $*"
+#echo $CMD
+eval $CMD
+
+exit

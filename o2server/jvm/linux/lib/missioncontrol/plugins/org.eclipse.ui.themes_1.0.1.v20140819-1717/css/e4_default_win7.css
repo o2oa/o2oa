@@ -1,0 +1,64 @@
+/*******************************************************************************
+ * Copyright (c) 2010, 2014 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *     Lars Vogel <Lars.Vogel@gmail.com> - Bug 420836
+ *******************************************************************************/
+
+@import url("platform:/plugin/org.eclipse.ui.themes/css/e4_basestyle.css");
+
+ColorDefinition#org-eclipse-ui-workbench-ACTIVE_UNSELECTED_TABS_COLOR_START {
+	color: #D2E1F0;
+}
+
+ColorDefinition#org-eclipse-ui-workbench-ACTIVE_UNSELECTED_TABS_COLOR_END {
+	color: #CEDDED;
+}
+
+ColorDefinition#org-eclipse-ui-workbench-ACTIVE_TAB_OUTER_KEYLINE_COLOR {
+	color: #B6BCCC;
+}
+
+.MTrimmedWindow {
+	background-color: #E1E6F6;
+}
+
+.MPartStack {
+	swt-simple: true;
+	swt-mru-visible: false;
+}
+
+.MTrimBar {
+	background-color: #E1E6F6;
+}
+
+.MTrimBar#org-eclipse-ui-main-toolbar {
+	background-image:  url(./win7.png);
+}
+
+.MToolControl.TrimStack {
+	frame-image:  url(./win7TSFrame.png);
+	handle-image:  url(./win7Handle.png);
+}
+
+#PerspectiveSwitcher  {
+	background-color: #F5F7FC #E1E6F6 100%;
+}
+
+#org-eclipse-ui-editorss {
+	swt-tab-height: 8px;
+	padding: 0px 5px 7px;
+}
+
+CTabFolder.MArea .MPartStack, CTabFolder.MArea .MPartStack.active {
+	swt-shadow-visible: false;
+}
+
+CTabFolder Canvas {
+	background-color: #F8F8F8;
+}

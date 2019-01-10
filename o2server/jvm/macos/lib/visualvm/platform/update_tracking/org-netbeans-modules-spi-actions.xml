@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="org.netbeans.modules.spi.actions/1">
+    <module_version install_time="1410360538336" last="true" origin="installer" specification_version="1.23.1">
+        <file crc="1336977091" name="config/Modules/org-netbeans-modules-spi-actions.xml"/>
+        <file crc="3049959875" name="modules/org-netbeans-modules-spi-actions.jar"/>
+    </module_version>
+</module>
