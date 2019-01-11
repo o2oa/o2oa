@@ -42,7 +42,7 @@
 	</target>
 
 
-	<target name="default">
+	<target name="default" depends="createConfigSample,createLocalSample,createManifestCfg">
 		<delete dir="target" />
 		<mkdir dir="target/o2server" />
 		<mkdir dir="target/o2server/commons" />
