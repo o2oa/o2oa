@@ -8,3 +8,6 @@
 /servers/
 command.swap
 /store/
+/node_modules/
+package-lock.json
+package.json
