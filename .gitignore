@@ -6,3 +6,5 @@
 /target/
 /.svn/
 /o2web/gulpfile.js
+**/.DS_Store
+.DS_Store
