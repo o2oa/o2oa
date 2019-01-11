@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." name="main" default="default">
 	<basename property="project" file="${basedir}" />
+	<mkdir dir="${basedir}/commons/ext" />
+	<mkdir dir="${basedir}/store/jars" />
 	<path id="project.classpath">
 		<fileset dir="${basedir}/commons/ext">
 			<include name="*.jar" />

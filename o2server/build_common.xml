@@ -2,6 +2,8 @@
 <project>
 	<basename property="project" file="${basedir}" />
 	<dirname property="o2server.dir" file="./" />
+	<mkdir dir="${o2server.dir}/commons/ext" />
+	<mkdir dir="${o2server.dir}/store/jars" />
 	<path id="project.classpath">
 		<fileset dir="${o2server.dir}/commons/ext">
 			<include name="*.jar" />
