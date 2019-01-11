@@ -305,6 +305,11 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.ant</groupId>
+			<artifactId>ant-launcher</artifactId>
+			<version>1.10.5</version>
+		</dependency>
+		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-server</artifactId>
 			<version>2.27</version>
@@ -405,11 +410,6 @@
 			<groupId>org.mnode.ical4j</groupId>
 			<artifactId>ical4j</artifactId>
 			<version>2.2.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.lalyos</groupId>
-			<artifactId>jfiglet</artifactId>
-			<version>0.0.8</version>
 		</dependency>
 		<dependency>
 			<groupId>CheckPasswordStrength</groupId>
