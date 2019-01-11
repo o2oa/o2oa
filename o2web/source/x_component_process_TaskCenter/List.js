@@ -658,12 +658,29 @@ MWF.xApplication.process.TaskCenter.List.Item = new Class({
         // this.inforNode = new Element("div", {"styles": this.list.css.itemInforNode}).inject(this.contentNode);
         this.newIconNode = new Element("div", {"styles": this.list.css.itemNewIconNode}).inject(this.node);
 
+        this.getApplicationIcon(function(icon){
+            var pic = "/x_component_process_ApplicationExplorer/$Main/default/icon/application.png";
+            if (icon.icon){
+                pic = "data:image/png;base64,"+icon.icon;
+            }
+            this.applicationIconNode.makeLnk({
+                "par": this._getLnkPar(pic)
+            });
+        }.bind(this));
+
         this.setContent();
         this.setNewIcon();
         this.setEvent();
         this.setTimeIcon();
 
         this.node.fade("in");
+    },
+    _getLnkPar: function(icon){
+        return {
+            "icon": icon,
+            "title": "["+this.data.processName+"]"+(this.data.title || this.list.app.lp.unnamed),
+            "par": (this.data.workCompleted) ? "process.Work#{\"workCompletedId\":\""+this.data.workCompleted+"\"}" : "process.Work#{\"workId\":\""+this.data.work+"\"}"
+        };
     },
     setTimeIcon: function(){
         //this.data.expireTime = "2017-08-31 19:00";

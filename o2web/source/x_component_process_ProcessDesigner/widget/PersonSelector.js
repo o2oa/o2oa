@@ -77,6 +77,9 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                             if (this.options.type.toLowerCase()==="dutyname") this.identitys.push(new MWF.widget.O2Duty(data, this.node));
                             if (this.options.type.toLowerCase()==="cmsapplication") this.identitys.push(new MWF.widget.O2CMSApplication(data, this.node));
                             if (this.options.type.toLowerCase()==="cmscategory") this.identitys.push(new MWF.widget.O2CMSCategory(data, this.node));
+
+                            if (this.options.type.toLowerCase()==="portalfile") this.identitys.push(new MWF.widget.O2File(data, this.node));
+                            if (this.options.type.toLowerCase()==="processfile") this.identitys.push(new MWF.widget.O2File(data, this.node));
                         }.bind(this));
                     }
                 }.bind(this));
@@ -96,6 +99,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                 "count": (this.options.type.toLowerCase()==="duty")? 1: this.options.count,
                 "values": selecteds,
                 "zIndex": 20000,
+                "isImage": this.options.isImage,
                 "onComplete": function(items){
                     this.identitys = [];
                     if (this.options.type.toLowerCase()!=="duty") this.node.empty();
@@ -117,6 +121,8 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                             if (this.options.type.toLowerCase()==="queryview") this.identitys.push(new MWF.widget.O2QueryView(item.data, this.node));
                             if (this.options.type.toLowerCase()==="querystat") this.identitys.push(new MWF.widget.O2QueryStat(item.data, this.node));
                             if (this.options.type.toLowerCase()==="dutyname") this.identitys.push(new MWF.widget.O2Duty(item.data, this.node));
+                            if (this.options.type.toLowerCase()==="portalfile") this.identitys.push(new MWF.widget.O2File(item.data, this.node));
+                            if (this.options.type.toLowerCase()==="processfile") this.identitys.push(new MWF.widget.O2File(item.data, this.node));
                         }.bind(this));
                         if (this.options.type.toLowerCase()==="duty") {
                             items.each(function(item){

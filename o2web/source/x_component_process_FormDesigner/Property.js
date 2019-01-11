@@ -72,6 +72,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadIconSelect();
                     this.loadLabelFlagSelect();
                     this.loadImageClipper();
+                    this.loadImageFileSelect();
                     this.loadParameterEditor();
                     this.loadContextRoot();
                     this.loadUnitTypeSelector();
@@ -98,8 +99,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     destroy: function(){
         if (this.propertyContent){
             this.propertyContent.destroy();
-            MWF.release(this);
         }
+        MWF.release(this);
     },
 	
 	loadTreeData: function(){
@@ -174,7 +175,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
 
                             MWF.widget.ace.load(function(){
-                                COMMON.AjaxModule.loadDom(COMMON.contentPath+"/res/framework/ace/src-min-noconflict/ext-static_highlight.js", function(){
+                                COMMON.AjaxModule.loadDom("/o2_lib/ace/src-min-noconflict/ext-static_highlight.js", function(){
                                     var highlight = ace.require("ace/ext/static_highlight");
                                     highlight(htmlNode, {mode: "ace/mode/html", theme: "ace/theme/eclipse", "fontSize": 16});
                                 }.bind(this));
@@ -422,6 +423,54 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }
     },
 
+    loadImageFileSelect: function(){
+        // var nodes = this.propertyContent.getElements(".MWFImageFileSelect");
+        // if (nodes.length){
+        //
+        //
+        //
+        //
+        //     this.getFileList(function(){
+        //         nodes.each(function(node){
+        //             var select = new Element("select").inject(node);
+        //             select.addEvent("change", function(e){
+        //                 this.setValue(e.target.getParent("div").get("name"), e.target.options[e.target.selectedIndex].value, select);
+        //
+        //             }.bind(this));
+        //             this.setFileSelectOptions(node, select);
+        //
+        //             var refreshNode = new Element("div", {"styles": this.form.css.propertyRefreshFormNode}).inject(node);
+        //             refreshNode.addEvent("click", function(e){
+        //                 this.getFileList(function(){
+        //                     this.setFileSelectOptions(node, select);
+        //                 }.bind(this), true);
+        //             }.bind(this));
+        //         }.bind(this));
+        //     }.bind(this));
+        // }
+    },
+    setFileSelectOptions: function(node, select){
+        var name = node.get("name");
+        select.empty();
+        var option = new Element("option", {"text": "none"}).inject(select);
+        this.files.each(function(file){
+            var option = new Element("option", {
+                "text": file.name,
+                "value": file.id,
+                "selected": (this.data[name]==file.id)
+            }).inject(select);
+        }.bind(this));
+    },
+    getFileList: function(callback, refresh){
+        if (!this.files || refresh){
+            this.form.designer.actions.listFile(this.form.designer.application.id, function(json){
+                this.files = json.data;
+                if (callback) callback();
+            }.bind(this));
+        }else{
+            if (callback) callback();
+        }
+    },
 
     loadImageClipper: function(){
         var nodes = this.propertyContent.getElements(".MWFImageClipper");
@@ -478,7 +527,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         this.fileUploadNode.set("multiple", false);
 
         var fileNode = this.uploadFileAreaNode.getFirst();
-        fileNode.set("accept", "images/*");
+        fileNode.set("accept", ".png,.jpg,.bmp,.gif,.jpeg,.jpe");
         fileNode.click();
 
         //MWF.xDesktop.requireApp("process.FormDesigner", "widget.ImageClipper", function(){
@@ -729,7 +778,14 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     "onChange": function(){
                         this.data[name] = htmlArea.getValue();
                         this.changeData(name);
+                        htmlArea.isChanged = true;
                     }.bind(this),
+                    // "onBlur": function(){
+                    //     if (htmlArea.isChanged){
+                    //         this.changeData(name, node, "");
+                    //         htmlArea.isChanged = false;
+                    //     }
+                    // }.bind(this),
                     "onSave": function(){
                         this.designer.saveForm();
                     }.bind(this)
@@ -802,6 +858,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         var cmsviewNodes = this.propertyContent.getElements(".MWFCMSViewSelect");
         var queryviewNodes = this.propertyContent.getElements(".MWFQueryViewSelect");
         var querystatNodes = this.propertyContent.getElements(".MWFQueryStatSelect");
+        var fileNodes = this.propertyContent.getElements(".MWFImageFileSelect");
+        var processFileNodes = this.propertyContent.getElements(".MWFProcessImageFileSelect");
+
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function(){
             personIdentityNodes.each(function(node){
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
@@ -869,10 +928,57 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 });
             }.bind(this));
 
+            fileNodes.each(function(node){
+                var d = this.data[node.get("name")];
+                var data = d || {};
+                //this.form
+                if (d && typeOf(d)==="string"){
+                    if (this.form.page){
+                        data = {"id": d, "portal": this.form.application}
+                    }else{
+                        data = {"id": d, "application": this.form.application}
+                    }
+                }
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                    "type": "PortalFile",
+                    "count": 1,
+                    "isImage": true,
+                    "values": (data.id) ? [data.id] : [],
+                    "onChange": function(ids){this.saveFileItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
 
+            processFileNodes.each(function(node){
+                var d = this.data[node.get("name")];
+                var data = d || {};
+                //this.form
+                if (d && typeOf(d)==="string"){
+                    if (this.form.page){
+                        data = {"id": d, "portal": this.form.application}
+                    }else{
+                        data = {"id": d, "application": this.form.application}
+                    }
+                }
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                    "type": "ProcessFile",
+                    "count": 1,
+                    "isImage": true,
+                    "values": (data.id) ? [data.id] : [],
+                    "onChange": function(ids){this.saveFileItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
 
 
         }.bind(this));
+    },
+    saveFileItem: function(node, ids){
+        if (ids[0]){
+            var file = ids[0].data;
+            this.data[node.get("name")] = file;
+        }else{
+            this.data[node.get("name")] = null;
+        }
+        this.changeData(node.get("name"));
     },
     saveViewItem: function(node, ids){
         if (ids[0]){
@@ -999,8 +1105,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             if (!this.data[name]) this.data[name] = {"code": "", "html": ""};
             var cssContent = this.data[name];
 
-            MWF.require("MWF.widget.CssArea", function(){
-                var cssArea = new MWF.widget.CssArea(node, {
+            o2.require("o2.widget.CssArea", function(){
+                var cssArea = new o2.widget.CssArea(node, {
                     "title": title,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
                     "onChange": function(){

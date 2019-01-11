@@ -55,8 +55,9 @@ MWF.xDesktop.Authentication = new Class({
         this.postLogin = function( json ){
             layout.desktop.session.user = json.data;
             layout.session.user = json.data;
+            layout.session.token = layout.session.user.token;
             var user = layout.desktop.session.user;
-
+            if (!user.identityList) user.identityList = [];
             if (user.roleList) {
                 var userRoleName = [];
                 user.roleList.each(function(role){
@@ -146,7 +147,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
 
         if (this.faceLogin){
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                COMMON.AjaxModule.loadDom(COMMON.contentPath + "/res/framework/adapter/adapter.js", function () {
+                COMMON.AjaxModule.loadDom("/o2_lib/adapter/adapter.js", function () {
                     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                         //暂时隐藏此功能
                         this.cameraLoginIcon = new Element("div", {"styles": this.explorer.css.cameraLoginIcon}).inject(this.formTopContentNode);
@@ -264,6 +265,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
     },
     //检测出身份
     checkUserFace: function(formData){
+
         var faceset = window.location.host;
         faceset = faceset.replace(/\./g, "_");
         this.faceAction.search(faceset, formData.data, {"name": "pic", "size": formData.size}, function(json){
@@ -375,8 +377,8 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
     },
 
     cameraLoginSuccess: function(){
-        COMMON.AjaxModule.loadDom(COMMON.contentPath+"/res/framework/CryptoJS/tripledes.js", function(){
-            COMMON.AjaxModule.loadDom(COMMON.contentPath+"/res/framework/CryptoJS/mode-ecb.js", function(){
+        COMMON.AjaxModule.loadDom(["/o2_lib/CryptoJS/tripledes.js", "/o2_lib/CryptoJS/mode-ecb.js"], function(){
+            //COMMON.AjaxModule.loadDom(, function(){
 
                 var addressObj = layout.desktop.serviceAddressList["x_organization_assemble_authentication"];
                 var url = layout.config.app_protocol+"//"+addressObj.host+(addressObj.port===80 ? "" : ":"+addressObj.port)+addressObj.context;
@@ -409,7 +411,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
                 });
                 res.send();
 
-            }.bind(this));
+            //}.bind(this));
         }.bind(this));
     },
 

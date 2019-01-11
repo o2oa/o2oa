@@ -805,15 +805,13 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 		/** 设置 allowRetract */
 		if (Objects.equals(activity.getActivityType(), ActivityType.manual)
-				&& BooleanUtils.isTrue(activity.get(Manual.allowReset_FIELDNAME, Boolean.class))) {
+				&& BooleanUtils.isTrue(activity.get(Manual.allowRetract_FIELDNAME, Boolean.class))) {
 			/** 标志文件还没有处理过 */
 			if (woTaskCompleteds.stream()
 					.filter(o -> StringUtils.equals(o.getPerson(), effectivePerson.getDistinguishedName())
 							&& StringUtils.equals(o.getActivityToken(), work.getActivityToken()))
 					.count() == 0) {
 				/** 找到到达当前活动的workLog */
-				// WorkLog workLog =
-				// business.workLog().getWithArrivedActivityTokenObject(work.getActivityToken());
 				WoWorkLog currentWorkLog = t.getWorkLogList().stream()
 						.filter(o -> StringUtils.equals(o.getArrivedActivityToken(), work.getActivityToken()))
 						.findFirst().orElse(null);
@@ -833,16 +831,16 @@ abstract class BaseAction extends StandardJaxrsAction {
 			}
 		}
 		/** 设置 allowReroute */
-		if (effectivePerson.isManager()) {
-			/** 管理员可以调度 */
-			control.setAllowReroute(true);
-		} else if (business.organization().person().hasRole(effectivePerson,
-				OrganizationDefinition.ProcessPlatformManager)) {
-			/** 有流程管理角色的可以 */
-			control.setAllowReroute(true);
-		} else if (BooleanUtils.isTrue(activity.getAllowReroute())) {
+		if (BooleanUtils.isTrue(activity.getAllowReroute())) {
 			/** 如果活动设置了可以调度 */
-			if ((null != process) && effectivePerson.isUser(process.getControllerList())) {
+			if (effectivePerson.isManager()) {
+				/** 管理员可以调度 */
+				control.setAllowReroute(true);
+			} else if (business.organization().person().hasRole(effectivePerson,
+					OrganizationDefinition.ProcessPlatformManager)) {
+				/** 有流程管理角色的可以 */
+				control.setAllowReroute(true);
+			} else if ((null != process) && effectivePerson.isUser(process.getControllerList())) {
 				/** 如果是流程的管理员那么可以调度 */
 				control.setAllowReroute(true);
 			} else if ((null != application) && effectivePerson.isUser(application.getControllerList())) {
@@ -850,8 +848,10 @@ abstract class BaseAction extends StandardJaxrsAction {
 				control.setAllowReroute(true);
 			}
 		}
-		/* 设置 allowDelete */
-		if (business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+		/** 设置 allowDelete */
+		if (business.canManageApplicationOrProcess(effectivePerson, application, process))
+
+		{
 			control.setAllowDelete(true);
 		} else if (Objects.equals(activity.getActivityType(), ActivityType.manual)
 				&& BooleanUtils.isTrue(activity.get(Manual.allowDeleteWork_FIELDNAME, Boolean.class))) {

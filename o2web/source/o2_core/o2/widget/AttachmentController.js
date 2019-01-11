@@ -826,6 +826,13 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.seq = this.controller.attachments.length+1;
         this.load();
 	},
+    _getLnkPar: function(url){
+        return {
+            "icon": this.getIcon(),
+            "title": this.data.name,
+            "par": "@url#"+url
+        };
+    },
     load: function(){
         this.node = new Element("div").inject(this.content);
         switch (this.controller.options.listStyle){
@@ -842,6 +849,13 @@ o2.widget.AttachmentController.Attachment = new Class({
                 this.loadSequence();
                 break;
         }
+
+        this.controller.module.getAttachmentUrl(this, function(url){
+            this.node.makeLnk({
+                "par": this._getLnkPar(url)
+            });
+        }.bind(this));
+
         this.createInforNode(function(){
             if (!Browser.Platform.ios){
                 this.tooltip = new mBox.Tooltip({

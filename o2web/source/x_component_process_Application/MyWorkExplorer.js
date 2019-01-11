@@ -1,4 +1,3 @@
-MWF.xDesktop.requireApp("Organization", "Selector.package", null, false);
 MWF.xDesktop.requireApp("process.Application", "WorkExplorer", null, false);
 MWF.xApplication.process.Application.MyWorkExplorer = new Class({
 	Extends: MWF.xApplication.process.Application.WorkExplorer,

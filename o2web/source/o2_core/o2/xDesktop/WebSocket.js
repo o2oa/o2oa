@@ -10,7 +10,7 @@ MWF.xDesktop.WebSocket = new Class({
         this.ws = "ws://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context+"/ws/collaboration";
         //var ws = "ws://hbxa01.bf.ctc.com/x_collaboration_assemble_websocket/ws/collaboration";
 
-        this.ws = this.ws+"?x-token="+encodeURIComponent(Cookie.read("x-token"));
+        this.ws = this.ws+"?x-token="+encodeURIComponent(Cookie.read("x-token"))+"&authorization="+encodeURIComponent(Cookie.read("x-token"));
 
         this.webSocket = new WebSocket(this.ws);
         this.webSocket.onopen = function (e){this.onOpen(e);}.bind(this);

@@ -55,13 +55,48 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
 
         //if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();
 	},
+    parseCSS: function(css){
+        var rex = /(url\(.*\))/g;
+        var match;
+        while ((match = rex.exec(css)) !== null) {
+            var pic = match[0];
+            var len = pic.length;
+            var s = pic.substring(pic.length-2, pic.length-1);
+            var n0 = (s==="'" || s==="\"") ? 5 : 4;
+            var n1 = (s==="'" || s==="\"") ? 2 : 1;
+            pic = pic.substring(n0, pic.length-n1);
+
+            if ((pic.indexOf("x_processplatform_assemble_surface")!=-1 || pic.indexOf("x_portal_assemble_surface")!=-1)){
+                var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
+                var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
+                if (pic.indexOf("/x_processplatform_assemble_surface")!==-1){
+                    pic = pic.replace("/x_processplatform_assemble_surface", pic+"/x_processplatform_assemble_surface");
+                }else if (pic.indexOf("x_processplatform_assemble_surface")!==-1){
+                    pic = pic.replace("x_processplatform_assemble_surface", pic+"/x_processplatform_assemble_surface");
+                }
+                if (pic.indexOf("/x_portal_assemble_surface")!==-1){
+                    pic = pic.replace("/x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+                }else if (pic.indexOf("x_portal_assemble_surface")!==-1){
+                    pic = pic.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+                }
+            }
+            pic = "url('"+pic+"')";
+            var len2 = pic.length;
+
+            css = css.substring(0, match.index) + pic + css.substring(rex.lastIndex, css.length);
+            rex.lastIndex = rex.lastIndex + (len2-len);
+        }
+        return css;
+    },
     loadCss: function(){
+        debugger;
         cssText = this.json.css.code;
         //var head = (document.head || document.getElementsByTagName("head")[0] || document.documentElement);
-
         var styleNode = $("style"+this.json.id);
         if (styleNode) styleNode.destroy();
         if (cssText){
+            cssText = this.parseCSS(cssText);
+
             var rex = new RegExp("(.+)(?=\\{)", "g");
             var match;
             var id = this.json.id.replace(/\-/g, "");

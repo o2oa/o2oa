@@ -26,49 +26,73 @@ public class ProfileDetailComposerStrategyMeasures {
 	private Gson gson = XGsonBuilder.instance();
 	private DateOperation dateOperation = new DateOperation();
 	private static Logger logger = LoggerFactory.getLogger( ProfileDetailComposerStrategyMeasures.class );
+
 	/**
-	 * 查询公司战略应用相关的信息：<br/>
+	 * 	查询公司战略应用相关的信息：<br/>
 	 * 1、查询部门重点工作的具体信息，所有在汇报里需要体现的数据均需要返回<br/>
 	 * 2、计算汇报涉及的个人数量以及组织数量，更新到profile信息中以便后续保存<br/>
-	 *
 	 * @param effectivePerson
-     * @param profile
+	 * @param companyStrategyMeasure_thisMonth  当年举措信息列表
+	 * @param companyStrategyWorks_thisMonth  当月工作信息列表
+	 * @param companyStrategyMeasure_nextMonth  次年举措信息列表
+	 * @param companyStrategyWorks_nextMonth  次年工作信息列表
+	 * @param profile
 	 * @param reportCreateRecordDetailList
-	 * @param flag 
+	 * @param flag
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Report_P_ProfileDetail> compose( EffectivePerson effectivePerson, List<WoCompanyStrategy> companyStrategyMeasure, List<WoCompanyStrategyWorks> companyStrategyWorks, Report_P_Profile profile, List<Report_P_ProfileDetail> reportCreateRecordDetailList, ReportCreateFlag flag) throws Exception {
+	public List<Report_P_ProfileDetail> compose( EffectivePerson effectivePerson, 
+			List<WoCompanyStrategy> companyStrategyMeasure_thisMonth, 
+			List<WoCompanyStrategyWorks> companyStrategyWorks_thisMonth, 
+			List<WoCompanyStrategy> companyStrategyMeasure_nextMonth, 
+			List<WoCompanyStrategyWorks> companyStrategyWorks_nextMonth, 
+			Report_P_Profile profile, 
+			List<Report_P_ProfileDetail> reportCreateRecordDetailList, 
+			ReportCreateFlag flag ) throws Exception {
+		
 		if( profile == null ) {
 			throw new Exception("reportCreateRecord is null!");
 		}
-		if( reportCreateRecordDetailList == null || reportCreateRecordDetailList.isEmpty()  ) {
+		if( reportCreateRecordDetailList == null ) {
 			reportCreateRecordDetailList = new ArrayList<>();
 		}
 		Boolean check = true; 
 		
 		List<ReportPersonInfo> detail_person_List = new ArrayList<>();//需要进行公司战略月报汇报的个人
-		List<ReportUnitInfo> detail_unit_List = new ArrayList<>();//需要进行公司战略月报汇报的组织
-		
+		List<ReportUnitInfo> detail_unit_List = new ArrayList<>();//需要进行公司战略月报汇报的组织	
 
 		Report_P_ProfileDetail reportCreateRecordDetail = null;
-		
-
 		
 		if( check ) {
 			//从公司战略应用模块中查询到的配置和工作数据信息中分析该次汇报所涉及的所有个人信息和组织信息
 			logger.debug( effectivePerson, ">>>>>>>>>>从公司战略应用模块中查询到的配置和工作数据信息中分析该次汇报所涉及的所有个人信息和组织信息！");
-			composePersonsAndUnits( companyStrategyMeasure, companyStrategyWorks, detail_person_List, detail_unit_List, flag );
+			composePersonsAndUnits( companyStrategyMeasure_thisMonth, companyStrategyWorks_thisMonth, detail_person_List, detail_unit_List, flag );
 			
 			//组织公司战略工作模块 - 公司战略举措概要详细信息： STRATEGY_MEASURE
 			logger.debug( effectivePerson, ">>>>>>>>>>组织公司战略工作模块 - 公司战略举措概要详细信息： STRATEGY_MEASURE");
-			reportCreateRecordDetail = composeProfileDetailWithCompanyStrategyMeasures( profile.getId(), EnumReportModules.STRATEGY.toString(), "公司战略", "STRATEGY_MEASURE", companyStrategyMeasure );
+			reportCreateRecordDetail = composeProfileDetailWithCompanyStrategyMeasures( profile.getId(), EnumReportModules.STRATEGY.toString(), "公司战略", "STRATEGY_MEASURE", companyStrategyMeasure_thisMonth );
 			if( reportCreateRecordDetail != null ) {
 				reportCreateRecordDetailList.add( reportCreateRecordDetail );
 			}
+			
+			//组织公司战略工作模块 - 公司战略举措概要详细信息： STRATEGY_MEASURE_NEXTYEAR
+			logger.debug( effectivePerson, ">>>>>>>>>>组织公司战略工作模块 - 公司战略举措概要详细信息： STRATEGY_MEASURE_NEXTMONTH");
+			reportCreateRecordDetail = composeProfileDetailWithCompanyStrategyMeasures( profile.getId(), EnumReportModules.STRATEGY.toString(), "公司战略", "STRATEGY_MEASURE_NEXTMONTH", companyStrategyMeasure_nextMonth );
+			if( reportCreateRecordDetail != null ) {
+				reportCreateRecordDetailList.add( reportCreateRecordDetail );
+			}
+			
 			//组织公司战略工作模块 - 组织重点工作概要详细信息： STRATEGY_WORK
 			logger.debug( effectivePerson, ">>>>>>>>>>组织公司战略工作模块 - 组织重点工作概要详细信息： STRATEGY_WORK");
-			reportCreateRecordDetail = composeProfileDetailWithCompanyStrategyWorks( profile.getId(), EnumReportModules.STRATEGY.toString(), "公司战略", "STRATEGY_WORK", companyStrategyWorks );
+			reportCreateRecordDetail = composeProfileDetailWithCompanyStrategyWorks( profile.getId(), EnumReportModules.STRATEGY.toString(), "公司战略", "STRATEGY_WORK", companyStrategyWorks_thisMonth );
+			if( reportCreateRecordDetail != null ) {
+				reportCreateRecordDetailList.add( reportCreateRecordDetail );
+			}
+			
+			//组织公司战略工作模块 - 组织重点工作概要详细信息： STRATEGY_WORK_NEXTYEAR
+			logger.debug( effectivePerson, ">>>>>>>>>>组织公司战略工作模块 - 组织重点工作概要详细信息： STRATEGY_WORK_NEXTMONTH");
+			reportCreateRecordDetail = composeProfileDetailWithCompanyStrategyWorks( profile.getId(), EnumReportModules.STRATEGY.toString(), "公司战略", "STRATEGY_WORK_NEXTMONTH", companyStrategyWorks_nextMonth );
 			if( reportCreateRecordDetail != null ) {
 				reportCreateRecordDetailList.add( reportCreateRecordDetail );
 			}

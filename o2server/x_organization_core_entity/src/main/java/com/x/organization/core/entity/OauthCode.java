@@ -75,8 +75,6 @@ public class OauthCode extends SliceJpaObject {
 
 	/** flag标志位 */
 
-	// public static String[] FLA GS = new String[] { JpaObject.id_FIELDNAME };
-
 	public String getScope() {
 		return scope;
 	}

@@ -160,6 +160,7 @@ MWF.xApplication.AppCenter.Exporter = new Class({
         var height = size.y*0.9;
         var x = (size.x-width)/2;
         var y = (size.y-height)/2;
+        if (y<80) y = 80;
 
         var _self = this;
         MWF.require("MWF.xDesktop.Dialog", function(){
@@ -296,8 +297,8 @@ MWF.xApplication.AppCenter.Exporter = new Class({
         this.step = 2;
     },
     showStatusList: function(){
-        this.showStatusItemList("processPlatformList", ["processList", "formList", "applicationDictList", "scriptList"]);
-        this.showStatusItemList("portalList", ["pageList", "scriptList", "widgetList"]);
+        this.showStatusItemList("processPlatformList", ["processList", "formList", "applicationDictList", "scriptList", "fileList"]);
+        this.showStatusItemList("portalList", ["pageList", "scriptList", "widgetList", "fileList"]);
         this.showStatusItemList("cmsList", ["categoryInfoList", "formList", "appDictList", "scriptList"]);
         this.showStatusItemList("queryList", ["viewList", "statList", "revealList"]);
     },
@@ -461,7 +462,8 @@ MWF.xApplication.AppCenter.Exporter.Element = new Class({
             "processList": [],
             "formList": [],
             "applicationDictList": [],
-            "scriptList": []
+            "scriptList": [],
+            "fileList": []
         };
     },
     load: function(){
@@ -514,13 +516,16 @@ MWF.xApplication.AppCenter.Exporter.Element = new Class({
         this.postData.formList = selectData.formList;
         this.postData.applicationDictList = selectData.applicationDictList;
         this.postData.scriptList = selectData.scriptList;
+        this.postData.fileList = selectData.fileList;
+
         this.exporter.selectData.processPlatformList.erase(this.postData);
-        if (selectData.processList.length || selectData.formList.length || selectData.applicationDictList.length || selectData.scriptList.length){
+        if (selectData.processList.length || selectData.formList.length || selectData.applicationDictList.length || selectData.scriptList.length || selectData.fileList.length){
             this.exporter.selectData.processPlatformList.push(this.postData);
             if (selectData.processList.length==this.data.processList.length &&
                 selectData.formList.length==this.data.formList.length &&
                 selectData.applicationDictList.length==this.data.applicationDictList.length &&
-                selectData.scriptList.length==this.data.scriptList.length){
+                selectData.scriptList.length==this.data.scriptList.length &&
+                selectData.fileList.length==this.data.fileList.length){
                 this.iconNode.setStyle("background", "url("+this.app.path+this.app.options.style+"/icon/sel_all.png) center center no-repeat");
             }else{
                 this.iconNode.setStyle("background", "url("+this.app.path+this.app.options.style+"/icon/sel_part.png) center center no-repeat");
@@ -671,7 +676,8 @@ MWF.xApplication.AppCenter.Exporter.Element.Selector = new Class({
             "processList": [],
             "formList": [],
             "applicationDictList": [],
-            "scriptList": []
+            "scriptList": [],
+            "fileList": []
         }
     },
     load: function(){
@@ -755,6 +761,7 @@ MWF.xApplication.AppCenter.Exporter.Element.Selector = new Class({
         this.selectData.formList = this.getCheckedList(this.listFormContent);
         this.selectData.applicationDictList = this.getCheckedList(this.listDictContent);
         this.selectData.scriptList = this.getCheckedList(this.listScriptContent);
+        this.selectData.fileList = this.getCheckedList(this.listFileContent);
         this.element.checkSelect(this.selectData);
         this.hide();
     },
@@ -782,6 +789,7 @@ MWF.xApplication.AppCenter.Exporter.Element.Selector = new Class({
         this.listFormContent = this.listProcess("formList");
         this.listDictContent = this.listProcess("applicationDictList");
         this.listScriptContent = this.listProcess("scriptList");
+        this.listFileContent = this.listProcess("fileList");
     },
     listProcess: function(name){
         var title = new Element("div", {"styles": this.css.moduleSelectContentTitleNode}).inject(this.contentAreaNode);

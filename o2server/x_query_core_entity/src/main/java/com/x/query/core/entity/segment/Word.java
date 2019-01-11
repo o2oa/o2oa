@@ -71,6 +71,7 @@ public class Word extends SliceJpaObject {
 	public static final String type_FIELDNAME = "type";
 	@FieldDescribe("类型,此type类型完全复制entry的type类型.")
 	@Column(length = length_32B, name = ColumnNamePrefix + type_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + type_FIELDNAME)
 	@CheckPersist(allowEmpty = false, simplyString = false)
 	private String type;
 
@@ -108,14 +109,7 @@ public class Word extends SliceJpaObject {
 	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + tag_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String tag;
-
-	public static final String identifier01_FIELDNAME = "identifier01";
-	@FieldDescribe("编号01.")
-	@Index(name = TABLE + IndexNameMiddle + identifier01_FIELDNAME)
-	@Column(name = ColumnNamePrefix + identifier01_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Integer identifier01;
-
+	
 	public String getLabel() {
 		return label;
 	}
@@ -162,14 +156,6 @@ public class Word extends SliceJpaObject {
 
 	public void setType(String type) {
 		this.type = type;
-	}
-
-	public Integer getIdentifier01() {
-		return identifier01;
-	}
-
-	public void setIdentifier01(Integer identifier01) {
-		this.identifier01 = identifier01;
 	}
 
 	public String getBundle() {

@@ -265,10 +265,10 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
         this.form.designer.shortcut = false;
 		this.form.designer.confirm("warn", module.node, MWF.APPFD.LP.notice.deleteElementTitle, MWF.APPFD.LP.notice.deleteElement, 300, 120, function(){
 
-			module.destroy();
 			module.form.selected();
-
             module.form.designer.shortcut = true;
+
+            module.destroy();
 			this.close();
 		}, function(){
             module.form.designer.shortcut = true;

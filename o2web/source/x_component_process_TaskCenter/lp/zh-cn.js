@@ -13,6 +13,7 @@ MWF.xApplication.process.TaskCenter.LP = {
     "startTop5": "常用流程",
     "startProcess": "可启动流程",
     "back": "返回",
+    "unnamed": "无标题",
 
 
     "list_title": "标题",

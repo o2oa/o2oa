@@ -1,3 +1,4 @@
+MWF.require("MWF.widget.MaskNode", null, false);
 MWF.xApplication.AppMarket.Main = new Class({
 	Extends: MWF.xApplication.Common.Main,
 	Implements: [Options, Events],
@@ -14,8 +15,20 @@ MWF.xApplication.AppMarket.Main = new Class({
 		this.lp = MWF.xApplication.AppMarket.LP;
         this.actions = MWF.Actions.get("x_program_center");
 	},
+    mask: function(){
+        if (!this.maskNode){
+            this.maskNode = new MWF.widget.MaskNode(this.contentNode, {"style": "bam"});
+            this.maskNode.load();
+        }
+    },
+    unmask: function(){
+        if (this.maskNode) this.maskNode.hide(function(){
+            MWF.release(this.maskNode);
+            this.maskNode = null;
+        }.bind(this));
+    },
 	loadApplication: function(callback){
-        this.components = [];
+	    this.components = [];
         this.loadTitle();
 
         this.contentNode = new Element("div", {"styles": this.css.contentNode}).inject(this.content);
@@ -23,12 +36,79 @@ MWF.xApplication.AppMarket.Main = new Class({
         this.setContentSize();
         this.addEvent("resize", this.setContentSize);
 
+        this.mask();
         this.loadCloudAppsContent();
 	},
 
     loadTitle: function(){
         this.titleBar = new Element("div", {"styles": this.css.titleBar}).inject(this.content);
+        this.titleActionNode = new Element("div", {"styles": this.css.titleActionNode,"text": this.lp.implodeLocal}).inject(this.titleBar);
         this.taskTitleTextNode = new Element("div", {"styles": this.css.titleTextNode,"text": this.lp.title}).inject(this.titleBar);
+        this.titleActionNode.addEvent("click", function(){
+            this.implodeLocal();
+        }.bind(this));
+    },
+    implodeLocal: function(){
+        if (!this.uploadFileAreaNode){
+            this.uploadFileAreaNode = new Element("div");
+            var html = "<input name=\"file\" type=\"file\" accept=\".xapp\"/>";
+            this.uploadFileAreaNode.set("html", html);
+            this.fileUploadNode = this.uploadFileAreaNode.getFirst();
+            this.fileUploadNode.addEvent("change", this.implodeLocalFile.bind(this));
+        }else{
+            if (this.fileUploadNode) this.fileUploadNode.destroy();
+            this.uploadFileAreaNode.empty();
+            var html = "<input name=\"file\" type=\"file\" accept=\".xapp\"/>";
+            this.uploadFileAreaNode.set("html", html);
+            this.fileUploadNode = this.uploadFileAreaNode.getFirst();
+            this.fileUploadNode.addEvent("change", this.implodeLocalFile.bind(this));
+        }
+        this.fileUploadNode.click();
+    },
+    implodeLocalFile: function(){
+        var files = this.fileUploadNode.files;
+        if (files.length){
+            var file = files[0];
+            var position = this.titleActionNode.getPosition(this.content);
+            var size = this.contentNode.getSize();
+            var width = size.x*0.9;
+            if (width>600) width = 600;
+            var height = size.y*0.9;
+            var x = (size.x-width)/2;
+            var y = (size.y-height)/2;
+
+            var setupModule = null;
+            MWF.require("MWF.xDesktop.Dialog", function(){
+                var dlg = new MWF.xDesktop.Dialog({
+                    "title": this.lp.setupTitle,
+                    "style": "appMarket",
+                    "top": y+20,
+                    "left": x,
+                    "fromTop":position.y,
+                    "fromLeft": position.x,
+                    "width": width,
+                    "height": height,
+                    "html": "",
+                    "maskNode": this.content,
+                    "container": this.content,
+                    "buttonList": [
+                        {
+                            "text": this.lp.ok,
+                            "action": function(){
+                                if (setupModule) setupModule.setup();
+                                this.close();
+                            }
+                        },
+                        {
+                            "text": this.lp.cancel,
+                            "action": function(){this.close();}
+                        }
+                    ]
+                });
+                dlg.show();
+                setupModule = new MWF.xApplication.AppMarket.Module.SetupLocal(file, dlg, this);
+            }.bind(this));
+        }
     },
     setContentSize: function(){
         var size = this.content.getSize();
@@ -63,6 +143,8 @@ MWF.xApplication.AppMarket.Main = new Class({
                     this.itemList.push(new MWF.xApplication.AppMarket.Module(this, module));
                 }.bind(this));
             }.bind(this));
+
+            this.unmask();
         }.bind(this));
     }
 });
@@ -300,8 +382,50 @@ MWF.xApplication.AppMarket.Module.Setup = new Class({
 
         }.bind(this));
     }
-
 });
+
+MWF.xApplication.AppMarket.Module.SetupLocal = new Class({
+    Extends: MWF.xApplication.AppMarket.Module.Setup,
+    initialize: function(file, dlg, app){
+        this.app = app;
+        this.file = file;
+        this.lp = this.app.lp;
+
+        this.module = {
+            "data": {
+                "name": this.lp.localApp,
+                "category": "",
+                "description": ""
+            }
+        };
+
+        this.data = this.module.data;
+        this.css = this.app.css;
+        this.dlg = dlg;
+        this.content = this.dlg.content;
+        this.setupData = {};
+        this.compareData = null;
+        this.load();
+    },
+    loadCompare: function(){
+        var formData = new FormData();
+        formData.append('file', this.file);
+
+        this.app.actions.compareUpload(formData, this.file, function(json){
+            this.clearLoading();
+            this.setupData.flag = json.data.flag;
+            this.createListArea();
+            this.compareData = json.data;
+            this.loadProcessList();
+            this.loadPortalList();
+            this.loadCMSList();
+            this.loadQueryList();
+            //json.data.processPlatformList
+
+        }.bind(this));
+    }
+});
+
 MWF.xApplication.AppMarket.Module.Setup.Element = new Class({
     initialize: function(setup, content, data){
         this.setup = setup;

@@ -86,7 +86,7 @@ MWF.xApplication.Common.Main = new Class({
         }
     },
 	load : function(isCurrent){
-		this.fireAppEvent("queryLoad");
+        this.fireAppEvent("queryLoad");
         if (!this.inBrowser){
             this.loadWindow(isCurrent);
         }else{
@@ -113,49 +113,6 @@ MWF.xApplication.Common.Main = new Class({
 				this.loadApplication(function(){
 					this.fireAppEvent("postLoadApplication");
 				}.bind(this));
-
-                // var resize = false;
-                // var size = this.window.node.getSize();
-                // var position = this.window.node.getPosition();
-                // var bodySize = $(document.body).getSize();
-                // var height = size.y;
-                // var width = size.x;
-
-                // var y = (size.y+position.y)-bodySize.y;
-                // if (y>-10){
-                //     height = size.y-y-10;
-                //     resize = true;
-                // }
-                // var x = (size.x+position.x)-bodySize.x;
-                // if (x>-10){
-                //     width = size.x-x-10;
-                //     resize = true;
-                // }
-                // var y = (size.y+position.y)-bodySize.y;
-                // if (y>0){
-                //     height = size.y-y;
-                //     resize = true;
-                // }
-                // var x = (size.x+position.x)-bodySize.x;
-                // if (x>0){
-                //     width = size.x-x;
-                //     resize = true;
-                // }
-
-                // if (resize){
-                //     this.window.options.height = height;
-                //     this.window.options.width = width;
-                //     this.window.node.setStyles({
-                //         "width": ""+width+"px",
-                //         "height": ""+height+"px"
-                //     });
-                //     this.window.spacer.setStyles({
-                //         "width": ""+width+"px",
-                //         "height": ""+height+"px"
-                //     });
-                //     this.window.setContentSize();
-                // }
-
 				this.fireAppEvent("postLoad");
 			}.bind(this),
 			"onResize": function(){
@@ -174,12 +131,6 @@ MWF.xApplication.Common.Main = new Class({
                 }
 
             }.bind(this)
-			// "onQueryMax": function(){
-            	// if (this.window.css.windowTitleMax) this.window.title.setStyles(this.window.css.windowTitleMax);
-             //    if (this.window.css.windowTitleRefreshMax) this.window.titleRefresh.setStyles(this.window.css.windowTitleRefreshMax);
-             //    if (this.window.css.windowTitleTextMax) this.window.titleText.setStyles(this.window.css.windowTitleTextMax);
-             //    if (this.window.css.windowTitleActionMax) this.window.titleAction.setStyles(this.window.css.windowTitleActionMax);
-			// }.bind(this)
 		};
 		
 		if (this.options.event){
@@ -353,19 +304,15 @@ MWF.xApplication.Common.Main = new Class({
             window.close();
         }else{
             this.window.close(function(){
-
                 this.taskitem.destroy();
-                delete this.window;
-                delete this.taskitem;
+                this.window = null;
+                this.taskitem = null;
+
                 this.desktop.closeApp(this);
 
                 this.fireAppEvent("postClose");
-                //MWF.recycleCount = 0;
-                //debugger;
-                MWF.release(this);
-                //
-                //alert(MWF.recycleCount)
-                //debugger;
+
+                o2.release(this);
             }.bind(this));
         }
 	},

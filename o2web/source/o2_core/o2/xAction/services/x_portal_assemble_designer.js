@@ -1,8 +1,9 @@
 MWF.xAction.RestActions.Action["x_portal_assemble_designer"] = new Class({
     Extends: MWF.xAction.RestActions.Action,
-    getUUID: function(success){
+    getUUID: function(success, async){
+        var sync = (async !== false);
         var id = "";
-        this.action.invoke({"name": "getId","async": false, "parameter": {"count": "1"}, "success": function(ids){
+        this.action.invoke({"name": "getId","async": sync, "parameter": {"count": "1"}, "success": function(ids){
             id = ids.data[0].id;
             if (success) success(id);
         },	"failure": null});
@@ -55,14 +56,14 @@ MWF.xAction.RestActions.Action["x_portal_assemble_designer"] = new Class({
         this.action.invoke({"name": "updatePage","data": json,"parameter": {"id": pageData.json.id},"success": success,"failure": failure});
     },
 
-    saveFile: function(data, success, failure){
+    saveFile: function(data, success, failure, async){
         if (data.id){
             this.updataFile(data.id, data, success, failure);
         }else{
             this.getUUID(function(id){
                 data.id = id;
-                this.addFile(data, success, failure);
-            }.bind(this));
+                this.addFile(data, success, failure, async);
+            }.bind(this), false);
 
         }
     },

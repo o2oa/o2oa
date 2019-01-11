@@ -75,6 +75,7 @@ public class Entry extends SliceJpaObject {
 	public static final String type_FIELDNAME = "type";
 	@FieldDescribe("类型.")
 	@Column(length = length_32B, name = ColumnNamePrefix + type_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + type_FIELDNAME)
 	@CheckPersist(allowEmpty = false, simplyString = false)
 	private String type;
 
@@ -136,6 +137,7 @@ public class Entry extends SliceJpaObject {
 	public static final String appName_FIELDNAME = "appName";
 	@FieldDescribe("cms栏目名称")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + appName_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + appName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String appName;
 
@@ -149,6 +151,7 @@ public class Entry extends SliceJpaObject {
 	public static final String categoryName_FIELDNAME = "categoryName";
 	@FieldDescribe("cms分类名称")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + categoryName_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + categoryName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String categoryName;
 

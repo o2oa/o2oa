@@ -13,11 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.tools.ImageToAcii;
 
-import de.vandermeer.asciitable.AT_Row;
-import de.vandermeer.asciitable.AsciiTable;
-import de.vandermeer.asciitable.CWC_FixedWidth;
-import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
-
 public class CommandFactory {
 
 	public static final Pattern test_pattern = Pattern.compile("^ {0,}test {0,}$", Pattern.CASE_INSENSITIVE);
@@ -139,75 +134,81 @@ public class CommandFactory {
 		}
 	}
 
-	public static void printHelpTable() {
-		try {
-			AsciiTable at = new AsciiTable();
-			at.addRule();
-			AT_Row row = at.addRow("command", "description");
-			row.setTextAlignment(TextAlignment.CENTER);
-			at.addRule();
-			row = at.addRow("help", " show useage message");
-			row.setPaddingLeft(1);
-			at.addRule();
-			row = at.addRow("start|stop [all]", "start stop all enable server");
-			row.setPaddingLeft(1);
-			at.addRule();
-			row = at.addRow("start|stop data", "start stop data server");
-			row.setPaddingLeft(1);
-			at.addRule();
-			row = at.addRow("start|stop storage", "start stop storage server");
-			row.setPaddingLeft(1);
-			at.addRule();
-			row = at.addRow("start|stop center", "start stop center server");
-			row.setPaddingLeft(1);
-			at.addRule();
-			row = at.addRow("start|stop application", "start stop application server");
-			row.setPaddingLeft(1);
-			at.addRule();
-			row = at.addRow("start|stop web", "start stop web server");
-			row.setPaddingLeft(1);
-			at.addRule();
-			row = at.addRow("dump data (passwd)", "dump data from database");
-			row.setPaddingLeft(1);
-			at.addRule();
-			row = at.addRow("dump storage (passwd)", "dump storage from database,file");
-			row.setPaddingLeft(1);
-			at.addRule();
-			row = at.addRow("restore data yyyyMMddHHmmss (passwd)", "restore data to database");
-			row.setPaddingLeft(1);
-			at.addRule();
-			row = at.addRow("restore storage yyyyMMddHHmmss (passwd)", "restore storage to database,file");
-			row.setPaddingLeft(1);
-			at.addRule();
-			row = at.addRow("setPassword (oldpasswd) (newpasswd)", "change initial manager password");
-			row.setPaddingLeft(1);
-			at.addRule();
-			row = at.addRow("version", "show available update version");
-			row.setPaddingLeft(1);
-			at.addRule();
-			row = at.addRow("update (passwd)", "upgrade to next version");
-			row.setPaddingLeft(1);
-			at.addRule();
-			row = at.addRow("compact data (passwod)", "compact local h2 repository database");
-			row.setPaddingLeft(1);
-			at.addRule();
-			row = at.addRow("erase content (cms|pp|bss|log|report) (passwd)", "remove all data except design");
-			row.setPaddingLeft(1);
-			at.addRule();
-			row = at.addRow("create encrypt key", "create random RSA key");
-			row.setPaddingLeft(1);
-			at.addRule();
-			row = at.addRow("exit", "exit after stop");
-			row.setPaddingLeft(1);
-			at.addRule();
-			at.getRenderer().setCWC(new CWC_FixedWidth().add(48).add(38));
-			System.out.println(at.render());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+//	public static void printHelpTable() {
+//		try {
+//			AsciiTable at = new AsciiTable();
+//			at.addRule();
+//			AT_Row row = at.addRow("command", "description");
+//			row.setTextAlignment(TextAlignment.CENTER);
+//			at.addRule();
+//			row = at.addRow("help", " show useage message");
+//			row.setPaddingLeft(1);
+//			at.addRule();
+//			row = at.addRow("start|stop [all]", "start stop all enable server");
+//			row.setPaddingLeft(1);
+//			at.addRule();
+//			row = at.addRow("start|stop data", "start stop data server");
+//			row.setPaddingLeft(1);
+//			at.addRule();
+//			row = at.addRow("start|stop storage", "start stop storage server");
+//			row.setPaddingLeft(1);
+//			at.addRule();
+//			row = at.addRow("start|stop center", "start stop center server");
+//			row.setPaddingLeft(1);
+//			at.addRule();
+//			row = at.addRow("start|stop application", "start stop application server");
+//			row.setPaddingLeft(1);
+//			at.addRule();
+//			row = at.addRow("start|stop web", "start stop web server");
+//			row.setPaddingLeft(1);
+//			at.addRule();
+//			row = at.addRow("dump data (passwd)", "dump data from database");
+//			row.setPaddingLeft(1);
+//			at.addRule();
+//			row = at.addRow("dump storage (passwd)", "dump storage from database,file");
+//			row.setPaddingLeft(1);
+//			at.addRule();
+//			row = at.addRow("restore data yyyyMMddHHmmss (passwd)", "restore data to database");
+//			row.setPaddingLeft(1);
+//			at.addRule();
+//			row = at.addRow("restore storage yyyyMMddHHmmss (passwd)", "restore storage to database,file");
+//			row.setPaddingLeft(1);
+//			at.addRule();
+//			row = at.addRow("setPassword (oldpasswd) (newpasswd)", "change initial manager password");
+//			row.setPaddingLeft(1);
+//			at.addRule();
+//			row = at.addRow("version", "show available update version");
+//			row.setPaddingLeft(1);
+//			at.addRule();
+//			row = at.addRow("update (passwd)", "upgrade to next version");
+//			row.setPaddingLeft(1);
+//			at.addRule();
+//			row = at.addRow("compact data (passwod)", "compact local h2 repository database");
+//			row.setPaddingLeft(1);
+//			at.addRule();
+//			row = at.addRow("erase content (cms|pp|bss|log|report) (passwd)", "remove all data except design");
+//			row.setPaddingLeft(1);
+//			at.addRule();
+//			row = at.addRow("create encrypt key", "create random RSA key");
+//			row.setPaddingLeft(1);
+//			at.addRule();
+//			row = at.addRow("exit", "exit after stop");
+//			row.setPaddingLeft(1);
+//			at.addRule();
+//			at.getRenderer().setCWC(new CWC_FixedWidth().add(48).add(38));
+//			System.out.println(at.render());
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
 
 	private static void printStartImage() {
+//		try {
+//			String ascii = FigletFont.convertOneLine(Config.currentNode().getBanner());
+//			System.out.println(ascii);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 		try {
 			File file = Config.startImage();
 			BufferedImage image = null;

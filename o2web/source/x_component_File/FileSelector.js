@@ -1,6 +1,6 @@
 MWF.xApplication.File = MWF.xApplication.File || {};
 MWF.xDesktop.requireApp("File", "lp.zh-cn", null, false);
-MWF.xDesktop.requireApp("File", "Actions.RestActions", null, false);
+// MWF.xDesktop.requireApp("File", "Actions.RestActions", null, false);
 MWF.xDesktop.requireApp("File", "AttachmentSelector", null, false);
 MWF.xDesktop.requireApp("File", "Main", null, false);
 MWF.require("MWF.widget.Tree", null, false);
@@ -44,8 +44,9 @@ MWF.xApplication.File.FileSelector = new Class({
 		this.currentHistory = 1;
 		this.currentFolder = null;
 		
-		this.restActions = new MWF.xApplication.File.Actions.RestActions();
-		
+		//this.restActions = new MWF.xApplication.File.Actions.RestActions();
+
+        this.restActions = MWF.Actions.get("x_file_assemble_control");
 		MWF.getJSON("/x_component_File/$Main/icon.json", function(json){
 			this.icons = json;
 		}.bind(this), false, false);

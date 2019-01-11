@@ -5,3 +5,10 @@
 /logs/
 /target/
 /x_build_and_scratch/
+/servers/
+command.swap
+/store/
+/node_modules/
+package-lock.json
+**/src/main/resources/META-INF/persistence.xml
+**/*_.java

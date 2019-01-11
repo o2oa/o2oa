@@ -1,0 +1,40 @@
+.importPersonAreaNode {
+    padding: 20px;
+    margin: 20px 40px;
+}
+.importPersonTitleNode {
+    height: 40px;
+    line-height: 40px;
+    font-weight: bold;
+    font-size: 18px;
+    color: #666666;
+}
+.importPersonTemplateNode {
+    margin-top: 10px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 14px;
+    color: #999999;
+}
+.importPersonNode {
+    margin: 10px 0px;
+    height: 30px;
+    line-height: 30px;
+    width: 160px;
+    border: 1px solid #999999;
+    border-radius: 8px;
+    background-color: #3c76b7;
+    color: #ffffff;
+    text-align: center;
+    cursor: pointer;
+}
+.importPersonResultNode {
+    display: none;
+    margin-top: 20px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 14px;
+    color: #999999;
+    padding-left: 40px;
+    background: url(/x_component_Org/$Main/default/icon/ok.png) no-repeat left center;
+}

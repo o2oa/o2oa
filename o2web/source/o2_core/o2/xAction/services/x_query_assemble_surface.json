@@ -19,6 +19,6 @@
   "exportView": {"uri": "/jaxrs/view/{id}/excel", "method": "PUT"},
   "getViewExcel": {"uri": "/jaxrs/view/excel/result/{flag}"},
 
-  "search": {"uri": "/jaxrs/entry/key/{key}"}
+  "search": {"uri": "/jaxrs/segment/key/{key}"}
 
 }

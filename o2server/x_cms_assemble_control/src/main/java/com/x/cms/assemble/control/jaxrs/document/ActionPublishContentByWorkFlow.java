@@ -18,6 +18,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
@@ -354,7 +355,7 @@ public class ActionPublishContentByWorkFlow extends BaseAction {
 			}
 		}
 
-		if (check) {
+		if ( check && !wi.getSkipPermission() ) {
 			//将读者以及作者信息持久化到数据库中
 			try {
 				documentInfoServiceAdv.refreshDocumentPermission( document.getId(), wi.getReaderList(), wi.getAuthorList() );
@@ -412,24 +413,44 @@ public static class Wi extends Document {
 		
 		public static WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, JpaObject.FieldsUnmodify);
 
+		@FieldDescribe( "文档操作者身份." )
 		private String identity = null;
 		
+		@FieldDescribe( "数据的路径列表." )
 		private String[] dataPaths = null;
 		
+		@FieldDescribe( "启动流程的JobId." )
 		private String wf_jobId = null;
 		
+		@FieldDescribe( "启动流程的WorkId." )
 		private String wf_workId = null;
 		
+		@FieldDescribe( "启动流程的附件列表." )
 		private String[] wf_attachmentIds = null;	
 		
+		@FieldDescribe( "文档数据." )
 		private Map<?, ?> docData = null;
 		
+		@FieldDescribe( "文档读者." )
 		private List<PermissionInfo> readerList = null;
 		
+		@FieldDescribe( "文档编辑者." )
 		private List<PermissionInfo> authorList = null;
 		
+		@FieldDescribe( "图片列表." )
 		private List<String> cloudPictures = null;
 		
+		@FieldDescribe( "不修改权限（跳过权限设置，保留原来的设置）." )
+		private Boolean skipPermission  = false;	
+		
+		public Boolean getSkipPermission() {
+			return skipPermission;
+		}
+
+		public void setSkipPermission(Boolean skipPermission) {
+			this.skipPermission = skipPermission;
+		}
+
 		public String getIdentity() {
 			return identity;
 		}

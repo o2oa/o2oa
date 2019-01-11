@@ -232,7 +232,15 @@ var mBox = new Class({
 				left: -12000,
 				zoom: 1
 			}
-		}).setStyles(this.options.setStyles.wrapper || {}).inject(document.body, 'bottom');
+		//}).setStyles(this.options.setStyles.wrapper || {}).inject(document.body, 'bottom');
+    	}).setStyles(this.options.setStyles.wrapper || {});
+
+        var target = $(target) || target || this.target || $(this.options.target) || this.options.target || $(this.options.attach);
+        if (target && typeOf(target)==="element"){
+            this.wrapper.inject(target, "after");
+        }else{
+            this.wrapper.inject(document.body, 'bottom');
+        }
 
 		// add mouse events to wrapper
 		if(this.options.closeOnMouseleave) {
@@ -388,6 +396,9 @@ var mBox = new Class({
 					}
 				}
 
+
+                if (this.wrapper) this.wrapper.inject(document.body, 'bottom');
+
 				// set new position
 				this.setPosition(null, options.position || null, options.offset || null);
 
@@ -468,6 +479,13 @@ var mBox = new Class({
 				this.ignoreDelayOnce = false;
 				this.wrapper.setStyle('display', 'none');
 				this.fireEvent('systemCloseComplete').fireEvent('closeComplete');
+
+                if (this.wrapper){
+                    var target = this.target || $(this.options.target) || this.options.target || $(this.options.attach);
+                    if (target && typeOf(target)==="element"){
+                        this.wrapper.inject(target);
+                    }
+                }
 			}.bind(this);
 
 			var close = function(complete) {

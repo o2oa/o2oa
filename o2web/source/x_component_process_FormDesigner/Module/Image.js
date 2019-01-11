@@ -49,25 +49,46 @@ MWF.xApplication.process.FormDesigner.Module.Image = MWF.FCImage = new Class({
                 var src = this.json.src.imageSrc;
 				this.node.src = src;
                 this.setPropertiesOrStyles("styles");
-                //if (!this.json.styles.width || !this.json.styles.height){
-                //    var tmpImg = new Element("img",{
-                //        "src": src
-                //    }).inject(this.form.node);
-                //    var size = tmpImg.getSize();
-                //    if (!this.json.styles.width){
-                //        this.node.setStyles({"width": ""+size.x+"px"});
-                //        this.json.styles.width = ""+size.x+"px";
-                //    }
-                //    if (!this.json.styles.height){
-                //        this.node.setStyles({"height": ""+size.y+"px"});
-                //        this.json.styles.height = ""+size.y+"px";
-                //    }
-                //    this.property.maplists["styles"].reload(this.json.styles);
-                //    tmpImg.destroy();
-                //}
+			}else{
+                this.node.set("src", this.path +this.options.style+"/icon/image1.png");
 			}
 		}
-		if (name="properties"){
+		debugger;
+		if (name=="srcfile"){
+            var value = this.json.srcfile;
+            if (value==="none"){
+                this.json.srcfile = "";
+                value = "";
+            }
+            if (value){
+                if (typeOf(value)==="object"){
+                    var url = MWF.xDesktop.getProcessFileUr(value.id, value.application);
+                    try{
+                        this.node.set("src", url);
+                    }catch(e){}
+                }else{
+                    var host = MWF.Actions.getHost("x_processplatform_assemble_surface");
+                    var action = MWF.Actions.get("x_processplatform_assemble_surface");
+                    var uri = action.action.actions.readFile.uri;
+                    uri = uri.replace("{flag}", value);
+                    uri = uri.replace("{applicationFlag}", this.form.json.application);
+                    value = host+"/x_processplatform_assemble_surface"+uri;
+
+                    try{
+                        this.node.set("src", value);
+                    }catch(e){}
+				}
+            }else{
+                if (this.json.properties.src) {
+                    this._setEditStyle_custom("properties");
+                }else if (this.json.src){
+                    this._setEditStyle_custom("src");
+                }else{
+                    this.node.set("src", this.path +this.options.style+"/icon/image1.png");
+                }
+            }
+		}
+		if (name=="properties"){
 			this._setNodeProperty();
 		}
 	},
@@ -77,7 +98,7 @@ MWF.xApplication.process.FormDesigner.Module.Image = MWF.FCImage = new Class({
         if (this.form.moduleElementNodeList.indexOf(this.node)==-1) this.form.moduleElementNodeList.push(this.node);
         this.node.store("module", this);
 
-        if (typeOf(this.json.src)=="object"){
+        if (typeOf(this.json.src)==="object"){
             var src = MWF.xDesktop.getImageSrc( this.json.src.imageId );
             this.node.set("src", src);
         }
@@ -97,7 +118,25 @@ MWF.xApplication.process.FormDesigner.Module.Image = MWF.FCImage = new Class({
                     value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
                 }
             }
-            this.node.set("src", value);
+            if (value){
+                this.node.set("src", value);
+			}else{
+                if (this.json.srcfile && this.json.srcfile!="none") {
+                    this._setEditStyle_custom("srcfile");
+                }else if (this.json.src){
+                    this._setEditStyle_custom("src");
+                }else{
+                    this.node.set("src", this.path +this.options.style+"/icon/image1.png");
+                }
+			}
+		}else{
+            if (this.json.srcfile && this.json.srcfile!="none") {
+                this._setEditStyle_custom("srcfile");
+            }else if (this.json.src){
+                this._setEditStyle_custom("src");
+            }else{
+                this.node.set("src", this.path +this.options.style+"/icon/image1.png");
+            }
 		}
 
 	}
