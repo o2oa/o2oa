@@ -45,7 +45,7 @@
 	</target>
 
 	<target name="createPersistenceXml">
-		<mkdir dir="{basedir}/src/main/resources/META-INF" />
+		<mkdir dir="${basedir}/src/main/resources/META-INF" />
 		<java classname="com.x.base.core.entity.tools.PersistenceXmlWriter" fork="true">
 			<sysproperty key="file.encoding" value="utf-8" />
 			<classpath>
