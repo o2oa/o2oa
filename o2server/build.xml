@@ -59,8 +59,12 @@
 		<mkdir dir="target/o2server/servers/centerServer/work" />
 		<mkdir dir="target/o2server/servers/applicationServer/webapps" />
 		<mkdir dir="target/o2server/servers/applicationServer/work" />
-		<exec vmlauncher="false" executable="npm install" />
-		<exec vmlauncher="false" executable="npm install -g gulp-cli" />
+		<exec vmlauncher="false" executable="npm">
+			<arg line="install" />
+		</exec>
+		<exec vmlauncher="false" executable="npm">
+			<arg line="install -g gulp-cli" />
+		</exec>
 		<exec vmlauncher="false" executable="gulp" />
 		<copy todir="target/o2server/commons/">
 			<fileset dir="./commons/" />

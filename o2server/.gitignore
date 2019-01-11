@@ -11,7 +11,6 @@
 command.swap
 /store/
 /node_modules/
-package-lock.json
 **/src/main/resources/META-INF/persistence.xml
 **/src/main/resources/META-INF/x_persistence.xml
 **/*_.java
@@ -19,3 +18,4 @@ package-lock.json
 console.jar
 **/.DS_Store
 .DS_Store
+/commons/ext/manifest.cfg
