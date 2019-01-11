@@ -1,0 +1,1107 @@
+'\" t
+.\" Copyright (c) 2011, 2015, Oracle and/or its affiliates. All rights reserved.
+.\"
+.\" Title: javafxpackager
+.\" Language: English
+.\" Date: 03 March 2015
+.\" SectDesc: Java Deployment Tools
+.\" Software: JDK 8
+.\" Arch: Generic
+.\" Part Number: E38209-04
+.\" Doc ID: JSSOR
+.\"
+.if n .pl 99999
+.TH "javafxpackager" "1" "03 March 2015" "JDK 8" "Java Deployment Tools"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+javafxpackager \- \fBNote:\fR This tool has been renamed \fBjavapackager\fR\&. The \fBjavafxpackager\&.exe\fR file may be removed in a future release\&. Please update your scripts to use \fBjavapackager\fR\&.
+.SH "SYNOPSIS"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\fBjavapackager\fR \fIcommand\fR [\fIoptions\fR]
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fIcommand\fR
+.RS 4
+The task that should be performed\&.
+.RE
+.PP
+options
+.RS 4
+One or more options for the command separated by spaces\&.
+.RE
+.SH "COMMANDS"
+.PP
+You can specify one of the following commands\&. After the command, specify the options for it\&.
+.PP
+\-createbss
+.RS 4
+Converts CSS files into binary form\&.
+.RE
+.PP
+\-createjar
+.RS 4
+Produces a JAR archive according to other parameters\&.
+.RE
+.PP
+\-deploy
+.RS 4
+Assembles the application package for redistribution\&. By default, the deploy task generates the base application package, but it can also generate a self\-contained application package if requested\&.
+.RE
+.PP
+\-makeall
+.RS 4
+Performs compilation,
+\fBcreatejar\fR, and
+\fBdeploy\fR
+steps as one call, with most arguments predefined, and attempts to generate all applicable self\-contained application packages\&. The source files must be located in a folder called
+\fBsrc\fR, and the resulting files (JAR, JNLP, HTML, and self\-contained application packages) are put in a folder called
+\fBdist\fR\&. This command can only be configured in a minimal way and is as automated as possible\&.
+.RE
+.PP
+\-signjar
+.RS 4
+Signs JAR file(s) with a provided certificate\&.
+.RE
+.SH "OPTIONS FOR THE CREATEBSS COMMAND"
+.PP
+\-outdir \fIdir\fR
+.RS 4
+Name of the directory that will receive generated output files\&.
+.RE
+.PP
+\-srcdir \fIdir\fR
+.RS 4
+Base directory of the files to package\&.
+.RE
+.PP
+\-srcfiles \fIfiles\fR
+.RS 4
+List of files in the directory specified by the
+\fB\-srcdir\fR
+option\&. If omitted, all files in the directory (which is a mandatory argument in this case) will be used\&. Files in the list must be separated by spaces\&.
+.RE
+.SH "OPTIONS FOR THE CREATEJAR COMMAND"
+.PP
+\-appclass \fIapp\-class\fR
+.RS 4
+Qualified name of the application class to be executed\&.
+.RE
+.PP
+\-argument \fIarg\fR
+.RS 4
+An unnamed argument to be inserted into the JNLP file as an
+\fB<fx:argument>\fR
+element\&.
+.RE
+.PP
+\-classpath \fIfiles\fR
+.RS 4
+List of dependent JAR file names\&.
+.RE
+.PP
+\-manifestAttrs \fImanifest\-attributes\fR
+.RS 4
+List of names and values for additional manifest attributes\&. Syntax:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\fB"name1=value1,name2=value2,name3=value3"\fR
+ 
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.PP
+\-nocss2bin
+.RS 4
+The packager will not convert CSS files to binary form before copying to JAR\&.
+.RE
+.PP
+\-outdir \fIdir\fR
+.RS 4
+Name of the directory that will receive generated output files\&.
+.RE
+.PP
+\-outfile \fIfilename\fR
+.RS 4
+Name (without the extension) of the file that will be generated\&.
+.RE
+.PP
+\-paramfile \fIfile\fR
+.RS 4
+A properties file with default named application parameters\&.
+.RE
+.PP
+\-preloader \fIpreloader\-class\fR
+.RS 4
+Qualified name of the JavaFX preloader class to be executed\&. Use this option only for JavaFX applications\&. Do not use for Java applications, including headless applications\&.
+.RE
+.PP
+\-srcdir \fIdir\fR
+.RS 4
+Base directory of the files to package\&.
+.RE
+.PP
+\-srcfiles \fIfiles\fR
+.RS 4
+List of files in the directory specified by the
+\fB\-srcdir\fR
+option\&. If omitted, all files in the directory (which is a mandatory argument in this case) will be used\&. Files in the list must be separated by spaces\&.
+.RE
+.SH "OPTIONS FOR THE DEPLOY COMMAND"
+.PP
+\-allpermissions
+.RS 4
+If present, the application will require all security permissions in the JNLP file\&.
+.RE
+.PP
+\-appclass \fIapp\-class\fR
+.RS 4
+Qualified name of the application class to be executed\&.
+.RE
+.PP
+\-argument \fIarg\fR
+.RS 4
+An unnamed argument to be inserted into an
+\fB<fx:argument>\fR
+element in the JNLP file\&.
+.RE
+.PP
+\-B\fIbundler\-argument=value\fR
+.RS 4
+Provides information to the bundler that is used to package a self\-contained application\&. See Arguments for Self\-Contained Application Bundlers for information on the arguments for each bundler\&.
+.RE
+.PP
+\-callbacks
+.RS 4
+Specifies user callback methods in generated HTML\&. The format is the following:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\fB"name1:value1,name2:value2,\&.\&.\&."\fR
+ 
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.PP
+\-description \fIdescription\fR
+.RS 4
+Description of the application\&.
+.RE
+.PP
+\-embedCertificates
+.RS 4
+If present, the certificates will be embedded in the JNLP file\&.
+.RE
+.PP
+\-embedjnlp
+.RS 4
+If present, the JNLP file will be embedded in the HTML document\&.
+.RE
+.PP
+\-height \fIheight\fR
+.RS 4
+Height of the application\&.
+.RE
+.PP
+\-htmlparamfile \fIfile\fR
+.RS 4
+Properties file with parameters for the resulting application when it is run in the browser\&.
+.RE
+.PP
+\-isExtension
+.RS 4
+If present, the
+\fBsrcfiles\fR
+are treated as extensions\&.
+.RE
+.PP
+\-name \fIname\fR
+.RS 4
+Name of the application\&.
+.RE
+.PP
+\-native \fItype\fR
+.RS 4
+Generate self\-contained application bundles (if possible)\&. Use the
+\fB\-B\fR
+option to provide arguments to the bundlers being used\&. If
+\fItype\fR
+is specified, then only a bundle of this type is created\&. If no type is specified,
+\fBall\fR
+is used\&.
+.sp
+The following values are valid for
+\fItype\fR:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBall\fR: Runs all of the installers for the platform on which it is running, and creates a disk image for the application\&. This value is used if
+\fItype\fR
+is not specified\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBinstaller\fR: Runs all of the installers for the platform on which it is running\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBimage\fR: Creates a disk image for the application\&. On OS X, the image is the
+\fB\&.app\fR
+file\&. On Linux, the image is the directory that gets installed\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBdmg\fR: Generates a DMG file for OS X\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBpkg\fR: Generates a
+\fB\&.pkg\fR
+package for OS X\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBmac\&.appStore\fR: Generates a package for the Mac App Store\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBrpm\fR: Generates an RPM package for Linux\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBdeb\fR: Generates a Debian package for Linux\&.
+.RE
+.RE
+.PP
+\-nosign
+.RS 4
+If present, the bundle generated for self\-contained applications is not signed by the bundler\&. The default for bundlers that support signing is to sign the bundle if signing keys are properly configured\&. This attribute is ignored by bundlers that do not support signing\&. At the time of the 8u40 release of the JDK, only OS X bundlers support signing\&.
+.RE
+.PP
+\-outdir \fIdir\fR
+.RS 4
+Name of the directory that will receive generated output files\&.
+.RE
+.PP
+\-outfile \fIfilename\fR
+.RS 4
+Name (without the extension) of the file that will be generated\&.
+.RE
+.PP
+\-paramfile \fIfile\fR
+.RS 4
+Properties file with default named application parameters\&.
+.RE
+.PP
+\-preloader \fIpreloader\-class\fR
+.RS 4
+Qualified name of the JavaFX preloader class to be executed\&. Use this option only for JavaFX applications\&. Do not use for Java applications, including headless applications\&.
+.RE
+.PP
+\-srcdir \fIdir\fR
+.RS 4
+Base directory of the files to package\&.
+.RE
+.PP
+\-srcfiles \fIfiles\fR
+.RS 4
+List of files in the directory specified by the
+\fB\-srcdir\fR
+option\&. If omitted, all files in the directory (which is a mandatory argument in this case) will be used\&. Files in the list must be separated by spaces\&.
+.RE
+.PP
+\-templateId
+.RS 4
+Application ID of the application for template processing\&.
+.RE
+.PP
+\-templateInFilename
+.RS 4
+Name of the HTML template file\&. Placeholders are in the following form:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\fB#XXXX\&.YYYY(APPID)#\fR
+ 
+.fi
+.if n \{\
+.RE
+.\}
+Where APPID is the identifier of an application and XXX is one of following:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBDT\&.SCRIPT\&.URL\fR
+.sp
+Location of dtjava\&.js in the Deployment Toolkit\&. By default, the location is
+.sp
+http://java\&.com/js/dtjava\&.js
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBDT\&.SCRIPT\&.CODE\fR
+.sp
+Script element to include dtjava\&.js of the Deployment Toolkit\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBDT\&.EMBED\&.CODE\&.DYNAMIC\fR
+.sp
+Code to embed the application into a given placeholder\&. It is expected that the code will be wrapped in the
+\fBfunction()\fR
+method\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBDT\&.EMBED\&.CODE\&.ONLOAD\fR
+.sp
+All the code needed to embed the application into a web page using the
+\fBonload\fR
+hook (except inclusion of dtjava\&.js)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBDT\&.LAUNCH\&.CODE\fR
+.sp
+Code needed to launch the application\&. It is expected that the code will be wrapped in the
+\fBfunction()\fR
+method\&.
+.RE
+.RE
+.PP
+\-templateOutFilename
+.RS 4
+Name of the HTML file that will be generated from the template\&.
+.RE
+.PP
+\-title \fItitle\fR
+.RS 4
+Title of the application\&.
+.RE
+.PP
+\-vendor \fIvendor\fR
+.RS 4
+Vendor of the application\&.
+.RE
+.PP
+\-width \fIwidth\fR
+.RS 4
+Width of the application\&.
+.RE
+.PP
+\-updatemode \fIupdate\-mode\fR
+.RS 4
+Sets the update mode for the JNLP file\&.
+.RE
+.SH "OPTIONS FOR THE MAKEALL COMMAND"
+.PP
+\-appclass \fIapp\-class\fR
+.RS 4
+Qualified name of the application class to be executed\&.
+.RE
+.PP
+\-classpath \fIfiles\fR
+.RS 4
+List of dependent JAR file names\&.
+.RE
+.PP
+\-height \fIheight\fR
+.RS 4
+Height of the application\&.
+.RE
+.PP
+\-name \fIname\fR
+.RS 4
+Name of the application\&.
+.RE
+.PP
+\-preloader \fIpreloader\-class\fR
+.RS 4
+Qualified name of the JavaFX preloader class to be executed\&. Use this option only for JavaFX applications\&. Do not use for Java applications, including headless applications\&.
+.RE
+.PP
+\-width \fIwidth\fR
+.RS 4
+Width of the application\&.
+.RE
+.SH "OPTIONS FOR THE SIGNJAR COMMAND"
+.PP
+\-alias
+.RS 4
+Alias for the key\&.
+.RE
+.PP
+\-keyPass
+.RS 4
+Password for recovering the key\&.
+.RE
+.PP
+\-keyStore \fIfile\fR
+.RS 4
+Keystore file name\&.
+.RE
+.PP
+\-outdir \fIdir\fR
+.RS 4
+Name of the directory that will receive generated output files\&.
+.RE
+.PP
+\-srcdir \fIdir\fR
+.RS 4
+Base directory of the files to be signed\&.
+.RE
+.PP
+\-srcfiles \fIfiles\fR
+.RS 4
+List of files in the directory specified by the
+\fB\-srcdir\fR
+option\&. If omitted, all files in the directory (which is a mandatory argument in this case) will be used\&. Files in the list must be separated by spaces\&.
+.RE
+.PP
+\-storePass
+.RS 4
+Password to check integrity of the keystore or unlock the keystore
+.RE
+.PP
+\-storeType
+.RS 4
+Keystore type\&. The default value is "jks"\&.
+.RE
+.SH "ARGUMENTS FOR SELF-CONTAINED APPLICATION BUNDLERS"
+.PP
+The
+\fB\-B\fR
+option for the
+\fB\-deploy\fR
+command is used to specify arguments for the bundler that is used to create self\-contained applications\&. Each type of bundler has its own set of arguments\&.
+.SS "General Bundler Arguments"
+.PP
+appVersion=\fIversion\fR
+.RS 4
+Version of the application package\&. Some bundlers restrict the format of the version string\&.
+.RE
+.PP
+classPath=\fIpath\fR
+.RS 4
+Class path relative to the assembled application directory\&. The path is typically extracted from the JAR file manifest, and does not need to be set if you are using the other
+\fBjavapackager\fR
+commands\&.
+.RE
+.PP
+icon=\fIpath\fR
+.RS 4
+Location of the default icon to be used for launchers and other assists\&. For OS X, the format must be
+\fB\&.icns\fR\&. For Linux, the format must be
+\fB\&.png\fR\&.
+.RE
+.PP
+identifier=\fIvalue\fR
+.RS 4
+Default value that is used for other platform\-specific values such as
+\fBmac\&.CFBundleIdentifier\fR\&. Reverse DNS order is recommended, for example,
+\fBcom\&.example\&.application\&.my\-application\fR\&.
+.RE
+.PP
+jvmOptions=\fIoption\fR
+.RS 4
+Option to be passed to the JVM when the application is run\&. Any option that is valid for the
+\fBjava\fR
+command can be used\&. To pass more than one option, use multiple instances of the
+\fB\-B\fR
+option, as shown in the following example:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\fB\-BjvmOptions=\-Xmx128m \-BjvmOptions=\-Xms128m\fR
+ 
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.PP
+jvmProperties=\fIproperty\fR=\fIvalue\fR
+.RS 4
+Java System Property to be passed to the VM when the application is run\&. Any property that is valid for the
+\fB\-D\fR
+option of the
+\fBjava\fR
+command can be used\&. Specify both the property name and the value for the property\&. To pass more than one property, use multiple instances of the
+\fB\-B\fR
+option, as shown in the following example:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\fB\-BjvmProperties=apiUserName=example \-BjvmProperties=apiKey=abcdef1234567890\fR
+ 
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.PP
+mainJar=\fIfilename\fR
+.RS 4
+Name of the JAR file that contains the main class for the application\&. The file name is typically extracted from the JAR file manifest, and does not need to be set if you are using the other
+\fBjavapackager\fR
+commands\&.
+.RE
+.PP
+preferencesID=\fInode\fR
+.RS 4
+Preferences node to examine to check for JVM options that the user can override\&. The node specified is passed to the application at run time as the option
+\fB\-Dapp\&.preferences\&.id\fR\&. This argument is used with the
+\fBuserJVMOptions\fR
+argument\&.
+.RE
+.PP
+runtime=\fIpath\fR
+.RS 4
+Location of the JRE or JDK to include in the package bundle\&. Provide a file path to the root folder of the JDK or JRE\&. To use the system default JRE, do not provide a path, as shown in the following example:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\fB\-Bruntime=\fR
+ 
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.PP
+userJvmOptions=\fIoption\fR=\fIvalue\fR
+.RS 4
+JVM options that users can override\&. Any option that is valid for the
+\fBjava\fR
+command can be used\&. Specify both the option name and the value for the option\&. To pass more than one option, use multiple instances of the
+\fB\-B\fR
+option, as shown in the following example:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\fB\-BuserJvmOptions=\-Xmx=128m \-BuserJvmOptions=\-Xms=128m\fR
+ 
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.SS "OS X Application Bundler Arguments"
+.PP
+mac\&.category=\fIcategory\fR
+.RS 4
+Category for the application\&. The category must be in the list of categories found on the Apple Developer website\&.
+.RE
+.PP
+mac\&.CFBundleIdentifier=\fIvalue\fR
+.RS 4
+Value stored in the info plist for
+\fBCFBundleIdentifier\fR\&. This value must be globally unique and contain only letters, numbers, dots, and dashes\&. Reverse DNS order is recommended, for example,
+\fBcom\&.example\&.application\&.my\-application\fR\&.
+.RE
+.PP
+mac\&.CFBundleName=\fIname\fR
+.RS 4
+Name of the application as it appears on the OS X Menu Bar\&. A name of less than 16 characters is recommended\&. The default is the name attribute\&.
+.RE
+.PP
+mac\&.CFBundleVersion=\fIvalue\fR
+.RS 4
+Version number for the application, used internally\&. The value must be at least one integer and no more than three integers separated by periods (\&.) for example, 1\&.3 or 2\&.0\&.1\&. The value can be different than the value for the
+\fBappVersion\fR
+argument\&. If the
+\fBappVersion\fR
+argument is specified with a valid value and the
+\fBmac\&.CFBundleVersion\fR
+argument is not specified, then the
+\fBappVersion\fR
+value is used\&. If neither argument is specified,
+\fB100\fR
+is used as the version number\&.
+.RE
+.PP
+mac\&.signing\-key\-developer\-id\-app=\fIkey\fR
+.RS 4
+Name of the signing key used for Devleloper ID or Gatekeeper signing\&. If you imported a standard key from the Apple Developer Website, then that key is used by default\&. If no key can be identified, then the application is not signed\&.
+.RE
+.PP
+mac\&.bundle\-id\-signing\-prefix=\fIprefix\fR
+.RS 4
+Prefix that is applied to the signed binary when binaries that lack plists or existing signatures are found inside the bundles\&.
+.RE
+.SS "OS X DMG (Disk Image) Bundler Arguments"
+.PP
+The OS X DMG installer shows the license file specified by
+\fBlicenseFile\fR, if provided, before allowing the disk image to be mounted\&.
+.PP
+licenseFile=\fIpath\fR
+.RS 4
+Location of the End User License Agreement (EULA) to be presented or recorded by the bundler\&. The path is relative to the packaged application resources, for example,
+\fB\-BlicenseFile=COPYING\fR\&.
+.RE
+.PP
+systemWide=\fIboolean\fR
+.RS 4
+Flag that indicates which drag\-to\-install target to use\&. Set to
+\fBtrue\fR
+to show the Applications folder\&. Set to
+\fBfalse\fR
+to show the Desktop folder\&. The default is
+\fBtrue\fR\&.
+.RE
+.PP
+mac\&.CFBundleVersion=\fIvalue\fR
+.RS 4
+Version number for the application, used internally\&. The value must be at least one integer and no more than three integers separated by periods (\&.) for example, 1\&.3 or 2\&.0\&.1\&. The value can be different than the value for the
+\fBappVersion\fR
+argument\&. If the
+\fBappVersion\fR
+argument is specified with a valid value and the
+\fBmac\&.CFBundleVersion\fR
+argument is not specified, then the
+\fBappVersion\fR
+value is used\&. If neither argument is specified,
+\fB100\fR
+is used as the version number\&.
+.RE
+.PP
+mac\&.dmg\&.simple=\fIboolean\fR
+.RS 4
+Flag that indicates if DMG customization steps that depend on executing AppleScript code are skipped\&. Set to
+\fBtrue\fR
+to skip the steps\&. When set to
+\fBtrue\fR, the disk window does not have a background image, and the icons are not moved into place\&. If the
+\fBsystemWide\fR
+argument is also set to
+\fBtrue\fR, then a symbolic link to the root Applications folder is added to the DMG file\&. If the
+\fBsystemWide\fR
+argument is set to
+\fBfalse\fR, then only the application is added to the DMG file, no link to the desktop is added\&.
+.RE
+.SS "OS X PKG Bundler Arguments"
+.PP
+The OS X PKG installer presents a wizard and shows the license file specified by
+\fBlicenseFile\fR
+as one of the pages in the wizard\&. The user must accept the terms before installing the application\&.
+.PP
+licenseFile=\fIpath\fR
+.RS 4
+Location of the End User License Agreement (EULA) to be presented or recorded by the bundler\&. The path is relative to the packaged application resources, for example,
+\fB\-BlicenseFile=COPYING\fR\&.
+.RE
+.PP
+mac\&.signing\-key\-developer\-id\-installer=\fIkey\fR
+.RS 4
+Name of the signing key used for Developer ID or Gatekeeper signing\&. If you imported a standard key from the Apple Developer Website, then that key is used by default\&. If no key can be identified, then the application is not signed\&.
+.RE
+.PP
+mac\&.CFBundleVersion=\fIvalue\fR
+.RS 4
+Version number for the application, used internally\&. The value must be at least one integer and no more than three integers separated by periods (\&.) for example, 1\&.3 or 2\&.0\&.1\&. The value can be different than the value for the
+\fBappVersion\fR
+argument\&. If the
+\fBappVersion\fR
+argument is specified with a valid value and the
+\fBmac\&.CFBundleVersion\fR
+argument is not specified, then the
+\fBappVersion\fR
+value is used\&. If neither argument is specified,
+\fB100\fR
+is used as the version number\&.
+.RE
+.SS "Mac App Store Bundler Arguments"
+.PP
+mac\&.app\-store\-entitlements=\fIpath\fR
+.RS 4
+Location of the file that contains the entitlements that the application operates under\&. The file must be in the format specified by Apple\&. The path to the file can be specified in absolute terms, or relative to the invocation of
+\fBjavapackager\fR\&. If no entitlements are specified, then the application operates in a sandbox that is stricter than the typical applet sandbox, and access to network sockets and all files is prevented\&.
+.RE
+.PP
+mac\&.signing\-key\-app=\fIkey\fR
+.RS 4
+Name of the application signing key for the Mac App Store\&. If you imported a standard key from the Apple Developer Website, then that key is used by default\&. If no key can be identified, then the application is not signed\&.
+.RE
+.PP
+mac\&.signing\-key\-pkg=\fIkey\fR
+.RS 4
+Name of the installer signing key for the Mac App Store\&. If you imported a standard key from the Apple Developer Website, then that key is used by default\&. If no key can be identified, then the application is not signed\&.
+.RE
+.PP
+mac\&.CFBundleVersion=\fIvalue\fR
+.RS 4
+Version number for the application, used internally\&. The value must be at least one integer and no more than three integers separated by periods (\&.) for example, 1\&.3 or 2\&.0\&.1\&. The value can be different than the value for the
+\fBappVersion\fR
+argument\&. If the
+\fBappVersion\fR
+argument is specified with a valid value and the
+\fBmac\&.CFBundleVersion\fR
+argument is not specified, then the
+\fBappVersion\fR
+value is used\&. If neither argument is specified,
+\fB100\fR
+is used as the version number\&.
+.RE
+.SS "Linux Debian Bundler Arguments"
+.PP
+The license file specified by
+\fBlicenseFile\fR
+is not presented to the user in all cases, but the file is included in the application metadata\&.
+.PP
+category=\fIcategory\fR
+.RS 4
+Category for the application\&. See http://standards\&.freedesktop\&.org/menu\-spec/latest/apa\&.html for examples\&.
+.RE
+.PP
+copyright=\fIstring\fR
+.RS 4
+Copyright string for the application\&. This argument is used in the Debian metadata\&.
+.RE
+.PP
+email=\fIaddress\fR
+.RS 4
+Email address used in the Debian Maintainer field\&.
+.RE
+.PP
+licenseFile=\fIpath\fR
+.RS 4
+Location of the End User License Agreement (EULA) to be presented or recorded by the bundler\&. The path is relative to the packaged application resources, for example,
+\fB\-BlicenseFile=COPYING\fR\&.
+.RE
+.PP
+licenseType=\fItype\fR
+.RS 4
+Short name of the license type, such as
+\fB\-BlicenseType=Proprietary\fR, or
+\fB"\-BlicenseType=GPL v2 + Classpath Exception"\fR\&.
+.RE
+.PP
+vendor=\fIvalue\fR
+.RS 4
+Corporation, organization, or individual providing the application\&. This argument is used in the Debian Maintainer field\&.
+.RE
+.SS "Linux RPM Bundler Arguments"
+.PP
+category=\fIcategory\fR
+.RS 4
+Category for the application\&. See http://standards\&.freedesktop\&.org/menu\-spec/latest/apa\&.html for examples\&.
+.RE
+.PP
+licenseFile=\fIpath\fR
+.RS 4
+Location of the End User License Agreement (EULA) to be presented or recorded by the bundler\&. The path is relative to the packaged application resources, for example,
+\fB\-BlicenseFile=COPYING\fR\&.
+.RE
+.PP
+licenseType=\fItype\fR
+.RS 4
+Short name of the license type, such as
+\fB\-BlicenseType=Proprietary\fR, or
+\fB"\-BlicenseType=GPL v2 + Classpath Exception"\fR\&.
+.RE
+.PP
+vendor=\fIvalue\fR
+.RS 4
+Corporation, organization, or individual providing the application\&.
+.RE
+.SH "DEPRECATED OPTIONS"
+.PP
+The following options are no longer used by the packaging tool and are ignored if present\&.
+.PP
+\-runtimeversion \fIversion\fR
+.RS 4
+Version of the required JavaFX Runtime\&. Deprecated\&.
+.RE
+.PP
+\-noembedlauncher
+.RS 4
+If present, the packager will not add the JavaFX launcher classes to the JAR file\&. Deprecated\&.
+.RE
+.SH "NOTES"
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+A
+\fB\-v \fRoption can be used with any task command to enable verbose output\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+When the
+\fB\-srcdir\fR
+option is allowed in a command, it can be used more than once\&. If the
+\fB\-srcfiles\fR
+option is specified, the files named in the argument will be looked for in the location specified in the preceding
+\fBsrcdir\fR
+option\&. If there is no
+\fB\-srcdir\fR
+preceding
+\fB\-srcfiles\fR, the directory from which the
+\fBjavapackager\fR
+command is executed is used\&.
+.RE
+.SH "EXAMPLES"
+.PP
+\fBExample 1 \fRUsing the \-createjar Command
+.RS 4
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\fBjavapackager \-createjar \-appclass package\&.ClassName\fR
+\fB  \-srcdir classes \-outdir out \-outfile outjar \-v\fR
+ 
+.fi
+.if n \{\
+.RE
+.\}
+Packages the contents of the
+\fBclasses\fR
+directory to
+\fBoutjar\&.jar\fR, sets the application class to
+\fBpackage\&.ClassName\fR\&.
+.RE
+.PP
+\fBExample 2 \fRUsing the \-deploy Command
+.RS 4
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\fBjavapackager \-deploy \-outdir outdir \-outfile outfile \-width 34 \-height 43 \fR
+\fB  \-name AppName \-appclass package\&.ClassName \-v \-srcdir compiled\fR
+ 
+.fi
+.if n \{\
+.RE
+.\}
+Generates
+\fBoutfile\&.jnlp\fR
+and the corresponding
+\fBoutfile\&.html\fR
+files in
+\fBoutdir\fR
+for application
+\fBAppName\fR, which is started by
+\fBpackage\&.ClassName\fR
+and has dimensions of 34 by 43 pixels\&.
+.RE
+.PP
+\fBExample 3 \fRUsing the \-makeall Command
+.RS 4
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\fBjavapackager \-makeall \-appclass brickbreaker\&.Main \-name BrickBreaker \-width 600\fR
+\fB\-height 600\fR
+ 
+.fi
+.if n \{\
+.RE
+.\}
+Does all the packaging work including compilation,
+\fBcreatejar\fR, and
+\fBdeploy\fR\&.
+.RE
+.PP
+\fBExample 4 \fRUsing the \-signjar Command
+.RS 4
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\fBjavapackager \-signJar \-\-outdir dist \-keyStore sampleKeystore\&.jks \-storePass ****\fR
+\fB\-alias duke \-keypass **** \-srcdir dist\fR
+ 
+.fi
+.if n \{\
+.RE
+.\}
+Signs all of the JAR files in the
+\fBdist\fR
+directory, attaches a certificate with the specified alias,
+\fBkeyStore\fR
+and
+\fBstorePass\fR, and puts the signed JAR files back into the
+\fBdist\fR
+directory\&.
+.RE
+.PP
+\fBExample 5 \fRUsing the \-deploy Command with Bundler Arguments
+.RS 4
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\fBjavapackager \-deploy \-native deb \-Bcategory=Education \-BjvmOptions=\-Xmx128m \fR
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\fB    \-BjvmOptions=\-Xms128m \-outdir packages \-outfile BrickBreaker \-srcdir dist \fR
+\fB    \-srcfiles BrickBreaker\&.jar \-appclass brickbreaker\&.Main \-name BrickBreaker \fR
+\fB    \-title "BrickBreaker demo"\fR
+ 
+.fi
+.if n \{\
+.RE
+.\}
+Generates the native Linux Debian package for running the BrickBreaker application as a self\- contained application\&.
+.RE
+.br
+'pl 8.5i
+'bp

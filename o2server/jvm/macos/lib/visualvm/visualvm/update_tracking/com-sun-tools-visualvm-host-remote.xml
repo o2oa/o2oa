@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="com.sun.tools.visualvm.host.remote/0">
+    <module_version install_time="1484426042715" last="true" origin="installer" specification_version="1.0">
+        <file crc="4193518575" name="config/Modules/com-sun-tools-visualvm-host-remote.xml"/>
+        <file crc="4018493116" name="modules/com-sun-tools-visualvm-host-remote.jar"/>
+    </module_version>
+</module>
