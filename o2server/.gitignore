@@ -10,4 +10,5 @@ command.swap
 /store/
 /node_modules/
 package-lock.json
-package.json
+**/src/main/resources/META-INF/persistence.xml
+**/*_.java
