@@ -135,6 +135,8 @@
     var _rand = function(max) {
         return Math.floor(Math.random() * (max + 1));
     };
+
+    //uuid
     var _uuid = function(){
         var dg = new Date(1582, 10, 15, 0, 0, 0, 0);
         var dc = new Date();
@@ -167,6 +169,8 @@
     };
     this.o2.runCallback = _runCallback;
 
+
+    //load js, css, html adn all.
     var _getAllOptions = function(options){
         var doc = (options && options.doc) || document;
         if (!doc.unid) doc.unid = _uuid();
@@ -176,6 +180,7 @@
             "sequence": !!(options && options.sequence),
             "doc": doc,
             "dom": (options && options.dom) || document.body,
+            "bind": (options && options.bind) || null,
             "position": "beforeend" //'beforebegin' 'afterbegin' 'beforeend' 'afterend'
         }
     };
@@ -209,15 +214,20 @@
             "sequence": !!(options && options.sequence),
             "doc": doc,
             "dom": (options && options.dom) || null,
+            "bind": (options && options.bind) || null,
             "position": "beforeend" //'beforebegin' 'afterbegin' 'beforeend' 'afterend'
         }
     };
-    var _xhr_get = function(url, success, failure){
+    var _xhr_get = function(url, success, failure, completed){
         var xhr = new _request();
         xhr.open("GET", url, true);
 
         var _checkCssLoaded= function(_, err){
-            if (!(xhr.readyState == 4 || err)) return;
+            if (!(xhr.readyState == 4)) return;
+            if (err){
+                if (completed) completed(xhr);
+                return;
+            }
 
             _removeListener(xhr, 'readystatechange', _checkCssLoaded);
             _removeListener(xhr, 'load', _checkCssLoaded);
@@ -232,6 +242,7 @@
                 failure(xhr);
             else
                 failure(xhr);
+            if (completed) completed(xhr);
         };
         var _checkCssErrorLoaded= function(err){ _checkCssLoaded(err) };
 
@@ -265,6 +276,7 @@
         }
     };
 
+    //load js
     //use framework url
     var _frameworks = {
         "o2.core": ["/o2_core/o2/o2.core.js"],
@@ -286,6 +298,8 @@
     var _loaded = {};
     var _loadedCss = {};
     var _loadedHtml = {};
+    var _loadCssRunning = {};
+    var _loadCssQueue = [];
 
     var _loadSingle = function(module, callback, op){
         var url = module;
@@ -354,18 +368,44 @@
     };
     this.o2.load = _load;
 
+    //load css
     var _loadSingleCss = function(module, callback, op, uuid){
         var url = module;
         var uid = _uuid();
         if (op.noCache) url = (url.indexOf("?")!==-1) ? url+"&v="+uid : url+"?v="+uid;
 
         var key = encodeURIComponent(url+op.doc.unid);
-        if (!op.reload) if (_loadedCss[key]){ if (callback)callback(_loadedCss[key]); return; }
+        if (_loadCssRunning[key]){
+            _loadCssQueue.push(function(){
+                _loadSingleCss(module, callback, op, uuid);
+            });
+            return;
+        }
+
+        if (_loadedCss[key]) uuid = _loadedCss[key]["class"];
+        if (op.dom) _parseDom(op.dom, function(node){ if (node.className.indexOf(uuid) == -1) node.className += ((node.className) ? " "+uuid : uuid);}, op.doc);
+
+        var completed = function(){
+            if (_loadCssRunning[key]){
+                _loadCssRunning[key] = false;
+                delete _loadCssRunning[key];
+            }
+            if (_loadCssQueue && _loadCssQueue.length){
+                (_loadCssQueue.shift())();
+            }
+        };
+
+        if (_loadedCss[key])if (!op.reload){
+            if (callback)callback(_loadedCss[key]);
+            completed();
+            return;
+        }
 
         var success = function(xhr){
             var cssText = xhr.responseText;
             try{
                 if (cssText){
+                    if (op.bind) cssText = cssText.bindJson(op.bind);
                     if (op.dom){
                         var rex = new RegExp("(.+)(?=\\{)", "g");
                         var match;
@@ -395,7 +435,7 @@
                     }
                 }
                 style.id = uid;
-                var styleObj = {"module": module, "id": uid, "style": style, "doc": op.doc};
+                var styleObj = {"module": module, "id": uid, "style": style, "doc": op.doc, "class": uuid};
                 _loadedCss[key] = styleObj;
                 if (callback) callback(styleObj);
             }catch (e){
@@ -407,7 +447,10 @@
             console.log("Error: load css module: "+module);
             if (callback) callback();
         };
-        _xhr_get(url, success, failure);
+
+        _loadCssRunning[key] = true;
+
+        _xhr_get(url, success, failure, completed);
     };
 
     var _parseDomString = function(dom, fn, sourceDoc){
@@ -430,8 +473,6 @@
         var cb = (_typeOf(options)==="function") ? options : callback;
 
         var uuid = "css"+_uuid();
-        if (op.dom) _parseDom(op.dom, function(node){ node.className += ((node.className) ? " "+uuid : uuid)}, op.doc);
-
         var thisLoaded = [];
         if (op.sequence){
             _loadSequence(ms, cb, op, 0, thisLoaded, _loadSingleCss, uuid);
@@ -466,6 +507,7 @@
         _loadCss(modules, op, cb);
     };
 
+    //load html
     _loadSingleHtml = function(module, callback, op){
         var url = module;
         var uid = _uuid();
@@ -486,6 +528,7 @@
     };
 
     var _injectHtml = function(op, data){
+        if (op.bind) data = data.bindJson(op.bind);
         if (op.dom) _parseDom(op.dom, function(node){ node.insertAdjacentHTML(op.position, data) }, op.doc);
     };
     var _loadHtml = function(modules, options, callback){
@@ -508,6 +551,128 @@
         _loadHtml(modules, op, cb);
     };
 
+    //load all
+    _loadAll = function(modules, options, callback){
+        //var ms = (_typeOf(modules)==="array") ? modules : [modules];
+        var op =  (_typeOf(options)==="object") ? _getAllOptions(options) : _getAllOptions(null);
+        var cb = (_typeOf(options)==="function") ? options : callback;
+
+        var ms, htmls, styles, sctipts;
+        var _htmlLoaded=(!modules.html), _cssLoaded=(!modules.css), _jsLoaded=(!modules.js);
+        var _checkloaded = function(){
+            if (_htmlLoaded && _cssLoaded && _jsLoaded) if (cb) cb(htmls, styles, sctipts);
+        };
+        if (modules.html){
+            _loadHtml(modules.html, op, function(h){
+                htmls = h;
+                _htmlLoaded = true;
+                _checkloaded();
+            });
+        }
+        if (modules.css){
+            _loadCss(modules.css, op, function(s){
+                styles = s;
+                _cssLoaded = true;
+                _checkloaded();
+            });
+        }
+        if (modules.js){
+            _load(modules.js, op, function(s){
+                sctipts = s;
+                _jsLoaded = true;
+                _checkloaded();
+            });
+        }
+    };
+    this.o2.loadAll = _loadAll;
+    Element.prototype.loadAll = function(modules, options, callback){
+        var op =  (_typeOf(options)==="object") ? options : {};
+        var cb = (_typeOf(options)==="function") ? options : callback;
+        op.dom = this;
+        _loadAll(modules, op, cb);
+    };
+
+    //json template
+    _parseText = function(html, json){
+        var _ht = html;
+        var regexp = /(text\{).+?\}/g;
+        var r = _ht.match(regexp);
+        if(r) if (r.length){
+            for (var i=0; i<r.length; i++){
+                var text = r[i].substr(0,r[i].lastIndexOf("}"));
+                text = text.substr(text.indexOf("{")+1,text.length);
+                var value = _jsonText(json ,text);
+                _ht = _ht.replace(/(text\{).+?\}/,value);
+            }
+        }
+        return _ht;
+    };
+    _parseEach = function(html, json){
+        var _ht = html;
+        var regexp = /(\{each\([\s\S]+\)\})[\s\S]+?(\{endEach\})/g;
+        var r = _ht.match(regexp);
+        if(r){
+            if (r.length){
+                for (var i=0; i<r.length; i++){
+                    var eachItemsStr = r[i].substr(0,r[i].indexOf(")"));
+                    eachItemsStr = eachItemsStr.substr(eachItemsStr.indexOf("(")+1,eachItemsStr.length);
+                    var pars = eachItemsStr.split(/,[\s]*/g);
+                    eachItemsPar = pars[0];
+                    eachItemsCount = pars[1].toInt();
+
+                    var eachItems = _jsonText(json ,eachItemsPar);
+                    if (eachItems) if (eachItemsCount==0) eachItemsCount = eachItems.length;
+
+                    var eachContentStr = r[i].substr(0,r[i].lastIndexOf("{endEach}"));
+                    eachContentStr = eachContentStr.substr(eachContentStr.indexOf("}")+1,eachContentStr.length);
+
+                    var eachContent = [];
+                    if (eachItems){
+                        for (var n=0; n<Math.min(eachItems.length, eachItemsCount); n++){
+                            var item = eachItems[n];
+                            if (item){
+                                var tmpEachContentStr = eachContentStr;
+                                var textReg = /(eachText\{).+?\}/g;
+                                texts = tmpEachContentStr.match(textReg);
+                                if (texts){
+                                    if (texts.length){
+                                        for (var j=0; j<texts.length; j++){
+                                            var text = texts[j].substr(0,texts[j].lastIndexOf("}"));
+                                            text = text.substr(text.indexOf("{")+1,text.length);
+
+                                            var value = _jsonText(item ,text);
+                                            tmpEachContentStr = tmpEachContentStr.replace(/(eachText\{).+?\}/,value);
+                                        }
+                                    }
+                                }
+                                eachContent.push(tmpEachContentStr);
+                            }
+                        }
+                    }
+                    _ht = _ht.replace(/(\{each\([\s\S]+\)\})[\s\S]+?(\{endEach\})/,eachContent.join(""));
+                }
+            }
+        }
+        return _ht;
+    };
+    _jsonText = function(json, text){
+        var $ = json;
+        var f = eval("(x = function($){\n return "+text+";\n})");
+        returnValue = f.apply(json, [$]);
+        if (returnValue===undefined) returnValue="";
+        returnValue = returnValue.toString();
+        return returnValue || "";
+    };
+
+    _bindJson = function(str, json){
+        return _parseEach(_parseText(str, json), json);
+    };
+    o2.bindJson = _bindJson;
+    String.prototype.bindJson = function(json){
+        return _parseEach(_parseText(this, json), json);
+    };
+
+    //dom ready
     var _dom = {
         ready: false,
         loaded: false,
