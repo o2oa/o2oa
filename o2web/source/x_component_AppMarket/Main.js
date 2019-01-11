@@ -1,3 +1,4 @@
+MWF.require("MWF.widget.MaskNode", null, false);
 MWF.xApplication.AppMarket.Main = new Class({
 	Extends: MWF.xApplication.Common.Main,
 	Implements: [Options, Events],
@@ -14,8 +15,20 @@ MWF.xApplication.AppMarket.Main = new Class({
 		this.lp = MWF.xApplication.AppMarket.LP;
         this.actions = MWF.Actions.get("x_program_center");
 	},
+    mask: function(){
+        if (!this.maskNode){
+            this.maskNode = new MWF.widget.MaskNode(this.contentNode, {"style": "bam"});
+            this.maskNode.load();
+        }
+    },
+    unmask: function(){
+        if (this.maskNode) this.maskNode.hide(function(){
+            MWF.release(this.maskNode);
+            this.maskNode = null;
+        }.bind(this));
+    },
 	loadApplication: function(callback){
-        this.components = [];
+	    this.components = [];
         this.loadTitle();
 
         this.contentNode = new Element("div", {"styles": this.css.contentNode}).inject(this.content);
@@ -23,6 +36,7 @@ MWF.xApplication.AppMarket.Main = new Class({
         this.setContentSize();
         this.addEvent("resize", this.setContentSize);
 
+        this.mask();
         this.loadCloudAppsContent();
 	},
 
@@ -129,6 +143,8 @@ MWF.xApplication.AppMarket.Main = new Class({
                     this.itemList.push(new MWF.xApplication.AppMarket.Module(this, module));
                 }.bind(this));
             }.bind(this));
+
+            this.unmask();
         }.bind(this));
     }
 });
