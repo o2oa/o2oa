@@ -1,7 +1,9 @@
 .project
 /.settings/
 /local/
+/localSample/
 /config/
+/configSample/
 /logs/
 /target/
 /x_build_and_scratch/
@@ -9,6 +11,11 @@
 command.swap
 /store/
 /node_modules/
-package-lock.json
 **/src/main/resources/META-INF/persistence.xml
+**/src/main/resources/META-INF/x_persistence.xml
 **/*_.java
+**/src/main/webapp/describe/
+console.jar
+**/.DS_Store
+.DS_Store
+/commons/ext/manifest.cfg

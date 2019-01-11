@@ -1,10 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." name="main" default="default">
 	<basename property="project" file="${basedir}" />
+	<mkdir dir="${basedir}/commons/ext" />
+	<mkdir dir="${basedir}/store/jars" />
+	<path id="project.classpath">
+		<fileset dir="${basedir}/commons/ext">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${basedir}/store/jars">
+			<include name="*.jar" />
+		</fileset>
+	</path>
 	<tstamp>
 		<format property="VERSION" pattern="yyyyMMddHHmmss" locale="zh-cn" />
 	</tstamp>
-	<target name="default">
+
+	<target name="createConfigSample">
+		<delete dir="${basedir}/configSample" />
+		<mkdir dir="${basedir}/configSample" />
+		<java classname="com.x.base.core.project.build.CreateConfigSample" fork="true">
+			<sysproperty key="file.encoding" value="utf-8" />
+			<classpath refid="project.classpath" />
+			<arg value="${basedir}" />
+		</java>
+	</target>
+
+	<target name="createLocalSample">
+		<delete dir="${basedir}/localSample" />
+		<mkdir dir="${basedir}/localSample" />
+		<java classname="com.x.base.core.project.build.CreateLocalSample" fork="true">
+			<sysproperty key="file.encoding" value="utf-8" />
+			<classpath refid="project.classpath" />
+			<arg value="${basedir}" />
+		</java>
+	</target>
+
+	<target name="createManifestCfg">
+		<java classname="com.x.base.core.project.build.CreateManifestCfg" fork="true">
+			<sysproperty key="file.encoding" value="utf-8" />
+			<classpath refid="project.classpath" />
+			<arg value="${basedir}" />
+		</java>
+	</target>
+
+
+	<target name="default" depends="createConfigSample,createLocalSample,createManifestCfg">
 		<delete dir="target" />
 		<mkdir dir="target/o2server" />
 		<mkdir dir="target/o2server/commons" />
@@ -19,6 +59,12 @@
 		<mkdir dir="target/o2server/servers/centerServer/work" />
 		<mkdir dir="target/o2server/servers/applicationServer/webapps" />
 		<mkdir dir="target/o2server/servers/applicationServer/work" />
+		<exec vmlauncher="false" executable="npm">
+			<arg line="install" />
+		</exec>
+		<exec vmlauncher="false" executable="npm">
+			<arg line="install -g gulp-cli" />
+		</exec>
 		<exec vmlauncher="false" executable="gulp" />
 		<copy todir="target/o2server/commons/">
 			<fileset dir="./commons/" />
