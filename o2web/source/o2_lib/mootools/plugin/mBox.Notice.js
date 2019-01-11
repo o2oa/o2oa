@@ -397,7 +397,7 @@ var mBox = new Class({
 				}
 
 
-                this.wrapper.inject(document.body, 'bottom');
+                if (this.wrapper) this.wrapper.inject(document.body, 'bottom');
 
 				// set new position
 				this.setPosition(null, options.position || null, options.offset || null);
@@ -480,9 +480,11 @@ var mBox = new Class({
 				this.wrapper.setStyle('display', 'none');
 				this.fireEvent('systemCloseComplete').fireEvent('closeComplete');
 
-                var target = this.target || $(this.options.target) || this.options.target || $(this.options.attach);
-                if (target && typeOf(target)==="element"){
-                    this.wrapper.inject(target);
+                if (this.wrapper){
+                    var target = this.target || $(this.options.target) || this.options.target || $(this.options.attach);
+                    if (target && typeOf(target)==="element"){
+                        this.wrapper.inject(target);
+                    }
                 }
 			}.bind(this);
 
