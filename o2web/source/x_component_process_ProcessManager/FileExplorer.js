@@ -9,15 +9,15 @@ MWF.xApplication.process.ProcessManager.FileExplorer = new Class({
         "noElement": MWF.APPPM.LP.file.noDictionaryNoticeText
     },
 
-    createSearchElementNode: function(){
-        this.titleActionNodeNode = new Element("div", {
-            "styles": this.css.titleActionNode,
-            "text": MWF.APPPM.LP.file.loadFiles
-        }).inject(this.toolbarNode);
-        this.titleActionNodeNode.addEvent("click", function(){
-            this.implodeFiles();
-        }.bind(this));
-    },
+    // createSearchElementNode: function(){
+    //     this.titleActionNodeNode = new Element("div", {
+    //         "styles": this.css.titleActionNode,
+    //         "text": MWF.APPPM.LP.file.loadFiles
+    //     }).inject(this.toolbarNode);
+    //     this.titleActionNodeNode.addEvent("click", function(){
+    //         this.implodeFiles();
+    //     }.bind(this));
+    // },
     getNewData: function(){
         return {
             "id": "",
@@ -73,16 +73,8 @@ MWF.xApplication.process.ProcessManager.FileExplorer = new Class({
     },
 
     _createElement: function(e){
-        // var _self = this;
-        // var options = {
-        //     "onQueryLoad": function(){
-        //         this.actions = _self.app.restActions;
-        //         this.application = _self.app.options.application || _self.app.application;
-        //         this.explorer = _self;
-        //     }
-        // };
-        // this.app.desktop.openApplication(e, "process.FileDesigner", options);
-        new MWF.xApplication.process.ProcessManager.FileDesigner(this);
+        this.implodeFiles();
+        //new MWF.xApplication.process.ProcessManager.FileDesigner(this);
     },
     _loadItemDataList: function(callback){
         var id = "";
@@ -120,11 +112,59 @@ MWF.xApplication.process.ProcessManager.FileExplorer = new Class({
 MWF.xApplication.process.ProcessManager.FileExplorer.File = new Class({
 	Extends: MWF.xApplication.process.ProcessManager.DictionaryExplorer.Dictionary,
 
+    load: function(){
+	    var css = "/x_component_process_ProcessManager/$DictionaryExplorer/"+this.explorer.options.style+"/file.css";
+        var view = "/x_component_process_ProcessManager/$DictionaryExplorer/"+this.explorer.options.style+"/file.html";
+        this.container.loadCss(css);
+        this.node = new Element("div", {
+            "styles": this.explorer.css.itemNode,
+            "events": {
+                "mouseover": function(){
+                    if (this.deleteActionNode) this.deleteActionNode.fade("in");
+                    if (this.saveasActionNode) this.saveasActionNode.fade("in");
+                }.bind(this),
+                "mouseout": function(){
+                    if (this.deleteActionNode) this.deleteActionNode.fade("out");
+                    if (this.saveasActionNode) this.saveasActionNode.fade("out");
+                }.bind(this)
+            }
+        }).inject(this.container);
+
+        if (this.data.name.icon) this.icon = this.data.name.icon;
+        this.data.iconUrl = this.explorer.path+""+this.explorer.options.style+"/processIcon/"+this.icon;
+
+        this.node.loadHtml(view, {"bind": this.data}, function(){
+            debugger;
+            var itemIconNode = this.node.getElement(".o2_fileItemIconNode");
+            this.deleteActionNode = this.node.getElement(".o2_fileDeleteActionNode");
+            var itemTextTitleNode = this.node.getElement(".o2_fileItemTextTitleNode");
+
+            itemIconNode.addEvent("click", function(e){
+                this.toggleSelected();
+                e.stopPropagation();
+            }.bind(this));
+
+            itemIconNode.makeLnk({
+                "par": this._getLnkPar()
+            });
+
+            if (!this.explorer.options.noDelete) this._createActions();
+
+            itemTextTitleNode.addEvent("click", function(e){
+                this._open(e);
+                e.stopPropagation();
+            }.bind(this));
+
+            this._customNodes();
+
+            this._isNew();
+        }.bind(this));
+    },
     _createActions: function(){
-        this.deleteActionNode = new Element("div", {
-            "styles": this.explorer.css.deleteActionNode
-        }).inject(this.node);
-        this.deleteActionNode.addEvent("click", function(e){
+        // this.deleteActionNode = new Element("div", {
+        //     "styles": this.explorer.css.deleteActionNode
+        // }).inject(this.node);
+        if (this.deleteActionNode) this.deleteActionNode.addEvent("click", function(e){
             this.deleteItem(e);
         }.bind(this));
     },
