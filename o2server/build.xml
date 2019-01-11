@@ -1,9 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." name="main" default="default">
 	<basename property="project" file="${basedir}" />
+	<path id="project.classpath">
+		<fileset dir="${basedir}/commons/ext">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${basedir}/store/jars">
+			<include name="*.jar" />
+		</fileset>
+	</path>
 	<tstamp>
 		<format property="VERSION" pattern="yyyyMMddHHmmss" locale="zh-cn" />
 	</tstamp>
+
+	<target name="createConfigSample">
+		<delete dir="${basedir}/configSample" />
+		<mkdir dir="${basedir}/configSample" />
+		<java classname="com.x.base.core.project.build.CreateConfigSample" fork="true">
+			<sysproperty key="file.encoding" value="utf-8" />
+			<classpath refid="project.classpath" />
+			<arg value="${basedir}" />
+		</java>
+	</target>
+
+	<target name="createLocalSample">
+		<delete dir="${basedir}/localSample" />
+		<mkdir dir="${basedir}/localSample" />
+		<java classname="com.x.base.core.project.build.CreateLocalSample" fork="true">
+			<sysproperty key="file.encoding" value="utf-8" />
+			<classpath refid="project.classpath" />
+			<arg value="${basedir}" />
+		</java>
+	</target>
+
+	<target name="createManifestCfg">
+		<java classname="com.x.base.core.project.build.CreateManifestCfg" fork="true">
+			<sysproperty key="file.encoding" value="utf-8" />
+			<classpath refid="project.classpath" />
+			<arg value="${basedir}" />
+		</java>
+	</target>
+
+
 	<target name="default">
 		<delete dir="target" />
 		<mkdir dir="target/o2server" />
