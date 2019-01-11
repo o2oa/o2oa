@@ -222,13 +222,14 @@
             async: loadAsync,
             withCredentials: credentials,
             onSuccess: function(responseJSON, responseText){
-                var xToken = this.getHeader("x-token");
-                if (xToken){
-                    if (layout){
-                        if (!layout.session) layout.session = {};
-                        layout.session.token = xToken;
-                    }
-                }
+                // var xToken = this.getHeader("authorization");
+                // if (!xToken) xToken = this.getHeader("x-token");
+                // if (xToken){
+                //     if (layout){
+                //         if (!layout.session) layout.session = {};
+                //         layout.session.token = xToken;
+                //     }
+                // }
                 o2.runCallback(callback, "success", [responseJSON])
             },
             onFailure: function(xhr){
@@ -261,11 +262,13 @@
         switch (type){
             case "object":
                 for (var k in o){
+                    //if (o[k] && o[k].destroy) o[k].destroy();
                     o[k] = null;
                 }
                 break;
             case "array":
                 for (var i=0; i< o.length; i++){
+                    _release(o[i]);
                     if (o[i]) o[i] = null;
                 }
                 break;

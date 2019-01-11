@@ -7,6 +7,13 @@ MWF.xScript.Environment = function(ev){
     this.library = COMMON;
     //this.library.version = "4.0";
 
+    this.power = {
+        "isManager": MWF.AC.isProcessManager() || _form.businessData.control.allowReroute,
+        "isReseter": _form.businessData.control.allowReset,
+        "isDelete": _form.businessData.control.allowDeleteWork,
+        "isPront": true,
+        "isPrint": true
+    };
     //data
     var getJSONData = function(jData){
         return new MWF.xScript.JSONData(jData, function(data, key, _self){
@@ -767,10 +774,14 @@ MWF.xScript.Environment = function(ev){
                 var viewJson = {
                     "application": view.application || _form.json.application,
                     "viewName": view.view || "",
-                    "isTitle": view.isTitle || "yes",
-                    "select": view.select || "multi"
+                    "isTitle": (view.isTitle===false) ? "no" : "yes",
+                    "select": (view.isMulti===false) ? "single" : "multi",
+                    "filter": view.filter
                 };
                 if (!options) options = {};
+                options.width = view.width;
+                options.height = view.height;
+                options.title = view.caption;
                 var width = options.width || "700";
                 var height = options.height || "400";
 
@@ -1164,6 +1175,7 @@ MWF.xScript.Environment = function(ev){
     this.event = ev.event;
     this.status = ev.status;
     this.session = layout.desktop.session;
+    this.Actions = o2.Actions;
 };
 
 
@@ -1388,10 +1400,10 @@ MWF.xScript.createDict = function(application){
 
         var encodePath = function( path ){
             var arr = path.split(/\./g);
-            // var ar = arr.map(function(v){
-            //     return encodeURIComponent(v);
-            // });
-            return arr.join("/");
+            var ar = arr.map(function(v){
+                return encodeURIComponent(v);
+            });
+            return ar.join("/");
         };
 
         this.get = function(path, success, failure){

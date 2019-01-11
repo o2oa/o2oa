@@ -50,7 +50,8 @@
 		"opacity": 0,
 		"padding": "4px",
 		"border-radius": "8px",
-		"background-image": "url("+MWF.defaultPath+"/xDesktop/$Window/desktop_default/img/window.jpg)"
+		"background-color": "#333333"
+        //"background-image": "url("+MWF.defaultPath+"/xDesktop/$Window/desktop_default/img/window.jpg)"
 	},
 	"spacerTo": {
 		"-webkit-user-select": "none",
@@ -59,7 +60,8 @@
 		"opacity": 0.8,
 		"border-radius": "8px",
 		"padding": "4px",
-		"background-image": "url("+MWF.defaultPath+"/xDesktop/$Window/desktop_default/img/window.jpg)"
+		"background-color": "#333333"
+        //"background-image": "url("+MWF.defaultPath+"/xDesktop/$Window/desktop_default/img/window.jpg)"
 	},
 	"spacerCurrent":{
 		"opacity": 0.8,

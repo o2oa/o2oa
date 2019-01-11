@@ -212,5 +212,9 @@
   "listUnitdutyPrev": {"uri": "/jaxrs/unitduty/list/{id}/prev/{count}"},
   //-------------------------------------------------------------
 
+  "getImportPersonTemplate": {"uri": "/jaxrs/inputperson/template"},
+  "getImportPersonResault": {"uri": "/jaxrs/inputperson/result/flag/{flag}"},
+  "importPerson": {"uri": "/jaxrs/inputperson", "method": "POST", "enctype": "formData"},
+
   "clazz": "x_organization_assemble_control"
 }

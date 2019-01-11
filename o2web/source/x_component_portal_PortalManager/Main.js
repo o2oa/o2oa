@@ -1,6 +1,5 @@
 MWF.xDesktop.requireApp("portal.PortalManager", "package", null, false);
 //MWF.xDesktop.requireApp("portal.PortalManager", "Actions.RestActions", null, false);
-MWF.xDesktop.requireApp("Organization", "Selector.package", null, false);
 MWF.require("MWF.xAction.org.express.RestActions", null,false);
 MWF.require("MWF.widget.Identity", null,false);
 MWF.xDesktop.requireApp("process.ProcessManager", "", null, false);

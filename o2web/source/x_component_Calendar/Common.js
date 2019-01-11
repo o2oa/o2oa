@@ -71,7 +71,7 @@ MWFCalendar.EventForm = new Class({
         this.fireEvent("postEdit");
     },
     _createTableContent : function(){
-        var path = "/x_desktop/res/framework/rrule/";
+        var path = "/o2_lib/rrule/";
         COMMON.AjaxModule.load(path+"rrule.js", function () {
             this.app.actions.listMyCalendar( function( json ){
                 this.calendarIds = [];

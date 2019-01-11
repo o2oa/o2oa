@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
@@ -22,14 +23,14 @@ public class MappingItem extends GsonPropertyObject {
 		if (null != cell) {
 			switch (item.getType()) {
 			case string:
-				cell.setCellType(Cell.CELL_TYPE_STRING);
+				cell.setCellType(CellType.STRING);
 				String stringValue = cell.getStringCellValue();
 				if (null != stringValue) {
 					PropertyUtils.setProperty(jpaObject, item.getField(), stringValue);
 				}
 				break;
 			case integer:
-				cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell.setCellType(CellType.NUMERIC);
 				Double doubeValue = cell.getNumericCellValue();
 				if (null != doubeValue) {
 					PropertyUtils.setProperty(jpaObject, item.getField(), doubeValue.intValue());

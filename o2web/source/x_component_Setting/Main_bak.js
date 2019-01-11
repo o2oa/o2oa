@@ -1,5 +1,5 @@
 //MWF.xDesktop.requireApp("Deployment", "Actions.RestActions", null, false);
-MWF.xDesktop.requireApp("Servers", "Actions.RestActions", null, false);
+//MWF.xDesktop.requireApp("Servers", "Actions.RestActions", null, false);
 MWF.xApplication.Servers.Main = new Class({
 	Extends: MWF.xApplication.Common.Main,
 	Implements: [Options, Events],

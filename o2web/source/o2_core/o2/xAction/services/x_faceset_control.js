@@ -27,7 +27,7 @@ MWF.xAction.RestActions.Action["x_faceset_control"] = new Class({
 MWF.xAction.RestActions.Action["x_faceset_control"].RestActions = new Class({
     Extends: MWF.xDesktop.Actions.RestActions,
     getAddress: function(success, failure){
-        this.address = "http://dev.o2oa.io:8888/"+this.serviceName;
+        this.address = "http://dev.o2oa.net:8888/"+this.serviceName;
         if (success) success.apply();
     }
 });

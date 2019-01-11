@@ -35,6 +35,7 @@ MWF.xApplication.AppCenter.LP = {
     "formList": "表单",
     "applicationDictList": "数据字典",
     "scriptList": "脚本",
+    "fileList": "资源文件",
 
     "pageList": "页面",
     "scriptList": "脚本",

@@ -239,7 +239,7 @@ MWF.xApplication.process.ProcessManager.DictionaryExplorer = new Class({
                     itemObj.load()
                 }.bind(this));
             }else{
-                var noElementNode = new Element("div", {
+                var noElementNode = new Element("div.noElementNode", {
                     "styles": this.css.noElementNode,
                     "text": (this.options.noCreate) ? MWF.APPPM.LP.dictionary.noDictionaryNoCreateNoticeText : this.options.tooltip.noElement
                 }).inject(this.elementContentListNode);

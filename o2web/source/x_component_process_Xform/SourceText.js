@@ -1,5 +1,4 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-COMMON.AjaxModule.load("JSONTemplate", null, false);
 MWF.xApplication.process.Xform.SourceText = MWF.APPSourceText =  new Class({
     Extends: MWF.APP$Module,
 
@@ -16,19 +15,23 @@ MWF.xApplication.process.Xform.SourceText = MWF.APPSourceText =  new Class({
         this.source = this._getSource();
         if (this.source){
             if (this.source.data){
-                this.template = new Template();
-                this.text = this.template.substitute("{"+this.json.jsonPath+"}", this.source.data);
+                COMMON.AjaxModule.load("JSONTemplate", function(){
 
-                if (this.json.jsonText){
-                    if (this.json.jsonText.code){
-                        this.text = this.form.Macro.exec(this.json.jsonText.code, this);
-                        this.node.set("text", this.text);
+                    this.template = new Template();
+                    this.text = this.template.substitute("{"+this.json.jsonPath+"}", this.source.data);
+
+                    if (this.json.jsonText){
+                        if (this.json.jsonText.code){
+                            this.text = this.form.Macro.exec(this.json.jsonText.code, this);
+                            this.node.set("text", this.text);
+                        }else{
+                            this.node.set("text", this.text);
+                        }
                     }else{
                         this.node.set("text", this.text);
                     }
-                }else{
-                    this.node.set("text", this.text);
-                }
+
+                }.bind(this));
             }
         }
     }

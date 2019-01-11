@@ -47,6 +47,7 @@ MWF.xApplication.process.FormDesigner.Module.$Element = MWF.FC$Element = new Cla
             this.form.scriptDesigner.removeModule(this.json);
 		}
 
+        if (this.property) this.property.destroy();
 		this.node.destroy();
 		this.actionArea.destroy();
 		
@@ -55,6 +56,7 @@ MWF.xApplication.process.FormDesigner.Module.$Element = MWF.FC$Element = new Cla
 		delete this.json;
 		
 		this.treeNode.destroy();
+		o2.release(this);
 	},
 	parseModules: function(){},
 	_deleteModule: function(){

@@ -322,7 +322,7 @@ public class ActionSave extends BaseAction {
 		
 		if (check) {
 			// 如果是已经发布的文档，需要限时再计算一次文档权限
-			if ( "published".equals( document.getDocStatus()) ) {
+			if ( "published".equals( document.getDocStatus()) && !wi.getSkipPermission()  ) {
 				//将读者以及作者信息持久化到数据库中
 				try {
 					documentInfoServiceAdv.refreshDocumentPermission( document.getId(), wi.getReaderList(), wi.getAuthorList() );
@@ -369,6 +369,9 @@ public class ActionSave extends BaseAction {
 		
 		@FieldDescribe( "图片列表." )
 		private List<String> cloudPictures = null;
+		
+		@FieldDescribe( "不修改权限（跳过权限设置，保留原来的设置）." )
+		private Boolean skipPermission  = false;
 		
 		public String getIdentity() {
 			return identity;
@@ -445,6 +448,13 @@ public class ActionSave extends BaseAction {
 			this.cloudPictures = cloudPictures;
 		}
 
+		public Boolean getSkipPermission() {
+			return skipPermission;
+		}
+
+		public void setSkipPermission(Boolean skipPermission) {
+			this.skipPermission = skipPermission;
+		}
 	}
 
 	public static class Wo extends WoId {

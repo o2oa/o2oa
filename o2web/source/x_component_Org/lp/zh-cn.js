@@ -229,5 +229,10 @@ MWF.xApplication.Org.LP = {
 	"changePersonIcon": "更换头像",
     "resetPasswordTitle": "重置密码确认",
     "resetPasswordText": "您确定要为用户 {name} 重置密码吗？",
-    "resetPasswordSuccess": "用户 {name} 的密码已重置"
+    "resetPasswordSuccess": "用户 {name} 的密码已重置",
+
+    "importPersonTitle": "人员导入",
+    "importPersonInfor": "您可以通过Excel批量导入人员，<a target='_blank' href='{url}' >点击此处</a>获取人员导入模板",
+    "importPersonAction": "上传Excel文件，导入人员",
+    "importPersonResult": "人员已导入，<a target='_blank' href='{url}' >点击此处</a>查看导入结果"
 };

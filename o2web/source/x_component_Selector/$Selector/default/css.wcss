@@ -364,6 +364,7 @@
 	"selectorItemTextNode": {
 		"height": "28px",
 		"margin": "0px 28px",
+		"word-wrap": "break-word",
 		"color": "#000"
 	},
 	"selectorItemCategoryTextNode": {
@@ -391,5 +392,10 @@
 	    "border": "1px solid #eee",
 	    "background": "#FFF",
 	    "height": "18px"
+	},
+	"filePreviewNode": {
+	    "overflow": "hidden",
+	    "max-width": "300px",
+	    "max-height": "200px"
 	}
 }

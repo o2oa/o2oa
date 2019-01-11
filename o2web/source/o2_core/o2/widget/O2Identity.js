@@ -25,6 +25,8 @@ o2.widget.O2Identity = new Class({
         // this.explorer = explorer;
         // this.removeAction = removeAction;
         this.load();
+
+        //o2.widget.O2Identity.iditems.push(this);
 	},
     setText: function(){
         this.node.set("text", this.data.name+"("+this.data.unitName+")");
@@ -446,9 +448,52 @@ o2.widget.O2Role = new Class({
         }
     }
 });
+o2.widget.O2File = new Class({
+    Extends: o2.widget.O2Group,
+    createInforNode: function(){
+        this.inforNode = new Element("div", {
+            "styles": this.style.identityInforNode
+        });
+        var extName = this.data.fileName.substring(this.data.fileName.lastIndexOf(".")+1, this.data.fileName.length).toLowerCase();
+        if (["png","jpg","bmp","gif","jpeg","jpe"].indexOf(extName)!==-1){
+            var url = (this.data.portal) ? MWF.xDesktop.getPortalFileUr(this.data.id, this.data.portal) : MWF.xDesktop.getProcessFileUr(this.data.id, this.data.application);
+            var img = new Element("img", {"src": url, "styles": {"max-width": "280px", "max-height": "140px"}}).inject(this.inforNode);
+        }else{
+            var nameNode = new Element("div", {
+                "styles": this.style.identityInforNameNode,
+                "text": this.data.applicationName || this.data.appName || this.data.name
+            }).inject(this.inforNode);
+        }
+
+        this.tooltip = new mBox.Tooltip({
+            content: this.inforNode,
+            setStyles: {content: {padding: 15, lineHeight: 20}},
+            attach: this.node,
+            transition: 'flyin'
+        });
+    },
+
+    getPersonData: function(){
+        return this.data;
+    }
+});
 o2.widget.O2Other = new Class({
     Extends: o2.widget.O2Group,
     getPersonData: function(){
         return this.data;
     }
 });
+
+// o2.widget.O2Identity.iditems = o2.widget.O2Identity.iditems || [];
+// o2.widget.O2Identity.intervalId = window.setInterval(function(){
+//     if (o2.widget.O2Identity.iditems && o2.widget.O2Identity.iditems.length){
+//         o2.widget.O2Identity.iditems.each(function(item){
+//             if (item.tooltip){
+//                 debugger;
+//                 if (item.tooltip.options.attach){
+//
+//                 }
+//             }
+//         });
+//     }
+// }, 10000);

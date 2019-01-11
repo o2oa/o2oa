@@ -408,7 +408,7 @@ o2.widget.ToolbarMenu = new Class({
 				"event": "click",
 				"disable": toolbarMenu.options.disable,
 				"onQueryShow": function(){
-					var p = toolbarMenu.node.getPosition();
+					var p = toolbarMenu.node.getPosition(toolbarMenu.node.getOffsetParent());
 					var s = toolbarMenu.node.getSize();
 					this.setOptions({
 						"top": p.y+s.y-2,
@@ -418,7 +418,7 @@ o2.widget.ToolbarMenu = new Class({
 					return true;
 				},
 				"onPostShow": function(){
-					var p = toolbarMenu.node.getPosition();
+					var p = toolbarMenu.node.getPosition(toolbarMenu.node.getOffsetParent());
 					var s = toolbarMenu.node.getSize();
 					toolbarMenu.node.set("styles", {
 						"background-color": this.node.getStyle("background-color"),
@@ -429,7 +429,7 @@ o2.widget.ToolbarMenu = new Class({
 					});
 					toolbarMenu.modifiyStyle = false;
 
-					toolbarMenu.tmpStyleNode = new Element("div",{
+					toolbarMenu.tmpStyleNode = new Element("div.MWFtmpStyleNode",{
 						"styles":{
 							"position":"absolute",
 							"top": p.y+s.y-2,
@@ -440,7 +440,7 @@ o2.widget.ToolbarMenu = new Class({
 							"height": "1px",
 							"overflow": "hidden"
 						}
-					}).inject($(document.body));
+					}).inject(toolbarMenu.node);
 
 					toolbarMenu.fireEvent("menuPostShow", [this]);
 				},

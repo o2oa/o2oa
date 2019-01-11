@@ -181,6 +181,192 @@ performance of this software.
 
 -------------------------------------------------------------------------------
 
+%% This notice is provided with respect to DejaVu fonts v2.34, which may be
+included with JRE 8, and JDK 8, and OpenJDK 8.
+
+--- begin of LICENSE ---
+
+Fonts are (c) Bitstream (see below). DejaVu changes are in public domain.
+Glyphs imported from Arev fonts are (c) Tavmjong Bah (see below)
+
+
+Bitstream Vera Fonts Copyright
+------------------------------
+
+Copyright (c) 2003 by Bitstream, Inc. All Rights Reserved. Bitstream Vera is
+a trademark of Bitstream, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of the fonts accompanying this license ("Fonts") and associated
+documentation files (the "Font Software"), to reproduce and distribute the
+Font Software, including without limitation the rights to use, copy, merge,
+publish, distribute, and/or sell copies of the Font Software, and to permit
+persons to whom the Font Software is furnished to do so, subject to the
+following conditions:
+
+The above copyright and trademark notices and this permission notice shall
+be included in all copies of one or more of the Font Software typefaces.
+
+The Font Software may be modified, altered, or added to, and in particular
+the designs of glyphs or characters in the Fonts may be modified and
+additional glyphs or characters may be added to the Fonts, only if the fonts
+are renamed to names not containing either the words "Bitstream" or the word
+"Vera".
+
+This License becomes null and void to the extent applicable to Fonts or Font
+Software that has been modified and is distributed under the "Bitstream
+Vera" names.
+
+The Font Software may be sold as part of a larger software package but no
+copy of one or more of the Font Software typefaces may be sold by itself.
+
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT,
+TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL BITSTREAM OR THE GNOME
+FOUNDATION BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING
+ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS IN THE
+FONT SOFTWARE.
+
+Except as contained in this notice, the names of Gnome, the Gnome
+Foundation, and Bitstream Inc., shall not be used in advertising or
+otherwise to promote the sale, use or other dealings in this Font Software
+without prior written authorization from the Gnome Foundation or Bitstream
+Inc., respectively. For further information, contact: fonts at gnome dot
+org.
+
+Arev Fonts Copyright
+------------------------------
+
+Copyright (c) 2006 by Tavmjong Bah. All Rights Reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the fonts accompanying this license ("Fonts") and
+associated documentation files (the "Font Software"), to reproduce
+and distribute the modifications to the Bitstream Vera Font Software,
+including without limitation the rights to use, copy, merge, publish,
+distribute, and/or sell copies of the Font Software, and to permit
+persons to whom the Font Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright and trademark notices and this permission notice
+shall be included in all copies of one or more of the Font Software
+typefaces.
+
+The Font Software may be modified, altered, or added to, and in
+particular the designs of glyphs or characters in the Fonts may be
+modified and additional glyphs or characters may be added to the
+Fonts, only if the fonts are renamed to names not containing either
+the words "Tavmjong Bah" or the word "Arev".
+
+This License becomes null and void to the extent applicable to Fonts
+or Font Software that has been modified and is distributed under the
+"Tavmjong Bah Arev" names.
+
+The Font Software may be sold as part of a larger software package but
+no copy of one or more of the Font Software typefaces may be sold by
+itself.
+
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL
+TAVMJONG BAH BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.
+
+Except as contained in this notice, the name of Tavmjong Bah shall not
+be used in advertising or otherwise to promote the sale, use or other
+dealings in this Font Software without prior written authorization
+from Tavmjong Bah. For further information, contact: tavmjong @ free
+. fr.
+
+TeX Gyre DJV Math
+-----------------
+Fonts are (c) Bitstream (see below). DejaVu changes are in public domain.
+
+Math extensions done by B. Jackowski, P. Strzelczyk and P. Pianowski
+(on behalf of TeX users groups) are in public domain.
+
+Letters imported from Euler Fraktur from AMSfonts are (c) American
+Mathematical Society (see below).
+Bitstream Vera Fonts Copyright
+Copyright (c) 2003 by Bitstream, Inc. All Rights Reserved. Bitstream Vera
+is a trademark of Bitstream, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of the fonts accompanying this license ("Fonts") and associated documentation
+files (the "Font Software"), to reproduce and distribute the Font Software,
+including without limitation the rights to use, copy, merge, publish,
+distribute, and/or sell copies of the Font Software, and to permit persons
+to whom the Font Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright and trademark notices and this permission notice
+shall be included in all copies of one or more of the Font Software typefaces.
+
+The Font Software may be modified, altered, or added to, and in particular
+the designs of glyphs or characters in the Fonts may be modified and
+additional glyphs or characters may be added to the Fonts, only if the
+fonts are renamed to names not containing either the words "Bitstream"
+or the word "Vera".
+
+This License becomes null and void to the extent applicable to Fonts or
+Font Software that has been modified and is distributed under the
+"Bitstream Vera" names.
+
+The Font Software may be sold as part of a larger software package but
+no copy of one or more of the Font Software typefaces may be sold by itself.
+
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT,
+TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL BITSTREAM OR THE GNOME
+FOUNDATION BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING
+ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
+OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS IN
+THE FONT SOFTWARE.
+Except as contained in this notice, the names of GNOME, the GNOME
+Foundation, and Bitstream Inc., shall not be used in advertising or 
+otherwise to promote the sale, use or other dealings in this Font Software
+without prior written authorization from the GNOME Foundation or 
+Bitstream Inc., respectively.
+For further information, contact: fonts at gnome dot org.
+
+AMSFonts (v. 2.2) copyright
+
+The PostScript Type 1 implementation of the AMSFonts produced by and
+previously distributed by Blue Sky Research and Y&Y, Inc. are now freely
+available for general use. This has been accomplished through the
+cooperation
+of a consortium of scientific publishers with Blue Sky Research and Y&Y.
+Members of this consortium include:
+
+Elsevier Science IBM Corporation Society for Industrial and Applied
+Mathematics (SIAM) Springer-Verlag American Mathematical Society (AMS)
+
+In order to assure the authenticity of these fonts, copyright will be
+held by the American Mathematical Society. This is not meant to restrict
+in any way the legitimate use of the fonts, such as (but not limited to)
+electronic distribution of documents containing these fonts, inclusion of
+these fonts into other public domain or commercial font collections or computer
+applications, use of the outline data to create derivative fonts and/or
+faces, etc. However, the AMS does require that the AMS copyright notice be
+removed from any derivative versions of the fonts which have been altered in
+any way. In addition, to ensure the fidelity of TeX documents using Computer
+Modern fonts, Professor Donald Knuth, creator of the Computer Modern faces,
+has requested that any alterations which yield different font metrics be
+given a different name.
+
+--- end of LICENSE ---
+
+-------------------------------------------------------------------------------
+
 %% This notice is provided with respect to Document Object Model (DOM) Level 2
 & 3, which may be included with JRE 8, JDK 8, and OpenJDK 8.
 
@@ -1311,7 +1497,7 @@ included with JDK 8 and OpenJDK 8 source distributions.
 
 -------------------------------------------------------------------------------
 
-%% This notice is provided with respect to libpng 1.6.16, which may be 
+%% This notice is provided with respect to libpng 1.6.35, which may be
 included with JRE 8, JDK 8, and OpenJDK 8.
 
 --- begin of LICENSE ---
@@ -1327,21 +1513,21 @@ this sentence.
 
 This code is released under the libpng license.
 
-libpng versions 1.2.6, August 15, 2004, through 1.6.16, December 22, 2014, are
-Copyright (c) 2004, 2006-2014 Glenn Randers-Pehrson, and are
-distributed according to the same disclaimer and license as libpng-1.2.5
-with the following individual added to the list of Contributing Authors
-
-   Cosmin Truta
-
-libpng versions 1.0.7, July 1, 2000, through 1.2.5 - October 3, 2002, are
-Copyright (c) 2000-2002 Glenn Randers-Pehrson, and are
-distributed according to the same disclaimer and license as libpng-1.0.6
-with the following individuals added to the list of Contributing Authors
+libpng versions 1.0.7, July 1, 2000 through 1.6.35, July 15, 2018 are
+Copyright (c) 2000-2002, 2004, 2006-2018 Glenn Randers-Pehrson, are
+derived from libpng-1.0.6, and are distributed according to the same
+disclaimer and license as libpng-1.0.6 with the following individuals
+added to the list of Contributing Authors:
 
    Simon-Pierre Cadieux
    Eric S. Raymond
+   Mans Rullgard
+   Cosmin Truta
    Gilles Vollant
+   James Yu
+   Mandar Sahastrabuddhe
+   Google Inc.
+   Vadim Barkov
 
 and with the following additions to the disclaimer:
 
@@ -1352,19 +1538,25 @@ and with the following additions to the disclaimer:
    risk of satisfactory quality, performance, accuracy, and effort is with
    the user.
 
+Some files in the "contrib" directory and some configure-generated
+files that are distributed with libpng have other copyright owners and
+are released under other open source licenses.
+
 libpng versions 0.97, January 1998, through 1.0.6, March 20, 2000, are
-Copyright (c) 1998, 1999 Glenn Randers-Pehrson, and are
-distributed according to the same disclaimer and license as libpng-0.96,
-with the following individuals added to the list of Contributing Authors:
+Copyright (c) 1998-2000 Glenn Randers-Pehrson, are derived from
+libpng-0.96, and are distributed according to the same disclaimer and
+license as libpng-0.96, with the following individuals added to the list
+of Contributing Authors:
 
    Tom Lane
    Glenn Randers-Pehrson
    Willem van Schaik
 
 libpng versions 0.89, June 1996, through 0.96, May 1997, are
-Copyright (c) 1996, 1997 Andreas Dilger
-Distributed according to the same disclaimer and license as libpng-0.88,
-with the following individuals added to the list of Contributing Authors:
+Copyright (c) 1996-1997 Andreas Dilger, are derived from libpng-0.88,
+and are distributed according to the same disclaimer and license as
+libpng-0.88, with the following individuals added to the list of
+Contributing Authors:
 
    John Bowler
    Kevin Bracey
@@ -1373,8 +1565,11 @@ with the following individuals added to the list of Contributing Authors:
    Greg Roelofs
    Tom Tanner
 
+Some files in the "scripts" directory have other copyright owners
+but are released under this license.
+
 libpng versions 0.5, May 1995, through 0.88, January 1996, are
-Copyright (c) 1995, 1996 Guy Eric Schalnat, Group 42, Inc.
+Copyright (c) 1995-1996 Guy Eric Schalnat, Group 42, Inc.
 
 For the purposes of this copyright and license, "Contributing Authors"
 is defined as the following set of individuals:
@@ -1397,13 +1592,13 @@ Permission is hereby granted to use, copy, modify, and distribute this
 source code, or portions hereof, for any purpose, without fee, subject
 to the following restrictions:
 
-1. The origin of this source code must not be misrepresented.
+  1. The origin of this source code must not be misrepresented.
 
-2. Altered versions must be plainly marked as such and must not
-   be misrepresented as being the original source.
+  2. Altered versions must be plainly marked as such and must not
+     be misrepresented as being the original source.
 
-3. This Copyright notice may not be removed or altered from any
-   source or altered source distribution.
+  3. This Copyright notice may not be removed or altered from any
+     source or altered source distribution.
 
 The Contributing Authors and Group 42, Inc. specifically permit, without
 fee, and encourage the use of this source code as a component to
@@ -1411,21 +1606,34 @@ supporting the PNG file format in commercial products.  If you use this
 source code in a product, acknowledgment is not required but would be
 appreciated.
 
+END OF COPYRIGHT NOTICE, DISCLAIMER, and LICENSE.
 
-A "png_get_copyright" function is available, for convenient use in "about"
-boxes and the like:
+TRADEMARK:
 
-   printf("%s",png_get_copyright(NULL));
+The name "libpng" has not been registered by the Copyright owner
+as a trademark in any jurisdiction.  However, because libpng has
+been distributed and maintained world-wide, continually since 1995,
+the Copyright owner claims "common-law trademark protection" in any
+jurisdiction where common-law trademark is recognized.
 
-Also, the PNG logo (in PNG format, of course) is supplied in the
-files "pngbar.png" and "pngbar.jpg (88x31) and "pngnow.png" (98x31).
+OSI CERTIFICATION:
 
-Libpng is OSI Certified Open Source Software.  OSI Certified Open Source is a
-certification mark of the Open Source Initiative.
+Libpng is OSI Certified Open Source Software.  OSI Certified Open Source is
+a certification mark of the Open Source Initiative. OSI has not addressed
+the additional disclaimers inserted at version 1.0.7.
+
+EXPORT CONTROL:
+
+The Copyright owner believes that the Export Control Classification
+Number (ECCN) for libpng is EAR99, which means not subject to export
+controls or International Traffic in Arms Regulations (ITAR) because
+it is open source, publicly available software, that does not contain
+any encryption software.  See the EAR, paragraphs 734.3(b)(3) and
+734.7(b).
 
 Glenn Randers-Pehrson
 glennrp at users.sourceforge.net
-December 22, 2014
+July 15, 2018
 
 --- end of LICENSE ---
 

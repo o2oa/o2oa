@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="com.jrockit.mc.rjmx" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="com.jrockit.mc.rjmx" id="com.jrockit.mc.rjmx.metadataprovider" name="MRI Meta Data Provider"/>
+      </appinfo>
+      <documentation>
+         This extension is for extending the meta data for a plugin.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="metaDataProvider"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="metaDataProvider">
+      <annotation>
+         <documentation>
+            Defines a MRI meta data provider service
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The class which implements the MRI meta data provider.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":com.jrockit.mc.rjmx.subscription.IMRIMetaDataProviderService"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         5.3.0
+      </documentation>
+   </annotation>
+
+
+
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 1999, 2015, Oracle and/or its affiliates. All rights reserved.
+      </documentation>
+   </annotation>
+
+</schema>

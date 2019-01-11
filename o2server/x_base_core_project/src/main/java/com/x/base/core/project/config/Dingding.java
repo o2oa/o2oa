@@ -20,8 +20,11 @@ public class Dingding extends ConfigObject {
 	@FieldDescribe("agentId")
 	private String agentId;
 
-//	@FieldDescribe("钉钉corpSecret")
-//	private String corpSecret;
+	@FieldDescribe("应用的key,唯一标识")
+	private String appKey;
+
+	@FieldDescribe("应用的密钥")
+	private String appSecret;
 
 	@FieldDescribe("组织同步cron,默认每10分钟同步一次.")
 	private String syncCron;
@@ -34,12 +37,6 @@ public class Dingding extends ConfigObject {
 
 	@FieldDescribe("是否启用消息推送")
 	private Boolean messageEnable;
-
-	@FieldDescribe("应用的key,唯一标识")
-	private String appKey;
-
-	@FieldDescribe("应用的密钥")
-	private String appSecret;
 
 	public static Dingding defaultInstance() {
 		return new Dingding();

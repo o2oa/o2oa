@@ -1,0 +1,71 @@
+.o2_fileItemNode {
+    padding: 5px;
+    height: 40px;
+    margin-top: 10px;
+    margin-left: 0;
+    border: 1px solid #CCC;
+    background-color: #FFF;
+    cursor: default;
+}
+.o2_fileDeleteActionNode {
+    padding: 0;
+    float: right;
+    width: 16px;
+    height: 16px;
+    opacity: 0;
+    cursor: pointer;
+    background: url('/x_component_process_ProcessManager/$Explorer/default/processIcon/deleteProcess.png') no-repeat center center;
+}
+.o2_fileItemIconNode {
+    padding: 0;
+    float: left;
+    margin-left: 10px;
+    width: 40px;
+    height: 40px;
+}
+.o2_fileItemInforNode {
+    margin-left: 60px;
+    margin-right: 26px;
+    height: 40px;
+    overflow: hidden;
+}
+.o2_fileItemInforBaseNode {
+    height: 20px;
+    line-height: 20px;
+    font-size: 12px;
+}
+
+.o2_fileItemTextTitleNode {
+    height: 20px;
+    font-weight: bold;
+    overflow: hidden;
+    cursor: pointer;
+    color: #333;
+    width: 38%;
+    float: left;
+}
+.o2_fileItemTextAliasNode {
+    height: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    color: #777;
+    float: left;
+    width: 38%;
+}
+.o2_fileItemTextDateNode {
+    height: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    color: #777;
+    float: left;
+    text-align: right;
+    width: 24%;
+}
+.o2_fileItemTextDescriptionNode {
+    font-size: 12px;
+    line-height: 20px;
+    height: 20px;
+    color: #888;
+    overflow: hidden;
+    white-space: normal;
+}

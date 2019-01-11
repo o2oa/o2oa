@@ -225,6 +225,22 @@ MWF.xDesktop.copyImage = function( reference, referencetype, attachmentId, scale
         "failure": failure
     });
 };
+MWF.xDesktop.getPortalFileUr = function(id, app){
+    var root = "x_portal_assemble_surface";
+    var url = MWF.Actions.getHost(root)+"/"+root+MWF.Actions.get(root).action.actions.readFile.uri;
+    url = url.replace("{flag}", id);
+    url = url.replace("{applicationFlag}", app);
+    return url
+};
+MWF.xDesktop.getProcessFileUr = function(id, app){
+    var root = "x_processplatform_assemble_surface";
+    var url = MWF.Actions.getHost(root)+"/"+root+MWF.Actions.get(root).action.actions.readFile.uri;
+    url = url.replace("{flag}", id);
+    url = url.replace("{applicationFlag}", app);
+    return url
+};
+
+
 MWF.xDesktop.getServiceAddress = function(config, callback){
     var error = function(){
         //MWF.xDesktop.notice("error", {"x": "right", "y": "top"}, "")
@@ -257,7 +273,9 @@ MWF.xDesktop.getServiceAddress = function(config, callback){
         var center = null;
         //var center = MWF.xDesktop.chooseCenter(config);
         if (center){
-            MWF.xDesktop.getServiceAddressConfigObject(center, callback, error);
+            MWF.xDesktop.getServiceAddressConfigObject(center, callback, function(){
+                MWF.xDesktop.getServiceAddressConfigArray(config, callback, error);
+            }.bind(this));
         }else{
             MWF.xDesktop.getServiceAddressConfigArray(config, callback, error);
         }
@@ -268,7 +286,7 @@ MWF.xDesktop.chooseCenter = function(config){
     var center = null;
     for (var i=0; i<config.center.length; i++){
         var ct = config.center[i];
-        if (!ct.webHost || (ct.webHost.toString().toLowerCase()===host.toString().toLowerCase())){
+        if (!ct.host || (ct.host.toString().toLowerCase()===host.toString().toLowerCase())){
             center = ct;
             break;
         }
@@ -409,18 +427,23 @@ MWF.org = {
             "unitLevel": data.unitLevel,
             "unitLevelName": data.unitLevelName
         };
-        if (!flat){
-            var woPerson = data.woPerson;
-            if (!data.woPerson){
-                MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
-                this.action = new MWF.xDesktop.Actions.RestActions("", "x_organization_assemble_control_alpha");
-                var uri = "/jaxrs/person/{flag}";
-                uri = uri.replace("{flag}", data.person);
+        var woPerson = data.woPerson;
+        if (!data.woPerson){
+            MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
+            this.action = new MWF.xDesktop.Actions.RestActions("", "x_organization_assemble_control_alpha");
+            var uri = "/jaxrs/person/{flag}";
+            uri = uri.replace("{flag}", data.person);
 
-                this.action.invoke({"uri": uri, "success": function(json){
-                    woPerson = json.data;
-                }.bind(this)});
-            }
+            this.action.invoke({"uri": uri, "success": function(json){
+                woPerson = json.data;
+            }.bind(this)});
+        }
+        rData.personName = woPerson.name;
+        rData.personEmployee = woPerson.employee;
+        rData.personUnique = woPerson.unique;
+        rData.personDn = woPerson.distinguishedName;
+
+        if (!flat){
             rData.woPerson = {
                 "id": woPerson.id,
                 "genderType": woPerson.genderType,

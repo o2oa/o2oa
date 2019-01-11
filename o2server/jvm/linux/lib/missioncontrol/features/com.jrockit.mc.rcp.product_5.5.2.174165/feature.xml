@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="com.jrockit.mc.rcp.product"
+      label="%name"
+      version="5.5.2.174165"
+      provider-name="Oracle">
+
+   <description url="%descriptionUrl">
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="%licenseUrl">
+      %license
+   </license>
+
+   <includes
+         id="com.jrockit.mc.feature.rcp"
+         version="5.5.2.174165"/>
+
+</feature>

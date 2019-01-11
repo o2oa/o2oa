@@ -12,7 +12,6 @@ import javax.persistence.FlushModeType;
 
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.StringValueMap;
 
 public abstract class EntityManagerContainerBasic implements AutoCloseable {
 
@@ -124,9 +123,6 @@ public abstract class EntityManagerContainerBasic implements AutoCloseable {
 			if (Boolean.class.isAssignableFrom(actualClass)) {
 				return FieldType.booleanValueList;
 			}
-		}
-		if (StringValueMap.class.isAssignableFrom(field.getType())) {
-			return FieldType.stringValueMap;
 		}
 		if (Map.class.isAssignableFrom(field.getType())) {
 			ParameterizedType parameterized = (ParameterizedType) field.getGenericType();

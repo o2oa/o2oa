@@ -1,4 +1,4 @@
-MWF.xDesktop.requireApp("File", "Actions.RestActions", null, false);
+//MWF.xDesktop.requireApp("File", "Actions.RestActions", null, false);
 MWF.xDesktop.requireApp("File", "AttachmentController", null, false);
 MWF.require("MWF.widget.Tree", null, false);
 MWF.xApplication.File.Main = new Class({
@@ -349,6 +349,11 @@ MWF.xApplication.File.Main = new Class({
                 window.open(url);
             });
         }.bind(this));
+    },
+    getAttachmentLinkUrl: function(attachment){
+        debugger;
+        var url = o2.Actions.get("x_file_assemble_control").action.actions.getAttachmentData.uri;
+        return url.replace("{id}", encodeURIComponent(attachment.data.id));
     },
 	downloadCurrentFile: function(){
 		if (this.selectedItem){

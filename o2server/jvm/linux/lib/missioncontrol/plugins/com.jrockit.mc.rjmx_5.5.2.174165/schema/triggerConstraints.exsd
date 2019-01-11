@@ -1,0 +1,562 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="com.jrockit.mc.rjmx" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="com.jrockit.mc.rjmx" id="triggerConstraints" name="Trigger Constraints"/>
+      </appinfo>
+      <documentation>
+         This extension point is used to add new trigger constraints to the JMX Console.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+         <documentation>
+            A trigger constraint must have an id, name, description and a class that extends &lt;code&gt;com.jrockit.mc.rjmx.triggers.TriggerConstraint&lt;/code&gt;. 
+
+It may also define settings of various types(string, file, boolean, integer, date or time) that can be configured in the JMX Console user interface.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="triggerConstraint" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="triggerConstraint">
+      <annotation>
+         <appinfo>
+            <meta.element labelAttribute="name" icon="icon"/>
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="string" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="file" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="boolean" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="integer" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="date" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="time" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="float" minOccurs="0" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the identifier for the constraint
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name for the constraint
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string">
+            <annotation>
+               <documentation>
+                  the icon for the constraint
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the description for the constraint
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  class that extends &lt;code&gt;com.jrockit.mc.rjmx.triggers.TriggerConstraint&lt;/code&gt; and that implements the method &lt;code&gt;validate(NotificationEvent e)&lt;/code&gt; which accepts or rejects a notification event.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="com.jrockit.mc.rjmx.triggers.TriggerConstraint"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="date">
+      <annotation>
+         <documentation>
+            Date setting for a trigger constraint.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the identifier for the setting
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of the setting
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  the description of the setting
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string">
+            <annotation>
+               <documentation>
+                  the default value
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="preference" type="boolean">
+            <annotation>
+               <documentation>
+                  set to true if the default value should be fetched from the preference store for the RJMXPlugin using the id as a key.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="time">
+      <annotation>
+         <documentation>
+            Time setting for a trigger action.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a unique identifier for this setting
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of the setting
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  the description of the setting
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string">
+            <annotation>
+               <documentation>
+                  the default value
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="preference" type="boolean">
+            <annotation>
+               <documentation>
+                  set to true if the default value should be fetched from the preference store for the RJMXPlugin using the id as a key.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="string">
+      <annotation>
+         <documentation>
+            String setting for a trigger constraint.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a unique identifier for this setting
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of the setting
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  the description of the setting
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string">
+            <annotation>
+               <documentation>
+                  the default value
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="preference" type="boolean">
+            <annotation>
+               <documentation>
+                  set to true if the default value should be fetched from the preference store for the RJMXPlugin using the id as a key.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="file">
+      <annotation>
+         <documentation>
+            File setting for a trigger constraint.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a unique identifier for this setting
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of the setting
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  the description of the setting
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string">
+            <annotation>
+               <documentation>
+                  the default value
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="preference" type="boolean">
+            <annotation>
+               <documentation>
+                  set to true if the default value should be fetched from the preference store for the RJMXPlugin using the id as a key.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="boolean">
+      <annotation>
+         <documentation>
+            Boolean setting for a trigger constraint.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a unique identifier for this setting
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of the setting
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  the description of the setting
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="boolean">
+            <annotation>
+               <documentation>
+                  the default value
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="preference" type="boolean">
+            <annotation>
+               <documentation>
+                  set to true if the default value should be fetched from the preference store for the RJMXPlugin using the id as a key.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="integer">
+      <annotation>
+         <documentation>
+            Integer setting for a trigger constraint.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a unique identifier for this setting
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of the setting
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  the description of the setting
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string">
+            <annotation>
+               <documentation>
+                  the default value
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="preference" type="boolean">
+            <annotation>
+               <documentation>
+                  set to true if the default value should be fetched from the preference store for the RJMXPlugin using the id as a key.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="min" type="string">
+            <annotation>
+               <documentation>
+                  the minimum allowed integer value for this setting
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="max" type="string">
+            <annotation>
+               <documentation>
+                  the maximum allowed integer value for this setting
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="float">
+      <annotation>
+         <documentation>
+            Float setting for a trigger action.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a unique identifier for this setting
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of the setting
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  the description of the setting
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string">
+            <annotation>
+               <documentation>
+                  the default value
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="preference" type="boolean">
+            <annotation>
+               <documentation>
+                  set to true if the default value should be fetched from the preference store for the RJMXPlugin using the id as a key.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="min" type="string">
+            <annotation>
+               <documentation>
+                  the minimum allowed float value for this setting
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="max" type="string">
+            <annotation>
+               <documentation>
+                  the maximum allowed float value for this setting
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         5.0.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         &lt;pre&gt;
+&lt;extension point=&quot;com.jrockit.mc.rjmx.triggerConstraints&quot;&gt;
+      &lt;triggerConstraint
+            class=&quot;com.jrockit.example.triggers.constraints.DisablingConstraint&quot;
+            description=&quot;This constraint will disable the rule, if the &apos;Disable rule&apos; value is true. The event data of a particular event will not matter.&quot;
+            icon=&quot;icons/disablingconstraint.gif&quot;
+            id=&quot;com.jrockit.example.triggers.HelloWorld&quot;
+            name=&quot;Disabling constraint&quot;&gt;
+            &lt;boolean
+                  id=&quot;com.jrockit.example.triggers.constraint.disable.rule&quot;
+                  name=&quot;Disable rule&quot;&gt;
+            &lt;/boolean&gt;     
+     &lt;/triggerConstraint&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+
+&lt;pre&gt;
+package com.jrockit.example.triggers.constraints;
+
+import com.jrockit.mc.rjmx.triggers.TriggerConstraint;
+import com.jrockit.mc.rjmx.triggers.internal.NotificationEvent;
+
+public class DisablingConstraint extends TriggerConstraint {
+ public boolean isValid(NotificationEvent e) {
+  return !getSetting(&quot;com.jrockit.example.triggers.constraint.disable.rule&quot;).getBoolean();
+ }
+}
+&lt;/pre&gt;
+      </documentation>
+   </annotation>
+
+
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 1999, 2015, Oracle and/or its affiliates. All rights reserved.
+      </documentation>
+   </annotation>
+
+</schema>

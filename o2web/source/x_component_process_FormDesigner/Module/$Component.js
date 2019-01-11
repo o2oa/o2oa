@@ -63,6 +63,7 @@ MWF.xApplication.process.FormDesigner.Module.$Component = MWF.FC$Component = new
             this.form.scriptDesigner.removeModule(this.json);
         }
 
+        if (this.property) this.property.destroy();
 		this.node.destroy();
 		this.actionArea.destroy();
 		
@@ -71,6 +72,7 @@ MWF.xApplication.process.FormDesigner.Module.$Component = MWF.FC$Component = new
 		delete this.json;
 		
 		this.treeNode.destroy();
+        o2.release(this);
 	},
 	_dragIn: function(module){
 		module.inContainer = null;

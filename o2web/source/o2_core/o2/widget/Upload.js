@@ -18,7 +18,7 @@ o2.widget.Upload = new Class({
 		this._loadCss();
 		this.container = $(container);
 
-		this.action = (typeOf(this.options.action)=="string") ? o2.Actions.get(action).action : this.options.action;
+		this.action = (typeOf(this.options.action)=="string") ? o2.Actions.get(this.options.action).action : this.options.action;
 	},
     load: function(){
         if (FormData.expiredIE){
@@ -42,6 +42,7 @@ o2.widget.Upload = new Class({
         }
     },
     formData_Upload: function(){
+        debugger;
         var files = this.fileUploadNode.files;
         if (files.length){
             var count = files.length;
@@ -57,6 +58,8 @@ o2.widget.Upload = new Class({
             if (this.isContinue){
                 for (var i = 0; i < files.length; i++) {
                     var file = files.item(i);
+                    this.fireEvent("beforeUploadEntry", [file, this]);
+
                     var formData = new FormData();
                     Object.each(this.options.data, function(v, k){
                         formData.append(k, v)

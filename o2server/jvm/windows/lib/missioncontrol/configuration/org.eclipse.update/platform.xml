@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config transient="false" date="1512678862306">
+	<site enabled="true" updateable="true" policy="USER-EXCLUDE" url="platform:/base/">
+		<feature id="com.jrockit.mc.rcp.product" url="features/com.jrockit.mc.rcp.product_5.5.2.174165/" version="5.5.2.174165">
+		</feature>
+		<feature id="org.eclipse.rcp" url="features/org.eclipse.rcp_4.4.0.v20141007-2301/" version="4.4.0.v20141007-2301">
+		</feature>
+		<feature id="org.eclipse.e4.rcp" url="features/org.eclipse.e4.rcp_1.3.100.v20141007-2033/" version="1.3.100.v20141007-2033">
+		</feature>
+		<feature id="com.jrockit.mc.feature.rcp" url="features/com.jrockit.mc.feature.rcp_5.5.2.174165/" version="5.5.2.174165">
+		</feature>
+		<feature id="org.eclipse.babel.nls_eclipse_ja" url="features/org.eclipse.babel.nls_eclipse_ja_4.4.0.v20140623020002/" version="4.4.0.v20140623020002">
+		</feature>
+		<feature id="org.eclipse.ecf.filetransfer.feature" url="features/org.eclipse.ecf.filetransfer.feature_3.9.0.v20140827-1444/" version="3.9.0.v20140827-1444">
+		</feature>
+		<feature id="com.jrockit.mc.feature.flightrecorder" url="features/com.jrockit.mc.feature.flightrecorder_5.5.2.174165/" version="5.5.2.174165">
+		</feature>
+		<feature id="org.eclipse.babel.nls_eclipse_zh" url="features/org.eclipse.babel.nls_eclipse_zh_4.4.0.v20140623020002/" version="4.4.0.v20140623020002">
+		</feature>
+		<feature id="org.eclipse.emf.ecore" url="features/org.eclipse.emf.ecore_2.10.1.v20140901-1043/" version="2.10.1.v20140901-1043">
+		</feature>
+		<feature id="org.eclipse.help" plugin-identifier="org.eclipse.help.base" url="features/org.eclipse.help_2.0.102.v20141007-2301/" version="2.0.102.v20141007-2301">
+		</feature>
+		<feature id="org.eclipse.emf.common" url="features/org.eclipse.emf.common_2.10.1.v20140901-1043/" version="2.10.1.v20140901-1043">
+		</feature>
+		<feature id="com.jrockit.mc.feature.core" plugin-identifier="com.jrockit.mc.ui" url="features/com.jrockit.mc.feature.core_5.5.2.174165/" version="5.5.2.174165">
+		</feature>
+		<feature id="com.jrockit.mc.feature.rcp.zh_CN" url="features/com.jrockit.mc.feature.rcp.zh_CN_5.5.2.174165/" version="5.5.2.174165">
+		</feature>
+		<feature id="org.eclipse.ecf.core.feature" url="features/org.eclipse.ecf.core.feature_1.1.0.v20140827-1444/" version="1.1.0.v20140827-1444">
+		</feature>
+		<feature id="org.eclipse.ecf.filetransfer.ssl.feature" url="features/org.eclipse.ecf.filetransfer.ssl.feature_1.0.0.v20140827-1444/" version="1.0.0.v20140827-1444">
+		</feature>
+		<feature id="org.eclipse.ecf.core.ssl.feature" url="features/org.eclipse.ecf.core.ssl.feature_1.0.0.v20140827-1444/" version="1.0.0.v20140827-1444">
+		</feature>
+		<feature id="com.jrockit.mc.feature.console" url="features/com.jrockit.mc.feature.console_5.5.2.174165/" version="5.5.2.174165">
+		</feature>
+		<feature id="org.eclipse.ecf.filetransfer.httpclient4.feature" url="features/org.eclipse.ecf.filetransfer.httpclient4.feature_3.9.1.v20140827-1444/" version="3.9.1.v20140827-1444">
+		</feature>
+		<feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature" url="features/org.eclipse.ecf.filetransfer.httpclient4.ssl.feature_1.0.0.v20140827-1444/" version="1.0.0.v20140827-1444">
+		</feature>
+		<feature id="org.eclipse.equinox.p2.core.feature" url="features/org.eclipse.equinox.p2.core.feature_1.3.0.v20140523-0116/" version="1.3.0.v20140523-0116">
+		</feature>
+		<feature id="com.jrockit.mc.feature.rcp.ja" url="features/com.jrockit.mc.feature.rcp.ja_5.5.2.174165/" version="5.5.2.174165">
+		</feature>
+		<feature id="org.eclipse.equinox.p2.rcp.feature" url="features/org.eclipse.equinox.p2.rcp.feature_1.2.0.v20140523-0116/" version="1.2.0.v20140523-0116">
+		</feature>
+	</site>
+</config>

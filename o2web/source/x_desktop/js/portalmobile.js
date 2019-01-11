@@ -18,7 +18,7 @@ o2.addReady(function(){
     var options = null;
 
     o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], {"sequence": true}, function(){
-        MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
+        //MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
         MWF.loadLP("zh-cn");
 
         // MWF.require("MWF.widget.Mask", null, false);
@@ -77,11 +77,11 @@ o2.addReady(function(){
                         var title = options.docTitle || "";
                         switch (appNames){
                             case "process.Work":
-                                if (window.o2 && window.o2.openO2Work){
+                                if (window.o2android && window.o2android.openO2Work){
                                     if( options.workId ){
-                                        window.o2.openO2Work(options.workId, "", title);
+                                        window.o2android.openO2Work(options.workId, "", title);
                                     }else if( options.workCompletedId ){
-                                        window.o2.openO2Work("", options.workCompletedId, title);
+                                        window.o2android.openO2Work("", options.workCompletedId, title);
                                     }
                                 }else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2Work){
                                     if( options.workId ){
@@ -105,8 +105,8 @@ o2.addReady(function(){
                                 }
                                 break;
                             case "cms.Document":
-                                if (window.o2 && window.o2.openO2CmsDocument){
-                                    window.o2.openO2CmsDocument(options.documentId, title);
+                                if (window.o2android && window.o2android.openO2CmsDocument){
+                                    window.o2android.openO2CmsDocument(options.documentId, title);
                                 }else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2CmsDocument){
                                     window.webkit.messageHandlers.openO2CmsDocument.postMessage({"docId":options.documentId,"docTitle":title});
                                 }else{
@@ -114,8 +114,8 @@ o2.addReady(function(){
                                 }
                                 break;
                             case "cms.Module":
-                                if (window.o2 && window.o2.openO2CmsApplication){
-                                    window.o2.openO2CmsApplication(options.columnId, title);
+                                if (window.o2android && window.o2android.openO2CmsApplication){
+                                    window.o2android.openO2CmsApplication(options.columnId, title);
                                 }else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2CmsApplication){
                                     window.webkit.messageHandlers.openO2CmsApplication.postMessage(options.columnId);
                                 }else{
@@ -123,8 +123,8 @@ o2.addReady(function(){
                                 }
                                 break;
                             case "Meeting":
-                                if (window.o2 && window.o2.openO2Meeting){
-                                    window.o2.openO2Meeting("");
+                                if (window.o2android && window.o2android.openO2Meeting){
+                                    window.o2android.openO2Meeting("");
                                 }else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2Meeting){
                                     window.webkit.messageHandlers.openO2Meeting.postMessage("");
                                 }else{
@@ -133,8 +133,8 @@ o2.addReady(function(){
                                 break;
 
                             case "Calendar":
-                                if (window.o2 && window.o2.openO2Calendar){
-                                    window.o2.openO2Calendar("");
+                                if (window.o2android && window.o2android.openO2Calendar){
+                                    window.o2android.openO2Calendar("");
                                 }else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2Calendar){
                                     window.webkit.messageHandlers.openO2Calendar.postMessage("");
                                 }else{
@@ -145,8 +145,9 @@ o2.addReady(function(){
                                 var tab = ((options && options.navi) ? options.navi : "task").toLowerCase();
                                 if (tab==="done") tab = "taskCompleted";
                                 if (tab==="readed") tab = "readCompleted";
-                                if (window.o2 && window.o2.openO2WorkSpace){
-                                    window.o2.openO2WorkSpace(tab);
+
+                                if (window.o2android && window.o2android.openO2WorkSpace){
+                                    window.o2android.openO2WorkSpace(tab);
                                 }else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2WorkSpace){
                                     window.webkit.messageHandlers.openO2WorkSpace.postMessage(tab);
                                 }else{

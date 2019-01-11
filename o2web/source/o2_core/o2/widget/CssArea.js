@@ -1,4 +1,5 @@
 o2.widget = o2.widget || {};
+o2.require("o2.widget.ScriptArea", null, false);
 o2.require("o2.widget.CssEditor", null, false);
 o2.widget.CssArea = new Class({
     Implements: [Options, Events],

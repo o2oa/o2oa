@@ -22,7 +22,7 @@ o2.widget.AudioRecorder = new Class({
             this.cssPath = o2.session.path+"/widget/$AudioRecorder/"+this.options.style+"/css.wcss";
             this._loadCss();
         }
-        COMMON.AjaxModule.loadDom(COMMON.contentPath+"/res/framework/adapter/adapter.js", function(){
+        COMMON.AjaxModule.loadDom("/o2_lib/adapter/adapter.js", function(){
             this.load();
         }.bind(this));
 	},

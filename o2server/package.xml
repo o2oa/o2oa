@@ -14,10 +14,12 @@
 		<mkdir dir="target/o2server/local" />
 		<mkdir dir="target/o2server/configSample" />
 		<mkdir dir="target/o2server/localSample" />
+		<mkdir dir="target/o2server/servers/webServer" />
 		<mkdir dir="target/o2server/servers/centerServer/webapps" />
 		<mkdir dir="target/o2server/servers/centerServer/work" />
 		<mkdir dir="target/o2server/servers/applicationServer/webapps" />
 		<mkdir dir="target/o2server/servers/applicationServer/work" />
+		<exec vmlauncher="false" executable="gulp" />
 		<copy todir="target/o2server/commons/">
 			<fileset dir="./commons/" />
 		</copy>
@@ -31,39 +33,6 @@
 		</copy>
 		<copy todir="target/o2server/localSample">
 			<fileset dir="./localSample">
-				<exclude name="**/.gitignore" />
-				<exclude name="**/.classpath" />
-				<exclude name="**/.project" />
-				<exclude name="**/.settings/" />
-			</fileset>
-		</copy>
-
-		<copy todir="target/o2server/servers/webServer/">
-			<fileset dir="./servers/webServer/">
-				<exclude name="**/.settings/" />
-				<exclude name="**/.svn/" />
-				<exclude name="**/.gitignore" />
-				<exclude name="**/.classpath" />
-				<exclude name="**/.project" />
-				<exclude name="**/Thumbs.db" />
-				<exclude name="**/*.bak" />
-				<exclude name="**/*.temp" />
-				<exclude name="**/*.tmp" />
-				<exclude name="**/~*" />
-				<exclude name="**/*.log" />
-				<exclude name="**/*.js" />
-				<exclude name="**/*.zip" />
-				<exclude name="**/*.7z" />
-			</fileset>
-		</copy>
-		<copy todir="target/o2server/servers/webServer/">
-			<fileset dir="./servers/webServer/">
-				<include name="**/*.min.js" />
-			</fileset>
-		</copy>
-		<copy todir="target/o2server/servers/webServer/x_desktop">
-			<fileset dir="./servers/webServer/x_desktop">
-				<include name="**/*.js" />
 				<exclude name="**/.gitignore" />
 				<exclude name="**/.classpath" />
 				<exclude name="**/.project" />

@@ -64,6 +64,9 @@ MWF.xApplication.Selector.Process.Item = new Class({
     _setIcon: function(){
         this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/processicon.png)");
     },
+    _getTtiteText: function(){
+        return this.data.name;
+    },
     loadSubItem: function(){
         return false;
     },

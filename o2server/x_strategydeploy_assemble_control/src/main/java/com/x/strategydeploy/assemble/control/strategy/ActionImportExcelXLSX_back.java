@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -142,19 +143,19 @@ public class ActionImportExcelXLSX_back extends BaseAction {
 		if (cell == null)
 			return "";
 
-		if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+		if (cell.getCellType() ==CellType.STRING) {
 
 			return cell.getStringCellValue();
 
-		} else if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
+		} else if (cell.getCellType() == CellType.BOOLEAN) {
 
 			return String.valueOf(cell.getBooleanCellValue());
 
-		} else if (cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
+		} else if (cell.getCellType() == CellType.FORMULA) {
 
 			return cell.getCellFormula();
 
-		} else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+		} else if (cell.getCellType() == CellType.NUMERIC) {
 			logger.info("CELL_TYPE_NUMERIC!!!");
 			return String.valueOf(cell.getNumericCellValue());
 

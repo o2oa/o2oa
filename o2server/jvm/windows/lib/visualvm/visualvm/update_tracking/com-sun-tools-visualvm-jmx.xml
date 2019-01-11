@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="com.sun.tools.visualvm.jmx/0">
+    <module_version install_time="1484426041462" last="true" origin="installer" specification_version="1.4">
+        <file crc="3322195459" name="config/Modules/com-sun-tools-visualvm-jmx.xml"/>
+        <file crc="3666763939" name="modules/com-sun-tools-visualvm-jmx.jar"/>
+    </module_version>
+</module>

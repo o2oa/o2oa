@@ -17,6 +17,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
+import com.x.base.core.project.annotation.JaxrsParameterDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.http.WrapOutId;
@@ -33,7 +34,8 @@ public class JobAction extends StandardJaxrsAction {
 	@Path("{job}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response deleteWithJob(@Context HttpServletRequest request, @PathParam("job") String job) {
+	public Response deleteWithJob(@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("job") String job) {
 		ActionResult<List<WrapOutId>> result = new ActionResult<>();
 		List<WrapOutId> wraps = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
