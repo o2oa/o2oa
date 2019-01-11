@@ -5,7 +5,7 @@
 	<key>CFBundleExecutable</key>
 	<string>jmc</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright \u00A9 1999, 2013, Oracle and/or its affiliates. All rights reserved.</string>
+	<string>Copyright \u00A9 1999, 2017, Oracle and/or its affiliates. All rights reserved.</string>
 	<key>CFBundleIconFile</key>
 	<string>jmc.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -17,11 +17,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>5.5.0</string>
+	<string>5.5.2</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>550000</string>
+	<string>552000</string>
 	<key>NSHighResolutionCapable</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

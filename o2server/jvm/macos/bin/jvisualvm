@@ -183,7 +183,6 @@ case "`uname`" in
     Darwin*)
         eval launchNbexec \
             --jdkhome '"$visualvm_jdkhome"' \
-            -J-Dcom.apple.mrj.application.apple.menu.about.name=VisualVM \
             -J-Xdock:name=VisualVM \
             '"-J-Xdock:icon=$basedir/etc/visualvm.icns"' \
             --branding visualvm \
