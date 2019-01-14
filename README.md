@@ -13,7 +13,7 @@ O2OA是一款Java开源企业信息化建设平台，包括流程管理、门户
 
 3. 支持私有化部署，下载软件安装包后可以安装在自己的服务器上，数据更安全。
 
-4. 随时随地办公，平台支持兼容HTML5的浏览器，并且提供了原生的IOS/Android应用，并且支持钉钉和企业微信集成。
+4. 随时随地办公，平台支持兼容HTML5的浏览器，并且提供了原生的IOS/Android应用，并且支持钉钉和企业微信集成。
 
 5. 高可扩展性，用户通过简单的学习后，可以自定义配置门户、流程应用、内容管理应用
 
@@ -59,7 +59,7 @@ Github : https://github.com/o2oa/o2oa
 
     wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
 	
-	yum -y install apache-maven
+    yum -y install apache-maven
 	
 	
 ## 安装 apache-ant-1.10.5 ant 	
@@ -71,15 +71,15 @@ Github : https://github.com/o2oa/o2oa
 
 1、打开命令提示工具，cd到o2oa/o2server目录
 
-   cd /usr/o2oa/o2server
+    cd /usr/o2oa/o2server
 
 2、执行命令进行编译：mvn install，开始进行源码编译
 
-   mvn install
+    mvn install
 
 3、打包安装程序： ant
 
-   ant
+    ant
 
 ## 关于编译错误
 第一次使用maven进行项目编译执行 mvn install 可能会发生异常，原因是编译生成的META-INF/persistence.xml来不及加载。这种情况下，您可以再执行一次mvn install即可完成对项目的编译。
