@@ -1,8 +1,8 @@
-## O2OA : Java企业信息化系统
+##O2OA : Java企业信息化系统
 
 O2OA是一款Java开源企业信息化建设平台，包括流程管理、门户管理、信息管理、数据管理和服务管理五大平台。用户可以直接使用平台已有功能进行信息信息化建设，平台提供了完整的用户管理，权限管理，流程和信息管理体系，并且提供了大量的开发组件和开箱即用的应用，可以大大减化企业信息化建设成本和业务应用开发难度。
 
-## 产品特点\:
+##产品特点\:
 
 1. 代码全部开源，开发者可以下载源码进行任意，编译成自己的信息化平台。
 
@@ -24,19 +24,40 @@ O2OA是一款Java开源企业信息化建设平台，包括流程管理、门户
 
 官方网站 : http://www.o2oa.net
 
+## 配置编译环境\:
+
+# 安装NodeJS
+
+1、访问nodejs的官方网站的downdolad，网址：https://nodejs.org/en/download/，获取Linux Binaries (x64)安装包下载链接：
+
+      wget https://nodejs.org/dist/v10.15.0/node-v10.15.0-linux-x64.tar.xz
+
+2、解压安装：
+
+	# yum search xz
+	# yum install xz.i386
+	# xz -d node-v10.15.0-linux-x64.tar.xz
+	# tar -xf node-v10.15.0-linux-x64.tar
+	# mv node-v10.15.0-linux-x64 node-v10.15.0
+
+3、配置nodejs（略）
+
+# 安装 Java8 及配置Java环境 
+
+    略
+	
+# 安装 apache-maven-3.6.0 及配置maven环境 
+
+    wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
+	
+	yum -y install apache-maven
+	
+	
+# 安装 apache-ant-1.10.5 ant 	
+
+    yum -y install ant
+
 ## 源码编译
-
-# 编译环境
-
-1、安装 Java8
-
-2、安装 apache-maven-3.6.0
-
-3、安装 apache-ant-1.10.5
-
-4、安装 nodeJs
-
-# 源码编译
 
 1、打开命令提示工具，cd到o2oa/o2server目录
 
@@ -44,11 +65,13 @@ O2OA是一款Java开源企业信息化建设平台，包括流程管理、门户
 
 3、打包安装程序： ant
 
-# 编译错误
+# 关于编译错误
+第一次使用maven进行项目编译执行 mvn install 可能会发生异常，原因是编译生成的META-INF/persistence.xml来不及加载。这种情况下，您可以再执行一次mvn install即可完成对项目的编译。
+[ERROR] Failed to execute goal org.apache.openjpa:openjpa-maven-plugin:3.0.0:enhance(enhanncer) on project x_base_core_project: Exception enhancer of goal org.apache.openjpa:openjpa-maven-plugin:3.0.0:enhance failed: MetaDataFactory could not be configured (conf.newMetaDataFactoryInstance() returned null). This might mean that no configuration properties were fount. Ensured that you have a META-INF/persistence.xml file, that it is  available in your classpath, or that the properties file you are using for configuration is available. If you are using Ant, please see the <properties> or <propertiesFile> attributes of the task's nested <config> element. This can also occur if your OpenJPA distribution jars are corrupt, or if your security policy is overly strict. -> [Help 1]
+[ERROR]
+......
 
-
-
-## 授权协议\
+## 授权协议\:
 
 o2oa软件遵守双重协议，一个是AGPL授权协议，一个是商用授权协议。
 
