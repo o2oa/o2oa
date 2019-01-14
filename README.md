@@ -1,6 +1,9 @@
 # O2OA : Java企业信息化系统
 
-O2OA是一款Java开源企业信息化建设平台，包括流程管理、门户管理、信息管理、数据管理和服务管理五大平台。用户可以直接使用平台已有功能进行信息信息化建设，平台提供了完整的用户管理，权限管理，流程和信息管理体系，并且提供了大量的开发组件和开箱即用的应用，可以大大减化企业信息化建设成本和业务应用开发难度。
+O2OA是一款Java开源企业信息化建设平台，包括流程管理、门户管理、信息管理、数据管理和服务管理五大平台。
+
+用户可以直接使用平台已有功能进行信息信息化建设，平台提供了完整的用户管理，权限管理，流程和信息管理体系，并且提供了大量的开发组件和开箱即用的应用，可以大大减化企业信息化建设成本和业务应用开发难度。
+
 
 # 产品特点\:
 
@@ -10,7 +13,7 @@ O2OA是一款Java开源企业信息化建设平台，包括流程管理、门户
 
 3. 支持私有化部署，下载软件安装包后可以安装在自己的服务器上，数据更安全。
 
-4. 随时随地办公，平台支持兼容HTML5的浏览器，并且提供了源生的IOS/Android应用
+4. 随时随地办公，平台支持兼容HTML5的浏览器，并且提供了原生的IOS/Android应用，并且支持钉钉和企业微信集成。
 
 5. 高可扩展性，用户通过简单的学习后，可以自定义配置门户、流程应用、内容管理应用
 
@@ -18,11 +21,17 @@ O2OA是一款Java开源企业信息化建设平台，包括流程管理、门户
 
 ![o2oa](https://static.oschina.net/uploads/space/2018/0918/200301_N9TG_3931542.png)
 
+
 # 官方网站\:
 
 开源主页 : https://www.oschina.net/p/o2oa
 
 官方网站 : http://www.o2oa.net
+
+Gitee : https://gitee.com/liyihz2008/O2OA
+
+Github : https://github.com/o2oa/o2oa
+
 
 # 配置编译环境\:
 
@@ -56,6 +65,7 @@ O2OA是一款Java开源企业信息化建设平台，包括流程管理、门户
 ## 安装 apache-ant-1.10.5 ant 	
 
     yum -y install ant
+    
 
 # 源码编译
 
@@ -73,9 +83,11 @@ O2OA是一款Java开源企业信息化建设平台，包括流程管理、门户
 
 ## 关于编译错误
 第一次使用maven进行项目编译执行 mvn install 可能会发生异常，原因是编译生成的META-INF/persistence.xml来不及加载。这种情况下，您可以再执行一次mvn install即可完成对项目的编译。
+
 [ERROR] Failed to execute goal org.apache.openjpa:openjpa-maven-plugin:3.0.0:enhance(enhanncer) on project x_base_core_project: Exception enhancer of goal org.apache.openjpa:openjpa-maven-plugin:3.0.0:enhance failed: MetaDataFactory could not be configured (conf.newMetaDataFactoryInstance() returned null). This might mean that no configuration properties were fount. Ensured that you have a META-INF/persistence.xml file, that it is  available in your classpath, or that the properties file you are using for configuration is available. If you are using Ant, please see the <properties> or <propertiesFile> attributes of the task's nested <config> element. This can also occur if your OpenJPA distribution jars are corrupt, or if your security policy is overly strict. -> [Help 1]
 [ERROR]
 ......
+	
 
 # 服务器部署
 
@@ -84,13 +96,21 @@ O2OA是一款Java开源企业信息化建设平台，包括流程管理、门户
 开源中国技术博客：https://my.oschina.net/u/3931542
 
 ## windows部署步骤：
-1.下载o2server_yyyyMMddHHmmss_windows.zip程序包.
-2.解压下载后的压缩包到任意目录
-3.确认开通服务器的80、20020、20030端口
-4.打开o2server文件夹，选择start_windows.bat双击打开
-5.在命令行中输入"start" 回车,启动服务,等待相关服务启动完成.
-6.启动完成后打开浏览器访问http://127.0.0.1
-7.输入用户名xadmin密码o2登陆系统
+
+1.下载o2server_yyyyMMddHHmmss_windows.zip程序包。
+
+2.解压下载后的压缩包到任意目录。
+
+3.确认开通服务器的80、20020、20030端口。
+
+4.打开o2server文件夹，选择start_windows.bat双击打开。
+
+5.在命令行中输入"start" 回车,启动服务,等待相关服务启动完成。
+
+6.启动完成后打开浏览器访问http://127.0.0.1。
+
+7.输入用户名xadmin密码o2登陆系统。
+
 
 # 关于授权协议\:
 
@@ -177,6 +197,7 @@ o2oa软件遵守双重协议，一个是AGPL授权协议，一个是商用授权
 2019-01-08 BUG修复:[流程引擎]修正召回|撤回按钮显示条件的判断错误。
 
 2019-01-08 BUG修复:[流程引擎]修正调度按钮显示条件的判断错误。
+
 
 # 最新版本服务器安装包下载\:
 
