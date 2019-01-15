@@ -201,12 +201,12 @@ o2oa软件遵守双重协议，一个是AGPL授权协议，一个是商用授权
 
 # 最新版本服务器安装包下载\:
 
-windows 64Bit : https://obs-o2public.obs.cn-east-2.myhwclouds.com/o2server_20190110095409_windows.zip
+windows 64Bit : http://download.o2oa.net/download/versions/o2server_20190110095409_windows.zip
 
-Linux 64Bit : https://obs-o2public.obs.cn-east-2.myhwclouds.com/o2server_20190110095409_linux.zip
+Linux 64Bit : http://download.o2oa.net/download/versions/o2server_20190110095409_linux.zip
 
-MacOS : https://obs-o2public.obs.cn-east-2.myhwclouds.com/o2server_20190110095409_macos.zip
+MacOS : http://download.o2oa.net/download/versions/o2server_20190110095409_macos.zip
 
-AIX : https://obs-o2public.obs.cn-east-2.myhwclouds.com/o2server_20190110095409_aix.zip
+AIX : http://download.o2oa.net/download/versions/o2server_20190110095409_aix.zip
 
 
