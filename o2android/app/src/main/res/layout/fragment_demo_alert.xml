@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="315dp"
+    android:layout_height="485dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center"
+    android:background="@mipmap/demo_alert_background">
+    
+    <ImageView
+        android:id="@+id/image_demo_alert_close"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:src="@mipmap/demo_alert_close"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+    
+    <ImageView
+        android:id="@+id/image_demo_alert_top"
+        android:layout_width="260dp"
+        android:layout_height="38dp"
+        android:src="@mipmap/demo_alert_top"
+        android:layout_marginTop="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+    
+    
+    <TextView
+        android:layout_width="258dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_demo_alert_top"
+        android:layout_marginTop="18dp"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:gravity="center_horizontal"
+        android:text="@string/demo_alert_top"/>
+
+
+    <TextView
+        android:id="@+id/tv_demo_alert_no1"
+        android:layout_width="245dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="198dp"
+        android:textColor="@color/z_color_text_primary"
+        android:textSize="14sp"
+        android:text="@string/demo_alert_no1"/>
+    <TextView
+        android:id="@+id/tv_demo_alert_no2"
+        android:layout_width="245dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_demo_alert_no1"
+        android:layout_marginTop="18dp"
+        android:textColor="@color/z_color_text_primary"
+        android:textSize="14sp"
+        android:text="@string/demo_alert_no2"/>
+    <TextView
+        android:id="@+id/tv_demo_alert_no3"
+        android:layout_width="245dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_demo_alert_no2"
+        android:layout_marginTop="18dp"
+        android:textColor="@color/z_color_text_primary"
+        android:textSize="14sp"
+        android:text="@string/demo_alert_no3"/>
+    <TextView
+        android:id="@+id/tv_demo_alert_no4"
+        android:layout_width="245dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_demo_alert_no3"
+        android:layout_marginTop="18dp"
+        android:textColor="@color/z_color_text_primary"
+        android:textSize="14sp"
+        android:text="@string/demo_alert_no4"/>
+
+
+</android.support.constraint.ConstraintLayout>

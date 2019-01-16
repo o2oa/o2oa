@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/menu_attendance_list"
+          app:showAsAction="ifRoom"
+          android:orderInCategory="100"
+          android:title="@string/menu_activity_attendance"/>
+
+    <item android:id="@+id/menu_attendance_appeal_approval"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="200"
+        android:title="@string/menu_activity_attendance_appeal_approval"/>
+
+    <item android:id="@+id/menu_attendance_location_setting"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="300"
+        android:title="@string/menu_activity_attendance_location_setting"/>
+
+
+
+</menu>

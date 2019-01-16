@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FB4747</color>
+    <color name="colorPrimaryDark">#FB4747</color>
+    <color name="colorAccent">#2ECC71</color>
+    <!-- z ui color -->
+    <color name="z_color_primary">#fffb4747</color>
+    <color name="z_color_primary_press">#E13F3F</color>
+    <color name="z_color_primary_blur">#FA9696</color>
+    <color name="z_color_primary_dark">#FB4747</color>
+    <color name="z_color_accent">#2ECC71</color>
+    <color name="z_color_accent_light">#822ECC71</color>
+    <color name="z_color_transparent">#00000000</color>
+    <color name="z_color_primary_transparent">#99FB4747</color>
+    <color name="z_color_white_translucent">#eeffffff</color>
+    <color name="z_color_white_translucent_af">#afffffff</color>
+    <color name="z_color_white">#FFFFFF</color>
+    <color name="z_color_black">#000000</color>
+    <color name="z_color_gray">#888888</color>
+    <color name="z_color_gray_600">#999999</color>
+    <color name="z_color_gray_light">#82a3a3a3</color>
+
+
+    <!-- refresh layout loading color -->
+    <color name="z_color_refresh_red">#ff0000</color>
+    <color name="z_color_refresh_orange">#ff5722</color>
+    <color name="z_color_refresh_purple">#673AB7</color>
+    <color name="z_color_refresh_scuba_blue">#02b0c8</color>
+    <!--selector -->
+    <color name="disabled">#cccccccc</color>
+    <color name="selected">#cccccccc</color>
+    <!--背景色-->
+    <color name="z_color_background">#F5F5F5</color>
+    <color name="z_color_bottom_bar_background">#F7F7F7</color>
+    <color name="z_color_mask">#55000000</color>
+    <color name="z_color_split_line">#E0E0E0</color>
+    <color name="z_color_split_line_ddd">#DDDDDD</color>
+    <color name="z_color_split_meeting_line">#FFDEDEDE</color>
+    <color name="z_color_background_normal">#F5F5F5</color>
+    <color name="z_color_input_line_blur">#FA9696</color>
+    <color name="z_color_input_line_focus">#fb4747</color>
+    <!--字体颜色-->
+    <color name="z_color_title_font">#313D49</color>
+    <color name="z_color_subtitle_font">#9B9B9B</color>
+    <color name="z_color_text_primary_dark">#333333</color>
+    <!--<color name="z_color_text_primary_dark">#121212</color>-->
+    <color name="z_color_text_primary">#666666</color>
+    <color name="z_color_text_hint">#999999</color>
+    <color name="z_color_meeting_text">#FFCCCCCC</color>
+    <color name="z_color_meeting_room_free">#FF66CC80</color>
+
+
+    <!--chart -->
+    <color name="z_pie_chart_normal">#91cd32</color>
+    <color name="z_pie_chart_holiday">#4f94cd</color>
+    <color name="z_pie_chart_late">#fede03</color>
+    <color name="z_pie_chart_absent">#ee807f</color>
+    <color name="z_pie_chart_abnormalduty">#fedcbd</color>
+    <color name="z_pie_chart_lackoftime">#dec674</color>
+    <color name="z_pie_chart_appeal">#2ac497</color>
+
+    <color name="z_attendance_late">#f5a623</color>
+    <color name="z_attendance_leaveEarlier">#AC71E3</color>
+    <color name="z_attendance_absent">#4fb2e3</color>
+
+    <!--okr-->
+    <color name="icon_light_blue_bg">#5664d8fc</color>
+    <color name="icon_light_blue">#b138adff</color>
+    <color name="icon_blue">#ff38adff</color>
+    <color name="load_blue">#ff1E88E5</color>
+    <color name="okr_bg">#FF3066A7</color>
+    <color name="okr_block_bg">#FF407AC1</color>
+    <color name="okr_block_press_bg">#FF124C93</color>
+    <color name="okr_deep_bg">#FF204C81</color>
+    <color name="okr_tool_bg">#ff3d77c1</color>
+
+
+    <!--scan code -->
+    <color name="viewfinder_frame">#ff000000</color>
+    <color name="viewfinder_laser">#ffff0000</color>
+    <color name="viewfinder_mask">#60000000</color>
+    <color name="result_view">#b0000000</color>
+    <color name="possible_result_points">#00000000</color>
+
+    <color name="meeting_agree">#F6A623</color>
+    <color name="meeting_reject">@color/z_color_primary</color>
+
+    <!-- attendance-->
+    <color name="overlay_work_place">#1c3288dd</color>
+    <color name="overlay_work_place_border">#3288dd</color>
+
+
+    <!--im-->
+    <color name="item_click_bg_color">#E9EDED</color>
+    <color name="conv_list_background">#f2f2f4</color>
+    <color name="white">#ffffff</color>
+    <color name="line_press">#57D9D9</color>
+    <color name="line_normal">#2DD0CF</color>
+    <color name="transparent">#00000000</color>
+    <color name="black">#000000</color>
+    <color name="color_black_333333">#333333</color>
+    <color name="color_activity_blue_bg">#f7389fff</color>
+    <color name="action_bar_txt_color">#999999</color>
+    <color name="chat_text_color">#0B1816</color>
+    <color name="color_gray_d9d9d9">#d9d9d9</color>
+    <color name="gray">#808080</color>
+    <color name="transparent_background">#80000000</color>
+    <color name="jmui_jpush">#FB4747</color>
+
+    <color name="titlebar_text_color">#fff</color>
+    <color name="jmui_chat_detail_split_line_color">#d3d3d3</color>
+    <color name="menu_item_back_pres_color">#FB4747</color>
+    <color name="actionbar_pres_color">#2C2C2C</color>
+    <color name="conv_list_split_line_color">#d6d6d6</color>
+    <color name="network_disconnected_bg_color">#ffdfe0</color>
+    <color name="all_members_bg_color">#f0f1f3</color>
+    <color name="default_cursor_color">#8db4eb</color>
+    <color name="me_split_line_color">#d0d0d0</color>
+    <color name="button_press">#99E4E4</color>
+    <color name="del_conversation_background">#E9EDED</color>
+    <color name="text_back_ground">#7E1D22</color>
+    <color name="me_no_picture_color">#e1e1e1</color>
+    <color name="header_pressed">#ffc0392b</color>
+    <color name="section_color">#f8f8f8</color>
+    <color name="section_text_color">#858585</color>
+    <color name="red">#FC2828</color>
+    <color name="black1">#7A7E83</color>
+    <color name="black2">#ffeeeeee</color>
+    <color name="windows_color">#F5F5F5</color>
+    <color name="toolbar_btn_select">#D9D9D9</color>
+    <color name="toolbar_btn_nomal">@color/white</color>
+    <color name="toolbar_spilt_line">#CDCDCD</color>
+    <color name="btn_send_textcolor">@color/white</color>
+    <color name="menu_item_click_color">#346fc3</color>
+    <color name="jmui_reset_password_title_color">#4e4e4e</color>
+    <color name="blue">#33b5e5</color>
+    <color name="status_bar">#303135</color>
+    <color name="theme_body">#cc22292c</color>
+    <color name="color_grey_999999">#999999</color>
+    <color name="color_b3b3b3">#b3b3b3</color>
+    <color name="split_line_grey_color_d9d9d9">#D9D9D9</color>
+    <color name="color_grey_eaeaea">#eaeaea</color>
+    <color name="dialog_select_color">#d4d4d4</color>
+    <color name="color_split_line_d9d9d9">#d9d9d9</color>
+    <color name="spilt_line">#CFCFCF</color>
+    <color name="color_line_border">#C7C7C7</color>
+    <color name="colorBlack_Three">#333333</color>
+    <color name="province_line_border">#3b3b3b</color>
+    <color name="login_button_normal">#28e1df</color>
+    <color name="button_no_click">#2DD0CF</color>
+    <color name="text_no_click">#99E4E4</color>
+    <color name="login_button_pressed">#2DD0CF</color>
+    <color name="press">#e8e8e8</color>
+    <color name="text_black_color">#333333</color>
+    <color name="text_line_color">#dfdfdd</color>
+    <color name="text_tips_color">#666666</color>
+    <color name="main_theme_color">#0195ff</color>
+    <color name="accept_btn_default">#2DD0CF</color>
+    <color name="accept_btn_pressed">#02BDBC</color>
+    <color name="contacts_pinner_txt">#858585</color>
+    <color name="finish_btn_clickable_color">#6fd66b</color>
+    <color name="refuse_btn_default">#ea6e76</color>
+    <color name="wait_inviting">#2DD09C</color>
+    <color name="send_file_action_bar">#2C2C2C</color>
+    <color name="send_file_desc_color">#808080</color>
+    <color name="send_file_action_bar_selected">#2DD0CF</color>
+    <color name="chat_item_file_size">#989898</color>
+    <color name="send_file_title_color">#545454</color>
+    <color name="send_file_divider_color">#dcdcdc</color>
+    <color name="reply_button_disable">#f5f5f5</color>
+    <color name="reply_button_text">#dfFFFFFF</color>
+    <color name="reply_button_text_disable">#b8b8b8</color>
+    <color name="text_primary">#df000000</color>
+    <color name="bg_edittext_color">#00000000</color>
+    <color name="bg_horizontal_line_color">#80a3a4a7</color>
+    <color name="bg_horizontal_btn_normal">#eeeeee</color>
+    <color name="bg_horizontal_btn_selected">#70a3a4a7</color>
+    <color name="bg_indicator_point_normal">#D8D8D8</color>
+    <color name="bg_indicator_point_selected">#A6A6A6</color>
+    <color name="picker_list_divider">#dadada</color>
+    <color name="picker_map_nearby_divider">@color/picker_list_divider</color>
+    <color name="chat_detail_item_hit_color">#555555</color>
+    <color name="scan_bg">#7f000000</color>
+    <color name="message_already_receipt">#999999</color>
+    <color name="message_no_receipt">#2DD0CF</color>
+    <color name="blue_btn_cannot_pressed">#6CDEDD</color>
+    <color name="blue_btn_normal">#2DD0CF</color>
+    <color name="blue_btn_pressed">#02BDBC</color>
+    <color name="red_btn_normal">#EB424D</color>
+    <color name="red_btn_press">#CC3139</color>
+    <color name="blue_btn_text_70">#E0F8F8</color>
+    <color name="blue_btn_text_press">#99E4E4</color>
+    <color name="red_btn_text_70">#EAACAF</color>
+    <color name="white_btn_press">#D2D2D2</color>
+    <color name="white_btn_text_press">#888888</color>
+    <color name="white_btn_text_normal">#2C2C2C</color>
+
+</resources>

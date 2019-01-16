@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_okr_report_work"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.okr.activity.OkrReportWorkActivity">
+
+
+    <include layout="@layout/snippet_appbarlayout_tablayout_toolbar" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager_okr_report_work"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></android.support.v4.view.ViewPager>
+</LinearLayout>

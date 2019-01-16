@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/z_color_background"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:id="@+id/relative_item_contact_body_org_top_gap"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="10dp">
+        <View
+            android:layout_alignParentTop="true"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/z_color_split_line_ddd" />
+        <View
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/z_color_split_line_ddd" />
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="8dp">
+        <View
+            android:id="@+id/view_item_contact_body_org_top_divider"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:visibility="visible"
+            android:background="@color/z_color_split_line_ddd" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleTextView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/image_item_contact_body_org_icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                app:c_width="40dp"
+                app:c_height="40dp"
+                app:c_text="X"
+                app:c_textColor="@color/z_color_white"
+                app:c_inColor="@color/z_color_primary"/>
+
+            <TextView
+                android:id="@+id/tv_item_contact_body_org_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_small"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/image_item_contact_body_org_icon"
+                android:textColor="@color/z_color_text_primary_dark"
+                android:textSize="@dimen/font_normal"
+                tools:text="@string/contact_list_depart" />
+
+            <TextView
+                android:id="@+id/tv_item_contact_body_org_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/tv_item_contact_body_org_name"
+                android:textColor="@color/z_color_text_primary"
+                android:textSize="13sp"
+                tools:text="(22)" />
+
+            <ImageView
+                android:id="@+id/image_item_contact_body_org_arrow"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/icon_arrow_22dp" />
+
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,11 @@
+framework module O2OA_Auth_SDK {
+  umbrella header "O2OA_Auth_SDK.h"
+
+  export *
+  module * { export * }
+}
+
+module O2OA_Auth_SDK.Swift {
+    header "O2OA_Auth_SDK-Swift.h"
+    requires objc
+}

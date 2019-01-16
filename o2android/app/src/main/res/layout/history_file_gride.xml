@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+    <jiguang.chat.activity.historyfile.view.MImageView
+        android:id="@+id/grid_item"
+        android:layout_width="fill_parent"
+        android:layout_height="100dip"
+        android:scaleType="centerCrop"
+        android:src="@drawable/jmui_picture_not_found"/>
+
+    <LinearLayout
+        android:id="@+id/checkbox_ll"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <CheckBox
+            android:id="@+id/child_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/pictures_select_icon"
+            android:button="@null"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

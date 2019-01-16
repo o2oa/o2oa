@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/spacing_small"
+    android:background="@android:color/white">
+    <TextView
+        android:id="@+id/tv_item_okr_work_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/z_color_title_font"
+        android:textSize="@dimen/font_large"/>
+    <TextView
+        android:id="@+id/tv_item_okr_work_process_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_item_okr_work_title"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:textColor="@color/z_color_subtitle_font"
+        />
+    <TextView
+        android:id="@+id/tv_item_okr_work_completeDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:textColor="@color/z_color_subtitle_font"
+        />
+
+</RelativeLayout>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_gravity="bottom"
+              android:background="#fff"
+              android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/selector_item_bg"
+        android:gravity="center"
+        android:padding="10dip"
+        android:text="保存图片"
+        android:textColor="#FF2C2C2C"
+        android:textSize="16sp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"
+        android:background="#4D000000"/>
+
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/selector_item_bg"
+        android:gravity="center"
+        android:padding="10dip"
+        android:text="取消"
+        android:textColor="#FF2C2C2C"
+        android:textSize="16sp"/>
+
+</LinearLayout>

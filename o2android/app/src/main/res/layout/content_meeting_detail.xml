@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    android:id="@+id/scroll_meeting_invited"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".app.meeting.invited.MeetingDetailInfoActivity"
+    tools:showIn="@layout/activity_meeting_detail_info">
+
+    <LinearLayout
+        android:id="@+id/linear_meeting_invited_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_normal"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_meeting_time"
+                    android:text="@string/meeting_name"/>
+                <TextView
+                    android:id="@+id/edit_meeting_invited_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:textSize="@dimen/font_normal"
+                    android:textColor="@color/z_color_text_primary"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/split_line"
+                android:background="@color/z_color_split_line_ddd"
+                android:layout_marginEnd="@dimen/meeting_padding"
+                android:layout_marginStart="@dimen/meeting_padding"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/spacing_normal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_meeting_time"
+                    android:text="@string/meeting_start_day"/>
+                <TextView
+                    android:id="@+id/edit_meeting_invited_start_day"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:textSize="@dimen/font_normal"
+                    android:textColor="@color/z_color_text_primary"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/split_line"
+                android:background="@color/z_color_split_line_ddd"
+                android:layout_marginEnd="@dimen/meeting_padding"
+                android:layout_marginStart="@dimen/meeting_padding"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_normal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_meeting_time"
+                    android:text="@string/accept_meeting_info_time"/>
+                <TextView
+                    android:id="@+id/edit_meeting_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:textSize="@dimen/font_normal"
+                    android:textColor="@color/z_color_text_primary"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/split_line"
+                android:background="@color/z_color_split_line_ddd"
+                android:layout_marginEnd="@dimen/meeting_padding"
+                android:layout_marginStart="@dimen/meeting_padding"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_normal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_meeting_time"
+                    android:text="@string/meeting_room"/>
+                <TextView
+                    android:id="@+id/edit_meeting_invited_room"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:textSize="@dimen/font_normal"
+                    android:textColor="@color/z_color_text_primary"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/split_line"
+                android:background="@color/z_color_split_line_ddd"
+                android:layout_marginEnd="@dimen/meeting_padding"
+                android:layout_marginStart="@dimen/meeting_padding"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_normal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_meeting_time"
+                    android:text="@string/meeting_people_sum"/>
+                <TextView
+                    android:id="@+id/meeting_people_sum"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:textSize="@dimen/font_normal"
+                    android:textColor="@color/z_color_text_primary"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/split_line"
+                android:background="@color/z_color_split_line_ddd"
+                android:layout_marginEnd="@dimen/meeting_padding"
+                android:layout_marginStart="@dimen/meeting_padding"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:padding="@dimen/spacing_normal"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start|top"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_meeting_time"
+                    android:text="@string/meeting_desc"/>
+
+                <TextView
+                    android:id="@+id/edit_meeting_create_form_desc"
+                    android:gravity="start|top"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:minLines="5"
+                    android:textSize="@dimen/font_normal"
+                    android:hint="@string/meeting_desc_hint"
+                    android:background="@null"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:background="@android:color/white"
+            android:paddingTop="@dimen/spacing_small"
+            android:layout_gravity="bottom"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_normal"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/z_color_text_primary_dark"
+                android:textSize="@dimen/font_meeting_time"
+                android:text="@string/meeting_accept_status"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/split_line"
+                android:background="@color/z_color_split_line_ddd"
+                android:layout_marginEnd="@dimen/meeting_padding"
+                android:layout_marginStart="@dimen/meeting_padding"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_normal"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/z_color_text_primary_dark"
+                android:textSize="@dimen/font_meeting_time"
+                android:text="@string/meeting_have_accepted"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_meeting_invited_accept_person_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/split_line"
+                android:background="@color/z_color_split_line_ddd"
+                android:layout_marginEnd="@dimen/meeting_padding"
+                android:layout_marginStart="@dimen/meeting_padding"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_normal"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/z_color_text_primary_dark"
+                android:textSize="@dimen/font_meeting_time"
+                android:text="@string/meeting_have_not_accept"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_meeting_invited_not_accept_person_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:background="@android:color/white"
+            android:padding="@dimen/spacing_normal"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_meeting_time"
+                    android:text="@string/meeting_file"/>
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_meeting_form_file_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

@@ -974,6 +974,46 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return list;
 	}
 
+	public <T extends JpaObject> List<T> fetchEuqalOrIsMember(Class<T> clz, String equalAttribute, Object equalValue,
+			String isMemberAttribute, Object isMemberValue) throws Exception {
+		List<T> os = this.fetchEuqalOrIsMember(clz, JpaObject.singularAttributeField(clz, true, true), equalAttribute,
+				equalValue, isMemberAttribute, isMemberValue);
+		return os;
+	}
+
+	public <T extends JpaObject, W extends GsonPropertyObject> List<W> fetchEuqalOrIsMember(Class<T> clz,
+			WrapCopier<T, W> copier, String equalAttribute, Object equalValue, String isMemberAttribute,
+			Object isMemberValue) throws Exception {
+		List<T> os = this.fetchEuqalOrIsMember(clz, copier.getCopyFields(), equalAttribute, equalValue,
+				isMemberAttribute, isMemberValue);
+		return copier.copy(os);
+	}
+
+	public <T extends JpaObject> List<T> fetchEuqalOrIsMember(Class<T> clz, List<String> attributes,
+			String equalAttribute, Object equalValue, String isMemberAttribute, Object isMemberValue) throws Exception {
+		List<T> list = new ArrayList<>();
+		List<String> fields = ListTools.trim(attributes, true, true, JpaObject.id_FIELDNAME);
+		EntityManager em = this.get(clz);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
+		Root<T> root = cq.from(clz);
+		List<Selection<?>> selections = new ArrayList<>();
+		for (String str : fields) {
+			selections.add(root.get(str));
+		}
+		Predicate p = cb.equal(root.get(equalAttribute), equalValue);
+		p = cb.or(p, cb.isMember(isMemberValue, root.get(isMemberAttribute)));
+		cq.multiselect(selections).where(p);
+		for (Tuple o : em.createQuery(cq).getResultList()) {
+			T t = clz.newInstance();
+			for (int i = 0; i < fields.size(); i++) {
+				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
+			}
+			list.add(t);
+		}
+		return list;
+	}
+
 	public <T extends JpaObject> Integer delete(Class<T> clz, Collection<String> ids) throws Exception {
 		int i = 0;
 		if (!ids.isEmpty()) {

@@ -1,0 +1,491 @@
+@charset "utf-8";
+/*
+  Copyright 2002, 2014, Oracle and/or its affiliates. All rights reserved.
+  Author: Robert Crews
+  Version: 2014.7.21
+*/
+
+body {
+  font-family: sans-serif;
+  line-height: 1.5;
+  color: #222;
+  background-color: white;
+  font-size: small;
+}
+* html body {
+  /* Modified SBMH (Tan hack) */
+  font-size: x-small; /* for IE5.x/win */
+  f\ont-size: small;  /* for other IE versions */
+}
+
+h1 {
+  font-size: 165%;
+  line-height: normal;
+  font-weight: bold;
+  border-bottom: 1px solid #ddd;
+  width: 100%;
+}
+
+h2 {
+  font-size: 152%;
+  line-height: normal;
+  font-weight: bold;
+}
+
+h3 {
+  font-size: 139%;
+  line-height: normal;
+  font-weight: bold;
+}
+
+h4 {
+  font-size: 126%;
+  line-height: normal;
+  font-weight: bold;
+}
+
+h5 {
+  font-size: 113%;
+  line-height: normal;
+  font-weight: bold;
+  display: inline;
+}
+
+h6 {
+  font-size: 100%;
+  line-height: normal;
+  font-weight: bold;
+  font-style: italic;
+  display: inline;
+}
+
+a:link {
+  color: #039;
+  background: inherit;
+}
+
+a:visited {
+  color: #72007c;
+  background: inherit;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a img, img[usemap] {
+  border-style: none;
+}
+
+code, pre, samp, tt {
+  font-family: monospace;
+  font-size: 110%;
+}
+
+caption {
+  text-align: center;
+  font-weight: bold;
+  width: auto;
+}
+
+dt {
+  font-weight: bold;
+}
+
+table {
+  font-size: small; /* for ICEBrowser */
+}
+
+td {
+  vertical-align: top;
+}
+
+th {
+  font-weight: bold;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+table[dir="rtl"] th {
+  font-weight: bold;
+  text-align: right;
+  vertical-align: bottom;
+}
+
+ol ol {
+  list-style-type: lower-alpha;
+}
+
+ol ol ol {
+  list-style-type: lower-roman;
+}
+
+td p:first-child, td pre:first-child {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+table.table-border {
+  border-collapse: collapse;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+}
+table.table-border th {
+  padding: 0.5ex 0.25em;
+  color: black;
+  background-color: #f7f7ea;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+table.table-border td {
+  padding: 0.5ex 0.25em;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+
+span.gui-object, span.gui-object-action {
+  font-weight: bold;
+}
+
+span.gui-object-action-var {
+  font-weight: bold;
+  font-style: italic;
+}
+
+span.gui-object-title { }
+
+p.horizontal-rule {
+  width: 100%;
+  border: #cc9 solid;
+  border-width: 0 0 1px 0;
+  margin-bottom: 4ex;
+}
+
+/* http://webaim.org/techniques/skipnav/ */
+.zz-skip-header a, .zz-skip-header a:hover, .zz-skip-header a:visited {
+  position: absolute;
+  left: 0;
+  top: -500px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.zz-skip-header a:active, .zz-skip-header a:focus {
+  position: static;
+  width: auto;
+  height: auto;
+}
+
+td.zz-nav-header-cell {
+  text-align: left;
+  font-size: 95%;
+  width: 99%;
+  color: black;
+  background-color: white;
+  font-weight: normal;
+  vertical-align: top;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a.zz-nav-header-link {
+  font-size: 95%;
+}
+
+td.zz-nav-button-cell {
+  white-space: nowrap;
+  text-align: center;
+  width: 1%;
+  vertical-align: top;
+  padding-left: 4px;
+  padding-right: 4px;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a.zz-nav-button-link {
+  font-size: 90%;
+}
+
+div.zz-nav-footer-menu {
+  width: 100%;
+  text-align: center;
+  margin-top: 2ex;
+  margin-bottom: 4ex;
+}
+
+p.zz-legal-notice, a.zz-legal-notice-link {
+  font-size: 85%;
+}
+
+sub, sup {
+  line-height: 0;
+}
+
+/*************************************/
+/*  Begin DARB Formats               */
+/*************************************/
+
+/*
+max-width causes better full-screen display, but in IE7 & IE8:
+ * Causes bullets in some ul elements to be in the wrong places.
+ * Causes h2 headings after bulleted list to have no space above.
+Not-selector hack hides rule from IE8 and below.
+*/
+html:not([ie8andbelow]) .IND p,
+html:not([ie8andbelow]) .IND div,
+html:not([ie8andbelow]) .IND table {
+  max-width: 70em;
+}
+
+div > pre, dd > pre, li > pre {
+  padding: 0.5ex 1ex;
+  color: black;
+  background-color: #eee;
+  border-radius: 4px;
+}
+
+.bold, .codeinlinebold, .syntaxinlinebold, .term, .glossterm, .seghead,
+.glossaryterm, .keyword, .msg, .msgexplankw, .msgactionkw, .msglevelkw,
+.msgorigkw, .msgaudkw, .notep1, .xreftitlebold, .xrefglossterm {
+  font-weight: bold;
+}
+
+.italic, .codeinlineitalic, .syntaxinlineitalic, .variable,
+.xreftitleitalic {
+  font-style: italic;
+}
+
+.bolditalic, .codeinlineboldital, .syntaxinlineboldital,
+.titleinfigure, .titleinexample, .titleintable, .titleinequation,
+.xreftitleboldital {
+  font-weight: bold;
+  font-style: italic;
+}
+
+.itemizedlisttitle, .orderedlisttitle, .segmentedlisttitle,
+.variablelisttitle {
+  font-weight: bold;
+}
+
+.bridgehead, .titleinrefsubsect3 {
+  font-weight: bold;
+}
+
+.titleinrefsubsect {
+  font-size: 126%;
+  font-weight: bold;
+}
+
+.titleinrefsubsect2 {
+  font-size: 113%;
+  font-weight: bold;
+}
+
+.subhead1 {
+  display: block;
+  font-size: 139%;
+  line-height: normal;
+  font-weight: bold;
+}
+
+.subhead2, .related-topics {
+  display: block;
+  font-weight: bold;
+}
+
+.subhead3 {
+  font-weight: bold;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.superscript {
+  vertical-align: super;
+  line-height: 0;
+}
+
+.subscript {
+  vertical-align: sub;
+  line-height: 0;
+}
+
+.listofeft {
+  border: none;
+}
+
+.betadraft, .alphabetanotice, .revenuerecognitionnotice {
+  color: #e00;
+  background-color: white;
+}
+
+.betadraftsubtitle {
+  text-align: center;
+  font-weight: bold;
+  color: #e00;
+  background-color: white;
+}
+
+.comment {
+  color: #080;
+  background-color: white;
+  font-weight: bold;
+}
+
+.copyrightlogo {
+  text-align: center;
+  font-size: 85%;
+}
+
+.tocsubheader {
+  list-style-type: none;
+}
+
+table.icons td {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.l1ix dd, dd dl.l2ix, dd dl.l3ix {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+div.infoboxnote, div.infoboxnotewarn, div.infoboxnotealso {
+  margin-top: 4ex;
+  margin-right: 10%;
+  margin-left: 10%;
+  margin-bottom: 4ex;
+  padding: 0.25em;
+  border-top: 1pt solid gray;
+  border-bottom: 1pt solid gray;
+}
+
+p.notep1 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.tahiti-highlight-example {
+  color: black;
+  background-color: #ff9;
+  text-decoration: inherit;
+}
+
+.tahiti-highlight-search {
+  color: black;
+  background-color: #9cf;
+  text-decoration: inherit;
+}
+
+.tahiti-sidebar-heading {
+  font-size: 110%;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/******************************************/
+/* Formats for FMW kit, Upated 2011-11-16 */
+/******************************************/
+
+.level1 {
+  font-family: sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  margin-left: 20px;
+}
+
+.level2 {
+  font-family: sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  margin-left: 40px;
+}
+
+.level3 {
+  font-family: sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  margin-left: 60px;
+}
+
+.level4 {
+  font-family: sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  margin-left: 80px;
+}
+
+.related-topics {
+  width: 60%;
+  margin-top: 30px;
+  padding-top: 10px;
+  border-top-color: #999999;
+  border-top-style: solid;
+  border-top-width: 1px;
+  font-size: 139%;
+  font-weight: bold;
+}
+
+/* remove top and bottom margins in p in table cells in Firefox */
+td p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+#tThisDocument a:hover {
+  color: #600;
+  background-color: #b0cff5;
+}
+
+/*************************************/
+/*  End DARB Formats                 */
+/*************************************/
+
+@media all {
+  dd {
+    margin-bottom: 2ex;
+  }
+  dl:first-child {
+    margin-top: 2ex;
+  }
+}
+
+@media print {
+  body {
+    font-size: 11pt;
+    padding: 0 !important;
+  }
+
+  a:link, a:visited {
+    color: black;
+    background-color: white;
+  }
+
+  code, pre, samp, tt {
+    font-size: 10pt;
+  }
+
+  #nav, #search_this_book, #comment_form,
+  #comment_announcement, #flipNav, .noprint {
+    display: none !important;
+  }
+
+  body#left-nav-present {
+    overflow: visible !important;
+  }
+}
+
+@media screen and (max-device-width: 480px) {
+  body{
+    -webkit-text-size-adjust: none;
+    -moz-text-size-adjust: none;
+    -ms-text-size-adjust: none;
+  }
+  fieldset input, fieldset textarea {
+    width: 100%;
+  }
+}

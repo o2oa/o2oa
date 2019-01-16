@@ -1,0 +1,65 @@
+/*******************************************************************************
+ * Copyright (c) 2010, 2014 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *     Lars Vogel <Lars.Vogel@gmail.com> - Bug 420836
+ *******************************************************************************/
+
+@import url("platform:/plugin/org.eclipse.ui.themes/css/e4_basestyle.css");
+
+ColorDefinition#org-eclipse-ui-workbench-ACTIVE_UNSELECTED_TABS_COLOR_START {
+	color: #F6F6F6;
+}
+
+ColorDefinition#org-eclipse-ui-workbench-ACTIVE_UNSELECTED_TABS_COLOR_END {
+	color: #D6D6D6;
+}
+
+ColorDefinition#org-eclipse-ui-workbench-ACTIVE_TAB_OUTER_KEYLINE_COLOR {
+	color: #C4C5C1;
+}
+
+.MTrimmedWindow {
+	background-color: #E8E8E8;
+}
+
+.MPartStack {
+	swt-simple: false;
+	swt-mru-visible: false;
+}
+
+.MTrimBar {
+	background-color: #E8E8E8;
+}
+
+.MTrimBar#org-eclipse-ui-main-toolbar {
+	background-color:  #CFCFCF #A8A8A8 100%;
+}
+
+.MToolControl.TrimStack {
+	frame-image:  url(./macTSFrame.png);
+	handle-image:  url(./macHandle.png);
+}
+
+#PerspectiveSwitcher {
+	background-color: #F0F0F0 #E8E8E8 100%;
+	eclipse-perspective-keyline-color: #515151 #515151;
+}
+
+#org-eclipse-ui-editorss {
+	swt-tab-height: 8px;
+	padding: 0px 5px 7px;
+}
+
+CTabFolder.MArea .MPartStack, CTabFolder.MArea .MPartStack.active {
+	swt-shadow-visible: false;
+}
+
+CTabFolder Canvas {
+	background-color: #F0F0F0;
+}

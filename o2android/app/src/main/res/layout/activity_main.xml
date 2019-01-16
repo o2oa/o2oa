@@ -1,0 +1,63 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fitsSystemWindows="true"
+    android:clipToPadding="false"
+    android:id="@+id/linear_main_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".app.o2.main.MainActivity">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar_layout_main_head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/XBPMTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_snippet_top_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/z_color_primary"
+                app:popupTheme="@style/XBPMTheme.PopupOverlay">
+
+                <TextView
+                    android:id="@+id/tv_snippet_top_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text=""
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </android.support.v7.widget.Toolbar>
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/content_fragmentView_id"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <include layout="@layout/fragment_main_bottom_bar_image" />
+
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_main_start_ai"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/o2_ai_start"
+        app:backgroundTint="@color/z_color_bottom_bar_background"
+        app:rippleColor="@color/z_color_bottom_bar_background"
+        app:elevation="1px"
+        app:fabSize="normal"
+        android:scaleType="center"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:visibility="gone"/>
+</FrameLayout>

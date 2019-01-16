@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.bbs.main.BBSMainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <android.support.design.widget.AppBarLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/app_bar_layout_snippet"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:theme="@style/XBPMTheme.AppBarOverlay">
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_snippet_top_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/z_color_primary"
+                app:popupTheme="@style/XBPMTheme.PopupOverlay">
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/toolbar_snippet_tab_layout"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@color/z_color_primary"
+                    app:tabIndicatorColor="@color/z_color_primary"/>
+
+                <TextView
+                    android:id="@+id/tv_snippet_top_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="marquee"
+                    android:singleLine="true"
+                    android:layout_gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text=""
+                    android:visibility="gone"/>
+
+            </android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager_bbs_main"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_bottom_bbs_main_cancel_collect_button"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:padding="@dimen/spacing_small"
+        android:background="@color/z_color_background"
+        android:gravity="center"
+        android:textColor="@color/z_color_primary"
+        android:textSize="@dimen/font_large"
+        android:text="@string/bbs_section_cancel_collect"
+        android:visibility="gone"
+        />
+</RelativeLayout>

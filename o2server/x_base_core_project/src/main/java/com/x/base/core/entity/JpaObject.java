@@ -39,12 +39,16 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 	}
 
 	abstract public void onPersist() throws Exception;
+	
+	public static final String default_schema = "X";
 
 	public static final String ColumnNamePrefix = "x";
 
 	public static final String IndexNameMiddle = "_";
 
 	public static final String JoinIndexNameSuffix = "_join";
+
+	public static final String KeyIndexNameSuffix = "_key";
 
 	public static final String ElementIndexNameSuffix = "_element";
 
@@ -56,19 +60,9 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 
 	abstract public void setId(String id);
 
-	// abstract public Date getCreateTime();
-	//
-	// abstract public void setCreateTime(Date createTime);
-	//
-	// abstract public Date getUpdateTime();
-	//
-	// abstract public void setUpdateTime(Date updateTime);
-	//
-	// abstract public String getSequence();
-	//
-	// abstract public void setSequence(String sequence);
-
 	public static final String id_FIELDNAME = "id";
+
+	public static final String key_FIELDNAME = "key";
 
 	public static final String createTime_FIELDNAME = "createTime";
 

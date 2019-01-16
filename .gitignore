@@ -1,6 +1,10 @@
 /o2cloud/
+/.settings/
 .classpath
 .project
 /.settings/
 /target/
-*_.java
+/.svn/
+/o2web/gulpfile.js
+**/.DS_Store
+.DS_Store

@@ -2,6 +2,7 @@ package com.x.server.console.action;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +22,7 @@ import org.dom4j.io.XMLWriter;
 import com.x.base.core.container.FactorDistributionPolicy;
 import com.x.base.core.container.factory.SlicePropertiesBuilder;
 import com.x.base.core.entity.AbstractPersistenceProperties;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.Storage;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.Packages;
@@ -63,6 +65,24 @@ public class PersistenceXmlHelper {
 		property = properties.addElement("property");
 		property.addAttribute("name", "openjpa.jdbc.DBDictionary");
 		property.addAttribute("value", SlicePropertiesBuilder.determineDBDictionary(sources.get(0)));
+		if (StringUtils.equals(SlicePropertiesBuilder.determineDBDictionary(sources.get(0)),
+				SlicePropertiesBuilder.dictionary_db2)) {
+			property = properties.addElement("property");
+			property.addAttribute("name", "openjpa.jdbc.Schema");
+			property.addAttribute("value", JpaObject.default_schema);
+		}
+		if (StringUtils.equals(SlicePropertiesBuilder.determineDBDictionary(sources.get(0)),
+				SlicePropertiesBuilder.dictionary_informix)) {
+			property = properties.addElement("property");
+			property.addAttribute("name", "openjpa.jdbc.Schema");
+			property.addAttribute("value", JpaObject.default_schema);
+		}
+		if (StringUtils.equals(SlicePropertiesBuilder.determineDBDictionary(sources.get(0)),
+				SlicePropertiesBuilder.dictionary_dm)) {
+			property = properties.addElement("property");
+			property.addAttribute("name", "openjpa.jdbc.Schema");
+			property.addAttribute("value", JpaObject.default_schema);
+		}
 		property = properties.addElement("property");
 		property.addAttribute("name", "openjpa.slice.Lenient");
 		property.addAttribute("value", "false");
@@ -274,7 +294,17 @@ public class PersistenceXmlHelper {
 		list = ListTools.includesExcludesWildcard(list, includes, excludes);
 		list = ListTools.trim(list, true, true);
 		list = list.stream().sorted().collect(Collectors.toList());
-		return ClassTools.forName(list);
+		List<Class<?>> os = new ArrayList<>();
+		for (String str : list) {
+			Class<?> clz = null;
+			try {
+				clz = Class.forName(str);
+				os.add(clz);
+			} catch (Exception e) {
+				System.out.println("无法获取类:" + str + ".");
+			}
+		}
+		return os;
 	}
 
 }

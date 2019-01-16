@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="com.jrockit.mc.feature.rcp.zh_CN"
+      label="%name"
+      version="5.5.2.174165"
+      provider-name="%provider">
+
+   <description url="%descriptionUrl">
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="%licenseUrl">
+      %license
+   </license>
+
+   <requires>
+      <import feature="com.jrockit.mc.feature.core" match="equivalent"/>
+   </requires>
+
+   <plugin
+         id="com.jrockit.mc.alert.zh_CN"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.browser.attach.zh_CN"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.browser.jdp.zh_CN"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.browser.zh_CN"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.components.ui.zh_CN"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.console.historicaldata.zh_CN"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.console.ui.zh_CN"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.console.ui.mbeanbrowser.zh_CN"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.console.ui.notification.zh_CN"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.ui.zh_CN"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.docs.zh_CN"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.flightrecorder.ui.zh_CN"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.flightrecorder.controlpanel.ui.zh_CN"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.greychart.ui.zh_CN"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.rcp.application.zh_CN"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.rcp.intro.zh_CN"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.rjmx.zh_CN"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.rjmx.ui.zh_CN"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.console.ui.diagnostic.zh_CN"
+         download-size="0"
+         install-size="0"
+         version="5.5.2.174165"
+         fragment="true"
+         unpack="false"/>
+
+</feature>

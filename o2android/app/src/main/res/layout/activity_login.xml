@@ -1,0 +1,265 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.login.LoginActivity">
+
+    <RelativeLayout
+        android:id="@+id/login_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:background="@mipmap/login_background_2">
+
+        <ScrollView
+            android:id="@+id/login_form_scroll_id"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/login_horizontal_margin"
+            android:paddingRight="@dimen/login_horizontal_margin"
+            android:paddingTop="@dimen/login_horizontal_margin">
+
+            <RelativeLayout
+                android:id="@+id/login_form_linear_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="95dp"
+                    android:layout_height="95dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@mipmap/login_avatar_outside"/>
+
+                <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
+                    android:id="@+id/image_login_logo"
+                    android:layout_width="87dp"
+                    android:layout_height="87dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@mipmap/login_avatar"
+                    />
+
+                <LinearLayout
+                    android:id="@+id/relative_login_form"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/image_login_logo"
+                    android:orientation="vertical"
+                    android:layout_marginTop="30dp">
+
+                    <LinearLayout
+                        android:id="@+id/relative_login_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/image_login_icon_name"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@mipmap/icon_user_focus" />
+
+                        <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.ClearTextEdit
+                            android:id="@+id/login_edit_username_id"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:completionThreshold="1"
+                            android:background="@null"
+                            android:hint="@string/activity_login_username"
+                            android:maxLines="1"
+                            android:textColor="@color/z_color_text_primary"
+                            android:textColorHint="@color/z_color_text_hint"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/view_login_username_bottom"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/z_color_input_line_focus"
+                        />
+                    <LinearLayout
+                        android:id="@+id/linear_login_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:id="@+id/relative_login_form_password"
+                            android:layout_width="0dp"
+                            android:layout_height="44dp"
+                            android:orientation="horizontal"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:id="@+id/image_login_icon_password"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center_vertical"
+                                android:src="@mipmap/icon_verification_code_normal" />
+
+                            <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.ClearTextEdit
+                                android:id="@+id/login_edit_password_id"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:background="@null"
+                                android:hint="@string/login_code"
+                                android:maxLines="1"
+                                android:inputType="number"
+                                android:textColor="@color/z_color_text_primary"
+                                android:textColorHint="@color/z_color_text_hint"
+                                android:textSize="13sp" />
+
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/button_login_phone_code"
+                            android:layout_width="110dp"
+                            android:layout_height="44dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="@dimen/spacing_tiny"
+                            android:background="@null"
+                            android:visibility="gone"
+                            android:text="@string/login_button_code"
+                            android:textColor="@color/z_color_primary"
+                            android:textSize="15sp"/>
+                    </LinearLayout>
+                    <View
+                        android:id="@+id/view_login_password_bottom"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/z_color_input_line_blur"
+                        />
+
+                    <Button
+                        android:id="@+id/btn_login_submit"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="30dp"
+                        android:background="@drawable/button_background_44dp"
+                        android:text="@string/activity_login_submit"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        />
+
+                    <Button
+                        android:id="@+id/btn_login_facepp"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="14dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/button_background_44dp_border"
+                        android:text="@string/activity_login_face"
+                        android:textColor="@color/z_color_text_primary"
+                        android:textSize="16sp"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:visibility="gone"
+                        />
+
+
+                    <TextView
+                        android:id="@+id/tv_rebind_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/login_button_rebind"
+                        android:textColor="@color/z_color_text_hint"
+                        android:textSize="13sp"
+                        android:layout_marginTop="10dp"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="15dp"
+                        />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </ScrollView>
+
+
+        <TextView
+            android:id="@+id/tv_login_copyright"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_horizontal"
+            android:textColor="@color/z_color_text_primary"
+            android:textSize="@dimen/font_mini"
+            tools:text="Copyright @2017 All Right Reserved" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/login_facepp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:visibility="gone">
+
+        <android.opengl.GLSurfaceView
+            android:id="@+id/login_facepp_surfaceview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+
+        <ImageView
+            android:id="@+id/login_facepp_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_menu_window_close"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="14dp"
+            android:layout_marginStart="14dp"
+            />
+
+        <TextView
+            android:id="@+id/login_facepp_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="14dp"
+            android:layout_centerHorizontal="true"
+            android:textColor="#ffffffff"
+            android:textSize="18sp"
+            android:text="人脸识别登录"/>
+
+        <TextView
+            android:id="@+id/login_facepp_debugPrinttext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="48dp"
+            android:layout_centerHorizontal="true"
+            android:textColor="#ffffffff"
+            android:textSize="18sp"
+            tools:text="1111111"/>
+
+
+    </RelativeLayout>
+</LinearLayout>
+
+
+

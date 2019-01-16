@@ -1,0 +1,147 @@
+{
+	"from": {
+		"width": "1px",
+		"height": "1px",
+		"position": "absolute",
+		"top": $(document.body).getSize().y/2,
+		"left": $(document.body).getSize().x/2,
+		"border-style": "solid",
+		"border-color": "#999",
+		"border-width": "1px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"border-radius": "8px",
+		"box-shadow": "0px 0px 10px #333", 
+		
+		"padding": "3px",
+		"overflow": "hidden",
+	
+		"opacity": 0
+		
+	},
+	"to": {
+		"border-style": "solid",
+		"border-color": "#999",
+		"border-width": "1px",
+		"box-shadow": "0px 0px 10px #333", 
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"border-radius": "8px",
+		"font-size": "12px",
+		"height": "60",
+		"padding": "3px",
+		"width": "300",
+		"position": "absolute",
+		"top": "0",
+		"left": "0",
+		"overflow": "hidden",
+		"opacity": 1
+	},
+	"current": {
+	},
+	"uncurrent": {
+	},
+	"spacerFrom": {
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"width": "1px",
+		"height": "1px",
+		"position": "absolute",
+		"opacity": 0,
+		"padding": "4px",
+		"border-radius": "8px",
+		"background-color": "#333333"
+        //"background-image": "url("+MWF.defaultPath+"/xDesktop/$Window/desktop_default/img/window.jpg)"
+	},
+	"spacerTo": {
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "absolute",
+		"opacity": 0.8,
+		"border-radius": "8px",
+		"padding": "4px",
+		"background-color": "#333333"
+        //"background-image": "url("+MWF.defaultPath+"/xDesktop/$Window/desktop_default/img/window.jpg)"
+	},
+	"spacerCurrent":{
+		"background-color": "#333333"
+        //"background-image": "url("+MWF.defaultPath+"/xDesktop/$Window/desktop_default/img/window.jpg)"
+	},
+	"spacerUncurrent":{
+		"background-image": "",
+		"background-color": "#AAA"
+	},
+    "content": {
+        "position": "relative"
+    },
+	"mark": {
+		"height": "0",
+		"width": "0",
+		"opacity": 0.3,
+		"position": "absolute",
+		"top": "0px",
+		"left": "0px",
+		"border-style": "none",
+		"border-width": "0",
+		"background-color": "#CCC"
+	},
+	"button": {
+		"border": "1px solid #999",
+		"color": "#333",
+		"margin": "0px 5px"
+	},
+	"titleAction": {
+        "cursor": "default"
+    },
+    "titleRefresh": {
+        "width": "20px",
+        "height": "20px",
+        "margin-top": "3px",
+        "margin-right": "4px",
+        "background-image": "url("+MWF.defaultPath+"/xDesktop/$Window/desktop_default/img/refresh.png)",
+        "background-position": "center center",
+        "background-repeat": "no-repeat"
+    },
+	"closeActionNode": {
+		"float": "right",
+		"width": "20px",
+		"height": "20px",
+		"margin-top": "4px",
+		"margin-right": "4px",
+		"background-image": "url("+MWF.defaultPath+"/xDesktop/$Window/desktop_default/img/close.png)",
+		"background-position": "center center",
+		"background-repeat": "no-repeat"
+	},
+	"maxActionNode": {
+		"float": "right",
+		"width": "20px",
+		"height": "20px",
+		"margin-top": "4px",
+		"margin-right": "4px",
+		"background-image": "url("+MWF.defaultPath+"/xDesktop/$Window/desktop_default/img/max.png)",
+		"background-position": "center center",
+		"background-repeat": "no-repeat"
+	},
+	"restoreActionNode": {
+		"background-image": "url("+MWF.defaultPath+"/xDesktop/$Window/desktop_default/img/restore.png)"
+	},
+	"minActionNode": {
+		"float": "right",
+		"width": "20px",
+		"height": "20px",
+		"margin-top": "4px",
+		"margin-right": "4px",
+		"background-image": "url("+MWF.defaultPath+"/xDesktop/$Window/desktop_default/img/min.png)",
+		"background-position": "center center",
+		"background-repeat": "no-repeat"
+	},
+	"titleActionOver": {
+		"box-shadow": "0px 0px 10px #999"
+	},
+	"titleActionOut": {
+		"box-shadow": "0px 0px 0px"
+	},
+	"titleActionDown": {
+		"box-shadow": "0px 0px 10px #000"
+	}
+}

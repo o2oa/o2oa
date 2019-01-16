@@ -1,0 +1,8 @@
+{
+  "id" : "o2CenterServer",
+  "name" : "dev",
+  "centerHost" : "dev.o2server.io",
+  "centerContext" : "/x_program_center",
+  "centerPort" : 20030,
+  "httpProtocol" : "http"
+}

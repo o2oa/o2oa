@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <include
+        layout="@layout/layout_search_title_bar"/>
+
+    <LinearLayout
+        android:id="@+id/ac_ll_friend_list_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/ac_search_list_view_item"
+            android:text="联系人"/>
+
+        <View
+            style="@style/ac_search_list_view_divider"/>
+    </LinearLayout>
+
+    <ListView
+        android:divider="@drawable/main_list_divider_line"
+        android:id="@+id/ac_lv_friend_list_detail_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/ac_tv_search_no_results"
+        style="@style/ac_search_no_results"/>
+</LinearLayout>

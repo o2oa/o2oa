@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/image_item_start_process_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@mipmap/icon_process_default"/>
+    <TextView
+        android:id="@+id/tv_item_start_process_name"
+        android:layout_marginTop="@dimen/spacing_large"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textColor="@color/z_color_text_primary_dark"
+        android:textSize="@dimen/font_normal"
+        android:text="流程名称"/>
+</LinearLayout>

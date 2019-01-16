@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="/x_desktop/res/css/style.css" charset="UTF-8" />
+    <link rel="stylesheet" href="/x_desktop/res/css/mBoxNotice.css" charset="UTF-8" />
+    <link rel="stylesheet" href="/x_desktop/res/css/mBoxTooltip.css" charset="UTF-8" />
+    <script src="/x_desktop/res/common.js"></script>
+    <script src="/x_desktop/res/framework/mootools/mootools-1.6.0.js"></script>
+    <!--<script src="/x_desktop/res/framework/mootools/mootools-more-1.4.0.1-all_2.js"></script>-->
+    <title>FORM PREVIEW</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <script>
+        layout = window.layout || {};
+        COMMON.DOM.addReady(function(){
+            COMMON.AjaxModule.load("/o2_lib/mootools/plugin/mBox.Notice.js", null, false);
+            COMMON.AjaxModule.load("/o2_lib/mootools/plugin/mBox.Tooltip.js", null, false);
+
+            COMMON.setContentPath("/x_desktop");
+            COMMON.AjaxModule.load("mwf", function(){
+                MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
+                MWF.loadLP("zh-cn");
+                MWF.require("MWF.xDesktop.Layout", function(){
+                    var preview = window.frameElement.retrieve("preview1");
+                    preview1.loadFormData($("layout"));
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+<div id="layout">
+    <div id="layout_top">
+
+    </div>
+    <div id="layout_form">
+    </div>
+</div>
+</body>
+</html>

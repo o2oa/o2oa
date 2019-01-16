@@ -181,6 +181,192 @@ performance of this software.
 
 -------------------------------------------------------------------------------
 
+%% This notice is provided with respect to DejaVu fonts v2.34, which may be
+included with JRE 8, and JDK 8, and OpenJDK 8.
+
+--- begin of LICENSE ---
+
+Fonts are (c) Bitstream (see below). DejaVu changes are in public domain.
+Glyphs imported from Arev fonts are (c) Tavmjong Bah (see below)
+
+
+Bitstream Vera Fonts Copyright
+------------------------------
+
+Copyright (c) 2003 by Bitstream, Inc. All Rights Reserved. Bitstream Vera is
+a trademark of Bitstream, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of the fonts accompanying this license ("Fonts") and associated
+documentation files (the "Font Software"), to reproduce and distribute the
+Font Software, including without limitation the rights to use, copy, merge,
+publish, distribute, and/or sell copies of the Font Software, and to permit
+persons to whom the Font Software is furnished to do so, subject to the
+following conditions:
+
+The above copyright and trademark notices and this permission notice shall
+be included in all copies of one or more of the Font Software typefaces.
+
+The Font Software may be modified, altered, or added to, and in particular
+the designs of glyphs or characters in the Fonts may be modified and
+additional glyphs or characters may be added to the Fonts, only if the fonts
+are renamed to names not containing either the words "Bitstream" or the word
+"Vera".
+
+This License becomes null and void to the extent applicable to Fonts or Font
+Software that has been modified and is distributed under the "Bitstream
+Vera" names.
+
+The Font Software may be sold as part of a larger software package but no
+copy of one or more of the Font Software typefaces may be sold by itself.
+
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT,
+TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL BITSTREAM OR THE GNOME
+FOUNDATION BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING
+ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS IN THE
+FONT SOFTWARE.
+
+Except as contained in this notice, the names of Gnome, the Gnome
+Foundation, and Bitstream Inc., shall not be used in advertising or
+otherwise to promote the sale, use or other dealings in this Font Software
+without prior written authorization from the Gnome Foundation or Bitstream
+Inc., respectively. For further information, contact: fonts at gnome dot
+org.
+
+Arev Fonts Copyright
+------------------------------
+
+Copyright (c) 2006 by Tavmjong Bah. All Rights Reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the fonts accompanying this license ("Fonts") and
+associated documentation files (the "Font Software"), to reproduce
+and distribute the modifications to the Bitstream Vera Font Software,
+including without limitation the rights to use, copy, merge, publish,
+distribute, and/or sell copies of the Font Software, and to permit
+persons to whom the Font Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright and trademark notices and this permission notice
+shall be included in all copies of one or more of the Font Software
+typefaces.
+
+The Font Software may be modified, altered, or added to, and in
+particular the designs of glyphs or characters in the Fonts may be
+modified and additional glyphs or characters may be added to the
+Fonts, only if the fonts are renamed to names not containing either
+the words "Tavmjong Bah" or the word "Arev".
+
+This License becomes null and void to the extent applicable to Fonts
+or Font Software that has been modified and is distributed under the
+"Tavmjong Bah Arev" names.
+
+The Font Software may be sold as part of a larger software package but
+no copy of one or more of the Font Software typefaces may be sold by
+itself.
+
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL
+TAVMJONG BAH BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.
+
+Except as contained in this notice, the name of Tavmjong Bah shall not
+be used in advertising or otherwise to promote the sale, use or other
+dealings in this Font Software without prior written authorization
+from Tavmjong Bah. For further information, contact: tavmjong @ free
+. fr.
+
+TeX Gyre DJV Math
+-----------------
+Fonts are (c) Bitstream (see below). DejaVu changes are in public domain.
+
+Math extensions done by B. Jackowski, P. Strzelczyk and P. Pianowski
+(on behalf of TeX users groups) are in public domain.
+
+Letters imported from Euler Fraktur from AMSfonts are (c) American
+Mathematical Society (see below).
+Bitstream Vera Fonts Copyright
+Copyright (c) 2003 by Bitstream, Inc. All Rights Reserved. Bitstream Vera
+is a trademark of Bitstream, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of the fonts accompanying this license ("Fonts") and associated documentation
+files (the "Font Software"), to reproduce and distribute the Font Software,
+including without limitation the rights to use, copy, merge, publish,
+distribute, and/or sell copies of the Font Software, and to permit persons
+to whom the Font Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright and trademark notices and this permission notice
+shall be included in all copies of one or more of the Font Software typefaces.
+
+The Font Software may be modified, altered, or added to, and in particular
+the designs of glyphs or characters in the Fonts may be modified and
+additional glyphs or characters may be added to the Fonts, only if the
+fonts are renamed to names not containing either the words "Bitstream"
+or the word "Vera".
+
+This License becomes null and void to the extent applicable to Fonts or
+Font Software that has been modified and is distributed under the
+"Bitstream Vera" names.
+
+The Font Software may be sold as part of a larger software package but
+no copy of one or more of the Font Software typefaces may be sold by itself.
+
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT,
+TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL BITSTREAM OR THE GNOME
+FOUNDATION BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING
+ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
+OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS IN
+THE FONT SOFTWARE.
+Except as contained in this notice, the names of GNOME, the GNOME
+Foundation, and Bitstream Inc., shall not be used in advertising or 
+otherwise to promote the sale, use or other dealings in this Font Software
+without prior written authorization from the GNOME Foundation or 
+Bitstream Inc., respectively.
+For further information, contact: fonts at gnome dot org.
+
+AMSFonts (v. 2.2) copyright
+
+The PostScript Type 1 implementation of the AMSFonts produced by and
+previously distributed by Blue Sky Research and Y&Y, Inc. are now freely
+available for general use. This has been accomplished through the
+cooperation
+of a consortium of scientific publishers with Blue Sky Research and Y&Y.
+Members of this consortium include:
+
+Elsevier Science IBM Corporation Society for Industrial and Applied
+Mathematics (SIAM) Springer-Verlag American Mathematical Society (AMS)
+
+In order to assure the authenticity of these fonts, copyright will be
+held by the American Mathematical Society. This is not meant to restrict
+in any way the legitimate use of the fonts, such as (but not limited to)
+electronic distribution of documents containing these fonts, inclusion of
+these fonts into other public domain or commercial font collections or computer
+applications, use of the outline data to create derivative fonts and/or
+faces, etc. However, the AMS does require that the AMS copyright notice be
+removed from any derivative versions of the fonts which have been altered in
+any way. In addition, to ensure the fidelity of TeX documents using Computer
+Modern fonts, Professor Donald Knuth, creator of the Computer Modern faces,
+has requested that any alterations which yield different font metrics be
+given a different name.
+
+--- end of LICENSE ---
+
+-------------------------------------------------------------------------------
+
 %% This notice is provided with respect to Document Object Model (DOM) Level 2
 & 3, which may be included with JRE 8, JDK 8, and OpenJDK 8.
 
@@ -285,13 +471,53 @@ You are receiving a copy of the Elliptic Curve Cryptography library in source
 form with the JDK 8 and OpenJDK 8 source distributions, and as object code in
 the JRE 8 & JDK 8 runtimes.
 
-In the case of the JRE 8 & JDK 8 runtimes, the terms of the Oracle license do
+In the case of the JRE & JDK runtimes, the terms of the Oracle license do
 NOT apply to the Elliptic Curve Cryptography library; it is licensed under the
 following license, separately from Oracle's JDK & JRE.  If you do not wish to
-install the Elliptic Curve Cryptography library, you may delete the library
-named libsunec.so (on Solaris and Linux systems) or sunec.dll (on Windows
-systems) from the JRE bin directory reserved for native libraries.
+install the Elliptic Curve Cryptography library, you may delete the
+Elliptic Curve Cryptography library:
+   - On Solaris and Linux systems: delete $(JAVA_HOME)/lib/libsunec.so
+   - On Windows systems: delete $(JAVA_HOME)\bin\sunec.dll
+   - On Mac systems, delete:
+      for JRE: /Library/Internet\ Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/lib/libsunec.dylib
+      for JDK: $(JAVA_HOME)/jre/lib/libsunec.dylib
 
+Written Offer for ECC Source Code
+  For third party technology that you receive from Oracle in binary form 
+  which is licensed under an open source license that gives you the right
+  to receive the source code for that binary, you can obtain a copy of 
+  the applicable source code from this page:
+     http://hg.openjdk.java.net/jdk8u/jdk8u/jdk/file/tip/src/share/native/sun/security/ec/impl
+
+  If the source code for the technology was not provided to you with the 
+  binary, you can also receive a copy of the source code on physical 
+  media by submitting a written request to:
+
+     Oracle America, Inc.
+     Attn: Associate General Counsel,
+     Development and Engineering Legal
+     500 Oracle Parkway, 10th Floor
+     Redwood Shores, CA 94065
+
+  Or, you may send an email to Oracle using the form at:
+     http://www.oracle.com/goto/opensourcecode/request
+
+  Your request should include:
+    - The name of the component or binary file(s) for which you are requesting 
+      the source code
+    - The name and version number of the Oracle product containing the binary
+    - The date you received the Oracle product
+    - Your name
+    - Your company name (if applicable)
+    - Your return mailing address and email and
+    - A telephone number in the event we need to reach you.
+
+  We may charge you a fee to cover the cost of physical media and processing. 
+  Your request must be sent (i) within three (3) years of the date you 
+  received the Oracle product that included the component or binary 
+  file(s) that are the subject of your request, or (ii) in the case of 
+  code licensed under the GPL v3, for as long as Oracle offers spare 
+  parts or customer support for that product model.
 
 --- begin of LICENSE ---
 
@@ -870,63 +1096,6 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 --- end of LICENSE ---
 
-%% This notice is provided with respect to Dynalink library which is included
-with the Nashorn technology.
-
---- begin of LICENSE ---
-Copyright (c) 2009-2013, Attila Szegedi
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
-* Redistributions of source code must retain the above copyright
-  notice, this list of conditions and the following disclaimer.
-* Redistributions in binary form must reproduce the above copyright
-  notice, this list of conditions and the following disclaimer in the
-  documentation and/or other materials provided with the distribution.
-* Neither the name of the copyright holder nor the names of
-  contributors may be used to endorse or promote products derived from
-  this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
-IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
-TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER
-BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
-OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
---- end of LICENSE ---
-
-%% This notice is provided with respect to Joni library which is included
-with the Nashorn technology.
-
---- begin of LICENSE ---
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
---- end of LICENSE ---
-
--------------------------------------------------------------------------------
-
 %% This notice is provided with respect to FontConfig 2.5, which may be 
 included with JRE 8, JDK 8, and OpenJDK 8 source distributions on
 Linux and Solaris.
@@ -951,6 +1120,74 @@ DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
 CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+
+--- end of LICENSE ---
+
+-------------------------------------------------------------------------------
+
+%% This notice is provided with respect to freebXML Registry 3.0 & 3.1,
+which may be included with JRE 8, JDK 8, and OpenJDK 8.
+
+--- begin of LICENSE ---
+
+freebxml:  Copyright (c) 2001 freebxml.org.  All rights reserved.
+
+The names "The freebXML Registry Project" and "freebxml Software
+Foundation" must not be used to endorse or promote products derived
+from this software or be used in a product name without prior
+written permission. For written permission, please contact
+ebxmlrr-team@lists.sourceforge.net.
+
+This software consists of voluntary contributions made by many individuals
+on behalf of the the freebxml Software Foundation. For more information on
+the freebxml Software Foundation, please see <http://www.freebxml.org/>.
+
+This product includes software developed by the Apache Software Foundation
+(http://www.apache.org/).
+
+The freebxml License, Version 1.1 5
+Copyright (c) 2001 freebxml.org. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+ 1. Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+ 2. Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the
+    distribution.
+
+ 3. The end-user documentation included with the redistribution, if
+    any, must include the following acknowlegement:
+       "This product includes software developed by
+        freebxml.org (http://www.freebxml.org/)."
+    Alternately, this acknowlegement may appear in the software itself,
+    if and wherever such third-party acknowlegements normally appear.
+
+ 4. The names "The freebXML Registry Project", "freebxml Software
+    Foundation" must not be used to endorse or promote products derived
+    from this software without prior written permission. For written
+    permission, please contact ebxmlrr-team@lists.sourceforge.net.
+
+ 5. Products derived from this software may not be called "freebxml",
+    "freebXML Registry" nor may freebxml" appear in their names without
+    prior written permission of the freebxml Group.
+
+THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED.  IN NO EVENT SHALL THE freebxml SOFTWARE FOUNDATION OR
+ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
 
 --- end of LICENSE ---
 
@@ -1080,6 +1317,47 @@ commercial products, provided that all warranty or liability claims are
 assumed by the product vendor.
 
 --- end of LICENSE ---
+
+--------------------------------------------------------------------------------
+
+%% This notice is provided with respect to Jing 20030619, which may 
+be included with JRE 8, JDK 8, and OpenJDK 8.
+
+--- begin of LICENSE  ---
+
+Copyright (c) 2001-2003 Thai Open Source Software Center Ltd All
+rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+
+Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+
+Neither the name of the Thai Open Source Software Center Ltd nor
+the names of its contributors may be used to endorse or promote
+products derived from this software without specific prior written
+permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
+
+--- end of LICENSE  ---
 
 --------------------------------------------------------------------------------
 
@@ -1215,11 +1493,11 @@ included with JDK 8 and OpenJDK 8 source distributions.
 
 -------------------------------------------------------------------------------
 
-%% Portions Copyright Eastman Kodak Company 1992
+%% Portions Copyright Eastman Kodak Company 1991-2003
 
 -------------------------------------------------------------------------------
 
-%% This notice is provided with respect to libpng 1.6.16, which may be 
+%% This notice is provided with respect to libpng 1.6.35, which may be
 included with JRE 8, JDK 8, and OpenJDK 8.
 
 --- begin of LICENSE ---
@@ -1235,21 +1513,21 @@ this sentence.
 
 This code is released under the libpng license.
 
-libpng versions 1.2.6, August 15, 2004, through 1.6.16, December 22, 2014, are
-Copyright (c) 2004, 2006-2014 Glenn Randers-Pehrson, and are
-distributed according to the same disclaimer and license as libpng-1.2.5
-with the following individual added to the list of Contributing Authors
-
-   Cosmin Truta
-
-libpng versions 1.0.7, July 1, 2000, through 1.2.5 - October 3, 2002, are
-Copyright (c) 2000-2002 Glenn Randers-Pehrson, and are
-distributed according to the same disclaimer and license as libpng-1.0.6
-with the following individuals added to the list of Contributing Authors
+libpng versions 1.0.7, July 1, 2000 through 1.6.35, July 15, 2018 are
+Copyright (c) 2000-2002, 2004, 2006-2018 Glenn Randers-Pehrson, are
+derived from libpng-1.0.6, and are distributed according to the same
+disclaimer and license as libpng-1.0.6 with the following individuals
+added to the list of Contributing Authors:
 
    Simon-Pierre Cadieux
    Eric S. Raymond
+   Mans Rullgard
+   Cosmin Truta
    Gilles Vollant
+   James Yu
+   Mandar Sahastrabuddhe
+   Google Inc.
+   Vadim Barkov
 
 and with the following additions to the disclaimer:
 
@@ -1260,19 +1538,25 @@ and with the following additions to the disclaimer:
    risk of satisfactory quality, performance, accuracy, and effort is with
    the user.
 
+Some files in the "contrib" directory and some configure-generated
+files that are distributed with libpng have other copyright owners and
+are released under other open source licenses.
+
 libpng versions 0.97, January 1998, through 1.0.6, March 20, 2000, are
-Copyright (c) 1998, 1999 Glenn Randers-Pehrson, and are
-distributed according to the same disclaimer and license as libpng-0.96,
-with the following individuals added to the list of Contributing Authors:
+Copyright (c) 1998-2000 Glenn Randers-Pehrson, are derived from
+libpng-0.96, and are distributed according to the same disclaimer and
+license as libpng-0.96, with the following individuals added to the list
+of Contributing Authors:
 
    Tom Lane
    Glenn Randers-Pehrson
    Willem van Schaik
 
 libpng versions 0.89, June 1996, through 0.96, May 1997, are
-Copyright (c) 1996, 1997 Andreas Dilger
-Distributed according to the same disclaimer and license as libpng-0.88,
-with the following individuals added to the list of Contributing Authors:
+Copyright (c) 1996-1997 Andreas Dilger, are derived from libpng-0.88,
+and are distributed according to the same disclaimer and license as
+libpng-0.88, with the following individuals added to the list of
+Contributing Authors:
 
    John Bowler
    Kevin Bracey
@@ -1281,8 +1565,11 @@ with the following individuals added to the list of Contributing Authors:
    Greg Roelofs
    Tom Tanner
 
+Some files in the "scripts" directory have other copyright owners
+but are released under this license.
+
 libpng versions 0.5, May 1995, through 0.88, January 1996, are
-Copyright (c) 1995, 1996 Guy Eric Schalnat, Group 42, Inc.
+Copyright (c) 1995-1996 Guy Eric Schalnat, Group 42, Inc.
 
 For the purposes of this copyright and license, "Contributing Authors"
 is defined as the following set of individuals:
@@ -1305,13 +1592,13 @@ Permission is hereby granted to use, copy, modify, and distribute this
 source code, or portions hereof, for any purpose, without fee, subject
 to the following restrictions:
 
-1. The origin of this source code must not be misrepresented.
+  1. The origin of this source code must not be misrepresented.
 
-2. Altered versions must be plainly marked as such and must not
-   be misrepresented as being the original source.
+  2. Altered versions must be plainly marked as such and must not
+     be misrepresented as being the original source.
 
-3. This Copyright notice may not be removed or altered from any
-   source or altered source distribution.
+  3. This Copyright notice may not be removed or altered from any
+     source or altered source distribution.
 
 The Contributing Authors and Group 42, Inc. specifically permit, without
 fee, and encourage the use of this source code as a component to
@@ -1319,28 +1606,41 @@ supporting the PNG file format in commercial products.  If you use this
 source code in a product, acknowledgment is not required but would be
 appreciated.
 
+END OF COPYRIGHT NOTICE, DISCLAIMER, and LICENSE.
 
-A "png_get_copyright" function is available, for convenient use in "about"
-boxes and the like:
+TRADEMARK:
 
-   printf("%s",png_get_copyright(NULL));
+The name "libpng" has not been registered by the Copyright owner
+as a trademark in any jurisdiction.  However, because libpng has
+been distributed and maintained world-wide, continually since 1995,
+the Copyright owner claims "common-law trademark protection" in any
+jurisdiction where common-law trademark is recognized.
 
-Also, the PNG logo (in PNG format, of course) is supplied in the
-files "pngbar.png" and "pngbar.jpg (88x31) and "pngnow.png" (98x31).
+OSI CERTIFICATION:
 
-Libpng is OSI Certified Open Source Software.  OSI Certified Open Source is a
-certification mark of the Open Source Initiative.
+Libpng is OSI Certified Open Source Software.  OSI Certified Open Source is
+a certification mark of the Open Source Initiative. OSI has not addressed
+the additional disclaimers inserted at version 1.0.7.
+
+EXPORT CONTROL:
+
+The Copyright owner believes that the Export Control Classification
+Number (ECCN) for libpng is EAR99, which means not subject to export
+controls or International Traffic in Arms Regulations (ITAR) because
+it is open source, publicly available software, that does not contain
+any encryption software.  See the EAR, paragraphs 734.3(b)(3) and
+734.7(b).
 
 Glenn Randers-Pehrson
 glennrp at users.sourceforge.net
-December 22, 2014
+July 15, 2018
 
 --- end of LICENSE ---
 
 -------------------------------------------------------------------------------
 
-%% This notice is provided with respect to GIFLIB 5.1.1 & libungif 4.1.3, which may be 
-included with JRE 8, JDK 8, and OpenJDK 8.
+%% This notice is provided with respect to GIFLIB 5.1.1 & libungif 4.1.3, 
+which may be included with JRE 8, JDK 8, and OpenJDK 8.
 
 --- begin of LICENSE ---
 
@@ -1972,67 +2272,45 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 -------------------------------------------------------------------------------
 
-%% This notice is provided with respect to SAX 2.0.1, which may be included 
-with JRE 8, JDK 8, and OpenJDK 8.
+%% This notice is provided with respect to Relax NG Datatype 1.0, which 
+may be included with JRE 8, JDK 8, and OpenJDK 8.  
 
---- begin of LICENSE ---
+--- begin of LICENSE  ---
 
- SAX is free!
+Copyright (c) 2005, 2010 Thai Open Source Software Center Ltd
+All rights reserved.
 
- In fact, it's not possible to own a license to SAX, since it's been placed in
- the public domain.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
 
- No Warranty
+    Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
 
- Because SAX is released to the public domain, there is no warranty for the
- design or for the software implementation, to the extent permitted by
- applicable law. Except when otherwise stated in writing the copyright holders
- and/or other parties provide SAX "as is" without warranty of any kind, either
- expressed or implied, including, but not limited to, the implied warranties
- of merchantability and fitness for a particular purpose. The entire risk as
- to the quality and performance of SAX is with you. Should SAX prove
- defective, you assume the cost of all necessary servicing, repair or
- correction.
+    Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the
+    distribution.
 
- In no event unless required by applicable law or agreed to in writing will
- any copyright holder, or any other party who may modify and/or redistribute
- SAX, be liable to you for damages, including any general, special, incidental
- or consequential damages arising out of the use or inability to use SAX
- (including but not limited to loss of data or data being rendered inaccurate
- or losses sustained by you or third parties or a failure of the SAX to
- operate with any other programs), even if such holder or other party has been
- advised of the possibility of such damages.
+    Neither the names of the copyright holders nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
 
- Copyright Disclaimers 
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- This page includes statements to that effect by David Megginson, who would
- have been able to claim copyright for the original work.  SAX 1.0
+--- end of LICENSE  ---
 
- Version 1.0 of the Simple API for XML (SAX), created collectively by the
- membership of the XML-DEV mailing list, is hereby released into the public
- domain.
-
- No one owns SAX: you may use it freely in both commercial and non-commercial
- applications, bundle it with your software distribution, include it on a
- CD-ROM, list the source code in a book, mirror the documentation at your own
- web site, or use it in any other way you see fit.
-
- David Megginson, sax@megginson.com
- 1998-05-11
-
- SAX 2.0 
-
- I hereby abandon any property rights to SAX 2.0 (the Simple API for XML), and
- release all of the SAX 2.0 source code, compiled code, and documentation
- contained in this distribution into the Public Domain. SAX comes with NO
- WARRANTY or guarantee of fitness for any purpose.
-
- David Megginson, david@megginson.com
- 2000-05-05
-
---- end of LICENSE ---
-
--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 %% This notice is provided with respect to SoftFloat version 2b, which may be 
 included with JRE 8, JDK 8, and OpenJDK 8 on Linux/ARM.
@@ -2518,814 +2796,234 @@ included with JRE 8, JDK 8, and OpenJDK 8 on Linux and Solaris.
 
 --- begin of LICENSE ---
 
-          Licenses
-The X.Org Foundation March 2004
+This is the copyright for the files in src/solaris/native/sun/awt: list.h, 
+multiVis.h, wsutils.h, list.c, multiVis.c
+Copyright (c) 1994 Hewlett-Packard Co.
+Copyright (c) 1996 X Consortium
 
-1. Introduction
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
 
-The X.org Foundation X Window System distribution is a compilation of code and
-documentation from many sources. This document is intended primarily as a
-guide to the licenses used in the distribution: you must check each file
-and/or package for precise redistribution terms. None-the-less, this summary
-may be useful to many users. No software incorporating the XFree86 1.1 license
-has been incorporated.
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
 
-This document is based on the compilation from XFree86.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE X CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
 
-2. XFree86 License
+Except as contained in this notice, the name of the X Consortium shall
+not be used in advertising or otherwise to promote the sale, use or
+other dealings in this Software without prior written authorization
+from the X Consortium.
+___________________________
+The files in motif/lib/Xm/util included this copyright:mkdirhier.man,
+xmkmf.man, chownxterm.c, makeg.man, mergelib.cpp, lndir.man, makestrs.man, 
+checktree.c, lndir.c, makestrs.c
+Copyright (c) 1993, 1994 X Consortium
 
-XFree86 code without an explicit copyright is covered by the following
-copyright/license:
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software furnished to do so, subject to the following conditions:
 
-Copyright (C) 1994-2003 The XFree86 Project, Inc. All Rights Reserved.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-XFREE86 PROJECT BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-Except as contained in this notice, the name of the XFree86 Project shall not
-be used in advertising or otherwise to promote the sale, use or other dealings
-in this Software without prior written authorization from the XFree86 Project.
-
-3. Other Licenses
-
-Portions of code are covered by the following licenses/copyrights. See
-individual files for the copyright dates.
-
-3.1. X/MIT Copyrights
-
-3.1.1. X Consortium
-
-Copyright (C) <date> X Consortium
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE X
-CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-Except as contained in this notice, the name of the X Consortium shall not be
-used in advertising or otherwise to promote the sale, use or other dealings in
-this Software without prior written authorization from the X Consortium.
-
-X Window System is a trademark of X Consortium, Inc.
-
-3.1.2. The Open Group
-
-Copyright <date> The Open Group
-
-Permission to use, copy, modify, distribute, and sell this software and its
-documentation for any purpose is hereby granted without fee, provided that the
-above copyright notice appear in all copies and that both that copyright
-notice and this permission notice appear in supporting documentation.
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-OPEN GROUP BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-Except as contained in this notice, the name of The Open Group shall not be
-used in advertising or otherwise to promote the sale, use or other dealings in
-this Software without prior written authorization from The Open Group.  3.2.
-Berkeley-based copyrights:
-
-o
-3.2.1. General
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-   1. Redistributions of source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer.
-
-   2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-
-   3. The name of the author may not be used to endorse or promote products
-   derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
-WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
-EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
-IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.  3.2.2. UCB/LBL
-
-Copyright (c) 1993 The Regents of the University of California. All rights
-reserved.
-
-This software was developed by the Computer Systems Engineering group at
-Lawrence Berkeley Laboratory under DARPA contract BG 91-66 and contributed to
-Berkeley.
-
-All advertising materials mentioning features or use of this software must
-display the following acknowledgement: This product includes software
-developed by the University of California, Lawrence Berkeley Laboratory.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-   1. Redistributions of source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer.
-
-   2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-
-   3. All advertising materials mentioning features or use of this software
-   must display the following acknowledgement: This product includes software
-   developed by the University of California, Berkeley and its contributors.
-
-   4. Neither the name of the University nor the names of its contributors may
-   be used to endorse or promote products derived from this software without
-   specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND ANY
-EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.  3.2.3. The
-NetBSD Foundation, Inc.
-
-Copyright (c) 2003 The NetBSD Foundation, Inc. All rights reserved.
-
-This code is derived from software contributed to The NetBSD Foundation by Ben
-Collver <collver1@attbi.com>
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-   1. Redistributions of source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer.
-
-   2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-
-   3. All advertising materials mentioning features or use of this software
-   must display the following acknowledgement: This product includes software
-   developed by the NetBSD Foundation, Inc. and its contributors.
-
-   4. Neither the name of The NetBSD Foundation nor the names of its
-   contributors may be used to endorse or promote products derived from this
-   software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE NETBSD FOUNDATION, INC. AND CONTRIBUTORS ``AS
-IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE FOUNDATION OR CONTRIBUTORS BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.  3.2.4. Theodore
-Ts'o.
-
-Copyright Theodore Ts'o, 1994, 1995, 1996, 1997, 1998, 1999. All rights
-reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-   1. Redistributions of source code must retain the above copyright notice,
-   and the entire permission notice in its entirety, including the disclaimer
-   of warranties.
-
-   2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-
-   3. he name of the author may not be used to endorse or promote products
-   derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
-FITNESS FOR A PARTICULAR PURPOSE, ALL OF WHICH ARE HEREBY DISCLAIMED. IN NO
-EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
-IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF NOT ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.  3.2.5. Theo de Raadt and Damien Miller
-
-Copyright (c) 1995,1999 Theo de Raadt. All rights reserved. Copyright (c)
-2001-2002 Damien Miller. All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-   1. Redistributions of source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer.
-
-   2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
-WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
-EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
-IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.  3.2.6. Todd C. Miller
-
-Copyright (c) 1998 Todd C. Miller <Todd.Miller@courtesan.com>
-
-Permission to use, copy, modify, and distribute this software for any purpose
-with or without fee is hereby granted, provided that the above copyright
-notice and this permission notice appear in all copies.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND TODD C. MILLER DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL TODD C. MILLER BE LIABLE FOR
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
-OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
-CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.  3.2.7. Thomas
-Winischhofer
-
-Copyright (C) 2001-2004 Thomas Winischhofer
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-   1. Redistributions of source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer.
-
-   2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-
-   3. The name of the author may not be used to endorse or promote products
-   derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESSED OR IMPLIED
-WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
-EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
-IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.  3.3. NVIDIA Corp
-
-Copyright (c) 1996 NVIDIA, Corp. All rights reserved.
-
-NOTICE TO USER: The source code is copyrighted under U.S. and international
-laws. NVIDIA, Corp. of Sunnyvale, California owns the copyright and as design
-patents pending on the design and interface of the NV chips. Users and
-possessors of this source code are hereby granted a nonexclusive, royalty-free
-copyright and design patent license to use this code in individual and
-commercial software.
-
-Any use of this source code must include, in the user documentation and
-internal comments to the code, notices to the end user as follows:
-
-Copyright (c) 1996 NVIDIA, Corp. NVIDIA design patents pending in the U.S. and
-foreign countries.
-
-NVIDIA, CORP. MAKES NO REPRESENTATION ABOUT THE SUITABILITY OF THIS SOURCE
-CODE FOR ANY PURPOSE. IT IS PROVIDED "AS IS" WITHOUT EXPRESS OR IMPLIED
-WARRANTY OF ANY KIND. NVIDIA, CORP. DISCLAIMS ALL WARRANTIES WITH REGARD TO
-THIS SOURCE CODE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
-FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT SHALL NVIDIA, CORP. BE LIABLE
-FOR ANY SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, OR ANY
-DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
-CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOURCE CODE.  3.4. GLX Public
-License
-
-GLX PUBLIC LICENSE (Version 1.0 (2/11/99)) ("License")
-
-Subject to any third party claims, Silicon Graphics, Inc. ("SGI") hereby
-grants permission to Recipient (defined below), under Recipient's copyrights
-in the Original Software (defined below), to use, copy, modify, merge,
-publish, distribute, sublicense and/or sell copies of Subject Software
-(defined below), and to permit persons to whom the Subject Software is
-furnished in accordance with this License to do the same, subject to all of
-the following terms and conditions, which Recipient accepts by engaging in any
-such use, copying, modifying, merging, publishing, distributing, sublicensing
-or selling:
-
-1. Definitions.
-
-    (a) "Original Software" means source code of computer software code which
-    is described in Exhibit A as Original Software.
-
-    (b) "Modifications" means any addition to or deletion from the substance
-    or structure of either the Original Software or any previous
-    Modifications. When Subject Software is released as a series of files, a
-    Modification means (i) any addition to or deletion from the contents of a
-    file containing Original Software or previous Modifications and (ii) any
-    new file that contains any part of the Original Code or previous
-    Modifications.
-
-    (c) "Subject Software" means the Original Software or Modifications or the
-    combination of the Original Software and Modifications, or portions of any
-    of the foregoing.
-
-    (d) "Recipient" means an individual or a legal entity exercising rights
-    under, and complying with all of the terms of, this License. For legal
-    entities, "Recipient" includes any entity which controls, is controlled
-    by, or is under common control with Recipient. For purposes of this
-    definition, "control" of an entity means (a) the power, direct or
-    indirect, to direct or manage such entity, or (b) ownership of fifty
-    percent (50%) or more of the outstanding shares or beneficial ownership of
-    such entity.
-
-2. Redistribution of Source Code Subject to These Terms. Redistributions of
-Subject Software in source code form must retain the notice set forth in
-Exhibit A, below, in every file. A copy of this License must be included in
-any documentation for such Subject Software where the recipients' rights
-relating to Subject Software are described. Recipient may distribute the
-source code version of Subject Software under a license of Recipient's choice,
-which may contain terms different from this License, provided that (i)
-Recipient is in compliance with the terms of this License, and (ii) the
-license terms include this Section 2 and Sections 3, 4, 7, 8, 10, 12 and 13 of
-this License, which terms may not be modified or superseded by any other terms
-of such license. If Recipient distributes the source code version under a
-different license Recipient must make it absolutely clear that any terms which
-differ from this License are offered by Recipient alone, not by SGI. Recipient
-hereby agrees to indemnify SGI for any liability incurred by SGI as a result
-of any such terms Recipient offers.
-
-3. Redistribution in Executable Form. The notice set forth in Exhibit A must
-be conspicuously included in any notice in an executable version of Subject
-Software, related documentation or collateral in which Recipient describes the
-user's rights relating to the Subject Software. Recipient may distribute the
-executable version of Subject Software under a license of Recipient's choice,
-which may contain terms different from this License, provided that (i)
-Recipient is in compliance with the terms of this License, and (ii) the
-license terms include this Section 3 and Sections 4, 7, 8, 10, 12 and 13 of
-this License, which terms may not be modified or superseded by any other terms
-of such license. If Recipient distributes the executable version under a
-different license Recipient must make it absolutely clear that any terms which
-differ from this License are offered by Recipient alone, not by SGI. Recipient
-hereby agrees to indemnify SGI for any liability incurred by SGI as a result
-of any such terms Recipient offers.
-
-4. Termination. This License and the rights granted hereunder will terminate
-automatically if Recipient fails to comply with terms herein and fails to cure
-such breach within 30 days of the breach. Any sublicense to the Subject
-Software which is properly granted shall survive any termination of this
-License absent termination by the terms of such sublicense. Provisions which,
-by their nature, must remain in effect beyond the termination of this License
-shall survive.
-
-5. No Trademark Rights. This License does not grant any rights to use any
-trade name, trademark or service mark whatsoever. No trade name, trademark or
-service mark of SGI may be used to endorse or promote products derived from
-the Subject Software without prior written permission of SGI.
-
-6. No Other Rights. This License does not grant any rights with respect to the
-OpenGL API or to any software or hardware implementation thereof or to any
-other software whatsoever, nor shall any other rights or licenses not
-expressly granted hereunder arise by implication, estoppel or otherwise with
-respect to the Subject Software. Title to and ownership of the Original
-Software at all times remains with SGI. All rights in the Original Software
-not expressly granted under this License are reserved.
-
-7. Compliance with Laws; Non-Infringement. Recipient shall comply with all
-applicable laws and regulations in connection with use and distribution of the
-Subject Software, including but not limited to, all export and import control
-laws and regulations of the U.S. government and other countries. Recipient may
-not distribute Subject Software that (i) in any way infringes (directly or
-contributorily) the rights (including patent, copyright, trade secret,
-trademark or other intellectual property rights of any kind) of any other
-person or entity or (ii) breaches any representation or warranty, express,
-implied or statutory, which under any applicable law it might be deemed to
-have been distributed.
-
-8. Claims of Infringement. If Recipient at any time has knowledge of any one
-or more third party claims that reproduction, modification, use, distribution,
-import or sale of Subject Software (including particular functionality or code
-incorporated in Subject Software) infringes the third party's intellectual
-property rights, Recipient must place in a well-identified web page bearing
-the title "LEGAL" a description of each such claim and a description of the
-party making each such claim in sufficient detail that a user of the Subject
-Software will know whom to contact regarding the claim. Also, upon gaining
-such knowledge of any such claim, Recipient must conspicuously include the URL
-for such web page in the Exhibit A notice required under Sections 2 and 3,
-above, and in the text of any related documentation, license agreement or
-collateral in which Recipient describes end user's rights relating to the
-Subject Software. If Recipient obtains such knowledge after it makes Subject
-Software available to any other person or entity, Recipient shall take other
-steps (such as notifying appropriate mailing lists or newsgroups) reasonably
-calculated to inform those who received the Subject Software that new
-knowledge has been obtained.
-
-9. DISCLAIMER OF WARRANTY. SUBJECT SOFTWARE IS PROVIDED ON AN "AS IS" BASIS,
-WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, WITHOUT
-LIMITATION, WARRANTIES THAT THE SUBJECT SOFTWARE IS FREE OF DEFECTS,
-MERCHANTABLE, FIT FOR A PARTICULAR PURPOSE OR NON- INFRINGING. SGI ASSUMES NO
-RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE. SHOULD ANY SOFTWARE
-PROVE DEFECTIVE IN ANY RESPECT, SGI ASSUMES NO COST OR LIABILITY FOR ANY
-SERVICING, REPAIR OR CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN
-ESSENTIAL PART OF THIS LICENSE. NO USE OF ANY SUBJECT SOFTWARE IS AUTHORIZED
-HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
-
-10. LIMITATION OF LIABILITY. UNDER NO CIRCUMSTANCES AND UNDER NO LEGAL THEORY,
-WHETHER TORT (INCLUDING, WITHOUT LIMITATION, NEGLIGENCE OR STRICT LIABILITY),
-CONTRACT, OR OTHERWISE, SHALL SGI OR ANY SGI LICENSOR BE LIABLE FOR ANY
-DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES OF ANY
-CHARACTER INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF GOODWILL, WORK
-STOPPAGE, LOSS OF DATA, COMPUTER FAILURE OR MALFUNCTION, OR ANY AND ALL OTHER
-COMMERCIAL DAMAGES OR LOSSES, EVEN IF SUCH PARTY SHALL HAVE BEEN INFORMED OF
-THE POSSIBILITY OF SUCH DAMAGES. THIS LIMITATION OF LIABILITY SHALL NOT APPLY
-TO LIABILITY FOR DEATH OR PERSONAL INJURY RESULTING FROM SGI's NEGLIGENCE TO
-THE EXTENT APPLICABLE LAW PROHIBITS SUCH LIMITATION. SOME JURISDICTIONS DO NOT
-ALLOW THE EXCLUSION OR LIMITATION OF INCIDENTAL OR CONSEQUENTIAL DAMAGES, SO
-THAT EXCLUSION AND LIMITATION MAY NOT APPLY TO RECIPIENT.
-
-11. Indemnity. Recipient shall be solely responsible for damages arising,
-directly or indirectly, out of its utilization of rights under this License.
-Recipient will defend, indemnify and hold harmless Silicon Graphics, Inc. from
-and against any loss, liability, damages, costs or expenses (including the
-payment of reasonable attorneys fees) arising out of Recipient's use,
-modification, reproduction and distribution of the Subject Software or out of
-any representation or warranty made by Recipient.
-
-12. U.S. Government End Users. The Subject Software is a "commercial item"
-consisting of "commercial computer software" as such terms are defined in
-title 48 of the Code of Federal Regulations and all U.S. Government End Users
-acquire only the rights set forth in this License and are subject to the terms
-of this License.
-
-13. Miscellaneous. This License represents the complete agreement concerning
-subject matter hereof. If any provision of this License is held to be
-unenforceable, such provision shall be reformed so as to achieve as nearly as
-possible the same economic effect as the original provision and the remainder
-of this License will remain in effect. This License shall be governed by and
-construed in accordance with the laws of the United States and the State of
-California as applied to agreements entered into and to be performed entirely
-within California between California residents. Any litigation relating to
-this License shall be subject to the exclusive jurisdiction of the Federal
-Courts of the Northern District of California (or, absent subject matter
-jurisdiction in such courts, the courts of the State of California), with
-venue lying exclusively in Santa Clara County, California, with the losing
-party responsible for costs, including without limitation, court costs and
-reasonable attorneys fees and expenses. The application of the United Nations
-Convention on Contracts for the International Sale of Goods is expressly
-excluded. Any law or regulation which provides that the language of a contract
-shall be construed against the drafter shall not apply to this License.
-
-Exhibit A
-
-The contents of this file are subject to Sections 2, 3, 4, 7, 8, 10, 12 and 13
-of the GLX Public License Version 1.0 (the "License"). You may not use this
-file except in compliance with those sections of the License. You may obtain a
-copy of the License at Silicon Graphics, Inc., attn: Legal Services, 2011 N.
-Shoreline Blvd., Mountain View, CA 94043 or at
-http://www.sgi.com/software/opensource/glx/license.html.
-
-Software distributed under the License is distributed on an "AS IS" basis. ALL
-WARRANTIES ARE DISCLAIMED, INCLUDING, WITHOUT LIMITATION, ANY IMPLIED
-WARRANTIES OF MERCHANTABILITY, OF FITNESS FOR A PARTICULAR PURPOSE OR OF NON-
-INFRINGEMENT. See the License for the specific language governing rights and
-limitations under the License.
-
-The Original Software is GLX version 1.2 source code, released February, 1999.
-The developer of the Original Software is Silicon Graphics, Inc. Those
-portions of the Subject Software created by Silicon Graphics, Inc. are
-Copyright (c) 1991-9 Silicon Graphics, Inc. All Rights Reserved.  3.5. CID
-Font Code Public License
-
-CID FONT CODE PUBLIC LICENSE (Version 1.0 (3/31/99))("License")
-
-Subject to any applicable third party claims, Silicon Graphics, Inc. ("SGI")
-hereby grants permission to Recipient (defined below), under SGI's copyrights
-in the Original Software (defined below), to use, copy, modify, merge,
-publish, distribute, sublicense and/or sell copies of Subject Software
-(defined below) in both source code and executable form, and to permit persons
-to whom the Subject Software is furnished in accordance with this License to
-do the same, subject to all of the following terms and conditions, which
-Recipient accepts by engaging in any such use, copying, modifying, merging,
-publication, distributing, sublicensing or selling:
-
-1. Definitions.
-
-    a. "Original Software" means source code of computer software code that is
-    described in Exhibit A as Original Software.
-
-    b. "Modifications" means any addition to or deletion from the substance or
-    structure of either the Original Software or any previous Modifications.
-    When Subject Software is released as a series of files, a Modification
-    means (i) any addition to or deletion from the contents of a file
-    containing Original Software or previous Modifications and (ii) any new
-    file that contains any part of the Original Code or previous
-    Modifications.
-
-    c. "Subject Software" means the Original Software or Modifications or the
-    combination of the Original Software and Modifications, or portions of any
-    of the foregoing.
-
-    d. "Recipient" means an individual or a legal entity exercising rights
-    under the terms of this License. For legal entities, "Recipient" includes
-    any entity that controls, is controlled by, or is under common control
-    with Recipient. For purposes of this definition, "control" of an entity
-    means (i) the power, direct or indirect, to direct or manage such entity,
-    or (ii) ownership of fifty percent (50%) or more of the outstanding shares
-    or beneficial ownership of such entity.
-
-    e. "Required Notice" means the notice set forth in Exhibit A to this
-    License.
-
-    f. "Accompanying Technology" means any software or other technology that
-    is not a Modification and that is distributed or made publicly available
-    by Recipient with the Subject Software. Separate software files that do
-    not contain any Original Software or any previous Modification shall not
-    be deemed a Modification, even if such software files are aggregated as
-    part of a product, or in any medium of storage, with any file that does
-    contain Original Software or any previous Modification.
-
-2. License Terms. All distribution of the Subject Software must be made
-subject to the terms of this License. A copy of this License and the Required
-Notice must be included in any documentation for Subject Software where
-Recipient's rights relating to Subject Software and/or any Accompanying
-Technology are described. Distributions of Subject Software in source code
-form must also include the Required Notice in every file distributed. In
-addition, a ReadMe file entitled "Important Legal Notice" must be distributed
-with each distribution of one or more files that incorporate Subject Software.
-That file must be included with distributions made in both source code and
-executable form. A copy of the License and the Required Notice must be
-included in that file. Recipient may distribute Accompanying Technology under
-a license of Recipient's choice, which may contain terms different from this
-License, provided that (i) Recipient is in compliance with the terms of this
-License, (ii) such other license terms do not modify or supersede the terms of
-this License as applicable to the Subject Software, (iii) Recipient hereby
-indemnifies SGI for any liability incurred by SGI as a result of the
-distribution of Accompanying Technology or the use of other license terms.
-
-3. Termination. This License and the rights granted hereunder will terminate
-automatically if Recipient fails to comply with terms herein and fails to cure
-such breach within 30 days of the breach. Any sublicense to the Subject
-Software that is properly granted shall survive any termination of this
-License absent termination by the terms of such sublicense. Provisions which,
-by their nature, must remain in effect beyond the termination of this License
-shall survive.
-
-4. Trademark Rights. This License does not grant any rights to use any trade
-name, trademark or service mark whatsoever. No trade name, trademark or
-service mark of SGI may be used to endorse or promote products derived from or
-incorporating any Subject Software without prior written permission of SGI.
-
-5. No Other Rights. No rights or licenses not expressly granted hereunder
-shall arise by implication, estoppel or otherwise. Title to and ownership of
-the Original Software at all times remains with SGI. All rights in the
-Original Software not expressly granted under this License are reserved.
-
-6. Compliance with Laws; Non-Infringement. Recipient shall comply with all
-applicable laws and regulations in connection with use and distribution of the
-Subject Software, including but not limited to, all export and import control
-laws and regulations of the U.S. government and other countries. Recipient may
-not distribute Subject Software that (i) in any way infringes (directly or
-contributorily) the rights (including patent, copyright, trade secret,
-trademark or other intellectual property rights of any kind) of any other
-person or entity, or (ii) breaches any representation or warranty, express,
-implied or statutory, which under any applicable law it might be deemed to
-have been distributed.
-
-7. Claims of Infringement. If Recipient at any time has knowledge of any one
-or more third party claims that reproduction, modification, use, distribution,
-import or sale of Subject Software (including particular functionality or code
-incorporated in Subject Software) infringes the third party's intellectual
-property rights, Recipient must place in a well-identified web page bearing
-the title "LEGAL" a description of each such claim and a description of the
-party making each such claim in sufficient detail that a user of the Subject
-Software will know whom to contact regarding the claim. Also, upon gaining
-such knowledge of any such claim, Recipient must conspicuously include the URL
-for such web page in the Required Notice, and in the text of any related
-documentation, license agreement or collateral in which Recipient describes
-end user's rights relating to the Subject Software. If Recipient obtains such
-knowledge after it makes Subject Software available to any other person or
-entity, Recipient shall take other steps (such as notifying appropriate
-mailing lists or newsgroups) reasonably calculated to provide such knowledge
-to those who received the Subject Software.
-
-8. DISCLAIMER OF WARRANTY. SUBJECT SOFTWARE IS PROVIDED ON AN "AS IS" BASIS,
-WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, WITHOUT
-LIMITATION, WARRANTIES THAT THE SUBJECT SOFTWARE IS FREE OF DEFECTS,
-MERCHANTABLE, FIT FOR A PARTICULAR PURPOSE OR NON-INFRINGING. SGI ASSUMES NO
-RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE. SHOULD ANY SOFTWARE
-PROVE DEFECTIVE IN ANY RESPECT, SGI ASSUMES NO COST OR LIABILITY FOR ANY
-SERVICING, REPAIR OR CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN
-ESSENTIAL PART OF THIS LICENSE. NO USE OF ANY SUBJECT SOFTWARE IS AUTHORIZED
-HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
-
-9. LIMITATION OF LIABILITY. UNDER NO CIRCUMSTANCES AND UNDER NO LEGAL THEORY,
-WHETHER TORT (INCLUDING, WITHOUT LIMITATION, NEGLIGENCE OR STRICT LIABILITY),
-CONTRACT, OR OTHERWISE, SHALL SGI OR ANY SGI LICENSOR BE LIABLE FOR ANY CLAIM,
-DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SUBJECT SOFTWARE OR
-THE USE OR OTHER DEALINGS IN THE SUBJECT SOFTWARE. SOME JURISDICTIONS DO NOT
-ALLOW THE EXCLUSION OR LIMITATION OF CERTAIN DAMAGES, SO THIS EXCLUSION AND
-LIMITATION MAY NOT APPLY TO RECIPIENT TO THE EXTENT SO DISALLOWED.
-
-10. Indemnity. Recipient shall be solely responsible for damages arising,
-directly or indirectly, out of its utilization of rights under this License.
-Recipient will defend, indemnify and hold SGI and its successors and assigns
-harmless from and against any loss, liability, damages, costs or expenses
-(including the payment of reasonable attorneys fees) arising out of
-(Recipient's use, modification, reproduction and distribution of the Subject
-Software or out of any representation or warranty made by Recipient.
-
-11. U.S. Government End Users. The Subject Software is a "commercial item"
-consisting of "commercial computer software" as such terms are defined in
-title 48 of the Code of Federal Regulations and all U.S. Government End Users
-acquire only the rights set forth in this License and are subject to the terms
-of this License.
-
-12. Miscellaneous. This License represents the complete agreement concerning
-subject matter hereof. If any provision of this License is held to be
-unenforceable by any judicial or administrative authority having proper
-jurisdiction with respect thereto, such provision shall be reformed so as to
-achieve as nearly as possible the same economic effect as the original
-provision and the remainder of this License will remain in effect. This
-License shall be governed by and construed in accordance with the laws of the
-United States and the State of California as applied to agreements entered
-into and to be performed entirely within California between California
-residents. Any litigation relating to this License shall be subject to the
-exclusive jurisdiction of the Federal Courts of the Northern District of
-California (or, absent subject matter jurisdiction in such courts, the courts
-of the State of California), with venue lying exclusively in Santa Clara
-County, California, with the losing party responsible for costs, including
-without limitation, court costs and reasonable attorneys fees and expenses.
-The application of the United Nations Convention on Contracts for the
-International Sale of Goods is expressly excluded. Any law or regulation that
-provides that the language of a contract shall be construed against the
-drafter shall not apply to this License.
-
-Exhibit A
-
-Copyright (c) 1994-1999 Silicon Graphics, Inc.
-
-The contents of this file are subject to the CID Font Code Public License
-Version 1.0 (the "License"). You may not use this file except in compliance
-with the License. You may obtain a copy of the License at Silicon Graphics,
-Inc., attn: Legal Services, 2011 N. Shoreline Blvd., Mountain View, CA 94043
-or at http://www.sgi.com/software/opensource/cid/license.html
-
-Software distributed under the License is distributed on an "AS IS" basis. ALL
-WARRANTIES ARE DISCLAIMED, INCLUDING, WITHOUT LIMITATION, ANY IMPLIED
-WARRANTIES OF MERCHANTABILITY, OF FITNESS FOR A PARTICULAR PURPOSE OR OF
-NON-INFRINGEMENT. See the License for the specific language governing rights
-and limitations under the License.
-
-The Original Software (as defined in the License) is CID font code that was
-developed by Silicon Graphics, Inc. Those portions of the Subject Software (as
-defined in the License) that were created by Silicon Graphics, Inc. are
-Copyright (c) 1994-1999 Silicon Graphics, Inc. All Rights Reserved.
-
-[NOTE: When using this text in connection with Subject Software delivered
-solely in object code form, Recipient may replace the words "this file" with
-"this software" in both the first and second sentences.] 3.6. Bitstream Vera
-Fonts Copyright
-
-The fonts have a generous copyright, allowing derivative works (as long as
-"Bitstream" or "Vera" are not in the names), and full redistribution (so long
-as they are not *sold* by themselves). They can be be bundled, redistributed
-and sold with any software.
-
-The fonts are distributed under the following copyright:
-
-Copyright (c) 2003 by Bitstream, Inc. All Rights Reserved. Bitstream Vera is a
-trademark of Bitstream, Inc.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of the fonts accompanying this license ("Fonts") and associated documentation
-files (the "Font Software"), to reproduce and distribute the Font Software,
-including without limitation the rights to use, copy, merge, publish,
-distribute, and/or sell copies of the Font Software, and to permit persons to
-whom the Font Software is furnished to do so, subject to the following
-conditions:
-
-The above copyright and trademark notices and this permission notice shall be
-included in all copies of one or more of the Font Software typefaces.
-
-The Font Software may be modified, altered, or added to, and in particular the
-designs of glyphs or characters in the Fonts may be modified and additional
-glyphs or characters may be added to the Fonts, only if the fonts are renamed
-to names not containing either the words "Bitstream" or the word "Vera".
-
-This License becomes null and void to the extent applicable to Fonts or Font
-Software that has been modified and is distributed under the "Bitstream Vera"
-names.
-
-The Font Software may be sold as part of a larger software package but no copy
-of one or more of the Font Software typefaces may be sold by itself.
-
-THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT,
-TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL BITSTREAM OR THE GNOME FOUNDATION
-BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING ANY GENERAL,
-SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF THE USE OR INABILITY TO
-USE THE FONT SOFTWARE OR FROM OTHER DEALINGS IN THE FONT SOFTWARE.
-
-Except as contained in this notice, the names of Gnome, the Gnome Foundation,
-and Bitstream Inc., shall not be used in advertising or otherwise to promote
-the sale, use or other dealings in this Font Software without prior written
-authorization from the Gnome Foundation or Bitstream Inc., respectively. For
-further information, contact: fonts at gnome dot org.  3.7. Bigelow & Holmes
-Inc and URW++ GmbH Luxi font license
-
-Luxi fonts copyright (c) 2001 by Bigelow & Holmes Inc. Luxi font instruction
-code copyright (c) 2001 by URW++ GmbH. All Rights Reserved. Luxi is a
-registered trademark of Bigelow & Holmes Inc.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of these Fonts and associated documentation files (the "Font Software"), to
-deal in the Font Software, including without limitation the rights to use,
-copy, merge, publish, distribute, sublicense, and/or sell copies of the Font
-Software, and to permit persons to whom the Font Software is furnished to do
-so, subject to the following conditions:
-
-The above copyright and trademark notices and this permission notice shall be
-included in all copies of one or more of the Font Software.
-
-The Font Software may not be modified, altered, or added to, and in particular
-the designs of glyphs or characters in the Fonts may not be modified nor may
-additional glyphs or characters be added to the Fonts. This License becomes
-null and void when the Fonts or Font Software have been modified.
-
-THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT,
-TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL BIGELOW & HOLMES INC. OR URW++
-GMBH. BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING ANY
-GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, WHETHER IN
-AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF THE USE OR
-INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS IN THE FONT
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE X CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-Except as contained in this notice, the names of Bigelow & Holmes Inc. and
-URW++ GmbH. shall not be used in advertising or otherwise to promote the sale,
-use or other dealings in this Font Software without prior written
-authorization from Bigelow & Holmes Inc. and URW++ GmbH.
+Except as contained in this notice, the name of the X Consortium shall not
+be used in advertising or otherwise to promote the sale, use or other
+dealing in this Software without prior written authorization from the
+X Consortium.
+_____________________________
+Xmos_r.h:
+/*
+Copyright (c) 1996 X Consortium
 
-For further information, contact:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-info@urwpp.de or design@bigelowandholmes.com
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+X CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Except as contained in this notice, the name of the X Consortium shall not be
+used in advertising or otherwise to promote the sale, use or other dealings
+in this Software without prior written authorization from the X Consortium.
+*/
+
+_____________________________
+Copyright notice for extutil.h:
+Copyright 1989, 1998 The Open Group
+
+All Rights Reserved.
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+OPEN GROUP BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Except as contained in this notice, the name of The Open Group shall not be
+used in advertising or otherwise to promote the sale, use or other dealings
+in this Software without prior written authorization from The Open Group.
+*
+* Author: Jim Fulton, MIT The Open Group
+*
+* Xlib Extension-Writing Utilities
+*
+* This package contains utilities for writing the client API for various
+* protocol extensions. THESE INTERFACES ARE NOT PART OF THE X STANDARD AND
+* ARE SUBJECT TO CHANGE!
+*/
+
+_____________________________
+Copyright notice for HPkeysym.h:
+/*
+
+Copyright 1987, 1998 The Open Group
+
+All Rights Reserved.
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE OPEN GROUP BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+Except as contained in this notice, the name of The Open Group shall
+not be used in advertising or otherwise to promote the sale, use or
+other dealings in this Software without prior written authorization
+from The Open Group.
+
+Copyright 1987 by Digital Equipment Corporation, Maynard, Massachusetts,
+
+All Rights Reserved
+
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
+provided that the above copyright notice appear in all copies and that
+both that copyright notice and this permission notice appear in
+supporting documentation, and that the names of Hewlett Packard
+or Digital not be
+used in advertising or publicity pertaining to distribution of the
+software without specific, written prior permission.
+
+DIGITAL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+DIGITAL BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+SOFTWARE.
+
+HEWLETT-PACKARD MAKES NO WARRANTY OF ANY KIND WITH REGARD
+TO THIS SOFWARE, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE. Hewlett-Packard shall not be liable for errors
+contained herein or direct, indirect, special, incidental or
+consequential damages in connection with the furnishing,
+performance, or use of this material.
+
+*/
+_____________________________________
+Copyright notice in keysym2ucs.h:
+
+Copyright 1987, 1994, 1998 The Open Group
+
+Permission to use, copy, modify, distribute, and sell this software and its
+documentation for any purpose is hereby granted without fee, provided that
+the above copyright notice appear in all copies and that both that
+copyright notice and this permission notice appear in supporting
+documentation.
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE OPEN GROUP BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+Except as contained in this notice, the name of The Open Group shall
+not be used in advertising or otherwise to promote the sale, use or
+other dealings in this Software without prior written authorization
+from The Open Group.
+
+
+Copyright 1987 by Digital Equipment Corporation, Maynard, Massachusetts
+
+All Rights Reserved
+
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
+provided that the above copyright notice appear in all copies and that
+both that copyright notice and this permission notice appear in
+supporting documentation, and that the name of Digital not be
+used in advertising or publicity pertaining to distribution of the
+software without specific, written prior permission.
+
+DIGITAL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+DIGITAL BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+SOFTWARE.
+
+*/
 
 --- end of LICENSE ---
 
 -------------------------------------------------------------------------------
 
-%% This notice is provided with respect to zlib v1.2.8, which may be included 
+%% This notice is provided with respect to zlib v1.2.11, which may be included 
 with JRE 8, JDK 8, and OpenJDK 8.
 
 --- begin of LICENSE ---
 
-  version 1.2.8, April 28th, 2013
+  version 1.2.11, January 15th, 2017
 
-  Copyright (C) 1995-2013 Jean-loup Gailly and Mark Adler
+  Copyright (C) 1995-2017 Jean-loup Gailly and Mark Adler
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -3361,7 +3059,6 @@ included with JRE 8, JDK 8, and OpenJDK 8.
   Apache Xalan-Java 2.7.1 
   Apache Xerces Java 2.10.0 
   Apache XML Resolver 1.1 
-  Dynalink 0.5
 
 
 --- begin of LICENSE ---

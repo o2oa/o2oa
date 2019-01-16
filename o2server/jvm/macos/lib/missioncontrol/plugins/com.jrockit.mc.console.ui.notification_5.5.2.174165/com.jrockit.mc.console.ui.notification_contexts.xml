@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?NLS TYPE="org.eclipse.help.contexts"?>
+<contexts>
+	<context id="TriggerTab">
+		<description>TriggerTab</description>
+		<topic href="html/olh001.htm#sthref9" label="Using the Triggers Tab"/>
+	</context>
+	<context id="trigger_table">
+		<description>TriggerSectionPart</description>
+		<topic href="html/olh001.htm#sthref10" label="Working with Trigger Rules"/>
+	</context>
+</contexts>

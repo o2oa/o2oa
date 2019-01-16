@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/z_color_background"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/linear_shimmer_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+        <include layout="@layout/snippet_shimmer_content" />
+    </LinearLayout>
+    <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.RecyclerViewSwipeRefreshLayout
+        android:id="@+id/refresh_cms_category_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_cms_category_document_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            ></android.support.v7.widget.RecyclerView>
+    </net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.RecyclerViewSwipeRefreshLayout>
+
+    <TextView
+        android:id="@+id/tv_no_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/recycler_no_data"
+        android:textColor="@color/z_color_subtitle_font"
+        android:textSize="@dimen/font_large"
+        android:visibility="gone"
+        />
+</LinearLayout>

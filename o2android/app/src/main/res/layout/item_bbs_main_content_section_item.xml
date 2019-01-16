@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="wrap_content"
+              android:layout_height="205dp"
+              android:layout_marginBottom="@dimen/spacing_normal"
+              android:layout_marginEnd="@dimen/spacing_normal"
+              android:layout_marginStart="@dimen/spacing_normal"
+              android:background="@drawable/bbs_corners_bg">
+
+    <TextView
+        android:id="@+id/tv_bbs_main_content_section_item_body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="@dimen/spacing_normal"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:text="222"
+        android:textSize="@dimen/font_meeting_time"
+        android:textColor="@color/z_color_title_font"/>
+
+    <ImageView
+        android:id="@+id/tv_bbs_main_collect_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/icon_collect_nor"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="@dimen/spacing_normal"
+        android:paddingEnd="@dimen/spacing_normal"/>
+
+    <ImageView
+        android:id="@+id/tv_bbs_main_content_section_item_icon"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@mipmap/icon_forum_default"
+        android:layout_centerInParent="true"/>
+
+    <TextView
+        android:id="@+id/tv_bbs_main_content_section_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/spacing_normal"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:text="7-28"
+        android:textSize="@dimen/font_meeting_time"
+        android:textColor="@color/z_color_title_font"/>
+
+    <TextView
+        android:id="@+id/tv_bbs_main_content_section_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/spacing_normal"
+        android:paddingEnd="@dimen/spacing_normal"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:text="18个"
+        android:textSize="@dimen/font_meeting_time"
+        android:textColor="@color/z_color_title_font"/>
+
+    <ImageView
+        android:id="@+id/tv_bbs_main_content_section_item_sign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:src="@mipmap/bbs_section_new_sign"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- zxing -->
+    <item type="id" name="auto_focus"/>
+    <item type="id" name="decode"/>
+    <item type="id" name="decode_failed"/>
+    <item type="id" name="decode_succeeded"/>
+    <item type="id" name="encode_failed"/>
+    <item type="id" name="encode_succeeded"/>
+    <item type="id" name="launch_product_query"/>
+    <item type="id" name="quit"/>
+    <item type="id" name="restart_preview"/>
+    <item type="id" name="return_scan_result"/>
+    <item type="id" name="search_book_contents_failed"/>
+    <item type="id" name="search_book_contents_succeeded"/>
+
+    <!-- swipe Menu -->
+    <item name="swipe_menu_content_view_id" type="id" />
+    <item name="swipe_menu_menu_view_id" type="id" />
+
+    <item name="cb_item_tag" type="id"/>
+    <item name="tv_calendar_edit_tag" type="id" />
+
+
+    <item name="decode_error" type="id"/>
+    <item type="id" name="id_autolayout" />
+    <item type="id" name="id_tag_pageset" />
+    <item type="id" name="id_toolbar_left" />
+    <item type="id" name="id_toolbar_right" />
+</resources>

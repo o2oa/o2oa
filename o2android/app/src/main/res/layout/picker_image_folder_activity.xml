@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/picker_image_folder_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/picker_image_folder_loading_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/picker_image_album_loading"
+            android:textSize="16sp"
+			android:textColor="@color/color_grey_999999" />
+        
+		<TextView
+		    android:id="@+id/picker_image_folder_loading_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/picker_image_album_empty"
+            android:textSize="16sp"
+			android:textColor="@color/color_grey_999999" 
+			android:visibility="gone"/>
+    </LinearLayout>
+
+    <ListView 
+        android:id="@+id/picker_image_folder_listView"
+        style="@style/list_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:divider="@color/color_split_line_d9d9d9"
+        android:dividerHeight="1dip"
+        android:listSelector="@color/transparent"
+        android:cacheColorHint="@color/transparent"/>
+    
+</RelativeLayout>

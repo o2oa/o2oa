@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RadioButton
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:button="@null"
+    android:drawableLeft="@drawable/radio_background_primary"
+    android:drawablePadding="10dp"
+    android:textColor="@color/z_color_text_primary"
+    android:text="兰德公司"/>

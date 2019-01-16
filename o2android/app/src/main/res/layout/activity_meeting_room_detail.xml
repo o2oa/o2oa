@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.meeting.reserve.MeetingRoomDetailActivity">
+
+    <include layout="@layout/snippet_appbarlayout_toolbar"/>
+
+
+    <LinearLayout
+        android:id="@+id/ll_meeting_reserve"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="0dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp">
+
+            <TextView
+                android:id="@+id/tv_meeting_room_date_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_meeting_time"
+                android:textColor="@color/z_color_text_primary_dark"
+                android:text="选择日期"/>
+
+            <LinearLayout
+                android:id="@+id/ll_meeting_room_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:orientation="vertical"
+                android:layout_marginEnd="5dp"
+                android:layout_alignTop="@+id/tv_meeting_room_date_tip">
+
+                <TextView
+                    android:id="@+id/tv_meeting_room_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/font_normal"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    tools:text="2017-08-31"/>
+
+                <View
+                    android:layout_width="72dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/split_line"
+                    android:background="@color/z_color_meeting_text"/>
+
+            </LinearLayout>
+
+
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/z_color_split_meeting_line"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp">
+
+            <TextView
+                android:id="@+id/tv_meeting_room_time_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_meeting_time"
+                android:textColor="@color/z_color_text_primary_dark"
+                android:text="选择时间"/>
+
+            <LinearLayout
+                android:id="@+id/ll_meeting_room_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="5dp"
+                android:layout_alignTop="@+id/tv_meeting_room_time_tip">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tv_meeting_room_start_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_normal"
+                        android:textColor="@color/z_color_text_primary_dark"
+                        tools:text="12:00"
+                        />
+                    <View
+                        android:layout_width="36dp"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="@dimen/split_line"
+                        android:background="@color/z_color_meeting_text"/>
+                </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="-"
+                    />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tv_meeting_room_end_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="13:00"
+                        android:textColor="@color/z_color_text_primary_dark"
+                        android:textSize="@dimen/font_normal"
+                        />
+                    <View
+                        android:layout_width="36dp"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="@dimen/split_line"
+                        android:background="@color/z_color_meeting_text"/>
+                </LinearLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:background="@android:color/white"
+            android:paddingEnd="@dimen/meeting_padding"
+            android:paddingStart="@dimen/meeting_padding">
+
+            <TextView
+                android:id="@+id/meeting_building_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:paddingBottom="@dimen/spacing_small"
+                android:paddingTop="@dimen/spacing_small"
+                android:textColor="@color/z_color_text_primary_dark"
+                android:textSize="@dimen/font_meeting_time"
+                tools:text="公司分社(01)"/>
+
+            <View
+                android:id="@+id/meeting_reserve_split"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_alignBottom="@id/meeting_building_name"
+                android:background="@color/z_color_split_meeting_line"/>
+
+            <TextView
+                android:id="@+id/tv_meeting_room_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/meeting_reserve_split"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:textColor="@color/z_color_text_hint"
+                android:textSize="@dimen/font_meeting_time"
+                tools:text="大会议室"/>
+
+            <TextView
+                android:id="@+id/tv_meeting_room_floor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_meeting_room_name"
+                android:layout_marginTop="@dimen/spacing_meeting"
+                android:textColor="@color/z_color_text_primary_dark"
+                android:textSize="@dimen/font_normal"
+                tools:text="楼层："/>
+
+            <TextView
+                android:id="@+id/tv_meeting_room_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_meeting_room_name"
+                android:layout_marginStart="@dimen/meeting_padding"
+                android:layout_marginTop="@dimen/spacing_meeting"
+                android:layout_toEndOf="@id/tv_meeting_room_floor"
+                android:textColor="@color/z_color_text_primary_dark"
+                android:textSize="@dimen/font_normal"
+                tools:text="房间："/>
+
+            <TextView
+                android:id="@+id/tv_meeting_list_item_meeting_room"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_meeting_room_floor"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:textColor="@color/z_color_text_primary"
+                android:textSize="@dimen/font_normal"
+                tools:text="容纳人数："/>
+
+            <LinearLayout
+                android:id="@+id/ll_meeting_room_device"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_meeting_list_item_meeting_room"
+                android:layout_marginBottom="@dimen/spacing_meeting"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_meeting_room_device"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="会议设备:"
+                    android:textColor="@color/z_color_text_primary"
+                    android:textSize="@dimen/font_normal"/>
+
+                <ImageView
+                    android:id="@+id/iv_icon_wifi"
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
+                    android:layout_marginStart="5dp"
+                    android:contentDescription="@null"
+                    android:visibility="gone"
+                    android:src="@mipmap/icon__wifi"/>
+
+                <ImageView
+                    android:id="@+id/iv_icon_tv"
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
+                    android:layout_marginStart="5dp"
+                    android:contentDescription="@null"
+                    android:visibility="gone"
+                    android:src="@mipmap/icon__tv"/>
+
+                <ImageView
+                    android:id="@+id/iv_icon_projector"
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
+                    android:layout_marginStart="5dp"
+                    android:contentDescription="@null"
+                    android:visibility="gone"
+                    android:src="@mipmap/icon__projector"/>
+
+                <ImageView
+                    android:id="@+id/iv_icon_video"
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
+                    android:layout_marginStart="5dp"
+                    android:contentDescription="@null"
+                    android:visibility="gone"
+                    android:src="@mipmap/icon__video"/>
+
+                <ImageView
+                    android:id="@+id/iv_icon_camera"
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
+                    android:layout_marginStart="5dp"
+                    android:contentDescription="@null"
+                    android:visibility="gone"
+                    android:src="@mipmap/icon__camera"/>
+
+                <ImageView
+                    android:id="@+id/iv_icon_phone"
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
+                    android:layout_marginStart="5dp"
+                    android:contentDescription="@null"
+                    android:visibility="gone"
+                    android:src="@mipmap/icon__phone"/>
+
+                <ImageView
+                    android:id="@+id/iv_icon_board"
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
+                    android:layout_marginStart="5dp"
+                    android:contentDescription="@null"
+                    android:visibility="gone"
+                    android:src="@mipmap/icon__board"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/meeting_detail_recycler_view"
+            android:background="@android:color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_meeting"/>
+
+    </LinearLayout>
+
+</LinearLayout>

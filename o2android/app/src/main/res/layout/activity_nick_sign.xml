@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#FFE8EDF3"
+              android:orientation="vertical">
+
+    <include layout="@layout/menu_title_bar_with_button"/>
+
+    <LinearLayout
+        android:id="@+id/ll_nickSign"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/ed_sign"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#fff"
+            android:gravity="start"
+            android:padding="15dp"
+            android:textColor="#FF2C2C2C"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10sp"
+        android:text="100"
+        android:textColor="#C4C5C5"/>
+
+
+</LinearLayout>

@@ -1,0 +1,103 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="login_horizontal_margin">32dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="toolbar_padding_top">25dp</dimen>
+
+
+
+    <!-- font sizes -->
+    <dimen name="font_huge">32sp</dimen>
+    <dimen name="font_larger">22sp</dimen>
+    <dimen name="font_large">16sp</dimen>
+    <dimen name="font_normal">14sp</dimen>
+    <dimen name="font_meeting_time">15sp</dimen>
+    <dimen name="font_meeting_participants">13sp</dimen>
+    <dimen name="font_small">12sp</dimen>
+    <dimen name="font_mini">10sp</dimen>
+    <dimen name="font_meeting_huge">18sp</dimen>
+    <!-- typical spacing between two views -->
+    <dimen name="spacing_huge">40dp</dimen>
+    <dimen name="spacing_large">24dp</dimen>
+    <dimen name="spacing_normal">14dp</dimen>
+    <dimen name="spacing_small">10dp</dimen>
+    <dimen name="spacing_meeting">10dp</dimen>
+    <dimen name="spacing_tiny">5dp</dimen>
+
+    <dimen name="spacing_twenty">20dp</dimen>
+
+    <dimen name="split_line">1dp</dimen>
+    <dimen name="avatar_width">48dp</dimen>
+    <dimen name="avatar_width_64">64dp</dimen>
+    <dimen name="spacing_56">56dp</dimen>
+    <dimen name="avatar_small_width">32dp</dimen>
+
+    <dimen name="spacing_contact_title_height">80dp</dimen>
+
+
+    <dimen name="status_bar_height">25dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="fab_size">50dp</dimen>
+    <dimen name="meeting_padding">15dp</dimen>
+
+
+    <!--im-->
+    <!-- 全局使用的大小 -->
+    <dimen name="title_bar_txt_size">20sp</dimen>
+    <dimen name="default_btn_radius">5dp</dimen>
+    <dimen name="view_left_right_padding">28dp</dimen>
+    <dimen name="title_bar_height">48.5dp</dimen>
+
+    <!-- Login页面 -->
+    <dimen name="login_email_txt_size">18sp</dimen>
+    <dimen name="login_regist_head_icon_size">80dp</dimen>
+    <dimen name="add_friend_txt_size">18sp</dimen>
+    <dimen name="msg_del_offset">70dp</dimen>
+
+    <!-- 文字的大小 -->
+    <dimen name="text_minimum_size">12sp</dimen>
+    <dimen name="text_default_size">12sp</dimen>
+    <dimen name="text_small_size">14sp</dimen>
+    <dimen name="text_normal_size">16sp</dimen>
+    <dimen name="text_medium_size">16sp</dimen>
+    <dimen name="text_large_size">22sp</dimen>
+    <dimen name="default_padding_top">5dp</dimen>
+    <dimen name="default_padding_bottom">5dp</dimen>
+    <dimen name="default_padding_right">15dp</dimen>
+    <dimen name="default_padding_left">15dp</dimen>
+    <dimen name="contact_item_padding_left">5dp</dimen>
+    <dimen name="item_head_icon_size">40dp</dimen>
+    <dimen name="chat_head_icon_size">40dp</dimen>
+    <dimen name="save_btn_height">30dp</dimen>
+    <dimen name="zxing">20dp</dimen>
+    <dimen name="me_head_icon_size">75dp</dimen>
+    <dimen name="drop_down_list_header_padding_top">12dp</dimen>
+    <dimen name="drop_down_list_header_padding_bottom">5dp</dimen>
+    <dimen name="drop_down_list_header_release_min_distance">0dp</dimen>
+    <dimen name="drop_down_list_header_progress_bar_height">36dp</dimen>
+    <dimen name="nick_name_margin_top">8dp</dimen>
+    <dimen name="nick_left">14dp</dimen>
+    <dimen name="nick_height">46.67dp</dimen>
+    <dimen name="text_size">12sp</dimen>
+    <dimen name="dark_line_size">3px</dimen>
+    <dimen name="big_text_size">17sp</dimen>
+    <dimen name="send_file_title_size">16sp</dimen>
+    <dimen name="dialog_text_margin_horizontal">15dip</dimen>
+    <dimen name="dialog_padding_vertical">20dip</dimen>
+    <dimen name="normal_text_size">16sp</dimen>
+    <dimen name="very_samll_text_size">9sp</dimen>
+    <dimen name="light_line_size">1px</dimen>
+    <dimen name="custom_dialog_padding_vertical">15dip</dimen>
+    <dimen name="long_image">150dip</dimen>
+
+    <dimen name="indicator_margin">10dp</dimen>
+    <dimen name="item_emoticon_size_big">60dp</dimen>
+    <dimen name="location">300dp</dimen>
+
+    <dimen name="bar_height">32dp</dimen>
+    <dimen name="bar_tool_btn_width">56dp</dimen>
+    <dimen name="verticalspit_view_width">0.6dp</dimen>
+    <dimen name="horizontalspit_view_height">0.6dp</dimen>
+    <dimen name="item_emoticon_size_default">32dp</dimen>
+</resources>

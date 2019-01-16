@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/menu_attendance_chart"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="90"
+        android:icon="@mipmap/icon_fab_pie_chart"
+        android:title="@string/title_activity_attendance_chart"/>
+
+</menu>

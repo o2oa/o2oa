@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_meeting"
+            android:background="@android:color/white">
+
+            <TextView
+                android:id="@+id/tv_meeting_choose_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textColor="@color/z_color_text_primary_dark"
+                android:textSize="@dimen/font_meeting_time"
+                tools:text="2017-08-14"/>
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/split_line"
+            android:layout_marginStart="@dimen/meeting_padding"
+            android:layout_marginEnd="@dimen/meeting_padding"
+            android:background="@color/z_color_split_meeting_line"/>
+
+        <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+            app:mcv_calendarMode="week"
+            android:id="@+id/calendarView_meeting_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"/>
+        
+        <LinearLayout
+            android:id="@+id/ll_meeting_main_month_chang"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:background="@android:color/white">
+            <ImageView
+                android:id="@+id/image_meeting_main_month_chang"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:src="@mipmap/icon_arrow_down"
+                />
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/meeting_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:background="@android:color/white"/>
+
+        <LinearLayout
+            android:id="@+id/ll_empty_meeting"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@null"
+                android:src="@mipmap/icon_no_meeting"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/meeting_tip_info"
+                android:textColor="@color/z_color_meeting_text"
+                android:textSize="@dimen/font_large"/>
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/meeting_tip"-->
+                <!--android:textColor="@color/z_color_meeting_text"-->
+                <!--android:textSize="@dimen/font_meeting_participants"/>-->
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_meeting_create"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:visibility="gone"
+        android:src="@mipmap/icon_add"
+        app:backgroundTint="@color/z_color_primary"/>
+
+</FrameLayout>

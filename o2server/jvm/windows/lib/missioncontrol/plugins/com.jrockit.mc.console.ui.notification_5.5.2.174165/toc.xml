@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+<toc label="Using the Triggers Tab" link_to="PLUGINS_ROOT/com.jrockit.mc.console.ui/toc.xml#NotificationTOCLink">
+  <!--<topic href="html/title.htm" label="Java Mission Control JMX Console Triggers Tab Online Help, Release 5.5">
+    <topic href="html/preface.htm" label="Preface">
+      <topic href="html/preface.htm#sthref3" label="Audience" />
+      <topic href="html/preface.htm#sthref4" label="Documentation Accessibility" />
+      <topic href="html/preface.htm#sthref6" label="Related Documents" />
+      <topic href="html/preface.htm#sthref7" label="Conventions" />
+    </topic>
+    <topic href="html/olh.htm" label="JMX Console Triggers Tab">-->
+      <topic href="html/olh001.htm#sthref9" label="Using the Triggers Tab">
+        <topic href="html/olh001.htm#sthref10" label="Working with Trigger Rules" />
+        <topic href="html/olh001.htm#sthref11" label="Viewing Application Alerts" />
+      </topic>
+    <!--</topic>
+  </topic>-->
+</toc>

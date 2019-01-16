@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.x.base.core.container.FactorDistributionPolicy;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.config.DataMapping;
 
 public class SlicePropertiesBuilder {
@@ -21,23 +22,23 @@ public class SlicePropertiesBuilder {
 	public static String driver_dm = "dm.jdbc.driver.DmDriver";
 	public static String driver_sqlserver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 	/** 避免db2在aix版本和lwl版本字段长度不一致的问题 */
-	private static String dictionary_db2 = "db2(createPrimaryKeys=false,characterColumnSize=255,maxColumnNameLength=128,maxIndexNameLength=128,maxConstraintNameLength=128)";
-	private static String dictionary_oracle = "oracle(maxTableNameLength=128,maxColumnNameLength=128,maxIndexNameLength=128,maxConstraintNameLength=128,maxEmbeddedClobSize=104857600)";
-	private static String dictionary_mysql = "mysql(clobTypeName=LONGTEXT,blobTypeName=LONGBLOB,createPrimaryKeys=false,maxIndexesPerTable=64)";
-	private static String dictionary_postgresql = "postgres";
-	private static String dictionary_informix = "informix";
-	private static String dictionary_h2 = "org.apache.openjpa.jdbc.sql.H2Dictionary";
-	private static String dictionary_dm = "com.x.base.core.openjpa.jdbc.sql.DMDictionary";
-	private static String dictionary_sqlserver = "sqlserver(schemaCase=preserve)";
+	public static String dictionary_db2 = "db2(createPrimaryKeys=false,characterColumnSize=255,maxColumnNameLength=128,maxIndexNameLength=128,maxConstraintNameLength=128)";
+	public static String dictionary_oracle = "oracle(maxTableNameLength=128,maxColumnNameLength=128,maxIndexNameLength=128,maxConstraintNameLength=128,maxEmbeddedClobSize=104857600)";
+	public static String dictionary_mysql = "mysql(clobTypeName=LONGTEXT,blobTypeName=LONGBLOB,createPrimaryKeys=false,maxIndexesPerTable=64)";
+	public static String dictionary_postgresql = "postgres";
+	public static String dictionary_informix = "informix";
+	public static String dictionary_h2 = "org.apache.openjpa.jdbc.sql.H2Dictionary";
+	public static String dictionary_dm = "com.x.base.core.openjpa.jdbc.sql.DMDictionary";
+	public static String dictionary_sqlserver = "sqlserver(schemaCase=preserve)";
 
-	private static String validationQuery_db2 = "select 1 from sysibm.sysdummy1";
-	private static String validationQuery_oracle = "select 1 from dual";
-	private static String validationQuery_mysql = "select 1";
-	private static String validationQuery_postgresql = "select 1";
-	private static String validationQuery_informix = "select 1";
-	private static String validationQuery_h2 = "select 1";
-	private static String validationQuery_dm = "select getdate()";
-	private static String validationQuery_sqlserver = "select 1";
+	public static String validationQuery_db2 = "select 1 from sysibm.sysdummy1";
+	public static String validationQuery_oracle = "select 1 from dual";
+	public static String validationQuery_mysql = "select 1";
+	public static String validationQuery_postgresql = "select 1";
+	public static String validationQuery_informix = "select 1";
+	public static String validationQuery_h2 = "select 1";
+	public static String validationQuery_dm = "select getdate()";
+	public static String validationQuery_sqlserver = "select 1";
 
 	public static Map<String, String> getPropertiesDBCP(List<DataMapping> list) throws Exception {
 		try {
@@ -51,13 +52,13 @@ public class SlicePropertiesBuilder {
 			 * 如果是DB2 添加 Schema,mysql 不需要Schema 如果用了Schema H2数据库就会报错说没有Schema
 			 */
 			if (StringUtils.equals(determineDBDictionary(list.get(0)), dictionary_db2)) {
-				properties.put("openjpa.jdbc.Schema", "x");
+				properties.put("openjpa.jdbc.Schema", JpaObject.default_schema);
 			}
 			if (StringUtils.equals(determineDBDictionary(list.get(0)), dictionary_informix)) {
-				properties.put("openjpa.jdbc.Schema", "x");
+				properties.put("openjpa.jdbc.Schema", JpaObject.default_schema);
 			}
 			if (StringUtils.equals(determineDBDictionary(list.get(0)), dictionary_dm)) {
-				properties.put("openjpa.jdbc.Schema", "x");
+				properties.put("openjpa.jdbc.Schema", JpaObject.default_schema);
 			}
 			properties.put("openjpa.slice.Lenient", "false");
 			// properties.put("openjpa.Multithreaded", "true");
@@ -132,43 +133,10 @@ public class SlicePropertiesBuilder {
 		}
 	}
 
-	// /* 使用DBCP连接池时产生的属性 */
-	// protected static String getConnectionPropertiesDBCP(DataMapping dataMapping)
-	// throws Exception {
-	// try {
-	// String str = "MaxActive=5, MaxIdle=1, MinIdle=0, MaxWait=10000, Username=" +
-	// dataMapping.getUsername()
-	// + ", Password=" + dataMapping.getPassword() + ", TestOnBorrow=true";
-	// if (StringUtils.equals(determineDBDictionary(dataMapping), dictionary_db2)) {
-	// str += ", driverClassName=" + driver_db2 + ", url=" + dataMapping.getUrl();
-	// } else if (StringUtils.equals(determineDBDictionary(dataMapping),
-	// dictionary_mysql)) {
-	// String url = dataMapping.getUrl();
-	// // url += "?autoReconnect=true";
-	// str += ", driverClassName=" + driver_mysql + ", url=" + url;
-	// } else if (StringUtils.equals(determineDBDictionary(dataMapping),
-	// dictionary_postgresql)) {
-	// String url = dataMapping.getUrl();
-	// str += ", driverClassName=" + driver_postgresql + ", url=" + url;
-	// } else if (StringUtils.equals(determineDBDictionary(dataMapping),
-	// dictionary_informix)) {
-	// String url = dataMapping.getUrl();
-	// str += ", driverClassName=" + driver_informix + ", url=" + url;
-	// } else if (StringUtils.equals(determineDBDictionary(dataMapping),
-	// dictionary_h2)) {
-	// String url = dataMapping.getUrl();
-	// str += ", driverClassName=" + driver_h2 + ", url=" + url;
-	// }
-	// return str;
-	// } catch (Exception e) {
-	// throw new Exception("can not create connection properites", e);
-	// }
-	// }
-
 	/* 使用DBCP2连接池时产生的属性 */
 	protected static String getConnectionPropertiesDBCP2(DataMapping dataMapping) throws Exception {
 		try {
-			String str = "maxTotal=5, maxIdle=2, minIdle=0, maxWaitMillis=30000, timeBetweenEvictionRunsMillis=300000, minEvictableIdleTimeMillis=300000, maxConnLifetimeMillis=1200000, Username="
+			String str = "maxTotal=4, maxIdle=2, minIdle=0, maxWaitMillis=30000, timeBetweenEvictionRunsMillis=300000, minEvictableIdleTimeMillis=300000, maxConnLifetimeMillis=1200000, Username="
 					+ dataMapping.getUsername() + ", Password=" + dataMapping.getPassword();
 			if (StringUtils.equals(determineDBDictionary(dataMapping), dictionary_db2)) {
 				str += ",validationQuery=" + validationQuery_db2 + ", driverClassName=" + driver_db2 + ", url="
@@ -210,13 +178,8 @@ public class SlicePropertiesBuilder {
 	/* 使用Druid连接池时产生的属性 */
 	protected static String getConnectionPropertiesDruid(DataMapping dataMapping) throws Exception {
 		try {
-			String str = "filters=stat, poolPreparedStatements=true, maxActive=5, minIdle=0, testOnBorrow=true, Username="
+			String str = "filters=stat, poolPreparedStatements=true, maxActive=4, minIdle=0, testOnBorrow=true, Username="
 					+ dataMapping.getUsername() + ", Password=" + dataMapping.getPassword();
-			// String str = "filters=stat, poolPreparedStatements=true,
-			// maxActive=20, minIdle=0, timeBetweenEvictionRunsMillis=100000,
-			// minEvictableIdleTimeMillis=300000, Username="
-			// + dataMapping.getUsername() + ", Password=" +
-			// dataMapping.getPassword();
 			if (StringUtils.equals(determineDBDictionary(dataMapping), dictionary_db2)) {
 				str += ", validationQuery=" + validationQuery_db2 + ", driverClassName=" + driver_db2 + ", url="
 						+ dataMapping.getUrl();

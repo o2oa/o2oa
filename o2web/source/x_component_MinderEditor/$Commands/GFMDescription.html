@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html class="theme">
+
+<head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>GFM基础书写格式</title>
+
+    <link id="prettify-style" href="./prettify-cmd.css" type="text/css" rel="stylesheet">
+
+</head>
+
+<body style="width:1200px;margin:0 auto;">
+
+<!-- zybuluo's body -->
+
+
+<!-- mdeditor's body -->
+
+
+<div id="editor-reader-full" class="editor-reader-full-shown" style="position: static;">
+    <div id="wmd-preview" class="wmd-preview wmd-preview-full-reader">
+        <div class="md-section-divider"></div>
+        <p data-anchor-id="vpmx">GFM 是 Github 拓展的基于 Markdown 的一种纯文本的书写格式。</p>
+
+        <div class="md-section-divider"></div>
+        <h2 data-anchor-id="0op9" id="基础书写格式">基础书写格式</h2>
+
+        <div class="md-section-divider"></div>
+        <h3 data-anchor-id="q2cg" id="段落">段落</h3>
+
+        <p data-anchor-id="sbds">在 Markdown 中，连续的一行或多行就是一个段落。用空行来进行切段。</p>
+
+        <div class="md-section-divider"></div>
+        <pre class="prettyprint linenums prettyprinted" data-anchor-id="6pb4" style=""><ol class="linenums">
+            <li class="L0"><code class="language-gfm"><span class="pun">这是第一个段落</span></code></li>
+            <li class="L1"><code class="language-gfm"><span class="pun">我跟上面是同一个段落</span></code></li>
+            <li class="L2"><code class="language-gfm"></code></li>
+            <li class="L3"><code class="language-gfm"><span class="pun">这是第二个段落</span></code></li>
+        </ol></pre>
+        <div class="md-section-divider"></div>
+        <h3 data-anchor-id="citx" id="大纲">大纲</h3>
+
+        <p data-anchor-id="9atw">Markdown 中，使用 <code>#</code> 来定义大纲标题，有多少个 <code>#</code>，就表示是几级的大纲。比如：</p>
+
+        <div class="md-section-divider"></div>
+        <pre class="prettyprint linenums prettyprinted" data-anchor-id="92o3" style=""><ol class="linenums">
+            <li class="L0"><code class="language-gfm"><span class="com"># 这是一级标题（会生成&lt;h1&gt;标签）</span></code></li>
+            <li class="L1"><code class="language-gfm"></code></li>
+            <li class="L2"><code class="language-gfm"><span class="pun">这里是段落内容</span></code></li>
+            <li class="L3"><code class="language-gfm"></code></li>
+            <li class="L4"><code class="language-gfm"><span class="com">## 这里是二级标题（会生成&lt;h2&gt;标签）</span></code></li>
+            <li class="L5"><code class="language-gfm"></code></li>
+            <li class="L6"><code class="language-gfm"><span class="pun">这里是段落内容</span></code></li>
+            <li class="L7"><code class="language-gfm"></code></li>
+            <li class="L8"><code class="language-gfm"><span class="pun">...</span></code></li>
+            <li class="L9"><code class="language-gfm"></code></li>
+            <li class="L0"><code class="language-gfm"><span class="com">###### 这里是六级标题</span></code></li>
+        </ol></pre>
+        <p data-anchor-id="upfh">这种书写方式非常直观自然。</p>
+
+        <div class="md-section-divider"></div>
+        <h3 data-anchor-id="7nka" id="引用内容">引用内容</h3>
+
+        <p data-anchor-id="md05">引用部分的内容只需要在行首加上 <code>&gt;</code> 就可以了。比如：</p>
+
+        <div class="md-section-divider"></div>
+        <pre class="prettyprint linenums prettyprinted" data-anchor-id="2apm" style=""><ol class="linenums">
+            <li class="L0"><code class="language-gfm"><span class="pun">&gt;</span><span class="pln"> </span><span
+                    class="typ">To</span><span class="pln"> be </span><span class="kwd">or</span><span
+                    class="pln"> </span><span class="kwd">not</span><span class="pln"> to be</span><span
+                    class="pun">,</span><span class="pln"> that </span><span class="kwd">is</span><span class="pln"> a question</span><span
+                    class="pun">.</span></code></li>
+        </ol></pre>
+        <p data-anchor-id="yi40">看起来是这样的：</p>
+        <blockquote data-anchor-id="rcsg" class="white-blockquote">
+            <p>To be or not to be, that is a question.</p>
+        </blockquote>
+        <div class="md-section-divider"></div>
+        <h3 data-anchor-id="ca9i" id="强调文本">强调文本</h3>
+
+        <p data-anchor-id="mmaq">您可以使用<strong>加粗</strong>和<em>斜体</em>来格式化文本内容。</p>
+
+        <div class="md-section-divider"></div>
+        <pre class="prettyprint linenums prettyprinted" data-anchor-id="uxo1" style=""><ol class="linenums">
+            <li class="L0"><code class="language-gfm"><span class="pun">加粗使用:</span><span class="pln"> </span><span
+                    class="pun">**这种语法**</span></code></li>
+            <li class="L1"><code class="language-gfm"><span class="pun">斜体使用:</span><span class="pln"> </span><span
+                    class="pun">*这种语法*</span><span class="pln"> </span><span class="pun">或</span><span
+                    class="pln"> _</span><span class="pun">这种语法</span><span class="pln">_</span></code></li>
+            <li class="L2"><code class="language-gfm"><span class="pun">还可以混合使用：**加粗文本中的</span><span
+                    class="pln">_</span><span class="pun">斜体</span><span class="pln">_</span><span class="pun">**</span></code>
+            </li>
+        </ol></pre>
+        <div class="md-section-divider"></div>
+        <h3 data-anchor-id="tg2m" id="删除线">删除线</h3>
+
+        <p data-anchor-id="r07a">你可以使用 ~~ 包裹一段文本让它拥有
+            <del>删除效果</del>
+        </p>
+        <div class="md-section-divider"></div>
+        <pre class="prettyprint linenums prettyprinted" data-anchor-id="lgdz" style=""><ol class="linenums">
+            <li class="L0"><code class="language-gfm"><span class="pun">这样来~~删除一段文本~~</span></code></li>
+        </ol></pre>
+        <div class="md-section-divider"></div>
+        <h2 data-anchor-id="nmhu" id="超链接">超链接</h2>
+
+        <p data-anchor-id="gnhz">通过 <code>[文本](url)</code> 的形式来添加超链接。比如这个是一个<a href="http://www.o2oa.net"
+                                                                               target="_blank">O2官网</a>的超连接。</p>
+
+        <div class="md-section-divider"></div>
+        <pre class="prettyprint linenums prettyprinted" data-anchor-id="y8kn" style=""><ol class="linenums">
+            <li class="L0"><code><span class="pun">[2官网](</span><span class="pln">http</span><span class="pun">:</span><span
+                    class="com">//o2oa.net) - 活力办公，创意无限</span></code></li>
+        </ol></pre>
+        <div class="md-section-divider"></div>
+        <h2 data-anchor-id="z94z" id="列表">列表</h2>
+
+        <div class="md-section-divider"></div>
+        <h3 data-anchor-id="rrgr" id="无序列表">无序列表</h3>
+
+        <p data-anchor-id="s7fo">在行首添加 <code>*</code> 或 <code>-</code> 可以开启列表模式，比如</p>
+
+        <div class="md-section-divider"></div>
+        <pre class="prettyprint linenums prettyprinted" data-anchor-id="pptp" style=""><ol class="linenums">
+            <li class="L0"><code class="language-gfm"><span class="pun">*</span><span class="pln"> </span><span
+                    class="pun">第一，...</span></code></li>
+            <li class="L1"><code class="language-gfm"><span class="pun">*</span><span class="pln"> </span><span
+                    class="pun">第二，...</span></code></li>
+            <li class="L2"><code class="language-gfm"><span class="pun">*</span><span class="pln"> </span><span
+                    class="pun">第三，...</span></code></li>
+            <li class="L3"><code class="language-gfm"></code></li>
+            <li class="L4"><code class="language-gfm"><span class="pun">-</span><span class="pln"> </span><span
+                    class="pun">首先，...</span></code></li>
+            <li class="L5"><code class="language-gfm"><span class="pun">-</span><span class="pln"> </span><span
+                    class="pun">其次，...</span></code></li>
+            <li class="L6"><code class="language-gfm"><span class="pun">-</span><span class="pln"> </span><span
+                    class="pun">最后，...</span></code></li>
+        </ol></pre>
+        <div class="md-section-divider"></div>
+        <h3 data-anchor-id="hlrd" id="有序列表">有序列表</h3>
+
+        <p data-anchor-id="xc8d">在行首添加数字，就可以开启有序列表模式，比如：</p>
+
+        <div class="md-section-divider"></div>
+        <pre class="prettyprint linenums prettyprinted" data-anchor-id="qdfd" style=""><ol class="linenums">
+            <li class="L0"><code class="language-gfm"><span class="lit">1.</span><span class="pln"> </span><span
+                    class="pun">打开冰箱</span></code></li>
+            <li class="L1"><code class="language-gfm"><span class="lit">2.</span><span class="pln"> </span><span
+                    class="pun">把大象放进去</span></code></li>
+            <li class="L2"><code class="language-gfm"><span class="lit">3.</span><span class="pln"> </span><span
+                    class="pun">关上冰箱</span></code></li>
+        </ol></pre>
+        <div class="md-section-divider"></div>
+        <h3 data-anchor-id="l9ci" id="列表嵌套">列表嵌套</h3>
+
+        <p data-anchor-id="hh4i">在上一级列表的基础上加两个空格，即可嵌套列表</p>
+
+        <div class="md-section-divider"></div>
+        <pre class="prettyprint linenums prettyprinted" data-anchor-id="54pb" style=""><ol class="linenums">
+            <li class="L0"><code class="language-gfm"><span class="lit">1.</span><span class="pln"> </span><span
+                    class="pun">打开冰箱</span></code></li>
+            <li class="L1"><code class="language-gfm"><span class="pln">  </span><span class="lit">1.</span><span
+                    class="pln"> </span><span class="pun">用右手打开</span></code></li>
+            <li class="L2"><code class="language-gfm"><span class="pln">  </span><span class="lit">2.</span><span
+                    class="pln"> </span><span class="pun">轻轻地打开</span></code></li>
+            <li class="L3"><code class="language-gfm"><span class="lit">2.</span><span class="pln"> </span><span
+                    class="pun">把大象放进去</span></code></li>
+            <li class="L4"><code class="language-gfm"><span class="pln">  </span><span class="pun">*</span><span
+                    class="pln"> </span><span class="pun">不要吐槽</span></code></li>
+            <li class="L5"><code class="language-gfm"><span class="pln">    </span><span class="pun">*</span><span
+                    class="pln"> </span><span class="pun">大象太大</span></code></li>
+            <li class="L6"><code class="language-gfm"><span class="pln">    </span><span class="pun">*</span><span
+                    class="pln"> </span><span class="pun">冰箱太小</span></code></li>
+            <li class="L7"><code class="language-gfm"><span class="pln">    </span><span class="pun">*</span><span
+                    class="pln"> </span><span class="pun">例子很无聊</span></code></li>
+            <li class="L8"><code class="language-gfm"><span class="lit">3.</span><span class="pln"> </span><span
+                    class="pun">关上冰箱</span></code></li>
+        </ol></pre>
+        <p data-anchor-id="zbwc">整体效果：</p>
+        <blockquote data-anchor-id="0zo2" class="white-blockquote">
+            <ol>
+                <li>打开冰箱 <br>
+                    <ol>
+                        <li>用右手打开</li>
+                        <li>轻轻地打开</li>
+                    </ol>
+                </li>
+                <li>把大象放进去 <br>
+                    <ul>
+                        <li>不要吐槽</li>
+                        <li>大象太大</li>
+                        <li>冰箱太小</li>
+                        <li>例子很无聊</li>
+                    </ul>
+                </li>
+                <li>关上冰箱</li>
+            </ol>
+        </blockquote>
+        <div class="md-section-divider"></div>
+        <h2 data-anchor-id="h26m" id="表格">表格</h2>
+
+        <p data-anchor-id="auai">表格使用了直观的定义方式，使用 <code>-</code> 和 <code>|</code> 分割行和列。</p>
+
+        <div class="md-section-divider"></div>
+        <pre class="prettyprint linenums prettyprinted" data-anchor-id="1bjw" style=""><ol class="linenums">
+            <li class="L0"><code class="language-gfm"><span class="pun">月份|收入|支出</span></code></li>
+            <li class="L1"><code class="language-gfm"><span class="pun">----|----|---</span></code></li>
+            <li class="L2"><code class="language-gfm"><span class="lit">8</span><span class="pln">   </span><span
+                    class="pun">|</span><span class="lit">1000</span><span class="pun">|</span><span
+                    class="lit">500</span></code></li>
+            <li class="L3"><code class="language-gfm"><span class="lit">9</span><span class="pln">   </span><span
+                    class="pun">|</span><span class="lit">1200</span><span class="pun">|</span><span
+                    class="lit">600</span></code></li>
+            <li class="L4"><code class="language-gfm"><span class="lit">10</span><span class="pln">  </span><span
+                    class="pun">|</span><span class="lit">1400</span><span class="pun">|</span><span
+                    class="lit">650</span></code></li>
+        </ol></pre>
+        <p data-anchor-id="jgya">看起来效果如下：</p>
+        <table data-anchor-id="1nfi" class="table table-striped-white table-bordered">
+            <thead>
+            <tr>
+                <th>月份</th>
+                <th>收入</th>
+                <th>支出</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>8</td>
+                <td>1000</td>
+                <td>500</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>1200</td>
+                <td>600</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>1400</td>
+                <td>650</td>
+            </tr>
+            </tbody>
+        </table>
+        <p data-anchor-id="ff3k">其中，航标题后的一行使用的横杆数量是不要求的，只是为了排版好看才人工对齐。比如你可以这样来定义上述表格。</p>
+
+        <div class="md-section-divider"></div>
+        <pre class="prettyprint linenums prettyprinted" data-anchor-id="js9l" style=""><ol class="linenums">
+            <li class="L0"><code class="language-gfm"><span class="pun">月份|收入|之处</span></code></li>
+            <li class="L1"><code class="language-gfm"><span class="pun">-|-|-</span></code></li>
+            <li class="L2"><code class="language-gfm"><span class="lit">8</span><span class="pun">|</span><span
+                    class="lit">1000</span><span class="pun">|</span><span class="lit">500</span></code></li>
+            <li class="L3"><code class="language-gfm"><span class="lit">9</span><span class="pun">|</span><span
+                    class="lit">1200</span><span class="pun">|</span><span class="lit">600</span></code></li>
+            <li class="L4"><code class="language-gfm"><span class="lit">10</span><span class="pun">|</span><span
+                    class="lit">1400</span><span class="pun">|</span><span class="lit">650</span></code></li>
+        </ol></pre>
+        <p data-anchor-id="t5yx">你还可以使用 <code>:</code> 指定列的对齐方式。</p>
+
+        <div class="md-section-divider"></div>
+        <pre class="prettyprint linenums prettyprinted" data-anchor-id="rfs0" style=""><ol class="linenums">
+            <li class="L0"><code class="language-gfm"><span class="pun">月份（居中对齐）|收入（右对齐）|支出（左对齐）</span></code></li>
+            <li class="L1"><code class="language-gfm"><span
+                    class="pun">:--------------:|-------------:|:------------</span></code></li>
+            <li class="L2"><code class="language-gfm"><span class="lit">8</span><span class="pln">               </span><span
+                    class="pun">|</span><span class="lit">1000</span><span class="pln">          </span><span
+                    class="pun">|</span><span class="lit">500</span></code></li>
+            <li class="L3"><code class="language-gfm"><span class="lit">9</span><span class="pln">               </span><span
+                    class="pun">|</span><span class="lit">1200</span><span class="pln">          </span><span
+                    class="pun">|</span><span class="lit">600</span></code></li>
+            <li class="L4"><code class="language-gfm"><span class="lit">10</span><span class="pln">              </span><span
+                    class="pun">|</span><span class="lit">1400</span><span class="pln">          </span><span
+                    class="pun">|</span><span class="lit">650</span></code></li>
+        </ol></pre>
+        <p data-anchor-id="hk7m">看起来效果如下：</p>
+        <table data-anchor-id="7col" class="table table-striped-white table-bordered">
+            <thead>
+            <tr>
+                <th style="text-align:center;">月份（居中对齐）</th>
+                <th style="text-align:right;">收入（右对齐）</th>
+                <th style="text-align:left;">支出（左对齐）</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td style="text-align:center;">8</td>
+                <td style="text-align:right;">1000</td>
+                <td style="text-align:left;">500</td>
+            </tr>
+            <tr>
+                <td style="text-align:center;">9</td>
+                <td style="text-align:right;">1200</td>
+                <td style="text-align:left;">600</td>
+            </tr>
+            <tr>
+                <td style="text-align:center;">10</td>
+                <td style="text-align:right;">1400</td>
+                <td style="text-align:left;">650</td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="md-section-divider"></div>
+        <h2 data-anchor-id="sb2h" id="代码">代码</h2>
+
+        <div class="md-section-divider"></div>
+        <h3 data-anchor-id="6qcb" id="行内代码">行内代码</h3>
+
+        <p data-anchor-id="pp5g">在文本中使用 <code>`</code> 包裹的内容会被识别为代码，比如</p>
+
+        <div class="md-section-divider"></div>
+        <pre class="prettyprint linenums prettyprinted" data-anchor-id="3tlj" style=""><ol class="linenums">
+            <li class="L0"><code class="language-gfm"><span class="pun">现在你可以不用</span><span class="pln"> </span><span
+                    class="str">`document.getElementById()`</span><span class="pln"> </span><span class="pun">了，现代浏览器都把复制了</span><span
+                    class="pln"> </span><span class="str">`id`</span><span class="pln"> </span><span class="pun">属性的元素放在了全局变量里。</span></code>
+            </li>
+        </ol></pre>
+        <p data-anchor-id="02kr">渲染出来是：</p>
+        <blockquote data-anchor-id="1e9m" class="white-blockquote">
+            <p>现在你可以不用 <code>document.getElementById()</code> 了，现代浏览器都把复制了 <code>id</code> 属性的元素放在了全局变量里。</p>
+        </blockquote>
+        <div class="md-section-divider"></div>
+        <h3 data-anchor-id="44wd" id="多行代码">多行代码</h3>
+
+        <p data-anchor-id="d74q">使用 <code>```</code> 来包裹多行的内容成为代码。</p>
+
+        <p data-anchor-id="ux7c">比如：</p>
+
+        <div class="md-section-divider"></div>
+        <pre class="prettyprint linenums prettyprinted" data-anchor-id="6urz" style=""><ol class="linenums">
+            <li class="L0"><code><span class="pln"> </span><span class="str">```</span></code></li>
+            <li class="L1"><code><span class="str"> var a = 0;</span></code></li>
+            <li class="L2"><code><span class="str"> var b = 1;</span></code></li>
+            <li class="L3"><code><span class="str"> var c = a + b;</span></code></li>
+            <li class="L4"><code><span class="str"> ```</span></code></li>
+        </ol></pre>
+    </div>
+    <div class="remark-icons">
+    </div>
+</div>
+
+
+</body>
+</html>
+    

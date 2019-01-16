@@ -1,0 +1,102 @@
+{
+	"tabNodeContainer": {
+		//"height": "20px",
+		//"background": "url("+o2.session.path+"/widget/$Tab/moduleList/tabAreaBg.gif)",
+		//"border-top": "1px solid #CCC",
+		"border-bottom": "1px solid #CCC",
+		"overflow": "hidden"
+	},
+	"contentNodeContainer": {
+		"overflow": "hidden",
+		"clear": "left"
+	},
+	"contentNodeArea": {
+		"background-color": "#FFF",
+		"margin": "5px",
+		"border-top": "1px solid #999999",
+		"border-left": "1px solid #999999",
+		"border-right": "1px solid #DDD",
+		"border-bottom": "1px solid #DDD",
+	
+		"overflow": "hidden",
+		"display": "none",
+		"opacity": 0
+	},
+	"tabNode": {
+		"position": "static",
+		"margin-left": "5px",
+		"margin-top": "0px",
+		"margin-right": "-12px",
+		"float": "left",
+		"height": "19px",
+		"line-height": "19px",
+		"width": "70px",
+		"cursor": "pointer",
+		
+		"background": "#EEEEEE",
+		
+		"border-top-left-radius": "5px",
+		"border-top-right-radius": "30px",
+
+		"border": "1px solid #CCC",
+		"border-bottom": "0px solid #CCC"
+	},
+	"tabTextNode": {
+		"font-size": "12px",
+		"line-height": "20px",
+		"text-align": "center",
+		"color": "#333333",
+		"margin-right": "8px",
+		"margin-top": "0px",
+		"font-weight": "normal",
+		"margin-left": "8px",
+		"padding": "0 5px",
+		"display": "inline"
+	},
+	"tabCloseNode": {
+		"height": "20px",
+		"width": "16px",
+		"background": "url("+o2.session.path+"/widget/$Tab/moduleList/close_gray.png) left center",
+		"background-repeat": "no-repeat" ,
+		"float": "right"
+	},
+	"tabNodeCurrent": {
+		"position": "relative",
+		"top": "0px",
+		"margin-left": "5px",
+		"margin-top": "0px",
+		"margin-right": "-12px",
+		"float": "left",
+		"height": "20px",
+		"width": "70px",
+		"background": "url("+o2.session.path+"/widget/$Tab/moduleList/tabNodeCurrentBg.gif) center center",
+		
+		"border-top-left-radius": "5px",
+		"border-top-right-radius": "30px",
+
+		"border": "1px solid #CCC",
+		"border-bottom": "0px solid #CCC"
+	},
+	"tabTextNodeCurrent": {
+		"font-size": "12px",
+		"line-height": "20px",
+		"text-align": "center",
+		"color": "#bf6364",
+		"margin-right": "8px",
+		"margin-left": "8px",
+		"font-weight": "normal",
+		"margin-top": "0px",
+		"float": "left",
+		"padding": "0 5px",
+		"display": "inline"
+	},
+
+	"tabCloseNodeCurrent": {
+		"height": "30px",
+		"width": "16px",
+		"background": "url("+o2.session.path+"/widget/$Tab/moduleList/close.png) left center",
+		"background-repeat": "no-repeat",
+		"float": "left",
+		"display": "inline"
+	}
+}

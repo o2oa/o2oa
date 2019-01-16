@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/okr_bg"
+    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.okr.activity.OkrSplashActivity">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
+        <ImageView
+            android:id="@+id/image_okr_splash_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_56"
+            android:layout_centerHorizontal="true"
+            android:src="@mipmap/okr"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/image_okr_splash_logo"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_large"
+            android:text="@string/title_activity_okr_main"
+            />
+
+        <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleProgressBar
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerInParent="true"
+            app:mlpb_arrow_height="2dp"
+            app:mlpb_arrow_width="4dp"
+            app:mlpb_progress_color="@color/z_color_primary"
+            app:mlpb_progress_stoke_width="5dp"
+            app:mlpb_show_arrow="true" />
+    </RelativeLayout>
+
+</LinearLayout>

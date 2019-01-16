@@ -1,0 +1,230 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="com.jrockit.mc.rjmx" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="com.jrockit.mc.rjmx" id="com.jrockit.mc.rjmx.syntheticattribute" name="Synthetic MBeans and Attributes"/>
+      </appinfo>
+      <documentation>
+         This extension point is for extending what is visible through the client side MBean connection. This allows for the standardized widgets and tools to pick up data attribute synthesized client side.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="syntheticAttribute"/>
+         </sequence>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="syntheticAttribute">
+      <annotation>
+         <documentation>
+            Defines a synthetic attribute.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="properties" minOccurs="0" maxOccurs="1"/>
+         </sequence>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The class which implements the attribute behaviour.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":com.jrockit.mc.rjmx.subscription.ISyntheticAttribute"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="type" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The class name of the objects that are returned for this attribute.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="writeable" type="boolean" use="required">
+            <annotation>
+               <documentation>
+                  Whether this attribute can be written or not.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="readable" type="boolean" use="required">
+            <annotation>
+               <documentation>
+                  Whether this attribute can be read or not.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="isIs" type="boolean">
+            <annotation>
+               <documentation>
+                  True if the getter should be an is instead of a get (mostly only makes sense for boolean attributes).
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="attributeName" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The object name + attributeName (on the form objectName#attributeName) under which this attribute will be exposed.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  The description of this attribute.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="string">
+      <complexType>
+         <attribute name="key" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="boolean">
+      <complexType>
+         <attribute name="key" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="boolean" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="integer">
+      <complexType>
+         <attribute name="key" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="float">
+      <complexType>
+         <attribute name="key" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="properties">
+      <annotation>
+         <documentation>
+            Properties propagated to the instance of a synthetic attribute.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <choice>
+               <element ref="string"/>
+               <element ref="boolean"/>
+               <element ref="integer"/>
+               <element ref="float"/>
+            </choice>
+         </sequence>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         5.0.0
+      </documentation>
+   </annotation>
+
+
+
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         Copyright (c) 1999, 2015, Oracle and/or its affiliates. All rights reserved.
+      </documentation>
+   </annotation>
+
+</schema>

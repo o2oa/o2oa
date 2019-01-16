@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".app.bbs.section.BBSSectionActivity">
+    <item android:id="@+id/menu_bbs_collect"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="90"
+        android:icon="@mipmap/menu_star_empty"
+        android:title="@string/bbs_section_collect" />
+</menu>

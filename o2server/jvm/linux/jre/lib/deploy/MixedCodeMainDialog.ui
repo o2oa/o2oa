@@ -1,0 +1,154 @@
+<interface>
+  <object class="GtkDialog" id="warning_dialog">
+    <property name="title">Title</property>
+    <property name="deletable">FALSE</property>
+    <property name="resizable">FALSE</property>
+    <property name="width-request">500</property>
+    <property name="height-request">225</property>
+    <property name="has-separator">FALSE</property>
+
+    <child internal-child="vbox">
+      <object class="GtkVBox" id="vbox">
+	<child>
+
+	  <object class="GtkFixed" id="content_area">
+
+	    <child>
+	      <object class="GtkLabel" id="header_label">
+		<property name="label">Header</property>
+		<property name="width-request">400</property>
+		<property name="wrap">TRUE</property>
+		<attributes>
+		  <attribute name="font-desc" value="Bold"/>
+		</attributes>
+	      </object>
+	      <packing>
+		<property name="x">75</property>
+		<property name="y">10</property>
+              </packing>
+	    </child>
+
+	    <child>
+	      <object class="GtkLabel" id="app_label">
+		<property name="label">appLabel</property>
+                <attributes>
+                  <attribute name="font-desc" value="Bold"/>
+                </attributes>
+	      </object>
+	      <packing>
+		<property name="x">75</property>
+		<property name="y">45</property>
+              </packing>
+	    </child>
+
+	    <child>
+	      <object class="GtkLabel" id="app_title_label">
+		<property name="label">appTitle</property>
+	      </object>
+	      <packing>
+		<property name="x">170</property>
+		<property name="y">45</property>
+              </packing>
+	    </child>
+
+	    <child>
+	      <object class="GtkImage" id="header_image">
+		<property name="file">mixcode_s.png</property>
+	      </object>
+	      <packing>
+		<property name="x">10</property>
+		<property name="y">10</property>
+              </packing>
+	    </child>
+
+	    <child>
+	      <object class="GtkImage" id="footer_image">
+		<property name="file">cautionshield.icns</property>
+	      </object>
+	      <packing>
+		<property name="x">10</property>
+		<property name="y">170</property>
+              </packing>
+	    </child>
+
+	    <child>
+	      <object class="GtkLabel" id="message_label">
+		<property name="label">message</property>
+                <property name="width-request">480</property>
+                <property name="wrap">true</property>
+	      </object>
+	      <packing>
+		<property name="x">10</property>
+		<property name="y">90</property>
+              </packing>
+	    </child>
+
+	    <child>
+	      <object class="GtkLabel" id="info_label">
+		<property name="label">info</property>
+                <property name="width-request">150</property>
+                <property name="wrap">true</property>
+		<attributes>
+		  <attribute name="font-desc" value="8"/>
+		</attributes>
+	      </object>
+	      <packing>
+		<property name="x">60</property>
+		<property name="y">165</property>
+              </packing>
+	    </child>
+
+            <child>
+              <object class="GtkButton" id="block_button">
+		<property name="width-request">90</property>
+                <child>
+                  <object class="GtkLabel" id="block_label">
+                  <property name="label">block</property>
+                  </object>
+                </child>
+              </object>
+	      <packing>
+		<property name="x">275</property>
+		<property name="y">170</property>
+              </packing>
+            </child>
+
+            <child>
+              <object class="GtkButton" id="dontblock_button">
+		<property name="width-request">90</property>
+                <child>
+                  <object class="GtkLabel" id="dontblock_label">
+                  <property name="label">dontblock</property>
+                  </object>
+                </child>
+              </object>
+	      <packing>
+		<property name="x">380</property>
+		<property name="y">170</property>
+              </packing>
+            </child>
+
+            <child>
+              <object class="GtkLinkButton" id="help_button">
+                <child>
+                  <object class="GtkLabel" id="help_label">
+                  <property name="label">help</property>
+                  <attributes>
+                    <attribute name="font-desc" value="8"/>
+                  </attributes>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="x">55</property>
+                <property name="y">198</property>
+              </packing>
+            </child>
+
+	  </object>
+	</child>
+      </object>
+    </child>
+
+  </object>
+</interface>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_meeting_room"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/z_color_background"
+    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.meeting.room.MeetingRoomChooseActivity">
+
+    <include layout="@layout/snippet_appbarlayout_toolbar" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/meeting_room_filter"-->
+            <!--android:textColor="@color/z_color_subtitle_font"-->
+            <!--android:textSize="@dimen/font_normal"/>-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:padding="@dimen/meeting_padding">
+            <TextView
+                android:id="@+id/tv_meeting_room_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/z_color_text_primary_dark"
+                tools:text="2017-08-22"
+                android:textSize="@dimen/font_meeting_time"/>
+            <TextView
+                android:id="@+id/tv_meeting_room_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/z_color_text_primary_dark"
+                android:layout_alignParentEnd="true"
+                tools:text="12:00-13:00"
+                android:textSize="@dimen/font_meeting_time"/>
+        </RelativeLayout>
+    </LinearLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_meeting_room_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

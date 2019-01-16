@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#E8EDF3"
+              android:orientation="vertical">
+
+    <include layout="@layout/menu_title_bar_with_button"/>
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/setNoteName"
+        style="@style/SettingItemStyle">
+
+        <TextView
+            style="@style/info_left_style"
+            android:text="备注名"/>
+
+        <ImageView
+            android:id="@+id/iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="13.93dp"
+            android:background="@drawable/arrow"/>
+
+        <TextView
+            android:id="@+id/tv_noteName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="9dp"
+            android:layout_toLeftOf="@id/iv"
+            android:textColor="#999999"
+            android:textSize="14sp"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.53dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:background="#E8EDF3"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_business"
+        style="@style/SettingItemStyle">
+
+        <TextView
+            style="@style/info_left_style"
+            android:text="发送名片"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="13.93dp"
+            android:background="@drawable/arrow"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.53dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:background="#E8EDF3"/>
+
+    <RelativeLayout
+        style="@style/SettingItemStyle">
+
+        <TextView
+            style="@style/info_left_style"
+            android:text="加入黑名单"/>
+
+        <jiguang.chat.view.SlipButton
+            android:id="@+id/btn_addBlackList"
+            android:layout_width="46dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="14dp"/>
+    </RelativeLayout>
+
+
+    <Button
+        android:visibility="gone"
+        android:id="@+id/btn_deleteFriend"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/red_btn_selector"
+        android:text="删除好友"
+        android:textColor="@drawable/red_text_selector"
+        android:textSize="16sp"/>
+
+</LinearLayout>

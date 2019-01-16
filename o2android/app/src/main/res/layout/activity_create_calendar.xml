@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="viewmodel"
+            type="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.calendar.vm.CreateCalendarViewModel"/>
+    </data>
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/z_color_background"
+        tools:context=".app.calendar.CreateCalendarActivity">
+        <RelativeLayout
+            android:id="@+id/rl_create_calendar_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/z_color_primary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/image_create_calendar_close_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="@dimen/spacing_small"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:onClick="clickClose"
+                android:src="@mipmap/icon_menu_window_close" />
+
+            <TextView
+                android:id="@+id/tv_create_calendar_save_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/spacing_small"
+                android:onClick="clickSaveBtn"
+                android:padding="@dimen/spacing_small"
+                android:text="@string/save"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/font_large" />
+
+            <EditText
+                android:id="@+id/et_create_calendar_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/image_create_calendar_close_btn"
+                android:layout_marginBottom="@dimen/spacing_small"
+                android:layout_marginEnd="@dimen/spacing_small"
+                android:layout_marginStart="@dimen/spacing_small"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:background="@null"
+                android:hint="@string/calendar_title_hint"
+                android:text="@={viewmodel.calendarTitle}"
+                android:textColor="@android:color/white"
+                android:textColorHint="@color/z_color_white_translucent_af"
+                android:textSize="@dimen/font_larger" />
+        </RelativeLayout>
+
+        <CheckBox
+            android:id="@+id/cb_create_calendar_is_open"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:checked="@={viewmodel.isPublic()}"
+            android:text="@string/calendar_is_open"
+            android:button="@drawable/o2_checkbox"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rl_create_calendar_top" />
+
+        <View
+            android:id="@+id/view_create_calendar_is_open_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:background="@color/divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cb_create_calendar_is_open" />
+
+        <LinearLayout
+            android:id="@+id/ll_create_calendar_color_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_normal"
+            android:layout_marginEnd="@dimen/spacing_normal"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view_create_calendar_is_open_divider">
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/view_create_calendar_color_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_create_calendar_color_layout" />
+
+
+        <TextView
+            android:id="@+id/tv_create_calendar_type"
+            android:layout_width="335dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:text="@={viewmodel.calendarType}"
+            android:textColor="@color/z_color_text_primary_dark"
+            android:textSize="@dimen/font_large"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view_create_calendar_color_divider"
+            tools:text="个人日历" />
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginEnd="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:src="@mipmap/icon_arrow_22dp"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@+id/tv_create_calendar_type"
+            app:layout_constraintTop_toBottomOf="@+id/view_create_calendar_color_divider" />
+
+        <View
+            android:id="@+id/view_create_calendar_type_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:background="@color/divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_create_calendar_type" />
+
+        <EditText
+            android:id="@+id/et_create_calendar_comment"
+            android:layout_width="335dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:background="@null"
+            android:minLines="3"
+            android:hint="@string/calendar_comment"
+            android:gravity="top"
+            android:text="@={viewmodel.comment}"
+            android:textColor="@color/z_color_text_primary"
+            android:textColorHint="@color/z_color_text_hint"
+            android:textSize="@dimen/font_normal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view_create_calendar_type_divider" />
+
+        <Button
+            android:id="@+id/btn_login_submit"
+            android:layout_width="325dp"
+            android:layout_height="44dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/et_create_calendar_comment"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_marginBottom="@dimen/spacing_normal"
+            android:background="@drawable/button_background_44dp"
+            android:text="@string/calendar_delete_calendar"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            visibleOrGone="@{viewmodel.deleteBtnVisibleable}"
+            android:onClick="clickDeleteBtn"
+            />
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

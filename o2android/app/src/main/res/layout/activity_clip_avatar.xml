@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".app.o2.my.ClipAvatarActivity">
+    <include layout="@layout/snippet_appbarlayout_toolbar" ></include>
+
+    <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.clip.ClipImageLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/clip_avatar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:image_src="@mipmap/launch_background"
+        app:horizontal_padding="20dp"></net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.clip.ClipImageLayout>
+
+</RelativeLayout>

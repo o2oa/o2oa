@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scroll_meeting_create"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".app.meeting.apply.MeetingApplyActivity"
+    tools:showIn="@layout/activity_meeting_create_form">
+
+    <LinearLayout
+        android:id="@+id/linear_meeting_create_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@android:color/white">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_normal"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_meeting_time"
+                    android:text="@string/meeting_name"/>
+                <EditText
+                    android:id="@+id/edit_meeting_create_form_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:textSize="@dimen/font_normal"
+                    android:background="@null"
+                    android:hint="@string/meeting_name_hint"
+                    />
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/z_color_split_line_ddd"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_marginEnd="@dimen/spacing_normal"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_normal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_meeting_time"
+                    android:text="@string/meeting_start_day"/>
+                
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/edit_meeting_create_form_start_day"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_normal"
+                        android:hint="2017-08-03"
+                        />
+                    <View
+                        android:layout_width="73dp"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="@dimen/split_line"
+                        android:background="@color/z_color_meeting_text"/>
+                </LinearLayout>
+                
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/z_color_split_line_ddd"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_marginEnd="@dimen/spacing_normal"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_normal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/edit_meeting_create_form_start_time_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:text="@string/accept_meeting_info_time"
+                    android:textSize="@dimen/font_meeting_time"
+                    />
+
+                <LinearLayout
+                    android:id="@+id/ll_meeting_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_weight="3">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="3dp">
+                        <TextView
+                            android:id="@+id/edit_meeting_create_form_start_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/font_normal"
+                            android:text="12:00"
+                            />
+                        <View
+                            android:layout_width="37dp"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="@dimen/split_line"
+                            android:background="@color/z_color_meeting_text"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="3dp"
+                        android:text="-"
+                        />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="3dp"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/edit_meeting_create_form_end_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="13:00"
+                            android:textSize="@dimen/font_normal"
+                            />
+                        <View
+                            android:layout_width="37dp"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="@dimen/split_line"
+                            android:background="@color/z_color_meeting_text"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/z_color_split_line_ddd"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_marginEnd="@dimen/spacing_normal"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:padding="@dimen/spacing_normal"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_meeting_time"
+                    android:text="@string/meeting_room"/>
+
+                <RelativeLayout
+                    android:id="@+id/rl_choose_room"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3">
+                    <TextView
+                        android:id="@+id/edit_meeting_create_form_room"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:textSize="@dimen/font_normal"
+                        android:hint="@string/meeting_room_hint"/>
+
+                    <ImageView
+                        android:id="@+id/iv_meeting_room"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignBottom="@id/edit_meeting_create_form_room"
+                        android:layout_alignTop="@id/edit_meeting_create_form_room"
+                        android:src="@mipmap/icon_arrow"/>
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/z_color_split_line_ddd"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_marginEnd="@dimen/spacing_normal"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:orientation="horizontal"
+                android:padding="@dimen/spacing_normal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start|top"
+                    android:text="@string/meeting_desc"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_meeting_time"/>
+
+                <EditText
+                    android:id="@+id/edit_meeting_create_form_desc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:background="@null"
+                    android:gravity="start|top"
+                    android:hint="@string/meeting_desc_hint"
+                    android:minLines="5"
+                    android:textSize="@dimen/font_normal"
+                    />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:background="@android:color/white"
+            android:padding="@dimen/spacing_normal"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_meeting_time"
+                    android:text="@string/meeting_invite_people"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/z_color_text_hint"
+                    android:textSize="@dimen/font_meeting_participants"
+                    tools:text="已选择X人"/>
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_meeting_create_form_invite_person_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/meeting_padding"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:background="@android:color/white"
+            android:padding="@dimen/spacing_normal"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_meeting_time"
+                    android:text="@string/meeting_file"/>
+
+                <ImageView
+                    android:id="@+id/iv_meeting_file_add"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/icon_attachment"/>
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_meeting_create_form_file_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_small"
+            android:text="@string/meeting_tips"
+            android:textColor="@color/secondary_text"
+            android:padding="@dimen/spacing_small"/>
+
+        <!--<Button
+            android:id="@+id/button_submit_meeting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_background_44dp"
+            android:layout_margin="@dimen/avatar_small_width"
+            android:textSize="@dimen/font_meeting_huge"
+            android:text="@string/work_form_submit_button"
+            android:textColor="@color/z_color_white"/>-->
+
+    </LinearLayout>
+
+
+</android.support.v4.widget.NestedScrollView>

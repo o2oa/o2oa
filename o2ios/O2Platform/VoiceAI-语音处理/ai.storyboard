@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="K6q-wn-zkE">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--VoiceAI Controller-->
+        <scene sceneID="nV5-aa-IQX">
+            <objects>
+                <viewController id="K6q-wn-zkE" customClass="OOVoiceAIController" customModule="O2Platform" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="AfG-4P-0ss">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pic_beijing_yy" translatesAutoresizingMaskIntoConstraints="NO" id="Lwz-K6-aNp">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vQy-Qp-OiV" customClass="OOVoiceView" customModule="O2Platform" customModuleProvider="target">
+                                <rect key="frame" x="97.5" y="243.5" width="180" height="180"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="180" id="gLT-cA-jD4"/>
+                                    <constraint firstAttribute="width" constant="180" id="o25-es-Cz2"/>
+                                </constraints>
+                            </view>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_luyin180_bai" translatesAutoresizingMaskIntoConstraints="NO" id="jKq-17-odX">
+                                <rect key="frame" x="142.5" y="288.5" width="90" height="90"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="90" id="YcQ-dM-naJ"/>
+                                    <constraint firstAttribute="width" constant="90" id="w39-Bs-PcY"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="B2n-Wz-cLR">
+                                <rect key="frame" x="16" y="643" width="343" height="0.0"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Lwz-K6-aNp" firstAttribute="top" secondItem="AfG-4P-0ss" secondAttribute="top" id="3Q1-iH-fO0"/>
+                            <constraint firstAttribute="trailing" secondItem="Lwz-K6-aNp" secondAttribute="trailing" id="5XO-fv-sa3"/>
+                            <constraint firstAttribute="bottom" secondItem="Lwz-K6-aNp" secondAttribute="bottom" id="9dR-4I-ibZ"/>
+                            <constraint firstItem="Lwz-K6-aNp" firstAttribute="leading" secondItem="AfG-4P-0ss" secondAttribute="leading" id="OtJ-eG-O4W"/>
+                            <constraint firstItem="jKq-17-odX" firstAttribute="centerX" secondItem="AfG-4P-0ss" secondAttribute="centerX" id="UyY-7P-FiR"/>
+                            <constraint firstItem="pna-1I-TG7" firstAttribute="trailing" secondItem="B2n-Wz-cLR" secondAttribute="trailing" constant="16" id="cfg-kO-pEV"/>
+                            <constraint firstItem="B2n-Wz-cLR" firstAttribute="leading" secondItem="pna-1I-TG7" secondAttribute="leading" constant="16" id="dHp-kf-4Qv"/>
+                            <constraint firstItem="jKq-17-odX" firstAttribute="centerY" secondItem="AfG-4P-0ss" secondAttribute="centerY" id="hBA-wv-n4p"/>
+                            <constraint firstItem="pna-1I-TG7" firstAttribute="bottom" secondItem="B2n-Wz-cLR" secondAttribute="bottom" constant="24" id="pSG-9i-nsU"/>
+                            <constraint firstItem="vQy-Qp-OiV" firstAttribute="centerY" secondItem="AfG-4P-0ss" secondAttribute="centerY" id="vO9-4q-Jvs"/>
+                            <constraint firstItem="vQy-Qp-OiV" firstAttribute="centerX" secondItem="AfG-4P-0ss" secondAttribute="centerX" id="zZo-g2-HcH"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="pna-1I-TG7"/>
+                    </view>
+                    <connections>
+                        <outlet property="showLabel" destination="B2n-Wz-cLR" id="teK-jc-4XL"/>
+                        <outlet property="voiceView" destination="vQy-Qp-OiV" id="SeX-Rg-rdu"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cVp-72-w7e" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="157.59999999999999" y="-59.820089955022496"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="icon_luyin180_bai" width="90" height="90"/>
+        <image name="pic_beijing_yy" width="375" height="667"/>
+    </resources>
+</document>

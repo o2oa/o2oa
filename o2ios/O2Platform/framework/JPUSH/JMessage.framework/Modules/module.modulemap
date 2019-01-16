@@ -1,0 +1,6 @@
+framework module JMessage {
+  umbrella header "JMessage.h"
+
+  export *
+  module * { export * }
+}

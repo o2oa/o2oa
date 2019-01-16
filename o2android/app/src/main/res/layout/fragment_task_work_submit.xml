@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/z_color_background">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_task_work_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/z_color_primary"
+        app:popupTheme="@style/XBPMTheme.PopupOverlay"
+        app:layout_scrollFlags="scroll|snap|enterAlways" >
+        <ImageView
+            android:id="@+id/image_task_work_submit_close_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_back_mtrl_white_alpha"
+            android:layout_gravity="start"/>
+        <TextView
+            android:id="@+id/tv_snippet_top_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ellipsize="marquee"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/white"
+            android:text="@string/work_form_submit"
+            android:singleLine="true" />
+        <TextView
+            android:id="@+id/tv_task_work_submit_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_normal"
+            android:layout_gravity="end"
+            android:textColor="@android:color/white"
+            android:text="@string/submit" />
+    </android.support.v7.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/tv_task_work_submit_choose_router_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:layout_marginStart="@dimen/spacing_normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_task_work_submit"
+        android:textColor="@color/text_primary"
+        android:text="@string/choose_router"/>
+
+    <RadioGroup
+        android:id="@+id/radio_group_task_work_submit_routers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/spacing_small"
+        app:layout_constraintTop_toBottomOf="@+id/tv_task_work_submit_choose_router_title"
+        android:background="@android:color/white">
+
+    </RadioGroup>
+
+    <RelativeLayout
+        android:id="@+id/rl_task_work_submit_opinion_bar"
+        app:layout_constraintTop_toBottomOf="@+id/radio_group_task_work_submit_routers"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small">
+        <TextView
+            android:id="@+id/tv_task_work_submit_opinion_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_normal"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/text_primary"
+            android:text="@string/dialog_opinion_input_label"/>
+        <ImageView
+            android:id="@+id/image_task_work_submit_sign_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_normal"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/icon_shouxiesr" />
+
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/edit_task_work_submit_approve_opinion"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@android:color/white"
+        android:layout_marginTop="@dimen/spacing_small"
+        app:layout_constraintTop_toBottomOf="@+id/rl_task_work_submit_opinion_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:padding="@dimen/spacing_tiny"
+        android:inputType="textMultiLine"
+        android:minLines="3"
+        android:gravity="start|top"
+        android:hint="@string/dialog_opinion_hint"
+        android:visibility="visible"
+        android:textColorHint="@color/z_color_subtitle_font" />
+    <io.o2oa.signatureview.SignatureView
+        android:id="@+id/signature_view_task_work_submit_opinion"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="@dimen/spacing_small"
+        app:layout_constraintTop_toBottomOf="@+id/rl_task_work_submit_opinion_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        app:penSize="2dp"
+        app:penColor="@color/z_color_text_primary_dark"/>
+
+    <ImageView
+        android:id="@+id/image_task_work_submit_clear_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:src="@mipmap/icon_delete_sign"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/signature_view_task_work_submit_opinion"
+        app:layout_constraintEnd_toEndOf="parent"/>
+</android.support.constraint.ConstraintLayout>

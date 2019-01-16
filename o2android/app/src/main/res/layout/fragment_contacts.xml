@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jiguang.chat.view.ContactsView android:id="@+id/contacts_view"
+                                xmlns:android="http://schemas.android.com/apk/res/android"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="#ffffff"
+                                android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bar_height"
+        android:background="@color/jmui_jpush">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:text="JChat"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"/>
+
+        <ImageButton
+            android:id="@+id/ib_goToAddFriend"
+            android:layout_width="55dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/msg_title_bar_right_btn_bg"
+            android:src="@drawable/add_friend"/>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <jiguang.chat.view.listview.StickyListHeadersListView
+                    android:id="@+id/listview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:dividerHeight="0.1dp"
+                    android:divider="@drawable/main_list_divider_line"/>
+
+                <TextView
+                    android:id="@+id/group_dialog"
+                    android:layout_width="80.0dip"
+                    android:layout_height="80.0dip"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/rc_bg_toast"
+                    android:gravity="center"
+                    android:textColor="#ffffffff"
+                    android:textSize="30.0dip"
+                    android:visibility="invisible"/>
+
+            </RelativeLayout>
+
+        <jiguang.chat.utils.sidebar.SideBar
+            android:id="@+id/sidebar"
+            android:layout_width="11.33dip"
+            android:layout_height="fill_parent"
+            android:layout_gravity="right|center"
+            android:layout_marginBottom="33dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="2dp"
+            android:visibility="visible"/>
+    </FrameLayout>
+
+
+</jiguang.chat.view.ContactsView>

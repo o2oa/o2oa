@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/z_color_background"
+    android:orientation="vertical"
+    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.scanlogin.ScanLoginActivity">
+
+    <include layout="@layout/snippet_appbarlayout_toolbar" />
+
+    <RelativeLayout
+        android:id="@+id/activity_scan_login"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/linear_scan_login_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="100dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:src="@mipmap/scan_login_content_2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/spacing_huge"
+                android:text="@string/scan_login_desc"
+                android:textColor="@color/z_color_title_font"
+                android:textSize="@dimen/font_large" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button_scan_login_confirm"
+            android:layout_width="325dp"
+            android:layout_height="44dp"
+            android:layout_below="@id/linear_scan_login_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/spacing_56"
+            android:background="@drawable/button_background_44dp"
+            android:text="@string/scan_login_confirm"
+            android:textColor="@android:color/white"></Button>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/spacing_normal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_scan_login_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/spacing_large"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:text="@string/scan_login_cancel"
+                android:textColor="@color/z_color_subtitle_font"
+                android:textSize="@dimen/font_large" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_scan_login_text_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:textColor="@color/z_color_title_font"
+        android:textSize="@dimen/font_normal"
+        android:visibility="visible" />
+</LinearLayout>

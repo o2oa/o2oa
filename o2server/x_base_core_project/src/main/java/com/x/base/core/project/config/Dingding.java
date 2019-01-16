@@ -20,8 +20,11 @@ public class Dingding extends ConfigObject {
 	@FieldDescribe("agentId")
 	private String agentId;
 
-	@FieldDescribe("钉钉corpSecret")
-	private String corpSecret;
+	@FieldDescribe("应用的key,唯一标识")
+	private String appKey;
+
+	@FieldDescribe("应用的密钥")
+	private String appSecret;
 
 	@FieldDescribe("组织同步cron,默认每10分钟同步一次.")
 	private String syncCron;
@@ -40,9 +43,9 @@ public class Dingding extends ConfigObject {
 	}
 
 	public static final Boolean default_enable = false;
-	public static final String default_corpId = "";
+	public static final String default_appKey = "";
+	public static final String default_appSecret = "";
 	public static final String default_agentId = "";
-	public static final String default_corpSecret = "";
 	public static final String default_syncCron = "10 0/10 * * * ?";
 	public static final String default_forceSyncCron = "10 45 8,12 * * ?";
 	public static final String default_oapiAddress = "https://oapi.dingtalk.com";
@@ -50,9 +53,9 @@ public class Dingding extends ConfigObject {
 
 	public Dingding() {
 		this.enable = default_enable;
-		this.corpId = default_corpId;
+		this.appKey = default_appKey;
+		this.appSecret = default_appSecret;
 		this.agentId = default_agentId;
-		this.corpSecret = default_corpSecret;
 		this.syncCron = default_syncCron;
 		this.forceSyncCron = default_forceSyncCron;
 		this.oapiAddress = default_oapiAddress;
@@ -89,28 +92,13 @@ public class Dingding extends ConfigObject {
 		return StringUtils.isEmpty(this.forceSyncCron) ? default_forceSyncCron : this.forceSyncCron;
 	}
 
-	public String getCorpId() {
-		return corpId;
-	}
-
-	public void setCorpId(String corpId) {
-		this.corpId = corpId;
-	}
-
-	public String getCorpSecret() {
-		return corpSecret;
-	}
-
-	public void setCorpSecret(String corpSecret) {
-		this.corpSecret = corpSecret;
-	}
-
 	public String corpAccessToken() throws Exception {
 		if ((StringUtils.isNotEmpty(cachedCorpAccessToken) && (null != cachedCorpAccessTokenDate))
 				&& (cachedCorpAccessTokenDate.after(new Date()))) {
 			return cachedCorpAccessToken;
 		} else {
-			String address = this.getOapiAddress() + "/gettoken?corpid=" + corpId + "&corpsecret=" + corpSecret;
+			String address = this.getOapiAddress() + "/gettoken?appkey=" + this.getAppKey() + "&appsecret="
+					+ this.getAppSecret();
 			AccessTokenResp resp = HttpConnection.getAsObject(address, null, AccessTokenResp.class);
 			if (resp.getErrcode() != 0) {
 				throw new ExceptionDingdingCorpAccessToken(resp.getErrcode(), resp.getErrmsg());
@@ -181,6 +169,18 @@ public class Dingding extends ConfigObject {
 		public void setTicket(String ticket) {
 			this.ticket = ticket;
 		}
+	}
+
+	public String getAppKey() {
+		return appKey;
+	}
+
+	public String getAppSecret() {
+		return appSecret;
+	}
+
+	public String getCorpId() {
+		return corpId;
 	}
 
 }

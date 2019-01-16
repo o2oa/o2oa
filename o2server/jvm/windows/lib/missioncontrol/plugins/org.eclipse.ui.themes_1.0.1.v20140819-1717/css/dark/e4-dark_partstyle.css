@@ -1,0 +1,320 @@
+/*******************************************************************************
+ * Copyright (c) 2010, 2014 Andrea Guarinoni and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Andrea Guarinoni <andrea.guarinoni.dev@outlook.com> - initial API and implementation
+ *     Lars Vogel - initial API and implementation
+ *******************************************************************************/
+
+
+/* ################################ CSS for .MParts ########################## */
+
+.MPart {
+    background-color: #323435;
+    color: #DDDDDD;
+}
+.MPartStack.active .MPart {
+    background-color: #292929;
+    color: #DDDDDD;
+}
+
+.MPart Composite,
+.MPart LayoutComposite,
+.MPart Label,
+.MPart Hyperlink,
+.MPart ImageHyperlink,
+.MPart ScrolledForm,
+.MPart Form,
+.MPart Section,
+.MPart FormText,
+.MPart Link,
+.MPart Sash,
+.MPart Button,
+.MPart Group,
+.MPart SashForm,
+.MPart FilteredTree,
+.MPart RegistryFilteredTree,
+.MPart PageSiteComposite,
+.MPart DependenciesComposite,
+.MPart Text[style~='SWT.READ_ONLY'],
+.MPart FigureCanvas,
+.MPart ListEditorComposite,
+.MPart ScrolledComposite,
+.MPart ScrolledComposite ToolBar,
+.Mpart ScrolledComposite ProgressInfoItem,
+.MPart Form ScrolledPageBook,
+.MPart Form > LayoutComposite > LayoutComposite > ToolBar,
+.MPart DependenciesComposite > SashForm > Section > * /* Section > DependenciesComposite$... */,
+.MPart LayoutComposite > * > LayoutComposite > Section > LayoutComposite > * /*LayoutComposite > MasterDetailBlock$... > LayoutComposite > Section > LayoutComposite > ExtensionsSection$...*/ {
+    background-color: #2F2F2F;
+    color: #AAAAAA;
+}
+.MPartStack.active .MPart Composite,
+.MPartStack.active .MPart LayoutComposite,
+.MPartStack.active .MPart Label,
+.MPartStack.active .MPart Hyperlink,
+.MPartStack.active .MPart ImageHyperlink,
+.MPartStack.active .MPart ScrolledForm,
+.MPartStack.active .MPart Form,
+.MPartStack.active .MPart Section,
+.MPartStack.active .MPart FormText,
+.MPartStack.active .MPart Link,
+.MPartStack.active .MPart Sash,
+.MPartStack.active .MPart Button,
+.MPartStack.active .MPart Group,
+.MPartStack.active .MPart SashForm,
+.MPartStack.active .MPart FilteredTree,
+.MPartStack.active .MPart RegistryFilteredTree,
+.MPartStack.active .MPart PageSiteComposite,
+.MPartStack.active .MPart DependenciesComposite,
+.MPartStack.active .MPart Text[style~='SWT.READ_ONLY'],
+.MPartStack.active .MPart FigureCanvas,
+.MPartStack.active .MPart ListEditorComposite,
+.MPartStack.active .MPart ScrolledComposite,
+.MPartStack.active .MPart ScrolledComposite ToolBar,
+.MPartStack.active .Mpart ScrolledComposite ProgressInfoItem,
+.MPartStack.active .MPart Form ScrolledPageBook,
+.MPartStack.active .MPart Form > LayoutComposite > LayoutComposite > ToolBar,
+.MPartStack.active .MPart DependenciesComposite > SashForm > Section > * /* Section > DependenciesComposite$... */,
+.MPartStack.active .MPart LayoutComposite > * > LayoutComposite > Section > LayoutComposite > * /*LayoutComposite > MasterDetailBlock$... > LayoutComposite > Section > LayoutComposite > ExtensionsSection$...*/ {
+    background-color: #262626;
+    color: #999999;
+}
+
+.MPart Section > Label {
+    background-color: #2F2F2F;
+    color: #ABCEDA;
+}
+.MPartStack.active .MPart Section > Label {
+    background-color: #262626;
+    color: #9EC1CE;
+}
+
+.MPart Table,
+.MPart Browser,
+.Mpart OleFrame,
+.MPart ViewForm,
+.MPart ViewForm > ToolBar,
+.MPart ViewForm > CLabel,
+.MPart PageBook > Label,
+.MPart PageBook > SashForm,
+#org-eclipse-help-ui-HelpView LayoutComposite > LayoutComposite,
+#org-eclipse-help-ui-HelpView LayoutComposite > LayoutComposite > * {
+    background-color: #313538;
+    color: #CCC;
+}
+.MPartStack.active .MPart Table,
+.MPartStack.active .MPart Browser,
+.MPartStack.active .Mpart OleFrame,
+.MPartStack.active .MPart ViewForm,
+.MPartStack.active .MPart ViewForm > ToolBar,
+.MPartStack.active .MPart ViewForm > CLabel,
+.MPartStack.active .MPart PageBook > Label,
+.MPartStack.active .MPart PageBook > SashForm,
+.MPartStack.active #org-eclipse-help-ui-HelpView LayoutComposite > LayoutComposite,
+.MPartStack.active #org-eclipse-help-ui-HelpView LayoutComposite > LayoutComposite > * {
+    background-color: #333;
+    color: #DDDDDD;
+}
+#org-eclipse-help-ui-HelpView LayoutComposite > LayoutComposite ImageHyperlink {
+    background-color: #313538;
+    color: #6fc5ee;
+}
+.MPartStack.active #org-eclipse-help-ui-HelpView LayoutComposite > LayoutComposite ImageHyperlink {
+    background-color: #333;
+    color: #7AAADA;
+}
+
+.MPart > Label,
+#com-android-ide-eclipse-adt-internal-lint-LintViewPart > Composite > Label {
+    background-color: #313538;
+    color: #7DC2BD;
+}
+.MPartStack.active .MPart > Label,
+.MPartStack.active #com-android-ide-eclipse-adt-internal-lint-LintViewPart > Composite > Label {
+    background-color: #2F3235;
+    color: #B1E8F7;
+}
+
+.MPart Section Tree,
+.MPart LayoutComposite > * > LayoutComposite > Section > LayoutComposite > Tree {
+    background-color: #383A3B;
+    color: #DDDDDD;
+}
+.MPartStack.active .MPart Section Tree,
+.MPartStack.active .MPart LayoutComposite > * > LayoutComposite > Section > LayoutComposite > Tree {
+    background-color: #353636;
+    color: #CCCCCC;
+}
+
+.MPart DatePicker,
+.MPart DatePicker > Text,
+.MPart DatePicker > ImageHyperlink,
+.MPart ScheduleDatePicker,
+.MPart ScheduleDatePicker > Text,
+.MPart ScheduleDatePicker > ImageHyperlink,
+.MPart CCombo,
+.MPart Spinner,
+.MPart Composite > StyledText,
+.MPart PageBook > SashForm Label,
+.MPart SashForm > Text[style~='SWT.BORDER'] {
+    background-color: #3f4447;
+    color: #BBBBBB;
+}
+.MPartStack.active .MPart DatePicker,
+.MPartStack.active .MPart DatePicker > Text,
+.MPartStack.active .MPart DatePicker > ImageHyperlink,
+.MPartStack.active .MPart ScheduleDatePicker,
+.MPartStack.active .MPart ScheduleDatePicker > Text,
+.MPartStack.active .MPart ScheduleDatePicker > ImageHyperlink,
+.MPartStack.active .MPart CCombo,
+.MPartStack.active .MPart Spinner,
+.MPartStack.active .MPart Composite > StyledText,
+.MPartStack.active .MPart PageBook > SashForm Label,
+.MPartStack.active .MPart SashForm > Text[style~='SWT.BORDER'] {
+    background-color: #313538;
+    color: #AAAAAA;
+}
+
+.MPart FormHeading,
+.MPart FormHeading > ToolBar,
+.MPart FormHeading > TitleRegion,
+.MPart FormHeading > TitleRegion > Label,
+.MPart FormHeading > TitleRegion > ToolBar,
+.MPart FormHeading > TitleRegion > StyledText,
+.MPart FormHeading LayoutComposite,
+.MPart FormHeading ImageHyperlink {
+    background-color: #505f70;
+    color: #9ac9d8;
+}
+.MPart FormHeading {
+    background: #505f70;
+    background-image: #505f70;
+}
+.MPartStack.active .MPart FormHeading,
+.MPartStack.active .MPart FormHeading > ToolBar,
+.MPartStack.active .MPart FormHeading > TitleRegion,
+.MPartStack.active .MPart FormHeading > TitleRegion > Label,
+.MPartStack.active .MPart FormHeading > TitleRegion > ToolBar,
+.MPartStack.active .MPart FormHeading > TitleRegion > StyledText,
+.MPartStack.active .MPart FormHeading LayoutComposite,
+.MPartStack.active .MPart FormHeading ImageHyperlink {
+    background-color: #415062;
+    color: #9ac9d8;
+}
+.MPartStack.active .MPart FormHeading {
+    background: #415062;
+    background-image: #415062;
+}
+.MPart FormHeading,
+.MPart FormHeading > TitleRegion {
+    swt-background-mode: none;
+}
+.MPart FormHeading > CLabel {
+    background-color: #505f70;
+    color: #E98787;
+}
+.MPartStack.active .MPart FormHeading > CLabel {
+    background-color: #415062;
+    color: #E98787;
+}
+
+/* ------------------------------------------------------------- */
+
+#org-eclipse-jdt-ui-SourceView StyledText,
+#org-eclipse-wst-jsdt-ui-SourceView StyledText {
+    background-color: #252525;
+}
+
+/* ------------------------------------------------------------- */
+
+#org-eclipse-ui-console-ConsoleView .MPart > Composite,
+#org-eclipse-ui-console-ConsoleView .MPart StyledText,
+#org-eclipse-ui-console-ConsoleView .MPart PageBook Label,
+#org-eclipse-dltk-debug-ui-ScriptDisplayView SashForm > * {
+    background-color: #2F2F2F;
+    color: #CCCCCC;
+}
+.MPartStack.active #org-eclipse-ui-console-ConsoleView .MPart > Composite,
+.MPartStack.active #org-eclipse-ui-console-ConsoleView .MPart StyledText,
+.MPartStack.active #org-eclipse-ui-console-ConsoleView .MPart PageBook Label,
+.MPartStack.active #org-eclipse-dltk-debug-ui-ScriptDisplayView SashForm > * {
+    background-color: #262626;
+    color: #CCCCCC;
+}
+
+/* ------------------------------------------------------------- */
+
+#org-eclipse-pde-runtime-LogView Text {
+    background-color: #333;
+    color: #F4F7F7;
+}
+
+/* ------------------------------------------------------------- */
+
+#org-eclipse-pde-ui-TargetPlatformState PageBook > Composite > * {
+    background-color: #2F2F2F;
+    color: #CCC;
+}
+
+/* ------------------------------------------------------------- */
+
+#org-eclipse-e4-ui-compatibility-editor Canvas {
+    background-color: #262626;
+}
+.MPartStack.active #org-eclipse-e4-ui-compatibility-editor Canvas {
+    background-color: #202020;
+}
+#org-eclipse-e4-ui-compatibility-editor CTabItem {
+    color: #EEEEEE;
+    font-weight: normal;
+}
+#org-eclipse-e4-ui-compatibility-editor CTabItem:selected {
+    background-color: #262626;
+    font-weight: bold;
+}
+#org-eclipse-e4-ui-compatibility-editor .MPart {
+    color: #EEEEEE;
+}
+#org-eclipse-e4-ui-compatibility-editor PaletteControl ScrolledComposite > Composite > * {
+    background-color: #2F2F2F;
+    color: #BBBBBB;
+}
+.MPartStack.active #org-eclipse-e4-ui-compatibility-editor PaletteControl ScrolledComposite > Composite > * {
+    background-color: #262626;
+    color: #CCCCCC;
+}
+#org-eclipse-e4-ui-compatibility-editor PaletteControl CLabel {
+    background-color: #383838;
+    color: #dddddd;
+}
+#org-eclipse-e4-ui-compatibility-editor PaletteControl CLabel:hover {
+/* SWT-BUG #362532: The event is never triggered so the native rule cannot be overridden (for hover event) */
+    background-color: #252525;
+    color: #dddddd;
+}
+#org-eclipse-e4-ui-compatibility-editor FlyoutControlComposite > Composite {
+    background-color: #3f4447;
+    color: #DDDDDD;
+}
+#org-eclipse-e4-ui-compatibility-editor LayoutCanvas {
+    background-color: #252525;
+    color: #CCCCCC;
+}
+
+.MPartStack > Composite {
+	background-color: #323435;
+}
+
+.MPartStack.active > Composite {
+	background-color: #292929;
+}
+
+.MPartStack.active.noFocus > Composite {
+	background-color: #323435;
+}
+

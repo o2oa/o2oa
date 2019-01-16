@@ -22,10 +22,4 @@ public abstract class SliceJpaObject extends JpaObject {
 		this.distributeFactor = distributeFactor;
 	}
 
-	// protected void concreteDistributeFactor() {
-	// if (null == this.distributeFactor) {
-	// this.distributeFactor = (new Random()).nextInt(1000);
-	// }
-	// }
-
 }

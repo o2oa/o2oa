@@ -1,11 +1,13 @@
 package com.x.base.core.project.jaxrs;
 
 import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.x.base.core.project.exception.CallbackPromptException;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.CacheControlFactory;
+import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.tools.DefaultCharset;
 
 public class ResponseFactory {
@@ -31,7 +33,8 @@ public class ResponseFactory {
 						.header(Content_Type, wo.getContentType()).header(Accept_Ranges, "bytes").build();
 			} else if ((null != result.getData()) && (result.getData() instanceof WoText)) {
 				WoText wo = (WoText) result.getData();
-				return Response.ok(wo.getText()).cacheControl(defaultCacheControl).build();
+				return Response.ok(wo.getText()).cacheControl(defaultCacheControl).type(HttpMediaType.TEXT_PLAIN_UTF_8)
+						.build();
 			} else if ((null != result.getData()) && (result.getData() instanceof WoCallback)) {
 				return Response.ok(callback((WoCallback) result.getData())).cacheControl(defaultCacheControl).build();
 			} else {

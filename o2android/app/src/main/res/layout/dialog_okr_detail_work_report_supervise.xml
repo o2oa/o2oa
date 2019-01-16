@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_marginTop="@dimen/spacing_tiny"
+    android:layout_marginBottom="@dimen/spacing_tiny"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/edit_dialog_okr_detail_work_report_opinion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/okr_detail_work_report_supervise"
+            />
+    </android.support.design.widget.TextInputLayout>
+
+
+</LinearLayout>

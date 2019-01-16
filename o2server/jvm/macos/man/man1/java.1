@@ -1,5 +1,5 @@
 '\" t
-.\" Copyright (c) 1994, 2015, Oracle and/or its affiliates. All rights reserved.
+.\" Copyright (c) 1994, 2017, Oracle and/or its affiliates. All rights reserved.
 .\"
 .\" Title: java
 .\" Language: English
@@ -1134,25 +1134,33 @@ for JVM internal signals\&. This option is equivalent to
 .PP
 \-Xverify:\fImode\fR
 .RS 4
-Sets the mode of the bytecode verifier\&. Bytecode verification helps to troubleshoot some problems, but it also adds overhead to the running application\&. Possible
+Sets the mode of the bytecode verifier\&. Bytecode verification ensures that class files are properly formed and satisfy the constraints listed in section 4.10, "Verification of class Files" in the \fIThe Java Virtual Machine Specification\fR:
+.sp
+https://docs\&.oracle.com/javase/specs/jvms/se8/html/jvms-4\&.html#jvms-4\&.10
+.sp
+Do not turn off verification as this reduces the protection provided by Java and could cause problems due to ill-formed class files\&.
+.sp
+Possible
 \fImode\fR
 arguments for this option include the following:
 .PP
-none
-.RS 4
-Do not verify the bytecode\&. This reduces startup time and also reduces the protection provided by Java\&.
-.RE
-.PP
 remote
 .RS 4
-Verify those classes that are not loaded by the bootstrap class loader\&. This is the default behavior if you do not specify the
+Verifies all bytecodes not loaded by the bootstrap class loader\&. This is the default behavior if you do not specify the
 \fB\-Xverify\fR
 option\&.
 .RE
 .PP
 all
 .RS 4
-Verify all classes\&.
+Enables verification of all bytecodes\&.
+.RE
+.PP
+none
+.RS 4
+Disables verification of all bytecodes\&. Use of
+\fB\-Xverify:none\fR
+is unsupported\&.
 .RE
 .RE
 .SS "Advanced Runtime Options"

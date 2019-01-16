@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="250dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/jmui_bottom_rounded_bg"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/jmui_top_conv_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/white_btn_selector">
+
+        <TextView
+            android:id="@+id/tv_conv_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="11.43dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="12.9dp"
+            android:text="会话置顶"
+            android:textColor="#2C2C2C"
+            android:textSize="@dimen/text_medium_size"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/jmui_delete_conv_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/white_btn_selector">
+
+        <TextView
+            android:id="@+id/tv_dialogText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="11.43dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="12.9dp"
+            android:text="@string/jmui_delete_conv"
+            android:textColor="#2C2C2C"
+            android:textSize="@dimen/text_medium_size"/>
+
+    </LinearLayout>
+</LinearLayout>

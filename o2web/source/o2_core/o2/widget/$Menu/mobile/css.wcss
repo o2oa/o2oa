@@ -1,0 +1,87 @@
+{
+	"container": {
+		"position": "fixed",
+		"background-color": "#333",
+		"overflow": "hidden",
+		"opacity": 0,
+		"z-index": "300",
+		"width": "100%"
+	},
+	"menuItem": {
+		"display":"block",
+		"position": "static",
+		"float": "left",
+		"color": "#fff",
+		"padding": "0px 2px",
+		"width": "50px",
+		"text-align": "center",
+		"margin": "5px 3px",
+		"overflow": "hidden",
+		"cursor": "pointer"
+	},
+
+	"menuItemImgDiv": {
+		"display":"block",
+		"cursor": "pointer",
+		"width": "40px",
+		"height": "40px",
+		"margin": "auto",
+		"margin-top": "3px",
+		"background": "url("+o2.session.path+"/widget/$Toolbar/mobile/round-black.png) no-repeat center center"
+	},
+	"menuItemImg": {
+		"cursor": "pointer",
+		"margin-top": "5px",
+		"margin-left": "2px"
+	},
+	"menuItemSeparator": {
+		"float": "left",
+		"height": "1px",
+		"width": "1px",
+		"display": "none",
+		"overflow": "hidden"
+	},
+	"menuItemText": {
+		"display":"block",
+		"position": "static",
+		"height": "20px",
+		"width": "50px",
+		"text-align": "center",
+		"line-height": "20px"
+	},
+	"menuLine": {
+		"position": "static",
+		"height": "1px",
+		"margin-left": "28px",
+		"background-color": "#CCCCCC",
+		"display": "none",
+		"border-bottom": "1px solid #FFFFFF"
+	},
+	"menuItemDisable": {
+		"color": "#666"
+	},
+
+	"menuOver": {
+		"background-color": "#666"
+	},
+	"menuOut": {
+		"background-color": "#333"
+	},
+	"menuDown": {
+		"background-color": "#666"
+	},
+	"menuUp": {
+		"background-color": "#333"
+	},
+	"tmpTriangle": {
+		"padding": "0",
+		"height": "20px",
+		"width": "20px",
+		"overflow": "hidden",
+		"position": "fixed",
+		"font-size": "20px",
+		"color": "#333",
+		"top": "auto",
+		"z-index": "1000"
+	}
+}

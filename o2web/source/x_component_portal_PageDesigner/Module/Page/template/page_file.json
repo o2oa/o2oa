@@ -1,0 +1,4285 @@
+{
+  "pcData":{
+    "json": {
+      "id": "",
+      "name": "新建表单",
+      "type": "Form",
+      "mode": "PC",
+      "description": "",
+      "application": "ed496d7e-2556-47b4-bb73-4eba011b033b",
+      "applicationName": "aaaa",
+      "styles": {},
+      "properties": {},
+      "cssLinks": [],
+      "scriptSrc": [],
+      "jsheader": {
+        "code": "if (x=\"s\"){ alert(\"123\");}",
+        "html": ""
+      },
+      "events": {
+        "postLoad": {
+          "code": "",
+          "html": ""
+        },
+        "afterLoad": {
+          "code": "",
+          "html": ""
+        },
+        "beforeSave": {
+          "code": "",
+          "html": ""
+        },
+        "afterSave": {
+          "code": "",
+          "html": ""
+        },
+        "beforeClose": {
+          "code": "",
+          "html": ""
+        },
+        "beforeProcess": {
+          "code": "",
+          "html": ""
+        },
+        "afterProcess": {
+          "code": "",
+          "html": ""
+        },
+        "help": {
+          "code": "",
+          "html": ""
+        },
+        "load": {
+          "code": "",
+          "html": ""
+        },
+        "unload": {
+          "code": "",
+          "html": ""
+        },
+        "click": {
+          "code": "",
+          "html": ""
+        },
+        "dblclick": {
+          "code": "",
+          "html": ""
+        },
+        "keydown": {
+          "code": "",
+          "html": ""
+        },
+        "keypress": {
+          "code": "",
+          "html": ""
+        },
+        "keyup": {
+          "code": "",
+          "html": ""
+        },
+        "mousedown": {
+          "code": "",
+          "html": ""
+        },
+        "mousemove": {
+          "code": "",
+          "html": ""
+        },
+        "mouseout": {
+          "code": "",
+          "html": ""
+        },
+        "mouseover": {
+          "code": "",
+          "html": ""
+        },
+        "mouseup": {
+          "code": "",
+          "html": ""
+        },
+        "focus": {
+          "code": "",
+          "html": ""
+        },
+        "blur": {
+          "code": "",
+          "html": ""
+        },
+        "submit": {
+          "code": "",
+          "html": ""
+        },
+        "reset": {
+          "code": "",
+          "html": ""
+        }
+      },
+      "moduleList": {
+        "div": {
+          "id": "div",
+          "name": "",
+          "type": "Div",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "width": "1000px",
+            "margin": "auto"
+          },
+          "container": ""
+        },
+        "actionbar": {
+          "id": "actionbar",
+          "name": "",
+          "type": "Actionbar",
+          "description": "",
+          "sysTools": {
+            "editTools": [
+              {
+                "type": "MWFToolBarButton",
+                "img": "close.png",
+                "title": "关闭工作",
+                "action": "closeWork",
+                "text": "关闭",
+                "id": "action_close",
+                "condition": "reutrn true"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "save.png",
+                "title": "保存工作",
+                "action": "saveWork",
+                "text": "保存",
+                "id": "action_saveData",
+                "condition": "reutrn this.power.isEditor"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "submit.png",
+                "title": "继续流转文件",
+                "action": "processWork",
+                "text": "继续流转",
+                "id": "action_processWork",
+                "condition": "reutrn this.power.isOwner"
+              },
+              {
+                "type": "MWFToolBarMenu",
+                "img": "tool.png",
+                "title": "管理工具",
+                "action": "",
+                "text": "工具",
+                "id": "action_tools",
+                "condition": "reutrn true",
+                "sub": [
+                  {
+                    "type": "MWFToolBarMenuItem",
+                    "img": "reroute.png",
+                    "title": "调度",
+                    "action": "rerouteWork",
+                    "text": "调度",
+                    "id": "action_reroute",
+                    "control": "allowReroute",
+                    "condition": "reutrn this.power.isManager"
+                  },
+                  {
+                    "type": "MWFToolBarMenuItem",
+                    "img": "reset.png",
+                    "title": "重置处理人",
+                    "action": "resetWork",
+                    "text": "重置处理人",
+                    "id": "action_reset",
+                    "control": "allowReset",
+                    "condition": "reutrn this.power.isReseter"
+                  },
+                  {
+                    "type": "MWFToolBarMenuItem",
+                    "img": "retract.png",
+                    "title": "撤回",
+                    "action": "retractWork",
+                    "text": "撤回",
+                    "id": "action_retract",
+                    "control": "allowRetract",
+                    "condition": "reutrn this.power.isReseter"
+                  },
+                  {
+                    "type": "MWFToolBarMenuLine",
+                    "img": "",
+                    "title": "",
+                    "action": "",
+                    "text": "",
+                    "condition": "reutrn true"
+                  },
+                  {
+                    "type": "MWFToolBarMenuItem",
+                    "img": "del.png",
+                    "title": "删除文件",
+                    "action": "deleteWork",
+                    "text": "删除文件",
+                    "id": "action_delete",
+                    "control": "allowDeleteWork",
+                    "condition": "reutrn this.power.isDelete"
+                  }
+                ]
+              },
+              {
+                "type": "MWFToolBarSeparator",
+                "img": "",
+                "title": "",
+                "action": "",
+                "text": "",
+                "condition": "reutrn true"
+              }
+            ],
+            "readTools": [
+              {
+                "type": "MWFToolBarButton",
+                "img": "close.png",
+                "title": "关闭工作",
+                "action": "closeWork",
+                "id": "action_close",
+                "text": "关闭",
+                "condition": "reutrn true"
+              },
+              {
+                "type": "MWFToolBarMenu",
+                "img": "tool.png",
+                "title": "管理工具",
+                "action": "",
+                "text": "工具",
+                "id": "action_tools",
+                "condition": "reutrn true",
+                "sub": [
+                  {
+                    "type": "MWFToolBarMenuItem",
+                    "img": "reroute.png",
+                    "title": "调度",
+                    "action": "rerouteWork",
+                    "text": "调度",
+                    "id": "action_reroute",
+                    "control": "allowReroute",
+                    "condition": "reutrn this.power.isManager"
+                  },
+                  {
+                    "type": "MWFToolBarMenuItem",
+                    "img": "reset.png",
+                    "title": "重置处理人",
+                    "action": "resetWork",
+                    "text": "重置处理人",
+                    "id": "action_reset",
+                    "control": "allowReset",
+                    "condition": "reutrn this.power.isReseter"
+                  },
+                  {
+                    "type": "MWFToolBarMenuItem",
+                    "img": "retract.png",
+                    "title": "撤回",
+                    "action": "retractWork",
+                    "text": "撤回",
+                    "id": "action_retract",
+                    "control": "allowRetract",
+                    "condition": "reutrn this.power.isReseter"
+                  },
+                  {
+                    "type": "MWFToolBarMenuLine",
+                    "img": "",
+                    "title": "",
+                    "action": "",
+                    "text": "",
+                    "control": "isDelete",
+                    "condition": "reutrn true"
+                  },
+                  {
+                    "type": "MWFToolBarMenuItem",
+                    "img": "del.png",
+                    "title": "删除文件",
+                    "action": "deleteWork",
+                    "text": "删除文件",
+                    "id": "action_delete",
+                    "control": "allowDeleteWork",
+                    "condition": "reutrn this.power.isDelete"
+                  }
+                ]
+              },
+              {
+                "type": "MWFToolBarSeparator",
+                "img": "",
+                "title": "",
+                "action": "",
+                "text": "",
+                "condition": "reutrn true"
+              }
+            ],
+          },
+          "tools": [],
+          "style": "form",
+          "container": ""
+        },
+        "label": {
+          "id": "label",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "script",
+          "text": "",
+          "script": {
+            "code": "return this.workContext.getWork().processName",
+            "html": "return this.workContext.getWork().processName"
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "text-align": "center",
+            "font-size": "24px",
+            "line-height": "40px",
+            "font-weight": "bold",
+            "color": "#F00"
+          },
+          "container": ""
+        },
+        "div_2": {
+          "id": "div_2",
+          "name": "",
+          "type": "Div",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "min-height": "auto",
+            "overflow": "hidden",
+            "height": "auto"
+          },
+          "container": ""
+        },
+        "div_1": {
+          "id": "div_1",
+          "name": "",
+          "type": "Div",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "height": "30px",
+            "min-height": "30px",
+            "margin": "5px 0px",
+            "float": "left"
+          },
+          "container": ""
+        },
+        "label_1": {
+          "id": "label_1",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "text": "拟稿人：",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "float": "left",
+            "font-weight": "bold",
+            "font-size": "14px",
+            "color": "red"
+          },
+          "container": ""
+        },
+        "label_2": {
+          "id": "label_2",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "script",
+          "text": "",
+          "script": {
+            "code": "return this.workContext.getWork().creatorPerson\n",
+            "html": "return this.workContext.getWork().creatorPerson\n"
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "float": "left"
+          },
+          "container": ""
+        },
+        "div_1_1": {
+          "id": "div_1_1",
+          "name": "",
+          "type": "Div",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "height": "30px",
+            "min-height": "30px",
+            "margin": "5px 0px",
+            "float": "right"
+          },
+          "container": ""
+        },
+        "label_1_1": {
+          "id": "label_1_1",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "text": "拟稿时间：",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "float": "left",
+            "font-weight": "bold",
+            "font-size": "14px",
+            "color": "red"
+          },
+          "container": ""
+        },
+        "label_2_1": {
+          "id": "label_2_1",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "script",
+          "text": "",
+          "script": {
+            "code": "return this.workContext.getWork().createTime\n",
+            "html": "return this.workContext.getWork().createTime\n"
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "float": "left"
+          },
+          "container": ""
+        },
+        "tab": {
+          "id": "tab",
+          "name": "",
+          "type": "Tab",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "clear": "both"
+          },
+          "tabStyles": {
+            "position": "relative",
+            "margin-left": "2px",
+            "margin-top": "4px",
+            "margin-right": "0px",
+            "float": "left",
+            "height": "25px",
+            "cursor": "pointer",
+            "min-width": "80px",
+            "background": "url(/o2_core/o2/widget/$Tab/default/tabAreaBg.gif) center center",
+            "border-top-left-radius": "5px",
+            "border-top-right-radius": "5px",
+            "border": "1px solid #999"
+          },
+          "tabTextStyles": {
+            "color": "#333333",
+            "font-weight": "bold",
+            "line-height": "26px",
+            "text-align": "center",
+            "margin-right": "8px",
+            "margin-top": "0px",
+            "margin-left": "8px"
+          },
+          "tabCurrentStyles": {
+            "position": "relative",
+            "margin-top": "0px",
+            "margin-left": "2px",
+            "margin-right": "0px",
+            "float": "left",
+            "height": "30px",
+            "min-width": "80px",
+            "background": "url(/o2_core/o2/widget/$Tab/default/tabNodeCurrentBg.gif) center center",
+            "border-top-left-radius": "5px",
+            "border-top-right-radius": "5px",
+            "border-top": "1px solid #999",
+            "border-left": "1px solid #999",
+            "border-right": "1px solid #999",
+            "border-bottom": "0px solid #efefef"
+          },
+          "tabTextCurrentStyles": {
+            "color": "#bf6364",
+            "font-weight": "bold",
+            "line-height": "30px",
+            "text-align": "center",
+            "margin-right": "8px",
+            "margin-left": "8px",
+            "margin-top": "2px"
+          },
+          "container": ""
+        },
+        "tab_tab$Page": {
+          "id": "tab_tab$Page",
+          "name": " 基本信息",
+          "type": "Tab$Page",
+          "description": "",
+          "width": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": ""
+        },
+        "tab_tab$Page_1": {
+          "id": "tab_tab$Page_1",
+          "name": "正文附件",
+          "type": "Tab$Page",
+          "description": "",
+          "width": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": ""
+        },
+        "tab_tab$Page_2": {
+          "id": "tab_tab$Page_2",
+          "name": "流程记录",
+          "type": "Tab$Page",
+          "description": "",
+          "width": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": ""
+        },
+        "tab_tab$Page_3": {
+          "id": "tab_tab$Page_3",
+          "name": "流程监控",
+          "type": "Tab$Page",
+          "description": "",
+          "width": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": ""
+        },
+        "tab_tab$Content": {
+          "id": "tab_tab$Content",
+          "name": "",
+          "type": "Tab$Content",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "padding": "10px"
+          },
+          "container": ""
+        },
+        "table": {
+          "id": "table",
+          "name": "",
+          "type": "Table",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {
+            "width": "100%",
+            "border": "0",
+            "cellpadding": "3",
+            "cellspacing": "2"
+          },
+          "class": "",
+          "styles": {
+            "border": "1px solid #666"
+          },
+          "titleTdStyles": {
+            "background-color": "#d8dbe4",
+            "color": "#red",
+            "font-weight": "bold"
+          },
+          "contentTdStyles": {
+            "background-color": "#FFFFFF",
+            "color": "#333"
+          },
+          "layoutTdStyles": {},
+          "container": ""
+        },
+        "table_table$Td": {
+          "id": "table_table$Td",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "title"
+        },
+        "label_3": {
+          "id": "label_3",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "text": "标题",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "color": "red"
+          },
+          "container": ""
+        },
+        "table_table$Td_1": {
+          "id": "table_table$Td_1",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {
+            "colspan": 3
+          },
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "content"
+        },
+        "subject": {
+          "id": "subject",
+          "name": "",
+          "type": "Textfield",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "compute": "create",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "change": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "inputType": "text",
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": ""
+        },
+        "table_table$Td_4": {
+          "id": "table_table$Td_4",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "title"
+        },
+        "label_4": {
+          "id": "label_4",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "text": "联系人",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "color": "red"
+          },
+          "container": ""
+        },
+        "table_table$Td_5": {
+          "id": "table_table$Td_5",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "content"
+        },
+        "lxPerson": {
+          "id": "lxPerson",
+          "name": "",
+          "type": "Textfield",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "compute": "create",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "change": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "inputType": "text",
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": ""
+        },
+        "table_table$Td_6": {
+          "id": "table_table$Td_6",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "title"
+        },
+        "label_5": {
+          "id": "label_5",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "text": "联系电话",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "color": "red"
+          },
+          "container": ""
+        },
+        "table_table$Td_7": {
+          "id": "table_table$Td_7",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "content"
+        },
+        "lxPhone": {
+          "id": "lxPhone",
+          "name": "",
+          "type": "Textfield",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "compute": "create",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "change": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "inputType": "text",
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": ""
+        },
+        "table_table$Td_8": {
+          "id": "table_table$Td_8",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "title"
+        },
+        "label_6": {
+          "id": "label_6",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "text": "受理时间",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "color": "red"
+          },
+          "container": ""
+        },
+        "table_table$Td_9": {
+          "id": "table_table$Td_9",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "content"
+        },
+        "slDate": {
+          "id": "slDate",
+          "name": "",
+          "type": "Calendar",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "range": "single",
+          "selectType": "datetime",
+          "format": "%Y-%m-%d %H:%M:%S",
+          "compute": "create",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "change": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": ""
+        },
+        "table_table$Td_10": {
+          "id": "table_table$Td_10",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "title"
+        },
+        "label_7": {
+          "id": "label_7",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "text": "截至时间",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "color": "red"
+          },
+          "container": ""
+        },
+        "table_table$Td_11": {
+          "id": "table_table$Td_11",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "content"
+        },
+        "jzDate": {
+          "id": "jzDate",
+          "name": "",
+          "type": "Calendar",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "range": "single",
+          "selectType": "datetime",
+          "format": "%Y-%m-%d %H:%M:%S",
+          "compute": "create",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "change": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": ""
+        },
+        "table_table$Td_12": {
+          "id": "table_table$Td_12",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "title"
+        },
+        "label_8": {
+          "id": "label_8",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "text": "办理部门",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "color": "red"
+          },
+          "container": ""
+        },
+        "table_table$Td_13": {
+          "id": "table_table$Td_13",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "content"
+        },
+        "blDepartment": {
+          "id": "blDepartment",
+          "name": "",
+          "type": "Personfield",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "range": "all",
+          "count": "1",
+          "selectType": "department",
+          "compute": "create",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "change": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": ""
+        },
+        "table_table$Td_14": {
+          "id": "table_table$Td_14",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "title"
+        },
+        "label_9": {
+          "id": "label_9",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "text": "办理人",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "color": "red"
+          },
+          "container": ""
+        },
+        "table_table$Td_15": {
+          "id": "table_table$Td_15",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "content"
+        },
+        "blPerson": {
+          "id": "blPerson",
+          "name": "",
+          "type": "Personfield",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "range": "depart",
+          "count": "1",
+          "selectType": "identity",
+          "compute": "create",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "change": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "rangeKey": {
+            "code": "return this.data.blDepartment;",
+            "html": "return this.data.blDepartment;"
+          }
+        },
+        "table_table$Td_16": {
+          "id": "table_table$Td_16",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "title"
+        },
+        "label_10": {
+          "id": "label_10",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "text",
+          "text": "简要说明",
+          "script": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "color": "red"
+          },
+          "container": ""
+        },
+        "table_table$Td_17": {
+          "id": "table_table$Td_17",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {
+            "colspan": 3
+          },
+          "class": "",
+          "styles": {},
+          "container": "",
+          "cellType": "content"
+        },
+        "explain": {
+          "id": "explain",
+          "name": "",
+          "type": "Textarea",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "compute": "create",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "change": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": ""
+        },
+        "tab_tab$Content_1": {
+          "id": "tab_tab$Content_1",
+          "name": "",
+          "type": "Tab$Content",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": ""
+        },
+        "htmleditor": {
+          "id": "htmleditor",
+          "name": "",
+          "type": "Htmleditor",
+          "description": "",
+          "events": {
+            "beforeCommandExec": {
+              "code": "",
+              "html": ""
+            },
+            "afterCommandExec": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            },
+            "change": {
+              "code": "",
+              "html": ""
+            },
+            "destroy": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "getData": {
+              "code": "",
+              "html": ""
+            },
+            "insertElement": {
+              "code": "",
+              "html": ""
+            },
+            "insertHtml": {
+              "code": "",
+              "html": ""
+            },
+            "insertText": {
+              "code": "",
+              "html": ""
+            },
+            "key": {
+              "code": "",
+              "html": ""
+            },
+            "loaded": {
+              "code": "",
+              "html": ""
+            },
+            "maximize": {
+              "code": "",
+              "html": ""
+            },
+            "paste": {
+              "code": "",
+              "html": ""
+            },
+            "resize": {
+              "code": "",
+              "html": ""
+            },
+            "save": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "editorProperties": {
+            "autoGrow_maxHeight": 400,
+            "autoGrow_minHeight": 300,
+            "resize_enabled": true,
+            "resize_maxHeight": "3000",
+            "resize_minHeight": "200",
+            "autoParagraph": true,
+            "autoUpdateElement": true,
+            "enterMode": 1,
+            "height": "200",
+            "width": "",
+            "readOnly": false,
+            "title": ""
+          },
+          "config": {
+            "code": "",
+            "html": ""
+          },
+          "class": "",
+          "styles": {},
+          "container": ""
+        },
+        "attachment": {
+          "id": "attachment",
+          "name": "",
+          "type": "Attachment",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "upload": {
+              "code": "",
+              "html": ""
+            },
+            "delete": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "size": "max",
+          "isSizeChange": "true",
+          "attachmentCount": "0",
+          "resize": "false",
+          "listStyle": "icon",
+          "readonly": "false",
+          "isUpload": "true",
+          "isDelete": "true",
+          "isReplace": "true",
+          "isDownload": "true",
+          "class": "",
+          "styles": {},
+          "container": ""
+        },
+        "tab_tab$Content_2": {
+          "id": "tab_tab$Content_2",
+          "name": "",
+          "type": "Tab$Content",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": ""
+        },
+        "log": {
+          "id": "log",
+          "name": "",
+          "type": "Log",
+          "description": "",
+          "filterActivity": [],
+          "filterPerson": [],
+          "filterRoute": [],
+          "mode": "default",
+          "textStyle": "<font style='color:#ff5400;'>{person}</font>（{department}） 选择【{route}】，提交于： {time}，处理意见：<font style='color:#00F'>{opinion}</font>",
+          "isTask": "true",
+          "filterScript": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": ""
+        },
+        "tab_tab$Content_3": {
+          "id": "tab_tab$Content_3",
+          "name": "",
+          "type": "Tab$Content",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": ""
+        },
+        "monitor": {
+          "id": "monitor",
+          "name": "",
+          "type": "Monitor",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": ""
+        },
+        "actionbar_1": {
+          "id": "actionbar_1",
+          "name": "",
+          "type": "Actionbar",
+          "description": "",
+          "sysTools": {
+            "editTools": [
+              {
+                "type": "MWFToolBarButton",
+                "img": "close.png",
+                "title": "关闭工作",
+                "action": "closeWork",
+                "text": "关闭",
+                "id": "action_close",
+                "condition": "reutrn true"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "save.png",
+                "title": "保存工作",
+                "action": "saveWork",
+                "text": "保存",
+                "id": "action_saveData",
+                "condition": "reutrn this.power.isEditor"
+              },
+              {
+                "type": "MWFToolBarButton",
+                "img": "submit.png",
+                "title": "继续流转文件",
+                "action": "processWork",
+                "text": "继续流转",
+                "id": "action_processWork",
+                "condition": "reutrn this.power.isOwner"
+              },
+              {
+                "type": "MWFToolBarMenu",
+                "img": "tool.png",
+                "title": "管理工具",
+                "action": "",
+                "text": "工具",
+                "id": "action_tools",
+                "condition": "reutrn true",
+                "sub": [
+                  {
+                    "type": "MWFToolBarMenuItem",
+                    "img": "reroute.png",
+                    "title": "调度",
+                    "action": "rerouteWork",
+                    "text": "调度",
+                    "id": "action_reroute",
+                    "control": "allowReroute",
+                    "condition": "reutrn this.power.isManager"
+                  },
+                  {
+                    "type": "MWFToolBarMenuItem",
+                    "img": "reset.png",
+                    "title": "重置处理人",
+                    "action": "resetWork",
+                    "text": "重置处理人",
+                    "id": "action_reset",
+                    "control": "allowReset",
+                    "condition": "reutrn this.power.isReseter"
+                  },
+                  {
+                    "type": "MWFToolBarMenuItem",
+                    "img": "retract.png",
+                    "title": "撤回",
+                    "action": "retractWork",
+                    "text": "撤回",
+                    "id": "action_retract",
+                    "control": "allowRetract",
+                    "condition": "reutrn this.power.isReseter"
+                  },
+                  {
+                    "type": "MWFToolBarMenuLine",
+                    "img": "",
+                    "title": "",
+                    "action": "",
+                    "text": "",
+                    "condition": "reutrn true"
+                  },
+                  {
+                    "type": "MWFToolBarMenuItem",
+                    "img": "del.png",
+                    "title": "删除文件",
+                    "action": "deleteWork",
+                    "text": "删除文件",
+                    "id": "action_delete",
+                    "control": "allowDeleteWork",
+                    "condition": "reutrn this.power.isDelete"
+                  }
+                ]
+              },
+              {
+                "type": "MWFToolBarSeparator",
+                "img": "",
+                "title": "",
+                "action": "",
+                "text": "",
+                "condition": "reutrn true"
+              }
+            ],
+            "readTools": [
+              {
+                "type": "MWFToolBarButton",
+                "img": "close.png",
+                "title": "关闭工作",
+                "action": "closeWork",
+                "id": "action_close",
+                "text": "关闭",
+                "condition": "reutrn true"
+              },
+              {
+                "type": "MWFToolBarMenu",
+                "img": "tool.png",
+                "title": "管理工具",
+                "action": "",
+                "text": "工具",
+                "id": "action_tools",
+                "condition": "reutrn true",
+                "sub": [
+                  {
+                    "type": "MWFToolBarMenuItem",
+                    "img": "reroute.png",
+                    "title": "调度",
+                    "action": "rerouteWork",
+                    "text": "调度",
+                    "id": "action_reroute",
+                    "control": "allowReroute",
+                    "condition": "reutrn this.power.isManager"
+                  },
+                  {
+                    "type": "MWFToolBarMenuItem",
+                    "img": "reset.png",
+                    "title": "重置处理人",
+                    "action": "resetWork",
+                    "text": "重置处理人",
+                    "id": "action_reset",
+                    "control": "allowReset",
+                    "condition": "reutrn this.power.isReseter"
+                  },
+                  {
+                    "type": "MWFToolBarMenuItem",
+                    "img": "retract.png",
+                    "title": "撤回",
+                    "action": "retractWork",
+                    "text": "撤回",
+                    "id": "action_retract",
+                    "control": "allowRetract",
+                    "condition": "reutrn this.power.isReseter"
+                  },
+                  {
+                    "type": "MWFToolBarMenuLine",
+                    "img": "",
+                    "title": "",
+                    "action": "",
+                    "text": "",
+                    "control": "isDelete",
+                    "condition": "reutrn true"
+                  },
+                  {
+                    "type": "MWFToolBarMenuItem",
+                    "img": "del.png",
+                    "title": "删除文件",
+                    "action": "deleteWork",
+                    "text": "删除文件",
+                    "id": "action_delete",
+                    "control": "allowDeleteWork",
+                    "condition": "reutrn this.power.isDelete"
+                  }
+                ]
+              },
+              {
+                "type": "MWFToolBarSeparator",
+                "img": "",
+                "title": "",
+                "action": "",
+                "text": "",
+                "condition": "reutrn true"
+              }
+            ],
+          },
+          "tools": [],
+          "style": "form",
+          "container": ""
+        }
+      },
+      "fieldList": {}
+    },
+    "html": "<div mwftype=\"form\" id=\"\"><div id=\"div\" mwftype=\"div\"><div id=\"actionbar\" mwftype=\"actionbar\"><div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/close.png\" title=\"关闭工作\" mwfbuttonaction=\"closeWork\" mwfbuttontext=\"关闭\"><span><img src=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/close.png\"></span><span>关闭</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/save.png\" title=\"保存工作\" mwfbuttonaction=\"saveWork\" mwfbuttontext=\"保存\"><span><img src=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/save.png\"></span><span>保存</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/submit.png\" title=\"继续流转文件\" mwfbuttonaction=\"processWork\" mwfbuttontext=\"继续流转\"><span><img src=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/submit.png\"></span><span>继续流转</span></div><div mwfnodetype=\"MWFToolBarMenu\" mwfbuttonimage=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/tool.png\" title=\"管理工具\" mwfbuttonaction=\"\" mwfbuttontext=\"工具\"><div mwfnodetype=\"MWFToolBarMenuItem\" mwfbuttonimage=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/reroute.png\" title=\"调度\" mwfbuttonaction=\"rerouteWork\" mwfbuttontext=\"调度\"></div><div mwfnodetype=\"MWFToolBarMenuItem\" mwfbuttonimage=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/reset.png\" title=\"重置处理人\" mwfbuttonaction=\"resetWork\" mwfbuttontext=\"重置处理人\"></div><div mwfnodetype=\"MWFToolBarMenuItem\" mwfbuttonimage=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/monitor.png\" title=\"流程监控\" mwfbuttonaction=\"monitorWork\" mwfbuttontext=\"流程监控\"></div><div mwfnodetype=\"MWFToolBarMenuLine\" mwfbuttonimage=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/\" title=\"\" mwfbuttonaction=\"\" mwfbuttontext=\"\"></div><div mwfnodetype=\"MWFToolBarMenuItem\" mwfbuttonimage=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/del.png\" title=\"删除文件\" mwfbuttonaction=\"deleteWork\" mwfbuttontext=\"删除文件\"></div><span><img src=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/tool.png\"></span><span>工具</span><div><img src=\"/x_desktop/res/mwf4/package/widget/$Toolbar/form/downicon.gif\"></div></div><div mwfnodetype=\"MWFToolBarSeparator\" mwfbuttonimage=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/\" title=\"\" mwfbuttonaction=\"\" mwfbuttontext=\"\"></div></div></div><div id=\"label\" mwftype=\"label\">(C)Text</div><div id=\"div_2\" mwftype=\"div\"><div id=\"div_1\" mwftype=\"div\"><div id=\"label_1\" mwftype=\"label\">拟稿人：</div><div id=\"label_2\" mwftype=\"label\">(C)Text</div></div><div id=\"div_1_1\" mwftype=\"div\"><div id=\"label_1_1\" mwftype=\"label\">拟稿时间：</div><div id=\"label_2_1\" mwftype=\"label\">(C)Text</div></div></div><div id=\"tab\" mwftype=\"tab\"><div><div id=\"tab_tab$Page\" mwftype=\"tab$Page\"><div> 基本信息</div></div><div id=\"tab_tab$Page_1\" mwftype=\"tab$Page\"><div>正文附件</div></div><div id=\"tab_tab$Page_2\" mwftype=\"tab$Page\"><div>流程记录</div></div><div id=\"tab_tab$Page_3\" mwftype=\"tab$Page\"><div>流程监控</div></div></div><div name=\"MWFcontentNodeContainer\"><div><div id=\"tab_tab$Content\" mwftype=\"tab$Content\"><div id=\"table\" mwftype=\"table\"><table width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"2\" cellpadding=\"3\"><tbody><tr><td id=\"table_table$Td\" mwftype=\"table$Td\"><div id=\"label_3\" mwftype=\"label\">标题</div></td><td id=\"table_table$Td_1\" rowspan=\"1\" colspan=\"3\" mwftype=\"table$Td\"><div id=\"subject\" mwftype=\"textfield\"><div></div><div>subject</div></div></td></tr><tr><td id=\"table_table$Td_4\" mwftype=\"table$Td\"><div id=\"label_4\" mwftype=\"label\">联系人</div></td><td id=\"table_table$Td_5\" mwftype=\"table$Td\"><div id=\"lxPerson\" mwftype=\"textfield\"><div></div><div>lxPerson</div></div></td><td id=\"table_table$Td_6\" mwftype=\"table$Td\"><div id=\"label_5\" mwftype=\"label\">联系电话</div></td><td id=\"table_table$Td_7\" mwftype=\"table$Td\"><div id=\"lxPhone\" mwftype=\"textfield\"><div></div><div>lxPhone</div></div></td></tr><tr><td id=\"table_table$Td_8\" mwftype=\"table$Td\"><div id=\"label_6\" mwftype=\"label\">受理时间</div></td><td id=\"table_table$Td_9\" mwftype=\"table$Td\"><div id=\"slDate\" mwftype=\"calendar\"><div></div><div>slDate</div></div></td><td id=\"table_table$Td_10\" mwftype=\"table$Td\"><div id=\"label_7\" mwftype=\"label\">截至时间</div></td><td id=\"table_table$Td_11\" mwftype=\"table$Td\"><div id=\"jzDate\" mwftype=\"calendar\"><div></div><div>jzDate</div></div></td></tr><tr><td id=\"table_table$Td_12\" mwftype=\"table$Td\"><div id=\"label_8\" mwftype=\"label\">办理部门</div></td><td id=\"table_table$Td_13\" mwftype=\"table$Td\"><div id=\"blDepartment\" mwftype=\"personfield\"><div></div><div>blDepartment</div></div></td><td id=\"table_table$Td_14\" mwftype=\"table$Td\"><div id=\"label_9\" mwftype=\"label\">办理人</div></td><td id=\"table_table$Td_15\" mwftype=\"table$Td\"><div id=\"blPerson\" mwftype=\"personfield\"><div></div><div>blPerson</div></div></td></tr><tr><td id=\"table_table$Td_16\" mwftype=\"table$Td\"><div id=\"label_10\" mwftype=\"label\">简要说明</div></td><td id=\"table_table$Td_17\" rowspan=\"1\" colspan=\"3\" mwftype=\"table$Td\"><div id=\"explain\" mwftype=\"textarea\"><div></div><div>explain</div></div></td></tr></tbody></table></div></div></div><div><div id=\"tab_tab$Content_1\" mwftype=\"tab$Content\"><div id=\"htmleditor\" mwftype=\"itmleditor\"><div></div><div id=\"cke_editor6\" class=\"cke_443 cke cke_reset cke_chrome cke_editor_editor6 cke_ltr cke_browser_webkit\" dir=\"ltr\" lang=\"zh-cn\" role=\"application\"><div class=\"cke_inner cke_reset\" role=\"presentation\"><span id=\"cke_443_top\" class=\"cke_top cke_reset_all\" role=\"presentation\"><span id=\"cke_451\" class=\"cke_voice_label\">工具栏</span><span id=\"cke_443_toolbox\" class=\"cke_toolbox\" role=\"group\" aria-labelledby=\"cke_451\" onmousedown=\"return false;\"><span id=\"cke_456\" class=\"cke_toolbar\" aria-labelledby=\"cke_456_label\" role=\"toolbar\"><span id=\"cke_456_label\" class=\"cke_voice_label\">文档</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_457\" class=\"cke_button cke_button__source  cke_button_off\" href=\"javascript:void('源码')\" title=\"源码\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_457_label\" aria-haspopup=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(855,event);\" onfocus=\"return CKEDITOR.tools.callFunction(856,event);\" onclick=\"CKEDITOR.tools.callFunction(857,this);return false;\"><span class=\"cke_button_icon cke_button__source_icon\">&nbsp;</span><span id=\"cke_457_label\" class=\"cke_button_label cke_button__source_label\" aria-hidden=\"false\">源码</span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_458\" class=\"cke_button cke_button__save cke_button_disabled \" href=\"javascript:void('保存')\" title=\"保存\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_458_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(858,event);\" onfocus=\"return CKEDITOR.tools.callFunction(859,event);\" onclick=\"CKEDITOR.tools.callFunction(860,this);return false;\"><span class=\"cke_button_icon cke_button__save_icon\">&nbsp;</span><span id=\"cke_458_label\" class=\"cke_button_label cke_button__save_label\" aria-hidden=\"false\">保存</span></a><a id=\"cke_459\" class=\"cke_button cke_button__newpage cke_button_disabled \" href=\"javascript:void('新建')\" title=\"新建\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_459_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(861,event);\" onfocus=\"return CKEDITOR.tools.callFunction(862,event);\" onclick=\"CKEDITOR.tools.callFunction(863,this);return false;\"><span class=\"cke_button_icon cke_button__newpage_icon\">&nbsp;</span><span id=\"cke_459_label\" class=\"cke_button_label cke_button__newpage_label\" aria-hidden=\"false\">新建</span></a><a id=\"cke_460\" class=\"cke_button cke_button__preview  cke_button_off\" href=\"javascript:void('预览')\" title=\"预览\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_460_label\" aria-haspopup=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(864,event);\" onfocus=\"return CKEDITOR.tools.callFunction(865,event);\" onclick=\"CKEDITOR.tools.callFunction(866,this);return false;\"><span class=\"cke_button_icon cke_button__preview_icon\">&nbsp;</span><span id=\"cke_460_label\" class=\"cke_button_label cke_button__preview_label\" aria-hidden=\"false\">预览</span></a><a id=\"cke_461\" class=\"cke_button cke_button__print  cke_button_off\" href=\"javascript:void('打印')\" title=\"打印\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_461_label\" aria-haspopup=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(867,event);\" onfocus=\"return CKEDITOR.tools.callFunction(868,event);\" onclick=\"CKEDITOR.tools.callFunction(869,this);return false;\"><span class=\"cke_button_icon cke_button__print_icon\">&nbsp;</span><span id=\"cke_461_label\" class=\"cke_button_label cke_button__print_label\" aria-hidden=\"false\">打印</span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_462\" class=\"cke_button cke_button__templates cke_button_disabled \" href=\"javascript:void('模板')\" title=\"模板\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_462_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(870,event);\" onfocus=\"return CKEDITOR.tools.callFunction(871,event);\" onclick=\"CKEDITOR.tools.callFunction(872,this);return false;\"><span class=\"cke_button_icon cke_button__templates_icon\">&nbsp;</span><span id=\"cke_462_label\" class=\"cke_button_label cke_button__templates_label\" aria-hidden=\"false\">模板</span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_463\" class=\"cke_toolbar\" aria-labelledby=\"cke_463_label\" role=\"toolbar\"><span id=\"cke_463_label\" class=\"cke_voice_label\">剪贴板/撤销</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_464\" class=\"cke_button cke_button__cut cke_button_disabled \" href=\"javascript:void('剪切')\" title=\"剪切\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_464_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(873,event);\" onfocus=\"return CKEDITOR.tools.callFunction(874,event);\" onclick=\"CKEDITOR.tools.callFunction(875,this);return false;\"><span class=\"cke_button_icon cke_button__cut_icon\">&nbsp;</span><span id=\"cke_464_label\" class=\"cke_button_label cke_button__cut_label\" aria-hidden=\"false\">剪切</span></a><a id=\"cke_465\" class=\"cke_button cke_button__copy cke_button_disabled \" href=\"javascript:void('复制')\" title=\"复制\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_465_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(876,event);\" onfocus=\"return CKEDITOR.tools.callFunction(877,event);\" onclick=\"CKEDITOR.tools.callFunction(878,this);return false;\"><span class=\"cke_button_icon cke_button__copy_icon\">&nbsp;</span><span id=\"cke_465_label\" class=\"cke_button_label cke_button__copy_label\" aria-hidden=\"false\">复制</span></a><a id=\"cke_466\" class=\"cke_button cke_button__paste cke_button_disabled \" href=\"javascript:void('粘贴')\" title=\"粘贴\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_466_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(879,event);\" onfocus=\"return CKEDITOR.tools.callFunction(880,event);\" onclick=\"CKEDITOR.tools.callFunction(881,this);return false;\"><span class=\"cke_button_icon cke_button__paste_icon\">&nbsp;</span><span id=\"cke_466_label\" class=\"cke_button_label cke_button__paste_label\" aria-hidden=\"false\">粘贴</span></a><a id=\"cke_467\" class=\"cke_button cke_button__pastetext cke_button_disabled \" href=\"javascript:void('粘贴为无格式文本')\" title=\"粘贴为无格式文本\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_467_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(882,event);\" onfocus=\"return CKEDITOR.tools.callFunction(883,event);\" onclick=\"CKEDITOR.tools.callFunction(884,this);return false;\"><span class=\"cke_button_icon cke_button__pastetext_icon\">&nbsp;</span><span id=\"cke_467_label\" class=\"cke_button_label cke_button__pastetext_label\" aria-hidden=\"false\">粘贴为无格式文本</span></a><a id=\"cke_468\" class=\"cke_button cke_button__pastefromword cke_button_disabled \" href=\"javascript:void('从 MS Word 粘贴')\" title=\"从 MS Word 粘贴\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_468_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(885,event);\" onfocus=\"return CKEDITOR.tools.callFunction(886,event);\" onclick=\"CKEDITOR.tools.callFunction(887,this);return false;\"><span class=\"cke_button_icon cke_button__pastefromword_icon\">&nbsp;</span><span id=\"cke_468_label\" class=\"cke_button_label cke_button__pastefromword_label\" aria-hidden=\"false\">从 MS Word 粘贴</span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_469\" class=\"cke_button cke_button__undo cke_button_disabled \" href=\"javascript:void('撤消')\" title=\"撤消\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_469_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(888,event);\" onfocus=\"return CKEDITOR.tools.callFunction(889,event);\" onclick=\"CKEDITOR.tools.callFunction(890,this);return false;\"><span class=\"cke_button_icon cke_button__undo_icon\">&nbsp;</span><span id=\"cke_469_label\" class=\"cke_button_label cke_button__undo_label\" aria-hidden=\"false\">撤消</span></a><a id=\"cke_470\" class=\"cke_button cke_button__redo cke_button_disabled \" href=\"javascript:void('重做')\" title=\"重做\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_470_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(891,event);\" onfocus=\"return CKEDITOR.tools.callFunction(892,event);\" onclick=\"CKEDITOR.tools.callFunction(893,this);return false;\"><span class=\"cke_button_icon cke_button__redo_icon\">&nbsp;</span><span id=\"cke_470_label\" class=\"cke_button_label cke_button__redo_label\" aria-hidden=\"false\">重做</span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_471\" class=\"cke_toolbar\" aria-labelledby=\"cke_471_label\" role=\"toolbar\"><span id=\"cke_471_label\" class=\"cke_voice_label\">编辑</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_472\" class=\"cke_button cke_button__find  cke_button_off\" href=\"javascript:void('查找')\" title=\"查找\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_472_label\" aria-haspopup=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(894,event);\" onfocus=\"return CKEDITOR.tools.callFunction(895,event);\" onclick=\"CKEDITOR.tools.callFunction(896,this);return false;\"><span class=\"cke_button_icon cke_button__find_icon\">&nbsp;</span><span id=\"cke_472_label\" class=\"cke_button_label cke_button__find_label\" aria-hidden=\"false\">查找</span></a><a id=\"cke_473\" class=\"cke_button cke_button__replace cke_button_disabled \" href=\"javascript:void('替换')\" title=\"替换\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_473_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(897,event);\" onfocus=\"return CKEDITOR.tools.callFunction(898,event);\" onclick=\"CKEDITOR.tools.callFunction(899,this);return false;\"><span class=\"cke_button_icon cke_button__replace_icon\">&nbsp;</span><span id=\"cke_473_label\" class=\"cke_button_label cke_button__replace_label\" aria-hidden=\"false\">替换</span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_474\" class=\"cke_button cke_button__selectall cke_button_disabled \" href=\"javascript:void('全选')\" title=\"全选\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_474_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(900,event);\" onfocus=\"return CKEDITOR.tools.callFunction(901,event);\" onclick=\"CKEDITOR.tools.callFunction(902,this);return false;\"><span class=\"cke_button_icon cke_button__selectall_icon\">&nbsp;</span><span id=\"cke_474_label\" class=\"cke_button_label cke_button__selectall_label\" aria-hidden=\"false\">全选</span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_475\" class=\"cke_button cke_button__scayt  cke_button_disabled\" href=\"javascript:void('拼写检查')\" title=\"拼写检查\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_475_label\" aria-haspopup=\"true\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(903,event);\" onfocus=\"return CKEDITOR.tools.callFunction(904,event);\" onclick=\"CKEDITOR.tools.callFunction(905,this);return false;\"><span class=\"cke_button_icon cke_button__scayt_icon\">&nbsp;</span><span id=\"cke_475_label\" class=\"cke_button_label cke_button__scayt_label\" aria-hidden=\"false\">即时拼写检查</span><span class=\"cke_button_arrow\"></span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_476\" class=\"cke_toolbar\" aria-labelledby=\"cke_476_label\" role=\"toolbar\"><span id=\"cke_476_label\" class=\"cke_voice_label\">表单</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_477\" class=\"cke_button cke_button__form cke_button_disabled \" href=\"javascript:void('表单')\" title=\"表单\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_477_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(906,event);\" onfocus=\"return CKEDITOR.tools.callFunction(907,event);\" onclick=\"CKEDITOR.tools.callFunction(908,this);return false;\"><span class=\"cke_button_icon cke_button__form_icon\">&nbsp;</span><span id=\"cke_477_label\" class=\"cke_button_label cke_button__form_label\" aria-hidden=\"false\">表单</span></a><a id=\"cke_478\" class=\"cke_button cke_button__checkbox cke_button_disabled \" href=\"javascript:void('复选框')\" title=\"复选框\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_478_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(909,event);\" onfocus=\"return CKEDITOR.tools.callFunction(910,event);\" onclick=\"CKEDITOR.tools.callFunction(911,this);return false;\"><span class=\"cke_button_icon cke_button__checkbox_icon\">&nbsp;</span><span id=\"cke_478_label\" class=\"cke_button_label cke_button__checkbox_label\" aria-hidden=\"false\">复选框</span></a><a id=\"cke_479\" class=\"cke_button cke_button__radio cke_button_disabled \" href=\"javascript:void('单选按钮')\" title=\"单选按钮\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_479_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(912,event);\" onfocus=\"return CKEDITOR.tools.callFunction(913,event);\" onclick=\"CKEDITOR.tools.callFunction(914,this);return false;\"><span class=\"cke_button_icon cke_button__radio_icon\">&nbsp;</span><span id=\"cke_479_label\" class=\"cke_button_label cke_button__radio_label\" aria-hidden=\"false\">单选按钮</span></a><a id=\"cke_480\" class=\"cke_button cke_button__textfield cke_button_disabled \" href=\"javascript:void('单行文本')\" title=\"单行文本\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_480_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(915,event);\" onfocus=\"return CKEDITOR.tools.callFunction(916,event);\" onclick=\"CKEDITOR.tools.callFunction(917,this);return false;\"><span class=\"cke_button_icon cke_button__textfield_icon\">&nbsp;</span><span id=\"cke_480_label\" class=\"cke_button_label cke_button__textfield_label\" aria-hidden=\"false\">单行文本</span></a><a id=\"cke_481\" class=\"cke_button cke_button__textarea cke_button_disabled \" href=\"javascript:void('多行文本')\" title=\"多行文本\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_481_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(918,event);\" onfocus=\"return CKEDITOR.tools.callFunction(919,event);\" onclick=\"CKEDITOR.tools.callFunction(920,this);return false;\"><span class=\"cke_button_icon cke_button__textarea_icon\">&nbsp;</span><span id=\"cke_481_label\" class=\"cke_button_label cke_button__textarea_label\" aria-hidden=\"false\">多行文本</span></a><a id=\"cke_482\" class=\"cke_button cke_button__select cke_button_disabled \" href=\"javascript:void('列表/菜单')\" title=\"列表/菜单\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_482_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(921,event);\" onfocus=\"return CKEDITOR.tools.callFunction(922,event);\" onclick=\"CKEDITOR.tools.callFunction(923,this);return false;\"><span class=\"cke_button_icon cke_button__select_icon\">&nbsp;</span><span id=\"cke_482_label\" class=\"cke_button_label cke_button__select_label\" aria-hidden=\"false\">列表/菜单</span></a><a id=\"cke_483\" class=\"cke_button cke_button__button cke_button_disabled \" href=\"javascript:void('按钮')\" title=\"按钮\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_483_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(924,event);\" onfocus=\"return CKEDITOR.tools.callFunction(925,event);\" onclick=\"CKEDITOR.tools.callFunction(926,this);return false;\"><span class=\"cke_button_icon cke_button__button_icon\">&nbsp;</span><span id=\"cke_483_label\" class=\"cke_button_label cke_button__button_label\" aria-hidden=\"false\">按钮</span></a><a id=\"cke_484\" class=\"cke_button cke_button__imagebutton cke_button_disabled \" href=\"javascript:void('图像按钮')\" title=\"图像按钮\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_484_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(927,event);\" onfocus=\"return CKEDITOR.tools.callFunction(928,event);\" onclick=\"CKEDITOR.tools.callFunction(929,this);return false;\"><span class=\"cke_button_icon cke_button__imagebutton_icon\">&nbsp;</span><span id=\"cke_484_label\" class=\"cke_button_label cke_button__imagebutton_label\" aria-hidden=\"false\">图像按钮</span></a><a id=\"cke_485\" class=\"cke_button cke_button__hiddenfield cke_button_disabled \" href=\"javascript:void('隐藏域')\" title=\"隐藏域\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_485_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(930,event);\" onfocus=\"return CKEDITOR.tools.callFunction(931,event);\" onclick=\"CKEDITOR.tools.callFunction(932,this);return false;\"><span class=\"cke_button_icon cke_button__hiddenfield_icon\">&nbsp;</span><span id=\"cke_485_label\" class=\"cke_button_label cke_button__hiddenfield_label\" aria-hidden=\"false\">隐藏域</span></a></span><span class=\"cke_toolbar_end\"></span></span><span class=\"cke_toolbar_break\"></span><span id=\"cke_486\" class=\"cke_toolbar\" aria-labelledby=\"cke_486_label\" role=\"toolbar\"><span id=\"cke_486_label\" class=\"cke_voice_label\">基本格式</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_487\" class=\"cke_button cke_button__bold cke_button_disabled \" href=\"javascript:void('加粗')\" title=\"加粗\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_487_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(933,event);\" onfocus=\"return CKEDITOR.tools.callFunction(934,event);\" onclick=\"CKEDITOR.tools.callFunction(935,this);return false;\"><span class=\"cke_button_icon cke_button__bold_icon\">&nbsp;</span><span id=\"cke_487_label\" class=\"cke_button_label cke_button__bold_label\" aria-hidden=\"false\">加粗</span></a><a id=\"cke_488\" class=\"cke_button cke_button__italic cke_button_disabled \" href=\"javascript:void('倾斜')\" title=\"倾斜\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_488_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(936,event);\" onfocus=\"return CKEDITOR.tools.callFunction(937,event);\" onclick=\"CKEDITOR.tools.callFunction(938,this);return false;\"><span class=\"cke_button_icon cke_button__italic_icon\">&nbsp;</span><span id=\"cke_488_label\" class=\"cke_button_label cke_button__italic_label\" aria-hidden=\"false\">倾斜</span></a><a id=\"cke_489\" class=\"cke_button cke_button__underline cke_button_disabled \" href=\"javascript:void('下划线')\" title=\"下划线\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_489_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(939,event);\" onfocus=\"return CKEDITOR.tools.callFunction(940,event);\" onclick=\"CKEDITOR.tools.callFunction(941,this);return false;\"><span class=\"cke_button_icon cke_button__underline_icon\">&nbsp;</span><span id=\"cke_489_label\" class=\"cke_button_label cke_button__underline_label\" aria-hidden=\"false\">下划线</span></a><a id=\"cke_490\" class=\"cke_button cke_button__strike cke_button_disabled \" href=\"javascript:void('删除线')\" title=\"删除线\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_490_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(942,event);\" onfocus=\"return CKEDITOR.tools.callFunction(943,event);\" onclick=\"CKEDITOR.tools.callFunction(944,this);return false;\"><span class=\"cke_button_icon cke_button__strike_icon\">&nbsp;</span><span id=\"cke_490_label\" class=\"cke_button_label cke_button__strike_label\" aria-hidden=\"false\">删除线</span></a><a id=\"cke_491\" class=\"cke_button cke_button__subscript cke_button_disabled \" href=\"javascript:void('下标')\" title=\"下标\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_491_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(945,event);\" onfocus=\"return CKEDITOR.tools.callFunction(946,event);\" onclick=\"CKEDITOR.tools.callFunction(947,this);return false;\"><span class=\"cke_button_icon cke_button__subscript_icon\">&nbsp;</span><span id=\"cke_491_label\" class=\"cke_button_label cke_button__subscript_label\" aria-hidden=\"false\">下标</span></a><a id=\"cke_492\" class=\"cke_button cke_button__superscript cke_button_disabled \" href=\"javascript:void('上标')\" title=\"上标\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_492_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(948,event);\" onfocus=\"return CKEDITOR.tools.callFunction(949,event);\" onclick=\"CKEDITOR.tools.callFunction(950,this);return false;\"><span class=\"cke_button_icon cke_button__superscript_icon\">&nbsp;</span><span id=\"cke_492_label\" class=\"cke_button_label cke_button__superscript_label\" aria-hidden=\"false\">上标</span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_493\" class=\"cke_button cke_button__removeformat cke_button_disabled \" href=\"javascript:void('清除格式')\" title=\"清除格式\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_493_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(951,event);\" onfocus=\"return CKEDITOR.tools.callFunction(952,event);\" onclick=\"CKEDITOR.tools.callFunction(953,this);return false;\"><span class=\"cke_button_icon cke_button__removeformat_icon\">&nbsp;</span><span id=\"cke_493_label\" class=\"cke_button_label cke_button__removeformat_label\" aria-hidden=\"false\">清除格式</span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_494\" class=\"cke_toolbar\" aria-labelledby=\"cke_494_label\" role=\"toolbar\"><span id=\"cke_494_label\" class=\"cke_voice_label\">段落</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_495\" class=\"cke_button cke_button__numberedlist cke_button_disabled \" href=\"javascript:void('编号列表')\" title=\"编号列表\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_495_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(954,event);\" onfocus=\"return CKEDITOR.tools.callFunction(955,event);\" onclick=\"CKEDITOR.tools.callFunction(956,this);return false;\"><span class=\"cke_button_icon cke_button__numberedlist_icon\">&nbsp;</span><span id=\"cke_495_label\" class=\"cke_button_label cke_button__numberedlist_label\" aria-hidden=\"false\">编号列表</span></a><a id=\"cke_496\" class=\"cke_button cke_button__bulletedlist cke_button_disabled \" href=\"javascript:void('项目列表')\" title=\"项目列表\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_496_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(957,event);\" onfocus=\"return CKEDITOR.tools.callFunction(958,event);\" onclick=\"CKEDITOR.tools.callFunction(959,this);return false;\"><span class=\"cke_button_icon cke_button__bulletedlist_icon\">&nbsp;</span><span id=\"cke_496_label\" class=\"cke_button_label cke_button__bulletedlist_label\" aria-hidden=\"false\">项目列表</span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_497\" class=\"cke_button cke_button__outdent cke_button_disabled \" href=\"javascript:void('减少缩进量')\" title=\"减少缩进量\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_497_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(960,event);\" onfocus=\"return CKEDITOR.tools.callFunction(961,event);\" onclick=\"CKEDITOR.tools.callFunction(962,this);return false;\"><span class=\"cke_button_icon cke_button__outdent_icon\">&nbsp;</span><span id=\"cke_497_label\" class=\"cke_button_label cke_button__outdent_label\" aria-hidden=\"false\">减少缩进量</span></a><a id=\"cke_498\" class=\"cke_button cke_button__indent cke_button_disabled \" href=\"javascript:void('增加缩进量')\" title=\"增加缩进量\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_498_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(963,event);\" onfocus=\"return CKEDITOR.tools.callFunction(964,event);\" onclick=\"CKEDITOR.tools.callFunction(965,this);return false;\"><span class=\"cke_button_icon cke_button__indent_icon\">&nbsp;</span><span id=\"cke_498_label\" class=\"cke_button_label cke_button__indent_label\" aria-hidden=\"false\">增加缩进量</span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_499\" class=\"cke_button cke_button__blockquote cke_button_disabled \" href=\"javascript:void('块引用')\" title=\"块引用\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_499_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(966,event);\" onfocus=\"return CKEDITOR.tools.callFunction(967,event);\" onclick=\"CKEDITOR.tools.callFunction(968,this);return false;\"><span class=\"cke_button_icon cke_button__blockquote_icon\">&nbsp;</span><span id=\"cke_499_label\" class=\"cke_button_label cke_button__blockquote_label\" aria-hidden=\"false\">块引用</span></a><a id=\"cke_500\" class=\"cke_button cke_button__creatediv cke_button_disabled \" href=\"javascript:void('创建 DIV 容器')\" title=\"创建 DIV 容器\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_500_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(969,event);\" onfocus=\"return CKEDITOR.tools.callFunction(970,event);\" onclick=\"CKEDITOR.tools.callFunction(971,this);return false;\"><span class=\"cke_button_icon cke_button__creatediv_icon\">&nbsp;</span><span id=\"cke_500_label\" class=\"cke_button_label cke_button__creatediv_label\" aria-hidden=\"false\">创建 DIV 容器</span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_501\" class=\"cke_button cke_button__justifyleft cke_button_disabled \" href=\"javascript:void('左对齐')\" title=\"左对齐\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_501_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(972,event);\" onfocus=\"return CKEDITOR.tools.callFunction(973,event);\" onclick=\"CKEDITOR.tools.callFunction(974,this);return false;\"><span class=\"cke_button_icon cke_button__justifyleft_icon\">&nbsp;</span><span id=\"cke_501_label\" class=\"cke_button_label cke_button__justifyleft_label\" aria-hidden=\"false\">左对齐</span></a><a id=\"cke_502\" class=\"cke_button cke_button__justifycenter cke_button_disabled \" href=\"javascript:void('居中')\" title=\"居中\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_502_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(975,event);\" onfocus=\"return CKEDITOR.tools.callFunction(976,event);\" onclick=\"CKEDITOR.tools.callFunction(977,this);return false;\"><span class=\"cke_button_icon cke_button__justifycenter_icon\">&nbsp;</span><span id=\"cke_502_label\" class=\"cke_button_label cke_button__justifycenter_label\" aria-hidden=\"false\">居中</span></a><a id=\"cke_503\" class=\"cke_button cke_button__justifyright cke_button_disabled \" href=\"javascript:void('右对齐')\" title=\"右对齐\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_503_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(978,event);\" onfocus=\"return CKEDITOR.tools.callFunction(979,event);\" onclick=\"CKEDITOR.tools.callFunction(980,this);return false;\"><span class=\"cke_button_icon cke_button__justifyright_icon\">&nbsp;</span><span id=\"cke_503_label\" class=\"cke_button_label cke_button__justifyright_label\" aria-hidden=\"false\">右对齐</span></a><a id=\"cke_504\" class=\"cke_button cke_button__justifyblock cke_button_disabled \" href=\"javascript:void('两端对齐')\" title=\"两端对齐\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_504_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(981,event);\" onfocus=\"return CKEDITOR.tools.callFunction(982,event);\" onclick=\"CKEDITOR.tools.callFunction(983,this);return false;\"><span class=\"cke_button_icon cke_button__justifyblock_icon\">&nbsp;</span><span id=\"cke_504_label\" class=\"cke_button_label cke_button__justifyblock_label\" aria-hidden=\"false\">两端对齐</span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_505\" class=\"cke_button cke_button__bidiltr cke_button_disabled \" href=\"javascript:void('文字方向为从左至右')\" title=\"文字方向为从左至右\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_505_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(984,event);\" onfocus=\"return CKEDITOR.tools.callFunction(985,event);\" onclick=\"CKEDITOR.tools.callFunction(986,this);return false;\"><span class=\"cke_button_icon cke_button__bidiltr_icon\">&nbsp;</span><span id=\"cke_505_label\" class=\"cke_button_label cke_button__bidiltr_label\" aria-hidden=\"false\">文字方向为从左至右</span></a><a id=\"cke_506\" class=\"cke_button cke_button__bidirtl cke_button_disabled \" href=\"javascript:void('文字方向为从右至左')\" title=\"文字方向为从右至左\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_506_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(987,event);\" onfocus=\"return CKEDITOR.tools.callFunction(988,event);\" onclick=\"CKEDITOR.tools.callFunction(989,this);return false;\"><span class=\"cke_button_icon cke_button__bidirtl_icon\">&nbsp;</span><span id=\"cke_506_label\" class=\"cke_button_label cke_button__bidirtl_label\" aria-hidden=\"false\">文字方向为从右至左</span></a><a id=\"cke_507\" class=\"cke_button cke_button__language cke_button_disabled \" href=\"javascript:void('设置语言')\" title=\"设置语言\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_507_label\" aria-haspopup=\"true\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(990,event);\" onfocus=\"return CKEDITOR.tools.callFunction(991,event);\" onclick=\"CKEDITOR.tools.callFunction(992,this);return false;\"><span class=\"cke_button_icon cke_button__language_icon\">&nbsp;</span><span id=\"cke_507_label\" class=\"cke_button_label cke_button__language_label\" aria-hidden=\"false\">设置语言</span><span class=\"cke_button_arrow\"></span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_508\" class=\"cke_toolbar\" aria-labelledby=\"cke_508_label\" role=\"toolbar\"><span id=\"cke_508_label\" class=\"cke_voice_label\">链接</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_509\" class=\"cke_button cke_button__link cke_button_disabled \" href=\"javascript:void('插入/编辑超链接')\" title=\"插入/编辑超链接\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_509_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(993,event);\" onfocus=\"return CKEDITOR.tools.callFunction(994,event);\" onclick=\"CKEDITOR.tools.callFunction(995,this);return false;\"><span class=\"cke_button_icon cke_button__link_icon\">&nbsp;</span><span id=\"cke_509_label\" class=\"cke_button_label cke_button__link_label\" aria-hidden=\"false\">插入/编辑超链接</span></a><a id=\"cke_510\" class=\"cke_button cke_button__unlink cke_button_disabled \" href=\"javascript:void('取消超链接')\" title=\"取消超链接\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_510_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(996,event);\" onfocus=\"return CKEDITOR.tools.callFunction(997,event);\" onclick=\"CKEDITOR.tools.callFunction(998,this);return false;\"><span class=\"cke_button_icon cke_button__unlink_icon\">&nbsp;</span><span id=\"cke_510_label\" class=\"cke_button_label cke_button__unlink_label\" aria-hidden=\"false\">取消超链接</span></a><a id=\"cke_511\" class=\"cke_button cke_button__anchor cke_button_disabled \" href=\"javascript:void('插入/编辑锚点链接')\" title=\"插入/编辑锚点链接\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_511_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(999,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1000,event);\" onclick=\"CKEDITOR.tools.callFunction(1001,this);return false;\"><span class=\"cke_button_icon cke_button__anchor_icon\">&nbsp;</span><span id=\"cke_511_label\" class=\"cke_button_label cke_button__anchor_label\" aria-hidden=\"false\">插入/编辑锚点链接</span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_512\" class=\"cke_toolbar\" aria-labelledby=\"cke_512_label\" role=\"toolbar\"><span id=\"cke_512_label\" class=\"cke_voice_label\">插入</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_513\" class=\"cke_button cke_button__image cke_button_disabled \" href=\"javascript:void('图像')\" title=\"图像\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_513_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1002,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1003,event);\" onclick=\"CKEDITOR.tools.callFunction(1004,this);return false;\"><span class=\"cke_button_icon cke_button__image_icon\">&nbsp;</span><span id=\"cke_513_label\" class=\"cke_button_label cke_button__image_label\" aria-hidden=\"false\">图像</span></a><a id=\"cke_514\" class=\"cke_button cke_button__flash cke_button_disabled \" href=\"javascript:void('Flash')\" title=\"Flash\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_514_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1005,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1006,event);\" onclick=\"CKEDITOR.tools.callFunction(1007,this);return false;\"><span class=\"cke_button_icon cke_button__flash_icon\">&nbsp;</span><span id=\"cke_514_label\" class=\"cke_button_label cke_button__flash_label\" aria-hidden=\"false\">Flash</span></a><a id=\"cke_515\" class=\"cke_button cke_button__table cke_button_disabled \" href=\"javascript:void('表格')\" title=\"表格\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_515_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1008,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1009,event);\" onclick=\"CKEDITOR.tools.callFunction(1010,this);return false;\"><span class=\"cke_button_icon cke_button__table_icon\">&nbsp;</span><span id=\"cke_515_label\" class=\"cke_button_label cke_button__table_label\" aria-hidden=\"false\">表格</span></a><a id=\"cke_516\" class=\"cke_button cke_button__horizontalrule cke_button_disabled \" href=\"javascript:void('插入水平线')\" title=\"插入水平线\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_516_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1011,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1012,event);\" onclick=\"CKEDITOR.tools.callFunction(1013,this);return false;\"><span class=\"cke_button_icon cke_button__horizontalrule_icon\">&nbsp;</span><span id=\"cke_516_label\" class=\"cke_button_label cke_button__horizontalrule_label\" aria-hidden=\"false\">插入水平线</span></a><a id=\"cke_517\" class=\"cke_button cke_button__smiley cke_button_disabled \" href=\"javascript:void('表情符')\" title=\"表情符\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_517_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1014,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1015,event);\" onclick=\"CKEDITOR.tools.callFunction(1016,this);return false;\"><span class=\"cke_button_icon cke_button__smiley_icon\">&nbsp;</span><span id=\"cke_517_label\" class=\"cke_button_label cke_button__smiley_label\" aria-hidden=\"false\">表情符</span></a><a id=\"cke_518\" class=\"cke_button cke_button__specialchar cke_button_disabled \" href=\"javascript:void('插入特殊符号')\" title=\"插入特殊符号\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_518_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1017,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1018,event);\" onclick=\"CKEDITOR.tools.callFunction(1019,this);return false;\"><span class=\"cke_button_icon cke_button__specialchar_icon\">&nbsp;</span><span id=\"cke_518_label\" class=\"cke_button_label cke_button__specialchar_label\" aria-hidden=\"false\">插入特殊符号</span></a><a id=\"cke_519\" class=\"cke_button cke_button__pagebreak cke_button_disabled \" href=\"javascript:void('插入打印分页符')\" title=\"插入打印分页符\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_519_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1020,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1021,event);\" onclick=\"CKEDITOR.tools.callFunction(1022,this);return false;\"><span class=\"cke_button_icon cke_button__pagebreak_icon\">&nbsp;</span><span id=\"cke_519_label\" class=\"cke_button_label cke_button__pagebreak_label\" aria-hidden=\"false\">插入打印分页符</span></a><a id=\"cke_520\" class=\"cke_button cke_button__iframe cke_button_disabled \" href=\"javascript:void('IFrame')\" title=\"IFrame\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_520_label\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1023,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1024,event);\" onclick=\"CKEDITOR.tools.callFunction(1025,this);return false;\"><span class=\"cke_button_icon cke_button__iframe_icon\">&nbsp;</span><span id=\"cke_520_label\" class=\"cke_button_label cke_button__iframe_label\" aria-hidden=\"false\">IFrame</span></a></span><span class=\"cke_toolbar_end\"></span></span><span class=\"cke_toolbar_break\"></span><span id=\"cke_521\" class=\"cke_toolbar\" aria-labelledby=\"cke_521_label\" role=\"toolbar\"><span id=\"cke_521_label\" class=\"cke_voice_label\">样式</span><span class=\"cke_toolbar_start\"></span><span id=\"cke_452\" class=\"cke_combo cke_combo__styles  cke_combo_disabled\" role=\"presentation\" aria-disabled=\"true\"><span id=\"cke_452_label\" class=\"cke_combo_label\">样式</span><a class=\"cke_combo_button\" title=\"样式\" tabindex=\"-1\" href=\"javascript:void('样式')\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_452_label\" aria-haspopup=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1027,event,this);\" onfocus=\"return CKEDITOR.tools.callFunction(1028,event);\" onclick=\"CKEDITOR.tools.callFunction(1026,this);return false;\"><span id=\"cke_452_text\" class=\"cke_combo_text cke_combo_inlinelabel\">样式</span><span class=\"cke_combo_open\"><span class=\"cke_combo_arrow\"></span></span></a></span><span id=\"cke_453\" class=\"cke_combo cke_combo__format  cke_combo_disabled\" role=\"presentation\" aria-disabled=\"true\"><span id=\"cke_453_label\" class=\"cke_combo_label\">格式</span><a class=\"cke_combo_button\" title=\"格式\" tabindex=\"-1\" href=\"javascript:void('格式')\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_453_label\" aria-haspopup=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1030,event,this);\" onfocus=\"return CKEDITOR.tools.callFunction(1031,event);\" onclick=\"CKEDITOR.tools.callFunction(1029,this);return false;\"><span id=\"cke_453_text\" class=\"cke_combo_text cke_combo_inlinelabel\">格式</span><span class=\"cke_combo_open\"><span class=\"cke_combo_arrow\"></span></span></a></span><span id=\"cke_454\" class=\"cke_combo cke_combo__font  cke_combo_disabled\" role=\"presentation\" aria-disabled=\"true\"><span id=\"cke_454_label\" class=\"cke_combo_label\">字体</span><a class=\"cke_combo_button\" title=\"字体\" tabindex=\"-1\" href=\"javascript:void('字体')\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_454_label\" aria-haspopup=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1033,event,this);\" onfocus=\"return CKEDITOR.tools.callFunction(1034,event);\" onclick=\"CKEDITOR.tools.callFunction(1032,this);return false;\"><span id=\"cke_454_text\" class=\"cke_combo_text cke_combo_inlinelabel\">字体</span><span class=\"cke_combo_open\"><span class=\"cke_combo_arrow\"></span></span></a></span><span id=\"cke_455\" class=\"cke_combo cke_combo__fontsize  cke_combo_disabled\" role=\"presentation\" aria-disabled=\"true\"><span id=\"cke_455_label\" class=\"cke_combo_label\">大小</span><a class=\"cke_combo_button\" title=\"大小\" tabindex=\"-1\" href=\"javascript:void('大小')\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_455_label\" aria-haspopup=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1036,event,this);\" onfocus=\"return CKEDITOR.tools.callFunction(1037,event);\" onclick=\"CKEDITOR.tools.callFunction(1035,this);return false;\"><span id=\"cke_455_text\" class=\"cke_combo_text cke_combo_inlinelabel\">大小</span><span class=\"cke_combo_open\"><span class=\"cke_combo_arrow\"></span></span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_522\" class=\"cke_toolbar\" aria-labelledby=\"cke_522_label\" role=\"toolbar\"><span id=\"cke_522_label\" class=\"cke_voice_label\">颜色</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_523\" class=\"cke_button cke_button__textcolor  cke_button_disabled\" href=\"javascript:void('文本颜色')\" title=\"文本颜色\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_523_label\" aria-haspopup=\"true\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1038,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1039,event);\" onclick=\"CKEDITOR.tools.callFunction(1040,this);return false;\"><span class=\"cke_button_icon cke_button__textcolor_icon\">&nbsp;</span><span id=\"cke_523_label\" class=\"cke_button_label cke_button__textcolor_label\" aria-hidden=\"false\">文本颜色</span><span class=\"cke_button_arrow\"></span></a><a id=\"cke_524\" class=\"cke_button cke_button__bgcolor  cke_button_disabled\" href=\"javascript:void('背景颜色')\" title=\"背景颜色\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_524_label\" aria-haspopup=\"true\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1041,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1042,event);\" onclick=\"CKEDITOR.tools.callFunction(1043,this);return false;\"><span class=\"cke_button_icon cke_button__bgcolor_icon\">&nbsp;</span><span id=\"cke_524_label\" class=\"cke_button_label cke_button__bgcolor_label\" aria-hidden=\"false\">背景颜色</span><span class=\"cke_button_arrow\"></span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_525\" class=\"cke_toolbar\" aria-labelledby=\"cke_525_label\" role=\"toolbar\"><span id=\"cke_525_label\" class=\"cke_voice_label\">工具</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_526\" class=\"cke_button cke_button__maximize  cke_button_off\" href=\"javascript:void('全屏')\" title=\"全屏\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_526_label\" aria-haspopup=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(1044,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1045,event);\" onclick=\"CKEDITOR.tools.callFunction(1046,this);return false;\"><span class=\"cke_button_icon cke_button__maximize_icon\">&nbsp;</span><span id=\"cke_526_label\" class=\"cke_button_label cke_button__maximize_label\" aria-hidden=\"false\">全屏</span></a><a id=\"cke_527\" class=\"cke_button cke_button__showblocks  cke_button_off\" href=\"javascript:void('显示区块')\" title=\"显示区块\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_527_label\" aria-haspopup=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(1047,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1048,event);\" onclick=\"CKEDITOR.tools.callFunction(1049,this);return false;\"><span class=\"cke_button_icon cke_button__showblocks_icon\">&nbsp;</span><span id=\"cke_527_label\" class=\"cke_button_label cke_button__showblocks_label\" aria-hidden=\"false\">显示区块</span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_528\" class=\"cke_toolbar\" aria-labelledby=\"cke_528_label\" role=\"toolbar\"><span id=\"cke_528_label\" class=\"cke_voice_label\">about</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_529\" class=\"cke_button cke_button__about  cke_button_off\" href=\"javascript:void('关于 CKEditor')\" title=\"关于 CKEditor\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_529_label\" aria-haspopup=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(1050,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1051,event);\" onclick=\"CKEDITOR.tools.callFunction(1052,this);return false;\"><span class=\"cke_button_icon cke_button__about_icon\">&nbsp;</span><span id=\"cke_529_label\" class=\"cke_button_label cke_button__about_label\" aria-hidden=\"false\">关于 CKEditor</span></a></span><span class=\"cke_toolbar_end\"></span></span></span></span><div id=\"cke_443_contents\" class=\"cke_contents cke_reset\" role=\"presentation\"><span id=\"cke_533\" class=\"cke_voice_label\">按 ALT+0 获得帮助</span><iframe src=\"\" frameborder=\"0\" class=\"cke_wysiwyg_frame cke_reset\" aria-describedby=\"cke_533\" tabindex=\"0\" allowtransparency=\"true\"></iframe></div><span id=\"cke_443_bottom\" class=\"cke_bottom cke_reset_all\" role=\"presentation\"><span id=\"cke_443_resizer\" class=\"cke_resizer cke_resizer_vertical cke_resizer_ltr\" title=\"拖拽以改变大小\" onmousedown=\"CKEDITOR.tools.callFunction(853, event)\">◢</span><span id=\"cke_443_path_label\" class=\"cke_voice_label\">元素路径</span><span id=\"cke_443_path\" class=\"cke_path\" role=\"group\" aria-labelledby=\"cke_443_path_label\"><span class=\"cke_path_empty\">&nbsp;</span></span></span></div></div></div><div id=\"attachment\" mwftype=\"itmleditor\"><div><div><div><div><div title=\"上传\"><div></div></div><div title=\"删除\"><div></div></div><div title=\"替换\"><div></div></div><div></div><div title=\"下载\"><div></div></div></div></div><div><div><div title=\"列表\"><div></div></div><div title=\"图标\"><div></div></div><div title=\"预览\"><div></div></div></div></div><div><div><div title=\"简洁模式\"><div></div></div></div></div></div><div><div></div></div><div><div></div></div></div></div></div></div><div><div id=\"tab_tab$Content_2\" mwftype=\"tab$Content\"><div id=\"log\" mwftype=\"log\"><div><div></div><div>LOG</div></div></div></div></div><div><div id=\"tab_tab$Content_3\" mwftype=\"tab$Content\"><div id=\"monitor\" mwftype=\"log\"><div><div></div><div>Monitor</div></div></div></div></div></div></div><div id=\"actionbar_1\" mwftype=\"actionbar\"><div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/close.png\" title=\"关闭工作\" mwfbuttonaction=\"closeWork\" mwfbuttontext=\"关闭\"><span><img src=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/close.png\"></span><span>关闭</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/save.png\" title=\"保存工作\" mwfbuttonaction=\"saveWork\" mwfbuttontext=\"保存\"><span><img src=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/save.png\"></span><span>保存</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/submit.png\" title=\"继续流转文件\" mwfbuttonaction=\"processWork\" mwfbuttontext=\"继续流转\"><span><img src=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/submit.png\"></span><span>继续流转</span></div><div mwfnodetype=\"MWFToolBarMenu\" mwfbuttonimage=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/tool.png\" title=\"管理工具\" mwfbuttonaction=\"\" mwfbuttontext=\"工具\"><div mwfnodetype=\"MWFToolBarMenuItem\" mwfbuttonimage=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/reroute.png\" title=\"调度\" mwfbuttonaction=\"rerouteWork\" mwfbuttontext=\"调度\"></div><div mwfnodetype=\"MWFToolBarMenuItem\" mwfbuttonimage=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/reset.png\" title=\"重置处理人\" mwfbuttonaction=\"resetWork\" mwfbuttontext=\"重置处理人\"></div><div mwfnodetype=\"MWFToolBarMenuItem\" mwfbuttonimage=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/monitor.png\" title=\"流程监控\" mwfbuttonaction=\"monitorWork\" mwfbuttontext=\"流程监控\"></div><div mwfnodetype=\"MWFToolBarMenuLine\" mwfbuttonimage=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/\" title=\"\" mwfbuttonaction=\"\" mwfbuttontext=\"\"></div><div mwfnodetype=\"MWFToolBarMenuItem\" mwfbuttonimage=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/del.png\" title=\"删除文件\" mwfbuttonaction=\"deleteWork\" mwfbuttontext=\"删除文件\"></div><span><img src=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/tool.png\"></span><span>工具</span><div><img src=\"/x_desktop/res/mwf4/package/widget/$Toolbar/form/downicon.gif\"></div></div><div mwfnodetype=\"MWFToolBarSeparator\" mwfbuttonimage=\"/x_component_process_FormDesigner/Module/Actionbar/default/tools/\" title=\"\" mwfbuttonaction=\"\" mwfbuttontext=\"\"></div></div></div></div></div>",
+    "id": "",
+    "isNewForm": true
+  },
+  "mobileData": {
+    "json": {
+      "id": "",
+      "name": "新建表单",
+      "type": "Form",
+      "mode": "Mobile",
+      "description": "",
+      "application": "",
+      "applicationName": "",
+
+      "styles": {},
+      "properties": {},
+      "cssLinks": [],
+      "scriptSrc": [],
+      "jsheader": {
+        "code": "",
+        "html": ""
+      },
+
+      "events": {
+        "help": {
+          "code": "",
+          "html": ""
+        },
+        "load": {
+          "code": "",
+          "html": ""
+        },
+        "unload": {
+          "code": "",
+          "html": ""
+        },
+        "click": {
+          "code": "",
+          "html": ""
+        },
+        "dblclick": {
+          "code": "",
+          "html": ""
+        },
+        "keydown": {
+          "code": "",
+          "html": ""
+        },
+        "keypress": {
+          "code": "",
+          "html": ""
+        },
+        "keyup": {
+          "code": "",
+          "html": ""
+        },
+
+        "mousedown": {
+          "code": "",
+          "html": ""
+        },
+        "mousemove": {
+          "code": "",
+          "html": ""
+        },
+        "mouseout": {
+          "code": "",
+          "html": ""
+        },
+        "mouseover": {
+          "code": "",
+          "html": ""
+        },
+        "mouseup": {
+          "code": "",
+          "html": ""
+        },
+        "focus": {
+          "code": "",
+          "html": ""
+        },
+        "blur": {
+          "code": "",
+          "html": ""
+        },
+        "submit": {
+          "code": "",
+          "html": ""
+        },
+        "reset": {
+          "code": "",
+          "html": ""
+        }
+
+      },
+
+      "moduleList": {},
+      "fieldList": {}
+    },
+    "html":"<div MWFType=\"form\" id=\"\"></div>"
+  }
+}

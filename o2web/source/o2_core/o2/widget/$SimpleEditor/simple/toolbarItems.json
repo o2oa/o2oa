@@ -1,0 +1,25 @@
+{
+	"item":[
+		{
+			"id" : "Image",
+			"title" : "插入图片",
+			"type" : "button",
+ 			"pic" : o2.session.path+"/widget/$SimpleEditor/default/img/picture.gif",
+			"picDisable" : o2.session.path+"/widget/$SimpleEditor/default/img/picture_gray.gif",
+			"actionName" : "Image",
+			"disable" : false
+		},
+		{
+			"type" : "separator"
+		},
+		{
+			"id" : "Emotion",
+			"title" : "插入表情",
+			"type" : "button",
+ 			"pic" : o2.session.path+"/widget/$SimpleEditor/default/img/emotion.gif",
+			"picDisable" : o2.session.path+"/widget/$SimpleEditor/default/img/emotion_gray.gif",
+			"actionName" : "Emotion",
+			"disable" : false
+		}
+	]
+}

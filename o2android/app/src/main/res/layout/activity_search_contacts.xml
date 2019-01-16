@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#fff"
+              android:orientation="vertical">
+
+    <include layout="@layout/layout_search_title_bar"/>
+    <View
+        android:background="#E8EDF3"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"/>
+
+    <TextView
+        android:id="@+id/no_connect"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="51.33dp"
+        android:text="当前网络不可用"
+        android:textColor="#999999"
+        android:textSize="16sp"/>
+
+    <ScrollView
+        android:id="@+id/search_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/ac_iv_search_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="60dp"
+                android:src="@drawable/jmui_sending_img"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/ac_ll_filter_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/ac_ll_filtered_friend_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        style="@style/ac_search_list_view_item"
+                        android:text="联系人"/>
+
+                    <View
+                        style="@style/ac_search_list_view_divider"/>
+
+                    <jiguang.chat.view.listview.NestedListView
+                        android:id="@+id/ac_lv_filtered_friends_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:divider="@drawable/main_list_divider_line"/>
+
+                    <LinearLayout
+                        android:id="@+id/ac_ll_more_friends"
+                        android:layout_width="match_parent"
+                        android:layout_height="46.67dp"
+                        android:background="#ffffff"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/ac_search_list_view_item_more"
+                            android:drawableRight="@drawable/arrow"
+                            android:text="查看更多联系人"/>
+
+                    </LinearLayout>
+
+                    <View
+                        style="@style/ac_search_part_divider_high"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ac_ll_filtered_group_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        style="@style/ac_search_list_view_item"
+                        android:text="群组"/>
+
+                    <View
+                        style="@style/ac_search_list_view_divider"/>
+
+                    <jiguang.chat.view.listview.NestedListView
+                        android:id="@+id/ac_lv_filtered_groups_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:divider="@drawable/main_list_divider_line"
+                        />
+
+                    <LinearLayout
+                        android:id="@+id/ac_ll_more_groups"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="#ffffff"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            style="@style/ac_search_list_view_item_more"
+                            android:drawableRight="@drawable/arrow"
+                            android:text="查看更多群组"/>
+                    </LinearLayout>
+
+                    <View
+                        style="@style/ac_search_part_divider_high"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/ac_tv_search_no_results"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:layout_marginTop="45dp"
+                    android:ellipsize="middle"
+                    android:maxLines="1"
+                    android:textColor="#999999"
+                    android:textSize="14sp"
+                    android:visibility="gone"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
