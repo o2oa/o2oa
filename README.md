@@ -35,6 +35,11 @@ Github : https://github.com/o2oa/o2oa
 
 # 配置编译环境\:
 
+强烈建议将项目Fork到自己的仓库里，Clone到本地后进行编译和打包，偶尔会发现下载zip文件后，commons/ext目录里的jar包不可用，全部只有1k大小。
+
+https://github.com/o2oa/o2oa 仓库里的源码已经编译打包测试通过，无任何问题。
+
+
 ## 安装NodeJS
 
 1、访问nodejs的官方网站的downdolad，网址：https://nodejs.org/en/download/，获取Linux Binaries (x64)安装包下载链接：
