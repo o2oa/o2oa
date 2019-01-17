@@ -317,6 +317,16 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return t;
 	}
 
+	public <T extends JpaObject> List<T> listAll(Class<T> cls) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		List<T> os = em.createQuery(cq.select(root)).getResultList();
+		List<T> list = new ArrayList<>(os);
+		return list;
+	}
+
 	public <T extends JpaObject> List<T> list(Class<T> cls, String... ids) throws Exception {
 		return this.list(cls, false, ListTools.toList(ids));
 	}
@@ -376,6 +386,18 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return new TreeList<T>(os);
 	}
 
+	public <T extends JpaObject> List<T> listEqualAndNotEqual(Class<T> cls, String equalAttribute, Object equalValue,
+			String notEqualAttribute, Object notEqualValue) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		cq.select(root).where(cb.and(cb.equal(root.get(equalAttribute), equalValue),
+				cb.notEqual(root.get(notEqualAttribute), notEqualValue)));
+		List<T> os = em.createQuery(cq).getResultList();
+		return new TreeList<T>(os);
+	}
+
 	public <T extends JpaObject, W extends Object> List<T> listEqualAndIn(Class<T> cls, String attribute, Object value,
 			String otherAttribute, Collection<W> otherValues) throws Exception {
 		EntityManager em = this.get(cls);
@@ -398,14 +420,14 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return em.createQuery(cq).getSingleResult();
 	}
 
-	public <T extends JpaObject> Long countEqual(Class<T> cls, String attribute, Object value, String otherAttribute,
-			Object otherValue) throws Exception {
+	public <T extends JpaObject> Long countEqualAndEqual(Class<T> cls, String euqalAttribute, Object equalValue,
+			String notEqualAttribute, Object notEqualValue) throws Exception {
 		EntityManager em = this.get(cls);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<T> root = cq.from(cls);
-		cq.select(cb.count(root))
-				.where(cb.and(cb.equal(root.get(attribute), value), cb.equal(root.get(otherAttribute), otherValue)));
+		cq.select(cb.count(root)).where(cb.and(cb.equal(root.get(euqalAttribute), equalValue),
+				cb.equal(root.get(notEqualAttribute), notEqualValue)));
 		return em.createQuery(cq).getSingleResult();
 	}
 
@@ -454,16 +476,6 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return list;
 	}
 
-	public <T extends JpaObject> List<T> listAll(Class<T> cls) throws Exception {
-		EntityManager em = this.get(cls);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<T> cq = cb.createQuery(cls);
-		Root<T> root = cq.from(cls);
-		List<T> os = em.createQuery(cq.select(root)).getResultList();
-		List<T> list = new ArrayList<>(os);
-		return list;
-	}
-
 	public <T extends JpaObject> List<String> ids(Class<T> cls) throws Exception {
 		EntityManager em = this.get(cls);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -494,6 +506,20 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Root<T> root = cq.from(cls);
 		Predicate p = cb.equal(root.get(attribute), value);
 		p = cb.and(p, cb.equal(root.get(otherAttribute), otherValue));
+		cq.select(root.get(JpaObject.id_FIELDNAME)).where(p);
+		List<String> os = em.createQuery(cq).getResultList();
+		List<String> list = new ArrayList<>(os);
+		return list;
+	}
+
+	public <T extends JpaObject> List<String> idsEqualAndNotEqual(Class<T> cls, String equalAttribute,
+			Object equalValue, String notEqualAttribute, Object notEqualValue) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<T> root = cq.from(cls);
+		Predicate p = cb.equal(root.get(equalAttribute), equalValue);
+		p = cb.and(p, cb.notEqual(root.get(notEqualAttribute), notEqualValue));
 		cq.select(root.get(JpaObject.id_FIELDNAME)).where(p);
 		List<String> os = em.createQuery(cq).getResultList();
 		List<String> list = new ArrayList<>(os);
@@ -536,7 +562,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return list;
 	}
 
-	public <T extends JpaObject, W extends Object> List<String> idsNotInAndEqual(Class<T> cls, String attribute,
+	public <T extends JpaObject, W extends Object> List<String> idsEqualAndNotIn(Class<T> cls, String attribute,
 			Collection<W> values, String otherAttribute, Object otherValue) throws Exception {
 		EntityManager em = this.get(cls);
 		CriteriaBuilder cb = em.getCriteriaBuilder();

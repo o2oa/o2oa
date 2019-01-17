@@ -28,4 +28,13 @@ public class TestClient {
 		System.out.println(list.subList(list.indexOf("bbb"), list.size()));
 	}
 
+	@Test
+	public void test1() throws Exception {
+		Double d = 111.11;
+		Long l = d.longValue();
+		System.out.println(Double.parseDouble(l.toString()));
+		System.out.println(l.doubleValue() == d);
+
+	}
+
 }

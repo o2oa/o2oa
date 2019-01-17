@@ -10,7 +10,7 @@
 		<version>4.0.5</version>
 	</parent>
 	<artifactId>x_query_service_processing</artifactId>
-<packaging>war</packaging>
+	<packaging>war</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>o2oa</groupId>
@@ -28,7 +28,7 @@
 			<groupId>o2oa</groupId>
 			<artifactId>x_query_core_entity</artifactId>
 		</dependency>
-				<dependency>
+		<dependency>
 			<groupId>o2oa</groupId>
 			<artifactId>x_query_core_express</artifactId>
 		</dependency>
@@ -52,7 +52,7 @@
 					</execution>
 					<execution>
 						<id>describe</id>
-						<phase>generate-sources</phase>
+						<phase>prepare-package</phase>
 					</execution>
 				</executions>
 			</plugin>

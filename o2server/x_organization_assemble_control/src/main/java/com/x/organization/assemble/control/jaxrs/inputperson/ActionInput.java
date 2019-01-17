@@ -11,7 +11,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -33,6 +32,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.scripting.Scripting;
 import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
@@ -58,7 +58,7 @@ class ActionInput extends BaseAction {
 			Business business = new Business(emc);
 			ActionResult<Wo> result = new ActionResult<>();
 			this.scan(business, workbook);
-			String name = "person_result_" + DateTools.formatDate(new Date()) + ".xls";
+			String name = "person_" + DateTools.formatDate(new Date()) + ".xlsx";
 			workbook.write(os);
 			CacheInputResult cacheInputResult = new CacheInputResult();
 			cacheInputResult.setName(name);
@@ -79,20 +79,18 @@ class ActionInput extends BaseAction {
 
 	private void scan(Business business, XSSFWorkbook workbook) throws Exception {
 		Sheet sheet = workbook.getSheetAt(0);
-		List<PersonItem> people = new ArrayList<>();
 		PersonSheetConfigurator configurator = new PersonSheetConfigurator(workbook, sheet);
-		this.scanPerson(configurator, sheet, people);
+		List<PersonItem> people = this.scanPerson(configurator, sheet);
 		this.concretePassword(people);
 		this.persist(business, workbook, configurator, people);
 	}
 
 	private void concretePassword(List<PersonItem> people) throws Exception {
-		Pattern pattern = Pattern.compile(com.x.base.core.project.config.Person.RegularExpression_Script);
+		Pattern pattern = Pattern.compile(com.x.base.core.project.config.Person.REGULAREXPRESSION_SCRIPT);
 		Matcher matcher = pattern.matcher(Config.person().getPassword());
 		if (matcher.matches()) {
 			String eval = matcher.group(1);
-			ScriptEngineManager factory = new ScriptEngineManager();
-			ScriptEngine engine = factory.getEngineByName("nashorn");
+			ScriptEngine engine = Scripting.getEngine();
 			for (PersonItem o : people) {
 				engine.put("person", o);
 				String pass = engine.eval(eval).toString();
@@ -108,14 +106,14 @@ class ActionInput extends BaseAction {
 		}
 	}
 
-	private void scanPerson(PersonSheetConfigurator configurator, Sheet sheet, List<PersonItem> people)
-			throws Exception {
+	private List<PersonItem> scanPerson(PersonSheetConfigurator configurator, Sheet sheet) throws Exception {
 		if (null == configurator.getNameColumn()) {
 			throw new ExceptionNameColumnEmpty();
 		}
 		if (null == configurator.getMobileColumn()) {
 			throw new ExceptionMobileColumnEmpty();
 		}
+		List<PersonItem> people = new ArrayList<>();
 		for (int i = configurator.getFirstRow(); i <= configurator.getLastRow(); i++) {
 			Row row = sheet.getRow(i);
 			if (null != row) {
@@ -162,8 +160,10 @@ class ActionInput extends BaseAction {
 					}
 				}
 				people.add(personItem);
+				logger.debug("scan person:{}.", personItem);
 			}
 		}
+		return people;
 	}
 
 	private void persist(Business business, XSSFWorkbook workbook, PersonSheetConfigurator configurator,
@@ -191,121 +191,112 @@ class ActionInput extends BaseAction {
 			}
 		}
 		if (validate) {
-			List<String> cannotDuplicateList = new ArrayList<>();
 			for (PersonItem o : people) {
-				if (cannotDuplicateList.contains(o.getName())) {
-					this.setMemo(workbook, configurator, o, "姓名冲突.");
-					validate = false;
-					continue;
-				} else {
-					cannotDuplicateList.add(o.getName());
-				}
-				if (cannotDuplicateList.contains(o.getMobile())) {
-					this.setMemo(workbook, configurator, o, "手机号冲突.");
-					validate = false;
-					continue;
-				} else {
-					cannotDuplicateList.add(o.getMobile());
-				}
-				if (StringUtils.isNotEmpty(o.getMail())) {
-					if (cannotDuplicateList.contains(o.getMail())) {
-						this.setMemo(workbook, configurator, o, "邮件地址冲突.");
-						validate = false;
-						continue;
-					} else {
-						cannotDuplicateList.add(o.getMail());
-					}
-				}
-				if (StringUtils.isNotEmpty(o.getEmployee())) {
-					if (cannotDuplicateList.contains(o.getEmployee())) {
-						this.setMemo(workbook, configurator, o, "员工编号冲突.");
-						validate = false;
-						continue;
-					} else {
-						cannotDuplicateList.add(o.getEmployee());
-					}
-				}
-				if (StringUtils.isNotEmpty(o.getUnique())) {
-					if (cannotDuplicateList.contains(o.getUnique())) {
-						this.setMemo(workbook, configurator, o, "唯一编码冲突.");
-						validate = false;
-						continue;
-					} else {
-						cannotDuplicateList.add(o.getUnique());
+				for (PersonItem item : people) {
+					if (o != item) {
+						if (StringUtils.equals(o.getName(), item.getName())) {
+							this.setMemo(workbook, configurator, o, "姓名冲突.");
+							validate = false;
+							continue;
+						}
+						if (StringUtils.equals(o.getMobile(), item.getMobile())) {
+							this.setMemo(workbook, configurator, o, "手机号冲突,本次导入中不唯一.");
+							validate = false;
+							continue;
+						}
+						if (StringUtils.isNotEmpty(o.getMail()) && StringUtils.equals(o.getMail(), item.getMail())) {
+							this.setMemo(workbook, configurator, o, "邮件地址冲突,本次导入中不唯一.");
+							validate = false;
+							continue;
+						}
+						if (StringUtils.isNotEmpty(o.getEmployee())
+								&& StringUtils.equals(o.getEmployee(), item.getEmployee())) {
+							this.setMemo(workbook, configurator, o, "员工编号冲突,本次导入中不唯一.");
+							validate = false;
+							continue;
+						}
+						if (StringUtils.isNotEmpty(o.getUnique())
+								&& StringUtils.equals(o.getUnique(), item.getUnique())) {
+							this.setMemo(workbook, configurator, o, "唯一编码冲突,本次导入中不唯一.");
+							validate = false;
+							continue;
+						}
 					}
 				}
 			}
-		}
-		if (validate) {
-			for (PersonItem o : people) {
-				p = emc.flag(o.getName(), Person.class);
-				if (null != p) {
-					this.setMemo(workbook, configurator, o, "姓名: " + o.getName() + " 与已经存在用户: " + p.getName() + " 冲突.");
-					validate = false;
-					continue;
-				}
-				p = emc.flag(o.getMobile(), Person.class);
-				if (null != p) {
-					this.setMemo(workbook, configurator, o,
-							"手机号: " + o.getMobile() + " 与已经存在用户: " + p.getName() + " 冲突.");
-					continue;
-				}
-				if (StringUtils.isNotEmpty(o.getUnique())) {
-					p = emc.flag(o.getUnique(), Person.class);
+			if (validate) {
+				for (PersonItem o : people) {
+					p = emc.flag(o.getName(), Person.class);
 					if (null != p) {
 						this.setMemo(workbook, configurator, o,
-								"唯一编码: " + o.getUnique() + " 与已经存在用户: " + p.getName() + " 冲突.");
+								"姓名: " + o.getName() + " 与已经存在用户: " + p.getName() + " 冲突.");
 						validate = false;
 						continue;
 					}
-				}
-				if (StringUtils.isNotEmpty(o.getEmployee())) {
-					p = emc.flag(o.getEmployee(), Person.class);
+					p = emc.flag(o.getMobile(), Person.class);
 					if (null != p) {
 						this.setMemo(workbook, configurator, o,
-								"员工编号: " + o.getEmployee() + " 与已经存在用户: " + p.getName() + " 冲突.");
+								"手机号: " + o.getMobile() + " 与已经存在用户: " + p.getName() + " 冲突.");
 						validate = false;
 						continue;
 					}
-				}
-				if (StringUtils.isNotEmpty(o.getMail())) {
-					if (!StringTools.isMail(o.getMail())) {
-						this.setMemo(workbook, configurator, o, "邮件地址格式错误.");
-						validate = false;
-						continue;
+					if (StringUtils.isNotEmpty(o.getMail())) {
+						if (!StringTools.isMail(o.getMail())) {
+							this.setMemo(workbook, configurator, o, "邮件地址格式错误.");
+							validate = false;
+							continue;
+						}
+						p = emc.flag(o.getMail(), Person.class);
+						if (null != p) {
+							this.setMemo(workbook, configurator, o,
+									"邮件地址: " + o.getMail() + " 与已经存在用户: " + p.getName() + " 冲突.");
+							validate = false;
+							continue;
+						}
 					}
-					p = emc.flag(o.getMail(), Person.class);
-					if (null != p) {
-						this.setMemo(workbook, configurator, o,
-								"邮件地址: " + o.getMail() + " 与已经存在用户: " + p.getName() + " 冲突.");
-						validate = false;
-						continue;
+					if (StringUtils.isNotEmpty(o.getUnique())) {
+						p = emc.flag(o.getUnique(), Person.class);
+						if (null != p) {
+							this.setMemo(workbook, configurator, o,
+									"唯一编码: " + o.getUnique() + " 与已经存在用户: " + p.getName() + " 冲突.");
+							validate = false;
+							continue;
+						}
 					}
-				}
-				this.setMemo(workbook, configurator, o, "校验成功");
-			}
-		}
-		if (validate) {
-			emc.beginTransaction(Person.class);
-			emc.beginTransaction(PersonAttribute.class);
-			for (PersonItem o : people) {
-				Person person = new Person();
-				o.copyTo(person);
-				emc.persist(person, CheckPersistType.all);
-				for (Entry<String, String> en : o.getAttributes().entrySet()) {
-					if (StringUtils.isNotEmpty(en.getValue())) {
-						PersonAttribute personAttribute = new PersonAttribute();
-						personAttribute.setName(en.getKey());
-						personAttribute.setAttributeList(new ArrayList<String>());
-						personAttribute.getAttributeList().add(en.getValue());
-						personAttribute.setPerson(person.getId());
-						emc.persist(personAttribute);
+					if (StringUtils.isNotEmpty(o.getEmployee())) {
+						p = emc.flag(o.getEmployee(), Person.class);
+						if (null != p) {
+							this.setMemo(workbook, configurator, o,
+									"员工编号: " + o.getEmployee() + " 与已经存在用户: " + p.getName() + " 冲突.");
+							validate = false;
+							continue;
+						}
 					}
+					this.setMemo(workbook, configurator, o, "校验通过.");
 				}
 			}
-			emc.commit();
+			if (validate) {
+				emc.beginTransaction(Person.class);
+				emc.beginTransaction(PersonAttribute.class);
+				for (PersonItem o : people) {
+					Person person = new Person();
+					o.copyTo(person);
+					emc.persist(person, CheckPersistType.all);
+					for (Entry<String, String> en : o.getAttributes().entrySet()) {
+						if (StringUtils.isNotEmpty(en.getValue())) {
+							PersonAttribute personAttribute = new PersonAttribute();
+							personAttribute.setName(en.getKey());
+							personAttribute.setAttributeList(new ArrayList<String>());
+							personAttribute.getAttributeList().add(en.getValue());
+							personAttribute.setPerson(person.getId());
+							emc.persist(personAttribute);
+						}
+					}
+					this.setMemo(workbook, configurator, o, "已导入.");
+				}
+				emc.commit();
+			}
 		}
-
 	}
 
 	private void setMemo(XSSFWorkbook workbook, PersonSheetConfigurator configurator, PersonItem personItem,

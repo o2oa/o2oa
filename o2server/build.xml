@@ -43,7 +43,6 @@
 		</java>
 	</target>
 
-
 	<target name="default" depends="createConfigSample,createLocalSample,createManifestCfg">
 		<delete dir="target" />
 		<mkdir dir="target/o2server" />

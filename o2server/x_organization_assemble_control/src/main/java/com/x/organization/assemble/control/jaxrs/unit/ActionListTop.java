@@ -86,8 +86,10 @@ class ActionListTop extends BaseAction {
 		List<Wo> wos = Wo.copier.copy(os);
 		wos.stream().forEach(o -> {
 			try {
-				o.setSubDirectUnitCount(this.countSubDirectUnit(business, o));
-				o.setSubDirectIdentityCount(this.countSubDirectIdentity(business, o));
+				o.setSubDirectUnitCount(
+						business.entityManagerContainer().countEqual(Unit.class, Unit.superior_FIELDNAME, o.getId()));
+				o.setSubDirectIdentityCount(business.entityManagerContainer().countEqual(Identity.class,
+						Identity.unit_FIELDNAME, o.getId()));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -96,23 +98,4 @@ class ActionListTop extends BaseAction {
 		return wos;
 	}
 
-	private Long countSubDirectUnit(Business business, Wo wo) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Unit.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-		Root<Unit> root = cq.from(Unit.class);
-		Predicate p = cb.equal(root.get(Unit_.superior), wo.getId());
-		Long count = em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
-		return count;
-	}
-
-	private Long countSubDirectIdentity(Business business, Wo wo) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Identity.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-		Root<Identity> root = cq.from(Identity.class);
-		Predicate p = cb.equal(root.get(Identity_.unit), wo.getId());
-		Long count = em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
-		return count;
-	}
 }

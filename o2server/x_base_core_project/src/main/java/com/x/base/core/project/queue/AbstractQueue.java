@@ -17,7 +17,9 @@ public abstract class AbstractQueue<T> {
 
 	private LinkedBlockingQueue<Object> queue = new LinkedBlockingQueue<>();
 
-	private volatile boolean turn = true;
+	private volatile boolean turn = false;
+
+	private Integer fixedSize = 1;
 
 	private String className = this.getClass().getName();
 
@@ -28,7 +30,7 @@ public abstract class AbstractQueue<T> {
 	/**
 	 * 将创建一个定长线程池，可控制线程最大并发数，超出的线程会在队列中等待
 	 */
-	private ExecutorService fixedThreadPool = null;
+	private ExecutorService executorService = null;
 
 	/**
 	 * 初始化一个定长线程池
@@ -37,15 +39,12 @@ public abstract class AbstractQueue<T> {
 	 * @throws Exception
 	 */
 	public void initFixedThreadPool(Integer count) throws Exception {
-		if (fixedThreadPool != null) {
-			throw new Exception("fixedThreadPool has init already, fixedThreadPool can not change!");
+		if (count == null || count < 1) {
+			fixedSize = 1;
+		} else {
+			fixedSize = count;
 		}
-		//modify by O2LEE 2017-07-28: check validity for parameter 'count' 
-		if( count == null || count < 1 ) {
-			count = 1;
-		}
-		fixedThreadPool = Executors.newFixedThreadPool( count );
-		logger.info( className + " new fixed thread pool with max thread count : " + count );
+		logger.info(className + " new fixed thread pool with max thread count : " + count);
 	}
 
 	public void send(T t) throws Exception {
@@ -53,9 +52,11 @@ public abstract class AbstractQueue<T> {
 	}
 
 	public void start() {
-		if (fixedThreadPool == null) {
-			fixedThreadPool = Executors.newFixedThreadPool(1);
+		if (turn) {
+			return;
 		}
+		turn = true;
+		executorService = Executors.newFixedThreadPool(fixedSize);
 		new Thread() {
 			public void run() {
 				Object o = null;
@@ -64,11 +65,12 @@ public abstract class AbstractQueue<T> {
 						o = queue.take();
 						if (null != o) {
 							if (o instanceof StopSignal) {
+								turn = false;
 								break;
 							}
 							logger.debug("queue class: {} execute on message: {}.", className, gson.toJson(o));
 							// 从线程池中获取空闲线程执行QueueProcessThread操作
-							fixedThreadPool.execute(new QueueProcessThread(abstractQueue, o));
+							executorService.execute(new QueueProcessThread(abstractQueue, o));
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -84,16 +86,14 @@ public abstract class AbstractQueue<T> {
 
 	public void stop() {
 		try {
-			this.turn = false;
+			this.queue.clear();
 			queue.put(new StopSignal());
 			logger.info("queue class: {} stop.", className);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			//modify by O2LEE 2017-07-28: add fixed thread pool shut down on queue stop 
-			if( fixedThreadPool != null ) {
-				fixedThreadPool.shutdown();
-				fixedThreadPool = null;
+			if (executorService != null) {
+				executorService.shutdown();
 			}
 		}
 	}

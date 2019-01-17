@@ -160,18 +160,4 @@ class ActionDelete extends BaseAction {
 			o.getUnitList().remove(unit.getId());
 		}
 	}
-
-	// private void removeIdentity(Business business, Unit unit) throws
-	// Exception {
-	// EntityManager em = business.entityManagerContainer().get(Identity.class);
-	// CriteriaBuilder cb = em.getCriteriaBuilder();
-	// CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
-	// Root<Identity> root = cq.from(Identity.class);
-	// Predicate p = cb.equal(root.get(Identity_.unit), unit.getId());
-	// List<Identity> os =
-	// em.createQuery(cq.select(root).where(p)).getResultList();
-	// for (Identity o : os) {
-	// business.entityManagerContainer().remove(o, CheckRemoveType.all);
-	// }
-	// }
 }

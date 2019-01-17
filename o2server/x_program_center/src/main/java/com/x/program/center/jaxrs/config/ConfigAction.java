@@ -28,6 +28,22 @@ public class ConfigAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ConfigAction.class);
 
+	@JaxrsMethodDescribe(value = "获取设置.", action = ActionGet.class)
+	@GET
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<ActionGet.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGet().execute(effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
 	@JaxrsMethodDescribe(value = "获取人员设置.", action = ActionGetPerson.class)
 	@GET
 	@Path("person")

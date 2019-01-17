@@ -42,7 +42,7 @@
 				<executions>
 					<execution>
 						<id>enhancer</id>
-						<phase>prepare-package</phase>
+						<phase>process-classes</phase>
 					</execution>
 				</executions>
 			</plugin>

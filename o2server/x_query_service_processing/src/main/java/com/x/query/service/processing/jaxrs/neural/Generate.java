@@ -74,24 +74,44 @@ import com.x.query.service.processing.ThisApplication;
 import com.x.query.service.processing.helper.ExtractTextHelper;
 import com.x.query.service.processing.helper.LanguageProcessingHelper;
 
-public class GenerateQueue extends AbstractQueue<String> {
+public class Generate {
 
-	private static Logger logger = LoggerFactory.getLogger(GenerateQueue.class);
+	private static Logger logger = LoggerFactory.getLogger(Generate.class);
 
-	@Override
+	private volatile static String generatingProject = "";
+
+	private volatile static boolean stop = false;
+
+	private Generate() {
+
+	}
+
+	public static String generatingProject() {
+		return generatingProject;
+	}
+
+	public static void stop() {
+		stop = true;
+	}
+
+	public static Generate newInstance() throws Exception {
+		if (StringUtils.isNotEmpty(generatingProject)) {
+			throw new Exception("Generate already concreted for project:" + generatingProject + ".");
+		}
+		return new Generate();
+	}
+
 	protected void execute(final String projectId) throws Exception {
+		generatingProject = projectId;
+		stop = false;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			TimeStamp stamp = new TimeStamp();
 			Business business = new Business(emc);
 			Project project = refreshProject(business, projectId);
 			logger.info("神经网络多层感知机 ({}) 生成条目开始.", project.getName());
 			if (StringUtils.equals(Project.STATUS_GENERATING, project.getStatus())) {
-				throw new ExceptionGenerating(project.getName());
+				throw new ExceptionGenerate(project.getName());
 			}
-			if (StringUtils.equals(Project.STATUS_LEARNING, project.getStatus())) {
-				throw new ExceptionLearning(project.getName());
-			}
-			ThisApplication.generating_stop_tag.remove(project.getId());
 			final Double validationRate = (MapTools.getDouble(project.getPropertyMap(),
 					Project.PROPERTY_MLP_VALIDATIONRATE, Project.DEFAULT_MLP_VALIDATIONRATE));
 			List<String> bundles = this.listBundle(business, project);
@@ -169,12 +189,15 @@ public class GenerateQueue extends AbstractQueue<String> {
 			emc.check(project, CheckPersistType.all);
 			emc.commit();
 			logger.info("神经网络多层感知机 ({}) 完成条目生成, 耗时: {}.", project.getName(), stamp.consumingMilliseconds());
+		} finally {
+			generatingProject = "";
+			stop = false;
 		}
 	}
 
 	private boolean checkStop(Business business, final String projectId, List<String> bundles, int i) throws Exception {
 		Project project = this.refreshProject(business, projectId);
-		if (ThisApplication.generating_stop_tag.remove(project.getId())) {
+		if (stop) {
 			business.entityManagerContainer().beginTransaction(Project.class);
 			project.setStatus("");
 			business.entityManagerContainer().commit();
@@ -385,16 +408,13 @@ public class GenerateQueue extends AbstractQueue<String> {
 		scriptHelper.put(BaseAction.PROPERTY_WORKCOMPLETED, workCompleted);
 		scriptHelper.put(BaseAction.PROPERTY_DATA, data);
 		if (StringUtils.isNotBlank(project.getOutValueScriptText())) {
-			scriptHelper.put(BaseAction.PROPERTY_OUTVALUES, outValue);
-			scriptHelper.eval(project.getOutValueScriptText());
+			outValue.addAll(scriptHelper.evalAsStringList(project.getOutValueScriptText()));
 		}
 		StringBuffer text = new StringBuffer();
 		String dataText = converter.text(items, true, true, true, true, true, ",");
 		dataText = StringUtils.replaceEach(dataText, outValue.toArray(new String[outValue.size()]),
 				StringTools.fill(outValue.size(), ","));
 		text.append(dataText);
-		// logger.debug("{} data text:{}.", workCompleted.getTitle(), dataText);
-		// inValue.addAll(lph.word(ThisApplication.analyzer, dataText));
 		List<Attachment> attachmentObjects = business.entityManagerContainer().listEqual(Attachment.class,
 				Attachment.job_FIELDNAME, workCompleted.getJob());
 		/* 把不需要的附件过滤掉 */
@@ -413,8 +433,6 @@ public class GenerateQueue extends AbstractQueue<String> {
 						o.getStorage());
 				if (null != mapping) {
 					o.dumpContent(mapping);
-					// logger.debug("{} attachment text:{}.", workCompleted.getTitle(),
-					// attachmentText);
 					text.append(ExtractTextHelper.extract(o.getBytes(), o.getName(), true, true, true, false));
 				}
 			}

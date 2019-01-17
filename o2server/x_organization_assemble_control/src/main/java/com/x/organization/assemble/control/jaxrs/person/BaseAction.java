@@ -155,9 +155,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	protected void checkEmployee(Business business, String employee, String excludeId) throws Exception {
-		// if (StringUtils.isEmpty(employee) || (!StringTools.isSimply(employee))) {
-		// throw new ExceptionInvalidEmployee(employee);
-		// }
 		if (StringUtils.isNotEmpty(business.person().getWithEmployee(employee, excludeId))) {
 			throw new ExceptionEmployeeDuplicate(employee, "员工号");
 		}
@@ -182,7 +179,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	protected String initPassword(Business business, Person person) throws Exception {
 		String str = Config.person().getPassword();
-		Pattern pattern = Pattern.compile(com.x.base.core.project.config.Person.RegularExpression_Script);
+		Pattern pattern = Pattern.compile(com.x.base.core.project.config.Person.REGULAREXPRESSION_SCRIPT);
 		Matcher matcher = pattern.matcher(str);
 		if (matcher.matches()) {
 			String eval = matcher.group(1);

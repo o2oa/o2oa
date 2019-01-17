@@ -58,9 +58,6 @@ class ActionGet extends BaseAction {
 
 		private static final long serialVersionUID = -125007357898871894L;
 
-		// @FieldDescribe("直接下级组织对象")
-		// private List<Wo> woSubDirectUnitList;
-
 		@FieldDescribe("直接上级组织对象")
 		private Wo woSupDirectUnit;
 

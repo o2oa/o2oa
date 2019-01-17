@@ -729,7 +729,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		CompletableFuture<Long> future_reviewCount = CompletableFuture.supplyAsync(() -> {
 			Long o = 0L;
 			try {
-				o = business.entityManagerContainer().countEqual(Review.class, Review.person_FIELDNAME,
+				o = business.entityManagerContainer().countEqualAndEqual(Review.class, Review.person_FIELDNAME,
 						effectivePerson.getDistinguishedName(), Review.job_FIELDNAME, work.getJob());
 			} catch (Exception e) {
 				logger.error(e);

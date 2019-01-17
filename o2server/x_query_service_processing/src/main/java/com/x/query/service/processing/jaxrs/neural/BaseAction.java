@@ -19,7 +19,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 	static final String PROPERTY_WORKCOMPLETED = "workCompleted";
 	static final String PROPERTY_DATA = "data";
 	static final String PROPERTY_INVALUES = "inValues";
-	static final String PROPERTY_OUTVALUES = "outValues";
 	static final String PROPERTY_ATTACHMENTS = "attachments";
 
 }

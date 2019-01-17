@@ -44,8 +44,8 @@ class ActionCreate extends BaseAction {
 				}
 			}
 			unit.setControllerList(ListTools.extractProperty(
-					business.person().pick(ListTools.trim(unit.getControllerList(), true, true)), JpaObject.id_FIELDNAME,
-					String.class, true, true));
+					business.person().pick(ListTools.trim(unit.getControllerList(), true, true)),
+					JpaObject.id_FIELDNAME, String.class, true, true));
 			/** 如果唯一标识不为空,要检查唯一标识是否唯一 */
 			if (this.duplicateUniqueWhenNotEmpty(business, unit)) {
 				throw new ExceptionDuplicateUnique(unit.getName(), unit.getUnique());
@@ -74,8 +74,9 @@ class ActionCreate extends BaseAction {
 		private static final long serialVersionUID = -6314932919066148113L;
 
 		static WrapCopier<Wi, Unit> copier = WrapCopierFactory.wi(Wi.class, Unit.class, null,
-				ListTools.toList(JpaObject.FieldsUnmodify, "pinyin", "pinyinInitial", "level", "levelName",
-						"inheritedControllerList"));
+				ListTools.toList(JpaObject.FieldsUnmodify, Unit.superior_FIELDNAME, Unit.pinyin_FIELDNAME,
+						Unit.pinyinInitial_FIELDNAME, Unit.level_FIELDNAME, Unit.levelName_FIELDNAME,
+						Unit.inheritedControllerList_FIELDNAME));
 	}
 
 }

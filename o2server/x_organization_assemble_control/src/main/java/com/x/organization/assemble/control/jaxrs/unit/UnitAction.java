@@ -354,4 +354,59 @@ public class UnitAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
+	@JaxrsMethodDescribe(value = "直接上级组织.", action = ActionGetSupDirect.class)
+	@GET
+	@Path("{flag}/sup/direct")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getSupDirect(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("组织标识") @PathParam("flag") String flag) {
+		ActionResult<ActionGetSupDirect.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetSupDirect().execute(effectivePerson, flag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "递归上级组织.", action = ActionListSupNested.class)
+	@GET
+	@Path("list/{flag}/sup/nested")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listSupNested(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("组织标识") @PathParam("flag") String flag) {
+		ActionResult<List<ActionListSupNested.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListSupNested().execute(effectivePerson, flag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "查找递归上级组织中符合type值的对象.", action = ActionListSupNestedWithType.class)
+	@GET
+	@Path("list/{flag}/sup/nested/type/{type}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listSupNestedWithType(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("组织标识") @PathParam("flag") String flag,
+			@JaxrsParameterDescribe("组织的type属性值,匹配多值中的某一个") @PathParam("type") String type) {
+		ActionResult<List<ActionListSupNestedWithType.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListSupNestedWithType().execute(effectivePerson, flag, type);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
 }

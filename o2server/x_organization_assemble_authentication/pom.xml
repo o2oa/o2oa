@@ -36,7 +36,7 @@
 					</execution>
 					<execution>
 						<id>describe</id>
-						<phase>generate-sources</phase>
+						<phase>prepare-package</phase>
 					</execution>
 				</executions>
 			</plugin>

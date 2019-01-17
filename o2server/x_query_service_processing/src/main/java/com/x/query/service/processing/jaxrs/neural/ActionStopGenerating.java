@@ -33,7 +33,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.query.core.entity.neural.Project;
-import com.x.query.service.processing.ThisApplication;
 
 class ActionStopGenerating extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String projectFlag) throws Exception {
@@ -43,7 +42,7 @@ class ActionStopGenerating extends BaseAction {
 			if (null == project) {
 				throw new ExceptionEntityNotExist(projectFlag, Project.class);
 			}
-			ThisApplication.generating_stop_tag.add(project.getId());
+			Generate.stop();
 			Wo wo = new Wo();
 			wo.setValue(true);
 			result.setData(wo);

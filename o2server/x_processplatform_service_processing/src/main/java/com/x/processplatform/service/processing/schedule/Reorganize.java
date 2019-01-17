@@ -105,33 +105,33 @@ public class Reorganize implements Job {
 		List<String> ids_none_application = emc.idsNotIn(Task.class, Task.application_FIELDNAME,
 				emc.ids(Application.class));
 		List<String> ids_none_process = emc.idsNotIn(Task.class, Task.process_FIELDNAME, emc.ids(Process.class));
-		List<String> ids_none_agent = emc.idsNotInAndEqual(Task.class, Task.activity_FIELDNAME, emc.ids(Agent.class),
+		List<String> ids_none_agent = emc.idsEqualAndNotIn(Task.class, Task.activity_FIELDNAME, emc.ids(Agent.class),
 				Task.activityType_FIELDNAME, ActivityType.agent);
-		List<String> ids_none_begin = emc.idsNotInAndEqual(Task.class, Task.activity_FIELDNAME, emc.ids(Begin.class),
+		List<String> ids_none_begin = emc.idsEqualAndNotIn(Task.class, Task.activity_FIELDNAME, emc.ids(Begin.class),
 				Task.activityType_FIELDNAME, ActivityType.begin);
-		List<String> ids_none_cancel = emc.idsNotInAndEqual(Task.class, Task.activity_FIELDNAME, emc.ids(Cancel.class),
+		List<String> ids_none_cancel = emc.idsEqualAndNotIn(Task.class, Task.activity_FIELDNAME, emc.ids(Cancel.class),
 				Task.activityType_FIELDNAME, ActivityType.cancel);
-		List<String> ids_none_choice = emc.idsNotInAndEqual(Task.class, Task.activity_FIELDNAME, emc.ids(Choice.class),
+		List<String> ids_none_choice = emc.idsEqualAndNotIn(Task.class, Task.activity_FIELDNAME, emc.ids(Choice.class),
 				Task.activityType_FIELDNAME, ActivityType.choice);
-		List<String> ids_none_delay = emc.idsNotInAndEqual(Task.class, Task.activity_FIELDNAME, emc.ids(Delay.class),
+		List<String> ids_none_delay = emc.idsEqualAndNotIn(Task.class, Task.activity_FIELDNAME, emc.ids(Delay.class),
 				Task.activityType_FIELDNAME, ActivityType.delay);
-		List<String> ids_none_embed = emc.idsNotInAndEqual(Task.class, Task.activity_FIELDNAME, emc.ids(Embed.class),
+		List<String> ids_none_embed = emc.idsEqualAndNotIn(Task.class, Task.activity_FIELDNAME, emc.ids(Embed.class),
 				Task.activityType_FIELDNAME, ActivityType.embed);
-		List<String> ids_none_end = emc.idsNotInAndEqual(Task.class, Task.activity_FIELDNAME, emc.ids(End.class),
+		List<String> ids_none_end = emc.idsEqualAndNotIn(Task.class, Task.activity_FIELDNAME, emc.ids(End.class),
 				Task.activityType_FIELDNAME, ActivityType.end);
-		List<String> ids_none_invoke = emc.idsNotInAndEqual(Task.class, Task.activity_FIELDNAME, emc.ids(Invoke.class),
+		List<String> ids_none_invoke = emc.idsEqualAndNotIn(Task.class, Task.activity_FIELDNAME, emc.ids(Invoke.class),
 				Task.activityType_FIELDNAME, ActivityType.invoke);
-		List<String> ids_none_manual = emc.idsNotInAndEqual(Task.class, Task.activity_FIELDNAME, emc.ids(Manual.class),
+		List<String> ids_none_manual = emc.idsEqualAndNotIn(Task.class, Task.activity_FIELDNAME, emc.ids(Manual.class),
 				Task.activityType_FIELDNAME, ActivityType.manual);
-		List<String> ids_none_merge = emc.idsNotInAndEqual(Task.class, Task.activity_FIELDNAME, emc.ids(Merge.class),
+		List<String> ids_none_merge = emc.idsEqualAndNotIn(Task.class, Task.activity_FIELDNAME, emc.ids(Merge.class),
 				Task.activityType_FIELDNAME, ActivityType.merge);
-		List<String> ids_none_message = emc.idsNotInAndEqual(Task.class, Task.activity_FIELDNAME,
+		List<String> ids_none_message = emc.idsEqualAndNotIn(Task.class, Task.activity_FIELDNAME,
 				emc.ids(Message.class), Task.activityType_FIELDNAME, ActivityType.message);
-		List<String> ids_none_parallel = emc.idsNotInAndEqual(Task.class, Task.activity_FIELDNAME,
+		List<String> ids_none_parallel = emc.idsEqualAndNotIn(Task.class, Task.activity_FIELDNAME,
 				emc.ids(Parallel.class), Task.activityType_FIELDNAME, ActivityType.parallel);
-		List<String> ids_none_service = emc.idsNotInAndEqual(Task.class, Task.activity_FIELDNAME,
+		List<String> ids_none_service = emc.idsEqualAndNotIn(Task.class, Task.activity_FIELDNAME,
 				emc.ids(Service.class), Task.activityType_FIELDNAME, ActivityType.service);
-		List<String> ids_none_split = emc.idsNotInAndEqual(Task.class, Task.activity_FIELDNAME, emc.ids(Split.class),
+		List<String> ids_none_split = emc.idsEqualAndNotIn(Task.class, Task.activity_FIELDNAME, emc.ids(Split.class),
 				Task.activityType_FIELDNAME, ActivityType.split);
 		List<String> ids = ListUtils
 				.sum(ListUtils
@@ -193,33 +193,33 @@ public class Reorganize implements Job {
 	private Integer rerouteWorkActivityNotExisted(Business business) throws Exception {
 		TimeStamp stamp = new TimeStamp();
 		EntityManagerContainer emc = business.entityManagerContainer();
-		List<String> ids_none_agent = emc.idsNotInAndEqual(Work.class, Work.activity_FIELDNAME, emc.ids(Agent.class),
+		List<String> ids_none_agent = emc.idsEqualAndNotIn(Work.class, Work.activity_FIELDNAME, emc.ids(Agent.class),
 				Work.activityType_FIELDNAME, ActivityType.agent);
-		List<String> ids_none_begin = emc.idsNotInAndEqual(Work.class, Work.activity_FIELDNAME, emc.ids(Begin.class),
+		List<String> ids_none_begin = emc.idsEqualAndNotIn(Work.class, Work.activity_FIELDNAME, emc.ids(Begin.class),
 				Work.activityType_FIELDNAME, ActivityType.begin);
-		List<String> ids_none_cancel = emc.idsNotInAndEqual(Work.class, Work.activity_FIELDNAME, emc.ids(Cancel.class),
+		List<String> ids_none_cancel = emc.idsEqualAndNotIn(Work.class, Work.activity_FIELDNAME, emc.ids(Cancel.class),
 				Work.activityType_FIELDNAME, ActivityType.cancel);
-		List<String> ids_none_choice = emc.idsNotInAndEqual(Work.class, Work.activity_FIELDNAME, emc.ids(Choice.class),
+		List<String> ids_none_choice = emc.idsEqualAndNotIn(Work.class, Work.activity_FIELDNAME, emc.ids(Choice.class),
 				Work.activityType_FIELDNAME, ActivityType.choice);
-		List<String> ids_none_delay = emc.idsNotInAndEqual(Work.class, Work.activity_FIELDNAME, emc.ids(Delay.class),
+		List<String> ids_none_delay = emc.idsEqualAndNotIn(Work.class, Work.activity_FIELDNAME, emc.ids(Delay.class),
 				Work.activityType_FIELDNAME, ActivityType.delay);
-		List<String> ids_none_embed = emc.idsNotInAndEqual(Work.class, Work.activity_FIELDNAME, emc.ids(Embed.class),
+		List<String> ids_none_embed = emc.idsEqualAndNotIn(Work.class, Work.activity_FIELDNAME, emc.ids(Embed.class),
 				Work.activityType_FIELDNAME, ActivityType.embed);
-		List<String> ids_none_end = emc.idsNotInAndEqual(Work.class, Work.activity_FIELDNAME, emc.ids(End.class),
+		List<String> ids_none_end = emc.idsEqualAndNotIn(Work.class, Work.activity_FIELDNAME, emc.ids(End.class),
 				Work.activityType_FIELDNAME, ActivityType.end);
-		List<String> ids_none_invoke = emc.idsNotInAndEqual(Work.class, Work.activity_FIELDNAME, emc.ids(Invoke.class),
+		List<String> ids_none_invoke = emc.idsEqualAndNotIn(Work.class, Work.activity_FIELDNAME, emc.ids(Invoke.class),
 				Work.activityType_FIELDNAME, ActivityType.invoke);
-		List<String> ids_none_manual = emc.idsNotInAndEqual(Work.class, Work.activity_FIELDNAME, emc.ids(Manual.class),
+		List<String> ids_none_manual = emc.idsEqualAndNotIn(Work.class, Work.activity_FIELDNAME, emc.ids(Manual.class),
 				Work.activityType_FIELDNAME, ActivityType.manual);
-		List<String> ids_none_merge = emc.idsNotInAndEqual(Work.class, Work.activity_FIELDNAME, emc.ids(Merge.class),
+		List<String> ids_none_merge = emc.idsEqualAndNotIn(Work.class, Work.activity_FIELDNAME, emc.ids(Merge.class),
 				Work.activityType_FIELDNAME, ActivityType.merge);
-		List<String> ids_none_message = emc.idsNotInAndEqual(Work.class, Work.activity_FIELDNAME,
+		List<String> ids_none_message = emc.idsEqualAndNotIn(Work.class, Work.activity_FIELDNAME,
 				emc.ids(Message.class), Work.activityType_FIELDNAME, ActivityType.message);
-		List<String> ids_none_parallel = emc.idsNotInAndEqual(Work.class, Work.activity_FIELDNAME,
+		List<String> ids_none_parallel = emc.idsEqualAndNotIn(Work.class, Work.activity_FIELDNAME,
 				emc.ids(Parallel.class), Work.activityType_FIELDNAME, ActivityType.parallel);
-		List<String> ids_none_service = emc.idsNotInAndEqual(Work.class, Work.activity_FIELDNAME,
+		List<String> ids_none_service = emc.idsEqualAndNotIn(Work.class, Work.activity_FIELDNAME,
 				emc.ids(Service.class), Work.activityType_FIELDNAME, ActivityType.service);
-		List<String> ids_none_split = emc.idsNotInAndEqual(Work.class, Work.activity_FIELDNAME, emc.ids(Split.class),
+		List<String> ids_none_split = emc.idsEqualAndNotIn(Work.class, Work.activity_FIELDNAME, emc.ids(Split.class),
 				Work.activityType_FIELDNAME, ActivityType.split);
 		List<String> ids = ListUtils
 				.sum(ListUtils.sum(

@@ -39,8 +39,8 @@ class ActionEdit extends BaseAction {
 			emc.beginTransaction(Unit.class);
 			unit = emc.find(unit.getId(), Unit.class);
 			unit.setControllerList(ListTools.extractProperty(
-					business.person().pick(ListTools.trim(unit.getControllerList(), true, true)), JpaObject.id_FIELDNAME,
-					String.class, true, true));
+					business.person().pick(ListTools.trim(unit.getControllerList(), true, true)),
+					JpaObject.id_FIELDNAME, String.class, true, true));
 			Wi.copier.copy(wi, unit);
 			/** 如果唯一标识不为空,要检查唯一标识是否唯一 */
 			if (this.duplicateUniqueWhenNotEmpty(business, unit)) {
@@ -69,8 +69,9 @@ class ActionEdit extends BaseAction {
 		private static final long serialVersionUID = -7527954993386512109L;
 
 		static WrapCopier<Wi, Unit> copier = WrapCopierFactory.wi(Wi.class, Unit.class, null,
-				ListTools.toList(JpaObject.FieldsUnmodify, "superior", "pinyin", "pinyinInitial", "level",
-						"levelName", "inheritedControllerList"));
+				ListTools.toList(JpaObject.FieldsUnmodify, Unit.superior_FIELDNAME, Unit.pinyin_FIELDNAME,
+						Unit.pinyinInitial_FIELDNAME, Unit.level_FIELDNAME, Unit.levelName_FIELDNAME,
+						Unit.inheritedControllerList_FIELDNAME));
 	}
 
 }

@@ -19,13 +19,12 @@ public class ActionTemplate extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionTemplate.class);
 
-	private static String name = "input_person_template.xls";
+	private static String name = "input_person_template.xlsx";
 
 	protected ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 		try (XSSFWorkbook workbook = new XSSFWorkbook(); ByteArrayOutputStream os = new ByteArrayOutputStream()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			this.template(workbook);
-
 			workbook.write(os);
 			Wo wo = new Wo(os.toByteArray(), this.contentType(true, name), this.contentDisposition(true, name));
 			result.setData(wo);
