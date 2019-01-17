@@ -53,7 +53,7 @@ public class SyncOrganization {
 
 	private ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
 	private ScriptEngine engine = scriptEngineManager.getEngineByName("nashorn");
-	private Pattern pattern = Pattern.compile(com.x.base.core.project.config.Person.RegularExpression_Script);
+	private Pattern pattern = Pattern.compile(com.x.base.core.project.config.Person.REGULAREXPRESSION_SCRIPT);
 
 	public PullResult execute(Business business) throws Exception {
 		logger.print("钉钉进行人员同步.");

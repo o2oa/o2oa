@@ -34,14 +34,6 @@ public class EnhancePersistenceXmlWriter {
 	private static void write(Argument arg) throws Exception {
 		try {
 			Document document = DocumentHelper.createDocument();
-			// Element persistence = document.addElement("persistence",
-			// "http://java.sun.com/xml/ns/persistence");
-			// persistence.addAttribute(QName.get("schemaLocation", "xsi",
-			// "http://www.w3.org/2001/XMLSchema-instance"),
-			// "http://java.sun.com/xml/ns/persistence
-			// http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd");
-			// persistence.addAttribute("version", "2.0");
-
 			Element persistence = document.addElement("persistence", "http://java.sun.com/xml/ns/persistence");
 			persistence.addAttribute(QName.get("schemaLocation", "xsi", "http://www.w3.org/2001/XMLSchema-instance"),
 					"http://java.sun.com/xml/ns/persistence  http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd");

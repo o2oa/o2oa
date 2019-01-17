@@ -116,7 +116,7 @@ public class Project extends SliceJpaObject {
 	public static final Integer DEFAULT_MLP_GENERATEINTEXTCUTOFFSIZE = 30;
 
 	public static final String PROPERTY_MLP_LEARNINTEXTCUTOFFSIZE = "learnInTextCutoffSize";
-	public static final Integer DEFAULT_MLP_LEARNINTEXTCUTOFFSIZE = 2000;
+	public static final Integer DEFAULT_MLP_LEARNINTEXTCUTOFFSIZE = 1000;
 
 	public static final String STATUS_GENERATING = "generating";
 	public static final String STATUS_LEARNING = "learning";

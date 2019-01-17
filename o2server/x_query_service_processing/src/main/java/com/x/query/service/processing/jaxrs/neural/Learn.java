@@ -58,7 +58,6 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.ByteTools;
 import com.x.base.core.project.tools.DoubleTools;
 import com.x.base.core.project.tools.ListTools;
@@ -72,25 +71,41 @@ import com.x.query.core.entity.neural.OutText;
 import com.x.query.core.entity.neural.OutValue;
 import com.x.query.core.entity.neural.Project;
 import com.x.query.service.processing.Business;
-import com.x.query.service.processing.ThisApplication;
 
-public class LearnQueue extends AbstractQueue<String> {
+public class Learn {
 
-	private static Logger logger = LoggerFactory.getLogger(LearnQueue.class);
+	private static Logger logger = LoggerFactory.getLogger(Learn.class);
 
-	@Override
-	protected void execute(final String projectId) throws Exception {
+	private volatile static String learningProject = "";
+
+	private volatile static boolean stop = false;
+
+	private Learn() {
+
+	}
+
+	public static String learningProject() {
+		return learningProject;
+	}
+
+	public static Learn newInstance() throws Exception {
+		if (StringUtils.isNotEmpty(learningProject)) {
+			throw new Exception("Learn already concreted for project:" + learningProject + ".");
+		}
+		return new Learn();
+	}
+
+	public static void stop() {
+		stop = true;
+	}
+
+	public void execute(final String projectId) throws Exception {
+		learningProject = projectId;
+		stop = false;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			TimeStamp stamp = new TimeStamp();
 			Business business = new Business(emc);
 			Project project = this.refreshProject(business, projectId);
-			if (StringUtils.equals(Project.STATUS_GENERATING, project.getStatus())) {
-				throw new ExceptionGenerating(project.getName());
-			}
-			if (StringUtils.equals(Project.STATUS_LEARNING, project.getStatus())) {
-				throw new ExceptionLearning(project.getName());
-			}
-			ThisApplication.learning_stop_tag.remove(project.getId());
 			final String projectName = project.getName();
 			logger.info("神经网络多层感知机 ({}) 学习开始.", projectName);
 			emc.beginTransaction(Project.class);
@@ -103,12 +118,11 @@ public class LearnQueue extends AbstractQueue<String> {
 					Project.DEFAULT_MLP_MAXERROR);
 			Integer maxIteration = MapTools.getInteger(project.getPropertyMap(), Project.PROPERTY_MLP_MAXITERATION,
 					Project.DEFAULT_MLP_MAXITERATION);
+			InTextBag inTextBag = this.inTextBag(business, project);
+			OutTextBag outTextBag = this.outTextBag(business, project);
 			try {
-				InTextBag inTextBag = this.inTextBag(business, project);
-				OutTextBag outTextBag = this.outTextBag(business, project);
 				NeuralNetwork<MomentumBackpropagation> neuralNetwork = project.createNeuralNetwork(inTextBag.size(),
 						outTextBag.size(), hiddenLayerCount);
-				// this.saveNeuralNetwork(neuralNetwork, project, "start");
 				neuralNetwork.getLearningRule().addListener(new LearningEventListener() {
 					@Override
 					public void handleLearningEvent(LearningEvent learningEvent) {
@@ -117,10 +131,11 @@ public class LearnQueue extends AbstractQueue<String> {
 							if (Objects.equals(LearningEvent.Type.EPOCH_ENDED, learningEvent.getEventType())) {
 								emc.beginTransaction(Project.class);
 								o.setIntermediateNnet(encode(neuralNetwork));
-								logger.info("神经网络多层感知机 ({}) 学习进度 {} / {}, 总误差: {}.", projectName,
+								logger.info("神经网络多层感知机 ({}) 学习进度 {} / {}, 总误差: {}, 单次耗时: {}.", projectName,
 										neuralNetwork.getLearningRule().getCurrentIteration(), maxIteration,
-										neuralNetwork.getLearningRule().getErrorFunction().getTotalError());
-								if (ThisApplication.learning_stop_tag.remove(o.getId())) {
+										neuralNetwork.getLearningRule().getErrorFunction().getTotalError(),
+										stamp.stampSeconds());
+								if (stop) {
 									neuralNetwork.stopLearning();
 									logger.info("神经网络多层感知机 ({}) 学习停止.", projectName);
 									o.setStatus("");
@@ -147,7 +162,6 @@ public class LearnQueue extends AbstractQueue<String> {
 				neuralNetwork.learn(learnSet);
 				project = refreshProject(business, projectId);
 				emc.beginTransaction(Project.class);
-				// this.saveNeuralNetwork(neuralNetwork, project, "completed");
 				project.setNnet(this.encode(neuralNetwork));
 				project.setStatus("");
 				project.setInValueCount(inTextBag.size());
@@ -196,6 +210,9 @@ public class LearnQueue extends AbstractQueue<String> {
 			} catch (Exception e) {
 				logger.error(e);
 			}
+		} finally {
+			learningProject = "";
+			stop = false;
 		}
 	}
 
@@ -241,6 +258,7 @@ public class LearnQueue extends AbstractQueue<String> {
 		return data;
 	}
 
+	/* 生成输入值包 */
 	private InTextBag inTextBag(Business business, Project project) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(InText.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -248,14 +266,14 @@ public class LearnQueue extends AbstractQueue<String> {
 		Root<InText> root = cq.from(InText.class);
 		Predicate p = cb.equal(root.get(InText_.project), project.getId());
 		cq.select(root).where(p).orderBy(cb.desc(root.get(InText_.count)));
-		List<InText> os = em
-				.createQuery(cq.distinct(true)).setMaxResults(MapTools.getInteger(project.getPropertyMap(),
-						Project.PROPERTY_MLP_LEARNINTEXTCUTOFFSIZE, Project.DEFAULT_MLP_LEARNINTEXTCUTOFFSIZE))
-				.getResultList();
+		Integer cutoff = MapTools.getInteger(project.getPropertyMap(), Project.PROPERTY_MLP_LEARNINTEXTCUTOFFSIZE,
+				Project.DEFAULT_MLP_LEARNINTEXTCUTOFFSIZE);
+		List<InText> os = em.createQuery(cq.distinct(true)).setMaxResults(cutoff).getResultList();
 		InTextBag inTextBag = new InTextBag(os);
 		return inTextBag;
 	}
 
+	/* 生成输出值包 */
 	private OutTextBag outTextBag(Business business, Project project) throws Exception {
 		List<OutText> os = business.entityManagerContainer().listEqual(OutText.class, OutText.project_FIELDNAME,
 				project.getId());
@@ -312,6 +330,7 @@ public class LearnQueue extends AbstractQueue<String> {
 			return this.list.size();
 		}
 
+		/* 将outText转换为outValue进行保存 */
 		public void saveToOutValue(Business business) throws Exception {
 			List<OutValue> os = new ArrayList<>();
 			for (OutText text : list) {
@@ -322,7 +341,7 @@ public class LearnQueue extends AbstractQueue<String> {
 				outValue.setSerial(text.getSerial());
 				os.add(outValue);
 			}
-			for (List<OutValue> values : ListTools.batch(os, 2000)) {
+			for (List<OutValue> values : ListTools.batch(os, 1000)) {
 				business.entityManagerContainer().beginTransaction(OutValue.class);
 				for (OutValue o : values) {
 					business.entityManagerContainer().persist(o, CheckPersistType.all);
@@ -354,6 +373,7 @@ public class LearnQueue extends AbstractQueue<String> {
 			return this.list.size();
 		}
 
+		/* 将InText转换为InValue进行保存 */
 		public void saveToInValue(Business business) throws Exception {
 			List<InValue> os = new ArrayList<>();
 			InText text = null;
@@ -367,6 +387,7 @@ public class LearnQueue extends AbstractQueue<String> {
 				inValue.setInTextSerial(text.getSerial());
 				os.add(inValue);
 			}
+			/* 批量保存 */
 			for (List<InValue> values : ListTools.batch(os, 1000)) {
 				business.entityManagerContainer().beginTransaction(InValue.class);
 				for (InValue o : values) {

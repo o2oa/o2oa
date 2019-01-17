@@ -30,12 +30,18 @@ class ActionMode extends BaseAction {
 		} else {
 			wo.setFaceLogin(false);
 		}
+		if (BooleanUtils.isTrue(Config.person().getCaptchaLogin())) {
+			wo.setCaptchaLogin(true);
+		} else {
+			wo.setCaptchaLogin(false);
+		}
 		result.setData(wo);
 		return result;
 	}
 
 	public static class Wo extends GsonPropertyObject {
 
+		private Boolean captchaLogin = true;
 		private Boolean codeLogin = false;
 		private Boolean bindLogin = false;
 		private Boolean faceLogin = false;
@@ -62,6 +68,14 @@ class ActionMode extends BaseAction {
 
 		public void setFaceLogin(Boolean faceLogin) {
 			this.faceLogin = faceLogin;
+		}
+
+		public Boolean getCaptchaLogin() {
+			return captchaLogin;
+		}
+
+		public void setCaptchaLogin(Boolean captchaLogin) {
+			this.captchaLogin = captchaLogin;
 		}
 
 	}

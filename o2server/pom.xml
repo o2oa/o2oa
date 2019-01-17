@@ -529,7 +529,7 @@
 						</execution>
 						<execution>
 							<id>enhance</id>
-							<!-- <phase>prepare-package</phase> -->
+							<!-- <phase>process-classes</phase> -->
 							<phase>none</phase>
 							<configuration>
 								<target>

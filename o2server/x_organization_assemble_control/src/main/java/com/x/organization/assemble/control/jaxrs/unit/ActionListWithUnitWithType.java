@@ -92,15 +92,6 @@ class ActionListWithUnitWithType extends BaseAction {
 		@FieldDescribe("直接下级组织组织对象")
 		private List<Wo> woSubDirectUnitList = new ArrayList<>();
 
-		// @FieldDescribe("直接下级身份对象")
-		// private List<WoIdentity> woSubDirectIdentityList = new ArrayList<>();
-
-		// @FieldDescribe("直接下级组织数量")
-		// private Long countSubDirectUnit = 0L;
-
-		// @FieldDescribe("直接下级身份数量")
-		// private Long subDirectIdentityCount = 0L;
-
 		static WrapCopier<Unit, Wo> copier = WrapCopierFactory.wo(Unit.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 
@@ -200,68 +191,5 @@ class ActionListWithUnitWithType extends BaseAction {
 		}
 		return null;
 	}
-
-	// private void format(List<Wo> tree, Wo wo) {
-	// if (wo.getLevel() == 1) {
-	// tree.add(wo);
-	// } else {
-	// Wo o = this.find(tree, wo.getSuperior());
-	// if (null != o) {
-	// o.getWoSubDirectUnitList().add(wo);
-	// }
-	// }
-	// }
-	//
-	// private Wo find(List<Wo> tree, String id) {
-	// for (Wo o : tree) {
-	// if (StringUtils.equalsIgnoreCase(id, o.getId())) {
-	// return o;
-	// } else if (ListTools.isNotEmpty(o.getWoSubDirectUnitList())) {
-	// Wo wo = find(o.getWoSubDirectUnitList(), id);
-	// if (null != wo) {
-	// return wo;
-	// }
-	// }
-	// }
-	// return null;
-	// }
-
-	// private void referenceSubDirectIdentity(Business business, Wo wo) throws
-	// Exception {
-	// EntityManager em = business.entityManagerContainer().get(Identity.class);
-	// CriteriaBuilder cb = em.getCriteriaBuilder();
-	// CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
-	// Root<Identity> root = cq.from(Identity.class);
-	// Predicate p = cb.equal(root.get(Identity_.unit), wo.getId());
-	// List<Identity> os =
-	// em.createQuery(cq.select(root).where(p)).getResultList();
-	// List<WoIdentity> wos = WoIdentity.copier.copy(os);
-	// wos = business.identity().sort(wos);
-	// wo.setWoSubDirectIdentityList(wos);
-	// }
-
-	// private Long countSubDirectUnit(Business business, Wo wo) throws
-	// Exception {
-	// EntityManager em = business.entityManagerContainer().get(Unit.class);
-	// CriteriaBuilder cb = em.getCriteriaBuilder();
-	// CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-	// Root<Unit> root = cq.from(Unit.class);
-	// Predicate p = cb.equal(root.get(Unit_.superior), wo.getId());
-	// Long count =
-	// em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
-	// return count;
-	// }
-
-	// private Long countSubDirectIdentity(Business business, Wo wo) throws
-	// Exception {
-	// EntityManager em = business.entityManagerContainer().get(Identity.class);
-	// CriteriaBuilder cb = em.getCriteriaBuilder();
-	// CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-	// Root<Identity> root = cq.from(Identity.class);
-	// Predicate p = cb.equal(root.get(Identity_.unit), wo.getId());
-	// Long count =
-	// em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
-	// return count;
-	// }
 
 }

@@ -1,14 +1,16 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>o2oa</groupId>
-    <artifactId>o2server</artifactId>
-    <version>4.0.5</version>
-  </parent>
-  <artifactId>x_organization_assemble_express</artifactId>
- <packaging>war</packaging>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>o2oa</groupId>
+		<artifactId>o2server</artifactId>
+		<version>4.0.5</version>
+	</parent>
+	<artifactId>x_organization_assemble_express</artifactId>
+	<packaging>war</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>o2oa</groupId>
@@ -30,7 +32,7 @@
 					</execution>
 					<execution>
 						<id>describe</id>
-						<phase>generate-sources</phase>
+						<phase>prepare-package</phase>
 					</execution>
 				</executions>
 			</plugin>

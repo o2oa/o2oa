@@ -14,7 +14,6 @@ public class QueueProcessThread<T> implements Runnable {
 	@Override
 	public void run() {
 		try {
-			// 执行OkrAbstractQueue对象的execute方法
 			queue.execute(o);
 		} catch (Exception e) {
 			e.printStackTrace();

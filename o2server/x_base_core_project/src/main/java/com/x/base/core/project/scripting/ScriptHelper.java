@@ -69,14 +69,12 @@ public class ScriptHelper {
 	public Object eval(String scriptText) throws Exception {
 		StringBuffer sb = new StringBuffer();
 		try {
-			sb.append("(function(){").append(SystemUtils.LINE_SEPARATOR);
+			sb.append("(function(){").append(System.lineSeparator());
 			if (StringUtils.isNotEmpty(scriptText)) {
-				sb.append(scriptText).append(SystemUtils.LINE_SEPARATOR);
+				sb.append(scriptText).append(System.lineSeparator());
 			}
 			sb.append("})();");
-			// return this.engine.eval(sb.toString(), scriptContext);
 			Object obj = this.engine.eval(sb.toString());
-			//logger.debug("eval return:{}.", obj);
 			return obj;
 		} catch (Exception e) {
 			throw new ExceptionScriptEval(e, sb.toString());

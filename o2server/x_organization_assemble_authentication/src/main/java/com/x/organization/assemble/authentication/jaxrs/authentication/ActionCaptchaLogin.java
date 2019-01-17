@@ -40,11 +40,14 @@ class ActionCaptchaLogin extends BaseAction {
 			if (StringUtils.isEmpty(password)) {
 				throw new ExceptionPasswordEmpty();
 			}
-			if (StringUtils.isEmpty(captcha) || StringUtils.isEmpty(captchaAnswer)) {
-				throw new ExceptionCaptchaEmpty();
-			}
-			if (!business.instrument().captcha().validate(captcha, captchaAnswer)) {
-				throw new ExceptionInvalidCaptcha();
+			/* 可以通过设置跳过图片验证码. */
+			if (Config.person().getCaptchaLogin()) {
+				if (StringUtils.isEmpty(captcha) || StringUtils.isEmpty(captchaAnswer)) {
+					throw new ExceptionCaptchaEmpty();
+				}
+				if (!business.instrument().captcha().validate(captcha, captchaAnswer)) {
+					throw new ExceptionInvalidCaptcha();
+				}
 			}
 			if (Config.token().isInitialManager(credential)) {
 				if (!StringUtils.equals(Config.token().getPassword(), password)) {

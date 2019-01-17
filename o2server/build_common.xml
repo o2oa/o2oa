@@ -63,9 +63,11 @@
 				path:'${basedir}/src/main/resources/META-INF/x_persistence.xml'
 			}" />
 		</java>
+		<echo>${project} create persistence xml: ${basedir}/src/main/resources/META-INF/x_persistence.xml</echo>
 	</target>
 
 	<target name="describe">
+		<echo>describe project:${project}</echo>
 		<mkdir dir="${basedir}/src/main/webapp/describe" />
 		<delete includeemptydirs="true">
 			<fileset dir="${basedir}/src/main/webapp/describe" includes="**/*" />
@@ -112,6 +114,7 @@
 					path:'${basedir}/src/main/resources/META-INF/persistence.xml'
 				}" />
 		</java>
+		<sleep seconds="1" />
 	</target>
 
 </project>

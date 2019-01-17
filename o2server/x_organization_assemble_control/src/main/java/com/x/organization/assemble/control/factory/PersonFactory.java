@@ -110,122 +110,71 @@ public class PersonFactory extends AbstractFactory {
 	}
 
 	public String getWithName(String name, String excludeId) throws Exception {
-		if (StringUtils.isEmpty(name) || (!JpaObjectTools.withinDefinedLength(name, Person.class, "name"))) {
+		if (StringUtils.isEmpty(name)
+				|| (!JpaObjectTools.withinDefinedLength(name, Person.class, Person.name_FIELDNAME))) {
 			return null;
 		}
-		EntityManager em = this.entityManagerContainer().get(Person.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Person> root = cq.from(Person.class);
-		Predicate p = cb.equal(root.get(Person_.name), name);
-		if (StringUtils.isNotEmpty(excludeId)) {
-			p = cb.and(p, cb.notEqual(root.get(Person_.id), excludeId));
-		}
-		cq.select(root.get(Person_.id)).where(p);
-		List<String> list = em.createQuery(cq).getResultList();
+		List<String> list = this.entityManagerContainer().idsEqualAndNotEqual(Person.class, Person.name_FIELDNAME, name,
+				Person.id_FIELDNAME, excludeId);
 		return this.returnNotDuplicateId(list);
 	}
 
 	public String getWithMobile(String mobile, String excludeId) throws Exception {
-		if (StringUtils.isEmpty(mobile) || (!JpaObjectTools.withinDefinedLength(mobile, Person.class, "mobile"))) {
+		if (StringUtils.isEmpty(mobile)
+				|| (!JpaObjectTools.withinDefinedLength(mobile, Person.class, Person.mobile_FIELDNAME))) {
 			return null;
 		}
-		EntityManager em = this.entityManagerContainer().get(Person.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Person> root = cq.from(Person.class);
-		Predicate p = cb.equal(root.get(Person_.mobile), mobile);
-		if (StringUtils.isNotEmpty(excludeId)) {
-			p = cb.and(p, cb.notEqual(root.get(Person_.id), excludeId));
-		}
-		cq.select(root.get(Person_.id)).where(p);
-		List<String> list = em.createQuery(cq).getResultList();
+		List<String> list = this.entityManagerContainer().idsEqualAndNotEqual(Person.class, Person.mobile_FIELDNAME,
+				mobile, Person.id_FIELDNAME, excludeId);
 		return this.returnNotDuplicateId(list);
 	}
 
 	public String getWithEmployee(String employee, String excludeId) throws Exception {
 		if (StringUtils.isEmpty(employee)
-				|| (!JpaObjectTools.withinDefinedLength(employee, Person.class, "employee"))) {
+				|| (!JpaObjectTools.withinDefinedLength(employee, Person.class, Person.employee_FIELDNAME))) {
 			return null;
 		}
-		EntityManager em = this.entityManagerContainer().get(Person.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Person> root = cq.from(Person.class);
-		Predicate p = cb.equal(root.get(Person_.employee), employee);
-		if (StringUtils.isNotEmpty(excludeId)) {
-			p = cb.and(p, cb.notEqual(root.get(Person_.id), excludeId));
-		}
-		cq.select(root.get(Person_.id)).where(p);
-		List<String> list = em.createQuery(cq).getResultList();
+		List<String> list = this.entityManagerContainer().idsEqualAndNotEqual(Person.class, Person.employee_FIELDNAME,
+				employee, Person.id_FIELDNAME, excludeId);
 		return this.returnNotDuplicateId(list);
 	}
 
 	public String getWithUnique(String unique, String excludeId) throws Exception {
-		if (StringUtils.isEmpty(unique) || (!JpaObjectTools.withinDefinedLength(unique, Person.class, "unique"))) {
+		if (StringUtils.isEmpty(unique)
+				|| (!JpaObjectTools.withinDefinedLength(unique, Person.class, Person.unique_FIELDNAME))) {
 			return null;
 		}
-		EntityManager em = this.entityManagerContainer().get(Person.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Person> root = cq.from(Person.class);
-		Predicate p = cb.equal(root.get(Person_.unique), unique);
-		if (StringUtils.isNotEmpty(excludeId)) {
-			p = cb.and(p, cb.notEqual(root.get(Person_.id), excludeId));
-		}
-		cq.select(root.get(Person_.id)).where(p);
-		List<String> list = em.createQuery(cq).getResultList();
+		List<String> list = this.entityManagerContainer().idsEqualAndNotEqual(Person.class, Person.unique_FIELDNAME,
+				unique, Person.id_FIELDNAME, excludeId);
 		return this.returnNotDuplicateId(list);
 	}
 
 	public String getWithQq(String qq, String excludeId) throws Exception {
-		if (StringUtils.isEmpty(qq) || (!JpaObjectTools.withinDefinedLength(qq, Person.class, "qq"))) {
+		if (StringUtils.isEmpty(qq) || (!JpaObjectTools.withinDefinedLength(qq, Person.class, Person.qq_FIELDNAME))) {
 			return null;
 		}
-		EntityManager em = this.entityManagerContainer().get(Person.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Person> root = cq.from(Person.class);
-		Predicate p = cb.equal(root.get(Person_.qq), qq);
-		if (StringUtils.isNotEmpty(excludeId)) {
-			p = cb.and(p, cb.notEqual(root.get(Person_.id), excludeId));
-		}
-		cq.select(root.get(Person_.id)).where(p);
-		List<String> list = em.createQuery(cq).getResultList();
+		List<String> list = this.entityManagerContainer().idsEqualAndNotEqual(Person.class, Person.qq_FIELDNAME, qq,
+				Person.id_FIELDNAME, excludeId);
 		return this.returnNotDuplicateId(list);
 	}
 
 	public String getWithMail(String mail, String excludeId) throws Exception {
-		if (StringUtils.isEmpty(mail) || (!JpaObjectTools.withinDefinedLength(mail, Person.class, "mail"))) {
+		if (StringUtils.isEmpty(mail)
+				|| (!JpaObjectTools.withinDefinedLength(mail, Person.class, Person.mail_FIELDNAME))) {
 			return null;
 		}
-		EntityManager em = this.entityManagerContainer().get(Person.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Person> root = cq.from(Person.class);
-		Predicate p = cb.equal(root.get(Person_.mail), mail);
-		if (StringUtils.isNotEmpty(excludeId)) {
-			p = cb.and(p, cb.notEqual(root.get(Person_.id), excludeId));
-		}
-		cq.select(root.get(Person_.id)).where(p);
-		List<String> list = em.createQuery(cq).getResultList();
+		List<String> list = this.entityManagerContainer().idsEqualAndNotEqual(Person.class, Person.mail_FIELDNAME, mail,
+				Person.id_FIELDNAME, excludeId);
 		return this.returnNotDuplicateId(list);
 	}
 
 	public String getWithWeixin(String weixin, String excludeId) throws Exception {
-		if (StringUtils.isEmpty(weixin) || (!JpaObjectTools.withinDefinedLength(weixin, Person.class, "weixin"))) {
+		if (StringUtils.isEmpty(weixin)
+				|| (!JpaObjectTools.withinDefinedLength(weixin, Person.class, Person.weixin_FIELDNAME))) {
 			return null;
 		}
-		EntityManager em = this.entityManagerContainer().get(Person.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Person> root = cq.from(Person.class);
-		Predicate p = cb.equal(root.get(Person_.weixin), weixin);
-		if (StringUtils.isNotEmpty(excludeId)) {
-			p = cb.and(p, cb.notEqual(root.get(Person_.id), excludeId));
-		}
-		cq.select(root.get(Person_.id)).where(p);
-		List<String> list = em.createQuery(cq).getResultList();
+		List<String> list = this.entityManagerContainer().idsEqualAndNotEqual(Person.class, Person.mail_FIELDNAME,
+				weixin, Person.id_FIELDNAME, excludeId);
 		return this.returnNotDuplicateId(list);
 	}
 
@@ -251,31 +200,31 @@ public class PersonFactory extends AbstractFactory {
 		}
 	}
 
-	public Person getWithDingdingIdObject(String dingdingId) throws Exception {
-		EntityManager em = this.entityManagerContainer().get(Person.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
-		Root<Person> root = cq.from(Person.class);
-		Predicate p = cb.equal(root.get(Person_.dingdingId), dingdingId);
-		List<Person> os = em.createQuery(cq.select(root).where(p)).setMaxResults(1).getResultList();
-		if (os.isEmpty()) {
-			return null;
-		} else {
-			return os.get(0);
-		}
-	}
-
-	public Person getWithQiyeweixinIdObject(String dingdingId) throws Exception {
-		EntityManager em = this.entityManagerContainer().get(Person.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
-		Root<Person> root = cq.from(Person.class);
-		Predicate p = cb.equal(root.get(Person_.qiyeweixinId), dingdingId);
-		List<Person> os = em.createQuery(cq.select(root).where(p)).setMaxResults(1).getResultList();
-		if (os.isEmpty()) {
-			return null;
-		} else {
-			return os.get(0);
-		}
-	}
+//	public Person getWi1thDingdingIdObject(String dingdingId) throws Exception {
+//		EntityManager em = this.entityManagerContainer().get(Person.class);
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
+//		Root<Person> root = cq.from(Person.class);
+//		Predicate p = cb.equal(root.get(Person_.dingdingId), dingdingId);
+//		List<Person> os = em.createQuery(cq.select(root).where(p)).setMaxResults(1).getResultList();
+//		if (os.isEmpty()) {
+//			return null;
+//		} else {
+//			return os.get(0);
+//		}
+//	}
+//
+//	public Person getWithQiyeweixinIdObject(String dingdingId) throws Exception {
+//		EntityManager em = this.entityManagerContainer().get(Person.class);
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
+//		Root<Person> root = cq.from(Person.class);
+//		Predicate p = cb.equal(root.get(Person_.qiyeweixinId), dingdingId);
+//		List<Person> os = em.createQuery(cq.select(root).where(p)).setMaxResults(1).getResultList();
+//		if (os.isEmpty()) {
+//			return null;
+//		} else {
+//			return os.get(0);
+//		}
+//	}
 }

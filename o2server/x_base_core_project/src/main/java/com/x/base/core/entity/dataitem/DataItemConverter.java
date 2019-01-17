@@ -9,7 +9,6 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -46,7 +45,8 @@ public class DataItemConverter<T extends DataItem> {
 			if (t.getItemType() == ItemType.o) {
 				T next = list.get(i + 1);
 				/** 是一个数字的值,说明是数组中的一个 */
-				if (NumberUtils.isNumber(next.paths().get(next.paths().size() - 1))) {
+				if (StringUtils.isNumeric(next.paths().get(next.paths().size() - 1))) {
+					// if (NumberUtils.isNumber(next.paths().get(next.paths().size() - 1))) {
 					/** 说明上一个T应该是一个Array */
 					t.setItemType(ItemType.a);
 				}
@@ -149,13 +149,15 @@ public class DataItemConverter<T extends DataItem> {
 		JsonElement o = root;
 		for (int i = 0; i < paths.size() - 1; i++) {
 			String path = paths.get(i);
-			if (!NumberUtils.isNumber(path)) {
+			if (!StringUtils.isNumeric(path)) {
+				// if (!NumberUtils.isNumber(path)) {
 				o = o.getAsJsonObject().get(path);
 			} else {
 				o = o.getAsJsonArray().get(Integer.parseInt(path));
 			}
 		}
-		if (!NumberUtils.isNumber(name)) {
+		if (!StringUtils.isNumeric(name)) {
+			// if (!NumberUtils.isNumber(name)) {
 			o.getAsJsonObject().add(name, jsonElement);
 		} else {
 			o.getAsJsonArray().add(jsonElement);

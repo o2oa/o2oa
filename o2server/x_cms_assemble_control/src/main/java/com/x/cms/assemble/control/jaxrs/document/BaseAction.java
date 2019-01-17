@@ -124,22 +124,28 @@ public class BaseAction extends StandardJaxrsAction {
 
 		//三、根据栏目和目录的限制查询可访问的分类列表
 		if( manager ){
+			List<String> categoryIds_result = new ArrayList<>();
 			//如果是管理员权限，则在所有的分类信息中进行过滤，可以忽略权限
 			if( ListTools.isEmpty( inFilterAppIdList )) {//并没有指定栏目
 				if( ListTools.isNotEmpty( inFilterCategoryIdList )) {
 					//未指定栏目，但指定了分类，那么直接使用指定的分类
-					categoryIds = inFilterCategoryIdList;
+					categoryIds_result = inFilterCategoryIdList;
 				}else {
-					categoryIds = categoryInfoServiceAdv.listAllIds();
+					categoryIds_result = categoryInfoServiceAdv.listAllIds();
 				}
 			}else {//指定了栏目，则需要在栏目的限制下获取的分类信息ID列表
 				categoryIds = categoryInfoServiceAdv.listCategoryIdsWithAppIds( inFilterAppIdList, documentType, manager, maxCount );
+				for( String id : categoryIds ){
+					if( !categoryIds_result.contains( id )){
+						categoryIds_result.add( id );
+					}
+				}
 				if( ListTools.isNotEmpty( inFilterCategoryIdList )) {
 					//如果指定了栏目又指定了分类, 取交集即可（管理员）
-					categoryIds.retainAll(inFilterCategoryIdList  );
+					categoryIds_result.retainAll(inFilterCategoryIdList  );
 				}
 			}
-			return categoryIds;
+			return categoryIds_result;
 		}else{
 			//如果不是管理员，则需要根据权限来获取可访问的分类
 			//获取用户可以访问到的所有分类列表

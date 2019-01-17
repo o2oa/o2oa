@@ -5,7 +5,7 @@ import javax.script.ScriptEngineManager;
 
 public class Scripting {
 
-	public static final String ENGINE_NAME = "nashorn";
+	public static final String ENGINE_NAME = "JavaScript";
 
 	private static ScriptEngineManager scriptEngineManager;
 
