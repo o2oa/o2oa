@@ -1,5 +1,7 @@
 package com.x.query.assemble.surface.jaxrs.neural;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -27,7 +29,7 @@ public class NeuralAction extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(NeuralAction.class);
 
-	@JaxrsMethodDescribe(value = "获取指定的Application信息,并在Control段附带其操作权限.", action = ActionCalculate.class)
+	@JaxrsMethodDescribe(value = "获取指定的Application信息,并在Control段附带其操作权限.", action = ActionListCalculate.class)
 	@GET
 	@Path("calculate/project/{projectFlag}/work/{workId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -35,10 +37,10 @@ public class NeuralAction extends BaseAction {
 	public void calculate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("项目标识") @PathParam("projectFlag") String projectFlag,
 			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId) {
-		ActionResult<ActionCalculate.Wo> result = new ActionResult<>();
+		ActionResult<List<ActionListCalculate.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCalculate().execute(effectivePerson, projectFlag, workId);
+			result = new ActionListCalculate().execute(effectivePerson, projectFlag, workId);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

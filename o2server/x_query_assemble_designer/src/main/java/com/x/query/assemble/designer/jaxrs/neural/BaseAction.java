@@ -10,14 +10,14 @@ import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.neural.Entry;
 import com.x.query.core.entity.neural.InValue;
 import com.x.query.core.entity.neural.OutValue;
-import com.x.query.core.entity.neural.Project;
+import com.x.query.core.entity.neural.Model;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(BaseAction.class);
 
-	protected Long cleanOutValue(Business business, Project project) throws Exception {
-		List<String> ids = business.entityManagerContainer().idsEqual(OutValue.class, OutValue.project_FIELDNAME,
+	protected Long cleanOutValue(Business business, Model project) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(OutValue.class, OutValue.model_FIELDNAME,
 				project.getId());
 		Long count = 0L;
 		for (List<String> os : ListTools.batch(ids, 2000)) {
@@ -28,8 +28,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return count;
 	}
 
-	protected Long cleanInValue(Business business, Project project) throws Exception {
-		List<String> ids = business.entityManagerContainer().idsEqual(InValue.class, InValue.project_FIELDNAME,
+	protected Long cleanInValue(Business business, Model project) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(InValue.class, InValue.model_FIELDNAME,
 				project.getId());
 		Long count = 0L;
 		for (List<String> os : ListTools.batch(ids, 2000)) {
@@ -40,8 +40,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return count;
 	}
 
-	protected Long cleanEntry(Business business, Project project) throws Exception {
-		List<String> ids = business.entityManagerContainer().idsEqual(Entry.class, Entry.project_FIELDNAME,
+	protected Long cleanEntry(Business business, Model project) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(Entry.class, Entry.model_FIELDNAME,
 				project.getId());
 		Long count = 0L;
 		for (List<String> os : ListTools.batch(ids, 2000)) {

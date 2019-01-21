@@ -35,20 +35,20 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.query.assemble.designer.ThisApplication;
-import com.x.query.core.entity.neural.Project;
+import com.x.query.core.entity.neural.Model;
 
 class ActionStopLearning extends BaseAction {
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String projectFlag) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String modelFlag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = new Wo();
-			Project project = emc.flag(projectFlag, Project.class);
-			if (null == project) {
-				throw new ExceptionEntityNotExist(projectFlag, Project.class);
+			Model model = emc.flag(modelFlag, Model.class);
+			if (null == model) {
+				throw new ExceptionEntityNotExist(modelFlag, Model.class);
 			}
 			ThisApplication.context().applications().getQuery(x_query_service_processing.class,
-					Applications.joinQueryUri("neural", "stop", "learning", "project", project.getId()));
+					Applications.joinQueryUri("neural", "stop", "learning", "model", model.getId()));
 			wo.setValue(true);
 			result.setData(wo);
 			return result;

@@ -13,42 +13,42 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.query.assemble.designer.Business;
-import com.x.query.core.entity.neural.Project;
+import com.x.query.core.entity.neural.Model;
 
-class ActionDeleteProject extends BaseAction {
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String projectFlag) throws Exception {
+class ActionDeleteModel extends BaseAction {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String modelFlag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Project project = emc.flag(projectFlag, Project.class);
-			if (null == project) {
-				throw new ExceptionEntityNotExist(projectFlag, Project.class);
+			Model model = emc.flag(modelFlag, Model.class);
+			if (null == model) {
+				throw new ExceptionEntityNotExist(modelFlag, Model.class);
 			}
-			if (StringUtils.equals(Project.STATUS_GENERATING, project.getStatus())) {
-				throw new ExceptionGenerating(project.getName());
+			if (StringUtils.equals(Model.STATUS_GENERATING, model.getStatus())) {
+				throw new ExceptionGenerating(model.getName());
 			}
-			if (StringUtils.equals(Project.STATUS_LEARNING, project.getStatus())) {
-				throw new ExceptionLearning(project.getName());
+			if (StringUtils.equals(Model.STATUS_LEARNING, model.getStatus())) {
+				throw new ExceptionLearning(model.getName());
 			}
-			this.cleanOutValue(business, project);
-			this.cleanInValue(business, project);
-			this.cleanEntry(business, project);
-			emc.beginTransaction(Project.class);
-			emc.remove(project, CheckRemoveType.all);
+			this.cleanOutValue(business, model);
+			this.cleanInValue(business, model);
+			this.cleanEntry(business, model);
+			emc.beginTransaction(Model.class);
+			emc.remove(model, CheckRemoveType.all);
 			emc.commit();
-			ApplicationCache.notify(Project.class);
+			ApplicationCache.notify(Model.class);
 			Wo wo = new Wo();
-			wo.setId(project.getId());
+			wo.setId(model.getId());
 			result.setData(wo);
 			return result;
 		}
 	}
 
-	public static class Wo extends Project {
+	public static class Wo extends Model {
 
 		private static final long serialVersionUID = -6541538280679110474L;
 
-		static WrapCopier<Project, Wo> copier = WrapCopierFactory.wo(Project.class, Wo.class, null,
+		static WrapCopier<Model, Wo> copier = WrapCopierFactory.wo(Model.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 
 	}

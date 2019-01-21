@@ -38,9 +38,9 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 
 	public static class Neural {
 
-		public static class Project {
+		public static class Model {
 
-			public static final String table = "QRY_NRL_PROJECT";
+			public static final String table = "QRY_NRL_MODEL";
 		}
 
 		public static class OutValue {

@@ -32,15 +32,15 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
-import com.x.query.core.entity.neural.Project;
+import com.x.query.core.entity.neural.Model;
 
 class ActionStopLearning extends BaseAction {
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String projectFlag) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String modelFlag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
-			Project project = emc.flag(projectFlag, Project.class);
-			if (null == project) {
-				throw new ExceptionEntityNotExist(projectFlag, Project.class);
+			Model model = emc.flag(modelFlag, Model.class);
+			if (null == model) {
+				throw new ExceptionEntityNotExist(modelFlag, Model.class);
 			}
 			Learn.stop();
 			Wo wo = new Wo();

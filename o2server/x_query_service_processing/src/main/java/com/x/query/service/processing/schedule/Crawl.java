@@ -22,6 +22,8 @@ public abstract class Crawl implements Job {
 	public static String[] SKIP_START_WITH = new String[] { "~", "!", "#", "$", "%", "^", "&", "*", "(", ")", "<", ">",
 			"[", "]", "{", "}", "\\", "?" };
 
+	public static final long MAX_ATTACHMENT_BYTE_LENGTH = 10 * 1024 * 1024;
+
 	public static LanguageProcessingHelper languageProcessingHelper = new LanguageProcessingHelper();
 
 	protected List<Item> toWord(String content) {
@@ -29,23 +31,28 @@ public abstract class Crawl implements Job {
 	}
 
 	protected String text(StorageObject storageObject) throws Exception {
-		if (ExtractTextTools.support(storageObject.getName())) {
-			try {
-				StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
-						storageObject.getStorage());
-				if (null != mapping) {
-					return ExtractTextTools.extract(storageObject.readContent(mapping), storageObject.getName(),
-							Config.query().getExtractOffice(), Config.query().getExtractPdf(),
-							Config.query().getExtractText(), Config.query().getExtractImage());
-				} else {
-					logger.print(
-							"storageMapping is null can not extract storageObject text, storageObject:{}, name:{}.",
-							storageObject.getId(), storageObject.getName());
+		if (storageObject.getLength() < MAX_ATTACHMENT_BYTE_LENGTH) {
+			if (ExtractTextTools.support(storageObject.getName())) {
+				try {
+					StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+							storageObject.getStorage());
+					if (null != mapping) {
+						return ExtractTextTools.extract(storageObject.readContent(mapping), storageObject.getName(),
+								Config.query().getExtractOffice(), Config.query().getExtractPdf(),
+								Config.query().getExtractText(), Config.query().getExtractImage());
+					} else {
+						logger.print(
+								"storageMapping is null can not extract storageObject text, storageObject:{}, name:{}.",
+								storageObject.getId(), storageObject.getName());
+					}
+				} catch (Exception e) {
+					logger.print("error extract attachment text, storageObject:{}, name:{}.", storageObject.getId(),
+							storageObject.getName());
 				}
-			} catch (Exception e) {
-				logger.print("error extract attachment text, storageObject:{}, name:{}.", storageObject.getId(),
-						storageObject.getName());
 			}
+		} else {
+			logger.print("忽略过大的附件:{}, size:{}, id:{}.", storageObject.getName(), storageObject.getLength(),
+					storageObject.getId());
 		}
 		return "";
 	}

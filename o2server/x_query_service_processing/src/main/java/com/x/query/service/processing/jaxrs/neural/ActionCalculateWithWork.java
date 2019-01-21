@@ -3,11 +3,11 @@ package com.x.query.service.processing.jaxrs.neural;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.math3.stat.StatUtils;
 import org.neuroph.core.NeuralNetwork;
 import org.neuroph.nnet.learning.MomentumBackpropagation;
 import org.neuroph.util.NeuralNetworkCODEC;
@@ -20,9 +20,9 @@ import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WrapStringList;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.scripting.ScriptHelper;
@@ -33,8 +33,8 @@ import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.neural.InValue;
+import com.x.query.core.entity.neural.Model;
 import com.x.query.core.entity.neural.OutValue;
-import com.x.query.core.entity.neural.Project;
 import com.x.query.service.processing.Business;
 import com.x.query.service.processing.ThisApplication;
 import com.x.query.service.processing.helper.ExtractTextHelper;
@@ -46,30 +46,30 @@ class ActionCalculateWithWork extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionCalculateWithWork.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String projectFlag, String workId) throws Exception {
-		logger.debug(effectivePerson, "projectFlag:{}, workId:{}.", projectFlag, workId);
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String modelFlag, String workId) throws Exception {
+		logger.debug(effectivePerson, "modelFlag:{}, workId:{}.", modelFlag, workId);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
+			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Project project = emc.flag(projectFlag, Project.class);
-			if (null == project) {
-				throw new ExceptionEntityNotExist(projectFlag, Project.class);
+			Model model = emc.flag(modelFlag, Model.class);
+			if (null == model) {
+				throw new ExceptionEntityNotExist(modelFlag, Model.class);
 			}
-			if (StringUtils.isEmpty(project.getNnet())) {
-				throw new ExceptionProjectNotReady(project.getName());
+			if (StringUtils.isEmpty(model.getNnet())) {
+				throw new ExceptionModelNotReady(model.getName());
 			}
 			NeuralNetwork<MomentumBackpropagation> neuralNetwork = null;
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), project.getId());
+			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), model.getId());
 			Element element = cache.get(cacheKey);
 			if (null != element && (null != element.getObjectValue())) {
 				neuralNetwork = ((NeuralNetwork<MomentumBackpropagation>) element.getObjectValue());
 			} else {
-				if (StringUtils.isEmpty(project.getNnet())) {
-					throw new ExceptionProjectNotReady(project.getName());
+				if (StringUtils.isEmpty(model.getNnet())) {
+					throw new ExceptionModelNotReady(model.getName());
 				}
-				neuralNetwork = project.createNeuralNetwork();
+				neuralNetwork = model.createNeuralNetwork();
 				NeuralNetworkCODEC.array2network(
-						DoubleTools.byteToDoubleArray(ByteTools.decompressBase64String(project.getNnet())),
+						DoubleTools.byteToDoubleArray(ByteTools.decompressBase64String(model.getNnet())),
 						neuralNetwork);
 				cache.put(new Element(cacheKey, neuralNetwork));
 			}
@@ -78,34 +78,34 @@ class ActionCalculateWithWork extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
-			TreeSet<String> inValue = this.convert(business, project, work);
-			double[] inputs = this.inputData(business, project, inValue);
+			TreeSet<String> inValue = this.convert(business, model, work);
+			double[] inputs = this.inputData(business, model, inValue);
 			neuralNetwork.setInput(inputs);
 			neuralNetwork.calculate();
 			double[] outputs = neuralNetwork.getOutput();
-			double mean = StatUtils.mean(outputs);
+			// double mean = StatUtils.mean(outputs);
 			List<Pair> pairs = new ArrayList<>();
 			for (int i = 0; i < outputs.length; i++) {
-				if (outputs[i] > mean) {
-					Pair p = new Pair();
-					p.setOut(outputs[i]);
-					p.setSerial(i);
-					pairs.add(p);
-				}
+				// if (outputs[i] > mean) {
+				Pair p = new Pair();
+				p.setOut(outputs[i]);
+				p.setSerial(i);
+				pairs.add(p);
+				// }
 			}
 			pairs = pairs.stream().sorted(Comparator.comparing(Pair::getOut).reversed()).collect(Collectors.toList());
-			Integer maxResult = MapTools.getInteger(project.getPropertyMap(), Project.PROPERTY_MLP_MAXRESULT,
-					Project.DEFAULT_MLP_MAXRESULT);
+			Integer maxResult = MapTools.getInteger(model.getPropertyMap(), Model.PROPERTY_MLP_MAXRESULT,
+					Model.DEFAULT_MLP_MAXRESULT);
 			if (pairs.size() > maxResult) {
 				pairs = pairs.stream().limit(maxResult).collect(Collectors.toList());
 			}
-			wo.getValueList().addAll(this.outputData(business, project, pairs));
-			result.setData(wo);
+			List<Wo> wos = this.outputData(business, model, pairs);
+			result.setData(wos);
 			return result;
 		}
 	}
 
-	private TreeSet<String> convert(Business business, Project project, Work work) throws Exception {
+	private TreeSet<String> convert(Business business, Model model, Work work) throws Exception {
 		ScriptHelper scriptHelper = new ScriptHelper();
 		LanguageProcessingHelper lph = new LanguageProcessingHelper();
 		DataItemConverter<Item> converter = new DataItemConverter<Item>(Item.class);
@@ -126,58 +126,70 @@ class ActionCalculateWithWork extends BaseAction {
 				}
 			}
 		}
-		switch (StringUtils.trimToEmpty(project.getAnalyzeType())) {
-		case Project.ANALYZETYPE_FULL:
-			lph.word(text.toString()).stream().limit(MapTools.getInteger(project.getPropertyMap(),
-					Project.PROPERTY_MLP_GENERATEINTEXTCUTOFFSIZE, Project.DEFAULT_MLP_GENERATEINTEXTCUTOFFSIZE))
+		switch (StringUtils.trimToEmpty(model.getAnalyzeType())) {
+		case Model.ANALYZETYPE_FULL:
+			lph.word(text.toString()).stream().limit(MapTools.getInteger(model.getPropertyMap(),
+					Model.PROPERTY_MLP_GENERATEINTEXTCUTOFFSIZE, Model.DEFAULT_MLP_GENERATEINTEXTCUTOFFSIZE))
 					.forEach(o -> {
 						inValue.add(o.getValue());
 					});
 			break;
-		case Project.ANALYZETYPE_CUSTOMIZED:
+		case Model.ANALYZETYPE_CUSTOMIZED:
 			break;
 		default:
 			inValue.addAll(HanLP
 					.extractKeyword(text.toString(),
-							MapTools.getInteger(project.getPropertyMap(), Project.PROPERTY_MLP_GENERATEINTEXTCUTOFFSIZE,
-									Project.DEFAULT_MLP_GENERATEINTEXTCUTOFFSIZE) * 2)
-					.stream().filter(o -> o.length() > 1)
-					.limit(MapTools.getInteger(project.getPropertyMap(), Project.PROPERTY_MLP_GENERATEINTEXTCUTOFFSIZE,
-							Project.DEFAULT_MLP_GENERATEINTEXTCUTOFFSIZE))
+							MapTools.getInteger(model.getPropertyMap(), Model.PROPERTY_MLP_GENERATEINTEXTCUTOFFSIZE,
+									Model.DEFAULT_MLP_GENERATEINTEXTCUTOFFSIZE) * 2)
+					.stream().filter(o -> o.length() > 1).limit(MapTools.getInteger(model.getPropertyMap(),
+							Model.PROPERTY_MLP_GENERATEINTEXTCUTOFFSIZE, Model.DEFAULT_MLP_GENERATEINTEXTCUTOFFSIZE))
 					.collect(Collectors.toList()));
 			break;
 		}
-		if (StringUtils.isNotBlank(project.getInValueScriptText())) {
+		if (StringUtils.isNotBlank(model.getInValueScriptText())) {
 			scriptHelper.put(PROPERTY_INVALUES, inValue);
-			scriptHelper.eval(project.getInValueScriptText());
+			scriptHelper.eval(model.getInValueScriptText());
 		}
 		return inValue;
 	}
 
-	private double[] inputData(Business business, Project project, TreeSet<String> inputs) throws Exception {
+	private double[] inputData(Business business, Model model, TreeSet<String> inputs) throws Exception {
 		List<String> values = new ArrayList<>();
 		values.addAll(inputs);
-		List<InValue> os = business.entityManagerContainer().listEqualAndIn(InValue.class, InValue.project_FIELDNAME,
-				project.getId(), InValue.text_FIELDNAME, values);
-		double[] data = new double[project.getInValueCount()];
+		List<InValue> os = business.entityManagerContainer().listEqualAndIn(InValue.class, InValue.model_FIELDNAME,
+				model.getId(), InValue.text_FIELDNAME, values);
+		double[] data = new double[model.getInValueCount()];
 		for (InValue in : os) {
 			data[in.getSerial()] = 1.0d;
 		}
 		return data;
 	}
 
-	private List<String> outputData(Business business, Project project, List<Pair> pairs) throws Exception {
-		List<String> list = new ArrayList<>();
+	private List<Wo> outputData(Business business, Model model, List<Pair> pairs) throws Exception {
+		List<Wo> wos = new ArrayList<>();
 		List<Integer> values = new ArrayList<>();
 		for (Pair p : pairs) {
 			values.add(p.getSerial());
 		}
-		List<OutValue> os = business.entityManagerContainer().listEqualAndIn(OutValue.class, OutValue.project_FIELDNAME,
-				project.getId(), OutValue.serial_FIELDNAME, values);
-		os.stream().forEach(o -> {
-			list.add(o.getText());
-		});
-		return list;
+		List<OutValue> os = business.entityManagerContainer().listEqualAndIn(OutValue.class, OutValue.model_FIELDNAME,
+				model.getId(), OutValue.serial_FIELDNAME, values);
+		String text = "";
+		for (Pair pair : pairs) {
+			text = "";
+			for (OutValue o : os) {
+				if (Objects.equals(o.getSerial(), pair.getSerial())) {
+					text = o.getText();
+					break;
+				}
+			}
+			if (StringUtils.isNotEmpty(text)) {
+				Wo wo = new Wo();
+				wo.setScore(pair.getOut());
+				wo.setValue(text);
+				wos.add(wo);
+			}
+		}
+		return wos;
 	}
 
 	public static class Pair {
@@ -201,7 +213,26 @@ class ActionCalculateWithWork extends BaseAction {
 		}
 	}
 
-	public static class Wo extends WrapStringList {
+	public static class Wo extends GsonPropertyObject {
+
+		private Double score;
+		private String value;
+
+		public Double getScore() {
+			return score;
+		}
+
+		public void setScore(Double score) {
+			this.score = score;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
 
 	}
 

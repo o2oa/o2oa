@@ -83,12 +83,12 @@ public class Entry extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String title;
 
-	public static final String project_FIELDNAME = "project";
-	@FieldDescribe("project")
-	@Column(length = length_id, name = ColumnNamePrefix + project_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + project_FIELDNAME)
+	public static final String model_FIELDNAME = "model";
+	@FieldDescribe("模型")
+	@Column(length = length_id, name = ColumnNamePrefix + model_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + model_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
-	private String project;
+	private String model;
 
 	public static final String inValueLabelList_FIELDNAME = "inValueLabelList";
 	@FieldDescribe("输入标签")
@@ -144,10 +144,6 @@ public class Entry extends SliceJpaObject {
 		this.title = title;
 	}
 
-	public String getProject() {
-		return project;
-	}
-
 	public List<Integer> getInValueLabelList() {
 		return inValueLabelList;
 	}
@@ -180,16 +176,20 @@ public class Entry extends SliceJpaObject {
 		this.outValueCount = outValueCount;
 	}
 
-	public void setProject(String project) {
-		this.project = project;
-	}
-
 	public String getType() {
 		return type;
 	}
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
 	}
 
 }

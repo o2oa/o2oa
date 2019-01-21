@@ -37,26 +37,26 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.query.assemble.designer.ThisApplication;
-import com.x.query.core.entity.neural.Project;
+import com.x.query.core.entity.neural.Model;
 
 class ActionGenerate extends BaseAction {
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String projectFlag) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String modelFlag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = new Wo();
-			Project project = emc.flag(projectFlag, Project.class);
-			if (null == project) {
-				throw new ExceptionEntityNotExist(projectFlag, Project.class);
+			Model model = emc.flag(modelFlag, Model.class);
+			if (null == model) {
+				throw new ExceptionEntityNotExist(modelFlag, Model.class);
 			}
-			if (StringUtils.equals(Project.STATUS_GENERATING, project.getStatus())) {
-				throw new ExceptionGenerating(project.getName());
+			if (StringUtils.equals(Model.STATUS_GENERATING, model.getStatus())) {
+				throw new ExceptionGenerating(model.getName());
 			}
-			if (StringUtils.equals(Project.STATUS_LEARNING, project.getStatus())) {
-				throw new ExceptionLearning(project.getName());
+			if (StringUtils.equals(Model.STATUS_LEARNING, model.getStatus())) {
+				throw new ExceptionLearning(model.getName());
 			}
 			ThisApplication.context().applications().getQuery(x_query_service_processing.class,
-					Applications.joinQueryUri("neural", "generate", "project", project.getId()));
+					Applications.joinQueryUri("neural", "generate", "model", model.getId()));
 			wo.setValue(true);
 			result.setData(wo);
 			return result;

@@ -58,12 +58,12 @@ public class InText extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String text;
 
-	public static final String project_FIELDNAME = "project";
-	@FieldDescribe("项目")
-	@Column(length = length_id, name = ColumnNamePrefix + project_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + project_FIELDNAME)
+	public static final String model_FIELDNAME = "model";
+	@FieldDescribe("模型")
+	@Column(length = length_id, name = ColumnNamePrefix + model_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + model_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
-	private String project;
+	private String model;
 
 	public static final String serial_FIELDNAME = "serial";
 	@FieldDescribe("编号")
@@ -87,14 +87,6 @@ public class InText extends SliceJpaObject {
 		this.text = text;
 	}
 
-	public String getProject() {
-		return project;
-	}
-
-	public void setProject(String project) {
-		this.project = project;
-	}
-
 	public Integer getCount() {
 		return count;
 	}
@@ -109,6 +101,14 @@ public class InText extends SliceJpaObject {
 
 	public void setSerial(Integer serial) {
 		this.serial = serial;
+	}
+
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
 	}
 
 }
