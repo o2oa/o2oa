@@ -14,11 +14,11 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.query.assemble.designer.Business;
-import com.x.query.core.entity.neural.Project;
+import com.x.query.core.entity.neural.Model;
 
-class ActionListProject extends BaseAction {
+class ActionListModel extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListProject.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionListModel.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -28,17 +28,17 @@ class ActionListProject extends BaseAction {
 					OrganizationDefinition.Manager, OrganizationDefinition.QueryManager))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-			List<Project> os = emc.listAll(Project.class);
+			List<Model> os = emc.listAll(Model.class);
 			result.setData(Wo.copier.copy(os));
 			return result;
 		}
 	}
 
-	public static class Wo extends Project {
+	public static class Wo extends Model {
 
 		private static final long serialVersionUID = -6541538280679110474L;
 
-		static WrapCopier<Project, Wo> copier = WrapCopierFactory.wo(Project.class, Wo.class, null,
+		static WrapCopier<Model, Wo> copier = WrapCopierFactory.wo(Model.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 
 	}

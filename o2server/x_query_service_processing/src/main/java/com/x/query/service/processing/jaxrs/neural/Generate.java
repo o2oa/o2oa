@@ -54,7 +54,6 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.scripting.ScriptHelper;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.MapTools;
@@ -67,8 +66,8 @@ import com.x.processplatform.core.entity.content.WorkCompleted_;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.neural.Entry;
 import com.x.query.core.entity.neural.InText;
+import com.x.query.core.entity.neural.Model;
 import com.x.query.core.entity.neural.OutText;
-import com.x.query.core.entity.neural.Project;
 import com.x.query.service.processing.Business;
 import com.x.query.service.processing.ThisApplication;
 import com.x.query.service.processing.helper.ExtractTextHelper;
@@ -78,7 +77,7 @@ public class Generate {
 
 	private static Logger logger = LoggerFactory.getLogger(Generate.class);
 
-	private volatile static String generatingProject = "";
+	private volatile static String generatingModel = "";
 
 	private volatile static boolean stop = false;
 
@@ -86,8 +85,8 @@ public class Generate {
 
 	}
 
-	public static String generatingProject() {
-		return generatingProject;
+	public static String generatingModel() {
+		return generatingModel;
 	}
 
 	public static void stop() {
@@ -95,41 +94,41 @@ public class Generate {
 	}
 
 	public static Generate newInstance() throws Exception {
-		if (StringUtils.isNotEmpty(generatingProject)) {
-			throw new Exception("Generate already concreted for project:" + generatingProject + ".");
+		if (StringUtils.isNotEmpty(generatingModel)) {
+			throw new Exception("Generate already concreted for model:" + generatingModel + ".");
 		}
 		return new Generate();
 	}
 
-	protected void execute(final String projectId) throws Exception {
-		generatingProject = projectId;
+	protected void execute(final String modelId) throws Exception {
+		generatingModel = modelId;
 		stop = false;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			TimeStamp stamp = new TimeStamp();
 			Business business = new Business(emc);
-			Project project = refreshProject(business, projectId);
-			logger.info("神经网络多层感知机 ({}) 生成条目开始.", project.getName());
-			if (StringUtils.equals(Project.STATUS_GENERATING, project.getStatus())) {
-				throw new ExceptionGenerate(project.getName());
+			Model model = refreshModel(business, modelId);
+			logger.info("神经网络多层感知机 ({}) 生成条目开始.", model.getName());
+			if (StringUtils.equals(Model.STATUS_GENERATING, model.getStatus())) {
+				throw new ExceptionGenerate(model.getName());
 			}
-			final Double validationRate = (MapTools.getDouble(project.getPropertyMap(),
-					Project.PROPERTY_MLP_VALIDATIONRATE, Project.DEFAULT_MLP_VALIDATIONRATE));
-			List<String> bundles = this.listBundle(business, project);
+			final Double validationRate = (MapTools.getDouble(model.getPropertyMap(),
+					Model.PROPERTY_MLP_VALIDATIONRATE, Model.DEFAULT_MLP_VALIDATIONRATE));
+			List<String> bundles = this.listBundle(business, model);
 			if (ListTools.isEmpty(bundles)) {
-				throw new ExceptionBundleEmpty(project.getName());
+				throw new ExceptionBundleEmpty(model.getName());
 			}
 			/* 用于测试的bundle */
 			List<String> validationBundles = ListTools.randomWithRate(bundles, validationRate);
 			/* 用于学习的bandle */
 			List<String> learnBundles = ListUtils.subtract(bundles, validationBundles);
-			emc.beginTransaction(Project.class);
-			project.setStatus(Project.STATUS_GENERATING);
-			project.setGeneratingPercent(0);
-			project.setValidationEntryCount(0);
-			project.setLearnEntryCount(0);
+			emc.beginTransaction(Model.class);
+			model.setStatus(Model.STATUS_GENERATING);
+			model.setGeneratingPercent(0);
+			model.setValidationEntryCount(0);
+			model.setLearnEntryCount(0);
 			emc.commit();
 			/* 准备运算,清空数据 */
-			this.clean(business, project);
+			this.clean(business, model);
 			ScriptHelper scriptHelper = new ScriptHelper();
 			LanguageProcessingHelper lph = new LanguageProcessingHelper();
 			DataItemConverter<Item> converter = new DataItemConverter<Item>(Item.class);
@@ -145,14 +144,14 @@ public class Generate {
 				if (null != workCompleted) {
 					inValues.clear();
 					outValues.clear();
-					this.convert(business, converter, scriptHelper, lph, project, workCompleted, inValues, outValues);
+					this.convert(business, converter, scriptHelper, lph, model, workCompleted, inValues, outValues);
 					if ((!inValues.isEmpty()) && (!outValues.isEmpty())) {
-						this.createLearnEntry(business, project, workCompleted, inBag, outBag, inValues, outValues);
+						this.createLearnEntry(business, model, workCompleted, inBag, outBag, inValues, outValues);
 						learnEntryCount++;
 					}
 				}
 				if (total % 100 == 99) {
-					if (checkStop(business, projectId, bundles, total)) {
+					if (checkStop(business, modelId, bundles, total)) {
 						return;
 					}
 				}
@@ -163,52 +162,52 @@ public class Generate {
 				if (null != workCompleted) {
 					inValues.clear();
 					outValues.clear();
-					this.convert(business, converter, scriptHelper, lph, project, workCompleted, inValues, outValues);
+					this.convert(business, converter, scriptHelper, lph, model, workCompleted, inValues, outValues);
 					if ((!inValues.isEmpty()) && (!outValues.isEmpty())) {
-						this.createValidationEntry(business, project, workCompleted, inBag, outBag, inValues,
+						this.createValidationEntry(business, model, workCompleted, inBag, outBag, inValues,
 								outValues);
 						testEntryCount++;
 					}
 				}
 				if (total % 100 == 99) {
-					if (checkStop(business, projectId, bundles, total)) {
+					if (checkStop(business, modelId, bundles, total)) {
 						return;
 					}
 				}
 				total++;
 			}
-			inBag.save(business, project);
-			outBag.save(business, project);
-			project = this.refreshProject(business, projectId);
-			emc.beginTransaction(Project.class);
-			project.setStatus("");
-			project.setEntryCount(bundles.size());
-			project.setGeneratingPercent(100);
-			project.setLearnEntryCount(learnEntryCount);
-			project.setValidationEntryCount(testEntryCount);
-			emc.check(project, CheckPersistType.all);
+			inBag.save(business, model);
+			outBag.save(business, model);
+			model = this.refreshModel(business, modelId);
+			emc.beginTransaction(Model.class);
+			model.setStatus("");
+			model.setEntryCount(bundles.size());
+			model.setGeneratingPercent(100);
+			model.setLearnEntryCount(learnEntryCount);
+			model.setValidationEntryCount(testEntryCount);
+			emc.check(model, CheckPersistType.all);
 			emc.commit();
-			logger.info("神经网络多层感知机 ({}) 完成条目生成, 耗时: {}.", project.getName(), stamp.consumingMilliseconds());
+			logger.info("神经网络多层感知机 ({}) 完成条目生成, 耗时: {}.", model.getName(), stamp.consumingMilliseconds());
 		} finally {
-			generatingProject = "";
+			generatingModel = "";
 			stop = false;
 		}
 	}
 
-	private boolean checkStop(Business business, final String projectId, List<String> bundles, int i) throws Exception {
-		Project project = this.refreshProject(business, projectId);
+	private boolean checkStop(Business business, final String modelId, List<String> bundles, int i) throws Exception {
+		Model model = this.refreshModel(business, modelId);
 		if (stop) {
-			business.entityManagerContainer().beginTransaction(Project.class);
-			project.setStatus("");
+			business.entityManagerContainer().beginTransaction(Model.class);
+			model.setStatus("");
 			business.entityManagerContainer().commit();
-			logger.info("神经网络多层感知机 ({}) 项目条目生成过程被取消.", project.getName());
+			logger.info("神经网络多层感知机 ({}) 项目条目生成过程被取消.", model.getName());
 			return true;
 		} else {
-			business.entityManagerContainer().beginTransaction(Project.class);
-			project.setStatus(Project.STATUS_GENERATING);
+			business.entityManagerContainer().beginTransaction(Model.class);
+			model.setStatus(Model.STATUS_GENERATING);
 			int percent = (int) (Math.ceil(i * 100.0 / bundles.size()));
-			project.setGeneratingPercent(percent);
-			logger.info("神经网络多层感知机 ({}) 条目生成进度 {}%, 共计: {} 个条目.", project.getName(), percent, bundles.size());
+			model.setGeneratingPercent(percent);
+			logger.info("神经网络多层感知机 ({}) 条目生成进度 {}%, 共计: {} 个条目.", model.getName(), percent, bundles.size());
 			business.entityManagerContainer().commit();
 			return false;
 		}
@@ -236,12 +235,12 @@ public class Generate {
 			return idx;
 		}
 
-		public void save(Business business, Project project) throws Exception {
+		public void save(Business business, Model model) throws Exception {
 			List<InText> list = this.convert();
 			for (List<InText> os : ListTools.batch(list, 2000)) {
 				business.entityManagerContainer().beginTransaction(InText.class);
 				for (InText o : os) {
-					o.setProject(project.getId());
+					o.setModel(model.getId());
 					business.entityManagerContainer().persist(o, CheckPersistType.all);
 				}
 				business.entityManagerContainer().commit();
@@ -283,12 +282,12 @@ public class Generate {
 			return idx;
 		}
 
-		public void save(Business business, Project project) throws Exception {
+		public void save(Business business, Model model) throws Exception {
 			List<OutText> list = this.convert();
 			for (List<OutText> os : ListTools.batch(list, 2000)) {
 				business.entityManagerContainer().beginTransaction(OutText.class);
 				for (OutText o : os) {
-					o.setProject(project.getId());
+					o.setModel(model.getId());
 					business.entityManagerContainer().persist(o, CheckPersistType.all);
 				}
 				business.entityManagerContainer().commit();
@@ -310,60 +309,60 @@ public class Generate {
 
 	}
 
-	private List<String> listBundle(Business business, Project project) throws Exception {
-		if (StringUtils.equals(project.getType(), Project.TYPE_CMS)) {
-			return listCmsBundle(business, project);
+	private List<String> listBundle(Business business, Model model) throws Exception {
+		if (StringUtils.equals(model.getDataType(), Model.DATATYPE_CMS)) {
+			return listCmsBundle(business, model);
 		} else {
-			return listProcessPlatformBundle(business, project);
+			return listProcessPlatformBundle(business, model);
 		}
 
 	}
 
-	private List<String> listCmsBundle(Business business, Project project) throws Exception {
+	private List<String> listCmsBundle(Business business, Model model) throws Exception {
 		return null;
 	}
 
-	private List<String> listProcessPlatformBundle(Business business, Project project) throws Exception {
+	private List<String> listProcessPlatformBundle(Business business, Model model) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(WorkCompleted.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<WorkCompleted> root = cq.from(WorkCompleted.class);
 		Predicate p = cb.conjunction();
-		if (ListTools.isNotEmpty(project.getApplicationList())) {
+		if (ListTools.isNotEmpty(model.getApplicationList())) {
 			p = cb.and(p, cb.isMember(root.get(WorkCompleted.application_FIELDNAME),
-					cb.literal(project.getApplicationList())));
+					cb.literal(model.getApplicationList())));
 		}
-		if (ListTools.isNotEmpty(project.getProcessList())) {
-			p = cb.and(p, cb.isMember(root.get(WorkCompleted.process_FIELDNAME), cb.literal(project.getProcessList())));
+		if (ListTools.isNotEmpty(model.getProcessList())) {
+			p = cb.and(p, cb.isMember(root.get(WorkCompleted.process_FIELDNAME), cb.literal(model.getProcessList())));
 		}
-		if (null != project.getStartDate()) {
-			p = cb.and(p, cb.greaterThanOrEqualTo(root.get(WorkCompleted_.startTime), project.getStartDate()));
+		if (null != model.getStartDate()) {
+			p = cb.and(p, cb.greaterThanOrEqualTo(root.get(WorkCompleted_.startTime), model.getStartDate()));
 		}
-		if (null != project.getEndDate()) {
-			p = cb.and(p, cb.lessThanOrEqualTo(root.get(WorkCompleted_.startTime), project.getEndDate()));
+		if (null != model.getEndDate()) {
+			p = cb.and(p, cb.lessThanOrEqualTo(root.get(WorkCompleted_.startTime), model.getEndDate()));
 		}
 		cq.select(root.get(WorkCompleted_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
 
-	private Project refreshProject(Business business, String projectId) throws Exception {
-		Project project = business.entityManagerContainer().find(projectId, Project.class);
-		if (null == project) {
-			throw new ExceptionEntityNotExist(projectId, Project.class);
+	private Model refreshModel(Business business, String modelId) throws Exception {
+		Model model = business.entityManagerContainer().find(modelId, Model.class);
+		if (null == model) {
+			throw new ExceptionEntityNotExist(modelId, Model.class);
 		}
-		return project;
+		return model;
 	}
 
-	private void clean(Business business, Project project) throws Exception {
-		Long cleanInText = this.cleanInText(business, project.getId());
-		Long cleanOutText = this.cleanOutText(business, project.getId());
-		Long cleanEntryCount = this.cleanEntry(business, project.getId());
-		logger.print("神经网络多层感知机 ({}) 清理训练数据集, entry: {}, inText: {}, outText: {}.", project.getName(), cleanEntryCount,
+	private void clean(Business business, Model model) throws Exception {
+		Long cleanInText = this.cleanInText(business, model.getId());
+		Long cleanOutText = this.cleanOutText(business, model.getId());
+		Long cleanEntryCount = this.cleanEntry(business, model.getId());
+		logger.print("神经网络多层感知机 ({}) 清理训练数据集, entry: {}, inText: {}, outText: {}.", model.getName(), cleanEntryCount,
 				cleanInText, cleanOutText);
 	}
 
-	private Long cleanEntry(Business business, String projectId) throws Exception {
-		List<String> ids = business.entityManagerContainer().idsEqual(Entry.class, Entry.project_FIELDNAME, projectId);
+	private Long cleanEntry(Business business, String modelId) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(Entry.class, Entry.model_FIELDNAME, modelId);
 		Long count = 0L;
 		for (List<String> os : ListTools.batch(ids, 2000)) {
 			business.entityManagerContainer().beginTransaction(Entry.class);
@@ -373,9 +372,9 @@ public class Generate {
 		return count;
 	}
 
-	private Long cleanInText(Business business, String projectId) throws Exception {
-		List<String> ids = business.entityManagerContainer().idsEqual(InText.class, InText.project_FIELDNAME,
-				projectId);
+	private Long cleanInText(Business business, String modelId) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(InText.class, InText.model_FIELDNAME,
+				modelId);
 		Long count = 0L;
 		for (List<String> os : ListTools.batch(ids, 2000)) {
 			business.entityManagerContainer().beginTransaction(InText.class);
@@ -385,9 +384,9 @@ public class Generate {
 		return count;
 	}
 
-	private Long cleanOutText(Business business, String projectId) throws Exception {
-		List<String> ids = business.entityManagerContainer().idsEqual(OutText.class, OutText.project_FIELDNAME,
-				projectId);
+	private Long cleanOutText(Business business, String modelId) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(OutText.class, OutText.model_FIELDNAME,
+				modelId);
 		Long count = 0L;
 		for (List<String> os : ListTools.batch(ids, 2000)) {
 			business.entityManagerContainer().beginTransaction(OutText.class);
@@ -398,17 +397,17 @@ public class Generate {
 	}
 
 	private void convert(Business business, DataItemConverter<Item> converter, ScriptHelper scriptHelper,
-			LanguageProcessingHelper lph, Project project, WorkCompleted workCompleted, TreeSet<String> inValue,
+			LanguageProcessingHelper lph, Model model, WorkCompleted workCompleted, TreeSet<String> inValue,
 			TreeSet<String> outValue) throws Exception {
-		logger.debug("神经网络多层感知机 ({}) 正在生成条目: {}.", project.getName(), workCompleted.getTitle());
+		logger.debug("神经网络多层感知机 ({}) 正在生成条目: {}.", model.getName(), workCompleted.getTitle());
 		List<Item> items = business.entityManagerContainer().listEqualAndEqual(Item.class, Item.itemCategory_FIELDNAME,
 				ItemCategory.pp, Item.bundle_FIELDNAME, workCompleted.getJob());
 		/* 先计算output,在后面可以在data的text先把output替换掉 */
 		Data data = XGsonBuilder.convert(converter.assemble(items), Data.class);
 		scriptHelper.put(BaseAction.PROPERTY_WORKCOMPLETED, workCompleted);
 		scriptHelper.put(BaseAction.PROPERTY_DATA, data);
-		if (StringUtils.isNotBlank(project.getOutValueScriptText())) {
-			outValue.addAll(scriptHelper.evalAsStringList(project.getOutValueScriptText()));
+		if (StringUtils.isNotBlank(model.getOutValueScriptText())) {
+			outValue.addAll(scriptHelper.evalAsStringList(model.getOutValueScriptText()));
 		}
 		StringBuffer text = new StringBuffer();
 		String dataText = converter.text(items, true, true, true, true, true, ",");
@@ -418,11 +417,11 @@ public class Generate {
 		List<Attachment> attachmentObjects = business.entityManagerContainer().listEqual(Attachment.class,
 				Attachment.job_FIELDNAME, workCompleted.getJob());
 		/* 把不需要的附件过滤掉 */
-		if (StringUtils.isNotBlank(project.getAttachmentScriptText())) {
+		if (StringUtils.isNotBlank(model.getAttachmentScriptText())) {
 			List<String> attachments = ListTools.extractProperty(attachmentObjects, Attachment.name_FIELDNAME,
 					String.class, true, true);
 			scriptHelper.put(BaseAction.PROPERTY_ATTACHMENTS, attachments);
-			scriptHelper.eval(project.getAttachmentScriptText());
+			scriptHelper.eval(model.getAttachmentScriptText());
 			attachmentObjects = ListTools.removePropertyNotIn(attachmentObjects, Attachment.name_FIELDNAME,
 					attachments);
 		}
@@ -437,41 +436,40 @@ public class Generate {
 				}
 			}
 		}
-		switch (StringUtils.trimToEmpty(project.getAnalyzeType())) {
-		case Project.ANALYZETYPE_FULL:
-			lph.word(text.toString()).stream().limit(MapTools.getInteger(project.getPropertyMap(),
-					Project.PROPERTY_MLP_GENERATEINTEXTCUTOFFSIZE, Project.DEFAULT_MLP_GENERATEINTEXTCUTOFFSIZE))
+		switch (StringUtils.trimToEmpty(model.getAnalyzeType())) {
+		case Model.ANALYZETYPE_FULL:
+			lph.word(text.toString()).stream().limit(MapTools.getInteger(model.getPropertyMap(),
+					Model.PROPERTY_MLP_GENERATEINTEXTCUTOFFSIZE, Model.DEFAULT_MLP_GENERATEINTEXTCUTOFFSIZE))
 					.forEach(o -> {
 						inValue.add(o.getValue());
 					});
 			break;
-		case Project.ANALYZETYPE_CUSTOMIZED:
+		case Model.ANALYZETYPE_CUSTOMIZED:
 			break;
 		default:
 			inValue.addAll(HanLP
 					.extractKeyword(text.toString(),
-							MapTools.getInteger(project.getPropertyMap(), Project.PROPERTY_MLP_GENERATEINTEXTCUTOFFSIZE,
-									Project.DEFAULT_MLP_GENERATEINTEXTCUTOFFSIZE) * 2)
-					.stream().filter(o -> o.length() > 1)
-					.limit(MapTools.getInteger(project.getPropertyMap(), Project.PROPERTY_MLP_GENERATEINTEXTCUTOFFSIZE,
-							Project.DEFAULT_MLP_GENERATEINTEXTCUTOFFSIZE))
+							MapTools.getInteger(model.getPropertyMap(), Model.PROPERTY_MLP_GENERATEINTEXTCUTOFFSIZE,
+									Model.DEFAULT_MLP_GENERATEINTEXTCUTOFFSIZE) * 2)
+					.stream().filter(o -> o.length() > 1).limit(MapTools.getInteger(model.getPropertyMap(),
+							Model.PROPERTY_MLP_GENERATEINTEXTCUTOFFSIZE, Model.DEFAULT_MLP_GENERATEINTEXTCUTOFFSIZE))
 					.collect(Collectors.toList()));
 			break;
 		}
-		if (StringUtils.isNotBlank(project.getInValueScriptText())) {
+		if (StringUtils.isNotBlank(model.getInValueScriptText())) {
 			scriptHelper.put(BaseAction.PROPERTY_INVALUES, inValue);
-			scriptHelper.eval(project.getInValueScriptText());
+			scriptHelper.eval(model.getInValueScriptText());
 		}
 	}
 
-	private void createLearnEntry(Business business, Project project, WorkCompleted workCompleted, InBag inBag,
+	private void createLearnEntry(Business business, Model model, WorkCompleted workCompleted, InBag inBag,
 			OutBag outBag, TreeSet<String> inValues, TreeSet<String> outValues) throws Exception {
 		Entry entry = new Entry();
 		entry.setType(Entry.TYPE_LEARN);
 		entry.setInValueLabelList(new ArrayList<Integer>());
 		entry.setOutValueLabelList(new ArrayList<Integer>());
 		entry.setBundle(workCompleted.getId());
-		entry.setProject(project.getId());
+		entry.setModel(model.getId());
 		entry.setTitle(workCompleted.getTitle());
 		entry.setInValueCount(inValues.size());
 		entry.setOutValueCount(outValues.size());
@@ -486,14 +484,14 @@ public class Generate {
 		business.entityManagerContainer().commit();
 	}
 
-	private void createValidationEntry(Business business, Project project, WorkCompleted workCompleted, InBag inBag,
+	private void createValidationEntry(Business business, Model model, WorkCompleted workCompleted, InBag inBag,
 			OutBag outBag, TreeSet<String> inValues, TreeSet<String> outValues) throws Exception {
 		Entry entry = new Entry();
 		entry.setType(Entry.TYPE_VALIDATION);
 		entry.setInValueLabelList(new ArrayList<Integer>());
 		entry.setOutValueLabelList(new ArrayList<Integer>());
 		entry.setBundle(workCompleted.getId());
-		entry.setProject(project.getId());
+		entry.setModel(model.getId());
 		entry.setTitle(workCompleted.getTitle());
 		entry.setInValueCount(inValues.size());
 		entry.setOutValueCount(outValues.size());

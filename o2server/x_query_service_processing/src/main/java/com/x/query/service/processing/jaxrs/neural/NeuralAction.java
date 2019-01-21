@@ -1,5 +1,7 @@
 package com.x.query.service.processing.jaxrs.neural;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -30,15 +32,15 @@ public class NeuralAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "创建用于学习的数据集.", action = ActionGenerate.class)
 	@GET
-	@Path("generate/project/{projectFlag}")
+	@Path("generate/model/{modelFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void generate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("项目标识") @PathParam("projectFlag") String projectFlag) {
+			@JaxrsParameterDescribe("模型标识") @PathParam("modelFlag") String modelFlag) {
 		ActionResult<ActionGenerate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGenerate().execute(effectivePerson, projectFlag);
+			result = new ActionGenerate().execute(effectivePerson, modelFlag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -48,15 +50,15 @@ public class NeuralAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "停止数据生成.", action = ActionStopGenerating.class)
 	@GET
-	@Path("stop/generating/project/{projectFlag}")
+	@Path("stop/generating/model/{modelFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void stopGenerating(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("项目标识") @PathParam("projectFlag") String projectFlag) {
+			@JaxrsParameterDescribe("项目标识") @PathParam("modelFlag") String modelFlag) {
 		ActionResult<ActionStopGenerating.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionStopGenerating().execute(effectivePerson, projectFlag);
+			result = new ActionStopGenerating().execute(effectivePerson, modelFlag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -66,15 +68,15 @@ public class NeuralAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "学习.", action = ActionLearn.class)
 	@GET
-	@Path("learn/project/{projectFlag}")
+	@Path("learn/model/{modelFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void trainProject(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("项目标识") @PathParam("projectFlag") String projectFlag) {
+	public void learn(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("模型标识") @PathParam("modelFlag") String modelFlag) {
 		ActionResult<ActionLearn.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionLearn().execute(effectivePerson, projectFlag);
+			result = new ActionLearn().execute(effectivePerson, modelFlag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -84,15 +86,15 @@ public class NeuralAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "停止学习.", action = ActionStopLearning.class)
 	@GET
-	@Path("stop/learning/project/{projectFlag}")
+	@Path("stop/learning/model/{modelFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void stopLearning(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("项目标识") @PathParam("projectFlag") String projectFlag) {
+			@JaxrsParameterDescribe("模型标识") @PathParam("modelFlag") String modelFlag) {
 		ActionResult<ActionStopLearning.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionStopLearning().execute(effectivePerson, projectFlag);
+			result = new ActionStopLearning().execute(effectivePerson, modelFlag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -102,16 +104,16 @@ public class NeuralAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "计算输入工作ID进行计算.", action = ActionCalculateWithWork.class)
 	@GET
-	@Path("calculate/project/{projectFlag}/work/{workId}")
+	@Path("list/calculate/model/{modelFlag}/work/{workId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void calculateWithWork(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("项目标识") @PathParam("projectFlag") String projectFlag,
+			@JaxrsParameterDescribe("模型标识") @PathParam("modelFlag") String modelFlag,
 			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId) {
-		ActionResult<ActionCalculateWithWork.Wo> result = new ActionResult<>();
+		ActionResult<List<ActionCalculateWithWork.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCalculateWithWork().execute(effectivePerson, projectFlag, workId);
+			result = new ActionCalculateWithWork().execute(effectivePerson, modelFlag, workId);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

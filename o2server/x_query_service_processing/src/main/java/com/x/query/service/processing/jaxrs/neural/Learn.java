@@ -69,14 +69,14 @@ import com.x.query.core.entity.neural.InText_;
 import com.x.query.core.entity.neural.InValue;
 import com.x.query.core.entity.neural.OutText;
 import com.x.query.core.entity.neural.OutValue;
-import com.x.query.core.entity.neural.Project;
+import com.x.query.core.entity.neural.Model;
 import com.x.query.service.processing.Business;
 
 public class Learn {
 
 	private static Logger logger = LoggerFactory.getLogger(Learn.class);
 
-	private volatile static String learningProject = "";
+	private volatile static String learningModel = "";
 
 	private volatile static boolean stop = false;
 
@@ -84,13 +84,13 @@ public class Learn {
 
 	}
 
-	public static String learningProject() {
-		return learningProject;
+	public static String learningModel() {
+		return learningModel;
 	}
 
 	public static Learn newInstance() throws Exception {
-		if (StringUtils.isNotEmpty(learningProject)) {
-			throw new Exception("Learn already concreted for project:" + learningProject + ".");
+		if (StringUtils.isNotEmpty(learningModel)) {
+			throw new Exception("Learn already concreted for model:" + learningModel + ".");
 		}
 		return new Learn();
 	}
@@ -99,48 +99,48 @@ public class Learn {
 		stop = true;
 	}
 
-	public void execute(final String projectId) throws Exception {
-		learningProject = projectId;
+	public void execute(final String modelId) throws Exception {
+		learningModel = modelId;
 		stop = false;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			TimeStamp stamp = new TimeStamp();
 			Business business = new Business(emc);
-			Project project = this.refreshProject(business, projectId);
-			final String projectName = project.getName();
-			logger.info("神经网络多层感知机 ({}) 学习开始.", projectName);
-			emc.beginTransaction(Project.class);
-			project.setStatus(Project.STATUS_LEARNING);
-			project.setTotalError(1.0d);
+			Model model = this.refreshmodel(business, modelId);
+			final String modelName = model.getName();
+			logger.info("神经网络多层感知机 ({}) 学习开始.", modelName);
+			emc.beginTransaction(Model.class);
+			model.setStatus(Model.STATUS_LEARNING);
+			model.setTotalError(1.0d);
 			emc.commit();
-			Integer hiddenLayerCount = MapTools.getInteger(project.getPropertyMap(),
-					Project.PROPERTY_MLP_HIDDENLAYERCOUNT, Project.DEFAULT_MLP_HIDDENLAYERCOUNT);
-			Double maxError = MapTools.getDouble(project.getPropertyMap(), Project.PROPERTY_MLP_MAXERROR,
-					Project.DEFAULT_MLP_MAXERROR);
-			Integer maxIteration = MapTools.getInteger(project.getPropertyMap(), Project.PROPERTY_MLP_MAXITERATION,
-					Project.DEFAULT_MLP_MAXITERATION);
-			InTextBag inTextBag = this.inTextBag(business, project);
-			OutTextBag outTextBag = this.outTextBag(business, project);
+			Integer hiddenLayerCount = MapTools.getInteger(model.getPropertyMap(), Model.PROPERTY_MLP_HIDDENLAYERCOUNT,
+					Model.DEFAULT_MLP_HIDDENLAYERCOUNT);
+			Double maxError = MapTools.getDouble(model.getPropertyMap(), Model.PROPERTY_MLP_MAXERROR,
+					Model.DEFAULT_MLP_MAXERROR);
+			Integer maxIteration = MapTools.getInteger(model.getPropertyMap(), Model.PROPERTY_MLP_MAXITERATION,
+					Model.DEFAULT_MLP_MAXITERATION);
+			InTextBag inTextBag = this.inTextBag(business, model);
+			OutTextBag outTextBag = this.outTextBag(business, model);
 			try {
-				NeuralNetwork<MomentumBackpropagation> neuralNetwork = project.createNeuralNetwork(inTextBag.size(),
+				NeuralNetwork<MomentumBackpropagation> neuralNetwork = model.createNeuralNetwork(inTextBag.size(),
 						outTextBag.size(), hiddenLayerCount);
 				neuralNetwork.getLearningRule().addListener(new LearningEventListener() {
 					@Override
 					public void handleLearningEvent(LearningEvent learningEvent) {
 						try {
-							Project o = refreshProject(business, projectId);
+							Model o = refreshmodel(business, modelId);
 							if (Objects.equals(LearningEvent.Type.EPOCH_ENDED, learningEvent.getEventType())) {
-								emc.beginTransaction(Project.class);
+								emc.beginTransaction(Model.class);
 								o.setIntermediateNnet(encode(neuralNetwork));
-								logger.info("神经网络多层感知机 ({}) 学习进度 {} / {}, 总误差: {}, 单次耗时: {}.", projectName,
+								logger.info("神经网络多层感知机 ({}) 学习进度 {} / {}, 总误差: {}, 单次耗时: {}.", modelName,
 										neuralNetwork.getLearningRule().getCurrentIteration(), maxIteration,
 										neuralNetwork.getLearningRule().getErrorFunction().getTotalError(),
 										stamp.stampSeconds());
 								if (stop) {
 									neuralNetwork.stopLearning();
-									logger.info("神经网络多层感知机 ({}) 学习停止.", projectName);
+									logger.info("神经网络多层感知机 ({}) 学习停止.", modelName);
 									o.setStatus("");
 								} else {
-									o.setStatus(Project.STATUS_LEARNING);
+									o.setStatus(Model.STATUS_LEARNING);
 									o.setTotalError(neuralNetwork.getLearningRule().getErrorFunction().getTotalError());
 								}
 								emc.commit();
@@ -150,42 +150,41 @@ public class Learn {
 						}
 					}
 				});
-				logger.info("神经网络多层感知机 ({}) 数据集准备就绪.", projectName);
+				logger.info("神经网络多层感知机 ({}) 数据集准备就绪.", modelName);
 				/* 训练数据集 */
-				DataSet learnSet = this.learnOrValidationSet(business, project, inTextBag, outTextBag,
-						Entry.TYPE_LEARN);
-				this.saveDataSet(learnSet, project, Entry.TYPE_LEARN);
+				DataSet learnSet = this.learnOrValidationSet(business, model, inTextBag, outTextBag, Entry.TYPE_LEARN);
+				this.saveDataSet(learnSet, model, Entry.TYPE_LEARN);
 				/* 测试数据集 */
-				DataSet validationSet = this.learnOrValidationSet(business, project, inTextBag, outTextBag,
+				DataSet validationSet = this.learnOrValidationSet(business, model, inTextBag, outTextBag,
 						Entry.TYPE_VALIDATION);
-				this.saveDataSet(validationSet, project, Entry.TYPE_VALIDATION);
+				this.saveDataSet(validationSet, model, Entry.TYPE_VALIDATION);
 				neuralNetwork.learn(learnSet);
-				project = refreshProject(business, projectId);
-				emc.beginTransaction(Project.class);
-				project.setNnet(this.encode(neuralNetwork));
-				project.setStatus("");
-				project.setInValueCount(inTextBag.size());
-				project.setOutValueCount(outTextBag.size());
+				model = refreshmodel(business, modelId);
+				emc.beginTransaction(Model.class);
+				model.setNnet(this.encode(neuralNetwork));
+				model.setStatus("");
+				model.setInValueCount(inTextBag.size());
+				model.setOutValueCount(outTextBag.size());
 				emc.commit();
-				this.cleanInValue(business, project);
+				this.cleanInValue(business, model);
 				inTextBag.saveToInValue(business);
-				this.cleanOutValue(business, project);
+				this.cleanOutValue(business, model);
 				outTextBag.saveToOutValue(business);
 				if (neuralNetwork.getLearningRule().getErrorFunction().getTotalError() > maxError) {
-					logger.print("神经网络多层感知机 ({}) 学习失败, 耗时: {}, 总误差: {}, 未能达到预期值: {}.", projectName,
+					logger.print("神经网络多层感知机 ({}) 学习失败, 耗时: {}, 总误差: {}, 未能达到预期值: {}.", modelName,
 							stamp.consumingMilliseconds(),
 							neuralNetwork.getLearningRule().getErrorFunction().getTotalError(), maxError);
 				} else {
-					logger.print("神经网络多层感知机 ({}) 学习完成.", projectName);
+					logger.print("神经网络多层感知机 ({}) 学习完成.", modelName);
 					if (!validationSet.isEmpty()) {
 						Evaluation evaluation = new Evaluation();
 						evaluation.addEvaluator(new ClassifierEvaluator.MultiClass(validationSet.getColumnNames()));
 						EvaluationResult evaluationResult = evaluation.evaluateDataSet(neuralNetwork, validationSet);
-						project = refreshProject(business, projectId);
-						emc.beginTransaction(Project.class);
-						project.setValidationMeanSquareError(evaluationResult.getMeanSquareError());
+						model = refreshmodel(business, modelId);
+						emc.beginTransaction(Model.class);
+						model.setValidationMeanSquareError(evaluationResult.getMeanSquareError());
 						emc.commit();
-						logger.print("神经网络多层感知机 ({}) 测试数据数量: {}, 测试结果集标准方差: {}.", projectName, validationSet.size(),
+						logger.print("神经网络多层感知机 ({}) 测试数据数量: {}, 测试结果集标准方差: {}.", modelName, validationSet.size(),
 								evaluationResult.getMeanSquareError());
 					}
 					// logger.info("##############################################################################");
@@ -211,7 +210,7 @@ public class Learn {
 				logger.error(e);
 			}
 		} finally {
-			learningProject = "";
+			learningModel = "";
 			stop = false;
 		}
 	}
@@ -223,22 +222,22 @@ public class Learn {
 		return ByteTools.compressBase64String(bytes);
 	}
 
-	private Project refreshProject(Business business, String projectId) throws Exception {
-		Project project = business.entityManagerContainer().find(projectId, Project.class);
-		if (null == project) {
-			throw new ExceptionEntityNotExist(projectId, Project.class);
+	private Model refreshmodel(Business business, String modelId) throws Exception {
+		Model model = business.entityManagerContainer().find(modelId, Model.class);
+		if (null == model) {
+			throw new ExceptionEntityNotExist(modelId, Model.class);
 		}
-		return project;
+		return model;
 	}
 
-	private DataSet learnOrValidationSet(Business business, Project project, InTextBag inTextBag, OutTextBag outTextBag,
+	private DataSet learnOrValidationSet(Business business, Model model, InTextBag inTextBag, OutTextBag outTextBag,
 			String type) throws Exception {
 		DataSet data = new DataSet(inTextBag.size(), outTextBag.size());
 		Entry entry = null;
 		double[] ins = null;
 		double[] outs = null;
-		for (String id : business.entityManagerContainer().idsEqualAndEqual(Entry.class, Entry.project_FIELDNAME,
-				project.getId(), Entry.type_FIELDNAME, type)) {
+		for (String id : business.entityManagerContainer().idsEqualAndEqual(Entry.class, Entry.model_FIELDNAME,
+				model.getId(), Entry.type_FIELDNAME, type)) {
 			entry = business.entityManagerContainer().find(id, Entry.class);
 			if (null != entry) {
 				ins = new double[inTextBag.size()];
@@ -259,33 +258,33 @@ public class Learn {
 	}
 
 	/* 生成输入值包 */
-	private InTextBag inTextBag(Business business, Project project) throws Exception {
+	private InTextBag inTextBag(Business business, Model model) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(InText.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<InText> cq = cb.createQuery(InText.class);
 		Root<InText> root = cq.from(InText.class);
-		Predicate p = cb.equal(root.get(InText_.project), project.getId());
+		Predicate p = cb.equal(root.get(InText_.model), model.getId());
 		cq.select(root).where(p).orderBy(cb.desc(root.get(InText_.count)));
-		Integer cutoff = MapTools.getInteger(project.getPropertyMap(), Project.PROPERTY_MLP_LEARNINTEXTCUTOFFSIZE,
-				Project.DEFAULT_MLP_LEARNINTEXTCUTOFFSIZE);
+		Integer cutoff = MapTools.getInteger(model.getPropertyMap(), Model.PROPERTY_MLP_LEARNINTEXTCUTOFFSIZE,
+				Model.DEFAULT_MLP_LEARNINTEXTCUTOFFSIZE);
 		List<InText> os = em.createQuery(cq.distinct(true)).setMaxResults(cutoff).getResultList();
 		InTextBag inTextBag = new InTextBag(os);
 		return inTextBag;
 	}
 
 	/* 生成输出值包 */
-	private OutTextBag outTextBag(Business business, Project project) throws Exception {
-		List<OutText> os = business.entityManagerContainer().listEqual(OutText.class, OutText.project_FIELDNAME,
-				project.getId());
+	private OutTextBag outTextBag(Business business, Model model) throws Exception {
+		List<OutText> os = business.entityManagerContainer().listEqual(OutText.class, OutText.model_FIELDNAME,
+				model.getId());
 		os = os.stream().sorted(Comparator.comparing(OutText::getSerial, Comparator.nullsLast(Integer::compareTo)))
 				.collect(Collectors.toList());
 		OutTextBag outTextBag = new OutTextBag(os);
 		return outTextBag;
 	}
 
-	private Long cleanInValue(Business business, Project project) throws Exception {
-		List<String> ids = business.entityManagerContainer().idsEqual(InValue.class, InValue.project_FIELDNAME,
-				project.getId());
+	private Long cleanInValue(Business business, Model model) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(InValue.class, InValue.model_FIELDNAME,
+				model.getId());
 		Long count = 0L;
 		for (List<String> os : ListTools.batch(ids, 2000)) {
 			business.entityManagerContainer().beginTransaction(InValue.class);
@@ -295,20 +294,20 @@ public class Learn {
 		return count;
 	}
 
-//	private void saveNeuralNetwork(NeuralNetwork<MomentumBackpropagation> neuralNetwork, Project project,
+//	private void saveNeuralNetwork(NeuralNetwork<MomentumBackpropagation> neuralNetwork, model model,
 //			String surffix) throws Exception {
-//		File file = new File(Config.base(), "local/temp/" + project.getName() + "_" + surffix + ".nnet");
+//		File file = new File(Config.base(), "local/temp/" + model.getName() + "_" + surffix + ".nnet");
 //		neuralNetwork.save(file.getAbsolutePath());
 //	}
 
-	private void saveDataSet(DataSet dataSet, Project project, String surffix) throws Exception {
-		File file = new File(Config.base(), "local/temp/" + project.getName() + "_" + surffix + ".txt");
+	private void saveDataSet(DataSet dataSet, Model model, String surffix) throws Exception {
+		File file = new File(Config.base(), "local/temp/" + model.getName() + "_" + surffix + ".txt");
 		dataSet.save(file.getAbsolutePath());
 	}
 
-	private Long cleanOutValue(Business business, Project project) throws Exception {
-		List<String> ids = business.entityManagerContainer().idsEqual(OutValue.class, OutValue.project_FIELDNAME,
-				project.getId());
+	private Long cleanOutValue(Business business, Model model) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(OutValue.class, OutValue.model_FIELDNAME,
+				model.getId());
 		Long count = 0L;
 		for (List<String> os : ListTools.batch(ids, 2000)) {
 			business.entityManagerContainer().beginTransaction(OutValue.class);
@@ -337,7 +336,7 @@ public class Learn {
 				OutValue outValue = new OutValue();
 				outValue.setText(text.getText());
 				outValue.setCount(text.getCount());
-				outValue.setProject(text.getProject());
+				outValue.setModel(text.getModel());
 				outValue.setSerial(text.getSerial());
 				os.add(outValue);
 			}
@@ -382,7 +381,7 @@ public class Learn {
 				InValue inValue = new InValue();
 				inValue.setText(text.getText());
 				inValue.setCount(text.getCount());
-				inValue.setProject(text.getProject());
+				inValue.setModel(text.getModel());
 				inValue.setSerial(i);
 				inValue.setInTextSerial(text.getSerial());
 				os.add(inValue);

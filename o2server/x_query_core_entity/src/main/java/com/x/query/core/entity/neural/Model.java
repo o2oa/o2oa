@@ -54,16 +54,16 @@ import com.x.query.core.entity.PersistenceProperties;
 
 @Entity
 @ContainerEntity
-@Table(name = PersistenceProperties.Neural.Project.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.Neural.Project.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.Neural.Model.table, uniqueConstraints = {
+		@UniqueConstraint(name = PersistenceProperties.Neural.Model.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class Project extends SliceJpaObject {
+public class Model extends SliceJpaObject {
 
 	private static final long serialVersionUID = -5610293696763235753L;
 
-	private static final String TABLE = PersistenceProperties.Neural.Project.table;
+	private static final String TABLE = PersistenceProperties.Neural.Model.table;
 
 	public String getId() {
 		return id;
@@ -76,11 +76,11 @@ public class Project extends SliceJpaObject {
 	@FieldDescribe("数据库主键,自动生成.")
 	@Id
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
-	@CheckRemove(citationNotExists = { @CitationNotExist(type = Entry.class, fields = Entry.project_FIELDNAME),
-			@CitationNotExist(type = InText.class, fields = InText.project_FIELDNAME),
-			@CitationNotExist(type = OutText.class, fields = OutText.project_FIELDNAME),
-			@CitationNotExist(type = InValue.class, fields = InValue.project_FIELDNAME),
-			@CitationNotExist(type = OutValue.class, fields = OutValue.project_FIELDNAME) })
+	@CheckRemove(citationNotExists = { @CitationNotExist(type = Entry.class, fields = Entry.model_FIELDNAME),
+			@CitationNotExist(type = InText.class, fields = InText.model_FIELDNAME),
+			@CitationNotExist(type = OutText.class, fields = OutText.model_FIELDNAME),
+			@CitationNotExist(type = InValue.class, fields = InValue.model_FIELDNAME),
+			@CitationNotExist(type = OutValue.class, fields = OutValue.model_FIELDNAME) })
 	private String id = createId();
 
 	/* 以上为 JpaObject 默认字段 */
@@ -121,8 +121,8 @@ public class Project extends SliceJpaObject {
 	public static final String STATUS_GENERATING = "generating";
 	public static final String STATUS_LEARNING = "learning";
 
-	public static final String TYPE_PROCESSPLATFORM = "processPlatform";
-	public static final String TYPE_CMS = "cms";
+	public static final String DATATYPE_PROCESSPLATFORM = "processPlatform";
+	public static final String DATATYPE_CMS = "cms";
 
 	public static final String NEURALNETWORKTYPE_MLP = "mlp";
 
@@ -195,16 +195,16 @@ public class Project extends SliceJpaObject {
 	}
 
 	public static final String neuralNetworkType_FIELDNAME = "neuralNetworkType";
-	@FieldDescribe(NEURALNETWORKTYPE_MLP)
+	@FieldDescribe("神经网络类型:" + NEURALNETWORKTYPE_MLP + ".")
 	@Column(length = length_32B, name = ColumnNamePrefix + neuralNetworkType_FIELDNAME)
 	@CheckPersist(allowEmpty = true, simplyString = false)
 	private String neuralNetworkType;
 
-	public static final String type_FIELDNAME = "type";
-	@FieldDescribe(TYPE_CMS + "," + TYPE_PROCESSPLATFORM)
-	@Column(length = length_32B, name = ColumnNamePrefix + type_FIELDNAME)
+	public static final String dataType_FIELDNAME = "dataType";
+	@FieldDescribe("数据类型:" + DATATYPE_CMS + "," + DATATYPE_PROCESSPLATFORM)
+	@Column(length = length_32B, name = ColumnNamePrefix + dataType_FIELDNAME)
 	@CheckPersist(allowEmpty = true, simplyString = false)
-	private String type;
+	private String dataType;
 
 	public static final String name_FIELDNAME = "name";
 	@Flag
@@ -213,7 +213,7 @@ public class Project extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
 	@CheckPersist(allowEmpty = false, citationNotExists =
 	/* 检查不重名 */
-	@CitationNotExist(type = Project.class, fields = { "id", "name", "alias" }))
+	@CitationNotExist(type = Model.class, fields = { "id", "name", "alias" }))
 	private String name;
 
 	public static final String description_FIELDNAME = "description";
@@ -228,7 +228,7 @@ public class Project extends SliceJpaObject {
 	@Column(length = length_255B, name = ColumnNamePrefix + alias_FIELDNAME)
 	@CheckPersist(allowEmpty = true, citationNotExists =
 	/* 同一个应用下不可重名 */
-	@CitationNotExist(type = Project.class, fields = { "id", "name", "alias" }))
+	@CitationNotExist(type = Model.class, fields = { "id", "name", "alias" }))
 	private String alias;
 
 	public static final String inValueScriptText_FIELDNAME = "inValueScriptText";
@@ -276,6 +276,42 @@ public class Project extends SliceJpaObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + applicationList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> applicationList;
+
+	public static final String analyzeType_FIELDNAME = "analyzeType";
+	@FieldDescribe("分析类型,default,full,customized")
+	@Column(length = length_32B, name = ColumnNamePrefix + analyzeType_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String analyzeType;
+
+	public static final String maxResult_FIELDNAME = "maxResult";
+	@FieldDescribe("最大输出值")
+	@Column(name = ColumnNamePrefix + maxResult_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Integer maxResult;
+
+	public static final String inValueCount_FIELDNAME = "inValueCount";
+	@FieldDescribe("输入数量")
+	@Column(name = ColumnNamePrefix + inValueCount_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Integer inValueCount;
+
+	public static final String outValueCount_FIELDNAME = "outValueCount";
+	@FieldDescribe("输出数量")
+	@Column(name = ColumnNamePrefix + outValueCount_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Integer outValueCount;
+
+	public static final String propertyMap_FIELDNAME = "propertyMap";
+	@FieldDescribe("神经网络参数.")
+	@CheckPersist(allowEmpty = true)
+	@PersistentMap(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle + propertyMap_FIELDNAME, joinIndex = @Index(name = TABLE
+			+ IndexNameMiddle + propertyMap_FIELDNAME + JoinIndexNameSuffix))
+	@KeyColumn(name = ColumnNamePrefix + key_FIELDNAME)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + propertyMap_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + propertyMap_FIELDNAME + ElementIndexNameSuffix)
+	@KeyIndex(name = TABLE + IndexNameMiddle + propertyMap_FIELDNAME + KeyIndexNameSuffix)
+	private LinkedHashMap<String, String> propertyMap;
 
 	public static final String startDate_FIELDNAME = "startDate";
 	@FieldDescribe("开始时间")
@@ -327,36 +363,6 @@ public class Project extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String intermediateNnet;
 
-//	public static final String learningRate_FIELDNAME = "learningRate";
-//	@FieldDescribe("学习率")
-//	@Column(name = ColumnNamePrefix + learningRate_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private Double learningRate;
-//
-//	public static final String momentum_FIELDNAME = "momentum";
-//	@FieldDescribe("动量")
-//	@Column(name = ColumnNamePrefix + momentum_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private Double momentum;
-//
-//	public static final String maxIteration_FIELDNAME = "maxIteration";
-//	@FieldDescribe("最大学习遍数")
-//	@Column(name = ColumnNamePrefix + maxIteration_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private Integer maxIteration;
-//
-//	public static final String generatingPercent_FIELDNAME = "generatingPercent";
-//	@FieldDescribe("当前条目生成进度")
-//	@Column(name = ColumnNamePrefix + generatingPercent_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private Integer generatingPercent;
-//
-//	public static final String maxError_FIELDNAME = "maxError";
-//	@FieldDescribe("最大错误,使用的是均方误差")
-//	@Column(name = ColumnNamePrefix + maxError_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private Double maxError;
-
 	public static final String generatingPercent_FIELDNAME = "generatingPercent";
 	@FieldDescribe("当前条目生成进度")
 	@Column(name = ColumnNamePrefix + generatingPercent_FIELDNAME)
@@ -368,24 +374,6 @@ public class Project extends SliceJpaObject {
 	@Column(name = ColumnNamePrefix + totalError_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Double totalError;
-
-	public static final String inValueCount_FIELDNAME = "inValueCount";
-	@FieldDescribe("输入数量")
-	@Column(name = ColumnNamePrefix + inValueCount_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Integer inValueCount;
-
-	public static final String outValueCount_FIELDNAME = "outValueCount";
-	@FieldDescribe("输出数量")
-	@Column(name = ColumnNamePrefix + outValueCount_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Integer outValueCount;
-
-	public static final String maxResult_FIELDNAME = "maxResult";
-	@FieldDescribe("最大输出值")
-	@Column(name = ColumnNamePrefix + maxResult_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Integer maxResult;
 
 	public static final String learnEntryCount_FIELDNAME = "learnEntryCount";
 	@FieldDescribe("学习条目数量")
@@ -400,36 +388,10 @@ public class Project extends SliceJpaObject {
 	private Integer validationEntryCount;
 
 	public static final String validationMeanSquareError_FIELDNAME = "validationMeanSquareError";
-	@FieldDescribe("测试比例")
+	@FieldDescribe("测试结果")
 	@Column(name = ColumnNamePrefix + validationMeanSquareError_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Double validationMeanSquareError;
-
-	public static final String analyzeType_FIELDNAME = "analyzeType";
-	@FieldDescribe("分析类型,default,full,customized")
-	@Column(length = length_32B, name = ColumnNamePrefix + analyzeType_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String analyzeType;
-
-	public static final String propertyMap_FIELDNAME = "propertyMap";
-	@FieldDescribe("神经网络参数.")
-	@CheckPersist(allowEmpty = true)
-	@PersistentMap(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + propertyMap_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + propertyMap_FIELDNAME + JoinIndexNameSuffix))
-	@KeyColumn(name = ColumnNamePrefix + key_FIELDNAME)
-	@ElementColumn(length = length_255B, name = ColumnNamePrefix + propertyMap_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + propertyMap_FIELDNAME + ElementIndexNameSuffix)
-	@KeyIndex(name = TABLE + IndexNameMiddle + propertyMap_FIELDNAME + KeyIndexNameSuffix)
-	private LinkedHashMap<String, String> propertyMap;
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
 
 	public String getName() {
 		return name;
@@ -633,6 +595,14 @@ public class Project extends SliceJpaObject {
 
 	public void setPropertyMap(LinkedHashMap<String, String> propertyMap) {
 		this.propertyMap = propertyMap;
+	}
+
+	public String getDataType() {
+		return dataType;
+	}
+
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
 	}
 
 }
