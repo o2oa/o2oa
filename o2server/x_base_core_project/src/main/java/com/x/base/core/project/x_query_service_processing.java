@@ -26,7 +26,7 @@ public class x_query_service_processing extends ServiceA {
 		containerEntities.add("com.x.query.core.entity.neural.OutText");
 		containerEntities.add("com.x.query.core.entity.neural.InValue");
 		containerEntities.add("com.x.query.core.entity.neural.OutValue");
-		containerEntities.add("com.x.query.core.entity.neural.Project");
+		containerEntities.add("com.x.query.core.entity.neural.Model");
 		containerEntities.add("com.x.processplatform.core.entity.content.Review");
 		containerEntities.add("com.x.processplatform.core.entity.content.Work");
 		containerEntities.add("com.x.processplatform.core.entity.content.WorkCompleted");
