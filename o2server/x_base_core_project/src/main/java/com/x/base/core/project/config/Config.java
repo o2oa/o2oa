@@ -18,15 +18,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.http.MimeTypes;
 
 import com.x.base.core.entity.annotation.ContainerEntity;
-import com.x.base.core.project.Packages;
 import com.x.base.core.project.x_program_center;
 import com.x.base.core.project.tools.BaseTools;
 import com.x.base.core.project.tools.Host;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.NumberTools;
 
-import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
-import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 
 public class Config {
 
@@ -36,7 +36,6 @@ public class Config {
 	}
 
 	public static final String PATH_VERSION = "version.o2";
-	public static final String PATH_CONFIG = "config";
 	public static final String PATH_LOCAL_NODE = "local/node.cfg";
 	public static final String PATH_CONFIG_TOKEN = "config/token.json";
 	public static final String PATH_CONFIG_EXTERNALDATASOURCES = "config/externalDataSources.json";
@@ -64,10 +63,125 @@ public class Config {
 	public static final String PATH_CONFIG_LOGLEVEL = "config/logLevel.json";
 	public static final String PATH_COMMONS_INITIALSCRIPTTEXT = "commons/initialScriptText.js";
 	public static final String PATH_COMMONS_MOOTOOLSSCRIPTTEXT = "commons/mooToolsScriptText.js";
-	public static final String PATH_LOCAL_TEMP = "local/temp";
+
+	public static final String DIR_COMMONS = "commons";
+	public static final String DIR_COMMONS_EXT = "commons/ext";
+	public static final String DIR_CONFIG = "config";
+	public static final String DIR_CUSTOM = "custom";
+	public static final String DIR_CUSTOM_JARS = "custom/jars";
+	public static final String DIR_DYNAMIC = "dynamic";
+	public static final String DIR_DYNAMIC_JARS = "dynamic/jars";
+	public static final String DIR_LOCAL = "local";
+	public static final String DIR_LOCAL_TEMP = "local/temp";
+	public static final String DIR_LOCAL_TEMP_CLASSES = "local/temp/classes";
+	public static final String DIR_LOGS = "logs";
+	public static final String DIR_SERVERS = "servers";
+	public static final String DIR_SERVERS_APPLICATIONSERVER = "servers/applicationServer";
+	public static final String DIR_SERVERS_APPLICATIONSERVER_WEBAPPS = "servers/applicationServer/webapps";
+	public static final String DIR_SERVERS_APPLICATIONSERVER_WORK = "servers/applicationServer/work";
+	public static final String DIR_SERVERS_CENTERSERVER = "servers/centerServer";
+	public static final String DIR_SERVERS_CENTERSERVER_WEBAPPS = "servers/centerServer/webapps";
+	public static final String DIR_SERVERS_CENTERSERVER_WORK = "servers/centerServer/work";
+	public static final String DIR_SERVERS_WEBSERVER = "servers/webServer";
+	public static final String DIR_STORE = "store";
+	public static final String DIR_STORE_JARS = "store/jars";
 
 	private static final String DEFAULT_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCWcVZIS57VeOUzi8c01WKvwJK9uRe6hrGTUYmF6J/pI6/UvCbdBWCoErbzsBZOElOH8Sqal3vsNMVLjPYClfoDyYDaUlakP3ldfnXJzAFJVVubF53KadG+fwnh9ZMvxdh7VXVqRL3IQBDwGgzX4rmSK+qkUJjc3OkrNJPB7LLD8QIDAQAB";
 	private static final String DEFAULT_PRIVATE_KEY = "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAJZxVkhLntV45TOLxzTVYq/Akr25F7qGsZNRiYXon+kjr9S8Jt0FYKgStvOwFk4SU4fxKpqXe+w0xUuM9gKV+gPJgNpSVqQ/eV1+dcnMAUlVW5sXncpp0b5/CeH1ky/F2HtVdWpEvchAEPAaDNfiuZIr6qRQmNzc6Ss0k8HsssPxAgMBAAECgYAWtRy05NUgm5Lc6Og0jVDL/mEnydxPBy2ectwzHh2k7wIHNi8XhUxFki2TMqzrM9Dv3/LySpMl4AE3mhs34LNPy6F+MwyF5X7j+2Y6MflJyeb9HNyT++viysQneoOEiOk3ghxF2/GPjpiEF79wSp+1YKTxRAyq7ypV3t35fGOOEQJBANLDPWl8b5c3lrcz/dTamMjHbVamEyX43yzQOphzkhYsz4pruATzTxU+z8/zPdEqHcWWV39CP3xu3EYNcAhxJW8CQQC2u7PF5Xb1xYRCsmIPssFxil64vvdUadSxl7GLAgjQ9ULyYWB24KObCEzLnPcT8Pf2Q0YQOixxa/78FuzmgbyfAkA7ZFFV/H7lugB6t+f7p24OhkRFep9CwBMD6dnZRBgSr6X8d8ZvfrD2Z7DgBMeSva+OEoOtlNmXExZ3lynO9zN5AkAVczEmIMp3DSl6XtAuAZC9kD2QODJ2QToLYsAfjiyUwsWKCC43piTuVOoW2KUUPSwOR1VZIEsJQWEcHGDQqhgHAkAeZ7a6dVRZFdBwKA0ADjYCufAW2cIYiVDQBJpgB+kiLQflusNOCBK0FT3lg8BdUSy2D253Ih6l3lbaM/4M7DFQ";
+
+	public static File dir_commons() throws Exception {
+		return new File(base(), DIR_COMMONS);
+	}
+
+	public static File dir_commons_ext() throws Exception {
+		return new File(base(), DIR_COMMONS_EXT);
+	}
+
+	public static File dir_config() throws Exception {
+		return new File(base(), DIR_CONFIG);
+	}
+
+	public static File dir_custom() throws Exception {
+		return new File(base(), DIR_CUSTOM);
+	}
+
+	public static File dir_custom_jars() throws Exception {
+		return new File(base(), DIR_CUSTOM_JARS);
+	}
+
+	public static File dir_dynamic() throws Exception {
+		return new File(base(), DIR_DYNAMIC);
+	}
+
+	public static File dir_dynamic_jars() throws Exception {
+		return dir_dynamic_jars(false);
+	}
+
+	public static File dir_dynamic_jars(Boolean force) throws Exception {
+		File dir = new File(base(), DIR_DYNAMIC_JARS);
+		if (force) {
+			if ((!dir.exists()) || dir.isFile()) {
+				FileUtils.forceMkdir(dir);
+			}
+		}
+		return dir;
+	}
+
+	public static File dir_local() throws Exception {
+		return new File(base(), DIR_LOCAL);
+	}
+
+	public static File dir_local_temp() throws Exception {
+		return new File(base(), DIR_LOCAL_TEMP);
+	}
+
+	public static File dir_local_temp_classes() throws Exception {
+		return new File(base(), DIR_LOCAL_TEMP_CLASSES);
+	}
+
+	public static File dir_logs() throws Exception {
+		return new File(base(), DIR_LOGS);
+	}
+
+	public static File dir_servers() throws Exception {
+		return new File(base(), DIR_SERVERS);
+	}
+
+	public static File dir_servers_applicationServer() throws Exception {
+		return new File(base(), DIR_SERVERS_APPLICATIONSERVER);
+	}
+
+	public static File dir_servers_applicationServer_webapps() throws Exception {
+		return new File(base(), DIR_SERVERS_APPLICATIONSERVER_WEBAPPS);
+	}
+
+	public static File dir_servers_applicationServer_work() throws Exception {
+		return new File(base(), DIR_SERVERS_APPLICATIONSERVER_WORK);
+	}
+
+	public static File dir_servers_centerServer() throws Exception {
+		return new File(base(), DIR_SERVERS_CENTERSERVER);
+	}
+
+	public static File dir_servers_centerServer_webapps() throws Exception {
+		return new File(base(), DIR_SERVERS_CENTERSERVER_WEBAPPS);
+	}
+
+	public static File dir_servers_centerServer_work() throws Exception {
+		return new File(base(), DIR_SERVERS_CENTERSERVER_WORK);
+	}
+
+	public static File dir_servers_webServer() throws Exception {
+		return new File(base(), DIR_SERVERS_WEBSERVER);
+	}
+
+	public static File dir_store() throws Exception {
+		return new File(base(), DIR_STORE);
+	}
+
+	public static File dir_store_jars() throws Exception {
+		return new File(base(), DIR_STORE_JARS);
+	}
 
 	public static void flush() {
 		if (null != INSTANCE) {
@@ -136,14 +250,12 @@ public class Config {
 			synchronized (Config.class) {
 				if (null == instance().nodes) {
 					Nodes nodes = new Nodes();
-					String base = BaseTools.getBasePath();
 					FileFilter fileFilter = new WildcardFileFilter("node_*.json");
-					File dir = new File(base, PATH_CONFIG);
-					File[] files = dir.listFiles(fileFilter);
+					File[] files = dir_config().listFiles(fileFilter);
 					if (null != files && files.length > 0) {
 						for (File o : files) {
 							String name = StringUtils.substringBetween(o.getName(), "node_", ".json");
-							Node node = BaseTools.readObject(PATH_CONFIG + "/" + o.getName(), Node.class);
+							Node node = BaseTools.readObject(DIR_CONFIG + "/" + o.getName(), Node.class);
 							if (StringUtils.isNotEmpty(name) && BooleanUtils.isTrue(node.getEnable())) {
 								nodes.put(name, node);
 							}
@@ -202,7 +314,7 @@ public class Config {
 				if (null == instance().publicKey) {
 					File file = new File(Config.base(), PATH_CONFIG_PUBLICKEY);
 					if (file.exists() && file.isFile()) {
-						instance().publicKey = FileUtils.readFileToString(file);
+						instance().publicKey = FileUtils.readFileToString(file, "utf-8");
 					} else {
 						instance().publicKey = DEFAULT_PUBLIC_KEY;
 					}
@@ -220,7 +332,7 @@ public class Config {
 				if (null == instance().privateKey) {
 					File file = new File(Config.base(), PATH_CONFIG_PRIVATEKEY);
 					if (file.exists() && file.isFile()) {
-						instance().privateKey = FileUtils.readFileToString(file);
+						instance().privateKey = FileUtils.readFileToString(file, "utf-8");
 					} else {
 						instance().privateKey = DEFAULT_PRIVATE_KEY;
 					}
@@ -608,13 +720,20 @@ public class Config {
 	}
 
 	private static List<Class<?>> dataMappingsScanEntities() throws Exception {
-		ScanResult scanResult = new FastClasspathScanner(Packages.PREFIX).scan();
-		List<String> names = scanResult.getNamesOfClassesWithAnnotation(ContainerEntity.class);
-		List<Class<?>> list = new ArrayList<>();
-		for (String str : names) {
-			list.add(Class.forName(str));
+		try (ScanResult scanResult = new ClassGraph().enableAllInfo().scan()) {
+			List<Class<?>> list = new ArrayList<>();
+			for (ClassInfo info : scanResult.getClassesWithAnnotation(ContainerEntity.class.getName())) {
+				Class<?> clz = Class.forName(info.getName());
+				list.add(clz);
+			}
+			return list;
 		}
-		return list;
+//		ScanResult scanResult = new FastClasspathScanner(Packages.PREFIX).scan();
+//		List<String> names = scanResult.getNamesOfClassesWithAnnotation(ContainerEntity.class);
+//		List<Class<?>> list = new ArrayList<>();
+//		for (String str : names) {
+//			list.add(Class.forName(str));
+//		}
 	}
 
 	public static Node currentNode() throws Exception {

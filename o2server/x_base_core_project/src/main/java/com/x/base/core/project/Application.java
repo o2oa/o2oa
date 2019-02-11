@@ -11,10 +11,11 @@ public class Application extends GsonPropertyObject {
 
 	private String name;
 	private String node;
-	private String context;
+	private String contextPath;
 	private Integer port;
 	private String token;
 	private Boolean sslEnable;
+	private Dependency dependency;
 
 	private String proxyHost;
 	private Integer proxyPort;
@@ -32,7 +33,7 @@ public class Application extends GsonPropertyObject {
 			buffer.append("http://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
 					.append(port == 80 ? "" : (":" + port));
 		}
-		buffer.append(context + "/jaxrs/");
+		buffer.append(contextPath + "/jaxrs/");
 		return buffer.toString();
 
 	}
@@ -67,14 +68,6 @@ public class Application extends GsonPropertyObject {
 
 	public void setReportDate(Date reportDate) {
 		this.reportDate = reportDate;
-	}
-
-	public String getContext() {
-		return context;
-	}
-
-	public void setContext(String context) {
-		this.context = context;
 	}
 
 	public void setProxyPort(Integer proxyPort) {
@@ -115,6 +108,22 @@ public class Application extends GsonPropertyObject {
 
 	public void setNode(String node) {
 		this.node = node;
+	}
+
+	public String getContextPath() {
+		return contextPath;
+	}
+
+	public void setContextPath(String contextPath) {
+		this.contextPath = contextPath;
+	}
+
+	public Dependency getDependency() {
+		return dependency;
+	}
+
+	public void setDependency(Dependency dependency) {
+		this.dependency = dependency;
 	}
 
 }

@@ -36,8 +36,8 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		this.token = token;
 	}
 
-	public Application get(Class<?> clz, String token) throws Exception {
-		List<Application> list = this.get(clz.getName());
+	public Application get(String className, String token) throws Exception {
+		List<Application> list = this.get(className);
 		if (null != list) {
 			for (Application application : list) {
 				if (StringUtils.equals(token, application.getToken())) {
@@ -52,11 +52,20 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		return this.get(clz.getName());
 	}
 
-	public void add(Class<?> applicationClass, Application application) throws Exception {
-		CopyOnWriteArrayList<Application> list = this.get(applicationClass.getName());
+//	public void add(Class<?> applicationClass, Application application) throws Exception {
+//		CopyOnWriteArrayList<Application> list = this.get(applicationClass.getName());
+//		if (null == list) {
+//			list = new CopyOnWriteArrayList<Application>();
+//			this.put(applicationClass.getName(), list);
+//		}
+//		list.add(application);
+//	}
+
+	public void add(String className, Application application) throws Exception {
+		CopyOnWriteArrayList<Application> list = this.get(className);
 		if (null == list) {
 			list = new CopyOnWriteArrayList<Application>();
-			this.put(applicationClass.getName(), list);
+			this.put(className, list);
 		}
 		list.add(application);
 	}
@@ -177,9 +186,9 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		return this.putQuery(false, cls, uri, body);
 	}
 
-	public Application randomWithWeight(Class<?> clz) throws Exception {
+	public Application randomWithWeight(String className) throws Exception {
 		List<Application> availabeApplications = new ArrayList<>();
-		List<Application> list = this.get(clz.getName());
+		List<Application> list = this.get(className);
 		if (null != list) {
 			for (Application app : list) {
 				availabeApplications.add(app);
@@ -204,6 +213,10 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		throw new Exception("randomWithWeight error.");
 	}
 
+	public Application randomWithWeight(Class<?> clz) throws Exception {
+		return this.randomWithWeight(clz.getName());
+	}
+
 	public static String joinQueryUri(String... parts) {
 		return Stream.of(parts).map(s -> {
 			try {
@@ -215,4 +228,15 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		}).collect(Collectors.joining("/"));
 	}
 
+	public List<String> listContainEntity(String name) {
+		List<String> os = new ArrayList<>();
+		this.entrySet().stream().forEach(o -> {
+			if (!o.getValue().isEmpty()) {
+				if (o.getValue().get(0).getDependency().containerEntities.contains(name)) {
+					os.add(o.getKey());
+				}
+			}
+		});
+		return os;
+	}
 }

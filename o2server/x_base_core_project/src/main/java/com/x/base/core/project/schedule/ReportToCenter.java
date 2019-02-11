@@ -9,6 +9,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import com.x.base.core.project.Context;
+import com.x.base.core.project.Dependency;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.CipherConnectionAction;
@@ -17,6 +18,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 public class ReportToCenter implements Job {
 
 	public static int INTERVAL = 45;
+
+	private static final String DATAMAP_ATTRIBUTE_CONTEXT = "context";
 
 	private Context context;
 
@@ -34,7 +37,7 @@ public class ReportToCenter implements Job {
 
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-		this.context = (Context) jobExecutionContext.getMergedJobDataMap().get("context");
+		this.context = (Context) jobExecutionContext.getMergedJobDataMap().get(DATAMAP_ATTRIBUTE_CONTEXT);
 		Echo echo = this.send(context);
 		this.updateApplications(context, echo.getApplicationsToken());
 	}
@@ -61,22 +64,28 @@ public class ReportToCenter implements Job {
 	private Report conreteReport(Context context) throws Exception {
 		Report report = new Report();
 		report.setClassName(context.clazz().getName());
+		report.setContextPath(context.contextPath());
+		report.setName(context.name());
 		report.setNode(Config.node());
 		report.setToken(context.token());
 		report.setWeight(context.weight());
 		report.setSslEnable(context.sslEnable());
 		report.setScheduleLocalRequestList(context.getScheduleLocalRequestList());
 		report.setScheduleRequestList(context.getScheduleRequestList());
+		report.setDependency(context.clazzInstance().dependency());
 		return report;
 	}
 
 	public static class Report extends GsonPropertyObject {
 
 		private String className;
+		private String name;
+		private String contextPath;
 		private String node;
 		private String token;
 		private Integer weight;
 		private Boolean sslEnable;
+		private Dependency dependency;
 
 		private List<ScheduleLocalRequest> scheduleLocalRequestList = new ArrayList<>();
 
@@ -164,6 +173,30 @@ public class ReportToCenter implements Job {
 
 		public void setScheduleRequestList(List<ScheduleRequest> scheduleRequestList) {
 			this.scheduleRequestList = scheduleRequestList;
+		}
+
+		public String getContextPath() {
+			return contextPath;
+		}
+
+		public void setContextPath(String contextPath) {
+			this.contextPath = contextPath;
+		}
+
+		public Dependency getDependency() {
+			return dependency;
+		}
+
+		public void setDependency(Dependency dependency) {
+			this.dependency = dependency;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
 		}
 
 	}

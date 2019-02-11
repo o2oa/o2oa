@@ -3,11 +3,11 @@ package com.x.base.core.entity.tools;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
 import javax.persistence.MappedSuperclass;
@@ -19,11 +19,11 @@ import org.dom4j.QName;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
-import com.x.base.core.project.Packages;
 import com.x.base.core.project.tools.MainTools;
 
-import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
-import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 
 public class EnhancePersistenceXmlWriter {
 	public static void main(String[] args) throws Exception {
@@ -60,18 +60,26 @@ public class EnhancePersistenceXmlWriter {
 	}
 
 	private static List<Class<?>> scanEnhanceClass() throws Exception {
-		FastClasspathScanner scanner = new FastClasspathScanner(Packages.PREFIX);
-		ScanResult scanResult = scanner.scan();
-		List<Class<?>> sortedList = new ArrayList<Class<?>>();
-		for (String str : scanResult.getNamesOfClassesWithAnnotationsAnyOf(MappedSuperclass.class, Entity.class)) {
-			sortedList.add(Class.forName(str));
-		}
-		Collections.sort(sortedList, new Comparator<Class<?>>() {
-			public int compare(Class<?> c1, Class<?> c2) {
-				return c1.getCanonicalName().compareTo(c2.getCanonicalName());
+		List<Class<?>> list = new ArrayList<Class<?>>();
+		try (ScanResult scanResult = new ClassGraph().enableAnnotationInfo().scan()) {
+			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Entity.class.getName());
+			for (ClassInfo info : classInfos) {
+				list.add(Class.forName(info.getName()));
 			}
-		});
-		return sortedList;
+			return list.stream().sorted(Comparator.comparing(Class::getName)).collect(Collectors.toList());
+		}
+//		FastClasspathScanner scanner = new FastClasspathScanner(Packages.PREFIX);
+//		ScanResult scanResult = scanner.scan();
+//		List<Class<?>> sortedList = new ArrayList<Class<?>>();
+//		for (String str : scanResult.getNamesOfClassesWithAnnotationsAnyOf(MappedSuperclass.class, Entity.class)) {
+//			sortedList.add(Class.forName(str));
+//		}
+//		Collections.sort(sortedList, new Comparator<Class<?>>() {
+//			public int compare(Class<?> c1, Class<?> c2) {
+//				return c1.getCanonicalName().compareTo(c2.getCanonicalName());
+//			}
+//		});
+//		return sortedList;
 	}
 
 	private static Set<Class<?>> scanMappedSuperclass(Class<?> clz) throws Exception {

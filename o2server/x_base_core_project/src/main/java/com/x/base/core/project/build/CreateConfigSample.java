@@ -17,7 +17,6 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.project.Packages;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.AppStyle;
 import com.x.base.core.project.config.CenterServer;
@@ -43,10 +42,6 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.FileTools;
-
-import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
-import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
 
 public class CreateConfigSample {
 
@@ -55,8 +50,6 @@ public class CreateConfigSample {
 	public static void main(String... args) throws Exception {
 		File base = new File(args[0]);
 		File dir = new File(base, "configSample");
-		FastClasspathScanner scanner = new FastClasspathScanner(Packages.PREFIX);
-		ScanResult scanResult = scanner.scan();
 		List<Class<?>> classes = new ArrayList<Class<?>>();
 		classes.add(AppStyle.class);
 		classes.add(CenterServer.class);
