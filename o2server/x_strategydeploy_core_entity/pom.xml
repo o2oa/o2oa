@@ -46,7 +46,7 @@
 				<artifactId>maven-resources-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>copy-jar</id>
+						<id>copy-custom-jar</id>
 						<phase>verify</phase>
 					</execution>
 				</executions>
