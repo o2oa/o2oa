@@ -56,7 +56,7 @@
 				<artifactId>maven-resources-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>copy-war</id>
+						<id>copy-custom-war</id>
 						<phase>verify</phase>
 					</execution>
 				</executions>
