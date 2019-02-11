@@ -4,7 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.x.base.core.project.x_strategydeploy_assemble_control;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -31,7 +30,8 @@ public class CompanyStrategyMeasure{
 		String serviceUrl = "strategydeployextra/listbyyear/";
 		String dataJson = "{\"strategydeployyear\":\""+year+"\"}";
 
-		ActionResponse resp = ThisApplication.context().applications().putQuery( x_strategydeploy_assemble_control.class, serviceUrl, dataJson );
+//		ActionResponse resp = ThisApplication.context().applications().putQuery(x_strategydeploy_assemble_control.class, serviceUrl, dataJson );
+		ActionResponse resp = ThisApplication.context().applications().putQuery("x_strategydeploy_assemble_control", serviceUrl, dataJson );
 		List<WoCompanyStrategy> wos = resp.getDataAsList( WoCompanyStrategy.class );
 		return wos;
 	}
