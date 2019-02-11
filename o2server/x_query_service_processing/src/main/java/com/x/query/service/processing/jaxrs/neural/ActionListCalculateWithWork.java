@@ -42,9 +42,9 @@ import com.x.query.service.processing.helper.LanguageProcessingHelper;
 
 import net.sf.ehcache.Element;
 
-class ActionCalculateWithWork extends BaseAction {
+class ActionListCalculateWithWork extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCalculateWithWork.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionListCalculateWithWork.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String modelFlag, String workId) throws Exception {
 		logger.debug(effectivePerson, "modelFlag:{}, workId:{}.", modelFlag, workId);

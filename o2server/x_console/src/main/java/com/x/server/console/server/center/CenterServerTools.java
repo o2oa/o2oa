@@ -2,6 +2,7 @@ package com.x.server.console.server.center;
 
 import java.io.File;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
 import org.eclipse.jetty.deploy.DeploymentManager;
@@ -25,6 +26,7 @@ import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.DefaultCharset;
 import com.x.server.console.server.JettySeverTools;
 
 public class CenterServerTools extends JettySeverTools {
@@ -32,20 +34,26 @@ public class CenterServerTools extends JettySeverTools {
 	private static Logger logger = LoggerFactory.getLogger(CenterServerTools.class);
 
 	private static int CENTERSERVER_THREAD_POOL_SIZE_MIN = 5;
-	private static int CENTERSERVER_THREAD_POOL_SIZE_MAX = 20;
+	private static int CENTERSERVER_THREAD_POOL_SIZE_MAX = 50;
+
+	protected static final String PATH_WEBAPPS = "servers/centerServer/webapps";
+	protected static final String PATH_WORK = "servers/centerServer/work";
 
 	public static Server start(CenterServer centerServer) throws Exception {
-		File commonsDir = new File(Config.base(), "commons");
-		File webappsDir = new File(Config.base(), "servers/centerServer/webapps");
-		File workDir = new File(Config.base(), "servers/centerServer/work");
-		File extDir = new File(Config.base(), "commons/ext");
-		File storeDir = new File(Config.base(), "store");
-		File jarsDir = new File(Config.base(), "store/jars");
+
+//		File commons_dir = new File(Config.base(), PATH_COMMONS);
+//		File commons_ext_dir = new File(Config.base(), PATH_COMMONS_EXT);
+//		File webapps_dir = new File(Config.base(), PATH_WEBAPPS);
+//		File work_dir = new File(Config.base(), PATH_WORK);
+//		File store_dir = new File(Config.base(), PATH_STORE);
+//		File store_jars_dir = new File(Config.base(), PATH_STORE_JARS);
+//		File custom_dir = new File(Config.base(), PATH_CUSTOM);
+//		File custom_jars_dir = new File(Config.base(), PATH_CUSTOM_JARS);
 
 		if (BooleanUtils.isTrue(centerServer.getRedeploy())) {
-			cleanDirectory(webappsDir);
-			cleanDirectory(workDir);
-			createDeployDescriptor(x_program_center.class, webappsDir, workDir, storeDir, extDir, jarsDir);
+			cleanDirectory(Config.dir_servers_centerServer_webapps());
+			cleanDirectory(Config.dir_servers_centerServer_work());
+			createDeployDescriptor();
 		}
 		QueuedThreadPool threadPool = new QueuedThreadPool();
 		threadPool.setMinThreads(CENTERSERVER_THREAD_POOL_SIZE_MIN);
@@ -69,8 +77,8 @@ public class CenterServerTools extends JettySeverTools {
 		deployer.setContexts(contexts);
 
 		WebAppProvider webAppProvider = new WebAppProvider();
-		webAppProvider.setMonitoredDirName(webappsDir.getAbsolutePath());
-		webAppProvider.setDefaultsDescriptor(new File(commonsDir, "webdefault_c.xml").getAbsolutePath());
+		webAppProvider.setMonitoredDirName(Config.dir_servers_centerServer_webapps().getAbsolutePath());
+		webAppProvider.setDefaultsDescriptor(new File(Config.dir_commons(), "webdefault_c.xml").getAbsolutePath());
 		webAppProvider.setScanInterval(centerServer.getScanInterval());
 		webAppProvider.setExtractWars(true);
 		webAppProvider.setConfigurationManager(new PropertiesConfigurationManager());
@@ -96,4 +104,46 @@ public class CenterServerTools extends JettySeverTools {
 		logger.print("center server start completed on port:{}.", centerServer.getPort());
 		return server;
 	}
+
+//	private static ClassInfo getClassInfo() {
+//		try (ScanResult scanResult = // Assign scanResult in try-with-resources
+//				new ClassGraph().enableAnnotationInfo() // Create a new ClassGraph instance
+//						// .verbose() // If you want to enable logging to stderr
+//						.enableAllInfo() // Scan classes, methods, fields, annotations
+//						.whitelistPackages("com.x.base.core.project")
+//						// .whitelistPackages("com.xyz") // Scan com.xyz and subpackages
+//						.scan()) { // Perform the scan and return a ScanResult
+//			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Module.class.getName());
+//			for (ClassInfo info : classInfos) {
+//				if (StringUtils.equals(x_program_center.class.getName(), info.getName())) {
+//					return info;
+//				}
+//			}
+//			return null;
+//		}
+//	}
+
+	protected static void createDeployDescriptor() throws Exception {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		if (Config.currentNode().getQuickStartWebApp()) {
+			buffer.append("<Configure class=\"org.eclipse.jetty.quickstart.QuickStartWebApp\">");
+			buffer.append("<Set name=\"autoPreconfigure\">true</Set>");
+		} else {
+			buffer.append("<Configure class=\"org.eclipse.jetty.webapp.WebAppContext\">");
+		}
+		buffer.append("<Set name=\"contextPath\">/" + x_program_center.class.getSimpleName() + "</Set>");
+		File war = new File(Config.dir_store(), x_program_center.class.getSimpleName() + ".war");
+		buffer.append("<Set name=\"war\">" + war.getAbsolutePath() + "</Set>");
+		String extraClasspath = calculateExtraClassPath(x_program_center.class);
+		buffer.append("<Set name=\"extraClasspath\">" + extraClasspath + "</Set>");
+		String tempDirectory = new File(Config.dir_servers_centerServer_work(), x_program_center.class.getSimpleName())
+				.getAbsolutePath();
+		buffer.append("<Set name=\"tempDirectory\">" + tempDirectory + "</Set>");
+		buffer.append("</Configure>");
+		File file = new File(Config.dir_servers_centerServer_webapps(),
+				x_program_center.class.getSimpleName() + ".xml");
+		FileUtils.write(file, buffer.toString(), DefaultCharset.charset);
+	}
+
 }

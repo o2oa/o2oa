@@ -28,15 +28,15 @@ class ActionList extends BaseAction {
 			for (Application o : en.getValue()) {
 				if (fromProxy) {
 					if (this.isUndefindHost(o.getProxyHost())) {
-						wo.getUrlList().add("http://" + this.getHost(request) + ":" + o.getProxyPort() + o.getContext()
-								+ "/jest/index.html");
+						wo.getUrlList().add("http://" + this.getHost(request) + ":" + o.getProxyPort()
+								+ o.getContextPath() + "/jest/index.html");
 					} else {
-						wo.getUrlList().add("http://" + o.getProxyHost() + ":" + o.getProxyPort() + o.getContext()
+						wo.getUrlList().add("http://" + o.getProxyHost() + ":" + o.getProxyPort() + o.getContextPath()
 								+ "/jest/index.html");
 					}
 				} else {
 					wo.getUrlList()
-							.add("http://" + o.getNode() + ":" + o.getPort() + o.getContext() + "/jest/index.html");
+							.add("http://" + o.getNode() + ":" + o.getPort() + o.getContextPath() + "/jest/index.html");
 				}
 			}
 			wos.add(wo);

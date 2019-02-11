@@ -2,13 +2,13 @@ package com.x.program.center.jaxrs.jest;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.Application;
 import com.x.base.core.project.AssembleA;
-import com.x.base.core.project.Packages;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Node;
 import com.x.base.core.project.config.WebServer;
@@ -26,8 +25,9 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.program.center.ThisApplication;
 
-import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
-import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
@@ -129,7 +129,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			WoAssemble wrap = new WoAssemble();
 			Application application = ThisApplication.context().applications().randomWithWeight(o);
 			if (null != application) {
-				wrap.setContext(application.getContext());
+				wrap.setContext(application.getContextPath());
 				if (this.isUndefindHost(application.getNode())) {
 					wrap.setHost(this.getHost(request));
 				} else {
@@ -149,7 +149,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			WoAssemble wrap = new WoAssemble();
 			Application application = ThisApplication.context().applications().randomWithWeight(o);
 			if (null != application) {
-				wrap.setContext(application.getContext());
+				wrap.setContext(application.getContextPath());
 				if (this.isUndefindHost(application.getProxyHost())) {
 					wrap.setHost(this.getHost(request));
 				} else {
@@ -168,18 +168,15 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (null == assembles) {
 			synchronized (BaseAction.class) {
 				if (null == assembles) {
-					ScanResult scanResult = new FastClasspathScanner(Packages.PREFIX).scan();
-					List<String> assembleList = scanResult.getNamesOfSubclassesOf(AssembleA.class);
-					List<String> list = new ArrayList<>();
-					list.addAll(assembleList);
-					Collections.sort(list, new Comparator<String>() {
-						public int compare(String s1, String s2) {
-							return s1.compareTo(s2);
+					try (ScanResult scanResult = new ClassGraph().enableAllInfo().scan()) {
+						assembles = new CopyOnWriteArrayList<Class<? extends AssembleA>>();
+						List<ClassInfo> list = new ArrayList<>();
+						list.addAll(scanResult.getSubclasses(AssembleA.class.getName()));
+						list = list.stream().sorted(Comparator.comparing(ClassInfo::getName))
+								.collect(Collectors.toList());
+						for (ClassInfo info : list) {
+							assembles.add((Class<AssembleA>) Class.forName(info.getName()));
 						}
-					});
-					assembles = new CopyOnWriteArrayList<Class<? extends AssembleA>>();
-					for (String str : list) {
-						assembles.add((Class<AssembleA>) Class.forName(str));
 					}
 				}
 			}

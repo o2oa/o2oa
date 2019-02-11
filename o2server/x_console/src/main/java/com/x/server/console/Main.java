@@ -733,18 +733,18 @@ public class Main {
 		Method method = urlClass.getDeclaredMethod("addURL", new Class[] { URL.class });
 		method.setAccessible(true);
 		/* loading ext */
-		File extDir = new File(base, "commons/ext");
-		File extDirManifest = new File(extDir, MANIFEST_FILENAME);
-		if (!extDirManifest.exists()) {
+		File commons_ext_dir = new File(base, "commons/ext");
+		File commons_ext_manifest_file = new File(commons_ext_dir, MANIFEST_FILENAME);
+		if (!commons_ext_manifest_file.exists()) {
 			throw new Exception("can not find " + MANIFEST_FILENAME + " in commons/ext.");
 		}
-		List<String> extDirManifestNames = readManifest(extDirManifest);
-		if (extDirManifestNames.isEmpty()) {
+		List<String> commons_ext_manifest_names = readManifest(commons_ext_manifest_file);
+		if (commons_ext_manifest_names.isEmpty()) {
 			throw new Exception("commons/ext manifest is empty.");
 		}
-		for (File file : extDir.listFiles()) {
+		for (File file : commons_ext_dir.listFiles()) {
 			if ((!file.getName().equals(MANIFEST_FILENAME)) && (!file.getName().equals(GITIGNORE_FILENAME))) {
-				if (!extDirManifestNames.remove(file.getName())) {
+				if (!commons_ext_manifest_names.remove(file.getName())) {
 					System.out.println("载入 commons/ext 过程中删除无效的文件:" + file.getName());
 					file.delete();
 				} else {
@@ -752,21 +752,19 @@ public class Main {
 				}
 			}
 		}
-		if (!extDirManifestNames.isEmpty()) {
-			for (String str : extDirManifestNames) {
-				System.out.println("载入 commons/ext 过程中无法找到文件:" + str);
-			}
+		for (String str : commons_ext_manifest_names) {
+			System.out.println("载入 commons/ext 过程中无法找到文件:" + str);
 		}
 		/* loading jars */
-		File jarsDir = new File(base, "store/jars");
-		File jarsDirManifest = new File(jarsDir, MANIFEST_FILENAME);
-		if (!jarsDirManifest.exists()) {
+		File store_jars_dir = new File(base, "store/jars");
+		File store_jars_manifest_file = new File(store_jars_dir, MANIFEST_FILENAME);
+		if (!store_jars_manifest_file.exists()) {
 			throw new Exception("can not find " + MANIFEST_FILENAME + " in store/jars.");
 		}
-		List<String> jarsDirManifestNames = readManifest(jarsDirManifest);
-		for (File file : jarsDir.listFiles()) {
+		List<String> store_jars_manifest_names = readManifest(store_jars_manifest_file);
+		for (File file : store_jars_dir.listFiles()) {
 			if ((!file.getName().equals(MANIFEST_FILENAME)) && (!file.getName().equals(GITIGNORE_FILENAME))) {
-				if (!jarsDirManifestNames.remove(file.getName())) {
+				if (!store_jars_manifest_names.remove(file.getName())) {
 					System.out.println("载入 store/jars 过程中删除无效的文件:" + file.getName());
 					file.delete();
 				} else {
@@ -774,13 +772,18 @@ public class Main {
 				}
 			}
 		}
-		if (!jarsDirManifestNames.isEmpty()) {
-			for (String str : jarsDirManifestNames) {
-				System.out.println("载入 store/jars 过程中无法找到文件:" + str);
+		for (String str : store_jars_manifest_names) {
+			System.out.println("载入 store/jars 过程中无法找到文件:" + str);
+		}
+		/* load custom jar */
+		File custom_jars_dir = new File(base, "custom/jars");
+		if (custom_jars_dir.exists() && custom_jars_dir.isDirectory()) {
+			for (File file : Config.dir_custom_jars().listFiles()) {
+				method.invoke(urlClassLoader, new Object[] { file.toURI().toURL() });
 			}
 		}
-		File tempDir = new File(base, "local/temp/classes");
-		method.invoke(urlClassLoader, new Object[] { tempDir.toURI().toURL() });
+		/* load temp class */
+		method.invoke(urlClassLoader, new Object[] { Config.dir_local_temp_classes().toURI().toURL() });
 	}
 
 	private static String getBasePath() throws Exception {

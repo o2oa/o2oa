@@ -2,15 +2,12 @@ package com.x.program.center;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.reflect.FieldUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -37,25 +34,27 @@ public class ReportQueue extends AbstractQueue<Report> {
 	@Override
 	protected void execute(Report report) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Class<?> clz = Class.forName(report.getClassName());
+			// Class<?> clz = Class.forName(report.getClassName());
 			Business business = new Business(emc);
-			Application application = ThisApplication.context().applications().get(clz, report.getToken());
+			Application application = ThisApplication.context().applications().get(report.getClassName(),
+					report.getToken());
 			if (null != application) {
 				application.setReportDate(new Date());
 			} else {
 				ApplicationServer applicationServer = Config.nodes().applicationServers().get(report.getNode());
 				application = new Application();
-				application.setName(Objects.toString(FieldUtils.readStaticField(clz, "name")));
+				application.setName(report.getName());
+				application.setDependency(report.getDependency());
 				application.setNode(report.getNode());
 				application.setPort(applicationServer.getPort());
-				application.setContext("/" + clz.getSimpleName());
+				application.setContextPath(report.getContextPath());
 				application.setToken(report.getToken());
 				application.setWeight((null == report.getWeight()) ? 100 : report.getWeight());
 				application.setSslEnable(report.getSslEnable());
 				application.setReportDate(new Date());
 				application.setProxyPort(applicationServer.getProxyPort());
 				application.setProxyHost(applicationServer.getProxyHost());
-				ThisApplication.context().applications().add(clz, application);
+				ThisApplication.context().applications().add(report.getClassName(), application);
 				ThisApplication.context().applications().setToken(StringTools.uniqueToken());
 			}
 			if (ListTools.isNotEmpty(report.getScheduleLocalRequestList())) {

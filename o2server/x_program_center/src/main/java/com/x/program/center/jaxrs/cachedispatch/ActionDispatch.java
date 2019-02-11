@@ -23,8 +23,8 @@ class ActionDispatch extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		logger.debug("receive dispatch cache request: {}", XGsonBuilder.toJson(jsonElement));
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		findApplicationWithEntity(wi.getClassName()).stream().forEach(c -> {
-			List<Application> apps = ThisApplication.context().applications().get(c.getName());
+		for (String str : ThisApplication.context().applications().listContainEntity(wi.getClassName())) {
+			List<Application> apps = ThisApplication.context().applications().get(str);
 			if (ListTools.isNotEmpty(apps)) {
 				apps.stream().forEach(o -> {
 					String url = o.getUrlRoot() + "cache";
@@ -36,7 +36,21 @@ class ActionDispatch extends BaseAction {
 					}
 				});
 			}
-		});
+		}
+		// findApplicationWithEntity(wi.getClassName()).stream().forEach(c -> {
+//			List<Application> apps = ThisApplication.context().applications().get(c.getName());
+//			if (ListTools.isNotEmpty(apps)) {
+//				apps.stream().forEach(o -> {
+//					String url = o.getUrlRoot() + "cache";
+//					logger.debug("dispatch cache request to : {}", url);
+//					try {
+//						CipherConnectionAction.put(effectivePerson.getDebugger(), url, wi);
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+//				});
+//			}
+//		});
 		Wo wo = new Wo();
 		wo.setValue(true);
 		result.setData(wo);

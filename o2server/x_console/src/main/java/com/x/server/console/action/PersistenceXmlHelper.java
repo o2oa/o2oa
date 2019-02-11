@@ -25,15 +25,14 @@ import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.Storage;
 import com.x.base.core.entity.annotation.ContainerEntity;
-import com.x.base.core.project.Packages;
 import com.x.base.core.project.config.DataMapping;
 import com.x.base.core.project.config.DataMappings;
-import com.x.base.core.project.tools.ClassTools;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 
-import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
-import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 
 public class PersistenceXmlHelper {
 
@@ -278,15 +277,23 @@ public class PersistenceXmlHelper {
 	}
 
 	public static List<String> listDataClassName() throws Exception {
-		ScanResult scanResult = new FastClasspathScanner(Packages.PREFIX).scan();
-		List<String> list = scanResult.getNamesOfClassesWithAnnotation(ContainerEntity.class);
-		return list;
+		try (ScanResult scanResult = new ClassGraph().enableAllInfo().scan()) {
+			List<String> list = new ArrayList<>();
+			for (ClassInfo info : scanResult.getClassesWithAnnotation(ContainerEntity.class.getName())) {
+				list.add(info.getName());
+			}
+			return list;
+		}
 	}
 
 	public static List<String> listStorageClassName() throws Exception {
-		ScanResult scanResult = new FastClasspathScanner(Packages.PREFIX).scan();
-		List<String> list = scanResult.getNamesOfClassesWithAnnotation(Storage.class);
-		return list;
+		try (ScanResult scanResult = new ClassGraph().enableAllInfo().scan()) {
+			List<String> list = new ArrayList<>();
+			for (ClassInfo info : scanResult.getClassesWithAnnotation(Storage.class.getName())) {
+				list.add(info.getName());
+			}
+			return list;
+		}
 	}
 
 	public static List<Class<?>> listClassWithIncludesExcludes(List<String> list, List<String> includes,

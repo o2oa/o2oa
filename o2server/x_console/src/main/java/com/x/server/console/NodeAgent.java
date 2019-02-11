@@ -101,22 +101,22 @@ public class NodeAgent extends Thread {
 				byte[] bytes = Base64.decodeBase64(body);
 				File file = new File(Config.base(), "store/jars/" + cls.getSimpleName() + ".jar");
 				FileUtils.writeByteArrayToFile(file, bytes);
-				if (Servers.applicationServerIsRunning()) {
-					DeploymentManager deployer = Servers.applicationServer.getBean(DeploymentManager.class);
-					List<String> dependWithContexts = new ArrayList<>();
-					for (Class<AssembleA> a : AssembleA.dependWith(cls)) {
-						dependWithContexts.add("/" + a.getSimpleName());
-					}
-					System.out.println(XGsonBuilder.toJson(dependWithContexts));
-					if (ListTools.isNotEmpty(dependWithContexts)) {
-						for (App app : deployer.getApps()) {
-							if (dependWithContexts.contains(app.getContextPath())) {
-								app.getContextHandler().stop();
-								app.getContextHandler().start();
-							}
-						}
-					}
-				}
+//				if (Servers.applicationServerIsRunning()) {
+//					DeploymentManager deployer = Servers.applicationServer.getBean(DeploymentManager.class);
+//					List<String> dependWithContexts = new ArrayList<>();
+//					for (Class<AssembleA> a : AssembleA.dependWith(cls)) {
+//						dependWithContexts.add("/" + a.getSimpleName());
+//					}
+//					System.out.println(XGsonBuilder.toJson(dependWithContexts));
+//					if (ListTools.isNotEmpty(dependWithContexts)) {
+//						for (App app : deployer.getApps()) {
+//							if (dependWithContexts.contains(app.getContextPath())) {
+//								app.getContextHandler().stop();
+//								app.getContextHandler().start();
+//							}
+//						}
+//					}
+//				}
 			} else if (ServiceA.class.isAssignableFrom(cls)) {
 				byte[] bytes = Base64.decodeBase64(body);
 				File file = new File(Config.base(), "store/" + cls.getSimpleName() + ".war");

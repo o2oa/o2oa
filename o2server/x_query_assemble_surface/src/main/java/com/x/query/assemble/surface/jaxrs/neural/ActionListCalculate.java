@@ -20,14 +20,14 @@ class ActionListCalculate extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionListCalculate.class);
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String projectFlag, String workId)
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String modelFlag, String workId)
 			throws Exception {
-		logger.debug(effectivePerson, "projectFlag:{}, workId:{}.", projectFlag, workId);
+		logger.debug(effectivePerson, "modelFlag:{}, workId:{}.", modelFlag, workId);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			Model model = emc.flag(projectFlag, Model.class);
+			Model model = emc.flag(modelFlag, Model.class);
 			if (null == model) {
-				throw new ExceptionEntityNotExist(projectFlag, Model.class);
+				throw new ExceptionEntityNotExist(modelFlag, Model.class);
 			}
 			Work work = emc.flag(workId, Work.class);
 			if (null == work) {

@@ -73,7 +73,7 @@ class ActionFire extends BaseAction {
 			String url = app.getUrlRoot()
 					+ Applications.joinQueryUri("fireschedule", "classname", schedule.getClassName());
 			CipherConnectionAction.get(effectivePerson.getDebugger(), url);
-			logger.info("fire schedule node: {}, application: {}, task: {}.", app.getNode(), app.getContext(),
+			logger.info("fire schedule node: {}, application: {}, task: {}.", app.getNode(), app.getContextPath(),
 					schedule.getClassName());
 		} else {
 			logger.info("can not fire schedule application: {}, task: {}.", schedule.getApplication(),

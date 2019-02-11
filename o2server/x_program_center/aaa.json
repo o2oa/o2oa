@@ -1,0 +1,44 @@
+{
+	"com.x.base.core.project.x_component_assemble_control": [
+		{
+			"name": "组件",
+			"node": "127.0.0.1",
+			"contextPath": "/x_component_assemble_control",
+			"port": 20020,
+			"token": "bd115139-1717-4c6c-ba75-78637d8a7277",
+			"sslEnable": false,
+			"proxyHost": "",
+			"proxyPort": 20020,
+			"weight": 100,
+			"reportDate": "2019-02-07 22:07:54"
+		}
+	],
+	"com.x.base.core.project.x_general_assemble_control": [
+		{
+			"name": "公共模块",
+			"node": "127.0.0.1",
+			"contextPath": "/x_general_assemble_control",
+			"port": 20020,
+			"token": "a7c3b168-d029-4068-87bb-9294f44653c2",
+			"sslEnable": false,
+			"proxyHost": "",
+			"proxyPort": 20020,
+			"weight": 100,
+			"reportDate": "2019-02-07 22:07:58"
+		}
+	],
+	"com.x.base.core.project.x_query_assemble_designer": [
+		{
+			"name": "数据查询设计",
+			"node": "127.0.0.1",
+			"contextPath": "/x_query_assemble_designer",
+			"port": 20020,
+			"token": "07c888af-5ed0-4b87-8829-13cb2c1d16db",
+			"sslEnable": false,
+			"proxyHost": "",
+			"proxyPort": 20020,
+			"weight": 100,
+			"reportDate": "2019-02-07 22:07:57"
+		}
+	]
+}

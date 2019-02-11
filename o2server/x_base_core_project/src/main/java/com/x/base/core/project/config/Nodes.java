@@ -79,9 +79,8 @@ public class Nodes extends ConcurrentSkipListMap<String, Node> {
 	}
 
 	public void save() throws Exception {
-		File dir = new File(Config.base(), Config.PATH_CONFIG);
 		for (Entry<String, Node> en : this.entrySet()) {
-			File file = new File(dir, "node_" + en.getKey() + ".json");
+			File file = new File(Config.dir_config(), "node_" + en.getKey() + ".json");
 			FileUtils.write(file, XGsonBuilder.toJson(en.getValue()), DefaultCharset.charset);
 		}
 	}
