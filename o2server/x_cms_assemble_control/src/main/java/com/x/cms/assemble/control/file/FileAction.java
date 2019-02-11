@@ -1,4 +1,4 @@
-package com.x.processplatform.assemble.designer.jaxrs.file;
+package com.x.cms.assemble.control.file;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 @Path("file")
-@JaxrsDescribe("文件")
+@JaxrsDescribe("资源文件管理")
 public class FileAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(FileAction.class);

@@ -38,9 +38,9 @@ public class TestClientImportFile {
 
 	@Test
 	public void test4() throws Exception {
-		File file = new File("d:/导出");
+		File file = new File("d:/公文中等结果集");
 		List<NameValuePair> heads = new ArrayList<>();
-		String xtoken = "HeEoZIVgPjQ31rEg7ARdQeRVMf3woS408yvnPg3u8lM7ddsEJNHFDLJTxCww6MWxaEy5G28B49o";
+		String xtoken = "jlMh2guoFia-EPxnDppJq1pXYeQZDa_GCp05aUeYqxzMvh87Dpd_A725Uy1VQNhSXe8IsPd8nkw";
 		heads.add(new NameValuePair("x-token", xtoken));
 		for (File dir : FileUtils.listFilesAndDirs(file, FalseFileFilter.FALSE, DirectoryFileFilter.DIRECTORY)) {
 			if (!StringUtils.equals(file.getAbsolutePath(), dir.getAbsolutePath())) {
@@ -55,8 +55,8 @@ public class TestClientImportFile {
 					System.out.println(info);
 					Req req = new Req();
 					req.setTitle(info.getSubject());
-					req.setForm("5606db2a-4e95-4cfd-ad61-219954465e1b");
-					req.setIdentity("周睿@ce37b1c0-61c5-4b94-bcf3-c489347cf062@I");
+					req.setForm("00a9df18-4a5a-490a-a2a4-224faf7d7e2a");
+					req.setIdentity("周睿@93b9c84c-e5be-4fd9-bcef-96754bc34371@I");
 					Map<String, Object> map = new HashMap<>();
 					map.put("mainSend", StringUtils.split(info.getFGMainDepartmentWP(), "#"));
 					map.put("contactSend", StringUtils.split(info.getFGContactDepartmentRP(), "#"));
@@ -64,7 +64,7 @@ public class TestClientImportFile {
 					map.put("subject", info.getSubject());
 					req.setData(XGsonBuilder.instance().toJsonTree(map));
 					ActionResponse resp = ConnectionAction.post(
-							"http://127.0.0.1:20020/x_processplatform_assemble_surface/jaxrs/workcompleted/process/ada7862c-0cb2-433b-a3bb-c6c20765da99",
+							"http://dev.:20020/x_processplatform_assemble_surface/jaxrs/workcompleted/process/	8a01b431-8aac-4ab1-b555-7686952e13a7",
 							heads, req.toString());
 					WoId id = resp.getData(WoId.class);
 					CloseableHttpClient httpclient = HttpClients.createDefault();

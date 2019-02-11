@@ -20,6 +20,9 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static class Form {
 			public static final String table = "CMS_FORM";
 		}
+		public static class File {
+			public static final String table = "CMS_FILE";
+		}
 		public static class FormField {
 			public static final String table = "CMS_FORMFIELD";
 		}

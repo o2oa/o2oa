@@ -18,11 +18,13 @@ import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.element.AppDict;
 import com.x.cms.core.entity.element.AppDictItem;
+import com.x.cms.core.entity.element.File;
 import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.Script;
 import com.x.cms.core.entity.element.wrap.WrapAppDict;
 import com.x.cms.core.entity.element.wrap.WrapCategoryInfo;
 import com.x.cms.core.entity.element.wrap.WrapCms;
+import com.x.cms.core.entity.element.wrap.WrapFile;
 import com.x.cms.core.entity.element.wrap.WrapForm;
 import com.x.cms.core.entity.element.wrap.WrapScript;
 
@@ -73,6 +75,16 @@ class ActionCreate extends BaseAction {
 			persistObjects.add(obj);
 		}
 		
+		for (WrapFile _o : wi.getFileList()) {
+			File obj = business.entityManagerContainer().find(_o.getId(), File.class);
+			if (null != obj) {
+				throw new ExceptionEntityExistForCreate(_o.getId(), File.class);
+			}
+			obj = WrapFile.inCopier.copy(_o);
+			obj.setAppId(appInfo.getId());
+			persistObjects.add(obj);
+		}
+		
 		for (WrapAppDict _o : wi.getAppDictList()) {
 			AppDict obj = business.entityManagerContainer().find(_o.getId(), AppDict.class);
 			if (null != obj) {
@@ -101,6 +113,8 @@ class ActionCreate extends BaseAction {
 			categoryInfo.setAppId(appInfo.getId());
 			persistObjects.add(categoryInfo);
 		}
+		
+		business.entityManagerContainer().beginTransaction(File.class);
 		business.entityManagerContainer().beginTransaction(AppInfo.class);
 		business.entityManagerContainer().beginTransaction(Script.class);
 		business.entityManagerContainer().beginTransaction(Form.class);

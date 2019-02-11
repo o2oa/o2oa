@@ -27,11 +27,13 @@ import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.element.AppDict;
+import com.x.cms.core.entity.element.File;
 import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.Script;
 import com.x.cms.core.entity.element.wrap.WrapAppDict;
 import com.x.cms.core.entity.element.wrap.WrapCategoryInfo;
 import com.x.cms.core.entity.element.wrap.WrapCms;
+import com.x.cms.core.entity.element.wrap.WrapFile;
 import com.x.cms.core.entity.element.wrap.WrapForm;
 import com.x.cms.core.entity.element.wrap.WrapScript;
 
@@ -73,6 +75,21 @@ class ActionPrepareCover extends BaseAction {
 				}
 			}
 		}
+		
+		for (MatchElement<WrapFile, File> m : this.match(business, wi.getFileList(),
+				ListUtils.union(this.listWithIds(business, wi.getFileList(), File.class),
+						business.fileFactory().listWithApplicationObject(exist.getId())))) {
+			if ((null != m.getW()) && (null != m.getT())) {
+				if (!StringUtils.equals(m.getW().getId(), m.getT().getId())) {
+					if (StringUtils.equals(m.getW().getAppId(), m.getT().getAppId())) {
+						wos.add(new Wo(m.getW().getId(), m.getT().getId()));
+					} else {
+						wos.add(new Wo(m.getW().getId(), JpaObject.createId()));
+					}
+				}
+			}
+		}
+		
 		for (MatchElement<WrapScript, Script> m : this.match(business, wi.getScriptList(),
 				ListUtils.union(this.listWithIds(business, wi.getScriptList(), Script.class),
 						business.getScriptFactory().listScriptWithApp(exist.getId())))) {

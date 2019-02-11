@@ -36,29 +36,35 @@ public class WrapCms extends AppInfo {
 		return ListTools.extractProperty(this.getScriptList(), JpaObject.id_FIELDNAME, String.class, true, true);
 	}
 
+	public List<String> listFileId() throws Exception {
+		return ListTools.extractProperty(this.getFileList(), JpaObject.id_FIELDNAME, String.class, true, true);
+	}
+	
 	@FieldDescribe("导出的分类设置")
 	private List<WrapCategoryInfo> categoryInfoList = new ArrayList<>();
 
 	@FieldDescribe("导出的表单设计")
 	private List<WrapForm> formList = new ArrayList<>();
-
-	// @FieldDescribe("栏目下所有表单ID列表")
-	// private List<String> formIds = new ArrayList<>();
-
+	
 	@FieldDescribe("导出的数据字典")
 	private List<WrapAppDict> appDictList = new ArrayList<>();
 
-	// @FieldDescribe("栏目下所有数据字典D列表")
-	// private List<String> appDictIds = new ArrayList<>();
-
 	@FieldDescribe("导出的脚本")
 	private List<WrapScript> scriptList = new ArrayList<>();
-
-	// @FieldDescribe("栏目下所有脚本ID列表")
-	// private List<String> scriptIds = new ArrayList<>();
-
+	
+	@FieldDescribe("导出的文件")
+	private List<WrapFile> fileList = new ArrayList<>();	
+	
 	public List<WrapForm> getFormList() {
 		return formList;
+	}
+
+	public List<WrapFile> getFileList() {
+		return fileList;
+	}
+
+	public void setFileList(List<WrapFile> fileList) {
+		this.fileList = fileList;
 	}
 
 	public List<WrapAppDict> getAppDictList() {

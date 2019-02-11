@@ -68,10 +68,13 @@ class ActionEdit extends BaseAction {
 
 		private static final long serialVersionUID = -7527954993386512109L;
 
+//		static WrapCopier<Wi, Unit> copier = WrapCopierFactory.wi(Wi.class, Unit.class, null,
+//				ListTools.toList(JpaObject.FieldsUnmodify, Unit.superior_FIELDNAME, Unit.pinyin_FIELDNAME,
+//						Unit.pinyinInitial_FIELDNAME, Unit.level_FIELDNAME, Unit.levelName_FIELDNAME,
+//						Unit.inheritedControllerList_FIELDNAME));
 		static WrapCopier<Wi, Unit> copier = WrapCopierFactory.wi(Wi.class, Unit.class, null,
-				ListTools.toList(JpaObject.FieldsUnmodify, Unit.superior_FIELDNAME, Unit.pinyin_FIELDNAME,
-						Unit.pinyinInitial_FIELDNAME, Unit.level_FIELDNAME, Unit.levelName_FIELDNAME,
-						Unit.inheritedControllerList_FIELDNAME));
+				ListTools.toList(JpaObject.FieldsUnmodify, Unit.pinyin_FIELDNAME, Unit.pinyinInitial_FIELDNAME,
+						Unit.level_FIELDNAME, Unit.levelName_FIELDNAME, Unit.inheritedControllerList_FIELDNAME));
 	}
 
 }

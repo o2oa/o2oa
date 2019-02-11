@@ -14,7 +14,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
@@ -25,11 +24,13 @@ import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.element.AppDict;
 import com.x.cms.core.entity.element.AppDictItem;
 import com.x.cms.core.entity.element.AppDictItem_;
+import com.x.cms.core.entity.element.File;
 import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.Script;
 import com.x.cms.core.entity.element.wrap.WrapAppDict;
 import com.x.cms.core.entity.element.wrap.WrapCategoryInfo;
 import com.x.cms.core.entity.element.wrap.WrapCms;
+import com.x.cms.core.entity.element.wrap.WrapFile;
 import com.x.cms.core.entity.element.wrap.WrapForm;
 import com.x.cms.core.entity.element.wrap.WrapScript;
 
@@ -70,19 +71,11 @@ class ActionSelect extends BaseAction {
 
 	private WrapCms get(Business business, AppInfo appInfo, Wi wi) throws Exception {
 		WrapCms wo = WrapCms.outCopier.copy(appInfo);
-		// 装配所有的分类ID列表、脚本ID列表、表单ID列表、数据字典ID列表
-		// List<String> categoryIds = business.getCategoryInfoFactory().listByAppId(
-		// appInfo.getId() );
-		//
-		// if( ListTools.isNotEmpty( categoryIds )) {
-		// wo.setCategoryList(categoryIds);
-		// }
-		wo.setCategoryInfoList(WrapCategoryInfo.outCopier
-				.copy(business.entityManagerContainer().list(CategoryInfo.class, wi.listCategoryInfoId())));
+		wo.setCategoryInfoList(WrapCategoryInfo.outCopier.copy(business.entityManagerContainer().list(CategoryInfo.class, wi.listCategoryInfoId())));
 		wo.setFormList(WrapForm.outCopier.copy(business.entityManagerContainer().list(Form.class, wi.listFormId())));
-		wo.setScriptList(
-				WrapScript.outCopier.copy(business.entityManagerContainer().list(Script.class, wi.listScriptId())));
+		wo.setScriptList( WrapScript.outCopier.copy(business.entityManagerContainer().list(Script.class, wi.listScriptId())));
 		wo.setAppDictList(this.listAppDict(business, appInfo, wi));
+		wo.setFileList(WrapFile.outCopier.copy(business.entityManagerContainer().list(File.class, wi.listFileId())));
 		return wo;
 	}
 
