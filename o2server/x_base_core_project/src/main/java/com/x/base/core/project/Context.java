@@ -8,7 +8,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletRequest;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.openjpa.enhance.PCRegistry;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.DateBuilder;
@@ -26,7 +25,6 @@ import org.quartz.impl.matchers.EverythingMatcher;
 
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.StorageType;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.DataMappings;
 import com.x.base.core.project.config.StorageMappings;
@@ -97,11 +95,31 @@ public class Context extends AbstractContext {
 		return this.clazz;
 	}
 
-	/** 随机令牌 */
+	private Deployable clazzInstance;
+
+	public Deployable clazzInstance() {
+		return this.clazzInstance;
+	}
+
+	/* 随机令牌 */
 	private volatile String token;
 
 	public String token() {
 		return this.token;
+	}
+
+	/* contextPath */
+	private volatile String contextPath;
+
+	public String contextPath() {
+		return this.contextPath;
+	}
+
+	/* title */
+	private volatile String name;
+
+	public String name() {
+		return this.name;
 	}
 
 	/* Storage资源 */
@@ -170,15 +188,17 @@ public class Context extends AbstractContext {
 	}
 
 	public static Context concrete(ServletContextEvent servletContextEvent) throws Exception {
-		/** 强制忽略ssl服务器认证 */
-		// HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
+		/* 强制忽略ssl服务器认证 */
 		SslTools.ignoreSsl();
 		ServletContext servletContext = servletContextEvent.getServletContext();
 		Context context = new Context();
+		context.contextPath = servletContext.getContextPath();
+		context.clazz = Class.forName(servletContext.getInitParameter(INITPARAMETER_PORJECT));
+		context.clazzInstance = (Deployable) context.clazz.newInstance();
+		context.name = getName(context.clazz);
 		context.path = servletContext.getRealPath("");
 		context.servletContext = servletContext;
 		context.servletContextName = servletContext.getServletContextName();
-		context.clazz = Class.forName(Packages.com_x_base_core_project_dot + context.servletContextName);
 		context.weight = Config.currentNode().getApplication().weight(context.clazz);
 		context.sslEnable = Config.currentNode().getApplication().getSslEnable();
 		context.initDatasFromCenters();
@@ -262,10 +282,9 @@ public class Context extends AbstractContext {
 	}
 
 	private void initDatasFromCenters() throws Exception {
-		@SuppressWarnings("unchecked")
-		List<String> containerEntities = (List<String>) FieldUtils.readStaticField(clazz, "containerEntities");
-		if (ListTools.isNotEmpty(containerEntities)) {
-			logger.print("{} loading datas, entity size:{}.", this.clazz.getName(), containerEntities.size());
+		if (ListTools.isNotEmpty(clazzInstance.dependency.containerEntities)) {
+			logger.print("{} loading datas, entity size:{}.", this.clazz.getName(),
+					clazzInstance.dependency.containerEntities.size());
 			DataMappings dataMappings = null;
 			do {
 				try {
@@ -282,10 +301,9 @@ public class Context extends AbstractContext {
 	}
 
 	private void initStoragesFromCenters() throws Exception {
-		@SuppressWarnings("unchecked")
-		List<StorageType> usedStorageTypes = (List<StorageType>) FieldUtils.readStaticField(clazz, "usedStorageTypes");
-		if (ListTools.isNotEmpty(usedStorageTypes)) {
-			logger.print("{} loading storages, type size:{}.", this.clazz.getName(), usedStorageTypes.size());
+		if (ListTools.isNotEmpty(clazzInstance.dependency.storageTypes)) {
+			logger.print("{} loading storages, type size:{}.", this.clazz.getName(),
+					clazzInstance.dependency.storageTypes.size());
 			StorageMappings storageMappings = null;
 			do {
 				try {

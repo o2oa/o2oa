@@ -36,12 +36,6 @@ public abstract class StorageObject extends SliceJpaObject {
 			synchronized (StorageObject.class) {
 				if (FILESYSTEMANAGERINSTANCE == null) {
 					StandardFileSystemManager fs = new StandardFileSystemManager();
-					// DefaultFileSystemManager fs = new
-					// DefaultFileSystemManager();
-					// File file = new File(Config.base(), "local/temp/vfs");
-					// FileUtils.forceMkdir(file);
-					// fs.setTemporaryFileStore(new
-					// DefaultFileReplicator(file));
 					fs.setFilesCache(new NullFilesCache());
 					fs.setCacheStrategy(CacheStrategy.ON_RESOLVE);
 					fs.init();
