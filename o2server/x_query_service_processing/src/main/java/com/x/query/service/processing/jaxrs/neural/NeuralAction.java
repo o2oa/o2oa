@@ -102,18 +102,18 @@ public class NeuralAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "计算输入工作ID进行计算.", action = ActionCalculateWithWork.class)
+	@JaxrsMethodDescribe(value = "计算输入工作ID进行计算.", action = ActionListCalculateWithWork.class)
 	@GET
 	@Path("list/calculate/model/{modelFlag}/work/{workId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void calculateWithWork(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void listCalculateWithWork(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("模型标识") @PathParam("modelFlag") String modelFlag,
 			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId) {
-		ActionResult<List<ActionCalculateWithWork.Wo>> result = new ActionResult<>();
+		ActionResult<List<ActionListCalculateWithWork.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCalculateWithWork().execute(effectivePerson, modelFlag, workId);
+			result = new ActionListCalculateWithWork().execute(effectivePerson, modelFlag, workId);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

@@ -81,7 +81,7 @@ public class FireSchedule implements Job {
 								+ Applications.joinQueryUri("fireschedule", "classname", latest.getClassName());
 						CipherConnectionAction.get(false, url);
 						logger.info("fire schedule node: {}, application: {}, task: {}.", app.getNode(),
-								app.getContext(), latest.getClassName());
+								app.getContextPath(), latest.getClassName());
 					} else {
 						logger.info("can not fire schedule application: {}, task: {}.", latest.getApplication(),
 								latest.getClassName());

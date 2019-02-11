@@ -56,11 +56,4 @@ public class TestOver {
 		}
 	}
 
-	@Test
-	public void test5() throws Exception {
-		for (Class<?> x : AssembleA.dependWith(x_processplatform_core_entity.class)) {
-			System.out.println(x);
-		}
-	}
-
 }

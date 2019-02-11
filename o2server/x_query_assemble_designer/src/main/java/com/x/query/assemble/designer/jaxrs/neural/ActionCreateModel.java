@@ -42,12 +42,12 @@ class ActionCreateModel extends BaseAction {
 		private static final long serialVersionUID = -5237741099036357033L;
 
 		static WrapCopier<Wi, Model> copier = WrapCopierFactory.wi(Wi.class, Model.class,
-				ListTools.toList(Model.id_FIELDNAME, Model.neuralNetworkType_FIELDNAME, Model.dataType_FIELDNAME,
-						Model.name_FIELDNAME, Model.description_FIELDNAME, Model.alias_FIELDNAME,
-						Model.inValueScriptText_FIELDNAME, Model.outValueScriptText_FIELDNAME,
-						Model.attachmentScriptText_FIELDNAME, Model.processList_FIELDNAME,
-						Model.applicationList_FIELDNAME, Model.inValueCount_FIELDNAME, Model.outValueCount_FIELDNAME,
-						Model.maxResult_FIELDNAME, Model.propertyMap_FIELDNAME, Model.analyzeType_FIELDNAME),
+				ListTools.toList(Model.neuralNetworkType_FIELDNAME, Model.dataType_FIELDNAME, Model.name_FIELDNAME,
+						Model.description_FIELDNAME, Model.alias_FIELDNAME, Model.inValueScriptText_FIELDNAME,
+						Model.outValueScriptText_FIELDNAME, Model.attachmentScriptText_FIELDNAME,
+						Model.processList_FIELDNAME, Model.applicationList_FIELDNAME, Model.inValueCount_FIELDNAME,
+						Model.outValueCount_FIELDNAME, Model.maxResult_FIELDNAME, Model.propertyMap_FIELDNAME,
+						Model.analyzeType_FIELDNAME),
 				JpaObject.FieldsUnmodifyExcludeId);
 
 	}

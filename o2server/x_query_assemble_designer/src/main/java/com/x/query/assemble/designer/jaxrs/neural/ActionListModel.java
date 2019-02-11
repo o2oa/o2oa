@@ -13,6 +13,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.neural.Model;
 
@@ -39,8 +40,7 @@ class ActionListModel extends BaseAction {
 		private static final long serialVersionUID = -6541538280679110474L;
 
 		static WrapCopier<Model, Wo> copier = WrapCopierFactory.wo(Model.class, Wo.class, null,
-				JpaObject.FieldsInvisible);
-
+				ListTools.toList(JpaObject.FieldsInvisible, Model.nnet_FIELDNAME, Model.intermediateNnet_FIELDNAME));
 	}
 
 }

@@ -15,6 +15,7 @@ import java.util.jar.JarOutputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
 
 public class JarTools {
 
@@ -199,8 +200,8 @@ public class JarTools {
 	}
 
 	public static void main(String[] args) throws Exception {
-		byte[] bytes = JarTools.jar("e:/bbb");
-		FileUtils.writeByteArrayToFile(new File("e:/bbb2.zip"), bytes);
+		System.out.println(StringUtils.startsWith("asdfasdf", ""));
+		System.out.println(StringUtils.startsWith("asdfasdf", null));
 	}
 
 }

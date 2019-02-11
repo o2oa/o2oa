@@ -114,7 +114,7 @@ public class Meta extends SliceJpaObject {
 	private Date dateValue;
 
 	public static final String timeValue_FIELDNAME = "timeValue";
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIME)
 	@FieldDescribe("时间值.")
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + timeValue_FIELDNAME)

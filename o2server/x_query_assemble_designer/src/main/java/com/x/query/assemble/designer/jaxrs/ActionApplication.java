@@ -12,6 +12,7 @@ import com.x.query.assemble.designer.jaxrs.output.OutputAction;
 import com.x.query.assemble.designer.jaxrs.query.QueryAction;
 import com.x.query.assemble.designer.jaxrs.reveal.RevealAction;
 import com.x.query.assemble.designer.jaxrs.stat.StatAction;
+import com.x.query.assemble.designer.jaxrs.table.TableAction;
 import com.x.query.assemble.designer.jaxrs.view.ViewAction;
 
 @ApplicationPath("jaxrs")
@@ -26,6 +27,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(NeuralAction.class);
 		classes.add(OutputAction.class);
 		classes.add(InputAction.class);
+		classes.add(TableAction.class);
 		return classes;
 	}
 

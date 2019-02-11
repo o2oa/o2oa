@@ -2,6 +2,7 @@ package com.x.query.service.processing.test;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.zip.Deflater;
 
 import org.apache.commons.io.FileUtils;
@@ -14,6 +15,9 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.Test;
 import org.neuroph.core.NeuralNetwork;
 import org.neuroph.nnet.learning.MomentumBackpropagation;
+
+import com.x.base.core.project.tools.ByteTools;
+import com.x.base.core.project.tools.DefaultCharset;
 
 public class TestClient {
 
@@ -65,9 +69,11 @@ public class TestClient {
 	}
 
 	@Test
-	public void test5() {
-		MomentumBackpropagation m = new MomentumBackpropagation();
-		System.out.println(m.getLearningRate());
-		System.out.println(m.getMomentum());
+	public void test5() throws Exception {
+		String str = FileUtils.readFileToString(new File("d:/code.txt"), DefaultCharset.charset);
+		byte[] bs = ByteTools.decompressBase64String(str);
+		System.out.println(bs.length);
+		String s = ByteTools.compressBase64String(bs);
+		System.out.println(s.length());
 	}
 }

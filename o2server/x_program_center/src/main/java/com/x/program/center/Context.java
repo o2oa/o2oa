@@ -14,7 +14,6 @@ import javax.persistence.criteria.Root;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.openjpa.enhance.PCRegistry;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.DateBuilder;
@@ -32,10 +31,10 @@ import org.quartz.impl.matchers.EverythingMatcher;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.StorageType;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.AbstractContext;
 import com.x.base.core.project.Applications;
+import com.x.base.core.project.Deployable;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMappings;
 import com.x.base.core.project.jaxrs.WrapClearCacheRequest;
@@ -85,11 +84,31 @@ public class Context extends AbstractContext {
 		return this.clazz;
 	}
 
+	private Deployable clazzInstance;
+
+	public Deployable clazzInstance() {
+		return this.clazzInstance;
+	}
+
 	/* 随机令牌 */
 	private volatile String token;
 
 	public String token() {
 		return this.token;
+	}
+
+	/* contextPath */
+	private volatile String contextPath;
+
+	public String contextPath() {
+		return this.contextPath;
+	}
+
+	/* name */
+	private volatile String name;
+
+	public String name() {
+		return this.name;
 	}
 
 	/* Applications资源 */
@@ -143,25 +162,25 @@ public class Context extends AbstractContext {
 
 	private Context() throws Exception {
 		SslTools.ignoreSsl();
-		// SLF4JBridgeHandler.removeHandlersForRootLogger();
-		// SLF4JBridgeHandler.install();
-		// Logger.getLogger(QuartzScheduler.class.getName()).setLevel(Level.WARNING);
 		this.applications = new Applications();
 		this.token = UUID.randomUUID().toString();
 		this.queues = new ArrayList<AbstractQueue<?>>();
 		this.scheduler = new StdSchedulerFactory(SchedulerFactoryProperties.concrete()).getScheduler();
 		this.scheduler.getListenerManager().addJobListener(new JobReportListener(), EverythingMatcher.allJobs());
 		this.scheduler.start();
-
 	}
 
 	public static Context concrete(ServletContextEvent servletContextEvent) throws Exception {
 		ServletContext servletContext = servletContextEvent.getServletContext();
 		Context context = new Context();
+		context.contextPath = servletContext.getContextPath();
+		context.clazz = Class.forName(servletContext.getInitParameter(INITPARAMETER_PORJECT));
+		context.clazzInstance = (Deployable) context.clazz.newInstance();
+		context.name = getName(context.clazz);
 		context.path = servletContext.getRealPath("");
 		context.servletContext = servletContext;
 		context.servletContextName = servletContext.getServletContextName();
-		context.clazz = Class.forName("com.x.base.core.project." + context.servletContextName);
+		context.clazz = Class.forName(servletContextEvent.getServletContext().getInitParameter(INITPARAMETER_PORJECT));
 		context.initDatas();
 		context.initStorages();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -218,22 +237,23 @@ public class Context extends AbstractContext {
 	}
 
 	private void initDatas() throws Exception {
-		@SuppressWarnings("unchecked")
-		List<String> containerEntities = (List<String>) FieldUtils.readStaticField(clazz, "containerEntities");
-		if (ListTools.isNotEmpty(containerEntities)) {
-			logger.print("{} loading datas, entity size:{}.", this.clazz.getName(), containerEntities.size());
-			EntityManagerContainerFactory.init(path, Config.dataMappings());
-		}
+		logger.print("{} loading datas, entity size:{}.", this.clazz.getName(),
+				clazzInstance.dependency().containerEntities.size());
+		EntityManagerContainerFactory.init(path, Config.dataMappings());
 	}
 
 	private void initStorages() throws Exception {
-		@SuppressWarnings("unchecked")
-		List<StorageType> usedStorageTypes = (List<StorageType>) FieldUtils.readStaticField(clazz, "usedStorageTypes");
-		if (ListTools.isNotEmpty(usedStorageTypes)) {
-			logger.print("{} loading storages, type size:{}.", this.clazz.getName(), usedStorageTypes.size());
-			this.storageMappings = Config.storageMappings();
-		}
+		this.storageMappings = Config.storageMappings();
 	}
+
+//	private void initStorages() throws Exception {
+//		@SuppressWarnings("unchecked")
+//		List<StorageType> usedStorageTypes = (List<StorageType>) FieldUtils.readStaticField(clazz, "usedStorageTypes");
+//		if (ListTools.isNotEmpty(usedStorageTypes)) {
+//			logger.print("{} loading storages, type size:{}.", this.clazz.getName(), usedStorageTypes.size());
+//			this.storageMappings = Config.storageMappings();
+//		}
+//	}
 
 	private void cleanupSchedule(EntityManagerContainer emc) throws Exception {
 		List<Schedule> list = emc.listAll(Schedule.class);
