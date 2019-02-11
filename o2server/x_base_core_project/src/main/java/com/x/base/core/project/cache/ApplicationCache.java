@@ -7,19 +7,19 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.AssembleA;
-import com.x.base.core.project.Packages;
+import com.x.base.core.project.Deployable;
 import com.x.base.core.project.ServiceA;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.jaxrs.WrapClearCacheRequest;
 import com.x.base.core.project.tools.ListTools;
 
-import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
-import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
@@ -120,20 +120,20 @@ public class ApplicationCache extends AbstractApplicationCache {
 	}
 
 	private ApplicationCache() {
-		try {
-			List<String> classes = new ArrayList<>();
-			ScanResult scanResult = new FastClasspathScanner(Packages.PREFIX).scan();
-			classes.addAll(scanResult.getNamesOfSubclassesOf(AssembleA.class));
-			classes.addAll(scanResult.getNamesOfSubclassesOf(ServiceA.class));
-			for (String o : classes) {
-				Class<?> clz = Class.forName(o);
-				for (String str : (List<String>) FieldUtils.readStaticField(clz, "containerEntities")) {
-					List<Class<?>> list = incidenceMap.get(str);
-					if (null == list) {
-						list = new ArrayList<Class<?>>();
-						incidenceMap.put(str, list);
+		try (ScanResult scanResult = new ClassGraph().enableAllInfo().scan()) {
+			List<ClassInfo> list = new ArrayList<>();
+			list.addAll(scanResult.getSubclasses(AssembleA.class.getName()));
+			list.addAll(scanResult.getSubclasses(ServiceA.class.getName()));
+			for (ClassInfo info : list) {
+				Class<?> clz = Class.forName(info.getName());
+				Deployable deployable = (Deployable) clz.newInstance();
+				for (String str : deployable.dependency().containerEntities) {
+					List<Class<?>> os = incidenceMap.get(str);
+					if (null == os) {
+						os = new ArrayList<Class<?>>();
+						incidenceMap.put(str, os);
 					}
-					list.add(clz);
+					os.add(clz);
 				}
 			}
 			manager = createCacheManager();

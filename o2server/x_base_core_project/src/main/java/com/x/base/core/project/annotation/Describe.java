@@ -48,8 +48,9 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 
-import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
-import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 
 public class Describe {
 
@@ -90,24 +91,25 @@ public class Describe {
 		} else {
 			pack = "com." + name.replaceAll("_", ".");
 		}
-		ScanResult scanResult = new FastClasspathScanner(pack).scan();
-		SetUniqueList<Class<?>> classes = SetUniqueList.setUniqueList(new ArrayList<Class<?>>());
-		for (String str : scanResult.getNamesOfClassesWithAnnotationsAllOf(ApplicationPath.class)) {
-			Class<?> applicationPathClass = ClassUtils.getClass(str);
-			for (Class<?> o : (Set<Class<?>>) MethodUtils.invokeMethod(applicationPathClass.newInstance(),
-					"getClasses")) {
-				Path path = o.getAnnotation(Path.class);
-				JaxrsDescribe jaxrsDescribe = o.getAnnotation(JaxrsDescribe.class);
-				if (null != path && null != jaxrsDescribe) {
-					classes.add(o);
+		try (ScanResult scanResult = new ClassGraph().whitelistPackages(pack).enableAllInfo().scan()) {
+			SetUniqueList<Class<?>> classes = SetUniqueList.setUniqueList(new ArrayList<Class<?>>());
+			for (ClassInfo info : scanResult.getClassesWithAnnotation(ApplicationPath.class.getName())) {
+				Class<?> applicationPathClass = ClassUtils.getClass(info.getName());
+				for (Class<?> o : (Set<Class<?>>) MethodUtils.invokeMethod(applicationPathClass.newInstance(),
+						"getClasses")) {
+					Path path = o.getAnnotation(Path.class);
+					JaxrsDescribe jaxrsDescribe = o.getAnnotation(JaxrsDescribe.class);
+					if (null != path && null != jaxrsDescribe) {
+						classes.add(o);
+					}
 				}
 			}
+			return classes;
 		}
-		return classes;
 	}
 
 	private JaxrsClass jaxrsClass(Class<?> clz) throws Exception {
-		System.out.println("describe class:" + clz.getName());
+		logger.print("describe class:{}.", clz.getName());
 		JaxrsDescribe jaxrsDescribe = clz.getAnnotation(JaxrsDescribe.class);
 		JaxrsClass jaxrsClass = new JaxrsClass();
 		jaxrsClass.setClassName(clz.getName());

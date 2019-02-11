@@ -19,7 +19,6 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Test;
 
 import com.google.gson.JsonElement;
-import com.x.base.core.project.Packages;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
@@ -27,32 +26,19 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.FileTools;
 
-import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
-import io.github.lukehutch.fastclasspathscanner.scanner.ScanResult;
-
 public class CreateSample {
 
 	private static Logger logger = LoggerFactory.getLogger(CreateSample.class);
 
 	@Test
 	public void test() throws Exception {
-		FastClasspathScanner scanner = new FastClasspathScanner(Packages.PREFIX);
-		ScanResult scanResult = scanner.scan();
 		List<Class<?>> classes = new ArrayList<Class<?>>();
-		// for (String str : scanResult.getNamesOfSubclassesOf(ConfigObject.class)) {
-		// Class<? extends ConfigObject> cls = (Class<? extends ConfigObject>)
-		// Class.forName(str);
-		// if (!cls.isMemberClass()) {
-		// classes.add(cls);
-		// }
-		// }
 		classes.add(AppStyle.class);
 		classes.add(CenterServer.class);
 		classes.add(Collect.class);
 		classes.add(Dingding.class);
 		classes.add(DumpRestoreData.class);
 		classes.add(DumpRestoreStorage.class);
-		// classes.add(ExternalDataSources.class);
 		classes.add(LogLevel.class);
 		classes.add(Meeting.class);
 		classes.add(Messages.class);

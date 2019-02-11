@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 
 /**
  * 标记所有可启动模块
+ * 
  * @author zhour
  *
  */
@@ -15,5 +16,17 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Inherited
 public @interface Module {
-	String name() default "";
+
+	public static final String PARAMETER_TYPE = "type";
+
+	public static final String PARAMETER_NAME = "name";
+
+	public static final String PARAMETER_CATEGORY = "category";
+
+	public ModuleType type();
+
+	public ModuleCategory category();
+
+	public String name();
+
 }

@@ -1,81 +1,48 @@
 package com.x.base.core.project;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.entity.StorageType;
-import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.annotation.Module;
+import com.x.base.core.project.annotation.ModuleCategory;
+import com.x.base.core.project.annotation.ModuleType;
 
+@Module(type = ModuleType.ASSEMBLE, category = ModuleCategory.OFFICIAL, name = "内容管理")
 public class x_cms_assemble_control extends AssembleA {
 
-	public static final String name = "内容管理";
-	public static List<String> containerEntities = new ArrayList<>();
-	public static List<StorageType> usedStorageTypes = new ArrayList<>();
-	public static List<Class<? extends Compilable>> dependents = new ArrayList<>();
+	public x_cms_assemble_control() {
+		super();
+		dependency.containerEntities.add("com.x.cms.core.entity.element.AppDict");
+		dependency.containerEntities.add("com.x.cms.core.entity.element.AppDictItem");
+		dependency.containerEntities.add("com.x.cms.core.entity.element.Form");
+		dependency.containerEntities.add("com.x.cms.core.entity.element.FormField");
+		dependency.containerEntities.add("com.x.cms.core.entity.element.QueryView");
+		dependency.containerEntities.add("com.x.cms.core.entity.element.Script");
+		dependency.containerEntities.add("com.x.cms.core.entity.element.TemplateForm");
+		dependency.containerEntities.add("com.x.cms.core.entity.element.View");
+		dependency.containerEntities.add("com.x.cms.core.entity.element.ViewCategory");
+		dependency.containerEntities.add("com.x.cms.core.entity.element.ViewFieldConfig");
+		dependency.containerEntities.add("com.x.cms.core.entity.AppInfo");
+		dependency.containerEntities.add("com.x.cms.core.entity.CategoryInfo");
+		dependency.containerEntities.add("com.x.cms.core.entity.CategoryExt");
+		dependency.containerEntities.add("com.x.cms.core.entity.Document");
+		dependency.containerEntities.add("com.x.cms.core.entity.DocumentViewRecord");
+		dependency.containerEntities.add("com.x.cms.core.entity.FileInfo");
+		dependency.containerEntities.add("com.x.cms.core.entity.Log");
+		dependency.containerEntities.add("com.x.cms.core.entity.Review");
+		dependency.containerEntities.add("com.x.processplatform.core.entity.content.Attachment");
+		dependency.containerEntities.add("com.x.query.core.entity.Item");
+		dependency.containerEntities.add("com.x.query.core.entity.View");
+		dependency.containerEntities.add("com.x.cms.core.entity.AppCategoryAdmin");
+		dependency.containerEntities.add("com.x.cms.core.entity.AppCategoryPermission");
+		dependency.containerEntities.add("com.x.cms.core.entity.DocumentPermission");
 
-	static {
-		containerEntities.add("com.x.cms.core.entity.element.AppDict");
-		containerEntities.add("com.x.cms.core.entity.element.AppDictItem");
-		containerEntities.add("com.x.cms.core.entity.element.Form");
-		containerEntities.add("com.x.cms.core.entity.element.FormField");
-		containerEntities.add("com.x.cms.core.entity.element.QueryView");
-		containerEntities.add("com.x.cms.core.entity.element.Script");
-		containerEntities.add("com.x.cms.core.entity.element.TemplateForm");
-		containerEntities.add("com.x.cms.core.entity.element.View");
-		containerEntities.add("com.x.cms.core.entity.element.ViewCategory");
-		containerEntities.add("com.x.cms.core.entity.element.ViewFieldConfig");
-
-		containerEntities.add("com.x.cms.core.entity.AppInfo");
-		containerEntities.add("com.x.cms.core.entity.CategoryInfo");
-		containerEntities.add("com.x.cms.core.entity.CategoryExt");
-		containerEntities.add("com.x.cms.core.entity.Document");
-		containerEntities.add("com.x.cms.core.entity.DocumentViewRecord");
-		containerEntities.add("com.x.cms.core.entity.FileInfo");
-		containerEntities.add("com.x.cms.core.entity.Log");
-		containerEntities.add("com.x.cms.core.entity.Review");
-
-		containerEntities.add("com.x.processplatform.core.entity.content.Attachment");
-		containerEntities.add("com.x.query.core.entity.Item");
-		containerEntities.add("com.x.query.core.entity.View");
-
-		containerEntities.add("com.x.cms.core.entity.AppCategoryAdmin");
-		containerEntities.add("com.x.cms.core.entity.AppCategoryPermission");
-		containerEntities.add("com.x.cms.core.entity.DocumentPermission");
-
-		usedStorageTypes.add(StorageType.cms);
-		usedStorageTypes.add(StorageType.processPlatform);
-
-		dependents.add(x_base_core_project.class);
-		dependents.add(x_processplatform_core_entity.class);
-		dependents.add(x_organization_core_entity.class);
-		dependents.add(x_organization_core_express.class);
-		dependents.add(x_cms_core_entity.class);
-		dependents.add(x_query_core_entity.class);
-		dependents.add(x_query_core_express.class);
-	}
-
-	protected void custom(File lib, String xLib) throws Exception {
-		// File xLibDir = new File(xLib);
-		// File libDir = new File(lib, "WEB-INF/lib");
-		// for (Class<? extends Compilable> clz : dependents) {
-		// FileUtils.copyDirectory(xLibDir, libDir, new
-		// NameFileFilter(clz.getSimpleName() + "-" + VERSION + ".jar"));
-		// }
-	}
-
-	public static void main(String[] args) {
-		try {
-			String str = args[0];
-			str = StringUtils.replace(str, "\\", "/");
-			Argument arg = XGsonBuilder.instance().fromJson(str, Argument.class);
-			x_cms_assemble_control o = new x_cms_assemble_control();
-			o.pack(arg.getDistPath(), arg.getRepositoryPath());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		dependency.storageTypes.add(StorageType.cms.toString());
+		dependency.storageTypes.add(StorageType.processPlatform.toString());
+		dependency.storeJars.add(x_processplatform_core_entity.class.getSimpleName());
+		dependency.storeJars.add(x_organization_core_entity.class.getSimpleName());
+		dependency.storeJars.add(x_organization_core_express.class.getSimpleName());
+		dependency.storeJars.add(x_cms_core_entity.class.getSimpleName());
+		dependency.storeJars.add(x_query_core_entity.class.getSimpleName());
+		dependency.storeJars.add(x_query_core_express.class.getSimpleName());
 	}
 
 }
