@@ -15,11 +15,13 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.element.AppDict;
+import com.x.cms.core.entity.element.File;
 import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.Script;
 import com.x.cms.core.entity.element.wrap.WrapAppDict;
 import com.x.cms.core.entity.element.wrap.WrapCategoryInfo;
 import com.x.cms.core.entity.element.wrap.WrapCms;
+import com.x.cms.core.entity.element.wrap.WrapFile;
 import com.x.cms.core.entity.element.wrap.WrapForm;
 import com.x.cms.core.entity.element.wrap.WrapScript;
 
@@ -34,12 +36,14 @@ class ActionList extends BaseAction {
 			List<WrapForm> formList = emc.fetchAll(Form.class, formCopier);
 			List<WrapScript> scriptList = emc.fetchAll(Script.class, scriptCopier);
 			List<WrapAppDict> appDictList = emc.fetchAll(AppDict.class, appDictCopier);
-
+			List<WrapFile> fileList = emc.fetchAll(File.class, fileCopier);
+			
 			ListTools.groupStick(wos, caetgoryList, "id", "appId", "categoryInfoList");
 			ListTools.groupStick(wos, formList, "id", "appId", "formList");
 			ListTools.groupStick(wos, scriptList, "id", "appId", "scriptList");
 			ListTools.groupStick(wos, appDictList, "id", "appId", "appDictList");
-
+			ListTools.groupStick(wos, fileList, AppInfo.id_FIELDNAME, File.appId_FIELDNAME, "fileList");
+			
 			wos = wos.stream()
 					.sorted(Comparator.comparing(Wo::getAppAlias, Comparator.nullsLast(String::compareTo))
 							.thenComparing(Wo::getAppName, Comparator.nullsLast(String::compareTo)))
@@ -49,6 +53,9 @@ class ActionList extends BaseAction {
 		}
 	}
 
+	public static WrapCopier<File, WrapFile> fileCopier = WrapCopierFactory.wo(File.class, WrapFile.class,
+			JpaObject.singularAttributeField(File.class, true, true), null);
+	
 	public static WrapCopier<CategoryInfo, WrapCategoryInfo> categoryInfoCopier = WrapCopierFactory.wo(
 			CategoryInfo.class, WrapCategoryInfo.class,
 			JpaObject.singularAttributeField(CategoryInfo.class, true, true), null);

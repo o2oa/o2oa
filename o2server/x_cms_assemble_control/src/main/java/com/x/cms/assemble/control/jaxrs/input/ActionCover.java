@@ -29,11 +29,13 @@ import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.CategoryInfo_;
 import com.x.cms.core.entity.element.AppDict;
 import com.x.cms.core.entity.element.AppDictItem;
+import com.x.cms.core.entity.element.File;
 import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.Script;
 import com.x.cms.core.entity.element.wrap.WrapAppDict;
 import com.x.cms.core.entity.element.wrap.WrapCategoryInfo;
 import com.x.cms.core.entity.element.wrap.WrapCms;
+import com.x.cms.core.entity.element.wrap.WrapFile;
 import com.x.cms.core.entity.element.wrap.WrapForm;
 import com.x.cms.core.entity.element.wrap.WrapScript;
 
@@ -96,6 +98,23 @@ class ActionCover extends BaseAction {
 			}
 		}
 		
+		for (WrapFile _o : wi.getFileList()) {
+			File obj = business.entityManagerContainer().find(_o.getId(), File.class);
+			if (null != obj) {
+				WrapFile.inCopier.copy(_o, obj);
+			} else {
+				obj = WrapFile.inCopier.copy(_o);
+				persistObjects.add(obj);
+			}
+			if (StringUtils.isNotEmpty(obj.getAlias())) {
+				obj.setAlias(this.idleAliasWithAppInfo(business, appInfo.getId(), obj.getAlias(), File.class, obj.getId()));
+			}
+			if (StringUtils.isNotEmpty(obj.getName())) {
+				obj.setName(this.idleNameWithAppInfo(business, appInfo.getId(), obj.getName(), File.class, obj.getId()));
+			}
+			obj.setAppId(appInfo.getId());
+		}
+		
 		for (WrapAppDict _o : wi.getAppDictList()) {
 			AppDict obj = business.entityManagerContainer().find(_o.getId(), AppDict.class);
 			if (null != obj) {
@@ -145,6 +164,7 @@ class ActionCover extends BaseAction {
 			}
 		}
 		
+		business.entityManagerContainer().beginTransaction(File.class);
 		business.entityManagerContainer().beginTransaction(AppInfo.class);
 		business.entityManagerContainer().beginTransaction(Script.class);
 		business.entityManagerContainer().beginTransaction(Form.class);

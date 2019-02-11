@@ -14,6 +14,9 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.x.base.core.project.exception.ExceptionScriptEval;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -104,6 +107,20 @@ public class ScriptHelper {
 		if (null != o) {
 			if (o instanceof CharSequence) {
 				list.add(Objects.toString(o, ""));
+			} else if (o instanceof JsonObject) {
+				JsonObject jsonObject = (JsonObject) o;
+				if (jsonObject.has(distinguishedName)) {
+					list.add(jsonObject.get(distinguishedName).getAsString());
+				}
+			} else if (o instanceof JsonArray) {
+				for (JsonElement jsonElement : (JsonArray) o) {
+					if (jsonElement.isJsonObject()) {
+						JsonObject jsonObject = jsonElement.getAsJsonObject();
+						if (jsonObject.has(distinguishedName)) {
+							list.add(jsonObject.get(distinguishedName).getAsString());
+						}
+					}
+				}
 			} else if (o instanceof Iterable) {
 				for (Object obj : (Iterable<?>) o) {
 					if (null != obj) {
@@ -142,6 +159,7 @@ public class ScriptHelper {
 			}
 		}
 		return list;
+
 	}
 
 	private List<String> readAsStringList(Object obj) throws Exception {

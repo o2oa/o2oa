@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 
 import com.x.base.core.project.jaxrs.AbstractActionApplication;
+import com.x.cms.assemble.control.file.FileAction;
 import com.x.cms.assemble.control.jaxrs.appdict.AppDictAction;
 import com.x.cms.assemble.control.jaxrs.appdict.AppDictAnonymousAction;
 import com.x.cms.assemble.control.jaxrs.appdictdesign.AppDictDesignAction;
@@ -51,6 +52,7 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add(PermissionForDocumentAction.class);
 		this.classes.add(DocumentViewRecordAction.class);
 		this.classes.add(FileInfoAction.class);
+		this.classes.add(FileAction.class);
 		this.classes.add(FormAction.class);
 		this.classes.add(ViewAction.class);
 		this.classes.add(QueryViewDesignAction.class);

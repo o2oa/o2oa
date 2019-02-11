@@ -16,11 +16,13 @@ import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.element.AppDict;
+import com.x.cms.core.entity.element.File;
 import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.Script;
 import com.x.cms.core.entity.element.wrap.WrapAppDict;
 import com.x.cms.core.entity.element.wrap.WrapCategoryInfo;
 import com.x.cms.core.entity.element.wrap.WrapCms;
+import com.x.cms.core.entity.element.wrap.WrapFile;
 import com.x.cms.core.entity.element.wrap.WrapForm;
 import com.x.cms.core.entity.element.wrap.WrapScript;
 
@@ -58,6 +60,14 @@ class ActionPrepareCreate extends BaseAction {
 				wos.add(new Wo(wrap.getId(), JpaObject.createId()));
 			}
 		}
+		
+		for (WrapFile wrap : wi.getFileList()) {
+			File exist_file = business.entityManagerContainer().find(wrap.getId(), File.class);
+			if (null != exist_file) {
+				wos.add(new Wo(wrap.getId(), JpaObject.createId()));
+			}
+		}
+		
 		for (WrapAppDict wrap : wi.getAppDictList()) {
 			AppDict exist_applicationDict = business.entityManagerContainer().find(wrap.getId(),
 					AppDict.class);
