@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -85,7 +86,7 @@ public class ActionMindViewWithId extends BaseAction {
 		private static final long serialVersionUID = -5076990764713538973L;
 		public static List<String> Excludes = new ArrayList<String>();
 		{
-			Excludes.add("sequence");
+			Excludes.add( JpaObject.sequence_FIELDNAME);
 			Excludes.add("creatorUnit_sequence");
 			Excludes.add("shared_sequence");
 			Excludes.add("folder_sequence");

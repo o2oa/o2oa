@@ -24,7 +24,7 @@ class ActionListNext extends BaseAction {
 					OrganizationDefinition.Manager, OrganizationDefinition.MeetingManager))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-			result = this.standardListNext(Wo.copier, id, count, "sequence", null, null, null, null, null, null, null,
+			result = this.standardListNext(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, null, null, null, null, null, null, null,
 					null, true, DESC);
 			return result;
 		}

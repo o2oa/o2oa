@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
@@ -177,7 +178,7 @@ public class HotPictureInfoCipherAction extends StandardJaxrsAction {
 								if (hotPictureInfoList != null) {
 									try {
 										wraps_out = wrapout_copier.copy(hotPictureInfoList);
-										SortTools.desc(wraps_out, "sequence");
+										SortTools.desc(wraps_out,  JpaObject.sequence_FIELDNAME);
 									} catch (Exception e) {
 										check = false;
 										Exception exception = new InfoWrapOutException(e);

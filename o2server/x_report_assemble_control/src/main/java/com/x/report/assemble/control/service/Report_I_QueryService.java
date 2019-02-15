@@ -6,6 +6,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.report.assemble.control.Business;
 import com.x.report.core.entity.Report_I_Base;
@@ -95,7 +96,7 @@ public class Report_I_QueryService{
 						sequenceFieldValue = PropertyUtils.getProperty( report, "targetUnit_sequence" );
 					}else if( "targetPerson".equals( orderField  )){//targetPerson
 						sequenceFieldValue = PropertyUtils.getProperty( report, "targetPerson_sequence" );
-					}else if( "sequence".equals( orderField  )){//sequence
+					}else if(  JpaObject.sequence_FIELDNAME.equals( orderField  )){//sequence
 						sequenceFieldValue = PropertyUtils.getProperty( report, orderField );
 					}
 				}

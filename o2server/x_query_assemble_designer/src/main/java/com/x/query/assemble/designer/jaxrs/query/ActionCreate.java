@@ -31,7 +31,7 @@ class ActionCreate extends BaseAction {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			if (!business.editable(effectivePerson, null)) {
+			if (!business.controllable(effectivePerson)) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
 			emc.beginTransaction(Query.class);

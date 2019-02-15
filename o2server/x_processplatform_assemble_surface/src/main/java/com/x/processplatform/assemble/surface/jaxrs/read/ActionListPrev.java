@@ -16,7 +16,7 @@ class ActionListPrev extends BaseAction {
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, Integer count) throws Exception {
 		EqualsTerms equals = new EqualsTerms();
 		equals.put("person", effectivePerson.getDistinguishedName());
-		ActionResult<List<Wo>> result = this.standardListPrev(Wo.copier, id, count, "sequence", equals, null, null,
+		ActionResult<List<Wo>> result = this.standardListPrev(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, equals, null, null,
 				null, null, null, null, null, true, DESC);
 		return result;
 	}

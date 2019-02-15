@@ -12,6 +12,7 @@ import com.x.query.assemble.designer.jaxrs.output.OutputAction;
 import com.x.query.assemble.designer.jaxrs.query.QueryAction;
 import com.x.query.assemble.designer.jaxrs.reveal.RevealAction;
 import com.x.query.assemble.designer.jaxrs.stat.StatAction;
+import com.x.query.assemble.designer.jaxrs.statement.StatementAction;
 import com.x.query.assemble.designer.jaxrs.table.TableAction;
 import com.x.query.assemble.designer.jaxrs.view.ViewAction;
 
@@ -28,6 +29,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(OutputAction.class);
 		classes.add(InputAction.class);
 		classes.add(TableAction.class);
+		classes.add(StatementAction.class);
 		return classes;
 	}
 

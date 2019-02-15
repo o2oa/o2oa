@@ -68,7 +68,7 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 
 	public static final String updateTime_FIELDNAME = "updateTime";
 
-	public static final String sequence_FIELDNAME = "sequence";
+	public static final String sequence_FIELDNAME =  "sequence";
 
 	public static final String distributeFactor_FIELDNAME = "distributeFactor";
 

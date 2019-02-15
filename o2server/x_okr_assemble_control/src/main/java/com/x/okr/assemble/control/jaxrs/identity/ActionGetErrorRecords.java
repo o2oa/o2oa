@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
@@ -91,7 +92,7 @@ public class ActionGetErrorRecords extends BaseAction {
 		private String identity  = null;
 		
 		@FieldDescribe( "用于列表排序的属性." )
-		private String sequenceField = "sequence";
+		private String sequenceField =  JpaObject.sequence_FIELDNAME;
 		
 		@FieldDescribe( "用于列表排序的方式." )
 		private String order = "DESC";

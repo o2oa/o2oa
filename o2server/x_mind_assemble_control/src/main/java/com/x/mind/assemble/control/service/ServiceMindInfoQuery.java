@@ -6,6 +6,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.mind.assemble.control.Business;
 import com.x.mind.entity.MindBaseInfo;
@@ -107,7 +108,7 @@ class ServiceMindInfoQuery{
 		MindBaseInfo entity = null;
 		Object sequenceFieldValue = null;
 		if( orderField == null || orderField.isEmpty() ){
-			orderField = "sequence";
+			orderField =  JpaObject.sequence_FIELDNAME;
 		}
 		if( orderType == null || orderType.isEmpty() ){
 			orderType = "DESC";
@@ -128,8 +129,8 @@ class ServiceMindInfoQuery{
 					sequenceFieldValue = PropertyUtils.getProperty( entity, "creator_sequence" );
 				}else if( "creatorUnit".equals( orderField  )){//创建者所属组织
 					sequenceFieldValue = PropertyUtils.getProperty( entity, "creatorUnit_sequence" );
-				}else if( "sequence".equals( orderField  )){//sequence
-					sequenceFieldValue = PropertyUtils.getProperty( entity, "sequence" );
+				}else if(  JpaObject.sequence_FIELDNAME.equals( orderField  )){//sequence
+					sequenceFieldValue = PropertyUtils.getProperty( entity,  JpaObject.sequence_FIELDNAME );
 				}
 			}
 		}
@@ -143,7 +144,7 @@ class ServiceMindInfoQuery{
 		MindRecycleInfo entity = null;
 		Object sequenceFieldValue = null;
 		if( orderField == null || orderField.isEmpty() ){
-			orderField = "sequence";
+			orderField =  JpaObject.sequence_FIELDNAME;
 		}
 		if( orderType == null || orderType.isEmpty() ){
 			orderType = "DESC";
@@ -162,8 +163,8 @@ class ServiceMindInfoQuery{
 					sequenceFieldValue = PropertyUtils.getProperty( entity, "creator_sequence" );
 				}else if( "creatorUnit".equals( orderField  )){//创建者所属组织
 					sequenceFieldValue = PropertyUtils.getProperty( entity, "creatorUnit_sequence" );
-				}else if( "sequence".equals( orderField  )){//sequence
-					sequenceFieldValue = PropertyUtils.getProperty( entity, "sequence" );
+				}else if(  JpaObject.sequence_FIELDNAME.equals( orderField  )){//sequence
+					sequenceFieldValue = PropertyUtils.getProperty( entity,  JpaObject.sequence_FIELDNAME );
 				}
 			}
 		}

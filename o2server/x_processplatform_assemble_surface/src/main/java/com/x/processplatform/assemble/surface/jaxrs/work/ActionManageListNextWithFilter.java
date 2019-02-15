@@ -65,7 +65,7 @@ class ActionManageListNextWithFilter extends BaseAction {
 				}
 			}
 
-			result = this.standardListNext(Wo.copier, id, count, "sequence", equals, null, likes, ins, null, null, null,
+			result = this.standardListNext(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, equals, null, likes, ins, null, null, null,
 					null, true, DESC);
 			/* 添加权限 */
 			if (null != result.getData()) {

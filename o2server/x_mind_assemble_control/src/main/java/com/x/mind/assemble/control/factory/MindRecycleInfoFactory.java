@@ -12,6 +12,7 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.tools.ListTools;
 import com.x.mind.assemble.control.AbstractFactory;
@@ -214,7 +215,7 @@ public class MindRecycleInfoFactory extends AbstractFactory {
 				}else{
 					p = cb.and( p, cb.greaterThan( root.get( MindRecycleInfo_.creator_sequence ), sequenceFieldValue.toString() ));
 				}
-			}else if( "sequence".equals( orderField  )){//sequence
+			}else if(  JpaObject.sequence_FIELDNAME.equals( orderField  )){//sequence
 				p = cb.and( p, cb.isNotNull( root.get( MindRecycleInfo_.sequence ) ));
 				if( "DESC".equalsIgnoreCase( orderType )){
 					p = cb.and( p, cb.lessThan( root.get( MindRecycleInfo_.sequence ), sequenceFieldValue.toString() ));
@@ -270,7 +271,7 @@ public class MindRecycleInfoFactory extends AbstractFactory {
 			}else{
 				cq.orderBy( cb.asc( root.get( MindRecycleInfo_.creator_sequence ) ));
 			}
-		}else if( "sequence".equals( orderField  )){//sequence
+		}else if(  JpaObject.sequence_FIELDNAME.equals( orderField  )){//sequence
 			if( "DESC".equalsIgnoreCase( orderType )){
 				cq.orderBy( cb.desc( root.get( MindRecycleInfo_.sequence ) ) );
 			}else{

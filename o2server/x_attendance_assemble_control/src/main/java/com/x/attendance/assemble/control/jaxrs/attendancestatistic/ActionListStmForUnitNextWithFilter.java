@@ -54,7 +54,7 @@ public class ActionListStmForUnitNextWithFilter extends BaseAction {
 				} else {
 					if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
 						sequence = PropertyUtils.getProperty(
-								emc.find(id, StatisticUnitForMonth.class ), "sequence");
+								emc.find(id, StatisticUnitForMonth.class ),  JpaObject.sequence_FIELDNAME);
 					}
 				}
 

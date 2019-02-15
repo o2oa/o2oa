@@ -7,7 +7,7 @@ import com.x.base.core.project.annotation.ModuleType;
 
 @Module(type = ModuleType.ASSEMBLE, category = ModuleCategory.OFFICIAL, name = "数据查询")
 public class x_query_assemble_surface extends AssembleA {
-	
+
 	public x_query_assemble_surface() {
 		super();
 		dependency.containerEntities.add("com.x.query.core.entity.Item");
@@ -23,6 +23,7 @@ public class x_query_assemble_surface extends AssembleA {
 		dependency.containerEntities.add("com.x.query.core.entity.neural.InValue");
 		dependency.containerEntities.add("com.x.query.core.entity.neural.OutValue");
 		dependency.containerEntities.add("com.x.query.core.entity.neural.Model");
+		dependency.containerEntities.add("com.x.query.core.entity.schema.*");
 		dependency.containerEntities.add("com.x.processplatform.core.entity.content.Review");
 		dependency.containerEntities.add("com.x.processplatform.core.entity.content.Work");
 		dependency.containerEntities.add("com.x.processplatform.core.entity.content.WorkCompleted");
@@ -30,6 +31,7 @@ public class x_query_assemble_surface extends AssembleA {
 		dependency.containerEntities.add("com.x.cms.core.entity.Document");
 		dependency.containerEntities.add("com.x.cms.core.entity.AppInfo");
 		dependency.containerEntities.add("com.x.cms.core.entity.CategoryInfo");
+		dependency.containerEntities.add("com.x.query.dynamic.entity.*");
 		dependency.storageTypes.add(StorageType.processPlatform.toString());
 		dependency.storageTypes.add(StorageType.cms.toString());
 		dependency.storeJars.add(x_query_core_entity.class.getSimpleName());

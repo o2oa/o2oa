@@ -3,11 +3,12 @@ package com.x.okr.assemble.control.jaxrs;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class WorkCommonSearchFilter extends GsonPropertyObject {
 	
-	private String sequenceField = "sequence";
+	private String sequenceField =  JpaObject.sequence_FIELDNAME;
 	
 	private String order = "DESC";
 	

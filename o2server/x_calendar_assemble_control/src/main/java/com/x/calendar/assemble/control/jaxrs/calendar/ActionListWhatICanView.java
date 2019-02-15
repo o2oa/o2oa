@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -158,7 +159,7 @@ public class ActionListWhatICanView extends BaseAction {
 		public static List<String> Excludes = new ArrayList<String>();
 		
 		static {
-			Excludes.add( "sequence" );
+			Excludes.add(  JpaObject.sequence_FIELDNAME );
 			Excludes.add( "updateTime" );
 			Excludes.add( "manageablePersonList" );
 			Excludes.add( "viewablePersonList" );

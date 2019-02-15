@@ -34,21 +34,12 @@ public class CenterServerTools extends JettySeverTools {
 	private static Logger logger = LoggerFactory.getLogger(CenterServerTools.class);
 
 	private static int CENTERSERVER_THREAD_POOL_SIZE_MIN = 5;
-	private static int CENTERSERVER_THREAD_POOL_SIZE_MAX = 50;
+	private static int CENTERSERVER_THREAD_POOL_SIZE_MAX = 100;
 
 	protected static final String PATH_WEBAPPS = "servers/centerServer/webapps";
 	protected static final String PATH_WORK = "servers/centerServer/work";
 
 	public static Server start(CenterServer centerServer) throws Exception {
-
-//		File commons_dir = new File(Config.base(), PATH_COMMONS);
-//		File commons_ext_dir = new File(Config.base(), PATH_COMMONS_EXT);
-//		File webapps_dir = new File(Config.base(), PATH_WEBAPPS);
-//		File work_dir = new File(Config.base(), PATH_WORK);
-//		File store_dir = new File(Config.base(), PATH_STORE);
-//		File store_jars_dir = new File(Config.base(), PATH_STORE_JARS);
-//		File custom_dir = new File(Config.base(), PATH_CUSTOM);
-//		File custom_jars_dir = new File(Config.base(), PATH_CUSTOM_JARS);
 
 		if (BooleanUtils.isTrue(centerServer.getRedeploy())) {
 			cleanDirectory(Config.dir_servers_centerServer_webapps());
@@ -59,6 +50,7 @@ public class CenterServerTools extends JettySeverTools {
 		threadPool.setMinThreads(CENTERSERVER_THREAD_POOL_SIZE_MIN);
 		threadPool.setMaxThreads(CENTERSERVER_THREAD_POOL_SIZE_MAX);
 		Server server = new Server(threadPool);
+		server.setAttribute("maxFormContentSize", 1024 * 1024 * 1024 * 10);
 
 		ClassList classlist = ClassList.setServerDefault(server);
 		classlist.addAfter(FragmentConfiguration.class.getName(), EnvConfiguration.class.getName(),
@@ -104,24 +96,6 @@ public class CenterServerTools extends JettySeverTools {
 		logger.print("center server start completed on port:{}.", centerServer.getPort());
 		return server;
 	}
-
-//	private static ClassInfo getClassInfo() {
-//		try (ScanResult scanResult = // Assign scanResult in try-with-resources
-//				new ClassGraph().enableAnnotationInfo() // Create a new ClassGraph instance
-//						// .verbose() // If you want to enable logging to stderr
-//						.enableAllInfo() // Scan classes, methods, fields, annotations
-//						.whitelistPackages("com.x.base.core.project")
-//						// .whitelistPackages("com.xyz") // Scan com.xyz and subpackages
-//						.scan()) { // Perform the scan and return a ScanResult
-//			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Module.class.getName());
-//			for (ClassInfo info : classInfos) {
-//				if (StringUtils.equals(x_program_center.class.getName(), info.getName())) {
-//					return info;
-//				}
-//			}
-//			return null;
-//		}
-//	}
 
 	protected static void createDeployDescriptor() throws Exception {
 		StringBuffer buffer = new StringBuffer();

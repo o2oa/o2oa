@@ -77,18 +77,18 @@ public class Context extends AbstractContext {
 		return this.servletContext;
 	}
 
-	/* 应用类 */
-	private Class<?> clazz;
-
-	public Class<?> clazz() {
-		return this.clazz;
-	}
-
-	private Deployable clazzInstance;
-
-	public Deployable clazzInstance() {
-		return this.clazzInstance;
-	}
+//	/* 应用类 */
+//	private Class<?> clazz;
+//
+//	public Class<?> clazz() {
+//		return this.clazz;
+//	}
+//
+//	private Deployable clazzInstance;
+//
+//	public Deployable clazzInstance() {
+//		return this.clazzInstance;
+//	}
 
 	/* 随机令牌 */
 	private volatile String token;
@@ -239,7 +239,8 @@ public class Context extends AbstractContext {
 	private void initDatas() throws Exception {
 		logger.print("{} loading datas, entity size:{}.", this.clazz.getName(),
 				clazzInstance.dependency().containerEntities.size());
-		EntityManagerContainerFactory.init(path, Config.dataMappings());
+		EntityManagerContainerFactory.init(path, Config.dataMappings(),
+				this.clazzInstance.dependency().containerEntities);
 	}
 
 	private void initStorages() throws Exception {

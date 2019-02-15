@@ -29,7 +29,7 @@ class ActionListNextWithApplication extends BaseAction {
 			EqualsTerms equals = new EqualsTerms();
 			equals.put("person", effectivePerson.getDistinguishedName());
 			equals.put("application", application.getId());
-			ActionResult<List<Wo>> result = this.standardListNext(Wo.copier, id, count, "sequence", equals, null, null,
+			ActionResult<List<Wo>> result = this.standardListNext(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, equals, null, null,
 					null, null, null, null, null, true, DESC);
 			return result;
 		}

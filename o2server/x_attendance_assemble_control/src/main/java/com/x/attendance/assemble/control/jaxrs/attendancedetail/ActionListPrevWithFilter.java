@@ -60,7 +60,7 @@ public class ActionListPrevWithFilter extends BaseAction {
 				if (id == null || "(0)".equals(id) || id.isEmpty()) {
 				} else {
 					if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
-						sequence = PropertyUtils.getProperty(emc.find(id, AttendanceDetail.class), "sequence");
+						sequence = PropertyUtils.getProperty(emc.find(id, AttendanceDetail.class),  JpaObject.sequence_FIELDNAME);
 					}
 				}
 

@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
@@ -57,7 +58,7 @@ public class OkrCenterWorkQueryService {
 			business = new Business(emc);
 			if( id != null && !"(0)".equals(id) && id.trim().length() > 20 ){
 				if ( !StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
-					sequence = PropertyUtils.getProperty( emc.find( id, OkrCenterWorkInfo.class ), "sequence" );
+					sequence = PropertyUtils.getProperty( emc.find( id, OkrCenterWorkInfo.class ),  JpaObject.sequence_FIELDNAME );
 				}
 			}
 			return business.okrCenterWorkInfoFactory().listNextWithFilter(id, count, sequence, wrapIn);
@@ -82,7 +83,7 @@ public class OkrCenterWorkQueryService {
 			business = new Business(emc);
 			if( id != null && !"(0)".equals(id) && id.trim().length() > 20 ){
 				if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
-					sequence = PropertyUtils.getProperty( emc.find( id, OkrCenterWorkInfo.class ), "sequence" );
+					sequence = PropertyUtils.getProperty( emc.find( id, OkrCenterWorkInfo.class ),  JpaObject.sequence_FIELDNAME );
 				}
 			}
 			return business.okrCenterWorkInfoFactory().listPrevWithFilter(id, count, sequence, wrapIn);

@@ -41,7 +41,7 @@ class ActionListNext extends BaseAction {
 					}
 					id = identity.getId();
 				}
-				result = this.standardListNext(Wo.copier, id, count, "sequence", null, null, null, null, null, null,
+				result = this.standardListNext(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, null, null, null, null, null, null,
 						null, null, true, DESC);
 				Co co = new Co(result.getData(), result.getCount());
 				business.cache().put(new Element(cacheKey, co));

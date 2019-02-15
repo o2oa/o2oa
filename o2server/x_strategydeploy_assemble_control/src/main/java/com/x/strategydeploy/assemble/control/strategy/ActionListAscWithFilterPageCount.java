@@ -71,7 +71,7 @@ public class ActionListAscWithFilterPageCount extends BaseAction {
 
 			List<Wo> wos = new ArrayList<>();
 			List<String> actions = new ArrayList<>();
-			// sequenceField = "sequence";
+			// sequenceField =  JpaObject.sequence_FIELDNAME;
 			logger.info("ActionListAscWithFilterPageCount-->execute:" + id);
 			if (reader_persons.indexOf(distinguishedName) >= 0 || writer_persons.indexOf(distinguishedName) >= 0) {
 				result = this.standardListNext(wrapout_copier, id, _totalcount, sequenceField, equals, notEquals, likes,

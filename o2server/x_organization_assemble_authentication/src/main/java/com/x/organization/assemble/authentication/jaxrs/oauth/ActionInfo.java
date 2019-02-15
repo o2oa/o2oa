@@ -8,7 +8,6 @@ import javax.script.ScriptEngine;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -21,7 +20,7 @@ import com.x.base.core.project.jaxrs.WoText;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.scripting.Scripting;
-import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.scripting.ScriptingEngine;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.OauthCode;
 import com.x.organization.core.entity.Person;
@@ -69,8 +68,8 @@ class ActionInfo extends BaseAction {
 		WoInfo woInfo = new WoInfo();
 		if (Config.token().isInitialManager(oauthCode.getPerson())) {
 			InitialManager initialManager = Config.token().initialManagerInstance();
-			ScriptEngine engine = Scripting.getEngine();
-			engine.put("person", initialManager);
+			ScriptingEngine engine = Scripting.getEngine();
+			engine.binding("person", initialManager);
 			for (String str : StringUtils.split(oauthCode.getScope(), ",")) {
 				String property = oauth.getMapping().get(str);
 				String value = "";
@@ -84,8 +83,8 @@ class ActionInfo extends BaseAction {
 			}
 		} else {
 			Person person = business.entityManagerContainer().find(oauthCode.getPerson(), Person.class);
-			ScriptEngine engine = Scripting.getEngine();
-			engine.put("person", person);
+			ScriptingEngine engine = Scripting.getEngine();
+			engine.binding("person", person);
 			for (String str : StringUtils.split(oauthCode.getScope(), ",")) {
 				String property = oauth.getMapping().get(str);
 				String value = "";

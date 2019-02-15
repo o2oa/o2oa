@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.x.base.core.project.AbstractContext;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.organization.core.express.group.GroupFactory;
 import com.x.organization.core.express.identity.IdentityFactory;
@@ -213,6 +214,17 @@ public class Organization {
 			this.unitDutyList = unitDutyList;
 		}
 
+	}
+
+	public Detail detail(EffectivePerson effectivePerson) throws Exception {
+		Detail o = new Detail();
+		o.setPerson(effectivePerson.getDistinguishedName());
+		o.setIdentityList(identity().listWithPerson(effectivePerson));
+		o.setUnitList(unit().listWithPerson(effectivePerson));
+		o.setUnitAllList(unit().listWithPersonSupNested(effectivePerson));
+		o.setGroupList(group().listWithPerson(effectivePerson.getDistinguishedName()));
+		o.setRoleList(role().listWithPerson(effectivePerson));
+		return o;
 	}
 
 }

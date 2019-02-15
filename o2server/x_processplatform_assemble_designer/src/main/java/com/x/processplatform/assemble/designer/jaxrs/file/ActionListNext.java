@@ -13,7 +13,7 @@ import com.x.processplatform.core.entity.element.File;
 class ActionListNext extends BaseAction {
 	ActionResult<List<Wo>> execute(String id, Integer count) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
-		result = this.standardListNext(Wo.copier, id, count, "sequence", null, null, null, null, null, null, null, null,
+		result = this.standardListNext(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, null, null, null, null, null, null, null, null,
 				true, DESC);
 		for (Wo wo : result.getData()) {
 			wo.setContentType(this.contentType(false, wo.getName()));

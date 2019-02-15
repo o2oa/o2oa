@@ -1,4 +1,0 @@
-1.执行before脚本
-2.拷贝 commons,store,servers,和console.jar
-3.更新版本文件
-4.执行after脚本

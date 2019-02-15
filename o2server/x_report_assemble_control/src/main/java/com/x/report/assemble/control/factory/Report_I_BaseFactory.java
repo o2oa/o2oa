@@ -12,6 +12,7 @@ import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.lib.util.StringUtil;
 
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.tools.ListTools;
 import com.x.report.assemble.control.AbstractFactory;
@@ -204,7 +205,7 @@ public class Report_I_BaseFactory extends AbstractFactory {
 				}else{
 					p = cb.and( p, cb.greaterThan( root.get( Report_I_Base_.targetPerson_sequence ), sequenceFieldValue.toString() ));
 				}
-			}else if( "sequence".equals( orderField  )){//sequence
+			}else if(  JpaObject.sequence_FIELDNAME.equals( orderField  )){//sequence
 				p = cb.and( p, cb.isNotNull( root.get( Report_I_Base_.sequence ) ));
 				if( "DESC".equalsIgnoreCase( orderType )){
 					p = cb.and( p, cb.lessThan( root.get( Report_I_Base_.sequence ), sequenceFieldValue.toString() ));
@@ -244,7 +245,7 @@ public class Report_I_BaseFactory extends AbstractFactory {
 			}else{
 				cq.orderBy( cb.asc( root.get( Report_I_Base_.targetPerson_sequence ) ));
 			}
-		}else if( "sequence".equals( orderField  )){//sequence
+		}else if(  JpaObject.sequence_FIELDNAME.equals( orderField  )){//sequence
 			if( "DESC".equalsIgnoreCase( orderType )){
 				cq.orderBy( cb.desc( root.get( Report_I_Base_.sequence ) ) );
 			}else{

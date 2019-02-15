@@ -146,6 +146,12 @@ public abstract class JettySeverTools {
 				jars.add(file.getAbsolutePath());
 			}
 		}
+		for (String str : dependency.dynamicJars) {
+			File file = new File(Config.dir_dynamic_jars(), str + ".jar");
+			if (file.exists()) {
+				jars.add(file.getAbsolutePath());
+			}
+		}
 		return StringUtils.join(jars, ";");
 	}
 

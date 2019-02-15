@@ -17,7 +17,7 @@ class ActionListPrev extends BaseAction {
 		if (effectivePerson.isNotManager()) {
 			throw new ExceptionAccessDenied(effectivePerson);
 		}
-		result = this.standardListPrev(Wo.copier, id, count, "sequence", null, null, null, null, null, null, null, null,
+		result = this.standardListPrev(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, null, null, null, null, null, null, null, null,
 				true, DESC);
 		return result;
 	}

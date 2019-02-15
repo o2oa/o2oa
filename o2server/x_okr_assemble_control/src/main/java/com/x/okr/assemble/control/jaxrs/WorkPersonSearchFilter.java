@@ -2,6 +2,7 @@ package com.x.okr.assemble.control.jaxrs;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class WorkPersonSearchFilter extends GsonPropertyObject {
@@ -38,7 +39,7 @@ public class WorkPersonSearchFilter extends GsonPropertyObject {
 	
 	private List<String> creatorTopUnitNames;
 	
-	private String sequenceField = "sequence";
+	private String sequenceField =  JpaObject.sequence_FIELDNAME;
 	
 	private String key;
 	

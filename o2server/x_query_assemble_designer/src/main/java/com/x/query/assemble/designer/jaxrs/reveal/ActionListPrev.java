@@ -23,11 +23,11 @@ class ActionListPrev extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			logger.debug(effectivePerson, "id:{}, count:{}.", id, count);
 			Business business = new Business(emc);
-			if (!business.editable(effectivePerson, null)) {
+			if (!business.controllable(effectivePerson)) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			result = this.standardFetchAttributeListPrev(emc, Wo.copier, id, count, "sequence", null, null, null, null,
+			result = this.standardFetchAttributeListPrev(emc, Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, null, null, null, null,
 					null, null, null, true, DESC);
 			return result;
 		}

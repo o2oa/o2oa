@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -76,7 +77,7 @@ public class ActionListNextWithFilter extends BaseAction {
 
 		private String filterLikeContent = null;
 
-		private String sequenceField = "sequence";
+		private String sequenceField =  JpaObject.sequence_FIELDNAME;
 
 		private String order = "DESC";
 

@@ -34,7 +34,7 @@ class ActionListQueryCategory extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			logger.debug(effectivePerson, effectivePerson.getDistinguishedName());
 			Business business = new Business(emc);
-			if (!business.editable(effectivePerson, null)) {
+			if (!business.controllable(effectivePerson)) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
 			ActionResult<List<Wo>> result = new ActionResult<>();

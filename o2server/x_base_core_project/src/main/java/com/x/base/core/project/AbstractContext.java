@@ -19,4 +19,18 @@ public abstract class AbstractContext {
 		return module.name();
 	}
 
+	/* 应用类 */
+	protected Class<?> clazz;
+
+	public Class<?> clazz() {
+		return this.clazz;
+	}
+
+	/* 应用类对象 */
+	protected Deployable clazzInstance;
+
+	public Deployable clazzInstance() {
+		return this.clazzInstance;
+	}
+
 }

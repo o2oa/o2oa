@@ -194,7 +194,7 @@ public class OkrWorkReportPersonLinkService{
 			business = new Business(emc);
 			if( id != null && !"(0)".equals(id) && id.trim().length() > 20 ){
 				if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
-					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkReportPersonLink.class ), "sequence" );
+					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkReportPersonLink.class ),  JpaObject.sequence_FIELDNAME );
 				}
 			}
 			okrWorkReportPersonLinkList = business.okrWorkReportPersonLinkFactory().listNextWithFilter( id, count, sequence, wrapIn );
@@ -226,7 +226,7 @@ public class OkrWorkReportPersonLinkService{
 			business = new Business(emc);
 			if( id != null && !"(0)".equals(id) && id.trim().length() > 20 ){
 				if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
-					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkReportPersonLink.class ), "sequence" );
+					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkReportPersonLink.class ),  JpaObject.sequence_FIELDNAME );
 				}
 			}
 			okrWorkReportPersonLinkList = business.okrWorkReportPersonLinkFactory().listPrevWithFilter( id, count, sequence, wrapIn );

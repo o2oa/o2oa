@@ -28,7 +28,7 @@ class ActionListPrevWithApplication extends BaseAction {
 			EqualsTerms equals = new EqualsTerms();
 			equals.put("creatorPerson", effectivePerson.getDistinguishedName());
 			equals.put("application", application.getId());
-			ActionResult<List<Wo>> result = this.standardListPrev(Wo.copier, id, count, "sequence", equals, null, null,
+			ActionResult<List<Wo>> result = this.standardListPrev(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, equals, null, null,
 					null, null, null, null, null, true, DESC);
 			if (null != result.getData()) {
 				for (Wo wo : result.getData()) {

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.tools.ListTools;
 import com.x.mind.assemble.common.date.DateOperation;
@@ -181,7 +182,7 @@ public class MindInfoService{
 			String creator, String creatorUnit, List<String> sharePersons, List<String> shareUnits, List<String> shareGroups, 
 			String orderField, String orderType, List<String> inMindIds ) throws Exception {
 		if( orderField == null || orderField.isEmpty() ){
-			orderField = "sequence";
+			orderField =  JpaObject.sequence_FIELDNAME;
 		}
 		if( orderType == null || orderType.isEmpty() ){
 			orderType = "DESC";
@@ -211,7 +212,7 @@ public class MindInfoService{
 	public List<MindRecycleInfo> listRecycleNextPageWithFilter(String id, Integer count, String key, String folderId, Boolean shared,
 			String creator, String creatorUnit, String orderField, String orderType, List<String> inMindIds ) throws Exception {
 		if( orderField == null || orderField.isEmpty() ){
-			orderField = "sequence";
+			orderField =  JpaObject.sequence_FIELDNAME;
 		}
 		if( orderType == null || orderType.isEmpty() ){
 			orderType = "DESC";

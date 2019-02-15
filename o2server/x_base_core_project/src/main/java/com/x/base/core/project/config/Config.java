@@ -71,9 +71,17 @@ public class Config {
 	public static final String DIR_CUSTOM_JARS = "custom/jars";
 	public static final String DIR_DYNAMIC = "dynamic";
 	public static final String DIR_DYNAMIC_JARS = "dynamic/jars";
+	public static final String DIR_JVM = "jvm";
+	public static final String DIR_JVM_AIX = "jvm/aix";
+	public static final String DIR_JVM_LINUX = "jvm/linux";
+	public static final String DIR_JVM_MACOS = "jvm/macos";
+	public static final String DIR_JVM_WINDOWS = "jvm/windows";
 	public static final String DIR_LOCAL = "local";
 	public static final String DIR_LOCAL_TEMP = "local/temp";
 	public static final String DIR_LOCAL_TEMP_CLASSES = "local/temp/classes";
+	public static final String DIR_LOCAL_TEMP_DYNAMIC = "local/temp/dynamic";
+	public static final String DIR_LOCAL_TEMP_DYNAMIC_SRC = "local/temp/dynamic/src";
+	public static final String DIR_LOCAL_TEMP_DYNAMIC_TARGET = "local/temp/dynamic/target";
 	public static final String DIR_LOGS = "logs";
 	public static final String DIR_SERVERS = "servers";
 	public static final String DIR_SERVERS_APPLICATIONSERVER = "servers/applicationServer";
@@ -102,7 +110,17 @@ public class Config {
 	}
 
 	public static File dir_custom() throws Exception {
-		return new File(base(), DIR_CUSTOM);
+		return dir_custom(true);
+	}
+
+	public static File dir_custom(Boolean force) throws Exception {
+		File dir = new File(base(), DIR_CUSTOM);
+		if (force) {
+			if ((!dir.exists()) || dir.isFile()) {
+				FileUtils.forceMkdir(dir);
+			}
+		}
+		return dir;
 	}
 
 	public static File dir_custom_jars() throws Exception {
@@ -127,6 +145,26 @@ public class Config {
 		return dir;
 	}
 
+	public static File dir_jvm() throws Exception {
+		return new File(base(), DIR_JVM);
+	}
+
+	public static File dir_jvm_aix() throws Exception {
+		return new File(base(), DIR_JVM_AIX);
+	}
+
+	public static File dir_jvm_linux() throws Exception {
+		return new File(base(), DIR_JVM_LINUX);
+	}
+
+	public static File dir_jvm_macos() throws Exception {
+		return new File(base(), DIR_JVM_MACOS);
+	}
+
+	public static File dir_jvm_windows() throws Exception {
+		return new File(base(), DIR_JVM_WINDOWS);
+	}
+
 	public static File dir_local() throws Exception {
 		return new File(base(), DIR_LOCAL);
 	}
@@ -137,6 +175,38 @@ public class Config {
 
 	public static File dir_local_temp_classes() throws Exception {
 		return new File(base(), DIR_LOCAL_TEMP_CLASSES);
+	}
+
+	public static File dir_local_temp_dynamic() throws Exception {
+		return new File(base(), DIR_LOCAL_TEMP_DYNAMIC);
+	}
+
+	public static File dir_local_temp_dynamic_src() throws Exception {
+		return dir_local_temp_dynamic_src(false);
+	}
+
+	public static File dir_local_temp_dynamic_src(Boolean force) throws Exception {
+		File dir = new File(base(), DIR_LOCAL_TEMP_DYNAMIC_SRC);
+		if (force) {
+			if ((!dir.exists()) || dir.isFile()) {
+				FileUtils.forceMkdir(dir);
+			}
+		}
+		return dir;
+	}
+
+	public static File dir_local_temp_dynamic_target() throws Exception {
+		return dir_local_temp_dynamic_target(false);
+	}
+
+	public static File dir_local_temp_dynamic_target(Boolean force) throws Exception {
+		File dir = new File(base(), DIR_LOCAL_TEMP_DYNAMIC_TARGET);
+		if (force) {
+			if ((!dir.exists()) || dir.isFile()) {
+				FileUtils.forceMkdir(dir);
+			}
+		}
+		return dir;
 	}
 
 	public static File dir_logs() throws Exception {
@@ -728,12 +798,6 @@ public class Config {
 			}
 			return list;
 		}
-//		ScanResult scanResult = new FastClasspathScanner(Packages.PREFIX).scan();
-//		List<String> names = scanResult.getNamesOfClassesWithAnnotation(ContainerEntity.class);
-//		List<Class<?>> list = new ArrayList<>();
-//		for (String str : names) {
-//			list.add(Class.forName(str));
-//		}
 	}
 
 	public static Node currentNode() throws Exception {

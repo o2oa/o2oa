@@ -112,6 +112,7 @@ public class ActionGetSubjectOperationPermissoin extends BaseAction {
 			hasPermission = checkUserPermission(checkUserPermission, roleAndPermission.getPermissionInfoList());
 			if (hasPermission) {
 				wrap.setManageAble(true);
+				wrap.setEditAble(true);
 			}
 		}
 		if (check) {
@@ -161,7 +162,7 @@ public class ActionGetSubjectOperationPermissoin extends BaseAction {
 		if (check) {
 			if (effectivePerson.getDistinguishedName() != null
 					&& subjectInfo.getCreatorName().equalsIgnoreCase(effectivePerson.getDistinguishedName())) {
-				wrap.setManageAble(true);
+				wrap.setEditAble(true);
 			}
 		}
 
@@ -174,7 +175,10 @@ public class ActionGetSubjectOperationPermissoin extends BaseAction {
 		@FieldDescribe( "用户是否可以审核该主题." )
 		private Boolean auditAble = false;
 		
-		@FieldDescribe( "用户是否可以删除或者管理该主题." )
+		@FieldDescribe( "用户是否可以编辑该主题." )
+		private Boolean editAble = false;
+		
+		@FieldDescribe( "用户是否可以管理该主题." )
 		private Boolean manageAble = false;	
 		
 		@FieldDescribe( "用户是否可以推荐该主题." )
@@ -193,7 +197,15 @@ public class ActionGetSubjectOperationPermissoin extends BaseAction {
 		private Boolean replyAuditAble = false;	
 		
 		@FieldDescribe( "用户是否可以在主题中对回复进行查询或者删除." )
-		private Boolean replyManageAble = false;
+		private Boolean replyManageAble = false;		
+
+		public Boolean getEditAble() {
+			return editAble;
+		}
+
+		public void setEditAble(Boolean editAble) {
+			this.editAble = editAble;
+		}
 
 		public Boolean getAuditAble() {
 			return auditAble;

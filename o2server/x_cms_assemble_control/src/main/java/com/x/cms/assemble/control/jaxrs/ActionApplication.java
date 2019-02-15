@@ -5,7 +5,6 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 
 import com.x.base.core.project.jaxrs.AbstractActionApplication;
-import com.x.cms.assemble.control.file.FileAction;
 import com.x.cms.assemble.control.jaxrs.appdict.AppDictAction;
 import com.x.cms.assemble.control.jaxrs.appdict.AppDictAnonymousAction;
 import com.x.cms.assemble.control.jaxrs.appdictdesign.AppDictDesignAction;
@@ -17,6 +16,7 @@ import com.x.cms.assemble.control.jaxrs.document.DocumentAction;
 import com.x.cms.assemble.control.jaxrs.document.DocumentAnonymousAction;
 import com.x.cms.assemble.control.jaxrs.document.DocumentCipherAction;
 import com.x.cms.assemble.control.jaxrs.document.DocumentViewRecordAction;
+import com.x.cms.assemble.control.jaxrs.file.FileAction;
 import com.x.cms.assemble.control.jaxrs.fileinfo.FileInfoAction;
 import com.x.cms.assemble.control.jaxrs.fileinfo.FileInfoAnonymousAction;
 import com.x.cms.assemble.control.jaxrs.form.FormAction;
