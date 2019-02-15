@@ -778,10 +778,17 @@ public class Main {
 		/* load custom jar */
 		File custom_jars_dir = new File(base, "custom/jars");
 		if (custom_jars_dir.exists() && custom_jars_dir.isDirectory()) {
-			for (File file : Config.dir_custom_jars().listFiles()) {
+			for (File file : custom_jars_dir.listFiles()) {
 				method.invoke(urlClassLoader, new Object[] { file.toURI().toURL() });
 			}
 		}
+		File dynamic_jars_dir = new File(base, "dynamic/jars");
+		if (dynamic_jars_dir.exists() && dynamic_jars_dir.isDirectory()) {
+			for (File file : dynamic_jars_dir.listFiles()) {
+				method.invoke(urlClassLoader, new Object[] { file.toURI().toURL() });
+			}
+		}
+
 		/* load temp class */
 		method.invoke(urlClassLoader, new Object[] { Config.dir_local_temp_classes().toURI().toURL() });
 	}

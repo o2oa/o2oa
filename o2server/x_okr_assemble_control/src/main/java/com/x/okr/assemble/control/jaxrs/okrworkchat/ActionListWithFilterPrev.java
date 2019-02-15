@@ -125,7 +125,7 @@ public static class Wi extends GsonPropertyObject {
 		private String workId;
 		
 		@FieldDescribe( "用于列表排序的属性." )
-		private String sequenceField = "sequence";
+		private String sequenceField =  JpaObject.sequence_FIELDNAME;
 		
 		@FieldDescribe( "用于列表排序的方式." )
 		private String order = "DESC";

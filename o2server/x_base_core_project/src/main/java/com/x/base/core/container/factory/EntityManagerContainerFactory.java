@@ -14,18 +14,29 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.CheckRemove;
+import com.x.base.core.project.AbstractContext;
 import com.x.base.core.project.config.DataMappings;
 
 public class EntityManagerContainerFactory extends SliceEntityManagerContainerFactory {
 
 	private volatile static EntityManagerContainerFactory instance;
 
-	public static void init(String webApplicationDirectory, DataMappings dataMappings) throws Exception {
+//	public static void init(String webApplicationDirectory, DataMappings dataMappings) throws Exception {
+//		synchronized (EntityManagerContainerFactory.class) {
+//			if (instance != null) {
+//				EntityManagerContainerFactory.close();
+//			}
+//			instance = new EntityManagerContainerFactory(webApplicationDirectory, dataMappings);
+//		}
+//	}
+
+	public static void init(String webApplicationDirectory, DataMappings dataMappings, List<String> entities)
+			throws Exception {
 		synchronized (EntityManagerContainerFactory.class) {
 			if (instance != null) {
 				EntityManagerContainerFactory.close();
 			}
-			instance = new EntityManagerContainerFactory(webApplicationDirectory, dataMappings);
+			instance = new EntityManagerContainerFactory(webApplicationDirectory, dataMappings, entities);
 		}
 	}
 
@@ -54,9 +65,14 @@ public class EntityManagerContainerFactory extends SliceEntityManagerContainerFa
 		return instance;
 	}
 
-	private EntityManagerContainerFactory(String webApplicationDirectory, DataMappings dataMappings) throws Exception {
-		super(webApplicationDirectory, dataMappings);
+	private EntityManagerContainerFactory(String webApplicationDirectory, DataMappings dataMappings,
+			List<String> entities) throws Exception {
+		super(webApplicationDirectory, dataMappings, entities);
 	}
+
+//	private EntityManagerContainerFactory(String webApplicationDirectory, DataMappings dataMappings) throws Exception {
+//		super(webApplicationDirectory, dataMappings);
+//	}
 
 	private EntityManagerContainerFactory(String source) throws Exception {
 		super(source);

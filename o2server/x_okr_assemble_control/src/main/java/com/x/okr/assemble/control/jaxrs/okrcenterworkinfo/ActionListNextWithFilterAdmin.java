@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -114,7 +115,7 @@ public class ActionListNextWithFilterAdmin extends BaseAction {
 		private String filterLikeContent = null;
 
 		@FieldDescribe("用于列表排序的属性.")
-		private String sequenceField = "sequence";
+		private String sequenceField =  JpaObject.sequence_FIELDNAME;
 
 		@FieldDescribe("用于列表排序的方式.")
 		private String order = "DESC";

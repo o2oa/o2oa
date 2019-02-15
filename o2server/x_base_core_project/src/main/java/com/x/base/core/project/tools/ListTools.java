@@ -18,8 +18,6 @@ import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
-import com.x.base.core.project.gson.XGsonBuilder;
-
 public class ListTools {
 
 	public static <T> List<T> add(List<T> list, boolean ignoreNull, boolean unique,

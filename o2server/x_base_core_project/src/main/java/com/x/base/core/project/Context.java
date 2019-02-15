@@ -88,19 +88,6 @@ public class Context extends AbstractContext {
 		return this.servletContext;
 	}
 
-	/* 应用类 */
-	private Class<?> clazz;
-
-	public Class<?> clazz() {
-		return this.clazz;
-	}
-
-	private Deployable clazzInstance;
-
-	public Deployable clazzInstance() {
-		return this.clazzInstance;
-	}
-
 	/* 随机令牌 */
 	private volatile String token;
 
@@ -293,10 +280,9 @@ public class Context extends AbstractContext {
 					dataMappings = rep.getData(DataMappings.class);
 				} catch (Exception e) {
 					e.printStackTrace();
-					Thread.sleep(5000);
 				}
 			} while (null == dataMappings);
-			EntityManagerContainerFactory.init(path, dataMappings);
+			EntityManagerContainerFactory.init(path, dataMappings, this.clazzInstance.dependency.containerEntities);
 		}
 	}
 

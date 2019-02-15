@@ -28,7 +28,6 @@ import com.x.cms.assemble.control.jaxrs.view.exception.ExceptionViewInfoProcess;
 import com.x.cms.assemble.control.jaxrs.view.exception.ExceptionViewNotExists;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.element.View;
-import com.x.cms.core.entity.tools.LogUtil;
 
 public class ActionListNextPageViewData extends BaseAction {
 	

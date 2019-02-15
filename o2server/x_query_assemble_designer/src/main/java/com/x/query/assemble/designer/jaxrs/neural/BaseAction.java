@@ -9,8 +9,8 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.neural.Entry;
 import com.x.query.core.entity.neural.InValue;
-import com.x.query.core.entity.neural.OutValue;
 import com.x.query.core.entity.neural.Model;
+import com.x.query.core.entity.neural.OutValue;
 
 abstract class BaseAction extends StandardJaxrsAction {
 

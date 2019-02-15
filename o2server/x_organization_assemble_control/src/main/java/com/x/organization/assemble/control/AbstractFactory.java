@@ -11,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.cache.ApplicationCache;
-import com.x.base.core.project.exception.ExceptionWhen;
 
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;

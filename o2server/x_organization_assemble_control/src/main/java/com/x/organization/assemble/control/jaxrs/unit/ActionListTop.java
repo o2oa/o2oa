@@ -19,7 +19,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Identity;
-import com.x.organization.core.entity.Identity_;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.Unit_;
 

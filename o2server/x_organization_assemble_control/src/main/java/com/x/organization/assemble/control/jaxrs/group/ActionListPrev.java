@@ -41,7 +41,7 @@ class ActionListPrev extends BaseAction {
 					}
 					id = o.getId();
 				}
-				result = this.standardListPrev(Wo.copier, id, count, "sequence", null, null, null, null, null, null,
+				result = this.standardListPrev(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, null, null, null, null, null, null,
 						null, null, true, DESC);
 				Co co = new Co(result.getData(), result.getCount());
 				business.cache().put(new Element(cacheKey, co));

@@ -3,6 +3,7 @@ package com.x.okr.assemble.control.jaxrs;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
@@ -27,7 +28,7 @@ public class WorkCommonQueryFilter extends GsonPropertyObject {
 	private List<String> defaultWorkTypes;
 
 	@FieldDescribe( "用于列表排序的属性." )
-	private String sequenceField = "sequence";
+	private String sequenceField =  JpaObject.sequence_FIELDNAME;
 	
 	@FieldDescribe( "用于列表排序的方式." )
 	private String order = "DESC";

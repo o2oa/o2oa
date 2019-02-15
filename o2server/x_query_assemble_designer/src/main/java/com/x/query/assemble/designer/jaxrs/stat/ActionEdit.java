@@ -17,7 +17,6 @@ import com.x.query.assemble.designer.Business;
 import com.x.query.assemble.designer.jaxrs.stat.ActionCreate.WiData;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.Stat;
-import com.x.query.core.entity.View;
 
 class ActionEdit extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {

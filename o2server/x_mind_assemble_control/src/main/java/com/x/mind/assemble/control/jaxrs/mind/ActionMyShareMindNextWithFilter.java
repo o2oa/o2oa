@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -88,7 +89,7 @@ public class ActionMyShareMindNextWithFilter extends BaseAction {
 		private List<String> shareGroups = null;
 
 		@FieldDescribe( "排序列：默认为sequence" )
-		private String orderField = "sequence" ;
+		private String orderField =  JpaObject.sequence_FIELDNAME ;
 		
 		@FieldDescribe( "排序方式：DESC|ASC， 默认为DESC" )
 		private String orderType = "DESC";

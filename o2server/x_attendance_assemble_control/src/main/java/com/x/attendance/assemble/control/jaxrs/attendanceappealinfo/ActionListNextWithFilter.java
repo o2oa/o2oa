@@ -54,7 +54,7 @@ public class ActionListNextWithFilter extends BaseAction {
 					logger.debug(effectivePerson, ">>>>>>>>>>第一页查询，没有id传入");
 				} else {
 					if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
-						sequence = PropertyUtils.getProperty(emc.find(id, AttendanceAppealInfo.class), "sequence");
+						sequence = PropertyUtils.getProperty(emc.find(id, AttendanceAppealInfo.class),  JpaObject.sequence_FIELDNAME);
 					}
 				}
 				// 从数据库中查询符合条件的一页数据对象

@@ -39,14 +39,14 @@ class ActionManageListNext extends BaseAction {
 					|| effectivePerson.isUser(application.getControllerList())) {
 				EqualsTerms equalsTerms = new EqualsTerms();
 				equalsTerms.put("application", application.getId());
-				result = this.standardListNext(Wo.copier, id, count, "sequence", equalsTerms, null, null, null, null,
+				result = this.standardListNext(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, equalsTerms, null, null, null, null,
 						null, null, null, true, DESC);
 			} else {
 				List<String> ids = business.process().listControlableProcess(effectivePerson, application);
 				if (ListTools.isNotEmpty(ids)) {
 					InTerms inTerms = new InTerms();
 					inTerms.put("process", ids);
-					result = this.standardListNext(Wo.copier, id, count, "sequence", null, null, null, inTerms, null,
+					result = this.standardListNext(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, null, null, null, inTerms, null,
 							null, null, null, true, DESC);
 				}
 			}

@@ -25,6 +25,7 @@ public class x_cms_assemble_control extends AssembleA {
 		dependency.containerEntities.add("com.x.cms.core.entity.CategoryExt");
 		dependency.containerEntities.add("com.x.cms.core.entity.Document");
 		dependency.containerEntities.add("com.x.cms.core.entity.DocumentViewRecord");
+		dependency.containerEntities.add("com.x.cms.core.entity.element.File");
 		dependency.containerEntities.add("com.x.cms.core.entity.FileInfo");
 		dependency.containerEntities.add("com.x.cms.core.entity.Log");
 		dependency.containerEntities.add("com.x.cms.core.entity.Review");

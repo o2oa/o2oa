@@ -146,7 +146,7 @@ public class ActionListWithFilterNext extends BaseAction {
 		
 		private List<String> workIds = null;
 		
-		private String sequenceField = "sequence";
+		private String sequenceField =  JpaObject.sequence_FIELDNAME;
 		
 		private String userIdentity = null;
 		

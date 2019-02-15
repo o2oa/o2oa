@@ -40,10 +40,6 @@
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>createPersistenceXml</id>
-						<phase>generate-sources</phase>
-					</execution>
-					<execution>
 						<id>describe</id>
 						<phase>prepare-package</phase>
 					</execution>

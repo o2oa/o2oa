@@ -129,7 +129,7 @@ public class OkrWorkReportProcessLogService{
 			business = new Business(emc);
 			if( id != null && !"(0)".equals(id) && id.trim().length() > 20 ){
 				if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
-					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkReportProcessLog.class ), "sequence" );
+					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkReportProcessLog.class ),  JpaObject.sequence_FIELDNAME );
 				}
 			}
 			ids = business.okrWorkReportProcessLogFactory().listNextWithFilter( id, count, sequence, wrapIn );

@@ -10,8 +10,6 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.script.ScriptEngine;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -33,6 +31,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.scripting.Scripting;
+import com.x.base.core.project.scripting.ScriptingEngine;
 import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
@@ -90,9 +89,9 @@ class ActionInput extends BaseAction {
 		Matcher matcher = pattern.matcher(Config.person().getPassword());
 		if (matcher.matches()) {
 			String eval = matcher.group(1);
-			ScriptEngine engine = Scripting.getEngine();
+			ScriptingEngine engine = Scripting.getEngine();
 			for (PersonItem o : people) {
-				engine.put("person", o);
+				engine.binding("person", o);
 				String pass = engine.eval(eval).toString();
 				o.setPassword(pass);
 			}

@@ -6,7 +6,7 @@ import com.x.base.core.project.annotation.ModuleType;
 
 @Module(type = ModuleType.CENTER, category = ModuleCategory.OFFICIAL, name = "中心")
 public class x_program_center extends AssembleC {
-	
+
 	public x_program_center() {
 		super();
 		dependency.containerEntities.add("com.x.program.center.core.entity.Agent");
@@ -48,6 +48,7 @@ public class x_program_center extends AssembleC {
 		dependency.storeJars.add(x_query_core_entity.class.getSimpleName());
 		dependency.storeJars.add(x_portal_core_entity.class.getSimpleName());
 		dependency.storeJars.add(x_general_core_entity.class.getSimpleName());
+		dependency.dynamicJars.add("x_query_dynamic_entity");
 	}
 
 //	public static final String name = "中心";

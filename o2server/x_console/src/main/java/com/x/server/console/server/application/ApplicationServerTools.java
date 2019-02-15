@@ -50,6 +50,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.JarTools;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.server.console.server.JettySeverTools;
 
 import io.github.classgraph.ClassGraph;
@@ -63,7 +64,7 @@ public class ApplicationServerTools extends JettySeverTools {
 	private static Logger logger = LoggerFactory.getLogger(ApplicationServerTools.class);
 
 	private static int APPLICATIONSERVER_THREAD_POOL_SIZE_MIN = 5;
-	private static int APPLICATIONSERVER_THREAD_POOL_SIZE_MAX = 50;
+	private static int APPLICATIONSERVER_THREAD_POOL_SIZE_MAX = 100;
 
 	protected static String PATH_WEBAPPS = "servers/applicationServer/webapps";
 	protected static String PATH_WORK = "servers/applicationServer/work";
@@ -74,7 +75,6 @@ public class ApplicationServerTools extends JettySeverTools {
 			cleanDirectory(Config.dir_servers_applicationServer_work());
 			cleanDirectory(Config.dir_servers_applicationServer_webapps());
 			List<ClassInfo> classInfoList = listOfficial();
-			classInfoList = filter(classInfoList);
 			logger.print("start to deploy official module, size:{}.", classInfoList.size());
 			for (ClassInfo info : classInfoList) {
 				Class<?> clz = Class.forName(info.getName());
@@ -107,6 +107,7 @@ public class ApplicationServerTools extends JettySeverTools {
 		threadPool.setMinThreads(APPLICATIONSERVER_THREAD_POOL_SIZE_MIN);
 		threadPool.setMaxThreads(APPLICATIONSERVER_THREAD_POOL_SIZE_MAX);
 		Server server = new Server(threadPool);
+		server.setAttribute("maxFormContentSize", 1024 * 1024 * 1024 * 10);
 
 		ClassList classlist = ClassList.setServerDefault(server);
 		classlist.addAfter(FragmentConfiguration.class.getName(), EnvConfiguration.class.getName(),
@@ -135,6 +136,7 @@ public class ApplicationServerTools extends JettySeverTools {
 
 		GzipHandler gzipHandler = new GzipHandler();
 		DefaultHandler defaultHandler = new DefaultHandler();
+
 		/** 禁止显示Contexts */
 		defaultHandler.setShowContexts(false);
 		/** 禁止显示icon */
@@ -169,7 +171,8 @@ public class ApplicationServerTools extends JettySeverTools {
 			for (ClassInfo info : list) {
 				filters.add(info.getName());
 			}
-			filters = ListTools.includesExcludes(filters, Config.currentNode().getApplication().getIncludes(),
+			filters = StringTools.includesExcludesWithWildcard(filters,
+					Config.currentNode().getApplication().getIncludes(),
 					Config.currentNode().getApplication().getExcludes());
 			List<ClassInfo> os = new ArrayList<>();
 			for (ClassInfo info : list) {
@@ -177,36 +180,20 @@ public class ApplicationServerTools extends JettySeverTools {
 					os.add(info);
 				}
 			}
+
 			return os;
 		}
 	}
 
 	private static List<String> listCustom() throws Exception {
 		List<String> list = new ArrayList<>();
-		for (String str : Config.dir_custom()
+		for (String str : Config.dir_custom(true)
 				.list(FileFilterUtils.or(new WildcardFileFilter("*.WAR"), new WildcardFileFilter("*.war")))) {
 			list.add(str);
 		}
+		list = ListTools.includesExcludesWildcard(list, Config.currentNode().getApplication().getIncludes(),
+				Config.currentNode().getApplication().getExcludes());
 		return list;
-	}
-
-	private static List<ClassInfo> filter(List<ClassInfo> list) throws Exception {
-		List<String> includes = new ArrayList<>();
-		List<String> excludes = new ArrayList<>();
-		includes.addAll(Config.currentNode().getApplication().getIncludes());
-		excludes.addAll(Config.currentNode().getApplication().getExcludes());
-		List<String> names = new ArrayList<>();
-		for (ClassInfo info : list) {
-			names.add(info.getName());
-		}
-		names = ListTools.includesExcludesWildcard(names, includes, excludes);
-		List<ClassInfo> os = new ArrayList<>();
-		for (ClassInfo info : list) {
-			if (ListTools.contains(names, info.getName())) {
-				os.add(info);
-			}
-		}
-		return os;
 	}
 
 	private static void customDeployDescriptor(File war) throws Exception {

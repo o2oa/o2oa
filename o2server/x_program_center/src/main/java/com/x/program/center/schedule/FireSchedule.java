@@ -74,8 +74,8 @@ public class FireSchedule implements Job {
 						o.setFireTime(date);
 					});
 					emc.commit();
-					Class<?> clz = Class.forName(latest.getApplication());
-					Application app = ThisApplication.context().applications().randomWithWeight(clz);
+					Application app = ThisApplication.context().applications()
+							.randomWithWeight(latest.getApplication());
 					if (null != app) {
 						String url = app.getUrlRoot()
 								+ Applications.joinQueryUri("fireschedule", "classname", latest.getClassName());

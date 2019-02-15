@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
@@ -39,7 +40,7 @@ class ActionListPrev extends BaseAction {
 					}
 					id = o.getId();
 				}
-				result = this.standardListPrev(Wo.copier, id, count, "sequence", null, null, null, null, null, null,
+				result = this.standardListPrev(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, null, null, null, null, null, null,
 						null, null, true, DESC);
 				/** 产生头像 */
 				// this.updateIcon(result.getData());

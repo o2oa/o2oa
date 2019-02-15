@@ -227,7 +227,7 @@ public class ActionListAllAndRelatedWithFilter extends BaseAction {
 
 			List<Wo> wos = new ArrayList<>();
 			List<String> actions = new ArrayList<>();
-			// sequenceField = "sequence";
+			// sequenceField =  JpaObject.sequence_FIELDNAME;
 			// logger.info("ActionListAllAndRelatedWithFilter-->distinguishedName:" +
 			// distinguishedName);
 			// logger.info("ActionListAllAndRelatedWithFilter-->reader_persons:" +

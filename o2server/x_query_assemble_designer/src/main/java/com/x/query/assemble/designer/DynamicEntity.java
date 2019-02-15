@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class DynamicEntity extends GsonPropertyObject {
@@ -12,6 +13,7 @@ public class DynamicEntity extends GsonPropertyObject {
 	public static final String TABLE_PREFIX = "QRY_DYN_";
 	public static final String CLASS_PACKAGE = "com.x.query.dynamic.entity";
 	public static final String FIELDNAME_SUFFIX = "_FIELDNAME";
+	public static final String JAR_NAME = "x_query_dynamic_entity";
 
 	private String name;
 
@@ -61,7 +63,11 @@ public class DynamicEntity extends GsonPropertyObject {
 		if (StringUtils.isEmpty(name)) {
 			throw new Exception("name is empty.");
 		}
-		return CLASS_PACKAGE + StringUtils.lowerCase(name);
+		return CLASS_PACKAGE + "." + StringUtils.capitalize(name);
+	}
+
+	public Class<? extends JpaObject> getObjectClass() throws Exception {
+		return (Class<? extends JpaObject>) Class.forName(this.className());
 	}
 
 	public DynamicEntity() {

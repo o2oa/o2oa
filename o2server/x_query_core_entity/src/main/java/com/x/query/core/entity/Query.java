@@ -230,10 +230,6 @@ public class Query extends SliceJpaObject {
 		this.controllerList = controllerList;
 	}
 
-	public static String getTable() {
-		return TABLE;
-	}
-
 	public String getCreatorPerson() {
 		return creatorPerson;
 	}

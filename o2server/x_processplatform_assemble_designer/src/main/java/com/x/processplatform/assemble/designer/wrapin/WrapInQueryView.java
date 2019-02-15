@@ -16,7 +16,7 @@ public class WrapInQueryView extends QueryView {
 		CreateExcludes.add(JpaObject.distributeFactor_FIELDNAME);
 		CreateExcludes.add("updateTime");
 		CreateExcludes.add("createTime");
-		CreateExcludes.add("sequence");
+		CreateExcludes.add( JpaObject.sequence_FIELDNAME);
 		CreateExcludes.add("lastUpdatePerson");
 		CreateExcludes.add("lastUpdateTime");
 	}
@@ -26,7 +26,7 @@ public class WrapInQueryView extends QueryView {
 		UpdateExcludes.add(JpaObject.id_FIELDNAME);
 		UpdateExcludes.add("updateTime");
 		UpdateExcludes.add("createTime");
-		UpdateExcludes.add("sequence");
+		UpdateExcludes.add( JpaObject.sequence_FIELDNAME);
 		UpdateExcludes.add("lastUpdatePerson");
 		UpdateExcludes.add("lastUpdateTime");
 	}

@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.okr.assemble.control.Business;
 import com.x.okr.assemble.control.jaxrs.okrworkreportbaseinfo.WrapInFilter;
@@ -140,7 +141,7 @@ public class OkrWorkReportQueryService{
 			business = new Business(emc);
 			if( id != null && !"(0)".equals(id) && id.trim().length() > 20 ){
 				if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
-					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkReportBaseInfo.class ), "sequence" );
+					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkReportBaseInfo.class ),  JpaObject.sequence_FIELDNAME );
 				}
 			}
 			okrWorkReportBaseInfoList = business.okrWorkReportBaseInfoFactory().listNextWithFilter( id, count, sequence, wrapIn );
@@ -172,7 +173,7 @@ public class OkrWorkReportQueryService{
 			business = new Business(emc);
 			if( id != null && !"(0)".equals(id) && id.trim().length() > 20 ){
 				if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
-					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkReportBaseInfo.class ), "sequence" );
+					sequence = PropertyUtils.getProperty( emc.find( id, OkrWorkReportBaseInfo.class ),  JpaObject.sequence_FIELDNAME );
 				}
 			}
 			okrWorkReportBaseInfoList = business.okrWorkReportBaseInfoFactory().listPrevWithFilter( id, count, sequence, wrapIn );

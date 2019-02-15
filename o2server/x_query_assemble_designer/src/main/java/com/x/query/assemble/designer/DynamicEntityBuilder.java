@@ -2,22 +2,36 @@ package com.x.query.assemble.designer;
 
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 
 import javax.lang.model.element.Modifier;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
+import javax.persistence.Lob;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.PersistentCollection;
+import org.apache.openjpa.persistence.PersistentMap;
+import org.apache.openjpa.persistence.jdbc.ContainerTable;
+import org.apache.openjpa.persistence.jdbc.ElementColumn;
+import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.KeyColumn;
+import org.apache.openjpa.persistence.jdbc.KeyIndex;
 
 import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 import com.x.base.core.entity.JpaObject;
@@ -34,6 +48,8 @@ import com.x.query.assemble.designer.DynamicEntity.Field;
 import com.x.query.assemble.designer.DynamicEntity.IntegerField;
 import com.x.query.assemble.designer.DynamicEntity.LongField;
 import com.x.query.assemble.designer.DynamicEntity.StringField;
+import com.x.query.assemble.designer.DynamicEntity.StringLobField;
+import com.x.query.assemble.designer.DynamicEntity.StringMapField;
 import com.x.query.assemble.designer.DynamicEntity.TimeField;
 
 public class DynamicEntityBuilder {
@@ -88,6 +104,14 @@ public class DynamicEntityBuilder {
 		this.createDateFields(builder);
 		this.createTimeFields(builder);
 		this.createDateTimeFields(builder);
+		this.createListStringFields(builder);
+		this.createListIntegerFields(builder);
+		this.createListLongFields(builder);
+		this.createListDoubleFields(builder);
+		this.createListBooleanFields(builder);
+		this.createListDateTimeFields(builder);
+		this.createStringLobFields(builder);
+		this.createStringMapFields(builder);
 
 		TypeSpec typeSpec = builder.build();
 
@@ -130,130 +154,58 @@ public class DynamicEntityBuilder {
 
 	private void createStringFields(Builder builder) {
 		for (StringField field : ListTools.trim(dynamicEntity.getStringFields(), true, true)) {
-			this.createStringField(builder, field);
+			this.createField(builder, field, String.class);
 		}
 	}
 
-	private void createStringField(Builder builder, StringField field) {
+	private void createIntegerFields(Builder builder) {
+		for (IntegerField field : ListTools.trim(dynamicEntity.getIntegerFields(), true, true)) {
+			this.createField(builder, field, Integer.class);
+		}
+	}
+
+	private void createLongFields(Builder builder) {
+		for (LongField field : ListTools.trim(dynamicEntity.getLongFields(), true, true)) {
+			this.createField(builder, field, Long.class);
+		}
+	}
+
+	private void createDoubleFields(Builder builder) {
+		for (DoubleField field : ListTools.trim(dynamicEntity.getDoubleFields(), true, true)) {
+			this.createField(builder, field, Double.class);
+		}
+	}
+
+	private void createBooleanFields(Builder builder) {
+		for (BooleanField field : ListTools.trim(dynamicEntity.getBooleanFields(), true, true)) {
+			this.createField(builder, field, Boolean.class);
+		}
+	}
+
+	private void createField(Builder builder, Field field, Class<?> typeClass) {
 //		public static final String stringValue_FIELDNAME = "stringValue";
 //		@FieldDescribe("文本字段.")
 //		@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + stringValue_FIELDNAME)
 //		@Index(name = TABLE + IndexNameMiddle + stringValue_FIELDNAME)
 //		@CheckPersist(allowEmpty = true)
 //		private String stringValue;
-
-		AnnotationSpec column = AnnotationSpec.builder(Column.class).addMember("length", "length_255B")
-				.addMember("name", "ColumnNamePrefix + " + field.fieldName()).build();
-
-		FieldSpec fieldSpec = FieldSpec.builder(String.class, field.getName(), Modifier.PRIVATE)
-				.addAnnotation(this.fieldDescribe(field)).addAnnotation(this.index(field))
-				.addAnnotation(this.checkPersist(field)).addAnnotation(column).build();
-		MethodSpec get = MethodSpec.methodBuilder("get" + StringUtils.capitalize(field.getName()))
-				.addModifiers(Modifier.PUBLIC).returns(String.class).addStatement("return this." + field.getName())
-				.build();
-		MethodSpec set = MethodSpec.methodBuilder("set" + StringUtils.capitalize(field.getName()))
-				.addModifiers(Modifier.PUBLIC).returns(void.class).addParameter(String.class, field.getName())
-				.addStatement("this." + field.getName() + " = " + field.getName()).build();
-		builder.addField(this.fieldName(field)).addField(fieldSpec).addMethod(get).addMethod(set);
-
-	}
-
-	private void createIntegerFields(Builder builder) {
-		for (IntegerField field : ListTools.trim(dynamicEntity.getIntegerFields(), true, true)) {
-			this.createIntegerField(builder, field);
+		AnnotationSpec column = null;
+		if (typeClass == String.class) {
+			column = AnnotationSpec.builder(Column.class).addMember("length", "length_255B")
+					.addMember("name", "ColumnNamePrefix + " + field.fieldName()).build();
+		} else {
+			column = AnnotationSpec.builder(Column.class).addMember("name", "ColumnNamePrefix + " + field.fieldName())
+					.build();
 		}
-	}
 
-	private void createIntegerField(Builder builder, IntegerField field) {
-//		public static final String integerValue_FIELDNAME = "integerValue";
-//		@FieldDescribe("整型.")
-//		@CheckPersist(allowEmpty = true)
-//		@Index(name = TABLE + IndexNameMiddle + integerValue_FIELDNAME)
-//		@Column(name = ColumnNamePrefix + integerValue_FIELDNAME)
-
-		AnnotationSpec column = AnnotationSpec.builder(Column.class)
-				.addMember("name", "ColumnNamePrefix + " + field.fieldName()).build();
-
-		FieldSpec fieldSpec = FieldSpec.builder(Integer.class, field.getName(), Modifier.PRIVATE)
+		FieldSpec fieldSpec = FieldSpec.builder(typeClass, field.getName(), Modifier.PRIVATE)
 				.addAnnotation(this.fieldDescribe(field)).addAnnotation(this.index(field))
 				.addAnnotation(this.checkPersist(field)).addAnnotation(column).build();
 		MethodSpec get = MethodSpec.methodBuilder("get" + StringUtils.capitalize(field.getName()))
-				.addModifiers(Modifier.PUBLIC).returns(Integer.class).addStatement("return this." + field.getName())
+				.addModifiers(Modifier.PUBLIC).returns(typeClass).addStatement("return this." + field.getName())
 				.build();
 		MethodSpec set = MethodSpec.methodBuilder("set" + StringUtils.capitalize(field.getName()))
-				.addModifiers(Modifier.PUBLIC).returns(void.class).addParameter(Integer.class, field.getName())
-				.addStatement("this." + field.getName() + " = " + field.getName()).build();
-		builder.addField(this.fieldName(field)).addField(fieldSpec).addMethod(get).addMethod(set);
-
-	}
-
-	private void createLongFields(Builder builder) {
-		for (LongField field : ListTools.trim(dynamicEntity.getLongFields(), true, true)) {
-			this.createLongField(builder, field);
-		}
-	}
-
-	private void createLongField(Builder builder, LongField field) {
-
-		AnnotationSpec column = AnnotationSpec.builder(Column.class)
-				.addMember("name", "ColumnNamePrefix + " + field.fieldName()).build();
-
-		FieldSpec fieldSpec = FieldSpec.builder(Long.class, field.getName(), Modifier.PRIVATE)
-				.addAnnotation(this.fieldDescribe(field)).addAnnotation(this.index(field))
-				.addAnnotation(this.checkPersist(field)).addAnnotation(column).build();
-		MethodSpec get = MethodSpec.methodBuilder("get" + StringUtils.capitalize(field.getName()))
-				.addModifiers(Modifier.PUBLIC).returns(Long.class).addStatement("return this." + field.getName())
-				.build();
-		MethodSpec set = MethodSpec.methodBuilder("set" + StringUtils.capitalize(field.getName()))
-				.addModifiers(Modifier.PUBLIC).returns(void.class).addParameter(Long.class, field.getName())
-				.addStatement("this." + field.getName() + " = " + field.getName()).build();
-		builder.addField(this.fieldName(field)).addField(fieldSpec).addMethod(get).addMethod(set);
-
-	}
-
-	private void createDoubleFields(Builder builder) {
-		for (DoubleField field : ListTools.trim(dynamicEntity.getDoubleFields(), true, true)) {
-			this.createDoubleField(builder, field);
-		}
-	}
-
-	private void createDoubleField(Builder builder, DoubleField field) {
-
-		AnnotationSpec column = AnnotationSpec.builder(Column.class)
-				.addMember("name", "ColumnNamePrefix + " + field.fieldName()).build();
-
-		FieldSpec fieldSpec = FieldSpec.builder(Double.class, field.getName(), Modifier.PRIVATE)
-				.addAnnotation(this.fieldDescribe(field)).addAnnotation(this.index(field))
-				.addAnnotation(this.checkPersist(field)).addAnnotation(column).build();
-		MethodSpec get = MethodSpec.methodBuilder("get" + StringUtils.capitalize(field.getName()))
-				.addModifiers(Modifier.PUBLIC).returns(Double.class).addStatement("return this." + field.getName())
-				.build();
-		MethodSpec set = MethodSpec.methodBuilder("set" + StringUtils.capitalize(field.getName()))
-				.addModifiers(Modifier.PUBLIC).returns(void.class).addParameter(Double.class, field.getName())
-				.addStatement("this." + field.getName() + " = " + field.getName()).build();
-		builder.addField(this.fieldName(field)).addField(fieldSpec).addMethod(get).addMethod(set);
-
-	}
-
-	private void createBooleanFields(Builder builder) {
-		for (BooleanField field : ListTools.trim(dynamicEntity.getBooleanFields(), true, true)) {
-			this.createBooleanField(builder, field);
-		}
-	}
-
-	private void createBooleanField(Builder builder, BooleanField field) {
-
-		AnnotationSpec column = AnnotationSpec.builder(Column.class)
-				.addMember("name", "ColumnNamePrefix + " + field.fieldName()).build();
-
-		FieldSpec fieldSpec = FieldSpec.builder(Boolean.class, field.getName(), Modifier.PRIVATE)
-				.addAnnotation(this.fieldDescribe(field)).addAnnotation(this.index(field))
-				.addAnnotation(this.checkPersist(field)).addAnnotation(column).build();
-		MethodSpec get = MethodSpec.methodBuilder("get" + StringUtils.capitalize(field.getName()))
-				.addModifiers(Modifier.PUBLIC).returns(Boolean.class).addStatement("return this." + field.getName())
-				.build();
-		MethodSpec set = MethodSpec.methodBuilder("set" + StringUtils.capitalize(field.getName()))
-				.addModifiers(Modifier.PUBLIC).returns(void.class).addParameter(Boolean.class, field.getName())
+				.addModifiers(Modifier.PUBLIC).returns(void.class).addParameter(typeClass, field.getName())
 				.addStatement("this." + field.getName() + " = " + field.getName()).build();
 		builder.addField(this.fieldName(field)).addField(fieldSpec).addMethod(get).addMethod(set);
 
@@ -335,6 +287,183 @@ public class DynamicEntityBuilder {
 				.build();
 		MethodSpec set = MethodSpec.methodBuilder("set" + StringUtils.capitalize(field.getName()))
 				.addModifiers(Modifier.PUBLIC).returns(void.class).addParameter(Date.class, field.getName())
+				.addStatement("this." + field.getName() + " = " + field.getName()).build();
+		builder.addField(this.fieldName(field)).addField(fieldSpec).addMethod(get).addMethod(set);
+
+	}
+
+	private void createListStringFields(Builder builder) {
+		for (StringField field : ListTools.trim(dynamicEntity.getListStringFields(), true, true)) {
+			this.createListFields(builder, field, String.class);
+		}
+	}
+
+	private void createListIntegerFields(Builder builder) {
+		for (IntegerField field : ListTools.trim(dynamicEntity.getListIntegerFields(), true, true)) {
+			this.createListFields(builder, field, Integer.class);
+		}
+	}
+
+	private void createListLongFields(Builder builder) {
+		for (LongField field : ListTools.trim(dynamicEntity.getListLongFields(), true, true)) {
+			this.createListFields(builder, field, Long.class);
+		}
+	}
+
+	private void createListDoubleFields(Builder builder) {
+		for (DoubleField field : ListTools.trim(dynamicEntity.getListDoubleFields(), true, true)) {
+			this.createListFields(builder, field, Double.class);
+		}
+	}
+
+	private void createListBooleanFields(Builder builder) {
+		for (BooleanField field : ListTools.trim(dynamicEntity.getListBooleanFields(), true, true)) {
+			this.createListFields(builder, field, Boolean.class);
+		}
+	}
+
+	private void createListDateTimeFields(Builder builder) {
+		for (BooleanField field : ListTools.trim(dynamicEntity.getListBooleanFields(), true, true)) {
+			this.createListFields(builder, field, Date.class);
+		}
+	}
+
+	private void createListFields(Builder builder, Field field, Class<?> typeClass) {
+
+//		public static final String groupList_FIELDNAME = "groupList";
+//		@FieldDescribe("群组的群组成员.存放群组 ID.")
+//		@ContainerTable(name = TABLE + ContainerTableNameMiddle + groupList_FIELDNAME, joinIndex = @Index(name = TABLE
+//				+ IndexNameMiddle + groupList_FIELDNAME + JoinIndexNameSuffix))
+//		@ElementIndex(name = TABLE + IndexNameMiddle + groupList_FIELDNAME + ElementIndexNameSuffix)
+//		@PersistentCollection(fetch = FetchType.EAGER)
+//		@OrderColumn(name = PersistenceProperties.orderColumn)
+//		@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + groupList_FIELDNAME)
+//		@CheckPersist(allowEmpty = true, citationExists = @CitationExist(type = Group.class))
+//		private List<String> groupList;
+
+		AnnotationSpec containerTable = AnnotationSpec.builder(ContainerTable.class)
+				.addMember("name", "TABLE + ContainerTableNameMiddle + " + field.fieldName())
+				.addMember("joinIndex", "@org.apache.openjpa.persistence.jdbc.Index(name = TABLE + IndexNameMiddle + "
+						+ field.fieldName() + " + JoinIndexNameSuffix)")
+				.build();
+
+		AnnotationSpec elementIndex = AnnotationSpec.builder(ElementIndex.class)
+				.addMember("name", "TABLE + IndexNameMiddle + " + field.fieldName() + " + ElementIndexNameSuffix")
+				.build();
+
+		AnnotationSpec persistentCollection = AnnotationSpec.builder(PersistentCollection.class)
+				.addMember("fetch", "javax.persistence.FetchType.EAGER").build();
+
+		AnnotationSpec orderColumn = AnnotationSpec.builder(OrderColumn.class)
+				.addMember("name", "com.x.organization.core.entity.AbstractPersistenceProperties.orderColumn").build();
+
+		AnnotationSpec elementColumn = AnnotationSpec.builder(ElementColumn.class).addMember("length", "length_255B")
+				.addMember("name", "ColumnNamePrefix + " + field.fieldName()).build();
+
+		ClassName type = ClassName.get(String.class);
+		ClassName list = ClassName.get(List.class);
+		TypeName list_type = ParameterizedTypeName.get(list, type);
+
+		FieldSpec fieldSpec = FieldSpec.builder(list_type, field.getName(), Modifier.PRIVATE)
+				.addAnnotation(this.fieldDescribe(field)).addAnnotation(containerTable).addAnnotation(elementIndex)
+				.addAnnotation(persistentCollection).addAnnotation(orderColumn).addAnnotation(elementColumn).build();
+		MethodSpec get = MethodSpec.methodBuilder("get" + StringUtils.capitalize(field.getName()))
+				.addModifiers(Modifier.PUBLIC).returns(list_type).addStatement("return this." + field.getName())
+				.build();
+		MethodSpec set = MethodSpec.methodBuilder("set" + StringUtils.capitalize(field.getName()))
+				.addModifiers(Modifier.PUBLIC).returns(void.class).addParameter(list_type, field.getName())
+				.addStatement("this." + field.getName() + " = " + field.getName()).build();
+		builder.addField(this.fieldName(field)).addField(fieldSpec).addMethod(get).addMethod(set);
+
+	}
+
+	private void createStringLobFields(Builder builder) {
+		for (StringLobField field : ListTools.trim(dynamicEntity.getStringLobFields(), true, true)) {
+			this.createStringLobField(builder, field);
+		}
+	}
+
+	private void createStringLobField(Builder builder, StringLobField field) {
+
+//		public static final String stringLobValue_FIELDNAME = "stringLobValue";
+//		@FieldDescribe("长文本.")
+//		@Lob
+//		@Basic(fetch = FetchType.EAGER)
+//		@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + stringLobValue_FIELDNAME)
+
+		AnnotationSpec lob = AnnotationSpec.builder(Lob.class).build();
+
+		AnnotationSpec basic = AnnotationSpec.builder(Basic.class)
+				.addMember("fetch", "javax.persistence.FetchType.EAGER").build();
+
+		AnnotationSpec column = AnnotationSpec.builder(Column.class).addMember("length", "length_100M")
+				.addMember("name", "ColumnNamePrefix + " + field.fieldName()).build();
+
+		FieldSpec fieldSpec = FieldSpec.builder(String.class, field.getName(), Modifier.PRIVATE)
+				.addAnnotation(this.fieldDescribe(field)).addAnnotation(lob).addAnnotation(basic).addAnnotation(column)
+				.build();
+		MethodSpec get = MethodSpec.methodBuilder("get" + StringUtils.capitalize(field.getName()))
+				.addModifiers(Modifier.PUBLIC).returns(String.class).addStatement("return this." + field.getName())
+				.build();
+		MethodSpec set = MethodSpec.methodBuilder("set" + StringUtils.capitalize(field.getName()))
+				.addModifiers(Modifier.PUBLIC).returns(void.class).addParameter(String.class, field.getName())
+				.addStatement("this." + field.getName() + " = " + field.getName()).build();
+		builder.addField(this.fieldName(field)).addField(fieldSpec).addMethod(get).addMethod(set);
+
+	}
+
+	private void createStringMapFields(Builder builder) {
+		for (StringMapField field : ListTools.trim(dynamicEntity.getStringMapFields(), true, true)) {
+			this.createStringMapField(builder, field);
+		}
+	}
+
+	private void createStringMapField(Builder builder, StringMapField field) {
+
+//		@FieldDescribe("Map类型.")
+//		@CheckPersist(allowEmpty = true)
+//		@PersistentMap(fetch = FetchType.EAGER, elementType = String.class, keyType = String.class)
+//		@ContainerTable(name = TABLE + ContainerTableNameMiddle + mapValueMap_FIELDNAME, joinIndex = @Index(name = TABLE
+//				+ IndexNameMiddle + mapValueMap_FIELDNAME + JoinIndexNameSuffix))
+//		@KeyColumn(name = ColumnNamePrefix + key_FIELDNAME)
+//		@ElementColumn(length = length_255B, name = ColumnNamePrefix + mapValueMap_FIELDNAME)
+//		@ElementIndex(name = TABLE + IndexNameMiddle + mapValueMap_FIELDNAME + ElementIndexNameSuffix)
+//		@KeyIndex(name = TABLE + IndexNameMiddle + mapValueMap_FIELDNAME + KeyIndexNameSuffix)
+
+		AnnotationSpec persistentMap = AnnotationSpec.builder(PersistentMap.class)
+				.addMember("fetch", " javax.persistence.FetchType.EAGER").addMember("elementType", "String.class")
+				.addMember("keyType", "String.class").build();
+
+		AnnotationSpec containerTable = AnnotationSpec.builder(ContainerTable.class)
+				.addMember("name", "TABLE + ContainerTableNameMiddle + " + field.fieldName())
+				.addMember("joinIndex", "@org.apache.openjpa.persistence.jdbc.Index(name = TABLE + IndexNameMiddle + "
+						+ field.fieldName() + " + JoinIndexNameSuffix)")
+				.build();
+
+		AnnotationSpec keyColumn = AnnotationSpec.builder(KeyColumn.class)
+				.addMember("name", "ColumnNamePrefix + key_FIELDNAME").build();
+
+		AnnotationSpec elementColumn = AnnotationSpec.builder(ElementColumn.class)
+				.addMember("name", "ColumnNamePrefix + " + field.fieldName()).addMember("length", "length_255B")
+				.build();
+
+		AnnotationSpec elementIndex = AnnotationSpec.builder(ElementIndex.class)
+				.addMember("name", "TABLE + IndexNameMiddle + " + field.fieldName() + " + ElementIndexNameSuffix")
+				.build();
+
+		AnnotationSpec keyIndex = AnnotationSpec.builder(KeyIndex.class)
+				.addMember("name", "TABLE + IndexNameMiddle + " + field.fieldName() + " + KeyIndexNameSuffix").build();
+
+		FieldSpec fieldSpec = FieldSpec.builder(String.class, field.getName(), Modifier.PRIVATE)
+				.addAnnotation(this.fieldDescribe(field)).addAnnotation(persistentMap).addAnnotation(containerTable)
+				.addAnnotation(keyColumn).addAnnotation(elementColumn).addAnnotation(elementIndex)
+				.addAnnotation(keyIndex).build();
+
+		MethodSpec get = MethodSpec.methodBuilder("get" + StringUtils.capitalize(field.getName()))
+				.addModifiers(Modifier.PUBLIC).returns(String.class).addStatement("return this." + field.getName())
+				.build();
+		MethodSpec set = MethodSpec.methodBuilder("set" + StringUtils.capitalize(field.getName()))
+				.addModifiers(Modifier.PUBLIC).returns(void.class).addParameter(String.class, field.getName())
 				.addStatement("this." + field.getName() + " = " + field.getName()).build();
 		builder.addField(this.fieldName(field)).addField(fieldSpec).addMethod(get).addMethod(set);
 

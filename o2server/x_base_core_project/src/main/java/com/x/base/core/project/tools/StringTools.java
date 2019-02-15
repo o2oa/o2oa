@@ -7,6 +7,7 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -316,4 +318,59 @@ public class StringTools {
 		return os;
 	}
 
+	public static boolean matchWildcard(String str, String pattern) {
+		if (StringUtils.isNotEmpty(str) && StringUtils.isNotEmpty(pattern) && StringUtils.contains(pattern, "*")) {
+			if (StringUtils.equals(pattern, "*")) {
+				return true;
+			}
+			if (StringUtils.startsWith(pattern, "*")) {
+				return StringUtils.endsWith(str, StringUtils.substringAfter(pattern, "*"));
+			}
+			if (StringUtils.endsWith(pattern, "*")) {
+				return StringUtils.startsWith(str, StringUtils.substringBeforeLast(pattern, "*"));
+			}
+			String[] parts = StringUtils.split(pattern, "*", 2);
+			if (StringUtils.startsWith(str, parts[0]) && StringUtils.endsWith(str, parts[1])) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return StringUtils.equals(str, pattern);
+		}
+	}
+
+	public static List<String> includesExcludesWithWildcard(List<String> list, Collection<String> includes,
+			Collection<String> excludes) {
+		if (list == null || list.isEmpty()) {
+			return list;
+		}
+		List<String> in = new ArrayList<>();
+		if (includes == null || includes.isEmpty()) {
+			in.addAll(list);
+		} else {
+			for (String str : list) {
+				loop: for (String include : includes) {
+					if (matchWildcard(str, include)) {
+						in.add(str);
+						break loop;
+					}
+				}
+			}
+		}
+		if (excludes == null || excludes.isEmpty()) {
+			return in;
+		} else {
+			List<String> ex = new ArrayList<>();
+			for (String str : in) {
+				loop: for (String exclude : excludes) {
+					if (matchWildcard(str, exclude)) {
+						ex.add(str);
+						break loop;
+					}
+				}
+			}
+			return ListUtils.subtract(in, ex);
+		}
+	}
 }

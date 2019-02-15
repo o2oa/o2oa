@@ -13,6 +13,7 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.tools.ListTools;
 import com.x.okr.assemble.control.AbstractFactory;
@@ -135,7 +136,7 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 			order = "DESC";
 		}
 		if ( StringUtils.isEmpty( sequenceField ) ) {
-			sequenceField = "sequence";
+			sequenceField =  JpaObject.sequence_FIELDNAME;
 		}
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<OkrWorkReportBaseInfo> cq = cb.createQuery(OkrWorkReportBaseInfo.class);
@@ -145,7 +146,7 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 			if( StringUtils.equalsIgnoreCase(order, "DESC" )) {
 				if( "createTime".equals( sequenceField )) {
 					p = cb.and( p, cb.lessThan(root.get( OkrWorkReportBaseInfo_.createTime ), (Date)sequence));
-				}else if( "sequence".equals( sequenceField )) {
+				}else if(  JpaObject.sequence_FIELDNAME.equals( sequenceField )) {
 					p = cb.and( p, cb.lessThan(root.get( OkrWorkReportBaseInfo_.sequence ), sequence.toString()));
 				}else if( "workTitle".equals( sequenceField )) {
 					p = cb.and( p, cb.lessThan(root.get( OkrWorkReportBaseInfo_.workTitle ), sequence.toString()));
@@ -159,7 +160,7 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 			}else {
 				if( "createTime".equals( sequenceField )) {
 					p = cb.and( p, cb.greaterThan(root.get( OkrWorkReportBaseInfo_.createTime ), (Date)sequence));
-				}else if( "sequence".equals( sequenceField )) {
+				}else if(  JpaObject.sequence_FIELDNAME.equals( sequenceField )) {
 					p = cb.and( p, cb.greaterThan(root.get( OkrWorkReportBaseInfo_.sequence ), sequence.toString()));
 				}else if( "workTitle".equals( sequenceField )) {
 					p = cb.and( p, cb.greaterThan(root.get( OkrWorkReportBaseInfo_.workTitle ), sequence.toString()));
@@ -192,7 +193,7 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 		if(StringUtils.equalsIgnoreCase(order, "DESC" )) {
 			if( "createTime".equals( sequenceField )) {
 				cq.orderBy( cb.desc( root.get( OkrWorkReportBaseInfo_.createTime) ) );	
-			}else if( "sequence".equals( sequenceField )) {
+			}else if(  JpaObject.sequence_FIELDNAME.equals( sequenceField )) {
 				cq.orderBy( cb.desc( root.get( OkrWorkReportBaseInfo_.sequence) ) );	
 			}else if( "workTitle".equals( sequenceField )) {
 				cq.orderBy( cb.desc( root.get( OkrWorkReportBaseInfo_.workTitle) ) );	
@@ -206,7 +207,7 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 		}else {
 			if( "createTime".equals( sequenceField )) {
 				cq.orderBy( cb.asc( root.get( OkrWorkReportBaseInfo_.createTime) ) );	
-			}else if( "sequence".equals( sequenceField )) {
+			}else if(  JpaObject.sequence_FIELDNAME.equals( sequenceField )) {
 				cq.orderBy( cb.asc( root.get( OkrWorkReportBaseInfo_.sequence) ) );	
 			}else if( "workTitle".equals( sequenceField )) {
 				cq.orderBy( cb.asc( root.get( OkrWorkReportBaseInfo_.workTitle) ) );	
@@ -231,7 +232,7 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 					order = "DESC";
 				}
 				if ( StringUtils.isEmpty( sequenceField ) ) {
-					sequenceField = "sequence";
+					sequenceField =  JpaObject.sequence_FIELDNAME;
 				}
 				CriteriaBuilder cb = em.getCriteriaBuilder();
 				CriteriaQuery<OkrWorkReportBaseInfo> cq = cb.createQuery(OkrWorkReportBaseInfo.class);
@@ -241,7 +242,7 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 					if( StringUtils.equalsIgnoreCase(order, "DESC" )) {
 						if( "createTime".equals( sequenceField )) {
 							p = cb.and( p, cb.greaterThan(root.get( OkrWorkReportBaseInfo_.createTime ), (Date)sequence));
-						}else if( "sequence".equals( sequenceField )) {
+						}else if(  JpaObject.sequence_FIELDNAME.equals( sequenceField )) {
 							p = cb.and( p, cb.greaterThan(root.get( OkrWorkReportBaseInfo_.sequence ), sequence.toString()));
 						}else if( "workTitle".equals( sequenceField )) {
 							p = cb.and( p, cb.greaterThan(root.get( OkrWorkReportBaseInfo_.workTitle ), sequence.toString()));
@@ -255,7 +256,7 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 					}else {
 						if( "createTime".equals( sequenceField )) {
 							p = cb.and( p, cb.lessThan(root.get( OkrWorkReportBaseInfo_.createTime ), (Date)sequence));
-						}else if( "sequence".equals( sequenceField )) {
+						}else if(  JpaObject.sequence_FIELDNAME.equals( sequenceField )) {
 							p = cb.and( p, cb.lessThan(root.get( OkrWorkReportBaseInfo_.sequence ), sequence.toString()));
 						}else if( "workTitle".equals( sequenceField )) {
 							p = cb.and( p, cb.lessThan(root.get( OkrWorkReportBaseInfo_.workTitle ), sequence.toString()));
@@ -288,7 +289,7 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 				if(StringUtils.equalsIgnoreCase(order, "DESC" )) {
 					if( "createTime".equals( sequenceField )) {
 						cq.orderBy( cb.desc( root.get( OkrWorkReportBaseInfo_.createTime) ) );	
-					}else if( "sequence".equals( sequenceField )) {
+					}else if(  JpaObject.sequence_FIELDNAME.equals( sequenceField )) {
 						cq.orderBy( cb.desc( root.get( OkrWorkReportBaseInfo_.sequence) ) );	
 					}else if( "workTitle".equals( sequenceField )) {
 						cq.orderBy( cb.desc( root.get( OkrWorkReportBaseInfo_.workTitle) ) );	
@@ -302,7 +303,7 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 				}else {
 					if( "createTime".equals( sequenceField )) {
 						cq.orderBy( cb.asc( root.get( OkrWorkReportBaseInfo_.createTime) ) );	
-					}else if( "sequence".equals( sequenceField )) {
+					}else if(  JpaObject.sequence_FIELDNAME.equals( sequenceField )) {
 						cq.orderBy( cb.asc( root.get( OkrWorkReportBaseInfo_.sequence) ) );	
 					}else if( "workTitle".equals( sequenceField )) {
 						cq.orderBy( cb.asc( root.get( OkrWorkReportBaseInfo_.workTitle) ) );	
@@ -335,7 +336,7 @@ public class OkrWorkReportBaseInfoFactory extends AbstractFactory {
 			order = "DESC";
 		}
 		if ( StringUtils.isEmpty( sequenceField ) ) {
-			sequenceField = "sequence";
+			sequenceField =  JpaObject.sequence_FIELDNAME;
 		}
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);

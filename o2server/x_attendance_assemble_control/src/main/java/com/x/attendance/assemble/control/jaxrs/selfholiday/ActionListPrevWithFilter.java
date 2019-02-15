@@ -59,7 +59,7 @@ public class ActionListPrevWithFilter extends BaseAction {
 					//logger.info( "第一页查询，没有id传入" );
 				}else{
 					if (!StringUtils.equalsIgnoreCase(id,StandardJaxrsAction.EMPTY_SYMBOL)) {
-						sequence = PropertyUtils.getProperty(emc.find( id, AttendanceSelfHoliday.class ), "sequence");
+						sequence = PropertyUtils.getProperty(emc.find( id, AttendanceSelfHoliday.class ),  JpaObject.sequence_FIELDNAME);
 					}
 				}
 				

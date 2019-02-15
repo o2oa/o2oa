@@ -36,6 +36,18 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 
 	}
 
+	public static class Schema {
+
+		public static class Table {
+			public static final String table = "QRY_SCH_TABLE";
+		}
+
+		public static class Statement {
+			public static final String table = "QRY_SCH_STATEMENT";
+		}
+
+	}
+
 	public static class Neural {
 
 		public static class Model {

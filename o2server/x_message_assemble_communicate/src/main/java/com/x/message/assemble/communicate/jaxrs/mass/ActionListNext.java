@@ -25,7 +25,7 @@ class ActionListNext extends BaseAction {
 			}
 		}
 		ActionResult<List<Wo>> result = new ActionResult<>();
-		result = this.standardListNext(Wo.copier, id, count, "sequence", null, null, null, null, null, null, null, null,
+		result = this.standardListNext(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, null, null, null, null, null, null, null, null,
 				true, DESC);
 		return result;
 	}

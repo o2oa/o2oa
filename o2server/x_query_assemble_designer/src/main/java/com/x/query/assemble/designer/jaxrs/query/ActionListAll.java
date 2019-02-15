@@ -3,11 +3,6 @@ package com.x.query.assemble.designer.jaxrs.query;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -20,11 +15,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
-import com.x.query.assemble.designer.jaxrs.query.ActionListSummary.Wo;
-import com.x.query.assemble.designer.jaxrs.query.ActionListSummary.WoStat;
-import com.x.query.assemble.designer.jaxrs.query.ActionListSummary.WoView;
 import com.x.query.core.entity.Query;
-import com.x.query.core.entity.Reveal;
 import com.x.query.core.entity.Stat;
 import com.x.query.core.entity.View;
 
@@ -36,7 +27,7 @@ class ActionListAll extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			logger.debug(effectivePerson, effectivePerson.getDistinguishedName());
 			Business business = new Business(emc);
-			if (!business.editable(effectivePerson, null)) {
+			if (!business.controllable(effectivePerson)) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
 			ActionResult<List<Wo>> result = new ActionResult<>();

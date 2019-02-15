@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -409,6 +410,84 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		List<T> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		List<T> list = new ArrayList<>(os);
 		return list;
+	}
+
+	public <T extends JpaObject> Long count(Class<T> cls) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<T> root = cq.from(cls);
+		return em.createQuery(cq.select(cb.count(root))).getSingleResult();
+	}
+
+	public <T extends JpaObject> Long countGreaterThanDesc(Class<T> cls, String attribute, Object value)
+			throws Exception {
+		EntityManager em = this.get(cls);
+		Query query = em.createQuery("select count(o) from " + cls.getName() + " o where (o." + attribute + " > "
+				+ "?1) order by o." + attribute + " DESC");
+		query.setParameter(1, value);
+		return (Long) query.getSingleResult();
+	}
+
+	public <T extends JpaObject> Long countLessThanDesc(Class<T> cls, String attribute, Object value) throws Exception {
+		EntityManager em = this.get(cls);
+		Query query = em.createQuery("select count(o) from " + cls.getName() + " o where (o." + attribute + " < "
+				+ "?1) order by o." + attribute + " DESC");
+		query.setParameter(1, value);
+		return (Long) query.getSingleResult();
+	}
+
+	public <T extends JpaObject> Long countGreaterThanAsc(Class<T> cls, String attribute, Object value)
+			throws Exception {
+		EntityManager em = this.get(cls);
+		Query query = em.createQuery("select count(o) from " + cls.getName() + " o where (o." + attribute + " > "
+				+ "?1) order by o." + attribute + " ASC");
+		query.setParameter(1, value);
+		return (Long) query.getSingleResult();
+	}
+
+	public <T extends JpaObject> Long countLessThanAsc(Class<T> cls, String attribute, Object value) throws Exception {
+		EntityManager em = this.get(cls);
+		Query query = em.createQuery("select count(o) from " + cls.getName() + " o where (o." + attribute + " < "
+				+ "?1) order by o." + attribute + " ASC");
+		query.setParameter(1, value);
+		return (Long) query.getSingleResult();
+	}
+
+	public <T extends JpaObject> Long countGreaterThanOrEqualToDesc(Class<T> cls, String attribute, Object value)
+			throws Exception {
+		EntityManager em = this.get(cls);
+		Query query = em.createQuery("select count(o) from " + cls.getName() + " o where (o." + attribute + " >= "
+				+ "?1) order by o." + attribute + " DESC");
+		query.setParameter(1, value);
+		return (Long) query.getSingleResult();
+	}
+
+	public <T extends JpaObject> Long countLessThanOrEqualToDesc(Class<T> cls, String attribute, Object value)
+			throws Exception {
+		EntityManager em = this.get(cls);
+		Query query = em.createQuery("select count(o) from " + cls.getName() + " o where (o." + attribute + " <= "
+				+ "?1) order by o." + attribute + " DESC");
+		query.setParameter(1, value);
+		return (Long) query.getSingleResult();
+	}
+
+	public <T extends JpaObject> Long countGreaterThanOrEqualToAsc(Class<T> cls, String attribute, Object value)
+			throws Exception {
+		EntityManager em = this.get(cls);
+		Query query = em.createQuery("select count(o) from " + cls.getName() + " o where (o." + attribute + " >= "
+				+ "?1) order by o." + attribute + " ASC");
+		query.setParameter(1, value);
+		return (Long) query.getSingleResult();
+	}
+
+	public <T extends JpaObject> Long countLessThanOrEqualToAsc(Class<T> cls, String attribute, Object value)
+			throws Exception {
+		EntityManager em = this.get(cls);
+		Query query = em.createQuery("select count(o) from " + cls.getName() + " o where (o." + attribute + " <= "
+				+ "?1) order by o." + attribute + " ASC");
+		query.setParameter(1, value);
+		return (Long) query.getSingleResult();
 	}
 
 	public <T extends JpaObject> Long countEqual(Class<T> cls, String attribute, Object value) throws Exception {
@@ -1163,5 +1242,26 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		List<W> os = em.createQuery(cq.select(root.get(attribute))).getResultList();
 		List<W> list = new ArrayList<>(os);
 		return list;
+	}
+
+	public <T extends JpaObject> String conflict(Class<T> clz, T t) throws Exception {
+		EntityManager em = this.get(clz);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		for (Field field : this.entityManagerContainerFactory.getFlagFields(clz)) {
+			Object value = t.get(field.getName());
+			if ((null != value) && StringUtils.isNotEmpty(Objects.toString(value))) {
+				CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+				Root<T> root = cq.from(clz);
+				Predicate p = cb.disjunction();
+				for (Field f : this.entityManagerContainerFactory.getFlagFields(clz)) {
+					p = cb.or(p, cb.equal(root.get(f.getName()), value));
+				}
+				p = cb.and(p, cb.notEqual(root.get(JpaObject.id_FIELDNAME), t.getId()));
+				if (em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult() > 0) {
+					return field.getName() + ":" + Objects.toString(value);
+				}
+			}
+		}
+		return null;
 	}
 }

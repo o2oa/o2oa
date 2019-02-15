@@ -33,7 +33,7 @@ class ActionCreate extends BaseAction {
 			Wo wo = new Wo();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			if (!business.editable(effectivePerson, null)) {
+			if (!business.controllable(effectivePerson)) {
 				throw new ExceptionQueryAccessDenied(effectivePerson.getName(), wi.getName(), wi.getId());
 			}
 			Query query = this.create(business, wi);
