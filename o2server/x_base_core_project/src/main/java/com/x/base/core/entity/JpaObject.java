@@ -39,7 +39,7 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 	}
 
 	abstract public void onPersist() throws Exception;
-	
+
 	public static final String default_schema = "X";
 
 	public static final String ColumnNamePrefix = "x";
@@ -68,7 +68,7 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 
 	public static final String updateTime_FIELDNAME = "updateTime";
 
-	public static final String sequence_FIELDNAME =  "sequence";
+	public static final String sequence_FIELDNAME = "sequence";
 
 	public static final String distributeFactor_FIELDNAME = "distributeFactor";
 
@@ -232,6 +232,7 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 	public static final String CREATETIMECOLUMN = "xcreateTime";
 	public static final String UPDATETIMECOLUMN = "xupdateTime";
 	public static final String SEQUENCECOLUMN = "xsequence";
+	public static final String ORDERCOLUMNCOLUMN = "xorderColumn";
 
 	public static final String DISTINGUISHEDNAME = "distinguishedName";
 
@@ -332,6 +333,14 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 			this.setSequence(StringUtils.join(DateTools.compact(this.getCreateTime()), this.getId()));
 		}
 		this.onPersist();
+	}
+
+	public static <T extends JpaObject> T cast(Class<T> cls, List<String> fields, Object[] objects) throws Exception {
+		T t = cls.newInstance();
+		for (int i = 0; i < fields.size(); i++) {
+			PropertyUtils.setProperty(t, fields.get(i), objects[i]);
+		}
+		return t;
 	}
 
 }

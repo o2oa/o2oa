@@ -2,13 +2,13 @@ package com.x.base.core.entity;
 
 public class AbstractPersistenceProperties {
 
-	public static final String defaultUnit = "x";
-
-	public static final String schema = "X";
-
-	public static final String orderColumn = "xorderColumn";
-
-	//public static final String xmlStrategy = "com.x.core.entity.xml.strats.XStreamValueHandler";
+//	public static final String defaultUnit = "x";
+//
+//	public static final String schema = "X";
+//
+//	public static final String orderColumn = "xorderColumn";
+//
+//	//public static final String xmlStrategy = "com.x.core.entity.xml.strats.XStreamValueHandler";
 
 	public static final int file_name_length = JpaObject.length_255B;
 
