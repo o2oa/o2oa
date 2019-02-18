@@ -111,7 +111,7 @@ public class MeasuresInfo extends SliceJpaObject {
 
 	@FieldDescribe("战略举措使用范围（部门列表），牵头部门")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + "_deptList", joinIndex = @Index(name = TABLE + "_deptList_join"))
 	@ElementColumn(length = JpaObject.length_255B, name = "xdeptList")
 	@ElementIndex(name = TABLE + "_deptList_element")

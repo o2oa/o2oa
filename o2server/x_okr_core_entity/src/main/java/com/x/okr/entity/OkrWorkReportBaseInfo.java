@@ -258,7 +258,7 @@ public class OkrWorkReportBaseInfo extends SliceJpaObject {
 	public static final String currentProcessorNameList_FIELDNAME = "currentProcessorNameList";
 	@FieldDescribe("当前处理人姓名，多值")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ currentProcessorNameList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ currentProcessorNameList_FIELDNAME + JoinIndexNameSuffix))
@@ -271,7 +271,7 @@ public class OkrWorkReportBaseInfo extends SliceJpaObject {
 	public static final String currentProcessorIdentityList_FIELDNAME = "currentProcessorIdentityList";
 	@FieldDescribe("当前处理人身份，多值")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ currentProcessorIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ currentProcessorIdentityList_FIELDNAME + JoinIndexNameSuffix))
@@ -284,7 +284,7 @@ public class OkrWorkReportBaseInfo extends SliceJpaObject {
 	public static final String currentProcessorUnitNameList_FIELDNAME = "currentProcessorUnitNameList";
 	@FieldDescribe("当前处理人所属组织，多值")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ currentProcessorUnitNameList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ currentProcessorUnitNameList_FIELDNAME + JoinIndexNameSuffix))
@@ -297,7 +297,7 @@ public class OkrWorkReportBaseInfo extends SliceJpaObject {
 	public static final String currentProcessorTopUnitNameList_FIELDNAME = "currentProcessorTopUnitNameList";
 	@FieldDescribe("当前处理人所属顶层组织，多值")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ currentProcessorTopUnitNameList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ currentProcessorTopUnitNameList_FIELDNAME + JoinIndexNameSuffix))
@@ -310,7 +310,7 @@ public class OkrWorkReportBaseInfo extends SliceJpaObject {
 	public static final String readLeadersNameList_FIELDNAME = "readLeadersNameList";
 	@FieldDescribe("批示领导姓名列表, 多值")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ readLeadersNameList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ readLeadersNameList_FIELDNAME + JoinIndexNameSuffix))
@@ -323,7 +323,7 @@ public class OkrWorkReportBaseInfo extends SliceJpaObject {
 	public static final String readLeadersIdentityList_FIELDNAME = "readLeadersIdentityList";
 	@FieldDescribe("批示领导身份列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ attachmentList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ attachmentList_FIELDNAME + JoinIndexNameSuffix))
@@ -336,7 +336,7 @@ public class OkrWorkReportBaseInfo extends SliceJpaObject {
 	public static final String attachmentList_FIELDNAME = "attachmentList";
 	@FieldDescribe("附件列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ attachmentList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ attachmentList_FIELDNAME + JoinIndexNameSuffix))

@@ -123,7 +123,7 @@ public class PersistenceXmlHelper {
 				|| StringUtils.equals(driver, SlicePropertiesBuilder.driver_informix)) {
 			property = properties.addElement("property");
 			property.addAttribute("name", "openjpa.jdbc.Schema");
-			property.addAttribute("value", AbstractPersistenceProperties.schema);
+			property.addAttribute("value", JpaObject.default_schema);
 		}
 		for (int i = 0; i < sources.size(); i++) {
 			DataMapping dataMapping = sources.get(i);
@@ -222,7 +222,7 @@ public class PersistenceXmlHelper {
 					|| StringUtils.equals(driver, SlicePropertiesBuilder.driver_informix)) {
 				property = properties.addElement("property");
 				property.addAttribute("name", "openjpa.jdbc.Schema");
-				property.addAttribute("value", AbstractPersistenceProperties.schema);
+				property.addAttribute("value", JpaObject.default_schema);
 			}
 			for (int i = 0; i < sources.size(); i++) {
 				DataMapping dataMapping = sources.get(i);

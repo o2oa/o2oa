@@ -225,7 +225,7 @@ public class Attachment extends StorageObject {
 	public static final String shareList_FIELDNAME = "shareList";
 	@FieldDescribe("共享人员")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + shareList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + shareList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + shareList_FIELDNAME)
@@ -236,7 +236,7 @@ public class Attachment extends StorageObject {
 	public static final String editorList_FIELDNAME = "editorList";
 	@FieldDescribe("可编辑人员")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + editorList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + editorList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + editorList_FIELDNAME)

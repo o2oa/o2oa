@@ -90,7 +90,7 @@ public class Mass extends SliceJpaObject {
 	public static final String personList_FIELDNAME = "personList";
 	@FieldDescribe("个人对象.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ personList_FIELDNAME, joinIndex = @Index(name = TABLE + personList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + personList_FIELDNAME)
@@ -100,7 +100,7 @@ public class Mass extends SliceJpaObject {
 	public static final String identityList_FIELDNAME = "identityList";
 	@FieldDescribe("身份对象.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ identityList_FIELDNAME, joinIndex = @Index(name = TABLE + identityList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + identityList_FIELDNAME)
@@ -110,7 +110,7 @@ public class Mass extends SliceJpaObject {
 	public static final String groupList_FIELDNAME = "groupList";
 	@FieldDescribe("群组对象.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ groupList_FIELDNAME, joinIndex = @Index(name = TABLE + groupList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + groupList_FIELDNAME)
@@ -120,7 +120,7 @@ public class Mass extends SliceJpaObject {
 	public static final String unitList_FIELDNAME = "unitList";
 	@FieldDescribe("组织对象.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ unitList_FIELDNAME, joinIndex = @Index(name = TABLE + unitList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + unitList_FIELDNAME)
@@ -130,7 +130,7 @@ public class Mass extends SliceJpaObject {
 	public static final String sendPersonList_FIELDNAME = "sendPersonList";
 	@FieldDescribe("发送人员对象.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + sendPersonList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ sendPersonList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + sendPersonList_FIELDNAME)

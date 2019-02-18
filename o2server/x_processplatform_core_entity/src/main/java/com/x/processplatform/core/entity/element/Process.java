@@ -126,7 +126,7 @@ public class Process extends SliceJpaObject {
 	public static final String controllerList_FIELDNAME = "controllerList";
 	@FieldDescribe("流程管理者.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + controllerList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + controllerList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + controllerList_FIELDNAME)
@@ -145,7 +145,7 @@ public class Process extends SliceJpaObject {
 	public static final String reviewIdentityList_FIELDNAME = "reviewIdentityList";
 	@FieldDescribe("Work的参阅人员.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ reviewIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ reviewIdentityList_FIELDNAME + JoinIndexNameSuffix))
@@ -224,7 +224,7 @@ public class Process extends SliceJpaObject {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ startableIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ startableIdentityList_FIELDNAME))
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + startableIdentityList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + startableIdentityList_FIELDNAME + JoinIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -236,7 +236,7 @@ public class Process extends SliceJpaObject {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ startableUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ startableUnitList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + startableUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + startableUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)

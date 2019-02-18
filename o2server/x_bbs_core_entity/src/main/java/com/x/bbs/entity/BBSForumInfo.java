@@ -83,7 +83,7 @@ public class BBSForumInfo extends SliceJpaObject {
 	public static final String forumManagerList_FIELDNAME = "forumManagerList";
 	@FieldDescribe("论坛管理员列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ forumManagerList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + forumManagerList_FIELDNAME
 					+ JoinIndexNameSuffix))

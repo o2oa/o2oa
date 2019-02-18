@@ -137,7 +137,7 @@ public class Report_I_WorkInfo extends SliceJpaObject {
 
 	@FieldDescribe("本次汇报工作关联举措ID列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + "_measuresList", joinIndex = @Index(name = TABLE + "_measuresList_join"))
 	@ElementColumn(length = JpaObject.length_id, name = "xmeasuresList")
 	@ElementIndex(name = TABLE + "_measuresList_element")

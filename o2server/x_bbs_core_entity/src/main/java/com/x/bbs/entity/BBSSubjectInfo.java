@@ -368,7 +368,7 @@ public class BBSSubjectInfo extends SliceJpaObject {
 	public static final String attachmentList_FIELDNAME = "attachmentList";
 	@FieldDescribe("附件列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + attachmentList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + attachmentList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + attachmentList_FIELDNAME)

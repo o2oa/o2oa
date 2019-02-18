@@ -110,7 +110,7 @@ public class Script extends SliceJpaObject {
 	public static final String dependScriptList_FIELDNAME = "dependScriptList";
 	@FieldDescribe("依赖的函数列表.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + dependScriptList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + dependScriptList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + dependScriptList_FIELDNAME)

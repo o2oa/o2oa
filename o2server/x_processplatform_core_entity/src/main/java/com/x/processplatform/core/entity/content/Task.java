@@ -352,7 +352,7 @@ public class Task extends SliceJpaObject {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + routeList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + routeList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + routeList_FIELDNAME)
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@CheckPersist(allowEmpty = true)
 	private List<String> routeList = new ArrayList<String>();
 
@@ -362,7 +362,7 @@ public class Task extends SliceJpaObject {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + routeNameList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + routeNameList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + routeNameList_FIELDNAME)
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@CheckPersist(allowEmpty = true)
 	private List<String> routeNameList = new ArrayList<String>();
 
@@ -373,7 +373,7 @@ public class Task extends SliceJpaObject {
 			+ routeOpinionList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + routeOpinionList_FIELDNAME
 					+ JoinIndexNameSuffix))
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + routeOpinionList_FIELDNAME)
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@CheckPersist(allowEmpty = true)
 	private List<String> routeOpinionList = new ArrayList<String>();
 

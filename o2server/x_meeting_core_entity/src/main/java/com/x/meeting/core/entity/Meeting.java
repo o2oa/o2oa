@@ -136,7 +136,7 @@ public class Meeting extends SliceJpaObject {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ invitePersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + invitePersonList_FIELDNAME
 					+ JoinIndexNameSuffix))
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + invitePersonList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + invitePersonList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -150,7 +150,7 @@ public class Meeting extends SliceJpaObject {
 	// + expandInvitePersonList_FIELDNAME, joinIndex = @Index(name = TABLE +
 	// IndexNameMiddle
 	// + expandInvitePersonList_FIELDNAME + JoinIndexNameSuffix))
-	// @OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	// @OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	// @ElementColumn(length = length_255B, name = ColumnNamePrefix +
 	// expandInvitePersonList_FIELDNAME)
 	// @ElementIndex(name = TABLE + IndexNameMiddle +
@@ -164,7 +164,7 @@ public class Meeting extends SliceJpaObject {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ acceptPersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + acceptPersonList_FIELDNAME
 					+ JoinIndexNameSuffix))
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + acceptPersonList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + acceptPersonList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -176,7 +176,7 @@ public class Meeting extends SliceJpaObject {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ rejectPersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + rejectPersonList_FIELDNAME
 					+ JoinIndexNameSuffix))
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + rejectPersonList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + rejectPersonList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
