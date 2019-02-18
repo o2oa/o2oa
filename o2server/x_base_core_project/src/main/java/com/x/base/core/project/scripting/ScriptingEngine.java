@@ -13,6 +13,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.exception.ExceptionScriptEval;
+import com.x.base.core.project.http.EffectivePerson;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 
@@ -30,6 +31,7 @@ public class ScriptingEngine {
 	public static final String BINDINGNAME__LOOKUP = "lookup";
 	public static final String BINDINGNAME_APPLICATIONS = "applications";
 	public static final String BINDINGNAME_PARAMETER = "parameter";
+	public static final String BINDINGNAME_EFFECTIVEPERSON = "effectivePerson";
 
 	public ScriptingEngine(ScriptEngine scriptEngine) {
 		this.scriptEngine = scriptEngine;
@@ -74,6 +76,11 @@ public class ScriptingEngine {
 
 	public ScriptingEngine bindingApplications(Object o) {
 		this.scriptEngine.put(BINDINGNAME_APPLICATIONS, o);
+		return this;
+	}
+	
+	public ScriptingEngine bindingEffectivePerson(EffectivePerson effectivePerson) {
+		this.scriptEngine.put(BINDINGNAME_EFFECTIVEPERSON, effectivePerson);
 		return this;
 	}
 

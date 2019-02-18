@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Id;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.openjpa.persistence.OpenJPAPersistence;
@@ -36,7 +37,6 @@ import com.x.base.core.entity.annotation.CheckRemove;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.entity.annotation.RestrictFlag;
 import com.x.base.core.entity.tools.JpaObjectTools;
-import com.x.base.core.project.AbstractContext;
 import com.x.base.core.project.config.DataMappings;
 import com.x.base.core.project.tools.ListTools;
 
@@ -44,6 +44,7 @@ public abstract class SliceEntityManagerContainerFactory {
 
 	// protected static String persistence_xml_path = "META-INF/x_persistence.xml";
 	protected static String PERSISTENCE_XML_PATH = "META-INF/persistence.xml";
+	protected static String META_INF = "META-INF";
 
 	/* class 与 entityManagerFactory 映射表 */
 	protected Map<Class<? extends JpaObject>, EntityManagerFactory> entityManagerFactoryMap = new ConcurrentHashMap<Class<? extends JpaObject>, EntityManagerFactory>();
@@ -155,6 +156,8 @@ public abstract class SliceEntityManagerContainerFactory {
 			}
 			OutputFormat format = OutputFormat.createPrettyPrint();
 			format.setEncoding("UTF-8");
+			File dir = new File(webApplicationDirectory + "/WEB-INF/classes/" + META_INF);
+			FileUtils.forceMkdir(dir);
 			File file = new File(webApplicationDirectory + "/WEB-INF/classes/" + PERSISTENCE_XML_PATH);
 			XMLWriter writer = new XMLWriter(new FileWriter(file), format);
 			writer.write(document);
