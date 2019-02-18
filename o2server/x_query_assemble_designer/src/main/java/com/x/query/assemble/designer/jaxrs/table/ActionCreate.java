@@ -19,6 +19,7 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
 import com.x.query.assemble.designer.DynamicEntity;
 import com.x.query.core.entity.schema.Table;
@@ -64,7 +65,8 @@ class ActionCreate extends BaseAction {
 		private static final long serialVersionUID = -5237741099036357033L;
 
 		static WrapCopier<Wi, Table> copier = WrapCopierFactory.wi(Wi.class, Table.class, null,
-				JpaObject.FieldsUnmodify);
+				ListTools.toList(JpaObject.FieldsUnmodify, Table.creatorPerson_FIELDNAME,
+						Table.lastUpdatePerson_FIELDNAME, Table.lastUpdateTime_FIELDNAME));
 	}
 
 }

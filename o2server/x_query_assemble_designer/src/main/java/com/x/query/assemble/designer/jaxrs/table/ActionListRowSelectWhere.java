@@ -19,10 +19,9 @@ import com.x.query.core.entity.schema.Table;
 
 class ActionListRowSelectWhere extends BaseAction {
 
-	ActionResult<List<Object>> execute(EffectivePerson effectivePerson, String tableFlag, String where)
-			throws Exception {
+	ActionResult<List<?>> execute(EffectivePerson effectivePerson, String tableFlag, String where) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<List<Object>> result = new ActionResult<>();
+			ActionResult<List<?>> result = new ActionResult<>();
 			Table table = emc.flag(tableFlag, Table.class);
 			Business business = new Business(emc);
 			if (null == table) {
@@ -32,14 +31,15 @@ class ActionListRowSelectWhere extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson, table);
 			}
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
+			@SuppressWarnings("unchecked")
 			Class<? extends JpaObject> clz = (Class<JpaObject>) Class.forName(dynamicEntity.className());
 			EntityManager em = emc.get(clz);
 			String sql = "SELECT o FROM " + clz.getName() + " o";
 			if (StringUtils.isNotBlank(where) && (!StringUtils.equals(where, EMPTY_SYMBOL))) {
 				sql += " where (" + where + ")";
 			}
-			List<? extends Object> list = em.createQuery(sql).getResultList();
-			result.setData((List<Object>) list);
+			List<?> list = em.createQuery(sql).getResultList();
+			result.setData(list);
 			return result;
 		}
 	}

@@ -1,20 +1,58 @@
 package com.x.query.assemble.designer.test;
 
-import java.io.File;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.junit.Test;
+
+import com.google.gson.JsonElement;
+import com.x.base.core.project.connection.HttpConnection;
+import com.x.base.core.project.gson.XGsonBuilder;
 
 public class TestClient {
 	@Test
-	public void test() {
-		Collection<File> files = FileUtils.listFiles(new File("d:/aaa"), FileFilterUtils.suffixFileFilter(".java"),
-				DirectoryFileFilter.INSTANCE);
-		for (File f : files) {
-			System.out.println(f.getAbsolutePath());
+	public void insert() throws Exception {
+
+		String address = "http://127.0.0.1:20020/x_query_assemble_designer/jaxrs/table/dd/row";
+		for (int j = 0; j < 200; j++) {
+			List<JsonElement> list = new ArrayList<>();
+			for (int i = 0; i < 200; i++) {
+				String value = Objects.toString(j * 100 + i);
+				Map<String, Object> map = new HashMap<>();
+				map.put("sf1", "sf1" + value);
+				List<String> os = new ArrayList<>();
+				os.add("lsf1" + value);
+				map.put("lsf1", os);
+				map.put("slf1", "slf1"
+						+ "你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好");
+				list.add(XGsonBuilder.instance().toJsonTree(map));
+			}
+			JsonElement jsonElement = HttpConnection.postAsObject(address, null, XGsonBuilder.toJson(list),
+					JsonElement.class);
+			System.out.println(jsonElement);
+		}
+
+	}
+
+	@Test
+	public void insert1() throws Exception {
+
+		String address = "http://127.0.0.1:20020/x_query_assemble_designer/jaxrs/table/dd/row";
+		for (int i = 0; i < 200; i++) {
+			String value = Objects.toString(i);
+			Map<String, Object> map = new HashMap<>();
+			map.put("sf1", "sf1" + value);
+			List<String> os = new ArrayList<>();
+			os.add("lsf1" + value);
+			map.put("lsf1", os);
+			map.put("slf1", "slf1"
+					+ "你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好");
+		Thread.sleep(1000);
+			JsonElement jsonElement = HttpConnection.postAsObject(address, null, XGsonBuilder.toJson(map),
+					JsonElement.class);
 		}
 	}
 }

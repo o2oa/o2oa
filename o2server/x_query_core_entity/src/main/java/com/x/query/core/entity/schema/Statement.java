@@ -92,7 +92,7 @@ public class Statement extends SliceJpaObject {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ executePersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ executePersonList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + executePersonList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + executePersonList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -103,7 +103,7 @@ public class Statement extends SliceJpaObject {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + executeUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + executeUnitList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + executeUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + executeUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)

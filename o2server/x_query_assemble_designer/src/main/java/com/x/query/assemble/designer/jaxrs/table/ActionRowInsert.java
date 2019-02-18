@@ -1,15 +1,18 @@
 package com.x.query.assemble.designer.jaxrs.table;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.query.assemble.designer.Business;
 import com.x.query.assemble.designer.DynamicEntity;
 import com.x.query.core.entity.schema.Table;
@@ -28,19 +31,34 @@ class ActionRowInsert extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson, table);
 			}
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
-			Class<? extends JpaObject> clz = (Class<JpaObject>) Class.forName(dynamicEntity.className());
-			JpaObject o = XGsonBuilder.instance().fromJson(jsonElement, clz);
-			emc.beginTransaction(clz);
-			emc.persist(o);
+			@SuppressWarnings("unchecked")
+			Class<? extends JpaObject> cls = (Class<JpaObject>) Class.forName(dynamicEntity.className());
+			List<Object> os = new ArrayList<>();
+
+			if (jsonElement.isJsonArray()) {
+				jsonElement.getAsJsonArray().forEach(o -> {
+					os.add(gson.fromJson(o, cls));
+				});
+			} else if (jsonElement.isJsonObject()) {
+				os.add(gson.fromJson(jsonElement, cls));
+			}
+			emc.beginTransaction(cls);
+			for (Object o : os) {
+				emc.persist((JpaObject) o, CheckPersistType.all);
+			}
 			emc.commit();
 			Wo wo = new Wo();
-			wo.setId(o.getId());
+			if (os.isEmpty()) {
+				wo.setValue(false);
+			} else {
+				wo.setValue(true);
+			}
 			result.setData(wo);
 			return result;
 		}
 	}
 
-	public static class Wo extends WoId {
+	public static class Wo extends WrapBoolean {
 
 	}
 

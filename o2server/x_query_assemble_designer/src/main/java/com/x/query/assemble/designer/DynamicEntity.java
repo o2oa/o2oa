@@ -17,32 +17,30 @@ public class DynamicEntity extends GsonPropertyObject {
 
 	private String name;
 
-	private List<StringField> stringFields;
-	private List<IntegerField> integerFields;
-	private List<LongField> longFields;
-	private List<DoubleField> doubleFields;
-	private List<BooleanField> booleanFields;
-	private List<DateField> dateFields;
-	private List<TimeField> timeFields;
-	private List<DateTimeField> dateTimeFields;
+	private List<StringField> stringFieldList;
+	private List<IntegerField> integerFieldList;
+	private List<LongField> longFieldList;
+	private List<DoubleField> doubleFieldList;
+	private List<BooleanField> booleanFieldList;
+	private List<DateField> dateFieldList;
+	private List<TimeField> timeFieldList;
+	private List<DateTimeField> dateTimeFieldList;
 
-	private List<StringField> listStringFields;
-	private List<IntegerField> listIntegerFields;
-	private List<LongField> listLongFields;
-	private List<DoubleField> listDoubleFields;
-	private List<BooleanField> listBooleanFields;
-	private List<DateField> listDateFields;
-	private List<TimeField> listTimeFields;
-	private List<DateTimeField> listDateTimeFields;
+	private List<StringField> listStringFieldList;
+	private List<IntegerField> listIntegerFieldList;
+	private List<LongField> listLongFieldList;
+	private List<DoubleField> listDoubleFieldList;
+	private List<BooleanField> listBooleanFieldList;
+	private List<DateTimeField> listDateTimeFieldList;
 
-	private List<StringLobField> stringLobFields;
-	private List<StringMapField> stringMapFields;
+	private List<StringLobField> stringLobFieldList;
+	private List<StringMapField> stringMapFieldList;
 
 	public void addStringField(String name, String description) {
 		StringField field = new StringField();
 		field.setName(name);
 		field.setDescription(description);
-		this.stringFields.add(field);
+		this.stringFieldList.add(field);
 	}
 
 	public String tableName() throws Exception {
@@ -71,26 +69,24 @@ public class DynamicEntity extends GsonPropertyObject {
 	}
 
 	public DynamicEntity() {
-		this.stringFields = new ArrayList<>();
-		this.integerFields = new ArrayList<>();
-		this.longFields = new ArrayList<>();
-		this.doubleFields = new ArrayList<>();
-		this.booleanFields = new ArrayList<>();
-		this.dateFields = new ArrayList<>();
-		this.timeFields = new ArrayList<>();
-		this.dateTimeFields = new ArrayList<>();
+		this.stringFieldList = new ArrayList<>();
+		this.integerFieldList = new ArrayList<>();
+		this.longFieldList = new ArrayList<>();
+		this.doubleFieldList = new ArrayList<>();
+		this.booleanFieldList = new ArrayList<>();
+		this.dateFieldList = new ArrayList<>();
+		this.timeFieldList = new ArrayList<>();
+		this.dateTimeFieldList = new ArrayList<>();
 
-		this.listStringFields = new ArrayList<>();
-		this.listIntegerFields = new ArrayList<>();
-		this.listLongFields = new ArrayList<>();
-		this.listDoubleFields = new ArrayList<>();
-		this.listBooleanFields = new ArrayList<>();
-		this.listDateFields = new ArrayList<>();
-		this.listTimeFields = new ArrayList<>();
-		this.listDateTimeFields = new ArrayList<>();
+		this.listStringFieldList = new ArrayList<>();
+		this.listIntegerFieldList = new ArrayList<>();
+		this.listLongFieldList = new ArrayList<>();
+		this.listDoubleFieldList = new ArrayList<>();
+		this.listBooleanFieldList = new ArrayList<>();
+		this.listDateTimeFieldList = new ArrayList<>();
 
-		this.stringLobFields = new ArrayList<>();
-		this.stringMapFields = new ArrayList<>();
+		this.stringLobFieldList = new ArrayList<>();
+		this.stringMapFieldList = new ArrayList<>();
 	}
 
 	public DynamicEntity(String name) {
@@ -153,156 +149,140 @@ public class DynamicEntity extends GsonPropertyObject {
 	public static class StringMapField extends Field {
 	}
 
-	public List<StringField> getStringFields() {
-		return stringFields;
-	}
-
-	public void setStringFields(List<StringField> stringFields) {
-		this.stringFields = stringFields;
-	}
-
-	public List<IntegerField> getIntegerFields() {
-		return integerFields;
-	}
-
-	public void setIntegerFields(List<IntegerField> integerFields) {
-		this.integerFields = integerFields;
-	}
-
-	public List<LongField> getLongFields() {
-		return longFields;
-	}
-
-	public void setLongFields(List<LongField> longFields) {
-		this.longFields = longFields;
-	}
-
-	public List<DoubleField> getDoubleFields() {
-		return doubleFields;
-	}
-
-	public void setDoubleFields(List<DoubleField> doubleFields) {
-		this.doubleFields = doubleFields;
-	}
-
-	public List<BooleanField> getBooleanFields() {
-		return booleanFields;
-	}
-
-	public void setBooleanFields(List<BooleanField> booleanFields) {
-		this.booleanFields = booleanFields;
-	}
-
-	public List<DateField> getDateFields() {
-		return dateFields;
-	}
-
-	public void setDateFields(List<DateField> dateFields) {
-		this.dateFields = dateFields;
-	}
-
-	public List<TimeField> getTimeFields() {
-		return timeFields;
-	}
-
-	public void setTimeFields(List<TimeField> timeFields) {
-		this.timeFields = timeFields;
-	}
-
-	public List<DateTimeField> getDateTimeFields() {
-		return dateTimeFields;
-	}
-
-	public void setDateTimeFields(List<DateTimeField> dateTimeFields) {
-		this.dateTimeFields = dateTimeFields;
-	}
-
-	public List<StringField> getListStringFields() {
-		return listStringFields;
-	}
-
-	public void setListStringFields(List<StringField> listStringFields) {
-		this.listStringFields = listStringFields;
-	}
-
-	public List<IntegerField> getListIntegerFields() {
-		return listIntegerFields;
-	}
-
-	public void setListIntegerFields(List<IntegerField> listIntegerFields) {
-		this.listIntegerFields = listIntegerFields;
-	}
-
-	public List<LongField> getListLongFields() {
-		return listLongFields;
-	}
-
-	public void setListLongFields(List<LongField> listLongFields) {
-		this.listLongFields = listLongFields;
-	}
-
-	public List<DoubleField> getListDoubleFields() {
-		return listDoubleFields;
-	}
-
-	public void setListDoubleFields(List<DoubleField> listDoubleFields) {
-		this.listDoubleFields = listDoubleFields;
-	}
-
-	public List<BooleanField> getListBooleanFields() {
-		return listBooleanFields;
-	}
-
-	public void setListBooleanFields(List<BooleanField> listBooleanFields) {
-		this.listBooleanFields = listBooleanFields;
-	}
-
-	public List<DateField> getListDateFields() {
-		return listDateFields;
-	}
-
-	public void setListDateFields(List<DateField> listDateFields) {
-		this.listDateFields = listDateFields;
-	}
-
-	public List<TimeField> getListTimeFields() {
-		return listTimeFields;
-	}
-
-	public void setListTimeFields(List<TimeField> listTimeFields) {
-		this.listTimeFields = listTimeFields;
-	}
-
-	public List<DateTimeField> getListDateTimeFields() {
-		return listDateTimeFields;
-	}
-
-	public void setListDateTimeFields(List<DateTimeField> listDateTimeFields) {
-		this.listDateTimeFields = listDateTimeFields;
-	}
-
-	public List<StringLobField> getStringLobFields() {
-		return stringLobFields;
-	}
-
-	public void setStringLobFields(List<StringLobField> stringLobFields) {
-		this.stringLobFields = stringLobFields;
-	}
-
-	public List<StringMapField> getStringMapFields() {
-		return stringMapFields;
-	}
-
-	public void setStringMapFields(List<StringMapField> stringMapFields) {
-		this.stringMapFields = stringMapFields;
-	}
-
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public List<StringField> getStringFieldList() {
+		return stringFieldList;
+	}
+
+	public void setStringFieldList(List<StringField> stringFieldList) {
+		this.stringFieldList = stringFieldList;
+	}
+
+	public List<IntegerField> getIntegerFieldList() {
+		return integerFieldList;
+	}
+
+	public void setIntegerFieldList(List<IntegerField> integerFieldList) {
+		this.integerFieldList = integerFieldList;
+	}
+
+	public List<LongField> getLongFieldList() {
+		return longFieldList;
+	}
+
+	public void setLongFieldList(List<LongField> longFieldList) {
+		this.longFieldList = longFieldList;
+	}
+
+	public List<DoubleField> getDoubleFieldList() {
+		return doubleFieldList;
+	}
+
+	public void setDoubleFieldList(List<DoubleField> doubleFieldList) {
+		this.doubleFieldList = doubleFieldList;
+	}
+
+	public List<BooleanField> getBooleanFieldList() {
+		return booleanFieldList;
+	}
+
+	public void setBooleanFieldList(List<BooleanField> booleanFieldList) {
+		this.booleanFieldList = booleanFieldList;
+	}
+
+	public List<DateField> getDateFieldList() {
+		return dateFieldList;
+	}
+
+	public void setDateFieldList(List<DateField> dateFieldList) {
+		this.dateFieldList = dateFieldList;
+	}
+
+	public List<TimeField> getTimeFieldList() {
+		return timeFieldList;
+	}
+
+	public void setTimeFieldList(List<TimeField> timeFieldList) {
+		this.timeFieldList = timeFieldList;
+	}
+
+	public List<DateTimeField> getDateTimeFieldList() {
+		return dateTimeFieldList;
+	}
+
+	public void setDateTimeFieldList(List<DateTimeField> dateTimeFieldList) {
+		this.dateTimeFieldList = dateTimeFieldList;
+	}
+
+	public List<StringField> getListStringFieldList() {
+		return listStringFieldList;
+	}
+
+	public void setListStringFieldList(List<StringField> listStringFieldList) {
+		this.listStringFieldList = listStringFieldList;
+	}
+
+	public List<IntegerField> getListIntegerFieldList() {
+		return listIntegerFieldList;
+	}
+
+	public void setListIntegerFieldList(List<IntegerField> listIntegerFieldList) {
+		this.listIntegerFieldList = listIntegerFieldList;
+	}
+
+	public List<LongField> getListLongFieldList() {
+		return listLongFieldList;
+	}
+
+	public void setListLongFieldList(List<LongField> listLongFieldList) {
+		this.listLongFieldList = listLongFieldList;
+	}
+
+	public List<DoubleField> getListDoubleFieldList() {
+		return listDoubleFieldList;
+	}
+
+	public void setListDoubleFieldList(List<DoubleField> listDoubleFieldList) {
+		this.listDoubleFieldList = listDoubleFieldList;
+	}
+
+	public List<BooleanField> getListBooleanFieldList() {
+		return listBooleanFieldList;
+	}
+
+	public void setListBooleanFieldList(List<BooleanField> listBooleanFieldList) {
+		this.listBooleanFieldList = listBooleanFieldList;
+	}
+
+	public List<DateTimeField> getListDateTimeFieldList() {
+		return listDateTimeFieldList;
+	}
+
+	public void setListDateTimeFieldList(List<DateTimeField> listDateTimeFieldList) {
+		this.listDateTimeFieldList = listDateTimeFieldList;
+	}
+
+	public List<StringLobField> getStringLobFieldList() {
+		return stringLobFieldList;
+	}
+
+	public void setStringLobFieldList(List<StringLobField> stringLobFieldList) {
+		this.stringLobFieldList = stringLobFieldList;
+	}
+
+	public List<StringMapField> getStringMapFieldList() {
+		return stringMapFieldList;
+	}
+
+	public void setStringMapFieldList(List<StringMapField> stringMapFieldList) {
+		this.stringMapFieldList = stringMapFieldList;
 	}
 
 }

@@ -1,8 +1,12 @@
 package com.x.query.assemble.designer.jaxrs.table;
 
-import javax.persistence.EntityManager;
+import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -16,10 +20,8 @@ import com.x.query.assemble.designer.Business;
 import com.x.query.assemble.designer.DynamicEntity;
 import com.x.query.core.entity.schema.Table;
 
-class ActionRowCountWhere extends BaseAction {
-
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String tableFlag, String where)
-			throws Exception {
+class ActionRowDeleteAll extends BaseAction {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String tableFlag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Table table = emc.flag(tableFlag, Table.class);
@@ -33,17 +35,39 @@ class ActionRowCountWhere extends BaseAction {
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
 			@SuppressWarnings("unchecked")
 			Class<? extends JpaObject> cls = (Class<JpaObject>) Class.forName(dynamicEntity.className());
-			EntityManager em = emc.get(cls);
-			String sql = "SELECT count(o) FROM " + cls.getName() + " o";
-			if (StringUtils.isNotBlank(where) && (!StringUtils.equals(where, EMPTY_SYMBOL))) {
-				sql += " where (" + where + ")";
-			}
-			Long count = (Long) em.createQuery(sql).getSingleResult();
+
+			List<String> ids = null;
+			Long count = 0L;
+			do {
+				ids = this.listIds(business, cls);
+				if (!ids.isEmpty()) {
+					emc.beginTransaction(cls);
+					count += this.delete(business, cls, ids);
+					emc.commit();
+				}
+			} while (!ids.isEmpty());
 			Wo wo = new Wo();
 			wo.setValue(count);
 			result.setData(wo);
 			return result;
 		}
+	}
+
+	private <T extends JpaObject> List<String> listIds(Business business, Class<T> cls) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<T> root = cq.from(cls);
+		List<String> os = em.createQuery(cq.select(root.get(JpaObject.id_FIELDNAME))).setMaxResults(2000)
+				.getResultList();
+		return os;
+	}
+
+	private <T extends JpaObject> Integer delete(Business business, Class<T> cls, List<String> ids) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(cls);
+		Query query = em.createQuery("delete from " + cls.getName() + " o where o.id in :ids");
+		query.setParameter("ids", ids);
+		return query.executeUpdate();
 	}
 
 	public static class Wo extends WrapLong {
