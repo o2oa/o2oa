@@ -279,7 +279,7 @@ public class WorkLog extends SliceJpaObject {
 	public static final String splitTokenList_FIELDNAME = "splitTokenList";
 	@FieldDescribe("拆分工作产生的Token")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + splitTokenList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + splitTokenList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + splitTokenList_FIELDNAME)

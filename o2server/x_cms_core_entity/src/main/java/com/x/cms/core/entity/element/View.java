@@ -149,7 +149,7 @@ public class View extends SliceJpaObject {
 	public static final String fieldConfigList_FIELDNAME = "fieldConfigList";
 	@FieldDescribe("展示列配置列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + fieldConfigList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + fieldConfigList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + fieldConfigList_FIELDNAME)

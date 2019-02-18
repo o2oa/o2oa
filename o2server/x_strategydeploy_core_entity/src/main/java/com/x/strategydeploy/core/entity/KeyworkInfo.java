@@ -125,7 +125,7 @@ public class KeyworkInfo extends SliceJpaObject {
 
 	@FieldDescribe("举措列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + "_measuresList", joinIndex = @Index(name = TABLE + "_measuresList_join"))
 	@ElementColumn(length = JpaObject.length_255B, name = "xmeasuresList")
 	@ElementIndex(name = TABLE + "_measuresList_element")
@@ -135,7 +135,7 @@ public class KeyworkInfo extends SliceJpaObject {
 	public static final String attachmentList_FIELDNAME = "attachmentList";
 	@FieldDescribe("附件列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + "_attachmentList", joinIndex = @Index(name = TABLE + "_attachmentList_join"))
 	@ElementColumn(length = JpaObject.length_255B, name = "xattachmentList")
 	@ElementIndex(name = TABLE + "_attachmentList_element")

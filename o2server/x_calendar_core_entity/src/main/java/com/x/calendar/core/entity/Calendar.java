@@ -130,7 +130,7 @@ public class Calendar extends SliceJpaObject {
 	public static final String manageablePersonList_FIELDNAME = "manageablePersonList";
 	@FieldDescribe("可管理人员列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ manageablePersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ manageablePersonList_FIELDNAME + JoinIndexNameSuffix))
@@ -143,7 +143,7 @@ public class Calendar extends SliceJpaObject {
 	public static final String followers_FIELDNAME = "followers";
 	@FieldDescribe("关注者列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + followers_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + followers_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
@@ -155,7 +155,7 @@ public class Calendar extends SliceJpaObject {
 	public static final String viewablePersonList_FIELDNAME = "viewablePersonList";
 	@FieldDescribe("可见人员列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ viewablePersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ viewablePersonList_FIELDNAME + JoinIndexNameSuffix))
@@ -168,7 +168,7 @@ public class Calendar extends SliceJpaObject {
 	public static final String viewableUnitList_FIELDNAME = "viewableUnitList";
 	@FieldDescribe("可见组织列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ viewableUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + viewableUnitList_FIELDNAME
 					+ JoinIndexNameSuffix))
@@ -181,7 +181,7 @@ public class Calendar extends SliceJpaObject {
 	public static final String viewableGroupList_FIELDNAME = "viewableGroupList";
 	@FieldDescribe("可见群组列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ viewableGroupList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ viewableGroupList_FIELDNAME + JoinIndexNameSuffix))
@@ -194,7 +194,7 @@ public class Calendar extends SliceJpaObject {
 	public static final String publishablePersonList_FIELDNAME = "publishablePersonList";
 	@FieldDescribe("可发布人员列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ publishablePersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ publishablePersonList_FIELDNAME + JoinIndexNameSuffix))
@@ -207,7 +207,7 @@ public class Calendar extends SliceJpaObject {
 	public static final String publishableUnitList_FIELDNAME = "publishableUnitList";
 	@FieldDescribe("可发布组织列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ publishableUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ publishableUnitList_FIELDNAME + JoinIndexNameSuffix))
@@ -220,7 +220,7 @@ public class Calendar extends SliceJpaObject {
 	public static final String publishableGroupList_FIELDNAME = "publishableGroupList";
 	@FieldDescribe("可发布群组列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ publishableGroupList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ publishableGroupList_FIELDNAME + JoinIndexNameSuffix))

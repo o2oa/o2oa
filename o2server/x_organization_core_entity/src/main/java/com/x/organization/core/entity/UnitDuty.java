@@ -138,7 +138,7 @@ public class UnitDuty extends SliceJpaObject {
 			+ IndexNameMiddle + identityList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementIndex(name = TABLE + IndexNameMiddle + identityList_FIELDNAME + ElementIndexNameSuffix)
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + identityList_FIELDNAME)
 	@CheckPersist(allowEmpty = true, citationExists = { @CitationExist(type = Identity.class) })
 	private List<String> identityList;

@@ -139,7 +139,7 @@ public class UnitAttribute extends SliceJpaObject {
 	public static final String attributeList_FIELDNAME = "attributeList";
 	@FieldDescribe("属性值,多值.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + attributeList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + attributeList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_255B, name = ColumnNamePrefix + attributeList_FIELDNAME)

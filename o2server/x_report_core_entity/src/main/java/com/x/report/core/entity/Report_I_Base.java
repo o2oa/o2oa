@@ -162,7 +162,7 @@ public class Report_I_Base extends SliceJpaObject {
 
 	@FieldDescribe("需要工作汇报的业务人员标识")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE
 			+ "_workreportPersonList", joinIndex = @Index(name = TABLE + "_workreportPersonList_join"))
 	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = "xworkreportPersonList")

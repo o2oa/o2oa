@@ -139,7 +139,7 @@ public class PersonAttribute extends SliceJpaObject {
 			+ IndexNameMiddle + attributeList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementIndex(name = TABLE + IndexNameMiddle + attributeList_FIELDNAME + ElementIndexNameSuffix)
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = JpaObject.length_255B, name = ColumnNamePrefix + attributeList_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private List<String> attributeList;

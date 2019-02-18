@@ -81,7 +81,7 @@ public class Message extends SliceJpaObject {
 	public static final String consumerList_FIELDNAME = "consumerList";
 	@FieldDescribe("消费对象.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ consumerList_FIELDNAME, joinIndex = @Index(name = TABLE + consumerList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + consumerList_FIELDNAME)

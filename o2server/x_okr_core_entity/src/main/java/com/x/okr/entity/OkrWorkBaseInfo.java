@@ -436,7 +436,7 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 	public static final String cooperateEmployeeNameList_FIELDNAME = "cooperateEmployeeNameList";
 	@FieldDescribe("协助人姓名，多值")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + cooperateEmployeeNameList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + cooperateEmployeeNameList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
@@ -448,7 +448,7 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 	public static final String cooperateIdentityList_FIELDNAME = "cooperateIdentityList";
 	@FieldDescribe("协助人身份，多值")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + cooperateIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + cooperateIdentityList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
@@ -460,7 +460,7 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 	public static final String cooperateUnitNameList_FIELDNAME = "cooperateUnitNameList";
 	@FieldDescribe("协助人所属组织，多值")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + cooperateUnitNameList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + cooperateUnitNameList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
@@ -472,7 +472,7 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 	public static final String cooperateTopUnitNameList_FIELDNAME = "cooperateTopUnitNameList";
 	@FieldDescribe("协助人所属顶层组织，多值")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + cooperateTopUnitNameList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + cooperateTopUnitNameList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
@@ -484,7 +484,7 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 	public static final String readLeaderIdentityList_FIELDNAME = "readLeaderIdentityList";
 	@FieldDescribe("阅知领导身份，多值")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + readLeaderIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + readLeaderIdentityList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
@@ -496,7 +496,7 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 	public static final String readLeaderNameList_FIELDNAME = "readLeaderNameList";
 	@FieldDescribe("阅知领导，多值")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + readLeaderNameList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + readLeaderNameList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
@@ -508,7 +508,7 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 	public static final String readLeaderUnitNameList_FIELDNAME = "readLeaderUnitNameList";
 	@FieldDescribe("阅知领导所属组织，多值")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + readLeaderUnitNameList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + readLeaderUnitNameList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
@@ -520,7 +520,7 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 	public static final String readLeaderTopUnitNameList_FIELDNAME = "readLeaderTopUnitNameList";
 	@FieldDescribe("阅知领导所属顶层组织，多值")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + readLeaderTopUnitNameList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + readLeaderTopUnitNameList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
@@ -532,7 +532,7 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 	public static final String attachmentList_FIELDNAME = "attachmentList";
 	@FieldDescribe("附件列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + attachmentList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + attachmentList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
@@ -544,7 +544,7 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 	public static final String appraiseInfoList_FIELDNAME = "appraiseInfoList";
 	@FieldDescribe("考核流程信息ID列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = PersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + appraiseInfoList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + appraiseInfoList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
