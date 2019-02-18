@@ -2,6 +2,7 @@ package com.x.query.assemble.designer;
 
 import java.io.File;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.lang.model.element.Modifier;
@@ -153,31 +154,31 @@ public class DynamicEntityBuilder {
 	}
 
 	private void createStringFields(Builder builder) {
-		for (StringField field : ListTools.trim(dynamicEntity.getStringFields(), true, true)) {
+		for (StringField field : ListTools.trim(dynamicEntity.getStringFieldList(), true, true)) {
 			this.createField(builder, field, String.class);
 		}
 	}
 
 	private void createIntegerFields(Builder builder) {
-		for (IntegerField field : ListTools.trim(dynamicEntity.getIntegerFields(), true, true)) {
+		for (IntegerField field : ListTools.trim(dynamicEntity.getIntegerFieldList(), true, true)) {
 			this.createField(builder, field, Integer.class);
 		}
 	}
 
 	private void createLongFields(Builder builder) {
-		for (LongField field : ListTools.trim(dynamicEntity.getLongFields(), true, true)) {
+		for (LongField field : ListTools.trim(dynamicEntity.getLongFieldList(), true, true)) {
 			this.createField(builder, field, Long.class);
 		}
 	}
 
 	private void createDoubleFields(Builder builder) {
-		for (DoubleField field : ListTools.trim(dynamicEntity.getDoubleFields(), true, true)) {
+		for (DoubleField field : ListTools.trim(dynamicEntity.getDoubleFieldList(), true, true)) {
 			this.createField(builder, field, Double.class);
 		}
 	}
 
 	private void createBooleanFields(Builder builder) {
-		for (BooleanField field : ListTools.trim(dynamicEntity.getBooleanFields(), true, true)) {
+		for (BooleanField field : ListTools.trim(dynamicEntity.getBooleanFieldList(), true, true)) {
 			this.createField(builder, field, Boolean.class);
 		}
 	}
@@ -212,7 +213,7 @@ public class DynamicEntityBuilder {
 	}
 
 	private void createDateFields(Builder builder) {
-		for (DateField field : ListTools.trim(dynamicEntity.getDateFields(), true, true)) {
+		for (DateField field : ListTools.trim(dynamicEntity.getDateFieldList(), true, true)) {
 			this.createDateField(builder, field);
 		}
 	}
@@ -223,8 +224,7 @@ public class DynamicEntityBuilder {
 				.addMember("name", "ColumnNamePrefix + " + field.fieldName()).build();
 
 		AnnotationSpec temporal = AnnotationSpec.builder(Temporal.class)
-				.addMember("value", "javax.persistence.Temporal.DATE").build();
-
+				.addMember("value", "javax.persistence.TemporalType.DATE").build();
 		FieldSpec fieldSpec = FieldSpec.builder(Date.class, field.getName(), Modifier.PRIVATE)
 				.addAnnotation(this.fieldDescribe(field)).addAnnotation(this.index(field))
 				.addAnnotation(this.checkPersist(field)).addAnnotation(column).addAnnotation(temporal).build();
@@ -239,7 +239,7 @@ public class DynamicEntityBuilder {
 	}
 
 	private void createTimeFields(Builder builder) {
-		for (TimeField field : ListTools.trim(dynamicEntity.getTimeFields(), true, true)) {
+		for (TimeField field : ListTools.trim(dynamicEntity.getTimeFieldList(), true, true)) {
 			this.createTimeField(builder, field);
 		}
 	}
@@ -250,7 +250,7 @@ public class DynamicEntityBuilder {
 				.addMember("name", "ColumnNamePrefix + " + field.fieldName()).build();
 
 		AnnotationSpec temporal = AnnotationSpec.builder(Temporal.class)
-				.addMember("value", "javax.persistence.Temporal.TIME").build();
+				.addMember("value", "javax.persistence.TemporalType.TIME").build();
 
 		FieldSpec fieldSpec = FieldSpec.builder(Date.class, field.getName(), Modifier.PRIVATE)
 				.addAnnotation(this.fieldDescribe(field)).addAnnotation(this.index(field))
@@ -266,7 +266,7 @@ public class DynamicEntityBuilder {
 	}
 
 	private void createDateTimeFields(Builder builder) {
-		for (DateTimeField field : ListTools.trim(dynamicEntity.getDateTimeFields(), true, true)) {
+		for (DateTimeField field : ListTools.trim(dynamicEntity.getDateTimeFieldList(), true, true)) {
 			this.createDateTimeField(builder, field);
 		}
 	}
@@ -277,7 +277,7 @@ public class DynamicEntityBuilder {
 				.addMember("name", "ColumnNamePrefix + " + field.fieldName()).build();
 
 		AnnotationSpec temporal = AnnotationSpec.builder(Temporal.class)
-				.addMember("value", "javax.persistence.Temporal.TIMESTAMP").build();
+				.addMember("value", "javax.persistence.TemporalType.TIMESTAMP").build();
 
 		FieldSpec fieldSpec = FieldSpec.builder(Date.class, field.getName(), Modifier.PRIVATE)
 				.addAnnotation(this.fieldDescribe(field)).addAnnotation(this.index(field))
@@ -293,37 +293,37 @@ public class DynamicEntityBuilder {
 	}
 
 	private void createListStringFields(Builder builder) {
-		for (StringField field : ListTools.trim(dynamicEntity.getListStringFields(), true, true)) {
+		for (StringField field : ListTools.trim(dynamicEntity.getListStringFieldList(), true, true)) {
 			this.createListFields(builder, field, String.class);
 		}
 	}
 
 	private void createListIntegerFields(Builder builder) {
-		for (IntegerField field : ListTools.trim(dynamicEntity.getListIntegerFields(), true, true)) {
+		for (IntegerField field : ListTools.trim(dynamicEntity.getListIntegerFieldList(), true, true)) {
 			this.createListFields(builder, field, Integer.class);
 		}
 	}
 
 	private void createListLongFields(Builder builder) {
-		for (LongField field : ListTools.trim(dynamicEntity.getListLongFields(), true, true)) {
+		for (LongField field : ListTools.trim(dynamicEntity.getListLongFieldList(), true, true)) {
 			this.createListFields(builder, field, Long.class);
 		}
 	}
 
 	private void createListDoubleFields(Builder builder) {
-		for (DoubleField field : ListTools.trim(dynamicEntity.getListDoubleFields(), true, true)) {
+		for (DoubleField field : ListTools.trim(dynamicEntity.getListDoubleFieldList(), true, true)) {
 			this.createListFields(builder, field, Double.class);
 		}
 	}
 
 	private void createListBooleanFields(Builder builder) {
-		for (BooleanField field : ListTools.trim(dynamicEntity.getListBooleanFields(), true, true)) {
+		for (BooleanField field : ListTools.trim(dynamicEntity.getListBooleanFieldList(), true, true)) {
 			this.createListFields(builder, field, Boolean.class);
 		}
 	}
 
 	private void createListDateTimeFields(Builder builder) {
-		for (BooleanField field : ListTools.trim(dynamicEntity.getListBooleanFields(), true, true)) {
+		for (DateTimeField field : ListTools.trim(dynamicEntity.getListDateTimeFieldList(), true, true)) {
 			this.createListFields(builder, field, Date.class);
 		}
 	}
@@ -336,7 +336,7 @@ public class DynamicEntityBuilder {
 //				+ IndexNameMiddle + groupList_FIELDNAME + JoinIndexNameSuffix))
 //		@ElementIndex(name = TABLE + IndexNameMiddle + groupList_FIELDNAME + ElementIndexNameSuffix)
 //		@PersistentCollection(fetch = FetchType.EAGER)
-//		@OrderColumn(name = PersistenceProperties.orderColumn)
+//		@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 //		@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + groupList_FIELDNAME)
 //		@CheckPersist(allowEmpty = true, citationExists = @CitationExist(type = Group.class))
 //		private List<String> groupList;
@@ -354,8 +354,8 @@ public class DynamicEntityBuilder {
 		AnnotationSpec persistentCollection = AnnotationSpec.builder(PersistentCollection.class)
 				.addMember("fetch", "javax.persistence.FetchType.EAGER").build();
 
-		AnnotationSpec orderColumn = AnnotationSpec.builder(OrderColumn.class)
-				.addMember("name", "com.x.organization.core.entity.AbstractPersistenceProperties.orderColumn").build();
+		AnnotationSpec orderColumn = AnnotationSpec.builder(OrderColumn.class).addMember("name", "ORDERCOLUMNCOLUMN")
+				.build();
 
 		AnnotationSpec elementColumn = AnnotationSpec.builder(ElementColumn.class).addMember("length", "length_255B")
 				.addMember("name", "ColumnNamePrefix + " + field.fieldName()).build();
@@ -378,7 +378,7 @@ public class DynamicEntityBuilder {
 	}
 
 	private void createStringLobFields(Builder builder) {
-		for (StringLobField field : ListTools.trim(dynamicEntity.getStringLobFields(), true, true)) {
+		for (StringLobField field : ListTools.trim(dynamicEntity.getStringLobFieldList(), true, true)) {
 			this.createStringLobField(builder, field);
 		}
 	}
@@ -413,7 +413,7 @@ public class DynamicEntityBuilder {
 	}
 
 	private void createStringMapFields(Builder builder) {
-		for (StringMapField field : ListTools.trim(dynamicEntity.getStringMapFields(), true, true)) {
+		for (StringMapField field : ListTools.trim(dynamicEntity.getStringMapFieldList(), true, true)) {
 			this.createStringMapField(builder, field);
 		}
 	}
@@ -454,16 +454,19 @@ public class DynamicEntityBuilder {
 		AnnotationSpec keyIndex = AnnotationSpec.builder(KeyIndex.class)
 				.addMember("name", "TABLE + IndexNameMiddle + " + field.fieldName() + " + KeyIndexNameSuffix").build();
 
-		FieldSpec fieldSpec = FieldSpec.builder(String.class, field.getName(), Modifier.PRIVATE)
+		ClassName type = ClassName.get(String.class);
+		ClassName map = ClassName.get(LinkedHashMap.class);
+		TypeName map_type = ParameterizedTypeName.get(map, type, type);
+
+		FieldSpec fieldSpec = FieldSpec.builder(map_type, field.getName(), Modifier.PRIVATE)
 				.addAnnotation(this.fieldDescribe(field)).addAnnotation(persistentMap).addAnnotation(containerTable)
 				.addAnnotation(keyColumn).addAnnotation(elementColumn).addAnnotation(elementIndex)
 				.addAnnotation(keyIndex).build();
 
 		MethodSpec get = MethodSpec.methodBuilder("get" + StringUtils.capitalize(field.getName()))
-				.addModifiers(Modifier.PUBLIC).returns(String.class).addStatement("return this." + field.getName())
-				.build();
+				.addModifiers(Modifier.PUBLIC).returns(map_type).addStatement("return this." + field.getName()).build();
 		MethodSpec set = MethodSpec.methodBuilder("set" + StringUtils.capitalize(field.getName()))
-				.addModifiers(Modifier.PUBLIC).returns(void.class).addParameter(String.class, field.getName())
+				.addModifiers(Modifier.PUBLIC).returns(void.class).addParameter(map_type, field.getName())
 				.addStatement("this." + field.getName() + " = " + field.getName()).build();
 		builder.addField(this.fieldName(field)).addField(fieldSpec).addMethod(get).addMethod(set);
 

@@ -36,11 +36,11 @@ import com.x.query.assemble.designer.DynamicEntityBuilder;
 import com.x.query.core.entity.schema.Enhance;
 import com.x.query.core.entity.schema.Table;
 
-class ActionBuild extends BaseAction {
+class ActionBuildAll extends BaseAction {
 
 	private static final String DOT_JAR = ".jar";
 
-	private static Logger logger = LoggerFactory.getLogger(ActionBuild.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionBuildAll.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -104,6 +104,7 @@ class ActionBuild extends BaseAction {
 	}
 
 	private void enhance() throws Exception {
+
 		File commandJavaFile = null;
 		if (SystemUtils.IS_OS_AIX) {
 			commandJavaFile = new File(Config.dir_jvm_aix(), "bin/java");
@@ -126,7 +127,9 @@ class ActionBuild extends BaseAction {
 
 		logger.debug("enhance command:{}.", command);
 
-		Runtime.getRuntime().exec(command);
+		Process process = Runtime.getRuntime().exec(command);
+
+		process.waitFor();
 	}
 
 	public static class Wo extends WrapBoolean {

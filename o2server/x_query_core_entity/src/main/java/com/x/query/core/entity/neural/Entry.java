@@ -93,7 +93,7 @@ public class Entry extends SliceJpaObject {
 	public static final String inValueLabelList_FIELDNAME = "inValueLabelList";
 	@FieldDescribe("输入标签")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ inValueLabelList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + inValueLabelList_FIELDNAME
 					+ JoinIndexNameSuffix))
@@ -105,7 +105,7 @@ public class Entry extends SliceJpaObject {
 	public static final String outValueLabelList_FIELDNAME = "outValueLabelList";
 	@FieldDescribe("结果标签")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = AbstractPersistenceProperties.orderColumn)
+	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ outValueLabelList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ outValueLabelList_FIELDNAME + JoinIndexNameSuffix))

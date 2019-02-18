@@ -29,14 +29,15 @@ class ActionRowUpdate extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson, table);
 			}
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
-			Class<? extends JpaObject> clz = (Class<JpaObject>) Class.forName(dynamicEntity.className());
-			JpaObject o = emc.find(id, clz);
+			@SuppressWarnings("unchecked")
+			Class<? extends JpaObject> cls = (Class<JpaObject>) Class.forName(dynamicEntity.className());
+			JpaObject o = emc.find(id, cls);
 			Wo wo = new Wo();
 			wo.setValue(false);
 			if (null != o) {
-				JpaObject n = XGsonBuilder.instance().fromJson(jsonElement, clz);
+				JpaObject n = XGsonBuilder.instance().fromJson(jsonElement, cls);
 				n.copyTo(o, JpaObject.FieldsUnmodify);
-				emc.beginTransaction(clz);
+				emc.beginTransaction(cls);
 				emc.check(o, CheckPersistType.all);
 				emc.commit();
 				wo.setValue(true);

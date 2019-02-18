@@ -25,12 +25,13 @@ class ActionRowDelete extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson, table);
 			}
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
-			Class<? extends JpaObject> clz = (Class<JpaObject>) Class.forName(dynamicEntity.className());
-			JpaObject o = emc.find(id, clz);
+			@SuppressWarnings("unchecked")
+			Class<? extends JpaObject> cls = (Class<JpaObject>) Class.forName(dynamicEntity.className());
+			JpaObject o = emc.find(id, cls);
 			Wo wo = new Wo();
 			wo.setValue(false);
 			if (null != o) {
-				emc.beginTransaction(clz);
+				emc.beginTransaction(cls);
 				emc.remove(o);
 				emc.commit();
 				wo.setValue(true);

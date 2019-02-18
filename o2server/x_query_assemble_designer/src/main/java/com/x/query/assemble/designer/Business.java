@@ -93,8 +93,8 @@ public class Business {
 
 	public boolean editable(EffectivePerson effectivePerson, Query o) throws Exception {
 		boolean result = false;
-		if (effectivePerson.isManager()
-				|| (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.QueryManager))) {
+		if (effectivePerson.isManager() || (this.organization().person().hasRole(effectivePerson,
+				OrganizationDefinition.Manager, OrganizationDefinition.QueryManager))) {
 			result = true;
 		}
 		if (!result && (null != o)) {
@@ -113,7 +113,7 @@ public class Business {
 			}
 			if (!result) {
 				if (effectivePerson.isManager() || (this.organization().person().hasRole(effectivePerson,
-						OrganizationDefinition.QueryManager))) {
+						OrganizationDefinition.Manager, OrganizationDefinition.QueryManager))) {
 					result = true;
 				}
 				if (!result) {
@@ -138,18 +138,24 @@ public class Business {
 
 	public boolean editable(EffectivePerson effectivePerson, Table o) throws Exception {
 		boolean result = false;
-		if (effectivePerson.isManager()
-				|| (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.QueryManager))) {
+		if (effectivePerson.isManager() || (this.organization().person().hasRole(effectivePerson,
+				OrganizationDefinition.Manager, OrganizationDefinition.QueryManager))) {
 			result = true;
 		}
 		if (!result && (null != o)) {
-			if (effectivePerson.isUser(o.getEditPersonList())) {
+			if (ListTools.isEmpty(o.getEditPersonList()) && ListTools.isEmpty(o.getEditUnitList())) {
 				result = true;
-			}
-			if (!result && ListTools.isNotEmpty(o.getEditUnitList())) {
-				List<String> units = this.organization().unit().listWithPerson(effectivePerson.getDistinguishedName());
-				if (ListTools.containsAny(units, o.getEditUnitList())) {
-					result = true;
+				if (!result) {
+					if (effectivePerson.isUser(o.getEditPersonList())) {
+						result = true;
+					}
+					if (!result && ListTools.isNotEmpty(o.getEditUnitList())) {
+						List<String> units = this.organization().unit()
+								.listWithPerson(effectivePerson.getDistinguishedName());
+						if (ListTools.containsAny(units, o.getEditUnitList())) {
+							result = true;
+						}
+					}
 				}
 			}
 		}
@@ -164,7 +170,8 @@ public class Business {
 			}
 			if (!result) {
 				if (effectivePerson.isManager()
-						|| (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.QueryManager))
+						|| (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+								OrganizationDefinition.QueryManager))
 						|| effectivePerson.isUser(o.getExecutePersonList())) {
 					result = true;
 				}
