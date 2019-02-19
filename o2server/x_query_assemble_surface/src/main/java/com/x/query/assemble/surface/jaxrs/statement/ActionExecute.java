@@ -1,4 +1,4 @@
-package com.x.query.assemble.designer.jaxrs.statement;
+package com.x.query.assemble.surface.jaxrs.statement;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,7 +20,7 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.scripting.ScriptingEngine;
-import com.x.query.assemble.designer.Business;
+import com.x.query.assemble.surface.Business;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 
@@ -54,20 +54,12 @@ class ActionExecute extends BaseAction {
 
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
 			@SuppressWarnings("unchecked")
-			Class<? extends JpaObject> cls = (Class<JpaObject>) Class.forName(dynamicEntity.className());
-			EntityManager em = emc.get(cls);
+			EntityManager em = emc.get((Class<JpaObject>) Class.forName(dynamicEntity.className()));
 			Query query = em.createQuery(statement.getData());
 			for (Entry<String, Object> en : parameter.entrySet()) {
 				query.setParameter(en.getKey(), en.getValue());
 			}
-			Object data = null;
-			if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
-				data = query.getResultList();
-			} else {
-				emc.beginTransaction(cls);
-				data = query.executeUpdate();
-				emc.commit();
-			}
+			Object data = query.getResultList();
 			if (StringUtils.isNotBlank(statement.getAfterScriptText())) {
 				this.initScriptingEngine(business, effectivePerson);
 				scriptingEngine.bindingData(data);
@@ -90,6 +82,7 @@ class ActionExecute extends BaseAction {
 	private void initScriptingEngine(Business business, EffectivePerson effectivePerson) {
 		if (null == this.scriptingEngine) {
 			this.scriptingEngine = business.createScriptEngine().bindingEffectivePerson(effectivePerson);
+
 		}
 	}
 

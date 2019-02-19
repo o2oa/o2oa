@@ -129,26 +129,6 @@
 			"description": "lbf2"
 		}
 	],
-	"listDateFieldList": [
-			{
-			"name": "ldtf1",
-			"description": "ldtf1"
-		},
-		{
-			"name": "ldtf2",
-			"description": "ldtf2"
-		}
-	],
-	"listTimeFieldList": [
-				{
-			"name": "ltf1",
-			"description": "ltf1"
-		},
-		{
-			"name": "ltf2",
-			"description": "ltf2"
-		}
-	],
 	"listDateTimeFieldList": [
 				{
 			"name": "ldttf1",

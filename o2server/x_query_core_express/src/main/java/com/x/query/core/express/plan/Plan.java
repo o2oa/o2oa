@@ -495,7 +495,7 @@ public abstract class Plan extends GsonPropertyObject {
 				switch (ItemStringValueType.valueOf(Objects.toString(o.get(2)))) {
 				case s:
 					if (null != o.get(3)) {
-						if (StringUtils.isNotEmpty(Objects.toString(o.get(4)))) {
+						if ((null != o.get(4)) && StringUtils.isNotEmpty(Objects.toString(o.get(4)))) {
 							row.put(selectEntry.getColumn(), Objects.toString(o.get(4)));
 						} else {
 							row.put(selectEntry.getColumn(), Objects.toString(o.get(3)));

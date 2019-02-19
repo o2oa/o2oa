@@ -1,4 +1,4 @@
-package com.x.query.assemble.designer;
+package com.x.base.core.entity.dynamic;
 
 import java.util.ArrayList;
 import java.util.List;

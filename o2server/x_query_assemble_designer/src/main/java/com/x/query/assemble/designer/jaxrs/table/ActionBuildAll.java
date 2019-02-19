@@ -1,6 +1,8 @@
 package com.x.query.assemble.designer.jaxrs.table;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -20,6 +22,8 @@ import org.apache.commons.lang3.SystemUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.dynamic.DynamicEntity;
+import com.x.base.core.entity.dynamic.DynamicEntityBuilder;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -31,8 +35,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.JarTools;
 import com.x.query.assemble.designer.Business;
-import com.x.query.assemble.designer.DynamicEntity;
-import com.x.query.assemble.designer.DynamicEntityBuilder;
 import com.x.query.core.entity.schema.Enhance;
 import com.x.query.core.entity.schema.Table;
 
@@ -76,19 +78,7 @@ class ActionBuildAll extends BaseAction {
 			Iterable<JavaFileObject> res = fileManager.list(StandardLocation.SOURCE_PATH, DynamicEntity.CLASS_PACKAGE,
 					EnumSet.of(JavaFileObject.Kind.SOURCE), true);
 			compiler.getTask(null, fileManager, null, null, null, res).call();
-//			URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-//			Class<?> urlClass = URLClassLoader.class;
-//			Method method = urlClass.getDeclaredMethod("addURL", new Class[] { URL.class });
-//			method.setAccessible(true);
-//
-//			method.invoke(urlClassLoader, new Object[] { target.toURI().toURL() });
-//
-//			Collection<File> files = FileUtils.listFiles(target, FileFilterUtils.suffixFileFilter(DOT_CLASS),
-//					DirectoryFileFilter.INSTANCE);
-//
-//			for (File f : files) {
-//				PCEnhancer.main(new String[] { f.getAbsolutePath() });
-//			}
+
 			fileManager.close();
 
 			this.enhance();
@@ -122,14 +112,28 @@ class ActionBuildAll extends BaseAction {
 		paths.add(Config.dir_commons_ext().getAbsolutePath() + File.separator + "*");
 		paths.add(Config.dir_local_temp_dynamic_target().getAbsolutePath());
 
-		String command = commandJavaFile.getAbsolutePath() + " -cp \"" + StringUtils.join(paths, File.pathSeparator)
-				+ "\" " + Enhance.class.getName();
+		String command = commandJavaFile.getAbsolutePath() + " -classpath \""
+				+ StringUtils.join(paths, File.pathSeparator) + "\" " + Enhance.class.getName() + " \""
+				+ Config.dir_local_temp_dynamic_target() + "\"";
 
 		logger.debug("enhance command:{}.", command);
 
-		Process process = Runtime.getRuntime().exec(command);
+		ProcessBuilder processBuilder = new ProcessBuilder();
+
+		if (SystemUtils.IS_OS_AIX) {
+			processBuilder.command("sh", "-c", command);
+		} else if (SystemUtils.IS_OS_LINUX) {
+			processBuilder.command("sh", "-c", command);
+		} else if (SystemUtils.IS_OS_MAC) {
+			processBuilder.command("sh", "-c", command);
+		} else {
+			processBuilder.command("cmd", "/c", command);
+		}
+
+		Process process = processBuilder.start();
 
 		process.waitFor();
+
 	}
 
 	public static class Wo extends WrapBoolean {
