@@ -1,6 +1,7 @@
-package com.x.query.assemble.designer.jaxrs.table;
+package com.x.query.assemble.surface.jaxrs.table;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -21,12 +22,12 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.query.assemble.designer.Business;
+import com.x.query.assemble.surface.Business;
 import com.x.query.core.entity.schema.Table;
 
-class ActionListRowNext extends BaseAction {
+class ActionListRowPrev extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListRowNext.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionListRowPrev.class);
 
 	ActionResult<List<JsonObject>> execute(EffectivePerson effectivePerson, String tableFlag, String id, Integer count)
 			throws Exception {
@@ -58,26 +59,38 @@ class ActionListRowNext extends BaseAction {
 			for (String str : fields) {
 				selects.add("o." + str);
 			}
+			result.setCount(emc.count(cls));
 			String sql = "select " + StringUtils.join(selects, ", ") + " from " + cls.getName() + " o";
 			Long rank = 0L;
-			if (null != sequence) {
-				sql += " where o." + JpaObject.sequence_FIELDNAME + " < ?1";
-				rank = emc.countGreaterThanOrEqualTo(cls, JpaObject.sequence_FIELDNAME, sequence);
-			}
-			sql += " order by o." + JpaObject.sequence_FIELDNAME + " DESC";
-			Query query = em.createQuery(sql, Object[].class);
-			if (null != sequence) {
-				query.setParameter(1, sequence);
-			}
-			List<Object[]> list = query.setMaxResults(Math.max(Math.min(count, list_max), list_min)).getResultList();
 			List<JsonObject> wos = new ArrayList<>();
-			result.setCount(emc.count(cls));
-			for (Object[] os : list) {
-				JsonObject jsonObject = XGsonBuilder.instance().toJsonTree(JpaObject.cast(cls, fields, os))
-						.getAsJsonObject();
-				jsonObject.getAsJsonObject().addProperty("rank", ++rank);
-				wos.add(jsonObject);
+			if (null != sequence) {
+				sql += " where o." + JpaObject.sequence_FIELDNAME + " > ?1 order by o." + JpaObject.sequence_FIELDNAME
+						+ " ASC";
+				rank = emc.countGreaterThan(cls, JpaObject.sequence_FIELDNAME, sequence);
+				Query query = em.createQuery(sql, Object[].class);
+				query.setParameter(1, sequence);
+				List<Object[]> list = query.setMaxResults(Math.max(Math.min(count, list_max), list_min))
+						.getResultList();
+				for (Object[] os : list) {
+					JsonObject jsonObject = XGsonBuilder.instance().toJsonTree(JpaObject.cast(cls, fields, os))
+							.getAsJsonObject();
+					jsonObject.getAsJsonObject().addProperty("rank", rank--);
+					wos.add(jsonObject);
+				}
+			} else {
+				sql += " order by o." + JpaObject.sequence_FIELDNAME + " ASC";
+				rank = result.getCount();
+				Query query = em.createQuery(sql, Object[].class);
+				List<Object[]> list = query.setMaxResults(Math.max(Math.min(count, list_max), list_min))
+						.getResultList();
+				for (Object[] os : list) {
+					JsonObject jsonObject = XGsonBuilder.instance().toJsonTree(JpaObject.cast(cls, fields, os))
+							.getAsJsonObject();
+					jsonObject.getAsJsonObject().addProperty("rank", rank--);
+					wos.add(jsonObject);
+				}
 			}
+			Collections.reverse(wos);
 			result.setData(wos);
 			return result;
 		}

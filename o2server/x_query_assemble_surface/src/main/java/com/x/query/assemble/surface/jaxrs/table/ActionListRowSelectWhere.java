@@ -1,25 +1,27 @@
-package com.x.query.assemble.designer.jaxrs.table;
+package com.x.query.assemble.surface.jaxrs.table;
 
-import com.google.gson.JsonElement;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.dynamic.DynamicEntity;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WrapBoolean;
-import com.x.query.assemble.designer.Business;
+import com.x.query.assemble.surface.Business;
 import com.x.query.core.entity.schema.Table;
 
-class ActionRowUpdate extends BaseAction {
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String tableFlag, String id, JsonElement jsonElement)
-			throws Exception {
+class ActionListRowSelectWhere extends BaseAction {
+
+	ActionResult<List<?>> execute(EffectivePerson effectivePerson, String tableFlag, String where) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
+			ActionResult<List<?>> result = new ActionResult<>();
 			Table table = emc.flag(tableFlag, Table.class);
 			Business business = new Business(emc);
 			if (null == table) {
@@ -30,25 +32,16 @@ class ActionRowUpdate extends BaseAction {
 			}
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
 			@SuppressWarnings("unchecked")
-			Class<? extends JpaObject> cls = (Class<JpaObject>) Class.forName(dynamicEntity.className());
-			JpaObject o = emc.find(id, cls);
-			Wo wo = new Wo();
-			wo.setValue(false);
-			if (null != o) {
-				JpaObject n = XGsonBuilder.instance().fromJson(jsonElement, cls);
-				n.copyTo(o, JpaObject.FieldsUnmodify);
-				emc.beginTransaction(cls);
-				emc.check(o, CheckPersistType.all);
-				emc.commit();
-				wo.setValue(true);
+			Class<? extends JpaObject> clz = (Class<JpaObject>) Class.forName(dynamicEntity.className());
+			EntityManager em = emc.get(clz);
+			String sql = "SELECT o FROM " + clz.getName() + " o";
+			if (StringUtils.isNotBlank(where) && (!StringUtils.equals(where, EMPTY_SYMBOL))) {
+				sql += " where (" + where + ")";
 			}
-			result.setData(wo);
+			List<?> list = em.createQuery(sql).getResultList();
+			result.setData(list);
 			return result;
 		}
-	}
-
-	public static class Wo extends WrapBoolean {
-
 	}
 
 }

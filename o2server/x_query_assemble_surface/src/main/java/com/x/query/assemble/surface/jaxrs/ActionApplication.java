@@ -10,6 +10,8 @@ import com.x.query.assemble.surface.jaxrs.query.QueryAction;
 import com.x.query.assemble.surface.jaxrs.reveal.RevealAction;
 import com.x.query.assemble.surface.jaxrs.segment.SegmentAction;
 import com.x.query.assemble.surface.jaxrs.stat.StatAction;
+import com.x.query.assemble.surface.jaxrs.statement.StatementAction;
+import com.x.query.assemble.surface.jaxrs.table.TableAction;
 import com.x.query.assemble.surface.jaxrs.test.TestAction;
 import com.x.query.assemble.surface.jaxrs.view.ViewAction;
 
@@ -24,6 +26,8 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(TestAction.class);
 		classes.add(SegmentAction.class);
 		classes.add(NeuralAction.class);
+		classes.add(TableAction.class);
+		classes.add(StatementAction.class);
 		return classes;
 	}
 

@@ -1,4 +1,4 @@
-package com.x.query.assemble.designer.jaxrs.table;
+package com.x.query.assemble.surface.jaxrs.table;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapIdList;
 import com.x.base.core.project.jaxrs.WrapLong;
 import com.x.base.core.project.tools.ListTools;
-import com.x.query.assemble.designer.Business;
+import com.x.query.assemble.surface.Business;
 import com.x.query.core.entity.schema.Table;
 
 class ActionRowDeleteBatch extends BaseAction {

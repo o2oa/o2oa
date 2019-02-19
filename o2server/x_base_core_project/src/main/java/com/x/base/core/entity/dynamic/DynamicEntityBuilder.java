@@ -1,4 +1,4 @@
-package com.x.query.assemble.designer;
+package com.x.base.core.entity.dynamic;
 
 import java.io.File;
 import java.util.Date;
@@ -39,19 +39,20 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
+import com.x.base.core.entity.dynamic.DynamicEntity.BooleanField;
+import com.x.base.core.entity.dynamic.DynamicEntity.DateField;
+import com.x.base.core.entity.dynamic.DynamicEntity.DateTimeField;
+import com.x.base.core.entity.dynamic.DynamicEntity.DoubleField;
+import com.x.base.core.entity.dynamic.DynamicEntity.Field;
+import com.x.base.core.entity.dynamic.DynamicEntity.IntegerField;
+import com.x.base.core.entity.dynamic.DynamicEntity.LongField;
+import com.x.base.core.entity.dynamic.DynamicEntity.StringField;
+import com.x.base.core.entity.dynamic.DynamicEntity.StringLobField;
+import com.x.base.core.entity.dynamic.DynamicEntity.StringMapField;
+import com.x.base.core.entity.dynamic.DynamicEntity.TimeField;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.ListTools;
-import com.x.query.assemble.designer.DynamicEntity.BooleanField;
-import com.x.query.assemble.designer.DynamicEntity.DateField;
-import com.x.query.assemble.designer.DynamicEntity.DateTimeField;
-import com.x.query.assemble.designer.DynamicEntity.DoubleField;
-import com.x.query.assemble.designer.DynamicEntity.Field;
-import com.x.query.assemble.designer.DynamicEntity.IntegerField;
-import com.x.query.assemble.designer.DynamicEntity.LongField;
-import com.x.query.assemble.designer.DynamicEntity.StringField;
-import com.x.query.assemble.designer.DynamicEntity.StringLobField;
-import com.x.query.assemble.designer.DynamicEntity.StringMapField;
-import com.x.query.assemble.designer.DynamicEntity.TimeField;
+ 
 
 public class DynamicEntityBuilder {
 

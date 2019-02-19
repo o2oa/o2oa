@@ -9,6 +9,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.entity.dynamic.DynamicEntity;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
@@ -21,7 +22,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
-import com.x.query.assemble.designer.DynamicEntity;
 import com.x.query.core.entity.schema.Table;
 
 class ActionCreate extends BaseAction {

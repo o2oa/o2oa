@@ -1,4 +1,4 @@
-package com.x.query.assemble.designer.jaxrs.table;
+package com.x.query.assemble.surface.jaxrs.table;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -12,7 +12,7 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
-import com.x.query.assemble.designer.Business;
+import com.x.query.assemble.surface.Business;
 import com.x.query.core.entity.schema.Table;
 
 class ActionRowUpdate extends BaseAction {
