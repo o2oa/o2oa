@@ -25,25 +25,4 @@ public class x_strategydeploy_assemble_control extends AssembleA {
 		dependency.storeJars.add(x_collaboration_core_message.class.getSimpleName());
 		dependency.customJars.add("x_strategydeploy_core_entity");
 	}
-
-//	public static final Dependency dependency = new Dependency();
-//
-//	static {
-//		dependency.containerEntities.add("com.x.strategydeploy.core.entity.Attachment");
-//		dependency.containerEntities.add("com.x.strategydeploy.core.entity.StrategyDeploy");
-//		dependency.containerEntities.add("com.x.strategydeploy.core.entity.MeasuresInfo");
-//		dependency.containerEntities.add("com.x.strategydeploy.core.entity.KeyworkInfo");
-//		dependency.containerEntities.add("com.x.strategydeploy.core.entity.StrategyConfigSys");
-//		dependency.storageTypes.add(StorageType.strategyDeploy.toString());
-//		dependency.storeJars.add(x_organization_core_express.class.getName());
-//		dependency.storeJars.add(x_organization_core_entity.class.getName());
-//		dependency.storeJars.add(x_collaboration_core_message.class.getName());
-//		dependency.customJars.add("x_strategydeploy_core_entity");
-//	}
-
-//	public static final String name = "战略工作";
-//	public static List<String> containerEntities = new ArrayList<>();
-//	public static List<StorageType> usedStorageTypes = new ArrayList<>();
-//	public static List<Class<? extends Compilable>> dependents = new ArrayList<>();
-
 }
