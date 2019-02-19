@@ -118,7 +118,7 @@ public class CommandFactory {
 			help += StringUtils.LF;
 			help += " update (passwd)" + "\t\t\t\t\t" + "upgrade to next version.";
 			help += StringUtils.LF;
-			help += " compact data (passwod)" + "\t\t\t\t\t" + "compact local h2 repository database.";
+			help += " compact data (passwd)" + "\t\t\t\t\t" + "compact local h2 repository database.";
 			help += StringUtils.LF;
 			help += " erase content (cms|pp|bbs|log|report) (passwd)" + "\t\t" + "remove all data except design.";
 			help += StringUtils.LF;
