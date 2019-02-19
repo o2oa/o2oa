@@ -66,6 +66,12 @@ public class Node extends ConfigObject {
 	private Boolean quickStartWebApp;
 	@FieldDescribe("服务器控制台启动标识")
 	private String banner;
+	@FieldDescribe("是否自动启动")
+	private Boolean autoStart;
+
+	public Boolean autoStart() {
+		return BooleanUtils.isTrue(autoStart);
+	}
 
 	public String getLogLevel() {
 		// "trace", "debug", "info", "warn", "error" or "off"
@@ -234,10 +240,6 @@ public class Node extends ConfigObject {
 			return (null == date) ? "" : this.date;
 		}
 
-	}
-
-	public void setQuickStartWebApp(Boolean quickStartWebApp) {
-		this.quickStartWebApp = quickStartWebApp;
 	}
 
 }
