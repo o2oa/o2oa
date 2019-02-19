@@ -205,21 +205,24 @@ public class SyncOrganization {
 		logger.print("正在删除单个组织{}.", unit.getDistinguishedName());
 		EntityManagerContainer emc = business.entityManagerContainer();
 		emc.beginTransaction(UnitAttribute.class);
-		emc.beginTransaction(UnitDuty.class);
-		emc.beginTransaction(Identity.class);
-		emc.beginTransaction(Unit.class);
 		for (UnitAttribute o : emc.listEqual(UnitAttribute.class, UnitAttribute.unit_FIELDNAME, unit.getId())) {
 			emc.remove(o, CheckRemoveType.all);
 			result.getRemoveUnitAttributeList().add(o.getDistinguishedName());
 		}
+		emc.commit();
+		emc.beginTransaction(UnitDuty.class);
 		for (UnitDuty o : emc.listEqual(UnitDuty.class, UnitDuty.unit_FIELDNAME, unit.getId())) {
 			emc.remove(o, CheckRemoveType.all);
 			result.getRemoveUnitDutyList().add(o.getDistinguishedName());
 		}
+		emc.commit();
+		emc.beginTransaction(Identity.class);
 		for (Identity o : emc.listEqual(Identity.class, Identity.unit_FIELDNAME, unit.getId())) {
 			emc.remove(o, CheckRemoveType.all);
 			result.getRemoveIdentityList().add(o.getDistinguishedName());
 		}
+		emc.commit();
+		emc.beginTransaction(Unit.class);
 		emc.remove(unit, CheckRemoveType.all);
 		emc.commit();
 		result.getRemoveUnitList().add(unit.getDistinguishedName());
@@ -352,13 +355,14 @@ public class SyncOrganization {
 
 	private void removePerson(Business business, PullResult result, Person person) throws Exception {
 		EntityManagerContainer emc = business.entityManagerContainer();
-		emc.beginTransaction(Person.class);
 		emc.beginTransaction(PersonAttribute.class);
 		for (PersonAttribute o : emc.listEqual(PersonAttribute.class, PersonAttribute.person_FIELDNAME,
 				person.getId())) {
 			result.getRemovePersonAttributeList().add(o.getDistinguishedName());
 			emc.remove(o, CheckRemoveType.all);
 		}
+		emc.commit();
+		emc.beginTransaction(Person.class);
 		emc.remove(person, CheckRemoveType.all);
 		emc.commit();
 		result.getRemovePersonList().add(person.getDistinguishedName());
@@ -438,7 +442,7 @@ public class SyncOrganization {
 		/* 删除身份 */
 		for (Identity identity : ListUtils.subtract(allIdentities, identities)) {
 			Person person = emc.find(identity.getPerson(), Person.class);
-			if (null == person || StringUtils.isNotEmpty(person.getQiyeweixinId())) {
+			if (null == person || StringUtils.isNotEmpty(person.getZhengwuDingdingId())) {
 				List<UnitDuty> uds = emc.listIsMember(UnitDuty.class, UnitDuty.identityList_FIELDNAME,
 						identity.getId());
 				if (ListTools.isNotEmpty(uds)) {
