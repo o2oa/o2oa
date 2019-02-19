@@ -137,6 +137,10 @@ public class Main {
 			SchedulerBuilder schedulerBuilder = new SchedulerBuilder();
 			Scheduler scheduler = schedulerBuilder.start();
 
+			if (Config.currentNode().autoStart()) {
+				startAll();
+			}
+
 			Matcher matcher = null;
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(pipedInput))) {
 				String cmd = "";
