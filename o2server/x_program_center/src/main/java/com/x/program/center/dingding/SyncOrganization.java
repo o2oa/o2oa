@@ -442,7 +442,7 @@ public class SyncOrganization {
 		/* 删除身份 */
 		for (Identity identity : ListUtils.subtract(allIdentities, identities)) {
 			Person person = emc.find(identity.getPerson(), Person.class);
-			if (null == person || StringUtils.isNotEmpty(person.getQiyeweixinId())) {
+			if (null == person || StringUtils.isNotEmpty(person.getDingdingId())) {
 				List<UnitDuty> uds = emc.listIsMember(UnitDuty.class, UnitDuty.identityList_FIELDNAME,
 						identity.getId());
 				if (ListTools.isNotEmpty(uds)) {
