@@ -6,7 +6,8 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.ActionResult;
-import com.x.base.core.project.http.WrapOutBoolean;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
@@ -14,9 +15,9 @@ class ActionCheckMobile extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionCheckMobile.class);
 
-	ActionResult<WrapOutBoolean> execute(String mobile) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson,String mobile) throws Exception {
 
-		ActionResult<WrapOutBoolean> result = new ActionResult<>();
+		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			if (!Config.person().isMobile(mobile)) {
 				throw new ExceptionInvalidMobile(mobile);
@@ -27,11 +28,14 @@ class ActionCheckMobile extends BaseAction {
 			if (BooleanUtils.isNotTrue(Config.collect().getEnable())) {
 				throw new ExceptionDisableCollect();
 			}
-			WrapOutBoolean wrap = new WrapOutBoolean();
-			wrap.setValue(true);
-			result.setData(wrap);
+			Wo wo = new Wo();
+			wo.setValue(true);
+			result.setData(wo);
 			return result;
 		}
+	}
+
+	public static class Wo extends WrapBoolean {
 	}
 
 }

@@ -3,37 +3,40 @@ package com.x.organization.assemble.personal.jaxrs.regist;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.JsonElement;
 import com.wx.pwd.CheckStrength;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.type.GenderType;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.WrapOutBoolean;
+import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.StringTools;
 import com.x.organization.assemble.personal.Business;
-import com.x.organization.assemble.personal.wrapin.WrapInRegist;
 import com.x.organization.core.entity.Person;
 
 class ActionCreate extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionCreate.class);
 
-	ActionResult<WrapOutBoolean> execute(WrapInRegist wrapIn) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<WrapOutBoolean> result = new ActionResult<>();
-			WrapOutBoolean wrap = new WrapOutBoolean();
+			ActionResult<Wo> result = new ActionResult<>();
+			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			String name = wrapIn.getName();
-			String password = wrapIn.getPassword();
-			String mobile = wrapIn.getMobile();
-			GenderType genderType = wrapIn.getGenderType();
-			String codeAnswer = wrapIn.getCodeAnswer();
-			String captcha = wrapIn.getCaptcha();
-			String captchaAnswer = wrapIn.getCaptchaAnswer();
+			String name = wi.getName();
+			String password = wi.getPassword();
+			String mobile = wi.getMobile();
+			GenderType genderType = wi.getGenderType();
+			String codeAnswer = wi.getCodeAnswer();
+			String captcha = wi.getCaptcha();
+			String captchaAnswer = wi.getCaptchaAnswer();
 			if (StringUtils.equals(com.x.base.core.project.config.Person.REGISTER_TYPE_DISABLE,
 					Config.person().getRegister())) {
 				throw new ExceptionDisableRegist();
@@ -69,8 +72,9 @@ class ActionCreate extends BaseAction {
 				}
 			}
 			this.register(business, name, password, genderType, mobile);
-			wrap.setValue(true);
-			result.setData(wrap);
+			Wo wo = new Wo();
+			wo.setValue(true);
+			result.setData(wo);
 			return result;
 		}
 	}
@@ -85,6 +89,83 @@ class ActionCreate extends BaseAction {
 		business.entityManagerContainer().beginTransaction(Person.class);
 		business.entityManagerContainer().persist(o, CheckPersistType.all);
 		business.entityManagerContainer().commit();
+	}
+
+	public static class Wi extends GsonPropertyObject {
+
+		private String name;
+
+		private GenderType genderType;
+
+		private String password;
+
+		private String mobile;
+
+		private String codeAnswer;
+
+		private String captchaAnswer;
+
+		private String captcha;
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public GenderType getGenderType() {
+			return genderType;
+		}
+
+		public void setGenderType(GenderType genderType) {
+			this.genderType = genderType;
+		}
+
+		public String getPassword() {
+			return password;
+		}
+
+		public void setPassword(String password) {
+			this.password = password;
+		}
+
+		public String getMobile() {
+			return mobile;
+		}
+
+		public void setMobile(String mobile) {
+			this.mobile = mobile;
+		}
+
+		public String getCodeAnswer() {
+			return codeAnswer;
+		}
+
+		public void setCodeAnswer(String codeAnswer) {
+			this.codeAnswer = codeAnswer;
+		}
+
+		public String getCaptchaAnswer() {
+			return captchaAnswer;
+		}
+
+		public void setCaptchaAnswer(String captchaAnswer) {
+			this.captchaAnswer = captchaAnswer;
+		}
+
+		public String getCaptcha() {
+			return captcha;
+		}
+
+		public void setCaptcha(String captcha) {
+			this.captcha = captcha;
+		}
+
+	}
+
+	public static class Wo extends WrapBoolean {
 	}
 
 }
