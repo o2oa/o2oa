@@ -318,22 +318,6 @@ public abstract class Plan extends GsonPropertyObject {
 				}
 				this.groupGrid = groupTable;
 			}
-			// /** stat 统计部分 */
-			// if ((null != this.calculate) && (this.calculate.available())) {
-			// logger.debug("开始数据统计.");
-			// if (BooleanUtils.isTrue(this.calculate.isGroup)) {
-			// CalculateGroupTable calculateGroupTable = this.calculateGroup();
-			// this.calculateGrid = calculateGroupTable;
-			// } else {
-			// CalculateRow calculateRow = this.calculate(table, calculate);
-			// this.calculateGrid = calculateRow;
-			// }
-			// if (StringUtils.isNotEmpty(this.afterCalculateGridScriptText)) {
-			// scriptEngine.put("calculateGrid", this.calculateGrid);
-			// scriptEngine.eval(this.afterCalculateGridScriptText);
-			// }
-			// logger.debug("数据统计完成.");
-			// }
 			/* 需要抽取单独的列 */
 			if (ListTools.isNotEmpty(this.columnList)) {
 				this.columnGrid = new TreeList<Object>();
