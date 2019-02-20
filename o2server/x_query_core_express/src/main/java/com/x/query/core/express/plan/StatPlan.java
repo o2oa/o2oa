@@ -221,11 +221,11 @@ public class StatPlan extends GsonPropertyObject {
 				en.getValue().selectList.stream().forEach(o -> {
 					/* 分类统计只能统计分类视图 */
 					if (!StringUtils.equals(o.column, en.getValue().group.column)) {
-						List<Double> values = new ArrayList<>();
 						CalculateEntry calculateEntry = calculate.get(en.getKey());
 						if (null != calculateEntry) {
 							NumberFormat numberFormat = this.getNumberFormat(calculateEntry);
 							en.getValue().groupGrid.stream().forEach(r -> {
+								List<Double> values = new ArrayList<>();
 								CalculateGroupRow row = table.getRow(r.group);
 								if (null != row) {
 									CalculateCell cell = row.getCell(calculateEntry.id);
