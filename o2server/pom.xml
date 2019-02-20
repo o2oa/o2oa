@@ -26,8 +26,7 @@
 		<module>x_portal_core_entity</module>
 		<module>x_processplatform_core_entity</module>
 		<module>x_query_core_entity</module>
-		<module>x_report_core_entity</module>
-		<module>x_strategydeploy_core_entity</module>
+		<!-- <module>x_report_core_entity</module> <module>x_strategydeploy_core_entity</module> -->
 		<module>x_program_center_core_entity</module>
 		<module>x_collaboration_core_message</module>
 		<module>x_organization_core_express</module>
@@ -47,7 +46,7 @@
 		<module>x_okr_assemble_control</module>
 		<module>x_organization_assemble_authentication</module>
 		<module>x_organization_assemble_control</module>
-		<module>x_organization_assemble_custom</module>
+		<!-- module>x_organization_assemble_custom</module> -->
 		<module>x_organization_assemble_express</module>
 		<module>x_organization_assemble_personal</module>
 		<module>x_portal_assemble_designer</module>
@@ -59,8 +58,7 @@
 		<module>x_query_assemble_designer</module>
 		<module>x_query_assemble_surface</module>
 		<module>x_query_service_processing</module>
-		<module>x_report_assemble_control</module>
-		<module>x_strategydeploy_assemble_control</module>
+		<!-- <module>x_report_assemble_control</module> <module>x_strategydeploy_assemble_control</module> -->
 		<module>x_program_center</module>
 		<module>x_console</module>
 	</modules>
@@ -147,6 +145,7 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-text</artifactId>
 			<version>1.6</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
@@ -293,9 +292,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>io.github.lukehutch</groupId>
-			<artifactId>fast-classpath-scanner</artifactId>
-			<version>3.1.13</version>
+			<groupId>io.github.classgraph</groupId>
+			<artifactId>classgraph</artifactId>
+			<version>4.6.18</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -308,6 +307,7 @@
 			<groupId>org.apache.ant</groupId>
 			<artifactId>ant-launcher</artifactId>
 			<version>1.10.5</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
@@ -410,6 +410,20 @@
 			<groupId>org.mnode.ical4j</groupId>
 			<artifactId>ical4j</artifactId>
 			<version>2.2.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.xbean/xbean-asm7-shaded -->
+		<dependency>
+			<groupId>org.apache.xbean</groupId>
+			<artifactId>xbean-asm7-shaded</artifactId>
+			<version>4.12</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup</groupId>
+			<artifactId>javapoet</artifactId>
+			<version>1.11.1</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>CheckPasswordStrength</groupId>
@@ -446,8 +460,41 @@
 			</plugin>
 		</plugins>
 		<pluginManagement>
-			<plugins><!--This plugin's configuration is used to store Eclipse m2e 
-					settings only. It has no influence on the Maven build itself. -->
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.openjpa
+										</groupId>
+										<artifactId>
+											openjpa-maven-plugin
+										</artifactId>
+										<versionRange>
+											[3.0.0,)
+										</versionRange>
+										<goals>
+											<goal>enhance</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -602,6 +649,25 @@
 							</configuration>
 						</execution>
 						<execution>
+							<id>copy-custom-jar</id>
+							<!-- <phase>verify</phase> -->
+							<phase>none</phase>
+							<goals>
+								<goal>copy-resources</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>../custom/jars</outputDirectory>
+								<resources>
+									<resource>
+										<directory>target</directory>
+										<includes>
+											<include>${project.artifactId}.jar</include>
+										</includes>
+									</resource>
+								</resources>
+							</configuration>
+						</execution>
+						<execution>
 							<id>copy-war</id>
 							<!-- <phase>verify</phase> -->
 							<phase>none</phase>
@@ -610,6 +676,25 @@
 							</goals>
 							<configuration>
 								<outputDirectory>../store</outputDirectory>
+								<resources>
+									<resource>
+										<directory>target</directory>
+										<includes>
+											<include>${project.artifactId}.war</include>
+										</includes>
+									</resource>
+								</resources>
+							</configuration>
+						</execution>
+						<execution>
+							<id>copy-custom-war</id>
+							<!-- <phase>verify</phase> -->
+							<phase>none</phase>
+							<goals>
+								<goal>copy-resources</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>../custom</outputDirectory>
 								<resources>
 									<resource>
 										<directory>target</directory>
