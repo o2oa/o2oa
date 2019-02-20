@@ -294,7 +294,7 @@
 		<dependency>
 			<groupId>io.github.classgraph</groupId>
 			<artifactId>classgraph</artifactId>
-			<version>4.8.4</version>
+			<version>4.6.18</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -537,21 +537,6 @@
 								<target>
 									<ant antfile="../build_common.xml">
 										<target name="metamodel" />
-									</ant>
-								</target>
-							</configuration>
-							<goals>
-								<goal>run</goal>
-							</goals>
-						</execution>
-						<execution>
-							<id>createEnhancePersistenceXml_x_base_core_project</id>
-							<!-- <phase>generate-sources</phase> -->
-							<phase>none</phase>
-							<configuration>
-								<target>
-									<ant antfile="../build_common.xml">
-										<target name="createEnhancePersistenceXml_x_base_core_project" />
 									</ant>
 								</target>
 							</configuration>
