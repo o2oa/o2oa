@@ -51,7 +51,7 @@ public class EnhancePersistenceXmlWriter {
 			}
 			OutputFormat format = OutputFormat.createPrettyPrint();
 			format.setEncoding("UTF-8");
-			File dir = new File(arg.getPath());
+			File dir = new File(arg.getPath(), "target/classes/META-INF");
 			FileUtils.forceMkdir(dir);
 			File file = new File(dir, "persistence.xml");
 			XMLWriter writer = new XMLWriter(new FileWriter(file), format);

@@ -96,7 +96,7 @@
 
 	<target name="createEnhancePersistenceXml">
 		<mkdir dir="${basedir}/src/main/resources/META-INF" />
-		<java classname="com.x.base.core.entity.tools.EnhancePersistenceXmlWriter" fork="false">
+		<java classname="com.x.base.core.entity.tools.EnhancePersistenceXmlWriter" fork="true">
 			<sysproperty key="file.encoding" value="utf-8" />
 			<classpath>
 				<pathelement path="${basedir}/target/classes" />
@@ -111,7 +111,7 @@
 				</fileset>
 			</classpath>
 			<arg value="{
-					path:'${basedir}/src/main/resources/META-INF'
+					path:'${basedir}'
 				}" />
 		</java>
 	</target>
