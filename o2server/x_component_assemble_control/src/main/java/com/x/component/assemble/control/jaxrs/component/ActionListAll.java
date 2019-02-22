@@ -130,20 +130,20 @@ class ActionListAll extends ActionBase {
 			o.setIconPath("appicon.png");
 			o.setVisible(true);
 			break;
-		case COMPONENT_STRATEGY:
-			o.setName(COMPONENT_STRATEGY);
-			o.setPath(COMPONENT_STRATEGY);
-			o.setTitle("战略管理");
-			o.setIconPath("appicon.png");
-			o.setVisible(true);
-			break;
-		case COMPONENT_REPORT:
-			o.setName(COMPONENT_REPORT);
-			o.setPath(COMPONENT_REPORT);
-			o.setTitle("工作报告");
-			o.setIconPath("appicon.png");
-			o.setVisible(true);
-			break;
+//		case COMPONENT_STRATEGY:
+//			o.setName(COMPONENT_STRATEGY);
+//			o.setPath(COMPONENT_STRATEGY);
+//			o.setTitle("战略管理");
+//			o.setIconPath("appicon.png");
+//			o.setVisible(true);
+//			break;
+//		case COMPONENT_REPORT:
+//			o.setName(COMPONENT_REPORT);
+//			o.setPath(COMPONENT_REPORT);
+//			o.setTitle("工作报告");
+//			o.setIconPath("appicon.png");
+//			o.setVisible(true);
+//			break;
 		case COMPONENT_MINDER:
 			o.setName(COMPONENT_MINDER);
 			o.setPath(COMPONENT_MINDER);
@@ -155,6 +155,13 @@ class ActionListAll extends ActionBase {
 			o.setName(COMPONENT_CALENDAR);
 			o.setPath(COMPONENT_CALENDAR);
 			o.setTitle("日程安排");
+			o.setIconPath("appicon.png");
+			o.setVisible(true);
+			break;
+		case COMPONENT_ANN:
+			o.setName(COMPONENT_ONLINEMEETING);
+			o.setPath(COMPONENT_ONLINEMEETING);
+			o.setTitle("神经网络");
 			o.setIconPath("appicon.png");
 			o.setVisible(true);
 			break;
