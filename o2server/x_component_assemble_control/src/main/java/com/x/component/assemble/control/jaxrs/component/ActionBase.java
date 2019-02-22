@@ -22,14 +22,15 @@ class ActionBase extends StandardJaxrsAction {
 	static final String COMPONENT_HOTARTICLE = "HotArticle";
 	static final String COMPONENT_EXEMANAGER = "ExeManager";
 	static final String COMPONENT_ONLINEMEETING = "OnlineMeeting";
-	static final String COMPONENT_STRATEGY = "Strategy";
-	static final String COMPONENT_REPORT = "Report";
+	static final String COMPONENT_ANN = "ANN";
+//	static final String COMPONENT_STRATEGY = "Strategy";
+//	static final String COMPONENT_REPORT = "Report";
 	static final String COMPONENT_MINDER = "Minder";
 	static final String COMPONENT_CALENDAR = "Calendar";
 
 	List<String> DEFAULT_COMPONENT_LIST = ListTools.toList(COMPONENT_FILE, COMPONENT_NOTE, COMPONENT_MEETING,
 			COMPONENT_EXECUTION, COMPONENT_ATTENDANCE, COMPONENT_FORUM, COMPONENT_HOTARTICLE, COMPONENT_EXEMANAGER,
-			COMPONENT_ONLINEMEETING, COMPONENT_STRATEGY, COMPONENT_REPORT, COMPONENT_MINDER, COMPONENT_CALENDAR);
+			COMPONENT_ONLINEMEETING, COMPONENT_MINDER, COMPONENT_CALENDAR, COMPONENT_ANN);
 
 	// {
 	// "name": "File",
@@ -124,5 +125,4 @@ class ActionBase extends StandardJaxrsAction {
 	// "visible": true
 	// }
 
- 
 }
