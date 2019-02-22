@@ -4,6 +4,7 @@
 .project
 /.settings/
 /target/
+/o2custom/
 /.svn/
 /o2web/gulpfile.js
 **/.DS_Store
