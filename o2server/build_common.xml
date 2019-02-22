@@ -101,7 +101,6 @@
 			<classpath>
 				<pathelement path="${basedir}/target/classes" />
 				<pathelement path="${basedir}/src/main/java" />
-				<pathelement path="${basedir}/src/main/resources" />
 				<fileset dir="${o2server.dir}/commons/ext">
 					<include name="*.jar" />
 				</fileset>
