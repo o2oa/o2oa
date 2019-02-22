@@ -216,15 +216,27 @@ public class Organization {
 
 	}
 
-	public Detail detail(EffectivePerson effectivePerson) throws Exception {
-		Detail o = new Detail();
-		o.setPerson(effectivePerson.getDistinguishedName());
-		o.setIdentityList(identity().listWithPerson(effectivePerson));
-		o.setUnitList(unit().listWithPerson(effectivePerson));
-		o.setUnitAllList(unit().listWithPersonSupNested(effectivePerson));
-		o.setGroupList(group().listWithPerson(effectivePerson.getDistinguishedName()));
-		o.setRoleList(role().listWithPerson(effectivePerson));
-		return o;
-	}
+//	public PersonDetail detail(EffectivePerson effectivePerson) throws Exception {
+//		PersonDetail o = new PersonDetail();
+//		o.setPerson(effectivePerson.getDistinguishedName());
+//		o.setIdentityList(identity().listWithPerson(effectivePerson));
+//		o.setUnitList(unit().listWithPerson(effectivePerson));
+//		o.setUnitAllList(unit().listWithPersonSupNested(effectivePerson));
+//		o.setGroupList(group().listWithPerson(effectivePerson.getDistinguishedName()));
+//		o.setRoleList(role().listWithPerson(effectivePerson));
+//		return o;
+//	}
+//
+//	public PersonDetail detail(String name) throws Exception {
+//		PersonDetail o = new PersonDetail();
+//		String person = this.person().get(name);
+//		o.setPerson(person);
+//		o.setIdentityList(identity().listWithPerson(person));
+//		o.setUnitList(unit().listWithPerson(person));
+//		o.setUnitAllList(unit().listWithPersonSupNested(person));
+//		o.setGroupList(group().listWithPerson(person));
+//		o.setRoleList(role().listWithPerson(person));
+//		return o;
+//	}
 
 }

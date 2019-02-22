@@ -6,7 +6,7 @@ import org.apache.commons.collections4.list.TreeList;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 
-public class Detail {
+public class PersonDetail {
 
 	@FieldDescribe("当前用户")
 	private String person = "";

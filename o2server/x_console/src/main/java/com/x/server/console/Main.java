@@ -43,7 +43,6 @@ import com.x.server.console.action.ActionEraseContentBbs;
 import com.x.server.console.action.ActionEraseContentCms;
 import com.x.server.console.action.ActionEraseContentLog;
 import com.x.server.console.action.ActionEraseContentProcessPlatform;
-import com.x.server.console.action.ActionEraseContentReport;
 import com.x.server.console.action.ActionRestoreData;
 import com.x.server.console.action.ActionRestoreStorage;
 import com.x.server.console.action.ActionSetPassword;
@@ -52,6 +51,7 @@ import com.x.server.console.action.ActionShowMemory;
 import com.x.server.console.action.ActionShowOs;
 import com.x.server.console.action.ActionShowThread;
 import com.x.server.console.action.ActionUpdate;
+import com.x.server.console.action.ActionUpdateFile;
 import com.x.server.console.action.ActionVersion;
 import com.x.server.console.log.LogTools;
 import com.x.server.console.server.Servers;
@@ -275,7 +275,7 @@ public class Main {
 
 					matcher = CommandFactory.update_pattern.matcher(cmd);
 					if (matcher.find()) {
-						if (update(matcher.group(1))) {
+						if (update(matcher.group(1), matcher.group(2), matcher.group(3))) {
 							stopAll();
 							System.exit(0);
 						} else {
@@ -283,9 +283,9 @@ public class Main {
 						}
 					}
 
-					matcher = CommandFactory.fastUpdate_pattern.matcher(cmd);
+					matcher = CommandFactory.updateFile_pattern.matcher(cmd);
 					if (matcher.find()) {
-						if (fastUpdate(matcher.group(1))) {
+						if (updateFile(matcher.group(1), matcher.group(2), matcher.group(3))) {
 							stopAll();
 							System.exit(0);
 						} else {
@@ -314,9 +314,6 @@ public class Main {
 							break;
 						case "log":
 							eraseContentLog(matcher.group(2));
-							break;
-						case "report":
-							eraseContentReport(matcher.group(2));
 							break;
 						case "bbs":
 							eraseContentBbs(matcher.group(2));
@@ -421,18 +418,19 @@ public class Main {
 		return true;
 	}
 
-	private static boolean fastUpdate(String password) {
+	private static boolean update(String password, String backup, String latest) {
 		try {
-			return new ActionUpdate().execute(password, false, true);
+			return new ActionUpdate().execute(password, BooleanUtils.toBoolean(backup),
+					BooleanUtils.toBoolean(latest));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return true;
 	}
 
-	private static boolean update(String password) {
+	private static boolean updateFile(String path, String backup, String password) {
 		try {
-			return new ActionUpdate().execute(password, true, false);
+			return new ActionUpdateFile().execute(path, BooleanUtils.toBoolean(backup), password);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -879,15 +877,6 @@ public class Main {
 	private static boolean eraseContentLog(String password) throws Exception {
 		try {
 			return new ActionEraseContentLog().execute(password);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	private static boolean eraseContentReport(String password) throws Exception {
-		try {
-			return new ActionEraseContentReport().execute(password);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
