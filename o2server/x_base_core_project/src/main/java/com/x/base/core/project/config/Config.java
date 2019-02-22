@@ -67,6 +67,7 @@ public class Config {
 	public static final String DIR_COMMONS = "commons";
 	public static final String DIR_COMMONS_EXT = "commons/ext";
 	public static final String DIR_CONFIG = "config";
+	public static final String DIR_CONFIGSAMPLE = "configSample";
 	public static final String DIR_CUSTOM = "custom";
 	public static final String DIR_CUSTOM_JARS = "custom/jars";
 	public static final String DIR_DYNAMIC = "dynamic";
@@ -77,11 +78,14 @@ public class Config {
 	public static final String DIR_JVM_MACOS = "jvm/macos";
 	public static final String DIR_JVM_WINDOWS = "jvm/windows";
 	public static final String DIR_LOCAL = "local";
+	public static final String DIR_LOCAL_BACKUP = "local/backup";
+	public static final String DIR_LOCAL_UPDATE = "local/update";
 	public static final String DIR_LOCAL_TEMP = "local/temp";
 	public static final String DIR_LOCAL_TEMP_CLASSES = "local/temp/classes";
 	public static final String DIR_LOCAL_TEMP_DYNAMIC = "local/temp/dynamic";
 	public static final String DIR_LOCAL_TEMP_DYNAMIC_SRC = "local/temp/dynamic/src";
 	public static final String DIR_LOCAL_TEMP_DYNAMIC_TARGET = "local/temp/dynamic/target";
+	public static final String DIR_LOCALSAMPLE = "localSample";
 	public static final String DIR_LOGS = "logs";
 	public static final String DIR_SERVERS = "servers";
 	public static final String DIR_SERVERS_APPLICATIONSERVER = "servers/applicationServer";
@@ -107,6 +111,10 @@ public class Config {
 
 	public static File dir_config() throws Exception {
 		return new File(base(), DIR_CONFIG);
+	}
+
+	public static File dir_configSample() throws Exception {
+		return new File(base(), DIR_CONFIGSAMPLE);
 	}
 
 	public static File dir_custom() throws Exception {
@@ -167,6 +175,38 @@ public class Config {
 
 	public static File dir_local() throws Exception {
 		return new File(base(), DIR_LOCAL);
+	}
+
+	public static File dir_local_backup() throws Exception {
+		return new File(base(), DIR_LOCAL_BACKUP);
+	}
+
+	public static File dir_local_backup(boolean force) throws Exception {
+		File dir = new File(base(), DIR_LOCAL_BACKUP);
+		if (force) {
+			if ((!dir.exists()) || dir.isFile()) {
+				FileUtils.forceMkdir(dir);
+			}
+		}
+		return dir;
+	}
+
+	public static File dir_local_update() throws Exception {
+		return new File(base(), DIR_LOCAL_UPDATE);
+	}
+
+	public static File dir_local_update(boolean force) throws Exception {
+		File dir = new File(base(), DIR_LOCAL_UPDATE);
+		if (force) {
+			if ((!dir.exists()) || dir.isFile()) {
+				FileUtils.forceMkdir(dir);
+			}
+		}
+		return dir;
+	}
+
+	public static File dir_localSample() throws Exception {
+		return new File(base(), DIR_LOCALSAMPLE);
 	}
 
 	public static File dir_local_temp() throws Exception {
