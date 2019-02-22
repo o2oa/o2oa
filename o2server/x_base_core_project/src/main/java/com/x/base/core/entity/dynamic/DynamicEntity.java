@@ -54,16 +54,17 @@ public class DynamicEntity extends GsonPropertyObject {
 		if (StringUtils.isEmpty(name)) {
 			throw new Exception("name is empty.");
 		}
-		return StringUtils.capitalize(name);
+		return name;
 	}
 
 	public String className() throws Exception {
 		if (StringUtils.isEmpty(name)) {
 			throw new Exception("name is empty.");
 		}
-		return CLASS_PACKAGE + "." + StringUtils.capitalize(name);
+		return CLASS_PACKAGE + "." + name;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Class<? extends JpaObject> getObjectClass() throws Exception {
 		return (Class<? extends JpaObject>) Class.forName(this.className());
 	}

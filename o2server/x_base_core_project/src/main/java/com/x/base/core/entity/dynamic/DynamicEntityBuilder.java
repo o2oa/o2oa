@@ -52,11 +52,11 @@ import com.x.base.core.entity.dynamic.DynamicEntity.StringMapField;
 import com.x.base.core.entity.dynamic.DynamicEntity.TimeField;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.ListTools;
- 
 
 public class DynamicEntityBuilder {
 
 	public static final String FIELDNAME_SUFFIX = "_FIELDNAME";
+	public static final String DOT_CLASS = ".class";
 
 	private DynamicEntity dynamicEntity;
 	private File dir;
@@ -353,15 +353,21 @@ public class DynamicEntityBuilder {
 				.build();
 
 		AnnotationSpec persistentCollection = AnnotationSpec.builder(PersistentCollection.class)
-				.addMember("fetch", "javax.persistence.FetchType.EAGER").build();
+				.addMember("fetch", "javax.persistence.FetchType.EAGER")
+				.addMember("elementType", typeClass.getSimpleName() + DOT_CLASS).build();
 
 		AnnotationSpec orderColumn = AnnotationSpec.builder(OrderColumn.class).addMember("name", "ORDERCOLUMNCOLUMN")
 				.build();
 
-		AnnotationSpec elementColumn = AnnotationSpec.builder(ElementColumn.class).addMember("length", "length_255B")
-				.addMember("name", "ColumnNamePrefix + " + field.fieldName()).build();
-
-		ClassName type = ClassName.get(String.class);
+		AnnotationSpec elementColumn = null;
+		if (CharSequence.class.isAssignableFrom(typeClass)) {
+			elementColumn = AnnotationSpec.builder(ElementColumn.class).addMember("length", "length_255B")
+					.addMember("name", "ColumnNamePrefix + " + field.fieldName()).build();
+		} else {
+			elementColumn = AnnotationSpec.builder(ElementColumn.class)
+					.addMember("name", "ColumnNamePrefix + " + field.fieldName()).build();
+		}
+		ClassName type = ClassName.get(typeClass);
 		ClassName list = ClassName.get(List.class);
 		TypeName list_type = ParameterizedTypeName.get(list, type);
 
