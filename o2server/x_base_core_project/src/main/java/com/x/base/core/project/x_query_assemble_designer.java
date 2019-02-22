@@ -21,7 +21,8 @@ public class x_query_assemble_designer extends AssembleA {
 		dependency.containerEntities.add("com.x.query.core.entity.neural.InValue");
 		dependency.containerEntities.add("com.x.query.core.entity.neural.OutValue");
 		dependency.containerEntities.add("com.x.query.core.entity.neural.Model");
-		dependency.containerEntities.add("com.x.query.core.entity.schema.*");
+		dependency.containerEntities.add("com.x.query.core.entity.schema.Table");
+		dependency.containerEntities.add("com.x.query.core.entity.schema.Statement");
 		dependency.containerEntities.add("com.x.processplatform.core.entity.content.Review");
 		dependency.containerEntities.add("com.x.processplatform.core.entity.content.Work");
 		dependency.containerEntities.add("com.x.processplatform.core.entity.content.WorkCompleted");
