@@ -69,6 +69,21 @@ public class Logger {
 
 	private final static String HTTPMESSAGEFORMAT = " > person:{}, method:{}, request:{}, remote host:{} address:{}, head:{}, body:{}.";
 
+	public boolean isDebug(EffectivePerson effectivePerson) {
+		if (null != effectivePerson && BooleanUtils.isTrue(effectivePerson.getDebugger())) {
+			return true;
+		} else {
+			return this.isDebug();
+		}
+	}
+
+	public boolean isDebug() {
+		if (level <= DEBUG_INT) {
+			return true;
+		}
+		return false;
+	}
+
 	public void print(String message, Object... os) {
 		this.log(PRINT, message, os);
 	}
