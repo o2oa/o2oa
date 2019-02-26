@@ -21,6 +21,7 @@ public class SlicePropertiesBuilder {
 	public static String driver_h2 = "org.h2.Driver";
 	public static String driver_dm = "dm.jdbc.driver.DmDriver";
 	public static String driver_sqlserver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+	public static String driver_gbase = "com.gbasedbt.jdbc.IfxDriver";
 	/** 避免db2在aix版本和lwl版本字段长度不一致的问题 */
 	public static String dictionary_db2 = "db2(createPrimaryKeys=false,characterColumnSize=255,maxColumnNameLength=128,maxIndexNameLength=128,maxConstraintNameLength=128)";
 	public static String dictionary_oracle = "oracle(maxTableNameLength=128,maxColumnNameLength=128,maxIndexNameLength=128,maxConstraintNameLength=128,maxEmbeddedClobSize=104857600)";
@@ -30,6 +31,7 @@ public class SlicePropertiesBuilder {
 	public static String dictionary_h2 = "org.apache.openjpa.jdbc.sql.H2Dictionary";
 	public static String dictionary_dm = "com.x.base.core.openjpa.jdbc.sql.DMDictionary";
 	public static String dictionary_sqlserver = "sqlserver(schemaCase=preserve)";
+	public static String dictionary_gbase = "com.x.base.core.openjpa.jdbc.sql.GBaseDictionary";
 
 	public static String validationQuery_db2 = "select 1 from sysibm.sysdummy1";
 	public static String validationQuery_oracle = "select 1 from dual";
@@ -39,6 +41,7 @@ public class SlicePropertiesBuilder {
 	public static String validationQuery_h2 = "select 1";
 	public static String validationQuery_dm = "select getdate()";
 	public static String validationQuery_sqlserver = "select 1";
+	public static String validationQuery_gbase = "select 1";
 
 	public static Map<String, String> getPropertiesDBCP(List<DataMapping> list) throws Exception {
 		try {
@@ -55,6 +58,9 @@ public class SlicePropertiesBuilder {
 				properties.put("openjpa.jdbc.Schema", JpaObject.default_schema);
 			}
 			if (StringUtils.equals(determineDBDictionary(list.get(0)), dictionary_informix)) {
+				properties.put("openjpa.jdbc.Schema", JpaObject.default_schema);
+			}
+			if (StringUtils.equals(determineDBDictionary(list.get(0)), dictionary_gbase)) {
 				properties.put("openjpa.jdbc.Schema", JpaObject.default_schema);
 			}
 			if (StringUtils.equals(determineDBDictionary(list.get(0)), dictionary_dm)) {
@@ -158,6 +164,10 @@ public class SlicePropertiesBuilder {
 				String url = dataMapping.getUrl();
 				str += ",validationQuery=" + validationQuery_informix + ", driverClassName=" + driver_informix
 						+ ", url=" + url;
+			} else if (StringUtils.equals(determineDBDictionary(dataMapping), dictionary_gbase)) {
+				String url = dataMapping.getUrl();
+				str += ",validationQuery=" + validationQuery_gbase + ", driverClassName=" + driver_gbase + ", url="
+						+ url;
 			} else if (StringUtils.equals(determineDBDictionary(dataMapping), dictionary_h2)) {
 				String url = dataMapping.getUrl();
 				str += ",validationQuery=" + validationQuery_h2 + ", driverClassName=" + driver_h2 + ", url=" + url;
@@ -200,6 +210,10 @@ public class SlicePropertiesBuilder {
 				String url = dataMapping.getUrl();
 				str += ", validationQuery=" + validationQuery_informix + ", driverClassName=" + driver_informix
 						+ ", url=" + url;
+			} else if (StringUtils.equals(determineDBDictionary(dataMapping), dictionary_gbase)) {
+				String url = dataMapping.getUrl();
+				str += ", validationQuery=" + validationQuery_gbase + ", driverClassName=" + driver_gbase + ", url="
+						+ url;
 			} else if (StringUtils.equals(determineDBDictionary(dataMapping), dictionary_h2)) {
 				String url = dataMapping.getUrl();
 				str += ", validationQuery=" + validationQuery_h2 + ", driverClassName=" + driver_h2 + ", url=" + url;
@@ -230,6 +244,8 @@ public class SlicePropertiesBuilder {
 				return driver_postgresql;
 			} else if (StringUtils.equals(determineDBDictionary(dataMapping), dictionary_informix)) {
 				return driver_informix;
+			} else if (StringUtils.equals(determineDBDictionary(dataMapping), dictionary_gbase)) {
+				return driver_gbase;
 			} else if (StringUtils.equals(determineDBDictionary(dataMapping), dictionary_h2)) {
 				return driver_h2;
 			} else if (StringUtils.equals(determineDBDictionary(dataMapping), dictionary_dm)) {
@@ -267,6 +283,8 @@ public class SlicePropertiesBuilder {
 				return dictionary_postgresql;
 			} else if (StringUtils.containsIgnoreCase(dataMapping.getUrl(), "jdbc:informix-sqli:")) {
 				return dictionary_informix;
+			} else if (StringUtils.containsIgnoreCase(dataMapping.getUrl(), "jdbc:gbasedbt-sqli")) {
+				return dictionary_gbase;
 			} else if (StringUtils.containsIgnoreCase(dataMapping.getUrl(), "jdbc:h2:tcp:")) {
 				return dictionary_h2;
 			} else if (StringUtils.containsIgnoreCase(dataMapping.getUrl(), "jdbc:dm:")) {
