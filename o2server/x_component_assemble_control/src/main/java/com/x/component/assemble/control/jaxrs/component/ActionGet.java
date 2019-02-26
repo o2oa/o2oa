@@ -12,12 +12,12 @@ import com.x.component.core.entity.Component;
 
 class ActionGet extends ActionBase {
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
-			Component component = emc.find(id, Component.class);
+			Component component = emc.flag(flag, Component.class);
 			if (null == component) {
-				throw new ExceptionEntityNotExist(id, Component.class);
+				throw new ExceptionEntityNotExist(flag, Component.class);
 			}
 			Wo wo = Wo.copier.copy(component);
 			result.setData(wo);
