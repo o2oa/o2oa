@@ -159,8 +159,8 @@ class ActionListAll extends ActionBase {
 			o.setVisible(true);
 			break;
 		case COMPONENT_ANN:
-			o.setName(COMPONENT_ONLINEMEETING);
-			o.setPath(COMPONENT_ONLINEMEETING);
+			o.setName(COMPONENT_ANN);
+			o.setPath(COMPONENT_ANN);
 			o.setTitle("神经网络");
 			o.setIconPath("appicon.png");
 			o.setVisible(true);
