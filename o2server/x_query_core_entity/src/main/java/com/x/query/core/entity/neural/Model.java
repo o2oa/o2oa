@@ -120,6 +120,8 @@ public class Model extends SliceJpaObject {
 
 	public static final String STATUS_GENERATING = "generating";
 	public static final String STATUS_LEARNING = "learning";
+	public static final String STATUS_COMPLETED = "completed";
+	public static final String STATUS_EXCESSIVE = "excessive";
 
 	public static final String DATATYPE_PROCESSPLATFORM = "processPlatform";
 	public static final String DATATYPE_CMS = "cms";
@@ -260,7 +262,7 @@ public class Model extends SliceJpaObject {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + processList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + processList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + processList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + processList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -271,7 +273,7 @@ public class Model extends SliceJpaObject {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + applicationList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + applicationList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + applicationList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + applicationList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)

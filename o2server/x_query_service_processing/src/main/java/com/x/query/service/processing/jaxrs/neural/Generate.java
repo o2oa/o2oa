@@ -111,8 +111,8 @@ public class Generate {
 			if (StringUtils.equals(Model.STATUS_GENERATING, model.getStatus())) {
 				throw new ExceptionGenerate(model.getName());
 			}
-			final Double validationRate = (MapTools.getDouble(model.getPropertyMap(),
-					Model.PROPERTY_MLP_VALIDATIONRATE, Model.DEFAULT_MLP_VALIDATIONRATE));
+			final Double validationRate = (MapTools.getDouble(model.getPropertyMap(), Model.PROPERTY_MLP_VALIDATIONRATE,
+					Model.DEFAULT_MLP_VALIDATIONRATE));
 			List<String> bundles = this.listBundle(business, model);
 			if (ListTools.isEmpty(bundles)) {
 				throw new ExceptionBundleEmpty(model.getName());
@@ -164,8 +164,7 @@ public class Generate {
 					outValues.clear();
 					this.convert(business, converter, scriptHelper, lph, model, workCompleted, inValues, outValues);
 					if ((!inValues.isEmpty()) && (!outValues.isEmpty())) {
-						this.createValidationEntry(business, model, workCompleted, inBag, outBag, inValues,
-								outValues);
+						this.createValidationEntry(business, model, workCompleted, inBag, outBag, inValues, outValues);
 						testEntryCount++;
 					}
 				}
@@ -181,7 +180,8 @@ public class Generate {
 			model = this.refreshModel(business, modelId);
 			emc.beginTransaction(Model.class);
 			model.setStatus("");
-			model.setEntryCount(bundles.size());
+			model.setEntryCount(total);
+			model.setEffectiveEntryCount(bundles.size());
 			model.setGeneratingPercent(100);
 			model.setLearnEntryCount(learnEntryCount);
 			model.setValidationEntryCount(testEntryCount);
@@ -329,8 +329,8 @@ public class Generate {
 		Root<WorkCompleted> root = cq.from(WorkCompleted.class);
 		Predicate p = cb.conjunction();
 		if (ListTools.isNotEmpty(model.getApplicationList())) {
-			p = cb.and(p, cb.isMember(root.get(WorkCompleted.application_FIELDNAME),
-					cb.literal(model.getApplicationList())));
+			p = cb.and(p,
+					cb.isMember(root.get(WorkCompleted.application_FIELDNAME), cb.literal(model.getApplicationList())));
 		}
 		if (ListTools.isNotEmpty(model.getProcessList())) {
 			p = cb.and(p, cb.isMember(root.get(WorkCompleted.process_FIELDNAME), cb.literal(model.getProcessList())));
@@ -373,8 +373,7 @@ public class Generate {
 	}
 
 	private Long cleanInText(Business business, String modelId) throws Exception {
-		List<String> ids = business.entityManagerContainer().idsEqual(InText.class, InText.model_FIELDNAME,
-				modelId);
+		List<String> ids = business.entityManagerContainer().idsEqual(InText.class, InText.model_FIELDNAME, modelId);
 		Long count = 0L;
 		for (List<String> os : ListTools.batch(ids, 2000)) {
 			business.entityManagerContainer().beginTransaction(InText.class);
@@ -385,8 +384,7 @@ public class Generate {
 	}
 
 	private Long cleanOutText(Business business, String modelId) throws Exception {
-		List<String> ids = business.entityManagerContainer().idsEqual(OutText.class, OutText.model_FIELDNAME,
-				modelId);
+		List<String> ids = business.entityManagerContainer().idsEqual(OutText.class, OutText.model_FIELDNAME, modelId);
 		Long count = 0L;
 		for (List<String> os : ListTools.batch(ids, 2000)) {
 			business.entityManagerContainer().beginTransaction(OutText.class);

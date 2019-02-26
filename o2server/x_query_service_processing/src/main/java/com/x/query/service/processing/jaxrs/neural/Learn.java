@@ -162,7 +162,6 @@ public class Learn {
 				model = refreshmodel(business, modelId);
 				emc.beginTransaction(Model.class);
 				model.setNnet(this.encode(neuralNetwork));
-				model.setStatus("");
 				model.setInValueCount(inTextBag.size());
 				model.setOutValueCount(outTextBag.size());
 				emc.commit();
@@ -170,10 +169,20 @@ public class Learn {
 				inTextBag.saveToInValue(business);
 				this.cleanOutValue(business, model);
 				outTextBag.saveToOutValue(business);
+				if (logger.isDebug()) {
+					File file = new File(Config.dir_local_temp(), model.getId() + ".nnet");
+					neuralNetwork.save(file.getAbsolutePath());
+					logger.debug("save nnet file to ", file.getAbsolutePath());
+				}
 				if (neuralNetwork.getLearningRule().getErrorFunction().getTotalError() > maxError) {
 					logger.print("神经网络多层感知机 ({}) 学习失败, 耗时: {}, 总误差: {}, 未能达到预期值: {}.", modelName,
 							stamp.consumingMilliseconds(),
 							neuralNetwork.getLearningRule().getErrorFunction().getTotalError(), maxError);
+					emc.beginTransaction(Model.class);
+					model.setValidationMeanSquareError(
+							neuralNetwork.getLearningRule().getErrorFunction().getTotalError());
+					model.setStatus(Model.STATUS_EXCESSIVE);
+					emc.commit();
 				} else {
 					logger.print("神经网络多层感知机 ({}) 学习完成.", modelName);
 					if (!validationSet.isEmpty()) {
@@ -183,9 +192,14 @@ public class Learn {
 						model = refreshmodel(business, modelId);
 						emc.beginTransaction(Model.class);
 						model.setValidationMeanSquareError(evaluationResult.getMeanSquareError());
+						model.setStatus(Model.STATUS_COMPLETED);
 						emc.commit();
 						logger.print("神经网络多层感知机 ({}) 测试数据数量: {}, 测试结果集标准方差: {}.", modelName, validationSet.size(),
 								evaluationResult.getMeanSquareError());
+					} else {
+						emc.beginTransaction(Model.class);
+						model.setStatus(Model.STATUS_COMPLETED);
+						emc.commit();
 					}
 					// logger.info("##############################################################################");
 					// logger.info("MeanSquare Error: " +
