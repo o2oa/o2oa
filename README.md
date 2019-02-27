@@ -32,6 +32,8 @@ Gitee : https://gitee.com/liyihz2008/O2OA
 
 Github : https://github.com/o2oa/o2oa
 
+脚本API：http://www.o2oa.net/x_desktop/portal.html?id=dcd8e168-2da0-4496-83ee-137dc976c7f6
+
 
 # 配置编译环境\:
 
