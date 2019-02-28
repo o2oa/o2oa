@@ -34,6 +34,9 @@ Github : https://github.com/o2oa/o2oa
 
 脚本API：http://www.o2oa.net/x_desktop/portal.html?id=dcd8e168-2da0-4496-83ee-137dc976c7f6
 
+O2OA开发相关教程天梯：https://my.oschina.net/o2oa/blog/3016363
+
+
 
 # 配置编译环境\:
 
