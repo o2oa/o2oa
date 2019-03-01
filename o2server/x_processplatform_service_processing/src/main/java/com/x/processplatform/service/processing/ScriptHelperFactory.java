@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Task;
