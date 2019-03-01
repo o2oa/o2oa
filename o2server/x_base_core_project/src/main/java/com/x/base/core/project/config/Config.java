@@ -65,6 +65,7 @@ public class Config {
 	public static final String PATH_COMMONS_MOOTOOLSSCRIPTTEXT = "commons/mooToolsScriptText.js";
 
 	public static final String DIR_COMMONS = "commons";
+	public static final String DIR_COMMONS_TESS4J_TESSDATA = "commons/tess4j/tessdata";
 	public static final String DIR_COMMONS_EXT = "commons/ext";
 	public static final String DIR_CONFIG = "config";
 	public static final String DIR_CONFIGSAMPLE = "configSample";
@@ -103,6 +104,10 @@ public class Config {
 
 	public static File dir_commons() throws Exception {
 		return new File(base(), DIR_COMMONS);
+	}
+
+	public static File dir_commons_tess4j_tessdata() throws Exception {
+		return new File(base(), DIR_COMMONS_TESS4J_TESSDATA);
 	}
 
 	public static File dir_commons_ext() throws Exception {
