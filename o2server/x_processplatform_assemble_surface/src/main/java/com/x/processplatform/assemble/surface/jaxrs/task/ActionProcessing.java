@@ -174,6 +174,9 @@ class ActionProcessing extends BaseAction {
 		@FieldDescribe("多媒体意见")
 		private String mediaOpinion;
 
+		@FieldDescribe("多媒体意见")
+		private JsonElement routeData;
+
 		public String getRouteName() {
 			return routeName;
 		}
@@ -196,6 +199,14 @@ class ActionProcessing extends BaseAction {
 
 		public void setMediaOpinion(String mediaOpinion) {
 			this.mediaOpinion = mediaOpinion;
+		}
+
+		public JsonElement getRouteData() {
+			return routeData;
+		}
+
+		public void setRouteData(JsonElement routeData) {
+			this.routeData = routeData;
 		}
 
 	}

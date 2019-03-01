@@ -7,6 +7,8 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.collaboration.core.message.Collaboration;
+import com.x.processplatform.service.processing.processor.embed.SyncEmbedQueue;
+import com.x.processplatform.service.processing.processor.invoke.SyncInvokeQueue;
 import com.x.processplatform.service.processing.schedule.Delay;
 import com.x.processplatform.service.processing.schedule.Expire;
 import com.x.processplatform.service.processing.schedule.Reorganize;
@@ -15,6 +17,10 @@ import com.x.processplatform.service.processing.schedule.Urge;
 public class ThisApplication {
 
 	protected static Context context;
+
+	public static SyncInvokeQueue syncInvokeQueue = new SyncInvokeQueue();
+
+	public static SyncEmbedQueue syncEmbedQueue = new SyncEmbedQueue();
 
 	public static Context context() {
 		return context;
@@ -26,6 +32,8 @@ public class ThisApplication {
 			ScriptHelperFactory.initialScriptText = Config.initialScriptText();
 			Collaboration.start(context());
 			MessageConnector.start(context());
+			context().startQueue(syncInvokeQueue);
+			context().startQueue(syncEmbedQueue);
 			if (BooleanUtils.isTrue(Config.processPlatform().getUrge().getEnable())) {
 				context.schedule(Urge.class, Config.processPlatform().getUrge().getCron());
 			}

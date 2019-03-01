@@ -281,11 +281,13 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 		private String position;
 
-		private ActivityType activityType;
+		//private ActivityType activityType;
 
 		private String resetRange;
 
 		private Integer resetCount;
+
+		private Boolean allowReset;
 
 		public String getName() {
 			return name;
@@ -319,13 +321,13 @@ abstract class BaseAction extends StandardJaxrsAction {
 			this.position = position;
 		}
 
-		public ActivityType getActivityType() {
-			return activityType;
-		}
-
-		public void setActivityType(ActivityType activityType) {
-			this.activityType = activityType;
-		}
+//		public ActivityType getActivityType() {
+//			return activityType;
+//		}
+//
+//		public void setActivityType(ActivityType activityType) {
+//			this.activityType = activityType;
+//		}
 
 		public String getId() {
 			return id;
@@ -349,6 +351,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 		public void setResetRange(String resetRange) {
 			this.resetRange = resetRange;
+		}
+
+		public Boolean getAllowReset() {
+			return allowReset;
+		}
+
+		public void setAllowReset(Boolean allowReset) {
+			this.allowReset = allowReset;
 		}
 
 	}
@@ -470,20 +480,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 		public static WrapCopier<Attachment, WoAttachment> copier = WrapCopierFactory.wo(Attachment.class,
 				WoAttachment.class, null, JpaObject.FieldsInvisible);
-
-		// private String contentType;
-		//
-		// public String getContentType() {
-		// return contentType;
-		// }
-		//
-		// public void setContentType(String contentType) {
-		// this.contentType = contentType;
-		// }
-		//
-		// public void contentType() throws Exception {
-		// this.contentType = Config.mimeTypes(this.getExtension());
-		// }
 
 	}
 
@@ -617,18 +613,19 @@ abstract class BaseAction extends StandardJaxrsAction {
 			}
 		});
 
-		CompletableFuture<Void> future_taskCompleteds = CompletableFuture.runAsync(() -> {
-			try {
-				List<TaskCompleted> os = business.entityManagerContainer()
-						.listEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, work.getJob()).stream()
-						.sorted(Comparator.comparing(TaskCompleted::getStartTime,
-								Comparator.nullsLast(Date::compareTo)))
-						.collect(Collectors.toList());
-				woTaskCompleteds.addAll(WoTaskCompleted.copier.copy(os));
-			} catch (Exception e) {
-				logger.error(e);
-			}
-		});
+//		CompletableFuture<Void> future_taskCompleteds = CompletableFuture.runAsync(() -> {
+//			try {
+//				List<TaskCompleted> os = business.entityManagerContainer()
+//						.listEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, work.getJob()).stream()
+//						.sorted(Comparator.comparing(TaskCompleted::getStartTime,
+//								Comparator.nullsLast(Date::compareTo)))
+//						.collect(Collectors.toList());
+//				woTaskCompleteds.addAll(WoTaskCompleted.copier.copy(os));
+//			} catch (Exception e) {
+//				logger.error(e);
+//			}
+//		});
+		
 		CompletableFuture<Void> future_reads = CompletableFuture.runAsync(() -> {
 			try {
 				List<Read> os = business.entityManagerContainer()
@@ -648,18 +645,18 @@ abstract class BaseAction extends StandardJaxrsAction {
 				logger.error(e);
 			}
 		});
-		CompletableFuture<Void> future_readCompleteds = CompletableFuture.runAsync(() -> {
-			try {
-				List<ReadCompleted> os = business.entityManagerContainer()
-						.listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, work.getJob()).stream()
-						.sorted(Comparator.comparing(ReadCompleted::getStartTime,
-								Comparator.nullsLast(Date::compareTo)))
-						.collect(Collectors.toList());
-				woReadCompleteds.addAll(WoReadCompleted.copier.copy(os));
-			} catch (Exception e) {
-				logger.error(e);
-			}
-		});
+//		CompletableFuture<Void> future_readCompleteds = CompletableFuture.runAsync(() -> {
+//			try {
+//				List<ReadCompleted> os = business.entityManagerContainer()
+//						.listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, work.getJob()).stream()
+//						.sorted(Comparator.comparing(ReadCompleted::getStartTime,
+//								Comparator.nullsLast(Date::compareTo)))
+//						.collect(Collectors.toList());
+//				woReadCompleteds.addAll(WoReadCompleted.copier.copy(os));
+//			} catch (Exception e) {
+//				logger.error(e);
+//			}
+//		});
 		CompletableFuture<Void> future_attachments = CompletableFuture.runAsync(() -> {
 			try {
 				List<Attachment> os = business.entityManagerContainer()
@@ -737,9 +734,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 			return o;
 		});
 		future_tasks.get(300, TimeUnit.SECONDS);
-		future_taskCompleteds.get(300, TimeUnit.SECONDS);
+		//future_taskCompleteds.get(300, TimeUnit.SECONDS);
 		future_reads.get(300, TimeUnit.SECONDS);
-		future_readCompleteds.get(300, TimeUnit.SECONDS);
+		//future_readCompleteds.get(300, TimeUnit.SECONDS);
 		future_attachments.get(300, TimeUnit.SECONDS);
 		future_workLogs.get(300, TimeUnit.SECONDS);
 		future_data.get(300, TimeUnit.SECONDS);
@@ -797,9 +794,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			control.setAllowSave(true);
 		}
 		/** 设置 allowReset */
-		if (Objects.equals(t.getActivity().getActivityType(), ActivityType.manual)
-				&& BooleanUtils
-						.isTrue((Boolean) PropertyUtils.getProperty(t.getActivity(), Manual.allowReset_FIELDNAME))
+		if (BooleanUtils.isTrue((Boolean) PropertyUtils.getProperty(t.getActivity(), Manual.allowReset_FIELDNAME))
 				&& (t.getCurrentTaskIndex() > -1)) {
 			control.setAllowReset(true);
 		}

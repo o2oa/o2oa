@@ -66,10 +66,13 @@ class ActionProcessing extends BaseAction {
 						if (null != work) {
 							WorkDataHelper workDataHelper = new WorkDataHelper(business.entityManagerContainer(), work);
 							data = workDataHelper.get();
+							ScriptHelper sh = ScriptHelperFactory.create(business, work, data, manual, task);
+							sh.eval(work.getApplication(), manual.getManualBeforeTaskScript(),
+									manual.getManualBeforeTaskScriptText());
+							if (workDataHelper.update(data)) {
+								emc.commit();
+							}
 						}
-						ScriptHelper sh = ScriptHelperFactory.create(business, work, data, manual);
-						sh.eval(work.getApplication(), manual.getManualBeforeTaskScript(),
-								manual.getManualBeforeTaskScriptText());
 					}
 				}
 			}
@@ -96,10 +99,13 @@ class ActionProcessing extends BaseAction {
 					if (null != work) {
 						WorkDataHelper workDataHelper = new WorkDataHelper(business.entityManagerContainer(), work);
 						data = workDataHelper.get();
+						ScriptHelper sh = ScriptHelperFactory.create(business, work, data, manual, taskCompleted);
+						sh.eval(work.getApplication(), manual.getManualAfterTaskScript(),
+								manual.getManualAfterTaskScriptText());
+						if (workDataHelper.update(data)) {
+							emc.commit();
+						}
 					}
-					ScriptHelper sh = ScriptHelperFactory.create(business, work, data, manual);
-					sh.eval(work.getApplication(), manual.getManualAfterTaskScript(),
-							manual.getManualAfterTaskScriptText());
 				}
 			}
 			MessageFactory.taskCompleted_create(taskCompleted);

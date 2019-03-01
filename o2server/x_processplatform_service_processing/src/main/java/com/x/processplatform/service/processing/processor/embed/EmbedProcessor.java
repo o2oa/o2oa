@@ -7,7 +7,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -81,9 +80,16 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 		}
 		logger.debug("embed:{}, process:{} try to embed application:{}, process:{}, assginData:{}", embed.getName(),
 				embed.getProcess(), embed.getTargetApplication(), embed.getTargetProcess(), gson.toJson(assginData));
-		WoWorkId woWorkId = ThisApplication.context().applications()
-				.postQuery(x_processplatform_service_processing.class, "work", assginData).getData(WoWorkId.class);
-		aeiObjects.getWork().setEmbedTargetWork(woWorkId.getId());
+		if (BooleanUtils.isTrue(embed.getAsync())) {
+			ThisApplication.syncEmbedQueue.send(assginData);
+		} else {
+			EmbedExecutor executor = new EmbedExecutor();
+			String embedWorkId = executor.execute(assginData);
+			aeiObjects.getWork().setEmbedTargetWork(embedWorkId);
+//			WoWorkId woWorkId = ThisApplication.context().applications()
+//					.postQuery(x_processplatform_service_processing.class, "work", assginData).getData(WoWorkId.class);
+		}
+
 		List<Work> results = new ArrayList<>();
 		results.add(aeiObjects.getWork());
 		return results;

@@ -10,7 +10,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapString;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.query.service.processing.ExtractTextTools;
+import com.x.base.core.project.tools.ExtractTextTools;
 
 class ActionExtract extends BaseAction {
 

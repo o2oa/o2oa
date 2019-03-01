@@ -1,7 +1,5 @@
 package com.x.processplatform.core.entity.element;
 
-import java.util.Date;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -165,6 +163,18 @@ public class Route extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String opinion;
 
+	public static final String decisionOpinion_FIELDNAME = "decisionOpinion";
+	@FieldDescribe("决策性意见,使用#分割.")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + decisionOpinion_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String decisionOpinion;
+
+	public static final String sole_FIELDNAME = "sole";
+	@FieldDescribe("唯一路由,当多人处理时,如果有人选择此路由将通过此路由,一票否决.")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + sole_FIELDNAME)
+	private Boolean sole;
+
 	public String getName() {
 		return name;
 	}
@@ -275,6 +285,22 @@ public class Route extends SliceJpaObject {
 
 	public void setOpinion(String opinion) {
 		this.opinion = opinion;
+	}
+
+	public String getDecisionOpinion() {
+		return decisionOpinion;
+	}
+
+	public void setDecisionOpinion(String decisionOpinion) {
+		this.decisionOpinion = decisionOpinion;
+	}
+
+	public Boolean getSole() {
+		return sole;
+	}
+
+	public void setSole(Boolean sole) {
+		this.sole = sole;
 	}
 
 }

@@ -6,6 +6,8 @@ import java.util.Map;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.organization.core.express.Organization;
 import com.x.processplatform.core.entity.content.Data;
+import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.service.processing.processor.AeiObjects;
@@ -41,7 +43,6 @@ public class ScriptHelperFactory {
 		return sh;
 	}
 
-
 	/**
 	 * 用于单独生成脚本运行环境,ManualBeforeTaskScript,ManualAfterTaskScript
 	 * 
@@ -69,6 +70,41 @@ public class ScriptHelperFactory {
 		}
 		ScriptHelper sh = new ScriptHelper(business, map, initialScriptText);
 		return sh;
+	}
 
+	public static ScriptHelper create(Business business, Work work, Data data, Activity activity, Task task,
+			BindingPair... bindingPairs) throws Exception {
+		WorkContext workContext = new WorkContext(business, work, activity, task);
+		Map<String, Object> map = new HashMap<>();
+		map.put(workContext_binding_name, workContext);
+		map.put(data_binding_name, data);
+		map.put(organization_binding_name, new Organization(ThisApplication.context()));
+		map.put(webservicesClient_binding_name, new WebservicesClient());
+		map.put(dictionary_binding_name,
+				new ApplicationDictHelper(business.entityManagerContainer(), work.getApplication()));
+		map.put(applications_binding_name, ThisApplication.context().applications());
+		for (BindingPair o : bindingPairs) {
+			map.put(o.getName(), o.getValue());
+		}
+		ScriptHelper sh = new ScriptHelper(business, map, initialScriptText);
+		return sh;
+	}
+
+	public static ScriptHelper create(Business business, Work work, Data data, Activity activity,
+			TaskCompleted taskCompleted, BindingPair... bindingPairs) throws Exception {
+		WorkContext workContext = new WorkContext(business, work, activity, taskCompleted);
+		Map<String, Object> map = new HashMap<>();
+		map.put(workContext_binding_name, workContext);
+		map.put(data_binding_name, data);
+		map.put(organization_binding_name, new Organization(ThisApplication.context()));
+		map.put(webservicesClient_binding_name, new WebservicesClient());
+		map.put(dictionary_binding_name,
+				new ApplicationDictHelper(business.entityManagerContainer(), work.getApplication()));
+		map.put(applications_binding_name, ThisApplication.context().applications());
+		for (BindingPair o : bindingPairs) {
+			map.put(o.getName(), o.getValue());
+		}
+		ScriptHelper sh = new ScriptHelper(business, map, initialScriptText);
+		return sh;
 	}
 }
