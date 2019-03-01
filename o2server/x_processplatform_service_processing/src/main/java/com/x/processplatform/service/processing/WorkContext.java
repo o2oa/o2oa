@@ -32,6 +32,8 @@ public class WorkContext {
 	private Gson gson = XGsonBuilder.instance();
 	private ProcessingAttributes processingAttributes;
 	private AeiObjects aeiObjects = null;
+	private Task task;
+	private TaskCompleted taskCompleted;
 
 	public WorkContext(AeiObjects aeiObjects) throws Exception {
 		this.aeiObjects = aeiObjects;
@@ -46,6 +48,22 @@ public class WorkContext {
 		this.work = work;
 		this.activity = activity;
 		this.gson = XGsonBuilder.instance();
+	}
+
+	WorkContext(Business business, Work work, Activity activity, Task task) throws Exception {
+		this.business = business;
+		this.work = work;
+		this.activity = activity;
+		this.gson = XGsonBuilder.instance();
+		this.task = task;
+	}
+
+	WorkContext(Business business, Work work, Activity activity, TaskCompleted taskCompleted) throws Exception {
+		this.business = business;
+		this.work = work;
+		this.activity = activity;
+		this.gson = XGsonBuilder.instance();
+		this.taskCompleted = taskCompleted;
 	}
 
 	public String getWork() throws Exception {
@@ -80,6 +98,16 @@ public class WorkContext {
 		} catch (Exception e) {
 			throw new Exception("getTaskCompletedList error.", e);
 		}
+	}
+
+	public String getTaskOrTaskCompleted() {
+		if (null != task) {
+			return gson.toJson(task);
+		}
+		if (null != taskCompleted) {
+			return gson.toJson(taskCompleted);
+		}
+		return "";
 	}
 
 	public String getReadList() throws Exception {
@@ -201,7 +229,7 @@ public class WorkContext {
 			List<String> libs = new ArrayList<>();
 			for (Script o : list) {
 				buffer.append(o.getText());
-				buffer.append(SystemUtils.LINE_SEPARATOR);
+				buffer.append(System.lineSeparator());
 				if (StringUtils.isNotEmpty(o.getId())) {
 					libs.add(o.getId());
 				}

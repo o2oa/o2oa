@@ -36,6 +36,7 @@ public class ActionUpdateFile extends ActionUpdate {
 			File file = new File(path);
 			if (!file.exists() || file.isDirectory()) {
 				logger.print("zip file not exist path:{}.", path);
+				return false;
 			}
 			if (backup) {
 				this.backup();

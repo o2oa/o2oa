@@ -3,18 +3,27 @@ package com.x.processplatform.core.entity.content;
 import static com.x.base.core.entity.StorageType.processPlatform;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Lob;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.PersistentCollection;
+import org.apache.openjpa.persistence.jdbc.ContainerTable;
+import org.apache.openjpa.persistence.jdbc.ElementColumn;
+import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
 
 import com.x.base.core.entity.AbstractPersistenceProperties;
@@ -24,7 +33,6 @@ import com.x.base.core.entity.StorageObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.config.Config;
 import com.x.base.core.project.tools.DateTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ActivityType;
@@ -296,6 +304,84 @@ public class Attachment extends StorageObject {
 	@CheckPersist(allowEmpty = true)
 	private String type;
 
+	public static final String text_FIELDNAME = "text";
+	@FieldDescribe("文本.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_100M, name = ColumnNamePrefix + text_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String text;
+
+	public static final String readIdentityList_FIELDNAME = "readIdentityList";
+	@FieldDescribe("可以访问的身份.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ readIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + readIdentityList_FIELDNAME
+					+ JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + readIdentityList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + readIdentityList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> readIdentityList;
+
+	public static final String readUnitList_FIELDNAME = "readUnitList";
+	@FieldDescribe("可以访问的组织.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle + readUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
+			+ IndexNameMiddle + readUnitList_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + readUnitList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + readUnitList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> readUnitList;
+
+	public static final String editIdentityList_FIELDNAME = "editIdentityList";
+	@FieldDescribe("可以修改的用户.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ editIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + editIdentityList_FIELDNAME
+					+ JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + editIdentityList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + editIdentityList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> editIdentityList;
+
+	public static final String editUnitList_FIELDNAME = "editUnitList";
+	@FieldDescribe("可以修改的组织.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle + editUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
+			+ IndexNameMiddle + editUnitList_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + editUnitList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + editUnitList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> editUnitList;
+
+	public static final String controllerIdentityList_FIELDNAME = "controllerIdentityList";
+	@FieldDescribe("可以修改的用户.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ controllerIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ controllerIdentityList_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + controllerIdentityList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + controllerIdentityList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> controllerIdentityList;
+
+	public static final String controllerUnitList_FIELDNAME = "controllerUnitList";
+	@FieldDescribe("可以修改的组织.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ controllerUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ controllerUnitList_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + controllerUnitList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + controllerUnitList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> controllerUnitList;
+
 	public String getJob() {
 		return job;
 	}
@@ -414,6 +500,62 @@ public class Attachment extends StorageObject {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	public List<String> getReadIdentityList() {
+		return readIdentityList;
+	}
+
+	public void setReadIdentityList(List<String> readIdentityList) {
+		this.readIdentityList = readIdentityList;
+	}
+
+	public List<String> getReadUnitList() {
+		return readUnitList;
+	}
+
+	public void setReadUnitList(List<String> readUnitList) {
+		this.readUnitList = readUnitList;
+	}
+
+	public List<String> getEditIdentityList() {
+		return editIdentityList;
+	}
+
+	public void setEditIdentityList(List<String> editIdentityList) {
+		this.editIdentityList = editIdentityList;
+	}
+
+	public List<String> getEditUnitList() {
+		return editUnitList;
+	}
+
+	public void setEditUnitList(List<String> editUnitList) {
+		this.editUnitList = editUnitList;
+	}
+
+	public List<String> getControllerIdentityList() {
+		return controllerIdentityList;
+	}
+
+	public void setControllerIdentityList(List<String> controllerIdentityList) {
+		this.controllerIdentityList = controllerIdentityList;
+	}
+
+	public List<String> getControllerUnitList() {
+		return controllerUnitList;
+	}
+
+	public void setControllerUnitList(List<String> controllerUnitList) {
+		this.controllerUnitList = controllerUnitList;
 	}
 
 }

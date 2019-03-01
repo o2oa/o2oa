@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.express.Organization;
 import com.x.processplatform.assemble.surface.factory.content.AttachmentFactory;
 import com.x.processplatform.assemble.surface.factory.content.ItemFactory;
@@ -46,6 +47,7 @@ import com.x.processplatform.assemble.surface.factory.element.RouteFactory;
 import com.x.processplatform.assemble.surface.factory.element.ScriptFactory;
 import com.x.processplatform.assemble.surface.factory.element.ServiceFactory;
 import com.x.processplatform.assemble.surface.factory.element.SplitFactory;
+import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Review;
@@ -1344,4 +1346,28 @@ public class Business {
 		}
 		return false;
 	}
+
+	public boolean controllerable(Business business, EffectivePerson effectivePerson, Application application,
+			Process process, Attachment attachment) throws Exception {
+		if (ListTools.isEmpty(attachment.getControllerIdentityList(), attachment.getControllerUnitList())) {
+			return true;
+		}
+		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
+			return true;
+		}
+		if (!ListTools.isEmpty(attachment.getControllerIdentityList())) {
+			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
+			if (ListTools.containsAny(identities, attachment.getControllerIdentityList())) {
+				return true;
+			}
+		}
+		if (!ListTools.isEmpty(attachment.getControllerUnitList())) {
+			List<String> units = business.organization().unit().listWithPersonSupNested(effectivePerson);
+			if (ListTools.containsAny(units, attachment.getControllerUnitList())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

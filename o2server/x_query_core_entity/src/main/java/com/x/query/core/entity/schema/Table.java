@@ -107,7 +107,7 @@ public class Table extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private List<String> readPersonList;
 
-	public static final String readUnitList_FIELDNAME = "readPersonList";
+	public static final String readUnitList_FIELDNAME = "readUnitList";
 	@FieldDescribe("可以访问数据的组织.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + readUnitList_FIELDNAME, joinIndex = @Index(name = TABLE

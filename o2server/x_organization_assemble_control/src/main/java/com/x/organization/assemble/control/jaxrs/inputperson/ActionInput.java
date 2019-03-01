@@ -92,6 +92,13 @@ class ActionInput extends BaseAction {
 			ScriptingEngine engine = Scripting.getEngine();
 			for (PersonItem o : people) {
 				engine.binding("person", o);
+				System.out.println("!!!!!!!!!!!!!!!!!");
+				System.out.println(engine);
+				System.out.println("!!!!!!!!!!!!!!!!!");
+				System.out.println(eval);
+				System.out.println("!!!!!!!!!!!!!!!!!");
+				System.out.println(o);
+				System.out.println("!!!!!!!!!!!!!!!!!");
 				String pass = engine.eval(eval).toString();
 				o.setPassword(pass);
 			}

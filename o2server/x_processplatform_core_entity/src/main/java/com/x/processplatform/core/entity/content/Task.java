@@ -135,6 +135,7 @@ public class Task extends SliceJpaObject {
 						this.routeList.add(o.getId());
 						this.routeNameList.add(o.getName());
 						this.routeOpinionList.add(StringUtils.trimToEmpty(o.getOpinion()));
+						this.routeDecisionOpinionList.add(StringUtils.trimToEmpty(o.getDecisionOpinion()));
 					});
 		}
 		this.routeName = "";
@@ -352,7 +353,7 @@ public class Task extends SliceJpaObject {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + routeList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + routeList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + routeList_FIELDNAME)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@CheckPersist(allowEmpty = true)
 	private List<String> routeList = new ArrayList<String>();
 
@@ -362,7 +363,7 @@ public class Task extends SliceJpaObject {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + routeNameList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + routeNameList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + routeNameList_FIELDNAME)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@CheckPersist(allowEmpty = true)
 	private List<String> routeNameList = new ArrayList<String>();
 
@@ -373,9 +374,20 @@ public class Task extends SliceJpaObject {
 			+ routeOpinionList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + routeOpinionList_FIELDNAME
 					+ JoinIndexNameSuffix))
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + routeOpinionList_FIELDNAME)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@CheckPersist(allowEmpty = true)
 	private List<String> routeOpinionList = new ArrayList<String>();
+
+	public static final String routeDecisionOpinionList_FIELDNAME = "routeDecisionOpinionList";
+	@FieldDescribe("决策性意见列表,使用#分割.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ routeDecisionOpinionList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ routeDecisionOpinionList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + routeDecisionOpinionList_FIELDNAME)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@CheckPersist(allowEmpty = true)
+	private List<String> routeDecisionOpinionList = new ArrayList<String>();
 
 	public static final String routeName_FIELDNAME = "routeName";
 	@FieldDescribe("选择的路由名称.")
@@ -724,6 +736,14 @@ public class Task extends SliceJpaObject {
 
 	public void setMediaOpinion(String mediaOpinion) {
 		this.mediaOpinion = mediaOpinion;
+	}
+
+	public List<String> getRouteDecisionOpinionList() {
+		return routeDecisionOpinionList;
+	}
+
+	public void setRouteDecisionOpinionList(List<String> routeDecisionOpinionList) {
+		this.routeDecisionOpinionList = routeDecisionOpinionList;
 	}
 
 }

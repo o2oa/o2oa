@@ -78,29 +78,29 @@ public class WorkDataHelper {
 		}
 	}
 
-	public void update(JsonElement jsonElement) throws Exception {
+	public boolean update(JsonElement jsonElement) throws Exception {
 		if (jsonElement.isJsonNull()) {
 			// throw new Exception("can not update data null.");
 			/** 如果是空数据就不更新,避免数据被清空 */
-			return;
+			return false;
 		}
 		if (jsonElement.isJsonPrimitive()) {
 			// throw new Exception("can not update data primitive.");
 			/** 如果是空数据就不更新,避免数据被清空 */
-			return;
+			return false;
 		}
 		if (jsonElement.isJsonObject()) {
 			if (jsonElement.getAsJsonObject().size() == 0) {
 				// throw new Exception("can not update data object size ==0.");
 				/** 如果是空数据就不更新,避免数据被清空 */
-				return;
+				return false;
 			}
 		}
 		if (jsonElement.isJsonArray()) {
 			if (jsonElement.getAsJsonArray().size() == 0) {
 				// throw new Exception("can not update data array size ==0.");
 				/** 如果是空数据就不更新,避免数据被清空 */
-				return;
+				return false;
 			}
 		}
 		List<Item> currents = converter.disassemble(jsonElement);
@@ -127,12 +127,15 @@ public class WorkDataHelper {
 			list.addAll(adds);
 			converter.sort(list);
 			items = list;
+			return true;
+		} else {
+			return false;
 		}
 	}
 
-	public void update(Data data) throws Exception {
+	public boolean update(Data data) throws Exception {
 		JsonElement jsonElement = gson.toJsonTree(data);
-		this.update(jsonElement);
+		return this.update(jsonElement);
 	}
 
 	public void remove() throws Exception {
