@@ -359,7 +359,7 @@ public class Attachment extends StorageObject {
 	private List<String> editUnitList;
 
 	public static final String controllerIdentityList_FIELDNAME = "controllerIdentityList";
-	@FieldDescribe("可以修改的用户.")
+	@FieldDescribe("可以管理的用户.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ controllerIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
@@ -371,7 +371,7 @@ public class Attachment extends StorageObject {
 	private List<String> controllerIdentityList;
 
 	public static final String controllerUnitList_FIELDNAME = "controllerUnitList";
-	@FieldDescribe("可以修改的组织.")
+	@FieldDescribe("可以管理的组织.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ controllerUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle

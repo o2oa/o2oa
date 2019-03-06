@@ -146,85 +146,72 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	private Map<String, WoAssemble> getRandomAssemblesFrom(HttpServletRequest request, String source) throws Exception {
 		Map<String, WoAssemble> map = new HashMap<>();
-		for (Class<? extends AssembleA> o : listAssemble()) {
+		for (String str : ThisApplication.context().applications().keySet()) {
 			WoAssemble wrap = new WoAssemble();
-			Application application = ThisApplication.context().applications().randomWithWeight(o);
+			Application application = ThisApplication.context().applications().randomWithWeight(str);
 			if (null != application) {
 				wrap.setContext(application.getContextPath());
 				wrap.setHost(StringUtils.isNotEmpty(source) ? source : this.getHost(request));
 				wrap.setPort(application.getPort());
 				wrap.setName(application.getName());
 			}
-			map.put(o.getSimpleName(), wrap);
+			map.put(StringUtils.substringAfterLast(str, "."), wrap);
 		}
 		return map;
 	}
 
 	private Map<String, WoAssemble> getRandomAssemblesProxy() throws Exception {
 		Map<String, WoAssemble> map = new HashMap<>();
-		for (Class<? extends AssembleA> o : listAssemble()) {
+		for (String str : ThisApplication.context().applications().keySet()) {
 			WoAssemble wrap = new WoAssemble();
-			Application application = ThisApplication.context().applications().randomWithWeight(o);
+			Application application = ThisApplication.context().applications().randomWithWeight(str);
 			if (null != application) {
 				wrap.setContext(application.getContextPath());
 				wrap.setHost(application.getProxyHost());
 				wrap.setPort(application.getProxyPort());
 				wrap.setName(application.getName());
 			}
-			map.put(o.getSimpleName(), wrap);
+			map.put(StringUtils.substringAfterLast(str, "."), wrap);
 		}
 		return map;
 	}
 
 	private Map<String, WoAssemble> getRandomAssemblesNode() throws Exception {
 		Map<String, WoAssemble> map = new HashMap<>();
-		for (Class<? extends AssembleA> o : listAssemble()) {
+		for (String str : ThisApplication.context().applications().keySet()) {
 			WoAssemble wrap = new WoAssemble();
-			Application application = ThisApplication.context().applications().randomWithWeight(o);
+			Application application = ThisApplication.context().applications().randomWithWeight(str);
 			if (null != application) {
 				wrap.setContext(application.getContextPath());
 				wrap.setHost(application.getNode());
 				wrap.setPort(application.getPort());
 				wrap.setName(application.getName());
 			}
-			map.put(o.getSimpleName(), wrap);
+			map.put(StringUtils.substringAfterLast(str, "."), wrap);
 		}
 		return map;
 	}
 
-	@SuppressWarnings("unchecked")
-	private List<Class<? extends AssembleA>> listAssemble() throws Exception {
-		if (null == assembles) {
-			synchronized (BaseAction.class) {
-				if (null == assembles) {
-					try (ScanResult scanResult = new ClassGraph().enableAllInfo().scan()) {
-						assembles = new CopyOnWriteArrayList<Class<? extends AssembleA>>();
-						List<ClassInfo> list = new ArrayList<>();
-						list.addAll(scanResult.getSubclasses(AssembleA.class.getName()));
-						list = list.stream().sorted(Comparator.comparing(ClassInfo::getName))
-								.collect(Collectors.toList());
-						for (ClassInfo info : list) {
-							assembles.add((Class<AssembleA>) Class.forName(info.getName()));
-						}
-					}
-//					ScanResult scanResult = new FastClasspathScanner(Packages.PREFIX).scan();
-//					List<String> assembleList = scanResult.getNamesOfSubclassesOf(AssembleA.class);
-//					List<String> list = new ArrayList<>();
-//					list.addAll(assembleList);
-//					Collections.sort(list, new Comparator<String>() {
-//						public int compare(String s1, String s2) {
-//							return s1.compareTo(s2);
+//	@SuppressWarnings("unchecked")
+//	private List<Class<? extends AssembleA>> listAssemble() throws Exception {
+//		if (null == assembles) {
+//			synchronized (BaseAction.class) {
+//				if (null == assembles) {
+//					try (ScanResult scanResult = new ClassGraph().enableAllInfo().scan()) {
+//						assembles = new CopyOnWriteArrayList<Class<? extends AssembleA>>();
+//						List<ClassInfo> list = new ArrayList<>();
+//						list.addAll(scanResult.getSubclasses(AssembleA.class.getName()));
+//						list = list.stream().sorted(Comparator.comparing(ClassInfo::getName))
+//								.collect(Collectors.toList());
+//						for (ClassInfo info : list) {
+//							assembles.add((Class<AssembleA>) Class.forName(info.getName()));
 //						}
-//					});
-//					assembles = new CopyOnWriteArrayList<Class<? extends AssembleA>>();
-//					for (String str : list) {
-//						assembles.add((Class<AssembleA>) Class.forName(str));
 //					}
-				}
-			}
-		}
-		return assembles;
-	}
+//				}
+//			}
+//		}
+//		return assembles;
+//	}
 
 	public static class WoAssemble extends GsonPropertyObject {
 

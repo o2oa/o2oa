@@ -20,8 +20,6 @@ import com.x.base.core.project.jaxrs.LikeTerms;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.WorkCompletedControl;
-import com.x.processplatform.assemble.surface.WorkControl;
-import com.x.processplatform.assemble.surface.wrapin.content.WrapInFilter;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Application;
 
@@ -30,7 +28,7 @@ class ActionListPrevWithFilter extends BaseAction {
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, Integer count, String applicationFlag,
 			JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			WrapInFilter wrapIn = this.convertToWrapIn(jsonElement, WrapInFilter.class);
+			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			EqualsTerms equals = new EqualsTerms();
@@ -41,17 +39,17 @@ class ActionListPrevWithFilter extends BaseAction {
 			String applicationId = null == application ? applicationFlag : application.getId();
 			equals.put("creatorPerson", effectivePerson.getDistinguishedName());
 			equals.put("application", applicationId);
-			if (ListTools.isNotEmpty(wrapIn.getProcessList())) {
-				ins.put("process", wrapIn.getProcessList());
+			if (ListTools.isNotEmpty(wi.getProcessList())) {
+				ins.put("process", wi.getProcessList());
 			}
-			if (ListTools.isNotEmpty(wrapIn.getStartTimeMonthList())) {
-				ins.put("startTimeMonth", wrapIn.getStartTimeMonthList());
+			if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
+				ins.put("startTimeMonth", wi.getStartTimeMonthList());
 			}
-			if (ListTools.isNotEmpty(wrapIn.getCompletedTimeMonthList())) {
-				ins.put("completedTimeMonth", wrapIn.getCompletedTimeMonthList());
+			if (ListTools.isNotEmpty(wi.getCompletedTimeMonthList())) {
+				ins.put("completedTimeMonth", wi.getCompletedTimeMonthList());
 			}
-			if (StringUtils.isNotEmpty(wrapIn.getKey())) {
-				String key = StringUtils.trim(StringUtils.replace(wrapIn.getKey(), "\u3000", " "));
+			if (StringUtils.isNotEmpty(wi.getKey())) {
+				String key = StringUtils.trim(StringUtils.replace(wi.getKey(), "\u3000", " "));
 				if (StringUtils.isNotEmpty(key)) {
 					likes.put("title", key);
 					likes.put("serial", key);
@@ -59,8 +57,8 @@ class ActionListPrevWithFilter extends BaseAction {
 					likes.put("creatorUnit", key);
 				}
 			}
-			result = this.standardListPrev(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, equals, null, likes, ins, null, null, null,
-					null, true, DESC);
+			result = this.standardListPrev(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, equals, null, likes, ins,
+					null, null, null, null, true, DESC);
 			/* 添加权限 */
 			if (null != result.getData()) {
 				for (Wo wo : result.getData()) {
@@ -73,18 +71,14 @@ class ActionListPrevWithFilter extends BaseAction {
 		}
 	}
 
-	public static class Wi extends GsonPropertyObject {
+	public class Wi extends GsonPropertyObject {
 
-		@FieldDescribe("流程")
 		private List<String> processList;
 
-		@FieldDescribe("启动月份")
-		private List<String> startTimeMonthList;
-
-		@FieldDescribe("完成月份")
 		private List<String> completedTimeMonthList;
 
-		@FieldDescribe("关键字")
+		private List<String> startTimeMonthList;
+
 		private String key;
 
 		public List<String> getProcessList() {
@@ -93,6 +87,14 @@ class ActionListPrevWithFilter extends BaseAction {
 
 		public void setProcessList(List<String> processList) {
 			this.processList = processList;
+		}
+
+		public List<String> getCompletedTimeMonthList() {
+			return completedTimeMonthList;
+		}
+
+		public void setCompletedTimeMonthList(List<String> completedTimeMonthList) {
+			this.completedTimeMonthList = completedTimeMonthList;
 		}
 
 		public List<String> getStartTimeMonthList() {
@@ -109,14 +111,6 @@ class ActionListPrevWithFilter extends BaseAction {
 
 		public void setKey(String key) {
 			this.key = key;
-		}
-
-		public List<String> getCompletedTimeMonthList() {
-			return completedTimeMonthList;
-		}
-
-		public void setCompletedTimeMonthList(List<String> completedTimeMonthList) {
-			this.completedTimeMonthList = completedTimeMonthList;
 		}
 
 	}

@@ -26,12 +26,12 @@ import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
 
-import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
@@ -80,7 +80,8 @@ public class Work extends SliceJpaObject {
 	}
 
 	public Work(Work work) throws Exception {
-		work.copyTo(this, JpaObject.id_FIELDNAME);
+		Work copy = XGsonBuilder.convert(work, Work.class);
+		copy.copyTo(this, JpaObject.id_FIELDNAME);
 	}
 
 	public void setTitle(String title) {

@@ -15,7 +15,6 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -29,7 +28,6 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.processplatform.assemble.surface.wrapin.element.WrapInApplicationDict;
 import com.x.processplatform.assemble.surface.wrapout.element.WrapOutApplicationDict;
 
 @JaxrsDescribe("数据字典操作")
@@ -66,11 +64,11 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 	public void update(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
-			WrapInApplicationDict wrapIn) {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+			JsonElement jsonElement) {
+		ActionResult<ActionUpdate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdate().execute(effectivePerson, applicationDictFlag, applicationFlag, wrapIn);
+			result = new ActionUpdate().execute(effectivePerson, applicationDictFlag, applicationFlag, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -83,8 +81,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 	@Path("list/application/{applicationFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listWithApplication(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request,
+	public void listWithApplication(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<List<WrapOutApplicationDict>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);

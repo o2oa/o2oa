@@ -7,10 +7,13 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.list.TreeList;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.WorkLog;
+import com.x.processplatform.core.entity.element.ActivityType;
 
 public class WorkLogTree {
 
@@ -18,19 +21,32 @@ public class WorkLogTree {
 
 	List<WorkLog> list;
 
-	List<Node> nodes = new TreeList<>();
+	Nodes nodes = new Nodes();
 
 	public WorkLogTree(List<WorkLog> list) throws Exception {
 		this.list = new ArrayList<WorkLog>(list);
 		List<String> froms = ListTools.extractProperty(list, WorkLog.fromActivityToken_FIELDNAME, String.class, true,
 				true);
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!A");
+		System.out.println(XGsonBuilder.toJson(froms));
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!A");
 		List<String> arriveds = ListTools.extractProperty(list, WorkLog.arrivedActivityToken_FIELDNAME, String.class,
 				true, true);
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!b");
+		System.out.println(XGsonBuilder.toJson(arriveds));
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Ab");
 		List<String> values = ListUtils.subtract(froms, arriveds);
-		List<WorkLog> begins = list.stream().filter(o -> values.contains(o.getFromActivityToken()))
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!bc");
+		System.out.println(XGsonBuilder.toJson(values));
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Abc");
+		List<WorkLog> begins = list.stream()
+				.filter(o -> BooleanUtils.isTrue(o.getConnected()) && values.contains(o.getFromActivityToken()))
 				.collect(Collectors.toList());
 		if (begins.size() != 1) {
-			throw new Exception();
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			System.out.println(XGsonBuilder.toJson(begins));
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			throw new ExceptionBeginNotFound(begins.size());
 		}
 		root = new Node();
 		root.workLog = begins.get(0);
@@ -40,7 +56,7 @@ public class WorkLogTree {
 	}
 
 	private void sub(Node node) {
-		node.children = new ArrayList<>();
+		node.children = new Nodes();
 		List<WorkLog> os = list.stream()
 				.filter(o -> StringUtils.equals(node.workLog.getArrivedActivityToken(), o.getFromActivityToken()))
 				.collect(Collectors.toList());
@@ -57,10 +73,37 @@ public class WorkLogTree {
 		}
 	}
 
+	public static class Nodes extends TreeList<Node> {
+
+		public boolean onlyManual() {
+			return true;
+		}
+
+	}
+
 	public static class Node {
+
 		private WorkLog workLog;
 		private Node parent;
-		private List<Node> children;
+		private Nodes children = new Nodes();
+
+		public Node upTo(ActivityType activityType, ActivityType... pass) {
+			Node p = this.parent;
+			List<ActivityType> passActivityTypes = ListTools.toList(pass);
+			while ((p != null) && (!Objects.equals(p.workLog.getArrivedActivityType(), activityType))
+					&& ListTools.contains(passActivityTypes, p.workLog.getFromActivityType())) {
+				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!");
+				System.out.println(p);
+				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!");
+				p = p.parent;
+			}
+			return p;
+		}
+
+		public WorkLog getWorkLog() {
+			return workLog;
+		}
+
 	}
 
 	public WorkLog root() {
@@ -101,24 +144,24 @@ public class WorkLogTree {
 		return os;
 	}
 
-	private List<Node> down(Node node) {
-		List<Node> os = new ArrayList<>();
+	public Nodes down(Node node) {
+		Nodes nodes = new Nodes();
 		for (Node o : node.children) {
-			os.add(o);
+			nodes.add(o);
 		}
 		for (Node o : node.children) {
-			os.addAll(down(o));
+			nodes.addAll(down(o));
 		}
-		return os;
+		return nodes;
 	}
 
-	private List<Node> up(Node node) {
-		List<Node> os = new ArrayList<>();
+	public Nodes up(Node node) {
+		Nodes nodes = new Nodes();
 		if (null != node.parent) {
-			os.add(node.parent);
-			os.addAll(up(node.parent));
+			nodes.add(node.parent);
+			nodes.addAll(up(node.parent));
 		}
-		return os;
+		return nodes;
 	}
 
 	public Node find(WorkLog workLog) {
@@ -132,7 +175,7 @@ public class WorkLogTree {
 		return node;
 	}
 
-	public List<Node> nodes() {
+	public Nodes nodes() {
 		return nodes;
 	}
 
