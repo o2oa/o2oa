@@ -116,7 +116,7 @@ public class Manual extends Activity {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ readIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + readIdentityList_FIELDNAME
 					+ JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + readIdentityList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + readIdentityList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -126,7 +126,7 @@ public class Manual extends Activity {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + readUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + readUnitList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + readUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + readUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -136,7 +136,7 @@ public class Manual extends Activity {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + readGroupList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + readGroupList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + readGroupList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + readGroupList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -167,7 +167,7 @@ public class Manual extends Activity {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ readDataPathList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + readDataPathList_FIELDNAME
 					+ JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = JpaObject.length_255B, name = ColumnNamePrefix + readDataPathList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + readDataPathList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -178,7 +178,7 @@ public class Manual extends Activity {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ reviewIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ reviewIdentityList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + reviewIdentityList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + reviewIdentityList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -188,7 +188,7 @@ public class Manual extends Activity {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + reviewUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + reviewUnitList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + reviewUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + reviewUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -198,7 +198,7 @@ public class Manual extends Activity {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + reviewGroupList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + reviewGroupList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + reviewGroupList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + reviewGroupList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -229,7 +229,7 @@ public class Manual extends Activity {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ reviewDataPathList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ reviewDataPathList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = JpaObject.length_255B, name = ColumnNamePrefix + reviewDataPathList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + reviewDataPathList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -331,7 +331,7 @@ public class Manual extends Activity {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + routeList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + routeList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + routeList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + routeList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -343,7 +343,7 @@ public class Manual extends Activity {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ taskIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + taskIdentityList_FIELDNAME
 					+ JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + taskIdentityList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + taskIdentityList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -354,7 +354,7 @@ public class Manual extends Activity {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + taskUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + taskUnitList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + taskUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + taskUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -365,7 +365,7 @@ public class Manual extends Activity {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + taskGroupList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + taskGroupList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + taskGroupList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + taskGroupList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -440,7 +440,7 @@ public class Manual extends Activity {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + IndexNameMiddle + taskDataPathList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + taskDataPathList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = JpaObject.length_255B, name = ColumnNamePrefix + taskDataPathList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + taskDataPathList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -484,6 +484,12 @@ public class Manual extends Activity {
 	@Column(name = ColumnNamePrefix + allowRapid_FIELDNAME)
 	private Boolean allowRapid;
 
+	public static final String allowAddSplit_FIELDNAME = "allowAddSplit";
+	@FieldDescribe("允许在会签拆分状态下增加会签分支.")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + allowAddSplit_FIELDNAME)
+	private Boolean allowAddSplit;
+
 	public static final String group_FIELDNAME = "group";
 	@FieldDescribe("分组")
 	@CheckPersist(allowEmpty = true)
@@ -492,7 +498,6 @@ public class Manual extends Activity {
 
 	public static final String resetRange_FIELDNAME = "resetRange";
 	@FieldDescribe("重置范围.")
-	// @Enumerated(EnumType.STRING)
 	@CheckPersist(allowEmpty = true)
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + resetRange_FIELDNAME)
 	private String resetRange;
@@ -1097,6 +1102,14 @@ public class Manual extends Activity {
 
 	public void setTaskGroupList(List<String> taskGroupList) {
 		this.taskGroupList = taskGroupList;
+	}
+
+	public Boolean getAllowAddSplit() {
+		return allowAddSplit;
+	}
+
+	public void setAllowAddSplit(Boolean allowAddSplit) {
+		this.allowAddSplit = allowAddSplit;
 	}
 
 }

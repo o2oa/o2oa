@@ -134,6 +134,9 @@ class ActionProcessing extends BaseAction {
 		@FieldDescribe("最后是否触发work的流转,默认流转.")
 		private Boolean finallyProcessingWork;
 
+		@FieldDescribe("路由数据.")
+		private JsonElement routeData;
+
 		public ProcessingType getProcessingType() {
 			return processingType;
 		}
@@ -148,6 +151,14 @@ class ActionProcessing extends BaseAction {
 
 		public void setFinallyProcessingWork(Boolean finallyProcessingWork) {
 			this.finallyProcessingWork = finallyProcessingWork;
+		}
+
+		public JsonElement getRouteData() {
+			return routeData;
+		}
+
+		public void setRouteData(JsonElement routeData) {
+			this.routeData = routeData;
 		}
 
 	}

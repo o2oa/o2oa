@@ -23,6 +23,7 @@ public class ScriptingEngine {
 
 	private static final String distinguishedName = "distinguishedName";
 
+	public static final String BINDINGNAME_GSON = "gson";
 	public static final String BINDINGNAME_ORGANIZATION = "organization";
 	public static final String BINDINGNAME_WORKCONTEXT = "workContext";
 	public static final String BINDINGNAME_DATA = "data";
@@ -35,6 +36,7 @@ public class ScriptingEngine {
 	public static final String BINDINGNAME_EFFECTIVEPERSON = "effectivePerson";
 	public static final String BINDINGNAME_JAXRSRESPONSE = "jaxrsResponse";
 	public static final String BINDINGNAME_JAXWSRESPONSE = "jaxwsResponse";
+	public static final String BINDINGNAME_ROUTEDATA = "routeData";
 
 	public ScriptingEngine(ScriptEngine scriptEngine) {
 		this.scriptEngine = scriptEngine;
@@ -104,6 +106,11 @@ public class ScriptingEngine {
 
 	public ScriptingEngine bindingParameters(Object o) {
 		this.scriptEngine.put(BINDINGNAME_PARAMETERS, o);
+		return this;
+	}
+
+	public ScriptingEngine bindingRouteData(String str) {
+		this.scriptEngine.put(BINDINGNAME_ROUTEDATA, str);
 		return this;
 	}
 

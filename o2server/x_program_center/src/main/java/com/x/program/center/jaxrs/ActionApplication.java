@@ -50,8 +50,8 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(StorageMappingsAction.class);
 		classes.add(UnexpectedErrorLogAction.class);
 		classes.add(WarnLogAction.class);
-		classes.add(JestAction.class);
 		classes.add(TestAction.class);
+		classes.add(JestAction.class);
 		classes.add(ModuleAction.class);
 		classes.add(PmsAction.class);
 		classes.add(AgentAction.class);

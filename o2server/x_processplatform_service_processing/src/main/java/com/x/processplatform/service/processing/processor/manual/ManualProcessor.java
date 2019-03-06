@@ -151,8 +151,6 @@ public class ManualProcessor extends AbstractManualProcessor {
 	protected List<Work> executing(AeiObjects aeiObjects, Manual manual) throws Exception {
 		List<Work> results = new ArrayList<>();
 		boolean passThrough = false;
-		// List<String> identities = TranslateTaskIdentityTools.translate(aeiObjects,
-		// manual);
 		/*
 		 * 如果采用List<String> identities =
 		 * TranslateTaskIdentityTools.translate(aeiObjects, manual)
@@ -161,9 +159,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 		List<String> identities = aeiObjects.business().organization().identity()
 				.list(aeiObjects.getWork().getManualTaskIdentityList());
 		if (identities.isEmpty()) {
-			logger.info("工作设置的处理人已经全部无效,重新计算当前环节所有处理人进行处理,标题:{}, id:{}, 设置的处理人:{}.", aeiObjects.getWork().getTitle(),
-					aeiObjects.getWork().getTitle(), aeiObjects.getWork().getManualTaskIdentityList());
 			identities = TranslateTaskIdentityTools.translate(aeiObjects, manual);
+			logger.info("工作设置的处理人已经全部无效,重新计算当前环节所有处理人进行处理,标题:{}, id:{}, 设置的处理人:{}.", aeiObjects.getWork().getTitle(),
+					aeiObjects.getWork().getId(), identities);
 		}
 		if (identities.isEmpty()) {
 			/* 如果活动没有找到任何可用的处理人,那么强制设置处理人为文档创建者,或者配置的 maintenanceIdentity */
@@ -254,7 +252,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 					os.add(o.getRouteName());
 				});
 		/* 进行独占路由的判断 */
-		Route soleRoute = routes.stream().filter(o -> BooleanUtils.isTrue(o.getSole())).findFirst().orElseGet(null);
+		Route soleRoute = routes.stream().filter(o -> BooleanUtils.isTrue(o.getSole())).findFirst().orElse(null);
 		if (null != soleRoute) {
 			result = soleRoute.getName();
 		} else {

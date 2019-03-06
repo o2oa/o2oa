@@ -5,14 +5,14 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.http.WrapOutId;
+import com.x.base.core.project.jaxrs.WoId;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.SerialNumber;
 import com.x.processplatform.core.entity.element.Application;
 
- class ActionRemove extends BaseAction {
-	ActionResult<WrapOutId> execute(EffectivePerson effectivePerson, String id) throws Exception {
-		ActionResult<WrapOutId> result = new ActionResult<>();
+class ActionRemove extends BaseAction {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			SerialNumber o = emc.find(id, SerialNumber.class);
@@ -29,9 +29,13 @@ import com.x.processplatform.core.entity.element.Application;
 			emc.beginTransaction(SerialNumber.class);
 			emc.remove(o, CheckRemoveType.all);
 			emc.commit();
-			WrapOutId wrap = new WrapOutId(id);
-			result.setData(wrap);
+			Wo wo = new Wo();
+			wo.setId(o.getId());
+			result.setData(wo);
 		}
 		return result;
+	}
+
+	public static class Wo extends WoId {
 	}
 }

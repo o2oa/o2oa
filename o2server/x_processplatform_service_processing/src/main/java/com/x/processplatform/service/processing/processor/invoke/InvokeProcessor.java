@@ -128,7 +128,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			body = this.jaxrsEvalBody(aeiObjects, invoke);
 			if (BooleanUtils.isTrue(invoke.getAsync())) {
 				JaxrsObject jaxrsObject = new JaxrsObject();
-				Application application = ThisApplication.context().applications().randomWithWeight(clz);
+				Application application = ThisApplication.context().applications().randomWithWeight(clz.getName());
 				jaxrsObject
 						.setAddress(StringTools.JoinUrl(application.getUrlRoot() + CipherConnectionAction.trim(uri)));
 				jaxrsObject.setBody(body);
@@ -144,7 +144,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			body = this.jaxrsEvalBody(aeiObjects, invoke);
 			if (BooleanUtils.isTrue(invoke.getAsync())) {
 				JaxrsObject jaxrsObject = new JaxrsObject();
-				Application application = ThisApplication.context().applications().randomWithWeight(clz);
+				Application application = ThisApplication.context().applications().randomWithWeight(clz.getName());
 				jaxrsObject
 						.setAddress(StringTools.JoinUrl(application.getUrlRoot() + CipherConnectionAction.trim(uri)));
 				jaxrsObject.setBody(body);
@@ -159,7 +159,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		case "get":
 			if (BooleanUtils.isTrue(invoke.getAsync())) {
 				JaxrsObject jaxrsObject = new JaxrsObject();
-				Application application = ThisApplication.context().applications().randomWithWeight(clz);
+				Application application = ThisApplication.context().applications().randomWithWeight(clz.getName());
 				jaxrsObject
 						.setAddress(StringTools.JoinUrl(application.getUrlRoot() + CipherConnectionAction.trim(uri)));
 				jaxrsObject.setInternal(invoke.getInternal());
@@ -173,7 +173,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		case "delete":
 			if (BooleanUtils.isTrue(invoke.getAsync())) {
 				JaxrsObject jaxrsObject = new JaxrsObject();
-				Application application = ThisApplication.context().applications().randomWithWeight(clz);
+				Application application = ThisApplication.context().applications().randomWithWeight(clz.getName());
 				jaxrsObject
 						.setAddress(StringTools.JoinUrl(application.getUrlRoot() + CipherConnectionAction.trim(uri)));
 				jaxrsObject.setInternal(invoke.getInternal());
