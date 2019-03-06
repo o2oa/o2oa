@@ -464,13 +464,13 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 	}
 
 	public <T extends JpaObject> Long countEqualAndEqual(Class<T> cls, String euqalAttribute, Object equalValue,
-			String notEqualAttribute, Object notEqualValue) throws Exception {
+			String otherEqualAttribute, Object otherEqualValue) throws Exception {
 		EntityManager em = this.get(cls);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<T> root = cq.from(cls);
 		cq.select(cb.count(root)).where(cb.and(cb.equal(root.get(euqalAttribute), equalValue),
-				cb.equal(root.get(notEqualAttribute), notEqualValue)));
+				cb.equal(root.get(otherEqualAttribute), otherEqualValue)));
 		return em.createQuery(cq).getSingleResult();
 	}
 
