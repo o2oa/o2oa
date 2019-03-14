@@ -1,6 +1,5 @@
 package com.x.processplatform.core.entity.element;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Basic;

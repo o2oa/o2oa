@@ -10,8 +10,8 @@ import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.ListTools;
+import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.ActivityType;
 
@@ -27,25 +27,13 @@ public class WorkLogTree {
 		this.list = new ArrayList<WorkLog>(list);
 		List<String> froms = ListTools.extractProperty(list, WorkLog.fromActivityToken_FIELDNAME, String.class, true,
 				true);
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!A");
-		System.out.println(XGsonBuilder.toJson(froms));
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!A");
 		List<String> arriveds = ListTools.extractProperty(list, WorkLog.arrivedActivityToken_FIELDNAME, String.class,
 				true, true);
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!b");
-		System.out.println(XGsonBuilder.toJson(arriveds));
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Ab");
 		List<String> values = ListUtils.subtract(froms, arriveds);
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!bc");
-		System.out.println(XGsonBuilder.toJson(values));
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Abc");
 		List<WorkLog> begins = list.stream()
 				.filter(o -> BooleanUtils.isTrue(o.getConnected()) && values.contains(o.getFromActivityToken()))
 				.collect(Collectors.toList());
 		if (begins.size() != 1) {
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			System.out.println(XGsonBuilder.toJson(begins));
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			throw new ExceptionBeginNotFound(begins.size());
 		}
 		root = new Node();
@@ -79,6 +67,15 @@ public class WorkLogTree {
 			return true;
 		}
 
+		public boolean containsWorkLog(WorkLog workLog) {
+			for (Node n : this) {
+				if (Objects.equals(n.getWorkLog(), workLog)) {
+					return true;
+				}
+			}
+			return false;
+		}
+
 	}
 
 	public static class Node {
@@ -92,9 +89,6 @@ public class WorkLogTree {
 			List<ActivityType> passActivityTypes = ListTools.toList(pass);
 			while ((p != null) && (!Objects.equals(p.workLog.getArrivedActivityType(), activityType))
 					&& ListTools.contains(passActivityTypes, p.workLog.getFromActivityType())) {
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!");
-				System.out.println(p);
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!");
 				p = p.parent;
 			}
 			return p;
@@ -106,8 +100,8 @@ public class WorkLogTree {
 
 	}
 
-	public WorkLog root() {
-		return root.workLog;
+	public Node root() {
+		return root;
 	}
 
 	public List<WorkLog> children(WorkLog workLog) {
@@ -177,6 +171,36 @@ public class WorkLogTree {
 
 	public Nodes nodes() {
 		return nodes;
+	}
+
+	public Nodes rootTo(Node n) {
+		Nodes os = new Nodes();
+		Nodes loop = new Nodes();
+		loop.add(this.root());
+		while (!loop.isEmpty()) {
+			Nodes temps = new Nodes();
+			for (Node o : loop) {
+				if (!os.contains(o) && (n != o)) {
+					os.add(o);
+					temps.addAll(o.children);
+				}
+			}
+			loop = temps;
+		}
+		os.add(n);
+		return os;
+	}
+
+	public Node location(Work work) {
+		Node node = null;
+		for (Node o : nodes) {
+			if (Objects.equals(work.getActivityToken(), o.workLog.getFromActivityToken())) {
+				node = o;
+				break;
+			}
+		}
+		return node;
+
 	}
 
 }

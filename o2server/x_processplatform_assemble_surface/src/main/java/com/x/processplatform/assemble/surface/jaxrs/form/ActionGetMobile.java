@@ -9,7 +9,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Form;
 
-class ActionGet extends BaseAction {
+class ActionGetMobile extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -20,7 +20,7 @@ class ActionGet extends BaseAction {
 				throw new ExceptionEntityNotExist(flag, Form.class);
 			}
 			Wo wo = new Wo();
-			wo.setData(form.getDataOrMobileData());
+			wo.setData(form.getMobileDataOrData());
 			result.setData(wo);
 			return result;
 		}

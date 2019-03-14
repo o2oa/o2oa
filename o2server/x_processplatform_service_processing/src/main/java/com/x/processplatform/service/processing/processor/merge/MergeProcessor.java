@@ -94,7 +94,6 @@ public class MergeProcessor extends AbstractMergeProcessor {
 				aeiObjects.getWorkLogs().stream()
 						.filter(p -> StringUtils.equals(p.getFromActivityToken(), o.getActivityToken()))
 						.forEach(obj -> {
-							obj.setWork(aeiObjects.getWork().getId());
 							aeiObjects.getDeleteWorkLogs().add(obj);
 						});
 			} catch (Exception e) {
@@ -126,6 +125,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 			aeiObjects.getTaskCompleteds().stream().filter(o -> StringUtils.equals(o.getWork(), work.getId()))
 					.forEach(o -> {
 						o.setWork(oldest.getId());
+						// o.setActivityToken(oldest.getActivityToken());
 						aeiObjects.getUpdateTaskCompleteds().add(o);
 					});
 		} catch (Exception e) {
@@ -137,6 +137,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 		try {
 			aeiObjects.getReads().stream().filter(o -> StringUtils.equals(o.getWork(), work.getId())).forEach(o -> {
 				o.setWork(oldest.getId());
+				// o.setActivityToken(oldest.getActivityToken());
 				aeiObjects.getUpdateReads().add(o);
 			});
 		} catch (Exception e) {
@@ -149,6 +150,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 			aeiObjects.getReadCompleteds().stream().filter(o -> StringUtils.equals(o.getWork(), work.getId()))
 					.forEach(o -> {
 						o.setWork(oldest.getId());
+						// o.setActivityToken(oldest.getActivityToken());
 						aeiObjects.getUpdateReadCompleteds().add(o);
 					});
 		} catch (Exception e) {
@@ -192,10 +194,14 @@ public class MergeProcessor extends AbstractMergeProcessor {
 
 	private void mergeWorkLog(AeiObjects aeiObjects, Work work, Work oldest) {
 		try {
-			aeiObjects.getWorkLogs().stream().filter(o -> StringUtils.equals(o.getWork(), work.getId())).forEach(o -> {
-				o.setWork(oldest.getId());
-				aeiObjects.getUpdateWorkLogs().add(o);
-			});
+			aeiObjects.getWorkLogs().stream()
+					.filter(o -> StringUtils.equals(work.getActivityToken(), o.getArrivedActivityToken())
+							&& StringUtils.equals(o.getWork(), work.getId()))
+					.forEach(o -> {
+						o.setWork(oldest.getId());
+						o.setArrivedActivityToken(oldest.getActivityToken());
+						aeiObjects.getUpdateWorkLogs().add(o);
+					});
 		} catch (Exception e) {
 			logger.error(e);
 		}

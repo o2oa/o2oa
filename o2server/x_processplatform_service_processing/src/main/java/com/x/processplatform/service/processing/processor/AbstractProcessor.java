@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.scripting.ScriptingEngine;
 import com.x.base.core.project.tools.ListTools;
 import com.x.collaboration.core.message.Collaboration;
 import com.x.collaboration.core.message.notification.ReadMessage;
@@ -43,7 +44,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 
 	public String arrive(String workId, ProcessingConfigurator processingConfigurator,
 			ProcessingAttributes processingAttributes) {
-		/** 返回值,如果返回值不为空,将继续循环 */
+		/* 返回值,如果返回值不为空,将继续循环 */
 		try {
 			Work work = this.entityManagerContainer().find(workId, Work.class);
 			if (null == work) {
@@ -306,7 +307,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 		if (aeiObjects.getActivityProcessingConfigurator().getCallBeforeInquireScript()) {
 			if (this.hasBeforeInquireScript(aeiObjects.getActivity())) {
 				ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects,
-						new BindingPair(Binding_name_routes, aeiObjects.getRoutes()));
+						new BindingPair(ScriptingEngine.BINDINGNAME_ROUTES, aeiObjects.getRoutes()));
 				scriptHelper.eval(aeiObjects.getWork().getApplication(),
 						Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), BIS)),
 						Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), BIST)));
@@ -318,7 +319,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 		if (aeiObjects.getActivityProcessingConfigurator().getCallAfterInquireScript()) {
 			if (this.hasAfterInquireScript(aeiObjects.getActivity())) {
 				ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects,
-						new BindingPair(Binding_name_routes, aeiObjects.getSelectRoutes()));
+						new BindingPair(ScriptingEngine.BINDINGNAME_ROUTES, aeiObjects.getSelectRoutes()));
 				scriptHelper.eval(aeiObjects.getWork().getApplication(),
 						Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), AIS)),
 						Objects.toString(PropertyUtils.getProperty(aeiObjects.getActivity(), AIST)));

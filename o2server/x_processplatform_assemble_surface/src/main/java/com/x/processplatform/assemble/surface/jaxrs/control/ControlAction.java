@@ -1,4 +1,4 @@
-package com.x.processplatform.assemble.surface.jaxrs.warp;
+package com.x.processplatform.assemble.surface.jaxrs.control;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -22,23 +22,24 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-@Path("wrap")
-@JaxrsDescribe("包装接口")
-public class WrapAction extends StandardJaxrsAction {
+@Path("control")
+@JaxrsDescribe("权限接口")
+public class ControlAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(WrapAction.class);
+	private static Logger logger = LoggerFactory.getLogger(ControlAction.class);
 
-	@JaxrsMethodDescribe(value = "列示指定流程当前用户的Task对象,上一页.", action = ActionGetWorkOrWorkCompleted.class)
+	@JaxrsMethodDescribe(value = "根据工作或完成工作获取权限.", action = ActionGetWorkOrWorkCompleted.class)
 	@GET
-	@Path("work/or/workcompleted/{flag}")
+	@Path("workorworkcompleted/{workOrWorkCompleted}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void getWorkOrWorkCompleted(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @JaxrsParameterDescribe("标识") @PathParam("flag") String flag) {
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作或已完成工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted) {
 		ActionResult<ActionGetWorkOrWorkCompleted.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetWorkOrWorkCompleted().execute(effectivePerson, flag);
+			result = new ActionGetWorkOrWorkCompleted().execute(effectivePerson, workOrWorkCompleted);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

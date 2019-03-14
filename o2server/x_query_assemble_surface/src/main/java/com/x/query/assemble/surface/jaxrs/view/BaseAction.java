@@ -124,11 +124,16 @@ abstract class BaseAction extends StandardJaxrsAction {
 					row = plan.grid.get(j);
 					r = sheet.createRow(j + 1);
 					i = 0;
-					for (Entry<String, Object> entry : row.data.entrySet()) {
+					for (SelectEntry o : plan.selectList) {
 						c = r.createCell(i);
-						c.setCellValue(Objects.toString(entry.getValue(), ""));
+						c.setCellValue(Objects.toString(row.get(o.column)));
 						i++;
 					}
+//					for (Entry<String, Object> entry : row.data.entrySet()) {
+//						c = r.createCell(i);
+//						c.setCellValue(Objects.toString(entry.getValue(), ""));
+//						i++;
+//					}
 				}
 			}
 			String name = view.getName() + ".xlsx";
