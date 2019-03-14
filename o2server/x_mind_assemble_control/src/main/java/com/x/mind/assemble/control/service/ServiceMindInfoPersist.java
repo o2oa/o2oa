@@ -53,11 +53,13 @@ class ServiceMindInfoPersist{
 			emc.persist( oldMindBase, CheckPersistType.all );
 		}else{
 			_mindBaseInfo.copyTo( oldMindBase, JpaObject.FieldsUnmodify  );
+			_mindBaseInfo.setId( oldMindBase.getId() );
 			_mindBaseInfo.setCreator_sequence( oldMindBase.getCreator_sequence() );
 			_mindBaseInfo.setFolder_sequence( oldMindBase.getFolder_sequence() );
 			_mindBaseInfo.setCreatorUnit_sequence( oldMindBase.getCreatorUnit_sequence() );
 			_mindBaseInfo.setShared_sequence( oldMindBase.getShared_sequence() );
-			emc.check( oldMindBase, CheckPersistType.all );	
+			_mindBaseInfo.composeSequnces();
+			emc.check( _mindBaseInfo, CheckPersistType.all );	
 		}
 		//保存脑图内容
 		if( oldContent == null ){
