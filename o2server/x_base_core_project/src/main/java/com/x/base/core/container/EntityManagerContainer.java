@@ -463,6 +463,24 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return em.createQuery(cq).getSingleResult();
 	}
 
+	public <T extends JpaObject> Long countNotEqual(Class<T> cls, String attribute, Object value) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<T> root = cq.from(cls);
+		cq.select(cb.count(root)).where(cb.notEqual(root.get(attribute), value));
+		return em.createQuery(cq).getSingleResult();
+	}
+
+	public <T extends JpaObject> Long countIsNull(Class<T> cls, String attribute) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<T> root = cq.from(cls);
+		cq.select(cb.count(root)).where(cb.isNull(root.get(attribute)));
+		return em.createQuery(cq).getSingleResult();
+	}
+
 	public <T extends JpaObject> Long countEqualAndEqual(Class<T> cls, String euqalAttribute, Object equalValue,
 			String otherEqualAttribute, Object otherEqualValue) throws Exception {
 		EntityManager em = this.get(cls);

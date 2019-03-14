@@ -79,7 +79,8 @@ public class SlicePropertiesBuilder {
 			properties.put("openjpa.IgnoreChanges", "true");
 			properties.put("openjpa.QueryCache", "false");
 			properties.put("openjpa.jdbc.ResultSetType", "scroll-insensitive");
-			// properties.put("openjpa.DynamicEnhancementAgent", "true");
+			/* 如果启用本地初始化会导致classLoad的问题 */
+			properties.put("openjpa.DynamicEnhancementAgent", "false");
 			properties.put("openjpa.jdbc.SynchronizeMappings", "buildSchema(ForeignKeys=false)");
 			// properties.put("openjpa.jdbc.SchemaFactory",
 			// "native(ForeignKeys=false)");
