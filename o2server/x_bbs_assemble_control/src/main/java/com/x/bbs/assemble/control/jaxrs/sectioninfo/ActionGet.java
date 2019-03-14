@@ -17,14 +17,15 @@ import com.x.bbs.assemble.control.jaxrs.sectioninfo.exception.ExceptionSectionIn
 import com.x.bbs.assemble.control.jaxrs.sectioninfo.exception.ExceptionSectionNotExists;
 import com.x.bbs.entity.BBSSectionInfo;
 
+import net.sf.ehcache.Element;
+
 public class ActionGet extends BaseAction {
 	
 	private static  Logger logger = LoggerFactory.getLogger( ActionGet.class );
 	
+	@SuppressWarnings("unchecked")
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		Wo wrap = null;
-		BBSSectionInfo sectionInfo = null;
 		Boolean check = true;
 		
 		if( check ){
@@ -34,6 +35,29 @@ public class ActionGet extends BaseAction {
 				result.error( exception );
 			}
 		}
+		
+		if( check ){
+			String cacheKey = "section#" + id;
+			Element element = cache.get( cacheKey );
+			if ((null != element) && (null != element.getObjectValue())) {
+				ActionResult<Wo> result_cache = (ActionResult<Wo>) element.getObjectValue();
+				result.setData( result_cache.getData() );
+				result.setCount( 1L);
+			} else {
+				//继续进行数据查询
+				result = getSectionQueryResult( id, request, effectivePerson );
+				cache.put(new Element(cacheKey, result ));
+			}
+		}
+		return result;
+	}
+
+	private ActionResult<Wo> getSectionQueryResult(String id, HttpServletRequest request, EffectivePerson effectivePerson) {
+		ActionResult<Wo> result = new ActionResult<>();
+		Wo wrap = null;
+		BBSSectionInfo sectionInfo = null;
+		Boolean check = true;
+		
 		if( check ){
 			try {
 				sectionInfo = sectionInfoServiceAdv.get( id );
@@ -62,7 +86,7 @@ public class ActionGet extends BaseAction {
 		}
 		return result;
 	}
-
+	
 	public static class Wo extends BBSSectionInfo{
 		
 		private static final long serialVersionUID = -5076990764713538973L;

@@ -277,7 +277,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId));
 		}
 		if( needPicture != null && needPicture ){
-			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.picId ) ) );
+			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.picId ) ),  cb.notEqual( root.get( BBSSubjectInfo_.picId ), ""));
 		}
 		if( creatorName != null && !creatorName.isEmpty() ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.creatorName ), creatorName ) );
@@ -316,7 +316,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId));
 		}
 		if( needPicture != null && needPicture ){
-			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.picId ) ) );
+			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.picId ) ),  cb.notEqual( root.get( BBSSubjectInfo_.picId ), ""));
 		}
 		if( creatorName != null && !creatorName.isEmpty() ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.creatorName ), creatorName ) );
@@ -418,7 +418,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId));
 		}
 		if( needPicture != null && needPicture ){
-			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.picId ) ) );
+			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.picId ) ),  cb.notEqual( root.get( BBSSubjectInfo_.picId ), ""));
 		}
 		cq.select( cb.count( root ) );		
 		return em.createQuery(cq.where(p)).getSingleResult();
@@ -454,7 +454,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId));
 		}
 		if( needPicture != null && needPicture ){
-			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.picId ) ) );
+			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.picId ) ),  cb.notEqual( root.get( BBSSubjectInfo_.picId ), ""));
 		}
 		cq.orderBy( cb.desc( root.get( BBSSubjectInfo_.createTime ) ) );
 		return em.createQuery(cq.where(p)).setMaxResults( maxRecordCount ).getResultList();

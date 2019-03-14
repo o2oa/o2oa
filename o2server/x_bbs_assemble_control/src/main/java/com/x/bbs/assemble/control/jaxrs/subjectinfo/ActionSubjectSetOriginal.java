@@ -60,6 +60,7 @@ public class ActionSubjectSetOriginal extends BaseAction {
 				wo.setId( id );
 				result.setData( wo );
 				ApplicationCache.notify( BBSSubjectInfo.class );
+				
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionSubjectOperation(e, "用户在设置原创主题信息时发生异常！");

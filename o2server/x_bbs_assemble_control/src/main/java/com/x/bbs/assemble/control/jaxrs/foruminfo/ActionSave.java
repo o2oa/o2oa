@@ -159,9 +159,11 @@ public class ActionSave extends BaseAction {
 				}
 				forumInfo = forumInfoServiceAdv.save( forumInfo );
 				wo.setId(forumInfo.getId());
+				
 				ApplicationCache.notify( BBSForumInfo.class );
 				ApplicationCache.notify( BBSSectionInfo.class );
 				ApplicationCache.notify( BBSSubjectInfo.class );
+				
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionForumInfoProcess(e, "系统在保存BBS论坛分区信息时发生异常.");

@@ -21,6 +21,7 @@ import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectSa
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectWrapIn;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionVoteOptionEmpty;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionWrapInConvert;
+import com.x.bbs.entity.BBSForumInfo;
 import com.x.bbs.entity.BBSSectionInfo;
 import com.x.bbs.entity.BBSSubjectInfo;
 
@@ -143,6 +144,9 @@ public class ActionSubjectSave extends BaseAction {
 				wo.setId(subjectInfo.getId());
 				
 				ApplicationCache.notify( BBSSubjectInfo.class );
+				ApplicationCache.notify( BBSSectionInfo.class );
+				ApplicationCache.notify( BBSForumInfo.class );
+				
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionSubjectSave(e);

@@ -33,7 +33,6 @@ public class ActionGetAllWithPermission extends BaseAction {
 		Boolean check = true;
 		Boolean isBBSManager = false;
 		
-		
 		if ( check ) {
 			isBBSManager = ThisApplication.isBBSManager(effectivePerson);
 		}
@@ -48,7 +47,7 @@ public class ActionGetAllWithPermission extends BaseAction {
 				result.setCount( result_cache.getCount() );
 			} else {
 				//继续进行数据查询;
-				result = getForumQueryResult( request, effectivePerson, isBBSManager );
+				result = getForumWithPermissionQueryResult( request, effectivePerson, isBBSManager );
 				cache.put(new Element(cacheKey, result ));
 			}
 		}		
@@ -56,7 +55,7 @@ public class ActionGetAllWithPermission extends BaseAction {
 	}
 
 	@SuppressWarnings("unchecked")
-	private ActionResult<List<Wo>> getForumQueryResult(HttpServletRequest request, EffectivePerson effectivePerson, Boolean isBBSManager) {
+	private ActionResult<List<Wo>> getForumWithPermissionQueryResult(HttpServletRequest request, EffectivePerson effectivePerson, Boolean isBBSManager) {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wraps = new ArrayList<>();
 		Boolean check = true;

@@ -23,7 +23,7 @@ public class ThisApplication {
 	public static void init() throws Exception {
 		try {
 			MessageConnector.start(context());
-			context.schedule(AlarmTrigger.class, "0 * * * * ?");
+			context.schedule(AlarmTrigger.class, "0/30 * * * * ?");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

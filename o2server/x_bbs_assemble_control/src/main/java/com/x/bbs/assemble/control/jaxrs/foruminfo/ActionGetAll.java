@@ -20,11 +20,34 @@ import com.x.bbs.assemble.control.jaxrs.foruminfo.exception.ExceptionForumInfoPr
 import com.x.bbs.entity.BBSForumInfo;
 import com.x.bbs.entity.BBSSectionInfo;
 
+import net.sf.ehcache.Element;
+
 public class ActionGetAll extends BaseAction {
 	
 	private static  Logger logger = LoggerFactory.getLogger( ActionGetAll.class );
 	
+	@SuppressWarnings("unchecked")
 	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson ) throws Exception {
+		ActionResult<List<Wo>> result = new ActionResult<>();
+		Boolean check = true;
+		
+		if( check ){
+			String cacheKey = "forum#all";
+			Element element = cache.get( cacheKey );
+			if ((null != element) && (null != element.getObjectValue())) {
+				ActionResult<List<Wo>> result_cache = (ActionResult<List<Wo>>) element.getObjectValue();
+				result.setData( result_cache.getData() );
+				result.setCount( 1L);
+			} else {
+				//继续进行数据查询
+				result = getForumAllQueryResult( request, effectivePerson );
+				cache.put(new Element(cacheKey, result ));
+			}
+		}
+		return result;
+	}
+
+	private ActionResult<List<Wo>> getForumAllQueryResult(HttpServletRequest request, EffectivePerson effectivePerson) {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wraps = new ArrayList<>();
 		List<BBSForumInfo> forumInfoList = null;
@@ -62,6 +85,7 @@ public class ActionGetAll extends BaseAction {
 			}
 		}
 		result.setData( wraps );
+		result.setCount( Long.parseLong( wraps.size() + "") );
 		return result;
 	}
 
