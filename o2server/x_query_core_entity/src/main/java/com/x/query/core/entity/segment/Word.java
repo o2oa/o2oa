@@ -109,7 +109,14 @@ public class Word extends SliceJpaObject {
 	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + tag_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String tag;
-	
+
+	public static final String application_FIELDNAME = "application";
+	@FieldDescribe("porcessPlatform中对应application应用,在cms中对应application栏目")
+	@Column(length = length_id, name = ColumnNamePrefix + application_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + application_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String application;
+
 	public String getLabel() {
 		return label;
 	}
@@ -164,6 +171,14 @@ public class Word extends SliceJpaObject {
 
 	public void setBundle(String bundle) {
 		this.bundle = bundle;
+	}
+
+	public String getApplication() {
+		return application;
+	}
+
+	public void setApplication(String application) {
+		this.application = application;
 	}
 
 }

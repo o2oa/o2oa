@@ -30,7 +30,7 @@ public class Row extends GsonPropertyObject {
 	public Double getAsDouble(String key) {
 		Object o = this.data.get(key);
 		String val = Objects.toString(o, "");
-		if (NumberUtils.isNumber(val)) {
+		if (NumberUtils.isCreatable(val)) {
 			return NumberUtils.toDouble(val);
 		} else {
 			return 0d;
