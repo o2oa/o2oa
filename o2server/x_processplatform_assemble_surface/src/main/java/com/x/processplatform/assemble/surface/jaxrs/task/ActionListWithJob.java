@@ -1,4 +1,9 @@
-package com.x.processplatform.assemble.surface.jaxrs.warp;
+package com.x.processplatform.assemble.surface.jaxrs.task;
+
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -6,31 +11,31 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
-import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Task;
 
-class ActionGetWorkOrWorkCompleted extends BaseAction {
+class ActionListWithJob extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionGetWorkOrWorkCompleted.class);
-
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String job) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
+
+			ActionResult<List<Wo>> result = new ActionResult<>();
+
 			Business business = new Business(emc);
-			Task task = emc.find(id, Task.class);
-			if (null == task) {
-				throw new ExceptionEntityNotExist(id, Task.class);
+
+			if (!business.readableWithJob(effectivePerson, job)) {
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
-			if (!business.readable(effectivePerson, task)) {
-				throw new ExceptionAccessDenied(effectivePerson, task);
-			}
-			Wo wo = Wo.copier.copy(task);
-			result.setData(wo);
+
+			List<Wo> wos = Wo.copier.copy(emc.listEqual(Task.class, Task.job_FIELDNAME, job));
+
+			wos = wos.stream().sorted(Comparator.comparing(Wo::getStartTime, Comparator.nullsLast(Date::compareTo)))
+					.collect(Collectors.toList());
+
+			result.setData(wos);
+
 			return result;
 		}
 	}
@@ -43,5 +48,4 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 				JpaObject.FieldsInvisible);
 
 	}
-
 }

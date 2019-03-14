@@ -281,7 +281,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 		private String position;
 
-		//private ActivityType activityType;
+		// private ActivityType activityType;
 
 		private String resetRange;
 
@@ -502,6 +502,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		private Boolean allowReroute;
 		/* 是否可以删除 */
 		private Boolean allowDelete;
+		/* 是否可以删除 */
+		private Boolean allowAddSplit;
 
 		public Boolean getAllowSave() {
 			return allowSave;
@@ -575,6 +577,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 			this.allowReadReset = allowReadReset;
 		}
 
+		public Boolean getAllowAddSplit() {
+			return allowAddSplit;
+		}
+
+		public void setAllowAddSplit(Boolean allowAddSplit) {
+			this.allowAddSplit = allowAddSplit;
+		}
+
 	}
 
 	public class WoForm extends Form {
@@ -613,19 +623,19 @@ abstract class BaseAction extends StandardJaxrsAction {
 			}
 		});
 
-//		CompletableFuture<Void> future_taskCompleteds = CompletableFuture.runAsync(() -> {
-//			try {
-//				List<TaskCompleted> os = business.entityManagerContainer()
-//						.listEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, work.getJob()).stream()
-//						.sorted(Comparator.comparing(TaskCompleted::getStartTime,
-//								Comparator.nullsLast(Date::compareTo)))
-//						.collect(Collectors.toList());
-//				woTaskCompleteds.addAll(WoTaskCompleted.copier.copy(os));
-//			} catch (Exception e) {
-//				logger.error(e);
-//			}
-//		});
-		
+		CompletableFuture<Void> future_taskCompleteds = CompletableFuture.runAsync(() -> {
+			try {
+				List<TaskCompleted> os = business.entityManagerContainer()
+						.listEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, work.getJob()).stream()
+						.sorted(Comparator.comparing(TaskCompleted::getStartTime,
+								Comparator.nullsLast(Date::compareTo)))
+						.collect(Collectors.toList());
+				woTaskCompleteds.addAll(WoTaskCompleted.copier.copy(os));
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+
 		CompletableFuture<Void> future_reads = CompletableFuture.runAsync(() -> {
 			try {
 				List<Read> os = business.entityManagerContainer()
@@ -645,18 +655,18 @@ abstract class BaseAction extends StandardJaxrsAction {
 				logger.error(e);
 			}
 		});
-//		CompletableFuture<Void> future_readCompleteds = CompletableFuture.runAsync(() -> {
-//			try {
-//				List<ReadCompleted> os = business.entityManagerContainer()
-//						.listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, work.getJob()).stream()
-//						.sorted(Comparator.comparing(ReadCompleted::getStartTime,
-//								Comparator.nullsLast(Date::compareTo)))
-//						.collect(Collectors.toList());
-//				woReadCompleteds.addAll(WoReadCompleted.copier.copy(os));
-//			} catch (Exception e) {
-//				logger.error(e);
-//			}
-//		});
+		CompletableFuture<Void> future_readCompleteds = CompletableFuture.runAsync(() -> {
+			try {
+				List<ReadCompleted> os = business.entityManagerContainer()
+						.listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, work.getJob()).stream()
+						.sorted(Comparator.comparing(ReadCompleted::getStartTime,
+								Comparator.nullsLast(Date::compareTo)))
+						.collect(Collectors.toList());
+				woReadCompleteds.addAll(WoReadCompleted.copier.copy(os));
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
 		CompletableFuture<Void> future_attachments = CompletableFuture.runAsync(() -> {
 			try {
 				List<Attachment> os = business.entityManagerContainer()
@@ -734,9 +744,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 			return o;
 		});
 		future_tasks.get(300, TimeUnit.SECONDS);
-		//future_taskCompleteds.get(300, TimeUnit.SECONDS);
+		future_taskCompleteds.get(300, TimeUnit.SECONDS);
 		future_reads.get(300, TimeUnit.SECONDS);
-		//future_readCompleteds.get(300, TimeUnit.SECONDS);
+		future_readCompleteds.get(300, TimeUnit.SECONDS);
 		future_attachments.get(300, TimeUnit.SECONDS);
 		future_workLogs.get(300, TimeUnit.SECONDS);
 		future_data.get(300, TimeUnit.SECONDS);
@@ -766,6 +776,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		control.setAllowReroute(false);
 		/** 工作是否可删除(管理员 或者 此活动在流程设计中允许删除且当前待办人是文件的创建者) */
 		control.setAllowDelete(false);
+		/** 是否可以添加拆分分支 */
+		control.setAllowAddSplit(false);
 		/** 设置allowVisit */
 		if ((t.getCurrentTaskIndex() > -1) || (t.getCurrentReadIndex() > -1) || (woTaskCompleteds.stream()
 				.filter(o -> StringUtils.equals(o.getPerson(), effectivePerson.getDistinguishedName())).count() > 0)
@@ -843,10 +855,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 				control.setAllowReroute(true);
 			}
 		}
-		/** 设置 allowDelete */
-		if (business.canManageApplicationOrProcess(effectivePerson, application, process))
-
-		{
+		/* 设置 allowDelete */
+		if (business.canManageApplicationOrProcess(effectivePerson, application, process)) {
 			control.setAllowDelete(true);
 		} else if (Objects.equals(activity.getActivityType(), ActivityType.manual)
 				&& BooleanUtils.isTrue(activity.get(Manual.allowDeleteWork_FIELDNAME, Boolean.class))) {
@@ -855,13 +865,17 @@ abstract class BaseAction extends StandardJaxrsAction {
 				control.setAllowDelete(true);
 			}
 		}
+		/* 设置 allowAddSplit */
+		if (Objects.equals(activity.getActivityType(), ActivityType.manual)
+				&& BooleanUtils.isTrue(activity.get(Manual.allowAddSplit_FIELDNAME, Boolean.class))) {
+			control.setAllowAddSplit(true);
+		}
 		t.setControl(control);
 		return t;
 	}
 
 	private void arrangeWorkLog(Business business, AbstractWo wo, List<WoTaskCompleted> woTaskCompleteds,
 			List<WoReadCompleted> woReadCompleteds) throws Exception {
-
 		ListTools.groupStick(wo.getWorkLogList(), wo.getTaskList(), WorkLog.fromActivityToken_FIELDNAME,
 				Task.activityToken_FIELDNAME, "taskList");
 		ListTools.groupStick(wo.getWorkLogList(), woTaskCompleteds, WorkLog.fromActivityToken_FIELDNAME,

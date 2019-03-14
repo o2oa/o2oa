@@ -22,6 +22,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
+import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
@@ -287,6 +288,7 @@ public class WorkCompleted extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String formMobileData;
 
+	@Flag
 	public static final String work_FIELDNAME = "work";
 	@FieldDescribe("Work Id.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + work_FIELDNAME)

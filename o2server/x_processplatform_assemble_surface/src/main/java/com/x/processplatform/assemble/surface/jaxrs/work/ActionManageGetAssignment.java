@@ -12,6 +12,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -42,7 +43,7 @@ class ActionManageGetAssignment extends BaseAction {
 			Application application = business.application().pick(work.getApplication());
 			// 需要对这个应用的管理权限
 			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
-				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			List<Task> tasks = emc.listEqual(Task.class, Task.work_FIELDNAME, work.getId());
 			List<TaskCompleted> taskCompleteds = emc.listEqual(TaskCompleted.class, TaskCompleted.work_FIELDNAME,

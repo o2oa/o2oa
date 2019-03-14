@@ -7,6 +7,7 @@ import java.util.List;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.x_processplatform_service_processing;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -34,7 +35,7 @@ class ActionManageDeleteSingleWork extends BaseAction {
 			Application application = business.application().pick(work.getApplication());
 			// 需要对这个应用的管理权限
 			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
-				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
 					"work/" + URLEncoder.encode(work.getId(), DefaultCharset.name));
