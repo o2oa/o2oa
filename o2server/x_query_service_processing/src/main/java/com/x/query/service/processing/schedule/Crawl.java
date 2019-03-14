@@ -38,9 +38,10 @@ public abstract class Crawl implements Job {
 					StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 							storageObject.getStorage());
 					if (null != mapping) {
+						/* 忽略设置强制不索引图片 */
 						return ExtractTextTools.extract(storageObject.readContent(mapping), storageObject.getName(),
 								Config.query().getExtractOffice(), Config.query().getExtractPdf(),
-								Config.query().getExtractText(), Config.query().getExtractImage());
+								Config.query().getExtractText(), false);
 					} else {
 						logger.print(
 								"storageMapping is null can not extract storageObject text, storageObject:{}, name:{}.",
