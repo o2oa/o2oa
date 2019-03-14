@@ -38,6 +38,9 @@ public class ScriptingEngine {
 	public static final String BINDINGNAME_JAXWSRESPONSE = "jaxwsResponse";
 	public static final String BINDINGNAME_ROUTEDATA = "routeData";
 
+	public static final String BINDINGNAME_ROUTES = "routes";
+	public static final String BINDINGNAME_ROUTE = "route";
+
 	public ScriptingEngine(ScriptEngine scriptEngine) {
 		this.scriptEngine = scriptEngine;
 	}
@@ -111,6 +114,16 @@ public class ScriptingEngine {
 
 	public ScriptingEngine bindingRouteData(String str) {
 		this.scriptEngine.put(BINDINGNAME_ROUTEDATA, str);
+		return this;
+	}
+
+	public ScriptingEngine bindingRoutes(Object o) {
+		this.scriptEngine.put(BINDINGNAME_ROUTES, o);
+		return this;
+	}
+
+	public ScriptingEngine bindingRoute(Object o) {
+		this.scriptEngine.put(BINDINGNAME_ROUTE, o);
 		return this;
 	}
 

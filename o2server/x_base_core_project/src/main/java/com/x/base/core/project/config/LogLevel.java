@@ -43,6 +43,9 @@ public class LogLevel extends ConfigObject {
 	@FieldDescribe("是否启用调试")
 	private String x_general_assemble_control = "";
 
+	@FieldDescribe("是否启用调试")
+	private String x_file_assemble_control = "";
+
 	public static LogLevel defaultInstance() {
 		return new LogLevel();
 	}
@@ -92,6 +95,10 @@ public class LogLevel extends ConfigObject {
 	}
 
 	public String x_general_assemble_control() {
+		return this.get(this.x_general_assemble_control);
+	}
+
+	public String x_file_assemble_control() {
 		return this.get(this.x_general_assemble_control);
 	}
 

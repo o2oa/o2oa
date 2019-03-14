@@ -72,6 +72,23 @@ public class BBSSubjectInfoServiceAdv {
 	}
 	
 	/**
+	 * 根据传入的ID从数据库查询BBSSubjectInfo对象
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	public void addViewCount( String id ) throws Exception {
+		if( id  == null || id.isEmpty() ){
+			throw new Exception( "id is null, return null!" );
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			subjectInfoService.addViewCount( emc, id );
+		}catch( Exception e ){
+			throw e;
+		}
+	}
+	
+	/**
 	 * 向数据库保存BBSSubjectInfo对象
 	 * @param wrapIn
 	 */

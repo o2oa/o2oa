@@ -123,9 +123,11 @@ public class ActionDelete extends BaseAction {
 				// 已经没有子版块和任何贴子信息了，所以只需要删除相应的权限信息即可
 				sectionInfoServiceAdv.delete( id );
 				wo.setId( id );
+				
 				ApplicationCache.notify( BBSForumInfo.class );
 				ApplicationCache.notify( BBSSectionInfo.class );
 				ApplicationCache.notify( BBSSubjectInfo.class );
+				
 				operationRecordService.sectionOperation(effectivePerson.getDistinguishedName(), sectionInfo, "DELETE", hostIp, hostName);
 			} catch (Exception e) {
 				check = false;

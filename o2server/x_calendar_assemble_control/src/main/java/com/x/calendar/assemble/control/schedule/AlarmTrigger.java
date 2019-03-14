@@ -62,7 +62,7 @@ public class AlarmTrigger implements Job {
 					calendar_Event = calendar_EventServiceAdv.get(id);
 					if (calendar_Event != null) {
 						MessageFactory.send_alarm(emc, calendar_Event);
-						logger.info("send message:{}.", calendar_Event);
+						logger.info("send message:{}.", calendar_Event.getTitle());
 					}
 				}
 			} catch (Exception e) {

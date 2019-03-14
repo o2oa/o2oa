@@ -21,15 +21,17 @@ import com.x.bbs.assemble.control.jaxrs.foruminfo.exception.ExceptionForumInfoPr
 import com.x.bbs.entity.BBSForumInfo;
 import com.x.bbs.entity.BBSSectionInfo;
 
+import net.sf.ehcache.Element;
+
 public class ActionGet extends BaseAction {
 	
 	private static  Logger logger = LoggerFactory.getLogger( ActionGet.class );
 	
+	@SuppressWarnings("unchecked")
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		Wo wrap = null;
-		BBSForumInfo forumInfo = null;
 		Boolean check = true;
+		
 		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
@@ -37,6 +39,28 @@ public class ActionGet extends BaseAction {
 				result.error( exception );
 			}
 		}
+		
+		if( check ){
+			String cacheKey = "forum#" + id;
+			Element element = cache.get( cacheKey );
+			if ((null != element) && (null != element.getObjectValue())) {
+				ActionResult<Wo> result_cache = (ActionResult<Wo>) element.getObjectValue();
+				result.setData( result_cache.getData() );
+				result.setCount( 1L);
+			} else {
+				//继续进行数据查询
+				result = getForumQueryResult( id, request, effectivePerson );
+				cache.put(new Element(cacheKey, result ));
+			}
+		}
+		return result;
+	}
+	
+	private ActionResult<Wo> getForumQueryResult(String id, HttpServletRequest request, EffectivePerson effectivePerson) {
+		ActionResult<Wo> result = new ActionResult<>();
+		Wo wrap = null;
+		BBSForumInfo forumInfo = null;
+		Boolean check = true;
 		
 		if( check ){
 			try {
@@ -57,6 +81,7 @@ public class ActionGet extends BaseAction {
 					//TODO 为了不改变前端的逻辑，此处将List转为String进行输出，逗号分隔
 					wrap.setForumManagerName( wrap.transferStringListToString( wrap.getForumManagerList()) );
 					result.setData( wrap );
+					result.setCount(1L);
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new ExceptionForumInfoProcess( e, "系统将论坛信息对象转换为输出数据时发生异常。" );
@@ -70,7 +95,7 @@ public class ActionGet extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	public static class Wo extends BBSForumInfo{
 		
 		@FieldDescribe("字符串形式输出的管理员信息，逗号(,)分隔.")

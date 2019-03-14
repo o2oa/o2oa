@@ -26,11 +26,53 @@ import com.x.bbs.entity.BBSSubjectInfo;
 import com.x.bbs.entity.BBSVoteOption;
 import com.x.bbs.entity.BBSVoteOptionGroup;
 
+import net.sf.ehcache.Element;
+
 public class ActionSubjectView extends BaseAction {
 	
 	private static Logger logger = LoggerFactory.getLogger( ActionSubjectView.class );
 	
+	@SuppressWarnings("unchecked")
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id ) throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
+		Boolean check = true;
+		if( check ){
+			if( id == null || id.isEmpty() ){
+				check = false;
+				Exception exception = new ExceptionSubjectIdEmpty();
+				result.error( exception );
+			}
+		}
+		
+		if( check ){
+			String cacheKey = "subject#view#" + id;
+			Element element = cache.get( cacheKey );
+			if ((null != element) && (null != element.getObjectValue())) {
+				ActionResult<Wo> result_cache = (ActionResult<Wo>) element.getObjectValue();
+				result.setData( result_cache.getData() );
+				result.setCount( 1L);
+			} else {
+				//继续进行数据查询
+				result = getSubjectViewQueryResult( id, request, effectivePerson );
+				cache.put(new Element(cacheKey, result ));
+			}
+		}
+		
+		if( check ){
+			try {
+				// 查看次数+1
+				subjectInfoServiceAdv.addViewCount( id );
+			}catch(Exception e) {
+				check = false;
+				Exception exception = new ExceptionSubjectView( e, id );
+				result.error( exception );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		return result;
+	}
+
+	private ActionResult<Wo> getSubjectViewQueryResult(String id, HttpServletRequest request, EffectivePerson effectivePerson) {
 		ActionResult<Wo> result = new ActionResult<>();
 		List<WoSubjectAttachment> wrapSubjectAttachmentList = null;
 		List<BBSSubjectAttachment> subjectAttachmentList = null;
@@ -45,16 +87,10 @@ public class ActionSubjectView extends BaseAction {
 		List<WoBBSVoteOption> wrapOutSubjectVoteOptionList = null;
 		String subjectContent = null;
 		Boolean check = true;
-		if( check ){
-			if( id == null || id.isEmpty() ){
-				check = false;
-				Exception exception = new ExceptionSubjectIdEmpty();
-				result.error( exception );
-			}
-		}
+		
 		if (check) {//查询版块信息是否存在
 			try {
-				subjectInfo = subjectInfoServiceAdv.view( id );
+				subjectInfo = subjectInfoServiceAdv.get( id );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionSubjectView( e, id );
@@ -71,6 +107,7 @@ public class ActionSubjectView extends BaseAction {
 			}else{//查到了主题信息
 				try {
 					currentSubject = WoBBSSubjectInfo.copier.copy( subjectInfo );
+					
 					//根据附件ID列表查询附件信息
 					if( currentSubject.getAttachmentList() != null && currentSubject.getAttachmentList().size() > 0 ){
 						subjectAttachmentList = subjectInfoServiceAdv.listAttachmentByIds( currentSubject.getAttachmentList() );
@@ -88,6 +125,7 @@ public class ActionSubjectView extends BaseAction {
 				}
 			}			
 		}
+		
 		if (check) {
 			if( wrapOutNearSubjectInfo.getCurrentSubject() != null ){
 				currentSubject = wrapOutNearSubjectInfo.getCurrentSubject();
@@ -105,6 +143,7 @@ public class ActionSubjectView extends BaseAction {
 				}
 			}
 		}
+		
 		//开始查询上一个主题的信息
 		if (check) {
 			try {
@@ -124,6 +163,7 @@ public class ActionSubjectView extends BaseAction {
 				wrapOutNearSubjectInfo.setLastSubject( lastSubject );
 			}
 		}
+		
 		//开始查询下一个主题的信息
 		if (check) {
 			try {
@@ -143,6 +183,7 @@ public class ActionSubjectView extends BaseAction {
 				wrapOutNearSubjectInfo.setNextSubject( nextSubject );
 			}
 		}
+		
 		if (check) {
 			if( currentSubject != null ){//获取该主题的投票选项
 				try {
@@ -155,6 +196,7 @@ public class ActionSubjectView extends BaseAction {
 				}
 			}
 		}
+		
 		if (check) {
 			if( currentSubject != null ){//获取该主题的投票选项组
 				try {
@@ -208,6 +250,7 @@ public class ActionSubjectView extends BaseAction {
 				}
 			}
 		}
+		
 		//将带@形式的人员标识修改为人员的姓名并且赋值到xxShort属性里
 		cutPersonNames( wrapOutNearSubjectInfo.getCurrentSubject() );
 		
