@@ -43,7 +43,7 @@
 		</delete>
 		<echo message="metamodel complete." />
 	</target>
-
+	<!--
 	<target name="createPersistenceXml">
 		<mkdir dir="${basedir}/src/main/resources/META-INF" />
 		<java classname="com.x.base.core.entity.tools.PersistenceXmlWriter" fork="true">
@@ -60,12 +60,12 @@
 			</classpath>
 			<arg value="{
 				project:'${project}',
-				path:'${basedir}/src/main/resources/META-INF/x_persistence.xml'
+				path:'${basedir}/src/main/resources/META-INF'
 			}" />
 		</java>
 		<echo>${project} create persistence xml: ${basedir}/src/main/resources/META-INF/x_persistence.xml</echo>
 	</target>
-
+-->
 	<target name="describe">
 		<echo>describe project:${project}</echo>
 		<mkdir dir="${basedir}/src/main/webapp/describe" />
@@ -101,7 +101,6 @@
 			<classpath>
 				<pathelement path="${basedir}/target/classes" />
 				<pathelement path="${basedir}/src/main/java" />
-				<pathelement path="${basedir}/src/main/resources" />
 				<fileset dir="${o2server.dir}/commons/ext">
 					<include name="*.jar" />
 				</fileset>
@@ -111,10 +110,9 @@
 				</fileset>
 			</classpath>
 			<arg value="{
-					path:'${basedir}/src/main/resources/META-INF/persistence.xml'
+					path:'${basedir}'
 				}" />
 		</java>
-		<sleep seconds="1" />
 	</target>
 
 </project>

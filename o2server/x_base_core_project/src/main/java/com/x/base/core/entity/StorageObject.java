@@ -183,6 +183,8 @@ public abstract class StorageObject extends SliceJpaObject {
 				try (InputStream input = fo.getContent().getInputStream()) {
 					length = IOUtils.copyLarge(input, output);
 				}
+			} else {
+				throw new Exception(fo.getPublicURIString() + " not existed, object:" + this.toString() + ".");
 			}
 			manager.closeFileSystem(fo.getFileSystem());
 		}

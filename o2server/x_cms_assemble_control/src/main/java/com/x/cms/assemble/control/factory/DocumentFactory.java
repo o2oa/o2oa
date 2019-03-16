@@ -630,13 +630,13 @@ public class DocumentFactory<T> extends AbstractFactory {
 		p = CriteriaBuilderTools.predicate_and(cb, p, permissionWhere );	
 		
 		if( maxResultCount == null || maxResultCount == 0 ){
-			maxResultCount = 10000;
+			maxResultCount = 500;
 		}
 		
 		if( publishDateList != null && !publishDateList.isEmpty() ){
-			cq.orderBy( cb.asc( root.get( Document_.publishTime )) );
+			cq.orderBy( cb.desc( root.get( Document_.publishTime )) );
 		}else {
-			cq.orderBy( cb.asc( root.get( Document_.createTime )) );
+			cq.orderBy( cb.desc( root.get( Document_.createTime )) );
 		}
 
 		//LogUtil.INFO( ">>>>SQL:", em.createQuery( cq.where( p ) ).setMaxResults( maxResultCount ).toString() );
@@ -685,7 +685,7 @@ public class DocumentFactory<T> extends AbstractFactory {
 
 	public List<String> listInReviewIds(Integer maxCount) throws Exception {
 		if( maxCount == null ){
-			maxCount = 1000;
+			maxCount = 500;
 		}
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();

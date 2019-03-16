@@ -62,16 +62,16 @@ public class SplitProcessor extends AbstractSplitProcessor {
 		aeiObjects.getUpdateWorkLogs().add(mainWorkLog);
 		/* 产生后续的拆分文档并标记拆分值 */
 		for (int i = 1; i < splitValues.size(); i++) {
-			Work splitWork = new Work();
+			Work splitWork = new Work(aeiObjects.getWork());
 			/* 将文档存放在一起 */
-			String activityToken = StringTools.uniqueToken();
-			aeiObjects.getWork().copyTo(splitWork, JpaObject.id_FIELDNAME);
-			splitWork.setActivityToken(activityToken);
+			// aeiObjects.getWork().copyTo(splitWork, JpaObject.id_FIELDNAME);
 			splitWork.setSplitValue(splitValues.get(i));
 			aeiObjects.getCreateWorks().add(splitWork);
-			WorkLog splitWorkLog = new WorkLog();
-			mainWorkLog.copyTo(splitWorkLog, JpaObject.id_FIELDNAME);
-			splitWorkLog.setFromActivityToken(activityToken);
+			WorkLog splitWorkLog = new WorkLog(mainWorkLog);
+			splitWorkLog.setWork(splitWork.getId());
+			//splitWork.setActivityToken(StringTools.uniqueToken());
+			// mainWorkLog.copyTo(splitWorkLog, JpaObject.id_FIELDNAME);
+			// splitWorkLog.setFromActivityToken(activityToken);
 			splitWorkLog.setSplitValue(splitValues.get(i));
 			aeiObjects.getCreateWorkLogs().add(splitWorkLog);
 			results.add(splitWork);

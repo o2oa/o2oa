@@ -245,7 +245,11 @@ public class CrawlWork extends Crawl {
 		StringBuffer buffer = new StringBuffer();
 		EntityManagerContainer emc = business.entityManagerContainer();
 		for (Attachment o : emc.listEqual(Attachment.class, Work.job_FIELDNAME, work.getJob())) {
-			buffer.append(this.text(o));
+			if (StringUtils.isNotEmpty(o.getText())) {
+				buffer.append(o.getText());
+			} else {
+				buffer.append(this.text(o));
+			}
 		}
 		return buffer.toString();
 	}

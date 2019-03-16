@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -164,15 +165,13 @@ public class ActionSave extends BaseAction {
 								"SECTION_REPLY_PUBLISH_" + subjectInfo.getMainSectionId());
 						if (!hasPermission) {
 							check = false;
-							Exception exception = new ExceptionSectionInsufficientPermissions(
-									sectionInfo.getSectionName(), "SECTION_REPLY_PUBLISH");
+							Exception exception = new ExceptionSectionInsufficientPermissions( sectionInfo.getSectionName(), "SECTION_REPLY_PUBLISH");
 							result.error(exception);
 						}
 					} catch (Exception e) {
 						check = false;
 						Exception exception = new ExceptionSectionPermissionsCheck(e,
-								effectivePerson.getDistinguishedName(), sectionInfo.getSectionName(),
-								"SECTION_REPLY_PUBLISH");
+								effectivePerson.getDistinguishedName(), sectionInfo.getSectionName(), "SECTION_REPLY_PUBLISH");
 						result.error(exception);
 						logger.error(e, effectivePerson, request, null);
 					}
@@ -210,8 +209,7 @@ public class ActionSave extends BaseAction {
 					}
 				} catch (Exception e) {
 					check = false;
-					Exception exception = new ExceptionForumPermissionsCheck(e, effectivePerson.getDistinguishedName(),
-							subjectInfo.getForumName(), "FORUM_REPLY_PUBLISH");
+					Exception exception = new ExceptionForumPermissionsCheck(e, effectivePerson.getDistinguishedName(), subjectInfo.getForumName(), "FORUM_REPLY_PUBLISH");
 					result.error(exception);
 					logger.error(e, effectivePerson, request, null);
 				}
@@ -260,9 +258,13 @@ public class ActionSave extends BaseAction {
 				Wo wo = new Wo();
 				wo.setId(replyInfo.getId());
 				result.setData(wo);
-
-				operationRecordService.replyOperation(effectivePerson.getDistinguishedName(), replyInfo, "CREATE",
-						hostIp, hostName);
+				
+				ApplicationCache.notify( BBSReplyInfo.class );
+				ApplicationCache.notify( BBSForumInfo.class );
+				ApplicationCache.notify( BBSSectionInfo.class );
+				ApplicationCache.notify( BBSSubjectInfo.class );
+				
+				operationRecordService.replyOperation(effectivePerson.getDistinguishedName(), replyInfo, "CREATE", hostIp, hostName);
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionReplyInfoProcess(e, "系统在保存回复信息时发生异常。");

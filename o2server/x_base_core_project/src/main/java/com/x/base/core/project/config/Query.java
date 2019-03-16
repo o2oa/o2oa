@@ -1,12 +1,11 @@
 package com.x.base.core.project.config;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.utils.SystemUtils;
 import org.quartz.CronExpression;
 
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -82,7 +81,7 @@ public class Query extends ConfigObject {
 	}
 
 	public Boolean getExtractImage() {
-		return BooleanUtils.isTrue(extractImage);
+		return SystemUtils.IS_OS_WINDOWS && BooleanUtils.isTrue(extractImage);
 	}
 
 	public String getTessLanguage() {

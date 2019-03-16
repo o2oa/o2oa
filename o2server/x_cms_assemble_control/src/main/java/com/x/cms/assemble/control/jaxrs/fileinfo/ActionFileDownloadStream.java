@@ -11,7 +11,7 @@ import com.x.cms.core.entity.FileInfo;
 
 public class ActionFileDownloadStream extends BaseAction {
 	
-	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id, Boolean stream ) throws Exception {
+	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		FileInfo attachment = fileInfoServiceAdv.get(id);
 		
@@ -20,8 +20,8 @@ public class ActionFileDownloadStream extends BaseAction {
 		}else {
 			StorageMapping mapping = ThisApplication.context().storageMappings().get(FileInfo.class, attachment.getStorage());
 			Wo wo = new Wo(attachment.readContent(mapping), 
-					this.contentType(stream, attachment.getName()), 
-					this.contentDisposition(stream, attachment.getName()));
+					this.contentType( true, attachment.getName()), 
+					this.contentDisposition( true, attachment.getName()));
 			result.setData(wo);
 		}
 		return result;

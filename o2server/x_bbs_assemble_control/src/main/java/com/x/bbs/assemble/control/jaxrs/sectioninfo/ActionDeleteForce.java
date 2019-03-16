@@ -83,9 +83,11 @@ public class ActionDeleteForce extends BaseAction {
 			try {
 				sectionInfoServiceAdv.deleteForce(id);
 				wo.setId( id );
+				
 				ApplicationCache.notify( BBSForumInfo.class );
 				ApplicationCache.notify( BBSSectionInfo.class );
 				ApplicationCache.notify( BBSSubjectInfo.class );
+				
 				operationRecordService.sectionOperation(effectivePerson.getDistinguishedName(), sectionInfo, "DELETE", hostIp, hostName);
 			} catch (Exception e) {
 				check = false;

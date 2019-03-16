@@ -77,7 +77,7 @@ public class ActionListNextWithFilter extends BaseAction {
 			try {
 				queryCategoryIds = listAllViewAbleCategoryIds( 
 						wi.getAppIdList(),  wi.getAppAliasList(), wi.getCategoryIdList(), wi.getCategoryAliasList(), wi.getDocumentType(), 
-						personName, isAnonymous, manager, 1000
+						personName, isAnonymous, manager, 500
 				);
 				if ( queryCategoryIds == null) {
 					queryCategoryIds = new ArrayList<>();

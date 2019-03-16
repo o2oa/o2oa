@@ -153,16 +153,15 @@ public class FileInfoAction extends StandardJaxrsAction{
 
 	@JaxrsMethodDescribe(value = "根据附件ID下载附件,设定是否使用stream输出", action = ActionFileDownloadStream.class)
 	@GET
-	@Path("download/document/{id}/stream/{stream}")
+	@Path("download/document/{id}/stream")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void attachmentDownloadStream(@Suspended final AsyncResponse asyncResponse, 
 			@Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id, 
-			@JaxrsParameterDescribe("用.APPLICATION_OCTET_STREAM头输出") @PathParam("stream") Boolean stream) {
+			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id) {
 		ActionResult<ActionFileDownloadStream.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionFileDownloadStream().execute(request, effectivePerson, id, stream);
+			result = new ActionFileDownloadStream().execute(request, effectivePerson, id );
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

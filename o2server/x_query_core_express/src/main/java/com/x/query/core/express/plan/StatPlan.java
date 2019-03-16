@@ -221,11 +221,11 @@ public class StatPlan extends GsonPropertyObject {
 				en.getValue().selectList.stream().forEach(o -> {
 					/* 分类统计只能统计分类视图 */
 					if (!StringUtils.equals(o.column, en.getValue().group.column)) {
-						List<Double> values = new ArrayList<>();
 						CalculateEntry calculateEntry = calculate.get(en.getKey());
 						if (null != calculateEntry) {
 							NumberFormat numberFormat = this.getNumberFormat(calculateEntry);
 							en.getValue().groupGrid.stream().forEach(r -> {
+								List<Double> values = new ArrayList<>();
 								CalculateGroupRow row = table.getRow(r.group);
 								if (null != row) {
 									CalculateCell cell = row.getCell(calculateEntry.id);
@@ -253,7 +253,7 @@ public class StatPlan extends GsonPropertyObject {
 		}
 		if (StringUtils.equalsIgnoreCase(SelectEntry.ORDER_DESC, calculate.orderType)
 				|| StringUtils.equalsIgnoreCase(SelectEntry.ORDER_ASC, calculate.orderType)) {
-			/* 需要进行排序如果为空则不进行排序 */
+			/* 需要进行排序如果为空则对标题进行排序 */
 			if (StringUtils.isEmpty(calculate.orderColumn)) {
 				/* 按分类值进行排序 */
 				if (StringUtils.equalsIgnoreCase(SelectEntry.ORDER_ASC, calculate.orderType)) {
@@ -364,7 +364,7 @@ public class StatPlan extends GsonPropertyObject {
 	public static class ColumnComparator implements Comparator<CalculateGroupRow> {
 
 		Collator collator = Collator.getInstance(java.util.Locale.CHINA);
-
+		
 		private String column;
 
 		public ColumnComparator(String column) {

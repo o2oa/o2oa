@@ -26,7 +26,7 @@ class ActionWho extends BaseAction {
 		ActionResult<JsonElement> result = new ActionResult<>();
 		String token = effectivePerson.getToken();
 		Application app = ThisApplication.context().applications()
-				.randomWithWeight(x_organization_assemble_authentication.class);
+				.randomWithWeight(x_organization_assemble_authentication.class.getName());
 		if (app != null) {
 			List<NameValuePair> heads = new ArrayList<>();
 			heads.add(new NameValuePair(HttpToken.X_Token, token));

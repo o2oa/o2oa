@@ -12,7 +12,7 @@ public class ThisApplication {
 		return context;
 	}
 
-    public static SmsQueue smsQueue;
+	public static SmsQueue smsQueue;
 
 	public static WsQueue wsQueue;
 
@@ -21,10 +21,10 @@ public class ThisApplication {
 	public static void init() {
 		try {
 			LoggerFactory.setLevel(Config.logLevel().x_collaboration_service_message());
-            smsQueue = new SmsQueue(context());
+			smsQueue = new SmsQueue(context());
 			wsQueue = new WsQueue(context());
 			pushMessageQueue = new PushMessageQueue(context());
-            context().startQueue(smsQueue);
+			context().startQueue(smsQueue);
 			context().startQueue(wsQueue);
 			context().startQueue(pushMessageQueue);
 		} catch (Exception e) {

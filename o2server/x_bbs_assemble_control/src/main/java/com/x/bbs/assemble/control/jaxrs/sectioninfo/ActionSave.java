@@ -227,13 +227,13 @@ public class ActionSave extends BaseAction {
 				if( sectionInfo.getUpdateTime() == null ) {
 					sectionInfo.setUpdateTime( sectionInfo.getCreateTime() );
 				}
-				sectionInfo = sectionInfoServiceAdv.save( sectionInfo );
-				
+				sectionInfo = sectionInfoServiceAdv.save( sectionInfo );				
 				wo.setId( sectionInfo.getId() );
 				
 				ApplicationCache.notify( BBSForumInfo.class );
 				ApplicationCache.notify( BBSSectionInfo.class );
 				ApplicationCache.notify( BBSSubjectInfo.class );
+				
 				if ( sectionInfo.getCreateTime().compareTo( sectionInfo.getUpdateTime() ) == 0 ) {
 					operationRecordService.sectionOperation(effectivePerson.getDistinguishedName(), sectionInfo, "CREATE", hostIp, hostName);
 				} else {

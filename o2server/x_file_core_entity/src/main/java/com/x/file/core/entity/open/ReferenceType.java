@@ -10,6 +10,6 @@ import com.x.base.core.entity.JpaObject;
  */
 public enum ReferenceType {
 
-	processPlatformJob, processPlatformForm, portalPage, cmsDocument, forumDocument, forumReply, component;
+	processPlatformJob, processPlatformForm, mindInfo, portalPage, cmsDocument, forumDocument, forumReply, component; 
 	public static final int length = JpaObject.length_64B;
 }

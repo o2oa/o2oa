@@ -2,7 +2,9 @@ package com.x.component.assemble.control;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.component.assemble.control.factory.ComponentFactory;
+import com.x.organization.core.express.Organization;
 
 public class Business {
 
@@ -25,10 +27,25 @@ public class Business {
 		return component;
 	}
 
-	public boolean componentEditAvailable(EffectivePerson effectivePerson) throws Exception {
-		if (effectivePerson.isManager()) {
-			return true;
+	private Organization organization;
+
+	public Organization organization() throws Exception {
+		if (null == this.organization) {
+			this.organization = new Organization(ThisApplication.context());
 		}
-		return false;
+		return organization;
+	}
+
+	public boolean editable(EffectivePerson effectivePerson) throws Exception {
+		boolean result = false;
+		if (effectivePerson.isManager()) {
+			result = true;
+		}
+		if (!result) {
+			if (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager)) {
+				result = true;
+			}
+		}
+		return result;
 	}
 }

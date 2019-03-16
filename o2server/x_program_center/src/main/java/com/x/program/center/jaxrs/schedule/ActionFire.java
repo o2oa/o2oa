@@ -67,8 +67,7 @@ class ActionFire extends BaseAction {
 			o.setFireTime(date);
 		});
 		emc.commit();
-		Class<?> clz = Class.forName(schedule.getApplication());
-		Application app = ThisApplication.context().applications().randomWithWeight(clz);
+		Application app = ThisApplication.context().applications().randomWithWeight(schedule.getApplication());
 		if (null != app) {
 			String url = app.getUrlRoot()
 					+ Applications.joinQueryUri("fireschedule", "classname", schedule.getClassName());

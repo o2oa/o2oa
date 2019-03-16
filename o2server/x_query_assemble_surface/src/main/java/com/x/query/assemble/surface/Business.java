@@ -32,7 +32,7 @@ import net.sf.ehcache.Element;
 public class Business {
 
 	private static Ehcache cache = ApplicationCache.instance().getCache(Query.class, View.class, Stat.class,
-			Reveal.class);
+			Reveal.class, Table.class, Statement.class);
 
 	public Ehcache cache() {
 		return cache;
@@ -95,7 +95,7 @@ public class Business {
 
 	@SuppressWarnings("unchecked")
 	public <T extends JpaObject> T pick(String flag, Class<T> cls) throws Exception {
-		String cacheKey = ApplicationCache.concreteCacheKey(flag);
+		String cacheKey = ApplicationCache.concreteCacheKey(cls, flag);
 		Element element = cache.get(cacheKey);
 		if ((null != element) && (null != element.getObjectValue())) {
 			return (T) element.getObjectValue();
@@ -103,7 +103,7 @@ public class Business {
 			T t = this.entityManagerContainer().flag(flag, cls);
 			if (null != t) {
 				entityManagerContainer().get(cls).detach(t);
-				cache.put(new Element(flag, t));
+				cache.put(new Element(cacheKey, t));
 				return t;
 			}
 			return null;

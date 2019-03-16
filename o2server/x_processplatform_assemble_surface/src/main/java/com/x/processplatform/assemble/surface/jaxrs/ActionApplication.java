@@ -8,6 +8,7 @@ import com.x.base.core.project.jaxrs.AbstractActionApplication;
 import com.x.processplatform.assemble.surface.jaxrs.application.ApplicationAction;
 import com.x.processplatform.assemble.surface.jaxrs.applicationdict.ApplicationDictAction;
 import com.x.processplatform.assemble.surface.jaxrs.attachment.AttachmentAction;
+import com.x.processplatform.assemble.surface.jaxrs.control.ControlAction;
 import com.x.processplatform.assemble.surface.jaxrs.data.DataAction;
 import com.x.processplatform.assemble.surface.jaxrs.file.FileAction;
 import com.x.processplatform.assemble.surface.jaxrs.form.FormAction;
@@ -57,6 +58,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(FormAction.class);
 		classes.add(UtilAction.class);
 		classes.add(WorkLogAction.class);
+		classes.add(ControlAction.class);
 		return classes;
 	}
 }

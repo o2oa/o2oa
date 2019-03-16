@@ -23,7 +23,8 @@ public class x_query_assemble_surface extends AssembleA {
 		dependency.containerEntities.add("com.x.query.core.entity.neural.InValue");
 		dependency.containerEntities.add("com.x.query.core.entity.neural.OutValue");
 		dependency.containerEntities.add("com.x.query.core.entity.neural.Model");
-		dependency.containerEntities.add("com.x.query.core.entity.schema.*");
+		dependency.containerEntities.add("com.x.query.core.entity.schema.Table");
+		dependency.containerEntities.add("com.x.query.core.entity.schema.Statement");
 		dependency.containerEntities.add("com.x.processplatform.core.entity.content.Review");
 		dependency.containerEntities.add("com.x.processplatform.core.entity.content.Work");
 		dependency.containerEntities.add("com.x.processplatform.core.entity.content.WorkCompleted");
@@ -40,5 +41,6 @@ public class x_query_assemble_surface extends AssembleA {
 		dependency.storeJars.add(x_processplatform_core_entity.class.getSimpleName());
 		dependency.storeJars.add(x_cms_core_entity.class.getSimpleName());
 		dependency.storeJars.add(x_query_core_express.class.getSimpleName());
+		dependency.dynamicJars.add("x_query_dynamic_entity");
 	}
 }

@@ -10,14 +10,13 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.scripting.ScriptingEngine;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Choice;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.service.processing.BindingPair;
 import com.x.processplatform.service.processing.ScriptHelper;
 import com.x.processplatform.service.processing.ScriptHelperFactory;
-import com.x.processplatform.service.processing.processor.AeiObjects;
-import com.x.processplatform.service.processing.processor.AeiObjects;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class ChoiceProcessor extends AbstractChoiceProcessor {
@@ -56,7 +55,7 @@ public class ChoiceProcessor extends AbstractChoiceProcessor {
 		/* 多条路由进行判断 */
 		for (Route o : aeiObjects.getRoutes()) {
 			ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects,
-					new BindingPair(Binding_name_route, o));
+					new BindingPair(ScriptingEngine.BINDINGNAME_ROUTE, o));
 			Object obj = scriptHelper.eval(aeiObjects.getWork().getApplication(), o.getScript(), o.getScriptText());
 			if (BooleanUtils.toBoolean(StringUtils.trimToNull(Objects.toString(obj))) == true) {
 				results.add(o);

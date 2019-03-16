@@ -151,8 +151,6 @@ public class ManualProcessor extends AbstractManualProcessor {
 	protected List<Work> executing(AeiObjects aeiObjects, Manual manual) throws Exception {
 		List<Work> results = new ArrayList<>();
 		boolean passThrough = false;
-		// List<String> identities = TranslateTaskIdentityTools.translate(aeiObjects,
-		// manual);
 		/*
 		 * 如果采用List<String> identities =
 		 * TranslateTaskIdentityTools.translate(aeiObjects, manual)
@@ -161,9 +159,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 		List<String> identities = aeiObjects.business().organization().identity()
 				.list(aeiObjects.getWork().getManualTaskIdentityList());
 		if (identities.isEmpty()) {
-			logger.info("工作设置的处理人已经全部无效,重新计算当前环节所有处理人进行处理,标题:{}, id:{}, 设置的处理人:{}.", aeiObjects.getWork().getTitle(),
-					aeiObjects.getWork().getTitle(), aeiObjects.getWork().getManualTaskIdentityList());
 			identities = TranslateTaskIdentityTools.translate(aeiObjects, manual);
+			logger.info("工作设置的处理人已经全部无效,重新计算当前环节所有处理人进行处理,标题:{}, id:{}, 设置的处理人:{}.", aeiObjects.getWork().getTitle(),
+					aeiObjects.getWork().getId(), identities);
 		}
 		if (identities.isEmpty()) {
 			/* 如果活动没有找到任何可用的处理人,那么强制设置处理人为文档创建者,或者配置的 maintenanceIdentity */
@@ -231,7 +229,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 							&& (!Objects.equals(o.getProcessingType(), ProcessingType.retract))
 							&& (!Objects.equals(o.getProcessingType(), ProcessingType.reset)))
 					.collect(Collectors.toList());
-			String name = this.choiceRouteName(taskCompletedList);
+			String name = this.choiceRouteName(taskCompletedList, aeiObjects.getRoutes());
 			for (Route o : aeiObjects.getRoutes()) {
 				if (o.getName().equalsIgnoreCase(name)) {
 					results.add(o);
@@ -242,18 +240,32 @@ public class ManualProcessor extends AbstractManualProcessor {
 		return results;
 	}
 
-	/** 通过已办存根选择某条路由 */
-	private String choiceRouteName(List<TaskCompleted> list) throws Exception {
+	/* 通过已办存根选择某条路由 */
+	private String choiceRouteName(List<TaskCompleted> list, List<Route> routes) throws Exception {
 		String result = "";
 		List<String> os = new ArrayList<>();
-		for (TaskCompleted o : ListTools.trim(list, false, false)) {
-			if ((!o.getProcessingType().equals(ProcessingType.reset))
-					&& (!o.getProcessingType().equals(ProcessingType.retract))) {
-				/** 跳过重置处理人的路由 */
-				os.add(o.getRouteName());
-			}
+		ListTools.trim(list, false, false).stream()
+				.filter(o -> (!Objects.equals(o.getProcessingType(), ProcessingType.reset))
+						&& (!Objects.equals(o.getProcessingType(), ProcessingType.retract)))
+				.forEach(o -> {
+					/* 跳过重置处理人的路由 */
+					os.add(o.getRouteName());
+				});
+		/* 进行独占路由的判断 */
+		Route soleRoute = routes.stream().filter(o -> BooleanUtils.isTrue(o.getSole())).findFirst().orElse(null);
+		if (null != soleRoute) {
+			result = soleRoute.getName();
+		} else {
+			/* 进行默认的策略,选择占比多的 */
+			result = ListTools.maxCountElement(os);
 		}
-		result = ListTools.maxCountElement(os);
+//		for (TaskCompleted o : ListTools.trim(list, false, false)) {
+//			if ((!o.getProcessingType().equals(ProcessingType.reset))
+//					&& (!o.getProcessingType().equals(ProcessingType.retract))) {
+//				/** 跳过重置处理人的路由 */
+//				os.add(o.getRouteName());
+//			}
+//		}
 		if (StringUtils.isEmpty(result)) {
 			throw new ExceptionChoiceRouteNameError(
 					ListTools.extractProperty(list, JpaObject.id_FIELDNAME, String.class, false, false));
@@ -263,7 +275,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 
 	private boolean single(AeiObjects aeiObjects, Manual manual) throws Exception {
 		boolean passThrough = false;
-		/** 找到所有的已办 */
+		/* 找到所有的已办 */
 		Long count = aeiObjects.getTaskCompleteds().stream().filter(o -> {
 			if (StringUtils.equals(aeiObjects.getWork().getActivityToken(), o.getActivityToken())
 					&& (!o.getProcessingType().equals(ProcessingType.retract))

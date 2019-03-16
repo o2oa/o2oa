@@ -183,7 +183,7 @@ class ActionCreate extends BaseAction {
 		try {
 			if (ListTools.contains(message.getConsumerList(), MessageConnector.CONSUME_CALENDAR)) {
 				Application app = ThisApplication.context().applications()
-						.randomWithWeight(x_calendar_assemble_control.class);
+						.randomWithWeight(x_calendar_assemble_control.class.getName());
 				if (null != app) {
 					WrapBoolean wrapBoolean = ThisApplication.context().applications()
 							.postQuery(effectivePerson.getDebugger(), app, "message", message)
@@ -327,7 +327,6 @@ class ActionCreate extends BaseAction {
 		private String invalidparty;
 		private String invalidtag;
 
-	 
 		public String getErrmsg() {
 			return errmsg;
 		}

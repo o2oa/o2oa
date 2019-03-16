@@ -53,7 +53,9 @@ public class ActionSubjectUnComplete extends BaseAction {
 				Wo wo = new Wo();
 				wo.setId( id );
 				result.setData( wo );
+				
 				ApplicationCache.notify( BBSSubjectInfo.class );
+				
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionSubjectOperation( e, "用户在取消主题完成时发生异常！" );

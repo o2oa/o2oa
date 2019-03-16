@@ -24,11 +24,45 @@ import com.x.bbs.entity.BBSSubjectInfo;
 import com.x.bbs.entity.BBSVoteOption;
 import com.x.bbs.entity.BBSVoteOptionGroup;
 
+import net.sf.ehcache.Element;
+
 public class ActionSubjectGet extends BaseAction {
-	
-	private static  Logger logger = LoggerFactory.getLogger( ActionSubjectGet.class );
-	
-	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id ) throws Exception {
+
+	private static Logger logger = LoggerFactory.getLogger(ActionSubjectGet.class);
+
+	@SuppressWarnings("unchecked")
+	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, String id)
+			throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
+		Boolean check = true;
+
+		if (check) {
+			if (id == null || id.isEmpty()) {
+				check = false;
+				Exception exception = new ExceptionSubjectIdEmpty();
+				result.error(exception);
+			}
+		}
+
+		if (check) {
+			String cacheKey = "subject#get#" + id;
+			Element element = cache.get(cacheKey);
+			if ((null != element) && (null != element.getObjectValue())) {
+				ActionResult<Wo> result_cache = (ActionResult<Wo>) element.getObjectValue();
+				result.setData(result_cache.getData());
+				result.setCount(1L);
+			} else {
+				// 继续进行数据查询
+				result = getSubjectGetQueryResult(id, request, effectivePerson);
+				cache.put(new Element(cacheKey, result));
+			}
+		}
+
+		return result;
+	}
+
+	private ActionResult<Wo> getSubjectGetQueryResult(String id, HttpServletRequest request,
+			EffectivePerson effectivePerson) {
 		ActionResult<Wo> result = new ActionResult<>();
 		List<WoSubjectAttachment> wrapSubjectAttachmentList = null;
 		List<BBSSubjectAttachment> subjectAttachmentList = null;
@@ -41,184 +75,175 @@ public class ActionSubjectGet extends BaseAction {
 		String subjectContent = null;
 		Boolean check = true;
 		
-		if( check ){
-			if( id == null || id.isEmpty() ){
-				check = false;
-				Exception exception = new ExceptionSubjectIdEmpty();
-				result.error( exception );
-			}
-		}
-		
-		//查询版块信息是否存在
+		// 查询版块信息是否存在
 		if (check) {
 			try {
-				subjectInfo = subjectInfoServiceAdv.get( id );
+				subjectInfo = subjectInfoServiceAdv.get(id);
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ExceptionSubjectQueryById( e, id );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
+				Exception exception = new ExceptionSubjectQueryById(e, id);
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
 			}
 		}
 
 		if (check) {
-			if ( subjectInfo == null ) {
+			if (subjectInfo == null) {
 				check = false;
-				Exception exception = new ExceptionSubjectNotExists( id );
-				result.error( exception );
-				//logger.error( e, effectivePerson, request, null);
-			}else{//查到了主题信息
+				Exception exception = new ExceptionSubjectNotExists(id);
+				result.error(exception);
+				// logger.error( e, effectivePerson, request, null);
+			} else {// 查到了主题信息
 				try {
-					wrap = Wo.copier.copy( subjectInfo );
-					//根据附件ID列表查询附件信息
-					if( subjectInfo.getAttachmentList() != null && subjectInfo.getAttachmentList().size() > 0 ){
-						subjectAttachmentList = subjectInfoServiceAdv.listAttachmentByIds( subjectInfo.getAttachmentList() );
-						if( subjectAttachmentList != null && subjectAttachmentList.size() > 0 ){
-							wrapSubjectAttachmentList = WoSubjectAttachment.copier.copy( subjectAttachmentList );
-							wrap.setSubjectAttachmentList( wrapSubjectAttachmentList );
+					wrap = Wo.copier.copy(subjectInfo);
+					// 根据附件ID列表查询附件信息
+					if (subjectInfo.getAttachmentList() != null && subjectInfo.getAttachmentList().size() > 0) {
+						subjectAttachmentList = subjectInfoServiceAdv
+								.listAttachmentByIds(subjectInfo.getAttachmentList());
+						if (subjectAttachmentList != null && subjectAttachmentList.size() > 0) {
+							wrapSubjectAttachmentList = WoSubjectAttachment.copier.copy(subjectAttachmentList);
+							wrap.setSubjectAttachmentList(wrapSubjectAttachmentList);
 						}
 					}
 				} catch (Exception e) {
 					check = false;
-					Exception exception = new ExceptionSubjectWrapOut( e );
-					result.error( exception );
-					logger.error( e, effectivePerson, request, null);
-				}
-			}			
-		}
-		if (check) {
-			if( wrap != null ){
-				//填充主题的内容信息
-				try {
-					subjectContent = subjectInfoServiceAdv.getSubjectContent( id );
-					if( subjectContent != null ){
-						wrap.setContent( subjectContent );
-					}
-				} catch (Exception e) {
-					check = false;
-					Exception exception = new ExceptionSubjectContentQueryById( e, id );
-					result.error( exception );
-					logger.error( e, effectivePerson, request, null);
+					Exception exception = new ExceptionSubjectWrapOut(e);
+					result.error(exception);
+					logger.error(e, effectivePerson, request, null);
 				}
 			}
 		}
-		
 		if (check) {
-			if( wrap != null ){//获取该主题的投票选项组
+			if (wrap != null) {
+				// 填充主题的内容信息
 				try {
-					voteOptionGroupList = subjectVoteService.listVoteOptionGroup( id );
-					if( voteOptionGroupList != null && !voteOptionGroupList.isEmpty() ){
-						wrapOutSubjectVoteOptionGroupList = WoBBSVoteOptionGroup.copier.copy( voteOptionGroupList );
-						for( WoBBSVoteOptionGroup group : wrapOutSubjectVoteOptionGroupList ){
-							voteOptionList = subjectVoteService.listVoteOptionByGroupId( group.getId() );
-							if( voteOptionList != null  && !voteOptionList.isEmpty() ){
+					subjectContent = subjectInfoServiceAdv.getSubjectContent(id);
+					if (subjectContent != null) {
+						wrap.setContent(subjectContent);
+					}
+				} catch (Exception e) {
+					check = false;
+					Exception exception = new ExceptionSubjectContentQueryById(e, id);
+					result.error(exception);
+					logger.error(e, effectivePerson, request, null);
+				}
+			}
+		}
+
+		if (check) {
+			if (wrap != null) {// 获取该主题的投票选项组
+				try {
+					voteOptionGroupList = subjectVoteService.listVoteOptionGroup(id);
+					if (voteOptionGroupList != null && !voteOptionGroupList.isEmpty()) {
+						wrapOutSubjectVoteOptionGroupList = WoBBSVoteOptionGroup.copier.copy(voteOptionGroupList);
+						for (WoBBSVoteOptionGroup group : wrapOutSubjectVoteOptionGroupList) {
+							voteOptionList = subjectVoteService.listVoteOptionByGroupId(group.getId());
+							if (voteOptionList != null && !voteOptionList.isEmpty()) {
 								try {
-									wrapOutSubjectVoteOptionList = WoBBSVoteOption.copier.copy( voteOptionList );
-									group.setVoteOptions( wrapOutSubjectVoteOptionList );
+									wrapOutSubjectVoteOptionList = WoBBSVoteOption.copier.copy(voteOptionList);
+									group.setVoteOptions(wrapOutSubjectVoteOptionList);
 								} catch (Exception e) {
 									check = false;
-									Exception exception = new ExceptionSubjectWrapOut( e );
-									result.error( exception );
-									logger.error( e, effectivePerson, request, null);
+									Exception exception = new ExceptionSubjectWrapOut(e);
+									result.error(exception);
+									logger.error(e, effectivePerson, request, null);
 								}
 							}
 						}
-						wrap.setVoteOptionGroupList( wrapOutSubjectVoteOptionGroupList );
+						wrap.setVoteOptionGroupList(wrapOutSubjectVoteOptionGroupList);
 					}
 				} catch (Exception e) {
 					check = false;
-					Exception exception = new ExceptionVoteOptionListById( e, id );
-					result.error( exception );
-					logger.error( e, effectivePerson, request, null);
+					Exception exception = new ExceptionVoteOptionListById(e, id);
+					result.error(exception);
+					logger.error(e, effectivePerson, request, null);
 				}
 			}
 		}
-		
+
 		if (check) {
-			//将带@形式的人员标识修改为人员的姓名并且赋值到xxShort属性里
-			if( wrap != null ){
-				cutPersonNames( wrap );
+			// 将带@形式的人员标识修改为人员的姓名并且赋值到xxShort属性里
+			if (wrap != null) {
+				cutPersonNames(wrap);
 			}
 		}
-		result.setData( wrap );
+		result.setData(wrap);
 		return result;
 	}
 
 	/**
-	 *  将带@形式的人员标识修改为人员的姓名并且赋值到xxShort属性里
-	 *  
-	 *  latestReplyUserShort = "";
-		bBSIndexSetterNameShort = "";
-		screamSetterNameShort = "";
-		originalSetterNameShort = "";
-		creatorNameShort = "";
-		auditorNameShort = "";
-		
+	 * 将带@形式的人员标识修改为人员的姓名并且赋值到xxShort属性里
+	 * 
+	 * latestReplyUserShort = ""; bBSIndexSetterNameShort = "";
+	 * screamSetterNameShort = ""; originalSetterNameShort = ""; creatorNameShort =
+	 * ""; auditorNameShort = "";
+	 * 
 	 * @param subject
 	 */
-	private void cutPersonNames( Wo subject ) {
-		if( subject != null ) {
-			if( subject.getLatestReplyUser() != null && !subject.getLatestReplyUser().isEmpty() ) {
-				subject.setLatestReplyUserShort( subject.getLatestReplyUser().split( "@" )[0]);
+	private void cutPersonNames(Wo subject) {
+		if (subject != null) {
+			if (subject.getLatestReplyUser() != null && !subject.getLatestReplyUser().isEmpty()) {
+				subject.setLatestReplyUserShort(subject.getLatestReplyUser().split("@")[0]);
 			}
-			if( subject.getbBSIndexSetterName() != null && !subject.getbBSIndexSetterName().isEmpty() ) {
-				subject.setbBSIndexSetterNameShort( subject.getbBSIndexSetterName().split( "@" )[0]);
+			if (subject.getbBSIndexSetterName() != null && !subject.getbBSIndexSetterName().isEmpty()) {
+				subject.setbBSIndexSetterNameShort(subject.getbBSIndexSetterName().split("@")[0]);
 			}
-			if( subject.getScreamSetterName() != null && !subject.getScreamSetterName().isEmpty() ) {
-				subject.setScreamSetterNameShort( subject.getScreamSetterName().split( "@" )[0]);
+			if (subject.getScreamSetterName() != null && !subject.getScreamSetterName().isEmpty()) {
+				subject.setScreamSetterNameShort(subject.getScreamSetterName().split("@")[0]);
 			}
-			if( subject.getOriginalSetterName() != null && !subject.getOriginalSetterName().isEmpty() ) {
-				subject.setOriginalSetterNameShort( subject.getOriginalSetterName().split( "@" )[0]);
+			if (subject.getOriginalSetterName() != null && !subject.getOriginalSetterName().isEmpty()) {
+				subject.setOriginalSetterNameShort(subject.getOriginalSetterName().split("@")[0]);
 			}
-			if( subject.getCreatorName() != null && !subject.getCreatorName().isEmpty() ) {
-				subject.setCreatorNameShort( subject.getCreatorName().split( "@" )[0]);
+			if (subject.getCreatorName() != null && !subject.getCreatorName().isEmpty()) {
+				subject.setCreatorNameShort(subject.getCreatorName().split("@")[0]);
 			}
-			if( subject.getAuditorName() != null && !subject.getAuditorName().isEmpty() ) {
-				subject.setAuditorNameShort( subject.getAuditorName().split( "@" )[0]);
+			if (subject.getAuditorName() != null && !subject.getAuditorName().isEmpty()) {
+				subject.setAuditorNameShort(subject.getAuditorName().split("@")[0]);
 			}
 		}
 	}
-	
-	public static class Wo extends BBSSubjectInfo{
-		
+
+	public static class Wo extends BBSSubjectInfo {
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
-		
-		public static WrapCopier< BBSSubjectInfo, Wo > copier = WrapCopierFactory.wo( BBSSubjectInfo.class, Wo.class, null, JpaObject.FieldsInvisible);
-		
+
+		public static WrapCopier<BBSSubjectInfo, Wo> copier = WrapCopierFactory.wo(BBSSubjectInfo.class, Wo.class, null,
+				JpaObject.FieldsInvisible);
+
 		private List<WoSubjectAttachment> subjectAttachmentList;
-		
-		@FieldDescribe( "投票主题的所有投票选项列表." )
+
+		@FieldDescribe("投票主题的所有投票选项列表.")
 		private List<WoBBSVoteOptionGroup> voteOptionGroupList;
-		
+
 		private String content = null;
-		
+
 		private Long voteCount = 0L;
-		
+
 		private String pictureBase64 = null;
-		
-		@FieldDescribe( "最新回复用户" )
+
+		@FieldDescribe("最新回复用户")
 		private String latestReplyUserShort = "";
-		
-		@FieldDescribe( "首页推荐人姓名" )
+
+		@FieldDescribe("首页推荐人姓名")
 		private String bBSIndexSetterNameShort = "";
-		
-		@FieldDescribe( "精华设置人姓名" )
+
+		@FieldDescribe("精华设置人姓名")
 		private String screamSetterNameShort = "";
-		
-		@FieldDescribe( "原创设置人姓名" )
+
+		@FieldDescribe("原创设置人姓名")
 		private String originalSetterNameShort = "";
-		
-		@FieldDescribe( "创建人姓名" )
+
+		@FieldDescribe("创建人姓名")
 		private String creatorNameShort = "";
-		
-		@FieldDescribe( "审核人姓名" )
+
+		@FieldDescribe("审核人姓名")
 		private String auditorNameShort = "";
-		
-		@FieldDescribe( "当前用户是否已经投票过." )
+
+		@FieldDescribe("当前用户是否已经投票过.")
 		private Boolean voted = false;
-		
+
 		public String getLatestReplyUserShort() {
 			return latestReplyUserShort;
 		}
@@ -315,22 +340,22 @@ public class ActionSubjectGet extends BaseAction {
 			this.voteCount = voteCount;
 		}
 	}
-	
-	public static class WoSubjectAttachment extends BBSSubjectAttachment{
-		
+
+	public static class WoSubjectAttachment extends BBSSubjectAttachment {
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
-		
-		public static WrapCopier< BBSSubjectAttachment, WoSubjectAttachment > copier = WrapCopierFactory.wo( BBSSubjectAttachment.class, WoSubjectAttachment.class, null, JpaObject.FieldsInvisible);
+
+		public static WrapCopier<BBSSubjectAttachment, WoSubjectAttachment> copier = WrapCopierFactory
+				.wo(BBSSubjectAttachment.class, WoSubjectAttachment.class, null, JpaObject.FieldsInvisible);
 	}
-	
-	public static class WoBBSVoteOptionGroup extends BBSVoteOptionGroup{
-		
+
+	public static class WoBBSVoteOptionGroup extends BBSVoteOptionGroup {
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
-		
-		public static WrapCopier< BBSVoteOptionGroup, WoBBSVoteOptionGroup > copier = WrapCopierFactory.wo( BBSVoteOptionGroup.class, WoBBSVoteOptionGroup.class, null, JpaObject.FieldsInvisible);
-		
+
+		public static WrapCopier<BBSVoteOptionGroup, WoBBSVoteOptionGroup> copier = WrapCopierFactory
+				.wo(BBSVoteOptionGroup.class, WoBBSVoteOptionGroup.class, null, JpaObject.FieldsInvisible);
+
 		private List<WoBBSVoteOption> voteOptions = null;
 
 		public List<WoBBSVoteOption> getVoteOptions() {
@@ -342,13 +367,13 @@ public class ActionSubjectGet extends BaseAction {
 		}
 	}
 
-	public static class WoBBSVoteOption extends BBSVoteOption{
-		
+	public static class WoBBSVoteOption extends BBSVoteOption {
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
-		
-		public static WrapCopier< BBSVoteOption, WoBBSVoteOption > copier = WrapCopierFactory.wo( BBSVoteOption.class, WoBBSVoteOption.class, null,JpaObject.FieldsInvisible);
-		
+
+		public static WrapCopier<BBSVoteOption, WoBBSVoteOption> copier = WrapCopierFactory.wo(BBSVoteOption.class,
+				WoBBSVoteOption.class, null, JpaObject.FieldsInvisible);
+
 		private Boolean voted = false;
 
 		public Boolean getVoted() {

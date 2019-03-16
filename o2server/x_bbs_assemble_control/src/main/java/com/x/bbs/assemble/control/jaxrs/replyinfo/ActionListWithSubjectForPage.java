@@ -19,16 +19,15 @@ import com.x.bbs.assemble.control.jaxrs.replyinfo.exception.ExceptionPageEmpty;
 import com.x.bbs.assemble.control.jaxrs.replyinfo.exception.ExceptionReplyInfoProcess;
 import com.x.bbs.entity.BBSReplyInfo;
 
+import net.sf.ehcache.Element;
+
 public class ActionListWithSubjectForPage extends BaseAction {
 	
 	private static  Logger logger = LoggerFactory.getLogger( ActionListWithSubjectForPage.class );
 	
+	@SuppressWarnings("unchecked")
 	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson, Integer page, Integer count, JsonElement jsonElement ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
-		List<Wo> wraps = new ArrayList<>();
-		List<BBSReplyInfo> replyInfoList = null;
-		List<BBSReplyInfo> replyInfoList_out = new ArrayList<BBSReplyInfo>();
-		Long total = 0L;
 		Wi wrapIn = null;
 		Boolean check = true;
 		
@@ -40,6 +39,30 @@ public class ActionListWithSubjectForPage extends BaseAction {
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
+		
+		if( check ) {
+			String cacheKey = wrapIn.getSubjectId() + "#" + page + "#" + count;
+			Element element = cache.get( cacheKey );
+			
+			if ((null != element) && (null != element.getObjectValue())) {
+				ActionResult<List<Wo>> result_cache = (ActionResult<List<Wo>>) element.getObjectValue();
+				result.setData( result_cache.getData() );
+				result.setCount( result_cache.getCount() );
+			} else {
+				result = getReplyQueryResult(wrapIn, request, effectivePerson, page, count);
+				cache.put(new Element(cacheKey, result ));
+			}
+		}
+		return result;
+	}
+
+	public ActionResult<List<Wo>> getReplyQueryResult( Wi wrapIn, HttpServletRequest request, EffectivePerson effectivePerson, Integer page, Integer count ) {
+		ActionResult<List<Wo>> result = new ActionResult<>();
+		List<Wo> wraps = new ArrayList<>();
+		List<BBSReplyInfo> replyInfoList = null;
+		List<BBSReplyInfo> replyInfoList_out = new ArrayList<BBSReplyInfo>();
+		Long total = 0L;
+		Boolean check = true;
 		
 		if( check ){
 			if( page == null ){
@@ -118,29 +141,22 @@ public class ActionListWithSubjectForPage extends BaseAction {
 		result.setCount( total );
 		return result;
 	}
-
+	
 	public static class Wi{
-
-		private String subjectId = null;
-		
+		private String subjectId = null;		
 		public static List<String> Excludes = new ArrayList<String>( JpaObject.FieldsUnmodify );
-
 		public String getSubjectId() {
 			return subjectId;
 		}
-
 		public void setSubjectId(String subjectId) {
 			this.subjectId = subjectId;
 		}
 	}
 	
-	public static class Wo extends BBSReplyInfo{
-		
-		private static final long serialVersionUID = -5076990764713538973L;
-		
-		public static List<String> Excludes = new ArrayList<String>();
-		
-		public static WrapCopier< BBSReplyInfo, Wo > copier = WrapCopierFactory.wo( BBSReplyInfo.class, Wo.class, null, JpaObject.FieldsInvisible);
+	public static class Wo extends BBSReplyInfo{		
+		private static final long serialVersionUID = -5076990764713538973L;		
+		public static List<String> Excludes = new ArrayList<String>();		
+		public static WrapCopier< BBSReplyInfo, Wo > copier = WrapCopierFactory.wo( BBSReplyInfo.class, Wo.class, null, JpaObject.FieldsInvisible);		
 		
 		@FieldDescribe( "创建人姓名" )
 		private String creatorNameShort = "";

@@ -26,12 +26,12 @@ import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
 
-import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
@@ -80,7 +80,8 @@ public class Work extends SliceJpaObject {
 	}
 
 	public Work(Work work) throws Exception {
-		work.copyTo(this, JpaObject.id_FIELDNAME);
+		Work copy = XGsonBuilder.convert(work, Work.class);
+		copy.copyTo(this, JpaObject.id_FIELDNAME);
 	}
 
 	public void setTitle(String title) {
@@ -282,7 +283,7 @@ public class Work extends SliceJpaObject {
 	public static final String manualTaskIdentityList_FIELDNAME = "manualTaskIdentityList";
 	@FieldDescribe("预期的处理人")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ manualTaskIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ manualTaskIdentityList_FIELDNAME + JoinIndexNameSuffix))
@@ -308,7 +309,7 @@ public class Work extends SliceJpaObject {
 	public static final String splitTokenList_FIELDNAME = "splitTokenList";
 	@FieldDescribe("拆分工作产生的Token")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + splitTokenList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + splitTokenList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + splitTokenList_FIELDNAME)
@@ -691,14 +692,6 @@ public class Work extends SliceJpaObject {
 	public void setForm(String form) {
 		this.form = form;
 	}
-
-	// public Boolean getExecuted() {
-	// return executed;
-	// }
-	//
-	// public void setExecuted(Boolean executed) {
-	// this.executed = executed;
-	// }
 
 	public Integer getErrorRetry() {
 		return errorRetry;

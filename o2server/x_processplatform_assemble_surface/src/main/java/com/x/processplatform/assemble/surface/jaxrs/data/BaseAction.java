@@ -8,12 +8,14 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.entity.dataitem.ItemType;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Review;
@@ -100,6 +102,16 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	void updateData(Business business, Work work, JsonElement jsonElement, String... paths) throws Exception {
+		if (jsonElement.isJsonObject()) {
+			JsonObject jsonObject = jsonElement.getAsJsonObject();
+			if (jsonObject.has(Data.WORK_PROPERTY)) {
+				jsonObject.remove(Data.WORK_PROPERTY);
+			}
+			if (jsonObject.has(Data.ATTACHMENTLIST_PROPERTY)) {
+				jsonObject.remove(Data.ATTACHMENTLIST_PROPERTY);
+			}
+			jsonElement = jsonObject;
+		}
 		DataItemConverter<Item> converter = new DataItemConverter<>(Item.class);
 		List<Item> exists = business.item().listWithJobWithPath(work.getJob(), paths);
 		List<Item> currents = converter.disassemble(jsonElement, paths);
@@ -124,6 +136,16 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	void updateData(Business business, WorkCompleted workCompleted, JsonElement jsonElement, String... paths)
 			throws Exception {
+		if (jsonElement.isJsonObject()) {
+			JsonObject jsonObject = jsonElement.getAsJsonObject();
+			if (jsonObject.has(Data.WORK_PROPERTY)) {
+				jsonObject.remove(Data.WORK_PROPERTY);
+			}
+			if (jsonObject.has(Data.ATTACHMENTLIST_PROPERTY)) {
+				jsonObject.remove(Data.ATTACHMENTLIST_PROPERTY);
+			}
+			jsonElement = jsonObject;
+		}
 		DataItemConverter<Item> converter = new DataItemConverter<>(Item.class);
 		List<Item> exists = business.item().listWithJobWithPath(workCompleted.getJob(), paths);
 		List<Item> currents = converter.disassemble(jsonElement, paths);
@@ -146,6 +168,16 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	void createData(Business business, Work work, JsonElement jsonElement, String... paths) throws Exception {
+		if (jsonElement.isJsonObject()) {
+			JsonObject jsonObject = jsonElement.getAsJsonObject();
+			if (jsonObject.has(Data.WORK_PROPERTY)) {
+				jsonObject.remove(Data.WORK_PROPERTY);
+			}
+			if (jsonObject.has(Data.ATTACHMENTLIST_PROPERTY)) {
+				jsonObject.remove(Data.ATTACHMENTLIST_PROPERTY);
+			}
+			jsonElement = jsonObject;
+		}
 		String[] parentPaths = new String[] { "", "", "", "", "", "", "", "" };
 		String[] cursorPaths = new String[] { "", "", "", "", "", "", "", "" };
 		for (int i = 0; i < paths.length - 1; i++) {

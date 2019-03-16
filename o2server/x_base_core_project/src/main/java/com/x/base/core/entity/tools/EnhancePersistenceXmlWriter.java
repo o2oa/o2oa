@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.persistence.Entity;
 import javax.persistence.MappedSuperclass;
 
+import org.apache.commons.io.FileUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -50,7 +51,11 @@ public class EnhancePersistenceXmlWriter {
 			}
 			OutputFormat format = OutputFormat.createPrettyPrint();
 			format.setEncoding("UTF-8");
-			XMLWriter writer = new XMLWriter(new FileWriter(new File(arg.getPath())), format);
+			File dir = new File(arg.getPath(), "target/classes/META-INF");
+			// File dir = new File(arg.getPath(), "src/main/resources/META-INF");
+			FileUtils.forceMkdir(dir);
+			File file = new File(dir, "persistence.xml");
+			XMLWriter writer = new XMLWriter(new FileWriter(file), format);
 			writer.write(document);
 			writer.close();
 			System.out.println("create enhance persistence.xml at path:" + arg.getPath());
@@ -68,18 +73,6 @@ public class EnhancePersistenceXmlWriter {
 			}
 			return list.stream().sorted(Comparator.comparing(Class::getName)).collect(Collectors.toList());
 		}
-//		FastClasspathScanner scanner = new FastClasspathScanner(Packages.PREFIX);
-//		ScanResult scanResult = scanner.scan();
-//		List<Class<?>> sortedList = new ArrayList<Class<?>>();
-//		for (String str : scanResult.getNamesOfClassesWithAnnotationsAnyOf(MappedSuperclass.class, Entity.class)) {
-//			sortedList.add(Class.forName(str));
-//		}
-//		Collections.sort(sortedList, new Comparator<Class<?>>() {
-//			public int compare(Class<?> c1, Class<?> c2) {
-//				return c1.getCanonicalName().compareTo(c2.getCanonicalName());
-//			}
-//		});
-//		return sortedList;
 	}
 
 	private static Set<Class<?>> scanMappedSuperclass(Class<?> clz) throws Exception {

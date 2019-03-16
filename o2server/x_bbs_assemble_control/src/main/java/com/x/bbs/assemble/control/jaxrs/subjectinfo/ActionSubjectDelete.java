@@ -12,6 +12,8 @@ import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectId
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectInfoProcess;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectNotExists;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectQueryById;
+import com.x.bbs.entity.BBSForumInfo;
+import com.x.bbs.entity.BBSSectionInfo;
 import com.x.bbs.entity.BBSSubjectInfo;
 
 public class ActionSubjectDelete extends BaseAction {
@@ -55,10 +57,11 @@ public class ActionSubjectDelete extends BaseAction {
 			wo.setId( id );
 			
 			ApplicationCache.notify( BBSSubjectInfo.class );
+			ApplicationCache.notify( BBSSectionInfo.class );
+			ApplicationCache.notify( BBSForumInfo.class );
 			
 			// 记录操作日志
-			operationRecordService.subjectOperation(effectivePerson.getDistinguishedName(), subjectInfo, "DELETE",
-					hostIp, hostName);
+			operationRecordService.subjectOperation(effectivePerson.getDistinguishedName(), subjectInfo, "DELETE", hostIp, hostName);
 		} catch (Exception e) {
 			check = false;
 			Exception exception = new ExceptionSubjectInfoProcess(e, "根据指定ID删除主题信息时发生异常.ID:" + id);

@@ -200,7 +200,7 @@ public class ActionListNextPageViewData extends BaseAction {
 						unitNames,
 						groupNames,
 						isManager,
-						viewableCatagories, wi.getDocumentType(), 5000);
+						viewableCatagories, wi.getDocumentType(), 500);
 				if( viewAbleDocIds == null ){
 					viewAbleDocIds = new ArrayList<>();
 				}

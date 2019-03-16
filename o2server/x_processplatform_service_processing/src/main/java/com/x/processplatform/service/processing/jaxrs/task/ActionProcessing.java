@@ -66,10 +66,13 @@ class ActionProcessing extends BaseAction {
 						if (null != work) {
 							WorkDataHelper workDataHelper = new WorkDataHelper(business.entityManagerContainer(), work);
 							data = workDataHelper.get();
+							ScriptHelper sh = ScriptHelperFactory.create(business, work, data, manual, task);
+							sh.eval(work.getApplication(), manual.getManualBeforeTaskScript(),
+									manual.getManualBeforeTaskScriptText());
+							if (workDataHelper.update(data)) {
+								emc.commit();
+							}
 						}
-						ScriptHelper sh = ScriptHelperFactory.create(business, work, data, manual);
-						sh.eval(work.getApplication(), manual.getManualBeforeTaskScript(),
-								manual.getManualBeforeTaskScriptText());
 					}
 				}
 			}
@@ -96,10 +99,13 @@ class ActionProcessing extends BaseAction {
 					if (null != work) {
 						WorkDataHelper workDataHelper = new WorkDataHelper(business.entityManagerContainer(), work);
 						data = workDataHelper.get();
+						ScriptHelper sh = ScriptHelperFactory.create(business, work, data, manual, taskCompleted);
+						sh.eval(work.getApplication(), manual.getManualAfterTaskScript(),
+								manual.getManualAfterTaskScriptText());
+						if (workDataHelper.update(data)) {
+							emc.commit();
+						}
 					}
-					ScriptHelper sh = ScriptHelperFactory.create(business, work, data, manual);
-					sh.eval(work.getApplication(), manual.getManualAfterTaskScript(),
-							manual.getManualAfterTaskScriptText());
 				}
 			}
 			MessageFactory.taskCompleted_create(taskCompleted);
@@ -128,6 +134,9 @@ class ActionProcessing extends BaseAction {
 		@FieldDescribe("最后是否触发work的流转,默认流转.")
 		private Boolean finallyProcessingWork;
 
+		@FieldDescribe("路由数据.")
+		private JsonElement routeData;
+
 		public ProcessingType getProcessingType() {
 			return processingType;
 		}
@@ -142,6 +151,14 @@ class ActionProcessing extends BaseAction {
 
 		public void setFinallyProcessingWork(Boolean finallyProcessingWork) {
 			this.finallyProcessingWork = finallyProcessingWork;
+		}
+
+		public JsonElement getRouteData() {
+			return routeData;
+		}
+
+		public void setRouteData(JsonElement routeData) {
+			this.routeData = routeData;
 		}
 
 	}

@@ -2,6 +2,7 @@ package com.x.bbs.assemble.control.jaxrs.replyinfo;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -11,6 +12,8 @@ import com.x.bbs.assemble.control.jaxrs.replyinfo.exception.ExceptionReplyIdEmpt
 import com.x.bbs.assemble.control.jaxrs.replyinfo.exception.ExceptionReplyInfoProcess;
 import com.x.bbs.assemble.control.jaxrs.replyinfo.exception.ExceptionReplyNotExists;
 import com.x.bbs.entity.BBSReplyInfo;
+import com.x.bbs.entity.BBSSectionInfo;
+import com.x.bbs.entity.BBSSubjectInfo;
 
 public class ActionDelete extends BaseAction {
 
@@ -54,8 +57,11 @@ public class ActionDelete extends BaseAction {
 			wo.setId( id );
 			result.setData( wo );
 			
-			operationRecordService.replyOperation(effectivePerson.getDistinguishedName(), replyInfo, "DELETE", hostIp,
-					hostName);
+			ApplicationCache.notify( BBSSubjectInfo.class );
+			ApplicationCache.notify( BBSReplyInfo.class );
+			ApplicationCache.notify( BBSSectionInfo.class );
+			
+			operationRecordService.replyOperation(effectivePerson.getDistinguishedName(), replyInfo, "DELETE", hostIp, hostName);
 		} catch (Exception e) {
 			check = false;
 			Exception exception = new ExceptionReplyInfoProcess(e, "根据指定ID删除回复信息时发生异常.ID:" + id);
