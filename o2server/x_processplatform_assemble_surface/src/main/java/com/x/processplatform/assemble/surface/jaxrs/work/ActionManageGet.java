@@ -5,6 +5,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.surface.Business;
@@ -28,7 +29,7 @@ class ActionManageGet extends BaseAction {
 			Application application = business.application().pick(work.getApplication());
 			// 需要对这个应用的管理权限
 			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
-				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			Wo wo = Wo.copier.copy(work);
 			/* 添加权限 */

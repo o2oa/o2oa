@@ -1,4 +1,4 @@
-package com.x.query.service.processing;
+package com.x.base.core.project.tools;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -34,6 +34,8 @@ public class ExtractTextTools {
 
 	private static Tika tika = null;
 
+	public static final Integer MAXLENGTH = 1024 * 1024 * 32;
+
 	public static boolean support(String name) {
 		String ext = StringUtils.substringAfterLast(name, ".");
 		if (StringUtils.isNotEmpty(ext)) {
@@ -43,8 +45,27 @@ public class ExtractTextTools {
 		return false;
 	}
 
-	public static final List<String> SUPPORT_TYPES = UnmodifiableList.unmodifiableList(
-			ListTools.toList(".doc", ".docx", ".pdf", ".xls", ".xlsx", ".txt", ".jpg", ".png", ".gif"));
+	public static boolean supportImage(String name) {
+		String ext = StringUtils.substringAfterLast(name, ".");
+		if (StringUtils.isNotEmpty(ext)) {
+			ext = "." + StringUtils.lowerCase(ext);
+			return SUPPORT_IMAGE_TYPES.contains(ext);
+		}
+		return false;
+	}
+
+	public static boolean available(byte[] bytes) {
+		if (null == bytes || bytes.length == 0 || bytes.length > MAXLENGTH) {
+			return false;
+		}
+		return true;
+	}
+
+	public static final List<String> SUPPORT_TYPES = UnmodifiableList.unmodifiableList(ListTools.toList(".doc", ".docx",
+			".pdf", ".xls", ".xlsx", ".txt", ".bmp", ".jpg", ".png", ".gif", ".jpeg", "jpe"));
+
+	public static final List<String> SUPPORT_IMAGE_TYPES = UnmodifiableList
+			.unmodifiableList(ListTools.toList(".bmp", ".jpg", ".png", ".gif", ".jpeg", "jpe"));
 
 	public static String extract(byte[] bytes, String name, Boolean office, Boolean pdf, Boolean txt, Boolean image) {
 		if ((null != bytes) && bytes.length > 0 && bytes.length < 1024 * 1024 * 10) {
@@ -68,7 +89,9 @@ public class ExtractTextTools {
 			}
 			if (image) {
 				if (StringUtils.endsWithIgnoreCase(name, ".jpg") || StringUtils.endsWithIgnoreCase(name, ".png")
-						|| StringUtils.endsWithIgnoreCase(name, ".gif")) {
+						|| StringUtils.endsWithIgnoreCase(name, ".gif") || StringUtils.endsWithIgnoreCase(name, ".bmp")
+						|| StringUtils.endsWithIgnoreCase(name, ".jpeg")
+						|| StringUtils.endsWithIgnoreCase(name, ".jpe")) {
 					return image(bytes);
 				}
 			}
@@ -115,12 +138,9 @@ public class ExtractTextTools {
 	}
 
 	public static String image(byte[] bytes) {
-		try {
-
-			try (ByteArrayInputStream in = new ByteArrayInputStream(bytes);) {
-				BufferedImage image = ImageIO.read(in);
-				return tesseractInstance().doOCR(image);
-			}
+		try (ByteArrayInputStream in = new ByteArrayInputStream(bytes)) {
+			BufferedImage image = ImageIO.read(in);
+			return tesseractInstance().doOCR(image);
 		} catch (Exception e) {
 			logger.error(e);
 		}
@@ -132,7 +152,7 @@ public class ExtractTextTools {
 			synchronized (ExtractTextTools.class) {
 				if (null == tesseract) {
 					tesseract = new Tesseract();
-					tesseract.setDatapath(Config.base() + "/commons/tess4j/tessdata");// 设置训练库的位置
+					tesseract.setDatapath(Config.dir_commons_tess4j_tessdata().getAbsolutePath());// 设置训练库的位置
 					tesseract.setLanguage(Config.query().getTessLanguage());// 中文识别
 				}
 			}

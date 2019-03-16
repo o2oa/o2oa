@@ -113,7 +113,7 @@ public class WorkAction extends StandardJaxrsAction {
 		ActionResult<ActionReroute.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionReroute().execute(effectivePerson, id, activityId,jsonElement);
+			result = new ActionReroute().execute(effectivePerson, id, activityId, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -133,6 +133,42 @@ public class WorkAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionRetract().execute(effectivePerson, id, workLogId);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "指定文件增加一个副本.", action = ActionAddSplit.class)
+	@PUT
+	@Path("{id}/add/split")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void addSplit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionAddSplit.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionAddSplit().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "回滚指定的工作到指定的workLog.", action = ActionCallback.class)
+	@PUT
+	@Path("{id}/callback")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void callback(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionCallback.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCallback().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

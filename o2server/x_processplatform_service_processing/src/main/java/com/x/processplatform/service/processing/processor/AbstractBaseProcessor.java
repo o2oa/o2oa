@@ -63,9 +63,6 @@ public abstract class AbstractBaseProcessor {
 	protected static String AIS = "afterInquireScript";
 	protected static String AIST = "afterInquireScriptText";
 
-	protected static String Binding_name_routes = "routes";
-	protected static String Binding_name_route = "route";
-
 	protected void arriveActivity(AeiObjects aeiObjects) throws Exception {
 		String token = aeiObjects.getWork().getActivityToken();
 		if (aeiObjects.getActivityProcessingConfigurator().getChangeActivityToken()) {
@@ -106,7 +103,8 @@ public abstract class AbstractBaseProcessor {
 
 	protected WorkLog stampArriveWorkLog(AeiObjects aeiObjects, String token, Date date) throws Exception {
 		WorkLog workLog = aeiObjects.getWorkLogs().stream()
-				.filter(o -> StringUtils.equals(aeiObjects.getWork().getActivityToken(), o.getFromActivityToken())
+				.filter(o -> StringUtils.equals(aeiObjects.getWork().getId(), o.getWork())
+						&& StringUtils.equals(aeiObjects.getWork().getActivityToken(), o.getFromActivityToken())
 						&& BooleanUtils.isNotTrue(o.getConnected()))
 				.findFirst().orElse(null);
 		if (null != workLog) {

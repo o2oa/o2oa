@@ -1,5 +1,7 @@
 package com.x.mind.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -8,6 +10,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
 import com.x.base.core.entity.JpaObject;
@@ -15,6 +18,7 @@ import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.tools.DateTools;
 
 /**
  * 脑图版本信息表
@@ -47,6 +51,10 @@ public class MindVersionInfo extends SliceJpaObject {
 	private String id = createId();
 
 	public void onPersist() throws Exception {
+		if( null == this.getCreateTime() ) {
+			this.setCreateTime( new Date() );
+		}
+		this.setSequence(StringUtils.join(DateTools.compact(this.getCreateTime()), this.getId()));
 	}
 	/*
 	 * =============================================================================

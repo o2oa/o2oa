@@ -37,9 +37,10 @@ public class CommandFactory {
 
 	public static final Pattern exit_pattern = Pattern.compile("^ {0,}exit {0,}$", Pattern.CASE_INSENSITIVE);
 
-	public static final Pattern update_pattern = Pattern.compile("^ {0,}update (.+)$", Pattern.CASE_INSENSITIVE);
+	public static final Pattern update_pattern = Pattern.compile("^ {0,}update (true|false) (true|false) (.+)$",
+			Pattern.CASE_INSENSITIVE);
 
-	public static final Pattern fastUpdate_pattern = Pattern.compile("^ {0,}fast update (.+)$",
+	public static final Pattern updateFile_pattern = Pattern.compile("^ {0,}update file (.+) (true|false) (.+)$",
 			Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern version_pattern = Pattern.compile("^ {0,}version {0,}$", Pattern.CASE_INSENSITIVE);
@@ -48,7 +49,7 @@ public class CommandFactory {
 			Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern erase_content_pattern = Pattern
-			.compile("^ {0,}erase content (pp|cms|log|report|bbs) (.+)$", Pattern.CASE_INSENSITIVE);
+			.compile("^ {0,}erase content (cms|pp|bbs|log) (.+)$", Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern compact_data_pattern = Pattern.compile("^ {0,}compact data (.+)$",
 			Pattern.CASE_INSENSITIVE);
@@ -114,17 +115,19 @@ public class CommandFactory {
 			help += StringUtils.LF;
 			help += " setPassword (oldpasswd) (newpasswd)" + "\t\t\t" + "change initial manager password.";
 			help += StringUtils.LF;
-			help += " version " + "\t\t\t\t\t\t" + "show available update version.";
+			help += " update (backup) (latest) (passwd)" + "\t\t\t" + "upgrade to new version.";
 			help += StringUtils.LF;
-			help += " update (passwd)" + "\t\t\t\t\t" + "upgrade to next version.";
+			help += " update file (path) (backup) (passwd)" + "\t\t\t" + "upgrade to new version from local zip file.";
 			help += StringUtils.LF;
 			help += " compact data (passwd)" + "\t\t\t\t\t" + "compact local h2 repository database.";
 			help += StringUtils.LF;
-			help += " erase content (cms|pp|bbs|log|report) (passwd)" + "\t\t" + "remove all data except design.";
+			help += " erase content (cms|pp|bbs|log) (passwd)" + "\t\t" + "remove all data except design.";
 			help += StringUtils.LF;
 			help += " create encrypt key" + "\t\t\t\t\t" + "create random RSA key.";
 			help += StringUtils.LF;
 			help += " show (os|cpu|memory|thread) interval repeat" + "\t\t" + "show operating system infomation.";
+			help += StringUtils.LF;
+			help += " version " + "\t\t\t\t\t\t" + "show available update version.";
 			help += StringUtils.LF;
 			help += " exit" + "\t\t\t\t\t\t\t" + "exit after stop.";
 			help += StringUtils.LF;
@@ -134,81 +137,7 @@ public class CommandFactory {
 		}
 	}
 
-//	public static void printHelpTable() {
-//		try {
-//			AsciiTable at = new AsciiTable();
-//			at.addRule();
-//			AT_Row row = at.addRow("command", "description");
-//			row.setTextAlignment(TextAlignment.CENTER);
-//			at.addRule();
-//			row = at.addRow("help", " show useage message");
-//			row.setPaddingLeft(1);
-//			at.addRule();
-//			row = at.addRow("start|stop [all]", "start stop all enable server");
-//			row.setPaddingLeft(1);
-//			at.addRule();
-//			row = at.addRow("start|stop data", "start stop data server");
-//			row.setPaddingLeft(1);
-//			at.addRule();
-//			row = at.addRow("start|stop storage", "start stop storage server");
-//			row.setPaddingLeft(1);
-//			at.addRule();
-//			row = at.addRow("start|stop center", "start stop center server");
-//			row.setPaddingLeft(1);
-//			at.addRule();
-//			row = at.addRow("start|stop application", "start stop application server");
-//			row.setPaddingLeft(1);
-//			at.addRule();
-//			row = at.addRow("start|stop web", "start stop web server");
-//			row.setPaddingLeft(1);
-//			at.addRule();
-//			row = at.addRow("dump data (passwd)", "dump data from database");
-//			row.setPaddingLeft(1);
-//			at.addRule();
-//			row = at.addRow("dump storage (passwd)", "dump storage from database,file");
-//			row.setPaddingLeft(1);
-//			at.addRule();
-//			row = at.addRow("restore data yyyyMMddHHmmss (passwd)", "restore data to database");
-//			row.setPaddingLeft(1);
-//			at.addRule();
-//			row = at.addRow("restore storage yyyyMMddHHmmss (passwd)", "restore storage to database,file");
-//			row.setPaddingLeft(1);
-//			at.addRule();
-//			row = at.addRow("setPassword (oldpasswd) (newpasswd)", "change initial manager password");
-//			row.setPaddingLeft(1);
-//			at.addRule();
-//			row = at.addRow("version", "show available update version");
-//			row.setPaddingLeft(1);
-//			at.addRule();
-//			row = at.addRow("update (passwd)", "upgrade to next version");
-//			row.setPaddingLeft(1);
-//			at.addRule();
-//			row = at.addRow("compact data (passwod)", "compact local h2 repository database");
-//			row.setPaddingLeft(1);
-//			at.addRule();
-//			row = at.addRow("erase content (cms|pp|bss|log|report) (passwd)", "remove all data except design");
-//			row.setPaddingLeft(1);
-//			at.addRule();
-//			row = at.addRow("create encrypt key", "create random RSA key");
-//			row.setPaddingLeft(1);
-//			at.addRule();
-//			row = at.addRow("exit", "exit after stop");
-//			row.setPaddingLeft(1);
-//			at.addRule();
-//			at.getRenderer().setCWC(new CWC_FixedWidth().add(48).add(38));
-//			System.out.println(at.render());
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-
 	private static void printStartImage() {
-//		try {
-//			String ascii = FigletFont.convertOneLine(Config.currentNode().getBanner());
-//			System.out.println(ascii);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
 		try {
 			File file = Config.startImage();
 			BufferedImage image = null;

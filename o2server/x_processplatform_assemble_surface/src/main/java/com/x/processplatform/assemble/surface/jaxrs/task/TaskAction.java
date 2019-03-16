@@ -35,6 +35,24 @@ public class TaskAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(TaskAction.class);
 
+	@JaxrsMethodDescribe(value = "根据job获取待办.", action = ActionListWithJob.class)
+	@GET
+	@Path("list/job/{job}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listNext(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("任务标识") @PathParam("job") String job) {
+		ActionResult<List<ActionListWithJob.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithJob().execute(effectivePerson, job);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
 	@JaxrsMethodDescribe(value = "列示当前用户创建的Task对象,下一页.", action = ActionListNext.class)
 	@GET
 	@Path("list/{id}/next/{count}")

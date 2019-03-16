@@ -23,6 +23,7 @@ public class ScriptingEngine {
 
 	private static final String distinguishedName = "distinguishedName";
 
+	public static final String BINDINGNAME_GSON = "gson";
 	public static final String BINDINGNAME_ORGANIZATION = "organization";
 	public static final String BINDINGNAME_WORKCONTEXT = "workContext";
 	public static final String BINDINGNAME_DATA = "data";
@@ -31,7 +32,14 @@ public class ScriptingEngine {
 	public static final String BINDINGNAME__LOOKUP = "lookup";
 	public static final String BINDINGNAME_APPLICATIONS = "applications";
 	public static final String BINDINGNAME_PARAMETER = "parameter";
+	public static final String BINDINGNAME_PARAMETERS = "parameters";
 	public static final String BINDINGNAME_EFFECTIVEPERSON = "effectivePerson";
+	public static final String BINDINGNAME_JAXRSRESPONSE = "jaxrsResponse";
+	public static final String BINDINGNAME_JAXWSRESPONSE = "jaxwsResponse";
+	public static final String BINDINGNAME_ROUTEDATA = "routeData";
+
+	public static final String BINDINGNAME_ROUTES = "routes";
+	public static final String BINDINGNAME_ROUTE = "route";
 
 	public ScriptingEngine(ScriptEngine scriptEngine) {
 		this.scriptEngine = scriptEngine;
@@ -78,14 +86,44 @@ public class ScriptingEngine {
 		this.scriptEngine.put(BINDINGNAME_APPLICATIONS, o);
 		return this;
 	}
-	
+
 	public ScriptingEngine bindingEffectivePerson(EffectivePerson effectivePerson) {
 		this.scriptEngine.put(BINDINGNAME_EFFECTIVEPERSON, effectivePerson);
 		return this;
 	}
 
+	public ScriptingEngine bindingJaxrsResponse(Object o) {
+		this.scriptEngine.put(BINDINGNAME_JAXRSRESPONSE, o);
+		return this;
+	}
+
+	public ScriptingEngine bindingJaxwsResponse(Object o) {
+		this.scriptEngine.put(BINDINGNAME_JAXWSRESPONSE, o);
+		return this;
+	}
+
 	public ScriptingEngine bindingParameter(Object o) {
 		this.scriptEngine.put(BINDINGNAME_PARAMETER, o);
+		return this;
+	}
+
+	public ScriptingEngine bindingParameters(Object o) {
+		this.scriptEngine.put(BINDINGNAME_PARAMETERS, o);
+		return this;
+	}
+
+	public ScriptingEngine bindingRouteData(String str) {
+		this.scriptEngine.put(BINDINGNAME_ROUTEDATA, str);
+		return this;
+	}
+
+	public ScriptingEngine bindingRoutes(Object o) {
+		this.scriptEngine.put(BINDINGNAME_ROUTES, o);
+		return this;
+	}
+
+	public ScriptingEngine bindingRoute(Object o) {
+		this.scriptEngine.put(BINDINGNAME_ROUTE, o);
 		return this;
 	}
 

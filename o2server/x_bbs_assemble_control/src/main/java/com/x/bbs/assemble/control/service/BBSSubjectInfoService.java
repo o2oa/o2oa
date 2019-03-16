@@ -95,6 +95,27 @@ public class BBSSubjectInfoService {
 		return subjectInfo;
 	}
 	
+	/**
+	 * 根据传入的ID从数据库查询BBSSubjectInfo对象
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	public void addViewCount( EntityManagerContainer emc, String id ) throws Exception {
+		if( id  == null || id.isEmpty() ){
+			throw new Exception( "id is null, return null!" );
+		}
+		BBSSubjectInfo subjectInfo = null;
+		subjectInfo = emc.find( id, BBSSubjectInfo.class );
+		if( subjectInfo != null ){
+			emc.beginTransaction( BBSSubjectInfo.class );
+			subjectInfo.setViewTotal( subjectInfo.getViewTotal() + 1 );
+			subjectInfo.setHot( subjectInfo.getHot() + 1 );
+			emc.check( subjectInfo, CheckPersistType.all );
+			emc.commit();
+		}
+	}
+	
 	
 	/**
 	 * 向数据库保存BBSSubjectInfo对象

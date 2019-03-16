@@ -15,7 +15,6 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -47,6 +46,25 @@ public class WorkAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionComplex().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据Work或workCompleted取得内容.", action = ActionGetWithWorkOrWorkCompleted.class)
+	@GET
+	@Path("workorworkcompleted/{workOrWorkCompleted}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getWithWorkOrWorkCompleted(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作或已完成工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted) {
+		ActionResult<ActionGetWithWorkOrWorkCompleted.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetWithWorkOrWorkCompleted().execute(effectivePerson, workOrWorkCompleted);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -445,6 +463,24 @@ public class WorkAction extends StandardJaxrsAction {
 			result = new ActionRetract().execute(effectivePerson, id);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "增加一个会签分支", action = ActionAddSplit.class)
+	@PUT
+	@Path("{id}/add/split")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void addSplit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionAddSplit.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionAddSplit().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));

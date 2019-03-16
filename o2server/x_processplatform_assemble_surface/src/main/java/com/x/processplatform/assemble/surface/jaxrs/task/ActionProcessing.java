@@ -2,7 +2,6 @@ package com.x.processplatform.assemble.surface.jaxrs.task;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,7 +43,8 @@ class ActionProcessing extends BaseAction {
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
-			Map<String, Object> requestAttributes = new HashMap<String, Object>();
+			ProcessingRequest processingRequest = new ProcessingRequest();
+			processingRequest.setRouteData(wi.getRouteData());
 			if (!StringUtils.equalsIgnoreCase(task.getPerson(), effectivePerson.getDistinguishedName())) {
 				throw new ExceptionAccessDenied(effectivePerson, task);
 			}
@@ -61,16 +61,7 @@ class ActionProcessing extends BaseAction {
 			emc.commit();
 			/* processing task */
 			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-					"task/" + URLEncoder.encode(task.getId(), DefaultCharset.name) + "/processing", requestAttributes);
-			/** 流程处理完毕,开始组装返回信息 */
-			// List<WorkLog> os = emc.list(WorkLog.class,
-			// business.workLog().listWithFromActivityTokenForwardNotConnected(task.getActivityToken()));
-			// List<Wo> wos = Wo.copier.copy(os);
-			// wos = business.workLog().sort(wos);
-			// for (Wo wo : wos) {
-			// wo.setTaskList(WoTask.copier.copy(business.task().listTask(wo)));
-			// wo.setTaskCompletedList(WoTaskCompleted.copier.copy(business.taskCompleted().listTaskCompleted(wo)));
-			// }
+					"task/" + URLEncoder.encode(task.getId(), DefaultCharset.name) + "/processing", processingRequest);
 			List<Wo> wos = this.referenceWorkLog(business, task);
 			result.setData(wos);
 			return result;
@@ -163,6 +154,20 @@ class ActionProcessing extends BaseAction {
 
 	}
 
+	public static class ProcessingRequest extends GsonPropertyObject {
+
+		private JsonElement routeData;
+
+		public JsonElement getRouteData() {
+			return routeData;
+		}
+
+		public void setRouteData(JsonElement routeData) {
+			this.routeData = routeData;
+		}
+
+	}
+
 	public static class Wi extends GsonPropertyObject {
 
 		@FieldDescribe("路由名称")
@@ -173,6 +178,9 @@ class ActionProcessing extends BaseAction {
 
 		@FieldDescribe("多媒体意见")
 		private String mediaOpinion;
+
+		@FieldDescribe("路由数据")
+		private JsonElement routeData;
 
 		public String getRouteName() {
 			return routeName;
@@ -196,6 +204,14 @@ class ActionProcessing extends BaseAction {
 
 		public void setMediaOpinion(String mediaOpinion) {
 			this.mediaOpinion = mediaOpinion;
+		}
+
+		public JsonElement getRouteData() {
+			return routeData;
+		}
+
+		public void setRouteData(JsonElement routeData) {
+			this.routeData = routeData;
 		}
 
 	}

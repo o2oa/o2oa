@@ -24,7 +24,7 @@
 					</execution>
 					<execution>
 						<id>createEnhancePersistenceXml</id>
-						<phase>generate-resources</phase>
+						<phase>process-classes</phase>
 					</execution>
 				</executions>
 			</plugin>
@@ -34,7 +34,7 @@
 				<executions>
 					<execution>
 						<id>enhancer</id>
-						<phase>process-classes</phase>
+						<phase>prepare-package</phase>
 					</execution>
 				</executions>
 			</plugin>

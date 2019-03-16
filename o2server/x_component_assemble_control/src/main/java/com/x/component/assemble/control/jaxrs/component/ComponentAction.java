@@ -52,15 +52,15 @@ public class ComponentAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "获取Component对象.", action = ActionGet.class)
 	@GET
-	@Path("{id}")
+	@Path("{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("id") String id) {
+			@PathParam("flag") String flag) {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGet().execute(effectivePerson, id);
+			result = new ActionGet().execute(effectivePerson, flag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -87,15 +87,15 @@ public class ComponentAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "更新Component对象.", action = ActionEdit.class)
 	@PUT
-	@Path("{id}")
+	@Path("{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void edit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("id") String id, JsonElement jsonElement) {
+			@PathParam("flag") String flag, JsonElement jsonElement) {
 		ActionResult<ActionEdit.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionEdit().execute(effectivePerson, id, jsonElement);
+			result = new ActionEdit().execute(effectivePerson, flag, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -105,15 +105,32 @@ public class ComponentAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "删除Component对象.", action = ActionDelete.class)
 	@DELETE
-	@Path("{id}")
+	@Path("{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@PathParam("id") String id) {
+			@PathParam("flag") String flag) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDelete().execute(effectivePerson, id);
+			result = new ActionDelete().execute(effectivePerson, flag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "删除所有Component,还原默认布局.", action = ActionDeleteAll.class)
+	@DELETE
+	@Path("delete/all")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteAll(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<ActionDeleteAll.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDeleteAll().execute(effectivePerson);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

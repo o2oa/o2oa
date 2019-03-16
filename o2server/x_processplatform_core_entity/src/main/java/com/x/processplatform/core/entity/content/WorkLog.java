@@ -26,6 +26,7 @@ import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ActivityType;
 
@@ -61,6 +62,15 @@ public class WorkLog extends SliceJpaObject {
 	}
 
 	/* 更新运行方法 */
+
+	public WorkLog() {
+
+	}
+
+	public WorkLog(WorkLog workLog) throws Exception {
+		WorkLog copy = XGsonBuilder.convert(workLog, WorkLog.class);
+		copy.copyTo(this, JpaObject.id_FIELDNAME);
+	}
 
 	public static final String job_FIELDNAME = "job";
 	@FieldDescribe("任务标识")
@@ -279,7 +289,7 @@ public class WorkLog extends SliceJpaObject {
 	public static final String splitTokenList_FIELDNAME = "splitTokenList";
 	@FieldDescribe("拆分工作产生的Token")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + splitTokenList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + splitTokenList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + splitTokenList_FIELDNAME)

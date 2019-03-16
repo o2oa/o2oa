@@ -86,7 +86,9 @@ public class ActionSubjectSubmitVoteResult extends BaseAction {
 			if ("投票".equals(subjectInfo.getTypeCategory())) {
 				try {
 					subjectVoteService.submitVoteResult(effectivePerson, subjectInfo, wrapIn.getOptionGroups());
+					
 					ApplicationCache.notify( BBSSubjectInfo.class );
+					
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new ExceptionSubjectOperation(e, "系统在保存投票选项信息时发生异常");

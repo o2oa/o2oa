@@ -15,7 +15,7 @@ public class DataMapping extends GsonPropertyObject {
 	private LogLevel enhanceLevel = LogLevel.WARN;
 	private LogLevel queryLevel = LogLevel.WARN;
 	private LogLevel sqlLevel = LogLevel.WARN;
-	private LogLevel jdbcLevel = LogLevel.WARN;
+	private LogLevel jdbcLevel = LogLevel.ERROR;
 
 	public String getUrl() {
 		return url;

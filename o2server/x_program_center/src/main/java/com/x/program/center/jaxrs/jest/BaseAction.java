@@ -127,7 +127,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		Map<String, WoAssemble> map = new HashMap<>();
 		for (Class<? extends AssembleA> o : listAssemble()) {
 			WoAssemble wrap = new WoAssemble();
-			Application application = ThisApplication.context().applications().randomWithWeight(o);
+			Application application = ThisApplication.context().applications().randomWithWeight(o.getName());
 			if (null != application) {
 				wrap.setContext(application.getContextPath());
 				if (this.isUndefindHost(application.getNode())) {
@@ -147,7 +147,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		Map<String, WoAssemble> map = new HashMap<>();
 		for (Class<? extends AssembleA> o : listAssemble()) {
 			WoAssemble wrap = new WoAssemble();
-			Application application = ThisApplication.context().applications().randomWithWeight(o);
+			Application application = ThisApplication.context().applications().randomWithWeight(o.getName());
 			if (null != application) {
 				wrap.setContext(application.getContextPath());
 				if (this.isUndefindHost(application.getProxyHost())) {

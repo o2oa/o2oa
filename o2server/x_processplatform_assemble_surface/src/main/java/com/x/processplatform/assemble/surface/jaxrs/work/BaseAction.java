@@ -281,11 +281,13 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 		private String position;
 
-		private ActivityType activityType;
+		// private ActivityType activityType;
 
 		private String resetRange;
 
 		private Integer resetCount;
+
+		private Boolean allowReset;
 
 		public String getName() {
 			return name;
@@ -319,13 +321,13 @@ abstract class BaseAction extends StandardJaxrsAction {
 			this.position = position;
 		}
 
-		public ActivityType getActivityType() {
-			return activityType;
-		}
-
-		public void setActivityType(ActivityType activityType) {
-			this.activityType = activityType;
-		}
+//		public ActivityType getActivityType() {
+//			return activityType;
+//		}
+//
+//		public void setActivityType(ActivityType activityType) {
+//			this.activityType = activityType;
+//		}
 
 		public String getId() {
 			return id;
@@ -349,6 +351,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 		public void setResetRange(String resetRange) {
 			this.resetRange = resetRange;
+		}
+
+		public Boolean getAllowReset() {
+			return allowReset;
+		}
+
+		public void setAllowReset(Boolean allowReset) {
+			this.allowReset = allowReset;
 		}
 
 	}
@@ -471,20 +481,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 		public static WrapCopier<Attachment, WoAttachment> copier = WrapCopierFactory.wo(Attachment.class,
 				WoAttachment.class, null, JpaObject.FieldsInvisible);
 
-		// private String contentType;
-		//
-		// public String getContentType() {
-		// return contentType;
-		// }
-		//
-		// public void setContentType(String contentType) {
-		// this.contentType = contentType;
-		// }
-		//
-		// public void contentType() throws Exception {
-		// this.contentType = Config.mimeTypes(this.getExtension());
-		// }
-
 	}
 
 	public static class WoControl extends GsonPropertyObject {
@@ -506,6 +502,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		private Boolean allowReroute;
 		/* 是否可以删除 */
 		private Boolean allowDelete;
+		/* 是否可以删除 */
+		private Boolean allowAddSplit;
 
 		public Boolean getAllowSave() {
 			return allowSave;
@@ -579,6 +577,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 			this.allowReadReset = allowReadReset;
 		}
 
+		public Boolean getAllowAddSplit() {
+			return allowAddSplit;
+		}
+
+		public void setAllowAddSplit(Boolean allowAddSplit) {
+			this.allowAddSplit = allowAddSplit;
+		}
+
 	}
 
 	public class WoForm extends Form {
@@ -629,6 +635,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				logger.error(e);
 			}
 		});
+
 		CompletableFuture<Void> future_reads = CompletableFuture.runAsync(() -> {
 			try {
 				List<Read> os = business.entityManagerContainer()
@@ -769,6 +776,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		control.setAllowReroute(false);
 		/** 工作是否可删除(管理员 或者 此活动在流程设计中允许删除且当前待办人是文件的创建者) */
 		control.setAllowDelete(false);
+		/** 是否可以添加拆分分支 */
+		control.setAllowAddSplit(false);
 		/** 设置allowVisit */
 		if ((t.getCurrentTaskIndex() > -1) || (t.getCurrentReadIndex() > -1) || (woTaskCompleteds.stream()
 				.filter(o -> StringUtils.equals(o.getPerson(), effectivePerson.getDistinguishedName())).count() > 0)
@@ -797,9 +806,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			control.setAllowSave(true);
 		}
 		/** 设置 allowReset */
-		if (Objects.equals(t.getActivity().getActivityType(), ActivityType.manual)
-				&& BooleanUtils
-						.isTrue((Boolean) PropertyUtils.getProperty(t.getActivity(), Manual.allowReset_FIELDNAME))
+		if (BooleanUtils.isTrue((Boolean) PropertyUtils.getProperty(t.getActivity(), Manual.allowReset_FIELDNAME))
 				&& (t.getCurrentTaskIndex() > -1)) {
 			control.setAllowReset(true);
 		}
@@ -848,10 +855,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 				control.setAllowReroute(true);
 			}
 		}
-		/** 设置 allowDelete */
-		if (business.canManageApplicationOrProcess(effectivePerson, application, process))
-
-		{
+		/* 设置 allowDelete */
+		if (business.canManageApplicationOrProcess(effectivePerson, application, process)) {
 			control.setAllowDelete(true);
 		} else if (Objects.equals(activity.getActivityType(), ActivityType.manual)
 				&& BooleanUtils.isTrue(activity.get(Manual.allowDeleteWork_FIELDNAME, Boolean.class))) {
@@ -860,13 +865,17 @@ abstract class BaseAction extends StandardJaxrsAction {
 				control.setAllowDelete(true);
 			}
 		}
+		/* 设置 allowAddSplit */
+		if (Objects.equals(activity.getActivityType(), ActivityType.manual)
+				&& BooleanUtils.isTrue(activity.get(Manual.allowAddSplit_FIELDNAME, Boolean.class))) {
+			control.setAllowAddSplit(true);
+		}
 		t.setControl(control);
 		return t;
 	}
 
 	private void arrangeWorkLog(Business business, AbstractWo wo, List<WoTaskCompleted> woTaskCompleteds,
 			List<WoReadCompleted> woReadCompleteds) throws Exception {
-
 		ListTools.groupStick(wo.getWorkLogList(), wo.getTaskList(), WorkLog.fromActivityToken_FIELDNAME,
 				Task.activityToken_FIELDNAME, "taskList");
 		ListTools.groupStick(wo.getWorkLogList(), woTaskCompleteds, WorkLog.fromActivityToken_FIELDNAME,

@@ -38,14 +38,14 @@ public class ActionUpdate extends ActionBase {
 
 	private static final String LATEST = "latest";
 
-	public boolean execute(String password, boolean backup, boolean toLatest) {
+	public boolean execute(String password, boolean backup, boolean latest) {
 		try {
 			this.init();
 			if (!StringUtils.equals(Config.token().getPassword(), password)) {
 				logger.print("password not mactch.");
 				return false;
 			}
-			WrapUpdateVersion wrapUpdateVersion = this.get(toLatest);
+			WrapUpdateVersion wrapUpdateVersion = this.get(latest);
 			if (StringUtils.equals(LATEST, wrapUpdateVersion.getVersion())) {
 				logger.print("already the latest version.");
 				return false;
@@ -67,21 +67,24 @@ public class ActionUpdate extends ActionBase {
 	}
 
 	private void backup() throws Exception {
-		File dir = new File(Config.base(), "local/backup");
-		FileUtils.forceMkdir(dir);
+		File dir = Config.dir_local_backup(true);
 		String tag = DateTools.compact(new Date());
 		File dest = new File(dir, tag + ".zip");
 		logger.print("backup current version to {}.", dest.getAbsolutePath());
 		List<File> files = new ArrayList<>();
-		files.add(new File(Config.base(), "commons"));
-		files.add(new File(Config.base(), "config"));
-		files.add(new File(Config.base(), "jvm"));
-		files.add(new File(Config.base(), "servers"));
-		files.add(new File(Config.base(), "store"));
+		files.add(Config.dir_commons());
+		files.add(Config.dir_config());
+		files.add(Config.dir_configSample());
+		files.add(Config.dir_localSample());
+		files.add(Config.dir_jvm());
+		files.add(Config.dir_servers());
+		files.add(Config.dir_store());
+		files.add(Config.dir_dynamic());
+		files.add(Config.dir_custom());
 		files.add(new File(Config.base(), "console.jar"));
 		files.add(new File(Config.base(), "index.html"));
 		files.add(new File(Config.base(), "version.o2"));
-		FileFilter fileFilter = new RegexFileFilter("^(start_|stop_)(aix|windows|linux|macos).(sh|bat)$");
+		FileFilter fileFilter = new RegexFileFilter("^(start_|stop_|console_)(aix|windows|linux|macos).(sh|bat)$");
 		for (File _f : new File(Config.base()).listFiles(fileFilter)) {
 			files.add(_f);
 		}
@@ -171,32 +174,5 @@ public class ActionUpdate extends ActionBase {
 		FileUtils.cleanDirectory(dir);
 		JarTools.unjar(file, "", dir, true);
 	}
-
-	// private byte[] getPack(String address) throws Exception {
-	// logger.print("download update pack form url: {}.", address);
-	// URL url = new URL(address);
-	//
-	// HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-	// connection.setUseCaches(false);
-	// connection.setRequestProperty("Content-Type",
-	// HttpMediaType.APPLICATION_JSON_UTF_8);
-	// connection.setRequestMethod("GET");
-	// connection.setDoOutput(false);
-	// connection.setDoInput(true);
-	// connection.connect();
-	// byte[] bytes;
-	// try (InputStream input = connection.getInputStream()) {
-	// bytes = IOUtils.toByteArray(input);
-	// }
-	// logger.print("download update pack completed.");
-	// return bytes;
-	// }
-
-	// private void unzip(byte[] bytes) throws Exception {
-	// File dir = new File(Config.base(), "local/update");
-	// FileUtils.forceMkdir(dir);
-	// FileUtils.cleanDirectory(dir);
-	// JarTools.unjar(bytes, "", dir, true);
-	// }
 
 }

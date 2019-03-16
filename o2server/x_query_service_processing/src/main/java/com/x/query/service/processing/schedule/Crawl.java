@@ -9,8 +9,8 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ExtractTextTools;
 import com.x.processplatform.core.entity.content.Attachment;
-import com.x.query.service.processing.ExtractTextTools;
 import com.x.query.service.processing.ThisApplication;
 import com.x.query.service.processing.helper.LanguageProcessingHelper;
 import com.x.query.service.processing.helper.LanguageProcessingHelper.Item;
@@ -31,15 +31,17 @@ public abstract class Crawl implements Job {
 	}
 
 	protected String text(StorageObject storageObject) throws Exception {
-		if (storageObject.getLength() < MAX_ATTACHMENT_BYTE_LENGTH) {
+		if ((null != storageObject.getLength()) && (storageObject.getLength() > 0)
+				&& (storageObject.getLength() < MAX_ATTACHMENT_BYTE_LENGTH)) {
 			if (ExtractTextTools.support(storageObject.getName())) {
 				try {
 					StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 							storageObject.getStorage());
 					if (null != mapping) {
+						/* 忽略设置强制不索引图片 */
 						return ExtractTextTools.extract(storageObject.readContent(mapping), storageObject.getName(),
 								Config.query().getExtractOffice(), Config.query().getExtractPdf(),
-								Config.query().getExtractText(), Config.query().getExtractImage());
+								Config.query().getExtractText(), false);
 					} else {
 						logger.print(
 								"storageMapping is null can not extract storageObject text, storageObject:{}, name:{}.",

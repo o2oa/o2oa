@@ -1,6 +1,5 @@
 package com.x.processplatform.core.entity.element;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -21,7 +20,6 @@ import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
 
-import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;

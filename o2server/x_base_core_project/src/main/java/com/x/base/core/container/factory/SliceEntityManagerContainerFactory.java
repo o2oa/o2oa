@@ -89,7 +89,7 @@ public abstract class SliceEntityManagerContainerFactory {
 			checkPersistFieldMap.put(clz, this.loadCheckPersistField(clz));
 			checkRemoveFieldMap.put(clz, this.loadCheckRemoveField(clz));
 			entityManagerFactoryMap.put(clz,
-					OpenJPAPersistence.createEntityManagerFactory(clz.getCanonicalName(), PERSISTENCE_XML_PATH));
+					OpenJPAPersistence.createEntityManagerFactory(clz.getName(), PERSISTENCE_XML_PATH));
 			List<Field> flagFields = new ArrayList<>();
 			List<Field> restrictFlagFields = new ArrayList<>();
 			for (Field o : FieldUtils.getFieldsListWithAnnotation(clz, Id.class)) {
@@ -112,9 +112,8 @@ public abstract class SliceEntityManagerContainerFactory {
 		Set<Class<? extends JpaObject>> classes = this.listUitClass(source);
 		for (Class<? extends JpaObject> clz : classes) {
 			checkPersistFieldMap.put(clz, this.loadCheckPersistField(clz));
-			checkRemoveFieldMap.put(clz, loadCheckRemoveField(clz));
-			entityManagerFactoryMap.put(clz,
-					OpenJPAPersistence.createEntityManagerFactory(clz.getCanonicalName(), source));
+			checkRemoveFieldMap.put(clz, this.loadCheckRemoveField(clz));
+			entityManagerFactoryMap.put(clz, OpenJPAPersistence.createEntityManagerFactory(clz.getName(), source));
 		}
 	}
 
@@ -140,10 +139,10 @@ public abstract class SliceEntityManagerContainerFactory {
 				unit.addAttribute("name", className);
 				unit.addAttribute("transaction-type", "RESOURCE_LOCAL");
 				Element provider = unit.addElement("provider");
-				provider.addText(PersistenceProviderImpl.class.getCanonicalName());
+				provider.addText(PersistenceProviderImpl.class.getName());
 				for (Class<?> o : JpaObjectTools.scanMappedSuperclass(clazz)) {
 					Element mapped_element = unit.addElement("class");
-					mapped_element.addText(o.getCanonicalName());
+					mapped_element.addText(o.getName());
 				}
 				Element slice_unit_properties = unit.addElement("properties");
 				for (Entry<String, String> entry : SlicePropertiesBuilder.getPropertiesDBCP(dataMappings.get(className))
@@ -224,7 +223,6 @@ public abstract class SliceEntityManagerContainerFactory {
 			if (null != checkPersist) {
 				map.put(fld, checkPersist);
 			}
-
 		}
 		return map;
 	}

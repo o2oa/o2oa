@@ -52,15 +52,6 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		return this.get(clz.getName());
 	}
 
-//	public void add(Class<?> applicationClass, Application application) throws Exception {
-//		CopyOnWriteArrayList<Application> list = this.get(applicationClass.getName());
-//		if (null == list) {
-//			list = new CopyOnWriteArrayList<Application>();
-//			this.put(applicationClass.getName(), list);
-//		}
-//		list.add(application);
-//	}
-
 	public void add(String className, Application application) throws Exception {
 		CopyOnWriteArrayList<Application> list = this.get(className);
 		if (null == list) {
@@ -70,120 +61,138 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		list.add(application);
 	}
 
-	public ActionResponse getQuery(Boolean xdebugger, Class<?> applicationClass, String uri) throws Exception {
-		Application application = this.randomWithWeight(applicationClass);
-		return CipherConnectionAction.get(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri));
-	}
-
 	public ActionResponse getQuery(Class<?> applicationClass, String uri) throws Exception {
-		return this.getQuery(false, applicationClass, uri);
+		return this.getQuery(false, applicationClass.getName(), uri);
 	}
 
-	public ActionResponse getQuery(Boolean xdebugger, Application application, String uri) throws Exception {
-		return CipherConnectionAction.get(xdebugger,
-				StringTools.JoinUrl(application.getUrlRoot(), CipherConnectionAction.trim(uri)));
+	public ActionResponse getQuery(Boolean xdebugger, Class<?> applicationClass, String uri) throws Exception {
+		return this.getQuery(xdebugger, applicationClass.getName(), uri);
 	}
 
 	public ActionResponse getQuery(Application application, String uri) throws Exception {
 		return this.getQuery(false, application, uri);
 	}
 
-	public ActionResponse getQuery(Boolean xdebugger, String applicationName, String uri) throws Exception {
-		Class<?> cls = Class.forName(Applications.class.getPackage().getName() + "." + applicationName);
-		return this.getQuery(xdebugger, cls, uri);
+	public ActionResponse getQuery(Boolean xdebugger, Application application, String uri) throws Exception {
+		return CipherConnectionAction.get(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri));
 	}
 
 	public ActionResponse getQuery(String applicationName, String uri) throws Exception {
-		Class<?> cls = Class.forName(Applications.class.getPackage().getName() + "." + applicationName);
-		return this.getQuery(false, cls, uri);
+		return getQuery(false, applicationName, uri);
 	}
 
-	public ActionResponse deleteQuery(Boolean xdebugger, Class<?> applicationClass, String uri) throws Exception {
-		Application application = this.randomWithWeight(applicationClass);
-		return CipherConnectionAction.delete(xdebugger,
-				StringTools.JoinUrl(application.getUrlRoot() + CipherConnectionAction.trim(uri)));
+	public ActionResponse getQuery(Boolean xdebugger, String applicationName, String uri) throws Exception {
+		String name = this.findApplicationName(applicationName);
+		if (StringUtils.isEmpty(name)) {
+			throw new Exception("getQuery can not find application with name:" + applicationName + ".");
+		}
+		Application application = this.randomWithWeight(name);
+		return CipherConnectionAction.get(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri));
 	}
 
 	public ActionResponse deleteQuery(Class<?> applicationClass, String uri) throws Exception {
-		return this.deleteQuery(false, applicationClass, uri);
+		return this.deleteQuery(false, applicationClass.getName(), uri);
 	}
 
-	public ActionResponse deleteQuery(Boolean xdebugger, Application application, String uri) throws Exception {
-		return CipherConnectionAction.delete(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri));
+	public ActionResponse deleteQuery(Boolean xdebugger, Class<?> applicationClass, String uri) throws Exception {
+		return this.deleteQuery(xdebugger, applicationClass.getName(), uri);
 	}
 
 	public ActionResponse deleteQuery(Application application, String uri) throws Exception {
 		return this.deleteQuery(false, application, uri);
 	}
 
-	public ActionResponse deleteQuery(Boolean xdebugger, String applicationName, String uri) throws Exception {
-		Class<?> cls = Class.forName(Applications.class.getPackage().getName() + "." + applicationName);
-		return this.deleteQuery(xdebugger, cls, uri);
+	public ActionResponse deleteQuery(Boolean xdebugger, Application application, String uri) throws Exception {
+		return CipherConnectionAction.delete(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri));
 	}
 
 	public ActionResponse deleteQuery(String applicationName, String uri) throws Exception {
-		Class<?> cls = Class.forName(Applications.class.getPackage().getName() + "." + applicationName);
-		return this.deleteQuery(false, cls, uri);
+		return deleteQuery(false, applicationName, uri);
 	}
 
-	public ActionResponse postQuery(Boolean xdebugger, Class<?> applicationClass, String uri, Object o)
+	public ActionResponse deleteQuery(Boolean xdebugger, String applicationName, String uri) throws Exception {
+		String name = this.findApplicationName(applicationName);
+		if (StringUtils.isEmpty(name)) {
+			throw new Exception("deleteQuery can not find application with name:" + applicationName + ".");
+		}
+		Application application = this.randomWithWeight(name);
+		return CipherConnectionAction.delete(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri));
+	}
+
+	public ActionResponse postQuery(Class<?> applicationClass, String uri, Object body) throws Exception {
+		return this.postQuery(false, applicationClass.getName(), uri, body);
+	}
+
+	public ActionResponse postQuery(Boolean xdebugger, Class<?> applicationClass, String uri, Object body)
 			throws Exception {
-		Application application = this.randomWithWeight(applicationClass);
-		return CipherConnectionAction.post(xdebugger,
-				StringTools.JoinUrl(application.getUrlRoot() + CipherConnectionAction.trim(uri)), o);
+		return this.postQuery(xdebugger, applicationClass.getName(), uri, body);
 	}
 
-	public ActionResponse postQuery(Class<?> applicationClass, String uri, Object o) throws Exception {
-		return this.postQuery(false, applicationClass, uri, o);
+	public ActionResponse postQuery(Application application, String uri, Object body) throws Exception {
+		return this.postQuery(false, application, uri, body);
 	}
 
-	public ActionResponse postQuery(Boolean xdebugger, Application application, String uri, Object o) throws Exception {
-		return CipherConnectionAction.post(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri), o);
-	}
-
-	public ActionResponse postQuery(Application application, String uri, Object o) throws Exception {
-		return this.postQuery(false, application, uri, o);
-	}
-
-	public ActionResponse postQuery(Boolean xdebugger, String applicationName, String uri, String body)
+	public ActionResponse postQuery(Boolean xdebugger, Application application, String uri, Object body)
 			throws Exception {
-		Class<?> cls = Class.forName(Applications.class.getPackage().getName() + "." + applicationName);
-		return this.postQuery(xdebugger, cls, uri, body);
+		return CipherConnectionAction.post(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri),
+				body);
 	}
 
 	public ActionResponse postQuery(String applicationName, String uri, String body) throws Exception {
-		Class<?> cls = Class.forName(Applications.class.getPackage().getName() + "." + applicationName);
-		return this.postQuery(false, cls, uri, body);
+		return this.postQuery(false, applicationName, uri, body);
 	}
 
-	public ActionResponse putQuery(Boolean xdebugger, Class<?> applicationClass, String uri, Object o)
+	public ActionResponse postQuery(Boolean xdebugger, String applicationName, String uri, Object body)
 			throws Exception {
-		Application application = this.randomWithWeight(applicationClass);
-		return CipherConnectionAction.put(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri), o);
+		String name = this.findApplicationName(applicationName);
+		if (StringUtils.isEmpty(name)) {
+			throw new Exception("postQuery can not find application with name:" + applicationName + ".");
+		}
+		Application application = this.randomWithWeight(name);
+		return CipherConnectionAction.post(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri),
+				body);
 	}
 
-	public ActionResponse putQuery(Class<?> applicationClass, String uri, Object o) throws Exception {
-		return this.putQuery(false, applicationClass, uri, o);
+	public ActionResponse putQuery(Class<?> applicationClass, String uri, Object body) throws Exception {
+		return this.putQuery(false, applicationClass.getName(), uri, body);
 	}
 
-	public ActionResponse putQuery(Boolean xdebugger, Application application, String uri, Object o) throws Exception {
+	public ActionResponse putQuery(Boolean xdebugger, Class<?> applicationClass, String uri, Object body)
+			throws Exception {
+		return this.putQuery(xdebugger, applicationClass.getName(), uri, body);
+	}
+
+	public ActionResponse putQuery(Application application, String uri, Object body) throws Exception {
+		return this.putQuery(false, application, uri, body);
+	}
+
+	public ActionResponse putQuery(Boolean xdebugger, Application application, String uri, Object body)
+			throws Exception {
 		return CipherConnectionAction.put(xdebugger,
-				StringTools.JoinUrl(application.getUrlRoot() + CipherConnectionAction.trim(uri)), o);
+				StringTools.JoinUrl(application.getUrlRoot() + CipherConnectionAction.trim(uri)), body);
 	}
 
-	public ActionResponse putQuery(Application application, String uri, Object o) throws Exception {
-		return this.putQuery(false, application, uri, o);
+	public ActionResponse putQuery(String applicationName, String uri, Object body) throws Exception {
+		return this.putQuery(false, applicationName, uri, body);
 	}
 
-	public ActionResponse putQuery(Boolean xdebugger, String applicationName, String uri, String body)
+	public ActionResponse putQuery(Boolean xdebugger, String applicationName, String uri, Object body)
 			throws Exception {
-		Class<?> cls = Class.forName(Applications.class.getPackage().getName() + "." + applicationName);
-		return this.putQuery(xdebugger, cls, uri, body);
+		String name = this.findApplicationName(applicationName);
+		if (StringUtils.isEmpty(name)) {
+			throw new Exception("putQuery can not find application with name:" + applicationName + ".");
+		}
+		Application application = this.randomWithWeight(name);
+		return CipherConnectionAction.put(xdebugger, application.getUrlRoot() + CipherConnectionAction.trim(uri), body);
 	}
 
-	public ActionResponse putQuery(String applicationName, String uri, String body) throws Exception {
-		Class<?> cls = Class.forName(Applications.class.getPackage().getName() + "." + applicationName);
-		return this.putQuery(false, cls, uri, body);
+	public String findApplicationName(String name) throws Exception {
+		for (String str : this.keySet()) {
+			if (StringUtils.equalsIgnoreCase(str, name) || StringUtils.endsWithIgnoreCase(str, "." + name)) {
+				return str;
+			}
+		}
+		return null;
 	}
 
 	public Application randomWithWeight(String className) throws Exception {
@@ -211,10 +220,6 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			}
 		}
 		throw new Exception("randomWithWeight error.");
-	}
-
-	public Application randomWithWeight(Class<?> clz) throws Exception {
-		return this.randomWithWeight(clz.getName());
 	}
 
 	public static String joinQueryUri(String... parts) {
