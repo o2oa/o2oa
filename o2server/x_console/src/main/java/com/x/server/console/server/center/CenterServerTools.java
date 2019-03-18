@@ -93,7 +93,10 @@ public class CenterServerTools extends JettySeverTools {
 		server.setStopAtShutdown(true);
 
 		server.start();
-		logger.print("center server start completed on port:{}.", centerServer.getPort());
+		System.out.println("****************************************");
+		System.out.println("* center server start completed.");
+		System.out.println("* port: " + centerServer.getPort() + ".");
+		System.out.println("****************************************");
 		return server;
 	}
 

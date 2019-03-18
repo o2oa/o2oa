@@ -68,7 +68,10 @@ public class StorageServerTools {
 		serverFactory.setUserManager(calculateUserManager(storageServer.getCalculatedAccounts()));
 		FtpServer server = serverFactory.createServer();
 		server.start();
-		logger.print("storage server start on port:{}.", storageServer.getPort());
+		System.out.println("****************************************");
+		System.out.println("* storage server start completed.");
+		System.out.println("* port: " + storageServer.getPort() + ".");
+		System.out.println("****************************************");
 		return server;
 	}
 
