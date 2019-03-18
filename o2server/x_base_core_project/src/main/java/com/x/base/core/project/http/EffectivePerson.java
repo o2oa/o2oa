@@ -129,8 +129,8 @@ public class EffectivePerson extends GsonPropertyObject {
 		return !this.isManager();
 	}
 
-	public boolean isUser(Collection<String> names) {
-		if (Objects.equals(TokenType.user, this.getTokenType())) {
+	public boolean isPerson(Collection<String> names) {
+		if (Objects.equals(TokenType.user, this.getTokenType())||Objects.equals(TokenType.manager, this.getTokenType())) {
 			if (null != names) {
 				List<String> list = new ArrayList<>(names);
 				if (list.contains(this.distinguishedName)) {
@@ -154,16 +154,16 @@ public class EffectivePerson extends GsonPropertyObject {
 		return false;
 	}
 
-	public boolean isUser(String... names) {
-		return this.isUser(Arrays.asList(names));
+	public boolean isPerson(String... names) {
+		return this.isPerson(Arrays.asList(names));
 	}
 
-	public boolean isNotUser(String... names) {
-		return !this.isUser(names);
+	public boolean isNotPerson(String... names) {
+		return !this.isPerson(names);
 	}
 
-	public boolean isNotUser(Collection<String> names) {
-		return !this.isUser(names);
+	public boolean isNotPerson(Collection<String> names) {
+		return !this.isPerson(names);
 	}
 
 	public String getToken() {

@@ -35,13 +35,13 @@ public class QueryViewFactory extends ElementFactory {
 				&& ListTools.isEmpty(queryView.getAvailablePersonList())) {
 			return true;
 		}
-		if (effectivePerson.isUser(queryView.getCreatorPerson())) {
+		if (effectivePerson.isPerson(queryView.getCreatorPerson())) {
 			return true;
 		}
 		if (effectivePerson.isManager()) {
 			return true;
 		}
-		if (effectivePerson.isUser(queryView.getControllerList())) {
+		if (effectivePerson.isPerson(queryView.getControllerList())) {
 			return true;
 		}
 		if (ListTools.isNotEmpty(queryView.getAvailablePersonList())) {
