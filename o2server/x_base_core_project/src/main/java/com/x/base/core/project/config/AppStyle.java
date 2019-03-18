@@ -101,6 +101,9 @@ public class AppStyle extends ConfigObject {
 		if (!this.nativeAppList.contains(NativeApp.nativeCalendar())) {
 			this.nativeAppList.add(NativeApp.nativeCalendar());
 		}
+		if (!this.nativeAppList.contains(NativeApp.nativeMindMap())) {
+			this.nativeAppList.add(NativeApp.nativeMindMap());
+		}
 		return this.nativeAppList;
 	}
 
@@ -436,6 +439,30 @@ public class AppStyle extends ConfigObject {
 			o.getiOS().setCategory("native");
 			o.getiOS().setSubcategory("coding");
 			o.getiOS().setStoryboard("checkin");
+			o.getiOS().setVcname("");
+			return o;
+		}
+
+//		"id": 12,
+//	    "key": "",
+//	    "name": "脑图",
+//	    "enable": true,
+//	    "iOS": {
+//	      "category": "native",
+//	      "subcategory": "coding",
+//	      "storyboard": "flutter",
+//	      "vcname": ""
+//	    }
+
+		public static NativeApp nativeMindMap() {
+			NativeApp o = new NativeApp();
+			o.setId(12);
+			o.setKey("mindMap");
+			o.setName("脑图");
+			o.setEnable(true);
+			o.getiOS().setCategory("native");
+			o.getiOS().setSubcategory("coding");
+			o.getiOS().setStoryboard("flutter");
 			o.getiOS().setVcname("");
 			return o;
 		}
