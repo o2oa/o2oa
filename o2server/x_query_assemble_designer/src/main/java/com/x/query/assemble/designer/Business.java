@@ -98,7 +98,7 @@ public class Business {
 			result = true;
 		}
 		if (!result && (null != o)) {
-			if (effectivePerson.isUser(o.getControllerList()) || effectivePerson.isUser(o.getCreatorPerson())) {
+			if (effectivePerson.isPerson(o.getControllerList()) || effectivePerson.isPerson(o.getCreatorPerson())) {
 				result = true;
 			}
 		}
@@ -117,8 +117,8 @@ public class Business {
 					result = true;
 				}
 				if (!result) {
-					if (effectivePerson.isUser(o.getEditPersonList())
-							|| effectivePerson.isUser(o.getReadPersonList())) {
+					if (effectivePerson.isPerson(o.getEditPersonList())
+							|| effectivePerson.isPerson(o.getReadPersonList())) {
 						result = true;
 					}
 					if (!result && (ListTools.isNotEmpty(o.getEditUnitList())
@@ -146,7 +146,7 @@ public class Business {
 			if (ListTools.isEmpty(o.getEditPersonList()) && ListTools.isEmpty(o.getEditUnitList())) {
 				result = true;
 				if (!result) {
-					if (effectivePerson.isUser(o.getEditPersonList())) {
+					if (effectivePerson.isPerson(o.getEditPersonList())) {
 						result = true;
 					}
 					if (!result && ListTools.isNotEmpty(o.getEditUnitList())) {
@@ -172,7 +172,7 @@ public class Business {
 				if (effectivePerson.isManager()
 						|| (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
 								OrganizationDefinition.QueryManager))
-						|| effectivePerson.isUser(o.getExecutePersonList())) {
+						|| effectivePerson.isPerson(o.getExecutePersonList())) {
 					result = true;
 				}
 				if ((!result) && ListTools.isNotEmpty(o.getExecuteUnitList())) {
