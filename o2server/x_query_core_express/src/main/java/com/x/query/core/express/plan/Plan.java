@@ -95,9 +95,13 @@ public abstract class Plan extends GsonPropertyObject {
 			@SuppressWarnings({ "rawtypes", "unchecked" })
 			public int compare(Row r1, Row r2) {
 				int comp = 0;
+				Object o1 = null;
+				Object o2 = null;
+				Comparable c1 = null;
+				Comparable c2 = null;
 				for (SelectEntry en : orderList) {
-					Object o1 = r1.get(en.column);
-					Object o2 = r2.get(en.column);
+					o1 = r1.get(en.column);
+					o2 = r2.get(en.column);
 					if (null == o1 && null == o2) {
 						comp = 0;
 					} else if (null == o1) {
@@ -105,8 +109,13 @@ public abstract class Plan extends GsonPropertyObject {
 					} else if (null == o2) {
 						comp = 1;
 					} else {
-						Comparable c1 = (Comparable) o1;
-						Comparable c2 = (Comparable) o2;
+						if (o1.getClass() == o2.getClass()) {
+							c1 = (Comparable) o1;
+							c2 = (Comparable) o2;
+						} else {
+							c1 = o1.toString();
+							c2 = o2.toString();
+						}
 						if (StringUtils.equals(SelectEntry.ORDER_ASC, en.orderType)) {
 							comp = c1.compareTo(c2);
 						} else {
