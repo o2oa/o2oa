@@ -18,4 +18,8 @@ public class ExceptionEntityNotExist extends PromptException {
 		super("标识为:{} 的 {} 对象不存在.", flag, name);
 	}
 
+	public <T extends JpaObject> ExceptionEntityNotExist(String flag) {
+		super("标识为:{} 的对象不存在.", flag);
+	}
+
 }
