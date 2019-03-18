@@ -75,7 +75,10 @@ public class WebServerTools extends JettySeverTools {
 		// MimeTypes mimeTypes = new MimeTypes();
 		// mimeTypes.addMimeMapping("wcss", "application/json;charset=utf-8");
 		context.setMimeTypes(Config.mimeTypes());
-		logger.print("web server start completed on port: {}.", webServer.getPort());
+		System.out.println("****************************************");
+		System.out.println("* web server start completed.");
+		System.out.println("* port: " + webServer.getPort() + ".");
+		System.out.println("****************************************");
 		return server;
 	}
 

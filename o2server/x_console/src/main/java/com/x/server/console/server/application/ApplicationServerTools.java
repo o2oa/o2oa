@@ -151,7 +151,10 @@ public class ApplicationServerTools extends JettySeverTools {
 		server.setStopAtShutdown(true);
 
 		server.start();
-		logger.print("application server start completed on port:{}.", applicationServer.getPort());
+		System.out.println("****************************************");
+		System.out.println("* application server start completed.");
+		System.out.println("* port: " + applicationServer.getPort() + ".");
+		System.out.println("****************************************");
 		return server;
 	}
 

@@ -39,8 +39,11 @@ public class DataServerTools {
 			webs[3] = webPort.toString();
 			webServer = Server.createWebServer(webs).start();
 		}
-		logger.print("data server start on port:{}, web console on port:{}.", dataServer.getTcpPort(),
-				dataServer.getWebPort());
+		System.out.println("****************************************");
+		System.out.println("* data server start completed.");
+		System.out.println("* port: " + dataServer.getTcpPort() + ".");
+		System.out.println("* web console port: " + dataServer.getWebPort() + ".");
+		System.out.println("****************************************");
 		return new DataTcpWebServer(tcpServer, webServer);
 	}
 }
