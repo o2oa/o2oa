@@ -35,14 +35,18 @@ class ActionListAll extends ActionBase {
 				List<Component> os = emc.listAll(Component.class);
 				if (os.isEmpty()) {
 					/* 一个模块都没有新建默认 */
-					emc.beginTransaction(Component.class);
-					for (String name : DEFAULT_COMPONENT_LIST) {
-						Component o = this.createComponent(name);
-						emc.persist(o, CheckPersistType.all);
-						os.add(o);
+					synchronized (ActionListAll.class) {
+						if (emc.listAll(Component.class).isEmpty()) {
+							emc.beginTransaction(Component.class);
+							for (String name : DEFAULT_COMPONENT_LIST) {
+								Component o = this.createComponent(name);
+								emc.persist(o, CheckPersistType.all);
+								os.add(o);
+							}
+							emc.commit();
+							ApplicationCache.notify(Component.class);
+						}
 					}
-					emc.commit();
-					ApplicationCache.notify(Component.class);
 				}
 				wos = Wo.copier.copy(os);
 				wos = wos.stream().sorted(

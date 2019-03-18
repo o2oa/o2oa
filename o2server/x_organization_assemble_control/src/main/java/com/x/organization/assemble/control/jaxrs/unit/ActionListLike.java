@@ -134,7 +134,7 @@ class ActionListLike extends BaseAction {
 		if (StringUtils.isEmpty(wi.getKey())) {
 			return wos;
 		}
-		List<String> unitIds = business.expendUnitToUnit(wi.getUnitList());
+		List<String> unitIds = business.expendUnitToUnit(ListTools.trim(wi.getUnitList(), true, true));
 		/** 去掉指定范围本身,仅包含下级 */
 		unitIds.removeAll(ListTools.extractProperty(business.unit().pick(wi.getUnitList()), JpaObject.id_FIELDNAME,
 				String.class, true, true));

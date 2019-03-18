@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -29,7 +31,8 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 			Business business = new Business(emc);
 
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted)) {
+			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
+					new ExceptionEntityNotExist(workOrWorkCompleted))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 
@@ -39,12 +42,15 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 			final String job = business.job().findWithWorkOrWorkCompleted(workOrWorkCompleted);
 
-			List<Wo> wos = this.list(business, job);
+			List<Wo> wos = new ArrayList<>();
 
-			for (Wo wo : wos) {
-				this.read(wo, identities, units);
-				this.edit(wo, identities, units);
-				this.control(wo, effectivePerson, identities, units);
+			for (Wo wo : this.list(business, job)) {
+				if (this.read(wo, identities, units)) {
+					wo.getControl().setAllowRead(true);
+					wo.getControl().setAllowEdit(this.edit(wo, identities, units));
+					wo.getControl().setAllowControl(this.control(wo, effectivePerson, identities, units));
+					wos.add(wo);
+				}
 			}
 
 			wos = wos.stream().sorted(Comparator.comparing(Wo::getCreateTime)).collect(Collectors.toList());
@@ -54,37 +60,48 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 		}
 	}
 
-	private void read(Wo wo, List<String> identities, List<String> units) throws Exception {
+	private boolean read(Wo wo, List<String> identities, List<String> units) throws Exception {
+		boolean value = false;
 		if (ListTools.isEmpty(wo.getReadIdentityList()) && ListTools.isEmpty(wo.getReadUnitList())) {
-			wo.getControl().setAllowRead(true);
+			value = true;
 		} else {
 			if (ListTools.containsAny(identities, wo.getReadIdentityList())
 					|| ListTools.containsAny(identities, wo.getReadUnitList())) {
-				wo.getControl().setAllowRead(true);
+				value = true;
 			}
 		}
+		wo.getControl().setAllowRead(value);
+		return value;
 	}
 
-	private void edit(Wo wo, List<String> identities, List<String> units) throws Exception {
+	private boolean edit(Wo wo, List<String> identities, List<String> units) throws Exception {
+		boolean value = false;
 		if (ListTools.isEmpty(wo.getEditIdentityList()) && ListTools.isEmpty(wo.getEditUnitList())) {
-			wo.getControl().setAllowEdit(true);
+			value = true;
 		} else {
 			if (ListTools.containsAny(identities, wo.getEditIdentityList())
 					|| ListTools.containsAny(identities, wo.getEditUnitList())) {
-				wo.getControl().setAllowEdit(true);
+				value = true;
 			}
 		}
+		return value;
 	}
 
-	private void control(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
+	private boolean control(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
 			throws Exception {
-		if (ListTools.containsAny(identities, wo.getControllerIdentityList())
-				|| ListTools.containsAny(identities, wo.getControllerUnitList())) {
-			wo.getControl().setAllowControl(true);
+		boolean value = false;
+		if (ListTools.isEmpty(wo.getControllerUnitList()) && ListTools.isEmpty(wo.getControllerIdentityList())) {
+			value = true;
+		} else {
+			if (ListTools.containsAny(identities, wo.getControllerIdentityList())
+					|| ListTools.containsAny(identities, wo.getControllerUnitList())) {
+				value = true;
+			}
 		}
-		if (effectivePerson.isUser(wo.getPerson())) {
-			wo.getControl().setAllowControl(true);
+		if (effectivePerson.isPerson(wo.getPerson())) {
+			value = true;
 		}
+		return value;
 	}
 
 	private List<Wo> list(Business business, String job) throws Exception {

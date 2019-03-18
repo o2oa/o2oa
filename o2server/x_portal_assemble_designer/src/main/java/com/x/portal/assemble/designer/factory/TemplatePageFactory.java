@@ -65,8 +65,8 @@ public class TemplatePageFactory extends AbstractFactory {
 		if (effectivePerson.isNotManager()
 				&& (!this.business().organization().person().hasRole(effectivePerson,
 						OrganizationDefinition.PortalManager))
-				&& (effectivePerson.isNotUser(o.getControllerList()))
-				&& effectivePerson.isNotUser(o.getCreatorPerson())) {
+				&& (effectivePerson.isNotPerson(o.getControllerList()))
+				&& effectivePerson.isNotPerson(o.getCreatorPerson())) {
 			return false;
 		}
 		return true;
@@ -111,10 +111,10 @@ public class TemplatePageFactory extends AbstractFactory {
 				OrganizationDefinition.PortalManager))) {
 			return true;
 		}
-		if (effectivePerson.isUser(o.getControllerList())) {
+		if (effectivePerson.isPerson(o.getControllerList())) {
 			return true;
 		}
-		if (effectivePerson.isUser(o.getCreatorPerson())) {
+		if (effectivePerson.isPerson(o.getCreatorPerson())) {
 			return true;
 		}
 

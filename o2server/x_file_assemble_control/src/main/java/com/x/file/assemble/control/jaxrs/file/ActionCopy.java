@@ -43,7 +43,7 @@ class ActionCopy extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionAttachmentNotExisted(attachmentId);
 			}
-			if (effectivePerson.isNotManager() && effectivePerson.isNotUser(attachment.getPerson())) {
+			if (effectivePerson.isNotManager() && effectivePerson.isNotPerson(attachment.getPerson())) {
 				throw new ExceptionAttachmentAccessDenied(effectivePerson.getDistinguishedName(), attachment.getName(),
 						attachment.getId());
 			}

@@ -2,6 +2,8 @@ package com.x.mind.assemble.control.jaxrs.folder;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -11,6 +13,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.mind.assemble.control.jaxrs.exception.ExceptionEntityCanNotDelete;
 import com.x.mind.assemble.control.jaxrs.exception.ExceptionFolderPersist;
 import com.x.mind.assemble.control.jaxrs.exception.ExceptionFolderWrapInConvert;
 import com.x.mind.entity.MindFolderInfo;
@@ -30,6 +33,13 @@ public class ActionFolderSave extends BaseAction {
 		Wo wo = new Wo();
 		MindFolderInfo mindFolderInfo = null;
 		Boolean check = true;
+		String creatorUnit = userManagerService.getUnitNameWithPerson(effectivePerson.getDistinguishedName());
+		
+		if( StringUtils.isEmpty( creatorUnit )) {
+			check = false;
+			Exception exception = new ExceptionEntityCanNotDelete("请为创建者分配组织后再进行此操作！");
+			result.error(exception);
+		}
 		
 		if( check ){
 			try {
@@ -49,7 +59,7 @@ public class ActionFolderSave extends BaseAction {
 		if( check ){
 			try {
 				wi.setCreator(effectivePerson.getDistinguishedName());
-				wi.setCreatorUnit(userManagerService.getUnitNameWithPerson(effectivePerson.getDistinguishedName()));
+				wi.setCreatorUnit( creatorUnit );
 				mindFolderInfo = mindFolderInfoService.save( Wi.copier.copy(wi) );
 				if( mindFolderInfo != null ) {
 					wo.setId(mindFolderInfo.getId());

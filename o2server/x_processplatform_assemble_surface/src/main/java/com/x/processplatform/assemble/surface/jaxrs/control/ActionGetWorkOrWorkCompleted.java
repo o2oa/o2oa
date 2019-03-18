@@ -3,16 +3,16 @@ package com.x.processplatform.assemble.surface.jaxrs.control;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.PropertyTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Read;
@@ -26,6 +26,7 @@ import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
+import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 
 class ActionGetWorkOrWorkCompleted extends BaseAction {
 
@@ -47,7 +48,8 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 
 			Business business = new Business(emc);
 
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted)) {
+			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
+					new ExceptionEntityNotExist(workOrWorkCompleted))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 
@@ -71,8 +73,9 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 		Wo wo = new Wo();
 		wo.setAllowVisit(true);
 		wo.setAllowReadProcessing(this.hasReadWithJob(business, effectivePerson, workCompleted.getJob()));
-		wo.setAllowRollback(this.canManageApplicationOrProcess(business, effectivePerson,
-				workCompleted.getApplication(), workCompleted.getProcess()));
+		wo.setAllowRollback(
+				this.canManageApplicationOrProcess(business, effectivePerson, workCompleted.getApplication(),
+						workCompleted.getProcess()) || BooleanUtils.isTrue(workCompleted.getAllowRollback()));
 		return wo;
 	}
 
@@ -106,29 +109,34 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 				&& wo.getAllowSave());
 
 		/* 是否可以增加会签分支 */
-		if (PropertyTools.getOrElse(activity, Manual.allowAddSplit_FIELDNAME, Boolean.class, false)) {
+		if (PropertyTools.getOrElse(activity, Manual.allowAddSplit_FIELDNAME, Boolean.class, false)
+				&& BooleanUtils.isTrue(work.getSplitting())) {
 			Node node = this.workLogTree(business, work.getJob()).location(work);
 			if (null != node) {
-				Node up = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice, ActivityType.delay,
-						ActivityType.embed, ActivityType.invoke);
-				if (null != up) {
-					wo.setAllowAddSplit(
-							this.hasTaskCompletedWithActivityToken(business, effectivePerson, work.getActivityToken())
-									&& BooleanUtils.isTrue(work.getSplitting()));
+				Nodes ups = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice, ActivityType.delay,
+						ActivityType.embed, ActivityType.invoke, ActivityType.parallel, ActivityType.split,
+						ActivityType.message);
+				for (Node o : ups) {
+					if (this.hasTaskCompletedWithActivityToken(business, effectivePerson,
+							o.getWorkLog().getFromActivityToken())) {
+						wo.setAllowAddSplit(true);
+						break;
+					}
 				}
 			}
 		}
 		/* 是否可以召回 */
-		if (PropertyTools.getOrElse(activity, Manual.allowRetract_FIELDNAME, Boolean.class, false)) {
+		if (PropertyTools.getOrElse(activity, Manual.allowRetract_FIELDNAME, Boolean.class, false) && this
+				.canManageApplicationOrProcess(business, effectivePerson, work.getApplication(), work.getProcess())) {
 			Node node = this.workLogTree(business, work.getJob()).location(work);
 			if (null != node) {
-				Node up = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice, ActivityType.delay,
+				Nodes ups = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice, ActivityType.delay,
 						ActivityType.embed, ActivityType.invoke);
-				if (null != up) {
-					wo.setAllowRetract(
-							this.hasTaskCompletedWithActivityToken(business, effectivePerson, work.getActivityToken())
-									&& this.canManageApplicationOrProcess(business, effectivePerson,
-											work.getApplication(), work.getProcess()));
+				for (Node o : ups) {
+					if (this.hasTaskCompletedWithActivityToken(business, effectivePerson, work.getActivityToken())) {
+						wo.setAllowRetract(true);
+						break;
+					}
 				}
 			}
 		}
@@ -174,9 +182,7 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 	private WorkLogTree workLogTree(Business business, String job) throws Exception {
 		if (null == this.workLogTree) {
 			this.workLogTree = new WorkLogTree(business.entityManagerContainer().fetchEqual(WorkLog.class,
-					ListTools.toList(WorkLog.arrivedActivityToken_FIELDNAME, WorkLog.arrivedActivityType_FIELDNAME,
-							WorkLog.fromActivityToken_FIELDNAME, WorkLog.fromActivityType_FIELDNAME),
-					WorkLog.job_FIELDNAME, job));
+					WorkLogTree.RELY_WORKLOG_ITEMS, WorkLog.job_FIELDNAME, job));
 		}
 		return this.workLogTree;
 	}

@@ -82,10 +82,10 @@ public class ApplicationFactory extends ElementFactory {
 			return true;
 		}
 		if (null != application) {
-			if (effectivePerson.isUser(application.getControllerList())) {
+			if (effectivePerson.isPerson(application.getControllerList())) {
 				return true;
 			}
-			if (effectivePerson.isUser(application.getCreatorPerson())) {
+			if (effectivePerson.isPerson(application.getCreatorPerson())) {
 				return true;
 			}
 		}

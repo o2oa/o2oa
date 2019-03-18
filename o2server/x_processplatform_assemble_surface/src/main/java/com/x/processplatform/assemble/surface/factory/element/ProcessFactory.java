@@ -178,7 +178,7 @@ public class ProcessFactory extends ElementFactory {
 		for (String str : ids) {
 			Process o = business.process().pick(str);
 			if (null != o) {
-				if (effectivePerson.isUser(o.getControllerList())) {
+				if (effectivePerson.isPerson(o.getControllerList())) {
 					list.add(str);
 				}
 			}

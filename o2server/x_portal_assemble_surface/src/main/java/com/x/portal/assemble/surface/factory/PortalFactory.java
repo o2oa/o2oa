@@ -56,10 +56,10 @@ public class PortalFactory extends AbstractFactory {
 				OrganizationDefinition.PortalManager)) {
 			return true;
 		}
-		if (effectivePerson.isUser(portal.getCreatorPerson())) {
+		if (effectivePerson.isPerson(portal.getCreatorPerson())) {
 			return true;
 		}
-		if (effectivePerson.isUser(portal.getControllerList())) {
+		if (effectivePerson.isPerson(portal.getControllerList())) {
 			return true;
 		}
 		if (ListTools.isEmpty(portal.getAvailableIdentityList(), portal.getAvailableUnitList())) {
