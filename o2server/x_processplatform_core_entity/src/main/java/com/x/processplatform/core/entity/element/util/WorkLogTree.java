@@ -1,12 +1,12 @@
 package com.x.processplatform.core.entity.element.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.collections4.list.TreeList;
+import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -19,49 +19,54 @@ public class WorkLogTree {
 
 	private Node root;
 
-	List<WorkLog> list;
+	public static List<String> RELY_WORKLOG_ITEMS = ListTools.toList(WorkLog.fromActivityToken_FIELDNAME,
+			WorkLog.arrivedActivityToken_FIELDNAME, WorkLog.fromActivityType_FIELDNAME,
+			WorkLog.arrivedActivityType_FIELDNAME, WorkLog.connected_FIELDNAME);
 
 	Nodes nodes = new Nodes();
 
 	public WorkLogTree(List<WorkLog> list) throws Exception {
-		this.list = new ArrayList<WorkLog>(list);
+
+		for (WorkLog o : list) {
+			this.nodes().add(new Node(o));
+		}
+
 		List<String> froms = ListTools.extractProperty(list, WorkLog.fromActivityToken_FIELDNAME, String.class, true,
 				true);
 		List<String> arriveds = ListTools.extractProperty(list, WorkLog.arrivedActivityToken_FIELDNAME, String.class,
 				true, true);
 		List<String> values = ListUtils.subtract(froms, arriveds);
-		List<WorkLog> begins = list.stream()
+		WorkLog begin = list.stream()
 				.filter(o -> BooleanUtils.isTrue(o.getConnected()) && values.contains(o.getFromActivityToken()))
-				.collect(Collectors.toList());
-		if (begins.size() != 1) {
-			throw new ExceptionBeginNotFound(begins.size());
+				.findFirst().orElse(null);
+		if (null == begin) {
+			throw new ExceptionBeginNotFound();
 		}
-		root = new Node();
-		root.workLog = begins.get(0);
-		root.parent = null;
-		this.nodes.add(root);
-		this.sub(root);
-	}
-
-	private void sub(Node node) {
-		node.children = new Nodes();
-		List<WorkLog> os = list.stream()
-				.filter(o -> StringUtils.equals(node.workLog.getArrivedActivityToken(), o.getFromActivityToken()))
-				.collect(Collectors.toList());
-		if (!os.isEmpty()) {
-			for (WorkLog o : os) {
-				list.remove(o);
-				Node child = new Node();
-				child.workLog = o;
-				child.parent = node;
-				node.children.add(child);
-				this.nodes.add(child);
-				sub(child);
-			}
+		root = this.find(begin);
+		for (Node o : nodes) {
+			this.associate();
 		}
 	}
 
-	public static class Nodes extends TreeList<Node> {
+	private void associate() {
+		for (Node node : nodes) {
+			this.nodes.stream().filter(
+					o -> StringUtils.equals(node.workLog.getFromActivityToken(), o.workLog.getArrivedActivityToken()))
+					.forEach(o -> {
+						node.parent.add(o);
+					});
+			this.nodes.stream().filter(
+					o -> StringUtils.equals(node.workLog.getArrivedActivityToken(), o.workLog.getFromActivityToken()))
+					.forEach(o -> {
+						node.children.add(o);
+					});
+		}
+
+	}
+
+	public static class Nodes extends ListOrderedSet<Node> {
+
+		private static final long serialVersionUID = 4612771613796262398L;
 
 		public boolean onlyManual() {
 			return true;
@@ -76,22 +81,62 @@ public class WorkLogTree {
 			return false;
 		}
 
+		public boolean containsWorkLogWithActivityToken(String activityToken) {
+			for (Node n : this) {
+				if (Objects.equals(n.getWorkLog().getArrivedActivityToken(), activityToken)) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public Date latestArrivedTime() {
+			Date date = null;
+			if (!this.isEmpty()) {
+				for (Node n : this) {
+					if (null != n.getWorkLog().getArrivedTime()) {
+						if (null == date) {
+							date = n.getWorkLog().getArrivedTime();
+						} else {
+							date = n.getWorkLog().getArrivedTime().after(date) ? n.getWorkLog().getArrivedTime() : date;
+						}
+					}
+				}
+			}
+			return date;
+		}
 	}
 
 	public static class Node {
 
+		public Node(WorkLog workLog) {
+			this.workLog = workLog;
+		}
+
 		private WorkLog workLog;
-		private Node parent;
+		private Nodes parent = new Nodes();
 		private Nodes children = new Nodes();
 
-		public Node upTo(ActivityType activityType, ActivityType... pass) {
-			Node p = this.parent;
-			List<ActivityType> passActivityTypes = ListTools.toList(pass);
-			while ((p != null) && (!Objects.equals(p.workLog.getArrivedActivityType(), activityType))
-					&& ListTools.contains(passActivityTypes, p.workLog.getFromActivityType())) {
-				p = p.parent;
+		public Nodes upTo(ActivityType activityType, ActivityType... pass) {
+			return this.upTo(activityType, ListTools.toList(pass));
+		}
+
+		public Nodes upTo(ActivityType activityType, List<ActivityType> pass) {
+			Nodes result = new Nodes();
+			this.upTo(activityType, pass, result);
+			return result;
+		}
+
+		private void upTo(ActivityType activityType, List<ActivityType> pass, Nodes result) {
+			for (Node o : this.parent) {
+				if (Objects.equals(o.workLog.getFromActivityType(), activityType)) {
+					result.add(o);
+				} else {
+					if (ListTools.contains(pass, o.workLog.getFromActivityType())) {
+						o.upTo(activityType, pass, result);
+					}
+				}
 			}
-			return p;
 		}
 
 		public WorkLog getWorkLog() {
@@ -150,12 +195,16 @@ public class WorkLogTree {
 	}
 
 	public Nodes up(Node node) {
-		Nodes nodes = new Nodes();
-		if (null != node.parent) {
-			nodes.add(node.parent);
-			nodes.addAll(up(node.parent));
+		Nodes result = new Nodes();
+		this.up(node, result);
+		return result;
+	}
+
+	private void up(Node node, Nodes result) {
+		for (Node o : node.parent) {
+			result.add(o);
+			up(o, result);
 		}
-		return nodes;
 	}
 
 	public Node find(WorkLog workLog) {

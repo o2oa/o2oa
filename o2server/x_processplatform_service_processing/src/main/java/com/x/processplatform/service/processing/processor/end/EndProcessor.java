@@ -51,6 +51,7 @@ public class EndProcessor extends AbstractEndProcessor {
 				.sorted(Comparator.comparing(Work::getCreateTime, Comparator.nullsLast(Date::compareTo))).findFirst()
 				.get();
 		WorkCompleted workCompleted = this.createWorkCompleted(oldest);
+		workCompleted.setAllowRollback(end.getAllowRollback());
 		aeiObjects.getCreateWorkCompleteds().add(workCompleted);
 		aeiObjects.getTasks().stream().forEach(o -> aeiObjects.getDeleteTasks().add(o));
 		aeiObjects.getHints().stream().forEach(o -> aeiObjects.getDeleteHints().add(o));

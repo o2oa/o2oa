@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -22,25 +23,16 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.ReadCompleted;
-import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
-import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.entity.element.ActivityType;
 
-class ActionListWithWorkOrWorkCompleted extends BaseAction {
+class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompleted.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionListRollbackWithWorkOrWorkCompleted.class);
 
-	private final static String taskList_FIELDNAME = "taskList";
 	private final static String taskCompletedList_FIELDNAME = "taskCompletedList";
-	private final static String readList_FIELDNAME = "readList";
-	private final static String readCompletedList_FIELDNAME = "readCompletedList";
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -55,49 +47,20 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 			final String job = business.job().findWithWorkOrWorkCompleted(workOrWorkCompleted);
 
-			CompletableFuture<List<WoTask>> future_tasks = CompletableFuture.supplyAsync(() -> {
-				return this.tasks(business, job);
-			});
 			CompletableFuture<List<WoTaskCompleted>> future_taskCompleteds = CompletableFuture.supplyAsync(() -> {
 				return this.taskCompleteds(business, job);
 			});
-			CompletableFuture<List<WoRead>> future_reads = CompletableFuture.supplyAsync(() -> {
-				return this.reads(business, job);
-			});
-			CompletableFuture<List<WoReadCompleted>> future_readCompleteds = CompletableFuture.supplyAsync(() -> {
-				return this.readCompleteds(business, job);
-			});
+
 			CompletableFuture<List<Wo>> future_workLogs = CompletableFuture.supplyAsync(() -> {
 				return this.workLogs(business, job);
 			});
-			List<WoTask> tasks = future_tasks.get();
 			List<WoTaskCompleted> taskCompleteds = future_taskCompleteds.get();
-			List<WoRead> reads = future_reads.get();
-			List<WoReadCompleted> readCompleteds = future_readCompleteds.get();
 			List<Wo> wos = future_workLogs.get();
-			ListTools.groupStick(wos, tasks, WorkLog.fromActivityToken_FIELDNAME, Task.activityToken_FIELDNAME,
-					taskList_FIELDNAME);
 			ListTools.groupStick(wos, taskCompleteds, WorkLog.fromActivityToken_FIELDNAME,
 					TaskCompleted.activityToken_FIELDNAME, taskCompletedList_FIELDNAME);
-			ListTools.groupStick(wos, reads, WorkLog.fromActivityToken_FIELDNAME, Read.activityToken_FIELDNAME,
-					readList_FIELDNAME);
-			ListTools.groupStick(wos, readCompleteds, WorkLog.fromActivityToken_FIELDNAME,
-					ReadCompleted.activityToken_FIELDNAME, readCompletedList_FIELDNAME);
 			result.setData(wos);
 			return result;
 		}
-	}
-
-	private List<WoTask> tasks(Business business, String job) {
-		List<WoTask> os = new ArrayList<>();
-		try {
-			os = business.entityManagerContainer().fetchEqual(Task.class, WoTask.copier, WoTask.job_FIELDNAME, job)
-					.stream().sorted(Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Date::compareTo)))
-					.collect(Collectors.toList());
-		} catch (Exception e) {
-			logger.error(e);
-		}
-		return os;
 	}
 
 	private List<WoTaskCompleted> taskCompleteds(Business business, String job) {
@@ -113,38 +76,14 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 		return os;
 	}
 
-	private List<WoRead> reads(Business business, String job) {
-		List<WoRead> os = new ArrayList<>();
-		try {
-			os = business.entityManagerContainer().fetchEqual(Read.class, WoRead.copier, Read.job_FIELDNAME, job)
-					.stream().sorted(Comparator.comparing(Read::getStartTime, Comparator.nullsLast(Date::compareTo)))
-					.collect(Collectors.toList());
-		} catch (Exception e) {
-			logger.error(e);
-		}
-		return os;
-	}
-
-	private List<WoReadCompleted> readCompleteds(Business business, String job) {
-		List<WoReadCompleted> os = new ArrayList<>();
-		try {
-			os = business.entityManagerContainer()
-					.fetchEqual(ReadCompleted.class, WoReadCompleted.copier, ReadCompleted.job_FIELDNAME, job).stream()
-					.sorted(Comparator.comparing(ReadCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
-					.collect(Collectors.toList());
-		} catch (Exception e) {
-			logger.error(e);
-		}
-		return os;
-	}
-
 	private List<Wo> workLogs(Business business, String job) {
 		List<Wo> os = new ArrayList<>();
 		try {
-			os = business.entityManagerContainer().fetchEqual(WorkLog.class, Wo.copier, WorkLog.job_FIELDNAME, job);
-			return os.stream()
-					.sorted(Comparator.comparing(Wo::getFromTime, Comparator.nullsLast(Date::compareTo))
-							.thenComparing(Wo::getArrivedTime, Comparator.nullsLast(Date::compareTo)))
+			os = business.entityManagerContainer().fetchEqual(WorkLog.class, Wo.copier, WorkLog.job_FIELDNAME, job)
+					.stream()
+					.filter(o -> (!BooleanUtils.isTrue(o.getSplitting()))
+							&& (Objects.equals(o.getArrivedActivityType(), ActivityType.manual)))
+					.sorted(Comparator.comparing(WorkLog::getCreateTime, Comparator.nullsLast(Date::compareTo)))
 					.collect(Collectors.toList());
 		} catch (Exception e) {
 			logger.error(e);
@@ -209,17 +148,6 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 	}
 
-	public static class WoTask extends Task {
-
-		private static final long serialVersionUID = 293599148568443301L;
-
-		static WrapCopier<Task, WoTask> copier = WrapCopierFactory.wo(Task.class, WoTask.class,
-				ListTools.toList(Task.id_FIELDNAME, Task.person_FIELDNAME, Task.unit_FIELDNAME,
-						Task.routeName_FIELDNAME, Task.opinion_FIELDNAME, Task.startTime_FIELDNAME,
-						Task.activityName_FIELDNAME, Task.activityToken_FIELDNAME),
-				null);
-	}
-
 	public static class WoTaskCompleted extends TaskCompleted {
 
 		private static final long serialVersionUID = -4432508672641778924L;
@@ -231,29 +159,6 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 						TaskCompleted.opinion_FIELDNAME, TaskCompleted.startTime_FIELDNAME,
 						TaskCompleted.activityName_FIELDNAME, TaskCompleted.completedTime_FIELDNAME,
 						Task.activityToken_FIELDNAME),
-				null);
-	}
-
-	public static class WoRead extends Read {
-
-		private static final long serialVersionUID = -7243683008987722267L;
-
-		static WrapCopier<Read, WoRead> copier = WrapCopierFactory.wo(Read.class, WoRead.class,
-				ListTools.toList(Read.id_FIELDNAME, Read.person_FIELDNAME, Read.unit_FIELDNAME, Read.opinion_FIELDNAME,
-						Read.startTime_FIELDNAME, Read.activityName_FIELDNAME, Task.activityToken_FIELDNAME),
-				null);
-	}
-
-	public static class WoReadCompleted extends ReadCompleted {
-
-		private static final long serialVersionUID = -7086077858353505033L;
-
-		static WrapCopier<ReadCompleted, WoReadCompleted> copier = WrapCopierFactory.wo(ReadCompleted.class,
-				WoReadCompleted.class,
-				ListTools.toList(ReadCompleted.id_FIELDNAME, ReadCompleted.person_FIELDNAME,
-						ReadCompleted.unit_FIELDNAME, ReadCompleted.opinion_FIELDNAME,
-						ReadCompleted.startTime_FIELDNAME, ReadCompleted.activityName_FIELDNAME,
-						ReadCompleted.completedTime_FIELDNAME, Task.activityToken_FIELDNAME),
 				null);
 	}
 

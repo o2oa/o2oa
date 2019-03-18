@@ -3,7 +3,7 @@ package com.x.processplatform.core.entity.element;
 import com.x.base.core.entity.JpaObject;
 
 public enum ActivityType {
-	agent, begin, cancel, choice, condition, delay, end, embed, invoke, manual, merge, message, parallel, service, split;
+	agent, begin, cancel, choice, delay, end, embed, invoke, manual, merge, message, parallel, service, split;
 
 	public static final int length = JpaObject.length_16B;
 

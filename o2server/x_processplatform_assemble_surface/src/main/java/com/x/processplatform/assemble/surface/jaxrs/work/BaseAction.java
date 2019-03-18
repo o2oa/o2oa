@@ -786,7 +786,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 						.count() > 0)
 				|| (reviewCount > 0)) {
 			control.setAllowVisit(true);
-		} else if (effectivePerson.isUser(work.getCreatorPerson())) {
+		} else if (effectivePerson.isPerson(work.getCreatorPerson())) {
 			control.setAllowVisit(true);
 		} else if (business.canManageApplicationOrProcess(effectivePerson, application, process)) {
 			control.setAllowVisit(true);
@@ -847,10 +847,10 @@ abstract class BaseAction extends StandardJaxrsAction {
 					OrganizationDefinition.ProcessPlatformManager)) {
 				/** 有流程管理角色的可以 */
 				control.setAllowReroute(true);
-			} else if ((null != process) && effectivePerson.isUser(process.getControllerList())) {
+			} else if ((null != process) && effectivePerson.isPerson(process.getControllerList())) {
 				/** 如果是流程的管理员那么可以调度 */
 				control.setAllowReroute(true);
-			} else if ((null != application) && effectivePerson.isUser(application.getControllerList())) {
+			} else if ((null != application) && effectivePerson.isPerson(application.getControllerList())) {
 				/** 如果是应用的管理员那么可以调度 */
 				control.setAllowReroute(true);
 			}

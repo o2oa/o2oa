@@ -53,12 +53,32 @@ public class WorkLogAction extends StandardJaxrsAction {
 	@Path("list/workorworkcompleted/{workOrWorkCompleted}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithWork(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void listWithWorkOrWorkCompleted(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作或已完成工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted) {
 		ActionResult<List<ActionListWithWorkOrWorkCompleted.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionListWithWorkOrWorkCompleted().execute(effectivePerson, workOrWorkCompleted);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "获取工作或完成工作可回滚的工作日志.", action = ActionListRollbackWithWorkOrWorkCompleted.class)
+	@GET
+	@Path("list/rollback/workorworkcompleted/{workOrWorkCompleted}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listRollbackWithWorkOrWorkCompleted(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作或已完成工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted) {
+		ActionResult<List<ActionListRollbackWithWorkOrWorkCompleted.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListRollbackWithWorkOrWorkCompleted().execute(effectivePerson, workOrWorkCompleted);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

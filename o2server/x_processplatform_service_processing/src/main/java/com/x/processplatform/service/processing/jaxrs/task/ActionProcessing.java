@@ -13,6 +13,7 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -52,10 +53,10 @@ class ActionProcessing extends BaseAction {
 			ActionResult<Wo> result = new ActionResult<>();
 			Task task = emc.find(id, Task.class);
 			if (null == task) {
-				throw new ExceptionTaskNotExist(id);
+				throw new ExceptionEntityNotExist(id, Task.class);
 			}
 			Manual manual = null;
-			/** 执行办前脚本 */
+			/* 执行办前脚本 */
 			if (Objects.equals(task.getActivityType(), ActivityType.manual)) {
 				manual = business.element().get(task.getActivity(), Manual.class);
 				if (null != manual) {
@@ -90,7 +91,7 @@ class ActionProcessing extends BaseAction {
 			emc.persist(taskCompleted, CheckPersistType.all);
 			emc.remove(task, CheckRemoveType.all);
 			emc.commit();
-			/** 待办执行后脚本 */
+			/* 待办执行后脚本 */
 			if (null != manual) {
 				if (StringUtils.isNotEmpty(manual.getManualAfterTaskScript())
 						|| StringUtils.isNotEmpty(manual.getManualAfterTaskScriptText())) {

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -32,6 +33,24 @@ import com.x.base.core.project.logger.LoggerFactory;
 public class TaskAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(TaskAction.class);
+
+	@JaxrsMethodDescribe(value = "抢办.", action = ActionGrab.class)
+	@GET
+	@Path("{id}/grab")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void grab(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+		ActionResult<ActionGrab.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGrab().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
 
 	@JaxrsMethodDescribe(value = "保存并继续流转.", action = ActionProcessing.class)
 	@PUT

@@ -52,7 +52,7 @@ class ActionCreate extends BaseAction {
 			if ((effectivePerson.isNotManager())
 					&& (!business.organization().person().hasRole(effectivePerson,
 							OrganizationDefinition.ProcessPlatformManager, OrganizationDefinition.Manager))
-					&& effectivePerson.isNotUser(application.getControllerList())) {
+					&& effectivePerson.isNotPerson(application.getControllerList())) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			emc.beginTransaction(Item.class);

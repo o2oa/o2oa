@@ -14,12 +14,14 @@ import com.x.processplatform.service.processing.jaxrs.task.TaskAction;
 import com.x.processplatform.service.processing.jaxrs.taskcompleted.TaskCompletedAction;
 import com.x.processplatform.service.processing.jaxrs.test.TestAction;
 import com.x.processplatform.service.processing.jaxrs.work.WorkAction;
+import com.x.processplatform.service.processing.jaxrs.workcompleted.WorkCompletedAction;
 
 @ApplicationPath("jaxrs")
 public class ActionApplication extends AbstractActionApplication {
 
 	public Set<Class<?>> getClasses() {
 		classes.add(WorkAction.class);
+		classes.add(WorkCompletedAction.class);
 		classes.add(JobAction.class);
 		classes.add(TaskAction.class);
 		classes.add(TaskCompletedAction.class);

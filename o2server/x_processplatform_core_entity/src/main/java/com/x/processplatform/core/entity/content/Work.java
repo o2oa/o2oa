@@ -84,6 +84,12 @@ public class Work extends SliceJpaObject {
 		copy.copyTo(this, JpaObject.id_FIELDNAME);
 	}
 
+	public Work(WorkCompleted workCompleted) throws Exception {
+		Work copy = XGsonBuilder.convert(workCompleted, Work.class);
+		copy.copyTo(this, JpaObject.id_FIELDNAME);
+		this.setId(workCompleted.getWork());
+	}
+
 	public void setTitle(String title) {
 		if (StringTools.utf8Length(title) > length_255B) {
 			this.title = StringTools.utf8SubString(this.title, 252) + "...";

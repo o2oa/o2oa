@@ -169,7 +169,7 @@ public class Read extends SliceJpaObject {
 	private String workCompleted;
 
 	public static final String completed_FIELDNAME = "completed";
-	@FieldDescribe("工作是否已经完成.")
+	@FieldDescribe("整个job是否已经完成.")
 	@Column(name = ColumnNamePrefix + completed_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + completed_FIELDNAME)
 	@CheckPersist(allowEmpty = true)

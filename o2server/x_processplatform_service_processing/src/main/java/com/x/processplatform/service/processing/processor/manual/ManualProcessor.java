@@ -197,6 +197,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 		case queue:
 			passThrough = this.queue(aeiObjects, manual);
 			break;
+		case grab:
+			passThrough = this.single(aeiObjects, manual);
+			break;
 		default:
 			throw new ExceptionManualModeError(manual.getId());
 		}

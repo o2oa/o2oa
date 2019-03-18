@@ -114,7 +114,7 @@ public class End extends Activity {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ readIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + readIdentityList_FIELDNAME
 					+ JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + readIdentityList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + readIdentityList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -124,17 +124,17 @@ public class End extends Activity {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + readUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + readUnitList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + readUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + readUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> readUnitList;
-	
+
 	@FieldDescribe("待阅群组名称,存储group,多值.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + readGroupList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + readGroupList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + readGroupList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + readGroupList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -165,7 +165,7 @@ public class End extends Activity {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ readDataPathList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + readDataPathList_FIELDNAME
 					+ JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = JpaObject.length_255B, name = ColumnNamePrefix + readDataPathList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + readDataPathList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -176,7 +176,7 @@ public class End extends Activity {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ reviewIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ reviewIdentityList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + reviewIdentityList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + reviewIdentityList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -186,17 +186,17 @@ public class End extends Activity {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + reviewUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + reviewUnitList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + reviewUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + reviewUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> reviewUnitList;
-	
+
 	@FieldDescribe("参与人群组名称,存储group,多值.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + reviewGroupList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + reviewGroupList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + reviewGroupList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + reviewGroupList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -227,7 +227,7 @@ public class End extends Activity {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ reviewDataPathList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ reviewDataPathList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = JpaObject.length_255B, name = ColumnNamePrefix + reviewDataPathList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + reviewDataPathList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -322,6 +322,12 @@ public class End extends Activity {
 	@Column(name = ColumnNamePrefix + allowRerouteTo_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + allowRerouteTo_FIELDNAME)
 	private Boolean allowRerouteTo;
+
+	public static final String allowRollback_FIELDNAME = "allowRollback";
+	@FieldDescribe("允许回滚")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + allowRollback_FIELDNAME)
+	private Boolean allowRollback;
 
 	public String getName() {
 		return name;
@@ -601,6 +607,14 @@ public class End extends Activity {
 
 	public void setAfterInquireScriptText(String afterInquireScriptText) {
 		this.afterInquireScriptText = afterInquireScriptText;
+	}
+
+	public Boolean getAllowRollback() {
+		return allowRollback;
+	}
+
+	public void setAllowRollback(Boolean allowRollback) {
+		this.allowRollback = allowRollback;
 	}
 
 }

@@ -1,14 +1,12 @@
 package com.x.processplatform.service.processing.jaxrs.work;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -20,9 +18,6 @@ import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.Processing;
 import com.x.processplatform.service.processing.ProcessingAttributes;
 
-/*
- * 
- */
 class ActionAddSplit extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
@@ -42,34 +37,46 @@ class ActionAddSplit extends BaseAction {
 			if (StringUtils.isEmpty(wi.getSplitValue())) {
 				throw new ExceptionEmptySplitValue(work.getId());
 			}
-			WorkLog workLog = this.getWorkLogTemplate(business, work);
+
+			WorkLog arrived = this.getWorkLogArrived(business, work);
+
+			if (null == arrived) {
+				throw new ExceptionInvalidArrivedWorkLog(work.getActivityToken());
+			}
+
+			WorkLog from = this.getWorkLogFrom(business, work);
+
+			if (null == from) {
+				throw new ExceptionInvalidFromWorkLog(work.getActivityToken());
+			}
+
 			emc.beginTransaction(Work.class);
 			emc.beginTransaction(WorkLog.class);
+
 			Work workCopy = new Work(work);
-			WorkLog workLogCopy = new WorkLog(workLog);
-			List<String> tokens = new ArrayList<>();
-			String token = StringTools.uniqueToken();
-			for (String str : workCopy.getSplitTokenList()) {
-				if (StringUtils.equals(str, workCopy.getSplitToken())) {
-					tokens.add(token);
-				} else {
-					tokens.add(str);
-				}
-			}
+
+			WorkLog arrivedCopy = new WorkLog(arrived);
+
+			WorkLog fromCopy = new WorkLog(from);
+
+			/* 设置work */
+			arrivedCopy.setWork(workCopy.getId());
+			fromCopy.setWork(workCopy.getId());
+
 			workCopy.setSplitValue(wi.getSplitValue());
-			workCopy.setSplitTokenList(tokens);
-			workCopy.setSplitToken(token);
-			workLogCopy.setSplitValue(wi.getSplitValue());
-			workLogCopy.setSplitTokenList(tokens);
-			workLogCopy.setSplitToken(token);
+			arrivedCopy.setSplitValue(wi.getSplitValue());
+			fromCopy.setSplitValue(wi.getSplitValue());
 			/* 重置到达值 */
 			String activityToken = StringTools.uniqueToken();
 			workCopy.setActivityToken(activityToken);
-			workLogCopy.setArrivedActivityToken(activityToken);
+			arrivedCopy.setArrivedActivityToken(activityToken);
+			fromCopy.setFromActivityToken(activityToken);
+
 			/* 清空处理人会导致重新计算当前环节处理人 */
 			workCopy.getManualTaskIdentityList().clear();
 			emc.persist(workCopy, CheckPersistType.all);
-			emc.persist(workLogCopy, CheckPersistType.all);
+			emc.persist(arrivedCopy, CheckPersistType.all);
+			emc.persist(fromCopy, CheckPersistType.all);
 			emc.commit();
 			Processing processing = new Processing(wi);
 			processing.processing(workCopy.getId());
@@ -80,18 +87,21 @@ class ActionAddSplit extends BaseAction {
 		}
 	}
 
-	private WorkLog getWorkLogTemplate(Business business, Work work) throws Exception {
-		List<WorkLog> os = business.entityManagerContainer().listEqual(WorkLog.class,
-				WorkLog.arrivedActivityToken_FIELDNAME, work.getActivityToken());
-		if (os.size() != 1) {
-			throw new ExceptionInvalidWorkLog(work.getActivityToken(), os.size());
-		} else {
-			return os.get(0);
-		}
+	private WorkLog getWorkLogArrived(Business business, Work work) throws Exception {
+		return business.entityManagerContainer()
+				.listEqual(WorkLog.class, WorkLog.arrivedActivityToken_FIELDNAME, work.getActivityToken()).stream()
+				.findFirst().orElse(null);
+	}
+
+	private WorkLog getWorkLogFrom(Business business, Work work) throws Exception {
+		return business.entityManagerContainer()
+				.listEqual(WorkLog.class, WorkLog.fromActivityToken_FIELDNAME, work.getActivityToken()).stream()
+				.findFirst().orElse(null);
 	}
 
 	public static class Wi extends ProcessingAttributes {
 
+		@FieldDescribe("增加的拆分值")
 		private String splitValue;
 
 		public String getSplitValue() {
