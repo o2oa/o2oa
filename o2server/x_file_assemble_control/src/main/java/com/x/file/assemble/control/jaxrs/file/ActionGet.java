@@ -18,7 +18,7 @@ class ActionGet extends BaseAction {
 			if (null == file) {
 				throw new ExceptionFileNotExisted(id);
 			}
-			if (effectivePerson.isNotManager() && effectivePerson.isNotUser(file.getPerson())) {
+			if (effectivePerson.isNotManager() && effectivePerson.isNotPerson(file.getPerson())) {
 				throw new ExceptionFileAccessDenied(effectivePerson.getDistinguishedName(), file.getName(),
 						file.getId());
 			}

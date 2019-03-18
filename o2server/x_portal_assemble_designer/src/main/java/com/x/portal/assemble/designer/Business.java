@@ -102,7 +102,7 @@ public class Business {
 			result = true;
 		}
 		if (!result && (null != o)) {
-			if (effectivePerson.isUser(o.getControllerList()) || effectivePerson.isUser(o.getCreatorPerson())) {
+			if (effectivePerson.isPerson(o.getControllerList()) || effectivePerson.isPerson(o.getCreatorPerson())) {
 				result = true;
 			}
 		}

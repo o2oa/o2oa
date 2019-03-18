@@ -21,6 +21,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.scripting.Scripting;
+import com.x.base.core.project.scripting.ScriptingEngine;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.organization.assemble.control.Business;
@@ -183,10 +185,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 		Matcher matcher = pattern.matcher(str);
 		if (matcher.matches()) {
 			String eval = matcher.group(1);
-			ScriptEngineManager factory = new ScriptEngineManager();
-			ScriptEngine engine = factory.getEngineByName("JavaScript");
-			engine.put("person", person);
-			String pass = engine.eval(eval).toString();
+			ScriptingEngine engine = Scripting.getEngine();
+			engine.binding("person", person);
+			String pass = engine.evalAsString(eval);
 			return pass;
 		} else {
 			return str;

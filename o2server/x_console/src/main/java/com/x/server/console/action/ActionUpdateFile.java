@@ -69,7 +69,7 @@ public class ActionUpdateFile extends ActionUpdate {
 		files.add(new File(Config.base(), "console.jar"));
 		files.add(new File(Config.base(), "index.html"));
 		files.add(new File(Config.base(), "version.o2"));
-		FileFilter fileFilter = new RegexFileFilter("^(start_|stop_|console_)(aix|windows|linux|macos).(sh|bat)$");
+		FileFilter fileFilter = new RegexFileFilter("^(start_|stop_|console_|service_)(aix|windows|linux|macos).(sh|bat)$");
 		for (File _f : new File(Config.base()).listFiles(fileFilter)) {
 			files.add(_f);
 		}

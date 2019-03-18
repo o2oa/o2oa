@@ -45,7 +45,7 @@ class ActionSetWithPersonWithName extends BaseAction {
 				logger.warn("user {} set personAttribute {} fail, person {} not exist.",
 						effectivePerson.getDistinguishedName(), StringUtils.join(wi.getAttributeList(), ","),
 						wi.getPerson());
-			} else if ((!effectivePerson.isManager()) && effectivePerson.isNotUser(person.getDistinguishedName())) {
+			} else if ((!effectivePerson.isManager()) && effectivePerson.isNotPerson(person.getDistinguishedName())) {
 				wo.setValue(false);
 				logger.warn("user {} set personAttribute person: {}, value: {} fail, permission denied.",
 						effectivePerson.getDistinguishedName(), wi.getPerson(),

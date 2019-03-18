@@ -7,6 +7,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.project.exception.PromptException;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
@@ -467,7 +468,7 @@ public class Business {
 	public Boolean canManageApplication(EffectivePerson effectivePerson, Application application) throws Exception {
 		if (effectivePerson.isManager()) {
 			return true;
-		} else if ((null != application) && effectivePerson.isUser(application.getControllerList())) {
+		} else if ((null != application) && effectivePerson.isPerson(application.getControllerList())) {
 			return true;
 		} else {
 			if (organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
@@ -489,9 +490,9 @@ public class Business {
 			Process process) throws Exception {
 		if (effectivePerson.isManager()) {
 			return true;
-		} else if ((null != process) && effectivePerson.isUser(process.getControllerList())) {
+		} else if ((null != process) && effectivePerson.isPerson(process.getControllerList())) {
 			return true;
-		} else if ((null != application) && effectivePerson.isUser(application.getControllerList())) {
+		} else if ((null != application) && effectivePerson.isPerson(application.getControllerList())) {
 			return true;
 		} else {
 			if (organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
@@ -521,7 +522,7 @@ public class Business {
 		/* 设置 allowReset */
 		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
 			control.setAllowReset(true);
-		} else if (effectivePerson.isUser(task.getPerson())) {
+		} else if (effectivePerson.isPerson(task.getPerson())) {
 			if (Objects.equals(activity.getActivityType(), ActivityType.manual)
 					&& BooleanUtils.isTrue(((Manual) activity).getAllowReset()) && null != task) {
 				control.setAllowReset(true);
@@ -562,7 +563,7 @@ public class Business {
 		/* 设置allowProcessing */
 		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
 			control.setAllowProcessing(true);
-		} else if (effectivePerson.isUser(read.getPerson())) {
+		} else if (effectivePerson.isPerson(read.getPerson())) {
 			control.setAllowProcessing(true);
 		}
 		/* 设置 allowReadReset */
@@ -653,7 +654,7 @@ public class Business {
 		if ((null != task) || (null != read) || (taskCompletedCount > 0) || (readCompletedCount > 0)
 				|| (reviewCount > 0)) {
 			control.setAllowVisit(true);
-		} else if (effectivePerson.isUser(work.getCreatorPerson())) {
+		} else if (effectivePerson.isPerson(work.getCreatorPerson())) {
 			control.setAllowVisit(true);
 		} else if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
 			control.setAllowVisit(true);
@@ -705,10 +706,10 @@ public class Business {
 			control.setAllowReroute(true);
 		} else if (null != activity && BooleanUtils.isTrue(activity.getAllowReroute())) {
 			/** 如果活动设置了可以调度 */
-			if ((null != process) && effectivePerson.isUser(process.getControllerList())) {
+			if ((null != process) && effectivePerson.isPerson(process.getControllerList())) {
 				/** 如果是流程的管理员那么可以调度 */
 				control.setAllowReroute(true);
-			} else if ((null != application) && effectivePerson.isUser(application.getControllerList())) {
+			} else if ((null != application) && effectivePerson.isPerson(application.getControllerList())) {
 				/** 如果是应用的管理员那么可以调度 */
 				control.setAllowReroute(true);
 			}
@@ -739,7 +740,7 @@ public class Business {
 		/* 设置 allowViist */
 		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
 			control.setAllowVisit(true);
-		} else if (effectivePerson.isUser(workCompleted.getCreatorPerson())) {
+		} else if (effectivePerson.isPerson(workCompleted.getCreatorPerson())) {
 			control.setAllowVisit(true);
 		} else if (taskCompleted().countWithPersonWithWorkCompleted(effectivePerson.getDistinguishedName(),
 				workCompleted) > 0) {
@@ -768,7 +769,7 @@ public class Business {
 		if (null == task) {
 			return false;
 		}
-		if (effectivePerson.isUser(task.getPerson())) {
+		if (effectivePerson.isPerson(task.getPerson())) {
 			return true;
 		}
 		if (effectivePerson.isManager()) {
@@ -780,13 +781,13 @@ public class Business {
 		}
 		Application application = this.application().pick(task.getApplication());
 		if (null != application) {
-			if (effectivePerson.isUser(application.getControllerList())) {
+			if (effectivePerson.isPerson(application.getControllerList())) {
 				return true;
 			}
 		}
 		Process process = this.process().pick(task.getProcess());
 		if (null != process) {
-			if (effectivePerson.isUser(process.getControllerList())) {
+			if (effectivePerson.isPerson(process.getControllerList())) {
 				return true;
 			}
 		}
@@ -797,7 +798,7 @@ public class Business {
 		if (null == taskCompleted) {
 			return false;
 		}
-		if (effectivePerson.isUser(taskCompleted.getPerson())) {
+		if (effectivePerson.isPerson(taskCompleted.getPerson())) {
 			return true;
 		}
 		if (effectivePerson.isManager()) {
@@ -809,13 +810,13 @@ public class Business {
 		}
 		Application application = this.application().pick(taskCompleted.getApplication());
 		if (null != application) {
-			if (effectivePerson.isUser(application.getControllerList())) {
+			if (effectivePerson.isPerson(application.getControllerList())) {
 				return true;
 			}
 		}
 		Process process = this.process().pick(taskCompleted.getProcess());
 		if (null != process) {
-			if (effectivePerson.isUser(process.getControllerList())) {
+			if (effectivePerson.isPerson(process.getControllerList())) {
 				return true;
 			}
 		}
@@ -826,7 +827,7 @@ public class Business {
 		if (null == read) {
 			return false;
 		}
-		if (effectivePerson.isUser(read.getPerson())) {
+		if (effectivePerson.isPerson(read.getPerson())) {
 			return true;
 		}
 		if (effectivePerson.isManager()) {
@@ -838,13 +839,13 @@ public class Business {
 		}
 		Application application = this.application().pick(read.getApplication());
 		if (null != application) {
-			if (effectivePerson.isUser(application.getControllerList())) {
+			if (effectivePerson.isPerson(application.getControllerList())) {
 				return true;
 			}
 		}
 		Process process = this.process().pick(read.getProcess());
 		if (null != process) {
-			if (effectivePerson.isUser(process.getControllerList())) {
+			if (effectivePerson.isPerson(process.getControllerList())) {
 				return true;
 			}
 		}
@@ -855,7 +856,7 @@ public class Business {
 		if (null == readCompleted) {
 			return false;
 		}
-		if (effectivePerson.isUser(readCompleted.getPerson())) {
+		if (effectivePerson.isPerson(readCompleted.getPerson())) {
 			return true;
 		}
 		if (effectivePerson.isManager()) {
@@ -867,13 +868,13 @@ public class Business {
 		}
 		Application application = this.application().pick(readCompleted.getApplication());
 		if (null != application) {
-			if (effectivePerson.isUser(application.getControllerList())) {
+			if (effectivePerson.isPerson(application.getControllerList())) {
 				return true;
 			}
 		}
 		Process process = this.process().pick(readCompleted.getProcess());
 		if (null != process) {
-			if (effectivePerson.isUser(process.getControllerList())) {
+			if (effectivePerson.isPerson(process.getControllerList())) {
 				return true;
 			}
 		}
@@ -884,7 +885,7 @@ public class Business {
 		if (null == review) {
 			return false;
 		}
-		if (effectivePerson.isUser(review.getPerson())) {
+		if (effectivePerson.isPerson(review.getPerson())) {
 			return true;
 		}
 		if (effectivePerson.isManager()) {
@@ -896,13 +897,13 @@ public class Business {
 		}
 		Application application = this.application().pick(review.getApplication());
 		if (null != application) {
-			if (effectivePerson.isUser(application.getControllerList())) {
+			if (effectivePerson.isPerson(application.getControllerList())) {
 				return true;
 			}
 		}
 		Process process = this.process().pick(review.getProcess());
 		if (null != process) {
-			if (effectivePerson.isUser(process.getControllerList())) {
+			if (effectivePerson.isPerson(process.getControllerList())) {
 				return true;
 			}
 		}
@@ -913,7 +914,7 @@ public class Business {
 		if (null == work) {
 			return false;
 		}
-		if (effectivePerson.isUser(work.getCreatorPerson())) {
+		if (effectivePerson.isPerson(work.getCreatorPerson())) {
 			return true;
 		}
 		if (effectivePerson.isManager()) {
@@ -945,13 +946,13 @@ public class Business {
 		}
 		Application application = this.application().pick(work.getApplication());
 		if (null != application) {
-			if (effectivePerson.isUser(application.getControllerList())) {
+			if (effectivePerson.isPerson(application.getControllerList())) {
 				return true;
 			}
 		}
 		Process process = this.process().pick(work.getProcess());
 		if (null != process) {
-			if (effectivePerson.isUser(process.getControllerList())) {
+			if (effectivePerson.isPerson(process.getControllerList())) {
 				return true;
 			}
 		}
@@ -962,7 +963,7 @@ public class Business {
 		if (null == workCompleted) {
 			return false;
 		}
-		if (effectivePerson.isUser(workCompleted.getCreatorPerson())) {
+		if (effectivePerson.isPerson(workCompleted.getCreatorPerson())) {
 			return true;
 		}
 		if (effectivePerson.isManager()) {
@@ -990,21 +991,21 @@ public class Business {
 		}
 		Application application = this.application().pick(workCompleted.getApplication());
 		if (null != application) {
-			if (effectivePerson.isUser(application.getControllerList())) {
+			if (effectivePerson.isPerson(application.getControllerList())) {
 				return true;
 			}
 		}
 		Process process = this.process().pick(workCompleted.getProcess());
 		if (null != process) {
-			if (effectivePerson.isUser(process.getControllerList())) {
+			if (effectivePerson.isPerson(process.getControllerList())) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public boolean readableWithWorkOrWorkCompleted(EffectivePerson effectivePerson, String workOrWorkCompleted)
-			throws Exception {
+	public boolean readableWithWorkOrWorkCompleted(EffectivePerson effectivePerson, String workOrWorkCompleted,
+			PromptException entityException) throws Exception {
 		Work work = emc.fetch(workOrWorkCompleted, Work.class, ListTools.toList(Work.job_FIELDNAME,
 				Work.application_FIELDNAME, Work.process_FIELDNAME, Work.creatorPerson_FIELDNAME));
 		WorkCompleted workCompleted = null;
@@ -1037,9 +1038,13 @@ public class Business {
 			processId = work.getProcess();
 		}
 		if (StringUtils.isEmpty(job)) {
-			return false;
+			if (null != entityException) {
+				throw entityException;
+			} else {
+				return false;
+			}
 		}
-		if (effectivePerson.isUser(creatorPerson)) {
+		if (effectivePerson.isPerson(creatorPerson)) {
 			return true;
 		}
 		if (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
@@ -1089,7 +1094,7 @@ public class Business {
 			applicationId = works.get(0).getApplication();
 			processId = works.get(0).getProcess();
 		}
-		if (effectivePerson.isUser(creatorPerson)) {
+		if (effectivePerson.isPerson(creatorPerson)) {
 			return true;
 		}
 		if (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,

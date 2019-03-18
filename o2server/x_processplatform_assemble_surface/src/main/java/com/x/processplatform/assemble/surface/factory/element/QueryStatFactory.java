@@ -80,16 +80,16 @@ public class QueryStatFactory extends ElementFactory {
 				&& ListTools.isEmpty(queryStat.getAvailablePersonList())) {
 			return true;
 		}
-		if (effectivePerson.isUser(queryStat.getCreatorPerson())) {
+		if (effectivePerson.isPerson(queryStat.getCreatorPerson())) {
 			return true;
 		}
 		if (effectivePerson.isManager()) {
 			return true;
 		}
-		if (effectivePerson.isUser(application.getControllerList())) {
+		if (effectivePerson.isPerson(application.getControllerList())) {
 			return true;
 		}
-		if (effectivePerson.isUser(queryStat.getControllerList())) {
+		if (effectivePerson.isPerson(queryStat.getControllerList())) {
 			return true;
 		}
 		if (ListTools.isNotEmpty(queryStat.getAvailablePersonList())) {

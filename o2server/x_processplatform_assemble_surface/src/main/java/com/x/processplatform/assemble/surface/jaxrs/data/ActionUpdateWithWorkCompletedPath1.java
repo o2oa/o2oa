@@ -28,7 +28,7 @@ class ActionUpdateWithWorkCompletedPath1 extends BaseAction {
 			Application application = business.application().pick(workCompleted.getApplication());
 			Process process = business.process().pick(workCompleted.getProcess());
 			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)
-					&& (!effectivePerson.isUser(workCompleted.getCreatorPerson()))) {
+					&& (!effectivePerson.isPerson(workCompleted.getCreatorPerson()))) {
 				throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(),
 						workCompleted.getTitle(), workCompleted.getId());
 			}

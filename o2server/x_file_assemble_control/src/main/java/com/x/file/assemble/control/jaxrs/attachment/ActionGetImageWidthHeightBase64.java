@@ -29,9 +29,9 @@ class ActionGetImageWidthHeightBase64 extends BaseAction {
 			ActionResult<Wo> result = new ActionResult<>();
 			Attachment attachment = emc.find(id, Attachment.class, ExceptionWhen.not_found);
 			/* 判断文件的当前用户是否是管理员或者文件创建者 或者当前用户在分享或者共同编辑中 */
-			if (effectivePerson.isNotManager() && effectivePerson.isNotUser(attachment.getPerson())
-					&& effectivePerson.isNotUser(attachment.getShareList())
-					&& effectivePerson.isNotUser(attachment.getEditorList())) {
+			if (effectivePerson.isNotManager() && effectivePerson.isNotPerson(attachment.getPerson())
+					&& effectivePerson.isNotPerson(attachment.getShareList())
+					&& effectivePerson.isNotPerson(attachment.getEditorList())) {
 				throw new Exception("person{name:" + effectivePerson.getDistinguishedName() + "} access attachment{id:"
 						+ id + "} denied.");
 			}
