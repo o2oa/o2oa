@@ -21,7 +21,7 @@ class ActionEdit extends BaseAction {
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
-			if (effectivePerson.isNotUser(task.getPerson()) && effectivePerson.isNotManager()) {
+			if (effectivePerson.isNotPerson(task.getPerson()) && effectivePerson.isNotManager()) {
 				throw new ExceptionAccessDenied(effectivePerson, task);
 			}
 			emc.beginTransaction(Task.class);

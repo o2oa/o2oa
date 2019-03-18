@@ -31,7 +31,6 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
-import com.x.processplatform.core.entity.element.ManualMode;
 import com.x.processplatform.core.entity.element.Route;
 
 /**
@@ -251,7 +250,7 @@ public class TaskCompleted extends SliceJpaObject {
 	private String work;
 
 	public static final String completed_FIELDNAME = "completed";
-	@FieldDescribe("是否已经完成.")
+	@FieldDescribe("整个job是否已经完成.")
 	@Column(name = ColumnNamePrefix + completed_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + completed_FIELDNAME)
 	@CheckPersist(allowEmpty = true)

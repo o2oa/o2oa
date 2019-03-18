@@ -288,8 +288,8 @@ public class WorkCompleted extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String formMobileData;
 
-	@Flag
 	public static final String work_FIELDNAME = "work";
+	@Flag
 	@FieldDescribe("Work Id.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + work_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + work_FIELDNAME)
@@ -317,160 +317,12 @@ public class WorkCompleted extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private Long duration;
 
-	// public static final String extensionString01_FIELDNAME = "extensionString01";
-	// @FieldDescribe("扩充文本字段01.")
-	// @Column(length = length_255B, name = ColumnNamePrefix +
-	// extensionString01_FIELDNAME)
-	// @Index(name = TABLE + IndexNameMiddle + extensionString01_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private String extensionString01;
-	//
-	// public static final String extensionString02_FIELDNAME = "extensionString02";
-	// @FieldDescribe("扩充文本字段02.")
-	// @Column(length = length_255B, name = ColumnNamePrefix +
-	// extensionString02_FIELDNAME)
-	// @Index(name = TABLE + IndexNameMiddle + extensionString02_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private String extensionString02;
-	//
-	// public static final String extensionString03_FIELDNAME = "extensionString03";
-	// @FieldDescribe("扩充文本字段03.")
-	// @Column(length = length_255B, name = ColumnNamePrefix +
-	// extensionString03_FIELDNAME)
-	// @Index(name = TABLE + IndexNameMiddle + extensionString03_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private String extensionString03;
-	//
-	// public static final String extensionString04_FIELDNAME = "extensionString04";
-	// @FieldDescribe("扩充文本字段04.")
-	// @Column(length = length_255B, name = ColumnNamePrefix +
-	// extensionString04_FIELDNAME)
-	// @Index(name = TABLE + IndexNameMiddle + extensionString04_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private String extensionString04;
-	//
-	// public static final String extensionString05_FIELDNAME = "extensionString05";
-	// @FieldDescribe("扩充文本字段05.")
-	// @Column(length = length_255B, name = ColumnNamePrefix +
-	// extensionString05_FIELDNAME)
-	// @Index(name = TABLE + IndexNameMiddle + extensionString05_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private String extensionString05;
-	//
-	// public static final String extensionString06_FIELDNAME = "extensionString06";
-	// @FieldDescribe("扩充文本字段06.")
-	// @Column(length = length_255B, name = ColumnNamePrefix +
-	// extensionString06_FIELDNAME)
-	// @Index(name = TABLE + IndexNameMiddle + extensionString06_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private String extensionString06;
-	//
-	// public static final String extensionString07_FIELDNAME = "extensionString07";
-	// @FieldDescribe("扩充文本字段07.")
-	// @Column(length = length_255B, name = ColumnNamePrefix +
-	// extensionString07_FIELDNAME)
-	// @Index(name = TABLE + IndexNameMiddle + extensionString07_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private String extensionString07;
-	//
-	// public static final String extensionString08_FIELDNAME = "extensionString08";
-	// @FieldDescribe("扩充文本字段08.")
-	// @Column(length = length_255B, name = ColumnNamePrefix +
-	// extensionString08_FIELDNAME)
-	// @Index(name = TABLE + IndexNameMiddle + extensionString08_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private String extensionString08;
-	//
-	// public static final String extensionString09_FIELDNAME = "extensionString09";
-	// @FieldDescribe("扩充文本字段09.")
-	// @Column(length = length_255B, name = ColumnNamePrefix +
-	// extensionString09_FIELDNAME)
-	// @Index(name = TABLE + IndexNameMiddle + extensionString09_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private String extensionString09;
-	//
-	// public static final String extensionString10_FIELDNAME = "extensionString10";
-	// @FieldDescribe("扩充文本字段10.")
-	// @Column(length = length_255B, name = ColumnNamePrefix +
-	// extensionString10_FIELDNAME)
-	// @Index(name = TABLE + IndexNameMiddle + extensionString10_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private String extensionString10;
-	//
-	// public static final String extensionDouble01_FIELDNAME = "extensionDouble01";
-	// @FieldDescribe("扩充数字字段01.")
-	// @Column(name = ColumnNamePrefix + extensionDouble01_FIELDNAME)
-	// @Index(name = TABLE + IndexNameMiddle + extensionDouble01_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private Double extensionDouble01;
-	//
-	// public static final String extensionDouble02_FIELDNAME = "extensionDouble02";
-	// @FieldDescribe("扩充数字字段02.")
-	// @Column(name = ColumnNamePrefix + extensionDouble02_FIELDNAME)
-	// @Index(name = TABLE + IndexNameMiddle + extensionDouble02_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private Double extensionDouble02;
-	//
-	// public static final String extensionDouble03_FIELDNAME = "extensionDouble03";
-	// @FieldDescribe("扩充数字字段03.")
-	// @Column(name = ColumnNamePrefix + extensionDouble03_FIELDNAME)
-	// @Index(name = TABLE + IndexNameMiddle + extensionDouble03_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private Double extensionDouble03;
-	//
-	// public static final String extensionDouble04_FIELDNAME = "extensionDouble04";
-	// @FieldDescribe("扩充数字字段04.")
-	// @Column(name = ColumnNamePrefix + extensionDouble04_FIELDNAME)
-	// @Index(name = TABLE + IndexNameMiddle + extensionDouble04_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private Double extensionDouble04;
-	//
-	// public static final String extensionDouble05_FIELDNAME = "extensionDouble05";
-	// @FieldDescribe("扩充数字字段05.")
-	// @Column(name = ColumnNamePrefix + extensionDouble05_FIELDNAME)
-	// @Index(name = TABLE + IndexNameMiddle + extensionDouble05_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private Double extensionDouble05;
-	//
-	// public static final String extensionBoolean01_FIELDNAME =
-	// "extensionBoolean01";
-	// @FieldDescribe("扩充布尔字段01.")
-	// @Column(name = ColumnNamePrefix + extensionBoolean01_FIELDNAME)
-	// @Index(name = TABLE + IndexNameMiddle + extensionBoolean01_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private Boolean extensionBoolean01;
-	//
-	// public static final String extensionBoolean02_FIELDNAME =
-	// "extensionBoolean02";
-	// @FieldDescribe("扩充布尔字段02.")
-	// @Column(name = ColumnNamePrefix + extensionBoolean02_FIELDNAME)
-	// @Index(name = TABLE + IndexNameMiddle + extensionBoolean02_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private Boolean extensionBoolean02;
-	//
-	// public static final String extensionBoolean03_FIELDNAME =
-	// "extensionBoolean03";
-	// @FieldDescribe("扩充布尔字段03.")
-	// @Column(name = ColumnNamePrefix + extensionBoolean03_FIELDNAME)
-	// @Index(name = TABLE + IndexNameMiddle + extensionBoolean03_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private Boolean extensionBoolean03;
-	//
-	// public static final String extensionBoolean04_FIELDNAME =
-	// "extensionBoolean04";
-	// @FieldDescribe("扩充布尔字段04.")
-	// @Column(name = ColumnNamePrefix + extensionBoolean04_FIELDNAME)
-	// @Index(name = TABLE + IndexNameMiddle + extensionBoolean04_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private Boolean extensionBoolean04;
-	//
-	// public static final String extensionBoolean05_FIELDNAME =
-	// "extensionBoolean05";
-	// @FieldDescribe("扩充布尔字段05.")
-	// @Column(name = ColumnNamePrefix + extensionBoolean05_FIELDNAME)
-	// @Index(name = TABLE + IndexNameMiddle + extensionBoolean05_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private Boolean extensionBoolean05;
+	public static final String allowRollback_FIELDNAME = "allowRollback";
+	@FieldDescribe("完成后是否允许回滚.")
+	@Column(name = ColumnNamePrefix + allowRollback_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + allowRollback_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean allowRollback;
 
 	public String getJob() {
 		return job;
@@ -662,6 +514,14 @@ public class WorkCompleted extends SliceJpaObject {
 
 	public void setCreatorUnitLevelName(String creatorUnitLevelName) {
 		this.creatorUnitLevelName = creatorUnitLevelName;
+	}
+
+	public Boolean getAllowRollback() {
+		return allowRollback;
+	}
+
+	public void setAllowRollback(Boolean allowRollback) {
+		this.allowRollback = allowRollback;
 	}
 
 }

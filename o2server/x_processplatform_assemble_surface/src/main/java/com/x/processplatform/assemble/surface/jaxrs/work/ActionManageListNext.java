@@ -35,7 +35,7 @@ class ActionManageListNext extends BaseAction {
 			if (effectivePerson.isManager()
 					|| business.organization().person().hasRole(effectivePerson,
 							OrganizationDefinition.ProcessPlatformManager, OrganizationDefinition.Manager)
-					|| effectivePerson.isUser(application.getControllerList())) {
+					|| effectivePerson.isPerson(application.getControllerList())) {
 				EqualsTerms equalsTerms = new EqualsTerms();
 				equalsTerms.put("application", application.getId());
 				result = this.standardListNext(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, equalsTerms, null, null, null, null,

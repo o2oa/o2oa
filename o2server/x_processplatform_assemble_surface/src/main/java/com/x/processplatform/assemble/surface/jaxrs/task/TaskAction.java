@@ -40,12 +40,30 @@ public class TaskAction extends StandardJaxrsAction {
 	@Path("list/job/{job}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listNext(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void listWithJob(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("任务标识") @PathParam("job") String job) {
 		ActionResult<List<ActionListWithJob.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionListWithJob().execute(effectivePerson, job);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据work获取待办.", action = ActionListWithWork.class)
+	@GET
+	@Path("list/work/{work}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithWork(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("work") String work) {
+		ActionResult<List<ActionListWithWork.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithWork().execute(effectivePerson, work);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

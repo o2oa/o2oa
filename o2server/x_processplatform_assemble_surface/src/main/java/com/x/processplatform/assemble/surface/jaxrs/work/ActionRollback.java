@@ -18,7 +18,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
-class ActionCallback extends BaseAction {
+class ActionRollback extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 
@@ -31,15 +31,25 @@ class ActionCallback extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
+
 			Application application = business.application().pick(work.getApplication());
+
+			if (null == application) {
+				throw new ExceptionEntityNotExist(work.getApplication(), Application.class);
+			}
+
 			Process process = business.process().pick(work.getProcess());
+
+			if (null == process) {
+				throw new ExceptionEntityNotExist(work.getProcess(), Process.class);
+			}
 
 			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 
 			Wo wo = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-					Applications.joinQueryUri("work", work.getId(), "add", "split"), wi).getData(Wo.class);
+					Applications.joinQueryUri("work", work.getId(), "rollback"), wi).getData(Wo.class);
 
 			result.setData(wo);
 			return result;
@@ -49,14 +59,14 @@ class ActionCallback extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
-		private String workLogId;
+		private String workLog;
 
-		public String getWorkLogId() {
-			return workLogId;
+		public String getWorkLog() {
+			return workLog;
 		}
 
-		public void setWorkLogId(String workLogId) {
-			this.workLogId = workLogId;
+		public void setWorkLog(String workLog) {
+			this.workLog = workLog;
 		}
 
 	}

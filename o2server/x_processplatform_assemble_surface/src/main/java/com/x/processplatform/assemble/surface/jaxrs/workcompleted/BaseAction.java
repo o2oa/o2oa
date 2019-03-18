@@ -489,7 +489,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 						.count() > 0)
 				|| (reviewCount > 0)) {
 			control.setAllowVisit(true);
-		} else if (effectivePerson.isUser(workCompleted.getCreatorPerson())) {
+		} else if (effectivePerson.isPerson(workCompleted.getCreatorPerson())) {
 			control.setAllowVisit(true);
 		} else if (business.canManageApplicationOrProcess(effectivePerson, application, process)) {
 			control.setAllowVisit(true);

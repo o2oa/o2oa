@@ -468,6 +468,26 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
+	@JaxrsMethodDescribe(value = "将工作召回。", action = ActionReroute.class)
+	@PUT
+	@Path("{id}/reroute/activity/{activityId}/activitytype/{activityType}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void reroute(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("活动标识") @PathParam("activityId") String activityId,
+			@JaxrsParameterDescribe("活动类型") @PathParam("activityType") ActivityType activityType) {
+		ActionResult<ActionReroute.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionReroute().execute(effectivePerson, id, activityId, activityType);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
 	@JaxrsMethodDescribe(value = "增加一个会签分支", action = ActionAddSplit.class)
 	@PUT
 	@Path("{id}/add/split")
@@ -486,21 +506,19 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "将工作召回。", action = ActionReroute.class)
+	@JaxrsMethodDescribe(value = "回滚工作到指定的workLog", action = ActionRollback.class)
 	@PUT
-	@Path("{id}/reroute/activity/{activityId}/activitytype/{activityType}")
+	@Path("{id}/rollback")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void reroute(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
-			@JaxrsParameterDescribe("活动标识") @PathParam("activityId") String activityId,
-			@JaxrsParameterDescribe("活动类型") @PathParam("activityType") ActivityType activityType) {
-		ActionResult<ActionReroute.Wo> result = new ActionResult<>();
+	public void rollback(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionRollback.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionReroute().execute(effectivePerson, id, activityId, activityType);
+			result = new ActionRollback().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));

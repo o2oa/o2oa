@@ -6,7 +6,7 @@ public class ExceptionBeginNotFound extends PromptException {
 
 	private static final long serialVersionUID = 4132300948670472899L;
 
-	ExceptionBeginNotFound(Integer count) {
-		super("没有找到开始节点,开始节点数量:{}.", count);
+	ExceptionBeginNotFound() {
+		super("没有找到开始节点.");
 	}
 }

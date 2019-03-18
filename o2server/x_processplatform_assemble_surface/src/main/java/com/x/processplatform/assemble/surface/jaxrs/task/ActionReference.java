@@ -37,7 +37,7 @@ class ActionReference extends BaseAction {
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id,Task.class);
 			}
-			if (effectivePerson.isNotUser(effectivePerson.getDistinguishedName()) && effectivePerson.isNotManager()) {
+			if (effectivePerson.isNotPerson(effectivePerson.getDistinguishedName()) && effectivePerson.isNotManager()) {
 				throw new ExceptionAccessDenied(effectivePerson, task);
 			}
 			Wo wo = new Wo();

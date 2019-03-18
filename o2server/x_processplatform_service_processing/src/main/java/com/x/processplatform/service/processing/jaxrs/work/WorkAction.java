@@ -158,17 +158,17 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "回滚指定的工作到指定的workLog.", action = ActionCallback.class)
+	@JaxrsMethodDescribe(value = "回滚指定的工作到指定的workLog.", action = ActionRollback.class)
 	@PUT
-	@Path("{id}/callback")
+	@Path("{id}/rollback")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void callback(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void rollback(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
-		ActionResult<ActionCallback.Wo> result = new ActionResult<>();
+		ActionResult<ActionRollback.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCallback().execute(effectivePerson, id, jsonElement);
+			result = new ActionRollback().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

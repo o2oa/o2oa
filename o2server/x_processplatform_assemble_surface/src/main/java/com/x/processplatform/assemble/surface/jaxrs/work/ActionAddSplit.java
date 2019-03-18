@@ -25,6 +25,7 @@ import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
+import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 
 class ActionAddSplit extends BaseAction {
 
@@ -56,21 +57,24 @@ class ActionAddSplit extends BaseAction {
 			}
 			WorkLogTree tree = new WorkLogTree(workLogs);
 			WorkLogTree.Node currentNode = tree.find(currentWorkLog);
-			WorkLogTree.Node upSplitNode = currentNode.upTo(ActivityType.split, ActivityType.message,
-					ActivityType.condition, ActivityType.invoke, ActivityType.embed);
-			if (null == upSplitNode) {
-				throw new ExceptionUpSplitNotFound(work.getId());
-			}
 
-			WorkLogTree.Node upManualNode = upSplitNode.upTo(ActivityType.manual, ActivityType.message,
-					ActivityType.condition, ActivityType.invoke, ActivityType.embed);
-			if (null == upManualNode) {
+			WorkLogTree.Nodes upManualNodes = currentNode.upTo(ActivityType.manual, ActivityType.agent,
+					ActivityType.choice, ActivityType.delay, ActivityType.delay, ActivityType.embed,
+					ActivityType.invoke, ActivityType.message, ActivityType.parallel, ActivityType.service,
+					ActivityType.split);
+
+			if (upManualNodes.isEmpty()) {
 				throw new ExceptionUpManualNotFound(work.getId());
 			}
 
-			if (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
-					effectivePerson.getDistinguishedName(), TaskCompleted.activityToken_FIELDNAME,
-					upManualNode.getWorkLog().getFromActivityToken()) < 1) {
+			for (WorkLogTree.Node o : upManualNodes) {
+
+				if (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
+						effectivePerson.getDistinguishedName(), TaskCompleted.activityToken_FIELDNAME,
+						o.getWorkLog().getFromActivityToken()) > 0) {
+					break;
+				}
+
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 

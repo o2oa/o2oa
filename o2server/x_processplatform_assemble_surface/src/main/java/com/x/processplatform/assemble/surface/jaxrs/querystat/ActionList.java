@@ -57,7 +57,7 @@ class ActionList extends BaseAction {
 		if (effectivePerson.isNotManager()
 				&& (!business.organization().person().hasRole(effectivePerson.getDistinguishedName(),
 						OrganizationDefinition.ProcessPlatformManager, OrganizationDefinition.Manager))
-				&& effectivePerson.isNotUser(application.getControllerList())) {
+				&& effectivePerson.isNotPerson(application.getControllerList())) {
 			p = cb.equal(root.get(QueryStat_.creatorPerson), effectivePerson.getDistinguishedName());
 			p = cb.or(p, root.get(QueryStat_.controllerList).in(effectivePerson.getDistinguishedName()));
 			p = cb.or(p,

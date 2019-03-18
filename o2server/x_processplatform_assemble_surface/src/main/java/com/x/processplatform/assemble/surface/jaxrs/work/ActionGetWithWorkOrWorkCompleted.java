@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import javax.persistence.EntityManager;
@@ -14,9 +15,12 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.dataitem.ItemCategory;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -24,12 +28,15 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.assemble.surface.jaxrs.work.ActionAddSplit.Wo;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Activity;
+import com.x.processplatform.core.entity.element.ManualMode;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.Item_;
 
@@ -41,7 +48,8 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted)) {
+			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
+					new ExceptionEntityNotExist(workOrWorkCompleted))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			Wo wo = null;
@@ -64,7 +72,7 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 			return this.data(business, work.getJob());
 		});
 		CompletableFuture<List<WoTask>> future_task = CompletableFuture.supplyAsync(() -> {
-			return this.tasks(business, work.getJob());
+			return this.tasks(business, work.getId());
 		});
 		CompletableFuture<List<WoRead>> future_read = CompletableFuture.supplyAsync(() -> {
 			return this.reads(business, work.getJob());
@@ -121,16 +129,17 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 
 	private List<WoTask> tasks(Business business, String workId) {
 		try {
-			return business.entityManagerContainer().fetchEqual(Task.class, WoTask.copier, Task.work_FIELDNAME, workId);
+			return WoTask.copier
+					.copy(business.entityManagerContainer().listEqual(Task.class, Task.work_FIELDNAME, workId));
 		} catch (Exception e) {
 			logger.error(e);
 		}
 		return null;
 	}
 
-	private List<WoRead> reads(Business business, String workId) {
+	private List<WoRead> reads(Business business, String job) {
 		try {
-			return business.entityManagerContainer().fetchEqual(Read.class, WoRead.copier, Read.work_FIELDNAME, workId);
+			return WoRead.copier.copy(business.entityManagerContainer().listEqual(Read.class, Read.job_FIELDNAME, job));
 		} catch (Exception e) {
 			logger.error(e);
 		}
@@ -141,27 +150,44 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 		WoActivity woActivity = new WoActivity();
 		Activity activity = business.getActivity(work);
 		if (null != activity) {
-			woActivity = WoActivity.copier.copy(activity);
+			activity.copyTo(woActivity);
 		}
 		return woActivity;
 	}
 
 	private void setCurrentTaskIndex(EffectivePerson effectivePerson, Wo wo) {
-		for (int i = 0; i < wo.getTaskList().size(); i++) {
-			if (effectivePerson.isUser(wo.getTaskList().get(i).getPerson())) {
-				wo.setCurrentTaskIndex(i);
+		int loop = 0;
+		for (WoTask task : wo.getTaskList()) {
+			if (effectivePerson.isPerson(task.getPerson())) {
+				wo.setCurrentTaskIndex(loop);
+				/* 发送抢办信号 */
+				if (Objects.equals(ManualMode.grab, wo.getActivity().getManualMode())) {
+					CompletableFuture.runAsync(() -> {
+						try {
+							ThisApplication.context().applications().getQuery(
+									x_processplatform_service_processing.class,
+									Applications.joinQueryUri("task", task.getId(), "grab"));
+						} catch (Exception e) {
+							logger.error(e);
+						}
+					});
+				}
 				break;
 			}
+			loop++;
 		}
 	}
 
 	private void setCurrentReadIndex(EffectivePerson effectivePerson, Wo wo) {
-		for (int i = 0; i < wo.getReadList().size(); i++) {
-			if (effectivePerson.isUser(wo.getReadList().get(i).getPerson())) {
-				wo.setCurrentReadIndex(i);
+		int loop = 0;
+		for (WoRead read : wo.getReadList()) {
+			if (effectivePerson.isPerson(read.getPerson())) {
+				wo.setCurrentReadIndex(loop);
 				break;
 			}
+			loop++;
 		}
+
 	}
 
 	public static class Wo extends GsonPropertyObject {
@@ -180,7 +206,7 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 		/* 只有work有 */
 		private List<WoTask> taskList;
 		/* 只有work有 */
-		private Integer currentTaskIndex;
+		private Integer currentTaskIndex = -1;
 
 		public JsonElement getWork() {
 			return work;
@@ -262,8 +288,8 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 
 		private static final long serialVersionUID = 5244996549744746585L;
 
-		static WrapCopier<Task, WoTask> copier = WrapCopierFactory.wo(Task.class, WoTask.class,
-				JpaObject.singularAttributeField(Task.class, true, true), JpaObject.FieldsInvisible);
+		static WrapCopier<Task, WoTask> copier = WrapCopierFactory.wo(Task.class, WoTask.class, null,
+				JpaObject.FieldsInvisible);
 
 	}
 
@@ -271,8 +297,8 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 
 		private static final long serialVersionUID = 5244996549744746585L;
 
-		static WrapCopier<Read, WoRead> copier = WrapCopierFactory.wo(Read.class, WoRead.class,
-				JpaObject.singularAttributeField(Read.class, true, true), JpaObject.FieldsInvisible);
+		static WrapCopier<Read, WoRead> copier = WrapCopierFactory.wo(Read.class, WoRead.class, null,
+				JpaObject.FieldsInvisible);
 
 	}
 
@@ -290,6 +316,14 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 		private String alias;
 
 		private String position;
+
+		private String resetRange;
+
+		private Integer resetCount;
+
+		private Boolean allowReset;
+
+		private ManualMode manualMode;
 
 		public String getName() {
 			return name;
@@ -329,6 +363,38 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 
 		public void setId(String id) {
 			this.id = id;
+		}
+
+		public String getResetRange() {
+			return resetRange;
+		}
+
+		public void setResetRange(String resetRange) {
+			this.resetRange = resetRange;
+		}
+
+		public Integer getResetCount() {
+			return resetCount;
+		}
+
+		public void setResetCount(Integer resetCount) {
+			this.resetCount = resetCount;
+		}
+
+		public Boolean getAllowReset() {
+			return allowReset;
+		}
+
+		public void setAllowReset(Boolean allowReset) {
+			this.allowReset = allowReset;
+		}
+
+		public ManualMode getManualMode() {
+			return manualMode;
+		}
+
+		public void setManualMode(ManualMode manualMode) {
+			this.manualMode = manualMode;
 		}
 
 	}

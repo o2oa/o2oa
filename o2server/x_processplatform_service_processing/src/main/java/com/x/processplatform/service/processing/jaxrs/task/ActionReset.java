@@ -14,6 +14,7 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -42,11 +43,11 @@ class ActionReset extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Task task = emc.find(id, Task.class);
 			if (null == task) {
-				throw new ExceptionTaskNotExist(id);
+				throw new ExceptionEntityNotExist(id, Task.class);
 			}
 			Work work = emc.find(task.getWork(), Work.class);
 			if (null == work) {
-				throw new ExceptionWorkNotExist(task.getWork());
+				throw new ExceptionEntityNotExist(task.getWork(), Work.class);
 			}
 			/* 检查reset人员 */
 			List<String> identites = new ArrayList<>();
