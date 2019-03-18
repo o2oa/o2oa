@@ -101,6 +101,7 @@ var apps = [
     {"folder": "x_component_Setting",                       "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_Strategy",                      "tasks": ["move", "min", "clean", "watch"]},
     {"folder": "x_component_Weixin",                        "tasks": ["move", "min", "clean", "watch"]},
+	{"folder": "x_component_ANN",                	        "tasks": ["move", "min", "clean", "watch"]},
 ];
 
 var sourcePrefix = '../o2web/';
