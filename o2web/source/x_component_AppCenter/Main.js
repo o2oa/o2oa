@@ -258,14 +258,35 @@ MWF.xApplication.AppCenter.Exporter = new Class({
     output: function(){
         if (this.step==2){
             if (this.checkInput()){
-                this.app.actions.output(this.selectData, function(json){
-                    var uri = this.app.actions.action.actions["download"].uri;
-                    uri = uri.replace("{flag}", json.data.flag);
 
-                    this.dlg.close();
-                    window.open(this.app.actions.action.address+uri);
+                MWF.require("o2.widget.Mask", function(){
+                    this.mask = new o2.widget.Mask();
+                    this.mask.loadNode(this.dlg.node);
 
-                    MWF.release(this);
+                    this.app.actions.output(this.selectData, function(json){
+                        var uri = this.app.actions.action.actions["download"].uri;
+                        uri = uri.replace("{flag}", json.data.flag);
+
+                        if (this.mask) this.mask.hide();
+                        this.dlg.close();
+                        window.open(this.app.actions.action.address+uri);
+
+                        MWF.release(this);
+                    }.bind(this), function(xhr, text, error){
+                        if (xhr.status!=0){
+                            var errorText = error;
+                            if (xhr){
+                                var json = JSON.decode(xhr.responseText);
+                                if (json){
+                                    errorText = json.message.trim() || "request json error";
+                                }else{
+                                    errorText = "request json error: "+xhr.responseText;
+                                }
+                            }
+                            MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
+                        }
+                        if (this.mask) this.mask.hide();
+                    }.bind(this));
                 }.bind(this));
             }
         }
@@ -495,12 +516,50 @@ MWF.xApplication.AppCenter.Exporter.Element = new Class({
             "mouseover": function(){this.contentNode.setStyles(this.css.moduleSetupListContentNode_over);}.bind(this),
             "mouseout": function(){this.contentNode.setStyles(this.css.moduleSetupListContentNode);}.bind(this)
         });
+        this.iconNode.addEvent("click", this.selectAll.bind(this));
         this.action.addEvent("click", function(){
             this.selectElements();
         }.bind(this));
         this.nameNode.addEvent("click", function(){
             this.selectElements();
         }.bind(this));
+    },
+    selectAll: function(){
+        debugger;
+        var selectData = this.postData;
+        if (selectData.processList.length || selectData.formList.length || selectData.applicationDictList.length || selectData.scriptList.length || selectData.fileList.length){
+            if (selectData.processList.length===this.data.processList.length &&
+                selectData.formList.length===this.data.formList.length &&
+                selectData.applicationDictList.length===this.data.applicationDictList.length &&
+                selectData.scriptList.length===this.data.scriptList.length &&
+                selectData.fileList.length===this.data.fileList.length){
+                selectData =  {
+                    "processList": [],
+                    "formList": [],
+                    "applicationDictList": [],
+                    "scriptList": [],
+                    "fileList": []
+                };
+            }else{
+                selectData =  {
+                    "processList": this.data.processList,
+                    "formList": this.data.formList,
+                    "applicationDictList": this.data.applicationDictList,
+                    "scriptList": this.data.scriptList,
+                    "fileList": this.data.fileList
+                };
+            }
+        }else{
+            selectData =  {
+                "processList": this.data.processList,
+                "formList": this.data.formList,
+                "applicationDictList": this.data.applicationDictList,
+                "scriptList": this.data.scriptList,
+                "fileList": this.data.fileList
+            };
+        }
+
+        this.checkSelect(selectData);
     },
     getNameContent: function(){
         return {
@@ -550,8 +609,40 @@ MWF.xApplication.AppCenter.Exporter.PortalElement = new Class({
             "description": this.data.description,
             "pageList": [],
             "scriptList": [],
-            "widgetList": []
+            "widgetList": [],
+            "fileList": []
         };
+    },
+    selectAll: function(){
+        var selectData = this.postData;
+        if (selectData.pageList.length || selectData.scriptList.length || selectData.widgetList.length || selectData.fileList.length){
+            if (selectData.pageList.length===this.data.pageList.length &&
+                selectData.scriptList.length===this.data.scriptList.length &&
+                selectData.widgetList.length===this.data.widgetList.length &&
+                selectData.fileList.length===this.data.fileList.length){
+                selectData =  {
+                    "pageList": [],
+                    "scriptList": [],
+                    "widgetList": [],
+                    "fileList": []
+                };
+            }else{
+                selectData =  {
+                    "pageList": this.data.pageList,
+                    "scriptList": this.data.scriptList,
+                    "widgetList": this.data.widgetList,
+                    "fileList": this.data.fileList
+                };
+            }
+        }else{
+            selectData =  {
+                "pageList": this.data.pageList,
+                "scriptList": this.data.scriptList,
+                "widgetList": this.data.widgetList,
+                "fileList": this.data.fileList
+            };
+        }
+        this.checkSelect(selectData);
     },
     selectElements: function(){
         new MWF.xApplication.AppCenter.Exporter.Element.PortalSelector(this, this.data);
@@ -560,12 +651,14 @@ MWF.xApplication.AppCenter.Exporter.PortalElement = new Class({
         this.postData.pageList = selectData.pageList;
         this.postData.scriptList = selectData.scriptList;
         this.postData.widgetList = selectData.widgetList;
+        this.postData.fileList = selectData.fileList;
 
-        if (selectData.pageList.length || selectData.scriptList.length || selectData.widgetList.length){
+        if (selectData.pageList.length || selectData.scriptList.length || selectData.widgetList.length || selectData.fileList.length){
             this.exporter.selectData.portalList.push(this.postData);
             if (selectData.pageList.length==this.data.pageList.length &&
                 selectData.scriptList.length==this.data.scriptList.length &&
-                selectData.widgetList.length==this.data.widgetList.length){
+                selectData.widgetList.length==this.data.widgetList.length &&
+                selectData.fileList.length==this.data.fileList.length){
                 this.iconNode.setStyle("background", "url("+this.app.path+this.app.options.style+"/icon/sel_all.png) center center no-repeat");
             }else{
                 this.iconNode.setStyle("background", "url("+this.app.path+this.app.options.style+"/icon/sel_part.png) center center no-repeat");
@@ -593,24 +686,62 @@ MWF.xApplication.AppCenter.Exporter.CmsElement = new Class({
             "categoryInfoList": [],
             "formList": [],
             "appDictList": [],
-            "scriptList": []
+            "scriptList": [],
+            "fileList": []
         };
     },
     selectElements: function(){
         new MWF.xApplication.AppCenter.Exporter.Element.CmsSelector(this, this.data);
+    },
+    selectAll: function(){
+        var selectData = this.postData;
+        if (selectData.categoryInfoList.length || selectData.formList.length || selectData.appDictList.length || selectData.scriptList.length || selectData.fileList.length){
+            if (selectData.categoryInfoList.length===this.data.categoryInfoList.length &&
+                selectData.formList.length===this.data.formList.length &&
+                selectData.appDictList.length===this.data.appDictList.length &&
+                selectData.scriptList.length===this.data.scriptList.length &&
+                selectData.fileList.length===this.data.fileList.length){
+                selectData =  {
+                    "categoryInfoList": [],
+                    "formList": [],
+                    "appDictList": [],
+                    "scriptList": [],
+                    "fileList": []
+                };
+            }else{
+                selectData =  {
+                    "categoryInfoList": this.data.categoryInfoList,
+                    "formList": this.data.formList,
+                    "appDictList": this.data.appDictList,
+                    "scriptList": this.data.scriptList,
+                    "fileList": this.data.fileList
+                };
+            }
+        }else{
+            selectData =  {
+                "categoryInfoList": this.data.categoryInfoList,
+                "formList": this.data.formList,
+                "appDictList": this.data.appDictList,
+                "scriptList": this.data.scriptList,
+                "fileList": this.data.fileList
+            };
+        }
+        this.checkSelect(selectData);
     },
     checkSelect: function(selectData){
         this.postData.categoryInfoList = selectData.categoryInfoList;
         this.postData.formList = selectData.formList;
         this.postData.appDictList = selectData.appDictList;
         this.postData.scriptList = selectData.scriptList;
+        this.postData.fileList = selectData.fileList;
 
-        if (selectData.categoryInfoList.length || selectData.formList.length || selectData.appDictList.length || selectData.scriptList.length){
+        if (selectData.categoryInfoList.length || selectData.formList.length || selectData.appDictList.length || selectData.scriptList.length || selectData.fileList.length){
             this.exporter.selectData.cmsList.push(this.postData);
-            if (selectData.categoryInfoList.length==this.data.categoryInfoList.length &&
-                selectData.formList.length==this.data.formList.length &&
-                selectData.appDictList.length==this.data.appDictList.length &&
-                selectData.scriptList.length==this.data.scriptList.length){
+            if (selectData.categoryInfoList.length===this.data.categoryInfoList.length &&
+                selectData.formList.length===this.data.formList.length &&
+                selectData.appDictList.length===this.data.appDictList.length &&
+                selectData.scriptList.length===this.data.scriptList.length &&
+                selectData.fileList.length===this.data.fileList.length){
                 this.iconNode.setStyle("background", "url("+this.app.path+this.app.options.style+"/icon/sel_all.png) center center no-repeat");
             }else{
                 this.iconNode.setStyle("background", "url("+this.app.path+this.app.options.style+"/icon/sel_part.png) center center no-repeat");
@@ -636,6 +767,33 @@ MWF.xApplication.AppCenter.Exporter.QueryElement = new Class({
     },
     selectElements: function(){
         new MWF.xApplication.AppCenter.Exporter.Element.QuerySelector(this, this.data);
+    },
+    selectAll: function(){
+        var selectData = this.postData;
+        if (selectData.viewList.length || selectData.statList.length || selectData.revealList.length){
+            if (selectData.viewList.length===this.data.viewList.length &&
+                selectData.statList.length===this.data.statList.length &&
+                selectData.revealList.length===this.data.revealList.length){
+                selectData =  {
+                    "viewList": this.data.viewList,
+                    "statList": this.data.statList,
+                    "revealList": this.data.revealList
+                };
+            }else{
+                selectData =  {
+                    "viewList": this.data.viewList,
+                    "statList": this.data.statList,
+                    "revealList": this.data.revealList
+                };
+            }
+        }else{
+            selectData =  {
+                "viewList": this.data.viewList,
+                "statList": this.data.statList,
+                "revealList": this.data.revealList
+            };
+        }
+        this.checkSelect(selectData);
     },
     checkSelect: function(selectData){
         this.postData.viewList = selectData.viewList;
@@ -860,13 +1018,15 @@ MWF.xApplication.AppCenter.Exporter.Element.PortalSelector = new Class({
         return {
             "pageList": [],
             "scriptList": [],
-            "widgetList": []
+            "widgetList": [],
+            "fileList": []
         }
     },
     checkSelect: function() {
         this.selectData.pageList = this.getCheckedList(this.listPageContent);
         this.selectData.scriptList = this.getCheckedList(this.listScriptContent);
         this.selectData.widgetList = this.getCheckedList(this.listWidgetContent);
+        this.selectData.fileList = this.getCheckedList(this.listFileContent);
         this.element.checkSelect(this.selectData);
         this.hide();
     },
@@ -875,6 +1035,7 @@ MWF.xApplication.AppCenter.Exporter.Element.PortalSelector = new Class({
         this.listPageContent = this.listProcess("pageList");
         this.listScriptContent = this.listProcess("scriptList");
         this.listWidgetContent = this.listProcess("widgetList");
+        this.listFileContent = this.listProcess("fileList");
     }
 });
 MWF.xApplication.AppCenter.Exporter.Element.CmsSelector = new Class({
@@ -884,7 +1045,8 @@ MWF.xApplication.AppCenter.Exporter.Element.CmsSelector = new Class({
             "categoryInfoList": [],
             "formList": [],
             "appDictList": [],
-            "scriptList": []
+            "scriptList": [],
+            "fileList": []
         }
     },
     checkSelect: function() {
@@ -892,6 +1054,7 @@ MWF.xApplication.AppCenter.Exporter.Element.CmsSelector = new Class({
         this.selectData.formList = this.getCheckedList(this.listFormContent);
         this.selectData.appDictList = this.getCheckedList(this.listDictContent);
         this.selectData.scriptList = this.getCheckedList(this.listScriptContent);
+        this.selectData.fileList = this.getCheckedList(this.listFileContent);
         this.element.checkSelect(this.selectData);
         this.hide();
     },
@@ -901,6 +1064,7 @@ MWF.xApplication.AppCenter.Exporter.Element.CmsSelector = new Class({
         this.listFormContent = this.listProcess("formList");
         this.listDictContent = this.listProcess("appDictList");
         this.listScriptContent = this.listProcess("scriptList");
+        this.listFileContent = this.listProcess("fileList");
     },
     getItemName: function(item){
         return item.name || item.categoryName;

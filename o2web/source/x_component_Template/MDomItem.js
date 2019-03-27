@@ -346,7 +346,9 @@ var MDomItem = new Class({
             }else if( this.options.warningType == "single" ){
                 this.setWarning(warningText, "empty");
             }else{
-                this.app.notice(warningText,"error",this.container);
+                if( this.app && this.app.notice ){
+                    this.app.notice(warningText,"error",this.container);
+                }
                 if( !this.options.validImmediately ){
                     if( ["text","password","textarea","select","multiselect"].contains( this.options.type ) ){
                         items[0].focus();
@@ -2575,6 +2577,7 @@ MDomItem.Rtf = new Class({
             if( this.options.RTFConfig ){
                 editorConfig = Object.merge( editorConfig, this.options.RTFConfig )
             }
+            if( editorConfig.skin )editorConfig.skin = "moono-lisa";
             if( !editorConfig.filebrowserFilesImage && !editorConfig.cloudFileDisable ){
                 editorConfig.filebrowserFilesImage = function( e, callback ){
                     MWF.xDesktop.requireApp("File", "FileSelector", function(){

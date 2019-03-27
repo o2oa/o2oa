@@ -1,0 +1,259 @@
+{
+	"from": {
+		"width": "1px",
+		"height": "1px",
+		"position": "absolute",
+		"top": $(document.body).getSize().y/2,
+		"left": $(document.body).getSize().x/2,
+		"border-style": "solid",
+		"border-color": "#999",
+		"border-width": "1px",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"border-radius": "8px",
+		"box-shadow": "0px 0px 10px #333", 
+		
+		"padding": "0px",
+		"overflow": "hidden",
+	
+		"opacity": 0
+		
+	},
+	"to": {
+		"border-style": "solid",
+		"border-color": "#999",
+		"border-width": "1px",
+		"box-shadow": "0px 0px 10px #333",
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"border-radius": "8px",
+		"font-size": "12px",
+		"height": "60",
+		"padding": "0px",
+		"width": "300",
+		"position": "absolute",
+		"top": "0",
+		"left": "0",
+		"overflow": "hidden",
+		"opacity": 1
+	},
+	"current": {
+	},
+	"uncurrent": {
+	},
+	"spacerFrom": {
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"width": "1px",
+		"height": "1px",
+		"position": "absolute",
+		"opacity": 0,
+		"padding": "0px",
+		"border-radius": "8px",
+		"background-color": "#333333"
+        //"background-image": "url("+MWF.defaultPath+"/xDesktop/$Window/desktop_newyear/img/window.jpg)"
+	},
+	"spacerTo": {
+		"-webkit-user-select": "none",
+		"-moz-user-select": "none",
+		"position": "absolute",
+		"opacity": 0.9,
+		"border-radius": "8px",
+		"padding": "0px",
+		"background-color": "#333333"
+        //"background-image": "url("+MWF.defaultPath+"/xDesktop/$Window/desktop_newyear/img/window.jpg)"
+	},
+	"spacerCurrent":{
+		"background-color": "#333333"
+        //"background-image": "url("+MWF.defaultPath+"/xDesktop/$Window/desktop_newyear/img/window.jpg)"
+	},
+	"spacerUncurrent":{
+		"background-image": "",
+		"background-color": "#AAA"
+	},
+	"content": {
+		"position": "relative",
+		"overflow": "hidden"
+	},
+	"mark": {
+		"height": "0",
+		"width": "0",
+		"opacity": 0.3,
+		"position": "absolute",
+		"top": "0px",
+		"left": "0px",
+		"border-style": "none",
+		"border-width": "0",
+		"background-color": "#CCC"
+	},
+	"button": {
+		"border": "1px solid #999",
+		"color": "#333",
+		"margin": "0px 5px"
+	},
+	"titleAction": {
+        "cursor": "default"
+	},
+	"titleRefresh": {
+	    "width": "20px",
+    	"height": "16px",
+    	"margin-top": "12px",
+    	"margin-right": "4px",
+        "background-image": "url("+MWF.defaultPath+"/xDesktop/$Window/desktop_o2/img/refresh.png)",
+		"background-position": "center 0px",
+		"background-repeat": "no-repeat"
+	},
+	"closeActionNode": {
+		"float": "right",
+		"width": "20px",
+		"height": "16px",
+		"margin-top": "10px",
+		"margin-right": "4px",
+		"background-image": "url("+MWF.defaultPath+"/xDesktop/$Window/desktop_o2/img/close.png)",
+		"background-position": "center 0px",
+
+		//"background-color": "#fff",
+
+		"background-repeat": "no-repeat"
+	},
+	"maxActionNode": {
+		"float": "right",
+		"width": "20px",
+		"height": "16px",
+		"margin-top": "10px",
+		"margin-right": "4px",
+		"background-image": "url("+MWF.defaultPath+"/xDesktop/$Window/desktop_o2/img/max.png)",
+		"background-position": "center 0px",
+
+		//"background-color": "#fff",
+		"background-repeat": "no-repeat"
+	},
+	"restoreActionNode": {
+		"background-image": "url("+MWF.defaultPath+"/xDesktop/$Window/desktop_o2/img/restore.png)"
+	},
+	"minActionNode": {
+		"float": "right",
+		"width": "20px",
+		"height": "16px",
+		"margin-top": "10px",
+		"margin-right": "4px",
+		"background-image": "url("+MWF.defaultPath+"/xDesktop/$Window/desktop_o2/img/min.png)",
+		"background-position": "center 0px",
+		//"background-color": "#fff",
+		"background-repeat": "no-repeat"
+	},
+	"titleActionOver": {
+		"background-position": "center -16px"
+	},
+	"titleActionOut": {
+		"background-position": "center 0px"
+	},
+	"titleActionDown": {
+		"background-position": "center -32px"
+	},
+
+	"windowNodeMax": {
+		"box-shadow": "0px 0px 0px #333",
+		"border-radius": "0px"
+	},
+
+	"windowTitleMax": {
+        "height": "20px",
+        "border-bottom": "1px solid #999",
+        "overflow": "hidden",
+        "line-height": "20px",
+        "font-size": "12px",
+        "background-color": "#e6e6e6"
+	},
+	"windowTitleRefreshMax": {
+	    "width": "20px",
+        "height": "16px",
+        "margin-top": "2px",
+        "margin-right": "4px",
+        "background-image": "url("+MWF.defaultPath+"/xDesktop/$Window/desktop_o2/img/refresh_max.png)",
+        "background-position": "center 0px"
+	},
+	"windowTitleTextMax": {
+	    "height": "20px",
+	    "float": "left",
+	    "cursor": "default",
+        "display": "none"
+	},
+	"windowTitleActionMax": {
+	    "height": "20px"
+	},
+    "windowActionNodeMax": {
+        "margin-top": "2px"
+    },
+    "windowTitleRestore": {
+        "height": "40px",
+        "border-bottom": "0px solid #999",
+        "overflow": "hidden",
+        "line-height": "40px",
+        "font-size": "14px",
+        "background-color": "transparent",
+        "color": "#FFF"
+    },
+    "windowTitleTextRestore": {
+        "height": "40px",
+        "display": "block"
+    },
+    "windowTitleActionRestore": {
+        "height": "40px"
+    },
+    "windowNodeRestore": {
+        "box-shadow": "0px 0px 10px #333",
+        "border-radius": "8px"
+    },
+
+    "MWF_dialod_title": {
+        "height":"40px",
+        "font-size":"14px",
+        "line-height":"40px",
+        "font-weight": "400",
+        "color": "#FFF"
+    },
+    "MWF_dialod_title_refresh": {
+        "height": "26px",
+        "margin-top": "14px",
+        "width": "40px",
+        "float": "left",
+        "margin-left": "10px"
+    },
+    "MWF_dialod_title_text": {
+        "height": "40px",
+        "float": "left",
+        "cursor": "default"
+    },
+    "MWF_dialod_title_action": {
+        "height": "40px",
+        "float": "right"
+    },
+    "MWF_dialod_under": {
+        "overflow": "hidden",
+        "background-color": "#EEEEEE"
+    },
+    "MWF_dialod_content": {
+        "margin": "0px",
+        "margin-bottom": "0px",
+        "background-color": "#EEEEEE",
+        "overflow": "auto",
+        "text-align": "left",
+        "padding": "0px"
+    },
+    "MWF_dialod_bottom": {
+        "height": "0px",
+        "width": "10px",
+        "background-color": "#EEEEEE",
+        "float": "right"
+    },
+    "MWF_dialod_bottom_resize": {
+        "cursor": "nw-resize",
+        "height": "10px",
+        "width": "10px",
+        "float": "right",
+        "position": "relative",
+        "top": "-10px"
+    }
+
+}

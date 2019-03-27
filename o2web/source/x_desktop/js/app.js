@@ -1,3 +1,6 @@
+var d = new Date();
+console.log(d.getTime());
+
 layout = window.layout || {};
 layout.desktop = layout;
 o2.addReady(function(){
@@ -44,7 +47,6 @@ o2.addReady(function(){
                     }.bind(this));
                     if (!baseObject.options) baseObject.options = Object.clone(MWF.xApplication.Common.options);
 
-                    //MWF.xDesktop.requireApp(appNames, "lp."+MWF.language, null, false);
                     MWF.xDesktop.requireApp(appNames, "lp."+MWF.language, {
                         "onRequestFailure": function(){
                             MWF.xDesktop.requireApp(appNames, "lp.zh-cn", null, false);
@@ -55,11 +57,6 @@ o2.addReady(function(){
                     MWF.xDesktop.requireApp(appNames, clazzName, function(){
                         if (callback) callback(baseObject);
                     });
-                    //
-                    //MWF.require(appLp, null, false);
-                    //MWF.require(appClass, function(){
-                    //    if (callback) callback(baseObject);
-                    //});
                 };
                 layout.refreshApp = function(app){
                     var status = app.recordStatus();

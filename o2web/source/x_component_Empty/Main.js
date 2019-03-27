@@ -25,5 +25,9 @@ MWF.xApplication.Empty.Main = new Class({
         //}
 
         //this.content
+
+		this.content.set("html", "<div style='color:#ff0000; padding: 30px; text-align: center; font-size: 24px;'>hello word</div>");
+        var d = new Date();
+        console.log(d.getTime());
 	}
 });

@@ -121,13 +121,19 @@ var library = {
 })();
 
 var wrapWorkContext = {
-    "getTask": function(){return library.JSONDecode(workContext.getCurrentTaskCompleted());},
+    "getTask": function(){return library.JSONDecode(workContext.getTaskOrTaskCompleted());},
     "getWork": function(){return library.JSONDecode(workContext.getWork());},
     "getActivity": function(){return library.JSONDecode(workContext.getActivity());},
     "getTaskList": function(){return library.JSONDecode(workContext.getTaskList());},
     "getTaskCompletedList": function(){return library.JSONDecode(workContext.getTaskCompletedList());},
     "getReadList": function(){return library.JSONDecode(workContext.getReadList());},
     "getReadCompletedList": function(){return library.JSONDecode(workContext.getReadCompletedList());},
+
+    "getJobTaskList": function(){return library.JSONDecode(workContext.getTaskListByJob());},
+    "getJobTaskCompletedList": function(){return library.JSONDecode(workContext.getTaskCompletedListByJob());},
+    "getJobReadList": function(){return library.JSONDecode(workContext.getReadListByJob());},
+    "getJobReadCompletedList": function(){return library.JSONDecode(workContext.getReadCompletedListByJob());},
+
     "getReviewList": function(){return library.JSONDecode(workContext.getReviewList());},
     "getWorkLogList": function(){return library.JSONDecode(workContext.getWorkLogList());},
     "getAttachmentList": function(){return library.JSONDecode(workContext.getAttachmentList());},
@@ -275,7 +281,7 @@ var org = {
             return null;
         }else{
             for (var i=0; i<v.length; i++){
-                var g = this.o.getObject​(v[i]);
+                var g = o.getObject(v[i]);
                 if (g) arr.push(g);
             }
         }
@@ -459,11 +465,13 @@ var org = {
     listIdentityWithUnit: function(name, nested){
         var v = null;
         if (nested){
+            print("111111111111111111");
             var v = this.oIdentity.listWithUnitSubNested(getNameFlag(name));
         }else{
+            print("222222222222222222");
             var v = this.oIdentity.listWithUnitSubDirect(getNameFlag(name));
         }
-        return this.getObject(this.oIdentity, v);
+        return org.getObject(this.oIdentity, v);
     },
 
     //组织**********
@@ -500,7 +508,7 @@ var org = {
     //     字符串  表示获取指定类型的组织
     //     空     表示获取直接所在的组织
     getUnitByIdentity: function(name, flag){
-        getOrgActions();
+        //getOrgActions();
         var getUnitMethod = "current";
         var v;
         if (flag){
@@ -697,27 +705,6 @@ var Action = (function(){
 })();
 Action.applications = this.applications;
 
-var Actions = {
-    'get': function(root){
-        if (loadedActions[root]) return loadedActions[root];
-        loadedActions[root] = {
-            "root": root,
-            "get": function(uri, success, failure){
-                return returnRes(estfulAcpplication.getQuery(this.root, uri), success, failure);
-            },
-            "post": function(uri, data, success, failure){
-                return returnRes(estfulAcpplication.postQuery(this.root, uri, JSON.stringify(data)), success, failure);
-            },
-            "put": function(uri, data, success, failure){
-                return returnRes(estfulAcpplication.putQuery(this.root, uri, JSON.stringify(data)), success, failure);
-            },
-            "delete": function(uri, success, failure){
-                return returnRes(estfulAcpplication.deleteQuery(this.root, uri), success, failure);
-            }
-        };
-        return loadedActions[root];
-    }
-};
 
 bind.library = library;
 bind.data = this.data;
@@ -725,7 +712,6 @@ bind.workContext = wrapWorkContext;
 bind.service = this.webservicesClient;
 bind.org = org;
 bind.Action = Action;
-bind.Actions = Actions;
 //bind.organization = this.organization;
 bind.include = include;
 bind.define = define;

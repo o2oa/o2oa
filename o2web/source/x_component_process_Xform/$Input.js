@@ -259,6 +259,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         }
     },
     showNotValidationMode: function(node){
+        debugger;
         var p = node.getParent("div");
         if (p){
             var mwftype = p.get("MWFtype") || p.get("mwftype");
@@ -267,7 +268,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
                     var contentAreaNode = p.getParent("div").getParent("div");
                     var tabAreaNode = contentAreaNode.getPrevious("div");
                     var idx = contentAreaNode.getChildren().indexOf(p.getParent("div"));
-                    var tabNode = tabAreaNode.getChildren()[idx];
+                    var tabNode = tabAreaNode.getLast().getFirst().getChildren()[idx];
                     tabNode.click();
                     p = tabAreaNode.getParent("div");
                 }

@@ -306,6 +306,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }.bind(this));
     },
     loadViewSearchCustomComparisonList: function(){
+        debugger;
         var idx = this.viewSearchCustomPathListNode.selectedIndex;
         var option = this.viewSearchCustomPathListNode.options[idx];
         var entry = option.retrieve("entry");
@@ -315,7 +316,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                     this.loadComparisonSelect(this.lp.numberFilter);
                     this.loadViewSearchCustomValueNumberInput();
                     break;
-                case "dateTimeValue":
+                case "datetimeValue":
                     this.loadComparisonSelect(this.lp.dateFilter);
                     this.loadViewSearchCustomValueDateInput();
                     break;
@@ -462,8 +463,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     },
     setContentHeight: function(){
         var size = this.node.getSize();
-        var searchSize = this.searchAreaNode.getSize();
-        var h = size.y-searchSize.y;
+        var searchSize = this.searchAreaNode.getComputedSize();
+        var h = size.y-searchSize.totalHeight;
+        if (this.exportAreaNode){
+            var exportSize = this.exportAreaNode.getComputedSize();
+            h = h-exportSize.totalHeight;
+        }
         this.viewAreaNode.setStyle("height", ""+h+"px");
     },
     createLoadding: function(){
@@ -810,8 +815,19 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.setEvent();
     },
     setOpenWork: function(td){
+        debugger;
         td.setStyle("cursor", "pointer");
-        td.addEvent("click", this.openWorkAndCompleted.bind(this));
+        if (this.view.json.type==="cms"){
+            td.addEvent("click", this.openCms.bind(this));
+        }else{
+            td.addEvent("click", this.openWorkAndCompleted.bind(this));
+        }
+
+    },
+    openCms: function(e){
+        var options = {"documentId": this.data.bundle};
+        this.view.fireEvent("openDocument", [options, this]);
+        layout.desktop.openApplication(e, "cms.Document", options);
     },
     openWorkAndCompleted: function(e){
         MWF.Actions.get("x_processplatform_assemble_surface").listWorkByJob(this.data.bundle, function(json){
@@ -859,7 +875,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
 
         var taskUsers = [];
         MWF.Actions.get("x_processplatform_assemble_surface").listTaskByWork(work.id, function(json){
-            json.data.taskList.each(function(task){
+            json.data.each(function(task){
                 taskUsers.push(MWF.name.cn(task.person));
             }.bind(this));
             new Element("div", {"styles": this.css.workAreaContentTitleNode, "text": this.view.lp.taskPeople+": "}).inject(contentNode);

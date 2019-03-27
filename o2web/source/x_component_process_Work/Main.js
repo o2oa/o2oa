@@ -19,11 +19,13 @@ MWF.xApplication.process.Work.Main = new Class({
 	},
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.process.Work.LP;
-        if (this.status){
+        if (!this.status) {
+        } else {
             this.options.workId = this.status.workId;
             this.options.workCompletedId = this.status.workCompletedId;
-            this.options.readonly = (this.status.readonly=="true") ? true : false;
+            this.options.readonly = (this.status.readonly === "true");
         }
+        this.action = MWF.Actions.get("x_processplatform_assemble_surface");
 	},
 	loadApplication: function(callback){
         this.node = new Element("div", {"styles": this.css.content}).inject(this.content);
@@ -31,20 +33,18 @@ MWF.xApplication.process.Work.Main = new Class({
         MWF.require("MWF.widget.Mask", function(){
             this.mask = new MWF.widget.Mask({"style": "desktop"});
 
-            this.formNode = new Element("div", {"styles": {"min-height": "100%", "font-size": "14px", "overflow": "hidden"}}).inject(this.node);
-            this.action = MWF.Actions.get("x_processplatform_assemble_surface");
-            //MWF.xDesktop.requireApp("process.Work", "Actions.RestActions", function(){
-            //    this.action = new MWF.xApplication.process.Work.Actions.RestActions();
-                if (!this.options.isRefresh){
-                    this.maxSize(function(){
-                        this.mask.loadNode(this.content);
-                        this.loadWork();
-                    }.bind(this));
-                }else{
+            this.formNode = new Element("div", {"styles": this.css.formNode}).inject(this.node);
+
+            if (!this.options.isRefresh){
+                this.maxSize(function(){
                     this.mask.loadNode(this.content);
                     this.loadWork();
-                }
-                if (callback) callback();
+                }.bind(this));
+            }else{
+                this.mask.loadNode(this.content);
+                this.loadWork();
+            }
+            if (callback) callback();
             //}.bind(this));
 
         }.bind(this));
@@ -92,36 +92,79 @@ MWF.xApplication.process.Work.Main = new Class({
 
     },
     loadWork: function(){
-        var method = "";
-        var id = "";
-
-        if (this.options.taskId){
-            method = (layout.mobile) ? "getJobByTaskMobile" : "getJobByTask";
-            id = this.options.taskId;
-        }else if (this.options.workCompletedId){
-            method = (layout.mobile) ? "getJobByWorkCompletedMobile" : "getJobByWorkCompleted";
-            id = this.options.workCompletedId;
-        }else if (this.options.workId) {
-            method = (layout.mobile) ? "getJobByWorkMobile" : "getJobByWork";
-            id = this.options.workId;
+        // var method = "";
+        var id = this.options.workCompletedId || this.options.workId;
+        // var methods = {
+        //     "loadWork": false,
+        //     "getWorkControl": false,
+        //     "getForm": false
+        // };
+        if (id){
+            debugger;
+            MWF.Actions.invokeAsync([
+                {"action": this.action, "name": "loadWork"},
+                {"action": this.action, "name": "getWorkControl"},
+                {"action": this.action, "name": (layout.mobile) ? "getWorkFormMobile": "getWorkForm"},
+                {"action": this.action, "name": "getWorkLog"},
+                {"action": this.action, "name": "listAttachments"}
+            ], {"success": function(json_work, json_control, json_form, json_log, json_att){
+                if (json_work && json_control && json_form && json_log && json_att){
+                    this.parseData(json_work.data, json_control.data, json_form.data, json_log.data, json_att.data);
+                    if (this.mask) this.mask.hide();
+                    if (layout.mobile) this.loadMobileActions();
+                    this.openWork();
+                } else{
+                    this.close();
+                }
+            }.bind(this), "failure": function(){}}, id);
         }
-        if (method && id){
-            this.action[method](function(json){
-                if (this.mask) this.mask.hide();
-                this.parseData(json.data);
-
-
-                if (layout.mobile) this.loadMobileActions();
-
-                this.openWork();
-
-
-            }.bind(this), function(){
-                this.close();
-            }.bind(this), id);
-        }
-
     },
+    parseData: function(workData, controlData, formData, logData, attData){
+        debugger;
+        var title = workData.work.title;
+        this.setTitle(this.options.title+"-"+title);
+
+        this.activity = workData.activity;
+        this.data = workData.data;
+        this.taskList = workData.taskList;
+        this.currentTask = this.getCurrentTaskData(workData);
+        this.taskList = workData.taskList;
+        this.readList = workData.readList;
+        this.work = workData.work;
+        this.workCompleted = (workData.work.completedTime) ? workData.work : null;
+
+        this.workLogList = logData;
+        this.attachmentList = attData;
+        //this.inheritedAttachmentList = data.inheritedAttachmentList;
+
+        this.control = controlData;
+        this.form = (formData.data) ? JSON.decode(MWF.decodeJsonString(formData.data)): null;
+        delete formData.data;
+        this.formInfor = formData;
+    },
+
+    // loadWork2: function(){
+    //     var method = "";
+    //     var id = "";
+    //
+    //     if (this.options.workCompletedId){
+    //         method = (layout.mobile) ? "getJobByWorkCompletedMobile" : "getJobByWorkCompleted";
+    //         id = this.options.workCompletedId;
+    //     }else if (this.options.workId) {
+    //         method = (layout.mobile) ? "getJobByWorkMobile" : "getJobByWork";
+    //         id = this.options.workId;
+    //     }
+    //     if (method && id){
+    //         this.action[method](function(json){
+    //             if (this.mask) this.mask.hide();
+    //             this.parseData(json.data);
+    //             if (layout.mobile) this.loadMobileActions();
+    //             this.openWork();
+    //         }.bind(this), function(){
+    //             this.close();
+    //         }.bind(this), id);
+    //     }
+    // },
     loadMobileActions: function(){
         if( this.control.allowSave || this.control.allowProcessing ){
             this.mobileActionBarNode = new Element("div", {"styles": this.css.mobileActionBarNode}).inject(this.node, "after");
@@ -133,7 +176,7 @@ MWF.xApplication.process.Work.Main = new Class({
                 "overflow": "auto",
                 "padding-bottom": "40px"
             });
-            this.node.set("id", "formNode111111111");
+            //this.node.set("id", "formNode111111111");
         }
         if( this.control.allowSave ){
             this.mobileSaveActionNode = new Element("div", {"styles": this.css.mobileSaveActionNode, "text": this.lp.save}).inject(this.mobileActionBarNode);
@@ -199,36 +242,36 @@ MWF.xApplication.process.Work.Main = new Class({
         //}
         return null;
     },
-    parseData: function(data){
-        var title = "";
-        if (this.options.taskId){
-            title = data.work.title;
-            this.options.workId = data.work.id;
-        }else if (this.options.workCompletedId){
-            title = data.workCompleted.title;
-            this.options.workCompleted = data.workCompleted.id;
-        }else if (this.options.workId) {
-            title = data.work.title;
-            this.options.workId = data.work.id;
-        }
-
-        this.setTitle(this.options.title+"-"+title);
-
-        this.activity = data.activity;
-        this.data = data.data;
-        this.taskList = data.taskList;
-        this.currentTask = this.getCurrentTaskData(data);
-        this.taskList = data.taskList;
-        this.readList = data.readList;
-        this.work = data.work;
-        this.workCompleted = data.workCompleted;
-        this.workLogList = data.workLogList;
-        this.attachmentList = data.attachmentList;
-        this.inheritedAttachmentList = data.inheritedAttachmentList;
-        this.control = data.control;
-        this.form = (data.form) ? JSON.decode(MWF.decodeJsonString(data.form.data)): null;
-        this.formInfor = data.form;
-    },
+    // parseData: function(data){
+    //     var title = "";
+    //     if (this.options.taskId){
+    //         title = data.work.title;
+    //         this.options.workId = data.work.id;
+    //     }else if (this.options.workCompletedId){
+    //         title = data.workCompleted.title;
+    //         this.options.workCompleted = data.workCompleted.id;
+    //     }else if (this.options.workId) {
+    //         title = data.work.title;
+    //         this.options.workId = data.work.id;
+    //     }
+    //
+    //     this.setTitle(this.options.title+"-"+title);
+    //
+    //     this.activity = data.activity;
+    //     this.data = data.data;
+    //     this.taskList = data.taskList;
+    //     this.currentTask = this.getCurrentTaskData(data);
+    //     this.taskList = data.taskList;
+    //     this.readList = data.readList;
+    //     this.work = data.work;
+    //     this.workCompleted = data.workCompleted;
+    //     this.workLogList = data.workLogList;
+    //     this.attachmentList = data.attachmentList;
+    //     this.inheritedAttachmentList = data.inheritedAttachmentList;
+    //     this.control = data.control;
+    //     this.form = (data.form) ? JSON.decode(MWF.decodeJsonString(data.form.data)): null;
+    //     this.formInfor = data.form;
+    // },
     openWork: function(){
         if (this.form){
             //this.readonly = true;
@@ -237,6 +280,35 @@ MWF.xApplication.process.Work.Main = new Class({
             //}else if(this.options.isControl && this.work){
             //    this.readonly = false;
             //}
+
+            // MWF.xDesktop.requireApp("process.Xform", "Package", function(){
+            //     MWF.xApplication.process.Xform.require(function(){
+            //         this.appForm = new MWF.APPForm(this.formNode, this.form, {});
+            //         this.appForm.businessData = {
+            //             "data": this.data,
+            //             "taskList": this.taskList,
+            //             "readList": this.readList,
+            //             "work": this.work,
+            //             "workCompleted": this.workCompleted,
+            //             "control": this.control,
+            //             "activity": this.activity,
+            //             "task": this.currentTask,
+            //             "workLogList": this.workLogList,
+            //             "attachmentList": this.attachmentList,
+            //             "inheritedAttachmentList": this.inheritedAttachmentList,
+            //             "formInfor": this.formInfor,
+            //             "status": {
+            //                 //"readonly": (this.options.readonly) ? true : false
+            //                 "readonly": this.readonly
+            //             }
+            //         };
+            //         this.appForm.workAction = this.action;
+            //         this.appForm.app = this;
+            //         this.appForm.load();
+            //     }.bind(this));
+            // }.bind(this));
+
+
             MWF.xDesktop.requireApp("process.Xform", "Form", function(){
                 this.appForm = new MWF.APPForm(this.formNode, this.form, {});
                 this.appForm.businessData = {

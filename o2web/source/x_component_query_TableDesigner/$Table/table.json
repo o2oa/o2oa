@@ -1,0 +1,14 @@
+{
+  "id": "",
+  "name": "",
+  "alias": "",
+  "description": "",
+  "query": "",
+  "readPersonList": [],
+  "readUnitList": [],
+  "editPersonList": [],
+  "editUnitList": []                                                                                    ,
+  "draftData": {
+    "fieldList": []
+  }
+}

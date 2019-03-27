@@ -61,11 +61,18 @@ MWF.xApplication.query.QueryManager.Main = new Class({
         }.bind(this));
     },
     clearContent: function(){
+        //暂时没有启用---------------------
         if (this.selectConfiguratorContent){
             if (this.selectConfigurator) delete this.selectConfigurator;
             this.selectConfiguratorContent.destroy();
             this.selectConfiguratorContent = null;
         }
+        if (this.revealConfiguratorContent){
+            if (this.revealConfigurator) delete this.revealConfigurator;
+            this.revealConfiguratorContent.destroy();
+            this.revealConfiguratorContent = null;
+        }
+        //-------------------------------
         if (this.viewConfiguratorContent){
             if (this.viewConfigurator) delete this.viewConfigurator;
             this.viewConfiguratorContent.destroy();
@@ -81,10 +88,15 @@ MWF.xApplication.query.QueryManager.Main = new Class({
             this.statConfiguratorContent.destroy();
             this.statConfiguratorContent = null;
         }
-        if (this.revealConfiguratorContent){
-            if (this.revealConfigurator) delete this.revealConfigurator;
-            this.revealConfiguratorContent.destroy();
-            this.revealConfiguratorContent = null;
+        if (this.tableConfiguratorContent){
+            if (this.tableConfigurator) delete this.tableConfigurator;
+            this.tableConfiguratorContent.destroy();
+            this.tableConfiguratorContent = null;
+        }
+        if (this.statementConfiguratorContent){
+            if (this.statementConfigurator) delete this.statementConfigurator;
+            this.statementConfiguratorContent.destroy();
+            this.statementConfiguratorContent = null;
         }
     },
 
@@ -155,7 +167,36 @@ MWF.xApplication.query.QueryManager.Main = new Class({
             this.revealConfigurator.app = this;
             this.revealConfigurator.load();
         }.bind(this));
-    }
+    },
+
+    tableConfig: function(){
+        this.clearContent();
+        this.tableConfiguratorContent = new Element("div", {
+            "styles": this.css.rightContentNode
+        }).inject(this.node);
+        this.loadTableConfig();
+    },
+    loadTableConfig: function(){
+        MWF.xDesktop.requireApp("query.QueryManager", "TableExplorer", function(){
+            this.tableConfigurator = new MWF.xApplication.query.QueryManager.TableExplorer(this.tableConfiguratorContent, this.restActions);
+            this.tableConfigurator.app = this;
+            this.tableConfigurator.load();
+        }.bind(this));
+    },
+    statementConfig: function(){
+        this.clearContent();
+        this.statementConfiguratorContent = new Element("div", {
+            "styles": this.css.rightContentNode
+        }).inject(this.node);
+        this.loadStatementConfig();
+    },
+    loadStatementConfig: function(){
+        MWF.xDesktop.requireApp("query.QueryManager", "StatementExplorer", function(){
+            this.statementConfigurator = new MWF.xApplication.query.QueryManager.StatementExplorer(this.statementConfiguratorContent, this.restActions);
+            this.statementConfigurator.app = this;
+            this.statementConfigurator.load();
+        }.bind(this));
+    },
 });
 
 MWF.xApplication.query.QueryManager.Menu = new Class({

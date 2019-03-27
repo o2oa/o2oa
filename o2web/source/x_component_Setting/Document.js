@@ -688,6 +688,7 @@ MWF.xApplication.Setting.Document.List.ItemEditor = new Class({
         }.bind(this));
     },
     save: function(dlg){
+        debugger;
         var keys = Object.keys(this.inputs);
         var values = {};
         var flag = true;

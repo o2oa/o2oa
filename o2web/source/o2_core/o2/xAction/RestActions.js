@@ -27,6 +27,69 @@ MWF.xAction.RestActions = MWF.Actions = {
             address = layout.config.app_protocol+"//"+host+(port=="80" ? "" : ":"+port);
         }
         return address;
+    },
+    "invokeAsync": function(actions, callback){
+        var len = actions.length;
+        var parlen = arguments.length-2;
+        var res = [];
+        var jsons = new Array(len-1);
+        var args = arguments;
+
+        var cbs = (o2.typeOf(callback)==="function") ? callback : callback.success;
+        var cbf = (o2.typeOf(callback)==="function") ? null : callback.failure;
+
+        var cb = function(){
+            if (res.length===len) cbs.apply(this, jsons);
+        };
+        var _doError = function(xhr, text, error){
+            if (xhr.status!=0){
+                var errorText = error;
+                if (xhr){
+                    var json = JSON.decode(xhr.responseText);
+                    if (json){
+                        errorText = json.message.trim() || "request json error";
+                    }else{
+                        errorText = "request json error: "+xhr.responseText;
+                    }
+                }
+                MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
+            }
+        };
+        actions.each(function(action, i){
+            var par = (i<parlen) ? args[i+2] : args[parlen+1];
+            if (par){
+                var actionArgs = (o2.typeOf(par)==="array") ? par : [par];
+                actionArgs.push(function(json){
+                    jsons[i] = json;
+                    res.push(true);
+                    cb();
+                });
+                actionArgs.push(function(xhr, text, error){
+                    res.push(false);
+                    if (!cbf){
+                        _doError(xhr, text, error);
+                    }else{
+                        cbf();
+                    }
+                    cb();
+                });
+                action.action[action.name].apply(action.action, actionArgs);
+            }else{
+                action.action[action.name](function(){
+                    jsons[i] = json;
+                    res.push(true);
+                    cb();
+                }, function(xhr, text, error){
+                    res.push(false);
+                    if (!cbf){
+                        _doError(xhr, text, error);
+                    }else{
+                        cbf();
+                    }
+                    cb();
+                });
+            }
+        });
     }
 };
 MWF.xAction.RestActions.Action = new Class({
@@ -73,6 +136,7 @@ MWF.xAction.RestActions.Action = new Class({
                     }
                 }
                 async = (n>++i) ? functionArguments[i] : null;
+                urlEncode = (n>++i) ? functionArguments[i] : true;
             }else{
                 parameters.each(function(p, x){
                     parameter[p] = (n>x) ? functionArguments[x] : null;
@@ -88,8 +152,9 @@ MWF.xAction.RestActions.Action = new Class({
                 success = (n>++i) ? functionArguments[i] : null;
                 failure = (n>++i) ? functionArguments[i] : null;
                 async = (n>++i) ? functionArguments[i] : null;
+                urlEncode = (n>++i) ? functionArguments[i] : true;
             }
-            return this.action.invoke({"name": key, "async": async, "data": data, "file": file, "parameter": parameter, "success": success, "failure": failure});
+            return this.action.invoke({"name": key, "async": async, "data": data, "file": file, "parameter": parameter, "success": success, "failure": failure, "urlEncode": urlEncode});
         }.bind(this);
     }
 });
