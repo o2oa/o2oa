@@ -25,7 +25,7 @@ MWF.xScript.Environment = function(ev){
     this.setData = function(data){
         this.data = getJSONData(data);
         this.data.save = function(callback){
-            form.workAction.saveData(function(){if (callback) callback();}.bind(this), null, work.id, jData);
+            _form.workAction.saveData(function(){if (callback) callback();}.bind(this), null, (ev.work.id || ev.workCompleted.id), data);
         }
     };
     this.setData(_data);
@@ -43,12 +43,91 @@ MWF.xScript.Environment = function(ev){
         "getTask": function(){return ev.task || null;},
         "getWork": function(){return ev.work || ev.workCompleted;},
         "getActivity": function(){return ev.activity || null;},
-        "getTaskList": function(){return ev.taskList;},
-        "getReadList": function(){return ev.readList;},
-        "getTaskCompletedList": function(){
-            //MWF.Actions.get("")
-            return ev.taskCompletedList;
+        "getTaskList": function(callback, error){
+            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+            var list;
+            o2.Actions.get("x_processplatform_assemble_surface").listTaskByWork(ev.work.id, function(json){
+                list = json.data;
+                if (cb) cb(list);
+            }, ecb, !!cb);
+            return list;
         },
+        "getTaskListByJob": function(callback, error){
+            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+            var list;
+            o2.Actions.get("x_processplatform_assemble_surface").listTaskByJob(ev.work.job, function(json){
+                list = json.data;
+                if (cb) cb(list);
+            }, ecb, !!cb);
+            return list;
+        },
+        "getReadList": function(callback, error){
+            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+            var list;
+            o2.Actions.get("x_processplatform_assemble_surface").listReadByWork(ev.work.id, function(json){
+                list = json.data;
+                if (cb) cb(list);
+            }, ecb, !!cb);
+            return list;
+        },
+        "getReadListByJob": function(callback, error){
+            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+            var list;
+            o2.Actions.get("x_processplatform_assemble_surface").listReadByJob(ev.work.job, function(json){
+                list = json.data;
+                if (cb) cb(list);
+            }, ecb, !!cb);
+            return list;
+        },
+        "getTaskCompletedList": function(callback, error){
+            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+            var list;
+            o2.Actions.get("x_processplatform_assemble_surface").listTaskCompletedByWork(ev.work.job, function(json){
+                list = json.data;
+                if (cb) cb(list);
+            }, ecb, !!cb);
+            return list;
+        },
+        "getTaskCompletedListByJob": function(callback, error){
+            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+            var list;
+            o2.Actions.get("x_processplatform_assemble_surface").listTaskCompletedByJob(ev.work.job, function(json){
+                list = json.data;
+                if (cb) cb(list);
+            }, ecb, !!cb);
+            return list;
+        },
+        "getReadCompletedList": function(callback, error){
+            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+            var list;
+            o2.Actions.get("x_processplatform_assemble_surface").listReadCompletedByWork(ev.work.job, function(json){
+                list = json.data;
+                if (cb) cb(list);
+            }, ecb, !!cb);
+            return list;
+        },
+        "getReadCompletedListByJob": function(callback, error){
+            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            var ecb = (error && o2.typeOf(error)==="function") ? error : null;
+            var list;
+            o2.Actions.get("x_processplatform_assemble_surface").listReadCompletedByJob(ev.work.job, function(json){
+                list = json.data;
+                if (cb) cb(list);
+            }, ecb, !!cb);
+            return list;
+        },
+        "getJobTaskList": this.getTaskListByJob,
+        "getJobReadList": this.getReadListByJob,
+        "getJobTaskCompletedList": this.getTaskCompletedListByJob,
+        "getJobReadCompletedList": this.getReadCompletedListByJob,
+
         "getControl": function(){return ev.control;},
         "getWorkLogList": function(){return ev.workLogList;},
         "getAttachmentList": function(){return ev.attachmentList;},
@@ -453,7 +532,7 @@ MWF.xScript.Environment = function(ev){
             switch (getUnitMethod){
                 case "current":
                     var data = {"identityList":getNameFlag(name)};
-                    orgActions.f(data, function(json){ v = json.data; }, null, false);
+                    orgActions.listUnitWithIdentity(data, function(json){ v = json.data; v=(v&&v.length===1) ? v[0] : v }, null, false);
                     break;
                 case "type":
                     var data = {"identity":(typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name,"type":flag};
@@ -649,103 +728,6 @@ MWF.xScript.Environment = function(ev){
         }
     };
 
-    //this.view = {
-    //    "lookup": function(view, callback){
-    //        getLookupAction(function(){
-    //            lookupAction.invoke({"name": "lookup","async": true, "parameter": {"view": view.view, "application": view.application},"success": function(json){
-    //                var data = {
-    //                    "grid": json.data.grid,
-    //                    "groupGrid": json.data.groupGrid
-    //                };
-    //                if (callback) callback(data);
-    //            }.bind(this)});
-    //        }.bind(this));
-    //    },
-    //    "select": function(view, callback, options){
-    //        if (view.view){
-    //            var viewJson = {
-    //                "application": view.application || _form.json.application,
-    //                "viewName": view.view || "",
-    //                "isTitle": view.isTitle || "yes",
-    //                "select": view.select || "multi",
-    //                "title": view.title || "Select View"
-    //            };
-    //            if (!options) options = {};
-    //            var width = options.width || "700";
-    //            var height = options.height || "400";
-    //
-    //            var size;
-    //            if (layout.mobile){
-    //                size = document.body.getSize();
-    //                width = size.x;
-    //                height = size.y;
-    //                options.style = "viewmobile";
-    //            }
-    //            width = width.toInt();
-    //            height = height.toInt();
-    //
-    //            size = _form.app.content.getSize();
-    //            var x = (size.x-width)/2;
-    //            var y = (size.y-height)/2;
-    //            if (x<0) x = 0;
-    //            if (y<0) y = 0;
-    //            if (layout.mobile){
-    //                x = 20;
-    //                y = 0;
-    //            }
-    //
-    //            var _self = this;
-    //            MWF.require("MWF.xDesktop.Dialog", function(){
-    //                var dlg = new MWF.xDesktop.Dialog({
-    //                    "title": viewJson.title || "select view",
-    //                    "style": options.style || "view",
-    //                    "top": y,
-    //                    "left": x-20,
-    //                    "fromTop":y,
-    //                    "fromLeft": x-20,
-    //                    "width": width,
-    //                    "height": height,
-    //                    "html": "<div style='height: 100%;'></div>",
-    //                    "maskNode": _form.app.content,
-    //                    "container": _form.app.content,
-    //                    "buttonList": [
-    //                        {
-    //                            "text": MWF.LP.process.button.ok,
-    //                            "action": function(){
-    //                                //if (callback) callback(_self.view.selectedItems);
-    //                                if (callback) callback(_self.view.getData());
-    //                                this.close();
-    //                            }
-    //                        },
-    //                        {
-    //                            "text": MWF.LP.process.button.cancel,
-    //                            "action": function(){this.close();}
-    //                        }
-    //                    ]
-    //                });
-    //                dlg.show();
-    //
-    //                if (layout.mobile){
-    //                    var backAction = dlg.node.getElement(".MWF_dialod_Action_back");
-    //                    var okAction = dlg.node.getElement(".MWF_dialod_Action_ok");
-    //                    if (backAction) backAction.addEvent("click", function(){
-    //                        dlg.close();
-    //                    }.bind(this));
-    //                    if (okAction) okAction.addEvent("click", function(){
-    //                        //if (callback) callback(this.view.selectedItems);
-    //                        if (callback) callback(this.view.getData());
-    //                        dlg.close();
-    //                    }.bind(this));
-    //                }
-    //
-    //                MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
-    //                    this.view = new MWF.xApplication.query.Query.Viewer(dlg.content.getFirst(), viewJson, {"style": "select"});
-    //                }.bind(this));
-    //            }.bind(this));
-    //        }
-    //    }
-    //};
-
     this.view = {
         "lookup": function(view, callback, async){
             var filterList = {"filterList": (view.filter || null)};
@@ -919,26 +901,6 @@ MWF.xScript.Environment = function(ev){
         }.bind(this), null, false);
     };
 
-    //var includedScripts = [];
-    //this.include = function(name, callback){
-    //    if (includedScripts.indexOf(name)===-1){
-    //        if (!this.scriptAction){
-    //            MWF.require("MWF.xScript.Actions.ScriptActions", null, false);
-    //            this.scriptAction = new MWF.xScript.Actions.ScriptActions();
-    //        }
-    //        this.scriptAction.getScriptByName(_form.json.application, name, includedScripts, function(json){
-    //            if (json.data){
-    //                includedScripts = includedScripts.concat(json.data.importedList);
-    //                MWF.Macro.exec(json.data.text, this);
-    //                if (callback) callback.apply(this);
-    //            }else{
-    //                if (callback) callback.apply(this);
-    //            }
-    //        }.bind(this), null, false);
-    //    }else{
-    //        if (callback) callback.apply(this);
-    //    }
-    //}.bind(this);
     this.define = function(name, fun, overwrite){
         var over = true;
         if (overwrite===false) over = false;
@@ -964,6 +926,11 @@ MWF.xScript.Environment = function(ev){
         "getData": function(){return new MWF.xScript.JSONData(_form.getData());},
         "save": function(callback){_form.saveWork(callback);},
         "close": function(){_form.closeWork();},
+
+        "verify": function(){
+            return !(!_form.formCustomValidation("", "") | !_form.formValidation("", ""));
+        },
+
         "process": function(option){
             if (option){
                 _form.submitWork(option.routeName, option.opinion, null, option.callback);
@@ -980,11 +947,26 @@ MWF.xScript.Environment = function(ev){
         },
         "retract": function(option){
             if (!option){
-                if (_form.businessData.control["allowRetract"]) _form.retractWork();
+                if (_form.businessData.control["allowAddSplit"]) _form.addSplit();
             }else{
                 _form.doRetractWork(opinion.success, opinion.failure);
             }
         },
+        "addSplit": function(option){
+            if (!option){
+                if (_form.businessData.control["allowRetract"]) _form.retractWork();
+            }else{
+                _form.addSplitWork(option.value, opinion.success, opinion.failure);
+            }
+        },
+        "rollback": function(option){
+            if (!option){
+                if (_form.businessData.control["allowRollback"]) _form.rollback();
+            }else{
+                _form.doRollbackActionInvoke(option.log, opinion.success, opinion.failure);
+            }
+        },
+
         "print": function(application, form){
             if (arguments.length){
                 var app = (arguments.length>1) ? arguments[0] : null;
@@ -1026,6 +1008,36 @@ MWF.xScript.Environment = function(ev){
             op.docTitle = title;
             op.appId = "process.Work"+(op.workId || op.workCompletedId);
             layout.desktop.openApplication(this.event, "process.Work", op);
+        },
+        "openJob": function(id, choice){
+            o2.Actions.get("x_processplatform_assemble_surface").listWorkByJob(id, function(json){
+                var len = json.data.workList.length + json.data.workCompletedList.length;
+                if (len){
+                    if (len>1 && choice){
+                        //@todo.........
+                        //.............
+                        //.............//.............
+                        //.............//.............
+
+
+                    }else{
+                        if (json.data.workList.length){
+                            var work =  json.data.workList[0];
+                            this.openWork(work.id, null, work.title);
+                        }else{
+                            var work =  json.data.workCompletedList[0];
+                            this.openWork(null, work.id, work.title);
+                        }
+                    }
+                }
+            }.bind(this));
+
+            // var op = options || {};
+            // op.workId = id;
+            // op.workCompletedId = completedId;
+            // op.docTitle = title;
+            // op.appId = "process.Work"+(op.workId || op.workCompletedId);
+            // layout.desktop.openApplication(this.event, "process.Work", op);
         },
         "openDocument": function(id, title, options){
             var op = options || {};
@@ -1416,9 +1428,9 @@ MWF.xScript.createDict = function(application){
                     if (success) success(json.data);
                 }, function(xhr, text, error){
                     if (failure) failure(xhr, text, error);
-                }, false);
+                }, false, false);
             }else{
-                action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](encodeURIComponent(this.name), applicationId, function(json){
+                action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, function(json){
                     value = json.data;
                     if (success) success(json.data);
                 }, function(xhr, text, error){
@@ -1436,7 +1448,7 @@ MWF.xScript.createDict = function(application){
                 if (success) success(json.data);
             }, function(xhr, text, error){
                 if (failure) failure(xhr, text, error);
-            });
+            }, false, false);
         };
         this.add = function(path, value, success, failure){
             var p = encodePath( path );
@@ -1445,7 +1457,7 @@ MWF.xScript.createDict = function(application){
                 if (success) success(json.data);
             }, function(xhr, text, error){
                 if (failure) failure(xhr, text, error);
-            });
+            }, false, false);
         };
         this["delete"] = function(path, success, failure){
             var p = encodePath( path );
@@ -1454,7 +1466,7 @@ MWF.xScript.createDict = function(application){
                 if (success) success(json.data);
             }, function(xhr, text, error){
                 if (failure) failure(xhr, text, error);
-            });
+            }, false, false);
         };
         this.destory = this["delete"];
     }

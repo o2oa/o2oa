@@ -1,0 +1,230 @@
+.o2_ann_content {
+    height: 100%;
+    overflow: hidden;
+}
+.o2_ann_top {
+    background-color: #484848;
+    border-bottom: 1px solid #333333;
+    height: 50px;
+}
+.o2_ann_topIcon {
+    width: 50px;
+    height: 50px;
+    float: left;
+    cursor: pointer;
+    border-right: 0px solid #ffffff;
+    background: url(/x_component_ANN/$Main/default/icon/create.png) center center no-repeat;
+}
+.o2_ann_topText {
+    height: 50px;
+    float: right;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    line-height: 50px;
+    margin-right: 20px;
+}
+.o2_ann_contentArea {
+    overflow: hidden;
+    height: 510px;
+}
+.o2_ann_leftContent {
+    width: 300px;
+    height: 100%;
+    float: left;
+    background-color: #484848;
+    overflow: auto;
+    /*background-image: url(/x_component_ANN/$Main/default/icon/bg.jpg);*/
+    /*background-size: cover;*/
+    /*background-repeat: no-repeat;*/
+}
+.o2_ann_rightContent {
+    height: 100%;
+    overflow: hidden;
+    margin-left: 300px;
+}
+
+
+/*.o2_ann_right {*/
+    /*height: 100%;*/
+    /*overflow: hidden;*/
+    /*margin-left: 300px;*/
+    /*border-left: 0px solid #999999;*/
+/*}*/
+/*.o2_ann_leftTitle {*/
+    /*height: 60px;*/
+    /*overflow: hidden;*/
+    /*border-bottom: 1px solid #999999;*/
+/*}*/
+/*.o2_ann_leftTitleIcon {*/
+    /*width: 60px;*/
+    /*height: 60px;*/
+    /*float: left;*/
+    /*background: url(/x_component_ANN/$Main/default/icon/logo.png) center center no-repeat;*/
+/*}*/
+/*.o2_ann_leftTitleAction {*/
+    /*width: 60px;*/
+    /*height: 60px;*/
+    /*float: right;*/
+    /*background: url(/x_component_ANN/$Main/default/icon/add.png) center center no-repeat;*/
+    /*cursor: pointer;*/
+/*}*/
+/*.o2_ann_leftTitleText {*/
+    /*margin: 0 60px 0 60px;*/
+    /*height: 60px;*/
+    /*line-height: 60px;*/
+    /*padding: 0 5px;*/
+    /*font-size: 18px;*/
+    /*font-weight: bold;*/
+    /*color: #eeeeee;*/
+/*}*/
+/*.o2_ann_leftContent {*/
+    /*overflow: auto;*/
+/*}*/
+
+.o2_ann_model_node {
+    height: 60px;
+    overflow: hidden;
+}
+.o2_ann_model_node_over {
+    background-color: #333333;
+}
+.o2_ann_model_node .icon {
+    background: url(/x_component_ANN/$Main/default/icon/itemlogo.png) center right no-repeat;
+    width: 50px;
+    height: 60px;
+    float: left;
+}
+.o2_ann_model_node .name {
+    height:25px;
+    margin-top: 10px;
+    line-height: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFFFFF;
+}
+.o2_ann_model_node .date {
+    height: 15px;
+    margin-bottom: 10px;
+    line-height: 15px;
+    font-size: 12px;
+    color: #eeeeee;
+}
+
+.o2_ann_model_node_selected {
+    background-color: #eeeeee;
+}
+.o2_ann_model_node_selected .icon {
+    background: url(/x_component_ANN/$Main/default/icon/itemlogo_selected.png) center right no-repeat;
+    width: 50px;
+    height: 60px;
+    float: left;
+}
+.o2_ann_model_node_selected .name {
+    color: #333333;
+}
+.o2_ann_model_node_selected .date {
+    color: #666666;
+}
+
+.o2_ann_model_nodeRight {
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 60px;
+    width: 30px;
+    float: right;
+}
+.o2_ann_model_nodeContent {
+    height: 80px;
+    margin: 0 30px 0 60px;
+    cursor: pointer;
+}
+
+.o2_ann_modelContext_node {
+    height: 100%;
+    overflow: hidden;
+}
+.o2_ann_modelContext_toolbar {
+    height: 40px;
+}
+.o2_ann_modelContext_content {
+    height: 470px;
+    overflow: auto;
+}
+.o2_ann_modelContext_area {
+    margin: 20px;
+    float: left;
+    width: 40%;
+}
+.o2_ann_modelContext_status {
+    width: 40%;
+    overflow: hidden;
+    padding-bottom: 40px;
+    float: right;
+    margin: 20px 20px 20px 0;
+    border-left: 1px solid #999999;
+}
+.o2_ann_modelContext_topTitle {
+    height: 30px;
+    line-height: 30px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #333333;
+    margin-bottom: 10px;
+}
+.o2_ann_modelContext_line {
+    margin-bottom: 20px;
+}
+.o2_ann_modelContext_title {
+    font-size: 18px;
+    font-weight: bold;
+    height: 30px;
+    line-height: 30px;
+    color: #666666;
+}
+.o2_ann_modelContext_value {
+    font-size: 14px;
+    line-height: 20px;
+    overflow: hidden;
+    color: #337acc;
+}
+.o2_ann_modelContext_input {
+    height: 24px;
+    border-radius: 3px;
+    border: 1px solid #cccccc;
+    font-size: 14px;
+    line-height: 24px;
+    color: #999999;
+    width: 90%;
+    padding: 0 5px;
+}
+.o2_ann_modelContext_button {
+    background-color: #337acc;
+    cursor: pointer;
+    border-radius: 5px;
+    color: #ffffff;
+    border: 1px solid #337acc;
+    height: 28px;
+}
+.o2_ann_modelContext_statusLine {
+    height: 30px;
+    margin-bottom: 10px;
+}
+.o2_ann_modelContext_statusTitle {
+    margin-left: 20px;
+    float: left;
+    line-height: 30px;
+    height: 30px;
+    font-size: 16px;
+    color: #666666;
+    font-weight: bold;
+}
+.o2_ann_modelContext_statusValue {
+    float: left;
+    margin-left: 10px;
+    line-height: 30px;
+    height: 30px;
+    color: #999999;
+    font-size: 14px;
+
+}

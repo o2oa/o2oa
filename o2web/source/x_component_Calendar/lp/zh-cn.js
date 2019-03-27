@@ -124,6 +124,17 @@ MWF.xApplication.Calendar.LP = {
         "arr": ["周日","周一","周二","周三","周四","周五","周六"],
         "rruleArr" : ["SU","MO","TU","WE","TH","FR","SA"]
     },
+    "weeksShort": {
+        "Sun": "日",
+        "Mon": "一",
+        "Tues": "二",
+        "Wed": "三",
+        "Thur": "四",
+        "Fri": "五",
+        "Sat": "六",
+        "arr": ["日","一","二","三","四","五","六"],
+        "rruleArr" : ["SU","MO","TU","WE","TH","FR","SA"]
+    },
     "config": {
         "navi": "导航",
         "autoHide": "自动隐藏",

@@ -1,0 +1,111 @@
+<div class="o2_ann_modelContext_node">
+    <div class="o2_ann_modelContext_toolbar">
+
+        <span MWFnodetype="MWFToolBarButton" MWFButtonImage="/x_component_ANN/$Main/default/tools/edit.png" title="编辑" MWFButtonAction="edit" MWFButtonText="编辑"></span>
+        <span MWFnodetype="MWFToolBarButton" MWFButtonImage="/x_component_ANN/$Main/default/tools/save.png" title="保存" MWFButtonAction="save" MWFButtonText="保存"></span>
+        <span MWFnodetype="MWFToolBarButton" MWFButtonImage="/x_component_ANN/$Main/default/tools/generate.png" title="生成训练集" MWFButtonAction="generate" MWFButtonText="生成训练集"></span>
+        <span MWFnodetype="MWFToolBarButton" MWFButtonImage="/x_component_ANN/$Main/default/tools/learn.png" title="开始训练" MWFButtonAction="learn" MWFButtonText="开始训练"></span>
+        <span MWFnodetype="MWFToolBarButton" MWFButtonImage="/x_component_ANN/$Main/default/tools/stop.png" title="停止生成训练集" MWFButtonAction="stopGenerate" MWFButtonText="停止生成训练集"></span>
+        <span MWFnodetype="MWFToolBarButton" MWFButtonImage="/x_component_ANN/$Main/default/tools/stop.png" title="停止训练" MWFButtonAction="stopLearn" MWFButtonText="停止训练"></span>
+        <span MWFnodetype="MWFToolBarButton" MWFButtonImage="/x_component_ANN/$Main/default/tools/reset.png" title="重置状态" MWFButtonAction="reset" MWFButtonText="重置状态"></span>
+        <span MWFnodetype="MWFToolBarButton" MWFButtonImage="/x_component_ANN/$Main/default/tools/close.png" title="关闭" MWFButtonAction="close" MWFButtonText="关闭"></span>
+        <span MWFnodetype="MWFToolBarButton" MWFButtonImage="/x_component_ANN/$Main/default/tools/remove.png" title="删除" MWFButtonAction="remove" MWFButtonText="删除"></span>
+
+    </div>
+    <div class="o2_ann_modelContext_content">
+        <div class="o2_ann_modelContext_area">
+            <div class="o2_ann_modelContext_topTitle">{{ $.lp.create }}</div>
+
+            <div class="o2_ann_modelContext_line">
+                <div class="o2_ann_modelContext_title">{{ $.lp.name }}</div>
+                <div class="o2_ann_modelContext_value">{{ $.data.name }}</div>
+            </div>
+
+            <div class="o2_ann_modelContext_line">
+                <div class="o2_ann_modelContext_title">{{ $.lp.description }}</div>
+                <div class="o2_ann_modelContext_value">{{ $.data.description }}</div>
+            </div>
+
+            <div class="o2_ann_modelContext_line">
+                <div class="o2_ann_modelContext_title">{{ $.lp.alias }}</div>
+                <div class="o2_ann_modelContext_value">{{ $.data.alias }}</div>
+            </div>
+
+            <div class="o2_ann_modelContext_line">
+                <div class="o2_ann_modelContext_title">{{ $.lp.processList }}</div>
+                <div class="o2_ann_modelContext_value"><div></div></div>
+            </div>
+
+            <div class="o2_ann_modelContext_line">
+                <div class="o2_ann_modelContext_title">{{ $.lp.applicationList }}</div>
+                <div class="o2_ann_modelContext_value"><div></div></div>
+            </div>
+
+            <div class="o2_ann_modelContext_line">
+                <div class="o2_ann_modelContext_title">{{ $.lp.analyzeType }}</div>
+                <div class="o2_ann_modelContext_value">{{ $.data.analyzeType }}</div>
+            </div>
+
+            <div class="o2_ann_modelContext_line">
+                <div class="o2_ann_modelContext_title">{{ $.lp.propertyMap }}</div>
+                <div class="o2_ann_modelContext_value"></div>
+            </div>
+
+            <div class="o2_ann_modelContext_line">
+                <div class="o2_ann_modelContext_title">{{ $.lp.inValueScriptText }}</div>
+                <div class="o2_ann_modelContext_value">{{ $.data.inValueScriptText }}</div>
+            </div>
+
+            <div class="o2_ann_modelContext_line">
+                <div class="o2_ann_modelContext_title">{{ $.lp.outValueScriptText }}</div>
+                <div class="o2_ann_modelContext_value">{{ $.data.outValueScriptText }}</div>
+            </div>
+
+            <div class="o2_ann_modelContext_line">
+                <div class="o2_ann_modelContext_title">{{ $.lp.attachmentScriptText }}</div>
+                <div class="o2_ann_modelContext_value">{{ $.data.attachmentScriptText }}</div>
+            </div>
+
+        </div>
+        <div class="o2_ann_modelContext_status">
+            <div class="o2_ann_modelContext_statusLine">
+                <div class="o2_ann_modelContext_statusTitle">{{ $.lp.startDate }}</div>
+                <div class="o2_ann_modelContext_statusValue">{{ $.data.startDate }}</div>
+            </div>
+            <div class="o2_ann_modelContext_statusLine">
+                <div class="o2_ann_modelContext_statusTitle">{{ $.lp.endDate }}</div>
+                <div class="o2_ann_modelContext_statusValue">{{ $.data.endDate }}</div>
+            </div>
+            <div class="o2_ann_modelContext_statusLine">
+                <div class="o2_ann_modelContext_statusTitle">{{ $.lp.entryCount }}</div>
+                <div class="o2_ann_modelContext_statusValue">{{ $.data.entryCount }}</div>
+            </div>
+
+            <div class="o2_ann_modelContext_statusLine">
+                <div class="o2_ann_modelContext_statusTitle">{{ $.lp.effectiveEntryCount }}</div>
+                <div class="o2_ann_modelContext_statusValue">{{ $.data.effectiveEntryCount }}</div>
+            </div>
+
+            <div class="o2_ann_modelContext_statusLine">
+                <div class="o2_ann_modelContext_statusTitle">{{ $.lp.statusText }}</div>
+                <div class="o2_ann_modelContext_statusValue">{{ $.data.status }}</div>
+            </div>
+
+            <div class="o2_ann_modelContext_statusLine">
+                <div class="o2_ann_modelContext_statusTitle">{{ $.lp.generatingPercent }}</div>
+                <div class="o2_ann_modelContext_statusValue">{{ $.data.generatingPercent }}</div>
+            </div>
+
+            <div class="o2_ann_modelContext_statusLine">
+                <div class="o2_ann_modelContext_statusTitle">{{ $.lp.learnEntryCount }}</div>
+                <div class="o2_ann_modelContext_statusValue">{{ $.data.learnEntryCount }}</div>
+            </div>
+
+            <div class="o2_ann_modelContext_statusLine">
+                <div class="o2_ann_modelContext_statusTitle">{{ $.lp.validationEntryCount }}</div>
+                <div class="o2_ann_modelContext_statusValue">{{ $.data.validationEntryCount }}</div>
+            </div>
+
+        </div>
+    </div>
+</div>

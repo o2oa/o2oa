@@ -360,7 +360,9 @@ var MGrid = new Class({
             if( this.getTrCounts() < this.options.maxTrCount ){
                 this._createTr( itemData, isNew, unid, sourceData )
             }else{
-                this.app.notice("最多只能添加"+this.options.maxTrCount+"项目","error");
+                if( this.app && this.app.notice ){
+                    this.app.notice("最多只能添加"+this.options.maxTrCount+"项目","error");
+                }
             }
         }else{
             this._createTr( itemData, isNew, unid, sourceData )

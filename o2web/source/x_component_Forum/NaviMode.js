@@ -541,6 +541,7 @@ MWFForum.NaviMode.AllItem = new Class({
         var view = this.navi.view = new MWFForum.NaviMode.AllView( this.viewWarp, this.app, this, {
             templateUrl : this.navi.path + this.navi.options.style + "/"+"listItem.json",
             pagingEnable : true,
+            holdMouseDownStyles : true,
             pagingPar : {
                 hasReturn : false,
                 currentPage : this.navi.options.viewPageNum,
@@ -651,6 +652,7 @@ MWFForum.NaviMode.RecommandItem = new Class({
         var view = this.navi.view = new MWFForum.NaviMode.RecommandView( this.viewWarp, this.app, this, {
             templateUrl : this.navi.path + this.navi.options.style + "/"+"listItem.json",
             pagingEnable : true,
+            holdMouseDownStyles : true,
             pagingPar : {
                 hasReturn : false,
                 currentPage : this.navi.options.viewPageNum,
@@ -760,6 +762,7 @@ MWFForum.NaviMode.CreamItem = new Class({
         var view = this.navi.view = new MWFForum.NaviMode.CreamView( this.viewWarp, this.app, this, {
             templateUrl : this.navi.path + this.navi.options.style + "/"+"listItem.json",
             pagingEnable : true,
+            holdMouseDownStyles : true,
             pagingPar : {
                 hasReturn : false,
                 currentPage : this.navi.options.viewPageNum,

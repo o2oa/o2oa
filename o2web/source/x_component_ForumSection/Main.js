@@ -597,6 +597,7 @@ MWF.xApplication.ForumSection.Explorer = new Class({
 		this.view = new MWF.xApplication.ForumSection.View( this.viewContainer, this.app, this, {
 			templateUrl : this.parent.path+"listItem.json",
 			pagingEnable : true,
+			holdMouseDownStyles : true,
 			onPostCreateViewBody : function(){
 				this.app.fireEvent("postCreateViewBody");
 			}.bind(this),
@@ -644,6 +645,7 @@ MWF.xApplication.ForumSection.Explorer = new Class({
 		this.viewPrime = new MWF.xApplication.ForumSection.PrimeView( this.viewContainerPrime, this.app, this, {
 			templateUrl : this.parent.path+"listItemPrime.json",
 			pagingEnable : true,
+			holdMouseDownStyles : true,
 			pagingPar : {
 				hasReturn : !this.app.naviMode,
 				currentPage : 1,

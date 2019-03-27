@@ -913,7 +913,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
                     var contentAreaNode = p.getParent("div").getParent("div");
                     var tabAreaNode = contentAreaNode.getPrevious("div");
                     var idx = contentAreaNode.getChildren().indexOf(p.getParent("div"));
-                    var tabNode = tabAreaNode.getChildren()[idx];
+                    var tabNode = tabAreaNode.getLast().getFirst().getChildren()[idx];
                     tabNode.click();
                     p = tabAreaNode.getParent("div");
                 }

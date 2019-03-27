@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<textarea id="content" style="width: 600px; height: 500px"></textarea>
+<textarea id="result" style="width: 600px; height: 500px"></textarea><br>
+
+<input type="button" value="testStr" onclick="test()"/>
+<input type="button" value="testDom" onclick="testDom()"/>
+
+<div id="resultDiv"></div>
+
+
+
+<script>
+    var json = {
+        "if": {
+            "x": 0
+        },
+        "lp": {
+            "saveIdeaDefault": "saveIdeaDefault",
+            "text2": "text2",
+            "text3": "text3",
+            "items": [
+                {
+                    "itemvalue": "items1",
+                    "subs": [
+                        {"subvalue": "items1_sub1"},
+                        {"subvalue": "items1_sub2"},
+                        {"subvalue": "items1_sub3"},
+                        {"subvalue": "items1_sub4"},
+                        {"subvalue": "items1_sub5"}
+                    ]
+                },
+                {
+                    "itemvalue": "items2"
+                },
+                {
+                    "itemvalue": "items3",
+                    "subs": [
+                        {"subvalue": "items3_sub1"},
+                        {"subvalue": "items3_sub2"}
+                    ]
+                },
+                {
+                    "itemvalue": "items4",
+                    "subs": [
+                        {"subvalue": "items4_sub1"},
+                        {"subvalue": "items4_sub2"},
+                        {"subvalue": "items4_sub3"}
+                    ]
+                }
+            ]
+        }
+    };
+    function testDom(){
+        document.all.resultDiv.innerHTML = "";
+        var sd = new Date();
+        var node = document.all.resultDiv;
+        for (var r=0; r<18; r++){
+            for (var i=0; i<json.lp.items.length; i++){
+                var n = document.createElement("div");
+                n.innerText = json.lp.text3;
+                node.appendChild(n);
+
+                var n2 = document.createElement("div");
+                n2.className = "o2_profile_ideasSave";
+                n2.innerText = json.lp.items[i].itemvalue;
+                node.appendChild(n2);
+
+                if (json.lp.items[i].subs){
+                    for (var j=0; j<json.lp.items[i].subs.length; j++){
+                        var n3 = document.createElement("div");
+                        n3.className = "o2_profile_ideasSave";
+                        n3.innerText = json.lp.items[i].subs[j].subvalue;
+                        node.appendChild(n3);
+                    }
+                }
+            }
+        }
+
+        document.all.result.value = node.innerHTML;
+
+        var ed = new Date();
+        alert(ed.getTime()-sd.getTime());
+    }
+    function test(){
+        var sd = new Date();
+        var t = document.all.content.value;
+        var r = "";
+        for (var z=0; z<18; z++){
+            r += parseHtml(t, json);
+        }
+        document.all.result.value = r;
+        document.all.resultDiv.innerHTML = r;
+
+        var ed = new Date();
+        alert(ed.getTime()-sd.getTime());
+    }
+    function _typeOf(item){
+        if (item == null) return 'null';
+        if (item.$family != null) return item.$family();
+        if (item.constructor == window.Array) return "array";
+
+        if (item.nodeName){
+            if (item.nodeType == 1) return 'element';
+            if (item.nodeType == 3) return (/\S/).test(item.nodeValue) ? 'textnode' : 'whitespace';
+        } else if (typeof item.length == 'number'){
+            if (item.callee) return 'arguments';
+        }
+        return typeof item;
+    }
+    function getIfBlockEnd(v){
+        var rex = /(\{\{if\s+)|(\{\{\s*end if\s*\}\})/gmi;
+        var rexEnd = /\{\{\s*end if\s*\}\}/gmi;
+        var subs = 1;
+        while ((match = rex.exec(v)) !== null) {
+            var fullMatch = match[0];
+            if (fullMatch.search(rexEnd)!==-1){
+                subs--;
+                if (subs==0) break;
+            }else{
+                subs++
+            }
+        }
+        if (match) return {"codeIndex": match.index, "lastIndex": rex.lastIndex};
+        return {"codeIndex": v.length-1, "lastIndex": v.length-1};
+    }
+    function getEachBlockEnd(v){
+        var rex = /(\{\{each\s+)|(\{\{\s*end each\s*\}\})/gmi;
+        var rexEnd = /\{\{\s*end each\s*\}\}/gmi;
+        var subs = 1;
+        while ((match = rex.exec(v)) !== null) {
+            var fullMatch = match[0];
+            if (fullMatch.search(rexEnd)!==-1){
+                subs--;
+                if (subs==0) break;
+            }else{
+                subs++;
+            }
+        }
+        if (match) return {"codeIndex": match.index, "lastIndex": rex.lastIndex};
+        return {"codeIndex": v.length-1, "lastIndex": v.length-1};
+    }
+    function parseHtml(str, json){
+        var v = str;
+        var rex = /(\{\{\s*)[\s\S]*?(\s*\}\})/gmi;
+
+        var match;
+        while ((match = rex.exec(v)) !== null) {
+            var fullMatch = match[0];
+            var offset = 0;
+
+            //if statement begin
+            if (fullMatch.search(/\{\{if\s+/i)!==-1){
+                //找到对应的end if
+                var condition = fullMatch.replace(/^\{\{if\s*/i, "");
+                condition = condition.replace(/\s*\}\}$/i, "");
+                var flag = _jsonText(json, condition, "boolean");
+
+                var tmpStr = v.substring(rex.lastIndex, v.length);
+                var endIfIndex = getIfBlockEnd(tmpStr);
+                if (flag){ //if 为 true
+                    var parseStr = parseHtml(tmpStr.substring(0, endIfIndex.codeIndex), json);
+                    var vLeft = v.substring(0, match.index);
+                    var vRight = v.substring(rex.lastIndex+endIfIndex.lastIndex, v.length);
+                    v = vLeft + parseStr + vRight;
+                    offset = parseStr.length - fullMatch.length;
+                }else{
+                    v = v.substring(0, match.index) + v.substring(rex.lastIndex+endIfIndex.lastIndex, v.length);
+                    offset = 0-fullMatch.length;
+                }
+            }else  if (fullMatch.search(/\{\{each\s+/)!==-1) { //each statement
+                var itemString = fullMatch.replace(/^\{\{each\s*/, "");
+                itemString = itemString.replace(/\s*\}\}$/, "");
+                var eachValue = _jsonText(json, itemString, "object");
+
+                var tmpEachStr = v.substring(rex.lastIndex, v.length);
+                var endEachIndex = getEachBlockEnd(tmpEachStr);
+
+                var parseEachStr = tmpEachStr.substring(0, endEachIndex.codeIndex);
+                var eachResult = "";
+                if (eachValue && _typeOf(eachValue)==="array"){
+                    for (var i=0; i<eachValue.length; i++){
+                        eachValue[i]._ = json;
+                        var parseEachResultStr = parseHtml(parseEachStr, eachValue[i]);
+                        eachResult += parseEachResultStr;
+                    }
+                    var eLeft = v.substring(0, match.index);
+                    var eRight = v.substring(rex.lastIndex+endEachIndex.lastIndex, v.length);
+                    v = eLeft + eachResult + eRight;
+                    offset = eachResult.length - fullMatch.length;
+                }else{
+                    v = v.substring(0, match.index) + v.substring(rex.lastIndex+endEachIndex.lastIndex, v.length);
+                    offset = 0-fullMatch.length;
+                }
+
+            }else{ //text statement
+                var text = fullMatch.replace(/^\{\{\s*/, "");
+                text = text.replace(/\}\}\s*$/, "");
+                var value = _jsonText(json, text);
+                offset = value.length-fullMatch.length;
+                v = v.substring(0, match.index) + value + v.substring(rex.lastIndex, v.length);
+            }
+            rex.lastIndex = rex.lastIndex + offset;
+        }
+        return v;
+    }
+
+    function parseHtml2(str, blocks){
+        var v = str;
+        var rex = /(\{\{\s*)[\s\S]*?(\s*\}\})/g;
+        var block = null, ifBlock = null, eachBlock = null;
+        if (blocks && blocks.length){
+            for (var i=blocks.length-1; i>=0; i--){
+                if (i===blocks.length-1) block = blocks[i];
+                if (!ifBlock && blocks[i].type==="if") ifBlock = blocks[i];
+                if (!eachBlock && blocks[i].type==="each") eachBlock = blocks[i];
+                if (block && ifBlock && eachBlock) break;
+            }
+        }
+
+        var match;
+        while ((match = rex.exec(v)) !== null) {
+            var fullMatch = match[0];
+            var offset = 0;
+
+            //if statement begin
+            if (fullMatch.search(/^\{\{if\s+/)!==-1){
+                var ifBlockObj = {"start": match.index, "type": "if"};
+                var condition = fullMatch.replace(/^\{\{if\s*/, "");
+                condition = condition.replace(/\s*\}\}$/, "");
+                ifBlockObj.value = _jsonText(json, condition, "boolean");
+                if (!blocks) blocks = [];
+                blocks.push(ifBlockObj);
+                block = ifBlockObj;
+                ifBlock = ifBlockObj;
+
+                v = v.substring(0, match.index) + v.substring(rex.lastIndex, v.length);
+                offset = 0 - fullMatch.length;
+
+            }else if (fullMatch.search(/\{\{\s*end if\s*\}\}/)!==-1){ //if statement end
+                if (ifBlock && !ifBlock.value){
+                    v = v.substring(0, ifBlock.start) + v.substring(rex.lastIndex, v.length);
+                    offset = ifBlock.start - rex.lastIndex;
+                }else{
+                    v = v.substring(0, match.index) + v.substring(rex.lastIndex, v.length);
+                    offset = 0 - fullMatch.length;
+                }
+            }else if (fullMatch.search(/^\{\{each\s+/)!==-1) { //each statement
+                var eachBlockObj = {"start": match.index, "type": "each"};
+                var itemString = fullMatch.replace(/^\{\{each\s*/, "");
+                itemString = itemString.replace(/\s*\}\}$/, "");
+                eachBlockObj.value = _jsonText(json, itemString, "object");
+                if (!blocks) blocks = [];
+                blocks.push(eachBlockObj);
+                block = eachBlockObj;
+                eachBlock = eachBlockObj;
+
+                v = v.substring(0, match.index) + v.substring(rex.lastIndex, v.length);
+                offset = 0 - fullMatch.length;
+
+            }else if (fullMatch.search(/\{\{\s*end each\s*\}\}/)!==-1) { //each statement end
+
+
+            }else{ //text statement
+                if (ifBlock && !ifBlock.value){
+                    v = v.substring(0, ifBlock.start) + v.substring(rex.lastIndex, v.length);
+                    offset = ifBlock.start - rex.lastIndex;
+                }else{
+                    var text = fullMatch.replace(/^\{\{\s*/, "");
+                    text = text.replace(/\}\}\s*$/, "");
+                    var value = _jsonText(((eachBlock) ? eachBlock.value : json), text);
+                    offset = value.length-fullMatch.length;
+                    v = v.substring(0, match.index) + value + v.substring(rex.lastIndex, v.length);
+                }
+
+            }
+            rex.lastIndex = rex.lastIndex + offset;
+        }
+        return v;
+    }
+
+    function _jsonText(json, text, type){
+        var $ = json;
+        var f = eval("(function($){\n return "+text+";\n})");
+        returnValue = f.apply(json, [$]);
+        if (returnValue===undefined) returnValue="";
+        if (type==="boolean") return (!!returnValue);
+        if (type==="object") return returnValue;
+        returnValue = returnValue.toString();
+        return returnValue || "";
+    }
+
+</script>
+</body>
+</html>

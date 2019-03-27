@@ -32,6 +32,22 @@
     "expand": false,
     "sub": []
   },
+  {
+    "title": "数据表",
+    "id": "1.1",
+    "action": "tableConfig",
+    "icon": "query_table.png",
+    "expand": false,
+    "sub": []
+  },
+  {
+    "title": "查询配置",
+    "id": "1.1",
+    "action": "statementConfig",
+    "icon": "query_statement.png",
+    "expand": false,
+    "sub": []
+  },
 //  {
 //    "title": "展示配置",
 //    "id": "1.1",

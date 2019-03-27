@@ -122,8 +122,12 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                     var module = this.form.currentSelectedModule;
                     if (module.moduleType != "form" && module.moduleName.indexOf("$") == -1) {
                         this.copyModule();
+                        var _form = module.form;
                         module.destroy();
-                        module.form.selected();
+                        _form.currentSelectedModule = null;
+                        _form.selected();
+                        _form = null;
+                        //module.form.selected();
                     }
                 }
                 //           }
@@ -1686,9 +1690,10 @@ debugger;
                     "width": "16px",
                     "height": "16px",
                     "z-index": 20000,
-                    "background": "url("+this.path+this.options.style+"/pageToolbar/wand.png)"
+                    "background": "url("+this.path+this.options.style+"/formtoolbar/wand.png)"
                 }}).inject(this.content);
                 this.brushCursorMoveFun = this.brushCursorMove.bind(this);
+                this.contentPosition = this.content.getPosition();
                 this.content.addEvent("mousemove", this.brushCursorMoveFun);
 
                 //this.designNode.setStyle("cursor", "url(/"+this.path+this.options.style+"/pageToolbar/brush.png)");
@@ -1706,8 +1711,8 @@ debugger;
     },
     brushCursorMove: function(e){
         if (this.brushCursor){
-            var x = e.event.layerX+10;
-            var y = e.event.layerY+10;
+            var x = e.page.x-this.contentPosition.x+10;
+            var y = e.page.y-this.contentPosition.y+10;
             this.brushCursor.setStyles({
                 "left": ""+x+"px",
                 "top": ""+y+"px"

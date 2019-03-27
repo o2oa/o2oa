@@ -239,7 +239,13 @@ MWF.xDesktop.getProcessFileUr = function(id, app){
     url = url.replace("{applicationFlag}", app);
     return url
 };
-
+MWF.xDesktop.getCMSFileUr = function(id, app){
+    var root = "x_cms_assemble_control";
+    var url = MWF.Actions.getHost(root)+"/"+root+MWF.Actions.get(root).action.actions.readFile.uri;
+    url = url.replace("{flag}", id);
+    url = url.replace("{applicationFlag}", app);
+    return url
+};
 
 MWF.xDesktop.getServiceAddress = function(config, callback){
     var error = function(){
@@ -294,13 +300,6 @@ MWF.xDesktop.chooseCenter = function(config){
     return center;
 };
 MWF.xDesktop.getServiceAddressConfigArray = function(config, callback, error) {
-    // var center = config.center[0];
-    // return MWF.restful("get", "res/config/distribute.json", null, function(json){
-    //     //this.serviceAddressList = json.data;
-    //     //this.centerServer = center;
-    //     if (callback) callback(json.data, center);
-    // }.bind(this));
-
     var requests = [];
     config.center.each(function(center){
         requests.push(

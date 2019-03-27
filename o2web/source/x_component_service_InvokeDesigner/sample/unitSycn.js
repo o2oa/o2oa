@@ -65,7 +65,7 @@ var applications = resources.getContext().applications();
 
 var Utils = {
     getUnitFlag : function( json ){
-        return json.flag || json.distinguishedName || json.unique || json.id || json.name;
+        return json.flag || json.unique || json.distinguishedName  || json.id || json.name;
     },
     getKeyEqualObjFromArray : function( sourceArray, sourceKey, value ){
         for( var i=0; i<sourceArray.length; i++ ){
