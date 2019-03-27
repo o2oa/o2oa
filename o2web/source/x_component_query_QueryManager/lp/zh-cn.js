@@ -78,6 +78,19 @@ MWF.xApplication.query.QueryManager.LP = {
         "deletePageTemplateTitle": "删除展示器模板确认",
         "deletePageTemplate": "是否确定要删除当前展示器模板吗？"
     },
+    "table": {
+        "create": "新建数据表",
+        "search": "搜索数据表",
+        "searchText": "请输入关键字",
+
+        "noStatNoticeText": "此数据应用现在还没有数据表，您可以点击此处创建一个新数据表",
+        "loaded": "数据表加载完毕",
+
+        "deleteProcessTitle": "删除数据表确认",
+        "deleteProcess": "是否确定要删除当前数据表？",
+        "deletePageTemplateTitle": "删除数据表模板确认",
+        "deletePageTemplate": "是否确定要删除当前数据表模板吗？"
+    },
 
 
     "application": {

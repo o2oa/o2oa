@@ -46,8 +46,8 @@
             }
         }
         if ((typeof currentNS).toLowerCase()==="function"){
-            for (var prop in props){
-                currentNS.prototype[prop] = props[prop];
+            for (var propfun in props){
+                currentNS.prototype[propfun] = props[propfun];
             }
         }
         return currentNS;
@@ -91,42 +91,93 @@
 
         _requireJs(jsPath, callback, loadAsync, compression);
     };
-    var _require = function(module, callback, async, compression){
+    var _requireSequence = function(fun, module, thisLoaded, thisErrorLoaded, callback, async, compression){
+        var m = module.shift();
+        fun(m, {
+            "onSuccess": function(){
+                thisLoaded.push(module[i]);
+                if (module.length){
+                    _requireSequence(module, thisLoaded, thisErrorLoaded, callback);
+                }else{
+                    if (thisErrorLoaded.length){
+                        o2.runCallback(callback, "failure", [thisLoaded, thisErrorLoaded]);
+                    }else{
+                        o2.runCallback(callback, "success", [thisLoaded, thisErrorLoaded]);
+                    }
+                }
+            },
+            "onFailure": function(){
+                thisErrorLoaded.push(module[i]);
+                o2.runCallback(callback, "failure", [thisLoaded, thisErrorLoaded]);
+            }
+        }, async, compression);
+    };
+    var _requireDisarray = function(fun, module, thisLoaded, thisErrorLoaded, callback, async, compression){
+        for (var i=0; i<module.length; i++){
+            fun(module[i], {
+                "onSuccess": function(){
+                    thisLoaded.push(module[i]);
+                    if ((thisLoaded.length+thisErrorLoaded.length)===module.length){
+                        if (thisErrorLoaded.length){
+                            o2.runCallback(callback, "failure", [thisLoaded, thisErrorLoaded]);
+                        }else{
+                            o2.runCallback(callback, "success", [thisLoaded, thisErrorLoaded]);
+                        }
+                    }
+                },
+                "onFailure": function(){
+                    thisErrorLoaded.push(module[i]);
+                    o2.runCallback(callback, "failure", [thisLoaded, thisErrorLoaded]);
+                }
+            }, async, compression);
+        }
+    };
+    var _require = function(module, callback, async, sequence, compression){
         var type = typeOf(module);
         if (type==="array"){
+            var sql = !!sequence;
             var thisLoaded = [];
             var thisErrorLoaded = [];
-            for (var i=0; i<module.length; i++){
-                _requireSingle(modules[i], {
-                    "onSuccess": function(){
-                        thisLoaded.push(modules[i]);
-                        if ((thisLoaded.length+thisErrorLoaded.length)===modules.length){
-                            if (thisErrorLoaded.length){
-                                o2.runCallback(callback, "failure", [thisLoaded, thisErrorLoaded]);
-                            }else{
-                                o2.runCallback(callback, "success", [thisLoaded, thisErrorLoaded]);
-                            }
-                        }
-                    },
-                    "onFailure": function(){
-                        thisErrorLoaded.push(modules[i]);
-                        o2.runCallback(callback, "failure", [thisLoaded, thisErrorLoaded]);
-                    }
-                }, async, compression);
+            if (sql){
+                _requireSequence(_requireSingle, module, thisLoaded, thisErrorLoaded, callback, async, compression);
+
+            }else{
+                _requireDisarray(_requireSingle, module, thisLoaded, thisErrorLoaded, callback, async, compression);
             }
         }
         if (type==="string"){
             _requireSingle(module, callback, async, compression);
         }
     };
-    var _requireApp = function(module, clazz, callback, async){
+
+    var _requireAppSingle = function(modules, callback, async, compression){
+        var module = modules[0];
+        var clazz = modules[1];
         var levels = module.split(".");
         //levels.shift();
         var root = "x_component_"+levels.join("_");
         var clazzName = clazz || "Main";
         var path = "/"+root+"/"+clazzName.replace(/\./g, "/")+".js";
         var loadAsync = (async!==false);
-        _requireJs(path, callback, loadAsync);
+        _requireJs(path, callback, loadAsync, compression);
+    };
+    var _requireApp = function(module, clazz, callback, async, sequence, compression){
+        var type = typeOf(module);
+        if (type==="array"){
+            var sql = !!sequence;
+            var thisLoaded = [];
+            var thisErrorLoaded = [];
+            if (sql){
+                _requireSequence(_requireAppSingle, module, thisLoaded, thisErrorLoaded, callback, async, compression);
+
+            }else{
+                _requireDisarray(_requireAppSingle, module, thisLoaded, thisErrorLoaded, callback, async, compression);
+            }
+        }
+        if (type==="string"){
+            var modules = [module, clazz];
+            _requireAppSingle(modules, callback, async, compression);
+        }
     };
 
     var _json = JSON;
@@ -316,8 +367,8 @@
         properties = Object(properties);
         var keys = Object.keys(properties);
         var descs = [];
-        for (var i = 0; i < keys.length; i++)
-            descs.push([keys[i], convertToDescriptor(properties[keys[i]])]);
+        for (var j = 0; j < keys.length; j++)
+            descs.push([keys[j], convertToDescriptor(properties[keys[j]])]);
         for (var i = 0; i < descs.length; i++){
             if (Object.defineProperty && (Browser.name=="ie" && Browser.version!=8)){
                 Object.defineProperty(obj, descs[i][0], descs[i][1]);
@@ -338,6 +389,14 @@
     this.o2.restful = _restful;
     this.o2.release = _release;
     this.o2.defineProperties = _defineProperties;
+
+    Object.repeatArray = function(o, count){
+        var arr = [];
+        for (var i=0; i<count; i++){
+            arr.push(o)
+        }
+        return arr;
+    }
 
 })();
 o2.core = true;

@@ -7,6 +7,8 @@ o2.widget.Dialog = o2.DL = new Class({
 		"title": "dialog",
 		"width": "300",
 		"height": "150",
+		"contentWidth": null,
+		"contentHeight": null,
 		"top": "0",
 		"left": "0",
 		"fromTop": "0",
@@ -19,13 +21,17 @@ o2.widget.Dialog = o2.DL = new Class({
 		"content": null,
 
 		"isMax": false,
-		"isClose": true,
+		"isClose": false,
 		"isResize": true,
 		"isMove": true,
+        "isTitle": true,
 		
 		"buttons": null,
 		"buttonList": null,
         "maskNode" : null,
+
+		"transition": null,
+		"duration": 200,
 
         "container": null
 	},
@@ -93,8 +99,6 @@ o2.widget.Dialog = o2.DL = new Class({
 		this.node.set("styles", this.css.from);
 		this.node.inject(this.options.container || $(document.body));
 		this.node.addEvent("selectstart", function(e){
-
-			
 			var select = e.target.getStyle("-webkit-user-select");
             if (!select) select = this.getParentSelect(e.target);
 			if (!select){
@@ -117,6 +121,15 @@ o2.widget.Dialog = o2.DL = new Class({
 		this.bottom = this.node.getElement(".MWF_dialod_bottom");
 		this.resizeNode = this.node.getElement(".MWF_dialod_bottom_resize");
 		this.button = this.node.getElement(".MWF_dialod_button");
+
+		if (!this.options.isTitle) {
+            this.title.destroy();
+            this.title = null;
+            this.titleCenter = null;
+            this.titleRefresh = null;
+            this.titleText = null;
+            this.titleAction = null;
+        }
 
 		if (this.title) this.title.setStyles(this.css.MWF_dialod_title);
         if (this.titleCenter) this.titleCenter.setStyles(this.css.MWF_dialod_title_center);
@@ -145,22 +158,52 @@ o2.widget.Dialog = o2.DL = new Class({
         this.titleRefresh.set("title", o2.LP.widget.refresh);
     },
 	setTitleEvent: function(){
-
 		this.title.addEvent("mousedown", function(){
-			this.containerDrag = new Drag.Move(this.node);
+			this.containerDrag = new Drag.Move(this.node, {
+                "container": (layout) ? layout.desktop.currentApp.content: null
+            });
 		}.bind(this));
 		this.title.addEvent("mouseup", function(){
 			this.node.removeEvents("mousedown");
 			this.title.addEvent("mousedown", function(){
-				this.containerDrag = new Drag.Move(this.node);
+				this.containerDrag = new Drag.Move(this.node, {
+                    "container": (layout) ? layout.desktop.currentApp.content: null
+                });
 			}.bind(this));
 		}.bind(this));
 	},
 	setResizeNode: function(){
 		//未实现................................
+        if (!this.options.isResize){
+            if (this.resizeNode) this.resizeNode.hide();
+        }else{
+            if (this.resizeNode){
+                this.node.makeResizable({
+                    "handle": this.resizeNode || this.bottom,
+                    "limit": {x:[200, null], y:[150, null]},
+                    "onDrag": function(){
+                        var size = this.node.getComputedSize();
+
+                        this.css.to.width = size.totalWidth;
+                        this.css.to.height = size.totalHeight;
+
+                        this.setContentSize(size.totalHeight, size.totalWidth);
+
+                        this.fireEvent("resize");
+                    }.bind(this),
+                    "onComplete": function(){
+                        this.fireEvent("resizeCompleted");
+                    }.bind(this)
+                });
+			}
+		}
 	},
 	getAction: function(){
-		//未实现................................
+		//未完成................................
+		if (this.options.isClose){
+			this.closeAction = new Element("div", {"styles": this.css.closeAction}).inject(this.titleAction);
+            this.closeAction.addEvent("click", this.close.bind(this));
+		}
 	},
 	getButton: function(){
 		for (i in this.options.buttons){
@@ -180,24 +223,38 @@ o2.widget.Dialog = o2.DL = new Class({
 					"value": bt.text,
 					"styles": this.css.button,
 					"events": {
-						"click": bt.action.bind(this, this)
+						"click": function(e){bt.action.call(this, this, e)}.bind(this)
 					}
 				}).inject(this.button);
 			}.bind(this));
 		}
 	},
 	getContentSize: function(height, width){
-		if (!height) height = this.options.height;
-		if (!width) width = this.options.width;
+        var nodeHeight, nodeWidth;
+		if (!height){
+			if (this.options.contentHeight){
+                nodeHeight = height = this.options.contentHeight.toFloat();
+			}else{
+                height = this.options.height.toFloat();
+			}
+		}
+        if (!width){
+            if (this.options.contentWidth){
+                nodeWidth = width = this.options.contentWidth.toFloat();
+            }else{
+                width = this.options.width.toFloat();
+            }
+        }
 
+        var offsetHeight = 0;
+        var offsetWidth = 0;
 		if (this.title){
 			var h1 = this.title.getSize().y;
 			var ptop1 = this.title.getStyle("padding-top").toFloat();
 			var pbottom1 = this.title.getStyle("padding-bottom").toFloat();
 			var mtop1 = this.title.getStyle("margin-top").toFloat();
 			var mbottom1 = this.title.getStyle("margin-bottom").toFloat();
-			
-			height = height - h1 - ptop1 - pbottom1 - mtop1 - mbottom1;
+            offsetHeight += h1 + ptop1 + pbottom1 + mtop1 + mbottom1;
 		}
 		if (this.bottom){
 			var h2 = this.bottom.getSize().y;
@@ -205,8 +262,8 @@ o2.widget.Dialog = o2.DL = new Class({
 			var pbottom2 = this.bottom.getStyle("padding-bottom").toFloat();
 			var mtop2 = this.bottom.getStyle("margin-top").toFloat();
 			var mbottom2 = this.bottom.getStyle("margin-bottom").toFloat();
-			
-			height = height - h2 - ptop2 - pbottom2 - mtop2 - mbottom2;
+
+            offsetHeight += h2 + ptop2 + pbottom2 + mtop2 + mbottom2;
 		}
 		if (this.button){
 			var h3 = this.button.getSize().y;
@@ -214,15 +271,21 @@ o2.widget.Dialog = o2.DL = new Class({
 			var pbottom3 = this.button.getStyle("padding-bottom").toFloat();
 			var mtop3 = this.button.getStyle("margin-top").toFloat();
 			var mbottom3 = this.button.getStyle("margin-bottom").toFloat();
-			
-			height = height - h3 - ptop3 - pbottom3 - mtop3 - mbottom3;
+
+            offsetHeight += h3 + ptop3 + pbottom3 + mtop3 + mbottom3;
 		}
 				
 		var ptop4 = this.content.getStyle("padding-top").toFloat();
 		var pbottom4 = this.content.getStyle("padding-bottom").toFloat();
 		var mtop4 = this.content.getStyle("margin-top").toFloat();
 		var mbottom4 = this.content.getStyle("margin-bottom").toFloat();
-		height = height - ptop4 - pbottom4 - mtop4 - mbottom4;
+        offsetHeight += ptop4 + pbottom4 + mtop4 + mbottom4;
+
+        if (nodeHeight){
+            nodeHeight = nodeHeight + offsetHeight+2;
+        }else {
+            height = height - offsetHeight;
+        }
 
         //if (this.content.getParent().getStyle("overflow-x")!="hidden" ) height = height-18;
 		
@@ -230,8 +293,34 @@ o2.widget.Dialog = o2.DL = new Class({
 		var pright = this.content.getStyle("padding-right").toFloat();
 		var mleft = this.content.getStyle("margin-left").toFloat();
 		var mright = this.content.getStyle("margin-right").toFloat();
-		width = width-pleft-pright-mleft-mright;
+        offsetWidth = pleft+pright+mleft+mright;
+		//width = width-pleft-pright-mleft-mright;
         //if (this.content.getParent().getStyle("overflow-y")!="hidden" ) width = width-18;
+        if (nodeWidth){
+            nodeWidth = nodeWidth+offsetWidth;
+        }else{
+            width = width-offsetWidth;
+		}
+
+
+		if (nodeHeight) {
+            this.options.height = nodeHeight;
+            this.options.contentHeight = null;
+            this.options.fromTop = this.options.fromTop.toFloat()-offsetHeight/2;
+            this.options.top = this.options.top.toFloat()-offsetHeight/2;
+            this.css.to.height = nodeHeight+"px";
+            this.css.to.top = this.options.top+"px";
+            this.css.from.top = this.options.fromTop+"px";
+        }
+        if (nodeWidth){
+            this.options.width = nodeWidth;
+            this.options.contentWidth = null;
+            this.options.fromLeft = this.options.fromLeft.toFloat()-offsetWidth/2;
+            this.options.left = this.options.left.toFloat()-offsetWidth/2;
+            this.css.to.width = nodeWidth+"px";
+            this.css.to.left = this.options.left+"px";
+            this.css.from.left = this.options.fromLeft+"px";
+        }
 
         if (!height || height<0){
             this.content.setStyles({"overflow": "hidden", "height": "auto", "width": ""+width+"px"});
@@ -259,8 +348,21 @@ o2.widget.Dialog = o2.DL = new Class({
             this.content.setStyles(this.getContentSize(height, width));
             this.content.setStyle("width", "auto");
 		//}
-
 	},
+	reCenter: function(){
+		var size = this.node.getSize();
+		var container = this.options.container || $(document.body);
+        var p = o2.getCenter(size, container, container);
+        this.options.top = p.y;
+        this.options.left = p.x;
+        this.css.to.top = this.options.top+"px";
+        this.css.to.left = this.options.left+"px";
+        this.node.setStyles({
+			"top": this.css.to.top,
+            "left": this.css.to.left
+		});
+	},
+
 	getTitle: function(){
 		this.titleText.set("text", this.options.title);
 	},
@@ -296,7 +398,7 @@ o2.widget.Dialog = o2.DL = new Class({
 	show: function(){
 		if (this.options.mark) this._markShow();
 		if (!this.morph){
-			this.morph = new Fx.Morph(this.node, {duration: 200});
+			this.morph = new Fx.Morph(this.node, {duration: this.options.duration, "transition": this.options.transition});
 		}
 		if (this.fireEvent("queryShow")){
 			this.node.setStyle("display", "block");
@@ -317,7 +419,7 @@ o2.widget.Dialog = o2.DL = new Class({
 	},
 	hide: function() {
 		if (!this.morph){
-			this.morph = new Fx.Morph(this.node, {duration: 200});
+			this.morph = new Fx.Morph(this.node, {duration: this.options.duration, "transition": this.options.transition});
 		}
 		if (this.fireEvent("queryHide")){
 			if (this.titleText) this.titleText.set("text", "");
@@ -332,7 +434,7 @@ o2.widget.Dialog = o2.DL = new Class({
 	},
 	close: function(){
 		if (!this.morph){
-			this.morph = new Fx.Morph(this.node, {duration: 200});
+			this.morph = new Fx.Morph(this.node, {duration: this.options.duration, "transition": this.options.transition});
 		}
 		
 		if (this.fireEvent("queryClose")){

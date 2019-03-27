@@ -120,6 +120,8 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         }.bind(this));
     },
     loadWorkLogLine_table: function(log, idx){
+        if (!log.readList) log.readList = [];
+        if (!log.readCompletedList) log.readCompletedList = [];
         if (log.taskCompletedList.length || log.readList.length || log.readCompletedList.length || (this.json.isTask && log.taskList.length)){
             var logActivityNode = new Element("div", {"styles": this.form.css.logActivityNode}).inject(this.node);
             var titleNode = new Element("div", {"styles": this.form.css.logActivityTitleNode}).inject(logActivityNode);
@@ -254,7 +256,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         }
     },
     loadTaskLine_text: function(task, node, log, isTask){
-        this.loadTaskLine_default(task, node, log, isTask, "0px", false);
+        this.loadTaskLine_default(task, node, log, isTask, "0px", false, true);
     },
 
     checkShow: function(log){
@@ -317,6 +319,8 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         }.bind(this));
     },
     loadWorkLogLine_default: function(log, idx){
+        if (!log.readList) log.readList = [];
+        if (!log.readCompletedList) log.readCompletedList = [];
         if (log.taskCompletedList.length || log.readList.length || log.readCompletedList.length || (this.json.isTask && log.taskList.length)) {
             var logActivityNode = new Element("div", {"styles": this.form.css.logActivityNode}).inject(this.node);
             var titleNode = new Element("div", {"styles": this.form.css.logActivityTitleNode}).inject(logActivityNode);
@@ -402,10 +406,14 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
     },
     loadTaskLine_default: function(task, node, log, isTask, margin, isZebra, nodeStyle){
         var style = "logTaskNode";
-        if (nodeStyle) style = "logTaskTextNode";
+        var textStyle = "logTaskFloatTextNode";
+        if (nodeStyle){
+            style = "logTaskTextNode";
+            textStyle = "logTaskTextNode";
+        }
         var logTaskNode = new Element("div", {"styles": this.form.css[style]}).inject(node);
         var iconNode = new Element("div", {"styles": this.form.css.logTaskIconNode}).inject(logTaskNode);
-        var textNode = new Element("div", {"styles": this.form.css.logTaskTextNode}).inject(logTaskNode);
+        var textNode = new Element("div", {"styles": this.form.css[textStyle]}).inject(logTaskNode);
 
         if (isZebra){
             logTaskNode.setStyles(this.form.css[this.lineClass]);
@@ -419,9 +427,6 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         if (margin) iconNode.setStyle("margin-left", margin);
         var left = iconNode.getStyle("margin-left").toInt();
         left = left + 28;
-        //textNode.setStyle("margin-left", ""+left+"px");
-
-        //this.textStyle
         var html;
         var company = "";
         if (!isTask){
@@ -437,7 +442,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             html = html.replace(/\{startTime\}/g, task.startTime);
             html = html.replace(/\{startDate\}/g, new Date().parse(task.startTime).format("%Y-%m-%d"));
             html = html.replace(/\{activity\}/g, log.fromActivityName);
-            html = html.replace(/\{arrivedActivity\}/g, task.arrivedActivityName);
+            html = html.replace(/\{arrivedActivity\}/g, log.arrivedActivityName);
             //var html = MWF.xApplication.process.Xform.LP.nextUser + task.person+"("+task.department+")" +", "+
             //    MWF.xApplication.process.Xform.LP.selectRoute + ": [" + task.routeName + "], " +
             //    MWF.xApplication.process.Xform.LP.submitAt + ": " + task.completedTime+ ", " +

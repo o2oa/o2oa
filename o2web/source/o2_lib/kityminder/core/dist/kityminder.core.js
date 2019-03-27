@@ -5609,14 +5609,17 @@ _p[49] = {
          */
             var ImageCommand = kity.createClass("ImageCommand", {
                 base: Command,
-                execute: function(km, url, title) {
+                execute: function(km, url, title, id) {
                     var nodes = km.getSelectedNodes();
-                    loadImageSize(url, function(width, height) {
+                    var url1;
+                    if( id )var url1 =  MWF.xDesktop.getImageSrc(id);
+                    loadImageSize(url1 || url, function(width, height) {
                         nodes.forEach(function(n) {
                             var size = fitImageSize(width, height, km.getOption("maxImageWidth"), km.getOption("maxImageHeight"));
                             n.setData("image", url);
                             n.setData("imageTitle", url && title);
                             n.setData("imageSize", url && size);
+                            n.setData("imageId", url && id);
                             n.render();
                         });
                         km.fire("saveScene");
@@ -5638,32 +5641,39 @@ _p[49] = {
                 },
                 queryValue: function(km) {
                     var node = km.getSelectedNode();
-                    return {
+                    var json = {
                         url: node.getData("image"),
-                        title: node.getData("imageTitle")
+                        title: node.getData("imageTitle"),
+                        id : node.getData("imageId")
                     };
+                    return json;
                 }
             });
             var ImageRenderer = kity.createClass("ImageRenderer", {
                 base: Renderer,
                 create: function(node) {
-                    return new kity.Image(node.getData("image"));
+                    var url = node.getData("imageId") ? MWF.xDesktop.getImageSrc(node.getData("imageId")) : node.getData("image");
+                    return new kity.Image(url);
                 },
                 shouldRender: function(node) {
-                    return node.getData("image");
+                    return node.getData("image") || node.getData("imageId");
                 },
                 update: function(image, node, box) {
                     var url = node.getData("image");
                     var title = node.getData("imageTitle");
                     var size = node.getData("imageSize");
+                    var id = node.getData("imageId");
+                    var url1;
+                    if( id )url1 = MWF.xDesktop.getImageSrc(node.getData("imageId"));
                     var spaceTop = node.getStyle("space-top");
                     if (!size) return;
                     if (title) {
                         image.node.setAttributeNS("http://www.w3.org/1999/xlink", "title", title);
                     }
+                    //image.node.setAttribute("crossOrigin","Anonymous");
                     var x = box.cx - size.width / 2;
                     var y = box.y - size.height - spaceTop;
-                    image.setUrl(url).setX(x | 0).setY(y | 0).setWidth(size.width | 0).setHeight(size.height | 0);
+                    image.setUrl(url1 || url).setX(x | 0).setY(y | 0).setWidth(size.width | 0).setHeight(size.height | 0);
                     return new kity.Box(x | 0, y | 0, size.width | 0, size.height | 0);
                 }
             });

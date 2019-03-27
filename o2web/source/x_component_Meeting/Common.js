@@ -255,19 +255,41 @@ MWF.xApplication.Meeting.RoomForm = new Class({
                             "click": function(){this.listBuilding();}.bind(this),
                             //"blur": function(){}.bind(this),
                             "change": function(){ this.buildingId = null; }.bind(this),
+                            "focus": function(){
+                                this.listBuildingHide();
+                                this.listBuilding();
+                            },
                             "keydown": function(e){
                                 //if ([13,40,38].indexOf(e.code)!=-1){
                                 //    if (!this.selectBuildingNode){
                                 //        this.listBuilding();
                                 //    }
                                 //}
-                                if (e.code==13){
-                                    this.listBuildingHide();
-                                    this.listBuilding();
+                                switch (e.code){
+                                    case 13:
+                                        this.listBuildingHide();
+                                        this.listBuilding();
+                                        break;
+                                    case 40:
+                                        this.selectBuildingNext();
+                                        break;
+                                    case 38:
+                                        this.selectBuildingPrev();
+                                        break;
+                                    case 38:
+                                        this.selectBuildingConfirm();
+                                        break;
+                                    default:
+                                        // this.listBuildingHide();
+                                        // this.listBuilding();
                                 }
-                                if (e.code==40) this.selectBuildingNext();
-                                if (e.code==38) this.selectBuildingPrev();
-                                if (e.code==32) this.selectBuildingConfirm(e);
+                                // if (e.code==13){
+                                //     this.listBuildingHide();
+                                //     this.listBuilding();
+                                // }
+                                // if (e.code==40) this.selectBuildingNext();
+                                // if (e.code==38) this.selectBuildingPrev();
+                                // if (e.code==32) this.selectBuildingConfirm(e);
                             }.bind(this)
                         }
                     },
@@ -356,7 +378,7 @@ MWF.xApplication.Meeting.RoomForm = new Class({
         if (this.selectBuildingNode){
             var node=null;
             if (this.selectBuildingNode.selectedNode){
-                var node = this.selectBuildingNode.selectedNode.getNext();
+                node = this.selectBuildingNode.selectedNode.getNext();
                 if (!node) node = this.selectBuildingNode.getFirst();
                 this.selectBuildingNode.selectedNode.setStyle("background-color", this.selectBuildingNode.selectedNode.retrieve("bg"));
             }else{
@@ -398,11 +420,21 @@ MWF.xApplication.Meeting.RoomForm = new Class({
     //cancelCreateRoom: function(){
     //    this.createRoomNode.destroy();
     //},
+    listBuildingData: function(key, callback){
+        if (key){
+            this.actions.listBuildingByKey(key, function(json){
+                if (callback) callback(json);
+            });
+        }else{
+            this.actions.listBuilding(function(json){
+                if (callback) callback(json);
+            });
+        }
+    },
     listBuilding: function(){
         var item = this.form.getItem("buildingName");
         var key = item.getValue();
-        if( !key )return;
-        this.actions.listBuildingByKey(key, function(json){
+        this.listBuildingData(key, function(json){
             if (json.data && json.data.length){
                 this.selectBuildingNode = new Element("div", {"styles": this.css.createRoomSelectBuildingNode}).inject(item.container);
                 this.setSelectBuildingNodeSize();
@@ -436,6 +468,14 @@ MWF.xApplication.Meeting.RoomForm = new Class({
                 }.bind(this));
             }
         }.bind(this));
+        // if( !key ){
+        //     listBuilding
+        // }else{
+        //
+        // }
+        // this.actions.listBuildingByKey(key, function(json){
+        //
+        // }.bind(this));
     },
     selectBuilding: function(node){
         var id = node.retrieve("building");

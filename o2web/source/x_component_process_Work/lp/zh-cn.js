@@ -20,11 +20,25 @@ MWF.xApplication.process.Work.LP = {
     "myfile": "我的文件",
     "reset": "重置处理人",
     "reroute": "调度",
+    "addSplit": "增加分支",
+    "rollback": "流程回溯",
 
     "phone": "手机",
     "mail": "邮箱",
     "save": "保存",
     "process": "继续流转",
     "handwriting": "手写",
-    "audioRecord": "录音"
+    "audioRecord": "录音",
+
+    "taskCompletedPerson": "办理人",
+    "readPerson": "阅读人",
+
+    "rollbackConfirmTitle": "流程回溯确认",
+    "rollbackConfirmContent": "您确定要将流程回溯到“{log}”状态吗？（流程回溯会清除此状态之后的所有信息）",
+
+    "recoverFileConfirmTitle": "恢复正文确认",
+    "recoverFileConfirmContent": "您确定要将正文恢复到 “{att}”版本吗？（恢复后，已保存的临时文件将被删除，您无法再次恢复）",
+
+    "notRecoverFileConfirmTitle": "取消正文恢复确认",
+    "notRecoverFileConfirmContent": "您确定要取消正文恢复吗？（取消后，已保存的临时文件将被删除，您无法再次恢复）"
 };

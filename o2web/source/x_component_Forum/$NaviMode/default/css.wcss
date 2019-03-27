@@ -356,6 +356,9 @@
   "documentNode_over": {
 	"background-color": "#f5f6f7"
   },
+  "documentNode_down": {
+	"background-color": "#f5f6f7"
+  },
   "documentNode_remove": {
 	"background-color": "#ffcccc"
   },

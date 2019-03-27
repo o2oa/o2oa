@@ -89,7 +89,7 @@ MWF.xAction.RestActions.Action["x_query_assemble_designer"] = new Class({
                 statData.data = data;
             }.bind(this));
         }else{
-            this.action.invoke({"name": "addView","data": statData, "success": function(json){
+            this.action.invoke({"name": "addStat","data": statData, "success": function(json){
                 statData.isNewView = false;
                 if (success) success(json);
             },"failure": failure});
@@ -101,5 +101,64 @@ MWF.xAction.RestActions.Action["x_query_assemble_designer"] = new Class({
     },
     deleteStat: function(id, success, failure, async){
         this.action.invoke({"name": "removeStat", "async": async, "parameter": {"id": id}, "success": success, "failure": failure});
+    },
+
+    saveStatement: function( data, success, failure, async){
+        if ( data.id ){
+            this.action.invoke({"name": "updateStatement", "async": async, "parameter": { "flag" : data.id  }, "data" : data, "success": success, "failure": failure});
+        }else{
+            this.action.invoke({"name": "createStatement", "async": async, "data" : data, "success": success, "failure": failure});
+        }
+    },
+
+    saveTable: function(data, success, failure){
+        if (!data.isNewTable){
+            this.updateTable(data, success, failure);
+        }else{
+            this.addTable(data, success, failure);
+        }
+    },
+    updateTable: function(tableData, success, failure){
+        var data = Object.clone(tableData);
+        data.data = JSON.encode(tableData.data);
+        data.query = tableData.application;
+        data.queryName = tableData.applicationName;
+        this.action.invoke({"name": "updateTable", "data": data, "parameter": {"id": data.id},"success": success,"failure": failure});
+    },
+    addTable: function(tableData, success, failure){
+        var data = Object.clone(tableData);
+        data.data = JSON.encode(tableData.data);
+        data.query = tableData.application;
+        data.queryName = tableData.applicationName;
+
+        if (!data.id){
+            this.getUUID(function(id){
+                data.id = id;
+                this.action.invoke({"name": "addStat","data": data, "success": function(json){
+                    tableData.isNewTable = false;
+                    if (success) success(json);
+                },"failure": failure});
+            }.bind(this));
+        }else{
+            this.action.invoke({"name": "addStat","data": data, "success": function(json){
+                tableData.isNewTable = false;
+                if (success) success(json);
+            },"failure": failure});
+        }
+    },
+    // saveTable: function( data, success, failure, async){
+    //     if ( data.id ){
+    //         this.action.invoke({"name": "updateTable", "async": async, "parameter": { "flag" : data.id  }, "data" : data, "success": success, "failure": failure});
+    //     }else{
+    //         this.action.invoke({"name": "createTable", "async": async, "data" : data, "success": success, "failure": failure});
+    //     }
+    // },
+
+    saveRow: function(tableFlag, data, success, failure, async){
+        if ( data.id ){
+            this.action.invoke({"name": "updateRow", "async": async, "parameter": {"tableFlag": tableFlag, "id" : data.id  }, "data" : data, "success": success, "failure": failure});
+        }else{
+            this.action.invoke({"name": "insertRow", "async": async, "parameter": {"tableFlag": tableFlag  }, "data" : data, "success": success, "failure": failure});
+        }
     }
 });

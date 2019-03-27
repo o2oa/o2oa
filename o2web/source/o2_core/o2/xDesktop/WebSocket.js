@@ -106,7 +106,7 @@ MWF.xDesktop.WebSocket = new Class({
     },
     receiveTaskMessage: function(data){
         //data.task
-        var action = new MWF.xDesktop.Actions.RestActions("/res/mwf4/package/xDesktop/Actions/action.json", "x_processplatform_assemble_surface", "x_desktop");
+        var action = new MWF.xDesktop.Actions.RestActions("/o2_core/o2/xDesktop/Actions/action.json", "x_processplatform_assemble_surface", "x_desktop");
         action.invoke({
             "name": "getTask",
             "parameter": {"id": data.task},
@@ -144,7 +144,7 @@ MWF.xDesktop.WebSocket = new Class({
         });
     },
     receiveReadMessage: function(data){
-        var action = new MWF.xDesktop.Actions.RestActions("/res/mwf4/package/xDesktop/Actions/action.json", "x_processplatform_assemble_surface", "x_desktop");
+        var action = new MWF.xDesktop.Actions.RestActions("/o2_core/o2/xDesktop/Actions/action.json", "x_processplatform_assemble_surface", "x_desktop");
         action.invoke({
             "name": "getRead",
             "parameter": {"id": data.read},

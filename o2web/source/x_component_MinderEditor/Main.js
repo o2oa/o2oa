@@ -462,13 +462,28 @@ MWF.xApplication.MinderEditor.Main = new Class({
             this.restActions.getMind( id, function( json2 ){
                 var converter = new MWF.xApplication.MinderEditor.Converter(this, this.minder, this);
                 converter.toPng(180, 130, function( img ){
+
                     var formData = new FormData();
                     formData.append('file', img, "untitled.png");
                     formData.append('site', id);
-                    this.restActions.uploadMindIcon( id, 180, function(){
-                        this.notice( "另存成功" );
-                    }.bind(this), null,formData, img, false )
-                }.bind(this));
+
+                    //this.restActions.uploadMindIcon( id, 180, function(){
+                    //    this.notice( "另存成功" );
+                    //}.bind(this), null,formData, img, false )
+
+                    MWF.xDesktop.uploadImage( id, "mindInfo", formData, img,
+                        function(json3){
+                            data.id = id;
+                            data.icon = json3.data.id;
+                            this.restActions.saveMind( data, function(json4){
+                                this.notice( "另存成功" );
+                            }.bind(this))
+                        }.bind(this)
+                    );
+
+                }.bind(this), function(){
+                    this.notice( "另存成功，但由于脑图中有外网图片，浏览器无法生成缩略图" );
+                }.bind(this))
             }.bind(this))
         }.bind(this));
     },
@@ -479,35 +494,68 @@ MWF.xApplication.MinderEditor.Main = new Class({
         var content = this.minder.exportJson();
         var contentStr = JSON.stringify( content );
         var title = this.minder.getRoot().getText();
+
+        var callback_save = function(id, flag, toPngFail){
+            this.data.content = contentStr;
+            var text = toPngFail ? "另存成功，但由于脑图中有外网图片，浏览器无法生成缩略图" : "保存成功";
+            this.restActions.saveMind( this.data, function(json4){
+                if( flag ){
+                    this.restActions.getMind( id, function( json5 ){
+                        this.data = json5.data;
+                        this.data.content = content;
+                        if( newName )this.setTitle(newName);
+                        this.notice( noticetText || text );
+                    }.bind(this))
+                }else{
+                    this.data.content = content;
+                    if( newName )this.setTitle(newName);
+                    this.notice( noticetText || text );
+                }
+            }.bind(this))
+        }.bind(this);
+
+        var callback = function( id, flag ){
+            var converter = new MWF.xApplication.MinderEditor.Converter(this, this.minder, this);
+            converter.toPng(180, 130, function( img ){
+                var formData = new FormData();
+                formData.append('file', img, "untitled.png");
+                formData.append('site', id);
+
+                //this.restActions.uploadMindIcon( id, 180, function(){
+                //    if( newName )this.setTitle(newName);
+                //    this.notice( noticetText || "保存成功" );
+                //}.bind(this), null,formData, img, false )
+
+                MWF.xDesktop.uploadImage( id, "mindInfo", formData, img,
+                    function(json3){
+                        this.data.icon = json3.data.id;
+                        callback_save(id, flag)
+                    }.bind(this)
+                );
+
+            }.bind(this), function(){
+                this.data.icon = "";
+                callback_save(id, flag, true);
+            }.bind(this))
+        }.bind(this);
+
         if( this.data && this.data.id){
             this.data.content = contentStr;
             if( newName ){ this.data.name = newName; }
             if( folder ){ this.data.folderId = folder; }
+            callback(this.data.id);
         }else{
             this.data = {
                 content : contentStr,
                 name : newName || title,
                 folderId : folder || this.options.folderId,
                 description : ""
-            }
+            };
+            this.restActions.saveMind( this.data, function(json){
+                var id = this.options.id = json.data.id;
+                callback(id, true);
+            }.bind(this));
         }
-        this.restActions.saveMind( this.data, function(json){
-            var id = this.options.id = json.data.id;
-            this.restActions.getMind( id, function( json2 ){
-                this.data = json2.data;
-                this.data.content = content;
-                var converter = new MWF.xApplication.MinderEditor.Converter(this, this.minder, this);
-                converter.toPng(180, 130, function( img ){
-                    var formData = new FormData();
-                    formData.append('file', img, "untitled.png");
-                    formData.append('site', id);
-                    this.restActions.uploadMindIcon( id, 180, function(){
-                        if( newName )this.setTitle(newName);
-                        this.notice( noticetText || "保存成功" );
-                    }.bind(this), null,formData, img, false )
-                }.bind(this));
-            }.bind(this))
-        }.bind(this));
     },
     openSaveAsDialog : function(){
         var form = new MWF.xApplication.MinderEditor.SaveAsForm(this, {
@@ -601,29 +649,36 @@ MWF.xApplication.MinderEditor.Converter = new Class({
         this.editor = editor;
         this.minder = minder;
     },
-    toPng: function (width, height, callback) {
+    toPng: function (width, height, callback, failure) {
         var img;
         this.toCanvas(width, height, function (canvas) {
-            var src = canvas.toDataURL("image/png");
+            try{
+                var src = canvas.toDataURL("image/png");
 
-            var base64Code = src.split(',')[1];
-            if (!base64Code) {
-                img = null;
-                return;
-            }
-            base64Code = window.atob(base64Code);
+                var base64Code = src.split(',')[1];
+                if (!base64Code) {
+                    img = null;
+                    return;
+                }
+                base64Code = window.atob(base64Code);
 
-            var ia = new Uint8Array(base64Code.length);
-            for (var i = 0; i < base64Code.length; i++) {
-                ia[i] = base64Code.charCodeAt(i);
+                var ia = new Uint8Array(base64Code.length);
+                for (var i = 0; i < base64Code.length; i++) {
+                    ia[i] = base64Code.charCodeAt(i);
+                }
+                img = new Blob([ia], {type: "image/png"});
+                if(callback)callback( img );
+            }catch(e){
+                if(failure)failure();
+                //debugger;
+                //var pr = new MWF.xApplication.MinderEditor.PreviewConverter(this.editor, this.minder, width, height);
+                //pr.toPng(width, height, callback, failure );
             }
-            img = new Blob([ia], {type: "image/png"});
-            if(callback)callback( img );
         }.bind(this))
     },
-    toCanvas: function (width, height, callback) {
+    toCanvas: function (width, height, callback, svg) {
         this.loadCanvgResource(function () {
-            var svg = this.editor.contentNode.get("html");
+            if( !svg )svg = this.editor.contentNode.get("html");
 
             var coordinates = this.getSvgCoordinates();
 
@@ -690,14 +745,14 @@ MWF.xApplication.MinderEditor.Converter = new Class({
                 styles: {width: contentWidth + "px", height: contentHeight + "px"}
             }).inject(this.editor.node);
             canvg(canvas, svg, {
-                log: true, renderCallback: function (dom) {
+                useCORS : true, log: true, renderCallback: function (dom) {
                     if (callback)callback(canvas);
                 }
             });
         }.bind(this))
     },
     loadCanvgResource: function (callback) {
-        var canvgPath = "/o2_lib/framework/canvg/";
+        var canvgPath = "/o2_lib/canvg/";
         COMMON.AjaxModule.load(canvgPath + "canvg.js", function () {
             if (callback)callback();
         }.bind(this))
@@ -738,4 +793,229 @@ MWF.xApplication.MinderEditor.Converter = new Class({
     }
 });
 
+
+MWF.xApplication.MinderEditor.PreviewConverter = new Class({
+    initialize: function (editor, minder, width, height) {
+        this.editor = editor;
+        this.minder = minder;
+
+        this.previewer = new Element("div",{ "styles" : {
+            width : width, height : height
+        }}).inject( this.editor.content );
+        this.initPreViewer();
+        this.draw();
+    },
+    initPreViewer: function(){
+        // 画布，渲染缩略图
+        this.paper = new kity.Paper( this.previewer );
+
+        // 用两个路径来挥之节点和连线的缩略图
+        this.nodeThumb = this.paper.put(new kity.Path());
+        this.connectionThumb = this.paper.put(new kity.Path());
+        /**
+         * 增加一个对天盘图情况缩略图的处理,
+         * @Editor: Naixor line 104~129
+         * @Date: 2015.11.3
+         */
+        this.pathHandler = this.getPathHandler(this.minder.getTheme());
+    },
+    getPathHandler: function (theme) {
+        switch (theme) {
+            case "tianpan":
+            case "tianpan-compact":
+                return function(nodePathData, x, y, width, height) {
+                    var r = width >> 1;
+                    nodePathData.push('M', x, y + r,
+                        'a', r, r, 0, 1, 1, 0, 0.01,
+                        'z');
+                };
+            default: {
+                return function(nodePathData, x, y, width, height) {
+                    nodePathData.push('M', x, y,
+                        'h', width, 'v', height,
+                        'h', -width, 'z');
+                }
+            }
+        }
+    },
+    draw : function(){
+        var view = this.minder.getRenderContainer().getBoundaryBox();
+        var padding = 30;
+        this.paper.setViewBox(
+            view.x - padding - 0.5,
+            view.y - padding - 0.5,
+            view.width + padding * 2 + 1,
+            view.height + padding * 2 + 1);
+
+        var nodePathData = [];
+        var connectionThumbData = [];
+        this.minder.getRoot().traverse(function(node) {
+            var box = node.getLayoutBox();
+            this.pathHandler(nodePathData, box.x, box.y, box.width, box.height);
+            if (node.getConnection() && node.parent && node.parent.isExpanded()) {
+                connectionThumbData.push(node.getConnection().getPathData());
+            }
+        }.bind(this));
+        this.paper.setStyle('background', this.minder.getStyle('background'));
+
+        if (nodePathData.length) {
+            this.nodeThumb
+                .fill(this.minder.getStyle('root-background'))
+                .setPathData(nodePathData);
+        } else {
+            this.nodeThumb.setPathData(null);
+        }
+
+        if (connectionThumbData.length) {
+            this.connectionThumb
+                .stroke(this.minder.getStyle('connect-color'), '0.5%')
+                .setPathData(connectionThumbData);
+        } else {
+            this.connectionThumb.setPathData(null);
+        }
+    },
+    toPng: function (width, height, callback, failure, svg) {
+        var img;
+        this.toCanvas(width, height, function (canvas) {
+            try{
+                var src = canvas.toDataURL("image/png");
+
+                var base64Code = src.split(',')[1];
+                if (!base64Code) {
+                    img = null;
+                    return;
+                }
+                base64Code = window.atob(base64Code);
+
+                var ia = new Uint8Array(base64Code.length);
+                for (var i = 0; i < base64Code.length; i++) {
+                    ia[i] = base64Code.charCodeAt(i);
+                }
+                img = new Blob([ia], {type: "image/png"});
+                if(callback)callback( img );
+            }catch(e){
+                if(failure)failure( );
+            }
+        }.bind(this), svg)
+    },
+    toCanvas: function (width, height, callback, svg ) {
+        this.loadCanvgResource(function () {
+            if(!svg)svg = this.previewer.get("html");
+
+            var coordinates = this.getSvgCoordinates();
+
+            var offsetLeft = Math.abs(coordinates.left), offsetTop = Math.abs(coordinates.top);
+            var contentWidth = coordinates.x, contentHeight = coordinates.y;
+            var matrix;
+            if (width && height) {
+                if ((width > coordinates.x) && (height > coordinates.y)) {
+                    //如果宽度比指定宽度小，设置偏移量
+                    if (width > coordinates.x) {
+                        offsetLeft += ( width - coordinates.x ) / 2;
+                        contentWidth = width;
+                    }
+                    //如果高度比指定高度小，设置偏移量
+                    if (height > coordinates.y) {
+                        offsetTop += ( height - coordinates.y ) / 2;
+                        contentHeight = height;
+                    }
+                }
+
+                //如果宽度比指定宽度大，进行缩小
+                var xRatio, yRatio, ox, oy, zoom;
+                if (width < coordinates.x) {
+                    xRatio = width / coordinates.x;
+                }
+                //如果高度比指定高度大，进行缩小
+                if (height < coordinates.y) {
+                    yRatio = height / coordinates.y;
+                }
+                if (xRatio || yRatio) {
+
+                    contentWidth = width;
+                    contentHeight = height;
+
+                    xRatio = xRatio || 1;
+                    yRatio = yRatio || 1;
+                    if( xRatio >= yRatio ){
+                        zoom = yRatio;
+                        ox = (width - zoom * coordinates.x)/2;
+                        oy = 0;
+                    }else{
+                        zoom = xRatio;
+                        ox = 0;
+                        oy = ( height - zoom * coordinates.y )/2;
+                    }
+
+                    matrix = zoom + " 0 0 " + zoom + " " + ox + " " + oy;
+                }
+            }
+
+            var regex = /<svg.*?>(.*?)<\/svg>/ig;
+            svg = "<svg width=\"" + contentWidth + "\" height=\"" + contentHeight + "\">" + regex.exec(svg)[1] + "</svg>";
+
+            var arr1 = svg.split("</defs>");
+            var arr2 = svg.split("<g id=\"minder_connect_group");
+
+            svg = arr1[0] + "</defs>"
+                + "<g transform=\"" + ( matrix ? "matrix(" + matrix + ")" : "translate(0.5 0.5)") + "\">"
+                + "<g transform=\"translate(" + offsetLeft + " " + offsetTop + ")\" text-rendering=\"" + ( matrix ? "geometricPrecision" : "optimize-speed")  + "\">"
+                + "<g id=\"minder_connect_group" + arr2[1];
+
+            var canvas = new Element("canvas", {
+                width: contentWidth, height: contentHeight,
+                styles: {width: contentWidth + "px", height: contentHeight + "px"}
+            }).inject(this.editor.node);
+            canvg(canvas, svg, {
+                useCORS : true, log: true, renderCallback: function (dom) {
+                    if (callback)callback(canvas);
+                }
+            });
+        }.bind(this))
+    },
+    loadCanvgResource: function (callback) {
+        var canvgPath = "/o2_lib/canvg/";
+        COMMON.AjaxModule.load(canvgPath + "canvg.js", function () {
+            if (callback)callback();
+        }.bind(this))
+    },
+    getSvgCoordinates: function () {
+
+        var topBox = {top: 0, left: 0, right: 0, bottom: 0};
+        var leftBox = {top: 0, left: 0, right: 0, bottom: 0};
+        var rightBox = {top: 0, left: 0, right: 0, bottom: 0};
+        var bottomBox = {top: 0, left: 0, right: 0, bottom: 0};
+
+        this.paper.getRoot().traverse(function (node) {
+            var renderBox = node.getLayoutBox();
+            if (renderBox.top < topBox.top) {
+                topBox = renderBox;
+            }
+            if (renderBox.left < leftBox.left) {
+                leftBox = renderBox;
+            }
+            if (renderBox.right > rightBox.right) {
+                rightBox = renderBox;
+            }
+            if (renderBox.bottom > bottomBox.bottom) {
+                bottomBox = renderBox;
+            }
+        }.bind(this));
+
+        return {
+            top: topBox.top,
+            right: rightBox.right,
+            bottom: bottomBox.bottom,
+            left: leftBox.left,
+            width: rightBox.right - leftBox.left + 1,
+            height: bottomBox.bottom - topBox.top + 1,
+            x: rightBox.right - leftBox.left + 1,
+            y: bottomBox.bottom - topBox.top + 1
+        };
+    },
+    destory : function(){
+        this.paper.remove();
+        this.previewer.destroy();
+    }
+});
 

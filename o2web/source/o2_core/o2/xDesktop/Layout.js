@@ -5,6 +5,7 @@ MWF.xDesktop.requireApp = function(module, clazz, callback, async){
 MWF.xApplication = MWF.xApplication || {};
 MWF.require("MWF.widget.Common", null, false);
 MWF.require("MWF.xDesktop.Common", null, false);
+MWF.require("o2.xDesktop.Dialog", null, false);
 MWF.require("MWF.xAction.RestActions", null, false);
 MWF.require("MWF.xDesktop.Menu", null, false);
 MWF.require("MWF.widget.UUID", null, false);
@@ -26,6 +27,7 @@ MWF.xDesktop.Layout = new Class({
     Implements: [Options, Events],
     options: {
         "style": "default",
+        "defaultStyle": "default",
 
         "topShim": "layout_top_shim",
         "top": "layout_top",
@@ -72,6 +74,7 @@ MWF.xDesktop.Layout = new Class({
         }.bind(this));
     },
     getStyleLoad: function(node){
+
         MWF.UD.getPublicData("forceLayout", function(json) {
             var forceStatus = null;
             if (json){
@@ -106,7 +109,6 @@ MWF.xDesktop.Layout = new Class({
         }.bind(this));
     },
     loadCss: function(){
-
         var uri = new URI(window.location.href);
         var style = uri.getData("style");
         var styletype = (uri.getData("styletype"));
@@ -118,7 +120,7 @@ MWF.xDesktop.Layout = new Class({
                         this.windowCss = json.data.window;
                     }else{
                         MWF.UD.deletePublicData(style);
-                        this.options.style = "default";
+                        this.options.style = this.options.defaultStyle;
                         this.cssPath = MWF.defaultPath+"/xDesktop/$Layout/"+this.options.style+"/css.wcss";
                         this._loadCss();
                     }
@@ -135,7 +137,7 @@ MWF.xDesktop.Layout = new Class({
                 this.cssPath = MWF.defaultPath+"/xDesktop/$Layout/"+this.options.style+"/css.wcss";
                 this._loadCss();
                 if (!this.css){
-                    this.options.style = "default";
+                    this.options.style = this.options.defaultStyle;
                     this.cssPath = MWF.defaultPath+"/xDesktop/$Layout/"+this.options.style+"/css.wcss";
                     this._loadCss();
                 }
@@ -146,7 +148,7 @@ MWF.xDesktop.Layout = new Class({
                         this.windowCss = json.data.window;
                     }else{
                         MWF.UD.deletePublicData(this.status.style);
-                        this.options.style = "default";
+                        this.options.style = this.options.defaultStyle;
                         this.cssPath = MWF.defaultPath+"/xDesktop/$Layout/"+this.options.style+"/css.wcss";
                         this._loadCss();
                     }
@@ -417,7 +419,7 @@ MWF.xDesktop.Layout = new Class({
     },
     openApplicationWithStatus: function(appStatus){
         var appName = appStatus.name;
-        var style = (appStatus.style) ? appStatus.style : "default";
+        var style = (appStatus.style) ? appStatus.style : this.options.defaultStyle;
         //	var appClass = "MWF.xApplication."+appName+".Main";
         this.requireApp(appName, function(appNamespace){
             var app = new appNamespace["Main"](this, {
@@ -463,7 +465,7 @@ MWF.xDesktop.Layout = new Class({
             if (this.status.apps){
                 Object.each(this.status.apps, function(appStatus, id){
                     var appName = appStatus.name;
-                    var style = (appStatus.style) ? appStatus.style : "default";
+                    var style = (appStatus.style) ? appStatus.style : this.options.defaultStyle;
                     //	var appClass = "MWF.xApplication."+appName+".Main";
 
                     this.requireApp(appName, function(appNamespace){
@@ -587,7 +589,6 @@ MWF.xDesktop.Layout = new Class({
 
     setEvent: function(){
         this.node.addEvent("selectstart", function(e){
-
             var select = "text";
             if (e.target.getStyle("-webkit-user-select")){
                 select = e.target.getStyle("-webkit-user-select").toString().toLowerCase();
@@ -931,6 +932,14 @@ MWF.xDesktop.Layout = new Class({
         }.bind(this), widgetName);
     },
     openApplication: function(e, appNames, options, obj, inBrowser){
+        if (appNames.substring(0, 4)==="@url"){
+            var url = appNames.replace(/\@url\:/i, "");
+            var a = new Element("a", {"href": url, "target": "_blank"});
+            a.click();
+            a.destroy();
+            a = null;
+            return true;
+        }
         var appPath = appNames.split(".");
         var appName = appPath[appPath.length-1];
 
@@ -1354,7 +1363,7 @@ MWF.xDesktop.Layout.Top = new Class({
     },
 
     showApplicationMenu: function(){
-        this.applicationMenuAreaMark.fade(0.8);
+        this.applicationMenuAreaMark.fade(0.7);
         this.applicationMenuArea.fade("in");
     },
     closeApplicationMenu: function(){
@@ -1573,7 +1582,16 @@ MWF.xDesktop.Layout.Top = new Class({
             "styles": this.layout.css.applicationMenuIconNode
         }).inject(applicationMenuNode);
 
-        var icon = "/x_component_"+value.path.replace(/\./g, "_")+"/$Main/"+value.iconPath;
+        var icon;
+        if (value.path.substring(0, 4)==="@url"){
+            if (value.iconPath){
+                icon = value.iconPath;
+            }else{
+                icon = "/x_component_Setting/$Main/default/icon/site.png";
+            }
+        }else{
+            icon = "/x_component_"+value.path.replace(/\./g, "_")+"/$Main/"+value.iconPath;
+        }
         applicationMenuIconNode.setStyle("background-image", "url("+icon+")");
 
         new Element("div", {

@@ -115,8 +115,13 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
                     var module = this.page.currentSelectedModule;
                     if (module.moduleType != "page" && module.moduleName.indexOf("$") == -1) {
                         this.copyModule();
+                        // module.destroy();
+                        // module.page.selected();
+                        var _page = module.form;
                         module.destroy();
-                        module.page.selected();
+                        _page.currentSelectedModule = null;
+                        _page.selected();
+                        _page = null;
                     }
                 }
             }
@@ -1610,7 +1615,6 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
         }
     },
     styleBrush: function(status, bt){
-
         if (status==="on"){
             var module = this.page.currentSelectedModule;
             if (module && module.json.type!=="Form"){

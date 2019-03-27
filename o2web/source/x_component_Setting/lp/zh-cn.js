@@ -48,6 +48,11 @@ MWF.xApplication.Setting.LP = {
 
     "base_loginSetting": "配置用户登录选项",
 
+
+    "base_captchaLogin": "启用图片验证码登录",
+    "base_captchaLogin_infor": "启用后登陆时必须正确输入图片验证码",
+    "base_captchaLogin_action": "",
+
     "base_codeLogin": "启用短信验证码登录",
     "base_codeLogin_infor": "启用后允许通过短信验证码登录",
     "base_codeLogin_action": "",
@@ -237,6 +242,7 @@ MWF.xApplication.Setting.LP = {
         "name": "组件名称",
         "componentTitle": "组件标题",
         "path": "组件路径",
+        "icon": "组件图标",
         "isVisible": "是否可见",
         "yes": "是",
         "no": "否",
@@ -249,6 +255,8 @@ MWF.xApplication.Setting.LP = {
         "denyList": "拒绝访问列表",
         "controllerList": "管理者",
         "selPerson": "选择人员",
+        "selIcon": "选择图标",
+        "urlInfor": "您可以通过“@url:”将路径添加为一个网页URL，如“@url:http://www.bing.com”",
 
         "phone": "手机",
         "mail": "邮件",

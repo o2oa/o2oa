@@ -743,7 +743,7 @@ MWFCalendar.EventForm = new Class({
 
         this.isWeekSelectCreated = false;
         this.formTopNode = null;
-        if(this.setFormNodeSizeFun && this.app ){
+        if(this.setFormNodeSizeFun && this.app && this.app.removeEvent ){
             this.app.removeEvent("resize",this.setFormNodeSizeFun);
         }
         if( this.formMaskNode )this.formMaskNode.destroy();
@@ -826,7 +826,8 @@ MWFCalendar.EventForm = new Class({
         }.bind(this));
 
         var _self = this;
-        this.app.confirm("warn", e, this.lp.deleteAttachmentTitle, this.lp.deleteAttachment+"( "+names.join(", ")+" )", 300, 120, function(){
+        var confirm = ( this.app && this.app.confirm ) ? this.app.confirm : MWF.xDesktop.confirm;
+        confirm("warn", e, this.lp.deleteAttachmentTitle, this.lp.deleteAttachment+"( "+names.join(", ")+" )", 300, 120, function(){
             while (attachments.length){
                 attachment = attachments.shift();
                 _self.deleteAttachment(attachment);
@@ -875,7 +876,8 @@ MWFCalendar.EventForm = new Class({
             }.bind(this))
         }else if( data.id ){ //编辑
             var text = this.app.lp.cancel_confirm.replace(/{name}/g, this.data.title);
-            this.app.confirm("infor", e, this.app.lp.cancel_confirm_title, text, 380, 200, function(){
+            var confirm = ( this.app && this.app.confirm ) ? this.app.confirm : MWF.xDesktop.confirm;
+            confirm("infor", e, this.app.lp.cancel_confirm_title, text, 380, 200, function(){
                 _self._cancelEvent();
                 this.close();
             }, function(){
@@ -902,7 +904,11 @@ MWFCalendar.EventForm = new Class({
     },
     save: function(){
         this._save(function(){
-            this.app.notice(this.lp.event_saveSuccess, "success");
+            if( this.app && this.app.notice ){
+                this.app.notice(this.lp.event_saveSuccess, "success");
+            }else{
+                MWF.xDesktop.notice("ok", {"x": "right", "y": "top"}, this.lp.event_saveSuccess, $(document.body))
+            }
             this.close();
             //if (!this.attachmentNode){
             //    this.loadAttachment();
@@ -923,7 +929,11 @@ MWFCalendar.EventForm = new Class({
         }
 
         if (errorText){
-            this.app.notice(this.lp.event_input_error+errorText, "error");
+            if( this.app && this.app.notice ){
+                this.app.notice(this.lp.event_input_error+errorText, "error");
+            }else{
+                MWF.xDesktop.notice("error", {"x": "right", "y": "top"}, this.lp.event_input_error+errorText, $(document.body));
+            }
             return false;
         }
 
@@ -1010,7 +1020,7 @@ MWFCalendar.EventForm = new Class({
         //if( this.form ){
         //    this.form.destroy();
         //}
-        if(this.setFormNodeSizeFun && this.app ){
+        if(this.setFormNodeSizeFun && this.app && this.app.removeEvent ){
             this.app.removeEvent("resize",this.setFormNodeSizeFun);
         }
         if( this.formMaskNode )this.formMaskNode.destroy();
@@ -1218,7 +1228,7 @@ MWFCalendar.CalendarForm = new Class({
     },
     editCalendar : function(){
         this.formTopNode = null;
-        if(this.setFormNodeSizeFun && this.app ){
+        if(this.setFormNodeSizeFun && this.app && this.app.removeEvent ){
             this.app.removeEvent("resize",this.setFormNodeSizeFun);
         }
         if( this.formMaskNode )this.formMaskNode.destroy();
@@ -1271,7 +1281,7 @@ MWFCalendar.CalendarForm = new Class({
         //if( this.form ){
         //    this.form.destroy();
         //}
-        if(this.setFormNodeSizeFun && this.app ){
+        if(this.setFormNodeSizeFun && this.app && this.app.removeEvent){
             this.app.removeEvent("resize",this.setFormNodeSizeFun);
         }
         if( this.formMaskNode )this.formMaskNode.destroy();

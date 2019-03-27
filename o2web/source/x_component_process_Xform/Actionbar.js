@@ -1,4 +1,4 @@
-MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
+//MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 MWF.require("MWF.widget.Tree", null, false);
 MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
 	Extends: MWF.APP$Module,
@@ -14,6 +14,7 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
 
             MWF.require("MWF.widget.Toolbar", function(){
                 this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);
+                if (this.json.actionStyles) this.toolbarWidget.css = this.json.actionStyles;
                 //alert(this.readonly)
 
                 if (this.json.hideSystemTools){
@@ -21,19 +22,25 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
                     this.toolbarWidget.load();
                 }else{
                     if (this.json.defaultTools){
-                        var o = {
-                            "type": "MWFToolBarButton",
-                            "img": "read.png",
-                            "title": "标记为已阅",
-                            "action": "readedWork",
-                            "text": "已阅",
-                            "id": "action_readed",
-                            "control": "allowReadProcessing",
-                            "condition": "",
-                            "read": false
-                        };
-                        this.json.defaultTools.push(o);
+                        var addActions = [
+                            {
+                                "type": "MWFToolBarButton",
+                                "img": "read.png",
+                                "title": "标记为已阅",
+                                "action": "readedWork",
+                                "text": "已阅",
+                                "id": "action_readed",
+                                "control": "allowReadProcessing",
+                                "condition": "",
+                                "read": false
+                            }
+                        ];
+                        this.form.businessData.control.allowReflow =
+
+                        //this.json.defaultTools.push(o);
                         this.setToolbars(this.json.defaultTools, this.toolbarNode, this.readonly);
+                        this.setToolbars(addActions, this.toolbarNode, this.readonly);
+
                         this.setCustomToolbars(this.json.tools, this.toolbarNode);
                         this.toolbarWidget.load();
                     }else{
@@ -75,6 +82,7 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
             }.bind(this));
         // }
 	},
+
     setCustomToolbars: function(tools, node){
 	    debugger;
         tools.each(function(tool){
@@ -113,37 +121,40 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
             }
         }.bind(this));
     },
-    setToolbars: function(tools, node, readonly, noCondition){
 
+    setToolbarItem: function(tool, node, readonly, noCondition){
+        var flag = true;
+        if (tool.control){
+            flag = this.form.businessData.control[tool.control]
+        }
+        if (!noCondition) if (tool.condition){
+            var hideFlag = this.form.Macro.exec(tool.condition, this);
+            flag = !hideFlag;
+        }
+        if (tool.id == "action_processWork"){
+            if (!this.form.businessData.task){
+                flag = false;
+            }
+        }
+        if (readonly) if (!tool.read) flag = false;
+        if (flag){
+            var actionNode = new Element("div", {
+                "id": tool.id,
+                "MWFnodetype": tool.type,
+                "MWFButtonImage": this.form.path+""+this.form.options.style+"/actionbar/"+tool.img,
+                "title": tool.title,
+                "MWFButtonAction": tool.action,
+                "MWFButtonText": tool.text
+            }).inject(node);
+            if (tool.sub){
+                var subNode = node.getLast();
+                this.setToolbars(tool.sub, subNode, readonly, noCondition);
+            }
+        }
+    },
+    setToolbars: function(tools, node, readonly, noCondition){
         tools.each(function(tool){
-            var flag = true;
-            if (tool.control){
-                flag = this.form.businessData.control[tool.control]
-            }
-            if (!noCondition) if (tool.condition){
-                var hideFlag = this.form.Macro.exec(tool.condition, this);
-                flag = !hideFlag;
-            }
-            if (tool.id == "action_processWork"){
-                if (!this.form.businessData.task){
-                    flag = false;
-                }
-            }
-            if (readonly) if (!tool.read) flag = false;
-            if (flag){
-                var actionNode = new Element("div", {
-                    "id": tool.id,
-                    "MWFnodetype": tool.type,
-                    "MWFButtonImage": this.form.path+""+this.form.options.style+"/actionbar/"+tool.img,
-                    "title": tool.title,
-                    "MWFButtonAction": tool.action,
-                    "MWFButtonText": tool.text
-                }).inject(node);
-                if (tool.sub){
-                    var subNode = node.getLast();
-                    this.setToolbars(tool.sub, subNode, readonly, noCondition);
-                }
-            }
+            this.setToolbarItem(tool, node, readonly, noCondition);
         }.bind(this));
     },
     runCustomAction: function(bt){
@@ -176,5 +187,12 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
     },
     readedWork: function(b,e){
         this.form.readedWork(e);
+    },
+    addSplit: function(e){
+        this.form.addSplit(e);
+    },
+    rollback: function(e){
+        this.form.rollback(e);
     }
+
 }); 

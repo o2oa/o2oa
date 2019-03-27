@@ -130,15 +130,15 @@
                         <input type="radio" name="rangeNext" value="direct" text{(['level', 'type'].indexOf($.rangeNext)==-1)?'checked':''}/>直接所属组织<br/>
                         <input type="radio" name="rangeNext" value="level" text{(($.rangeNext) && $.rangeNext.indexOf('level')!=-1)?'checked':''}/>第
                         <div style="display: inline"><select name="rangeNextLevel">
-                            <option value="1" text{($.rangeDraftLevel=='1')?'selected':''}>1</option>
-                            <option value="2" text{($.rangeDraftLevel=='2')?'selected':''}>2</option>
-                            <option value="3" text{($.rangeDraftLevel=='3')?'selected':''}>3</option>
-                            <option value="4" text{($.rangeDraftLevel=='4')?'selected':''}>4</option>
-                            <option value="5" text{($.rangeDraftLevel=='5')?'selected':''}>5</option>
-                            <option value="6" text{($.rangeDraftLevel=='6')?'selected':''}>6</option>
-                            <option value="7" text{($.rangeDraftLevel=='7')?'selected':''}>7</option>
-                            <option value="8" text{($.rangeDraftLevel=='8')?'selected':''}>8</option>
-                            <option value="9" text{($.rangeDraftLevel=='9')?'selected':''}>9</option>
+                            <option value="1" text{($.rangeNextLevel=='1')?'selected':''}>1</option>
+                            <option value="2" text{($.rangeNextLevel=='2')?'selected':''}>2</option>
+                            <option value="3" text{($.rangeNextLevel=='3')?'selected':''}>3</option>
+                            <option value="4" text{($.rangeNextLevel=='4')?'selected':''}>4</option>
+                            <option value="5" text{($.rangeNextLevel=='5')?'selected':''}>5</option>
+                            <option value="6" text{($.rangeNextLevel=='6')?'selected':''}>6</option>
+                            <option value="7" text{($.rangeNextLevel=='7')?'selected':''}>7</option>
+                            <option value="8" text{($.rangeNextLevel=='8')?'selected':''}>8</option>
+                            <option value="9" text{($.rangeNextLevel=='9')?'selected':''}>9</option>
                         </select>层组织</div><br/>
                         <input style="float: left" type="radio" name="rangeNext" value="type" text{(($.rangeNext) && $.rangeNext.indexOf('type')!=-1)?'checked':''}/>类型为
                         <div class="MWFFormUnitTypeSelector" name="rangeNextUnitType" style="display: inline"></div>

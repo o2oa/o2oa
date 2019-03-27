@@ -19,7 +19,6 @@
   "removeApplication": {"uri": "/jaxrs/query/{id}","method": "DELETE"},
   "deleteApplication": {"uri": "/jaxrs/query/{id}","method": "DELETE"},
 
-
   "listSelect": {"uri": "/jaxrs/select/list/query/{id}"},
   "listView": {"uri": "/jaxrs/view/list/query/{id}"},
   "listStat": {"uri": "/jaxrs/stat/list/query/{id}"},
@@ -51,6 +50,46 @@
   "deleteReveal": {"uri": "/jaxrs/reveal/{id}","method": "DELETE"},
   "updateReveal": {"uri": "/jaxrs/reveal/{id}","method": "PUT"},
 
+
+  //NeuralAction
+  "createModel": {"uri": "/jaxrs/neural/model","method": "POST"},
+  "deleteModel": {"uri": "/jaxrs/neural/model/{modelFlag}","method": "DELETE"},
+  "getModel": {"uri": "/jaxrs/neural/model/{modelFlag}"},
+  "updateModel": {"uri": "/jaxrs/neural/model/{modelFlag}","method": "PUT"},
+  "listModel": {"uri": "/jaxrs/neural/list/model"},
+
+  "generate": {"uri": "/jaxrs/neural/generate/model/{modelFlag}"},
+  "learn": {"uri": "/jaxrs/neural/learn/model/{modelFlag}"},
+  "stopGenerating": {"uri": "/jaxrs/neural/stop/generating/model/{modelFlag}"},
+  "stopLearning": {"uri": "/jaxrs/neural/stop/learn/model/{modelFlag}"},
+  "resetStatus": {"uri": "/jaxrs/neural/model/{modelFlag}/reset/status"},
+
+  "listStatementNext" : {"uri": "/jaxrs/statement/list/{id}/next/{count}"},
+  "listStatementPrev" : {"uri": "/jaxrs/statement/list/{id}/prev/{count}"},
+  "getStatement" : { "uri": "/jaxrs/statement/{flag}" },
+  "updateStatement":{ "uri": "/jaxrs/statement/{flag}", "method": "PUT" },
+  "createStatement":{ "uri": "/jaxrs/statement", "method": "POST" },
+  "deleteStatement" : { "uri": "/jaxrs/statement/{flag}", "method": "DELETE" },
+  "executeStatement" : { "uri": "/jaxrs/statement/{flag}/execute", "method": "POST" },
+
+  "buildAllTable" : { "uri" : "/jaxrs/table/build/all" }, //编译表对象生成实体类进行数据库建表,执行后需要重新启动.
+  "listTableNext" : {"uri": "/jaxrs/table/list/{id}/next/{count}"},
+  "listTable" : {"uri": "/jaxrs/table/list/query/{id}"},
+  "listTablePrev" : {"uri": "/jaxrs/table/list/{id}/prev/{count}"},
+  "getTable" : { "uri": "/jaxrs/table/{flag}" },
+  "updateTable":{ "uri": "/jaxrs/table/{flag}", "method": "PUT" },
+  "createTable":{ "uri": "/jaxrs/table", "method": "POST" },
+  "deleteTable" : { "uri": "/jaxrs/table/{flag}", "method": "DELETE" },
+
+  "listRowNext" : { "uri" : "/jaxrs/table/list/{tableFlag}/row/{id}/next/{count}" },
+  "listRowPrev" : { "uri" : "/jaxrs/table/list/{tableFlag}/row/{id}/prev/{count}" },
+  "listRowSelectWhere" : { "uri" : "/jaxrs/table/list/{tableFlag}/row/select/where/{where}" }, //通过where 获取表中的数据,格式为jpql语法,o.name='zhangsan'
+  "getRow" : { "uri": "/jaxrs/table/{tableFlag}/row/{id}" }, //获取表中某一行数据
+  "updateRow":{ "uri": "/jaxrs/table/{tableFlag}/row/{id}", "method": "PUT" }, //更新指定表中指定行数据.
+  "insertRow":{ "uri": "/jaxrs/table/{tableFlag}/row", "method": "POST" },//插入一行
+  "countRowWhere" : { "uri": "/jaxrs/table/{tableFlag}/row/count/where/{where}"},//通过where 统计数量
+  "deleteRow" : { "uri": "/jaxrs/table/{tableFlag}/row/{id}", "method": "DELETE" }, //更新指定表中指定行数据.
+  "deleteAllRow" : { "uri": "/jaxrs/table/{tableFlag}/row/delete/all", "method": "DELETE"}, //通过where 统计数量
 
   "clazz": "x_query_assemble_designer"
 }
