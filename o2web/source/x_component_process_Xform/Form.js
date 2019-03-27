@@ -1,10 +1,8 @@
-MWF.require("MWF.widget.Common", null, false);
-//MWF.require("MWF.xAction.org.express.RestActions", null,false);
-//MWF.xDesktop.requireApp("Organization", "Selector.package", null, false);
-MWF.require("MWF.widget.Identity", null,false);
+MWF.require(["MWF.widget.Common", "MWF.widget.Identity"], null, false);
 MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.Xform = MWF.xApplication.process.Xform || {};
 MWF.xDesktop.requireApp("process.Xform", "Package", null, false);
+
 MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
 	Implements: [Options, Events],
 	Extends: MWF.widget.Common,
@@ -44,11 +42,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
 		this.data = data;
 		this.json = data.json;
 		this.html = data.html;
-		
+
 		this.path = "/x_component_process_Xform/$Form/";
 		this.cssPath = this.options.cssPath || "/x_component_process_Xform/$Form/"+this.options.style+"/css.wcss";
 		this._loadCss();
-		
+
 		this.modules = [];
         this.all = {};
         this.forms = {};
@@ -218,7 +216,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
             // };
         }
 	},
-	
+
 	_loadHtml: function(){
 		// this.container.set("html", this.html);
 		// this.node = this.container.getFirst();
@@ -232,7 +230,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
             if (select!=="text" && select!=="auto") e.preventDefault();
         });
 	},
-	
+
 	_loadForm: function(){
 		this._loadStyles();
 		this._loadCssLinks();
@@ -307,12 +305,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
 			}
 		}.bind(this));
 	},
-	
-	
+
+
 	_getDomjson: function(dom){
 		var mwfType = dom.get("MWFtype") || dom.get("mwftype");
 		switch (mwfType) {
-			case "form": 
+			case "form":
 				return this.json;
 			case "":
 				return null;
@@ -336,7 +334,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
 				if (type.indexOf("$")===-1){
                     moduleNodes.push(subDom);
                 }
-				if (mwftype !== "datagrid" && mwftype !== "subSource"){
+                // && mwftype !== "tab$Content"
+                if (mwftype !== "datagrid" && mwftype !== "subSource" && mwftype !== "tab$Content"){
 					moduleNodes = moduleNodes.concat(this._getModuleNodes(subDom));
 				}
 			}else{
@@ -469,7 +468,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
             this.fireEvent("beforeSave");
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeSave");
             this.saveFormData(function(json){
-                this.app.notice(MWF.xApplication.process.Xform.LP.dataSaved, "success");
+                if (this.app) this.app.notice(MWF.xApplication.process.Xform.LP.dataSaved, "success");
                 if (callback) callback();
                 this.fireEvent("afterSave");
                 if (this.app && this.app.fireEvent) this.app.fireEvent("afterSave");
@@ -519,7 +518,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
 
         this.app.close();
     },
-    addMessage: function(data){
+    getMessageContent: function(data){
         var content = "";
         if (data.length){
             data.each(function(work){
@@ -533,6 +532,22 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
         }else{
             content += MWF.xApplication.process.Xform.LP.workCompleted;
         }
+        return "<div>"+MWF.xApplication.process.Xform.LP.taskProcessedMessage+"“"+this.businessData.work.title+"”</div>"+content;
+    },
+    addMessage: function(data){
+        // var content = "";
+        // if (data.length){
+        //     data.each(function(work){
+        //         var users = [];
+        //         work.taskList.each(function(task){
+        //             users.push(MWF.name.cn(task.person)+"("+MWF.name.cn(task.unit)+")");
+        //         }.bind(this));
+        //
+        //         content += "<div><b>"+MWF.xApplication.process.Xform.LP.nextActivity+"<font style=\"color: #ea621f\">"+work.fromActivityName+"</font>, "+MWF.xApplication.process.Xform.LP.nextUser+"<font style=\"color: #ea621f\">"+users.join(", ")+"</font></b></div>";
+        //     }.bind(this));
+        // }else{
+        //     content += MWF.xApplication.process.Xform.LP.workCompleted;
+        // }
 
         //data.workList.each(function(list){
         //    content += "<div><b>"+MWF.xApplication.process.Xform.LP.nextActivity+"<font style=\"color: #ea621f\">"+list.activityName+"</font>, "+MWF.xApplication.process.Xform.LP.nextUser+"<font style=\"color: #ea621f\">"+list.personList.join(", ")+"</font></b></div>"
@@ -540,7 +555,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
 
         var msg = {
             "subject": MWF.xApplication.process.Xform.LP.taskProcessed,
-            "content": "<div>"+MWF.xApplication.process.Xform.LP.taskProcessedMessage+"“"+this.businessData.work.title+"”</div>"+content
+            "content": this.getMessageContent(data)
         };
         layout.desktop.message.addTooltip(msg);
         return layout.desktop.message.addMessage(msg);
@@ -651,6 +666,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
         if (!this.validation(routeName, opinion, processor, medias)){
             //this.app.content.unmask();
             processor.node.unmask();
+            if (callback) callback();
             return false;
         }
         if (!opinion){
@@ -694,6 +710,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
                     //if (processor) processor.destroy();
                     //if (processNode) processNode.destroy();
                     if (callback) callback(json);
+
+                    this.taskList = json.data;
                     this.fireEvent("afterProcess");
                     if (this.app && this.app.fireEvent) this.app.fireEvent("afterProcess");
                     //    this.notice(MWF.xApplication.process.Xform.LP.taskProcessed, "success");
@@ -710,7 +728,26 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
                             window.location = "appMobile.html?app=process.TaskCenter";
                         }
                     }else{
-                        this.app.close();
+                        if (this.app.inBrowser){
+                            if (this.mask) this.mask.hide();
+                            var content = this.getMessageContent(json.data);
+                            var div = new Element("div", {"styles": {"margin": "10px 10px 0px 10px", "padding": "5px", "overflow": "hidden"}}).inject(this.app.content);
+                            div.set("html", content);
+                            var dlg = o2.DL.open({
+                                "content": div,
+                                "isTitle": false,
+                                "width": 350,
+                                "height": 130,
+                                "buttonList": [
+                                    {
+                                        "text": MWF.xApplication.process.Xform.LP.ok,
+                                        "action": function(){dlg.close(); this.app.close();}.bind(this)
+                                    }
+                                ]
+                            });
+                        }else{
+                            this.app.close();
+                        }
                     }
                     //window.setTimeout(function(){this.app.close();}.bind(this), 2000);
                 }.bind(this), null, this.businessData.task.id, this.businessData.task);
@@ -940,6 +977,291 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
             },
             content: content
         });
+    },
+    addSplit: function(){
+        if (!this.businessData.control["allowAddSplit"]){
+            MWF.xDesktop.notice("error", {x: "right", y:"top"}, "Permission Denied");
+            return false;
+        }
+        MWF.require("MWF.xDesktop.Dialog", function(){
+            var width = 600;
+            var height = 220;
+            var p = MWF.getCenterPosition(this.app.content, width, height);
+
+            var _self = this;
+            var dlg = new MWF.xDesktop.Dialog({
+                "title": this.app.lp.addSplit,
+                "style": "work",
+                "top": p.y-100,
+                "left": p.x,
+                "fromTop": p.y-100,
+                "fromLeft": p.x,
+                "width": width,
+                "height": height,
+                "url": this.app.path+"split.html",
+                "container": this.app.content,
+                "isClose": true,
+                "onPostShow": function(){
+                    debugger;
+                    var okButton = dlg.content.getElement(".o2_addSplit_okButton");
+                    var cancelButton = dlg.content.getElement(".o2_addSplit_cancelButton");
+                    var selectButton = dlg.content.getElement(".o2_addSplit_selector");
+                    var input = dlg.content.getElement("input");
+                    okButton.addEvent("click", function(){
+                        var value = input.get("value");
+                        _self.doAddSplit(this, value);
+                    }.bind(this));
+                    cancelButton.addEvent("click", function(){
+                        this.close();
+                    }.bind(this));
+                    selectButton.addEvent("click", function(){
+                        var value = input.get("value");
+                        MWF.xDesktop.requireApp("Selector", "package", function(){
+                            new o2.O2Selector(_self.app.content, {
+                                "type": "",
+                                "count": 1,
+                                "values": (value) ? [input.get("value")]: [],
+                                "types": ["unit", "identity", "group", "role"],
+                                "onComplete": function(items){
+                                    input.set("value", items[0].data.distinguishedName);
+                                }
+                            });
+                        }.bind(this));
+                        //_self.selectSplitUnit(this);
+                    }.bind(this));
+                }
+            });
+            dlg.show();
+        }.bind(this));
+    },
+    doAddSplit: function(dlg, splitValue){
+        if (!splitValue){
+            this.app.notice(MWF.xApplication.process.Xform.LP.inputSplitValue, "error", dlg.node);
+            return false;
+        }
+        MWF.require("MWF.widget.Mask", function(){
+            this.mask = new MWF.widget.Mask({"style": "desktop", "zIndex": 50000});
+            this.mask.loadNode(this.app.content);
+
+            this.fireEvent("beforeAddSplit");
+            if (this.app && this.app.fireEvent) this.app.fireEvent("beforeAddSplit");
+
+            this.addSplitWork(splitValue, function(){
+                this.workAction.getJobByWork(function(workJson){
+                    this.fireEvent("afterReset");
+                    if (this.app && this.app.fireEvent) this.app.fireEvent("afterReset");
+                    this.addAddSplitMessage(workJson.data);
+                    //this.app.notice(MWF.xApplication.process.Xform.LP.addSplitOk+": "+MWF.name.cns(names).join(", "), "success");
+                    //this.app.close();
+                }.bind(this), null, this.businessData.work.id);
+                dlg.close();
+                if (this.mask) {this.mask.hide(); this.mask = null;}
+            }.bind(this), function(xhr, text, error){
+                var errorText = error+":"+text;
+                if (xhr) errorText = xhr.responseText;
+                this.app.notice("request json error: "+errorText, "error", dlg.node);
+                if (this.mask) {this.mask.hide(); this.mask = null;}
+            }.bind(this));
+        }.bind(this));
+    },
+    addSplitWork: function(splitValue, success, failure){
+        var data = {"splitValue": splitValue};
+        this.saveFormData(
+            function(json){
+                this.workAction.addSplit(
+                    function(json){
+                        if (success) success(json);
+                    }.bind(this),
+                    function(xhr, text, error){
+                        if (failure) failure(xhr, text, error);
+                    },
+                    this.businessData.work.id, data
+                );
+            }.bind(this),
+            function(xhr, text, error){
+                if (failure) failure(xhr, text, error);
+            }, true, null, true
+        );
+    },
+    setRollBackChecked: function(item){
+        item.store("isSelected", true);
+        item.setStyles(this.css.rollbackItemNode_current);
+
+        item.getFirst().setStyles(this.css.rollbackItemIconNode_current);
+
+        var node = item.getLast().getFirst();
+        node.getFirst().setStyles(this.css.rollbackItemActivityNode_current);
+        node.getLast().setStyles(this.css.rollbackItemTimeNode_current);
+
+        node = item.getLast().getLast();
+        node.getFirst().setStyles(this.css.rollbackItemTaskTitleNode_current);
+        node.getLast().setStyles(this.css.rollbackItemTaskNode_current);
+    },
+    setRollBackUnchecked: function(item){
+        item.store("isSelected", false);
+        item.setStyles(this.css.rollbackItemNode);
+
+        item.getFirst().setStyles(this.css.rollbackItemIconNode);
+
+        var node = item.getLast().getFirst();
+        node.getFirst().setStyles(this.css.rollbackItemActivityNode);
+        node.getLast().setStyles(this.css.rollbackItemTimeNode);
+
+        node = item.getLast().getLast();
+        node.getFirst().setStyles(this.css.rollbackItemTaskTitleNode);
+        node.getLast().setStyles(this.css.rollbackItemTaskNode);
+    },
+    getRollbackLogs: function(rollbackItemNode){
+        var _self = this;
+        this.businessData.workLogList.each(function(log){
+            if (!log.splitting && log.connected && (log.taskCompletedList.length || log.readList.length || log.readCompletedList.length)){
+                var node = new Element("div", {"styles": this.css.rollbackItemNode}).inject(rollbackItemNode);
+                node.store("log", log);
+                var iconNode = new Element("div", {"styles": this.css.rollbackItemIconNode}).inject(node);
+                var contentNode = new Element("div", {"styles": this.css.rollbackItemContentNode}).inject(node);
+
+                var div = new Element("div", {"styles": {"overflow": "hidden"}}).inject(contentNode);
+                var activityNode = new Element("div", {"styles": this.css.rollbackItemActivityNode, "text": log.fromActivityName}).inject(div);
+                var timeNode = new Element("div", {"styles": this.css.rollbackItemTimeNode, "text": log.arrivedTime}).inject(div);
+                div = new Element("div", {"styles": {"overflow": "hidden"}}).inject(contentNode);
+                var taskTitleNode = new Element("div", {"styles": this.css.rollbackItemTaskTitleNode, "text": this.app.lp.taskCompletedPerson+": "}).inject(div);
+
+                log.taskCompletedList.each(function(o){
+                    var text = o2.name.cn(o.person)+"("+o.completedTime+")";
+                    var taskNode = new Element("div", {"styles": this.css.rollbackItemTaskNode, "text": text}).inject(div);
+                }.bind(this));
+
+
+                node.addEvents({
+                    "mouseover": function(){
+                        var isSelected = this.retrieve("isSelected");
+                        if (!isSelected) this.setStyles(_self.css.rollbackItemNode_over);
+                    },
+                    "mouseout": function(){
+                        var isSelected = this.retrieve("isSelected");
+                        if (!isSelected) this.setStyles(_self.css.rollbackItemNode)
+                    },
+                    "click": function(){
+                        var isSelected = this.retrieve("isSelected");
+                        if (isSelected){
+                            _self.setRollBackUnchecked(this);
+                        }else{
+                            var items = rollbackItemNode.getChildren();
+                            items.each(function(item){
+                                _self.setRollBackUnchecked(item);
+                            });
+                            _self.setRollBackChecked(this);
+                        }
+                    }
+                });
+            }
+        }.bind(this));
+    },
+    rollback: function(){
+        if (!this.businessData.control["allowRollback"]){
+            MWF.xDesktop.notice("error", {x: "right", y:"top"}, "Permission Denied");
+            return false;
+        }
+        var node = new Element("div", {"styles": this.css.rollbackAreaNode});
+        var html = "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden\">请选择文件要回溯到的位置：</div>";
+        html += "<div style=\"max-height: 300px; margin-bottom:10px; margin-top:10px; overflow-y:auto;\"></div>";
+        node.set("html", html);
+        var rollbackItemNode = node.getLast();
+        this.getRollbackLogs(rollbackItemNode);
+        node.inject(this.app.content);
+
+        var dlg = o2.DL.open({
+            "title": this.app.lp.rollback,
+            //"style": "work",
+            "isResize": false,
+            "content": node,
+            "width": 600,
+            "buttonList": [
+                {
+                    "text": MWF.LP.process.button.ok,
+                    "action": function(d, e){
+                        debugger;
+                        this.doRollback(node, e, dlg);
+                    }.bind(this)
+                },
+                {
+                    "text": MWF.LP.process.button.cancel,
+                    "action": function(){dlg.close();}
+                }
+            ]
+        });
+    },
+    doRollback: function(node, e, dlg){
+        var rollbackItemNode = node.getLast();
+        var items = rollbackItemNode.getChildren();
+        var _self = this;
+        for (var i=0; i<items.length; i++){
+            if (items[i].retrieve("isSelected")){
+                var text = this.app.lp.rollbackConfirmContent;
+                var log = items[i].retrieve("log");
+                text = text.replace("{log}", log.fromActivityName+"("+log.arrivedTime+")");
+                this.app.confirm("infor", e, this.app.lp.rollbackConfirmTitle, text, 450, 120, function(){
+                    _self.doRollbackAction(log.id, dlg);
+
+                    dlg.close();
+
+                    this.close();
+                }, function(){
+                    this.close();
+                });
+                break;
+            }
+        }
+    },
+
+    doRollbackAction: function(log){
+        MWF.require("MWF.widget.Mask", function(){
+            this.mask = new MWF.widget.Mask({"style": "desktop", "zIndex": 50000});
+            this.mask.loadNode(this.app.content);
+
+            this.fireEvent("beforeRollback");
+            if (this.app && this.app.fireEvent) this.app.fireEvent("beforeRollback");
+
+            this.doRollbackActionInvoke(log, function(json){
+                var id = json.data.id;
+                this.workAction.listTaskByWork(function(workJson){
+                    this.fireEvent("afterReset");
+                    if (this.app && this.app.fireEvent) this.app.fireEvent("afterReset");
+                    this.addRollbackMessage(workJson.data);
+                    //this.app.notice(MWF.xApplication.process.Xform.LP.rollbackOk+": "+MWF.name.cns(names).join(", "), "success");
+                    this.app.close();
+                }.bind(this), null, id);
+                if (this.mask) {this.mask.hide(); this.mask = null;}
+            }.bind(this), function(xhr, text, error){
+                var errorText = error+":"+text;
+                if (xhr) errorText = xhr.responseText;
+                this.app.notice("request json error: "+errorText, "error");
+                if (this.mask) {this.mask.hide(); this.mask = null;}
+            }.bind(this));
+        }.bind(this));
+    },
+    doRollbackActionInvoke: function(id, success, failure){
+        var method = (this.businessData.work.completedTime) ? "rollbackWorkcompleted" : "rollback";
+        o2.Actions.get("x_processplatform_assemble_surface")[method](this.businessData.work.id, {"workLog":id}, function(json){
+            if (success) success(json);
+        }.bind(this), function(xhr, text, error){
+            if (failure) failure(xhr, text, error)
+        }.bind(this));
+    },
+
+    addRollbackMessage: function(data){
+        var users = [];
+        data.each(function(task){
+            users.push(MWF.name.cn(task.person)+"("+MWF.name.cn(task.unit)+")");
+        }.bind(this));
+        var content = "<div><b>"+MWF.xApplication.process.Xform.LP.currentActivity+"<font style=\"color: #ea621f\">"+data[0].activityName+"</font>, "+MWF.xApplication.process.Xform.LP.nextUser+"<font style=\"color: #ea621f\">"+users.join(", ")+"</font></b></div>";
+
+        var msg = {
+            "subject": MWF.xApplication.process.Xform.LP.workRollback,
+            "content": "<div>"+MWF.xApplication.process.Xform.LP.rollbackWorkInfor+"“"+this.businessData.work.title+"”</div>"+content
+        };
+        layout.desktop.message.addTooltip(msg);
+        return layout.desktop.message.addMessage(msg);
     },
 
     resetWork: function(){
@@ -1180,7 +1502,20 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
 
 
     },
+    addAddSplitMessage: function(data){
+        var users = [];
+        data.taskList.each(function(task){
+            users.push(MWF.name.cn(task.person)+"("+MWF.name.cn(task.unit)+")");
+        }.bind(this));
+        var content = "<div><b>"+MWF.xApplication.process.Xform.LP.currentActivity+"<font style=\"color: #ea621f\">"+data.work.activityName+"</font>, "+MWF.xApplication.process.Xform.LP.nextUser+"<font style=\"color: #ea621f\">"+users.join(", ")+"</font></b></div>";
 
+        var msg = {
+            "subject": MWF.xApplication.process.Xform.LP.addSplitWork,
+            "content": "<div>"+MWF.xApplication.process.Xform.LP.addSplitWorkInfor+"“"+this.businessData.work.title+"”</div>"+content
+        };
+        layout.desktop.message.addTooltip(msg);
+        return layout.desktop.message.addMessage(msg);
+    },
     addResetMessage: function(data){
         var users = [];
         data.taskList.each(function(task){
@@ -1325,12 +1660,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
                             }).inject(select);
                         }.bind(_self));
 
-                        json.data.controllerList.each(function(activity){
-                            new Element("option", {
-                                "value": activity.id+"#condition",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
+                        // json.data.controllerList.each(function(activity){
+                        //     new Element("option", {
+                        //         "value": activity.id+"#condition",
+                        //         "text": activity.name
+                        //     }).inject(select);
+                        // }.bind(_self));
 
                         json.data.delayList.each(function(activity){
                             new Element("option", {
@@ -1634,5 +1969,5 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
             }
         }.bind(this))
     }
-	
+
 });

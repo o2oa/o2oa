@@ -362,16 +362,16 @@ MWF.xScript.CMSEnvironment = function(ev){
             }
             switch (getUnitMethod){
                 case "current":
-                    var data = {"identity":(typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name,"level":flag};
-                    orgActions.getUnitWithIdentityAndLevel(data, function(json){ v = json.data; }, null, false);
+                    var data = {"identityList":getNameFlag(name)};
+                    orgActions.listUnitWithIdentity(data, function(json){ v = json.data; v=(v&&v.length===1) ? v[0] : v }, null, false);
                     break;
                 case "type":
                     var data = {"identity":(typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name,"type":flag};
                     orgActions.getUnitWithIdentityAndType(data, function(json){ v = json.data; }, null, false);
                     break;
                 case "level":
-                    var data = {"identityList":getNameFlag(name)};
-                    orgActions.listUnitWithIdentity(data, function(json){ v = json.data; }, null, false);
+                    var data = {"identity":(typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name,"level":flag};
+                    orgActions.getUnitWithIdentityAndLevel(data, function(json){ v = json.data; }, null, false);
                     break;
             }
             return v;
@@ -1335,10 +1335,10 @@ MWF.xScript.createCMSDict = function(application){
 
         var encodePath = function( path ){
             var arr = path.split(/\./g);
-            // var ar = arr.map(function(v){
-            //     return encodeURIComponent(v);
-            // });
-            return arr.join("/");
+            var ar = arr.map(function(v){
+                return encodeURIComponent(v);
+            });
+            return ar.join("/");
         };
 
         this.get = function(path, success, failure){
@@ -1351,7 +1351,7 @@ MWF.xScript.createCMSDict = function(application){
                     if (success) success(json.data);
                 }, function(xhr, text, error){
                     if (failure) failure(xhr, text, error);
-                }, false);
+                }, false, false);
             }else{
                 action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](encodeURIComponent(this.name), applicationId, function(json){
                     value = json.data;

@@ -19,7 +19,6 @@ o2.addReady(function(){
 
             (function(){
                 layout.load = function(){
-
                     var uri = href.toURI();
                     MWF.require("MWF.xDesktop.Actions.RestActions", function(){
                         var action = new MWF.xDesktop.Actions.RestActions("", "x_organization_assemble_authentication", "");
@@ -35,8 +34,6 @@ o2.addReady(function(){
                             //window.loaction = "app.html?app=process.TaskCenter";
                         }.bind(this)});
                     });
-
-
                 };
 
                 layout.isAuthentication = function(){

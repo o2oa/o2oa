@@ -225,7 +225,14 @@
     "logTaskTextNode": {
         "margin-right": "10px",
         "overflow": "hidden",
-        "float": "left"
+        //"float": "left",
+        //"margin-left": "28px"
+    },
+    "logTaskFloatTextNode": {
+        "margin-right": "10px",
+        "overflow": "hidden",
+        "float": "left",
+        //"margin-left": "28px"
     },
     "logReadTextNode": {
         "margin": "5px 48px 5px 48px",
@@ -503,10 +510,10 @@
         "position": "relative",
         "height": "25px",
         "line-height": "25px",
-        "top": "-32px",
+        "top": "-34px",
         "float": "right",
-        "width": "140px",
-        "margin-right": "20px"
+        "width": "160px",
+        "margin-right": "5px"
     },
 
     "inputOpinionHandwritingAction": {
@@ -551,5 +558,216 @@
         "margin-left": "5px",
         "cursor": "pointer",
         "background": "url("+"/x_component_process_Work/$Processor/default/audioRecord.png) no-repeat 5px center"
+    },
+
+    "modelNode": {
+        "border-radius": "3px",
+        "border": "1px solid #999999",
+        "box-shadow": "0px 0px 5px #666",
+        "padding": "5px",
+        "background-color": "#ffffff",
+        "position": "absolute"
+    },
+    "modelNodeTitle": {
+        "height": "20px",
+        "line-height": "20px",
+        "font-weight": "bold",
+        "color": "#666666",
+        "float": "left"
+    },
+    "modelItemNode": {
+        "height": "20px",
+        "line-height": "20px",
+        "font-size": "12px",
+        "color": "#a31515",
+        "float": "left",
+        "cursor": "pointer",
+        "margin-left": "10px"
+    },
+    "modelNodeContent": {
+        "margin-left": "10px"
+    },
+    "attachmentPermissionNode": {
+        "overflow": "hidden",
+        "width": "500px",
+        "padding": "0px 40px",
+    },
+    "attachmentPermissionNamesNode": {
+        "overflow": "hidden",
+    },
+    "attachmentPermissionNamesTitleNode": {
+        "font-size": "14px",
+        "color": "#666666",
+        "height": "30px",
+        "font-weight": "bold",
+        "line-height": "30px"
+    },
+    "attachmentPermissionNamesAreaNode": {
+        "overflow": "hidden",
+        "padding": "0px",
+        "color": "#0000ff",
+        "margin-bottom": "20px"
+    },
+
+
+    "attachmentPermissionAttNode": {
+        "height": "20px",
+        "line-height": "20px"
+    },
+    "attachmentPermissionTitleNode": {
+        "font-size": "14px",
+        "color": "#666666",
+        "height": "26px",
+        "line-height": "26px"
+    },
+    "attachmentPermissionInputNode": {
+        "min-height": "24px",
+        "overflow": "hidden",
+        "line-height": "24px",
+        "border": "1px solid #3C76B7",
+        "border-radius": "3px",
+        "cursor": "pointer",
+        "margin-bottom": "10px",
+        "background-color": "#ffffff"
+    },
+
+    "attachmentOCRNode": {
+        "width": "500px",
+        "height": "450px",
+        "padding": "20px 20px 10px 20px"
+    },
+    "attachmentOCRInputAreaNode": {
+        "height": "242px",
+        //"width": "398px",
+        "border": "1px solid #999999",
+        "border-radius": "5px",
+        "padding": "5px",
+        "background-color": "#ffffff"
+    },
+    "attachmentOCRInputNode": {
+        "height": "230px",
+        "width": "490px",
+        "border": "0px",
+        "font-size": "14px",
+        "font-family": "'Microsoft YaHei','微软雅黑','SimSun','宋体'",
+        "overflow": "auto"
+    },
+    "attachmentOCRImageAreaNode": {
+        "height": "190px",
+        "margin-bottom": "10px",
+        "text-align": "center"
+    },
+    "attachmentOCRImageNode": {
+        "max-height": "190px",
+        "max-height": "190px",
+        "max-width": "498px",
+        "margin": "auto"
+    },
+    "rollbackAreaNode": {
+        "padding": "0 30px",
+        "font-size": "14px",
+        "overflow": "hidden"
+    },
+    "rollbackItemNode": {
+        "height": "46px",
+        "margin-bottom": "10px",
+        "padding": "10px",
+        "cursor": "pointer",
+        "background-color": "#ffffff"
+    },
+    "rollbackItemNode_over": {
+        "background-color": "#eaf1f9"
+    },
+    "rollbackItemNode_current": {
+        "background-color": "#6196d1"
+    },
+
+    "rollbackItemIconNode": {
+        "height": "46px",
+        "width": "30px",
+        "float": "right",
+        "overflow": "hidden",
+        "background": "url("+"/x_component_process_Xform/$Form/default/icon/rollback_uncheck.png) no-repeat center center"
+    },
+    "rollbackItemIconNode_current": {
+        "background": "url("+"/x_component_process_Xform/$Form/default/icon/rollback_check.png) no-repeat center center"
+    },
+    "rollbackItemContentNode": {
+        "margin-right": "30px",
+        "height": "46px"
+    },
+    "rollbackItemActivityNode": {
+        "height": "26px",
+        "line-height": "26px",
+        "font-weight": "bold",
+        "float": "left",
+        "color": "#000000",
+        "margin-right": "10px"
+    },
+    "rollbackItemActivityNode_current": {
+        "color": "#ffffff",
+    },
+    "rollbackItemTimeNode": {
+        "height": "26px",
+        "line-height": "26px",
+        "color": "#666666",
+        "float": "left"
+    },
+    "rollbackItemTimeNode_current": {
+        "color": "#eeeeee"
+    },
+    "rollbackItemTaskTitleNode": {
+        "float": "left",
+        "height": "20px",
+        "line-height": "20px",
+        "font-size": "12px",
+        "color": "#0000ff",
+        "font-weight": "bold"
+    },
+    "rollbackItemTaskTitleNode_current":{
+        "color": "#ffffff",
+    },
+    "rollbackItemTaskNode": {
+        "float": "left",
+        "margin-left": "5px",
+        "height": "20px",
+        "line-height": "20px",
+        "font-size": "12px",
+        "color": "#666666"
+    },
+    "rollbackItemTaskNode_current": {
+        "color": "#eeeeee"
+    },
+    "officeRecoverItemNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "margin-bottom": "10px",
+        "padding": "10px",
+        "cursor": "pointer",
+        "color": "#666666",
+        "font-weight": "bold",
+        "font-size": "14px",
+        "background-color": "#ffffff"
+    },
+    "officeRecoverItemNode_over": {
+        "background-color": "#eaf1f9"
+    },
+    "officeRecoverItemNode_current": {
+        "color": "#ffffff",
+        "background-color": "#6196d1"
+    },
+    "officeRecoverItemActionNode": {
+        "height": "30px",
+        "width": "50px",
+        "float": "right",
+        "overflow": "hidden",
+        "background": "url("+"/x_component_process_Xform/$Form/default/icon/open.png) no-repeat center center"
+    },
+    "officeRecoverItemActionNode_current": {
+        "background": "url("+"/x_component_process_Xform/$Form/default/icon/open_current.png) no-repeat center center"
+    },
+    "officeRecoverItemTitleNode": {
+        "margin-right": "50px",
+        "height": "30px"
     }
 }

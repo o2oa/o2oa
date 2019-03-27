@@ -26,7 +26,7 @@ MWF.xApplication.Calendar.Main = new Class({
         this.isManager = MWF.AC.isAdministrator();
         this.userName = ( layout.desktop.session.user || layout.user ).distinguishedName;
         if (!this.actions) this.actions = MWF.Actions.get("x_calendar_assemble_control"); //new MWF.xApplication.Calendar.Actions.RestActions();
-        if (!this.personActions) this.personActions = MWF.Actions.get("x_organization_assemble_express");
+        //if (!this.personActions) this.personActions = MWF.Actions.get("x_organization_assemble_express");
     },
     loadApplication: function(callback) {
         MWF.UD.getDataJson("calendarConfig", function(json){
@@ -125,8 +125,10 @@ MWF.xApplication.Calendar.Main = new Class({
         }).inject(this.node);
     },
     loadLayout: function(){
-        if( this.status && this.status.action ){
+        if( this.status && this.status.action ) {
             this.defaultAction = this.status.action;
+        }else if( this.options.defaultAction ){
+                this.defaultAction = this.options.defaultAction;
         }else if (this.calendarConfig.defaultView){
             this.defaultAction = this.calendarConfig.defaultView;
         }else{
@@ -309,7 +311,7 @@ MWF.xApplication.Calendar.Main = new Class({
         }
     },
     toList: function(){
-        this.contentNode.setStyle("background", "#EEE");
+        if(this.contentNode)this.contentNode.setStyle("background", "#EEE");
         if( this.currentView ){
             this.currentView.destroy();
             this.currentView = null;
@@ -339,7 +341,7 @@ MWF.xApplication.Calendar.Main = new Class({
     },
 
     toMonth: function(){
-        this.contentNode.setStyle("background", "#EEE");
+        if(this.contentNode)this.contentNode.setStyle("background", "#EEE");
         if( this.currentView ){
             this.currentView.destroy();
             this.currentView = null;
@@ -369,7 +371,7 @@ MWF.xApplication.Calendar.Main = new Class({
     },
 
     toWeek: function(){
-        this.contentNode.setStyle("background", "#EEE");
+        if(this.contentNode)this.contentNode.setStyle("background", "#EEE");
         if( this.currentView ){
             this.currentView.destroy();
             this.currentView = null;
@@ -399,7 +401,7 @@ MWF.xApplication.Calendar.Main = new Class({
     },
 
     toDay: function(d){
-        this.contentNode.setStyle("background", "#EEE");
+        if(this.contentNode)this.contentNode.setStyle("background", "#EEE");
         if( this.currentView ){
             this.currentView.destroy();
             this.currentView = null;

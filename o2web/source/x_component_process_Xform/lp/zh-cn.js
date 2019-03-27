@@ -1,4 +1,5 @@
 MWF.xApplication.process.Xform.LP = {
+    "ok": "确定",
 	"deleteDatagridLineTitle":"删除条目确认",
     "deleteDatagridLine": "是否确定要删除当前条目？",
     "browserNotActiveX": "您的浏览器不支持ActiveX控件，不能加载Office控件，请使用IE浏览器",
@@ -58,9 +59,18 @@ MWF.xApplication.process.Xform.LP = {
     "workReset": "文件已重置",
     "resetWorkInfor": "您重置了文件：",
 
+    "workRollback": "文件已回溯",
+    "rollbackOk": "文件已回溯给",
+    "rollbackWorkInfor": "您回溯了文件：",
+
     "workReroute": "文件已调度",
     "rerouteWorkInfor": "您调度了文件：",
     "rerouteOk": "文件已调度到：",
+
+    "inputSplitValue": "请输入或选择增加分支的依据值",
+    "addSplitOk": "已经增加处理分支：",
+    "addSplitWork": "已经增加处理分支",
+    "addSplitWorkInfor": "您已为当前工作增加了分支",
 
     "deleteWorkTitle": "删除文件确认",
     "deleteWorkText": {"html": "<div style='color: red;'>注意：您正在删除此文档，删除后文档无法找回，请您确认要删除此文件吗？</div>"},
@@ -100,5 +110,22 @@ MWF.xApplication.process.Xform.LP = {
     "worklogRead": "查看待阅",
     "mediaOpinion_image": "手写意见",
     "mediaOpinion_video": "视频意见",
-    "mediaOpinion_voice": "语音意见"
+    "mediaOpinion_voice": "语音意见",
+
+    "attachmentPermission": "设置附件权限",
+    "attachmentPermissionInfo": "您正在为以下附件设置权限：",
+    "attachmentRead": "谁可以查看和下载此附件：(为空表示有权限阅读此文档的人都可以)",
+    "attachmentEdit": "谁可以编辑此附件：(为空表示有权限编辑此文档的人都可以)",
+    "attachmentController": "谁可以设置此附件的权限：(为空表示有权限编辑此文档的人都可以)",
+
+    "attachmentOCRTitle": "纠正自动识别的图片中的文字",
+    "attachmentOCR_saved": "图像文字识别结果已保存",
+
+    "autosave": "自动保存文档",
+
+    "ignore": "忽略",
+    "ANNInput": "智能输入建议值：",
+
+    "recover": "恢复正文",
+    "notRecover": "取消正文恢复"
 };

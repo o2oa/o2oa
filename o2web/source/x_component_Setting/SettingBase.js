@@ -34,6 +34,12 @@ MWF.xApplication.Setting.BaseLoginDocument = new Class({
         this.titleName = new Element("div", {"styles": this.explorer.css.explorerContentTitleNode}).inject(this.node);
         this.titleName.set("text", this.lp.base_loginSetting);
 
+        this.baseCaptchaLoginInput = new MWF.xApplication.Setting.Document.Check(this.explorer, this.node, {
+            "lp": {"title": this.lp.base_captchaLogin, "infor": this.lp.base_captchaLogin_infor, "action": this.lp.base_captchaLogin_action},
+            "data": {"key": "personData", "valueKey": "captchaLogin", "notEmpty": false },
+            "value": this.explorer.personData.captchaLogin
+        });
+
         this.baseCodeLoginInput = new MWF.xApplication.Setting.Document.Check(this.explorer, this.node, {
             "lp": {"title": this.lp.base_codeLogin, "infor": this.lp.base_codeLogin_infor, "action": this.lp.base_codeLogin_action},
             "data": {"key": "personData", "valueKey": "codeLogin", "notEmpty": false },
@@ -134,19 +140,44 @@ MWF.xApplication.Setting.BaseSSODocument = new Class({
             "icon": "sso.png"
         });
 
+
+        if (!this.explorer.tokenData.qyweixin) this.explorer.tokenData.qyweixin = {
+            "enable": false,
+            "syncCron": "",
+            "forceSyncCron": "",
+            "apiAddress": "",
+            "corpId": "",
+            "corpSecret": "",
+            "agentId": "",
+            "token": "",
+            "encodingAesKey": "",
+            "messageEnable": false
+        };
         this.baseQyweixinInput = new MWF.xApplication.Setting.Document.List(this.explorer, this.node, {
             "lp": {"title": this.lp.base_qyweixin, "infor": this.lp.base_qyweixin_infor, "action": this.lp.base_qyweixin_action},
-            "data": {"key": "tokenData", "valueKey": "qyweixin", "notEmpty": false},
-            "value": this.explorer.tokenData.qyweixin || {"corpId": "", "corpSecret": ""},
+            "data": {"key": "tokenData", "valueKey": "qiyeweixin", "notEmpty": false},
+            "value": this.explorer.tokenData.qiyeweixin,
             "itemTitle": "corpId: {corpId}",
             "addItem": {"corpId": "", "corpSecret": ""},
             "icon": "weixin.png"
         });
+
+        if (!this.explorer.tokenData.dingding) this.explorer.tokenData.dingding = {
+            "enable": false,
+            "corpId": "",
+            "agentId": "",
+            "appKey": "",
+            "appSecret": "",
+            "syncCron": "",
+            "forceSyncCron": "",
+            "oapiAddress": "",
+            "messageEnable": true
+        };
         this.baseDingdingInput = new MWF.xApplication.Setting.Document.List(this.explorer, this.node, {
             "lp": {"title": this.lp.base_dingding, "infor": this.lp.base_dingding_infor, "action": this.lp.base_dingding_action},
             "data": {"key": "tokenData", "valueKey": "dingding", "notEmpty": false},
-            "value": this.explorer.tokenData.dingding || {"corpId": "", "corpSecret": "", "agentId": ""},
-            "itemTitle": "corpId: {corpId}",
+            "value": this.explorer.tokenData.dingding,
+            "itemTitle": "agentId: {agentId}",
             "addItem": {"corpId": "", "corpSecret": "", "agentId": ""},
             "icon": "dingding.png"
         });

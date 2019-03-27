@@ -196,7 +196,18 @@ MWF.xApplication.Setting.UIModuleDocument.Component = new Class({
 
         this.actionAreaNode = new Element("div", {"styles": this.css.actionAreaNode}).inject(this.node);
 
-        var icon = "/x_component_"+this.data.path.replace(/\./g, "_")+"/$Main/"+this.data.iconPath;
+        //var icon = "/x_component_"+this.data.path.replace(/\./g, "_")+"/$Main/"+this.data.iconPath;
+        var icon;
+        if (this.data.path.substring(0, 4)==="@url"){
+            if (this.data.iconPath){
+                icon = this.data.iconPath;
+            }else{
+                icon = "/x_component_Setting/$Main/default/icon/site.png";
+            }
+        }else{
+            icon = "/x_component_"+this.data.path.replace(/\./g, "_")+"/$Main/"+this.data.iconPath;
+        }
+
         this.iconNode.setStyle("background-image", "url("+icon+")");
 
         this.titleNode.set("text", this.data.title);
@@ -360,6 +371,17 @@ MWF.xApplication.Setting.UIModuleDocument.Deploy = new Class({
         this.nameInputNode = this.createLine(this.lp.name);
         this.titleInputNode = this.createLine(this.lp.componentTitle);
         this.pathInputNode = this.createLine(this.lp.path);
+
+        // var p = this.pathInputNode.getParent();
+        // p.setStyle("height", ""+h+"px");
+        new Element("div", {"text": this.lp.urlInfor, "styles": this.css.deployLineNode}).inject( this.content);
+
+        this.iconNode = new MWF.xApplication.Setting.UIModuleDocument.Deploy.Icon(this.deployment, this.content, this.lp.icon, this);
+
+        this.pathInputNode.addEvent("change", function(){
+            if (this.iconNode) this.iconNode.checkIcon();
+        }.bind(this));
+
         this.visibleInputNode = this.createLineSelect(this.lp.isVisible);
 
         // this.widgetNameInputNode = this.createLine(this.lp.widgetName);
@@ -411,12 +433,13 @@ MWF.xApplication.Setting.UIModuleDocument.Deploy = new Class({
         //     "denyList": this.denyList.list,
         //     "controllerList": this.controllerList.list
         // };
+        var path = this.pathInputNode.get("value");
         var data = {
             "name": this.nameInputNode.get("value"),
             "title": this.titleInputNode.get("value"),
-            "path": this.pathInputNode.get("value"),
-            "visible": (visible=="yes") ? true : false,
-            "iconPath": "appicon.png",
+            "path": path,
+            "visible": (visible==="yes") ? true : false,
+            "iconPath": (path.substring(0, 4)==="@url") ? "/x_component_Setting/$Main/default/icon/site.png" : "appicon.png",
             "widgetName": "",
             "widgetTitle": "",
             "widgetIconPath": "",
@@ -467,6 +490,7 @@ MWF.xApplication.Setting.UIModuleDocument.DeployEdit = new Class({
 
         this.okAction.addEvent("click", function(){
             var data = this.getComponentData();
+            data.iconPath = this.data.iconPath;
             if ((!data.name) || (!data.title) || (!data.path)){
                 this.deployment.app.notice(this.lp.noInputInfor, "error");
                 return false;
@@ -537,4 +561,88 @@ MWF.xApplication.Setting.UIModuleDocument.Deploy.Select = new Class({
             if (personName) new MWF.widget.O2Person({"name": personName}, this.listNode, {"style": "application"});
         }.bind(this));
     }
+});
+
+MWF.xApplication.Setting.UIModuleDocument.Deploy.Icon = new Class({
+    initialize: function(deployment, content, title, deploy){
+        this.deployment = deployment;
+        this.css = this.deployment.css;
+        this.deploy = deploy;
+
+        this.list = [];
+
+        var lineNode = new Element("div", {"styles": this.css.deployLineNode}).inject(content);
+        lineNode.setStyle("height", "64px");
+        var titleNode = new Element("div", {"styles": this.css.deployTitleNode, "text": title}).inject(lineNode);
+        var valueNode = new Element("div", {"styles": this.css.deployvalueNode}).inject(lineNode);
+        this.iconNode = new Element("div", {"styles": this.css.deployIconNode}).inject(valueNode);
+
+        this.actionNode = new Element("div", {"styles": this.css.actionNode, "text": this.deployment.lp.selIcon}).inject(valueNode);
+        this.actionNode.setStyles({"margin-top": "10px", "float": "left"});
+
+        this.actionNode.addEvent("click", function(){
+            if (!this.uploadFileAreaNode){
+                this.createUploadFileAreaNode();
+            }
+            this.fileUploadNode.set("multiple", false);
+
+            var fileNode = this.uploadFileAreaNode.getFirst();
+            fileNode.set("accept", ".png,.jpg,.bmp,.gif,.jpeg,.jpe");
+            fileNode.click();
+        }.bind(this));
+
+        this.checkIcon();
+    },
+    createUploadFileAreaNode: function(){
+        this.uploadFileAreaNode = new Element("div");
+        var html = "<input name=\"file\" type=\"file\" accept=\"images/*\" />";
+        this.uploadFileAreaNode.set("html", html);
+
+        this.fileUploadNode = this.uploadFileAreaNode.getFirst();
+        this.fileUploadNode.addEvent("change", function(){
+            //var fileId = attachment.data.id;
+
+            var files = this.fileUploadNode.files;
+            if (files.length){
+                var count = files.length;
+                for (var i = 0; i < files.length; i++) {
+                    var file = files.item(i);
+
+                    var formData = new FormData();
+                    formData.append('file', file);
+
+                    MWF.xDesktop.uploadImage(
+                        "component",
+                        "component",
+                        formData,
+                        file,
+                        function(json){
+                            debugger;
+                            var id = json.id;
+                            this.deploy.data.iconPath = MWF.xDesktop.getImageSrc(id);
+                            this.checkIcon();
+                        }.bind(this)
+                    );
+                }
+            }
+        }.bind(this));
+    },
+    checkIcon: function(){
+        var path = this.deploy.pathInputNode.get("value") || ((this.deploy.data) ? this.deploy.data.path : "");
+        if (path.substring(0,4)==="@url"){
+            if (!this.deploy.data || !this.deploy.data.iconPath){
+                this.iconNode.setStyle("background", "url(/x_component_Setting/$Main/default/icon/site.png) no-repeat center center");
+            }else{
+                this.iconNode.setStyle("background", "url("+this.deploy.data.iconPath+") no-repeat center center");
+            }
+            if (this.actionNode) this.actionNode.show();
+        }else{
+            if (path){
+                var p = path.replace(".", "_");
+                this.iconNode.setStyle("background", "url(/x_component_"+p+"/$Main/appicon.png) no-repeat center center");
+            }
+            if (this.actionNode) this.actionNode.hide();
+        }
+    }
+
 });

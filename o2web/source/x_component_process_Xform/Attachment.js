@@ -86,6 +86,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         if (this.options.readonly){
             this.setActionDisabled(this.replaceAction);
             this.setActionDisabled(this.min_replaceAction);
+            return false;
         }
 
         if (this.options.isReplaceOption!=="y" && this.options.isReplaceOption!=="n") {
@@ -101,6 +102,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                 if (this.options.isReplaceOption==="ao"){
                     flag = (this.selectedAttachments[0].data.person === layout.desktop.session.user.distinguishedName && this.selectedAttachments[0].data.activity===this.module.form.businessData.activity.id);
                 }
+                if (!this.selectedAttachments[0].data.control.allowEdit) flag = false;
 
                 if (flag) {
                     this.setActionEnabled(this.replaceAction);
@@ -158,7 +160,80 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         this.createReadGroupActions();
         this.createListGroupActions();
         if (this.module.json.isOpenInOffice && this.module.json.officeControlName) this.createOfficeGroupActions();
+
+        this.createConfigGroupActions();
+        
         this.createViewGroupActions();
+    },
+    checkActions: function(){
+        //    if (this.options.readonly){
+        //        this.setReadonly();
+        //    }else{
+        this.checkUploadAction();
+        this.checkDeleteAction();
+        this.checkReplaceAction();
+        //this.checkOfficeAction();
+        this.checkDownloadAction();
+        this.checkSizeAction();
+
+        this.checkConfigAction();
+
+        this.checkListStyleAction();
+        //    }
+    },
+
+    checkConfigAction: function(){
+        if (this.options.readonly){
+            this.setActionDisabled(this.configAction);
+            this.setActionDisabled(this.checkTextAction);
+            return false;
+        }
+        if (this.selectedAttachments.length){
+            var flag = true;
+            for (var i=0; i<this.selectedAttachments.length; i++){
+                if (!this.selectedAttachments[i].data.control.allowControl){
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag){
+                this.setActionEnabled(this.configAction);
+            }else{
+                this.setActionDisabled(this.configAction);
+            }
+            //this.setActionEnabled(this.min_deleteAction);
+        }else{
+            this.setActionDisabled(this.configAction);
+            //this.setActionDisabled(this.min_deleteAction);
+        }
+
+        this.setActionDisabled(this.checkTextAction);
+        if (this.selectedAttachments.length && this.selectedAttachments.length===1){
+            var att = this.selectedAttachments[0];
+            if (this.options.images.indexOf(att.data.extension.toLowerCase())!==-1){
+                this.setActionEnabled(this.checkTextAction);
+            }
+        }
+    },
+
+
+
+    createConfigGroupActions: function(){
+        this.configActionBoxNode = new Element("div", {"styles": this.css.actionsBoxNode}).inject(this.topNode);
+        this.configActionsGroupNode = new Element("div", {"styles": this.css.actionsGroupNode}).inject(this.configActionBoxNode);
+
+        this.configAction = this.createAction(this.configActionsGroupNode, "config", MWF.LP.widget.configAttachment, function(e, node){
+            this.configAttachment(e, node);
+        }.bind(this));
+
+        this.createSeparate(this.configActionsGroupNode);
+
+        this.checkTextAction = this.createAction(this.configActionsGroupNode, "check", MWF.LP.widget.checkOcrText, function(e, node){
+            this.checkImageTex(e, node);
+        }.bind(this));
+
+        if (this.configAction) this.setActionDisabled(this.configAction);
+        if (this.checkTextAction) this.setActionDisabled(this.checkTextAction);
     },
     createOfficeGroupActions: function(){
         this.officeActionBoxNode = new Element("div", {"styles": this.css.actionsBoxNode}).inject(this.topNode);
@@ -205,6 +280,187 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             if (this.min_closeOfficeAction) this.setActionDisabled(this.min_closeOfficeAction);
             if (this.closeOfficeAction) this.setActionDisabled(this.closeOfficeAction);
         }
+    },
+    configAttachment: function(){
+        var lp = MWF.xApplication.process.Xform.LP;
+        var css = this.module.form.css;
+        var node = new Element("div", {"styles": css.attachmentPermissionNode}).inject(this.node);
+        var attNames = new Element("div", {"styles": css.attachmentPermissionNamesNode}).inject(node);
+        var attNamesTitle = new Element("div", {"styles": css.attachmentPermissionNamesTitleNode, "text": lp.attachmentPermissionInfo}).inject(attNames);
+        var attNamesArea = new Element("div", {"styles": css.attachmentPermissionNamesAreaNode}).inject(attNames);
+
+        if (this.selectedAttachments.length){
+            this.selectedAttachments.each(function(att){
+                var attNode = new Element("div", {"styles": css.attachmentPermissionAttNode, "text": att.data.name}).inject(attNamesArea);
+            }.bind(this));
+        }
+
+        var editArea = new Element("div", {"styles": css.attachmentPermissionEditAreaNode}).inject(node);
+        var title = new Element("div", {"styles": css.attachmentPermissionTitleNode, "text": lp.attachmentRead}).inject(editArea);
+        var readInput = new Element("div", {"styles": css.attachmentPermissionInputNode}).inject(editArea);
+
+        title = new Element("div", {"styles": css.attachmentPermissionTitleNode, "text": lp.attachmentEdit}).inject(editArea);
+        var editInput = new Element("div", {"styles": css.attachmentPermissionInputNode}).inject(editArea);
+
+        title = new Element("div", {"styles": css.attachmentPermissionTitleNode, "text": lp.attachmentController}).inject(editArea);
+        var controllerInput = new Element("div", {"styles": css.attachmentPermissionInputNode}).inject(editArea);
+
+        var dlg = o2.DL.open({
+            "title": lp.attachmentPermission,
+            "isResize": false,
+            "content": node,
+            "buttonList": [
+                {
+                    "text": MWF.LP.process.button.ok,
+                    "action": function(){
+                        this.setAttachmentConfig(readInput, editInput, controllerInput);
+                        dlg.close();
+                    }.bind(this)
+                },
+                {
+                    "text": MWF.LP.process.button.cancel,
+                    "action": function(){dlg.close();}
+                }
+            ]
+        });
+
+        if (this.selectedAttachments.length===1){
+            var data = this.selectedAttachments[0].data;
+
+            var readUnitList = (data.readUnitList) || [];
+            var readIdentityList = (data.readIdentityList) || [];
+            var editUnitList = (data.editUnitList) || [];
+            var editIdentityList = (data.editIdentityList) || [];
+            var controllerUnitList = (data.controllerUnitList) || [];
+            var controllerIdentityList = (data.controllerIdentityList) || [];
+
+            readInput.setSelectPerson(this.module.form.app.content, {
+                "types": ["unit", "identity"],
+                "values": readUnitList.concat(readIdentityList).trim()
+            });
+            editInput.setSelectPerson(this.module.form.app.content, {
+                "types": ["unit", "identity"],
+                "values": editUnitList.concat(editIdentityList).trim()
+            });
+            controllerInput.setSelectPerson(this.module.form.app.content, {
+                "types": ["unit", "identity"],
+                "values": controllerUnitList.concat(controllerIdentityList).trim()
+            });
+        }else{
+            readInput.setSelectPerson(this.module.form.app.content, { "types": ["unit", "identity"] });
+            editInput.setSelectPerson(this.module.form.app.content, { "types": ["unit", "identity"] });
+            controllerInput.setSelectPerson(this.module.form.app.content, { "types": ["unit", "identity"] });
+        }
+    },
+    setAttachmentConfig: function(readInput, editInput, controllerInput){
+        if (this.selectedAttachments.length){
+            var readList = readInput.retrieve("data-value");
+            var editList = editInput.retrieve("data-value");
+            var controllerList = controllerInput.retrieve("data-value");
+
+            var readUnitList = [];
+            var readIdentityList = [];
+            var editUnitList = [];
+            var editIdentityList = [];
+            var controllerUnitList = [];
+            var controllerIdentityList = [];
+
+            if (readList){
+                readList.each(function(v){
+                    var vName = (typeOf(v)==="string") ? v : v.distinguishedName;
+                    var len = vName.length;
+                    var flag = vName.substring(len-1,len);
+                    if (flag==="U") readUnitList.push(vName);
+                    if (flag==="I") readIdentityList.push(vName);
+                });
+            }
+            if (editList){
+                editList.each(function(v){
+                    var vName = (typeOf(v)==="string") ? v : v.distinguishedName;
+                    var len = vName.length;
+                    var flag = vName.substring(len-1,len);
+                    if (flag==="U") editUnitList.push(vName);
+                    if (flag==="I") editIdentityList.push(vName);
+                });
+            }
+            if (controllerList){
+                controllerList.each(function(v){
+                    var vName = (typeOf(v)==="string") ? v : v.distinguishedName;
+                    var len = vName.length;
+                    var flag = vName.substring(len-1,len);
+                    if (flag==="U") controllerUnitList.push(vName);
+                    if (flag==="I") controllerIdentityList.push(vName);
+                });
+            }
+
+            this.selectedAttachments.each(function(att){
+                att.data.readUnitList = readUnitList;
+                att.data.readIdentityList = readIdentityList;
+                att.data.editUnitList = editUnitList;
+                att.data.editIdentityList = editIdentityList;
+                att.data.controllerUnitList = controllerUnitList;
+                att.data.controllerIdentityList = controllerIdentityList;
+
+                o2.Actions.get("x_processplatform_assemble_surface").configAttachment(att.data.id, this.module.form.businessData.work.id, att.data);
+            }.bind(this));
+        }
+    },
+
+    checkImageTex: function(){
+        if (this.selectedAttachments.length && this.selectedAttachments.length==1){
+            var att = this.selectedAttachments[0];
+            var lp = MWF.xApplication.process.Xform.LP;
+            var css = this.module.form.css;
+
+            var node = new Element("div", {"styles": css.attachmentOCRNode}).inject(this.node);
+            var previewNode = new Element("div", {"styles": css.attachmentOCRImageAreaNode}).inject(node);
+            var imgNode = new Element("img", {"styles": css.attachmentOCRImageNode}).inject(previewNode);
+
+            o2.Actions.get("x_processplatform_assemble_surface").getAttachmentUrl(att.data.id, this.module.form.businessData.work.id, function(url){
+                imgNode.set("src", url);
+            });
+
+            var areaNode = new Element("div", {"styles": css.attachmentOCRInputAreaNode}).inject(node);
+            var inputNode = new Element("textarea", {"styles": css.attachmentOCRInputNode}).inject(areaNode);
+
+            var dlg = o2.DL.open({
+                "title": lp.attachmentOCRTitle,
+                "isResize": false,
+                "content": node,
+                "buttonList": [
+                    {
+                        "text": MWF.LP.process.button.ok,
+                        "action": function(){
+                            this.setAttachmentOCR(inputNode, att);
+                            dlg.close();
+                        }.bind(this)
+                    },
+                    {
+                        "text": MWF.LP.process.button.cancel,
+                        "action": function(){dlg.close();}
+                    }
+                ]
+            });
+            if (att.data.ocr){
+                inputNode.set("text", att.data.ocr.text || "");
+            }else{
+                o2.Actions.get("x_processplatform_assemble_surface").getAttachmentOCR(att.data.id, this.module.form.businessData.work.id, function(json){
+                    att.data.ocr = json.data;
+                    inputNode.set("text", json.data.text || "");
+                }.bind(this))
+            }
+
+        }
+    },
+    setAttachmentOCR: function(inputNode, att){
+        var data = inputNode.get("text");
+        if (!att.data.ocr) att.data.ocr = {};
+        att.data.ocr.text = data;
+        o2.Actions.get("x_processplatform_assemble_surface").setAttachmentOCR(att.data.id, this.module.form.businessData.work.id, {
+            "text": data
+        }, function(){
+            this.module.form.app.notice("success", lp.attachmentOCR_saved, this.node);
+        }.bind(this));
     }
 });
 MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
@@ -473,7 +729,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
                 }else if(window.webkit && window.webkit.messageHandlers) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage({"id": att.data.id, "site": this.json.id});
                 }else{
-                    this.form.workAction.getAttachmentData(att.data.id, this.form.businessData.work.id);
+                    this.form.workAction.getAttachmentStream(att.data.id, this.form.businessData.work.id);
                 }
             }.bind(this));
         }else{
@@ -483,20 +739,20 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
                 }else if(window.webkit && window.webkit.messageHandlers) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage({"id": att.data.id, "site": this.json.id});
                 }else{
-                    this.form.workAction.getWorkcompletedAttachmentData(att.data.id, this.form.businessData.workCompleted.id);
+                    this.form.workAction.getWorkcompletedAttachmentStream(att.data.id, this.form.businessData.workCompleted.id);
                 }
             }.bind(this));
         }
     },
     openAttachment: function(e, node, attachments){
-        if (this.form.businessData.work){
+        if (this.form.businessData.work && !this.form.businessData.work.completedTime){
             attachments.each(function(att){
                 if (window.o2android && window.o2android.downloadAttachment){
                     window.o2android.downloadAttachment(att.data.id);
                 }else if(window.webkit && window.webkit.messageHandlers) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage({"id": att.data.id, "site": this.json.id});
                 }else {
-                    this.form.workAction.getAttachmentStream(att.data.id, this.form.businessData.work.id);
+                    this.form.workAction.getAttachmentData(att.data.id, this.form.businessData.work.id);
                 }
             }.bind(this));
         }else{
@@ -506,7 +762,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
                 }else if(window.webkit && window.webkit.messageHandlers) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage(att.data.id, this.json.id);
                 }else {
-                    this.form.workAction.getWorkcompletedAttachmentStream(att.data.id, this.form.businessData.workCompleted.id);
+                    this.form.workAction.getWorkcompletedAttachmentData(att.data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id));
                 }
             }.bind(this));
         }
@@ -558,7 +814,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment =  new Class({
                     var contentAreaNode = p.getParent("div").getParent("div");
                     var tabAreaNode = contentAreaNode.getPrevious("div");
                     var idx = contentAreaNode.getChildren().indexOf(p.getParent("div"));
-                    var tabNode = tabAreaNode.getChildren()[idx];
+                    var tabNode = tabAreaNode.getLast().getFirst().getChildren()[idx];
                     tabNode.click();
                     p = tabAreaNode.getParent("div");
                 }

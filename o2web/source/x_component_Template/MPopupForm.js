@@ -106,7 +106,7 @@ var MPopupForm = new Class({
             this.data = this.form.getResult(false, this.options.resultSeparator, false, false, true);
         }
         this.formTopNode = null;
-        if(this.setFormNodeSizeFun && this.app ){
+        if(this.setFormNodeSizeFun && this.app && this.app.removeEvent){
             this.app.removeEvent("resize",this.setFormNodeSizeFun);
         }
         if( this.formMaskNode )this.formMaskNode.destroy();
@@ -176,7 +176,7 @@ var MPopupForm = new Class({
 
         this.setFormNodeSize();
         this.setFormNodeSizeFun = this.setFormNodeSize.bind(this);
-        if( this.app )this.app.addEvent("resize", this.setFormNodeSizeFun);
+        if( this.app && this.app.addEvent )this.app.addEvent("resize", this.setFormNodeSizeFun);
 
         if (this.options.draggable && this.formTopNode) {
             var size = (this.container || this.app.content).getSize();
@@ -462,7 +462,7 @@ var MPopupForm = new Class({
         //if( this.form ){
         //    this.form.destroy();
         //}
-        if(this.setFormNodeSizeFun && this.app ){
+        if(this.setFormNodeSizeFun && this.app && this.app.removeEvent ){
             this.app.removeEvent("resize",this.setFormNodeSizeFun);
         }
         if( this.formMaskNode )this.formMaskNode.destroy();
@@ -479,12 +479,12 @@ var MPopupForm = new Class({
         if (data) {
             this._ok(data, function (json) {
                 if (json.type == "error") {
-                    if( this.app )this.app.notice(json.message, "error");
+                    if( this.app && this.app.notice )this.app.notice(json.message, "error");
                 } else {
                     if( this.formMaskNode )this.formMaskNode.destroy();
                     if( this.formAreaNode )this.formAreaNode.destroy();
                     if (this.explorer && this.explorer.view)this.explorer.view.reload();
-                    if( this.app )this.app.notice(this.isNew ? this.lp.createSuccess : this.lp.updateSuccess, "success");
+                    if( this.app && this.app.notice)this.app.notice(this.isNew ? this.lp.createSuccess : this.lp.updateSuccess, "success");
                     this.fireEvent("postOk");
                 }
             }.bind(this))

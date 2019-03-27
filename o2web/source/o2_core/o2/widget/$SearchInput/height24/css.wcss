@@ -1,0 +1,54 @@
+{
+	"searchNode": {
+		"overflow": "hidden"
+	},
+	"searchBarNode": {
+        "border": "0px solid #999999",
+        "height": "26px"
+	},
+    "searchAction": {
+        "cursor": "pointer",
+        "height": "26px",
+        "width": "30px",
+        "background": "url("+o2.session.path+"/widget/$SearchInput/height24/icon/search.png) no-repeat center center",
+        "float": "right"
+    },
+    "searchInputArea": {
+        "margin-right": "30px",
+        "margin-left": "5px",
+        "height": "26px"
+    },
+
+    "searchInputNode": {
+	    "border": "0px",
+	    "height": "24px",
+	    "line-height": "24px",
+	    "width": "99%",
+	    "color": "#999999",
+	    "background": "transparent",
+	    "font-size": "14px"
+	},
+	"autoCompletedNode": {
+        "position": "absolute",
+        "clear": "both",
+        "border-left": "1px solid #999999",
+        "border-right": "1px solid #999999",
+        "border-bottom": "1px solid #999999",
+        "overflow": "hidden",
+        "box-shadow": "0px 3px 10px #cccccc",
+        "background-color": "#ffffff"
+    },
+    "searchKeyItem": {
+        "padding": "0px 5px",
+        "height": "26px",
+        "font-size": "14px",
+        "line-height": "26px",
+        "color": "#666666",
+        "cursor": "default",
+        "background-color": "#ffffff"
+    },
+    "searchKeyItem_over": {
+        "background-color": "#f1f1f1"
+    }
+
+}

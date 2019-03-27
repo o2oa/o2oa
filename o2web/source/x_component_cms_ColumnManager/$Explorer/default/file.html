@@ -1,0 +1,19 @@
+<!--<div class="o2_fileItemNode">-->
+<div class="o2_fileItemIconNode">
+    <img class="o2_fileItemImgNode" src="{{$.iconUrl}}"/>
+</div>
+<div class="o2_fileDeleteActionNode"></div>
+<div class="o2_fileItemInforNode">
+    <div class="o2_fileItemInforBaseNode">
+        <div class="o2_fileItemTextTitleNode" title="{{$.name}}">{{$.name}}</div>
+        <div class="o2_fileItemTextDescriptionNode" title="{{$.description}}">{{$.description}}</div>
+        <div class="o2_fileItemTextDateNode" title="{{$.updateTime}}">{{$.updateTime}}</div>
+    </div>
+    <div unselectable="off" class="o2_fileItemUrlNode">
+        <textarea readonly class="o2_fileUrlNode">{{$.fileUrl.substring($.fileUrl.indexOf("/", 7), $.fileUrl.length)}}</textarea>
+
+    </div>
+
+
+</div>
+<!--</div>-->

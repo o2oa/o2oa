@@ -6,6 +6,13 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
     options: {
         "moduleEvents": ["complete", "clear", "change"]
     },
+    _loadNode: function(){
+        if (this.readonly || this.json.isReadonly){
+            this._loadNodeRead();
+        }else{
+            this._loadNodeEdit();
+        }
+    },
     setDescriptionEvent: function(){
         if (this.descriptionNode){
             this.descriptionNode.addEvents({
