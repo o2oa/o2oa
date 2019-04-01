@@ -73,17 +73,7 @@ public class CategoryInfoFactory extends AbstractFactory {
 		cq.select(root.get( CategoryInfo_.id));
 		return em.createQuery( cq.where(p) ).setMaxResults(1000).getResultList();
 	}
-	
-	public List<CategoryInfo> listInReviewCategoryInfoList() throws Exception {
-		EntityManager em = this.entityManagerContainer().get(CategoryInfo.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<CategoryInfo> cq = cb.createQuery(CategoryInfo.class);
-		Root<CategoryInfo> root = cq.from(CategoryInfo.class);
-		Predicate p = cb.equal( root.get(CategoryInfo_.documentType), "信息");
-		p = cb.and(p, cb.or(cb.isFalse( root.get(CategoryInfo_.reviewed ) ), cb.isNull(root.get(CategoryInfo_.reviewed ))));
-		return em.createQuery(cq.where(p)).getResultList();
-	}
-	
+
 	public List<String> listByAppIds( List<String> appIds, String documentType, Boolean manager, Integer maxCount ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( CategoryInfo.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();

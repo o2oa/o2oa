@@ -11,6 +11,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import com.x.base.core.entity.JpaObject;
@@ -90,6 +92,7 @@ public class AttendanceStatisticRequireLog extends SliceJpaObject {
 	private String statisticDay = "";
 
 	@FieldDescribe("处理时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "xprocessTime")
 	@CheckPersist(allowEmpty = true)
 	private Date processTime = null;

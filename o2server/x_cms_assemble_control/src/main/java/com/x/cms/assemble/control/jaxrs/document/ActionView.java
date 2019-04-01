@@ -33,7 +33,6 @@ public class ActionView extends BaseAction {
 	@SuppressWarnings("unchecked")
 	protected ActionResult<Wo> execute(HttpServletRequest request, String id, EffectivePerson effectivePerson) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		Wo wo = new Wo();
 		Boolean isManager = false;
 		Boolean check = true;
 		Boolean isAnonymous = effectivePerson.isAnonymous();

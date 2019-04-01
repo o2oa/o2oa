@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
@@ -59,6 +61,7 @@ public class BBSSubjectAttachment extends StorageObject {
 	}
 
 	@FieldDescribe("最后更新时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "xlastUpdateTime")
 	@Index(name = TABLE + "_lastUpdateTime")
 	@CheckPersist(allowEmpty = false)

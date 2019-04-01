@@ -11,6 +11,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import com.x.base.core.entity.AbstractPersistenceProperties;
@@ -103,6 +105,7 @@ public class AttendanceAppealInfo extends SliceJpaObject {
 	private String recordDateString;
 
 	@FieldDescribe("记录日期")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "xrecordDate")
 	@CheckPersist(allowEmpty = true)
 	private Date recordDate;
@@ -176,6 +179,7 @@ public class AttendanceAppealInfo extends SliceJpaObject {
 	private String opinion1;
 
 	@FieldDescribe("审批日期一")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "xprocessTime1")
 	@CheckPersist(allowEmpty = true)
 	private Date processTime1;
@@ -201,6 +205,7 @@ public class AttendanceAppealInfo extends SliceJpaObject {
 	private String opinion2;
 
 	@FieldDescribe("审批日期二")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "xprocessTime2")
 	@CheckPersist(allowEmpty = true)
 	private Date processTime2;

@@ -44,17 +44,6 @@ public class ActionUpdateReviewForce extends BaseAction {
 		
 		if( check ){
 			try {
-				permissionOperateService.refreshReview( id );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess( e, "根据指定分类ID强制更新信息存根Review信息时发生异常。ID:" + id );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}
-		}
-		
-		if( check ){
-			try {
 				WoId wo = new WoId();
 				wo.setId( id );
 				result.setData( wo );

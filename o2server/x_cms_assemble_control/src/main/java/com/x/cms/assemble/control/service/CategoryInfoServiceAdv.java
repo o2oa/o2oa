@@ -112,15 +112,6 @@ public class CategoryInfoServiceAdv {
 		}
 	}
 	
-
-	public List<CategoryInfo> listInReviewCategoryInfoList() throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			return categoryInfoService.listInReviewCategoryInfoList(emc);
-		} catch (Exception e) {
-			throw e;
-		}
-	}
-	
 	public void inReview(String categoryId) throws Exception {
 		if (StringUtils.isEmpty( categoryId )) {
 			throw new Exception("categoryId is empty.");
@@ -129,7 +120,6 @@ public class CategoryInfoServiceAdv {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			categoryInfo = emc.find( categoryId, CategoryInfo.class );
 			emc.beginTransaction( CategoryInfo.class );
-			categoryInfo.setReviewed( false );
 			emc.persist( categoryInfo, CheckPersistType.all );
 			emc.commit();
 		} catch (Exception e) {
@@ -162,7 +152,6 @@ public class CategoryInfoServiceAdv {
 				//如果不存在，则将当前登录者作为应用栏目的管理者
 				emc.beginTransaction( CategoryInfo.class );
 				categoryInfo.addManageablePerson( currentPerson.getDistinguishedName() );
-				categoryInfo.setReviewed( false );
 				emc.check( categoryInfo, CheckPersistType.all );
 				emc.commit();
 			}
@@ -246,7 +235,6 @@ public class CategoryInfoServiceAdv {
 			categoryInfo.setManageablePersonList(personList);
 			categoryInfo.setManageableUnitList(unitList);
 			categoryInfo.setManageableGroupList(groupList);
-			categoryInfo.setReviewed( false );
 			emc.check(categoryInfo , CheckPersistType.all );
 			emc.commit();
 		} catch (Exception e) {
@@ -272,7 +260,6 @@ public class CategoryInfoServiceAdv {
 			categoryInfo.setPublishablePersonList(personList);
 			categoryInfo.setPublishableUnitList(unitList);
 			categoryInfo.setPublishableGroupList(groupList);
-			categoryInfo.setReviewed( false );
 			emc.check(categoryInfo , CheckPersistType.all );
 			emc.commit();
 		} catch (Exception e) {
@@ -298,7 +285,6 @@ public class CategoryInfoServiceAdv {
 			categoryInfo.setViewablePersonList(personList);
 			categoryInfo.setViewableUnitList(unitList);
 			categoryInfo.setViewableGroupList(groupList);
-			categoryInfo.setReviewed( false );
 			emc.check(categoryInfo , CheckPersistType.all );
 			emc.commit();
 		} catch (Exception e) {
@@ -326,7 +312,6 @@ public class CategoryInfoServiceAdv {
 				if( StringUtils.isEmpty( categoryInfo_entity.getDocumentType() )) {
 					categoryInfo_entity.setDocumentType( "信息" );
 				}
-				categoryInfo.setReviewed( false );
 				emc.check(categoryInfo_entity , CheckPersistType.all );
 				emc.commit();
 			}
@@ -471,7 +456,6 @@ public class CategoryInfoServiceAdv {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			CategoryInfo categoryInfo = emc.find( categoryId, CategoryInfo.class );
 			emc.beginTransaction( CategoryInfo.class );
-			categoryInfo.setReviewed( true );
 			emc.persist( categoryInfo, CheckPersistType.all );
 			emc.commit();
 		} catch (Exception e) {

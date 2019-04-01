@@ -12,6 +12,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.openjpa.persistence.PersistentCollection;
@@ -145,6 +147,7 @@ public class BBSSubjectInfo extends SliceJpaObject {
 
 	public static final String latestReplyTime_FIELDNAME = "latestReplyTime";
 	@FieldDescribe("最新回复时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = ColumnNamePrefix + latestReplyTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date latestReplyTime = null;
@@ -199,6 +202,7 @@ public class BBSSubjectInfo extends SliceJpaObject {
 
 	public static final String bBSIndexSetterTime_FIELDNAME = "bBSIndexSetterTime";
 	@FieldDescribe("首页推荐时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = ColumnNamePrefix + bBSIndexSetterTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date bBSIndexSetterTime = null;
@@ -217,6 +221,7 @@ public class BBSSubjectInfo extends SliceJpaObject {
 
 	public static final String forumIndexSetterTime_FIELDNAME = "forumIndexSetterTime";
 	@FieldDescribe("论坛推荐时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = ColumnNamePrefix + forumIndexSetterTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date forumIndexSetterTime = null;
@@ -277,6 +282,7 @@ public class BBSSubjectInfo extends SliceJpaObject {
 
 	public static final String screamSetterTime_FIELDNAME = "screamSetterTime";
 	@FieldDescribe("精华设置时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = ColumnNamePrefix + screamSetterTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date screamSetterTime = null;
@@ -295,6 +301,7 @@ public class BBSSubjectInfo extends SliceJpaObject {
 
 	public static final String originalSetterTime_FIELDNAME = "originalSetterTime";
 	@FieldDescribe("原创设置时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = ColumnNamePrefix + originalSetterTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date originalSetterTime = null;
@@ -313,6 +320,7 @@ public class BBSSubjectInfo extends SliceJpaObject {
 
 	public static final String recommendTime_FIELDNAME = "recommendTime";
 	@FieldDescribe("推荐时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = ColumnNamePrefix + recommendTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date recommendTime = null;
@@ -343,6 +351,7 @@ public class BBSSubjectInfo extends SliceJpaObject {
 
 	public static final String voteLimitTime_FIELDNAME = "voteLimitTime";
 	@FieldDescribe("投票截止时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = ColumnNamePrefix + voteLimitTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date voteLimitTime = null;

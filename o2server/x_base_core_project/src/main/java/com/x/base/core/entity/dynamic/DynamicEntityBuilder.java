@@ -39,17 +39,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
-import com.x.base.core.entity.dynamic.DynamicEntity.BooleanField;
-import com.x.base.core.entity.dynamic.DynamicEntity.DateField;
-import com.x.base.core.entity.dynamic.DynamicEntity.DateTimeField;
-import com.x.base.core.entity.dynamic.DynamicEntity.DoubleField;
 import com.x.base.core.entity.dynamic.DynamicEntity.Field;
-import com.x.base.core.entity.dynamic.DynamicEntity.IntegerField;
-import com.x.base.core.entity.dynamic.DynamicEntity.LongField;
-import com.x.base.core.entity.dynamic.DynamicEntity.StringField;
-import com.x.base.core.entity.dynamic.DynamicEntity.StringLobField;
-import com.x.base.core.entity.dynamic.DynamicEntity.StringMapField;
-import com.x.base.core.entity.dynamic.DynamicEntity.TimeField;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.ListTools;
 
@@ -111,7 +101,6 @@ public class DynamicEntityBuilder {
 		this.createListLongFields(builder);
 		this.createListDoubleFields(builder);
 		this.createListBooleanFields(builder);
-		this.createListDateTimeFields(builder);
 		this.createStringLobFields(builder);
 		this.createStringMapFields(builder);
 
@@ -155,31 +144,31 @@ public class DynamicEntityBuilder {
 	}
 
 	private void createStringFields(Builder builder) {
-		for (StringField field : ListTools.trim(dynamicEntity.getStringFieldList(), true, true)) {
+		for (Field field : ListTools.trim(dynamicEntity.stringFields(), true, true)) {
 			this.createField(builder, field, String.class);
 		}
 	}
 
 	private void createIntegerFields(Builder builder) {
-		for (IntegerField field : ListTools.trim(dynamicEntity.getIntegerFieldList(), true, true)) {
+		for (Field field : ListTools.trim(dynamicEntity.integerFields(), true, true)) {
 			this.createField(builder, field, Integer.class);
 		}
 	}
 
 	private void createLongFields(Builder builder) {
-		for (LongField field : ListTools.trim(dynamicEntity.getLongFieldList(), true, true)) {
+		for (Field field : ListTools.trim(dynamicEntity.longFields(), true, true)) {
 			this.createField(builder, field, Long.class);
 		}
 	}
 
 	private void createDoubleFields(Builder builder) {
-		for (DoubleField field : ListTools.trim(dynamicEntity.getDoubleFieldList(), true, true)) {
+		for (Field field : ListTools.trim(dynamicEntity.doubleFields(), true, true)) {
 			this.createField(builder, field, Double.class);
 		}
 	}
 
 	private void createBooleanFields(Builder builder) {
-		for (BooleanField field : ListTools.trim(dynamicEntity.getBooleanFieldList(), true, true)) {
+		for (Field field : ListTools.trim(dynamicEntity.booleanFields(), true, true)) {
 			this.createField(builder, field, Boolean.class);
 		}
 	}
@@ -214,12 +203,12 @@ public class DynamicEntityBuilder {
 	}
 
 	private void createDateFields(Builder builder) {
-		for (DateField field : ListTools.trim(dynamicEntity.getDateFieldList(), true, true)) {
+		for (Field field : ListTools.trim(dynamicEntity.dateFields(), true, true)) {
 			this.createDateField(builder, field);
 		}
 	}
 
-	private void createDateField(Builder builder, DateField field) {
+	private void createDateField(Builder builder, Field field) {
 
 		AnnotationSpec column = AnnotationSpec.builder(Column.class)
 				.addMember("name", "ColumnNamePrefix + " + field.fieldName()).build();
@@ -240,12 +229,12 @@ public class DynamicEntityBuilder {
 	}
 
 	private void createTimeFields(Builder builder) {
-		for (TimeField field : ListTools.trim(dynamicEntity.getTimeFieldList(), true, true)) {
+		for (Field field : ListTools.trim(dynamicEntity.timeFields(), true, true)) {
 			this.createTimeField(builder, field);
 		}
 	}
 
-	private void createTimeField(Builder builder, TimeField field) {
+	private void createTimeField(Builder builder, Field field) {
 
 		AnnotationSpec column = AnnotationSpec.builder(Column.class)
 				.addMember("name", "ColumnNamePrefix + " + field.fieldName()).build();
@@ -267,12 +256,12 @@ public class DynamicEntityBuilder {
 	}
 
 	private void createDateTimeFields(Builder builder) {
-		for (DateTimeField field : ListTools.trim(dynamicEntity.getDateTimeFieldList(), true, true)) {
+		for (Field field : ListTools.trim(dynamicEntity.dateTimeFields(), true, true)) {
 			this.createDateTimeField(builder, field);
 		}
 	}
 
-	private void createDateTimeField(Builder builder, DateTimeField field) {
+	private void createDateTimeField(Builder builder, Field field) {
 
 		AnnotationSpec column = AnnotationSpec.builder(Column.class)
 				.addMember("name", "ColumnNamePrefix + " + field.fieldName()).build();
@@ -294,38 +283,32 @@ public class DynamicEntityBuilder {
 	}
 
 	private void createListStringFields(Builder builder) {
-		for (StringField field : ListTools.trim(dynamicEntity.getListStringFieldList(), true, true)) {
+		for (Field field : ListTools.trim(dynamicEntity.stringListFields(), true, true)) {
 			this.createListFields(builder, field, String.class);
 		}
 	}
 
 	private void createListIntegerFields(Builder builder) {
-		for (IntegerField field : ListTools.trim(dynamicEntity.getListIntegerFieldList(), true, true)) {
+		for (Field field : ListTools.trim(dynamicEntity.integerListFields(), true, true)) {
 			this.createListFields(builder, field, Integer.class);
 		}
 	}
 
 	private void createListLongFields(Builder builder) {
-		for (LongField field : ListTools.trim(dynamicEntity.getListLongFieldList(), true, true)) {
+		for (Field field : ListTools.trim(dynamicEntity.longListFields(), true, true)) {
 			this.createListFields(builder, field, Long.class);
 		}
 	}
 
 	private void createListDoubleFields(Builder builder) {
-		for (DoubleField field : ListTools.trim(dynamicEntity.getListDoubleFieldList(), true, true)) {
+		for (Field field : ListTools.trim(dynamicEntity.doubleListFields(), true, true)) {
 			this.createListFields(builder, field, Double.class);
 		}
 	}
 
 	private void createListBooleanFields(Builder builder) {
-		for (BooleanField field : ListTools.trim(dynamicEntity.getListBooleanFieldList(), true, true)) {
+		for (Field field : ListTools.trim(dynamicEntity.booleanListFields(), true, true)) {
 			this.createListFields(builder, field, Boolean.class);
-		}
-	}
-
-	private void createListDateTimeFields(Builder builder) {
-		for (DateTimeField field : ListTools.trim(dynamicEntity.getListDateTimeFieldList(), true, true)) {
-			this.createListFields(builder, field, Date.class);
 		}
 	}
 
@@ -385,12 +368,12 @@ public class DynamicEntityBuilder {
 	}
 
 	private void createStringLobFields(Builder builder) {
-		for (StringLobField field : ListTools.trim(dynamicEntity.getStringLobFieldList(), true, true)) {
+		for (Field field : ListTools.trim(dynamicEntity.stringLobFields(), true, true)) {
 			this.createStringLobField(builder, field);
 		}
 	}
 
-	private void createStringLobField(Builder builder, StringLobField field) {
+	private void createStringLobField(Builder builder, Field field) {
 
 //		public static final String stringLobValue_FIELDNAME = "stringLobValue";
 //		@FieldDescribe("长文本.")
@@ -420,12 +403,12 @@ public class DynamicEntityBuilder {
 	}
 
 	private void createStringMapFields(Builder builder) {
-		for (StringMapField field : ListTools.trim(dynamicEntity.getStringMapFieldList(), true, true)) {
+		for (Field field : ListTools.trim(dynamicEntity.stringMapFields(), true, true)) {
 			this.createStringMapField(builder, field);
 		}
 	}
 
-	private void createStringMapField(Builder builder, StringMapField field) {
+	private void createStringMapField(Builder builder, Field field) {
 
 //		@FieldDescribe("Map类型.")
 //		@CheckPersist(allowEmpty = true)

@@ -48,6 +48,7 @@ public class Dingding extends ConfigObject {
 
 	public static final Boolean default_enable = false;
 	public static final String default_appKey = "";
+	public static final String default_corpId = "";
 	public static final String default_appSecret = "";
 	public static final String default_agentId = "";
 	public static final String default_syncCron = "10 0/10 * * * ?";
@@ -57,6 +58,7 @@ public class Dingding extends ConfigObject {
 
 	public Dingding() {
 		this.enable = default_enable;
+		this.corpId = default_corpId;
 		this.appKey = default_appKey;
 		this.appSecret = default_appSecret;
 		this.agentId = default_agentId;
@@ -190,6 +192,42 @@ public class Dingding extends ConfigObject {
 	public void save() throws Exception {
 		File file = new File(Config.base(), Config.PATH_CONFIG_DINGDING);
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
+	}
+
+	public void setEnable(Boolean enable) {
+		this.enable = enable;
+	}
+
+	public void setCorpId(String corpId) {
+		this.corpId = corpId;
+	}
+
+	public void setAgentId(String agentId) {
+		this.agentId = agentId;
+	}
+
+	public void setAppKey(String appKey) {
+		this.appKey = appKey;
+	}
+
+	public void setAppSecret(String appSecret) {
+		this.appSecret = appSecret;
+	}
+
+	public void setSyncCron(String syncCron) {
+		this.syncCron = syncCron;
+	}
+
+	public void setForceSyncCron(String forceSyncCron) {
+		this.forceSyncCron = forceSyncCron;
+	}
+
+	public void setOapiAddress(String oapiAddress) {
+		this.oapiAddress = oapiAddress;
+	}
+
+	public void setMessageEnable(Boolean messageEnable) {
+		this.messageEnable = messageEnable;
 	}
 
 }

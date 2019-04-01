@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import com.x.base.core.entity.AbstractPersistenceProperties;
@@ -91,11 +93,13 @@ public class AttendanceStatisticalCycle extends SliceJpaObject {
 	private String cycleEndDateString;
 
 	@FieldDescribe("月周期开始日期")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "xcycleStartDate")
 	@CheckPersist(allowEmpty = true)
 	private Date cycleStartDate;
 
 	@FieldDescribe("月周期结束日期")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "xcycleEndDate")
 	@CheckPersist(allowEmpty = true)
 	private Date cycleEndDate;

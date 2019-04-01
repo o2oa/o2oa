@@ -110,7 +110,6 @@ public class AppInfoServiceAdv {
 				}else {
 					appInfo.addManageablePerson( currentPerson.getDistinguishedName() );
 				}
-				appInfo.setReviewed( false );
 				emc.check( appInfo, CheckPersistType.all );
 				emc.commit();
 			}
@@ -148,14 +147,6 @@ public class AppInfoServiceAdv {
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return appInfoService.listByAppAlias(emc, appAlias);
-		} catch (Exception e) {
-			throw e;
-		}
-	}
-
-	public List<AppInfo> listInReviewAppInfoList() throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			return appInfoService.listInReviewAppInfoList( emc );
 		} catch (Exception e) {
 			throw e;
 		}
@@ -205,7 +196,6 @@ public class AppInfoServiceAdv {
 			appInfo.setManageablePersonList(personList);
 			appInfo.setManageableUnitList(unitList);
 			appInfo.setManageableGroupList(groupList);
-			appInfo.setReviewed( false );
 			emc.check(appInfo , CheckPersistType.all );
 			emc.commit();
 		} catch (Exception e) {
@@ -231,7 +221,6 @@ public class AppInfoServiceAdv {
 			appInfo.setPublishablePersonList(personList);
 			appInfo.setPublishableUnitList(unitList);
 			appInfo.setPublishableGroupList(groupList);
-			appInfo.setReviewed( false );
 			emc.check(appInfo , CheckPersistType.all );
 			emc.commit();
 		} catch (Exception e) {
@@ -257,7 +246,6 @@ public class AppInfoServiceAdv {
 			appInfo.setViewablePersonList(personList);
 			appInfo.setViewableUnitList(unitList);
 			appInfo.setViewableGroupList(groupList);
-			appInfo.setReviewed( false );
 			emc.check(appInfo , CheckPersistType.all );
 			emc.commit();
 		} catch (Exception e) {
@@ -283,7 +271,6 @@ public class AppInfoServiceAdv {
 				if( StringUtils.isEmpty( appInfo_entity.getDocumentType() )) {
 					appInfo_entity.setDocumentType( "信息" );
 				}
-				appInfo.setReviewed( false );
 				emc.check(appInfo_entity , CheckPersistType.all );
 				emc.commit();
 			}
@@ -395,7 +382,6 @@ public class AppInfoServiceAdv {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			AppInfo appInfo = emc.find( appId, AppInfo.class );
 			emc.beginTransaction( AppInfo.class );
-			appInfo.setReviewed( true );
 			emc.persist( appInfo, CheckPersistType.all );
 			emc.commit();
 		} catch (Exception e) {

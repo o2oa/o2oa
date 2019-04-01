@@ -5,6 +5,10 @@ import com.x.base.core.project.exception.PromptException;
 class ExceptionAppInfoAccessDenied extends PromptException {
 	private static final long serialVersionUID = 1859164370743532895L;
 
+	ExceptionAppInfoAccessDenied( String message ) {
+		super( message );
+	}
+	
 	ExceptionAppInfoAccessDenied( Throwable e, String message ) {
 		super( message, e );
 	}

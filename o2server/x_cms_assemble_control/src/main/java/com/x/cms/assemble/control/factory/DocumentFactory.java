@@ -50,16 +50,6 @@ public class DocumentFactory<T> extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 	
-	//@MethodDescribe("列示指定Id的Document信息列表")
-//	public List<Document> list(List<String> ids) throws Exception {
-//		EntityManager em = this.entityManagerContainer().get( Document.class );
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<Document> cq = cb.createQuery( Document.class );
-//		Root<Document> root = cq.from( Document.class );
-//		Predicate p = root.get( Document_.id).in( ids );
-//		return em.createQuery(cq.where(p)).getResultList();
-//	}
-	
 	//@MethodDescribe("根据应用ID列示所有的Document信息列表")
 	public List<String> listByAppId( String appId, String documentType, Integer maxCount ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
@@ -95,19 +85,6 @@ public class DocumentFactory<T> extends AbstractFactory {
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
 	}
-	
-//	public Long countWithDocIds(List<String> viewAbleDocIds) throws Exception {
-//		if( viewAbleDocIds == null || viewAbleDocIds.isEmpty() ){
-//			return 0L;
-//		}
-//		EntityManager em = this.entityManagerContainer().get( Document.class );
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<Long> cq = cb.createQuery( Long.class );
-//		Root<Document> root = cq.from( Document.class );
-//		Predicate p = root.get( Document_.id ).in( viewAbleDocIds );
-//		cq.select( cb.count( root ) );
-//		return em.createQuery(cq.where(p)).getSingleResult();
-//	}
 	
 	public List<Document> listInReviewDocumentList( Integer maxCount ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Document.class);

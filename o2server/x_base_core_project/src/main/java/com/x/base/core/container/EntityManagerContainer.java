@@ -412,6 +412,16 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return list;
 	}
 
+	public <T extends JpaObject, W extends Object> List<T> listEqualAndGreaterThanOrEqualTo(Class<T> cls,
+			String attribute, Object value, String otherAttribute, Object otherValue) throws Exception {
+		EntityManager em = this.get(cls);
+		Query query = em.createQuery("select o from " + cls.getName() + " o where ((o." + attribute + " = ?1) and (o."
+				+ otherAttribute + " >= ?2))");
+		query.setParameter(1, value);
+		query.setParameter(2, otherValue);
+		return new ArrayList<T>(query.getResultList());
+	}
+
 	public <T extends JpaObject> Long count(Class<T> cls) throws Exception {
 		EntityManager em = this.get(cls);
 		CriteriaBuilder cb = em.getCriteriaBuilder();

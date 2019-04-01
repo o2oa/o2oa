@@ -29,7 +29,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
@@ -91,25 +90,6 @@ public class AppInfoAction extends StandardJaxrsAction {
 		ActionResult<BaseAction.Wo> result = new ActionResult<>();
 		try {
 			result = new ActionGet().execute( request, effectivePerson, flag );
-		} catch (Exception e) {
-			result = new ActionResult<>();
-			Exception exception = new ExceptionAppInfoProcess(e, "根据指定ID查询应用栏目信息对象时发生异常。flag:" + flag );
-			result.error(exception);
-			logger.error(e, effectivePerson, request, null);
-		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
-	}
-	
-	@JaxrsMethodDescribe(value = "根据标识强制更新指定的栏目Review.", action = ActionUpdateReviewForce.class)
-	@GET
-	@Path("review/{flag}/update")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response updateReviewForce(@Context HttpServletRequest request, @JaxrsParameterDescribe("栏目ID") @PathParam("flag") String flag) {
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		ActionResult<WoId> result = new ActionResult<>();
-		try {
-			result = new ActionUpdateReviewForce().execute( request, effectivePerson, flag );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e, "根据指定ID查询应用栏目信息对象时发生异常。flag:" + flag );

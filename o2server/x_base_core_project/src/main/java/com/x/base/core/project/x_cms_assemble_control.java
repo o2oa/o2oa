@@ -28,13 +28,10 @@ public class x_cms_assemble_control extends AssembleA {
 		dependency.containerEntities.add("com.x.cms.core.entity.element.File");
 		dependency.containerEntities.add("com.x.cms.core.entity.FileInfo");
 		dependency.containerEntities.add("com.x.cms.core.entity.Log");
-		dependency.containerEntities.add("com.x.cms.core.entity.Review");
 		dependency.containerEntities.add("com.x.processplatform.core.entity.content.Attachment");
 		dependency.containerEntities.add("com.x.query.core.entity.Item");
 		dependency.containerEntities.add("com.x.query.core.entity.View");
-		dependency.containerEntities.add("com.x.cms.core.entity.AppCategoryAdmin");
-		dependency.containerEntities.add("com.x.cms.core.entity.AppCategoryPermission");
-		dependency.containerEntities.add("com.x.cms.core.entity.DocumentPermission");
+		dependency.containerEntities.add("com.x.cms.core.entity.ReadRemind");
 
 		dependency.storageTypes.add(StorageType.cms.toString());
 		dependency.storageTypes.add(StorageType.processPlatform.toString());
