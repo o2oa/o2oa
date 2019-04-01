@@ -126,13 +126,6 @@
     "visible": true
   },
   {
-    "name": "Execution",
-    "path": "Execution",
-    "title": "执行力管理",
-    "iconPath": "appicon.png",
-    "visible": true
-  },
-  {
     "name": "Attendance",
     "path": "Attendance",
     "title": "考勤管理",
@@ -171,20 +164,6 @@
     "name": "OnlineMeeting",
     "path": "OnlineMeeting",
     "title": "网络会议",
-    "iconPath": "appicon.png",
-    "visible": true
-  },
-  {
-    "name": "Strategy",
-    "path": "Strategy",
-    "title": "战略管理",
-    "iconPath": "appicon.png",
-    "visible": true
-  },
-  {
-    "name": "Report",
-    "path": "Report",
-    "title": "工作报告",
     "iconPath": "appicon.png",
     "visible": true
   },

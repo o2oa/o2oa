@@ -69,6 +69,7 @@ MWF.xApplication.Org.LP = {
     "unitLevel": "组织层级",
     "unitLevelName": "层级名称",
     "unitControllerList": "管理者",
+    "unitSuperUnit": "上级组织",
     "unitDescription": "组织描述",
     "editUnit": "编辑组织信息",
     "saveUnit": "保存组织信息",

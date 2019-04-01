@@ -270,7 +270,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         if (this.json.range==="currentUnit"){
             debugger;
             if (this.form.app.currentTask){
-                return this.getNextSelectUnit(this.form.app.currentTask.identity);
+                return this.getNextSelectUnit(this.form.app.currentTask.identityDn);
             }else{
                 if (this.form.app.taskList && this.form.app.taskList.length){
                     var ids = [];
@@ -295,8 +295,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         }
         return [];
     },
-	clickSelect: function(){
-        //var names = (nameValue) ? this.getInputData().split(MWF.splitStr) : [];
+    getOptions: function(){
         var values = this.getInputData();
         var count = (this.json.count) ? this.json.count : 0;
 
@@ -308,10 +307,6 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         if (this.json.selectType=="identity"){
             var selectDutys = this.getSelectRangeDuty();
         }
-        // var selectUnits = this.selectUnits;
-        // if (this.json.selectType=="identity"){
-        //     var selectDutys = this.selectDutys;
-        // }
 
         if (this.json.range!=="all"){
             if (!selectUnits.length){
@@ -334,7 +329,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
             exclude = typeOf(v)==="array" ? v : [v];
         }
 
-        var options = {
+        return {
             "type": this.json.selectType,
             "unitType": (this.json.selectUnitType==="all") ? "" : this.json.selectUnitType,
             "values": (this.json.isInput) ? [] : values,
@@ -344,32 +339,41 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
             "exclude" : exclude,
             "expandSubEnable" : (this.json.expandSubEnable=="no") ? false : true,
             "onComplete": function(items){
-                var values = [];
-                items.each(function(item){
-                    values.push(MWF.org.parseOrgData(item.data, true));
-                }.bind(this));
-                if (this.json.isInput){
-                    this.addData(values);
-                }else{
-                    this.setData(values);
-                }
-
-                //this._setBusinessData(values);
-                this.validationMode();
-                this.validation()
+                this.selectOnComplete(items);
             }.bind(this),
-            "onCancel": function(){
-                this.validation();
-            }.bind(this),
-            "onLoad": function(){
-                if (this.descriptionNode) this.descriptionNode.setStyle("display", "none");
-            }.bind(this),
-            "onClose": function(){
-                v = this._getBusinessData();
-                if (!v || !v.length) if (this.descriptionNode)  this.descriptionNode.setStyle("display", "block");
-
-            }.bind(this)
+            "onCancel": this.selectOnCancel.bind(this),
+            "onLoad": this.selectOnLoad.bind(this),
+            "onClose": this.selectOnClose.bind(this)
         };
+    },
+    selectOnComplete: function(items){
+        var values = [];
+        items.each(function(item){
+            values.push(MWF.org.parseOrgData(item.data, true));
+        }.bind(this));
+        if (this.json.isInput){
+            this.addData(values);
+        }else{
+            this.setData(values);
+        }
+
+        //this._setBusinessData(values);
+        this.validationMode();
+        this.validation()
+    },
+    selectOnCancel: function(){
+        this.validation();
+    },
+    selectOnLoad: function(){
+        if (this.descriptionNode) this.descriptionNode.setStyle("display", "none");
+    },
+    selectOnClose: function(){
+        v = this._getBusinessData();
+        if (!v || !v.length) if (this.descriptionNode)  this.descriptionNode.setStyle("display", "block");
+    },
+
+	clickSelect: function(){
+        var options = this.getOptions();
         var selector = new MWF.O2Selector(this.form.app.content, options);
 	},
     resetData: function(){

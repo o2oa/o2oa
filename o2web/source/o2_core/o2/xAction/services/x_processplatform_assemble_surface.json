@@ -183,6 +183,9 @@
 
 
   "getWorkData": {"uri": "/jaxrs/data/work/{id}", "method": "GET"},
+  "getWorkDataByPath": {"uri": "/jaxrs/data/work/{id}/{path}", "method": "GET"},
+  "getWorkcompletedDataByPath": {"uri": "/jaxrs/data/workcompleted/{id}/{path}", "method": "GET"},
+
   "getWorkcompletedData": {"uri": "/jaxrs/data/workcompleted/{id}", "method": "GET"},
 
   "saveData": {"uri": "/jaxrs/data/work/{id}", "method": "PUT"},
@@ -207,7 +210,8 @@
   "getAttachmentOCR": {"uri": "/jaxrs/attachment/{id}/work/{workId}/text"},
   "setAttachmentOCR": {"uri": "/jaxrs/attachment/edit/{id}/work/{workId}/text", "method": "PUT"},
 
-
+  "listWorkAttachments": {"uri": "/jaxrs/attachment/list/work/{workId}"},
+  "listWorkCompletedAttachments": {"uri": "/jaxrs/attachment/list/workcompleted/{workCompletedId}"},
 
   "retractWork": {"uri": "/jaxrs/work/{id}/retract", "method": "PUT"},
   "resetWork": {"uri": "/jaxrs/task/{id}/reset", "method": "PUT"},
@@ -224,7 +228,6 @@
   //"getForm": {"uri": "/jaxrs/form/{id}"},
   "getForm": {"uri": "/jaxrs/form/{id}/application/{applicationFlag}"},
   "getScript": {"uri": "/jaxrs/script/{flag}/application/{applicationFlag}"},
-gulp
 
   "sendReaderByWork" : {"uri":"/jaxrs/read/work/{workId}", "method": "POST"},
   "sendReaderByWorkCompleted" : {"uri":"/jaxrs/read/workcompleted/{workCompletedId}", "method": "POST"},

@@ -11,6 +11,7 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
         "values": [],
         "zIndex": 1000,
         "expand": false,
+        "expandSubEnable": true,
         "exclude" : []
     },
     loadSelectItems: function(addToNext){
@@ -18,8 +19,8 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
             this.options.dutys.each(function(duty){
                 var data = {"name": duty, "id":duty};
                 var category = this._newItemCategory("ItemCategory",data, this, this.itemAreaNode);
-                category.loadSub();
-                category.clickItem();
+                //category.loadSub();
+                //category.clickItem();
                 // this.action.getUnitduty(function(dutyData){
                 //     var category = this._newItemCategory("ItemCategory", dutyData.data, this, this.itemAreaNode);
                 // }.bind(this), null, duty);
@@ -164,6 +165,9 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
             if (this.selector.options.units.length){
                 var action = MWF.Actions.get("x_organization_assemble_express");
                 var data = {"name":this.data.name, "unit":""};
+                var count = this.selector.options.units.length;
+                alert(count)
+                var i = 0;
                 this.selector.options.units.each(function(u){
                     if (typeOf(u)==="string"){
                         data.unit = u;
@@ -177,10 +181,17 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
                                 this.selector.items.push(item);
                             }
                         }.bind(this));
+                        i++;
+                        if (i>=count){
+                            if (!this.loaded) {
+                                this.loaded = true;
+                                if (callback) callback();
+                            }
+                        }
                     }.bind(this));
                 }.bind(this));
-                this.loaded = true;
-                if (callback) callback();
+
+                //if (callback) callback();
 
             }else{
                 this.selector.orgAction.listIdentityWithDuty(function(json){

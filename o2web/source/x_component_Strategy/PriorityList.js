@@ -519,7 +519,7 @@ MWF.xApplication.Strategy.PriorityList.View = new Class({
         if (!count)count = 100;
         var id = (this.items.length) ? this.items[this.items.length - 1].data.id : "(0)";
 
-        if(id=="(0)") {
+        if(id=="(0)") {debugger;
             this.explorer.explorer.createShade();
         }
 

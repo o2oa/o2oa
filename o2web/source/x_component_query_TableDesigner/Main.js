@@ -4,7 +4,7 @@ MWF.APPDTBD.options = {
 	"multitask": true,
 	"executable": false
 };
-MWF.xDesktop.requireApp("query.StatDesigner", "Stat", null, false);
+MWF.xDesktop.requireApp("query.TableDesigner", "Table", null, false);
 
 MWF.xApplication.query.TableDesigner.Main = new Class({
 	Extends: MWF.xApplication.query.ViewDesigner.Main,
@@ -47,8 +47,22 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
         }.bind(this));
     },
 
+    loadViewListNodes: function(){
+        this.viewListTitleNode = new Element("div", {
+            "styles": this.css.viewListTitleNode,
+            "text": MWF.APPDTBD.LP.table
+        }).inject(this.viewListNode);
 
+        this.viewListResizeNode = new Element("div", {"styles": this.css.viewListResizeNode}).inject(this.viewListNode);
+        this.viewListAreaSccrollNode = new Element("div", {"styles": this.css.viewListAreaSccrollNode}).inject(this.viewListNode);
+        this.viewListAreaNode = new Element("div", {"styles": this.css.viewListAreaNode}).inject(this.viewListAreaSccrollNode);
+
+        this.loadViewListResize();
+
+        this.loadViewList();
+    },
     loadViewList: function(){
+        debugger;
         this.actions.listTable(this.application.id, function (json) {
             json.data.each(function(table){
                 this.createListViewItem(table);
@@ -56,11 +70,11 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
         }.bind(this), null, false);
     },
 
-    //列示所有视图列表
+    //列示所有数据表列表
     createListViewItem: function(table, isNew){
         var _self = this;
         var listTableItem = new Element("div", {"styles": this.css.listViewItem}).inject(this.viewListAreaNode, (isNew) ? "top": "bottom");
-        var listTableItemIcon = new Element("div", {"styles": this.css.listViewItemIcon}).inject(listViewItem);
+        var listTableItemIcon = new Element("div", {"styles": this.css.listViewItemIcon}).inject(listTableItem);
         var listTableItemText = new Element("div", {"styles": this.css.listViewItemText, "text": (table.name) ? table.name+" ("+table.alias+")" : this.lp.newTable}).inject(listTableItem);
 
         listTableItem.store("table", table);
@@ -70,7 +84,7 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
             "mouseout": function(){if (_self.currentListViewItem!=this) this.setStyles(_self.css.listViewItem);}
         });
     },
-    //打开视图
+    //打开数据表
     loadViewByData: function(node, e){
         var table = node.retrieve("table");
         if (openNew){
@@ -83,14 +97,14 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
                     this.application = _self.application;
                     this.explorer = _self.explorer;
                 }
-            };
-            this.desktop.openApplication(e, "query.StatDesigner", options);
+            };Table
+            this.desktop.openApplication(e, "query.TableDesigner", options);
         }
     },
 	
 	//loadView------------------------------------------
     loadView: function(){
-		this.getTableData(this.options.id, function(vdata){
+		this.getViewData(this.options.id, function(vdata){
             this.setTitle(this.options.appTitle + "-"+vdata.name);
             this.taskitem.setText(this.options.appTitle + "-"+vdata.name);
             this.options.appTitle = this.options.appTitle + "-"+vdata.name;

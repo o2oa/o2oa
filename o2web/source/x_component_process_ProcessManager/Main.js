@@ -177,42 +177,66 @@ MWF.xApplication.process.ProcessManager.Main = new Class({
     },
     clearContent: function(){
         if (this.processConfiguratorContent){
-            if (this.processConfigurator) delete this.processConfigurator;
+            if (this.processConfigurator){
+                if (this.processConfigurator.destroy) this.processConfigurator.destroy();
+                delete this.processConfigurator;
+            }
             this.processConfiguratorContent.destroy();
             this.processConfiguratorContent = null;
         }
         if (this.formConfiguratorContent){
-            if (this.formConfigurator) delete this.formConfigurator;
+            if (this.formConfigurator){
+                if (this.formConfigurator.destroy) this.formConfigurator.destroy();
+                delete this.formConfigurator;
+            }
             this.formConfiguratorContent.destroy();
             this.formConfiguratorContent = null;
         }
         if (this.viewConfiguratorContent){
-            if (this.viewConfigurator) delete this.viewConfigurator;
+            if (this.viewConfigurator){
+                if (this.viewConfigurator.destroy) this.viewConfigurator.destroy();
+                delete this.viewConfigurator;
+            }
             this.viewConfiguratorContent.destroy();
             this.viewConfiguratorContent = null;
         }
         if (this.statConfiguratorContent){
-            if (this.statConfigurator) delete this.statConfigurator;
+            if (this.statConfigurator){
+                if (this.statConfigurator.destroy) this.statConfigurator.destroy();
+                delete this.statConfigurator;
+            }
             this.statConfiguratorContent.destroy();
             this.statConfiguratorContent = null;
         }
         if (this.propertyConfiguratorContent){
-            if (this.property) delete this.property;
+            if (this.property){
+                if (this.property.destroy) this.property.destroy();
+                delete this.property;
+            }
             this.propertyConfiguratorContent.destroy();
             this.propertyConfiguratorContent = null;
         }
         if (this.dataConfiguratorContent){
-            if (this.dataConfigurator) delete this.dataConfigurator;
+            if (this.dataConfigurator){
+                if (this.dataConfigurator.destroy) this.dataConfigurator.destroy();
+                delete this.dataConfigurator;
+            }
             this.dataConfiguratorContent.destroy();
             this.dataConfiguratorContent = null;
         }
         if (this.scriptConfiguratorContent){
-            if (this.scriptConfigurator) delete this.scriptConfigurator;
+            if (this.scriptConfigurator){
+                if (this.scriptConfigurator.destroy) this.scriptConfigurator.destroy();
+                delete this.scriptConfigurator;
+            }
             this.scriptConfiguratorContent.destroy();
             this.scriptConfiguratorContent = null;
         }
         if (this.fileConfiguratorContent){
-            if (this.fileConfigurator) delete this.fileConfigurator;
+            if (this.fileConfigurator){
+                if (this.fileConfigurator.destroy) this.fileConfigurator.destroy();
+                delete this.fileConfigurator;
+            }
             this.fileConfiguratorContent.destroy();
             this.fileConfiguratorContent = null;
         }

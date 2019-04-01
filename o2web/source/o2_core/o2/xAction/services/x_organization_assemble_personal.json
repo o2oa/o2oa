@@ -23,5 +23,13 @@
   "createCodeOnResetPassword" :  {"uri":"/jaxrs/reset/code/credential/{credential}"},
 
 
+  "getUserData": {"uri": "/jaxrs/custom/{name}"},
+  "putUserData": {"uri": "/jaxrs/custom/{name}", "method": "PUT"},
+  "deleteUserData": {"uri": "/jaxrs/custom/{name}", "method": "DELETE"},
+
+  "getPublicUserData": {"uri": "/jaxrs/definition/{name}"},
+  "putPublicUserData": {"uri": "/jaxrs/definition/{name}", "method": "PUT"},
+  "deletePublicUserData": {"uri": "/jaxrs/definition/{name}", "method": "DELETE"},
+
   "clazz": "x_organization_assemble_personal"
 }

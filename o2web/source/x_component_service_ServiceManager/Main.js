@@ -141,12 +141,13 @@ MWF.xApplication.service.ServiceManager.Main = new Class({
         if (layout.desktop.currentApp && layout.desktop.currentApp.appId===this.appId){
             if (this.agentConfigurator){
                 this.agentConfigurator.keyCopy(e);
+                if (e) e.preventDefault();
             }
             if (this.invokeConfigurator){
                 this.invokeConfigurator.keyCopy(e);
+                if (e) e.preventDefault();
             }
         }
-        if (e) e.preventDefault();
     },
     keyPasteItems: function(e){
         if (layout.desktop.currentApp && layout.desktop.currentApp.appId===this.appId) {
@@ -157,7 +158,7 @@ MWF.xApplication.service.ServiceManager.Main = new Class({
                 this.invokeConfigurator.keyPaste(e);
             }
         }
-        if (e) e.preventDefault();
+        //if (e) e.preventDefault();
     }
 });
 

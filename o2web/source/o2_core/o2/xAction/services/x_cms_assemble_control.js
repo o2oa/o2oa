@@ -77,6 +77,19 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
             json.data = [];
         }
     },
+
+    saveFile: function(data, success, failure, async){
+        if (data.id){
+            this.updataFile(data.id, data, success, failure, async);
+        }else{
+            this.getUUID(function(id){
+                data.id = id;
+                this.addFile(data, success, failure, async);
+            }.bind(this), false);
+
+        }
+    },
+
     saveForm: function(formData, mobileData, fieldList, success, failure){
         if (!formData.isNewForm){
             this.updateForm(formData, mobileData, fieldList, success, failure);

@@ -57,6 +57,12 @@ var Utils = {
         }
         return -1;
     },
+    arrayErase : function(array, target){
+        for (var i = array.length; i--;){
+            if (array[i] === target) array.splice(i, 1);
+        }
+        return array;
+    },
     objectClone : function (obj) {
         if (null == obj || "object" != typeof obj) return obj;
 

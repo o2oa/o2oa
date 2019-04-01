@@ -3,6 +3,7 @@
   "name": "",
   "type": "Tab",
   "description": "",
+  "isDelay": false,
   "events": {
     "click": {
       "code": "",

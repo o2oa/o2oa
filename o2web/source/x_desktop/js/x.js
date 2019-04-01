@@ -46,7 +46,7 @@ o2.addReady(function(){
 
                 MWF.require("MWF.xDesktop.Layout", function(){
                     layout.desktop = new MWF.xDesktop.Layout("layout", {
-                        "style": "default",
+                        //"style": "newyear",
                         "onLoad": function(){
                             if (loadingNode){
                                 new Fx.Tween(loadingNode).start("opacity", 0).chain(function(){

@@ -42,9 +42,9 @@ MWF.xApplication.Selector.Process = new Class({
         return false;
     },
     _getItem: function(callback, failure, id, async){
-        this.action.getProcess(function(json){
+        this.processAction.getProcess(function(json){
             if (callback) callback.apply(this, [json]);
-        }.bind(this), failure, ((typeOf(id)==="string") ? id : id.id), async);
+        }.bind(this), failure, ((typeOf(id)==="string") ? id : (typeOf(id)=="string") ? id : id.id), async);
     },
     _newItemSelected: function(data, selector, item){
         return new MWF.xApplication.Selector.Process.ItemSelected(data, selector, item)

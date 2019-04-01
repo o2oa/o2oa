@@ -246,6 +246,10 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
     },
     _getItemObject: function(item){
         return MWF.xApplication.process.ProcessManager.Explorer.Item(this, item)
+    },
+    destroy: function(){
+        this.node.destroy();
+        o2.release(this);
     }
 });
 

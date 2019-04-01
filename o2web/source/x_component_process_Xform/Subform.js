@@ -10,9 +10,48 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform =  new Class({
             }
         }.bind(this));
     },
+    loadCss: function(){
+        if (this.subformData.json.css && this.subformData.json.css.code){
+            var cssText = this.form.parseCSS(this.subformData.json.css.code);
+            var rex = new RegExp("(.+)(?=\\{)", "g");
+            var match;
+            var id = this.form.json.id.replace(/\-/g, "");
+            while ((match = rex.exec(cssText)) !== null) {
+                var prefix = ".css" + id + " ";
+                var rule = prefix + match[0];
+                cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                rex.lastIndex = rex.lastIndex + prefix.length;
+            }
+
+            var styleNode = $("style"+this.form.json.id);
+            if (!styleNode){
+                var styleNode = document.createElement("style");
+                styleNode.setAttribute("type", "text/css");
+                styleNode.id="style"+this.form.json.id;
+                styleNode.inject(this.form.container, "before");
+            }
+
+            if(styleNode.styleSheet){
+                var setFunc = function(){
+                    styleNode.styleSheet.cssText += cssText;
+                };
+                if(styleNode.styleSheet.disabled){
+                    setTimeout(setFunc, 10);
+                }else{
+                    setFunc();
+                }
+            }else{
+                var cssTextNode = document.createTextNode(cssText);
+                styleNode.appendChild(cssTextNode);
+            }
+        }
+    },
     loadSubform: function(){
         if (this.subformData){
             //this.form.addEvent("postLoad", function(){
+
+            this.loadCss();
+
                 this.node.set("html", this.subformData.html);
                 Object.each(this.subformData.json.moduleList, function(module, key){
                     var formKey = key;

@@ -41,6 +41,12 @@
                     <input class="editTeditTableRadioableInput" class="editTableInput" name="allowRerouteTo" text{(!$.allowRerouteTo)?'checked':''} type="radio" value="false"/>否</td>
             </tr>
         </table>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableValue"  colspan="2"><b>允许流程回溯：</b><input class="editTableRadio" name="allowRollback" text{($.allowRollback)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="allowRollback" text{(!$.allowRollback)?'checked':''} type="radio" value="false"/>否</td>
+            </tr>
+        </table>
     </div>
     <div title="人员"  class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">

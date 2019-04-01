@@ -56,7 +56,7 @@ o2.widget.ScriptHelp = new Class({
                         }
                     }.bind(this));
                 }else{
-                    var subMenu = new o2.widget.ScriptHelp.Menu(null, {"style": "script"});
+                    var subMenu = new o2.widget.ScriptHelp.Menu(this.node, {"style": "script"});
                     subMenu.load();
                     this.loadMenuItems(code.value, subMenu);
                     menu.addMenuMenu(code.name, "", subMenu);

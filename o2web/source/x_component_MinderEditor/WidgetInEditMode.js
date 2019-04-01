@@ -737,8 +737,8 @@ MWF.xApplication.MinderEditor.ImageForm = new Class({
             "description" : "",
             "imageUrl" : "",
             "ratioAdjustedEnable" : true,
-            "reference" : "1111",
-            "referenceType": "forumDocument",
+            "reference" :  this.app.data.id || "1111",
+            "referenceType": "mindInfo",
             "fromFileEnable" : false,
             "resetEnable" : true
         });
@@ -826,13 +826,13 @@ MWF.xApplication.MinderEditor.ImageForm = new Class({
                     url : MWF.xDesktop.getImageSrc( json.id ),
                     title :  this.uploadform.getResult(true,null,true,false,true)["title2"]
                 };
-                this.app.minder.execCommand('image', data.url, data.title || '');
+                this.app.minder.execCommand('image', data.url, data.title || '', json.id );
                 this.close();
             }.bind(this));
         }else{
             var data = this.linkform.getResult(true,null,true,false,true);
             if( data ){
-                this.app.minder.execCommand('image', data.url, data.title || '');
+                this.app.minder.execCommand('image', data.url, data.title || '', '');
                 this.close();
             }
         }

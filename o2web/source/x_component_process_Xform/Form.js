@@ -733,18 +733,63 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm =  new Class({
                             var content = this.getMessageContent(json.data);
                             var div = new Element("div", {"styles": {"margin": "10px 10px 0px 10px", "padding": "5px", "overflow": "hidden"}}).inject(this.app.content);
                             div.set("html", content);
-                            var dlg = o2.DL.open({
-                                "content": div,
-                                "isTitle": false,
-                                "width": 350,
-                                "height": 130,
-                                "buttonList": [
-                                    {
-                                        "text": MWF.xApplication.process.Xform.LP.ok,
-                                        "action": function(){dlg.close(); this.app.close();}.bind(this)
-                                    }
-                                ]
-                            });
+
+                            debugger;
+                            if (this.json.isPrompt!=="false"){
+                                var options ={
+                                    "content": div,
+                                    "isTitle": false,
+                                    "width": 350,
+                                    "height": 180,
+                                    "buttonList": [
+                                        {
+                                            "text": MWF.xApplication.process.Xform.LP.ok,
+                                            "action": function(){dlg.close(); this.app.close();}.bind(this)
+                                        }
+                                    ]
+                                }
+                                var size = this.app.content.getSize();
+                                switch (this.json.promptPosition || "righttop"){
+                                    case "lefttop":
+                                        options.top = 10;
+                                        options.left = 10;
+                                        options.fromTop = 10;
+                                        options.fromLeft = 10;
+                                        break;
+                                    case "righttop":
+                                        options.top = 10;
+                                        options.left = size.x-360;
+                                        options.fromTop = 10;
+                                        options.fromLeft = size.x-10;
+                                        break;
+                                    case "leftbottom":
+                                        options.top = size.y-190;
+                                        options.left = 10;
+                                        options.fromTop = size.y-10;
+                                        options.fromLeft = 10;
+                                        break;
+                                    case "rightbottom":
+                                        options.top = size.y-190;
+                                        options.left = size.x-360;
+                                        options.fromTop = size.y-10;
+                                        options.fromLeft = size.x-10;
+                                        break;
+                                    default:
+                                        delete options.top;
+                                        delete options.left;
+                                        delete options.fromTop;
+                                        delete options.fromLeft;
+                                }
+                                var dlg = o2.DL.open(options);
+                                if (this.json.promptCloseTime!=0){
+                                    var t = this.json.promptCloseTime || 2;
+                                    t = t.toInt()*1000;
+                                    var _work = this;
+                                    window.setTimeout(function(){dlg.close(); _work.app.close();}, t);
+                                }
+                            }else{
+                                this.app.close();
+                            }
                         }else{
                             this.app.close();
                         }

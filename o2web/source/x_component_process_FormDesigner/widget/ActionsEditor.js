@@ -146,21 +146,23 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor.ButtonAction = new Cl
             this.conditionButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/code_empty.png)");
         }
 
-        this.editButton = new Element("div", {"styles": this.css.actionEditButtonNode, "title": this.editor.designer.lp.actionbar.edithide}).inject(this.titleNode);
-        if (this.data.editShow){
-            this.editButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/edit.png)");
-        }else{
-            this.editButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/edit_hide.png)");
+        if (!this.editor.options.noEditShow){
+            this.editButton = new Element("div", {"styles": this.css.actionEditButtonNode, "title": this.editor.designer.lp.actionbar.edithide}).inject(this.titleNode);
+            if (this.data.editShow){
+                this.editButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/edit.png)");
+            }else{
+                this.editButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/edit_hide.png)");
+            }
         }
 
-        this.readButton = new Element("div", {"styles": this.css.actionReadButtonNode, "title": this.editor.designer.lp.actionbar.readhide}).inject(this.titleNode);
-        if (this.data.readShow){
-            this.readButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/read.png)");
-        }else{
-            this.readButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/read_hide.png)");
+        if (!this.editor.options.noReadShow){
+            this.readButton = new Element("div", {"styles": this.css.actionReadButtonNode, "title": this.editor.designer.lp.actionbar.readhide}).inject(this.titleNode);
+            if (this.data.readShow){
+                this.readButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/read.png)");
+            }else{
+                this.readButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/read_hide.png)");
+            }
         }
-
-
 
         var icon = this.editor.path+this.editor.options.style+"/tools/"+this.data.img;
         this.iconNode.setStyle("background-image", "url("+icon+")");
@@ -251,7 +253,7 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor.ButtonAction = new Cl
             this.editCondition();
         }.bind(this));
 
-        this.editButton.addEvent("click", function(e){
+        if (this.editButton) this.editButton.addEvent("click", function(e){
             if (this.data.editShow){
                 this.editButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/edit_hide.png)");
                 this.data.editShow = false;
@@ -262,7 +264,7 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor.ButtonAction = new Cl
             this.editor.fireEvent("change");
             e.stopPropagation();
         }.bind(this));
-        this.readButton.addEvent("click", function(e){
+        if (this.readButton) this.readButton.addEvent("click", function(e){
             if (this.data.readShow){
                 this.readButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/read_hide.png)");
                 this.data.readShow = false;

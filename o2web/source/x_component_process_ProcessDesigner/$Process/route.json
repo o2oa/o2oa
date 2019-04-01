@@ -10,8 +10,10 @@
 		"position": "",
 		"orderNumber": "",
 		"opinion": "",
+		"decisionOpinion": "",
 
 		"activity": "",
-		"createTime": ""
+		"createTime": "",
+		"sole": false
 	}
 }

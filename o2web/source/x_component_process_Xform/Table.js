@@ -11,10 +11,13 @@ MWF.xApplication.process.Xform.Table = MWF.APPTable =  new Class({
                 var td = row.cells[j];
 
                 var json = this.form._getDomjson(td);
-                var table = this;
-                var module = this.form._loadModule(json, td, function(){
-                    this.table = table;
-                });
+                if (json){
+                    var table = this;
+                    var module = this.form._loadModule(json, td, function(){
+                        this.table = table;
+                    });
+                }
+
 
                 this.form.modules.push(module);
             }

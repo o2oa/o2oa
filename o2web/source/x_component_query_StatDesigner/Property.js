@@ -290,7 +290,8 @@ MWF.xApplication.query.StatDesigner.Property = MWF.FVProperty = new Class({
 		}
 		var oldValue = this.data[name];
 		//this.data[name] = value;
-        this.changeJsonDate(name, value);
+        var names = name.split(".");
+        this.changeJsonDate(names, value);
         this.changeData(name, select, oldValue);
 	},
 	

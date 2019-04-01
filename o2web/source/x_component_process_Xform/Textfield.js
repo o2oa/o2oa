@@ -110,34 +110,40 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
             this.validationMode();
             if (this.validation()) this._setBusinessData(this.getInputData("change"));
         }.bind(this));
-        //var input = new Element("input", {"styles": {
-        //    "background": "transparent",
-        //    "width": "100%",
-        //    "border": "0px"
-        //}});
-        //input.set(this.json.properties);
-        //
-        //var node = new Element("div", {"styles": {"ovwrflow": "hidden"}}).inject(this.node, "after");
-        //input.inject(node);
-        //this.node.destroy();
-        //this.node = node;
-        //this.node.set({
-			//"id": this.json.id,
-			//"MWFType": this.json.type
-        //});
-        ////this.node.setStyle("margin-right", "18px");
-        //
-        //this.node.addEvent("change", function(){
-        //    //if (this.json.validation){
-        //    //    if (this.json.validation.code) {
-        //    //        if (this.validation()) this._setBusinessData(this.getInputData("change"));
-        //    //    }else{
-        //    //        this._setBusinessData(this.getInputData("change"));
-        //    //    }
-        //    //}else{
-        //        this._setBusinessData(this.getInputData("change"));
-        //    //}
-        //}.bind(this));
+        if (this.json.ANNModel){
+            this.node.getFirst().addEvent("focus", function(){
+                o2.Actions.get("x_query_assemble_surface").calculateNeural(this.json.ANNModel, this.form.businessData.work.id, function(json){
+                    var arr = json.data.filter(function(d){
+                        var value = this.node.getFirst().get("value");
+                        return d.score>0.1 && (value.indexOf(d.value)===-1)
+                    }.bind(this));
+                    if (arr.length){
+                        if (!this.modelNode) this.createModelNode();
+                        this.modelNode.getLast().empty();
+                        this.modelNode.show();
+                        this.modelNode.position({ "relativeTo": this.node, "position": "bottomLeft", "edge": 'upperLeft' });
+
+                        arr.each(function(v){
+                            var node = new Element("div", {"text": v.value, "styles": this.form.css.modelItemNode}).inject(this.modelNode.getLast());
+                            node.addEvents({
+                                "mouseover": function(){this.setStyle("color", "#0000ff");},
+                                "mouseout": function(){this.setStyle("color", "#a31515");},
+                                "mousedown": function(e){
+                                    var str = this.node.getFirst().get("value")
+                                    this.node.getFirst().set("value", ((str) ? str+", "+e.target.get("text") : e.target.get("text")));
+                                    this.modelNode.hide();
+                                }.bind(this)
+                            });
+                        }.bind(this));
+                    }
+                }.bind(this));
+            }.bind(this));
+
+            this.node.getFirst().addEvent("blur", function(){
+                if (this.modelNode) this.modelNode.hide();
+            }.bind(this));
+        }
+
         this.node.getFirst().addEvent("blur", function(){
             this.validation();
         }.bind(this));
@@ -145,6 +151,12 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
             this.validationMode();
         }.bind(this));
 	},
+    createModelNode: function(){
+        this.modelNode = new Element("div", {"styles": this.form.css.modelNode}).inject(this.node, "after");
+        new Element("div", {"styles": this.form.css.modelNodeTitle, "text": MWF.xApplication.process.Xform.LP.ANNInput}).inject(this.modelNode);
+        new Element("div", {"styles": this.form.css.modelNodeContent, "text": MWF.xApplication.process.Xform.LP.ANNInput}).inject(this.modelNode);
+    },
+
     getInputData: function(){
         var v = this.node.getElement("input").get("value");
         if (this.json.dataType=="number"){
