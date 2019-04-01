@@ -135,6 +135,8 @@
     var _rand = function(max) {
         return Math.floor(Math.random() * (max + 1));
     };
+    this.o2.addListener = _addListener;
+    this.o2.removeListener = _removeListener;
 
     //uuid
     var _uuid = function(){
@@ -181,7 +183,7 @@
             "doc": doc,
             "dom": (options && options.dom) || document.body,
             "bind": (options && options.bind) || null,
-            "position": "beforeend" //'beforebegin' 'afterbegin' 'beforeend' 'afterend'
+            "position": (options && options.position) || "beforeend" //'beforebegin' 'afterbegin' 'beforeend' 'afterend'
         }
     };
     var _getCssOptions = function(options){
@@ -215,7 +217,7 @@
             "doc": doc,
             "dom": (options && options.dom) || null,
             "bind": (options && options.bind) || null,
-            "position": "beforeend" //'beforebegin' 'afterbegin' 'beforeend' 'afterend'
+            "position": (options && options.position) || "beforeend" //'beforebegin' 'afterbegin' 'beforeend' 'afterend'
         }
     };
     var _xhr_get = function(url, success, failure, completed){
@@ -284,7 +286,7 @@
         "ie_adapter": ["/o2_lib/o2/ie_adapter.js"],
         "jquery": ["/o2_lib/jquery/jquery.min.js"],
         "mootools": ["/o2_lib/mootools/mootools-1.6.0_all.js"],
-        "ckeditor": ["/o2_lib/htmleditor/ckeditor/ckeditor.js"],
+        "ckeditor": ["/o2_lib/htmleditor/ckeditor462/ckeditor.js"],
         "raphael": ["/o2_lib/raphael/raphael.js"],
         "d3": ["/o2_lib/d3/d3.min.js"],
         "ace": ["/o2_lib/ace/src-noconflict/ace.js","/o2_lib/ace/src-noconflict/ext-language_tools.js"],
@@ -328,7 +330,7 @@
                         if (s) head.removeChild(s);
                         if (callback)callback();
                     }else{
-                        head.removeChild(s);
+                        //head.removeChild(s);
                         if (callback)callback(scriptObj);
                     }
                 }
@@ -480,22 +482,27 @@
             _loadDisarray(ms, cb, op, thisLoaded, _loadSingleCss, uuid);
         }
     };
-    var _removeCss = function(module, doc){
+    var _removeCss = function(modules, doc){
         var thisDoc = doc || document;
-        var k = encodeURIComponent(module+(thisDoc.unid||""));
-        var removeCss = _loadedCss[k];
-        if (!removeCss) for (key in _loadedCss){
-            if (_loadedCss[key].id==module){
-                removeCss = _loadedCss[key];
-                k = key;
-                break;
+        var ms = (_typeOf(modules)==="array") ? modules : [modules];
+        for (var i=0; i<ms.length; i++){
+            var module = modules[i];
+
+            var k = encodeURIComponent(module+(thisDoc.unid||""));
+            var removeCss = _loadedCss[k];
+            if (!removeCss) for (key in _loadedCss){
+                if (_loadedCss[key].id==module){
+                    removeCss = _loadedCss[key];
+                    k = key;
+                    break;
+                }
             }
-        }
-        if (removeCss){
-            delete _loadedCss[k];
-            var styleNode = removeCss.doc.getElementById(removeCss.id);
-            if (styleNode) styleNode.parentNode.removeChild(styleNode);
-            removeCss = null;
+            if (removeCss){
+                delete _loadedCss[k];
+                var styleNode = removeCss.doc.getElementById(removeCss.id);
+                if (styleNode) styleNode.parentNode.removeChild(styleNode);
+                removeCss = null;
+            }
         }
     };
     this.o2.loadCss = _loadCss;
@@ -593,84 +600,205 @@
     };
 
     //json template
-    _parseText = function(html, json){
-        var _ht = html;
-        var regexp = /(text\{).+?\}/g;
-        var r = _ht.match(regexp);
-        if(r) if (r.length){
-            for (var i=0; i<r.length; i++){
-                var text = r[i].substr(0,r[i].lastIndexOf("}"));
-                text = text.substr(text.indexOf("{")+1,text.length);
-                var value = _jsonText(json ,text);
-                _ht = _ht.replace(/(text\{).+?\}/,value);
+    // _parseText = function(html, json){
+    //     var _ht = html;
+    //     var regexp = /(text\{).+?\}/g;
+    //     var r = _ht.match(regexp);
+    //     if(r) if (r.length){
+    //         for (var i=0; i<r.length; i++){
+    //             var text = r[i].substr(0,r[i].lastIndexOf("}"));
+    //             text = text.substr(text.indexOf("{")+1,text.length);
+    //             var value = _jsonText(json ,text);
+    //             _ht = _ht.replace(/(text\{).+?\}/,value);
+    //         }
+    //     }
+    //     return _ht;
+    // };
+    // _parseEach = function(html, json){
+    //     var _ht = html;
+    //     var regexp = /(\{each\([\s\S]+\)\})[\s\S]+?(\{endEach\})/g;
+    //     var r = _ht.match(regexp);
+    //     if(r){
+    //         if (r.length){
+    //             for (var i=0; i<r.length; i++){
+    //                 var eachItemsStr = r[i].substr(0,r[i].indexOf(")"));
+    //                 eachItemsStr = eachItemsStr.substr(eachItemsStr.indexOf("(")+1,eachItemsStr.length);
+    //                 var pars = eachItemsStr.split(/,[\s]*/g);
+    //                 eachItemsPar = pars[0];
+    //                 eachItemsCount = pars[1].toInt();
+    //
+    //                 var eachItems = _jsonText(json ,eachItemsPar);
+    //                 if (eachItems) if (eachItemsCount==0) eachItemsCount = eachItems.length;
+    //
+    //                 var eachContentStr = r[i].substr(0,r[i].lastIndexOf("{endEach}"));
+    //                 eachContentStr = eachContentStr.substr(eachContentStr.indexOf("}")+1,eachContentStr.length);
+    //
+    //                 var eachContent = [];
+    //                 if (eachItems){
+    //                     for (var n=0; n<Math.min(eachItems.length, eachItemsCount); n++){
+    //                         var item = eachItems[n];
+    //                         if (item){
+    //                             var tmpEachContentStr = eachContentStr;
+    //                             var textReg = /(eachText\{).+?\}/g;
+    //                             texts = tmpEachContentStr.match(textReg);
+    //                             if (texts){
+    //                                 if (texts.length){
+    //                                     for (var j=0; j<texts.length; j++){
+    //                                         var text = texts[j].substr(0,texts[j].lastIndexOf("}"));
+    //                                         text = text.substr(text.indexOf("{")+1,text.length);
+    //
+    //                                         var value = _jsonText(item ,text);
+    //                                         tmpEachContentStr = tmpEachContentStr.replace(/(eachText\{).+?\}/,value);
+    //                                     }
+    //                                 }
+    //                             }
+    //                             eachContent.push(tmpEachContentStr);
+    //                         }
+    //                     }
+    //                 }
+    //                 _ht = _ht.replace(/(\{each\([\s\S]+\)\})[\s\S]+?(\{endEach\})/,eachContent.join(""));
+    //             }
+    //         }
+    //     }
+    //     return _ht;
+    // };
+    // _jsonText = function(json, text){
+    //     var $ = json;
+    //     var f = eval("(x = function($){\n return "+text+";\n})");
+    //     returnValue = f.apply(json, [$]);
+    //     if (returnValue===undefined) returnValue="";
+    //     returnValue = returnValue.toString();
+    //     return returnValue || "";
+    // };
+    // var _bindJson = function(str, json){
+    //     return _parseEach(_parseText(str, json), json);
+    // };
+    // o2.bindJson = _bindJson;
+    // String.prototype.bindJson = function(json){
+    //     return _parseEach(_parseText(this, json), json);
+    // };
+
+    var _getIfBlockEnd = function(v){
+        var rex = /(\{\{if\s+)|(\{\{\s*end if\s*\}\})/gmi;
+        var rexEnd = /\{\{\s*end if\s*\}\}/gmi;
+        var subs = 1;
+        while ((match = rex.exec(v)) !== null) {
+            var fullMatch = match[0];
+            if (fullMatch.search(rexEnd)!==-1){
+                subs--;
+                if (subs==0) break;
+            }else{
+                subs++
             }
         }
-        return _ht;
-    };
-    _parseEach = function(html, json){
-        var _ht = html;
-        var regexp = /(\{each\([\s\S]+\)\})[\s\S]+?(\{endEach\})/g;
-        var r = _ht.match(regexp);
-        if(r){
-            if (r.length){
-                for (var i=0; i<r.length; i++){
-                    var eachItemsStr = r[i].substr(0,r[i].indexOf(")"));
-                    eachItemsStr = eachItemsStr.substr(eachItemsStr.indexOf("(")+1,eachItemsStr.length);
-                    var pars = eachItemsStr.split(/,[\s]*/g);
-                    eachItemsPar = pars[0];
-                    eachItemsCount = pars[1].toInt();
+        if (match) return {"codeIndex": match.index, "lastIndex": rex.lastIndex};
+        return {"codeIndex": v.length-1, "lastIndex": v.length-1};
+    }
+    var _getEachBlockEnd = function(v){
+        var rex = /(\{\{each\s+)|(\{\{\s*end each\s*\}\})/gmi;
+        var rexEnd = /\{\{\s*end each\s*\}\}/gmi;
+        var subs = 1;
+        while ((match = rex.exec(v)) !== null) {
+            var fullMatch = match[0];
+            if (fullMatch.search(rexEnd)!==-1){
+                subs--;
+                if (subs==0) break;
+            }else{
+                subs++;
+            }
+        }
+        if (match) return {"codeIndex": match.index, "lastIndex": rex.lastIndex};
+        return {"codeIndex": v.length-1, "lastIndex": v.length-1};
+    }
 
-                    var eachItems = _jsonText(json ,eachItemsPar);
-                    if (eachItems) if (eachItemsCount==0) eachItemsCount = eachItems.length;
+    var _parseHtml = function(str, json){
+        var v = str;
+        var rex = /(\{\{\s*)[\s\S]*?(\s*\}\})/gmi;
 
-                    var eachContentStr = r[i].substr(0,r[i].lastIndexOf("{endEach}"));
-                    eachContentStr = eachContentStr.substr(eachContentStr.indexOf("}")+1,eachContentStr.length);
+        var match;
+        while ((match = rex.exec(v)) !== null) {
+            var fullMatch = match[0];
+            var offset = 0;
 
-                    var eachContent = [];
-                    if (eachItems){
-                        for (var n=0; n<Math.min(eachItems.length, eachItemsCount); n++){
-                            var item = eachItems[n];
-                            if (item){
-                                var tmpEachContentStr = eachContentStr;
-                                var textReg = /(eachText\{).+?\}/g;
-                                texts = tmpEachContentStr.match(textReg);
-                                if (texts){
-                                    if (texts.length){
-                                        for (var j=0; j<texts.length; j++){
-                                            var text = texts[j].substr(0,texts[j].lastIndexOf("}"));
-                                            text = text.substr(text.indexOf("{")+1,text.length);
+            //if statement begin
+            if (fullMatch.search(/\{\{if\s+/i)!==-1){
+                //找到对应的end if
+                var condition = fullMatch.replace(/^\{\{if\s*/i, "");
+                condition = condition.replace(/\s*\}\}$/i, "");
+                var flag = _jsonText(json, condition, "boolean");
 
-                                            var value = _jsonText(item ,text);
-                                            tmpEachContentStr = tmpEachContentStr.replace(/(eachText\{).+?\}/,value);
-                                        }
-                                    }
-                                }
-                                eachContent.push(tmpEachContentStr);
-                            }
-                        }
-                    }
-                    _ht = _ht.replace(/(\{each\([\s\S]+\)\})[\s\S]+?(\{endEach\})/,eachContent.join(""));
+                var tmpStr = v.substring(rex.lastIndex, v.length);
+                var endIfIndex = _getIfBlockEnd(tmpStr);
+                if (flag){ //if 为 true
+                    var parseStr = _parseHtml(tmpStr.substring(0, endIfIndex.codeIndex), json);
+                    var vLeft = v.substring(0, match.index);
+                    var vRight = v.substring(rex.lastIndex+endIfIndex.lastIndex, v.length);
+                    v = vLeft + parseStr + vRight;
+                    offset = parseStr.length - fullMatch.length;
+                }else{
+                    v = v.substring(0, match.index) + v.substring(rex.lastIndex+endIfIndex.lastIndex, v.length);
+                    offset = 0-fullMatch.length;
                 }
+            }else  if (fullMatch.search(/\{\{each\s+/)!==-1) { //each statement
+                var itemString = fullMatch.replace(/^\{\{each\s*/, "");
+                itemString = itemString.replace(/\s*\}\}$/, "");
+                var eachValue = _jsonText(json, itemString, "object");
+
+                var tmpEachStr = v.substring(rex.lastIndex, v.length);
+                var endEachIndex = _getEachBlockEnd(tmpEachStr);
+
+                var parseEachStr = tmpEachStr.substring(0, endEachIndex.codeIndex);
+                var eachResult = "";
+                if (eachValue && _typeOf(eachValue)==="array"){
+                    for (var i=0; i<eachValue.length; i++){
+                        eachValue[i]._ = json;
+                        eachResult += _parseHtml(parseEachStr, eachValue[i]);
+                    }
+                    var eLeft = v.substring(0, match.index);
+                    var eRight = v.substring(rex.lastIndex+endEachIndex.lastIndex, v.length);
+                    v = eLeft + eachResult + eRight;
+                    offset = eachResult.length - fullMatch.length;
+                }else{
+                    v = v.substring(0, match.index) + v.substring(rex.lastIndex+endEachIndex.lastIndex, v.length);
+                    offset = 0-fullMatch.length;
+                }
+
+            }else{ //text statement
+                var text = fullMatch.replace(/^\{\{\s*/, "");
+                text = text.replace(/\}\}\s*$/, "");
+                var value = _jsonText(json, text);
+                offset = value.length-fullMatch.length;
+                v = v.substring(0, match.index) + value + v.substring(rex.lastIndex, v.length);
             }
+            rex.lastIndex = rex.lastIndex + offset;
         }
-        return _ht;
+        return v;
     };
-    _jsonText = function(json, text){
-        var $ = json;
-        var f = eval("(x = function($){\n return "+text+";\n})");
-        returnValue = f.apply(json, [$]);
-        if (returnValue===undefined) returnValue="";
-        returnValue = returnValue.toString();
-        return returnValue || "";
+    var _jsonText = function(json, text, type){
+        try {
+            var $ = json;
+            var f = eval("(function($){\n return "+text+";\n})");
+            returnValue = f.apply(json, [$]);
+            if (returnValue===undefined) returnValue="";
+            if (type==="boolean") return (!!returnValue);
+            if (type==="object") return returnValue;
+            returnValue = returnValue.toString();
+            return returnValue || "";
+        }catch(e){
+            if (type==="boolean") return false;
+            if (type==="object") return null;
+            return "";
+        }
     };
 
-    _bindJson = function(str, json){
-        return _parseEach(_parseText(str, json), json);
+    o2.bindJson = function(str, json){
+        return _parseHtml(str, json);
     };
-    o2.bindJson = _bindJson;
     String.prototype.bindJson = function(json){
-        return _parseEach(_parseText(this, json), json);
+        return _parseHtml(this, json);
     };
+
+
 
     //dom ready
     var _dom = {

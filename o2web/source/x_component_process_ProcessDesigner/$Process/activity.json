@@ -64,6 +64,8 @@
     "allowRerouteTo": true,
     "allowReset": true,
     "allowRapid": false,
+    "allowAddSplit": false,
+    "allowRollback": false,
 
     "resetCount": "0",
     "resetRange": "department",
@@ -455,6 +457,7 @@
     "updateTime": "",
     "extension": "",
     "form": "",
+    "async": false,
 
     "readIdentityList": [],
     "readUnitList": [],
@@ -605,6 +608,7 @@
     "updateTime": "",
     "extension": "",
     "form": "",
+    "async": false,
 
     "readIdentityList": [],
     "readUnitList": [],

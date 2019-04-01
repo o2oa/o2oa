@@ -36,6 +36,41 @@
                 </td>
             </tr>
         </table>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td colspan="2" class="editTableValue"><b>流转后提示框:</b>
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}promptArea').setStyle('display', 'block');}" name="isPrompt" text{($.isPrompt!==false)?'checked':''} type="radio" value="ture"/>是
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}promptArea').setStyle('display', 'none'); }" name="isPrompt" text{($.isPrompt===false)?'checked':''} type="radio" value="false"/>否
+                </td>
+            </tr>
+        </table>
+        <table style="display: text{($.isPrompt!==false)?'block':'none'}" id="text{$.pid}promptArea" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td colspan="2" class="editTableValue"><b>提示框位置:</b>
+                    <input class="editTableRadio" name="promptPosition" text{($.promptPosition=='center')?'checked':''} type="radio" value="center"/>中央
+                    <input class="editTableRadio" name="promptPosition" text{($.promptPosition=='lefttop')?'checked':''} type="radio" value="lefttop"/>左上
+                    <input class="editTableRadio" name="promptPosition" text{(['lefttop','center','leftbottom','rightbottom'].indexOf($.promptPosition)==-1)?'checked':''} type="radio" value="righttop"/>右上
+                    <input class="editTableRadio" name="promptPosition" text{($.promptPosition=='leftbottom')?'checked':''} type="radio" value="leftbottom"/>左下
+                    <input class="editTableRadio" name="promptPosition" text{($.promptPosition=='rightbottom')?'checked':''} type="radio" value="rightbottom"/>右下
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="editTableValue"><b>提示框
+                    <select name="promptCloseTime">
+                        <option value="0" text{($.promptCloseTime==0)?'selected':''}>不关闭</option>
+                        <option value="1" text{($.promptCloseTime==1)?'selected':''}>1</option>
+                        <option value="2" text{(!$.promptCloseTime || $.promptCloseTime==2)?'selected':''}>2</option>
+                        <option value="3" text{($.promptCloseTime==3)?'selected':''}>3</option>
+                        <option value="4" text{($.promptCloseTime==4)?'selected':''}>4</option>
+                        <option value="5" text{($.promptCloseTime==5)?'selected':''}>5</option>
+                        <option value="6" text{($.promptCloseTime==6)?'selected':''}>6</option>
+                        <option value="7" text{($.promptCloseTime==7)?'selected':''}>7</option>
+                        <option value="8" text{($.promptCloseTime==8)?'selected':''}>8</option>
+                        <option value="9" text{($.promptCloseTime==9)?'selected':''}>9</option>
+                    </select>
+                    秒后自动关闭</b></td>
+            </tr>
+        </table>
 		
 		<!--<div class="MWFArraylist" name="cssLinks" title="CSS引用"></div>-->
 		<!--<div class="MWFArraylist" name="scriptSrc" title="JS引用"></div>-->

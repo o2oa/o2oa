@@ -122,6 +122,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 				this.loadTitleContentNode();
 				this.loadCopyActionNode();
 				this.loadPastEvent();
+				this.loadBatchRemoveAction();
 				this.loadSearchNode();
 				if(callback)callback();
 			}.bind(this)
@@ -165,10 +166,82 @@ MWF.xApplication.cms.Module.Main = new Class({
 			//}.bind(this));
 		}
 	},
+	loadBatchRemoveAction : function(){
+		if( !this.isAdmin )return;
+
+		this.batchRemoveAction = new Element("div", {
+			"styles": this.css.batchRemoveDocumentAction,
+			"text" : this.lp.batchRemove
+		}).inject(this.titleBar);
+		this.batchRemoveAction.addEvents({
+			"click": function(e){
+				if( this.view ){
+					if( this.view.selectEnable ){
+						this.view.disableSelectMode();
+						this.batchRemoveConfirmAction.setStyle("display","none");
+						//this.batchRemoveAction.set("text",this.lp.batchRemove);
+					}else{
+						this.view.selectMode();
+						this.batchRemoveConfirmAction.setStyle("display","");
+						//this.batchRemoveAction.set("text",this.lp.cancel);
+					}
+				}
+			}.bind(this),
+			"mouseover" : function(e){
+				this.batchRemoveAction.setStyles( this.css.batchRemoveDocumentAction_over )
+			}.bind(this),
+			"mouseout" : function(e){
+				this.batchRemoveAction.setStyles( this.css.batchRemoveDocumentAction )
+			}.bind(this)
+		});
+
+
+		this.batchRemoveConfirmAction = new Element("div", {
+			"styles": this.css.batchRemoveConfirmDocumentAction,
+			"text" : this.lp.batchRemoveConfirm
+		}).inject(this.titleBar);
+		var _self = this;
+		this.batchRemoveConfirmAction.addEvents({
+			"click": function (e) {
+				var itemIds = this.view.getSelectedIds();
+				if (itemIds.length) {
+					_self.readyRemove = true;
+					var text = "删除后无法恢复，确定要删除选中的"+itemIds.length+"个文档？";
+					this.confirm("warn", e, "清除确认", text, 350, 120, function(){
+
+						_self.removeDocumentList(itemIds);
+
+						this.close();
+
+					}, function(){
+						_self.readyRemove = false;
+						this.close();
+					});
+				}else{
+					this.notice("请先选择文档","error")
+				}
+			}.bind(this)
+		});
+		this.batchRemoveConfirmAction.setStyle("display","none");
+	},
+	removeDocumentList : function( itemIds ){
+		var count = 0;
+		itemIds.each( function(id){
+			this.restActions.removeDocument(id, function(json){
+				count++;
+				if( count === itemIds.length ){
+					this.notice("清除成功", "success");
+					this.view.disableSelectMode();
+					this.batchRemoveConfirmAction.setStyle("display","none");
+					this.view.reload();
+				}
+			}.bind(this));
+		}.bind(this))
+	},
 	loadCopyActionNode : function(){
 		if( !this.isAdmin )return;
 		this.copyAction = new Element("div", {
-			"styles": this.css.createDocumentAction,
+			"styles": this.css.copyDocumentAction,
 			"text" : this.lp.copy
 		}).inject(this.titleBar);
 		this.copyAction.addEvents({
@@ -198,53 +271,58 @@ MWF.xApplication.cms.Module.Main = new Class({
 				}
 			}.bind(this),
 			"mouseover" : function(e){
-				this.copyAction.setStyles( this.css.createDocumentAction_over )
+				this.copyAction.setStyles( this.css.copyDocumentAction_over )
 			}.bind(this),
 			"mouseout" : function(e){
-				this.copyAction.setStyles( this.css.createDocumentAction )
+				this.copyAction.setStyles( this.css.copyDocumentAction )
 			}.bind(this)
 		});
 	},
 	keyCopyItems: function(e){
-		var itemIds = this.view.getSelectedIds();
-		if (itemIds.length){
-			var items = [];
-			var i = 0;
+		if (layout.desktop.currentApp && layout.desktop.currentApp.appId===this.appId) {
+			var itemIds = this.view.getSelectedIds();
+			if (itemIds.length) {
+				var items = [];
+				var i = 0;
 
-			var checkItems = function(e){
-				if (i>= itemIds.length){
-					if (items.length){
-						var str = JSON.encode(items);
-						if (e && e.clipboardData){
-							e.clipboardData.setData('text/plain', str);
-						}else {
-							window.clipboardData.setData("Text", str);
+				var checkItems = function (e) {
+					if (i >= itemIds.length) {
+						if (items.length) {
+							var str = JSON.encode(items);
+							if (e && e.clipboardData) {
+								e.clipboardData.setData('text/plain', str);
+								e.preventDefault();
+							} else {
+								window.clipboardData.setData("Text", str);
+							}
+							this.notice(this.lp.copyed, "success");
 						}
-						this.notice(this.lp.copyed, "success");
 					}
-				}
-			}.bind(this);
+				}.bind(this);
 
-			itemIds.each(function(id){
-				this.restActions.getDocument( id, function(json){
-					json.data.elementType = "cmsDocument";
-					items.push(json.data);
-					i++;
-					checkItems(e);
-				}.bind(this), null, false)
-			}.bind(this));
+				itemIds.each(function (id) {
+					this.restActions.getDocument(id, function (json) {
+						json.data.elementType = "cmsDocument";
+						items.push(json.data);
+						i++;
+						checkItems(e);
+					}.bind(this), null, false)
+				}.bind(this));
+			}
 		}
 	},
 	keyPasteItems: function(e){
-		var dataStr = "";
-		if (e && e.clipboardData){
-			dataStr = e.clipboardData.getData('text/plain');
-		}else{
-			dataStr = window.clipboardData.getData("Text");
-		}
-		var data = JSON.decode(dataStr);
+		if (layout.desktop.currentApp && layout.desktop.currentApp.appId===this.appId) {
+			var dataStr = "";
+			if (e && e.clipboardData) {
+				dataStr = e.clipboardData.getData('text/plain');
+			} else {
+				dataStr = window.clipboardData.getData("Text");
+			}
+			var data = JSON.decode(dataStr);
 
-		this.pasteItem(data, 0);
+			this.pasteItem(data, 0);
+		}
 	},
 	pasteItem: function(data, i){
 		if (i<data.length){

@@ -1,3 +1,4 @@
+MWF.xApplication.Forum = MWF.xApplication.Forum || {};
 MWF.xApplication.Forum.LP = {
 	"title": "论坛首页",
 	"delete" : "删除",

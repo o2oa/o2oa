@@ -209,16 +209,16 @@ o2.widget.ScriptArea = new Class({
         this.jsEditor.load();
         if (this.options.isbind) this.bind(content);
 
-        this.createScriptReferenceMenu();
-
-
-        this.jsEditor.addEvent("reference", function(editor, e, e1){
-            if (!this.scriptReferenceMenu){
-                this.createScriptReferenceMenu(this.showReferenceMenu.bind(this));
-            }else{
-                this.showReferenceMenu();
-            }
-        }.bind(this));
+        // this.createScriptReferenceMenu();
+        //
+        //
+        // this.jsEditor.addEvent("reference", function(editor, e, e1){
+        //     if (!this.scriptReferenceMenu){
+        //         this.createScriptReferenceMenu(this.showReferenceMenu.bind(this));
+        //     }else{
+        //         this.showReferenceMenu();
+        //     }
+        // }.bind(this));
         this.referenceNode.setStyle("background", "url("+o2.session.path+"/widget/$ScriptArea/"+this.options.style+"/icon/reference.png) center center no-repeat")
     },
 

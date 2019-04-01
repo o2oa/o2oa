@@ -64,9 +64,11 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadArrayList();
                     this.loadEventsEditor();
                     this.loadActionArea();
+                    this.loadActionStylesArea();
                     this.loadHTMLArea();
                     this.loadJSONArea();
                     this.loadFormSelect();
+                    this.loadANNModelSelect();
                     //this.loadViewSelect();
                     this.loadValidation();
                     this.loadIconSelect();
@@ -200,6 +202,51 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 }.bind(this));
             }.bind(this));
         }
+    },
+    loadANNModelSelect: function(){
+        var nodes = this.propertyContent.getElements(".MWFANNModelSelect");
+        if (nodes.length){
+            this.getModelList(function(){
+                nodes.each(function(node){
+                    var select = new Element("select").inject(node);
+                    select.addEvent("change", function(e){
+                        this.setValue(e.target.getParent("div").get("name"), e.target.options[e.target.selectedIndex].value, select);
+                    }.bind(this));
+                    this.setModelSelectOptions(node, select);
+
+                    var refreshNode = new Element("div", {"styles": this.form.css.propertyRefreshFormNode}).inject(node);
+                    refreshNode.addEvent("click", function(e){
+                        this.getModelList(function(){
+                            this.setModelSelectOptions(node, select);
+                        }.bind(this), true);
+                    }.bind(this));
+
+                }.bind(this));
+            }.bind(this));
+        }
+    },
+    getModelList: function(callback, refresh){
+        if (!this.models || refresh){
+            var action = o2.Actions.get("x_query_assemble_designer");
+            if (action.listModel) action.listModel(function(json){
+                this.models = json.data;
+                if (callback) callback();
+            }.bind(this));
+        }else{
+            if (callback) callback();
+        }
+    },
+    setModelSelectOptions: function(node, select){
+        var name = node.get("name");
+        select.empty();
+        var option = new Element("option", {"text": "none"}).inject(select);
+        this.models.each(function(model){
+            var option = new Element("option", {
+                "text": model.name,
+                "value": model.id,
+                "selected": (this.data[name]==model.id)
+            }).inject(select);
+        }.bind(this));
     },
     loadFormSelect: function(){
         var formNodes = this.propertyContent.getElements(".MWFFormSelect");
@@ -1136,8 +1183,40 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             }.bind(this));
         }.bind(this));
     },
+    loadActionStylesArea: function(){
+        var _self = this;
+        var actionAreas = this.propertyContent.getElements(".MWFActionStylesArea");
+        actionAreas.each(function(node){
+            var name = node.get("name");
+            var actionStyles = this.data[name];
+            MWF.require("MWF.widget.Maplist", function(){
+                var maps = [];
+                Object.each(actionStyles, function(v, k){
+                    var mapNode = new Element("div").inject(node);
+                    mapNode.empty();
 
+                    var maplist = new MWF.widget.Maplist(mapNode, {
+                        "title": k,
+                        "collapse": true,
+                        "onChange": function(){
+                            var oldData = _self.data[name];
+debugger;
+                            maps.each(function(o){
+                                _self.data[name][o.key] = o.map.toJson();
+                            }.bind(this));
+                            _self.changeData(name, node, oldData);
+                        }
+                    });
+                    maps.push({"key": k, "map": maplist});
+                    maplist.load(v);
+                }.bind(this));
+            }.bind(this));
+
+
+        }.bind(this));
+    },
     loadActionArea: function(){
+        debugger;
         var actionAreas = this.propertyContent.getElements(".MWFActionArea");
         actionAreas.each(function(node){
             var name = node.get("name");
@@ -1177,14 +1256,18 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "noCreate": true,
-                    "noDelete": true,
+                    "noDelete": false,
                     "noCode": true,
+                    "noReadShow": true,
+                    "noEditShow": true,
                     "onChange": function(){
                         this.data[name] = actionEditor.data;
                         this.changeData(name);
                     }.bind(this)
                 });
+                debugger;
                 actionEditor.load(actionContent);
+                debugger;
 
 
                 // var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, {

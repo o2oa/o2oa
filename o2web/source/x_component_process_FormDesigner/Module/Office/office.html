@@ -25,7 +25,7 @@
 			</tr>
 			<tr>
 				<td class="editTableTitle">延时加载:</td>
-				<td class="editTableVaisOpenAttachmentlue">
+				<td class="editTableValue">
 					<input type="radio" name="isNotLoadNow" value="true" text{($.isNotLoadNow)?'checked':''}/>是
 					<input type="radio" name="isNotLoadNow" value="false" text{(!$.isNotLoadNow)?'checked':''}/>否
 				</td>
@@ -59,6 +59,38 @@
 					<td class="editTableValue">
 						<input type="radio" name="isAttReadonly" value="true" text{($.isAttReadonly)?'checked':''}/>是
 						<input type="radio" name="isAttReadonly" value="false" text{(!$.isAttReadonly)?'checked':''}/>否
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">自动保存:</td>
+				<td class="editTableValue">
+					<input onclick="if (this.checked){ $('text{$.pid}fileAutoSaveArea').setStyle('display', 'block')}" type="radio" name="isAutoSave" value="true" text{($.isAutoSave)?'checked':''}/>是
+					<input onclick="if (this.checked){ $('text{$.pid}fileAutoSaveArea').setStyle('display', 'none')}" type="radio" name="isAutoSave" value="false" text{(!$.isAutoSave)?'checked':''}/>否
+				</td>
+			</tr>
+		</table>
+		<div id="text{$.pid}fileAutoSaveArea" style="display: text{($.isAutoSave)?'block':'none'};">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableValue"  colspan="2"><b>保留版本数: &nbsp;&nbsp;</b>
+						<select name="autoSaveNumber">
+							<option value="1" text{($.autoSaveNumber=='1')?'selected':''}>1</option>
+							<option value="2" text{($.autoSaveNumber=='2')?'selected':''}>2</option>
+							<option value="3" text{(!$.autoSaveNumber || $.autoSaveNumber=='3')?'selected':''}>3</option>
+							<option value="4" text{($.autoSaveNumber=='4')?'selected':''}>4</option>
+							<option value="5" text{($.autoSaveNumber=='5')?'selected':''}>5</option>
+							<option value="6" text{($.autoSaveNumber=='6')?'selected':''}>6</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="editTableTitle">时间间隔(分钟):</td>
+					<td class="editTableValue">
+						<input type="number" name="autoSaveTime" value="text{$.autoSaveTime || 5}" class="editTableInput"/>
 					</td>
 				</tr>
 			</table>

@@ -62,7 +62,18 @@
     "icon": "icon_jiao_ben.png",
     "selectedIcon": "icon_jiao_ben_click.png",
     "create" : true,
-    "createAction" : "createScriptConfig",
+    "createAction" : "createScriptConfig" ,
+    "expand": false,
+    "sub": []
+  },
+  {
+    "title": "资源文件",
+    "id": "fileConfig",
+    "action": "fileConfig",
+    "icon": "icon_jiao_ben.png",
+    "selectedIcon": "icon_jiao_ben_click.png",
+    "create" : true,
+    "createAction" : "createFileConfig",
     "expand": false,
     "sub": []
   },

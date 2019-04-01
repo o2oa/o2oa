@@ -54,6 +54,15 @@ MWF.xApplication.query.QueryExplorer.Main = new Class({
         if (callback) callback();
 	},
 
+    hasCreatorRole: function(){
+        return MWF.AC.isQueryPlatformCreator();
+    },
+    hasManagerRole: function(){
+        if (MWF.AC.isAdministrator()) return true;
+        if (MWF.AC.isQueryManager()) return true;
+        return false;
+    },
+
     loadApplicationByCategory: function(item){
         var name = "";
         if (item){name = item.retrieve("categoryName", "")}
@@ -68,7 +77,7 @@ MWF.xApplication.query.QueryExplorer.Main = new Class({
                 }.bind(this));
                 //}
             }else {
-                if (MWF.AC.isProcessPlatformCreator()){
+                if (this.hasCreatorRole()){
                     var noApplicationNode = new Element("div", {
                         "styles": this.css.noApplicationNode,
                         "text": this.options.tooltip.noApplicationCreate
@@ -317,6 +326,7 @@ MWF.xApplication.query.QueryExplorer.Query = new Class({
         if (id){
             var _self = this;
             var options = {
+                "appId": "query.ViewDesigner"+id,
                 "onQueryLoad": function(){
                     this.actions = _self.app.actions;
                     //this.category = _self;
@@ -374,6 +384,7 @@ MWF.xApplication.query.QueryExplorer.Query = new Class({
         if (id){
             var _self = this;
             var options = {
+                "appId": "query.StatDesigner"+id,
                 "onQueryLoad": function(){
                     this.actions = _self.app.actions;
                     //this.category = _self;

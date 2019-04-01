@@ -233,12 +233,12 @@ MWF.xDesktop.LnkMove = new Class({
 			"mousedown": function(e){
 				if (!e.rightClick){
 					this.isReadyDrag = true;
-					this.isReadySwing = true;
+					//this.isReadySwing = true;
 					this.readyDragPosition = {"x": e.page.x, "y": e.page.y};
 					this.readySwingTime = new Date().getTime();
-					this.swingTimer = window.setTimeout(function(){
-						this.beginNodeSwing(e);
-					}.bind(this), 1000);
+					// this.swingTimer = window.setTimeout(function(){
+					// 	this.beginNodeSwing(e);
+					// }.bind(this), 1000);
 					
 					this.node.addEvent("mousemove", function(event){
 						if (this.isReadyDrag){
@@ -355,10 +355,24 @@ MWF.xDesktop.Lnk = new Class({
 			"styles": this.desktop.css.desktopLnkIconNode
 		}).inject(this.node);
 
+		var img = new Element("img").inject(this.iconNode);
+		var s = this.iconNode.getSize();
+        if (!s.x) s.x = this.iconNode.getStyle("width").toFloat();
+        if (!s.y) s.y = this.iconNode.getStyle("height").toFloat();
+		var w = s.x-10;
+        var h = s.y-10;
+        img.setStyles({
+			"margin": "5px",
+			"max-width": ""+w+"px",
+            "max-height": ""+h+"px"
+		});
+
         if (this.icon.substr(0,3).toLowerCase()=="url"){
-            this.iconNode.setStyle("background-image", this.icon);
+            img.set("src", this.icon.substring(4, this.icon.length-1));
+            //this.iconNode.setStyle("background-image", this.icon);
         }else{
-            this.iconNode.setStyle("background-image", "url("+this.icon+")");
+            img.set("src", this.icon);
+            //this.iconNode.setStyle("background-image", "url("+this.icon+")");
         }
 		//this.iconNode.setStyle("background-image", "url("+this.icon+")");
 		
@@ -395,7 +409,7 @@ MWF.xDesktop.Lnk = new Class({
 		this.node.inject(node, where);
 	},
 	open: function(e){
-		debugger;
+
 		if (!this.isSwing){
             var parList = this.par.split("#");
             var appName = parList[0];

@@ -44,37 +44,67 @@ MWF.xApplication.process.ProcessManager.FileExplorer = new Class({
         return ""+n+" "+o[i].t;
     },
     implodeFiles: function(){
-        MWF.require("MWF.widget.Upload", function(){
-            new MWF.widget.Upload(this.app.content, {
-                "action": MWF.Actions.get("x_processplatform_assemble_designer").action,
-                "multiple": true,
-                "method": "uploadFile",
-                "parameter": {"id": ""},
-                "onBeforeUploadEntry": function(file, up){
-                    var data = this.getNewData();
-                    data.name = file.name;
-                    data.fileName = file.name;
-                    data.description = file.name+" "+this.getSizeText(file.size);
-                    data.updateTime = (new Date()).format("db");
-                    MWF.Actions.get("x_processplatform_assemble_designer").saveFile(data, function(json){
-                        up.options.parameter = {"id": json.data.id};
+        if (this.upload){
+            this.upload.upload();
+        }else{
+            MWF.require("MWF.widget.Upload", function(){
+                var datas = [];
+                this.upload = new MWF.widget.Upload(this.app.content, {
+                    "action": MWF.Actions.get("x_processplatform_assemble_designer").action,
+                    "multiple": true,
+                    "method": "uploadFile",
+                    "parameter": {"id": ""},
+                    "onBeforeUploadEntry": function(file, up){
+                        var data = this.getNewData();
+                        data.name = file.name;
+                        data.fileName = file.name;
+                        data.description = file.name+" "+this.getSizeText(file.size);
+                        data.updateTime = (new Date()).format("db");
+                        MWF.Actions.get("x_processplatform_assemble_designer").saveFile(data, function(json){
+                            up.options.parameter = {"id": json.data.id};
 
-                        var node = this.elementContentListNode.getFirst();
-                        if (node) if (node.hasClass("noElementNode")){
-                            node.destroy();
-                        }
-
+                            var node = this.elementContentListNode.getFirst();
+                            if (node) if (node.hasClass("noElementNode")){
+                                node.destroy();
+                            }
+                            datas.push(data);
+                        }.bind(this), null, false);
+                    }.bind(this),
+                    "onEvery": function(json, current, count, file){
+                        var data = datas[current-1];
                         var itemObj = this._getItemObject(data);
                         itemObj.load();
-                    }.bind(this), null, false);
-                }.bind(this)
-            }).load();
+                    }.bind(this)
+                }).load();
+            }.bind(this));
+        }
+    },
+
+    loadContentNode: function(){
+        this.cssPath = this.path+this.options.style+"/file.css";
+
+        this.elementContentNode = new Element("div", {
+            "styles": this.css.elementContentNode
+        }).inject(this.node);
+
+        this.elementContentNode.addEvent("click", function(){
+            while (this.selectMarkItems.length){
+                this.selectMarkItems[0].unSelected();
+            }
         }.bind(this));
+
+        this.elementContentListNode = new Element("div", {
+            "styles": this.css.elementContentListNode
+        }).inject(this.elementContentNode);
+
+        this.elementContentListNode.loadCss(this.cssPath);
+
+        this.setContentSize();
+        this.app.addEvent("resize", function(){this.setContentSize();}.bind(this));
     },
 
     _createElement: function(e){
         this.implodeFiles();
-        //new MWF.xApplication.process.ProcessManager.FileDesigner(this);
     },
     _loadItemDataList: function(callback){
         var id = "";
@@ -101,11 +131,31 @@ MWF.xApplication.process.ProcessManager.FileExplorer = new Class({
                 item.deleteFile();
             }else{
                 item.deleteFile(function(){
-                //    this.reloadItems();
-                //    this.hideDeleteAction();
                 }.bind(this));
             }
         }
+    },
+    destroy: function(){
+        this.node.destroy();
+        o2.removeCss(this.cssPath);
+        o2.release(this);
+    },
+    getIconJson: function(callback){
+        if (!this.icons){
+            MWF.getJSON("/x_component_File/$Main/icon.json", function(json){
+                this.icons = json;
+                if (callback) callback();
+            }.bind(this), false, false);
+        }else{
+            if (callback) callback();
+        }
+    },
+    getIcon: function(fileName){
+        this.getIconJson();
+        var ext = fileName.substring(fileName.lastIndexOf(".")+1, fileName.length);
+        if (!ext) ext="unkonw";
+        var iconName = this.icons[ext.toLowerCase()] || this.icons.unknow;
+        return "/x_component_File/$Main/default/file/"+iconName;
     }
 });
 
@@ -113,11 +163,8 @@ MWF.xApplication.process.ProcessManager.FileExplorer.File = new Class({
 	Extends: MWF.xApplication.process.ProcessManager.DictionaryExplorer.Dictionary,
 
     load: function(){
-	    var css = "/x_component_process_ProcessManager/$DictionaryExplorer/"+this.explorer.options.style+"/file.css";
-        var view = "/x_component_process_ProcessManager/$DictionaryExplorer/"+this.explorer.options.style+"/file.html";
-        this.container.loadCss(css);
-        this.node = new Element("div", {
-            "styles": this.explorer.css.itemNode,
+        var view = this.explorer.path+this.explorer.options.style+"/file.html";
+        this.node = new Element("div.o2_fileItemNode", {
             "events": {
                 "mouseover": function(){
                     if (this.deleteActionNode) this.deleteActionNode.fade("in");
@@ -131,11 +178,35 @@ MWF.xApplication.process.ProcessManager.FileExplorer.File = new Class({
         }).inject(this.container);
 
         if (this.data.name.icon) this.icon = this.data.name.icon;
-        this.data.iconUrl = this.explorer.path+""+this.explorer.options.style+"/processIcon/"+this.icon;
+        var ext = this.data.fileName.substring(this.data.fileName.lastIndexOf(".")+1, this.data.fileName.length);
+        this.data.fileUrl = this._getUrl();
+
+        if (["png","jpg","bmp","gif","jpeg","jpe"].indexOf(ext)!==-1){
+            //new Image()
+            this.data.iconUrl = this.data.fileUrl;
+        }else{
+            this.data.iconUrl = this.explorer.getIcon(this.data.fileName);
+        }
+
+        //this.data.iconUrl = this.explorer.path+""+this.explorer.options.style+"/processIcon/"+this.icon;
+
 
         this.node.loadHtml(view, {"bind": this.data}, function(){
             debugger;
             var itemIconNode = this.node.getElement(".o2_fileItemIconNode");
+            var itemImgNode = this.node.getElement(".o2_fileItemImgNode");
+            var itemUrlNode = this.node.getElement(".o2_fileItemUrlNode");
+            itemUrlNode.setStyle("-webkit-user-select", "text");
+            var s = itemIconNode.getSize();
+            // if (!s.x) s.x = itemIconNode.getStyle("width").toFloat();
+            // if (!s.y) s.y = itemIconNode.getStyle("height").toFloat();
+            itemImgNode.setStyles({
+                "max-width": ""+s.x+"px",
+                "max-height": ""+s.y+"px"
+            });
+            itemImgNode.set("src", this.data.iconUrl);
+
+
             this.deleteActionNode = this.node.getElement(".o2_fileDeleteActionNode");
             var itemTextTitleNode = this.node.getElement(".o2_fileItemTextTitleNode");
 
@@ -161,72 +232,58 @@ MWF.xApplication.process.ProcessManager.FileExplorer.File = new Class({
         }.bind(this));
     },
     _createActions: function(){
-        // this.deleteActionNode = new Element("div", {
-        //     "styles": this.explorer.css.deleteActionNode
-        // }).inject(this.node);
         if (this.deleteActionNode) this.deleteActionNode.addEvent("click", function(e){
             this.deleteItem(e);
         }.bind(this));
     },
 
-    _customNodes: function(){
-        // if (!this.data.validated){
-        //     new Element("div", {"styles": this.explorer.css.itemErrorNode}).inject(this.node);
-        //     this.node.setStyle("background-color", "#f9e8e8");
-        // }
-    },
+    _customNodes: function(){},
 	_open: function(e){
 		var _self = this;
         MWF.Actions.get("x_processplatform_assemble_designer").getFile(this.data.id, function(json){
             this.data = json.data;
             new MWF.xApplication.process.ProcessManager.FileDesigner(this.explorer, this.data);
         }.bind(this));
-
-
-		// var options = {
-		// 	"onQueryLoad": function(){
-		// 		this.actions = _self.explorer.actions;
-		// 		this.category = _self;
-		// 		this.options.id = _self.data.id;
-         //        this.application = _self.explorer.app.options.application;
-         //        this.explorer = _self.explorer
-		// 	}
-		// };
-		// this.explorer.app.desktop.openApplication(e, "process.FileDesigner", options);
 	},
     _getIcon: function(){
-        //var x = (Math.random()*33).toInt();
-        //return "process_icon_"+x+".png";
         return "file.png";
     },
-	_getLnkPar: function(){
+    _getUrl: function(){
         var url = MWF.Actions.get("x_processplatform_assemble_surface").action.actions.readFile.uri;
         url = url.replace(/{flag}/, this.data.id);
         url = url.replace(/{applicationFlag}/, this.data.application);
         url = "/x_processplatform_assemble_surface"+url;
-        var href = MWF.Actions.getHost("x_processplatform_assemble_surface")+url;
-
+        return MWF.Actions.getHost("x_processplatform_assemble_surface")+url;
+    },
+	_getLnkPar: function(){
 		return {
-			"icon": this.explorer.path+this.explorer.options.style+"/fileIcon/lnk.png",
+			"icon": this.data.iconUrl,
 			"title": this.data.name,
-            "par": "@url#"+href
+            "par": "@url#"+this._getUrl()
 		};
 	},
-//	deleteItem: function(e){
-//		var _self = this;
-//		this.explorer.app.confirm("info", e, this.explorer.app.lp.form.deleteFormTitle, this.explorer.app.lp.form.deleteForm, 320, 110, function(){
-//			_self.deleteForm();
-//			this.close();
-//		},function(){
-//			this.close();
-//		});
-//	},
     deleteFile: function(callback){
 		this.explorer.app.restActions.deleteFile(this.data.id, function(){
 			this.node.destroy();
 			if (callback) callback();
 		}.bind(this));
-	}
+	},
+    _isNew: function(){
+        if (this.data.updateTime){
+            var createDate = Date.parse(this.data.updateTime);
+            var currentDate = new Date();
+            if (createDate.diff(currentDate, "hour")<12) {
+                this.newNode = new Element("div", {
+                    "styles": this.css.itemFileNewNode
+                }).inject(this.node);
+                this.newNode.addEvent("click", function(e){
+                    this.toggleSelected();
+                    e.stopPropagation();
+                }.bind(this));
+            }
+        }
+    }
+
 });
 
 MWF.xApplication.process.ProcessManager.FileDesigner = new Class({
@@ -352,33 +409,34 @@ MWF.xApplication.process.ProcessManager.FileDesigner = new Class({
             this.loadFileIcon();
         }
     },
-    getIconJson: function(callback){
-        if (!this.icons){
-            MWF.getJSON("/x_component_File/$Main/icon.json", function(json){
-                this.icons = json;
-                if (callback) callback();
-            }.bind(this), false, false);
-        }else{
-            if (callback) callback();
-        }
-    },
-    getIcon: function(ext){
-        if (!ext) ext="unkonw";
-        var iconName = this.icons[ext.toLowerCase()] || this.icons.unknow;
-        return "/x_component_File/$Main/default/file/"+iconName;
-    },
+    // getIconJson: function(callback){
+    //     if (!this.icons){
+    //         MWF.getJSON("/x_component_File/$Main/icon.json", function(json){
+    //             this.icons = json;
+    //             if (callback) callback();
+    //         }.bind(this), false, false);
+    //     }else{
+    //         if (callback) callback();
+    //     }
+    // },
+    // getIcon: function(ext){
+    //     if (!ext) ext="unkonw";
+    //     var iconName = this.icons[ext.toLowerCase()] || this.icons.unknow;
+    //     return "/x_component_File/$Main/default/file/"+iconName;
+    // },
     loadFileIcon: function(){
+        debugger;
         this.fileContentNode.empty();
-        var ext = this.data.fileName.substr(this.data.fileName.lastIndexOf(".")+1, this.data.fileName.length);
-        this.getIconJson(function(){
-            var url = this.getIcon(ext);
+        //var ext = this.data.fileName.substr(this.data.fileName.lastIndexOf(".")+1, this.data.fileName.length);
+        //this.explorer.getIconJson(function(){
+        var url = this.explorer.getIcon(this.data.fileName);
 
-            var fileIconNode = new Element("div", {"styles": this.css.fileDesignerContentFileLineFileIconNode}).inject(this.fileContentNode);
-            fileIconNode.setStyle("background-image", "url('"+url+"')");
-            var fileTextNode = new Element("div", {"styles": this.css.fileDesignerContentFileLineFileNameNode, "text": this.data.fileName}).inject(this.fileContentNode);
-            var fileSizeNode = new Element("div", {"styles": this.css.fileDesignerContentFileLineFileSizeNode, "text": this.data.description}).inject(this.fileContentNode);
+        var fileIconNode = new Element("div", {"styles": this.css.fileDesignerContentFileLineFileIconNode}).inject(this.fileContentNode);
+        fileIconNode.setStyle("background-image", "url('"+url+"')");
+        var fileTextNode = new Element("div", {"styles": this.css.fileDesignerContentFileLineFileNameNode, "text": this.data.fileName}).inject(this.fileContentNode);
+        var fileSizeNode = new Element("div", {"styles": this.css.fileDesignerContentFileLineFileSizeNode, "text": this.data.description}).inject(this.fileContentNode);
 
-        }.bind(this));
+        //}.bind(this));
     },
     createContentLine: function(text, value, readonly){
         var div = new Element("div", {"styles": this.css.fileDesignerContentLineNode}).inject(this.contentAreaNode);
@@ -496,6 +554,4 @@ MWF.xApplication.process.ProcessManager.FileDesigner = new Class({
         if (this.resizeFun) this.app.removeEvent("resize", this.resizeFun);
         MWF.release(this);
     }
-
-
 });

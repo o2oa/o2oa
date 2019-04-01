@@ -293,6 +293,8 @@ o2.LP.widget = {
     "clearImg_confirm": "您确定要清除图片吗？",
     "office": "在文档控件中打开",
     "closeOffice": "关闭附件",
+    "configAttachment": "设置附件权限",
+    "checkOcrText": "纠正自动识别的图片中的文字",
 
     "record": "录音",
     "stop": "停止",

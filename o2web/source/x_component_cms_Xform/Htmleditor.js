@@ -72,6 +72,7 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor =  new Class({
             editorConfig.reference = this.form.businessData.document.id;
             editorConfig.referenceType = "cmsDocument";
 
+            if( editorConfig.skin )editorConfig.skin = "moono-lisa";
             this.editor = CKEDITOR.replace(editorDiv, editorConfig);
             this._loadEvents();
 

@@ -619,6 +619,7 @@
     },
     "personAreaHeadNode": {
         "height": "40px",
+        "line-height": "40px",
         "margin-right": "240px"
     },
     "actionAreaHeadNode": {

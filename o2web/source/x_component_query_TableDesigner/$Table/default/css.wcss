@@ -350,5 +350,9 @@
         "font-weight": "bold",
         "color": "#1133FF",
         "white-space": "nowrap"
+    },
+    "colmunListTable": {
+        "width": "100%",
+        "border-bottom": "1px dotted #999",
     }
 }

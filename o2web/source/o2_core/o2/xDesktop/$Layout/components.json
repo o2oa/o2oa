@@ -18,7 +18,7 @@
     "path": "process.TaskCenter",
     "title": "办公中心",
     "iconPath": "appicon.png",
-    "visible": true,
+    "visible": true
   },
   {
     "name": "cms",

@@ -129,10 +129,14 @@ var wrapWorkContext = {
     "getReadList": function(){return library.JSONDecode(workContext.getReadList());},
     "getReadCompletedList": function(){return library.JSONDecode(workContext.getReadCompletedList());},
 
-    "getJobTaskList": function(){return library.JSONDecode(workContext.getTaskListByJob());},
-    "getJobTaskCompletedList": function(){return library.JSONDecode(workContext.getTaskCompletedListByJob());},
-    "getJobReadList": function(){return library.JSONDecode(workContext.getReadListByJob());},
-    "getJobReadCompletedList": function(){return library.JSONDecode(workContext.getReadCompletedListByJob());},
+    "getJobTaskList": function(){return library.JSONDecode(workContext.getJobTaskList());},
+    "getJobTaskCompletedList": function(){return library.JSONDecode(workContext.getJobTaskCompletedList());},
+    "getJobReadList": function(){return library.JSONDecode(workContext.getJobReadList());},
+    "getJobReadCompletedList": function(){return library.JSONDecode(workContext.getJobReadCompletedList());},
+    "getTaskListByJob": function(){return library.JSONDecode(workContext.getJobTaskList());},
+    "getTaskCompletedListByJob": function(){return library.JSONDecode(workContext.getJobTaskCompletedList());},
+    "getReadListByJob": function(){return library.JSONDecode(workContext.getJobReadList());},
+    "getReadCompletedListByJob": function(){return library.JSONDecode(workContext.getJobReadCompletedList());},
 
     "getReviewList": function(){return library.JSONDecode(workContext.getReviewList());},
     "getWorkLogList": function(){return library.JSONDecode(workContext.getWorkLogList());},

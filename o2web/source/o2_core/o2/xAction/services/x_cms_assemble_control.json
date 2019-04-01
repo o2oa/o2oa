@@ -151,6 +151,7 @@
   "addData": {"uri": "/jaxrs/data/document/{id}", "method": "POST"},
   "updateData": {"uri": "/jaxrs/data/document/{id}", "method": "PUT"},
 
+  //attachment为文档中的附件
   "listAttachment" : {"uri":"/jaxrs/fileinfo/list/document/{documentid}"},
   "getAttachment": {"uri": "/jaxrs/fileinfo/{id}/document/{documentid}"},
   "deleteAttachment": {"uri": "/jaxrs/fileinfo/{id}", "method": "DELETE"},
@@ -171,6 +172,24 @@
   "convertLocalImageToBase64": {"uri": "/servlet/image/encode/base64/size/{size}", "method": "POST", "enctype": "formData"},
   //将用户已经上传的图片附件直接转换为一个base64编码[Jaxrs]
   "getSubjectAttachmentBase64" : {"uri":"/jaxrs/fileinfo/{id}/binary/base64/{size}"},
+
+  //file为CMS平台的附件
+  "listFile" : {"uri":"/jaxrs/file/list/appInfo/{applicationFlag}"},
+  "getFile": {"uri": "/jaxrs/file/{id}"},
+  "addFile": {"uri": "/jaxrs/file", "method": "POST"},
+  "removeFile": {"uri": "/jaxrs/file/{id}", "method": "DELETE"},
+  "deleteFile": {"uri": "/jaxrs/file/{id}", "method": "DELETE"},
+  "updataFile": {"uri": "/jaxrs/file/{id}", "method": "PUT"},
+  "getFileByName": {"uri": "/jaxrs/file/appInfo/{applicationId}/name/{name}"},
+  "downloadFile": {"uri": "/jaxrs/file/{id}/download"},
+  "downloadWithApp": {"uri": "/jaxrs/file/{flag}/appInfo/{applicationFlag}/download"},
+  "readFileById": {"uri": "/jaxrs/file/{id}/content"},
+  "uploadFile": {"uri": "/jaxrs/file/{id}/upload", "method": "POST", "enctype": "formData"},
+  "copyFile": {"uri": "/jaxrs/file/{flag}/appInfo/{appInfoFlag}"},
+
+  "readFile": {"uri": "/jaxrs/file/{flag}/appInfo/{applicationFlag}/content"},
+//  "listFile": {"uri": "/jaxrs/file/list/application/{applicationFlag}"},
+
 
   //id                   -- ID
   //  documentId           --文档ID

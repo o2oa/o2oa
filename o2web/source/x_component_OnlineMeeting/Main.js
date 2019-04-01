@@ -1,4 +1,5 @@
 MWF.xDesktop.requireApp("OnlineMeeting", "Actions.RestActions", null, false);
+MWF.require("MWF.widget.MaskNode", null, false);
 MWF.xApplication.OnlineMeeting.options.multitask = false;
 MWF.xApplication.OnlineMeeting.Main = new Class({
 	Extends: MWF.xApplication.Common.Main,
@@ -19,14 +20,28 @@ MWF.xApplication.OnlineMeeting.Main = new Class({
         this.actions = new MWF.xApplication.OnlineMeeting.Actions.RestActions();
     },
     getLogin: function(success, failure){
+        //if (success) success();
         if (failure) failure();
     },
     loginOpenMeeting: function(data, success, failure){
         var uri = this.actions.getLoginUri(data);
         var iframe = new Element("iframe", {"src": uri, "styles": {"display": "none"}}).inject(this.content);
-        window.setTimeout(function(){
+        //window.open(uri);
+        //window.setTimeout(function(){
             if (success) success();
-        }.bind(this), 3000);
+        //}.bind(this), 5000);
+    },
+    mask: function(){
+        if (!this.maskNode){
+            this.maskNode = new MWF.widget.MaskNode(this.content, {"style": "bam"});
+            this.maskNode.load();
+        }
+    },
+    unmask: function(){
+        if (this.maskNode) this.maskNode.hide(function(){
+            MWF.release(this.maskNode);
+            this.maskNode = null;
+        }.bind(this));
     },
     loadApplication: function(callback) {
         this.actions.getOpenMeeting(function(json){
@@ -35,6 +50,7 @@ MWF.xApplication.OnlineMeeting.Main = new Class({
                 this.loadMeetingRoom();
             }.bind(this), function(){
                 if (this.meetingLoginData){
+                    this.mask();
                     this.loginOpenMeeting(this.meetingLoginData, function(){
                         this.loadMeetingRoom();
                     }.bind(this));
@@ -67,9 +83,10 @@ MWF.xApplication.OnlineMeeting.Main = new Class({
     loadCountent: function(){
         this.actions.listRoom(function(json){
             json.data.each(function(d){
-                d.url = this.actions.getRoomUri(d);
+                d.url = this.actions.getRoomUri(this.meetingLoginData, d);
                 new MWF.xApplication.OnlineMeeting.room(this, d);
             }.bind(this));
+            this.unmask();
         }.bind(this));
     }
 });
@@ -91,9 +108,9 @@ MWF.xApplication.OnlineMeeting.room = new Class({
 
         this.node.addEvent("click", function(e){
             window.open(this.data.url);
-//             var _self = this;
-//             var options = {"url": this.data.url};
-//             this.app.desktop.openApplication(e, "OnlineMeetingRoom", options);
+             // var _self = this;
+             // var options = {"url": this.data.url};
+             // this.app.desktop.openApplication(e, "OnlineMeetingRoom", options);
         }.bind(this));
     }
 });

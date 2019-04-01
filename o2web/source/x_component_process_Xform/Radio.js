@@ -158,6 +158,15 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
     resetData: function(){
         this.setData(this.getValue());
     },
+    getSelectedInput: function(){
+        var inputs = this.node.getElements("input");
+        if (inputs.length){
+            for (var i=0; i<inputs.length; i++){
+                if (inputs[i].checked) return inputs[i];
+            }
+        }
+        return null;
+    },
 	setData: function(data){
         this._setBusinessData(data);
 		var inputs = this.node.getElements("input");

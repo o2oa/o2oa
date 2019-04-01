@@ -33,7 +33,7 @@ MWF.xApplication.cms.ColumnManager.PermissionSetting = new Class({
         }.bind(this));
     },
     createNode: function(){
-        if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();
+        //if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();
 
         this.titleNode = new Element("div.availableTitleNode", {
             "styles": this.app.css.availableTitleNode,

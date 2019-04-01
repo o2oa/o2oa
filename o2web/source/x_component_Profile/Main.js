@@ -11,177 +11,217 @@ MWF.xApplication.Profile.Main = new Class({
         "height": "600",
         "isResize": false,
         "isMax": false,
+        "mvcStyle": "style.css",
         "title": MWF.xApplication.Profile.LP.title
+    },
+    _loadCss: function(){},
+    loadCss: function(file, callback){
+        var path = (file && typeOf(file)==="string") ? file : "style.css";
+        var cb = (file && typeOf(file)==="function") ? file : callback;
+        var cssPath = this.path+this.options.style+"/"+path;
+        this.content.loadCss(cssPath, cb);
     },
     onQueryLoad: function(){
         this.lp = MWF.xApplication.Profile.LP;
+        this.action = MWF.Actions.get("x_organization_assemble_personal");
     },
     loadApplication: function(callback){
-        this.loadTitle();
-        this.loadContent();
-    },
+        this.action.getPerson(function(json){
+            this.personData = json.data;
+            this.personData.personIcon = this.action.getPersonIcon();
+            this.content.loadHtml(this.path+this.options.style+"/view.html", {"bind": {"data": this.personData, "lp": this.lp}}, function(){
+                this.loadContent()
+            }.bind(this));
+        }.bind(this));
+        //this.loadCss();
 
-    loadTitle: function(){
-        this.loadTitleBar();
-        this.loadTitleUserNode();
-        this.loadTitleTextNode();
-    },
-
-    loadTitleBar: function(){
-        this.titleBar = new Element("div", {
-            "styles": this.css.titleBar
-        }).inject(this.content);
-    },
-    loadTitleUserNode: function(){
-        this.titleUserNode = new Element("div", {
-            "styles": this.css.titleUserNode
-        }).inject(this.titleBar);
-        this.titleUserIconNode = new Element("div", {
-            "styles": this.css.titleUserIconNode
-        }).inject(this.titleUserNode);
-        this.titleUserTextNode = new Element("div", {
-            "styles": this.css.titleUserTextNode,
-            "text": this.desktop.session.user.name
-        }).inject(this.titleUserNode);
-    },
-    loadTitleTextNode: function(){
-        this.taskTitleTextNode = new Element("div", {
-            "styles": this.css.titleTextNode,
-            "text": this.lp.title
-        }).inject(this.titleBar);
+        // this.loadTitle();
+        // this.loadContent();
+        if (callback) callback();
     },
 
     loadContent: function(){
-        this.contentNode = new Element("div", {"styles": this.css.contentNode}).inject(this.content);
+        var pageConfigNodes = this.content.getElements(".o2_profile_configNode");
+        this.contentNode = this.content.getElement(".o2_profile_contentNode");
         MWF.require("MWF.widget.Tab", function(){
             this.tab = new MWF.widget.Tab(this.contentNode, {"style": "profile"});
             this.tab.load();
 
-            this.loadInforConfigNode();
-            this.loadLayoutConfigNode();
-            this.loadIdeaConfigNode();
-            this.loadPasswordConfigNode();
-            this.loadSSOConfigNode();
-
-            this.inforConfigPage = this.tab.addTab(this.inforConfigNode, this.lp.inforConfig);
-            this.layoutConfigPage = this.tab.addTab(this.layoutConfigNode, this.lp.layoutConfig);
-            this.ideaConfigPage = this.tab.addTab(this.ideaConfigNode, this.lp.ideaConfig);
-            this.passwordConfigPage = this.tab.addTab(this.passwordConfigNode, this.lp.passwordConfig);
-            this.ssoConfigPage = this.tab.addTab(this.ssoConfigNode, this.lp.ssoConfig);
+            pageConfigNodes.each(function(node){
+                this.tab.addTab(node, node.get("title"));
+            }.bind(this));
 
             if (this.options.tab){
-                this[this.options.tab].showIm();
+                this.tab.pages[this.options.tab].showIm();
             }else{
-                this.inforConfigPage.showIm();
+                this.tab.pages[0].showIm();
             }
 
+            this.loadInforConfigActions();
+            this.loadLayoutConfigActions();
+            this.loadIdeaConfigActions();
+            this.loadPasswordConfigActions();
+            this.loadSSOConfigAction();
+
         }.bind(this));
     },
-    loadInforConfigNode: function(){
-        this.inforConfigNode = new Element("div", {"styles": this.css.configNode}).inject(this.content);
-        this.inforConfigAreaNode = new Element("div", {"styles": this.css.inforConfigAreaNode}).inject(this.inforConfigNode);
+    loadInforConfigActions: function(){
+        this.contentImgNode = this.content.getElement(".o2_profile_inforIconContentImg");
+        this.content.getElement(".o2_profile_inforIconChange").addEvent("click", function(){
+            this.changeIcon();
+        }.bind(this));
 
-        this.getAction(function(){
-            this.action.getPerson(function(json){
-                this.personData = json.data;
-                // var icon = json.data.icon;
-                // if (!icon){
-                //     if (json.data.genderType=="f"){
-                //         icon = "/x_component_Profile/$Main/"+this.options.style+"/female.png";
-                //     }else{
-                //         icon = "/x_component_Profile/$Main/"+this.options.style+"/man.png";
-                //     }
-                // }else{
-                //     icon = "data:image/png;base64,"+icon;
-                // }
+        var inputs = this.tab.pages[0].contentNode.getElements("input");
+        this.mailInputNode = inputs[0];
+        this.mobileInputNode = inputs[1];
+        this.officePhoneInputNode = inputs[2];
+        this.weixinInputNode = inputs[3];
+        this.qqInputNode = inputs[4];
+        this.signatureInputNode = inputs[5];
 
-                //var html = "<table width='100%' border='0' cellpadding='5px'>" +
-                //    "<tr><td>头像：</td><td><img src='"+icon+"' style='width:72px; height: 72px; border:0px; float:left'/>" +
-                //    "<div style='margin: 20px 10px; cursor: pointer; float: left; border: 1px solid #999; padding: 3px 5px'>更换头像</div></td></tr>" +
-                //    "<tr><td>姓名：</td><td>"+json.data.name+"</td></tr>" +
-                //    "<tr><td>工号：</td><td>"+json.data.employee+"</td></tr>" +
-                //    "<tr><td>邮件：</td><td></td></tr>" +
-                //    "<tr><td>微信：</td><td>"+json.data.employee+"</td></tr>" +
-                //    "<tr><td>手机：</td><td>"+json.data.employee+"</td></tr>" +
-                //    "<tr><td>QQ：</td><td>"+json.data.employee+"</td></tr>" +
-                //    "</table>"
-                //this.inforConfigAreaNode.set("html", html);
-                var _self = this;
+        this.content.getElement(".o2_profile_saveInforAction").addEvent("click", function(){
+            this.savePersonInfor();
+        }.bind(this));
+    },
 
-                var lineNode = new Element("div", {"styles": this.css.inforLineNode}).inject(this.inforConfigAreaNode);
-                var titleNode = new Element("div", {"styles": this.css.inforIconTitleNode, "text": this.lp.icon}).inject(lineNode);
-                var contentNode = new Element("div", {"styles": this.css.inforIconContentNode}).inject(lineNode);
-                this.contentImgNode = new Element("img", {"styles": this.css.inforIconContentImgNode, "src": this.action.getPersonIcon()}).inject(contentNode);
-                var actionNode = new Element("div", {"styles": this.css.inforChangeIconNode, "text": this.lp.changeIcon, "events": {
-                    "click": function(){this.changeIcon();}.bind(this)
-                }}).inject(lineNode);
+    loadLayoutConfigActions: function(){
+        var buttons = this.tab.pages[1].contentNode.getElements(".o2_profile_layoutClearDataAction");
+        this.clearDataAction = buttons[0];
+        this.defaultDataAction = (buttons.length>1) ? buttons[1]: null;
+        this.clearDefaultDataAction = (buttons.length>2) ? buttons[2]: null;
+        this.forceDataAction = (buttons.length>3) ? buttons[3]: null;
+        this.deleteForceDataAction = (buttons.length>4) ? buttons[4]: null;
 
-                var lineNode = new Element("div", {"styles": this.css.inforLineNode}).inject(this.inforConfigAreaNode);
-                var titleNode = new Element("div", {"styles": this.css.inforTitleNode, "text": this.lp.name}).inject(lineNode);
-                var contentNode = new Element("div", {"styles": this.css.inforContentNode, "text": json.data.name}).inject(lineNode);
-
-                var lineNode = new Element("div", {"styles": this.css.inforLineNode}).inject(this.inforConfigAreaNode);
-                var titleNode = new Element("div", {"styles": this.css.inforTitleNode, "text": this.lp.employee}).inject(lineNode);
-                var contentNode = new Element("div", {"styles": this.css.inforContentNode, "text": json.data.employee}).inject(lineNode);
-
-                var lineNode = new Element("div", {"styles": this.css.inforLineNode}).inject(this.inforConfigAreaNode);
-                var titleNode = new Element("div", {"styles": this.css.inforTitleNode, "text": this.lp.mail}).inject(lineNode);
-                var contentNode = new Element("div", {"styles": this.css.inforContentNode}).inject(lineNode);
-                this.mailInputNode = new Element("input", {"styles": this.css.inforContentInputNode, "value": json.data.mail, "events": {
-                    "blur": function(){this.setStyles(_self.css.inforContentInputNode);},
-                    "focus": function(){this.setStyles(_self.css.inforContentInputNode_focus);}
-                }}).inject(contentNode);
-
-                var lineNode = new Element("div", {"styles": this.css.inforLineNode}).inject(this.inforConfigAreaNode);
-                var titleNode = new Element("div", {"styles": this.css.inforTitleNode, "text": this.lp.mobile}).inject(lineNode);
-                var contentNode = new Element("div", {"styles": this.css.inforContentNode}).inject(lineNode);
-                this.mobileInputNode = new Element("input", {"styles": this.css.inforContentInputNode, "value": json.data.mobile, "events": {
-                    "blur": function(){this.setStyles(_self.css.inforContentInputNode);},
-                    "focus": function(){this.setStyles(_self.css.inforContentInputNode_focus);}
-                }}).inject(contentNode);
-
-                var lineNode = new Element("div", {"styles": this.css.inforLineNode}).inject(this.inforConfigAreaNode);
-                var titleNode = new Element("div", {"styles": this.css.inforTitleNode, "text": this.lp.officePhone}).inject(lineNode);
-                var contentNode = new Element("div", {"styles": this.css.inforContentNode}).inject(lineNode);
-                this.officePhoneInputNode = new Element("input", {"styles": this.css.inforContentInputNode, "value": json.data.officePhone, "events": {
-                    "blur": function(){this.setStyles(_self.css.inforContentInputNode);},
-                    "focus": function(){this.setStyles(_self.css.inforContentInputNode_focus);}
-                }}).inject(contentNode);
-
-                var lineNode = new Element("div", {"styles": this.css.inforLineNode}).inject(this.inforConfigAreaNode);
-                var titleNode = new Element("div", {"styles": this.css.inforTitleNode, "text": this.lp.weixin}).inject(lineNode);
-                var contentNode = new Element("div", {"styles": this.css.inforContentNode}).inject(lineNode);
-                this.weixinInputNode = new Element("input", {"styles": this.css.inforContentInputNode, "value": json.data.weixin, "events": {
-                    "blur": function(){this.setStyles(_self.css.inforContentInputNode);},
-                    "focus": function(){this.setStyles(_self.css.inforContentInputNode_focus);}
-                }}).inject(contentNode);
-
-                var lineNode = new Element("div", {"styles": this.css.inforLineNode}).inject(this.inforConfigAreaNode);
-                var titleNode = new Element("div", {"styles": this.css.inforTitleNode, "text": this.lp.QQ}).inject(lineNode);
-                var contentNode = new Element("div", {"styles": this.css.inforContentNode}).inject(lineNode);
-                this.qqInputNode = new Element("input", {"styles": this.css.inforContentInputNode, "value": json.data.qq, "events": {
-                    "blur": function(){this.setStyles(_self.css.inforContentInputNode);},
-                    "focus": function(){this.setStyles(_self.css.inforContentInputNode_focus);}
-                }}).inject(contentNode);
-
-                var lineNode = new Element("div", {"styles": this.css.inforLineNode}).inject(this.inforConfigAreaNode);
-                var titleNode = new Element("div", {"styles": this.css.inforTitleNode, "text": this.lp.signature}).inject(lineNode);
-                var contentNode = new Element("div", {"styles": this.css.inforContentNode}).inject(lineNode);
-                this.signatureInputNode = new Element("input", {"styles": this.css.inforContentInputNode, "value": json.data.signature, "events": {
-                    "blur": function(){this.setStyles(_self.css.inforContentInputNode);},
-                    "focus": function(){this.setStyles(_self.css.inforContentInputNode_focus);}
-                }}).inject(contentNode);
-
-                var lineNode = new Element("div", {"styles": this.css.inforLineNode}).inject(this.inforConfigAreaNode);
-                this.saveAction = new Element("div", {"styles": this.css.saveAction, "text": this.lp.saveInfor}).inject(lineNode);
-                this.saveAction.addEvent("click", function(){
-                    this.savePersonInfor();
+        this.clearDataAction.addEvent("click", function(){
+            MWF.require("MWF.widget.UUID", function(){
+                MWF.UD.deleteData("layout", function(){
+                    this.notice(this.lp.clearok, "success");
+                    this.desktop.notRecordStatus = true;
                 }.bind(this));
+            }.bind(this));
+        }.bind(this));
+
+        if( MWF.AC.isAdministrator() ){
+            this.defaultDataAction.addEvent("click", function(){
+                MWF.require("MWF.widget.UUID", function(){
+                    var text = this.lp.setDefaultOk;
+                    this.close();
+                    var status = layout.desktop.getLayoutStatusData();
+                    MWF.UD.putPublicData("defaultLayout", status, function(){
+                        MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, text, layout.desktop.desktopNode);
+                    }.bind(this));
+                }.bind(this));
+            }.bind(this));
+
+            this.clearDefaultDataAction.addEvent("click", function(){
+                MWF.require("MWF.widget.UUID", function(){
+                    MWF.UD.deletePublicData("defaultLayout", function(){
+                        this.notice(this.lp.clearok, "success");
+                        this.desktop.notRecordStatus = true;
+                    }.bind(this));
+                }.bind(this));
+            }.bind(this));
+
+            this.forceDataAction.addEvent("click", function(){
+                MWF.require("MWF.widget.UUID", function(){
+                    var text = this.lp.setForceOk;
+                    this.close();
+                    var status = layout.desktop.getLayoutStatusData();
+                    MWF.UD.putPublicData("forceLayout", status, function(){
+                        MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, text, layout.desktop.desktopNode);
+                    }.bind(this));
+                }.bind(this));
+            }.bind(this));
+
+            this.deleteForceDataAction.addEvent("click", function(){
+                MWF.require("MWF.widget.UUID", function(){
+                    MWF.UD.deletePublicData("forceLayout", function(){
+                        this.notice(this.lp.clearok, "success");
+                        this.desktop.notRecordStatus = true;
+                    }.bind(this));
+                }.bind(this));
+            }.bind(this));
+        }
 
 
-            }.bind(this), null, this.desktop.session.user.name)
+        var UINode = this.tab.pages[1].contentNode.getLast();
+        this.loadDesktopBackground(UINode);
+    },
+
+    loadIdeaConfigActions: function(){
+        this.ideasArea = this.tab.pages[2].contentNode.getElement("textarea");
+        this.ideasSaveAction = this.ideasArea.getNext();
+        this.ideasSaveDefaultAction = this.ideasSaveAction.getNext() || null;
+
+        if (MWF.AC.isAdministrator()){
+            this.ideasSaveDefaultAction.addEvent("click", function(){
+                MWF.require("MWF.widget.UUID", function(){
+                    var data = {};
+                    data.ideas = this.ideasArea.get("value").split("\n");
+                    MWF.UD.putPublicData("idea", data, function(){
+                        this.notice(this.lp.ideaSaveOk, "success");
+                    }.bind(this));
+                }.bind(this));
+            }.bind(this))
+        }
+
+        MWF.require("MWF.widget.UUID", function(){
+            MWF.UD.getDataJson("idea", function(json){
+                if (json){
+                    if (json.ideas) this.ideasArea.set("value", json.ideas.join("\n"));
+                }
+            }.bind(this));
+        }.bind(this));
+
+        this.ideasSaveAction.addEvent("click", function(){
+            MWF.require("MWF.widget.UUID", function(){
+                var data = {};
+                data.ideas = this.ideasArea.get("value").split("\n");
+                MWF.UD.putData("idea", data, function(){
+                    this.notice(this.lp.ideaSaveOk, "success");
+                }.bind(this));
+            }.bind(this));
+        }.bind(this))
+    },
+
+    loadPasswordConfigActions: function(){
+        var inputs = this.tab.pages[3].contentNode.getElements("input");
+        this.oldPasswordInputNode = inputs[0];
+        this.passwordInputNode = inputs[1];
+        this.morePasswordInputNode = inputs[2];
+        this.savePasswordAction = this.tab.pages[3].contentNode.getElement(".o2_profile_savePasswordAction");
+
+        this.oldPasswordInputNode.addEvents({
+            "blur": function(){this.removeClass("o2_profile_inforContentInput_focus");},
+            "focus": function(){this.addClass("o2_profile_inforContentInput_focus");}
+        });
+        this.passwordInputNode.addEvents({
+            "blur": function(){this.removeClass("o2_profile_inforContentInput_focus");},
+            "focus": function(){this.addClass("o2_profile_inforContentInput_focus");},
+            "keyup" : function(){ this.checkPassowrdStrength(  this.passwordInputNode.get("value") ) }.bind(this)
+        });
+        this.morePasswordInputNode.addEvents({
+            "blur": function(){this.removeClass("o2_profile_inforContentInput_focus");},
+            "focus": function(){this.addClass("o2_profile_inforContentInput_focus");}
+        });
+        this.savePasswordAction.addEvent("click", function(){
+            this.changePassword();
         }.bind(this));
     },
+    loadSSOConfigAction: function(){
+        this.ssoConfigAreaNode = this.tab.pages[4].contentNode.getElement(".o2_profile_ssoConfigArea");
+        MWF.Actions.get("x_organization_assemble_authentication").listOauthServer(function(json){
+            json.data.each(function(d){
+                var node = new Element("a", {
+                    "styles": {"font-size": "14px", "display": "block", "margin-bottom": "10px"},
+                    "text": d.displayName,
+                    "target": "_blank",
+                    "href": "/x_desktop/oauth.html?oauth="+encodeURIComponent(d.name)+"&redirect="+"&method=oauthBind"
+                }).inject(this.ssoConfigAreaNode)
+            }.bind(this));
+        }.bind(this));
+    },
+
     changeIcon: function(){
         var options = {};
         var width = "668";
@@ -270,56 +310,10 @@ MWF.xApplication.Profile.Main = new Class({
                         }
                     }.bind(this))
                 }.bind(this), null, this.image.getFormData(), this.image.resizedImage);
-
-
-                // this.explorer.actions.changePersonIcon(this.data.id ,function(){
-                //     this.iconNode.set("src", "");
-                //     if (this.item.iconNode) this.item.iconNode.getElement("img").set("src", "");
-                //     window.setTimeout(function(){
-                //         this.iconNode.set("src", this._getIcon(true));
-                //         if (this.item.iconNode) this.item.iconNode.getElement("img").set("src", this.item._getIcon(true));
-                //     }.bind(this), 100);
-                // }.bind(this), null, this.image.getFormData(), this.image.resizedImage);
             }
         }
     },
 
-    // changeIcon: function(){
-    //     if (!this.uploadFileAreaNode){
-    //         this.uploadFileAreaNode = new Element("div");
-    //         var html = "<input name=\"file\" type=\"file\"/>";
-    //         this.uploadFileAreaNode.set("html", html);
-    //
-    //         this.fileUploadNode = this.uploadFileAreaNode.getFirst();
-    //         this.fileUploadNode.addEvent("change", function(){
-    //
-    //             var files = fileNode.files;
-    //             if (files.length){
-    //                 for (var i = 0; i < files.length; i++) {
-    //                     var file = files.item(i);
-    //
-    //                     var formData = new FormData();
-    //                     formData.append('file', file);
-    //                     //formData.append('name', file.name);
-    //                     //formData.append('folder', folderId);
-    //                     this.action.changeIcon(function(){
-    //                         this.action.getPerson(function(json){
-    //                             if (json.data){
-    //                                 this.personData = json.data;
-    //                                 //if (this.personData.icon){
-    //                                     this.contentImgNode.set("src", this.action.getPersonIcon());
-    //                                 //}
-    //                             }
-    //                         }.bind(this))
-    //                     }.bind(this), null, formData, file);
-    //                 }
-    //             }
-    //
-    //         }.bind(this));
-    //     }
-    //     var fileNode = this.uploadFileAreaNode.getFirst();
-    //     fileNode.click();
-    // },
     savePersonInfor: function(){
         this.personData.officePhone = this.officePhoneInputNode.get("value");
         this.personData.mail = this.mailInputNode.get("value");
@@ -331,94 +325,7 @@ MWF.xApplication.Profile.Main = new Class({
             this.notice(this.lp.saveInforOk, "success");
         }.bind(this));
     },
-    loadLayoutConfigNode: function(){
-        this.layoutConfigNode = new Element("div", {"styles": this.css.configNode}).inject(this.content);
 
-        new Element("div", {"styles": this.css.layoutTitleNode, "text": this.lp.layoutAction}).inject(this.layoutConfigNode);
-
-        var buttonNode = new Element("div", {"styles": this.css.buttonNodeArea}).inject(this.layoutConfigNode);
-
-        this.clearDataAction = new Element("div", {"styles": this.css.clearDataAction, "text": this.lp.clear}).inject(buttonNode);
-        this.clearDataAction.addEvent("click", function(){
-            MWF.require("MWF.widget.UUID", function(){
-                //MWF.UD.putData("layout", {}, function(){
-                //    this.notice(this.lp.clearok, "success");
-                //    this.desktop.notRecordStatus = true;
-                //}.bind(this));
-
-                MWF.UD.deleteData("layout", function(){
-                    this.notice(this.lp.clearok, "success");
-                    this.desktop.notRecordStatus = true;
-                }.bind(this));
-
-            }.bind(this));
-        }.bind(this));
-
-        if (MWF.AC.isAdministrator()){
-            var defaultNode = new Element("div", {"styles": {"overflow":"hidden", "clear": "left"}}).inject(buttonNode);
-            this.defaultDataAction = new Element("div", {"styles": this.css.setDefaultDataAction, "text": this.lp.setDefault}).inject(defaultNode);
-            this.defaultDataAction.addEvent("click", function(){
-                MWF.require("MWF.widget.UUID", function(){
-                    var text = this.lp.setDefaultOk;
-                    this.close();
-                    var status = layout.desktop.getLayoutStatusData();
-                    MWF.UD.putPublicData("defaultLayout", status, function(){
-                        MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, text, layout.desktop.desktopNode);
-                    }.bind(this));
-                }.bind(this));
-            }.bind(this));
-
-            this.clearDefaultDataAction = new Element("div", {"styles": this.css.setDefaultDataAction, "text": this.lp.clearDefault}).inject(defaultNode);
-            this.clearDefaultDataAction.addEvent("click", function(){
-                MWF.require("MWF.widget.UUID", function(){
-                    MWF.UD.deletePublicData("defaultLayout", function(){
-                        this.notice(this.lp.clearok, "success");
-                        this.desktop.notRecordStatus = true;
-                    }.bind(this));
-                    //
-                    // var text = this.lp.setDefaultOk;
-                    // this.close();
-                    // var status = layout.desktop.getLayoutStatusData();
-                    // MWF.UD.putPublicData("defaultLayout", status, function(){
-                    //     MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, text, layout.desktop.desktopNode);
-                    // }.bind(this));
-                }.bind(this));
-            }.bind(this));
-
-
-            //var tmpNode = new Element("div", {"styles": {
-            //    "width": "300px",
-            //    "margin": "-20px auto"
-            //}}).inject(this.layoutConfigNode);
-
-            this.forceDataAction = new Element("div", {"styles": this.css.setDefaultDataAction, "text": this.lp.setForce}).inject(buttonNode);
-            this.forceDataAction.setStyle("float", "left");
-            this.forceDataAction.addEvent("click", function(){
-                MWF.require("MWF.widget.UUID", function(){
-                    var text = this.lp.setForceOk;
-                    this.close();
-                    var status = layout.desktop.getLayoutStatusData();
-                    MWF.UD.putPublicData("forceLayout", status, function(){
-                        MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, text, layout.desktop.desktopNode);
-                    }.bind(this));
-                }.bind(this));
-            }.bind(this));
-
-            this.deleteForceDataAction = new Element("div", {"styles": this.css.setDefaultDataAction, "text": this.lp.clearForce}).inject(buttonNode);
-            this.deleteForceDataAction.addEvent("click", function(){
-                MWF.require("MWF.widget.UUID", function(){
-                    MWF.UD.deletePublicData("forceLayout", function(){
-                        this.notice(this.lp.clearok, "success");
-                        this.desktop.notRecordStatus = true;
-                    }.bind(this));
-                }.bind(this));
-            }.bind(this));
-        }
-
-        new Element("div", {"styles": this.css.layoutTitleNode, "text": this.lp.desktopBackground}).inject(this.layoutConfigNode);
-        var UINode = new Element("div", {"styles": this.css.buttonNodeArea}).inject(this.layoutConfigNode);
-        this.loadDesktopBackground(UINode);
-    },
     loadDesktopBackground: function(UINode){
         var currentSrc = layout.desktop.options.style;
         MWF.UD.getDataJson("layoutDesktop", function(json){
@@ -429,7 +336,7 @@ MWF.xApplication.Profile.Main = new Class({
             json.each(function(style){
                 var img = MWF.defaultPath+"/xDesktop/$Layout/"+style.style+"/preview.jpg";
                 //var dskImg = MWF.defaultPath+"/xDesktop/$Layout/"+style.style+"/desktop.jpg";
-                var imgArea = new Element("div", {"styles": this.css.previewBackground}).inject(UINode);
+                var imgArea = new Element("div.o2_profile_previewBackground").inject(UINode);
                 if (currentSrc==style.style){
                     imgArea.setStyles({"border": "4px solid #ffea00"});
                 }
@@ -440,14 +347,6 @@ MWF.xApplication.Profile.Main = new Class({
                 imgArea.addEvent("click", function(){ _self.selectDesktopImg(this, UINode); });
             }.bind(this));
         }.bind(this));
-
-        //MWF.UD.getPublicData("layoutDesktopImgs", function(json){
-        //    if (json) currentSrc = json.src;
-        //}.bind(this), false);
-        //
-        if (MWF.AC.isAdministrator()){
-
-        }
     },
     selectDesktopImg: function(item, UINode){
         var desktopImg = item.retrieve("dskimg");
@@ -460,89 +359,6 @@ MWF.xApplication.Profile.Main = new Class({
             var dskImg = MWF.defaultPath+"/xDesktop/$Layout/"+desktopImg+"/desktop.jpg";
             layout.desktop.node.setStyle("background-image", "url("+dskImg+")");
         }.bind(this));
-    },
-
-    loadIdeaConfigNode: function(){
-        this.ideaConfigNode = new Element("div", {"styles": this.css.configNode}).inject(this.content);
-        this.ideasArea = new Element("textarea", {"styles": this.css.ideasArea}).inject(this.ideaConfigNode);
-        this.ideasSaveAction = new Element("div", {"styles": this.css.ideasSaveAction, "text": this.lp.saveIdea}).inject(this.ideaConfigNode);
-
-        if (MWF.AC.isAdministrator()){
-            this.ideasSaveDefaultAction = new Element("div", {"styles": this.css.ideasSaveAction, "text": this.lp.saveIdeaDefault}).inject(this.ideaConfigNode);
-            this.ideasSaveDefaultAction.addEvent("click", function(){
-                MWF.require("MWF.widget.UUID", function(){
-                    var data = {};
-                    data.ideas = this.ideasArea.get("value").split("\n");
-                    MWF.UD.putPublicData("idea", data, function(){
-                        this.notice(this.lp.ideaSaveOk, "success");
-                    }.bind(this));
-                }.bind(this));
-            }.bind(this))
-        }
-
-        MWF.require("MWF.widget.UUID", function(){
-            MWF.UD.getDataJson("idea", function(json){
-                if (json){
-                    if (json.ideas) this.ideasArea.set("value", json.ideas.join("\n"));
-                }
-            }.bind(this));
-        }.bind(this));
-
-        this.ideasSaveAction.addEvent("click", function(){
-            MWF.require("MWF.widget.UUID", function(){
-                var data = {};
-                data.ideas = this.ideasArea.get("value").split("\n");
-                MWF.UD.putData("idea", data, function(){
-                    this.notice(this.lp.ideaSaveOk, "success");
-                }.bind(this));
-            }.bind(this));
-        }.bind(this))
-    },
-    loadPasswordConfigNode: function(){
-        this.passwordConfigNode = new Element("div", {"styles": this.css.configNode});
-        this.passwordConfigAreaNode = new Element("div", {"styles": this.css.inforConfigAreaNode}).inject(this.passwordConfigNode);
-
-        var _self = this;
-        var lineNode = new Element("div", {"styles": this.css.inforLineNode}).inject(this.passwordConfigAreaNode);
-        var titleNode = new Element("div", {"styles": this.css.inforTitleNode, "text": this.lp.oldPassword}).inject(lineNode);
-        var contentNode = new Element("div", {"styles": this.css.inforContentNode}).inject(lineNode);
-        this.oldPasswordInputNode = new Element("input", {"type": "password", "styles": this.css.inforContentInputNode, "events": {
-            "blur": function(){this.setStyles(_self.css.inforContentInputNode);},
-            "focus": function(){this.setStyles(_self.css.inforContentInputNode_focus);}
-        }}).inject(contentNode);
-
-        var lineNode = new Element("div", {"styles": this.css.inforLineNode}).inject(this.passwordConfigAreaNode);
-        var titleNode = new Element("div", {"styles": this.css.inforTitleNode, "text": this.lp.password}).inject(lineNode);
-        var contentNode = new Element("div", {"styles": this.css.inforContentNode}).inject(lineNode);
-        this.passwordInputNode = new Element("input", {"type": "password", "styles": this.css.inforContentInputNode, "events": {
-            "blur": function(){
-                this.setStyles(_self.css.inforContentInputNode);
-            },
-            "focus": function(){this.setStyles(_self.css.inforContentInputNode_focus);},
-            "keyup" : function(){ this.checkPassowrdStrength(  this.passwordInputNode.get("value") ) }.bind(this)
-        }}).inject(contentNode);
-
-        var lineNode = new Element("div", {"styles": this.css.inforLineNode}).inject(this.passwordConfigAreaNode);
-        var titleNode = new Element("div", {"styles": this.css.inforTitleNode}).inject(lineNode);
-        this.passwordRemindContainer = new Element("div", {"styles": this.css.inforContentNode}).inject(lineNode);
-
-        var lineNode = new Element("div", {"styles": this.css.inforLineNode}).inject(this.passwordConfigAreaNode);
-        var titleNode = new Element("div", {"styles": this.css.inforTitleNode, "text": this.lp.morePassword}).inject(lineNode);
-        var contentNode = new Element("div", {"styles": this.css.inforContentNode}).inject(lineNode);
-        this.morePasswordInputNode = new Element("input", {"type": "password", "styles": this.css.inforContentInputNode, "events": {
-            "blur": function(){this.setStyles(_self.css.inforContentInputNode);},
-            "focus": function(){this.setStyles(_self.css.inforContentInputNode_focus);}
-        }}).inject(contentNode);
-
-        var lineNode = new Element("div", {"styles": this.css.inforLineNode}).inject(this.passwordConfigAreaNode);
-        this.saveAction = new Element("div", {"styles": this.css.saveAction, "text": this.lp.passwordConfig}).inject(lineNode);
-        this.saveAction.addEvent("click", function(){
-            this.changePassword();
-        }.bind(this));
-
-        this.createPasswordStrengthNode();
-        this.passworRemindNode = new Element("div",{"styles": this.css.passwordRemindNode, "text": this.lp.paswordRule }).inject( this.passwordRemindContainer );
-
     },
     changePassword: function(){
         var oldPassword = this.oldPasswordInputNode.get("value");
@@ -576,10 +392,6 @@ MWF.xApplication.Profile.Main = new Class({
         if (!this.acrion){
             this.action = MWF.Actions.get("x_organization_assemble_personal");
             if (callback) callback();
-            // MWF.xDesktop.requireApp("Profile", "Actions.RestActions", function(){
-            //     this.action = new MWF.xApplication.Profile.Actions.RestActions();
-            //     if (callback) callback();
-            // }.bind(this));
         }else{
             if (callback) callback();
         }
@@ -614,12 +426,23 @@ MWF.xApplication.Profile.Main = new Class({
         }.bind(this) );
     },
     checkPassowrdStrength: function(pwd){
-        this.lowColorNode.setStyles( this.css.passwordStrengthColor );
-        this.lowTextNode.setStyles( this.css.passwordStrengthText );
-        this.middleColorNode.setStyles( this.css.passwordStrengthColor );
-        this.middleTextNode.setStyles( this.css.passwordStrengthText );
-        this.highColorNode.setStyles( this.css.passwordStrengthColor );
-        this.highTextNode.setStyles( this.css.passwordStrengthText );
+        var passwordStrengthNode = this.tab.pages[3].contentNode.getElement(".o2_profile_passwordStrengthArea");
+        var nodes = passwordStrengthNode.getElements(".o2_profile_passwordStrengthColor");
+        var lowColorNode = nodes[0];
+        var middleColorNode = nodes[1];
+        var highColorNode = nodes[2];
+        nodes = passwordStrengthNode.getElements(".o2_profile_passwordStrengthText");
+        var lowTextNode = nodes[0];
+        var middleTextNode = nodes[1];
+        var highTextNode = nodes[2];
+
+        lowColorNode.removeClass("o2_profile_passwordStrengthColor_low");
+        middleColorNode.removeClass("o2_profile_passwordStrengthColor_middle");
+        highColorNode.removeClass("o2_profile_passwordStrengthColor_high");
+        lowTextNode.removeClass("o2_profile_passwordStrengthText_current");
+        middleTextNode.removeClass("o2_profile_passwordStrengthText_current");
+        highTextNode.removeClass("o2_profile_passwordStrengthText_current");
+
         if (pwd==null||pwd==''){
         }else{
             this.getPasswordLevel( pwd, function( level ){
@@ -628,72 +451,21 @@ MWF.xApplication.Profile.Main = new Class({
                     case 1:
                     case 2:
                     case 3:
-                        this.lowColorNode.setStyles( this.css.passwordStrengthColor_low );
-                        this.lowTextNode.setStyles( this.css.passwordStrengthText_current );
+                        lowColorNode.addClass("o2_profile_passwordStrengthColor_low");
+                        lowTextNode.addClass("o2_profile_passwordStrengthText_current");
                         break;
                     case 4:
                     case 5:
                     case 6:
-                        this.middleColorNode.setStyles( this.css.passwordStrengthColor_middle );
-                        this.middleTextNode.setStyles( this.css.passwordStrengthText_current );
+                        middleColorNode.addClass("o2_profile_passwordStrengthColor_middle");
+                        middleTextNode.addClass("o2_profile_passwordStrengthText_current");
                         break;
                     default:
-                        this.highColorNode.setStyles( this.css.passwordStrengthColor_high );
-                        this.highTextNode.setStyles( this.css.passwordStrengthText_current );
+                        highColorNode.addClass("o2_profile_passwordStrengthColor_high");
+                        highTextNode.addClass("o2_profile_passwordStrengthText_current");
                 }
             }.bind(this) )
 
         }
-    },
-    loadSSOConfigNode: function(){
-        this.ssoConfigNode = new Element("div", {"styles": this.css.configNode}).inject(this.content);
-        this.ssoConfigTitleNode = new Element("div", {"styles": this.css.ssoConfigTitleNode, "text": this.lp.bindOauth}).inject(this.ssoConfigNode);
-        this.ssoConfigAreaNode = new Element("div", {"styles": {"padding": "10px 40px"}}).inject(this.ssoConfigNode);
-
-        MWF.Actions.get("x_organization_assemble_authentication").listOauthServer(function(json){
-            json.data.each(function(d){
-                var node = new Element("a", {
-                    "styles": {"font-size": "14px", "display": "block", "margin-bottom": "10px"},
-                    "text": d.displayName,
-                    "target": "_blank",
-                    "href": "/x_desktop/oauth.html?oauth="+encodeURIComponent(d.name)+"&redirect="+"&method=oauthBind"
-                }).inject(this.ssoConfigAreaNode)
-            }.bind(this));
-        }.bind(this));
-
-
-        // this.ideasArea = new Element("textarea", {"styles": this.css.ideasArea}).inject(this.ideaConfigNode);
-        // this.ideasSaveAction = new Element("div", {"styles": this.css.ideasSaveAction, "text": this.lp.saveIdea}).inject(this.ideaConfigNode);
-        //
-        // if (MWF.AC.isAdministrator()){
-        //     this.ideasSaveDefaultAction = new Element("div", {"styles": this.css.ideasSaveAction, "text": this.lp.saveIdeaDefault}).inject(this.ideaConfigNode);
-        //     this.ideasSaveDefaultAction.addEvent("click", function(){
-        //         MWF.require("MWF.widget.UUID", function(){
-        //             var data = {};
-        //             data.ideas = this.ideasArea.get("value").split("\n");
-        //             MWF.UD.putPublicData("idea", data, function(){
-        //                 this.notice(this.lp.ideaSaveOk, "success");
-        //             }.bind(this));
-        //         }.bind(this));
-        //     }.bind(this))
-        // }
-        //
-        // MWF.require("MWF.widget.UUID", function(){
-        //     MWF.UD.getDataJson("idea", function(json){
-        //         if (json){
-        //             if (json.ideas) this.ideasArea.set("value", json.ideas.join("\n"));
-        //         }
-        //     }.bind(this));
-        // }.bind(this));
-        //
-        // this.ideasSaveAction.addEvent("click", function(){
-        //     MWF.require("MWF.widget.UUID", function(){
-        //         var data = {};
-        //         data.ideas = this.ideasArea.get("value").split("\n");
-        //         MWF.UD.putData("idea", data, function(){
-        //             this.notice(this.lp.ideaSaveOk, "success");
-        //         }.bind(this));
-        //     }.bind(this));
-        // }.bind(this))
     }
 });

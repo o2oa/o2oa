@@ -11,7 +11,7 @@
     "height": "50px",
     "overflow": "hidden",
     "float" : "left",
-    "width" : "600px"
+    "width" : "300px"
   },
   "searchBarNode": {
     "width" : "200px",

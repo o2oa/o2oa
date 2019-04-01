@@ -1,6 +1,6 @@
 MWF.xApplication.query.TableDesigner.LP = {
     "title": "数据表设计",
-    "newStat": "新建数据表",
+    "newTable": "新建数据表",
     "property": "属性",
     "item": "项目",
     "type": "类型",
@@ -21,38 +21,11 @@ MWF.xApplication.query.TableDesigner.LP = {
     "ok" : "确定",
     "cancel" : "取消",
     "view" : "视图",
+    "table": "数据表",
 
     "action": {
         "move": "移动",
         "delete": "删除",
         "add": "添加"
-    },
-
-    "notice": {
-        "save_success": "统计保存成功！",
-        "saveAs_success" : "统计另存成功，您可以在统计设置中打开新统计！",
-
-        "deleteFilterTitle": "删除筛选条件确认",
-        "deleteFilter": "是否确定删除筛选条件？",
-
-        "deleteColumnTitle": "删除列确认",
-        "deleteColumn": "是否确定删除当前列？",
-
-
-        "changeTypeTitle": "改变数据类型确认",
-        "changeTypeDeleteChildren": "改变数据类型将删除所有子数据，是否确定要执行？",
-        "changeType": "改变数据类型将改变数据的值，是否确定要执行？",
-
-        "inputTypeError": "您输入的数据类型有误，请重新输入",
-        "sameKey": "您输入的项目名称在对象中已存在，请重新输入",
-        "emptyKey": "项目名称不能为空，请重新输入",
-        "numberKey": "项目名称不能为数字，请重新输入",
-
-        "inputName": "请输入统计名称",
-        "noModifyName": "不能修改名称或者别名",
-        "inputView": "请先选择一个视图",
-        "errorViewColumn": "视图列选择有错误，请重新选择"
-    },
-    "category": "分类",
-    "amount": "总计"
+    }
 };

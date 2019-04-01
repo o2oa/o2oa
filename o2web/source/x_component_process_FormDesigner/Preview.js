@@ -22,6 +22,8 @@ MWF.xApplication.process.FormDesigner.Preview = MWF.FCPreview = new Class({
 
         this.form = form;
 		this.data = (form._getFormData) ? form._getFormData() : form._getPageData();
+
+        //this.data = Object.clone(data);
 	},
 
 	load: function(){
@@ -103,9 +105,16 @@ MWF.xApplication.process.FormDesigner.Preview = MWF.FCPreview = new Class({
             "top": p.top,
             "left": p.left,
             "isExpand": false,
-            "target": this.form.designer.node
+            "target": this.form.designer.node,
+            "onQueryClose": function(){
+                this.destroy();
+            }.bind(this)
         });
         this.panel.load();
+    },
+    destroy: function(){
+        this.node.empty();
+        o2.release(this);
     },
     setEvent: function(){
         this.setFormFrameSize();

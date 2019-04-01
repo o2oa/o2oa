@@ -48,6 +48,16 @@
 
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
+                <td class="editTableTitle">调用方式:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="async" text{(!$.async)?'checked':''} value="false"/>同步
+                    <input type="radio" name="async" text{($.async)?'checked':''} value="true"/>异步
+                </td>
+            </tr>
+        </table>
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
                 <td class="editTableTitle">拷贝数据：</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="inheritData" text{($.inheritData)?'checked':''} type="radio" value="true"/>是

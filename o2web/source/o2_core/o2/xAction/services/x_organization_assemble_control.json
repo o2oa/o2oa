@@ -164,8 +164,11 @@
   //列出指定组织的上级和下级组织（直接 和 所有）
   "listSubUnitDirect": {"uri": "/jaxrs/unit/list/{id}/sub/direct"},
   "listSubUnitNested": {"uri": "/jaxrs/unit/list/{id}/sub/nested"},
-  "listSupUnitDirect": {"uri": "/jaxrs/unit/list/{id}/sup/direct"},
+  "listSubUnitNestedByType": {"uri": "/jaxrs/unit/list/{flag}/sub/direct/type/{type}"},
+
+  "getSupUnitDirect": {"uri": "/jaxrs/unit/{id}/sup/direct"},
   "listSupUnitNested": {"uri": "/jaxrs/unit/list/{id}/sup/nested"},
+  "listSupUnitNestedByType": {"uri": "/jaxrs/unit/list/{flag}/sup/nested/type/{type}"},
 
   "getUnitWithIdentityWithLevel": {"uri": "/jaxrs/unit/identity/{id}/level/{level}"},
   "getUnitWithIdentityWithType": {"uri": "/jaxrs/unit/identity/{id}/type/{type}"},

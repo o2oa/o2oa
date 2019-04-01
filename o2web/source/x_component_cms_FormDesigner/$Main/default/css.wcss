@@ -8,7 +8,7 @@
 	//	"background-color": "#cfebaa"
 	},
 	"propertyNode": {
-		"width": "340px",
+		"width": "360px",
 		"overflow": "hidden",
 		"float": "right",
 		"-webkit-user-select": "text",
@@ -16,7 +16,7 @@
 	},
 	"formNode": {
 		"margin-left": "141px",
-		"margin-right": "301px",
+		"margin-right": "361px",
 		"border-right": "1px solid #505050",
 		"border-left": "1px solid #505050",
 		"background-color": "#FFF",
@@ -358,5 +358,22 @@
         "box-shadow": "0px 0px 0px #666",
         "border": "1px solid #999",
         "background": "url("+"/x_component_process_FormDesigner/$Main/default/editCancel_bg.png) no-repeat"
+    },
+
+    "designTabScriptAreaNode": {
+        "height": "100%"
+    },
+    "designTabScriptPcAreaNode": {
+        "height": "100%"
+    },
+    "designTabScriptMobileAreaNode": {
+        "height": "100%",
+        "display": "none"
+    },
+    "scriptPageDragNode": {
+        "opacity": 0.7,
+        "border": "2px dashed #999",
+        "background-color": "#CCC",
+        "position": "absolute"
     }
 }

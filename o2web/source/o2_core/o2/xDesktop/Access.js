@@ -23,6 +23,11 @@ MWF.xDesktop.Access = MWF.AC = {
         this.getRoleList();
         return this.isAdministrator() || (this.roleList.indexOf("processplatformmanager")!==-1);
     },
+    isQueryManager: function(){
+        if (!layout.desktop.session.user.roleList) return false;
+        this.getRoleList();
+        return this.isAdministrator() || (this.roleList.indexOf("querymanager")!==-1);
+    },
     isOrganizationManager: function(){
         if (!layout.desktop.session.user.roleList) return false;
         this.getRoleList();
@@ -64,9 +69,17 @@ MWF.xDesktop.Access = MWF.AC = {
     },
     isProcessPlatformCreator: function(){
         if (this.isAdministrator()) return true;
+        if (this.isProcessManager()) return true;
         if (!layout.desktop.session.user.roleList) return false;
         this.getRoleList();
         return (this.roleList.indexOf("processplatformcreator")!==-1);
+    },
+    isQueryPlatformCreator: function(){
+        if (this.isAdministrator()) return true;
+        if (this.isQueryManager()) return true;
+        if (!layout.desktop.session.user.roleList) return false;
+        this.getRoleList();
+        return (this.roleList.indexOf("querycreator")!==-1);
     },
     isApplicationManager: function(option){
         if (this.isAdministrator()) {
