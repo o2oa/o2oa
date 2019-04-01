@@ -698,7 +698,7 @@ MWF.xApplication.Setting.Document.List.ItemEditor = new Class({
                 var value = (typeOf(input)=="element" && input.tagName.toString().toLowerCase()!="select") ? input.get("value") : input.getValue();
                 if (!value && value!==false){
                     flag = false;
-                    this.app.notice(this.lp.pleaseInput+this.lp.list[k], "error");
+                    this.app.notice(this.lp.pleaseInput+(this.lp.list[k] || k), "error");
                     return false;
                 }else{
                     values[k] = value;
