@@ -1,27 +1,27 @@
 MWF.xApplication = MWF.xApplication || {};
 MWF.xApplication.query = MWF.xApplication.query || {};
-MWF.xApplication.query.StatDesigner = MWF.xApplication.query.StatDesigner || {};
-MWF.APPDSTD = MWF.xApplication.query.StatDesigner;
+MWF.xApplication.query.TableDesigner = MWF.xApplication.query.TableDesigner || {};
+MWF.APPDTBD = MWF.xApplication.query.TableDesigner;
 
-MWF.xDesktop.requireApp("query.StatDesigner", "lp."+MWF.language, null, false);
+MWF.xDesktop.requireApp("query.TableDesigner", "lp."+MWF.language, null, false);
 MWF.xDesktop.requireApp("query.ViewDesigner", "View", null, false);
-MWF.xDesktop.requireApp("query.StatDesigner", "Property", null, false);
+MWF.xDesktop.requireApp("query.ViewDesigner", "Property", null, false);
 
-MWF.xApplication.query.StatDesigner.Stat = new Class({
+MWF.xApplication.query.TableDesigner.Table = new Class({
     Extends: MWF.xApplication.query.ViewDesigner.View,
     Implements: [Options, Events],
     options: {
         "style": "default",
         "isView": false,
         "showTab": true,
-        "propertyPath": "/x_component_query_StatDesigner/$Stat/stat.html"
+        "propertyPath": "/x_component_query_TableDesigner/$Table/table.html"
     },
 
     initialize: function(designer, data, options){
         this.setOptions(options);
 
-        this.path = "/x_component_query_StatDesigner/$Stat/";
-        this.cssPath = "/x_component_query_StatDesigner/$Stat/"+this.options.style+"/css.wcss";
+        this.path = "/x_component_query_TableDesigner/$Table/";
+        this.cssPath = "/x_component_query_TableDesigner/$Table/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 
@@ -38,7 +38,7 @@ MWF.xApplication.query.StatDesigner.Stat = new Class({
         if(this.designer.application) this.data.applicationName = this.designer.application.name;
         if(this.designer.application) this.data.application = this.designer.application.id;
 
-        this.isNewView = (this.data.id) ? false : true;
+        this.isNewTable = (this.data.id) ? false : true;
 
         this.items = [];
         this.view = this;
@@ -48,6 +48,40 @@ MWF.xApplication.query.StatDesigner.Stat = new Class({
         this.designer.addEvent("queryClose", function(){
             if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
         }.bind(this));
+    },
+    load : function(){
+        this.setAreaNodeSize();
+        this.designer.addEvent("resize", this.setAreaNodeSize.bind(this));
+        this.areaNode.inject(this.node);
+
+        this.designer.viewListAreaNode.getChildren().each(function(node){
+            var table = node.retrieve("table");
+            if (table.id==this.data.id){
+                if (this.designer.currentListViewItem){
+                    this.designer.currentListViewItem.setStyles(this.designer.css.listViewItem);
+                }
+                node.setStyles(this.designer.css.listViewItem_current);
+                this.designer.currentListViewItem = node;
+                this.lisNode = node;
+            }
+        }.bind(this));
+
+        this.domListNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.designer.propertyDomArea);
+        this.createColmunEditTable();
+
+        this.loadView();
+
+        this.selected();
+        this.setEvent();
+
+        this.setViewWidth();
+        this.designer.addEvent("resize", this.setViewWidth.bind(this));
+    },
+    createColmunEditTable: function(){
+        this.colmunListTable = new Element("table", {"styles": this.css.colmunListTable}).inject(this.domListNode);
+        var tr = this.colmunListTable.insertRow(-1);
+        var td = tr.
+
     },
     changeViewSelected: function(){
         if (this.json.view){
@@ -103,9 +137,8 @@ MWF.xApplication.query.StatDesigner.Stat = new Class({
     },
 
     showProperty: function(){
-
         if (!this.property){
-            this.property = new MWF.xApplication.query.StatDesigner.Property(this, this.designer.propertyContentArea, this.designer, {
+            this.property = new MWF.xApplication.query.ViewDesigner.Property(this, this.designer.propertyContentArea, this.designer, {
                 "path": this.options.propertyPath,
                 "onPostLoad": function(){
                     this.property.show();
@@ -117,28 +150,8 @@ MWF.xApplication.query.StatDesigner.Stat = new Class({
         }
     },
 
-    //getDataTr: function(ri){
-    //    var tr = null;
-    //    var trs = this.viewContentTableNode.getElements("tr");
-    //    if (trs.length) if (trs[ri]) tr = trs[ri];
-    //    return tr;
-    //},
-    //getDataTd: function(tr, ci){
-    //    var td = null;
-    //    var tds = tr.getElements("td");
-    //    if (tds.length) if (tds[ci]) td = tds[ci];
-    //    return td;
-    //},
-    //getDataLastColumnCell: function(ri, ci){
-    //    var trs = this.viewContentTableNode.getElements("tr");
-    //    if (trs.length) if (trs[ri]) tr = trs[ri];
-    //    var td = null;
-    //    var tds = tr.getElements("td");
-    //    if (tds.length) if (tds[ci]) td = tds[ci];
-    //    return td;
-    //},
     loadViewData: function(){
-
+//查询表数据
         if (this.data.id){
             this.saveSilence(function(){
                 this.viewContentBodyNode.empty();
@@ -211,45 +224,47 @@ MWF.xApplication.query.StatDesigner.Stat = new Class({
 
     addColumn: function(){
 
-        MWF.require("MWF.widget.UUID", function(){
-            var id = (new MWF.widget.UUID).id;
-            var json = {
-                "id": id,
-                "column": "",
-                "displayName": this.designer.lp.unnamed,
-                "calculateType": "sum",
-                "orderType": "original",
-                "orderEffectType": "key"
-            };
-            if (!this.json.data.calculate.calculateList) this.json.data.calculate.calculateList = [];
-            this.json.data.calculate.calculateList.push(json);
-            var column = new MWF.xApplication.query.StatDesigner.Stat.Column(json, this);
-            this.items.push(column);
-            column.selected();
-            if (this.property) this.property.loadStatColumnSelect();
+        if (!this.json.draftData.fieldList) this.json.draftData.fieldList = [];
+        var colmunNames = this.json.draftData.fieldList.map(function(item){ return item.name; });
+        var name = "colmun";
+        var i=1;
+        while(colmunNames.indexOf(name)!=-1){
+            name = "colmun_"+i;
+            i++;
+        }
+        var json = {
+            "name": name,
+            "type":"string",
+            "description":"新建列"
+        };
 
-            if (this.viewContentTableNode){
-                var trs = this.viewContentTableNode.getElements("tr");
-                trs.each(function(tr){
-                    new Element("td", {"styles": this.css.viewContentTdNode}).inject(tr)
-                }.bind(this));
-                //this.setContentColumnWidth();
-            }
-            this.setViewWidth();
-            this.addColumnNode.scrollIntoView(true);
+        this.json.draftData.fieldList.push(json);
+        var column = new MWF.xApplication.query.TableDesigner.Table.Column(json, this);
+        this.items.push(column);
+        column.selected();
 
-        }.bind(this));
+        if (this.property) this.property.loadStatColumnSelect();
+
+        if (this.viewContentTableNode){
+            var trs = this.viewContentTableNode.getElements("tr");
+            trs.each(function(tr){
+                new Element("td", {"styles": this.css.viewContentTdNode}).inject(tr)
+            }.bind(this));
+            //this.setContentColumnWidth();
+        }
+        this.setViewWidth();
+        this.addColumnNode.scrollIntoView(true);
+
+
         //new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 0}).toRight();
     },
 
     loadViewColumns: function(){
-    //    for (var i=0; i<10; i++){
-        if (this.json.data.calculate.calculateList) {
-            this.json.data.calculate.calculateList.each(function (json) {
-                this.items.push(new MWF.xApplication.query.StatDesigner.Stat.Column(json, this));
+        if (this.json.draftData.fieldList) {
+            this.json.draftData.fieldList.each(function (json) {
+                this.items.push(new MWF.xApplication.query.TableDesigner.Table.Column(json, this));
             }.bind(this));
         }
-    //    }
     },
 
     saveSilence: function(callback){
@@ -422,10 +437,10 @@ MWF.xApplication.query.StatDesigner.Stat = new Class({
 });
 
 
-MWF.xApplication.query.StatDesigner.Stat.Column = new Class({
+MWF.xApplication.query.TableDesigner.Table.Column = new Class({
     Extends:MWF.xApplication.query.ViewDesigner.View.Column,
 	initialize: function(json, view, next){
-        this.propertyPath = "/x_component_query_StatDesigner/$Stat/column.html";
+        this.propertyPath = "/x_component_query_TableDesigner/$Table/column.html";
 		this.view = view;
         this.json = json;
         this.next = next;
@@ -434,10 +449,21 @@ MWF.xApplication.query.StatDesigner.Stat.Column = new Class({
         this.domListNode = this.view.domListNode;
         this.load();
 	},
+    createDomListItem: function(){
+        this.listNode = new Element("div", {"styles": this.css.cloumnListNode});
+        if (this.next){
+            this.listNode.inject(this.next.listNode, "before");
+        }else{
+            this.listNode.inject(this.domListNode);
+        }
+        var listIconNode = new Element("div", {"styles": this.css.cloumnListIconNode}).inject(this.listNode);
+        var listTextNode = new Element("div", {"styles": this.css.cloumnListTextNode}).inject(this.listNode);
+        this.resetTextNode();
+    },
 
     showProperty: function(){
         if (!this.property){
-            this.property = new MWF.xApplication.query.StatDesigner.Property(this, this.view.designer.propertyContentArea, this.view.designer, {
+            this.property = new MWF.xApplication.query.ViewDesigner.Property(this, this.view.designer.propertyContentArea, this.view.designer, {
                 "path": this.propertyPath,
                 "onPostLoad": function(){
                     this.property.show();
@@ -451,10 +477,6 @@ MWF.xApplication.query.StatDesigner.Stat.Column = new Class({
     },
 
     _setEditStyle: function(name, input, oldValue){
-        //if (name=="displayName") this.resetTextNode();
-        //if (name=="selectType") this.resetTextNode();
-        //if (name=="attribute") this.resetTextNode();
-        //if (name=="path") this.resetTextNode();
         if (name=="displayName") this.resetTextNode();
         if (name=="column") this.checkColumn();
         if (name=="view"){
@@ -469,10 +491,33 @@ MWF.xApplication.query.StatDesigner.Stat.Column = new Class({
             }
         }
     },
-    resetTextNode: function(){
-        var listText = this.json.displayName+"("+this.json.calculateType+")";
 
-        this.textNode.set("text", this.json.displayName);
+    _createIconAction: function(){
+        if (!this.actionArea){
+            this.actionArea = new Element("div", {"styles": this.css.actionAreaNode}).inject(this.view.areaNode, "after");
+            this._createAction({
+                "name": "add",
+                "icon": "add.png",
+                "event": "click",
+                "action": "addColumn",
+                "title": MWF.APPDVD.LP.action.add
+            });
+            this._createAction({
+                "name": "delete",
+                "icon": "delete1.png",
+                "event": "click",
+                "action": "delete",
+                "title": MWF.APPDVD.LP.action["delete"]
+            });
+        }
+    },
+
+    resetTextNode: function(){
+        var text = (this.json.description) ? this.json.name : this.json.name+"("+this.json.description+")";
+        var listText = (this.json.description) ? this.json.name+"("+this.json.description+")" : this.json.name;
+        listText += " - "+this.json.type;
+
+        this.textNode.set("text", text);
         this.listNode.getLast().set("text", listText);
 
         if (this.view.property) this.view.property.loadStatColumnSelect();

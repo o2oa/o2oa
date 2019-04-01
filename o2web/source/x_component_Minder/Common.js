@@ -1136,13 +1136,20 @@ MWF.xApplication.Minder.Document = new Class({
                 ev.stopPropagation()
             }.bind(this))
         }
-        this.app.restActions.getMindIcon( itemData.id, function( json ){
+        //this.app.restActions.getMindIcon( itemData.id, function( json ){
+        //    var thumbnailNode = itemNode.getElement("[item=thumbnail]");
+        //    thumbnailNode.set("src", "data:image/png;base64,"+ json.data.value );
+        //}, function(){
+        //    var thumbnailNode = itemNode.getElement("[item=thumbnail]");
+        //    thumbnailNode.set("src", this.app.path +  this.view.options.style + "/icon/default_thumbnail.png" );
+        //}.bind(this))
+        if( itemData.icon ){
             var thumbnailNode = itemNode.getElement("[item=thumbnail]");
-            thumbnailNode.set("src", "data:image/png;base64,"+ json.data.value );
-        }, function(){
+            thumbnailNode.set("src", MWF.xDesktop.getImageSrc(itemData.icon) );
+        }else{
             var thumbnailNode = itemNode.getElement("[item=thumbnail]");
             thumbnailNode.set("src", this.app.path +  this.view.options.style + "/icon/default_thumbnail.png" );
-        }.bind(this))
+        }
     },
     setSelect : function( flag ){
         var select = this.node.getElement("[item=select]");

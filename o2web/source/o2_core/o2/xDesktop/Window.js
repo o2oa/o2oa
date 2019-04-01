@@ -512,7 +512,7 @@ MWF.xDesktop.Window = new Class({
 			this.morph = new Fx.Morph(this.node, {duration: 100, link: "chain"});
 		}
 		this.morph.setOptions({duration: 50});
-		debugger;
+
 		this.getSpacer();
 		if (!this.spacerMorph){
 			this.spacerMorph = new Fx.Morph(this.spacer, {duration: 100, link: "chain"});

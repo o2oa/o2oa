@@ -27,6 +27,14 @@ o2.widget.Upload = new Class({
             this.doUpload_FormData();
         }
     },
+    upload:function(){
+        if (FormData.expiredIE){
+            this.doUpload_InputFile();
+        }else{
+            if (!this.fileUploadNode) this.formData_CreateUploadArea();
+            this.fileUploadNode.click();
+        }
+    } ,
     doUpload_FormData: function(){
         this.formData_CreateUploadArea();
         this.fileUploadNode.click();
@@ -42,7 +50,6 @@ o2.widget.Upload = new Class({
         }
     },
     formData_Upload: function(){
-        debugger;
         var files = this.fileUploadNode.files;
         if (files.length){
             var count = files.length;

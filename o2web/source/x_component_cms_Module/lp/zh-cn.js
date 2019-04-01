@@ -28,6 +28,9 @@ MWF.xApplication.cms.Module.LP = {
 	"completedTime": "完成时间",
 	"process": "流程",
 
+	"batchRemove" : "清除",
+	"batchRemoveConfirm" : "确定清除",
+
 	"processList": "流程",
 	"activityNameList": "活动",
 	"creatorCompanyList": "创建公司",

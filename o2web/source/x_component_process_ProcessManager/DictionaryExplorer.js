@@ -367,6 +367,7 @@ MWF.xApplication.process.ProcessManager.DictionaryExplorer.Dictionary = new Clas
 
 		var _self = this;
 		var options = {
+            "appId": "process.DictionaryDesigner"+_self.data.id,
 			"onQueryLoad": function(){
 				this.actions = _self.explorer.actions;
 				this.category = _self;

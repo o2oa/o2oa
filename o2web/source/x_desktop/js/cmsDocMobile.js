@@ -39,13 +39,13 @@ o2.addReady(function(){
                         //MWF.xDesktop.requireApp("cms.Document", "Actions.RestActions", null, false);
                         //this.action = new MWF.xApplication.cms.Document.Actions.RestActions();
                         this.action = MWF.Actions.get("x_cms_assemble_control");
-                        //MWF.xDesktop.requireApp("cms.Document", "lp."+MWF.language, null, false);
-                        MWF.xDesktop.requireApp("cms.Document", "lp."+MWF.language, {
-                            "onRequestFailure": function(){
-                                MWF.xDesktop.requireApp("cms.Document", "lp.zh-cn", null, false);
-                            }.bind(this),
-                            "onSuccess": function(){}.bind(this)
-                        }, false);
+                        MWF.xDesktop.requireApp("cms.Document", "lp."+MWF.language, null, false);
+                        //MWF.xDesktop.requireApp("cms.Document", "lp."+MWF.language, {
+                        //    "onRequestFailure": function(){
+                        //        MWF.xDesktop.requireApp("cms.Document", "lp.zh-cn", null, false);
+                        //    }.bind(this),
+                        //    "onSuccess": function(){}.bind(this)
+                        //}, false);
 
                         this.lp = MWF.xApplication.cms.Document.LP;
 

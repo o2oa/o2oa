@@ -111,7 +111,7 @@ MWF.xApplication.query.Query.Main = new Class({
                 }.bind(this));
             }
         }.bind(this));
-        MWF.Actions.get("x_query_assemble_designer").listStat(this.options.id, function(json){
+        MWF.Actions.get("x_query_assemble_surface").listStat(this.options.id, function(json){
         //this.action.listStat(this.options.id, function(json){
             if (json.data){
                 json.data.each(function(stat){

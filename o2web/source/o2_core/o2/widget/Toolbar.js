@@ -25,15 +25,15 @@ o2.widget.Toolbar = new Class({
 
 	},
 	load: function(){
-		if (this.fireEvent("queryLoad")){
+        if (this.fireEvent("queryLoad")){
 
-			this.node.set("styles", this.css.container);
+            this.node.set("styles", this.css.container);
 
-			this._loadToolbarItemNode();
-			this._loadToolbarItems();
-			this.fireEvent("postLoad");
-		}
-	},
+            this._loadToolbarItemNode();
+            this._loadToolbarItems();
+            this.fireEvent("postLoad");
+        }
+    },
 	_loadToolbarItemNode: function(){
 		var subNodes = this.node.getChildren();
 		subNodes.each(function(node, idx){

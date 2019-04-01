@@ -92,6 +92,13 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">允许下载:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isDownload" text{($.isDownload!=='n')?'checked':''} type="radio" value="y"/>允许
+                    <input class="editTableRadio" name="isDownload" text{($.isDownload=='n')?'checked':''} type="radio" value="n"/>不允许
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">允许删除:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="isDelete" text{($.isDelete=='y')?'checked':''} type="radio" value="y"/>允许

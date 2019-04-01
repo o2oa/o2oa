@@ -20,6 +20,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
 
     "setting" : "设置",
 
+    "ok": "确定",
     "edit": "编辑",
     "save": "保存",
     "cancel": "取消",
@@ -178,5 +179,26 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "loaded": "数据视图加载完毕",
         "deleteFormTitle": "删除数据视图确认",
         "deleteForm": "是否确定要删除当前数据视图？"
-    }
+    },
+    "file": {
+        "create": "新建附件",
+        "search": "搜索附件",
+        "searchText": "请输入关键字",
+        "description": "附件信息",
+
+        "noScriptNoticeText": "此应用现在还没有附件，您可以点击此处创建一个新附件",
+        "loaded": "附件加载完毕",
+        "deleteFormTitle": "删除附件确认",
+        "deleteForm": "是否确定要删除当前附件？",
+        "saveSuccess": "附件已保存！",
+        "saveConfirm": "保存确认",
+        "saveConfirmText": "附件已被修改，您是否要保存修改的内容？",
+        "uploadSuccess": "附件已上传",
+        "loadFiles": "批量上传附件"
+    },
+
+    "name": "名称",
+    "alias": "别名",
+    "attachment": "附件",
+    "upload": "上传附件"
 };

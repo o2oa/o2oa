@@ -51,7 +51,7 @@ MWF.xApplication.Setting.MobileConnectDocument = new Class({
             "lp": {"title": this.lp.mobile_application, "infor": this.lp.mobile_application_infor, "editAction": this.lp.mobile_application_action},
             "data": {"key": "proxyData", "valueKey": "applicationList", "notEmpty": false},
             "value": this.explorer.proxyData.applicationList,
-            "itemTitle": "{node} - {proxyHost}:{proxyPort}",
+            "itemTitle": "{proxyHost}:{proxyPort}",
             "readonly": ["node"],
             "icon": "server.png"
         });

@@ -9,7 +9,7 @@
 		"word-break" : "keep-all",
 		"cursor": "pointer",
 		"overflow": "hidden",
-		"height": "36px",
+		"height": "auto",
 		"display":"block",
 		"font-size": "14px",
 		"border-top": "2px solid #3c76b7"

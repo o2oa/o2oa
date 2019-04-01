@@ -349,11 +349,11 @@ MWF.xApplication.process.TaskCenter.TaskCompletedList.Item = new Class({
         }.bind(this));
     },
     openWorkByTaskCompleted: function(e, id){
-        var options = {"workId": id, "readonly": true, "appId": id};
+        var options = {"workId": id, "readonly": true, "appId": "process.Work"+id};
         this.list.app.desktop.openApplication(e, "process.Work", options);
     },
     openWorkCompleteedByTaskCompleted: function(e, id){
-        var options = {"workCompletedId": id, "readonly": true, "appId": id};
+        var options = {"workCompletedId": id, "readonly": true, "appId": "process.Work"+id};
         this.list.app.desktop.openApplication(e, "process.Work", options);
     },
 

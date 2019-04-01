@@ -9,18 +9,18 @@ MWF.xApplication.portal.PortalManager.FileExplorer = new Class({
         "noElement": MWF.APPPM.LP.file.noDictionaryNoticeText
     },
 
-    _createElement: function(e){
-        // var _self = this;
-        // var options = {
-        //     "onQueryLoad": function(){
-        //         this.actions = _self.app.restActions;
-        //         this.application = _self.app.options.application || _self.app.application;
-        //         this.explorer = _self;
-        //     }
-        // };
-        // this.app.desktop.openApplication(e, "process.FileDesigner", options);
-        new MWF.xApplication.portal.PortalManager.FileDesigner(this);
-    },
+    // _createElement: function(e){
+    //     // var _self = this;
+    //     // var options = {
+    //     //     "onQueryLoad": function(){
+    //     //         this.actions = _self.app.restActions;
+    //     //         this.application = _self.app.options.application || _self.app.application;
+    //     //         this.explorer = _self;
+    //     //     }
+    //     // };
+    //     // this.app.desktop.openApplication(e, "process.FileDesigner", options);
+    //     new MWF.xApplication.portal.PortalManager.FileDesigner(this);
+    // },
     getNewData: function(){
         return {
             "id": "",
@@ -32,7 +32,13 @@ MWF.xApplication.portal.PortalManager.FileExplorer = new Class({
         }
     },
     implodeFiles: function(){
+        if (this.upload){
+            this.upload.upload();
+        }else{
+
+        }
         MWF.require("MWF.widget.Upload", function(){
+            var datas = [];
             new MWF.widget.Upload(this.app.content, {
                 "action": MWF.Actions.get("x_portal_assemble_designer").action,
                 "multiple": true,
@@ -51,10 +57,15 @@ MWF.xApplication.portal.PortalManager.FileExplorer = new Class({
                         if (node) if (node.hasClass("noElementNode")){
                             node.destroy();
                         }
-
-                        var itemObj = this._getItemObject(data);
-                        itemObj.load();
+                        datas.push(data);
+                        // var itemObj = this._getItemObject(data);
+                        // itemObj.load();
                     }.bind(this), null, false);
+                }.bind(this),
+                "onEvery": function(json, current, count, file){
+                    var data = datas[current-1];
+                    var itemObj = this._getItemObject(data);
+                    itemObj.load();
                 }.bind(this)
             }).load();
         }.bind(this));
@@ -74,6 +85,13 @@ MWF.xApplication.portal.PortalManager.FileExplorer.File = new Class({
             new MWF.xApplication.portal.PortalManager.FileDesigner(this.explorer, this.data);
         }.bind(this));
 	},
+    _getUrl: function(){
+        var url = MWF.Actions.get("x_portal_assemble_surface").action.actions.readFile.uri;
+        url = url.replace(/{flag}/, this.data.id);
+        url = url.replace(/{applicationFlag}/, this.data.portal);
+        url = "/x_portal_assemble_surface"+url;
+        return MWF.Actions.getHost("x_portal_assemble_surface")+url;
+    },
     _getIcon: function(){
         return "file.png";
     },
@@ -85,7 +103,7 @@ MWF.xApplication.portal.PortalManager.FileExplorer.File = new Class({
         var href = MWF.Actions.getHost("x_portal_assemble_surface")+url;
 
 		return {
-			"icon": this.explorer.path+this.explorer.options.style+"/fileIcon/lnk.png",
+			"icon": this.data.iconUrl,
 			"title": this.data.name,
             "par": "@url#"+href
 		};

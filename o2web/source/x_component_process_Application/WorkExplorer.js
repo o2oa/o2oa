@@ -434,7 +434,7 @@ MWF.xApplication.process.Application.WorkExplorer = new Class({
     },
 
     loadProcess: function(){
-        this.actions.listProcessManage(this.app.options.id, function(json){
+        this.actions.listProcessCountManage(this.app.options.id, function(json){
             json.data.each(function(process){
                 this.loadProcessNode(process);
             }.bind(this));
@@ -1190,12 +1190,13 @@ MWF.xApplication.process.Application.WorkExplorer.Work = new Class({
     },
 
     setPersonData: function(){
-        var data = {
-            "name": MWF.name.cn(this.data.creatorIdentity),
-            "unitName": (this.data.creatorUnit) ? MWF.name.cn(this.data.creatorUnit) : "",
-            "id": this.data.creatorIdentity
-        };
-        new MWF.widget.O2Identity(data, this.personAreaNode, {"style": "work", "lazy": true});
+        // var data = {
+        //     "name": MWF.name.cn(this.data.creatorIdentity),
+        //     "unitName": (this.data.creatorUnit) ? MWF.name.cn(this.data.creatorUnit) : "",
+        //     "id": this.data.creatorIdentity
+        // };
+        this.personAreaNode.set("text", MWF.name.cn(this.data.creatorIdentity)+"("+((this.data.creatorUnit) ? MWF.name.cn(this.data.creatorUnit) : "")+")");
+        //new MWF.widget.O2Identity(data, this.personAreaNode, {"style": "work", "lazy": true});
     },
     setStatusData: function(){
         this.createStatusIcon("start");
@@ -1292,8 +1293,10 @@ MWF.xApplication.process.Application.WorkExplorer.Task = new Class({
         this.setEvents();
     },
     setTaskContent: function () {
+        debugger;
         //var time = new Date().parse(this.data.startTime).format("%Y-%m-%d %H:%M");
-        new MWF.widget.O2Identity({"name": this.data.identity}, this.personAreaNode, {"style": "task"});
+        this.personAreaNode.set("text", o2.name.cn(this.data.identity)+"("+o2.name.cn(this.data.unit)+")");
+        //new MWF.widget.O2Identity({"name": this.data.identity}, this.personAreaNode, {"style": "task"});
 
         var time = new Date().parse(this.data.startTime).format("%Y-%m-%d %H:%M");
         this.timeAreaNode.set("text", time);

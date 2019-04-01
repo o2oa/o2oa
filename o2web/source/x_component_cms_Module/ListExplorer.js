@@ -34,7 +34,7 @@ MWF.xApplication.cms.Module.ListExplorer = new Class({
 		this.node = $(node);
         this.searchNode = $(searchNode);
 		this.initData();
-        if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();
+        if (!this.personActions) this.personActions = MWF.Actions.get("x_organization_assemble_express");
 	},
 	setTooltip: function(tooltip){
 		if (tooltip) this.options.tooltip = Object.merge(this.options.tooltip, tooltip);

@@ -686,6 +686,7 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 	},
 	
 	_deleteRow:function(){
+		var _form = this.form;
 		var tr = this.node.getParent("tr");
 		var table = tr.getParent("table");
 		var rowIndex = tr.rowIndex;
@@ -717,7 +718,6 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 			this.parentContainer.destroy();
 		}else{
 			tds = tr.getElements("td");
-			
 			tds.each(function(td){
 				var module = td.retrieve("module");
 				if (module){
@@ -727,7 +727,9 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 			});
 			tr.destroy();
 		}
-		this.form.selected();
+        _form.currentSelectedModule = null;
+        _form.selected();
+        _form = null;
 	},
 	deleteCol: function(e){
 		var module = this;

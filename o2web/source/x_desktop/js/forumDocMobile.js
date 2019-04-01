@@ -39,13 +39,13 @@ o2.addReady(function(){
                         // MWF.xDesktop.requireApp("Forum", "Actions.RestActions", null, false);
                         // this.action = new MWF.xApplication.Forum.Actions.RestActions();
                         this.action = MWF.Actions.get("x_bbs_assemble_control");
-                        //MWF.xDesktop.requireApp("Forum", "lp."+MWF.language, null, false);
-                        MWF.xDesktop.requireApp("Forum", "lp."+MWF.language, {
-                            "onRequestFailure": function(){
-                                MWF.xDesktop.requireApp("Forum", "lp.zh-cn", null, false);
-                            }.bind(this),
-                            "onSuccess": function(){}.bind(this)
-                        }, false);
+                        MWF.xDesktop.requireApp("Forum", "lp."+MWF.language, null, false);
+                        //MWF.xDesktop.requireApp("Forum", "lp."+MWF.language, {
+                        //    "onRequestFailure": function(){
+                        //        MWF.xDesktop.requireApp("Forum", "lp.zh-cn", null, false);
+                        //    }.bind(this),
+                        //    "onSuccess": function(){}.bind(this)
+                        //}, false);
 
                         this.lp = MWF.xApplication.Forum.LP;
 
@@ -341,6 +341,9 @@ o2.addReady(function(){
                 };
                 layout.reload = function(){
                     window.location.reload();
+                };
+                layout.openApplication = function(){
+
                 };
 
                 MWF.getJSON("res/config/config.json", function(config){

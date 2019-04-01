@@ -141,6 +141,14 @@
         "height": "36px",
         "margin-left": "100px",
     },
+    "deployIconNode": {
+        "height": "64px",
+        "width": "64px",
+        "background-color": "#cccccc",
+        "float": "left",
+        "overflow": "hidden",
+        "margin-right": "10px"
+    },
     "deployInputNode": {
         "height": "18px",
         "width": "95%"

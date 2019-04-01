@@ -95,8 +95,11 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
                 if (this.form.currentSelectedModule) {
                     var module = this.form.currentSelectedModule;
                     if (module.moduleType != "form" && module.moduleName.indexOf("$") == -1) {
+
+                        this.form.fireEvent("queryGetFormData", [module.node]);
                         var html = module.getHtml();
                         var json = module.getJson();
+                        this.form.fireEvent("postGetFormData", [module.node]);
 
                         MWF.clipboard.data = {
                             "type": "form",
@@ -387,7 +390,12 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         }
         this.form.unSelectedMulti();
 
+        if (this.form.designTabPageScriptAreaNode) this.form.designTabPageScriptAreaNode.hide();
         this.form = this.pcForm;
+
+        if ((this.scriptPage && this.scriptPage.isShow) || this.scriptPanel){
+            this.loadAllScript();
+        }
 
         this.currentDesignerMode = "PC";
     },
@@ -414,10 +422,18 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
 
         if (!this.mobileForm){
             this.mobileForm = new MWF.CMSFCForm(this, this.designMobileNode, {"mode": "Mobile"});
+            if (!Object.keys(this.formMobileData.json.moduleList).length){
+                this.formMobileData = Object.clone(this.formData);
+            }
             this.mobileForm.load(this.formMobileData);
         }
 
+        if (this.form.designTabPageScriptAreaNode) this.form.designTabPageScriptAreaNode.hide();
         this.form = this.mobileForm;
+
+        if ((this.scriptPage && this.scriptPage.isShow) || this.scriptPanel){
+            this.loadAllScript();
+        }
 
         this.currentDesignerMode = "Mobile";
     },
@@ -478,9 +494,15 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         //         this.designNode.setStyle("margin", "0px");
         //         this.designNode.setStyles(this.css.designNode);
 
+        MWF.require("MWF.widget.Tab", null, false);
+        this.designTabNode = new Element("div").inject(this.formContentNode);
+        this.designTab = new MWF.widget.Tab(this.designTabNode, {"style": "design"});
+        this.designTab.load();
+        this.designTabPageAreaNode = Element("div");
+
         this.designNode = new Element("div", {
             "styles": this.css.designNode
-        }).inject(this.formContentNode);
+        }).inject(this.designTabPageAreaNode);
         //this.designContentNode = new Element("div", {
         //    "styles": {"overflow": "visible"}
         //}).inject(this.designNode);
@@ -492,14 +514,170 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
 
         this.designMobileNode = new Element("div", {
             "styles": this.css.designMobileNode
-        }).inject(this.formContentNode);
+        }).inject(this.designTabPageAreaNode);
 
         //MWF.require("MWF.widget.ScrollBar", function(){
         //    new MWF.widget.ScrollBar(this.designMobileNode, {"distance": 50, "style": "xApp_mobileForm"});
         //}.bind(this));
         //    }.bind(this), 2000);
 
+       this.designTabScriptAreaNode = Element("div", {"styles": this.css.designTabScriptAreaNode});
 
+        this.designPage = this.designTab.addTab(this.designTabPageAreaNode, this.lp.design);
+        this.scriptPage = this.designTab.addTab(this.designTabScriptAreaNode, this.lp.script);
+
+        this.setScriptPageEvent();
+
+        this.designPage.showTabIm();
+        this.scriptPage.addEvent("postShow", function(){
+            this.checkLoadAllScript();
+            this.fireEvent("resize");
+        }.bind(this));
+        this.designPage.addEvent("postShow", function(){
+            this.fireEvent("resize");
+        }.bind(this));
+    },
+     createScriptPanel: function(p, s){
+        MWF.require("MWF.widget.Panel", function(){
+            this.scriptPanel = new MWF.widget.Panel(this.designTabScriptAreaNode, {
+                "title": this.lp.script,
+                "minLeft": "500",
+                "minTop": "1",
+                "style": "page",
+                "target": this.content,
+                "limitMove": false,
+                "isClose": false,
+                "width": s.x,
+                "height": s.y,
+                "top": p.y,
+                "left": p.x,
+                "onPostLoad": function(){
+                    this.loadAllScript();
+                    this.fireEvent("resize");
+                }.bind(this),
+                "onResize": function(){
+                    this.fireEvent("resize");
+                }.bind(this),
+                "onDrag": function(el, e){
+                    if (el.getStyle("top").toInt()<0) el.setStyle("top", "0px");
+                    if (!this.scriptPage.tab.tabNodeContainer.isOutside(e)){
+                        this.scriptPage.tabNode.show();
+                        this.scriptPanel.container.setStyle("opacity", "0.5");
+                    }else{
+                        this.scriptPage.tabNode.hide();
+                        this.scriptPanel.container.setStyle("opacity", "1");
+                    }
+                }.bind(this),
+                "onCompleteMove": function(el, e){
+                    if (!this.scriptPage.tab.tabNodeContainer.isOutside(e)){
+                        this.scriptPage.tabNode.show();
+
+                        this.designTabScriptAreaNode.inject(this.designTab.contentNodeContainer.getLast());
+                        this.fireEvent("resize");
+                        this.scriptPage.showTabIm();
+
+                        this.scriptPanel.closePanel();
+                        this.scriptPanel = null;
+                    }
+                }.bind(this)
+            });
+            this.scriptPanel.load();
+        }.bind(this));
+    },
+    createScriptPageDragNode: function(e){
+        var size = this.scriptPage.tab.contentNodeContainer.getSize();
+        var position = this.scriptPage.tab.contentNodeContainer.getPosition(this.content);
+        if (!this.scriptPageContentDrag){
+            var dragNode = new Element("div", {"styles": this.css.scriptPageDragNode}).inject(this.content);
+
+            this.scriptPageContentDrag = new Drag.Move(dragNode, {
+                "droppables": [this.scriptPage.tab.tabNodeContainer],
+                "onEnter": function(el, drop){
+                    this.scriptPage.tabNode.show();
+                    this.designTabScriptAreaNode.show();
+
+                    // this.scriptPageContentDrag.stop();
+                    // this.scriptPageContentDrag.detach();
+                    this.scriptPageContentDrag = null;
+                    dragNode.destroy();
+
+                    this.scriptPageDrag.start(e);
+                }.bind(this),
+                "onComplete": function(el, e){
+                    if (this.scriptPage.tab.tabNodeContainer.isOutside(e)){
+                        this.createScriptPanel(dragNode.getPosition(this.content), dragNode.getSize());
+                        this.designPage.showTabIm();
+                    }
+                    this.scriptPageContentDrag = null;
+                    if (dragNode) dragNode.destroy();
+                    this.designTabScriptAreaNode.show();
+                }.bind(this)
+
+            });
+        }
+
+        var tabPosition = this.scriptPage.tabNode.getPosition();
+        var dx = e.page.x-tabPosition.x;
+        var dy = e.page.y-tabPosition.y;
+
+        this.scriptPage.tabNode.hide();
+        this.designTabScriptAreaNode.hide();
+
+        var w = size.x*0.7;
+        var h = size.y*0.7;
+        var x = position.x+dx;
+        var y = position.y+dy-20;
+
+        dragNode.setStyles({
+            "width": ""+w+"px",
+            "height": ""+h+"px",
+            "top": ""+y+"px",
+            "left": ""+x+"px"
+        });
+        this.scriptPageContentDrag.start(e);
+
+    },
+    setScriptPageEvent: function(){
+        this.scriptPageDrag =  new Drag(this.scriptPage.tabNode, {
+            "snap": 20,
+            "onStart": function(el,e){
+                el.setStyle("position", "static");
+            },
+            "onDrag": function(el,e){
+                if (this.scriptPage.tab.tabNodeContainer.isOutside(e)){
+                    this.scriptPageDrag.stop();
+                    el.setStyle("left", "auto");
+                    this.createScriptPageDragNode(e);
+                }
+            }.bind(this),
+            "onComplete": function(el){
+                el.setStyle("left", "auto");
+                //el.setStyle("position", "relative");
+            }.bind(this)
+        });
+    },
+    checkLoadAllScript: function(){
+        if (this.form){
+            this.loadAllScript();
+        }else{
+            this.designPage.showTabIm();
+        }
+    },
+    loadAllScript: function(){
+        if (!this.form.designTabPageScriptAreaNode) this.form.designTabPageScriptAreaNode = Element("div", {"styles": this.css.designTabScriptPcAreaNode}).inject(this.designTabScriptAreaNode);
+        this.form.designTabPageScriptAreaNode.show();
+
+        if (!this.form.scriptDesigner){
+            MWF.xDesktop.requireApp("cms.FormDesigner", "Script", function(){
+                this.form.scriptDesigner = new MWF.xApplication.cms.FormDesigner.Script(this, this.form.designTabPageScriptAreaNode, this.form.json);
+                // var moduleJson = this.pageData.json;
+                // if (moduleJson.jsheader){
+                //     if (moduleJson.jsheader.code){
+                //
+                //     }
+                // }
+            }.bind(this));
+        }
     },
     reloadPropertyStyles: function(){
         //MWF.release(this.css);
@@ -868,10 +1046,17 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         var y = nodeSize.y - allFormToolberSize.totalHeight - formToolbarMarginTop - formToolbarMarginBottom;
         this.formContentNode.setStyle("height", ""+y+"px");
 
+        var tabSize = this.designTab.tabNodeContainer.getComputedSize();
+        var tabMarginTop = this.designTab.tabNodeContainer.getStyle("margin-top").toFloat();
+        var tabMarginBottom = this.designTab.tabNodeContainer.getStyle("margin-bottom").toFloat();
+        y = y-tabSize.totalHeight-tabMarginTop-tabMarginBottom;
+        this.designTab.contentNodeContainer.setStyle("height", ""+y+"px");
+
         if (this.designNode){
             var designMarginTop = this.designNode.getStyle("margin-top").toFloat();
             var designMarginBottom = this.designNode.getStyle("margin-bottom").toFloat();
-            y = nodeSize.y - allFormToolberSize.totalHeight - formToolbarMarginTop - formToolbarMarginBottom - designMarginTop - designMarginBottom;
+            //y = nodeSize.y - allFormToolberSize.totalHeight - formToolbarMarginTop - formToolbarMarginBottom - designMarginTop - designMarginBottom;
+            y = y - designMarginTop - designMarginBottom;
             this.designNode.setStyle("height", ""+y+"px");
         }
 
@@ -915,10 +1100,17 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         var y = designerHeight - allFormToolberSize.totalHeight - formToolbarMarginTop - formToolbarMarginBottom;
         //    this.formContentNode.setStyle("height", ""+designerHeight+"px");
 
+        var tabSize = this.designTab.tabNodeContainer.getComputedSize();
+        var tabMarginTop = this.designTab.tabNodeContainer.getStyle("margin-top").toFloat();
+        var tabMarginBottom = this.designTab.tabNodeContainer.getStyle("margin-bottom").toFloat();
+        y = y-tabSize.totalHeight-tabMarginTop-tabMarginBottom;
+        this.designTab.contentNodeContainer.setStyle("height", ""+y+"px");
+
         if (this.designNode){
             var designMarginTop = this.designNode.getStyle("margin-top").toFloat();
             var designMarginBottom = this.designNode.getStyle("margin-bottom").toFloat();
-            y = designerHeight - allFormToolberSize.totalHeight - formToolbarMarginTop - formToolbarMarginBottom - designMarginTop - designMarginBottom;
+            //y = designerHeight - allFormToolberSize.totalHeight - formToolbarMarginTop - formToolbarMarginBottom - designMarginTop - designMarginBottom;
+            y = y - designMarginTop - designMarginBottom;
             this.designNode.setStyle("height", ""+y+"px");
         }
 
@@ -1134,6 +1326,61 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         }.bind(this));
         return fieldList;
     },
+       checkSubform: function(){
+        var pcSubforms = [];
+        if (this.pcForm){
+            this.pcForm.moduleList.each(function(module){
+                if (module.moduleName==="subform"){
+                    if (module.regetSubformData()){
+                        module.subformData.updateTime = "";
+                        var moduleNames = module.getConflictFields();
+                        if (moduleNames.length){
+                            var o = {
+                                "id": module.json.id,
+                                "fields": moduleNames
+                            };
+                            pcSubforms.push(o);
+                        }
+                    }
+
+                }
+            }.bind(this));
+        }
+        var mobileSubforms = [];
+        if (this.mobileForm){
+            this.mobileForm.moduleList.each(function(module){
+                if (module.moduleName==="subform"){
+                    if (module.regetSubformData()){
+                        module.subformData.updateTime = "";
+                        var moduleNames = module.getConflictFields();
+                        if (moduleNames.length){
+                            var o = {
+                                "id": module.json.id,
+                                "fields": moduleNames
+                            };
+                            mobileSubforms.push(o);
+                        }
+                    }
+                }
+            }.bind(this));
+        }
+        var txt = "";
+        if (pcSubforms.length){
+            var pctxt = "";
+            pcSubforms.each(function(subform){
+                pctxt += subform.id+" ( "+subform.fields.join(", ")+" ) <br>";
+            });
+            txt += this.lp.checkSubformPcInfor.replace("{subform}", pctxt);
+        }
+        if (mobileSubforms.length){
+            var mobiletxt = "";
+            mobileSubforms.each(function(subform){
+                mobiletxt += subform.id+" ( "+subform.fields.join(", ")+" ) <br>";
+            });
+            txt += this.lp.checkSubformMobileInfor.replace("{subform}", mobiletxt);
+        }
+        return txt;
+    },
     saveForm: function(){
         if (!this.isSave){
             var pcData, mobileData;
@@ -1171,12 +1418,17 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
                 this.options.desktopReload = true;
                 this.options.id = this.pcForm.json.id;
 
-                this.isSave = false;
+                //this.fireAppEvent("postSave"); //add by cxy
+                if (this.pcForm) this.pcForm.fireEvent("postSave");
+                if (this.mobileForm) this.mobileForm.fireEvent("postSave");
 
-                this.fireAppEvent("postSave"); //add by cxy
+                this.isSave = false;
 
             }.bind(this), function(xhr, text, error){
                 this.isSave = false;
+
+                if (this.pcForm) this.pcForm.fireEvent("postSaveError");
+                if (this.mobileForm) this.mobileForm.fireEvent("postSaveError");
 
                 var errorText = error+":"+text;
                 if (xhr) errorText = xhr.responseText;
@@ -1200,6 +1452,15 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
     },
     formExplode: function(){
         this.form.explode();
+    },
+    formImplode: function(){
+        this.form.implode();
+    },
+    htmlImplode: function(){
+        this.form.implodeHTML();
+    },
+    officeImplode: function(){
+        this.form.implodeOffice();
     },
     recordStatus: function(){
         return {"id": this.options.id};
@@ -1369,6 +1630,44 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             this.createTemplateSaveNode();
         }else{
             MWF.xDesktop.notice("info", {x: "right", y:"top"}, this.lp.isSave);
+        }
+    },
+    styleBrush: function(status, bt){
+        if (status==="on"){
+            var module = this.form.currentSelectedModule;
+            if (module && module.json.type!=="Form"){
+                this.form.brushStyle = module.json.styles;
+                this.brushCursor = new Element("div", {"styles": {
+                    "position": "absolute",
+                    "width": "16px",
+                    "height": "16px",
+                    "z-index": 20000,
+                    "background": "url("+this.path+this.options.style+"/pageToolbar/wand.png)"
+                }}).inject(this.content);
+                this.brushCursorMoveFun = this.brushCursorMove.bind(this);
+                this.content.addEvent("mousemove", this.brushCursorMoveFun);
+
+                //this.designNode.setStyle("cursor", "url(/"+this.path+this.options.style+"/pageToolbar/brush.png)");
+            }else{
+                bt.off();
+            }
+        }else{
+            this.form.brushStyle = null;
+            if (this.brushCursorMoveFun) this.content.removeEvent("mousemove", this.brushCursorMoveFun);
+            if (this.brushCursor){
+                this.brushCursor.destroy();
+                this.brushCursor = null;
+            }
+        }
+    },
+    brushCursorMove: function(e){
+        if (this.brushCursor){
+            var x = e.event.layerX+10;
+            var y = e.event.layerY+10;
+            this.brushCursor.setStyles({
+                "left": ""+x+"px",
+                "top": ""+y+"px"
+            });
         }
     }
 });

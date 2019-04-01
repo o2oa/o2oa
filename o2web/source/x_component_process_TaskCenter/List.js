@@ -801,7 +801,7 @@ MWF.xApplication.process.TaskCenter.List.Item = new Class({
 
     openTask: function(e){
         //     this._getJobByTask(function(data){
-        var options = {"workId": this.data.work, "appId": this.data.work};
+        var options = {"workId": this.data.work, "appId": "process.Work"+this.data.work};
         this.list.app.desktop.openApplication(e, "process.Work", options);
         //     }.bind(this));
     },

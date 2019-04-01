@@ -611,19 +611,19 @@
 		"line":{
 			"normal":{
 				"cursor": "pointer",
-				"stroke-width": "1",
-				"stroke": "#333333",
+				"stroke-width": "2",
+				"stroke": "#bbbbbb",
 				"z-index": 50
 			},
 			"selected": {
 				"cursor": "pointer",
-				"stroke-width": "2",
+				"stroke-width": "3",
 				"stroke": "#ffa200",
 				"z-index": 50
 			},
 			"no-checked": {
 				"cursor": "pointer",
-				"stroke-width": "1",
+				"stroke-width": "2",
 				"stroke": "#f00",
 				"z-index": 50
 			}

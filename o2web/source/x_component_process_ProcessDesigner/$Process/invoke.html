@@ -52,6 +52,15 @@
                 </td>
             </tr>
         </table>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">调用方式:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="async" text{(!$.async)?'checked':''} value="false"/>同步
+                    <input type="radio" name="async" text{($.async)?'checked':''} value="true"/>异步
+                </td>
+            </tr>
+        </table>
 
         <div id="text{$.id}webserviceInvokeModeJaxws" style="display: text{($.invokeMode!='jaxrs')?'block':'none'}">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">

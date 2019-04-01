@@ -450,7 +450,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 "comparison": comparison,
                 "comparisonTitle": comparisonTitle,
                 "value": value,
-                "formatType": entry.formatType
+                "formatType": (entry.formatType=="datetimeValue") ? "dateTimeValue": entry.formatType
             }, this.viewSearchCustomFilterContentNode));
 
             this.searchCustomView();

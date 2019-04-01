@@ -1,18 +1,25 @@
 <div style="background-color: #FFF; overflow: hidden">
 	<div title="基本" class="MWFTab">
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-		  <tr>
-		    <td class="editTableTitle">标识:</td>
-		    <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
-		  </tr>
-		  <tr>
-		    <td class="editTableTitle">名称:</td>
-		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
-		  </tr>
-		  <tr>
-		    <td class="editTableTitle">描述:</td>
-		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
-		  </tr>
+			<tr>
+				<td class="editTableTitle">标识:</td>
+				<td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">名称:</td>
+				<td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">描述:</td>
+				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+			</tr>
+			<tr title="延时加载为是时，未显示的tab页内容不会加载，只有在tab页第一次显示时才会加载内容">
+				<td class="editTableTitle">延时加载:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isDelay" value="true" text{($.isDelay)?'checked':''}/>是
+					<input type="radio" name="isDelay" value="false" text{(!$.isDelay)?'checked':''}/>否
+				</td>
+			</tr>
 		</table>
 		
 		<div class="MWFMaplist" name="styles" title="样式"></div>

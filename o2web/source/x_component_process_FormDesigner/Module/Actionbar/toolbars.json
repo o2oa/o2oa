@@ -55,6 +55,17 @@
   },
   {
     "type": "MWFToolBarButton",
+    "img": "split.png",
+    "title": "增加拆分分支",
+    "action": "addSplit",
+    "text": "增加分支",
+    "id": "action_split",
+    "control": "allowAddSplit",
+    "condition": "",
+    "read": true
+  },
+  {
+    "type": "MWFToolBarButton",
     "img": "retract.png",
     "title": "撤回",
     "action": "retractWork",
@@ -63,6 +74,16 @@
     "control": "allowRetract",
     "condition": "",
     "read": true
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "rollback.png",
+    "title": "回溯到指定的环节，不保留流程记录",
+    "action": "rollback",
+    "text": "流程回溯",
+    "id": "action_rollback",
+    "control": "allowRollback",
+    "condition": ""
   },
   {
     "type": "MWFToolBarButton",
@@ -85,7 +106,7 @@
     "control": "",
     "condition": "",
     "read": true
-  },
+  }
 //  {
 //    "type": "MWFToolBarMenu",
 //    "img": "tool.png",
@@ -99,13 +120,13 @@
 //
 //    ]
 //  },
-  {
-    "type": "MWFToolBarSeparator",
-    "img": "",
-    "title": "",
-    "action": "",
-    "text": "",
-    "condition": "",
-    "read": true
-  }
+//  {
+//    "type": "MWFToolBarSeparator",
+//    "img": "",
+//    "title": "",
+//    "action": "",
+//    "text": "",
+//    "condition": "",
+//    "read": true
+//  }
 ]

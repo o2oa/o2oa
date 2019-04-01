@@ -5,6 +5,11 @@
         "overflow": "auto",
         "background-color": "#FFF"
     },
+    "formNode": {
+        "min-height": "100%",
+        "font-size": "14px",
+        "overflow": "hidden"
+    },
     "maskNode": {
         "background-color": "#666",
         "opacity": 0.4,

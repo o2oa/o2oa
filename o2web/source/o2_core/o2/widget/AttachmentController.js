@@ -195,6 +195,8 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         this.createReadGroupActions();
         this.createListGroupActions();
         this.createViewGroupActions();
+
+        //this.createConfigGroupActions();
     },
 
     createEditGroupActions: function(){
@@ -924,7 +926,7 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.textSizeNode.set("text", size);
 
         this.textUploaderNode = new Element("div", {"styles": this.css.attachmentTextUploaderNode_list}).inject(this.textNode);
-        this.textUploaderNode.set("text", this.data.person);
+        this.textUploaderNode.set("text", o2.name.cn(this.data.person));
 
         this.textTimeNode = new Element("div", {"styles": this.css.attachmentTextTimeNode_list}).inject(this.textNode);
         this.textTimeNode.set("text", this.data.lastUpdateTime);
@@ -964,7 +966,7 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.textSizeNode.set("text", size);
 
         this.textUploaderNode = new Element("div", {"styles": this.css.attachmentTextUploaderNode_list}).inject(this.textNode);
-        this.textUploaderNode.set("text", this.data.person);
+        this.textUploaderNode.set("text", o2.name.cn(this.data.person));
 
         this.textTimeNode = new Element("div", {"styles": this.css.attachmentTextTimeNode_list}).inject(this.textNode);
         this.textTimeNode.set("text", this.data.lastUpdateTime);

@@ -83,7 +83,7 @@ MWF.xApplication.cms.Index.Starter = new Class({
 
             this.areaNode.inject(this.markNode, "after");
             this.areaNode.fade("in");
-            $("form_startSubject").focus();
+            if($("form_startSubject"))$("form_startSubject").focus();
 
             this.setStartNodeSize();
             this.setStartNodeSizeFun = this.setStartNodeSize.bind(this);
@@ -170,6 +170,22 @@ MWF.xApplication.cms.Index.Starter = new Class({
             this.okStart(e);
         }.bind(this));
     },
+    getIdentities: function(){
+        var identities = [];
+        MWF.Actions.get("x_organization_assemble_personal").getPerson(function(json){
+            var identities1 = (json.data && json.data.woIdentityList) ? json.data.woIdentityList : [];
+            identities1.each( function(i){
+                if( this.options.identity ){
+                    if( this.options.identity == i.distinguishedName ){
+                        if( i.distinguishedName )identities.push(i);
+                    }
+                }else{
+                    if( i.distinguishedName )identities.push(i);
+                }
+            }.bind(this));
+        }.bind(this), null, false );
+        return identities;
+    },
     setStartFormContent: function(){
         this.dateArea = this.formNode.getElementById("form_startDate");
         var d = new Date();
@@ -194,7 +210,7 @@ MWF.xApplication.cms.Index.Starter = new Class({
         return this.categoryData && this.categoryData.documentType != "信息"
     },
     checkSubject: function(){
-        if( this.categoryData ){
+        if( this.categoryData &&  this.subjectInput ){
             if( this.isIgnoreTitle() ){
                 this.subjectInput.getParent("tr").setStyle("display","none");
             }else{
@@ -266,7 +282,7 @@ MWF.xApplication.cms.Index.Starter = new Class({
     },
     cancelStart: function(e){
         var _self = this;
-        if ($("form_startSubject").get("value")){
+        if ($("form_startSubject") && $("form_startSubject").get("value")){
             this.app.confirm("warn", e, this.lp.start_cancel_title, this.lp.start_cancel, "320px", "100px", function(){
                 _self.markNode.destroy();
                 _self.areaNode.destroy();
@@ -287,13 +303,14 @@ MWF.xApplication.cms.Index.Starter = new Class({
         }
     },
     _createDocument: function(e){
-        var title = $("form_startSubject").get("value")|| "";
+        var subjectObj = $("form_startSubject");
+        var title = subjectObj ? subjectObj.get("value") : "";
         this.getDocumentAction();
         var data = {
             "id" : this.documentAction.getUUID(),
             "isNewDocument" : true,
             "title": title,
-            "creatorIdentity": this.identityArea.get("value"),
+            "creatorIdentity": this.identityArea ? this.identityArea.get("value") : this.identityList[0].distinguishedName,
             "appId" :this.categoryData.appId,
             "categoryId" : this.categoryData.id,
             "form" : this.categoryData.formId,
@@ -305,22 +322,26 @@ MWF.xApplication.cms.Index.Starter = new Class({
         };
 
         if (!data.title && !this.isIgnoreTitle()){
-            $("form_startSubject").setStyle("border-color", "red");
-            $("form_startSubject").focus();
+            if( subjectObj ){
+                subjectObj.setStyle("border-color", "red");
+                subjectObj.focus();
+            }
             this.app.notice(this.lp.inputSubject, "error");
         }else if (!data.creatorIdentity){
             this.departmentSelArea.setStyle("border-color", "red");
             this.app.notice(this.lp.selectStartId, "error");
         }else{
             if( this.isIgnoreTitle() )data.title = "无标题";
-            this.mask = new MWF.widget.Mask({"style": "desktop"});
-            this.mask.loadNode(this.areaNode);
+            if( this.areaNode ){
+                this.mask = new MWF.widget.Mask({"style": "desktop"});
+                this.mask.loadNode(this.areaNode);
+            }
             this.getDocumentAction(function(){
                 this.documentAction.addDocument( data, function(json){
-                    this.mask.hide();
+                    if(this.mask)this.mask.hide();
 
-                    this.markNode.destroy();
-                    this.areaNode.destroy();
+                    if(this.markNode)this.markNode.destroy();
+                    if(this.areaNode)this.areaNode.destroy();
 
                     this._openDocument( json.data.id );
                     //this.fireEvent("started", [json.data, title, this.categoryData.name]);
@@ -345,15 +366,18 @@ MWF.xApplication.cms.Index.Starter = new Class({
 
 
     _createProcessDocument:function(e){
-        var title = $("form_startSubject").get("value") || "";
+        var subjectObj = $("form_startSubject");
+        var title = subjectObj ? subjectObj.get("value") : "";
         var processId = this.categoryData.workflowFlag;
         var data = {
-            "title":$("form_startSubject").get("value"),
+            "title":title,
             "identity": this.identityArea.get("value")
         };
         if (!data.title || !this.isIgnoreTitle()){
-            $("form_startSubject").setStyle("border-color", "red");
-            $("form_startSubject").focus();
+            if( subjectObj ){
+                subjectObj.setStyle("border-color", "red");
+                subjectObj.focus();
+            }
             this.app.notice(this.lp.inputSubject, "error");
         }else if (!data.identity){
             this.departmentSelArea.setStyle("border-color", "red");

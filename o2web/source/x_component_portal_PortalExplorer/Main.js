@@ -304,6 +304,7 @@ MWF.xApplication.portal.PortalExplorer.Portal = new Class({
         if (id){
             var _self = this;
             var options = {
+                "appId": "portal.PageDesigner"+id,
                 "onQueryLoad": function(){
                     this.actions = _self.app.actions;
                     //this.category = _self;
