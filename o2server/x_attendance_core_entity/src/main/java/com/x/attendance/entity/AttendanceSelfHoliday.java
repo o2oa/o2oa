@@ -10,6 +10,8 @@ import javax.persistence.InheritanceType;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
@@ -103,11 +105,13 @@ public class AttendanceSelfHoliday extends SliceJpaObject {
 	private String leaveType;
 
 	@FieldDescribe("开始时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "xstartTime")
 	@CheckPersist(allowEmpty = false)
 	private Date startTime;
 
 	@FieldDescribe("结束时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "xendTime")
 	@CheckPersist(allowEmpty = false)
 	private Date endTime;

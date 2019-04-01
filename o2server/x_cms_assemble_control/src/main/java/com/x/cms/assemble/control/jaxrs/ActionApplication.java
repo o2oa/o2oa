@@ -9,6 +9,7 @@ import com.x.cms.assemble.control.jaxrs.appdict.AppDictAction;
 import com.x.cms.assemble.control.jaxrs.appdict.AppDictAnonymousAction;
 import com.x.cms.assemble.control.jaxrs.appdictdesign.AppDictDesignAction;
 import com.x.cms.assemble.control.jaxrs.appinfo.AppInfoAction;
+import com.x.cms.assemble.control.jaxrs.appinfo.AppInfoAnonymousAction;
 import com.x.cms.assemble.control.jaxrs.categoryinfo.CategoryInfoAction;
 import com.x.cms.assemble.control.jaxrs.categoryinfo.CategoryInfoAnonymousAction;
 import com.x.cms.assemble.control.jaxrs.data.DataAction;
@@ -70,6 +71,7 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add(OutputAction.class);
 		this.classes.add(PermissionAction.class);
 		
+		this.classes.add(AppInfoAnonymousAction.class);
 		this.classes.add(AppDictAnonymousAction.class);
 		this.classes.add(CategoryInfoAnonymousAction.class);
 		this.classes.add(DocumentAnonymousAction.class);

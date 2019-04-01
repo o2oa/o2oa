@@ -24,14 +24,6 @@ import com.x.query.core.entity.Item;
 
 public class CategoryInfoService {
 
-//	public List<CategoryInfo> list(EntityManagerContainer emc, List<String> ids) throws Exception {
-//		if( ids == null || ids.isEmpty() ){
-//			return null;
-//		}
-//		Business business = new Business( emc );
-//		return business.getCategoryInfoFactory().list( ids );
-//	}
-	
 	public CategoryInfo get( EntityManagerContainer emc, String id ) throws Exception {
 		if( id == null || id.isEmpty() ){
 			return null;
@@ -452,10 +444,5 @@ public class CategoryInfoService {
 		Business business = new Business( emc );
 		return business.getCategoryInfoFactory().listManageableCategoryIds( personName, unitNames, groupNames, inAppInfoIds,
 				documentType, maxCount );
-	}
-
-	public List<CategoryInfo> listInReviewCategoryInfoList(EntityManagerContainer emc) throws Exception {
-		Business business = new Business( emc );
-		return business.getCategoryInfoFactory().listInReviewCategoryInfoList();
 	}
 }

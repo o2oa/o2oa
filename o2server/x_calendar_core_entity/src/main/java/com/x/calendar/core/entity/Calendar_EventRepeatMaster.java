@@ -14,6 +14,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
@@ -201,6 +203,7 @@ public class Calendar_EventRepeatMaster extends SliceJpaObject implements Clonea
 
 	public static final String startTime_FIELDNAME = "startTime";
 	@FieldDescribe("事件开始时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = ColumnNamePrefix + startTime_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + startTime_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
@@ -208,6 +211,7 @@ public class Calendar_EventRepeatMaster extends SliceJpaObject implements Clonea
 
 	public static final String endTime_FIELDNAME = "endTime";
 	@FieldDescribe("事件结束时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = ColumnNamePrefix + endTime_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + endTime_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
@@ -233,6 +237,7 @@ public class Calendar_EventRepeatMaster extends SliceJpaObject implements Clonea
 
 	public static final String recurrenceStartTime_FIELDNAME = "recurrenceStartTime";
 	@FieldDescribe("重复开始时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = ColumnNamePrefix + recurrenceStartTime_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Date recurrenceStartTime = null;
@@ -257,6 +262,7 @@ public class Calendar_EventRepeatMaster extends SliceJpaObject implements Clonea
 
 	public static final String alarmTime_FIELDNAME = "alarmTime";
 	@FieldDescribe("当前事件提醒时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = ColumnNamePrefix + alarmTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date alarmTime = null;

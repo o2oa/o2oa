@@ -11,6 +11,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.openjpa.persistence.jdbc.Index;
@@ -176,12 +178,14 @@ public class BBSUserInfo extends SliceJpaObject {
 
 	public static final String lastVisitTime_FIELDNAME = "lastVisitTime";
 	@FieldDescribe("上次访问时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = ColumnNamePrefix + lastVisitTime_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Date lastVisitTime = null;
 
 	public static final String lastOperationTime_FIELDNAME = "lastOperationTime";
 	@FieldDescribe("最近一次操作时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = ColumnNamePrefix + lastOperationTime_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Date lastOperationTime = null;

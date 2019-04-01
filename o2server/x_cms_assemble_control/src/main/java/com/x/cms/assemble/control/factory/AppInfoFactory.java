@@ -150,16 +150,6 @@ public class AppInfoFactory extends AbstractFactory {
 		p = cb.or(p, root.get(AppInfo_.appName).in(appAliases));
 		return em.createQuery(cq.where(p)).getResultList();
 	}
-	
-	public List<AppInfo> listInReviewAppInfoList() throws Exception {
-		EntityManager em = this.entityManagerContainer().get(AppInfo.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<AppInfo> cq = cb.createQuery(AppInfo.class);
-		Root<AppInfo> root = cq.from(AppInfo.class);
-		Predicate p = cb.equal( root.get(AppInfo_.documentType), "信息");
-		p = cb.and(p, cb.or(cb.isFalse( root.get(AppInfo_.reviewed ) ), cb.isNull(root.get(AppInfo_.reviewed ))));
-		return em.createQuery(cq.where(p)).getResultList();
-	}
 
 	public <T extends AppInfo> List<T> sort(List<T> list) {
 		list = list.stream()

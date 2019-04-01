@@ -24,10 +24,6 @@ import com.x.cms.assemble.control.factory.FormFactory;
 import com.x.cms.assemble.control.factory.FormFieldFactory;
 import com.x.cms.assemble.control.factory.ItemFactory;
 import com.x.cms.assemble.control.factory.LogFactory;
-import com.x.cms.assemble.control.factory.RescissoryClass_AppCategoryAdminFactory;
-import com.x.cms.assemble.control.factory.RescissoryClass_AppCategoryPermissionFactory;
-import com.x.cms.assemble.control.factory.RescissoryClass_DocumentPermissionFactory;
-import com.x.cms.assemble.control.factory.ReviewFactory;
 import com.x.cms.assemble.control.factory.ScriptFactory;
 import com.x.cms.assemble.control.factory.SearchFactory;
 import com.x.cms.assemble.control.factory.TemplateFormFactory;
@@ -72,20 +68,12 @@ public class Business {
 	private Organization organization;
 	private ItemFactory itemFactory;
 	private FormFieldFactory formFieldFactory;
-	private ReviewFactory reviewFactory;
 
 	public FileFactory fileFactory() throws Exception {
 		if (null == this.fileFactory) {
 			this.fileFactory = new FileFactory(this);
 		}
 		return fileFactory;
-	}
-	
-	public ReviewFactory reviewFactory() throws Exception {
-		if (null == this.reviewFactory) {
-			this.reviewFactory = new ReviewFactory(this);
-		}
-		return reviewFactory;
 	}
 	
 	public FormFieldFactory formFieldFactory() throws Exception {
@@ -518,33 +506,5 @@ public class Business {
 			}
 		}
 		return result;
-	}
-	
-	//********************************************************************************************************
-	//*******************               废除的属性和方法 ，使用新的数据结构来控制权限            ***************
-	//********************************************************************************************************
-	private RescissoryClass_AppCategoryPermissionFactory appCategoryPermissionFactory;
-	private RescissoryClass_AppCategoryAdminFactory appCategoryAdminFactory;
-	private RescissoryClass_DocumentPermissionFactory documentPermissionFactory;
-	
-	public RescissoryClass_DocumentPermissionFactory documentPermissionFactory() throws Exception {
-		if (null == this.documentPermissionFactory) {
-			this.documentPermissionFactory = new RescissoryClass_DocumentPermissionFactory(this);
-		}
-		return documentPermissionFactory;
-	}
-	
-	public RescissoryClass_AppCategoryPermissionFactory getAppCategoryPermissionFactory() throws Exception {
-		if (null == this.appCategoryPermissionFactory) {
-			this.appCategoryPermissionFactory = new RescissoryClass_AppCategoryPermissionFactory(this);
-		}
-		return appCategoryPermissionFactory;
-	}
-
-	public RescissoryClass_AppCategoryAdminFactory getAppCategoryAdminFactory() throws Exception {
-		if (null == this.appCategoryAdminFactory) {
-			this.appCategoryAdminFactory = new RescissoryClass_AppCategoryAdminFactory(this);
-		}
-		return appCategoryAdminFactory;
 	}
 }

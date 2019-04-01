@@ -23,26 +23,14 @@ import com.x.query.core.entity.Item;
 
 public class AppInfoService {
 
-//	public List<AppInfo> list( EntityManagerContainer emc, List<String> ids ) throws Exception {
-//		if( ids == null || ids.isEmpty() ){
-//			return null;
-//		}
-//		return emc.list( AppInfo.class,  ids );
-//		Business business = new Business( emc );
-//		return business.getAppInfoFactory().list( ids );
-//	}
 	public List<String> listAllIds(EntityManagerContainer emc, String documentType ) throws Exception {
 		Business business = new Business( emc );
 		return business.getAppInfoFactory().listAllIds(documentType);
 	}
+	
 	public List<AppInfo> listAll(EntityManagerContainer emc, String documentType) throws Exception {
 		Business business = new Business( emc );
 		return business.getAppInfoFactory().listAll(documentType);
-	}
-
-	public List<AppInfo> listInReviewAppInfoList(EntityManagerContainer emc) throws Exception {
-		Business business = new Business( emc );
-		return business.getAppInfoFactory().listInReviewAppInfoList();
 	}
 	
 	@SuppressWarnings("unchecked")

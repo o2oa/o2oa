@@ -7,7 +7,6 @@ import com.x.cms.assemble.control.queue.DataImportStatus;
 import com.x.cms.assemble.control.queue.QueueDataRowImport;
 import com.x.cms.assemble.control.queue.QueueDocumentDelete;
 import com.x.cms.assemble.control.queue.QueueDocumentUpdate;
-import com.x.cms.assemble.control.timertask.Timertask_DocumentReviewTask;
 import com.x.cms.assemble.control.timertask.Timertask_LogRecordCheckTask;
 
 public class ThisApplication {
@@ -33,8 +32,6 @@ public class ThisApplication {
 		context().startQueue( queueDocumentUpdate );
 		// 每天凌晨2点执行一次
 		context.schedule( Timertask_LogRecordCheckTask.class, "0 0 2 * * ?" );
-		//每2分钟执行一次
-		context.schedule(Timertask_DocumentReviewTask.class, "0 */2 * * * ?");
 	}
 
 	public static void destroy() {

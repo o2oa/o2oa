@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
@@ -77,6 +79,7 @@ public class AttendanceDetailMobile extends SliceJpaObject {
 	private String recordDateString;
 
 	@FieldDescribe("打卡记录日期")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "xrecordDate")
 	@CheckPersist(allowEmpty = true)
 	private Date recordDate;

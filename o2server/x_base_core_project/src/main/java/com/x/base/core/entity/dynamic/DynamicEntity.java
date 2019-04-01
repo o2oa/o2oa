@@ -2,6 +2,7 @@ package com.x.base.core.entity.dynamic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -15,33 +16,27 @@ public class DynamicEntity extends GsonPropertyObject {
 	public static final String FIELDNAME_SUFFIX = "_FIELDNAME";
 	public static final String JAR_NAME = "x_query_dynamic_entity";
 
+	public static final String TYPE_string = "string";
+	public static final String TYPE_integer = "integer";
+	public static final String TYPE_long = "long";
+	public static final String TYPE_double = "double";
+	public static final String TYPE_boolean = "boolean";
+	public static final String TYPE_date = "date";
+	public static final String TYPE_time = "time";
+	public static final String TYPE_dateTime = "dateTime";
+
+	public static final String TYPE_stringList = "stringList";
+	public static final String TYPE_integerList = "integerList";
+	public static final String TYPE_longList = "longList";
+	public static final String TYPE_doubleList = "doubleList";
+	public static final String TYPE_booleanList = "booleanList";
+
+	public static final String TYPE_stringLob = "stringLob";
+	public static final String TYPE_stringMap = "stringMap";
+
 	private String name;
 
-	private List<StringField> stringFieldList;
-	private List<IntegerField> integerFieldList;
-	private List<LongField> longFieldList;
-	private List<DoubleField> doubleFieldList;
-	private List<BooleanField> booleanFieldList;
-	private List<DateField> dateFieldList;
-	private List<TimeField> timeFieldList;
-	private List<DateTimeField> dateTimeFieldList;
-
-	private List<StringField> listStringFieldList;
-	private List<IntegerField> listIntegerFieldList;
-	private List<LongField> listLongFieldList;
-	private List<DoubleField> listDoubleFieldList;
-	private List<BooleanField> listBooleanFieldList;
-	private List<DateTimeField> listDateTimeFieldList;
-
-	private List<StringLobField> stringLobFieldList;
-	private List<StringMapField> stringMapFieldList;
-
-	public void addStringField(String name, String description) {
-		StringField field = new StringField();
-		field.setName(name);
-		field.setDescription(description);
-		this.stringFieldList.add(field);
-	}
+	private List<Field> fieldList = new ArrayList<>();
 
 	public String tableName() throws Exception {
 		if (StringUtils.isEmpty(name)) {
@@ -70,24 +65,7 @@ public class DynamicEntity extends GsonPropertyObject {
 	}
 
 	public DynamicEntity() {
-		this.stringFieldList = new ArrayList<>();
-		this.integerFieldList = new ArrayList<>();
-		this.longFieldList = new ArrayList<>();
-		this.doubleFieldList = new ArrayList<>();
-		this.booleanFieldList = new ArrayList<>();
-		this.dateFieldList = new ArrayList<>();
-		this.timeFieldList = new ArrayList<>();
-		this.dateTimeFieldList = new ArrayList<>();
-
-		this.listStringFieldList = new ArrayList<>();
-		this.listIntegerFieldList = new ArrayList<>();
-		this.listLongFieldList = new ArrayList<>();
-		this.listDoubleFieldList = new ArrayList<>();
-		this.listBooleanFieldList = new ArrayList<>();
-		this.listDateTimeFieldList = new ArrayList<>();
-
-		this.stringLobFieldList = new ArrayList<>();
-		this.stringMapFieldList = new ArrayList<>();
+		this.fieldList = new ArrayList<>();
 	}
 
 	public DynamicEntity(String name) {
@@ -95,9 +73,85 @@ public class DynamicEntity extends GsonPropertyObject {
 		this.name = name;
 	}
 
-	public static abstract class Field {
+	public List<Field> stringFields() {
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_string))
+				.collect(Collectors.toList());
+	}
+
+	public List<Field> integerFields() {
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_integer))
+				.collect(Collectors.toList());
+	}
+
+	public List<Field> longFields() {
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_long))
+				.collect(Collectors.toList());
+	}
+
+	public List<Field> doubleFields() {
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_double))
+				.collect(Collectors.toList());
+	}
+
+	public List<Field> booleanFields() {
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_boolean))
+				.collect(Collectors.toList());
+	}
+
+	public List<Field> dateFields() {
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_date))
+				.collect(Collectors.toList());
+	}
+
+	public List<Field> timeFields() {
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_time))
+				.collect(Collectors.toList());
+	}
+
+	public List<Field> dateTimeFields() {
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_dateTime))
+				.collect(Collectors.toList());
+	}
+
+	public List<Field> stringListFields() {
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_stringList))
+				.collect(Collectors.toList());
+	}
+
+	public List<Field> integerListFields() {
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_integerList))
+				.collect(Collectors.toList());
+	}
+
+	public List<Field> longListFields() {
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_longList))
+				.collect(Collectors.toList());
+	}
+
+	public List<Field> doubleListFields() {
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_doubleList))
+				.collect(Collectors.toList());
+	}
+
+	public List<Field> booleanListFields() {
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_booleanList))
+				.collect(Collectors.toList());
+	}
+
+	public List<Field> stringLobFields() {
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_stringLob))
+				.collect(Collectors.toList());
+	}
+
+	public List<Field> stringMapFields() {
+		return this.fieldList.stream().filter(o -> StringUtils.equals(o.getType(), TYPE_stringMap))
+				.collect(Collectors.toList());
+	}
+
+	public static class Field {
 		private String name;
 		private String description;
+		private String type;
 
 		public String fieldName() {
 			return this.name + FIELDNAME_SUFFIX;
@@ -118,36 +172,14 @@ public class DynamicEntity extends GsonPropertyObject {
 		public void setDescription(String description) {
 			this.description = description;
 		}
-	}
 
-	public static class StringField extends Field {
-	}
+		public String getType() {
+			return type;
+		}
 
-	public static class IntegerField extends Field {
-	}
-
-	public static class LongField extends Field {
-	}
-
-	public static class DoubleField extends Field {
-	}
-
-	public static class BooleanField extends Field {
-	}
-
-	public static class DateField extends Field {
-	}
-
-	public static class TimeField extends Field {
-	}
-
-	public static class DateTimeField extends Field {
-	}
-
-	public static class StringLobField extends Field {
-	}
-
-	public static class StringMapField extends Field {
+		public void setType(String type) {
+			this.type = type;
+		}
 	}
 
 	public String getName() {
@@ -158,132 +190,12 @@ public class DynamicEntity extends GsonPropertyObject {
 		this.name = name;
 	}
 
-	public List<StringField> getStringFieldList() {
-		return stringFieldList;
+	public List<Field> getFieldList() {
+		return fieldList;
 	}
 
-	public void setStringFieldList(List<StringField> stringFieldList) {
-		this.stringFieldList = stringFieldList;
-	}
-
-	public List<IntegerField> getIntegerFieldList() {
-		return integerFieldList;
-	}
-
-	public void setIntegerFieldList(List<IntegerField> integerFieldList) {
-		this.integerFieldList = integerFieldList;
-	}
-
-	public List<LongField> getLongFieldList() {
-		return longFieldList;
-	}
-
-	public void setLongFieldList(List<LongField> longFieldList) {
-		this.longFieldList = longFieldList;
-	}
-
-	public List<DoubleField> getDoubleFieldList() {
-		return doubleFieldList;
-	}
-
-	public void setDoubleFieldList(List<DoubleField> doubleFieldList) {
-		this.doubleFieldList = doubleFieldList;
-	}
-
-	public List<BooleanField> getBooleanFieldList() {
-		return booleanFieldList;
-	}
-
-	public void setBooleanFieldList(List<BooleanField> booleanFieldList) {
-		this.booleanFieldList = booleanFieldList;
-	}
-
-	public List<DateField> getDateFieldList() {
-		return dateFieldList;
-	}
-
-	public void setDateFieldList(List<DateField> dateFieldList) {
-		this.dateFieldList = dateFieldList;
-	}
-
-	public List<TimeField> getTimeFieldList() {
-		return timeFieldList;
-	}
-
-	public void setTimeFieldList(List<TimeField> timeFieldList) {
-		this.timeFieldList = timeFieldList;
-	}
-
-	public List<DateTimeField> getDateTimeFieldList() {
-		return dateTimeFieldList;
-	}
-
-	public void setDateTimeFieldList(List<DateTimeField> dateTimeFieldList) {
-		this.dateTimeFieldList = dateTimeFieldList;
-	}
-
-	public List<StringField> getListStringFieldList() {
-		return listStringFieldList;
-	}
-
-	public void setListStringFieldList(List<StringField> listStringFieldList) {
-		this.listStringFieldList = listStringFieldList;
-	}
-
-	public List<IntegerField> getListIntegerFieldList() {
-		return listIntegerFieldList;
-	}
-
-	public void setListIntegerFieldList(List<IntegerField> listIntegerFieldList) {
-		this.listIntegerFieldList = listIntegerFieldList;
-	}
-
-	public List<LongField> getListLongFieldList() {
-		return listLongFieldList;
-	}
-
-	public void setListLongFieldList(List<LongField> listLongFieldList) {
-		this.listLongFieldList = listLongFieldList;
-	}
-
-	public List<DoubleField> getListDoubleFieldList() {
-		return listDoubleFieldList;
-	}
-
-	public void setListDoubleFieldList(List<DoubleField> listDoubleFieldList) {
-		this.listDoubleFieldList = listDoubleFieldList;
-	}
-
-	public List<BooleanField> getListBooleanFieldList() {
-		return listBooleanFieldList;
-	}
-
-	public void setListBooleanFieldList(List<BooleanField> listBooleanFieldList) {
-		this.listBooleanFieldList = listBooleanFieldList;
-	}
-
-	public List<DateTimeField> getListDateTimeFieldList() {
-		return listDateTimeFieldList;
-	}
-
-	public void setListDateTimeFieldList(List<DateTimeField> listDateTimeFieldList) {
-		this.listDateTimeFieldList = listDateTimeFieldList;
-	}
-
-	public List<StringLobField> getStringLobFieldList() {
-		return stringLobFieldList;
-	}
-
-	public void setStringLobFieldList(List<StringLobField> stringLobFieldList) {
-		this.stringLobFieldList = stringLobFieldList;
-	}
-
-	public List<StringMapField> getStringMapFieldList() {
-		return stringMapFieldList;
-	}
-
-	public void setStringMapFieldList(List<StringMapField> stringMapFieldList) {
-		this.stringMapFieldList = stringMapFieldList;
+	public void setFieldList(List<Field> fieldList) {
+		this.fieldList = fieldList;
 	}
 
 }

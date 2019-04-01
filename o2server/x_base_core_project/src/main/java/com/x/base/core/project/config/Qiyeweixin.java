@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.connection.HttpConnection;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DefaultCharset;
 
@@ -141,7 +142,7 @@ public class Qiyeweixin extends ConfigObject {
 		this.apiAddress = oapiAddress;
 	}
 
-	public static class CorpAccessTokenResp {
+	public static class CorpAccessTokenResp extends GsonPropertyObject {
 
 		// {"":7200,"":"ok","":"1601c97b17893fbfa4218ce2151a0692","":0}
 

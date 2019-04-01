@@ -130,6 +130,14 @@ public class XGsonBuilder {
 		return null;
 	}
 
+	public static <T> T extract(JsonElement jsonElement, String name, Class<T> cls, T defaultValue) {
+		JsonElement element = extract(jsonElement, name);
+		if (element == null || element.isJsonNull()) {
+			return defaultValue;
+		}
+		return instance().fromJson(element, cls);
+	}
+
 	public static boolean isJson(String json) {
 		if (StringUtils.isBlank(json)) {
 			return false;

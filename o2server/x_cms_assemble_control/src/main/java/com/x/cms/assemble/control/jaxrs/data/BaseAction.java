@@ -18,7 +18,6 @@ import com.x.cms.assemble.control.service.CategoryInfoServiceAdv;
 import com.x.cms.assemble.control.service.DocumentInfoServiceAdv;
 import com.x.cms.assemble.control.service.UserManagerService;
 import com.x.cms.core.entity.Document;
-import com.x.cms.core.entity.tools.LogUtil;
 import com.x.query.core.entity.Item;
 
 import net.sf.ehcache.Ehcache;

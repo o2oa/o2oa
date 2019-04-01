@@ -33,7 +33,7 @@ public class ActionListWithCondition extends BaseAction {
 		List<Wo> wraps = null;
 		List<Calendar> calendarList = null;
 		Boolean check = true;
-		Boolean manager = false;
+		//Boolean manager = false;
 		List<String> unitNames = null;
 		List<String> groupNames = null;
 		String personName = effectivePerson.getDistinguishedName();

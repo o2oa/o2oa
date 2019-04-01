@@ -13,6 +13,8 @@ import javax.persistence.Lob;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
@@ -74,6 +76,7 @@ public class AttendanceImportFileInfo extends SliceJpaObject {
 	 */
 
 	@FieldDescribe("最后更新时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "xlastUpdateTime")
 	@Index(name = TABLE + "_lastUpdateTime")
 	@CheckPersist(allowEmpty = false)
@@ -170,10 +173,12 @@ public class AttendanceImportFileInfo extends SliceJpaObject {
 	private Long processCount = 0L;
 
 	@FieldDescribe("数据开始日期")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "xstartDate")
 	private Date startDate = null;
 
 	@FieldDescribe("数据结束日期")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "xendDate")
 	private Date endDate = null;
 
