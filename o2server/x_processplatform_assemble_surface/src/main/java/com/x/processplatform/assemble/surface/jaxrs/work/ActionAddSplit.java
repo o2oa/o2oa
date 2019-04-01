@@ -25,7 +25,6 @@ import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
-import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 
 class ActionAddSplit extends BaseAction {
 
@@ -48,35 +47,18 @@ class ActionAddSplit extends BaseAction {
 					|| (!BooleanUtils.isTrue(work.getSplitting()))) {
 				throw new ExceptionCannotAddSplit(work.getId());
 			}
-			List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, work.getJob());
-			WorkLog currentWorkLog = workLogs.stream()
-					.filter(o -> StringUtils.equals(o.getFromActivityToken(), work.getActivityToken())).findFirst()
-					.orElse(null);
-			if (null == currentWorkLog) {
-				throw new ExceptionCurrentWorkLogNotFound(work.getId());
-			}
+
+			List<WorkLog> workLogs = this.listWorkLog(business, work);
+
 			WorkLogTree tree = new WorkLogTree(workLogs);
-			WorkLogTree.Node currentNode = tree.find(currentWorkLog);
 
-			WorkLogTree.Nodes upManualNodes = currentNode.upTo(ActivityType.manual, ActivityType.agent,
-					ActivityType.choice, ActivityType.delay, ActivityType.delay, ActivityType.embed,
-					ActivityType.invoke, ActivityType.message, ActivityType.parallel, ActivityType.service,
-					ActivityType.split);
+			WorkLog workLog = workLogs.stream().filter(o -> StringUtils.equals(o.getId(), wi.getWorkLog())).findFirst()
+					.orElse(null);
 
-			if (upManualNodes.isEmpty()) {
-				throw new ExceptionUpManualNotFound(work.getId());
+			if (null == workLog) {
+				throw new ExceptionEntityNotExist(wi.getWorkLog(), WorkLog.class);
 			}
 
-			for (WorkLogTree.Node o : upManualNodes) {
-
-				if (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
-						effectivePerson.getDistinguishedName(), TaskCompleted.activityToken_FIELDNAME,
-						o.getWorkLog().getFromActivityToken()) > 0) {
-					break;
-				}
-
-				throw new ExceptionAccessDenied(effectivePerson);
-			}
 
 			Wo wo = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 					Applications.joinQueryUri("work", work.getId(), "add", "split"), wi).getData(Wo.class);
@@ -87,10 +69,17 @@ class ActionAddSplit extends BaseAction {
 		}
 	}
 
+	private List<WorkLog> listWorkLog(Business business, Work work) throws Exception {
+		return business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.job_FIELDNAME, work.getJob());
+	}
+
 	public static class Wi extends GsonPropertyObject {
 
 		@FieldDescribe("添加的拆分值.")
 		private String splitValue;
+
+		@FieldDescribe("拆分日志.")
+		private String workLog;
 
 		public String getSplitValue() {
 			return splitValue;
@@ -98,6 +87,14 @@ class ActionAddSplit extends BaseAction {
 
 		public void setSplitValue(String splitValue) {
 			this.splitValue = splitValue;
+		}
+
+		public String getWorkLog() {
+			return workLog;
+		}
+
+		public void setWorkLog(String workLog) {
+			this.workLog = workLog;
 		}
 
 	}

@@ -12,8 +12,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.OrderColumn;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,16 +21,17 @@ import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
 
-import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.CheckRemove;
+import com.x.base.core.entity.annotation.CitationExist;
 import com.x.base.core.entity.annotation.CitationNotExist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.query.core.entity.PersistenceProperties;
+import com.x.query.core.entity.Query;
 
 @Entity
 @ContainerEntity
@@ -46,6 +45,10 @@ public class Table extends SliceJpaObject {
 	private static final long serialVersionUID = -5610293696763235753L;
 
 	private static final String TABLE = PersistenceProperties.Schema.Table.table;
+
+	public static final String STATUS_build = "build";
+
+	public static final String STATUS_draft = "draft";
 
 	public String getId() {
 		return id;
@@ -96,12 +99,19 @@ public class Table extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String description;
 
+	public static final String query_FIELDNAME = "query";
+	@FieldDescribe("所属查询.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + query_FIELDNAME)
+	@Index(name = TABLE + ColumnNamePrefix + query_FIELDNAME)
+	@CheckPersist(allowEmpty = false, citationExists = { @CitationExist(type = Query.class) })
+	private String query;
+
 	public static final String readPersonList_FIELDNAME = "readPersonList";
 	@FieldDescribe("可以访问数据的用户.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + readPersonList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + readPersonList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + readPersonList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + readPersonList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -112,7 +122,7 @@ public class Table extends SliceJpaObject {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + readUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + readUnitList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + readUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + readUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -123,7 +133,7 @@ public class Table extends SliceJpaObject {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + editPersonList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + editPersonList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + editPersonList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + editPersonList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -134,7 +144,7 @@ public class Table extends SliceJpaObject {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + editUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + editUnitList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + editUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + editUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -165,6 +175,20 @@ public class Table extends SliceJpaObject {
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String data;
+
+	public static final String draftData_FIELDNAME = "draftData";
+	@FieldDescribe("草稿表结构方案.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + draftData_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String draftData;
+
+	public static final String status_FIELDNAME = "status";
+	@FieldDescribe("状态")
+	@CheckPersist(allowEmpty = false)
+	@Column(length = length_32B, name = ColumnNamePrefix + status_FIELDNAME)
+	private String status;
 
 	public String getName() {
 		return name;
@@ -252,6 +276,30 @@ public class Table extends SliceJpaObject {
 
 	public void setAlias(String alias) {
 		this.alias = alias;
+	}
+
+	public String getQuery() {
+		return query;
+	}
+
+	public void setQuery(String query) {
+		this.query = query;
+	}
+
+	public String getDraftData() {
+		return draftData;
+	}
+
+	public void setDraftData(String draftData) {
+		this.draftData = draftData;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }

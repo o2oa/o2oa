@@ -1,7 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.data;
 
-import org.apache.commons.lang3.BooleanUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -36,8 +34,7 @@ class ActionUpdateWithWork extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
-			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
+			if (!business.editable(effectivePerson, work)) {
 				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
 						work.getId());
 			}

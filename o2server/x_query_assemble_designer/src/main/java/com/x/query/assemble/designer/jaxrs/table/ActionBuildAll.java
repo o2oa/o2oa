@@ -53,7 +53,7 @@ class ActionBuildAll extends BaseAction {
 			File target = Config.dir_local_temp_dynamic_target(true);
 			FileUtils.cleanDirectory(src);
 			FileUtils.cleanDirectory(target);
-			List<Table> tables = emc.listAll(Table.class);
+			List<Table> tables = emc.listEqual(Table.class, Table.status_FIELDNAME, Table.STATUS_build);
 			for (Table table : tables) {
 				DynamicEntity dynamicEntity = XGsonBuilder.instance().fromJson(table.getData(), DynamicEntity.class);
 				dynamicEntity.setName(table.getName());

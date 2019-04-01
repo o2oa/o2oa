@@ -169,10 +169,17 @@ public class ActionUpdate extends ActionBase {
 	}
 
 	private void unzip(File file) throws Exception {
-		File dir = new File(Config.base(), "local/update");
-		FileUtils.forceMkdir(dir);
+		File dir = Config.dir_local_update(true);
 		FileUtils.cleanDirectory(dir);
 		JarTools.unjar(file, "", dir, true);
+		File dir_local = new File(dir, "local");
+		if (dir_local.exists()) {
+			FileUtils.forceDelete(dir_local);
+		}
+		File dir_config = new File(dir, "config");
+		if (dir_config.exists()) {
+			FileUtils.forceDelete(dir_config);
+		}
 	}
 
 }

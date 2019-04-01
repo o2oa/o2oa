@@ -13,6 +13,8 @@ import com.x.organization.core.express.Organization;
 import com.x.query.assemble.designer.factory.QueryFactory;
 import com.x.query.assemble.designer.factory.RevealFactory;
 import com.x.query.assemble.designer.factory.StatFactory;
+import com.x.query.assemble.designer.factory.StatementFactory;
+import com.x.query.assemble.designer.factory.TableFactory;
 import com.x.query.assemble.designer.factory.ViewFactory;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.schema.Statement;
@@ -55,6 +57,24 @@ public class Business {
 			this.view = new ViewFactory(this);
 		}
 		return view;
+	}
+
+	private TableFactory table;
+
+	public TableFactory table() throws Exception {
+		if (null == this.table) {
+			this.table = new TableFactory(this);
+		}
+		return table;
+	}
+	
+	private StatementFactory statement;
+
+	public StatementFactory statement() throws Exception {
+		if (null == this.statement) {
+			this.statement = new StatementFactory(this);
+		}
+		return statement;
 	}
 
 	private StatFactory stat;

@@ -44,8 +44,8 @@ class ActionList extends BaseAction {
 
 			ListTools.groupStick(wos, pageList, "id", "portal", "pageList");
 			ListTools.groupStick(wos, scriptList, "id", "portal", "scriptList");
+			ListTools.groupStick(wos, fileList, "id", "portal", "fileList");
 			ListTools.groupStick(wos, widgetList, "id", "portal", "widgetList");
-
 			wos = wos.stream()
 					.sorted(Comparator.comparing(Wo::getAlias, Comparator.nullsLast(String::compareTo))
 							.thenComparing(Wo::getName, Comparator.nullsLast(String::compareTo)))

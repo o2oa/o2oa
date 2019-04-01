@@ -7,6 +7,8 @@ import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.query.assemble.surface.Business;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.View;
@@ -15,8 +17,12 @@ import com.x.query.core.express.plan.Runtime;
 
 class ActionExecute extends BaseAction {
 
+	private static Logger logger = LoggerFactory.getLogger(ActionExecute.class);
+
 	ActionResult<Plan> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+		logger.debug("jsonElement:{}.", jsonElement);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+
 			ActionResult<Plan> result = new ActionResult<>();
 			Business business = new Business(emc);
 			View view = business.pick(id, View.class);

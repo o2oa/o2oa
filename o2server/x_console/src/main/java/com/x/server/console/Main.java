@@ -790,7 +790,6 @@ public class Main {
 				method.invoke(urlClassLoader, new Object[] { file.toURI().toURL() });
 			}
 		}
-
 		/* load temp class */
 		method.invoke(urlClassLoader, new Object[] { Config.dir_local_temp_classes().toURI().toURL() });
 	}

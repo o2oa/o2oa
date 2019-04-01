@@ -77,6 +77,8 @@ class ActionAssignCreate extends BaseAction {
 			work.setCreatorIdentity(identityDn);
 			work.setCreatorPerson(business.organization().person().getWithIdentity(identityDn));
 			work.setCreatorUnit(business.organization().unit().getWithIdentity(identityDn));
+			/* 通过赋值调用的是不能被作为草稿删除的 */
+			work.setDataChanged(true);
 			if (ListTools.isNotEmpty(wi.getAttachmentList())) {
 				emc.beginTransaction(Attachment.class);
 				/** 这个attachmentList要手动初始化 */

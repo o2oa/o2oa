@@ -14,6 +14,8 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.DataServer;
+import com.x.base.core.project.config.Dingding;
+import com.x.base.core.project.config.Qiyeweixin;
 import com.x.base.core.project.config.Token;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -28,7 +30,16 @@ public class ActionSetToken extends BaseAction {
 		if (!StringUtils.equals(wi.getPassword(), Config.token().getPassword())) {
 			this.changeInternalDataServerPassword(Config.token().getPassword(), wi.getPassword());
 		}
-		wi.save();
+		Wi.copier.copy(wi, Config.token());
+		Config.token().save();
+		if (null != wi.getDingding()) {
+			WiDingding.copier.copy(wi.getDingding(), Config.dingding());
+			Config.dingding().save();
+		}
+		if (null != wi.getQiyeweixin()) {
+			WiQiyeweixin.copier.copy(wi.getQiyeweixin(), Config.qiyeweixin());
+			Config.qiyeweixin().save();
+		}
 		this.configFlush(effectivePerson);
 		Wo wo = new Wo();
 		wo.setValue(true);
@@ -55,6 +66,40 @@ public class ActionSetToken extends BaseAction {
 	public static class Wi extends Token {
 
 		static WrapCopier<Wi, Token> copier = WrapCopierFactory.wi(Wi.class, Token.class, null, null);
+
+		private WiDingding dingding;
+
+		private WiQiyeweixin qiyeweixin;
+
+		public WiDingding getDingding() {
+			return dingding;
+		}
+
+		public void setDingding(WiDingding dingding) {
+			this.dingding = dingding;
+		}
+
+		public WiQiyeweixin getQiyeweixin() {
+			return qiyeweixin;
+		}
+
+		public void setQiyeweixin(WiQiyeweixin qiyeweixin) {
+			this.qiyeweixin = qiyeweixin;
+		}
+
+	}
+
+	public static class WiDingding extends Dingding {
+
+		static WrapCopier<WiDingding, Dingding> copier = WrapCopierFactory.wi(WiDingding.class, Dingding.class, null,
+				null);
+
+	}
+
+	public static class WiQiyeweixin extends Qiyeweixin {
+
+		static WrapCopier<WiQiyeweixin, Qiyeweixin> copier = WrapCopierFactory.wi(WiQiyeweixin.class, Qiyeweixin.class,
+				null, null);
 
 	}
 

@@ -223,14 +223,14 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 	public static class WoTaskCompleted extends TaskCompleted {
 
 		private static final long serialVersionUID = -4432508672641778924L;
-
+		
 		static WrapCopier<TaskCompleted, WoTaskCompleted> copier = WrapCopierFactory.wo(TaskCompleted.class,
 				WoTaskCompleted.class,
 				ListTools.toList(TaskCompleted.id_FIELDNAME, TaskCompleted.person_FIELDNAME,
 						TaskCompleted.unit_FIELDNAME, TaskCompleted.routeName_FIELDNAME,
 						TaskCompleted.opinion_FIELDNAME, TaskCompleted.startTime_FIELDNAME,
 						TaskCompleted.activityName_FIELDNAME, TaskCompleted.completedTime_FIELDNAME,
-						Task.activityToken_FIELDNAME),
+						TaskCompleted.activityToken_FIELDNAME, TaskCompleted.mediaOpinion_FIELDNAME),
 				null);
 	}
 
@@ -240,7 +240,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 		static WrapCopier<Read, WoRead> copier = WrapCopierFactory.wo(Read.class, WoRead.class,
 				ListTools.toList(Read.id_FIELDNAME, Read.person_FIELDNAME, Read.unit_FIELDNAME, Read.opinion_FIELDNAME,
-						Read.startTime_FIELDNAME, Read.activityName_FIELDNAME, Task.activityToken_FIELDNAME),
+						Read.startTime_FIELDNAME, Read.activityName_FIELDNAME, Read.activityToken_FIELDNAME),
 				null);
 	}
 
@@ -253,7 +253,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 				ListTools.toList(ReadCompleted.id_FIELDNAME, ReadCompleted.person_FIELDNAME,
 						ReadCompleted.unit_FIELDNAME, ReadCompleted.opinion_FIELDNAME,
 						ReadCompleted.startTime_FIELDNAME, ReadCompleted.activityName_FIELDNAME,
-						ReadCompleted.completedTime_FIELDNAME, Task.activityToken_FIELDNAME),
+						ReadCompleted.completedTime_FIELDNAME, ReadCompleted.activityToken_FIELDNAME),
 				null);
 	}
 

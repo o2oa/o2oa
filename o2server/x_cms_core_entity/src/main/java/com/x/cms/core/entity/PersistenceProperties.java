@@ -72,31 +72,8 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static final String table = "CMS_REVIEW";
 	}
 	
-	/**
-	 * 不用了，后续会删除
-	 * @author O2LEE
-	 *
-	 */
-	public static class AppCategoryAdmin {
-		public static final String table = "CMS_APPCATEGORY_ADMIN";
-	}
-	
-	/**
-	 * 不用了，后续会删除
-	 * @author O2LEE
-	 *
-	 */
-	public static class AppCategoryPermission {
-		public static final String table = "CMS_APPCATEGORY_PERMISSION";
-	}
-	
-	/**
-	 * 不用了，后续会删除
-	 * @author O2LEE
-	 *
-	 */
-	public static class DocumentPermission {
-		public static final String table = "CMS_DOCUMENT_PERMISSION";
+	public static class ReadRemind {
+		public static final String table = "CMS_READREMIND";
 	}
 
 }

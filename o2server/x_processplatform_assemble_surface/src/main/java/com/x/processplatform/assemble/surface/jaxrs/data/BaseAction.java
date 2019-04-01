@@ -15,6 +15,7 @@ import com.x.base.core.entity.dataitem.ItemType;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
@@ -27,9 +28,7 @@ import com.x.query.core.entity.Item;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	private static final String title_path = "title";
 	private static final String subject_path = "subject";
-	private static final String serial_path = "serial";
 
 	protected Gson gson = XGsonBuilder.instance();
 
@@ -43,11 +42,11 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	/** 将data中的Title 和 serial 字段同步到work中 */
 	void updateTitleSerial(Business business, Work work, JsonElement jsonElement) throws Exception {
-		String title = XGsonBuilder.extractString(jsonElement, title_path);
+		String title = XGsonBuilder.extractString(jsonElement, Work.title_FIELDNAME);
 		if (null == title) {
 			title = XGsonBuilder.extractString(jsonElement, subject_path);
 		}
-		String serial = XGsonBuilder.extractString(jsonElement, serial_path);
+		String serial = XGsonBuilder.extractString(jsonElement, Work.serial_FIELDNAME);
 		/* 如果有数据就将数据覆盖到work task taskCompleted read readCompleted review 中 */
 		if (((null != title) && (!Objects.equals(title, work.getTitle())))
 				|| ((null != serial) && (!Objects.equals(serial, work.getSerial())))) {
@@ -57,40 +56,55 @@ abstract class BaseAction extends StandardJaxrsAction {
 			business.entityManagerContainer().beginTransaction(Read.class);
 			business.entityManagerContainer().beginTransaction(ReadCompleted.class);
 			business.entityManagerContainer().beginTransaction(Review.class);
-			business.entityManagerContainer().beginTransaction(Item.class);
+
+			List<Task> tasks = business.entityManagerContainer().listEqual(Task.class, Task.job_FIELDNAME,
+					work.getJob());
+			List<TaskCompleted> taskCompleteds = business.entityManagerContainer().listEqual(TaskCompleted.class,
+					TaskCompleted.job_FIELDNAME, work.getJob());
+			List<Read> reads = business.entityManagerContainer().listEqual(Read.class, Read.job_FIELDNAME,
+					work.getJob());
+			List<ReadCompleted> readCompleteds = business.entityManagerContainer().listEqual(ReadCompleted.class,
+					ReadCompleted.job_FIELDNAME, work.getJob());
+			List<Review> reviews = business.entityManagerContainer().listEqual(Review.class, Review.job_FIELDNAME,
+					work.getJob());
+
 			if ((null != title) && (!Objects.equals(title, work.getTitle()))) {
 				work.setTitle(title);
+				for (Task o : tasks) {
+					o.setTitle(title);
+				}
+				for (TaskCompleted o : taskCompleteds) {
+					o.setTitle(title);
+				}
+				for (Read o : reads) {
+					o.setTitle(title);
+				}
+				for (ReadCompleted o : readCompleteds) {
+					o.setTitle(title);
+				}
+				for (Review o : reviews) {
+					o.setTitle(title);
+				}
 			}
+
 			if ((null != serial) && (!Objects.equals(serial, work.getSerial()))) {
 				work.setSerial(serial);
+				for (Task o : tasks) {
+					o.setSerial(serial);
+				}
+				for (TaskCompleted o : taskCompleteds) {
+					o.setSerial(serial);
+				}
+				for (Read o : reads) {
+					o.setSerial(serial);
+				}
+				for (ReadCompleted o : readCompleteds) {
+					o.setSerial(serial);
+				}
+				for (Review o : reviews) {
+					o.setSerial(serial);
+				}
 			}
-			for (Task o : business.entityManagerContainer().list(Task.class, business.task().listWithWork(work))) {
-				o.setTitle(work.getTitle());
-				o.setSerial(work.getSerial());
-			}
-			for (TaskCompleted o : business.entityManagerContainer().list(TaskCompleted.class,
-					business.taskCompleted().listWithWork(work))) {
-				o.setTitle(work.getTitle());
-				o.setSerial(work.getSerial());
-			}
-			for (Read o : business.entityManagerContainer().list(Read.class, business.read().listWithWork(work))) {
-				o.setTitle(work.getTitle());
-				o.setSerial(work.getSerial());
-			}
-			for (ReadCompleted o : business.entityManagerContainer().list(ReadCompleted.class,
-					business.readCompleted().listWithWork(work))) {
-				o.setTitle(work.getTitle());
-				o.setSerial(work.getSerial());
-			}
-			for (Review o : business.entityManagerContainer().list(Review.class,
-					business.review().listWithWork(work))) {
-				o.setTitle(work.getTitle());
-				o.setSerial(work.getSerial());
-			}
-			// for (Item o : business.item().listWithJobWithPath(work.getJob())) {
-			// o.setTitle(work.getTitle());
-			// o.setSerial(work.getSerial());
-			// }
 			/** 这里必须先提交掉,不然后面的获取会得到不一致的状态 */
 			/**
 			 * <openjpa-2.4.3-SNAPSHOT-r422266:1777109 nonfatal user error>
@@ -104,12 +118,11 @@ abstract class BaseAction extends StandardJaxrsAction {
 	void updateData(Business business, Work work, JsonElement jsonElement, String... paths) throws Exception {
 		if (jsonElement.isJsonObject()) {
 			JsonObject jsonObject = jsonElement.getAsJsonObject();
-			if (jsonObject.has(Data.WORK_PROPERTY)) {
-				jsonObject.remove(Data.WORK_PROPERTY);
-			}
-			if (jsonObject.has(Data.ATTACHMENTLIST_PROPERTY)) {
-				jsonObject.remove(Data.ATTACHMENTLIST_PROPERTY);
-			}
+
+			jsonObject.add(Data.WORK_PROPERTY, gson.toJsonTree(Data.DataWork.workCopier.copy(work)));
+			jsonObject.add(Data.ATTACHMENTLIST_PROPERTY,
+					gson.toJsonTree(this.listDataAttachment(business, work.getJob())));
+
 			jsonElement = jsonObject;
 		}
 		DataItemConverter<Item> converter = new DataItemConverter<>(Item.class);
@@ -138,12 +151,11 @@ abstract class BaseAction extends StandardJaxrsAction {
 			throws Exception {
 		if (jsonElement.isJsonObject()) {
 			JsonObject jsonObject = jsonElement.getAsJsonObject();
-			if (jsonObject.has(Data.WORK_PROPERTY)) {
-				jsonObject.remove(Data.WORK_PROPERTY);
-			}
-			if (jsonObject.has(Data.ATTACHMENTLIST_PROPERTY)) {
-				jsonObject.remove(Data.ATTACHMENTLIST_PROPERTY);
-			}
+
+			jsonObject.add(Data.WORK_PROPERTY, gson.toJsonTree(Data.DataWork.workCompletedCopier.copy(workCompleted)));
+			jsonObject.add(Data.ATTACHMENTLIST_PROPERTY,
+					gson.toJsonTree(this.listDataAttachment(business, workCompleted.getJob())));
+
 			jsonElement = jsonObject;
 		}
 		DataItemConverter<Item> converter = new DataItemConverter<>(Item.class);
@@ -170,12 +182,11 @@ abstract class BaseAction extends StandardJaxrsAction {
 	void createData(Business business, Work work, JsonElement jsonElement, String... paths) throws Exception {
 		if (jsonElement.isJsonObject()) {
 			JsonObject jsonObject = jsonElement.getAsJsonObject();
-			if (jsonObject.has(Data.WORK_PROPERTY)) {
-				jsonObject.remove(Data.WORK_PROPERTY);
-			}
-			if (jsonObject.has(Data.ATTACHMENTLIST_PROPERTY)) {
-				jsonObject.remove(Data.ATTACHMENTLIST_PROPERTY);
-			}
+
+			jsonObject.add(Data.WORK_PROPERTY, gson.toJsonTree(Data.DataWork.workCopier.copy(work)));
+			jsonObject.add(Data.ATTACHMENTLIST_PROPERTY,
+					gson.toJsonTree(this.listDataAttachment(business, work.getJob())));
+
 			jsonElement = jsonObject;
 		}
 		String[] parentPaths = new String[] { "", "", "", "", "", "", "", "" };
@@ -235,7 +246,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			business.entityManagerContainer().remove(o);
 		}
 		if (paths.length > 0) {
-			if (NumberUtils.isNumber(paths[paths.length - 1])) {
+			if (NumberUtils.isCreatable(paths[paths.length - 1])) {
 				int position = paths.length - 1;
 				for (Item o : business.item().listWithJobWithPathWithAfterLocation(work.getJob(),
 						NumberUtils.toInt(paths[position]), paths)) {
@@ -260,5 +271,10 @@ abstract class BaseAction extends StandardJaxrsAction {
 		o.setDistributeFactor(workCompleted.getDistributeFactor());
 		o.setBundle(workCompleted.getJob());
 		o.setItemCategory(ItemCategory.pp);
+	}
+
+	private List<Data.DataAttachment> listDataAttachment(Business business, String job) throws Exception {
+		return business.entityManagerContainer().fetchEqual(Attachment.class, Data.DataAttachment.copier,
+				Attachment.job_FIELDNAME, job);
 	}
 }

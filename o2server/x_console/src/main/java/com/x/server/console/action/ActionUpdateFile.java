@@ -69,7 +69,8 @@ public class ActionUpdateFile extends ActionUpdate {
 		files.add(new File(Config.base(), "console.jar"));
 		files.add(new File(Config.base(), "index.html"));
 		files.add(new File(Config.base(), "version.o2"));
-		FileFilter fileFilter = new RegexFileFilter("^(start_|stop_|console_|service_)(aix|windows|linux|macos).(sh|bat)$");
+		FileFilter fileFilter = new RegexFileFilter(
+				"^(start_|stop_|console_|service_)(aix|windows|linux|macos).(sh|bat)$");
 		for (File _f : new File(Config.base()).listFiles(fileFilter)) {
 			files.add(_f);
 		}
@@ -81,5 +82,13 @@ public class ActionUpdateFile extends ActionUpdate {
 		File dir = Config.dir_local_update(true);
 		FileUtils.cleanDirectory(dir);
 		JarTools.unjar(file, "", dir, true);
+		File dir_local = new File(dir, "local");
+		if (dir_local.exists()) {
+			FileUtils.forceDelete(dir_local);
+		}
+		File dir_config = new File(dir, "config");
+		if (dir_config.exists()) {
+			FileUtils.forceDelete(dir_config);
+		}
 	}
 }

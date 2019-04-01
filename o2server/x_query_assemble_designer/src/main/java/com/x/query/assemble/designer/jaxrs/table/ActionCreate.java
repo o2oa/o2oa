@@ -46,6 +46,7 @@ class ActionCreate extends BaseAction {
 			table.setCreatorPerson(effectivePerson.getDistinguishedName());
 			table.setLastUpdatePerson(effectivePerson.getDistinguishedName());
 			table.setLastUpdateTime(new Date());
+			table.setStatus(Table.STATUS_draft);
 			emc.persist(table, CheckPersistType.all);
 			emc.commit();
 			ApplicationCache.notify(Table.class);
@@ -66,7 +67,8 @@ class ActionCreate extends BaseAction {
 
 		static WrapCopier<Wi, Table> copier = WrapCopierFactory.wi(Wi.class, Table.class, null,
 				ListTools.toList(JpaObject.FieldsUnmodify, Table.creatorPerson_FIELDNAME,
-						Table.lastUpdatePerson_FIELDNAME, Table.lastUpdateTime_FIELDNAME));
+						Table.lastUpdatePerson_FIELDNAME, Table.lastUpdateTime_FIELDNAME, Table.data_FIELDNAME,
+						Table.status_FIELDNAME));
 	}
 
 }

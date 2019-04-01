@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.openjpa.persistence.jdbc.Index;
@@ -124,6 +126,7 @@ public class OkrWorkDynamics extends SliceJpaObject {
 
 	public static final String dateTime_FIELDNAME = "dateTime";
 	@FieldDescribe("操作时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column( name = ColumnNamePrefix + dateTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date dateTime = null;

@@ -29,6 +29,7 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.query.core.entity.PersistenceProperties;
+import com.x.query.core.entity.Query;
 
 @Entity
 @ContainerEntity
@@ -90,6 +91,13 @@ public class Statement extends SliceJpaObject {
 	@Column(length = length_255B, name = ColumnNamePrefix + description_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String description;
+
+	public static final String query_FIELDNAME = "query";
+	@FieldDescribe("所属查询.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + query_FIELDNAME)
+	@Index(name = TABLE + ColumnNamePrefix + query_FIELDNAME)
+	@CheckPersist(allowEmpty = false, citationExists = { @CitationExist(type = Query.class) })
+	private String query;
 
 	public static final String type_FIELDNAME = "type";
 	@FieldDescribe("语句类型,insert,delete,update,select")
@@ -272,6 +280,14 @@ public class Statement extends SliceJpaObject {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getQuery() {
+		return query;
+	}
+
+	public void setQuery(String query) {
+		this.query = query;
 	}
 
 }

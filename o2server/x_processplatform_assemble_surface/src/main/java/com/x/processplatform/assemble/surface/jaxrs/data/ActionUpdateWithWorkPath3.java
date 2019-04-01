@@ -24,8 +24,7 @@ class ActionUpdateWithWorkPath3 extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
-			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
+			if (!business.editable(effectivePerson, work)) {
 				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
 						work.getId());
 			}

@@ -11,6 +11,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.openjpa.persistence.jdbc.Index;
@@ -159,6 +161,7 @@ public class OkrWorkReportProcessLog extends SliceJpaObject {
 
 	public static final String arriveTime_FIELDNAME = "arriveTime";
 	@FieldDescribe("到达时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column( name = ColumnNamePrefix + arriveTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date arriveTime = null;
@@ -171,6 +174,7 @@ public class OkrWorkReportProcessLog extends SliceJpaObject {
 
 	public static final String processTime_FIELDNAME = "processTime";
 	@FieldDescribe("处理时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column( name = ColumnNamePrefix + processTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date processTime = null;

@@ -155,7 +155,6 @@ public class Processing extends BaseProcessing {
 				break;
 			}
 			/** 在内层的方法中进行提交,这里不需要再次进行提交,在内层提交是因为比如发送待办等要在提交后运行 */
-			// this.entityManagerContainer.f
 			return id;
 		} catch (Exception e) {
 			throw new Exception("processing arrive failure.", e);

@@ -105,7 +105,7 @@ public class View extends SliceJpaObject {
 	public static final String query_FIELDNAME = "query";
 	@FieldDescribe("所属查询.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + query_FIELDNAME)
-	@Index(name = TABLE + "_query")
+	@Index(name = TABLE + ColumnNamePrefix + query_FIELDNAME)
 	@CheckPersist(allowEmpty = false, citationExists = { @CitationExist(type = Query.class) })
 	private String query;
 

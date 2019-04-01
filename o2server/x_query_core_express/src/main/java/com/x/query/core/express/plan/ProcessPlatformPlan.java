@@ -193,6 +193,7 @@ public class ProcessPlatformPlan extends Plan {
 		List<List<String>> batch_jobs = ListTools.batch(jobs, SQL_STATEMENT_IN_BATCH);
 		for (int i = 0; i < filterEntries.size(); i++) {
 			FilterEntry f = filterEntries.get(i);
+			logger.debug("listBundle_filterEntry:{}.", f);
 			List<String> os = new TreeList<>();
 			List<CompletableFuture<List<String>>> futures = new TreeList<>();
 			for (List<String> _batch : batch_jobs) {
@@ -203,6 +204,7 @@ public class ProcessPlatformPlan extends Plan {
 						CriteriaQuery<String> cq = cb.createQuery(String.class);
 						Root<Item> root = cq.from(Item.class);
 						Predicate p = f.toPredicate(cb, root, this.runtime, ItemCategory.pp);
+						logger.debug("predicate:{}.", p);
 						p = cb.and(p, cb.isMember(root.get(Item_.bundle), cb.literal(_batch)));
 						cq.select(root.get(Item_.bundle)).where(p);
 						return em.createQuery(cq).getResultList();

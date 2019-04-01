@@ -24,9 +24,9 @@ class ActionUpdateWithWorkPath4 extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
-			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
-				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(), work.getId());
+			if (!business.editable(effectivePerson, work)) {
+				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
+						work.getId());
 			}
 			/** 先更新title和serial,再更新DataItem,因为旧的DataItem中也有title和serial数据. */
 			this.updateTitleSerial(business, work, jsonElement);

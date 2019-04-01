@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.openjpa.persistence.jdbc.Index;
@@ -168,6 +170,7 @@ public class OkrWorkPerson extends SliceJpaObject {
 
 	public static final String completeDateLimit_FIELDNAME = "completeDateLimit";
 	@FieldDescribe("工作完成日期")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column( name = ColumnNamePrefix + completeDateLimit_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date completeDateLimit = null;

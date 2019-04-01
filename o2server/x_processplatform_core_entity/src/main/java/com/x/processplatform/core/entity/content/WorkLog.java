@@ -285,6 +285,13 @@ public class WorkLog extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String splitValue;
 
+	public static final String splitWork_FIELDNAME = "splitWork";
+	@FieldDescribe("拆分自工作")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + splitWork_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + splitWork_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String splitWork;
+
 	/** 不需要索引 */
 	public static final String splitTokenList_FIELDNAME = "splitTokenList";
 	@FieldDescribe("拆分工作产生的Token")
@@ -534,6 +541,14 @@ public class WorkLog extends SliceJpaObject {
 
 	public void setArrivedActivityAlias(String arrivedActivityAlias) {
 		this.arrivedActivityAlias = arrivedActivityAlias;
+	}
+
+	public String getSplitWork() {
+		return splitWork;
+	}
+
+	public void setSplitWork(String splitWork) {
+		this.splitWork = splitWork;
 	}
 
 }

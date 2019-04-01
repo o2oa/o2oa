@@ -3,6 +3,7 @@ package com.x.program.center.jaxrs.config;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Person;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -13,7 +14,8 @@ public class ActionSetPerson extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		wi.save();
+		Wi.copier.copy(wi, Config.person());
+		Config.person().save();
 		this.configFlush(effectivePerson);
 		Wo wo = new Wo();
 		wo.setValue(true);

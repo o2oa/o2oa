@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.openjpa.persistence.jdbc.Index;
@@ -151,12 +153,14 @@ public class OkrWorkAuthorizeRecord extends SliceJpaObject {
 
 	public static final String delegateDateTime_FIELDNAME = "delegateDateTime";
 	@FieldDescribe("委托时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column( name = ColumnNamePrefix + delegateDateTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date delegateDateTime = null;
 
 	public static final String takebackDateTime_FIELDNAME = "takebackDateTime";
 	@FieldDescribe("收回时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column( name = ColumnNamePrefix + takebackDateTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date takebackDateTime = null;

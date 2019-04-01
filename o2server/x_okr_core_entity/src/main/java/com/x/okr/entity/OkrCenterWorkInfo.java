@@ -14,6 +14,8 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.openjpa.persistence.PersistentCollection;
@@ -165,6 +167,7 @@ public class OkrCenterWorkInfo extends SliceJpaObject {
 
 	public static final String defaultCompleteDateLimit_FIELDNAME = "defaultCompleteDateLimit";
 	@FieldDescribe("中心工作默认完成日期")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = ColumnNamePrefix + defaultCompleteDateLimit_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date defaultCompleteDateLimit = null;
