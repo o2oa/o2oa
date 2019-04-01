@@ -368,8 +368,13 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
             "id": "process_taskcenter_startProcessMask",
             "style": this.css.maskNode
         });
-        var maskNode = this.window.node.getElement("#process_taskcenter_startProcessMask");
+
+        //var maskNode = this.window.node.getElement("#process_taskcenter_startProcessMask");
+        var maskNode = this.content.getParent().getElement("#process_taskcenter_startProcessMask");
         if (maskNode){
+            if( this.inBrowser ){
+                maskNode.setStyles({"width":"100%","height":"100%"});
+            }
             maskNode.addEvent("click", function (e) {
                 this.closeStartProcessArea(e);
             }.bind(this));
@@ -549,7 +554,8 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
             this.startProcessAreaNode.setStyle("top", "" + y + "px");
             this.startProcessAreaNode.setStyle("left", "" + x + "px");
 
-            var maskNode = this.window.node.getElement("#process_taskcenter_startProcessMask");
+            var maskNode = this.content.getParent().getElement("#process_taskcenter_startProcessMask");
+            //var maskNode = this.window.node.getElement("#process_taskcenter_startProcessMask");
             if (maskNode){
                 maskNode.setStyles({"width": ""+size.x+"px", "height": ""+size.y+"px"});
                 maskNode.position({
@@ -855,17 +861,31 @@ MWF.xApplication.process.TaskCenter.AllApplication = new Class({
                 this.top5Data.sort(function(p1, p2){
                     return 0-(p1.count-p2.count);
                 });
-                this.top5Data.each(function(process, i){
-                    if (i<5) new MWF.xApplication.process.TaskCenter.Process(process, this, {"name": process.applicationName}, top5ChildNode);
-                }.bind(this));
             }
+
+            var allowProcessIds = [];
             this.data.each(function (app) {
                 new Element("div", {"styles": this.css.applicationChildTitleNode, "text": app.name}).inject(this.childNode);
                 var appChildNode = new Element("div", {"styles": this.css.applicationChildChildNode}).inject(this.childNode);
                 app.processList.each(function(process){
+                    allowProcessIds.push(process.id);
                     new MWF.xApplication.process.TaskCenter.Process(process, this, app, appChildNode);
                 }.bind(this));
             }.bind(this));
+
+            if (top5ChildNode){
+                saveflag = false;
+                this.top5Data.each(function(process, i){
+                    if (allowProcessIds.indexOf(process.id)!==-1){
+                        if (i<5) new MWF.xApplication.process.TaskCenter.Process(process, this, {"name": process.applicationName}, top5ChildNode);
+                    }else{
+                        saveflag = true;
+                        process.count=0;
+                    }
+                }.bind(this));
+                if (saveflag) MWF.UD.putData("taskCenter_startTop", this.top5Data);
+            }
+
         }.bind(this));
     }
 });

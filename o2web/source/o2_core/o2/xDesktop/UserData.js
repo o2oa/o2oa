@@ -4,7 +4,7 @@ MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
 
 MWF.xDesktop.UserData = MWF.UD = {
     getAction: function(){
-        this.action = new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_organization_assemble_custom");
+        this.action = new MWF.xDesktop.Actions.RestActions("/xDesktop/Actions/action.json", "x_organization_assemble_personal");
     },
     getData: function(name, callback, async){
         if (!this.action) this.getAction();

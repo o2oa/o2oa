@@ -92,31 +92,18 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
         this.setAreaNodeSize();
         this.designer.addEvent("resize", this.setAreaNodeSize.bind(this));
         this.areaNode.inject(this.node);
-        //this.page = this.tab.addTab(this.areaNode, this.data.name || this.designer.lp.newView, (!this.data.isNewView && this.data.id!=this.designer.options.id));
-        //this.page.view = this;
 
-        //this.page.addEvent("show", function(){
-            this.designer.viewListAreaNode.getChildren().each(function(node){
-                var view = node.retrieve("view");
-                if (view.id==this.data.id){
-                    if (this.designer.currentListViewItem){
-                        this.designer.currentListViewItem.setStyles(this.designer.css.listViewItem);
-                    }
-                    node.setStyles(this.designer.css.listViewItem_current);
-                    this.designer.currentListViewItem = node;
-                    this.lisNode = node;
+        this.designer.viewListAreaNode.getChildren().each(function(node){
+            var view = node.retrieve("view");
+            if (view.id==this.data.id){
+                if (this.designer.currentListViewItem){
+                    this.designer.currentListViewItem.setStyles(this.designer.css.listViewItem);
                 }
-            }.bind(this));
-        //    this.setPropertyContent();
-        //}.bind(this));
-
-        //this.page.addEvent("queryClose", function(){
-        //    if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
-        //    this.saveSilence();
-        //    if (this.lisNode) this.lisNode.setStyles(this.designer.css.listViewItem);
-        //}.bind(this));
-
-        //this.page.tabNode.addEvent("dblclick", this.designer.maxOrReturnEditor.bind(this.designer));
+                node.setStyles(this.designer.css.listViewItem_current);
+                this.designer.currentListViewItem = node;
+                this.lisNode = node;
+            }
+        }.bind(this));
 
         this.domListNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.designer.propertyDomArea);
 
@@ -400,10 +387,6 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
             "cellPadding": "0",
             "cellSpacing": "0"
         }).inject(this.viewContentBodyNode);
-
-
-        //this.designer.addEvent("resize", this.setContentHeight.bind(this));
-
     },
     setContentHeight: function(){
         var size = this.areaNode.getSize();
@@ -629,29 +612,25 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
             "text": this.json.displayName
         }).inject(this.node);
 
+        this.createDomListItem();
 
-        this.listNode = new Element("div", {"styles": this.css.cloumnListNode});
-        if (this.next){
-            this.listNode.inject(this.next.listNode, "before");
-        }else{
-            this.listNode.inject(this.domListNode);
-        }
-
-        var listIconNode = new Element("div", {"styles": this.css.cloumnListIconNode}).inject(this.listNode);
-        var listTextNode = new Element("div", {"styles": this.css.cloumnListTextNode}).inject(this.listNode);
-
-        //var listText = (this.json.selectType=="attribute") ? (this.json.attribute || "") : (this.json.path || "");
-        //if (!listText) listText = "unnamed";
-        //
-        //listTextNode.set("text", this.json.displayName+"("+listText+")");
-
-        this.resetTextNode();
 
         this._createIconAction();
 
         //if (!this.json.export) this.hideMode();
 
         this.setEvent();
+    },
+    createDomListItem: function(){
+        this.listNode = new Element("div", {"styles": this.css.cloumnListNode});
+        if (this.next){
+            this.listNode.inject(this.next.listNode, "before");
+        }else{
+            this.listNode.inject(this.domListNode);
+        }
+        var listIconNode = new Element("div", {"styles": this.css.cloumnListIconNode}).inject(this.listNode);
+        var listTextNode = new Element("div", {"styles": this.css.cloumnListTextNode}).inject(this.listNode);
+        this.resetTextNode();
     },
     setEvent: function(){
         this.node.addEvents({

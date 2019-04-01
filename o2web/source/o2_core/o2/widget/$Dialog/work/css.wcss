@@ -50,7 +50,11 @@
 	},
 	"button": {
 		"border": "1px solid #999",
-		"color": "#333",
-		"margin": "0px 5px"
+        "background-color": "#3C76B7",
+        "color": "#fff",
+        "height": "26px",
+        "border-radius": "5px",
+        "min-width": "80px",
+        "margin": "10px 5px"
 	}
 }

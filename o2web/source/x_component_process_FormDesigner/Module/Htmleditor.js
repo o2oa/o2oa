@@ -132,7 +132,7 @@ MWF.xApplication.process.FormDesigner.Module.Htmleditor = MWF.FCHtmleditor = new
 
 		this.loadCkeditor(config);
 		this._setNodeProperty();
-        if (!this.form.isSubform) this._createIconAction();
+        if (!this.form.isSubform) this._createIconAction() ;
 		this._setNodeEvent();
 	},
 	//ckeditor

@@ -19,7 +19,7 @@
 		"width": "90px",
 		"height": "90px",
 		"float": "left",
-		"margin": "20px",
+		"margin": "20px 20px 10px 20px",
 		"cursor": "pointer",
 		"box-shadow": "0px 0px 0px",
 		"border-radius": "8px",

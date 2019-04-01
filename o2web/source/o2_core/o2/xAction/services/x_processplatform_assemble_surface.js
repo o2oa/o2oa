@@ -83,5 +83,14 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_surface"] = new Class
             url = url.replace("{workCompletedId}", encodeURIComponent(workid));
             if (callback) callback(this.action.address+url);
         }.bind(this));
+    },
+    getWorkDataByPath: function(id, path, success, failure, async){
+        var p = path.replace(/\./g, "/");
+        if (id.workCompleted){
+            this.action.invoke({"name": "getWorkcompletedDataByPath","async": async, "parameter": {"id": id.workCompleted, "path": p},	"success": success,	"failure": failure, "urlEncode":false});
+        }else{
+            this.action.invoke({"name": "getWorkDataByPath","async": async, "parameter": {"id": id.work, "path": p},	"success": success,	"failure": failure, "urlEncode":false});
+        }
+
     }
 });

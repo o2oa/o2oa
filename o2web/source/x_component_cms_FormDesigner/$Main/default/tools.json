@@ -141,7 +141,11 @@
     "text": "HTML",
     "className": "Html"
   },
-
+  "common": {
+    "icon": "common.png",
+    "text": "通用元素",
+    "className": "Common"
+  },
   "tab": {
     "icon": "tabs.png",
     "text": "分页",

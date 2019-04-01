@@ -127,6 +127,7 @@ o2.addReady(function(){
                     };
                     layout.load = function(){
                         //debugger;
+
                         this.isAuthentication(function(){
                             layout.desktop = layout;
                             layout.apps = [];

@@ -110,6 +110,7 @@ o2.addReady(function(){
                                 }else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2CmsDocument){
                                     window.webkit.messageHandlers.openO2CmsDocument.postMessage({"docId":options.documentId,"docTitle":title});
                                 }else{
+                                    //window.open("appMobile.html?app="+appNames+"&option="+(optionsStr || "")+"&status="+(statusStr || ""));
                                     window.location = "appMobile.html?app="+appNames+"&option="+(optionsStr || "")+"&status="+(statusStr || "");
                                 }
                                 break;

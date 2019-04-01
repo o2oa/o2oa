@@ -92,6 +92,51 @@
     "background": "url(/x_component_cms_Index/$Main/default/icon/createDocument_over.png) 20px center no-repeat"
   },
 
+  "copyDocumentAction": {
+    "height": "50px",
+    "line-height": "50px",
+    "color" : "#666",
+    "font-size" : "15px",
+    "background": "url(/x_component_cms_Module/$Main/default/icon/copy.png) 20px center no-repeat",
+    "float": "right",
+    "padding-left" : "40px",
+    "cursor": "pointer"
+  },
+  "copyDocumentAction_over": {
+    "color" : "#3c76b7",
+    "background": "url(/x_component_cms_Module/$Main/default/icon/copy_over.png) 20px center no-repeat"
+  },
+
+  "batchRemoveDocumentAction" : {
+    "height": "50px",
+    "line-height": "50px",
+    "color" : "#666",
+    "font-size" : "15px",
+    "background": "url(/x_component_cms_Module/$ListExplorer/default/icon/delete.png) 20px center no-repeat",
+    "float": "right",
+    "padding-left" : "40px",
+    "cursor": "pointer"
+  },
+  "batchRemoveDocumentAction_over": {
+    "color" : "#3c76b7",
+    "background": "url(/x_component_cms_Module/$ListExplorer/default/icon/delete_over.png) 20px center no-repeat"
+  },
+
+  "batchRemoveConfirmDocumentAction" : {
+    "height": "50px",
+    "line-height": "50px",
+    "color" : "red",
+    "font-size" : "15px",
+    "background": "url(/x_component_cms_Module/$ListExplorer/default/icon/delete_red.png) 20px center no-repeat",
+    "float": "right",
+    "padding-left" : "40px",
+    "cursor": "pointer"
+  },
+  "batchRemoveConfirmDocumentAction_over": {
+    "color" : "red",
+    "background": "url(/x_component_cms_Module/$ListExplorer/default/icon/delete_red.png) 20px center no-repeat"
+  },
+
   "importAction": {
     "height": "50px",
     "line-height": "50px",

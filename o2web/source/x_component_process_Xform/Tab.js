@@ -35,7 +35,6 @@ MWF.xApplication.process.Xform.Tab = MWF.APPTab =  new Class({
 
 		var contents = this.tab.contentNodeContainer.getChildren("div");
 		tabs.each(function(tab, idx){
-			
 			this.tab.rebuildTab(contents[idx], contents[idx].getFirst(), tab);
 		}.bind(this));
 		
@@ -43,6 +42,7 @@ MWF.xApplication.process.Xform.Tab = MWF.APPTab =  new Class({
         this.loadSubModule();
 	},
     loadSubModule: function(){
+	    debugger;
         this.tab.pages.each(function(page){
             var node = page.tabNode;
             var json = this.form._getDomjson(node);
@@ -53,16 +53,31 @@ MWF.xApplication.process.Xform.Tab = MWF.APPTab =  new Class({
             this.elements.push(module);
             this.form.modules.push(module);
 
-            node = page.contentNode;
-            json = this.form._getDomjson(node);
-            tab = this;
-            module = this.form._loadModule(json, node, function(){
-                this.tab = tab;
-            });
-            this.containers.push(module);
-            this.form.modules.push(module);
-
+            if (page.isShow){
+                this.showContentModule.call(page, this);
+            }else{
+                if (this.json.isDelay){
+                    var _self = this;
+                    page.showContentModuleFun = function(){_self.showContentModule.call(page, _self)};
+                    page.addEvent("show", page.showContentModuleFun);
+                }else{
+                    this.showContentModule.call(page, this);
+                }
+            }
         }.bind(this));
+    },
+    showContentModule: function(_self){
+        var node = this.contentNode;
+        node.isLoadModule = true;
+        json = _self.form._getDomjson(node);
+        tab = _self;
+        module = _self.form._loadModule(json, node, function(){
+            this.tab = tab;
+        });
+        _self.containers.push(module);
+        _self.form.modules.push(module);
+
+        if (this.showContentModuleFun) this.removeEvent("show", this.showContentModuleFun);
     },
 
 	_setTabWidgetStyles: function(){
@@ -78,5 +93,8 @@ MWF.xApplication.process.Xform.tab$Page = MWF.APPTab$Page =  new Class({
     Extends: MWF.APP$Module
 });
 MWF.xApplication.process.Xform.tab$Content = MWF.APPTab$Content =  new Class({
-    Extends: MWF.APP$Module
+    Extends: MWF.APP$Module,
+    _loadUserInterface: function(){
+        this.form._loadModules(this.node);
+    }
 });

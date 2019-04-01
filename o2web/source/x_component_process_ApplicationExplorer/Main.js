@@ -55,6 +55,14 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 		this.loadApplicationContent();
 		if (callback) callback();
 	},
+    hasCreatorRole: function(){
+	    return MWF.AC.isProcessPlatformCreator();
+    },
+    hasManagerRole: function(){
+        if (MWF.AC.isAdministrator()) return true;
+        if (MWF.AC.isProcessManager()) return true;
+        return false;
+    },
 	loadApplicationContent: function(){
 	//	this.loadStartMenu();
         this.loadToolbar();
@@ -75,7 +83,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
         this.createSearchAction();
     },
     createCreateAction: function(){
-        if (MWF.AC.isProcessPlatformCreator()){
+        if (this.hasCreatorRole()){
             this.createApplicationNode = new Element("div", {
                 "styles": this.css.createApplicationNode,
                 "title": this.options.tooltip.create
@@ -153,7 +161,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
         //    "styles": this.css.categoryActionNode,
         //    "text": this.options.tooltip.selectCategory
         //}).inject(this.categoryAreaNode);
-        if (MWF.AC.isProcessPlatformCreator()){
+        if (this.hasCreatorRole()){
             this.importActionNode = new Element("div", {
                 "styles": this.css.importActionNode,
                 "text": this.lp.application.import
@@ -333,7 +341,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
                 }.bind(this));
                 //}
             }else {
-                if (MWF.AC.isProcessPlatformCreator()){
+                if (this.hasCreatorRole()){
                     var noApplicationNode = new Element("div", {
                         "styles": this.css.noApplicationNode,
                         "text": this.options.tooltip.noApplicationCreate
@@ -636,6 +644,16 @@ MWF.xApplication.process.ApplicationExplorer.Application = new Class({
         this.node.inject(this.container, this.options.where);
 	},
 
+    canManage: function(){
+        if (this.app.hasCreatorRole()){
+            if ((this.data.creatorPerson==layout.desktop.session.user.name) || MWF.AC.isAdministrator() || this.app.hasManagerRole()){
+                return true;
+            }
+        }else{
+           if (this.data.controllerList.indexOf(layout.desktop.session.user.distinguishedName)!==-1) return true;
+        }
+        return false;
+    },
     loadTopNode: function(){
         this.topNode = new Element("div", {
             "styles": this.css.applicationItemTopNode
@@ -647,8 +665,8 @@ MWF.xApplication.process.ApplicationExplorer.Application = new Class({
         }.bind(this));
     },
     loadDeleteAction: function(){
-        if (MWF.AC.isProcessPlatformCreator()){
-            if ((this.data.creatorPerson==layout.desktop.session.user.name) || MWF.AC.isAdministrator()){
+        if (this.canManage()){
+            //if ((this.data.creatorPerson==layout.desktop.session.user.name) || (this.data.controllerList.indexOf(layout.desktop.session.user.distinguishedName)!==-1) || MWF.AC.isAdministrator()){
                 this.delAdctionNode = new Element("div", {
                     "styles": this.css.applicationItemDelActionNode
                 }).inject(this.topNode);
@@ -661,12 +679,12 @@ MWF.xApplication.process.ApplicationExplorer.Application = new Class({
                     this.checkDeleteApplication(e);
                     e.stopPropagation();
                 }.bind(this));
-            }
+            //}
         }
     },
     loadExportAction: function(){
-        if (MWF.AC.isProcessPlatformCreator()) {
-            if ((this.data.creatorPerson == layout.desktop.session.user.name) || MWF.AC.isAdministrator()) {
+        if (this.canManage()) {
+            //if ((this.data.creatorPerson == layout.desktop.session.user.name) || MWF.AC.isAdministrator() || MWF.AC.isProcessManager()) {
                 this.exportAdctionNode = new Element("div", {
                     "styles": this.css.applicationItemExportActionNode,
                     "title": this.app.lp.application.export
@@ -684,7 +702,7 @@ MWF.xApplication.process.ApplicationExplorer.Application = new Class({
                     this.exportApplication(e);
                     e.stopPropagation();
                 }.bind(this));
-            }
+            //}
         }
     },
     exportApplication: function(){
@@ -886,6 +904,7 @@ MWF.xApplication.process.ApplicationExplorer.Application = new Class({
         if (id){
             var _self = this;
             var options = {
+                "appId": "process.ProcessDesigner"+id,
                 "onQueryLoad": function(){
                     this.actions = _self.app.actions;
                     //this.category = _self;
@@ -975,16 +994,20 @@ MWF.xApplication.process.ApplicationExplorer.Application = new Class({
     openForm: function(node, e){
         var id = node.retrieve("formId");
         if (id){
-            var _self = this;
-            var options = {
-                "onQueryLoad": function(){
-                    this.actions = _self.app.actions;
-                    //this.category = _self;
-                    this.options.id = id;
-                    this.application = _self.data;
-                }
-            };
-            this.app.desktop.openApplication(e, "process.FormDesigner", options);
+            layout.desktop.getFormDesignerStyle(function(){
+                var _self = this;
+                var options = {
+                    "style": layout.desktop.formDesignerStyle,
+                    "appId": "process.FormDesigner"+id,
+                    "onQueryLoad": function(){
+                        this.actions = _self.app.actions;
+                        //this.category = _self;
+                        this.options.id = id;
+                        this.application = _self.data;
+                    }
+                };
+                this.app.desktop.openApplication(e, "process.FormDesigner", options);
+            }.bind(this));
         }
     },
 

@@ -123,7 +123,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         "style": "default",
         "popupStyle" : "o2platform",
         "width": "650",
-        "height": "460",
+        "height": "480",
         "hasTop": true,
         "hasIcon": false,
         "hasTopIcon" : true,
@@ -437,9 +437,11 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         this.loginType = "captcha";
         this.codeLogin=false;
         this.bindLogin=false;
+        this.captchaLogin = true;
         this.actions.getLoginMode(function( json ){
             this.codeLogin = json.data.codeLogin;
             this.bindLogin = json.data.bindLogin;
+            this.captchaLogin = json.data.captchaLogin;
         }.bind(this), null, false);
 
         MWF.Actions.get("x_organization_assemble_personal").getRegisterMode(function(json){
@@ -470,10 +472,12 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
 
         html+="<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>" +
             "<tr item='credentialTr'><td styles='formTableValueTop20' item='credential'></td></tr>" +
-            "<tr item='passwordTr'><td styles='formTableValueTop20' item='password'></td></tr>" +
-            "<tr item='captchaTr'><td styles='formTableValueTop20'>"+
-            "<div item='captchaAnswer' style='float:left;'></div><div item='captchaPic' style='float:left;'></div><div item='changeCaptchaAction' style='float:left;'></div>"+
-            "</td></tr>";
+            "<tr item='passwordTr'><td styles='formTableValueTop20' item='password'></td></tr>";
+        if( this.captchaLogin ){
+            html += "<tr item='captchaTr'><td styles='formTableValueTop20'>"+
+                "<div item='captchaAnswer' style='float:left;'></div><div item='captchaPic' style='float:left;'></div><div item='changeCaptchaAction' style='float:left;'></div>"+
+                "</td></tr>";
+        }
         if( this.codeLogin ){
             html += "<tr item='codeTr' style='display: none'><td styles='formTableValueTop20'>"+
                 "   <div item='codeAnswer' style='float:left;'></div>"+
@@ -504,7 +508,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         }).inject(this.formTableArea, "after");
 
 
-        this.setCaptchaPic();
+        if( this.captchaLogin )this.setCaptchaPic();
         this.errorArea = this.formTableArea.getElement("[item=errorArea]");
 
         this.oauthArea = this.formTableArea.getElement("[item=oauthArea]");
@@ -764,6 +768,9 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
             this.options.height = parseInt(this.options.height) + this.oauthArea.getSize().y ;
             this.isPlusOauthSize = true;
         }
+        if( !this.captchaLogin ){
+            this.options.height = this.options.height - 60;
+        }
     },
     loadOauthContent : function(){
         this.actions.listOauthServer(function( json ){
@@ -842,7 +849,8 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         this.form.getItem("passwordAction").setStyles(this.css.titleNode_active);
         this.form.getItem("codeAction").setStyles(this.css.titleNode_normal);
         this.formTableArea.getElement("[item='passwordTr']").setStyle("display","");
-        this.formTableArea.getElement("[item='captchaTr']").setStyle("display","");
+        var captchaTr = this.formTableArea.getElement("[item='captchaTr']");
+        if(captchaTr)captchaTr.setStyle("display","");
         this.formTableArea.getElement("[item='codeTr']").setStyle("display","none");
     },
     showCodeLogin: function(){
@@ -851,7 +859,8 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         this.form.getItem("passwordAction").setStyles(this.css.titleNode_normal);
         this.form.getItem("codeAction").setStyles(this.css.titleNode_active);
         this.formTableArea.getElement("[item='passwordTr']").setStyle("display","none");
-        this.formTableArea.getElement("[item='captchaTr']").setStyle("display","none");
+        var captchaTr = this.formTableArea.getElement("[item='captchaTr']");
+        if(captchaTr)captchaTr.setStyle("display","none");
         this.formTableArea.getElement("[item='codeTr']").setStyle("display","");
 
     },
@@ -885,6 +894,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         }.bind(this))
     },
     setCaptchaPic: function(){
+        if( !this.captchaLogin )return;
         var captchaPic = this.formTableArea.getElement("[item='captchaPic']");
         captchaPic.empty();
         this.actions.getLoginCaptcha(120, 50, function( json ){
@@ -991,17 +1001,19 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         if( this.loginType === "captcha" ){
             this.form.getItem("password").options.notEmpty = true;
 
-            captchaItem = this.form.getItem("captchaAnswer");
-            if( captchaItem )captchaItem.options.notEmpty = true;
+            if( this.captchaLogin ){
+                captchaItem = this.form.getItem("captchaAnswer");
+                if( captchaItem )captchaItem.options.notEmpty = true;
+            }
 
             codeItem = this.form.getItem("codeAnswer");
             if(codeItem)codeItem.options.notEmpty = false;
         }else if( this.loginType === "code" ){
             this.form.getItem("password").options.notEmpty = false;
-
-            captchaItem = this.form.getItem("captchaAnswer");
-            if( captchaItem )captchaItem.options.notEmpty = false;
-
+            if( this.captchaLogin ){
+                captchaItem = this.form.getItem("captchaAnswer");
+                if( captchaItem )captchaItem.options.notEmpty = false;
+            }
             codeItem = this.form.getItem("codeAnswer");
             if(codeItem)codeItem.options.notEmpty = true;
         }
@@ -1033,10 +1045,12 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         if( this.loginType === "captcha" ){
             d = {
                 credential : data.credential,
-                password : data.password,
-                captchaAnswer : data.captchaAnswer,
-                captcha : this.captcha
+                password : data.password
             };
+            if( this.captchaLogin ){
+                d.captchaAnswer = data.captchaAnswer;
+                d.captcha = this.captcha;
+            }
             this.actions.loginByCaptcha( d, function( json ){
                 if( callback )callback( json );
                 //this.fireEvent("postOk")
@@ -1044,7 +1058,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
                 var error = JSON.parse( errorObj.responseText );
                 this.setWarning( error.message );
                 this.setCaptchaPic();
-                this.form.getItem( "captchaAnswer").setValue("");
+                if(this.form.getItem( "captchaAnswer"))this.form.getItem( "captchaAnswer").setValue("");
             }.bind(this));
         }else if( this.loginType === "code" ){
             d = {

@@ -123,7 +123,7 @@ MWF.xDesktop.MessageMobile = new Class({
 		var item = new MWF.xDesktop.MessageMobile.Item(this,msg);
         if (!this.isShow){
             this.setPosition();
-            this.show();
+            //this.show();
         }
 		return item;
 	},

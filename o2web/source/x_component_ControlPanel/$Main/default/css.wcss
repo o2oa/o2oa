@@ -27,8 +27,8 @@
         "-moz-user-select": "none"
     },
     "contentNodeTo": {
-        "width": "800px",
-        "height": "220px"
+        "width": "680px",
+        "height": "350px"
     },
     "titleAreaNode": {
         "height": "70px",

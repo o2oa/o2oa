@@ -104,6 +104,8 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
             this.toolbarNode = this.node.getFirst("div");
             this.toolbarNode.empty();
             this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);
+            if (!this.json.actionStyles) this.json.actionStyles = Object.clone(this.toolbarWidget.css);
+            this.toolbarWidget.css = this.json.actionStyles;
 
             if (this.json.defaultTools){
                 var json = Array.clone(this.json.defaultTools);
@@ -121,27 +123,9 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
                     //json = null;
                 }.bind(this), false);
             }
-         //   if (this.json.sysTools.editTools){
-         //       this.setToolbars(this.json.sysTools.editTools, this.toolbarNode);
-         ////       this.setToolbars(this.json.tools.editTools, this.toolbarNode);
-         //   }else{
-         //       this.setToolbars(this.json.sysTools, this.toolbarNode);
-         ////       this.setToolbars(this.json.tools, this.toolbarNode);
-         //   }
-
         }
 
     },
-    //resetIcons: function(){
-    //    var divs = this.toolbarNode.getElements("div");
-    //    divs.each(function(item, idx){
-    //        var img = item.get("MWFButtonImage");
-    //        if (img){
-    //            item.set("MWFButtonImage", this.path+""+this.options.style+"/tools/"+img);
-    //        }
-    //    }.bind(this));
-    //
-    //},
     setToolbars: function(tools, node){
         tools.each(function(tool){
             var actionNode = new Element("div", {
@@ -170,7 +154,7 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
                 });
             }
         }
-        if (name=="defaultTools" || name=="tools"){
+        if (name=="defaultTools" || name=="tools" || name==="actionStyles"){
             this._refreshActionbar();
         }
 

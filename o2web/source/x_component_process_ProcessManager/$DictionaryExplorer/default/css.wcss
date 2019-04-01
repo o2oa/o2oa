@@ -244,6 +244,14 @@
         "left": "-5px",
         "background": "url("+"/x_component_process_ProcessManager/$DictionaryExplorer/default/icon/new.png) no-repeat right"
     },
+    "itemFileNewNode": {
+        "width": "30px",
+        "height": "30px",
+        "position": "relative",
+        "top": "-65px",
+        "left": "-5px",
+        "background": "url("+"/x_component_process_ProcessManager/$DictionaryExplorer/default/icon/new.png) no-repeat right"
+    },
     "createTemplateMaskNode": {
         "width": "100%",
         "height": "100%",

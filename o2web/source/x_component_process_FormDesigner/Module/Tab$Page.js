@@ -120,6 +120,7 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 	"addPage": function(){
 		var page = this.tab.addPage();
 		page.tabNode.inject(this.page.tabNode, "before");
+        page.contentNodeArea.inject(this.page.contentNodeArea, "before");
 		page.showTabIm();
 	},
 	"delete": function(e){

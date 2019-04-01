@@ -386,8 +386,8 @@ MWF.xApplication.ForumDocument.Main = new Class({
 					content: {text: this.lp.content, type : "rtf", notEmpty : true, RTFConfig : {
 						isSetImageMaxWidth : true,
 						reference : this.advanceId || this.data.id,
-						referenceType: "forumDocument",
-						skin : "bootstrapck" //,
+						referenceType: "forumDocument"//,
+						//skin : "bootstrapck" //,
 						//filebrowserCurrentDocumentImage: function (e, callback) {
 						//	_self.selectDocImage( callback );
 						//}
@@ -961,7 +961,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		}
 
 
-		if( this.permission.manageAble || this.data.creatorName == this.userName ){
+		if( this.permission.manageAble || this.permission.editAble || this.data.creatorName == this.userName ){
 			action = new Element("div", {
 				"styles" : this.css.actionItem,
 				"text" : this.lp.delete
@@ -975,7 +975,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		}
 
 		if( this.data.typeCategory != this.lp.vote ){
-			if( this.permission.manageAble || this.data.creatorName == this.userName ){
+			if( this.permission.manageAble || this.permission.editAble || this.data.creatorName == this.userName ){
 				action = new Element("div", {
 					"styles" : this.css.actionItem,
 					"text" : this.lp.edit
@@ -1739,7 +1739,7 @@ MWF.xApplication.ForumDocument.ReplyEditor = new Class({
 					}.bind(this)},
 					creatorName: { type : "innerText", value : ( this.app.userName || "" ).split('@')[0] },
 					content: { type : "rtf", RTFConfig : {
-						skin : "bootstrapck",
+						//skin : "bootstrapck",
 						"resize_enabled": false,
 						isSetImageMaxWidth : true,
 						reference : this.advanceReplyId,
@@ -1791,7 +1791,7 @@ MWF.xApplication.ForumDocument.ReplyForm = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"width": "820",
+		"width": "860",
 		"height": "470",
 		"hasTop": true,
 		"hasIcon": false,
@@ -1850,7 +1850,7 @@ MWF.xApplication.ForumDocument.ReplyForm = new Class({
 				itemTemplate: {
 					mainSubject: { type: "innertext", defaultValue : "RE:" + this.mainData.title },
 					content: { type : "rtf", RTFConfig : {
-						skin : "bootstrapck",
+						//skin : "bootstrapck",
 						"resize_enabled": false,
 						isSetImageMaxWidth : true,
 						reference : this.advanceReplyId || this.data.id,

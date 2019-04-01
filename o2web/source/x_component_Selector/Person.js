@@ -231,8 +231,9 @@ MWF.xApplication.Selector.Person = new Class({
             if (this.options.count.toInt()!==1) this.loadSelectedNodeMobile();
             this.loadSelectNodeMobile();
         }else{
-            if (this.options.count.toInt()!==1) this.loadSelectedNode();
             this.loadSelectNode();
+            if (this.options.count.toInt()!==1) this.loadSelectedNode();
+
         }
     },
     loadSelectNodeMobile: function(){
@@ -477,6 +478,9 @@ MWF.xApplication.Selector.Person = new Class({
 
         this.setSelectedItem();
 
+        this.loadSelectedNodeScroll();
+    },
+    loadSelectedNodeScroll: function(){
         MWF.require("MWF.widget.ScrollBar", function(){
             var _self = this;
             new MWF.widget.ScrollBar(this.selectedScrollNode, {
@@ -484,6 +488,7 @@ MWF.xApplication.Selector.Person = new Class({
             });
         }.bind(this));
     },
+
     loadSelectedNodeMobile: function(){
         this.selectedScrollNode = new Element("div", {
             "styles": this.css.selectedScrollNode

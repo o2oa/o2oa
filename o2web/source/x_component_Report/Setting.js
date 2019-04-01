@@ -525,16 +525,21 @@ MWF.xApplication.Report.SettingForm = new Class({
         return arr;
     },
     save: function(e){
-        var pdata = this.personform.getResult(true,null,true,false,false);
-        if( pdata){
-            MWF.UD.putData("reportConfig", pdata, function(){
-                if( this.sysform ){
-                    this.saveSysData();
-                }else{
-                    this.app.notice(this.lp.save_success, "success");
-                }
-            }.bind(this), false);
+        if( this.personform ){
+            var pdata = this.personform.getResult(true,null,true,false,false);
+            if( pdata){
+                MWF.UD.putData("reportConfig", pdata, function(){
+                    if( this.sysform ){
+                        this.saveSysData();
+                    }else{
+                        this.app.notice(this.lp.save_success, "success");
+                    }
+                }.bind(this), false);
+            }
+        }else if( this.sysform ){
+            this.saveSysData();
         }
+
     },
     saveSysData: function(){
         var sdata = this.sysform.getResult(true,"|",true,false,false);

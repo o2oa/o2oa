@@ -567,7 +567,7 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
 				this.contentNode.setStyle("margin-right", width+1);
 				this.propertyNode.setStyle("width", width);
                 //this.tab.pages.each(function(page){
-                    this.view.setViewWidth();
+                (this.view || this.table).setViewWidth();
                 //});
 			}.bind(this)
 		});

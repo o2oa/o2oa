@@ -331,7 +331,7 @@ o2.widget.O2Process = new Class({
         });
         var nameNode = new Element("div", {
             "styles": this.style.identityInforNameNode,
-            "text": this.data.applicationName || this.data.appName
+            "text": this.data.name || this.data.applicationName || this.data.appName
         }).inject(this.inforNode);
         this.tooltip = new mBox.Tooltip({
             content: this.inforNode,

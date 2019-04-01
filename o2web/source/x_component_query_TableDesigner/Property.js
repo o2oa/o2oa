@@ -1,6 +1,6 @@
 MWF.require("MWF.widget.Common", null, false);
 MWF.require("MWF.widget.JsonTemplate", null, false);
-MWF.xApplication.query.StatDesigner.Property = MWF.FVProperty = new Class({
+MWF.xApplication.query.TableDesigner.Property = MWF.FVProperty = new Class({
 	Extends: MWF.widget.Common,
 	Implements: [Options, Events],
 	options: {

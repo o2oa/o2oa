@@ -159,15 +159,21 @@ o2.widget.Dialog = o2.DL = new Class({
     },
 	setTitleEvent: function(){
 		this.title.addEvent("mousedown", function(){
+            var content;
+            if (layout.app) content = layout.app.content;
+            if (layout.desktop.currentApp) content = layout.desktop.currentApp.content;
 			this.containerDrag = new Drag.Move(this.node, {
-                "container": (layout) ? layout.desktop.currentApp.content: null
+                "container": content
             });
 		}.bind(this));
 		this.title.addEvent("mouseup", function(){
 			this.node.removeEvents("mousedown");
 			this.title.addEvent("mousedown", function(){
-				this.containerDrag = new Drag.Move(this.node, {
-                    "container": (layout) ? layout.desktop.currentApp.content: null
+				var content;
+				if (layout.app) content = layout.app.content;
+				if (layout.desktop.currentApp) content = layout.desktop.currentApp.content;
+                this.containerDrag = new Drag.Move(this.node, {
+                    "container": content
                 });
 			}.bind(this));
 		}.bind(this));
@@ -183,11 +189,12 @@ o2.widget.Dialog = o2.DL = new Class({
                     "limit": {x:[200, null], y:[150, null]},
                     "onDrag": function(){
                         var size = this.node.getComputedSize();
+                        // this.css.to.width = size.totalWidth;
+                        // this.css.to.height = size.totalHeight;
+                        this.css.to.width = size.width;
+                        this.css.to.height = size.height;
 
-                        this.css.to.width = size.totalWidth;
-                        this.css.to.height = size.totalHeight;
-
-                        this.setContentSize(size.totalHeight, size.totalWidth);
+                        this.setContentSize(size.height, size.width);
 
                         this.fireEvent("resize");
                     }.bind(this),

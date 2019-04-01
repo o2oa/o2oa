@@ -203,6 +203,7 @@ MWF.xApplication.query.QueryManager.StatExplorer.Stat= new Class({
 	_open: function(e){
         var _self = this;
         var options = {
+            "appId": "query.StatDesigner"+_self.data.id,
             "onQueryLoad": function(){
                 this.actions = _self.explorer.actions;
                 this.category = _self;

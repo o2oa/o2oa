@@ -1360,8 +1360,7 @@
             "height": "200",
             "width": "",
             "readOnly": false,
-            "title": "",
-            "skin": "bootstrapck"
+            "title": ""
           },
           "config": {
             "code": "",
@@ -3705,8 +3704,8 @@
             "height": "200",
             "width": "",
             "readOnly": false,
-            "title": "",
-            "skin": "bootstrapck"
+            "title": ""
+            //"skin": "bootstrapck"
           },
           "config": {
             "code": "",

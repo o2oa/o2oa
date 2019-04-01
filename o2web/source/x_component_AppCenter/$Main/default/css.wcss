@@ -163,7 +163,8 @@
     "moduleSetupListIconNode": {
         "height": "36px",
         "float": "left",
-        "width": "36px"
+        "width": "36px",
+        "cursor": "pointer"
     },
     "moduleSetupListNameNode": {
         "height": "36px",

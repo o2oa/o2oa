@@ -37,11 +37,26 @@ MWF.xApplication.OnlineMeeting.Actions.RestActions = new Class({
         //var par = "http://";
         //par = (data.host) ? (par+data.host) : (par+window.location.host);
         //this.roomHost = par;
-        par = this.roomHost+"/openmeetings/signin?oauthid="+data.oauth2Id;
+        par = this.roomHost+"/openmeetings/signin?oauthid="+data.oauth2Id+"&redirect_uri={url}";
         return uri.replace(/{uri}/, escape(par));
     },
-    getRoomUri: function(data){
-        var par = this.roomHost+this.actionAuth.actions["room"].uri;
-        return par.replace(/{id}/, data.id);
+    getRoomUri: function(meetingLoginData, data){
+        //var url = this.getLoginUri(meetingLoginData);
+
+        this.actionAuth.getActions();
+        var action = this.actionAuth.actions["login"];
+        var ssouri = this.actionAuth.address+action.uri;
+        var ssopar = this.roomHost+"/openmeetings/signin?oauthid="+meetingLoginData.oauth2Id+"&redirect_uri={url}";
+
+        var par = this.roomHost+this.action.actions["room"].uri;
+        par = par.replace(/{id}/, data.id);
+
+        ssopar = ssopar.replace(/{url}/, par);
+
+        // var par = this.roomHost+this.action.actions["room"].uri;
+        // //return par.replace(/{id}/, data.id);
+        // var r = par.replace(/{id}/, data.id);
+
+        return ssouri.replace(/{uri}/, escape(ssopar));
     }
 });

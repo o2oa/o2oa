@@ -417,6 +417,7 @@ MWF.xApplication.portal.PortalManager.PageExplorer.Page= new Class({
 	_open: function(e){
         var _self = this;
         var options = {
+            "appId": "portal.PageDesigner"+_self.data.id,
             "onQueryLoad": function(){
                 this.actions = _self.explorer.actions;
                 this.category = _self;

@@ -211,7 +211,7 @@
             this.each(function(v){
                 if (v) arr.push(v);
             });
-            return v;
+            return arr;
         },
         "isIntersect": function(arr){
             return this.some(function(item){ return (arr.indexOf(item)!==-1); })
@@ -461,6 +461,19 @@
                 }
             }
             return properties;
+        },
+        "getZIndex": function(){
+            var n = this;
+            var i=0;
+            while (n){
+                if (n.getStyle("position")==="absolute"){
+                    var idx = n.getStyle("z-index");
+                    i = (idx && idx.toFloat()>i) ? idx.toFloat()+1 : 0;
+                    break;
+                }
+                n = n.getParent();
+            }
+            return i;
         }
     });
     Object.copy = function(from, to){

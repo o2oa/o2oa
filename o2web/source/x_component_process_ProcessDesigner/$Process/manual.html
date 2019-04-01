@@ -24,9 +24,10 @@
             <tr>
                 <td class="editTableTitle">处理方式:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="manualMode" text{($.manualMode=='single')?'checked':''} type="radio" value="single"/>单人
-                    <input class="editTableRadio" name="manualMode" text{($.manualMode=='parallel')?'checked':''} type="radio" value="parallel"/>并行
-                    <input class="editTableRadio" name="manualMode" text{($.manualMode=='queue')?'checked':''} type="radio" value="queue"/>串行
+                    <input title="只需一人处理" class="editTableRadio" name="manualMode" text{($.manualMode=='single')?'checked':''} type="radio" value="single"/>单人
+                    <input title="多人同时处理" class="editTableRadio" name="manualMode" text{($.manualMode=='parallel')?'checked':''} type="radio" value="parallel"/>并行
+                    <input title="多人按顺序处理" class="editTableRadio" name="manualMode" text{($.manualMode=='queue')?'checked':''} type="radio" value="queue"/>串行
+                    <input title="谁先打开待办就由谁处理" class="editTableRadio" name="manualMode" text{($.manualMode=='grab')?'checked':''} type="radio" value="grab"/>抢办
                 </td>
             </tr>
             <tr>
@@ -287,6 +288,20 @@
                     <input class="editTableRadio" name="allowRapid" text{(!$.allowRapid)?'checked':''} type="radio" value="false"/>否</td>
             </tr>
         </table>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableValue"  colspan="2"><b>允许增加拆分分支：</b><input class="editTableRadio" name="allowAddSplit" text{($.allowAddSplit)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="allowAddSplit" text{(!$.allowAddSplit)?'checked':''} type="radio" value="false"/>否</td>
+            </tr>
+        </table>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableValue"  colspan="2"><b>允许流程回溯：</b><input class="editTableRadio" name="allowRollback" text{($.allowRollback)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="allowRollback" text{(!$.allowRollback)?'checked':''} type="radio" value="false"/>否</td>
+            </tr>
+        </table>
+
+
     </div>
     <div title="事件"  class="MWFTab">
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">

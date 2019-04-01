@@ -6,7 +6,7 @@ MWF.xApplication.ControlPanel.Main = new Class({
 		"style": "default",
 		"name": "ControlPanel",
 		"icon": "icon.png",
-		"width": "740",
+		"width": "840",
         "isResize": false,
         "isMax": false,
 		"height": "280",
@@ -105,6 +105,7 @@ MWF.xApplication.ControlPanel.Main = new Class({
         this.contentNode.setStyles({"width": ""+w+"px"});
     },
     loadApplications: function(){
+        debugger;
     	COMMON.JSON.get(this.path+"applications.json", function(catalog){
             var user = this.layout.session.user;
             var currentNames = [user.name, user.distinguishedName, user.id, user.unique];

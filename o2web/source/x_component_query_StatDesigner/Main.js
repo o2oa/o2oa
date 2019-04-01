@@ -55,6 +55,21 @@ MWF.xApplication.query.StatDesigner.Main = new Class({
         }.bind(this));
     },
 
+    loadViewListNodes: function(){
+        this.viewListTitleNode = new Element("div", {
+            "styles": this.css.viewListTitleNode,
+            "text": MWF.APPDSTD.LP.stat
+        }).inject(this.viewListNode);
+
+        this.viewListResizeNode = new Element("div", {"styles": this.css.viewListResizeNode}).inject(this.viewListNode);
+        this.viewListAreaSccrollNode = new Element("div", {"styles": this.css.viewListAreaSccrollNode}).inject(this.viewListNode);
+        this.viewListAreaNode = new Element("div", {"styles": this.css.viewListAreaNode}).inject(this.viewListAreaSccrollNode);
+
+        this.loadViewListResize();
+
+        this.loadViewList();
+    },
+
     loadViewList: function(){
         this.actions.listStat(this.application.id, function (json) {
             json.data.each(function(view){

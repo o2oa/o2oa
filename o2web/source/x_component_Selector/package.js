@@ -89,5 +89,62 @@ MWF.O2SelectorFilter = new Class({
     filter: function(value, callback){
         return this.selectFilter.filter(value, callback);
     }
-
 });
+
+(function(){
+    var _createEl = function(data, node){
+        var dname = data.distinguishedName;
+        if (typeOf(data)==="string"){
+            data = {"id": data};
+            dname = data.id;
+        }
+        var len = dname.length;
+        var flag = dname.substring(len-1,len);
+        switch (flag){
+            case "U":
+                new o2.widget.O2Unit(data, node, {"style": "xform"});
+                break;
+            case "I":
+                new o2.widget.O2Identity(data, node, {"style": "xform"});
+                break;
+            case "G":
+                new o2.widget.O2Group(data, node, {"style": "xform"});
+                break;
+            case "P":
+                new o2.widget.O2Person(data, node, {"style": "xform"});
+                break;
+            case "R":
+                new o2.widget.O2Role(data, node, {"style": "xform"});
+                break;
+        }
+    };
+
+    Element.prototype.setSelectPerson = function(container, options){
+        if (options.types) options.type = "";
+        options.onComplete = function(items){
+            debugger;
+            o2.require("o2.widget.O2Identity", function(){
+                options.values = [];
+                this.empty();
+                items.each(function(item){
+                    options.values.push(item.data);
+                    _createEl(item.data, this);
+                    if (options.selectItem) options.selectItem(item);
+                }.bind(this));
+                this.store("data-value", options.values);
+            }.bind(this));
+        }.bind(this);
+
+        if (options.values){
+            options.values.each(function(v){
+                this.store("data-value", options.values);
+                _createEl(v, this);
+            }.bind(this));
+        }
+        this.addEvent("click", function(){
+            var i = this.getZIndex();
+            options.zIndex = i+1;
+            new MWF.O2Selector(container, options);
+        }.bind(this));
+    };
+})();

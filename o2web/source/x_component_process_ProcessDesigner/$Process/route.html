@@ -34,6 +34,21 @@
                 <td class="editTableValue"><input type="text" name="opinion" value="text{$.opinion}" class="editTableInput"/></td>
             </tr>
             <tr>
+                <td class="editTableTitle">决策组:</td>
+                <td class="editTableValue">
+                    <input type="text" name="decisionOpinion" value="text{$.decisionOpinion}" class="editTableInput"/>
+                    <div>多个决策组请用#号分隔</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">优先路由:</td>
+                <td class="editTableValue" id="text{$.id}sole" >
+                    <input class="editTableRadio" name="sole" text{($.sole)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="sole" text{(!$.sole)?'checked':''} type="radio" value="false"/>否
+                </td>
+            </tr>
+
+            <tr>
                 <td class="editTableValue" id="text{$.id}passExpired" colspan="2"><b>活动超时时自动流转：</b><input class="editTableRadio" name="passExpired" text{($.passExpired)?'checked':''} type="radio" value="true"/>是
                     <input class="editTableRadio" name="passExpired" text{(!$.passExpired)?'checked':''} type="radio" value="false"/>否</td>
             </tr>
