@@ -31,18 +31,18 @@ public class TranslateReviewPersonTools {
 
 	private static Logger logger = LoggerFactory.getLogger(TranslateReviewPersonTools.class);
 
-	/* 计算manual节点中所有的待办，全部翻译成Identity */
+	/* 计算参阅人，全部翻译成Identity,最终全部转换为person */
 	public static List<String> translate(AeiObjects aeiObjects) throws Exception {
 		List<String> identities = new ArrayList<>();
 		List<String> units = new ArrayList<>();
 		List<String> groups = new ArrayList<>();
-		ClassifyDistinguishedName classifyDistinguishedName = null;
 		/* 指定的身份 */
 		if (ListTools.isNotEmpty(aeiObjects.getActivity().getReviewIdentityList())) {
 			identities.addAll(aeiObjects.getActivity().getReviewIdentityList());
 		}
 		/* 选择了职务 */
 		identities.addAll(duty(aeiObjects));
+		ClassifyDistinguishedName classifyDistinguishedName = null;
 		/* 指定data数据路径值 */
 		classifyDistinguishedName = aeiObjects.business().organization().classifyDistinguishedNames(
 				data(aeiObjects.business(), aeiObjects.getData(), aeiObjects.getActivity()));
@@ -63,12 +63,12 @@ public class TranslateReviewPersonTools {
 			groups.addAll(aeiObjects.getActivity().getReviewGroupList());
 		}
 		identities.addAll(aeiObjects.business().organization().identity().listWithGroup(groups));
-		identities.addAll(aeiObjects.business().organization().identity().listWithUnitSubDirect(units));
+		identities.addAll(aeiObjects.business().organization().identity().listWithUnitSubNested(units));
 		identities = ListTools.trim(identities, true, true);
 		logger.debug("work title:{}, id:{}, activity name:{}, id:{}, translate review identity: {}",
 				aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(), aeiObjects.getActivity().getName(),
 				aeiObjects.getActivity().getId(), XGsonBuilder.toJson(identities));
-		List<String> os = aeiObjects.business().organization().identity().list(identities);
+		List<String> os = aeiObjects.business().organization().person().listWithIdentity(identities);
 		if (os.size() != identities.size()) {
 			logger.warn(
 					"work title:{}, id:{}, activity name:{}, id:{}, translate review identity: {}, result not with same length: {}.",
@@ -120,15 +120,6 @@ public class TranslateReviewPersonTools {
 		return list;
 	}
 
-	/* 取得指定部门的identity */
-	private static List<String> unit(Business business, Activity activity) throws Exception {
-		List<String> list = new ArrayList<>();
-		if (ListTools.isNotEmpty(activity.getReviewUnitList())) {
-			list.addAll(business.organization().identity().listWithUnitSubDirect(activity.getReviewUnitList()));
-		}
-		return list;
-	}
-
 	private static List<String> data(Business business, Data data, Activity activity) throws Exception {
 		List<String> list = new ArrayList<>();
 		if (ListTools.isNotEmpty(activity.getReviewDataPathList())) {
@@ -137,23 +128,6 @@ public class TranslateReviewPersonTools {
 					list.addAll(data.extractDistinguishedName(str));
 				}
 			}
-		}
-		return list;
-	}
-
-	private static List<String> identity(Activity activity) throws Exception {
-		List<String> list = new ArrayList<>();
-		if (ListTools.isNotEmpty(activity.getReviewIdentityList())) {
-			list.addAll(activity.getReviewIdentityList());
-		}
-		return list;
-	}
-
-	/** 指定的身份 */
-	private static List<String> group(Business business, Activity activity) throws Exception {
-		List<String> list = new ArrayList<>();
-		if (ListTools.isNotEmpty(activity.getReviewGroupList())) {
-			list.addAll(business.organization().identity().listWithGroup(activity.getReviewGroupList()));
 		}
 		return list;
 	}

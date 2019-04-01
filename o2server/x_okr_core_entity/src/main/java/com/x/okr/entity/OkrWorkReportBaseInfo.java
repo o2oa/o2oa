@@ -12,6 +12,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.openjpa.persistence.PersistentCollection;
@@ -74,6 +76,7 @@ public class OkrWorkReportBaseInfo extends SliceJpaObject {
 	 */
 	public static final String submitTime_FIELDNAME = "submitTime";
 	@FieldDescribe("汇报提交时间.")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column( name = ColumnNamePrefix + submitTime_FIELDNAME)
 	private Date submitTime;
 

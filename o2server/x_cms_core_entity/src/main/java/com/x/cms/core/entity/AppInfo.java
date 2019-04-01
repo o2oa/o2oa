@@ -31,6 +31,11 @@ import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.ListTools;
 
+/**
+ * 栏目信息
+ * @author O2LEE
+ *
+ */
 @ContainerEntity
 @Entity
 @Table(name = PersistenceProperties.AppInfo.table, uniqueConstraints = {
@@ -153,13 +158,13 @@ public class AppInfo extends SliceJpaObject {
 	@Column( length =AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + creatorTopUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String creatorTopUnitName;
-
-	public static final String reviewed_FIELDNAME = "reviewed";
-	@FieldDescribe("是否已经更新review.")
-	@Column( name = ColumnNamePrefix + reviewed_FIELDNAME)
+	
+	public static final String anonymousAble_FIELDNAME = "anonymousAble";
+	@FieldDescribe("是否允许匿名访问.")
+	@Column( name = ColumnNamePrefix + anonymousAble_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	@Index(name = TABLE + IndexNameMiddle + reviewed_FIELDNAME)
-	private Boolean reviewed = false;
+	@Index(name = TABLE + IndexNameMiddle + anonymousAble_FIELDNAME)
+	private Boolean anonymousAble = true;
 	
 	public static final String allPeopleView_FIELDNAME = "allPeopleView";
 	@FieldDescribe("可见范围为所有人可见.")
@@ -637,12 +642,12 @@ public class AppInfo extends SliceJpaObject {
 		removeStringFromList(this.manageableGroupList, groupName);
 	}
 
-	public Boolean getReviewed() {
-		return reviewed;
+	public Boolean getAnonymousAble() {
+		return anonymousAble;
 	}
 
-	public void setReviewed(Boolean reviewed) {
-		this.reviewed = reviewed;
+	public void setAnonymousAble(Boolean anonymousAble) {
+		this.anonymousAble = anonymousAble;
 	}
 
 	private List<String> addStringToList(List<String> sourceList, String targetString) {

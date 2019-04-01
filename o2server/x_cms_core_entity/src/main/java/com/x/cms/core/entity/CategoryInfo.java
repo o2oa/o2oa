@@ -33,7 +33,7 @@ import com.x.base.core.project.tools.ListTools;
 /**
  * 内容管理栏目目录分类信息
  * 
- * @author 李义
+ * @author O2LEE
  *
  */
 @ContainerEntity
@@ -273,14 +273,14 @@ public class CategoryInfo extends SliceJpaObject {
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + importViewName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String importViewName = null;
-
-	public static final String reviewed_FIELDNAME = "reviewed";
-	@FieldDescribe("是否已经更新review.")
-	@Column(name = ColumnNamePrefix + reviewed_FIELDNAME)
+	
+	public static final String anonymousAble_FIELDNAME = "anonymousAble";
+	@FieldDescribe("是否允许匿名访问.")
+	@Column( name = ColumnNamePrefix + anonymousAble_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	@Index(name = TABLE + IndexNameMiddle + reviewed_FIELDNAME)
-	private Boolean reviewed = false;
-
+	@Index(name = TABLE + IndexNameMiddle + anonymousAble_FIELDNAME)
+	private Boolean anonymousAble = true;
+	
 	public static final String viewablePersonList_FIELDNAME = "viewablePersonList";
 	@FieldDescribe("发布可见人员")
 	@PersistentCollection(fetch = FetchType.EAGER)
@@ -962,12 +962,12 @@ public class CategoryInfo extends SliceJpaObject {
 		this.importViewAppId = importViewAppId;
 	}
 
-	public Boolean getReviewed() {
-		return reviewed;
+	public Boolean getAnonymousAble() {
+		return anonymousAble;
 	}
 
-	public void setReviewed(Boolean reviewed) {
-		this.reviewed = reviewed;
+	public void setAnonymousAble(Boolean anonymousAble) {
+		this.anonymousAble = anonymousAble;
 	}
 
 }

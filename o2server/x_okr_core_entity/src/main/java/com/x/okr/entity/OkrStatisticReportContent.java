@@ -11,6 +11,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.openjpa.persistence.jdbc.Index;
@@ -126,6 +128,7 @@ public class OkrStatisticReportContent extends SliceJpaObject {
 
 	public static final String statisticTime_FIELDNAME = "statisticTime";
 	@FieldDescribe("统计时间.")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column( name = ColumnNamePrefix + statisticTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date statisticTime = null;

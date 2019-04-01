@@ -50,6 +50,7 @@ class ActionEdit extends BaseAction {
 			XGsonBuilder.instance().fromJson(table.getData(), DynamicEntity.class);
 			table.setLastUpdatePerson(effectivePerson.getDistinguishedName());
 			table.setLastUpdateTime(new Date());
+			table.setStatus(Table.STATUS_draft);
 			emc.check(table, CheckPersistType.all);
 			emc.commit();
 			ApplicationCache.notify(Table.class);
@@ -71,6 +72,7 @@ class ActionEdit extends BaseAction {
 
 		static WrapCopier<Wi, Table> copier = WrapCopierFactory.wi(Wi.class, Table.class, null,
 				ListTools.toList(JpaObject.FieldsUnmodify, Table.creatorPerson_FIELDNAME,
-						Table.lastUpdatePerson_FIELDNAME, Table.lastUpdateTime_FIELDNAME));
+						Table.lastUpdatePerson_FIELDNAME, Table.lastUpdateTime_FIELDNAME, Table.data_FIELDNAME,
+						Table.status_FIELDNAME));
 	}
 }

@@ -1004,6 +1004,43 @@ public class Business {
 		return false;
 	}
 
+	public boolean readableWithWork(EffectivePerson effectivePerson, String workId, PromptException entityException)
+			throws Exception {
+		Work work = emc.fetch(workId, Work.class, ListTools.toList(Work.job_FIELDNAME, Work.application_FIELDNAME,
+				Work.process_FIELDNAME, Work.creatorPerson_FIELDNAME));
+		if (null == work) {
+			if (null != entityException) {
+				throw entityException;
+			} else {
+				return false;
+			}
+		}
+		if (effectivePerson.isPerson(work.getCreatorPerson())) {
+			return true;
+		}
+		if (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
+				effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME, work.getJob()) == 0) {
+			if (emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME,
+					effectivePerson.getDistinguishedName(), ReadCompleted.job_FIELDNAME, work.getJob()) == 0) {
+				if (emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+						Task.job_FIELDNAME, work.getJob()) == 0) {
+					if (emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME,
+							effectivePerson.getDistinguishedName(), Read.job_FIELDNAME, work.getJob()) == 0) {
+						if (emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME,
+								effectivePerson.getDistinguishedName(), Review.job_FIELDNAME, work.getJob()) == 0) {
+							Application application = application().pick(work.getApplication());
+							Process process = process().pick(work.getProcess());
+							if (!canManageApplicationOrProcess(effectivePerson, application, process)) {
+								return false;
+							}
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+
 	public boolean readableWithWorkOrWorkCompleted(EffectivePerson effectivePerson, String workOrWorkCompleted,
 			PromptException entityException) throws Exception {
 		Work work = emc.fetch(workOrWorkCompleted, Work.class, ListTools.toList(Work.job_FIELDNAME,
@@ -1118,6 +1155,23 @@ public class Business {
 			}
 		}
 		return true;
+	}
+
+	public boolean editable(EffectivePerson effectivePerson, Work work) throws Exception {
+		if (null == work) {
+			return false;
+		}
+		if (effectivePerson.isManager()) {
+			return true;
+		}
+		if (emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+				Task.work_FIELDNAME, work.getId()) > 0) {
+			return true;
+		}
+		if (this.canManageApplicationOrProcess(effectivePerson, work.getApplication(), work.getProcess())) {
+			return true;
+		}
+		return false;
 	}
 
 	public boolean controllerable(Business business, EffectivePerson effectivePerson, Application application,

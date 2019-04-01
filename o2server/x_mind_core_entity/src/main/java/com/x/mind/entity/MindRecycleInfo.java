@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
@@ -118,6 +120,7 @@ public class MindRecycleInfo extends SliceJpaObject {
 
 	public static final String fileCreateTime_FIELDNAME = "fileCreateTime";
 	@FieldDescribe("自动生成，文件创建时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = ColumnNamePrefix + fileCreateTime_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + fileCreateTime_FIELDNAME)
 	private Date fileCreateTime;

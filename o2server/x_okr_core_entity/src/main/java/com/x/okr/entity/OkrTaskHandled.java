@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.openjpa.persistence.jdbc.Index;
@@ -135,6 +137,7 @@ public class OkrTaskHandled extends SliceJpaObject {
 
 	public static final String arriveDateTime_FIELDNAME = "arriveDateTime";
 	@FieldDescribe("到达时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column( name = ColumnNamePrefix + arriveDateTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date arriveDateTime = null;
@@ -173,6 +176,7 @@ public class OkrTaskHandled extends SliceJpaObject {
 
 	public static final String processDateTime_FIELDNAME = "processDateTime";
 	@FieldDescribe("办理时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column( name = ColumnNamePrefix + processDateTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date processDateTime = null;

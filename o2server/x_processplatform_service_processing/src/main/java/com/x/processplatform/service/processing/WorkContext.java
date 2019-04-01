@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
 
 import com.google.gson.Gson;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -72,68 +72,6 @@ public class WorkContext {
 
 	public String getActivity() throws Exception {
 		return gson.toJson(this.activity);
-	}
-
-	public String getTaskList() throws Exception {
-		try {
-			List<Task> list = new ArrayList<>();
-			if (null != this.aeiObjects) {
-				list.addAll(aeiObjects.getTasks());
-				list.addAll(aeiObjects.getCreateTasks());
-			}
-			return gson.toJson(list);
-		} catch (Exception e) {
-			throw new Exception("getTaskList error.", e);
-		}
-	}
-
-	public String getTaskCompletedList() throws Exception {
-		try {
-			List<TaskCompleted> list = new ArrayList<>();
-			if (null != this.aeiObjects) {
-				list.addAll(aeiObjects.getTaskCompleteds());
-				list.addAll(aeiObjects.getCreateTaskCompleteds());
-			}
-			return gson.toJson(list);
-		} catch (Exception e) {
-			throw new Exception("getTaskCompletedList error.", e);
-		}
-	}
-
-	public String getTaskOrTaskCompleted() {
-		if (null != task) {
-			return gson.toJson(task);
-		}
-		if (null != taskCompleted) {
-			return gson.toJson(taskCompleted);
-		}
-		return "";
-	}
-
-	public String getReadList() throws Exception {
-		try {
-			List<Read> list = new ArrayList<>();
-			if (null != this.aeiObjects) {
-				list.addAll(aeiObjects.getReads());
-				list.addAll(aeiObjects.getCreateReads());
-			}
-			return gson.toJson(list);
-		} catch (Exception e) {
-			throw new Exception("getReadList error.", e);
-		}
-	}
-
-	public String getReadCompletedList() throws Exception {
-		try {
-			List<ReadCompleted> list = new ArrayList<>();
-			if (null != this.aeiObjects) {
-				list.addAll(aeiObjects.getReadCompleteds());
-				list.addAll(aeiObjects.getCreateReadCompleteds());
-			}
-			return gson.toJson(list);
-		} catch (Exception e) {
-			throw new Exception("getReadCompletedList error.", e);
-		}
 	}
 
 	public String getReviewList() throws Exception {
@@ -246,6 +184,132 @@ public class WorkContext {
 			return gson.toJson(map);
 		} catch (Exception e) {
 			throw new Exception("getScript error.", e);
+		}
+	}
+
+	public String getJobTaskList() throws Exception {
+		try {
+
+			List<Task> list = new ArrayList<>();
+			if (null != this.aeiObjects) {
+				list.addAll(aeiObjects.getTasks());
+				list.addAll(aeiObjects.getCreateTasks());
+			}
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			System.out.println(gson.toJson(list));
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			return gson.toJson(list);
+		} catch (Exception e) {
+			throw new Exception("getJobTaskList error.", e);
+		}
+	}
+
+	public String getJobTaskCompletedList() throws Exception {
+		try {
+			List<TaskCompleted> list = new ArrayList<>();
+			if (null != this.aeiObjects) {
+				list.addAll(aeiObjects.getTaskCompleteds());
+				list.addAll(aeiObjects.getCreateTaskCompleteds());
+			}
+			return gson.toJson(list);
+		} catch (Exception e) {
+			throw new Exception("getJobTaskCompletedList error.", e);
+		}
+	}
+
+	public String getJobReadList() throws Exception {
+		try {
+			List<Read> list = new ArrayList<>();
+			if (null != this.aeiObjects) {
+				list.addAll(aeiObjects.getReads());
+				list.addAll(aeiObjects.getCreateReads());
+			}
+			return gson.toJson(list);
+		} catch (Exception e) {
+			throw new Exception("getJobReadList error.", e);
+		}
+	}
+
+	public String getJobReadCompletedList() throws Exception {
+		try {
+			List<ReadCompleted> list = new ArrayList<>();
+			if (null != this.aeiObjects) {
+				list.addAll(aeiObjects.getReadCompleteds());
+				list.addAll(aeiObjects.getCreateReadCompleteds());
+			}
+			return gson.toJson(list);
+		} catch (Exception e) {
+			throw new Exception("getJobReadCompletedList error.", e);
+		}
+	}
+
+	public String getTaskList() throws Exception {
+		try {
+			List<Task> list = new ArrayList<>();
+			if (null != this.aeiObjects) {
+				list.addAll(aeiObjects.getTasks());
+				list.addAll(aeiObjects.getCreateTasks());
+			}
+			return gson.toJson(
+					list.stream().filter(o -> StringUtils.equals(o.getWork(), this.aeiObjects.getWork().getId()))
+							.collect(Collectors.toList()));
+		} catch (Exception e) {
+			throw new Exception("getTaskList error.", e);
+		}
+	}
+
+	public String getTaskCompletedList() throws Exception {
+		try {
+			List<TaskCompleted> list = new ArrayList<>();
+			if (null != this.aeiObjects) {
+				list.addAll(aeiObjects.getTaskCompleteds());
+				list.addAll(aeiObjects.getCreateTaskCompleteds());
+			}
+			return gson.toJson(
+					list.stream().filter(o -> StringUtils.equals(o.getWork(), this.aeiObjects.getWork().getId()))
+							.collect(Collectors.toList()));
+		} catch (Exception e) {
+			throw new Exception("getTaskCompletedList error.", e);
+		}
+	}
+
+	public String getTaskOrTaskCompleted() {
+		if (null != task) {
+			return gson.toJson(task);
+		}
+		if (null != taskCompleted) {
+			return gson.toJson(taskCompleted);
+		}
+		return "";
+	}
+
+	public String getReadList() throws Exception {
+		try {
+			List<Read> list = new ArrayList<>();
+			if (null != this.aeiObjects) {
+				list.addAll(aeiObjects.getReads());
+				list.addAll(aeiObjects.getCreateReads());
+			}
+			return gson.toJson(
+					list.stream().filter(o -> StringUtils.equals(o.getWork(), this.aeiObjects.getWork().getId()))
+							.collect(Collectors.toList()));
+		} catch (Exception e) {
+			throw new Exception("getReadList error.", e);
+		}
+	}
+
+	public String getReadCompletedList() throws Exception {
+		try {
+			List<ReadCompleted> list = new ArrayList<>();
+			if (null != this.aeiObjects) {
+				list.addAll(aeiObjects.getReadCompleteds());
+				list.addAll(aeiObjects.getCreateReadCompleteds());
+			}
+			return gson.toJson(
+					list.stream().filter(o -> StringUtils.equals(o.getWork(), this.aeiObjects.getWork().getId()))
+							.collect(Collectors.toList()));
+		} catch (Exception e) {
+			throw new Exception("getReadCompletedList error.", e);
 		}
 	}
 

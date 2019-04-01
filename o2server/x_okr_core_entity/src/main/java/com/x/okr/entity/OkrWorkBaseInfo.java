@@ -14,6 +14,8 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.openjpa.persistence.PersistentCollection;
@@ -188,13 +190,17 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 	private String confirmDateStr = "";
 
 	public static final String completeDateLimit_FIELDNAME = "completeDateLimit";
+
+
 	@FieldDescribe("工作完成日期")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column( name = ColumnNamePrefix + completeDateLimit_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date completeDateLimit = null;
 
 	public static final String archiveDate_FIELDNAME = "archiveDate";
 	@FieldDescribe("工作归档时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column( name = ColumnNamePrefix + archiveDate_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date archiveDate = null;
@@ -267,19 +273,22 @@ public class OkrWorkBaseInfo extends SliceJpaObject {
 
 	public static final String completeTime_FIELDNAME = "completeTime";
 	@FieldDescribe("工作完成时间")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column( name = ColumnNamePrefix + completeTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date completeTime = null;
 	
 	public static final String lastReportTime_FIELDNAME = "lastReportTime";
 	@FieldDescribe("上一次汇报时间")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + lastReportTime_FIELDNAME)
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column( name = ColumnNamePrefix + lastReportTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date lastReportTime = null;
 
 	public static final String nextReportTime_FIELDNAME = "nextReportTime";
 	@FieldDescribe("下一次汇报时间")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + nextReportTime_FIELDNAME)
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column( name = ColumnNamePrefix + nextReportTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date nextReportTime = null;
 

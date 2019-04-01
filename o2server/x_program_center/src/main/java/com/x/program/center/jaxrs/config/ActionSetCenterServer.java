@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.CenterServer;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
@@ -13,7 +14,8 @@ public class ActionSetCenterServer extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		wi.save();
+		Wi.copier.copy(wi, Config.centerServer());
+		Config.centerServer().save();
 		this.configFlush(effectivePerson);
 		Wo wo = new Wo();
 		wo.setValue(true);

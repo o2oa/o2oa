@@ -49,7 +49,7 @@ class ActionUploadOctetStream extends BaseAction {
 					BufferedImage image = ImageIO.read(in);
 					if (image.getWidth() > scale) {
 						/** 图像的实际大小比scale大的要进行压缩 */
-						BufferedImage scalrImage = Scalr.resize(image, Method.SPEED, Mode.FIT_TO_WIDTH, scale);
+						BufferedImage scalrImage = Scalr.resize(image, Method.QUALITY, Mode.FIT_TO_WIDTH, scale);
 						ImageIO.write(scalrImage, file.getExtension(), baos);
 					} else {
 						/** 图像的实际大小比scale小,保存原图不进行压缩 */

@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -451,7 +452,8 @@ public class AeiObjects extends GsonPropertyObject {
 		this.commitReview();
 		this.commitHint();
 		this.commitAttachment();
-		this.getWorkDataHelper().update(this.getData());
+		// this.getWorkDataHelper().update(this.getData());
+		this.commitData();
 		this.entityManagerContainer().commit();
 	}
 
@@ -792,6 +794,13 @@ public class AeiObjects extends GsonPropertyObject {
 				}
 			});
 		}
+	}
+
+	private void commitData() throws Exception {
+		List<Attachment> os = ListUtils.subtract(this.getAttachments(), this.getDeleteAttachments());
+		os = ListUtils.sum(os, this.getCreateAttachments());
+		this.getWorkDataHelper()
+				.update(this.getData().removeWork().removeAttachmentList().setWork(this.work).setAttachmentList(os));
 	}
 
 	public List<Work> getUpdateWorks() {

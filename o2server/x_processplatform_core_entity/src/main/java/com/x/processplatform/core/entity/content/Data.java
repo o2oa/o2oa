@@ -9,6 +9,8 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.map.ListOrderedMap;
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -23,16 +25,33 @@ public class Data extends ListOrderedMap<String, Object> {
 
 	private static final long serialVersionUID = 8339934499479910171L;
 
-	public void setWork(Work work) throws Exception {
+	public static void removeWork(JsonElement jsonElement) {
+		if (null != jsonElement && jsonElement.isJsonObject()) {
+		}
+		JsonObject o = jsonElement.getAsJsonObject();
+		if (o.has(Data.WORK_PROPERTY)) {
+			o.remove(Data.WORK_PROPERTY);
+		}
+	}
+
+	public Data setWork(Work work) throws Exception {
 		DataWork dataWork = new DataWork();
 		if (null != work) {
 			DataWork.workCopier.copy(work, dataWork);
 		}
 		dataWork.setWorkId(work.getId());
 		this.put(WORK_PROPERTY, dataWork);
+		return this;
 	}
 
-	public void setWork(WorkCompleted workCompleted) throws Exception {
+	public Data removeWork() {
+		if (this.containsKey(WORK_PROPERTY)) {
+			this.remove(WORK_PROPERTY);
+		}
+		return this;
+	}
+
+	public Data setWork(WorkCompleted workCompleted) throws Exception {
 		DataWork dataWork = new DataWork();
 		if (null != workCompleted) {
 			DataWork.workCompletedCopier.copy(workCompleted, dataWork);
@@ -41,14 +60,23 @@ public class Data extends ListOrderedMap<String, Object> {
 		dataWork.setWorkCompletedId(workCompleted.getId());
 		dataWork.setCompleted(true);
 		this.put(WORK_PROPERTY, dataWork);
+		return this;
 	}
 
-	public void setAttachmentList(List<Attachment> attachmentList) throws Exception {
+	public Data setAttachmentList(List<Attachment> attachmentList) throws Exception {
 		List<DataAttachment> list = new ArrayList<>();
 		if (ListTools.isEmpty(attachmentList)) {
 			DataAttachment.copier.copy(attachmentList, list);
 		}
 		this.put(ATTACHMENTLIST_PROPERTY, list);
+		return this;
+	}
+
+	public Data removeAttachmentList() {
+		if (this.containsKey(ATTACHMENTLIST_PROPERTY)) {
+			this.remove(ATTACHMENTLIST_PROPERTY);
+		}
+		return this;
 	}
 
 	public List<String> extractDistinguishedName(String path) throws Exception {
@@ -101,10 +129,10 @@ public class Data extends ListOrderedMap<String, Object> {
 
 	public static class DataWork extends GsonPropertyObject {
 
-		private static WrapCopier<Work, DataWork> workCopier = WrapCopierFactory.wo(Work.class, DataWork.class, null,
+		public static WrapCopier<Work, DataWork> workCopier = WrapCopierFactory.wo(Work.class, DataWork.class, null,
 				JpaObject.FieldsInvisible);
 
-		private static WrapCopier<WorkCompleted, DataWork> workCompletedCopier = WrapCopierFactory
+		public static WrapCopier<WorkCompleted, DataWork> workCompletedCopier = WrapCopierFactory
 				.wo(WorkCompleted.class, DataWork.class, null, JpaObject.FieldsInvisible);
 
 		private String job;
@@ -312,7 +340,7 @@ public class Data extends ListOrderedMap<String, Object> {
 
 	public static class DataAttachment extends GsonPropertyObject {
 
-		static WrapCopier<Attachment, DataAttachment> copier = WrapCopierFactory.wo(Attachment.class,
+		public static WrapCopier<Attachment, DataAttachment> copier = WrapCopierFactory.wo(Attachment.class,
 				DataAttachment.class, null, JpaObject.FieldsInvisible);
 
 		private String name;

@@ -3,9 +3,11 @@ package com.x.processplatform.service.processing.jaxrs.work;
 import java.util.Date;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -37,11 +39,14 @@ class ActionCreate extends BaseAction {
 			Begin begin = business.element().getBeginWithProcess(process.getId());
 			Work work = this.create(application, process, begin);
 			emc.beginTransaction(Work.class);
-			emc.persist(work, CheckPersistType.all);
 			if ((null != jsonElement) && jsonElement.isJsonObject()) {
 				WorkDataHelper workDataHelper = new WorkDataHelper(emc, work);
 				workDataHelper.update(jsonElement);
+//				if (XGsonBuilder.extract(jsonElement, Work.dataChanged_FIELDNAME, Boolean.class, false)) {
+//					work.setDataChanged(true);
+//				}
 			}
+			emc.persist(work, CheckPersistType.all);
 			emc.commit();
 			Wo wo = new Wo();
 			wo.setId(work.getId());
