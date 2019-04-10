@@ -1,7 +1,14 @@
 package com.x.processplatform.assemble.surface.jaxrs.data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -9,11 +16,15 @@ import org.apache.commons.lang3.math.NumberUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.entity.dataitem.ItemType;
 import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
@@ -24,6 +35,9 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.content.WorkCompleted_;
+import com.x.processplatform.core.entity.content.Work_;
+import com.x.processplatform.core.entity.element.Application;
 import com.x.query.core.entity.Item;
 
 abstract class BaseAction extends StandardJaxrsAction {
@@ -276,5 +290,48 @@ abstract class BaseAction extends StandardJaxrsAction {
 	private List<Data.DataAttachment> listDataAttachment(Business business, String job) throws Exception {
 		return business.entityManagerContainer().fetchEqual(Attachment.class, Data.DataAttachment.copier,
 				Attachment.job_FIELDNAME, job);
+	}
+
+	protected Boolean manager(Business business, EffectivePerson effectivePerson) throws Exception {
+		if (effectivePerson.isManager()) {
+			return true;
+		}
+		return (business.organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+				OrganizationDefinition.ProcessPlatformManager));
+	}
+
+	protected Boolean applicationControl(Business business, EffectivePerson effectivePerson, String job)
+			throws Exception {
+		List<String> ids = new ArrayList<>();
+		ids.addAll(this.listApplicationWithWork(business, job));
+		ids.addAll(this.listApplicationWithWorkCompleted(business, job));
+		ids = ListTools.trim(ids, true, true);
+		List<Application> os = business.application().pick(ids);
+		for (Application o : os) {
+			if (ListTools.contains(o.getControllerList(), effectivePerson.getDistinguishedName())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private List<String> listApplicationWithWork(Business business, String job) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(Work.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Work> root = cq.from(Work.class);
+		Predicate p = cb.equal(root.get(Work_.job), job);
+		cq.select(root.get(Work_.application)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	private List<String> listApplicationWithWorkCompleted(Business business, String job) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(WorkCompleted.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<WorkCompleted> root = cq.from(WorkCompleted.class);
+		Predicate p = cb.equal(root.get(WorkCompleted_.job), job);
+		cq.select(root.get(WorkCompleted_.application)).where(p);
+		return em.createQuery(cq).getResultList();
 	}
 }
