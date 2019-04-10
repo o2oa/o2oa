@@ -13,7 +13,6 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -44,6 +43,189 @@ public class DataAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionGetWithJob().execute(effectivePerson, job);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据路径获取指定work的data数据.", action = ActionGetWithJobPath0.class)
+	@GET
+	@Path("job/{job}/{path0}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getWithJobPath0(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("job") String job,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0) {
+		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetWithJobPath0().execute(effectivePerson, job, path0);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据路径获取指定work的data数据.", action = ActionGetWithJobPath1.class)
+	@GET
+	@Path("job/{job}/{path0}/{path1}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getWithJobPath1(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("job") String job,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1) {
+		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetWithWorkPath1().execute(effectivePerson, job, path0, path1);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据路径获取指定work的data数据.", action = ActionGetWithJobPath2.class)
+	@GET
+	@Path("work/{id}/{path0}/{path1}/{path2}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getWithJobPath2(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("job") String job,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2) {
+		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetWithJobPath2().execute(effectivePerson, job, path0, path1, path2);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据路径获取指定work的data数据.", action = ActionGetWithJobPath3.class)
+	@GET
+	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getWithJobPath3(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("job") String job,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3) {
+		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetWithJobPath3().execute(effectivePerson, job, path0, path1, path2, path3);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据路径获取指定work的data数据.", action = ActionGetWithJobPath4.class)
+	@GET
+	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getWithJobPath4(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("job") String job,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4) {
+		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetWithJobPath4().execute(effectivePerson, job, path0, path1, path2, path3, path4);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据路径获取指定work的data数据.", action = ActionGetWithJobPath5.class)
+	@GET
+	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getWithJobPath5(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("job") String job,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5) {
+		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetWithJobPath5().execute(effectivePerson, job, path0, path1, path2, path3, path4,
+					path5);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据路径获取指定work的data数据.", action = ActionGetWithJobPath6.class)
+	@GET
+	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getWithJobPath6(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("job") String job,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
+			@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6) {
+		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetWithJobPath6().execute(effectivePerson, job, path0, path1, path2, path3, path4, path5,
+					path6);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据路径获取指定work的data数据.", action = ActionGetWithJobPath7.class)
+	@GET
+	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getWithJobPath7(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("job") String job,
+			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
+			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
+			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
+			@JaxrsParameterDescribe("3级路径") @PathParam("path3") String path3,
+			@JaxrsParameterDescribe("4级路径") @PathParam("path4") String path4,
+			@JaxrsParameterDescribe("5级路径") @PathParam("path5") String path5,
+			@JaxrsParameterDescribe("6级路径") @PathParam("path6") String path6,
+			@JaxrsParameterDescribe("7级路径") @PathParam("path7") String path7) {
+		ActionResult<JsonElement> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetWithJobPath7().execute(effectivePerson, job, path0, path1, path2, path3, path4, path5,
+					path6, path7);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -93,8 +275,8 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithWorkWithPath1(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+	public void getWithWorkPath1(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1) {
 		ActionResult<JsonElement> result = new ActionResult<>();
@@ -113,8 +295,8 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithWorkWithPath2(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+	public void getWithWorkPath2(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2) {
@@ -134,8 +316,8 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithWorkWithPath3(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+	public void getWithWorkPath3(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
@@ -156,8 +338,8 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithWorkWithPath4(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+	public void getWithWorkPath4(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
@@ -179,8 +361,8 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithWorkWithPath5(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+	public void getWithWorkPath5(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
@@ -204,8 +386,8 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithWorkWithPath6(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+	public void getWithWorkPath6(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
@@ -230,8 +412,8 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithWorkWithPath7(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+	public void getWithWorkPath7(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
 			@JaxrsParameterDescribe("2级路径") @PathParam("path2") String path2,
@@ -257,8 +439,8 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("workcompleted/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithWorkCompleted(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @JaxrsParameterDescribe("已完成工作标识") @PathParam("id") String id) {
+	public void getWithWorkCompleted(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("已完成工作标识") @PathParam("id") String id) {
 		ActionResult<JsonElement> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -275,7 +457,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("workcompleted/{id}/{path0}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithWorkCompletedWithPath0(@Suspended final AsyncResponse asyncResponse,
+	public void getWithWorkCompletedPath0(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("已完成工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0) {
 		ActionResult<JsonElement> result = new ActionResult<>();
@@ -294,7 +476,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("workcompleted/{id}/{path0}/{path1}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithWorkCompletedWithPath1(@Suspended final AsyncResponse asyncResponse,
+	public void getWithWorkCompletedPath1(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("已完成工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1) {
@@ -314,7 +496,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("workcompleted/{id}/{path0}/{path1}/{path2}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithWorkCompletedWithPath2(@Suspended final AsyncResponse asyncResponse,
+	public void getWithWorkCompletedPath2(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("已完成工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -335,7 +517,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("workcompleted/{id}/{path0}/{path1}/{path2}/{path3}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithWorkCompletedWithPath3(@Suspended final AsyncResponse asyncResponse,
+	public void getWithWorkCompletedPath3(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("已完成工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -357,7 +539,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithWorkCompletedWithPath4(@Suspended final AsyncResponse asyncResponse,
+	public void getWithWorkCompletedPath4(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("已完成工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -381,7 +563,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithWorkCompletedWithPath5(@Suspended final AsyncResponse asyncResponse,
+	public void getWithWorkCompletedPath5(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("已完成工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -406,7 +588,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithWorkCompletedWithPath6(@Suspended final AsyncResponse asyncResponse,
+	public void getWithWorkCompletedPath6(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("已完成工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -432,7 +614,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getWithWorkCompletedWithPath7(@Suspended final AsyncResponse asyncResponse,
+	public void getWithWorkCompletedPath7(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("已完成工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -477,7 +659,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWorkWithPath0(@Suspended final AsyncResponse asyncResponse,
+	public void updateWithWorkPath0(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0, JsonElement jsonElement) {
 		ActionResult<ActionUpdateWithWorkPath0.Wo> result = new ActionResult<>();
@@ -496,7 +678,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWorkWithPath1(@Suspended final AsyncResponse asyncResponse,
+	public void updateWithWorkPath1(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1, JsonElement jsonElement) {
@@ -516,7 +698,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWorkWithPath2(@Suspended final AsyncResponse asyncResponse,
+	public void updateWithWorkPath2(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -537,7 +719,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWorkWithPath3(@Suspended final AsyncResponse asyncResponse,
+	public void updateWithWorkPath3(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -560,7 +742,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWorkWithPath4(@Suspended final AsyncResponse asyncResponse,
+	public void updateWithWorkPath4(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -584,7 +766,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWorkWithPath5(@Suspended final AsyncResponse asyncResponse,
+	public void updateWithWorkPath5(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -609,7 +791,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWorkWithPath6(@Suspended final AsyncResponse asyncResponse,
+	public void updateWithWorkPath6(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -635,7 +817,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWorkWithPath7(@Suspended final AsyncResponse asyncResponse,
+	public void updateWithWorkPath7(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -656,14 +838,15 @@ public class DataAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
-	
+
 	@JaxrsMethodDescribe(value = "更新指定WorkCompleted的Data数据.", action = ActionUpdateWithWorkCompleted.class)
 	@PUT
 	@Path("workcompleted/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWorkCompleted(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id, JsonElement jsonElement) {
+	public void updateWithWorkCompleted(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
+			JsonElement jsonElement) {
 		ActionResult<ActionUpdateWithWorkCompleted.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -680,7 +863,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("workcompleted/{id}/{path0}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWorkCompletedWithPath0(@Suspended final AsyncResponse asyncResponse,
+	public void updateWithWorkCompletedPath0(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0, JsonElement jsonElement) {
 		ActionResult<ActionUpdateWithWorkCompletedPath0.Wo> result = new ActionResult<>();
@@ -699,7 +882,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("workcompleted/{id}/{path0}/{path1}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWorkCompletedWithPath1(@Suspended final AsyncResponse asyncResponse,
+	public void updateWithWorkCompletedPath1(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1, JsonElement jsonElement) {
@@ -719,7 +902,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("workcompleted/{id}/{path0}/{path1}/{path2}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWorkCompletedWithPath2(@Suspended final AsyncResponse asyncResponse,
+	public void updateWithWorkCompletedPath2(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -727,7 +910,8 @@ public class DataAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateWithWorkCompletedPath2.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateWithWorkCompletedPath2().execute(effectivePerson, id, path0, path1, path2, jsonElement);
+			result = new ActionUpdateWithWorkCompletedPath2().execute(effectivePerson, id, path0, path1, path2,
+					jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -740,7 +924,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("workcompleted/{id}/{path0}/{path1}/{path2}/{path3}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWorkCompletedWithPath3(@Suspended final AsyncResponse asyncResponse,
+	public void updateWithWorkCompletedPath3(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -763,7 +947,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWorkCompletedWithPath4(@Suspended final AsyncResponse asyncResponse,
+	public void updateWithWorkCompletedPath4(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -773,8 +957,8 @@ public class DataAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateWithWorkCompletedPath4.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateWithWorkCompletedPath4().execute(effectivePerson, id, path0, path1, path2, path3, path4,
-					jsonElement);
+			result = new ActionUpdateWithWorkCompletedPath4().execute(effectivePerson, id, path0, path1, path2, path3,
+					path4, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -787,7 +971,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWorkCompletedWithPath5(@Suspended final AsyncResponse asyncResponse,
+	public void updateWithWorkCompletedPath5(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -798,8 +982,8 @@ public class DataAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateWithWorkCompletedPath5.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateWithWorkCompletedPath5().execute(effectivePerson, id, path0, path1, path2, path3, path4,
-					path5, jsonElement);
+			result = new ActionUpdateWithWorkCompletedPath5().execute(effectivePerson, id, path0, path1, path2, path3,
+					path4, path5, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -812,7 +996,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWorkCompletedWithPath6(@Suspended final AsyncResponse asyncResponse,
+	public void updateWithWorkCompletedPath6(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -824,8 +1008,8 @@ public class DataAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateWithWorkCompletedPath6.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateWithWorkCompletedPath6().execute(effectivePerson, id, path0, path1, path2, path3, path4,
-					path5, path6, jsonElement);
+			result = new ActionUpdateWithWorkCompletedPath6().execute(effectivePerson, id, path0, path1, path2, path3,
+					path4, path5, path6, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -838,7 +1022,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("workcompleted/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWorkCompletedWithPath7(@Suspended final AsyncResponse asyncResponse,
+	public void updateWithWorkCompletedPath7(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -851,8 +1035,8 @@ public class DataAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateWithWorkCompletedPath7.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateWithWorkCompletedPath7().execute(effectivePerson, id, path0, path1, path2, path3, path4,
-					path5, path6, path7, jsonElement);
+			result = new ActionUpdateWithWorkCompletedPath7().execute(effectivePerson, id, path0, path1, path2, path3,
+					path4, path5, path6, path7, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -883,7 +1067,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void createWithWorkWithPath0(@Suspended final AsyncResponse asyncResponse,
+	public void createWithWorkPath0(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0, JsonElement jsonElement) {
 		ActionResult<ActionCreateWithWorkPath0.Wo> result = new ActionResult<>();
@@ -902,7 +1086,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void createWithWorkWithPath1(@Suspended final AsyncResponse asyncResponse,
+	public void createWithWorkPath1(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1, JsonElement jsonElement) {
@@ -922,7 +1106,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void createWithWorkWithPath2(@Suspended final AsyncResponse asyncResponse,
+	public void createWithWorkPath2(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -943,7 +1127,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void createWithWorkWithPath3(@Suspended final AsyncResponse asyncResponse,
+	public void createWithWorkPath3(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -966,7 +1150,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void createWithWorkWithPath4(@Suspended final AsyncResponse asyncResponse,
+	public void createWithWorkPath4(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -990,7 +1174,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void createWithWorkWithPath5(@Suspended final AsyncResponse asyncResponse,
+	public void createWithWorkPath5(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -1015,7 +1199,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void createWithWorkWithPath6(@Suspended final AsyncResponse asyncResponse,
+	public void createWithWorkPath6(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -1041,7 +1225,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void createWithWorkWithPath7(@Suspended final AsyncResponse asyncResponse,
+	public void createWithWorkPath7(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -1086,7 +1270,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteWithWorkWithPath0(@Suspended final AsyncResponse asyncResponse,
+	public void deleteWithWorkPath0(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0) {
 		ActionResult<ActionDeleteWithWorkPath0.Wo> result = new ActionResult<>();
@@ -1105,7 +1289,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteWithWorkWithPath1(@Suspended final AsyncResponse asyncResponse,
+	public void deleteWithWorkPath1(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1) {
@@ -1125,7 +1309,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteWithWorkWithPath2(@Suspended final AsyncResponse asyncResponse,
+	public void deleteWithWorkPath2(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -1146,7 +1330,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteWithWorkWithPath3(@Suspended final AsyncResponse asyncResponse,
+	public void deleteWithWorkPath3(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -1168,7 +1352,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteWithWorkWithPath4(@Suspended final AsyncResponse asyncResponse,
+	public void deleteWithWorkPath4(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -1191,7 +1375,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteWithWorkWithPath5(@Suspended final AsyncResponse asyncResponse,
+	public void deleteWithWorkPath5(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -1216,7 +1400,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteWithWorkWithPath6(@Suspended final AsyncResponse asyncResponse,
+	public void deleteWithWorkPath6(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
@@ -1242,7 +1426,7 @@ public class DataAction extends StandardJaxrsAction {
 	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteWithWorkWithPath7(@Suspended final AsyncResponse asyncResponse,
+	public void deleteWithWorkPath7(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0,
 			@JaxrsParameterDescribe("1级路径") @PathParam("path1") String path1,
