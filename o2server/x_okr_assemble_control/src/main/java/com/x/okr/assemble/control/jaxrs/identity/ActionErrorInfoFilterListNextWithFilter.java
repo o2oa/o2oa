@@ -53,18 +53,20 @@ public class ActionErrorInfoFilterListNextWithFilter extends BaseAction {
 			}
 		}
 		if (check) {
-			try {
-				if (!okrUserInfoService.getIsOkrManager(currentPerson.getDistinguishedName())) {
+			if( !"xadmin".equalsIgnoreCase( currentPerson.getName() )) {
+				try {
+					if (!okrUserInfoService.getIsOkrManager(currentPerson.getDistinguishedName())) {
+						check = false;
+						Exception exception = new ExceptionInsufficientPermissions(currentPerson.getDistinguishedName(),
+								ThisApplication.OKRMANAGER);
+						result.error(exception);
+					}
+				} catch (Exception e) {
 					check = false;
-					Exception exception = new ExceptionInsufficientPermissions(currentPerson.getDistinguishedName(),
-							ThisApplication.OKRMANAGER);
+					Exception exception = new ExceptionOkrSystemAdminCheck(e, currentPerson.getDistinguishedName());
 					result.error(exception);
+					logger.error(e, currentPerson, request, null);
 				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionOkrSystemAdminCheck(e, currentPerson.getDistinguishedName());
-				result.error(exception);
-				logger.error(e, currentPerson, request, null);
 			}
 		}
 

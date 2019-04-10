@@ -167,6 +167,11 @@ public class AppInfoService {
 		List<String> document_ids = null;
 		CategoryInfo categoryInfo = null;
 		Document document = null;
+		Long docCount = 0L;
+		Integer totalWhileCount = 0;
+		Integer currenteWhileCount = 0;
+		Integer queryMaxCount = 1000;
+		
 		Business business = new Business(emc);
 		appInfo = emc.find( wrapIn.getId(), AppInfo.class );
 		emc.beginTransaction( AppInfo.class );
@@ -193,16 +198,28 @@ public class AppInfoService {
 						emc.check( categoryInfo, CheckPersistType.all );
 						
 						//对该目录下所有的文档的栏目名称和分类别名进行调整
-						document_ids = business.getDocumentFactory().listByCategoryId( categoryId );
-						if( document_ids != null && !document_ids.isEmpty() ){
-							for( String docId : document_ids ){
-								document = emc.find( docId, Document.class );
-								document.setAppName( categoryInfo.getAppName() );
-								document.setCategoryAlias( categoryInfo.getCategoryAlias() );
-								if( document.getHasIndexPic() == null ){
-									document.setHasIndexPic( false );
+						docCount = business.getDocumentFactory().countByCategoryId( categoryInfo.getId() );
+						if( docCount > 0 ) {
+							totalWhileCount = (int) (docCount/queryMaxCount) + 1;
+							if( totalWhileCount > 0 ) {
+								while( docCount > 0 && currenteWhileCount <= totalWhileCount ) {
+									document_ids = business.getDocumentFactory().listByCategoryId( categoryId, queryMaxCount );
+									if( document_ids != null && !document_ids.isEmpty() ){
+										for( String docId : document_ids ){
+											try {
+												document = emc.find( docId, Document.class );
+												document.setAppName( categoryInfo.getAppName() );
+												document.setCategoryAlias( categoryInfo.getCategoryAlias() );
+												if( document.getHasIndexPic() == null ){
+													document.setHasIndexPic( false );
+												}
+												emc.check( document, CheckPersistType.all );
+											}catch( Exception e ) {
+												e.printStackTrace();
+											}
+										}
+									}
 								}
-								emc.check( document, CheckPersistType.all );
 							}
 						}
 					}

@@ -63,25 +63,25 @@ public class ScriptHelperFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	public static ScriptHelper create(Business business, Work work, Data data, Activity activity,
-			BindingPair... bindingPairs) throws Exception {
-		WorkContext workContext = new WorkContext(business, work, activity);
-		Map<String, Object> map = new HashMap<>();
-		map.put(ScriptingEngine.BINDINGNAME_WORKCONTEXT, workContext);
-		map.put(ScriptingEngine.BINDINGNAME_DATA, data);
-		map.put(ScriptingEngine.BINDINGNAME_ORGANIZATION, new Organization(ThisApplication.context()));
-		map.put(ScriptingEngine.BINDINGNAME_WEBSERVICESCLIENT, new WebservicesClient());
-		map.put(ScriptingEngine.BINDINGNAME_DICTIONARY,
-				new ApplicationDictHelper(business.entityManagerContainer(), work.getApplication()));
-		map.put(ScriptingEngine.BINDINGNAME_APPLICATIONS, ThisApplication.context().applications());
-		for (BindingPair o : bindingPairs) {
-			map.put(o.getName(), o.getValue());
-		}
-		ScriptHelper sh = new ScriptHelper(business, map, initialScriptText);
-		return sh;
-	}
+//	public static ScriptHelper create(Business business, Work work, Data data, Activity activity,
+//			BindingPair... bindingPairs) throws Exception {
+//		WorkContext workContext = new WorkContext(business, work, activity);
+//		Map<String, Object> map = new HashMap<>();
+//		map.put(ScriptingEngine.BINDINGNAME_WORKCONTEXT, workContext);
+//		map.put(ScriptingEngine.BINDINGNAME_DATA, data);
+//		map.put(ScriptingEngine.BINDINGNAME_ORGANIZATION, new Organization(ThisApplication.context()));
+//		map.put(ScriptingEngine.BINDINGNAME_WEBSERVICESCLIENT, new WebservicesClient());
+//		map.put(ScriptingEngine.BINDINGNAME_DICTIONARY,
+//				new ApplicationDictHelper(business.entityManagerContainer(), work.getApplication()));
+//		map.put(ScriptingEngine.BINDINGNAME_APPLICATIONS, ThisApplication.context().applications());
+//		for (BindingPair o : bindingPairs) {
+//			map.put(o.getName(), o.getValue());
+//		}
+//		ScriptHelper sh = new ScriptHelper(business, map, initialScriptText);
+//		return sh;
+//	}
 
-	public static ScriptHelper create(Business business, Work work, Data data, Activity activity, Task task,
+	public static ScriptHelper createWithTask(Business business, Work work, Data data, Activity activity, Task task,
 			BindingPair... bindingPairs) throws Exception {
 		WorkContext workContext = new WorkContext(business, work, activity, task);
 		Map<String, Object> map = new HashMap<>();
@@ -99,7 +99,7 @@ public class ScriptHelperFactory {
 		return sh;
 	}
 
-	public static ScriptHelper create(Business business, Work work, Data data, Activity activity,
+	public static ScriptHelper createWithTaskCompleted(Business business, Work work, Data data, Activity activity,
 			TaskCompleted taskCompleted, BindingPair... bindingPairs) throws Exception {
 		WorkContext workContext = new WorkContext(business, work, activity, taskCompleted);
 		Map<String, Object> map = new HashMap<>();

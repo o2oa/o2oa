@@ -130,6 +130,10 @@ public class CategoryInfoService {
 		String oldCategoryName = null;
 		List<String> document_ids = null;
 		Business business = new Business(emc);
+		Long docCount = 0L;
+		Integer totalWhileCount = 0;
+		Integer currenteWhileCount = 0;
+		Integer queryMaxCount = 1000;
 		
 		if( temp_categoryInfo.getId() == null ){
 			temp_categoryInfo.setId( CategoryInfo.createId() );
@@ -183,16 +187,33 @@ public class CategoryInfoService {
 			if( !oldCategoryName.equals( categoryInfo.getCategoryName() )){
 				emc.beginTransaction( Document.class );
 				//对该目录下所有的文档的栏目名称和分类别名进行调整
-				document_ids = business.getDocumentFactory().listByCategoryId( categoryInfo.getId() );
-				if( document_ids != null && !document_ids.isEmpty() ){
-					for( String docId : document_ids ){
-						document = emc.find( docId, Document.class );
-						document.setAppName( categoryInfo.getAppName() );
-						document.setCategoryAlias( categoryInfo.getCategoryAlias() );						
-						if( document.getHasIndexPic() == null ){
-							document.setHasIndexPic( false );
+				docCount = business.getDocumentFactory().countByCategoryId( categoryInfo.getId() );
+				if( docCount > 0 ) {
+					totalWhileCount = (int) (docCount/queryMaxCount) + 1;
+					if( totalWhileCount > 0 ) {
+						while( docCount > 0 && currenteWhileCount <= totalWhileCount ) {
+							//查询1000个文档进行操作
+							document_ids = business.getDocumentFactory().listByCategoryId( categoryInfo.getId(), queryMaxCount );
+							if( document_ids != null && !document_ids.isEmpty() ){
+								for( String docId : document_ids ){
+									try {
+										document = emc.find( docId, Document.class );
+										document.setAppName( categoryInfo.getAppName() );
+										document.setCategoryAlias( categoryInfo.getCategoryAlias() );						
+										if( document.getHasIndexPic() == null ){
+											document.setHasIndexPic( false );
+										}
+										emc.check( document, CheckPersistType.all );
+									}catch( Exception e ) {
+										e.printStackTrace();
+									}
+								}
+							}
+							//当前循环次数+1
+							currenteWhileCount ++;
+							//重新查询剩余的文档数量
+							docCount = business.getDocumentFactory().countByCategoryId( categoryInfo.getId() );
 						}
-						emc.check( document, CheckPersistType.all );
 					}
 				}
 			}
@@ -259,6 +280,10 @@ public class CategoryInfoService {
 		AppInfo appInfo = null;
 		ViewCategory viewCategory = null;
 		List<Item> dataItems = null;
+		Long docCount = 0L;
+		Integer totalWhileCount = 0;
+		Integer currenteWhileCount = 0;
+		Integer queryMaxCount = 1000;
 		
 		Business business = new Business( emc );
 		emc.beginTransaction( AppInfo.class );
@@ -268,8 +293,7 @@ public class CategoryInfoService {
 		emc.beginTransaction( Document.class );
 		emc.beginTransaction( Item.class );
 		
-		categoryInfo = emc.find( id, CategoryInfo.class );	
-		
+		categoryInfo = emc.find( id, CategoryInfo.class );			
 		categoryExt = emc.find( id, CategoryExt.class );	
 		
 		ids = business.getViewCategoryFactory().listByCategoryId(id);
@@ -291,26 +315,44 @@ public class CategoryInfoService {
 		}
 		
 		//还有文档以及文档权限需要删除
-		ids = business.getDocumentFactory().listByCategoryId( id );
-		if( ids != null && !ids.isEmpty()  ){
-			for( String del_id : ids ){
-				document = emc.find( del_id, Document.class );
-				if( document != null ){
-					//删除与该文档有关的所有数据信息
-					dataItems = business.itemFactory().listWithDocmentWithPath(del_id);
-					if ((!dataItems.isEmpty())) {
-						emc.beginTransaction( Item.class );
-						for ( Item o : dataItems ) {
-							emc.remove(o);
+		docCount = business.getDocumentFactory().countByCategoryId( id );
+		if( docCount > 0 ) {
+			totalWhileCount = (int) (docCount/queryMaxCount) + 1;
+			if( totalWhileCount > 0 ) {
+				while( docCount > 0 && currenteWhileCount <= totalWhileCount ) {
+					//查询1000个文档进行操作
+					ids = business.getDocumentFactory().listByCategoryId( id, queryMaxCount );
+					if( ids != null && !ids.isEmpty()  ){
+						for( String del_id : ids ){
+							document = emc.find( del_id, Document.class );
+							if( document != null ){
+								try {
+									//删除与该文档有关的所有数据信息
+									dataItems = business.itemFactory().listWithDocmentWithPath( del_id );
+									if ((!dataItems.isEmpty())) {
+										emc.beginTransaction( Item.class );
+										for ( Item o : dataItems ) {
+											emc.remove(o);
+										}
+									}
+								}catch( Exception e ) {
+									e.printStackTrace();
+								}
+								
+								//检查是否需要删除热点图片
+								try {
+									ThisApplication.queueDocumentDelete.send( document.getId() );
+								} catch ( Exception e1 ) {
+									e1.printStackTrace();
+								}
+								emc.remove( document );
+							}
 						}
 					}
-					//检查是否需要删除热点图片
-					try {
-						ThisApplication.queueDocumentDelete.send( document.getId() );
-					} catch ( Exception e1 ) {
-						e1.printStackTrace();
-					}
-					emc.remove( document );
+					//当前循环次数+1
+					currenteWhileCount ++;
+					//重新查询剩余的文档数量
+					docCount = business.getDocumentFactory().countByCategoryId( id );
 				}
 			}
 		}

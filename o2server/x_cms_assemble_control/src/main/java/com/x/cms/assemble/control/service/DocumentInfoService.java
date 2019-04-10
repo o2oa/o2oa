@@ -17,13 +17,26 @@ import com.x.query.core.entity.Item;
 
 public class DocumentInfoService {
 
-//	public List<Document> list( EntityManagerContainer emc, List<String> ids ) throws Exception {
-//		if( ids == null || ids.isEmpty() ){
-//			return null;
-//		}
-//		Business business = new Business( emc );
-//		return business.getDocumentFactory().list( ids );
-//	}
+	@SuppressWarnings("unchecked")
+	public List<String> listByCategoryId( EntityManagerContainer emc, String categoryId, Integer maxCount ) throws Exception {
+		if( categoryId == null || categoryId.isEmpty() ){
+			return null;
+		}
+		Business business = new Business( emc );
+		return business.getDocumentFactory().listByCategoryId( categoryId, maxCount );
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> listByAppId( EntityManagerContainer emc, String appId, String documentType, Integer maxCount ) throws Exception {
+		if( appId == null || appId.isEmpty() ){
+			return null;
+		}
+		if( documentType == null || documentType.isEmpty() ){
+			documentType = "全部";
+		}
+		Business business = new Business( emc );
+		return business.getDocumentFactory().listByAppId( appId, documentType, maxCount );
+	}
 	
 	@SuppressWarnings("unchecked")
 	public List<String> listByCategoryId( EntityManagerContainer emc, String categoryId ) throws Exception {
@@ -31,7 +44,7 @@ public class DocumentInfoService {
 			return null;
 		}
 		Business business = new Business( emc );
-		return business.getDocumentFactory().listByCategoryId( categoryId );
+		return business.getDocumentFactory().listByCategoryId( categoryId, 10000 );
 	}
 
 	public Document get(EntityManagerContainer emc, String id) throws Exception {
@@ -48,6 +61,14 @@ public class DocumentInfoService {
 		}
 		Business business = new Business( emc );
 		return business.getDocumentFactory().countByCategoryId(categoryId);
+	}
+	
+	public Long countByAppId(EntityManagerContainer emc, String appId) throws Exception {
+		if( appId == null || appId.isEmpty() ){
+			return null;
+		}
+		Business business = new Business( emc );
+		return business.getDocumentFactory().countByAppId(appId);
 	}
 
 	public Document save( EntityManagerContainer emc, Document wrapIn ) throws Exception {

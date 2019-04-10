@@ -79,6 +79,26 @@ public class AppInfoAction extends StandardJaxrsAction {
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
+	
+	@JaxrsMethodDescribe(value = "根据栏目ID删除所有的信息文档.", action = ActionEraseDocumentWithAppInfo.class)
+	@DELETE
+	@Path("erase/app/{id}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response eraseWithAppId(@Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("栏目ID") @PathParam("id") String id) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<ActionEraseDocumentWithAppInfo.Wo> result = new ActionResult<>();
+		try {
+			result = new ActionEraseDocumentWithAppInfo().execute(request, id, effectivePerson );
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			Exception exception = new ExceptionAppInfoProcess(e, "根据栏目ID删除所有的信息文档发生未知异常，ID:" + id);
+			result.error(exception);
+			logger.error(e, effectivePerson, request, null);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
 
 	@JaxrsMethodDescribe(value = "根据标识获取信息栏目信息对象.", action = ActionGet.class)
 	@GET

@@ -65,14 +65,14 @@ public class DocumentFactory<T> extends AbstractFactory {
 	}
 	
 	//@MethodDescribe("根据ID列示指定分类所有Document信息列表")
-	public List<String> listByCategoryId( String categoryId ) throws Exception {
+	public List<String> listByCategoryId( String categoryId, Integer maxCount ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Document.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery( String.class );
 		Root<Document> root = cq.from( Document.class );
 		Predicate p = cb.equal(root.get( Document_.categoryId ), categoryId );
 		cq.select(root.get( Document_.id)).where(p);
-		return em.createQuery( cq ).setMaxResults(10000).getResultList();
+		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
 	}
 	
 	//@MethodDescribe("根据ID列示指定分类所有Document信息数量")
@@ -82,6 +82,16 @@ public class DocumentFactory<T> extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<Document> root = cq.from(Document.class);
 		Predicate p = cb.equal( root.get(Document_.categoryId), categoryId );
+		cq.select(cb.count(root)).where(p);
+		return em.createQuery(cq).getSingleResult();
+	}
+	
+	public Long countByAppId( String appId ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( Document.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<Document> root = cq.from(Document.class);
+		Predicate p = cb.equal( root.get(Document_.appId), appId );
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
 	}
