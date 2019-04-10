@@ -116,50 +116,54 @@ class ActionInput extends BaseAction {
 		for (int i = configurator.getFirstRow(); i <= configurator.getLastRow(); i++) {
 			Row row = sheet.getRow(i);
 			if (null != row) {
-				PersonItem personItem = new PersonItem();
-				personItem.setRow(i);
 				String name = configurator.getCellStringValue(row.getCell(configurator.getNameColumn()));
-				name = StringUtils.trimToEmpty(name);
 				String mobile = configurator.getCellStringValue(row.getCell(configurator.getMobileColumn()));
-				mobile = StringUtils.trimToEmpty(mobile);
-				GenderType genderType = GenderType.d;
-				if (null != configurator.getGenderTypeColumn()) {
-					String gender = configurator.getCellStringValue(row.getCell(configurator.getGenderTypeColumn()));
-					gender = StringUtils.trimToEmpty(gender);
-					if (genderTypeMaleItems.contains(gender)) {
-						genderType = GenderType.m;
+				if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(mobile)) {
+					PersonItem personItem = new PersonItem();
+					personItem.setRow(i);
+					name = StringUtils.trimToEmpty(name);
+					mobile = StringUtils.trimToEmpty(mobile);
+					GenderType genderType = GenderType.d;
+					if (null != configurator.getGenderTypeColumn()) {
+						String gender = configurator
+								.getCellStringValue(row.getCell(configurator.getGenderTypeColumn()));
+						gender = StringUtils.trimToEmpty(gender);
+						if (genderTypeMaleItems.contains(gender)) {
+							genderType = GenderType.m;
+						}
+						if (genderTypeFemaleItems.contains(gender)) {
+							genderType = GenderType.f;
+						}
 					}
-					if (genderTypeFemaleItems.contains(gender)) {
-						genderType = GenderType.f;
+					personItem.setName(name);
+					personItem.setGenderType(genderType);
+					personItem.setMobile(mobile);
+					if (null != configurator.getEmployeeColumn()) {
+						String employee = configurator
+								.getCellStringValue(row.getCell(configurator.getEmployeeColumn()));
+						employee = StringUtils.trimToEmpty(employee);
+						personItem.setEmployee(employee);
 					}
-				}
-				personItem.setName(name);
-				personItem.setGenderType(genderType);
-				personItem.setMobile(mobile);
-				if (null != configurator.getEmployeeColumn()) {
-					String employee = configurator.getCellStringValue(row.getCell(configurator.getEmployeeColumn()));
-					employee = StringUtils.trimToEmpty(employee);
-					personItem.setEmployee(employee);
-				}
-				if (null != configurator.getUniqueColumn()) {
-					String unique = configurator.getCellStringValue(row.getCell(configurator.getUniqueColumn()));
-					unique = StringUtils.trimToEmpty(unique);
-					personItem.setUnique(unique);
-				}
-				if (null != configurator.getMailColumn()) {
-					String mail = configurator.getCellStringValue(row.getCell(configurator.getMailColumn()));
-					mail = StringUtils.trimToEmpty(mail);
-					personItem.setMail(mail);
-				}
-				if (!configurator.getAttributes().isEmpty()) {
-					for (Entry<String, Integer> en : configurator.getAttributes().entrySet()) {
-						String value = configurator.getCellStringValue(row.getCell(en.getValue()));
-						value = StringUtils.trimToEmpty(value);
-						personItem.getAttributes().put(en.getKey(), value);
+					if (null != configurator.getUniqueColumn()) {
+						String unique = configurator.getCellStringValue(row.getCell(configurator.getUniqueColumn()));
+						unique = StringUtils.trimToEmpty(unique);
+						personItem.setUnique(unique);
 					}
+					if (null != configurator.getMailColumn()) {
+						String mail = configurator.getCellStringValue(row.getCell(configurator.getMailColumn()));
+						mail = StringUtils.trimToEmpty(mail);
+						personItem.setMail(mail);
+					}
+					if (!configurator.getAttributes().isEmpty()) {
+						for (Entry<String, Integer> en : configurator.getAttributes().entrySet()) {
+							String value = configurator.getCellStringValue(row.getCell(en.getValue()));
+							value = StringUtils.trimToEmpty(value);
+							personItem.getAttributes().put(en.getKey(), value);
+						}
+					}
+					people.add(personItem);
+					logger.debug("scan person:{}.", personItem);
 				}
-				people.add(personItem);
-				logger.debug("scan person:{}.", personItem);
 			}
 		}
 		return people;
@@ -193,11 +197,11 @@ class ActionInput extends BaseAction {
 			for (PersonItem o : people) {
 				for (PersonItem item : people) {
 					if (o != item) {
-						if (StringUtils.equals(o.getName(), item.getName())) {
-							this.setMemo(workbook, configurator, o, "姓名冲突.");
-							validate = false;
-							continue;
-						}
+//						if (StringUtils.equals(o.getName(), item.getName())) {
+//							this.setMemo(workbook, configurator, o, "姓名冲突.");
+//							validate = false;
+//							continue;
+//						}
 						if (StringUtils.equals(o.getMobile(), item.getMobile())) {
 							this.setMemo(workbook, configurator, o, "手机号冲突,本次导入中不唯一.");
 							validate = false;
@@ -226,12 +230,12 @@ class ActionInput extends BaseAction {
 			if (validate) {
 				for (PersonItem o : people) {
 					p = emc.flag(o.getName(), Person.class);
-					if (null != p) {
-						this.setMemo(workbook, configurator, o,
-								"姓名: " + o.getName() + " 与已经存在用户: " + p.getName() + " 冲突.");
-						validate = false;
-						continue;
-					}
+//					if (null != p) {
+//						this.setMemo(workbook, configurator, o,
+//								"姓名: " + o.getName() + " 与已经存在用户: " + p.getName() + " 冲突.");
+//						validate = false;
+//						continue;
+//					}
 					p = emc.flag(o.getMobile(), Person.class);
 					if (null != p) {
 						this.setMemo(workbook, configurator, o,
