@@ -8,7 +8,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DefaultCharset;
 
@@ -18,7 +17,7 @@ public class Collect extends ConfigObject {
 	private static String Default_footer = "www.o2oa.net";
 	private static String Default_name = "www.o2oa.net";
 	private static String Default_appUrl = "http://www.pgyer.com/ZhiHe_android";
-	private static String Default_server = "collect.o2server.io";
+	private static String Default_server = "collect.o2oa.net";
 	private static Integer Default_port = 20080;
 
 	public static Collect defaultInstance() {
@@ -55,6 +54,18 @@ public class Collect extends ConfigObject {
 	private Integer port;
 	@FieldDescribe("云平台连接是否启用ssl")
 	private Boolean sslEnable;
+	@FieldDescribe("推送消息secret")
+	private String secret;
+	@FieldDescribe("推送消息key")
+	private String key;
+
+	public String getSecret() {
+		return secret;
+	}
+
+	public String getKey() {
+		return key;
+	}
 
 	public Boolean getEnable() {
 		return BooleanUtils.isTrue(this.enable);
@@ -156,6 +167,14 @@ public class Collect extends ConfigObject {
 	public void save() throws Exception {
 		File file = new File(Config.base(), Config.PATH_CONFIG_COLLECT);
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
+	}
+
+	public void setSecret(String secret) {
+		this.secret = secret;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 
 }
