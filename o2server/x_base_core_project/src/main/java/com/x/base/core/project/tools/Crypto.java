@@ -25,6 +25,7 @@ public class Crypto {
 	private static final String utf8 = "UTF-8";
 
 	private final static String DES = "DES";
+	
 	private final static String cipher_init = "DES";
 
 	private final static String RSA = "RSA";
