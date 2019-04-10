@@ -77,6 +77,13 @@ public class Table extends SliceJpaObject {
 
 	/* 更新运行方法 */
 
+	public static final String query_FIELDNAME = "query";
+	@FieldDescribe("所属查询.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + query_FIELDNAME)
+	@Index(name = TABLE + ColumnNamePrefix + query_FIELDNAME)
+	@CheckPersist(allowEmpty = false, citationExists = { @CitationExist(type = Query.class) })
+	private String query;
+
 	public static final String name_FIELDNAME = "name";
 	@Flag
 	@FieldDescribe("表名,最大32个字符.")
@@ -98,13 +105,6 @@ public class Table extends SliceJpaObject {
 	@Column(length = length_255B, name = ColumnNamePrefix + description_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String description;
-
-	public static final String query_FIELDNAME = "query";
-	@FieldDescribe("所属查询.")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + query_FIELDNAME)
-	@Index(name = TABLE + ColumnNamePrefix + query_FIELDNAME)
-	@CheckPersist(allowEmpty = false, citationExists = { @CitationExist(type = Query.class) })
-	private String query;
 
 	public static final String readPersonList_FIELDNAME = "readPersonList";
 	@FieldDescribe("可以访问数据的用户.")
@@ -189,6 +189,12 @@ public class Table extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	@Column(length = length_32B, name = ColumnNamePrefix + status_FIELDNAME)
 	private String status;
+
+	public static final String buildSuccess_FIELDNAME = "buildSuccess";
+	@FieldDescribe("是否编译成功.")
+	@CheckPersist(allowEmpty = false)
+	@Column(name = ColumnNamePrefix + buildSuccess_FIELDNAME)
+	private Boolean buildSuccess;
 
 	public String getName() {
 		return name;
@@ -300,6 +306,14 @@ public class Table extends SliceJpaObject {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public Boolean getBuildSuccess() {
+		return buildSuccess;
+	}
+
+	public void setBuildSuccess(Boolean buildSuccess) {
+		this.buildSuccess = buildSuccess;
 	}
 
 }

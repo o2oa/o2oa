@@ -124,44 +124,6 @@ public class TableAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示表对象,下一页.", action = ActionListNext.class)
-	@GET
-	@Path("list/{id}/next/{count}")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void listNext(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id,
-			@JaxrsParameterDescribe("数量") @PathParam("count") Integer count) {
-		ActionResult<List<ActionListNext.Wo>> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionListNext().execute(effectivePerson, id, count);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
-	}
-
-	@JaxrsMethodDescribe(value = "列示Stat对象,上一页.", action = ActionListPrev.class)
-	@GET
-	@Path("list/{id}/prev/{count}")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void listPrev(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id,
-			@JaxrsParameterDescribe("数量") @PathParam("count") Integer count) {
-		ActionResult<List<ActionListPrev.Wo>> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionListPrev().execute(effectivePerson, id, count);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
-	}
-
 	@JaxrsMethodDescribe(value = "创建表.", action = ActionCreate.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -381,6 +343,24 @@ public class TableAction extends StandardJaxrsAction {
 			result = new ActionListRowPrev().execute(effectivePerson, tableFlag, id, count);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "执行语句.", action = ActionExecute.class)
+	@POST
+	@Path("{flag}/execute")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void execute(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("flag") String flag, JsonElement jsonElement) {
+		ActionResult<Object> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionExecute().execute(effectivePerson, flag, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));

@@ -12,7 +12,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.dynamic.DynamicEntity;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -29,9 +28,7 @@ class ActionRowDeleteAll extends BaseAction {
 			if (null == table) {
 				throw new ExceptionEntityNotExist(tableFlag, Table.class);
 			}
-			if (!business.editable(effectivePerson, table)) {
-				throw new ExceptionAccessDenied(effectivePerson, table);
-			}
+			this.check(effectivePerson, business, table);
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
 			@SuppressWarnings("unchecked")
 			Class<? extends JpaObject> cls = (Class<JpaObject>) Class.forName(dynamicEntity.className());
@@ -65,9 +62,9 @@ class ActionRowDeleteAll extends BaseAction {
 
 	private <T extends JpaObject> Integer delete(Business business, Class<T> cls, List<String> ids) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(cls);
-		Query query = em.createQuery("delete from " + cls.getName() + " o where o.id in :ids");
-		query.setParameter("ids", ids);
-		return query.executeUpdate();
+		Query q = em.createQuery("delete from " + cls.getName() + " o where o.id in :ids");
+		q.setParameter("ids", ids);
+		return q.executeUpdate();
 	}
 
 	public static class Wo extends WrapLong {

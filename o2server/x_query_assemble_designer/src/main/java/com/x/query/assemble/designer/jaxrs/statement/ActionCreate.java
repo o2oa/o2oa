@@ -21,6 +21,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
+import com.x.query.core.entity.Query;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 
@@ -28,24 +29,29 @@ class ActionCreate extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			if (!business.controllable(effectivePerson)) {
-				throw new ExceptionAccessDenied(effectivePerson);
-			}
+			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Statement statement = Wi.copier.copy(wi);
+			Table table = emc.flag(wi.getTable(), Table.class);
+			if (null == table) {
+				throw new ExceptionEntityNotExist(wi.getTable(), Table.class);
+			}
+			Query query = emc.flag(wi.getQuery(), Query.class);
+			if (null == query) {
+				throw new ExceptionEntityNotExist(table.getQuery(), Query.class);
+			}
+			if (!business.editable(effectivePerson, query)) {
+				throw new ExceptionAccessDenied(effectivePerson, query);
+			}
 			if (StringUtils.isEmpty(statement.getName())) {
 				throw new ExceptionEntityFieldEmpty(Statement.class, Table.name_FIELDNAME);
 			}
 			if (StringUtils.isNotEmpty(emc.conflict(Statement.class, statement))) {
 				throw new ExceptionDuplicateFlag(Statement.class, emc.conflict(Statement.class, statement));
 			}
-			Table table = emc.flag(statement.getTable(), Table.class);
-			if (null == table) {
-				throw new ExceptionEntityNotExist(statement.getTable(), Table.class);
-			}
 			emc.beginTransaction(Statement.class);
 			statement.setTable(table.getId());
+			statement.setQuery(table.getQuery());
 			statement.setCreatorPerson(effectivePerson.getDistinguishedName());
 			statement.setLastUpdatePerson(effectivePerson.getDistinguishedName());
 			statement.setLastUpdateTime(new Date());

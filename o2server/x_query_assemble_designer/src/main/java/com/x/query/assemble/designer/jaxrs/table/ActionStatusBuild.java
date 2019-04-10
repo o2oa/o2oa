@@ -4,7 +4,7 @@ import com.alibaba.druid.util.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.ApplicationCache;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityFieldEmpty;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -22,20 +22,14 @@ class ActionStatusBuild extends BaseAction {
 				throw new ExceptionEntityNotExist(flag, Table.class);
 			}
 			Business business = new Business(emc);
-			if (!business.editable(effectivePerson, table)) {
-				throw new ExceptionAccessDenied(effectivePerson, table);
-			}
+			this.check(effectivePerson, business, table);
 			if (StringUtils.isEmpty(table.getDraftData())) {
-				throw new ExceptionEmptyDraftData(flag);
+				throw new ExceptionEntityFieldEmpty(Table.class, Table.draftData_FIELDNAME);
 			}
 			emc.beginTransaction(Table.class);
-
 			table.setData(table.getDraftData());
-
 			table.setStatus(Table.STATUS_build);
-
 			emc.commit();
-
 			ApplicationCache.notify(Table.class);
 			ApplicationCache.notify(Statement.class);
 			Wo wo = new Wo();

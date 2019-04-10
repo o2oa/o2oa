@@ -5,7 +5,6 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -16,14 +15,12 @@ class ActionGet extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
+			Business business = new Business(emc);
 			Statement statement = emc.flag(flag, Statement.class);
 			if (null == statement) {
 				throw new ExceptionEntityNotExist(flag, Statement.class);
 			}
-			Business business = new Business(emc);
-			if (!business.controllable(effectivePerson)) {
-				throw new ExceptionAccessDenied(effectivePerson, statement);
-			}
+			this.check(effectivePerson, business, statement);
 			Wo wo = Wo.copier.copy(statement);
 			result.setData(wo);
 			return result;

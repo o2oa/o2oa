@@ -14,7 +14,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.dynamic.DynamicEntity;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
@@ -40,9 +39,7 @@ class ActionListRowPrev extends BaseAction {
 			if (null == table) {
 				throw new ExceptionEntityNotExist(tableFlag, Table.class);
 			}
-			if (!business.readable(effectivePerson, table)) {
-				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
-			}
+			this.check(effectivePerson, business, table);
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
 			Class<? extends JpaObject> cls = dynamicEntity.getObjectClass();
 			EntityManager em = emc.get(cls);
@@ -67,10 +64,9 @@ class ActionListRowPrev extends BaseAction {
 				sql += " where o." + JpaObject.sequence_FIELDNAME + " > ?1 order by o." + JpaObject.sequence_FIELDNAME
 						+ " ASC";
 				rank = emc.countGreaterThan(cls, JpaObject.sequence_FIELDNAME, sequence);
-				Query query = em.createQuery(sql, Object[].class);
-				query.setParameter(1, sequence);
-				List<Object[]> list = query.setMaxResults(Math.max(Math.min(count, list_max), list_min))
-						.getResultList();
+				Query q = em.createQuery(sql, Object[].class);
+				q.setParameter(1, sequence);
+				List<Object[]> list = q.setMaxResults(Math.max(Math.min(count, list_max), list_min)).getResultList();
 				for (Object[] os : list) {
 					JsonObject jsonObject = XGsonBuilder.instance().toJsonTree(JpaObject.cast(cls, fields, os))
 							.getAsJsonObject();
@@ -80,9 +76,8 @@ class ActionListRowPrev extends BaseAction {
 			} else {
 				sql += " order by o." + JpaObject.sequence_FIELDNAME + " ASC";
 				rank = result.getCount();
-				Query query = em.createQuery(sql, Object[].class);
-				List<Object[]> list = query.setMaxResults(Math.max(Math.min(count, list_max), list_min))
-						.getResultList();
+				Query q = em.createQuery(sql, Object[].class);
+				List<Object[]> list = q.setMaxResults(Math.max(Math.min(count, list_max), list_min)).getResultList();
 				for (Object[] os : list) {
 					JsonObject jsonObject = XGsonBuilder.instance().toJsonTree(JpaObject.cast(cls, fields, os))
 							.getAsJsonObject();
