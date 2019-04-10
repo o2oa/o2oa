@@ -38,14 +38,11 @@ class ActionExecute extends BaseAction {
 			if (null == statement) {
 				throw new ExceptionEntityNotExist(flag, Statement.class);
 			}
-			if (!business.executable(effectivePerson, statement)) {
-				throw new ExceptionAccessDenied(effectivePerson, statement);
-			}
-			Table table = emc.find(statement.getTable(), Table.class);
+			this.check(effectivePerson, business, statement);
+			Table table = emc.flag(statement.getTable(), Table.class);
 			if (null == table) {
 				throw new ExceptionEntityNotExist(statement.getTable(), Table.class);
 			}
-
 			Map<String, Object> parameter = XGsonBuilder.instance().fromJson(jsonElement,
 					new TypeToken<Map<String, Object>>() {
 					}.getType());

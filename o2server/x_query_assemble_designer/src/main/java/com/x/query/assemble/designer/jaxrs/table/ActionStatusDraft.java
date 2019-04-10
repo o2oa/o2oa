@@ -21,9 +21,7 @@ class ActionStatusDraft extends BaseAction {
 				throw new ExceptionEntityNotExist(flag, Table.class);
 			}
 			Business business = new Business(emc);
-			if (!business.editable(effectivePerson, table)) {
-				throw new ExceptionAccessDenied(effectivePerson, table);
-			}
+			this.check(effectivePerson, business, table);
 			emc.beginTransaction(Table.class);
 			table.setStatus(Table.STATUS_draft);
 			emc.commit();

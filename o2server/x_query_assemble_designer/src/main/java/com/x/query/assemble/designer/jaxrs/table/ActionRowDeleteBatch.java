@@ -33,9 +33,7 @@ class ActionRowDeleteBatch extends BaseAction {
 			if (null == table) {
 				throw new ExceptionEntityNotExist(tableFlag, Table.class);
 			}
-			if (!business.editable(effectivePerson, table)) {
-				throw new ExceptionAccessDenied(effectivePerson, table);
-			}
+			this.check(effectivePerson, business, table);
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
 			@SuppressWarnings("unchecked")
 			Class<? extends JpaObject> cls = (Class<JpaObject>) Class.forName(dynamicEntity.className());

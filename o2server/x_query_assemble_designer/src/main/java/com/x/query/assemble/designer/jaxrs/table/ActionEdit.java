@@ -23,6 +23,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
+import com.x.query.core.entity.Query;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 
@@ -30,14 +31,12 @@ class ActionEdit extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
+			Business business = new Business(emc);
 			Table table = emc.flag(flag, Table.class);
 			if (null == table) {
 				throw new ExceptionEntityNotExist(flag, Table.class);
 			}
-			Business business = new Business(emc);
-			if (!business.editable(effectivePerson, table)) {
-				throw new ExceptionAccessDenied(effectivePerson, table);
-			}
+			this.check(effectivePerson, business, table);
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Wi.copier.copy(wi, table);
 			if (StringUtils.isEmpty(table.getName())) {

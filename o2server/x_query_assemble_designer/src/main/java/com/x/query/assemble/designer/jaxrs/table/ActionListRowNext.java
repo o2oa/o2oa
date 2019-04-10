@@ -13,7 +13,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.dynamic.DynamicEntity;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
@@ -39,9 +38,7 @@ class ActionListRowNext extends BaseAction {
 			if (null == table) {
 				throw new ExceptionEntityNotExist(tableFlag, Table.class);
 			}
-			if (!business.readable(effectivePerson, table)) {
-				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
-			}
+			this.check(effectivePerson, business, table);
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
 			Class<? extends JpaObject> cls = dynamicEntity.getObjectClass();
 			EntityManager em = emc.get(cls);
@@ -65,11 +62,11 @@ class ActionListRowNext extends BaseAction {
 				rank = emc.countGreaterThanOrEqualTo(cls, JpaObject.sequence_FIELDNAME, sequence);
 			}
 			sql += " order by o." + JpaObject.sequence_FIELDNAME + " DESC";
-			Query query = em.createQuery(sql, Object[].class);
+			Query q = em.createQuery(sql, Object[].class);
 			if (null != sequence) {
-				query.setParameter(1, sequence);
+				q.setParameter(1, sequence);
 			}
-			List<Object[]> list = query.setMaxResults(Math.max(Math.min(count, list_max), list_min)).getResultList();
+			List<Object[]> list = q.setMaxResults(Math.max(Math.min(count, list_max), list_min)).getResultList();
 			List<JsonObject> wos = new ArrayList<>();
 			result.setCount(emc.count(cls));
 			for (Object[] os : list) {

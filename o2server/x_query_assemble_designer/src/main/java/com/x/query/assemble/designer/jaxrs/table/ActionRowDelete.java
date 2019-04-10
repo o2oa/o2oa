@@ -10,6 +10,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.query.assemble.designer.Business;
+import com.x.query.core.entity.Query;
 import com.x.query.core.entity.schema.Table;
 
 class ActionRowDelete extends BaseAction {
@@ -21,9 +22,7 @@ class ActionRowDelete extends BaseAction {
 			if (null == table) {
 				throw new ExceptionEntityNotExist(tableFlag, Table.class);
 			}
-			if (!business.editable(effectivePerson, table)) {
-				throw new ExceptionAccessDenied(effectivePerson, table);
-			}
+			this.check(effectivePerson, business, table);
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
 			@SuppressWarnings("unchecked")
 			Class<? extends JpaObject> cls = (Class<JpaObject>) Class.forName(dynamicEntity.className());
