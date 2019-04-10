@@ -41,6 +41,8 @@ public class CollectPerson extends BaseAction {
 						req.setFooter(Config.collect().getFooter());
 						req.setName(Config.collect().getName());
 						req.setPassword(Config.collect().getPassword());
+						req.setSecret(Config.collect().getSecret());
+						req.setKey(Config.collect().getKey());
 						req.setMobileList(mobiles);
 						req.setCenterProxyHost(Config.centerServer().getProxyHost());
 						if (StringUtils.isEmpty(req.getCenterProxyHost())) {
@@ -95,6 +97,10 @@ public class CollectPerson extends BaseAction {
 		private Integer centerProxyPort;
 
 		private String httpProtocol;
+
+		private String secret;
+
+		private String key;
 
 		public String getName() {
 			return name;
@@ -158,6 +164,22 @@ public class CollectPerson extends BaseAction {
 
 		public void setFooter(String footer) {
 			this.footer = footer;
+		}
+
+		public String getSecret() {
+			return secret;
+		}
+
+		public void setSecret(String secret) {
+			this.secret = secret;
+		}
+
+		public String getKey() {
+			return key;
+		}
+
+		public void setKey(String key) {
+			this.key = key;
 		}
 
 	}

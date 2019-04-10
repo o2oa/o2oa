@@ -126,14 +126,14 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 			}
 		}
 		/* 是否可以召回 */
-		if (PropertyTools.getOrElse(activity, Manual.allowRetract_FIELDNAME, Boolean.class, false) && this
-				.canManageApplicationOrProcess(business, effectivePerson, work.getApplication(), work.getProcess())) {
+		if (PropertyTools.getOrElse(activity, Manual.allowRetract_FIELDNAME, Boolean.class, false)) {
 			Node node = this.workLogTree(business, work.getJob()).location(work);
 			if (null != node) {
 				Nodes ups = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice, ActivityType.delay,
 						ActivityType.embed, ActivityType.invoke);
 				for (Node o : ups) {
-					if (this.hasTaskCompletedWithActivityToken(business, effectivePerson, work.getActivityToken())) {
+					if (this.hasTaskCompletedWithActivityToken(business, effectivePerson,
+							o.getWorkLog().getFromActivityToken())) {
 						wo.setAllowRetract(true);
 						break;
 					}
