@@ -46,7 +46,7 @@ class ActionUpload extends BaseAction {
 			String fileName = new String(disposition.getFileName().getBytes(DefaultCharset.charset_iso_8859_1),
 					DefaultCharset.charset);
 			fileName = FilenameUtils.getName(fileName);
-			
+
 			if (StringUtils.isEmpty(FilenameUtils.getExtension(fileName))) {
 				throw new ExceptionEmptyExtension(fileName);
 			}

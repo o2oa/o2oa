@@ -118,6 +118,26 @@ public class CategoryInfoAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
+	@JaxrsMethodDescribe(value = "根据分类ID删除所有的信息文档.", action = ActionEraseDocumentWithCategory.class)
+	@DELETE
+	@Path("erase/category/{id}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response eraseWithCategory(@Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("分类ID") @PathParam("id") String id) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<ActionEraseDocumentWithCategory.Wo> result = new ActionResult<>();
+		try {
+			result = new ActionEraseDocumentWithCategory().execute(request, id, effectivePerson );
+		} catch (Exception e) {
+			result = new ActionResult<>();
+			Exception exception = new ExceptionCategoryInfoProcess(e, "根据分类ID删除所有的信息文档发生未知异常，ID:" + id);
+			result.error(exception);
+			logger.error(e, effectivePerson, request, null);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
 	@JaxrsMethodDescribe(value = "获取用户有查看访问文章信息的所有分类列表.", action = ActionListWhatICanView_Article.class)
 	@GET
 	@Path("list/view/app/{appId}")

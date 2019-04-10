@@ -6,6 +6,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.organization.Unit;
+import com.x.base.core.project.tools.ListTools;
 import com.x.okr.assemble.control.Business;
 
 /**
@@ -173,6 +174,12 @@ public class OkrUserManagerService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			identities = business.organization().identity().listWithPerson( personName );
+			System.out.println(">>>>>>>>>>>loginIdentity:" + loginIdentity );
+			if( ListTools.isNotEmpty( identities )) {
+				for( String identity : identities ) {
+					System.out.println(">>>>>>>>>>>identity:" + identity );
+				}
+			}			
 			if( identities.contains( loginIdentity )){
 				return true;
 			}

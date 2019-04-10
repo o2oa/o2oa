@@ -57,18 +57,32 @@ public class ActionLogin extends BaseAction {
 						okrUserCache = setUserLoginIdentity( request, effectivePerson, wrapIn.getLoginIdentity() );
 						result.setData(okrUserCache);
 					} catch (Exception e) {
-						Exception exception = new ExceptionGetOkrUserCache(e, effectivePerson.getDistinguishedName(),
-								wrapIn.getLoginIdentity());
+						Exception exception = new ExceptionGetOkrUserCache(e, effectivePerson.getDistinguishedName(), wrapIn.getLoginIdentity());
 						result.error(exception);
 						logger.error(e, effectivePerson, request, null);
 					}
 				} else {// 用户自己没有传入的身份，查询用户是否有该身份的代理配置（秘书）
 					try {
 						ids = okrConfigSecretaryService.listIdsByLeaderIdentity(effectivePerson.getDistinguishedName(), wrapIn.getLoginIdentity());
-						if (ListTools.isEmpty(ids)) {//用户没有指定身份的代理权限，无法登录系统
-							check = false;
-							Exception exception = new ExceptionUserHasNoProxyIdentity( effectivePerson.getDistinguishedName(), wrapIn.getLoginIdentity());
-							result.error(exception);
+						if (ListTools.isEmpty(ids)) {//用户没有指定身份的代理权限，无法登录系统							
+							//以用户自己的主要身份进行登录
+							identity = okrUserManagerService.getIdentityWithPerson( effectivePerson.getDistinguishedName() );
+							if( StringUtils.isNotEmpty( identity )) {
+								System.out.println( "用户使用身份：" + identity + " 登录系统......" );
+								try {
+									okrUserCache = setUserLoginIdentity( request, effectivePerson, identity );
+									result.setData(okrUserCache);
+								} catch (Exception e) {
+									check = false;
+									Exception exception = new ExceptionGetOkrUserCache(e, effectivePerson.getDistinguishedName(), wrapIn.getLoginIdentity());
+									result.error(exception);
+									logger.error(e, effectivePerson, request, null);
+								}
+							}else {
+								check = false;
+								Exception exception = new ExceptionUserHasNoProxyIdentity( effectivePerson.getDistinguishedName(), wrapIn.getLoginIdentity());
+								result.error(exception);
+							}							
 						} else {// 顺利查询到身份代理配置信息，向cache里新增用户相关信息
 							okrUserCache = setUserLoginIdentity(request, effectivePerson, wrapIn.getLoginIdentity());
 							result.setData(okrUserCache);

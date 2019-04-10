@@ -58,6 +58,28 @@ public class DocumentInfoServiceAdv {
 			throw e;
 		}
 	}
+	
+	public List<String> listIdsByCategoryId( String categoryId, Integer maxCount ) throws Exception {
+		if( categoryId == null || categoryId.isEmpty() ){
+			throw new Exception("categoryId is null!");
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			return documentInfoService.listByCategoryId( emc, categoryId, maxCount );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+	
+	public List<String> listIdsByAppId( String appId, String documentType, Integer maxCount ) throws Exception {
+		if( appId == null || appId.isEmpty() ){
+			throw new Exception("categoryId is null!");
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			return documentInfoService.listByAppId( emc, appId, documentType, maxCount );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
 
 	public Document get( String id ) throws Exception {
 		if( id == null || id.isEmpty() ){
@@ -121,6 +143,17 @@ public class DocumentInfoServiceAdv {
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			return documentInfoService.countByCategoryId( emc, categoryId );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+	
+	public Long countByAppId(String appId ) throws Exception {
+		if( appId == null || appId.isEmpty() ){
+			throw new Exception("appId is null!");
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			return documentInfoService.countByAppId( emc, appId );
 		} catch ( Exception e ) {
 			throw e;
 		}
