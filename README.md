@@ -287,4 +287,9 @@ MacOS : http://download.o2oa.net/download/versions/o2server_20190321220124_macos
 
 AIX : http://download.o2oa.net/download/versions/o2server_20190321220124_aix.zip
 
+# 官方百度云盘下载\:
+
+链接: https://pan.baidu.com/s/1oBQ1atXGyXdLaYE5uAqF1w 
+
+提取码: pnk9
 
