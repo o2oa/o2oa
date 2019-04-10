@@ -67,7 +67,7 @@ class ActionProcessing extends BaseAction {
 						if (null != work) {
 							WorkDataHelper workDataHelper = new WorkDataHelper(business.entityManagerContainer(), work);
 							data = workDataHelper.get();
-							ScriptHelper sh = ScriptHelperFactory.create(business, work, data, manual, task);
+							ScriptHelper sh = ScriptHelperFactory.createWithTask(business, work, data, manual, task);
 							sh.eval(work.getApplication(), manual.getManualBeforeTaskScript(),
 									manual.getManualBeforeTaskScriptText());
 							if (workDataHelper.update(data)) {
@@ -100,7 +100,8 @@ class ActionProcessing extends BaseAction {
 					if (null != work) {
 						WorkDataHelper workDataHelper = new WorkDataHelper(business.entityManagerContainer(), work);
 						data = workDataHelper.get();
-						ScriptHelper sh = ScriptHelperFactory.create(business, work, data, manual, taskCompleted);
+						ScriptHelper sh = ScriptHelperFactory.createWithTaskCompleted(business, work, data, manual,
+								taskCompleted);
 						sh.eval(work.getApplication(), manual.getManualAfterTaskScript(),
 								manual.getManualAfterTaskScriptText());
 						if (workDataHelper.update(data)) {

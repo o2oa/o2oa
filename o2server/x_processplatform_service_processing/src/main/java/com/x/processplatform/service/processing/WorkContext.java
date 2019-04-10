@@ -1,6 +1,8 @@
 package com.x.processplatform.service.processing;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,12 +45,12 @@ public class WorkContext {
 		this.processingAttributes = aeiObjects.getProcessingAttributes();
 	}
 
-	WorkContext(Business business, Work work, Activity activity) throws Exception {
-		this.business = business;
-		this.work = work;
-		this.activity = activity;
-		this.gson = XGsonBuilder.instance();
-	}
+//	WorkContext(Business business, Work work, Activity activity) throws Exception {
+//		this.business = business;
+//		this.work = work;
+//		this.activity = activity;
+//		this.gson = XGsonBuilder.instance();
+//	}
 
 	WorkContext(Business business, Work work, Activity activity, Task task) throws Exception {
 		this.business = business;
@@ -195,9 +197,6 @@ public class WorkContext {
 				list.addAll(aeiObjects.getTasks());
 				list.addAll(aeiObjects.getCreateTasks());
 			}
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			System.out.println(gson.toJson(list));
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			return gson.toJson(list);
 		} catch (Exception e) {
 			throw new Exception("getJobTaskList error.", e);
@@ -273,12 +272,24 @@ public class WorkContext {
 		}
 	}
 
-	public String getTaskOrTaskCompleted() {
+	public String getTaskOrTaskCompleted() throws Exception {
 		if (null != task) {
 			return gson.toJson(task);
 		}
 		if (null != taskCompleted) {
 			return gson.toJson(taskCompleted);
+		}
+		List<TaskCompleted> list = new ArrayList<>();
+		if (null != this.aeiObjects) {
+			list.addAll(aeiObjects.getTaskCompleteds());
+			list.addAll(aeiObjects.getCreateTaskCompleteds());
+		}
+		TaskCompleted o = list
+				.stream().sorted(Comparator
+						.comparing(TaskCompleted::getCreateTime, Comparator.nullsLast(Date::compareTo)).reversed())
+				.findFirst().orElse(null);
+		if (null != o) {
+			return gson.toJson(o);
 		}
 		return "";
 	}
