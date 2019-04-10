@@ -80,7 +80,7 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
     createColmunEditTable: function(){
         this.colmunListTable = new Element("table", {"styles": this.css.colmunListTable}).inject(this.domListNode);
         var tr = this.colmunListTable.insertRow(-1);
-        var td = tr.
+        var td = tr.insertCell();
 
     },
     changeViewSelected: function(){
