@@ -56,15 +56,15 @@ Github : https://github.com/o2oa/o2oa
 O2OA开发相关教程天梯：https://my.oschina.net/o2oa/blog/3016363
 
 
-# 最新版本服务器安装包下载[o2server_20190425182257]\:
+# 最新版本服务器安装包下载[o2server_20190426125713]\:
 
-windows 64Bit : http://download.o2oa.net/download/versions/o2server_20190425182257_windows.zip
+windows 64Bit : http://download.o2oa.net/download/versions/o2server_20190426125713_windows.zip
 
-Linux 64Bit : http://download.o2oa.net/download/versions/o2server_20190425182257_linux.zip
+Linux 64Bit : http://download.o2oa.net/download/versions/o2server_20190426125713_linux.zip
 
-MacOS : http://download.o2oa.net/download/versions/o2server_20190425182257_macos.zip
+MacOS : http://download.o2oa.net/download/versions/o2server_20190426125713_macos.zip
 
-AIX : http://download.o2oa.net/download/versions/o2server_20190425182257_aix.zip
+AIX : http://download.o2oa.net/download/versions/o2server_20190426125713_aix.zip
 
 
 # 官方网盘下载\:
