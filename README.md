@@ -71,7 +71,7 @@ AIX : http://download.o2oa.net/download/versions/o2server_20190425182257_aix.zip
 
 百度云盘：https://pan.baidu.com/s/1oBQ1atXGyXdLaYE5uAqF1w   提取码: pnk9
 
-腾讯微云盘：https://share.weiyun.com/5krUMjj
+腾讯微云：https://share.weiyun.com/5krUMjj
 
 
 # 最新版本 v4.1660\:
