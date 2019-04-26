@@ -19,6 +19,7 @@
             android:id="@+id/login_form_scroll_id"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="visible"
             android:paddingBottom="@dimen/activity_vertical_margin"
             android:paddingLeft="@dimen/login_horizontal_margin"
             android:paddingRight="@dimen/login_horizontal_margin"
@@ -163,32 +164,48 @@
                         style="@style/Widget.AppCompat.Button.Borderless"
                         />
 
-                    <Button
-                        android:id="@+id/btn_login_facepp"
+                    <!--<Button-->
+                        <!--android:id="@+id/btn_login_facepp"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="44dp"-->
+                        <!--android:layout_marginTop="14dp"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:background="@drawable/button_background_44dp_border"-->
+                        <!--android:text="@string/activity_login_face"-->
+                        <!--android:textColor="@color/z_color_text_primary"-->
+                        <!--android:textSize="16sp"-->
+                        <!--style="@style/Widget.AppCompat.Button.Borderless"-->
+                        <!--android:visibility="gone"-->
+                        <!--/>-->
+
+
+
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="44dp"
-                        android:layout_marginTop="14dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/button_background_44dp_border"
-                        android:text="@string/activity_login_face"
-                        android:textColor="@color/z_color_text_primary"
-                        android:textSize="16sp"
-                        style="@style/Widget.AppCompat.Button.Borderless"
-                        android:visibility="gone"
-                        />
-
-
-                    <TextView
-                        android:id="@+id/tv_rebind_btn"
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/login_button_rebind"
-                        android:textColor="@color/z_color_text_hint"
-                        android:textSize="13sp"
-                        android:layout_marginTop="10dp"
-                        android:layout_gravity="end"
-                        android:layout_marginEnd="15dp"
-                        />
+                        android:layout_marginTop="10dp">
+                        <TextView
+                            android:id="@+id/tv_bioauth_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/activity_login_fingerprint"
+                            android:textColor="@color/z_color_text_hint"
+                            android:textSize="13sp"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginStart="15dp"
+                            android:visibility="gone"
+                            />
+                        <TextView
+                            android:id="@+id/tv_rebind_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/login_button_rebind"
+                            android:textColor="@color/z_color_text_hint"
+                            android:textSize="13sp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginEnd="15dp"
+                            />
+                    </RelativeLayout>
 
                 </LinearLayout>
 
@@ -197,6 +214,52 @@
         </ScrollView>
 
 
+        <RelativeLayout
+            android:id="@+id/login_main_biometry"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:background="@mipmap/login_background_2"
+            android:paddingLeft="@dimen/login_horizontal_margin"
+            android:paddingRight="@dimen/login_horizontal_margin">
+            <Button
+                android:id="@+id/btn_bio_auth_login"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/button_background_44dp"
+                android:text="@string/activity_login_fingerprint_click"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                />
+            <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
+                android:id="@+id/image_bio_auth_icon"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginBottom="20dp"
+                android:layout_centerHorizontal="true"
+                android:layout_above="@+id/btn_bio_auth_login"
+                android:src="@mipmap/zhiwen"
+                />
+            <TextView
+                android:id="@+id/tv_user_fallback_btn"
+                android:layout_below="@+id/btn_bio_auth_login"
+                android:layout_alignParentEnd="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_button_user_fallback"
+                android:textColor="@color/z_color_text_hint"
+                android:textSize="13sp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="15dp"
+                />
+
+
+
+        </RelativeLayout>
         <TextView
             android:id="@+id/tv_login_copyright"
             android:layout_width="match_parent"
@@ -211,54 +274,6 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/login_facepp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:visibility="gone">
-
-        <android.opengl.GLSurfaceView
-            android:id="@+id/login_facepp_surfaceview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-
-        <ImageView
-            android:id="@+id/login_facepp_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/icon_menu_window_close"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="14dp"
-            android:layout_marginStart="14dp"
-            />
-
-        <TextView
-            android:id="@+id/login_facepp_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="14dp"
-            android:layout_centerHorizontal="true"
-            android:textColor="#ffffffff"
-            android:textSize="18sp"
-            android:text="人脸识别登录"/>
-
-        <TextView
-            android:id="@+id/login_facepp_debugPrinttext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="48dp"
-            android:layout_centerHorizontal="true"
-            android:textColor="#ffffffff"
-            android:textSize="18sp"
-            tools:text="1111111"/>
-
-
-    </RelativeLayout>
 </LinearLayout>
 
 

@@ -44,7 +44,7 @@ class StartProcessStepTwoFragment : BaseMVPFragment<StartProcessStepTwoContract.
     var processId = ""
     var processName = ""
     var identity = ""
-    var globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener? = null
+//    var globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener? = null
     override fun initUI() {
         val startString = getString(R.string.title_activity_start_process_step_two)
         (activity as StartProcessActivity).setToolBarTitle(startString)
@@ -54,29 +54,29 @@ class StartProcessStepTwoFragment : BaseMVPFragment<StartProcessStepTwoContract.
         tv_start_process_step_two_time.text = DateHelper.nowByFormate("yyyy-MM-dd HH:mm")
         btn_start_process_step_two_positive.setOnClickListener { startProcess() }
         btn_start_process_step_two_cancel.setOnClickListener { (activity as StartProcessActivity).finish() }
-        edit_start_process_step_two_title.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                globalLayoutListener = this
-                val screenHeight = activity.window.decorView.rootView.height
-                val screenWidth = activity.window.decorView.rootView.width
-                val rect = Rect()
-                activity.window.decorView.getWindowVisibleDisplayFrame(rect)
-                val height = screenHeight - (rect.bottom -rect.top)
-                if (height > screenHeight/3) {
-                    emptySpaceView(true, screenWidth, height)
-                }else {
-                    emptySpaceView(false)
-                }
-            }
-        })
+//        edit_start_process_step_two_title.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+//            override fun onGlobalLayout() {
+//                globalLayoutListener = this
+//                val screenHeight = activity.window.decorView.rootView.height
+//                val screenWidth = activity.window.decorView.rootView.width
+//                val rect = Rect()
+//                activity.window.decorView.getWindowVisibleDisplayFrame(rect)
+//                val height = screenHeight - (rect.bottom -rect.top)
+//                if (height > screenHeight/3) {
+//                    emptySpaceView(true, screenWidth, height)
+//                }else {
+//                    emptySpaceView(false)
+//                }
+//            }
+//        })
 
         mPresenter.loadCurrentPersonIdentityWithProcess(processId)
     }
 
     override fun onDestroyView() {
-        if (globalLayoutListener!=null) {
-            edit_start_process_step_two_title.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
-        }
+//        if (globalLayoutListener!=null) {
+//            edit_start_process_step_two_title.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
+//        }
         super.onDestroyView()
         XLog.debug("StartProcessStepTwoFragment onDestroyView...............")
     }

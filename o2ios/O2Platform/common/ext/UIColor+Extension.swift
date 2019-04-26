@@ -11,6 +11,36 @@ import UIKit
 
 extension UIColor {
     
+    convenience init(hex string: String) {
+        var hex = string.hasPrefix("#")
+            ? String(string.dropFirst())
+            : string
+        guard hex.count == 3 || hex.count == 6
+            else {
+                self.init(white: 1.0, alpha: 0.0)
+                return
+        }
+        if hex.count == 3 {
+            for (index, char) in hex.enumerated() {
+                hex.insert(char, at: hex.index(hex.startIndex, offsetBy: index * 2))
+            }
+        }
+        
+        guard let intCode = Int(hex, radix: 16) else {
+            self.init(white: 1.0, alpha: 0.0)
+            return
+        }
+        
+        self.init(
+            red:   CGFloat((intCode >> 16) & 0xFF) / 255.0,
+            green: CGFloat((intCode >> 8) & 0xFF) / 255.0,
+            blue:  CGFloat((intCode) & 0xFF) / 255.0, alpha: 1.0)
+    }
+    
+    public func alpha(_ value: CGFloat) -> UIColor {
+        return withAlphaComponent(value)
+    }
+    
     class func rgb(_ r: Int, _ g: Int, _ b: Int, _ alpha: CGFloat) -> UIColor {
         return UIColor.init(red: CGFloat(r)/255.0, green: CGFloat(g)/255.0, blue: CGFloat(b)/255.0, alpha: alpha / 1.0)
     }

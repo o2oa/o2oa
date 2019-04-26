@@ -32,13 +32,13 @@ class SCommonViewController: UITableViewController {
     
     @IBAction func checkUpdateVersion(_ sender: UIButton) {
         PgyUpdateManager.sharedPgy().checkUpdate(withDelegete: self, selector: #selector(updateVersion(_:)))
-        ProgressHUD.show("更新校验中，请稍候...", interaction: false)
+        self.showMessage(title: "更新校验中，请稍候...")
     }
     
     @objc private func updateVersion(_ response:AnyObject?){
         print("update be callbacked")
         if let obj = response {
-            ProgressHUD.dismiss()
+            self.dismissProgressHUD()
             //print(obj)
             let appURLString = obj["downloadURL"]
             if  let appURL = URL(string: appURLString as! String) {
@@ -49,18 +49,13 @@ class SCommonViewController: UITableViewController {
                 }
             }
         }else{
-            ProgressHUD.show("已经是最新版本")
-            Timer.after(0.5, {
-                DispatchQueue.main.async {
-                    ProgressHUD.dismiss()
-                }
-            })
+            self.showSuccess(title: "已经是最新版本")
         }
     }
     
     
     @IBAction func clearCacheAction(_ sender: UIButton) {
-        ProgressHUD.show("正在收集...", interaction: false)
+        self.showMessage(title: "正在收集...")
         let fileSize = SZKCleanCache.folderSizeAtPath()
         let msg = "检测到可以清理的缓存大小为\(fileSize)M，是否立即清除？"
         //let msgAttrib = msg.color(RGB(155, g: 155, b: 155))
@@ -72,7 +67,7 @@ class SCommonViewController: UITableViewController {
         let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
         alertController.addAction(okAction)
         alertController.addAction(cancelAction)
-        ProgressHUD.dismiss()
+        self.dismissProgressHUD()
         self.present(alertController, animated: true, completion: nil)
         
     }
@@ -97,14 +92,14 @@ class SCommonViewController: UITableViewController {
         }))
         
         self.group.notify(queue: DispatchQueue.main) {
-            ProgressHUD.showSuccess("清理完成")
+            self.showSuccess(title: "清理完成")
             self.notify()
         }
     }
     
     private func notify() {
     // 通知门户页面刷新 因为清除了浏览器缓存 没有cookie了 需要重新加载webview
-        NotificationCenter.default.post(name: Notification.Name("reloadPortal"), object: nil)
+        NotificationCenter.default.post(name: OONotification.reloadPortal.notificationName, object: nil)
     }
     
 

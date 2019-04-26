@@ -1,0 +1,6 @@
+framework module shared_preferences {
+  umbrella header "shared_preferences-umbrella.h"
+
+  export *
+  module * { export * }
+}

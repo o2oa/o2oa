@@ -12,11 +12,17 @@ import CocoaLumberjack
 import Alamofire
 import ObjectMapper
 import swiftScan
+import JHTAlertController
 
+protocol BaseWebViewUIViewControllerJSDelegate {
+    func closeUIViewWindow()
+    func actionBarLoaded(show: Bool)
+}
 
 open class BaseWebViewUIViewController: UIViewController {
     
     var webView:WKWebView!
+    var delegate: BaseWebViewUIViewControllerJSDelegate?
 
     override open func viewDidLoad() {
         super.viewDidLoad()
@@ -47,6 +53,9 @@ open class BaseWebViewUIViewController: UIViewController {
         // bbs 回复
         userContentController.add(self, name: "ReplyAction")
         
+        // protal已经存在ActionBar
+         userContentController.add(self, name: "actionBarLoaded")
+        
         // 打开工作 {"work":"", "workCompleted":"", "title":""}
         userContentController.add(self, name: "openO2Work")
         // 4个分类 task taskCompleted read readCompleted
@@ -62,6 +71,12 @@ open class BaseWebViewUIViewController: UIViewController {
         userContentController.add(self, name: "openO2Calendar")
         // 打开扫一扫
         userContentController.add(self, name: "openScan")
+        
+        userContentController.add(self, name: "openO2Alert")
+        // 打开钉钉
+        userContentController.add(self, name: "openDingtalk")
+        // 关闭当前UIViewController
+        userContentController.add(self, name: "closeNativeWindow")
         
 
         
@@ -170,9 +185,43 @@ extension BaseWebViewUIViewController: WKScriptMessageHandler {
         case "openScan":
             self.openScan()
             break
+        case "openO2Alert":
+            if message.body is NSString {
+                let msg = message.body as! NSString
+                self.openO2Alert(message: String(msg))
+            }
+            break
+        case "closeNativeWindow":
+            DDLogDebug("关闭窗口！！！！")
+            self.delegate?.closeUIViewWindow()
+            break
+        case "openDingtalk":
+            self.openDingtalk()
+            break
+        case "actionBarLoaded":
+            self.delegate?.actionBarLoaded(show: true)
+            break
         default:
             break
         }
+    }
+    
+    private func openO2Alert(message: String) {
+        DDLogDebug("O2 alert msg:\(message)")
+        let alertController = JHTAlertController(title: "", message: message, preferredStyle: .alert)
+        alertController.titleImage = #imageLiteral(resourceName: "logo80-bai")
+        alertController.messageTextColor = UIColor(hex: "#030303")
+        alertController.titleViewBackgroundColor = UIColor.hexInt(0xFB4747)
+        alertController.alertBackgroundColor =  UIColor(hexString: "#FCFCFC", alpha: 0.9)!
+        alertController.setAllButtonBackgroundColors(to: UIColor(hexString: "#FCFCFC", alpha: 0.9)!)
+        alertController.setButtonTextColorFor(.default, to: UIColor(hex: "#FB4747"))
+        alertController.setButtonTextColorFor(.cancel, to: UIColor(hex: "#FB4747"))
+        alertController.hasRoundedCorners = true
+        let okAction = JHTAlertAction(title: "确定", style: .default, handler: {action in
+            
+        })
+        alertController.addActions([okAction])
+        present(alertController, animated: true, completion: nil)
     }
     
     
@@ -182,6 +231,7 @@ extension BaseWebViewUIViewController: WKScriptMessageHandler {
         let json = """
         {"work":"\(work)", "workCompleted":"\(workCompleted)", "title":"\(title)"}
         """
+        DDLogDebug("openWork json: \(json)")
         let todo = TodoTask(JSONString: json)
         destVC.todoTask = todo
         destVC.backFlag = 3 //隐藏就行
@@ -209,7 +259,7 @@ extension BaseWebViewUIViewController: WKScriptMessageHandler {
     private func openCmsApplication(appId: String) {
         DDLogInfo("打开栏目， appId：\(appId)")
         let url = AppDelegate.o2Collect.generateURLWithAppContextKey(CMSContext.cmsContextKey, query: CMSContext.cmsCategoryListQuery, parameter: ["##appId##": appId as AnyObject])
-        ProgressHUD.show("Loading...", interaction: false)
+        self.showMessage(title: "Loading...")
         Alamofire.request(url!, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: nil).responseJSON { (response) in
             switch response.result {
             case .success(let val):
@@ -225,10 +275,10 @@ extension BaseWebViewUIViewController: WKScriptMessageHandler {
                         self.show(destVC, sender: nil)
                     }
                 }
-                ProgressHUD.dismiss()
+                self.dismissProgressHUD()
             case .failure(let err):
                 DDLogError(err.localizedDescription)
-                ProgressHUD.dismiss()
+                self.dismissProgressHUD()
             }
         }
         
@@ -271,5 +321,9 @@ extension BaseWebViewUIViewController: WKScriptMessageHandler {
         }
     }
     
-    
+    private func openDingtalk() {
+        UIApplication.shared.open(URL(string: "dingtalk://dingtalkclient/")!, options: [:]) { (result) in
+            DDLogInfo("打开了钉钉。。。。\(result)")
+        }
+    }
 }

@@ -13,28 +13,32 @@ import AlamofireNetworkActivityIndicator
 import EZSwiftExtensions
 import UserNotifications
 import O2OA_Auth_SDK
+import Flutter
+import IQKeyboardManagerSwift
 
-//极光
-let appKey = "9aca7cc20fe0cc987cd913ca"
-let bmapKey = "cL9Y2GLhUxgqmKTIcyxv28Y2S7O2DfYj"
-let channel = "Publish channel"
+
+
+
+
 let isProduction = true
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate,JPUSHRegisterDelegate,UNUserNotificationCenterDelegate {
+class AppDelegate: FlutterAppDelegate, JPUSHRegisterDelegate, UNUserNotificationCenterDelegate {
     
     var _mapManager: BMKMapManager?
     
-    var window: UIWindow?
     //中心服务器节点类
     public static let o2Collect = O2Collect()
     //中心服务器绑定数据信息
     public static var deviceData = CollectDeviceData()
     //网络监听
     public let o2ReachabilityManager = O2ReachabilityManager.sharedInstance
+    // flutter engine
+    var flutterEngine : FlutterEngine?
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    override func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         //启动日志管理器
+        
         O2Logger.startLogManager()
         //日志文件
         O2Logger.getLogFiles()
@@ -87,18 +91,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate,JPUSHRegisterDelegate,UNUs
             AppDelegate.deviceData.name = UIDevice.idForVendor()!
         }
         //Buglyy异常上报
-        Bugly.start(withAppId: "0bc87f457b")
+        Bugly.start(withAppId: BUGLY_ID)
         
         //JPush
         _setupJPUSH()
-        JPUSHService.setup(withOption: launchOptions, appKey: appKey, channel: channel, apsForProduction: isProduction)
+        JPUSHService.setup(withOption: launchOptions, appKey: JPUSH_APP_KEY, channel: JPUSH_channel, apsForProduction: isProduction)
         
-        JMessage.setupJMessage(launchOptions, appKey: appKey, channel: channel, apsForProduction: isProduction, category: nil, messageRoaming: true)
+        JMessage.setupJMessage(launchOptions, appKey: JPUSH_APP_KEY, channel: JPUSH_channel, apsForProduction: isProduction, category: nil, messageRoaming: true)
         _setupJMessage()
         
         _mapManager = BMKMapManager()
         BMKMapManager.setCoordinateTypeUsedInBaiduMapSDK(BMK_COORDTYPE_BD09LL)
-        _mapManager?.start(bmapKey, generalDelegate: nil)
+        _mapManager?.start(BAIDU_MAP_KEY, generalDelegate: nil)
         
         
         JPUSHService.registrationIDCompletionHandler { (resCode, registrationID) in
@@ -112,13 +116,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate,JPUSHRegisterDelegate,UNUs
             }
         }
         
-        //初始化相关值
-        //AppDelegate.deviceData.deviceType = "ios"
        
         OOPlusButtonSubclass.register()
         OOTabBarHelper.initTabBarStyle()
         
-        return true
+        //
+        IQKeyboardManager.shared.enable = true
+        
+        return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
     
     
@@ -131,13 +136,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate,JPUSHRegisterDelegate,UNUs
                 NSInteger(UNAuthorizationOptions.badge.rawValue)
             JPUSHService.register(forRemoteNotificationConfig: entity, delegate: self)
             
-        } else if #available(iOS 8, *) {
-            // 可以自定义 categories
-            JPUSHService.register(
-                forRemoteNotificationTypes: UIUserNotificationType.badge.rawValue |
-                    UIUserNotificationType.sound.rawValue |
-                    UIUserNotificationType.alert.rawValue,
-                categories: nil)
         } else {
             // ios 8 以前 categories 必须为nil
             JPUSHService.register(
@@ -170,8 +168,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate,JPUSHRegisterDelegate,UNUs
     }
     
     
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        let deviceId = deviceToken.hexString
+    override func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        super.application(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
+//        let deviceId = deviceToken.hexString
 //        if !deviceId.isEmpty {
 //            AppDelegate.deviceData.name = deviceId
 //        }else{
@@ -181,10 +180,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate,JPUSHRegisterDelegate,UNUs
         NotificationCenter.default.post(name: Notification.Name(rawValue: "DidRegisterRemoteNotification"), object: deviceToken)
         JPUSHService.registerDeviceToken(deviceToken)
         JMessage.registerDeviceToken(deviceToken)
-        
     }
     
-    func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
+    override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        DDLogDebug("open url :\(url.absoluteString)")
+        return true
+    }
+    
+    override func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
         if notificationSettings.types.rawValue == 0 {
             AppConfigSettings.shared.notificationGranted = false
             AppConfigSettings.shared.firstGranted = true
@@ -196,58 +199,41 @@ class AppDelegate: UIResponder, UIApplicationDelegate,JPUSHRegisterDelegate,UNUs
         }
     }
     
-    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+    override func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         DDLogError(error.localizedDescription)
         AppDelegate.deviceData.name = "104C9F7F-7403-4B3E-B6A2-C222C82074FF"
     }
     
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
+    override func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
         JPUSHService.handleRemoteNotification(userInfo)
         O2Logger.debug("收到通知,\(userInfo)")
         NotificationCenter.default.post(name: Notification.Name(rawValue: "AddNotificationCount"), object: nil)  //把  要addnotificationcount
     }
     
     
-    func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
+    override func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
         JPUSHService.showLocalNotification(atFront: notification, identifierKey: nil)
     }
     
-    func applicationWillResignActive(_ application: UIApplication) {
-        
-    }
-    
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        
-    }
-    
-    func applicationWillEnterForeground(_ application: UIApplication) {
+    override func applicationWillEnterForeground(_ application: UIApplication) {
         application.applicationIconBadgeNumber = 0
         application.cancelAllLocalNotifications()
     }
     
-    func applicationDidBecomeActive(_ application: UIApplication) {
+    override func applicationDidBecomeActive(_ application: UIApplication) {
         if UIDevice.deviceModelReadable() != "Simulator" {
             PgyUpdateManager.sharedPgy().checkUpdate(withDelegete: self, selector: #selector(updateVersion(_:)))
         }
         
     }
-    
-    func applicationWillTerminate(_ application: UIApplication) {
-        
-    }
+   
     
     
     deinit {
         o2ReachabilityManager.stopListening()
     }
     
-    func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
-        return true
-    }
-    
-    func application(_ application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
-        return true
-    }
+   
     
     @available(iOS 10.0, *)
     func jpushNotificationCenter(_ center: UNUserNotificationCenter!, didReceive response: UNNotificationResponse!, withCompletionHandler completionHandler: (() -> Void)!) {
@@ -325,11 +311,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate,JPUSHRegisterDelegate,UNUs
 //MARK: - JMessage Delegate
 extension AppDelegate: JMessageDelegate {
     func onDBMigrateStart() {
-        ProgressHUD.show("数据库升级中")
+       // self.showMessage(title: "数据库升级中")
     }
     
     func onDBMigrateFinishedWithError(_ error: Error!) {
-        ProgressHUD.showSuccess("数据库升级完成")
+       // self.showSuccess(title: "数据库升级完成")
     }
     
     func onReceive(_ event: JMSGNotificationEvent!) {

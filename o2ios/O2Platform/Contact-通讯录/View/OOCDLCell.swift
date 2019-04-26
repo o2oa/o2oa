@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Hue
+
 import SDWebImage
 
 class OOCDLCell: UITableViewCell,Configurable {

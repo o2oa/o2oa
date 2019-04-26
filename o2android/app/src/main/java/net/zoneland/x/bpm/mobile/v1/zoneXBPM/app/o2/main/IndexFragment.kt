@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.bigkoo.convenientbanner.ConvenientBanner
+import io.flutter.app.FlutterActivity
 import kotlinx.android.synthetic.main.fragment_main_todo.*
 import kotlinx.android.synthetic.main.snippet_shimmer_content.*
 import net.muliba.changeskin.FancySkinManager
@@ -38,6 +39,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.ConvenientBa
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.enums.ApplicationEnum
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.enums.HotPictureApplicationEnum
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.flutter.FlutterConnectActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.cms.CMSDocumentInfoJson
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.HotPictureOutData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.TaskData
@@ -80,6 +82,10 @@ class IndexFragment : BaseMVPViewPagerFragment<IndexContract.View, IndexContract
                 ApplicationEnum.MEETING.key -> activity.go<MeetingMainActivity>()
                 ApplicationEnum.ATTENDANCE.key -> activity.go<AttendanceMainActivity>()
                 ApplicationEnum.CALENDAR.key -> activity.go<CalendarMainActivity>()
+                ApplicationEnum.MindMap.key -> {
+                    XLog.info("脑图")
+                    activity.go<FlutterConnectActivity>(FlutterConnectActivity.startFlutterAppWithRoute(ApplicationEnum.MindMap.key))
+                }
                 ApplicationEnum.O2AI.key -> {
                     PermissionRequester(activity)
                             .request(Manifest.permission.RECORD_AUDIO)

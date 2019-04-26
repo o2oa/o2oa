@@ -18,7 +18,8 @@ public enum ApplicationEnum {
     CMS("cms", "信息中心", R.mipmap.app_cms),
     ATTENDANCE("attendance", "考勤打卡", R.mipmap.app_attendance),
     O2AI("o2ai", "语音助手", R.mipmap.app_o2_ai),
-    CALENDAR("calendar", "日程安排", R.mipmap.app_calendar);
+    CALENDAR("calendar", "日程安排", R.mipmap.app_calendar),
+    MindMap("mindMap", "脑图", R.mipmap.app_mind_map);
 
 
 

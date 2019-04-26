@@ -1,5 +1,6 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.support.v4.content.ContextCompat
@@ -11,10 +12,7 @@ import android.util.AttributeSet
 import android.view.ActionMode
 import android.view.MotionEvent
 import android.view.View
-import android.webkit.CookieManager
-import android.webkit.JavascriptInterface
-import android.webkit.WebChromeClient
-import android.webkit.WebView
+import android.webkit.*
 import android.widget.ProgressBar
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2App
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
@@ -36,7 +34,7 @@ class NestedProgressWebView : WebView, NestedScrollingChild {
     private val mScrollConsumed = IntArray(2)
     private var mNestedOffsetY: Int = 0
     private val mChildHelper: NestedScrollingChildHelper = NestedScrollingChildHelper(this)
-    private lateinit var progressBar: ProgressBar
+    protected lateinit var progressBar: ProgressBar
     private val mActionList = ArrayList<String>()
     private var mActionMode: ActionMode? = null
     private var mLinkJsInterfaceName:String = "fancyActionJsInterface"
@@ -68,13 +66,22 @@ class NestedProgressWebView : WebView, NestedScrollingChild {
         webChromeClient = ProgressWebChromeClient()
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private fun initSettings() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            settings.safeBrowsingEnabled = false
+        }
+
         settings.javaScriptEnabled = true
         settings.allowFileAccess = true
         settings.setAppCacheEnabled(true)
         settings.builtInZoomControls = false
         settings.setSupportMultipleWindows(true)
         settings.javaScriptCanOpenWindowsAutomatically = true
+        //5.0以上开启混合模式加载
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+        }
     }
 
     fun addActionList(list: List<String>) {

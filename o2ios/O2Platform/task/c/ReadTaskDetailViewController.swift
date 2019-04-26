@@ -78,24 +78,24 @@ class ReadTaskDetailViewController: BaseTaskWebViewController {
     @IBAction func changeDocAction(_ sender: UIBarButtonItem) {
         DDLogDebug("readButtonAction")
         let url = AppDelegate.o2Collect.generateURLWithAppContextKey(ReadContext.readContextKey, query: ReadContext.readProcessing, parameter: ["##id##":(todoTask?.id)! as AnyObject])
-        ProgressHUD.show("提交中...")
+        self.showMessage(title: "提交中...")
         Alamofire.request(url!, method:.post, parameters: todoTask?.toJSON(), encoding: JSONEncoding.default, headers: nil).responseJSON {  response in
             switch response.result {
             case .success(let val):
                 DDLogDebug(JSON(val).description)
                 let json = JSON(val)
                 if json["type"]=="success"{
-                    ProgressHUD.showSuccess("提交成功")
+                    self.showSuccess(title: "提交成功")
                     DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3, execute: {
                         self.performSegue(withIdentifier: "backToReadTask", sender: nil)
                     })
                 }else {
                     DDLogError(json["message"].description)
-                    ProgressHUD.showError("提交失败")
+                    self.showError(title: "提交失败")
                 }
             case .failure(let err):
                 DDLogError(err.localizedDescription)
-                ProgressHUD.showError("提交失败")
+                self.showError(title: "提交失败")
             }
             
         }

@@ -3,6 +3,7 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.bbs.view
 
 import android.app.Activity
 import android.content.Intent
+import android.net.http.SslError
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Gravity
@@ -10,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.webkit.JavascriptInterface
+import android.webkit.SslErrorHandler
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageView
@@ -88,9 +90,13 @@ class BBSWebViewSubjectActivity : BaseMVPActivity<BBSWebViewSubjectContract.View
         keyHeight = metric.heightPixels/3*/
         //init webview
         web_view_bbs_web_view_subject_content.addJavascriptInterface(this, "o2bbs")
-        web_view_bbs_web_view_subject_content.setWebViewClient(object : WebViewClient() {
+        web_view_bbs_web_view_subject_content.webViewClient = object : WebViewClient() {
+            override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
+                XLog.error("ssl error, $error")
+                handler?.proceed()
+            }
             override fun shouldOverrideUrlLoading(view: WebView?, url: String): Boolean {
-                XLog.debug("shouldOverrideUrlLoading:" + url)
+                XLog.debug("shouldOverrideUrlLoading:$url")
                 if (ZoneUtil.checkUrlIsInner(url)) {
                     view?.loadUrl(url)
                 } else {
@@ -98,7 +104,7 @@ class BBSWebViewSubjectActivity : BaseMVPActivity<BBSWebViewSubjectContract.View
                 }
                 return true
             }
-        })
+        }
         //发送监听
         button_bbs_subject_reply.setOnClickListener {
             publishReply()
@@ -140,24 +146,28 @@ class BBSWebViewSubjectActivity : BaseMVPActivity<BBSWebViewSubjectContract.View
         XLog.debug("bbs webView attachment : $attachment")
         val canReply  =  attachment.canReply
         val hasAttach = attachment.hasAttach
-        if (!canReply && !hasAttach) {
-            layout_bbs_subject_operation_bar.gone()
-            button_bbs_subject_attach.gone()
-        } else if (canReply && !hasAttach) {
-            button_bbs_subject_attach.setOnClickListener {
-                XToast.toastShort(this,"没有附件")
-            }
-        } else if (!canReply && hasAttach){
+//        if (!canReply && !hasAttach) {
+//            layout_bbs_subject_operation_bar.gone()
+//            button_bbs_subject_attach.gone()
+//        } else if (canReply && !hasAttach) {
+//            button_bbs_subject_attach.setOnClickListener {
+//                XToast.toastShort(this,"没有附件")
+//            }
+//        } else
+        if (!canReply){
             edit_bbs_reply_subject_content.isClickable = false
             button_bbs_subject_reply.isClickable = false
             button_bbs_subject_reply.text = "禁止评论"
         }
 
         if (hasAttach) {
+            button_bbs_subject_attach.visible()
             attachList.clear()
             attachList.addAll(attachment.attachList)
             popupWindow.listener = this
             popupWindow.setOnDismissListener { ZoneUtil.lightOn(this@BBSWebViewSubjectActivity) }
+        }else {
+            button_bbs_subject_attach.gone()
         }
     }
 
@@ -172,11 +182,11 @@ class BBSWebViewSubjectActivity : BaseMVPActivity<BBSWebViewSubjectContract.View
             XToast.toastShort(this, "请填写回复内容")
             return
         }
-        XLog.debug("content:" + content)
+        XLog.debug("content:$content")
         content = formatToHtml(content)
-        XLog.debug("content html:" + content)
+        XLog.debug("content html:$content")
         content += addAttachmentToContent()
-        XLog.debug("content html and image:" + content)
+        XLog.debug("content html and image:$content")
         val form = ReplyFormJson(
                 newReplyId,
                 content,
@@ -258,13 +268,13 @@ class BBSWebViewSubjectActivity : BaseMVPActivity<BBSWebViewSubjectContract.View
     override fun openCompletedFile(id: String?) {
         if (!TextUtils.isEmpty(id)) {
             val file = File(getAttachFileLocalPath(id!!))
-            if (file != null && file.exists()) AndroidUtils.openFileWithDefaultApp(this, file)
+            if (file.exists()) AndroidUtils.openFileWithDefaultApp(this, file)
         }
     }
 
     override fun startDownLoadFile(id: String?) {
         if (!TextUtils.isEmpty(id)){
-            taskMap.put(id!!, doAsync {
+            taskMap[id!!] = doAsync {
                 val filePath = getAttachFileLocalPath(id)
                 val file = File(filePath)
                 var downloadSuccess = false
@@ -303,13 +313,13 @@ class BBSWebViewSubjectActivity : BaseMVPActivity<BBSWebViewSubjectContract.View
                         XToast.toastShort(this@BBSWebViewSubjectActivity, "下载附件失败！")
                     }
                 }
-            })
+            }
         }
     }
 
     private fun getAttachFileLocalPath(id:String) : String{
         var path  = ""
-        attachList.filter { it.id == id }.map { path = FileExtensionHelper.getXBPMBBSAttachFolder()+File.separator+it.fileName }
+        attachList.asSequence().filter { it.id == id }.map { path = FileExtensionHelper.getXBPMBBSAttachFolder()+File.separator+it.fileName }.toList()
         return path
     }
 
@@ -373,14 +383,14 @@ class BBSWebViewSubjectActivity : BaseMVPActivity<BBSWebViewSubjectContract.View
             val deleteIcon = view.findViewById<ImageView>(R.id.image_bbs_subject_image_upload_delete_button)
             deleteIcon.visible()
             val attachmentBaseView = view.findViewById<RelativeLayout>(R.id.relative_bbs_subject_image_upload_grid_top)
-            attachmentBaseView.setOnClickListener { view ->
-                removeImageFromImageViewList(view)
+            attachmentBaseView.setOnClickListener { v ->
+                removeImageFromImageViewList(v)
                 uploadedImageMap.remove(tag)
             }
             val imageBean = uploadingImageMap[tag]
             if (imageBean != null) {
                 imageBean.fileId = fileId
-                uploadedImageMap.put(tag, imageBean)
+                uploadedImageMap[tag] = imageBean
             }
         }
         uploadingImageMap.remove(tag)

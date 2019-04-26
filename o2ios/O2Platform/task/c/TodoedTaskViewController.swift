@@ -38,7 +38,7 @@ class TodoedTaskViewController: UITableViewController {
     }
     
     func loadTodoedData(){
-        ProgressHUD.show("加载中...")
+        self.showMessage(title: "加载中...")
         Alamofire.request(loadUrl!).responseJSON(completionHandler:{  response in
             debugPrint(response.result)
             switch response.result {
@@ -52,14 +52,14 @@ class TodoedTaskViewController: UITableViewController {
                     self.setActionModel(data["workList"].array,completed: false)
                     self.setStatusModel(Mapper<ActivityTask>().mapArray(JSONString:data["workLogList"].description))
                     self.tableView.reloadData()
-                    ProgressHUD.showSuccess("加载完成")
+                    self.showSuccess(title: "加载完成")
                 }else{
                     DDLogError(JSON(val)["message"].description)
-                    ProgressHUD.showError("加载失败")
+                    self.showError(title: "加载失败")
                 }
             case .failure(let err):
                 DDLogError(err.localizedDescription)
-                ProgressHUD.showError("加载失败")
+                self.showError(title: "加载失败")
             }
         })
     }

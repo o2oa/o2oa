@@ -54,17 +54,17 @@ class SPasswordChangeViewController: FormViewController {
         let newRow  = form.rowBy(tag: "newPassword") as! PasswordRow
         let newConfirmRow  = form.rowBy(tag: "confirmPassword") as! PasswordRow
         if oldRow.validate().count > 0 {
-            ProgressHUD.showError(oldRow.validate()[0].msg)
+            self.showError(title: oldRow.validate()[0].msg)
             //oldRow.cell.becomeFirstResponder()
             return
         }
         if newRow.validate().count > 0 {
-            ProgressHUD.showError(newRow.validate()[0].msg)
+            self.showError(title: newRow.validate()[0].msg)
             //newRow.cell.becomeFirstResponder()
             return
         }
         if newConfirmRow.validate().count > 0 {
-            ProgressHUD.showError(newConfirmRow.validate()[0].msg)
+            self.showError(title: newConfirmRow.validate()[0].msg)
             //newConfirmRow.cell.becomeFirstResponder()
             return
         }
@@ -77,20 +77,20 @@ class SPasswordChangeViewController: FormViewController {
             let parameter = ["oldPassword":oldRow.value!,"newPassword":newRow.value!,"confirmPassword":newConfirmRow.value!]
             //修改密码
             let url = AppDelegate.o2Collect.generateURLWithAppContextKey(PersonContext.personContextKey, query: PersonContext.personPasswordUpdateQuery, parameter: nil)
-            ProgressHUD.show("提交中...")
+            self.showMessage(title:"提交中...")
             Alamofire.request(url!, method: .put, parameters: parameter, encoding: JSONEncoding.default, headers: nil).responseJSON(completionHandler: { (response) in
                 switch response.result {
                 case .success(let val):
                     let type = JSON(val)["type"]
                     if type == "success" {
-                        ProgressHUD.showSuccess("修改成功")
+                        self.showSuccess(title: "修改成功")
                     }else{
                         DDLogError(JSON(val).description)
-                        ProgressHUD.showError("修改失败")
+                        self.showError(title: "修改失败")
                     }
                 case .failure(let err):
                     DDLogError(err.localizedDescription)
-                    ProgressHUD.showError("修改失败")
+                    self.showError(title: "修改失败")
                 }
             })
             

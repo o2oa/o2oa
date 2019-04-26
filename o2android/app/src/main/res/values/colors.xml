@@ -89,6 +89,7 @@
     <color name="overlay_work_place">#1c3288dd</color>
     <color name="overlay_work_place_border">#3288dd</color>
 
+    <color name="bg_biometry_dialog">#99000000</color>
 
     <!--im-->
     <color name="item_click_bg_color">#E9EDED</color>

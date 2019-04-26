@@ -70,7 +70,7 @@ class ContactPersonInfoController: FormViewController {
     }
     
     func loadPersonInfo(_ sender: AnyObject?){
-        ProgressHUD.show("加载中...")
+        self.showMessage(title: "加载中...")
         Alamofire.request(myPersonURL!).responseJSON {
             response in
             switch response.result {
@@ -78,10 +78,10 @@ class ContactPersonInfoController: FormViewController {
                 let json = JSON(val)["data"]
                 self.contact = Mapper<PersonV2>().map(JSONString:json.description)!
                 self.loadDataCell()
-                ProgressHUD.dismiss()
+                self.dismissProgressHUD()
             case .failure(let err):
                 DDLogError(err.localizedDescription)
-                ProgressHUD.showError("加载失败")
+                self.showError(title: "加载失败")
             }
             
         }
@@ -132,7 +132,7 @@ class ContactPersonInfoController: FormViewController {
                     if UIApplication.shared.canOpenURL(smsURL!) {
                         UIApplication.shared.openURL(smsURL!)
                     }else{
-                        ProgressHUD.showError("发短信失败")
+                        self.showError(title: "发短信失败")
                     }
                 })
                 let phoneAction = UIAlertAction(title: "打电话", style: .default, handler: { _ in
@@ -140,7 +140,7 @@ class ContactPersonInfoController: FormViewController {
                     if UIApplication.shared.canOpenURL(phoneURL!) {
                         UIApplication.shared.openURL(phoneURL!)
                     }else{
-                        ProgressHUD.showError("打电话失败")
+                        self.showError(title: "打电话失败")
                     }
                 })
                 let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)

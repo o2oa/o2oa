@@ -8,6 +8,7 @@
 
 import UIKit
 import O2OA_Auth_SDK
+import CocoaLumberjack
 
 class OOAttanceSettingController: UIViewController {
     
@@ -32,16 +33,34 @@ class OOAttanceSettingController: UIViewController {
         , options: nil)?.first as! OOAttandanceSettingDataView
         return view
     }()
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        title = "设置"
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "关闭", style: .plain, target: self, action: #selector(closeWindow))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "地点管理", style: .plain, target: self, action: #selector(navWorkPlaceManager(_:)))
+        loadAdmin()
+        //增加mapView
+        commonDataView()
+        commonMapView()
+        
+    }
+    
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         dataView.isHidden = false
+        self.addNotificationObserver(OONotification.newWorkPlace.stringValue, selector: #selector(createNewWorkPlace(_:)))
         self.addKeyboardWillShowNotification()
         self.addKeyboardWillHideNotification()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        self.removeNotificationObserver()
+        self.removeNotificationObserver(OONotification.newWorkPlace.stringValue)
+        self.removeKeyboardWillHideNotification()
+        self.removeKeyboardWillShowNotification()
         dataView.isHidden  = true
     }
     
@@ -63,37 +82,24 @@ class OOAttanceSettingController: UIViewController {
     }
 //
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        title = "设置"
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "关闭", style: .plain, target: self, action: #selector(closeWindow))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "地点管理", style: .plain, target: self, action: #selector(navWorkPlaceManager(_:)))
-        navigationItem.rightBarButtonItem?.isEnabled = false
-        loadAdmin()
-        //增加mapView
-        commonDataView()
-        commonMapView()
-        self.addNotificationObserver(OONotification.newWorkPlace.stringValue, selector: #selector(createNewWorkPlace(_:)))
-    }
-    
+   
     private func loadAdmin() {
-//        let distName = AppConfigSettings.shared.account?.distinguishedName ?? ""
-//        viewModel.getAttendanceAdmin().then { (admins) -> Bool in
-//            admins.forEach({ (admin) in
-//                if admin.adminName == distName {
-//                    self.isAdmin = true
-//                }
-//            })
-//            return self.isAdmin
-//            }.then({ (result) in
-//                self.navigationItem.rightBarButtonItem?.isEnabled = result
-//            })
-//            .catch { (myerror) in
-//                
-//        }
+        let distName = O2AuthSDK.shared.myInfo()?.distinguishedName ?? ""
+        viewModel.getAttendanceAdmin().then { (admins) in
+                admins.forEach({ (admin) in
+                    if admin.adminName == distName {
+                        self.isAdmin = true
+                    }
+                })
+            DDLogDebug("是否是管理员：\(self.isAdmin)")
+            }
+            .catch { (myerror) in
+                DDLogError(myerror.localizedDescription)
+        }
     }
     
     @objc private func createNewWorkPlace(_ notification:Notification){
+        DDLogDebug("接收到消息。。。。。。。。。。。。。。。。。。。。。。")
         if self.isAdmin == false {
             MBProgressHUD_JChat.show(text: "你不是管理员，无操作权限", view: self.view)
             return
@@ -122,8 +128,12 @@ class OOAttanceSettingController: UIViewController {
     }
     
     @objc private func navWorkPlaceManager(_ sender:Any?){
-        let destVC = OOAttandanceWorkPlaceController(nibName: "OOAttandanceWorkPlaceController", bundle: nil)
-        self.pushVC(destVC)
+        if self.isAdmin {
+            let destVC = OOAttandanceWorkPlaceController(nibName: "OOAttandanceWorkPlaceController", bundle: nil)
+            self.pushVC(destVC)
+        }else {
+            MBProgressHUD_JChat.show(text: "你不是管理员，无操作权限", view: self.view)
+        }
     }
     
     func commonMapView() {
@@ -167,7 +177,6 @@ class OOAttanceSettingController: UIViewController {
         locService.delegate = nil
         locService.stopUserLocationService()
         searchAddress.delegate = nil
-        self.removeNotificationObserver()
     }
     
 

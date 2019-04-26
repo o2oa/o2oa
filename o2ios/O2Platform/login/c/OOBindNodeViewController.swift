@@ -126,7 +126,7 @@ class OOBindNodeViewController:OOBaseViewController,UITableViewDataSource,UITabl
                         if self.presentedViewController == nil {
                             self.dismissVC(completion:nil)
                         }
-                        let destVC = OOTabBarController.genernateVC()
+                        let destVC = O2MainController.genernateVC()
                         destVC.selectedIndex = 2
                         UIApplication.shared.keyWindow?.rootViewController = destVC
                         UIApplication.shared.keyWindow?.makeKeyAndVisible()

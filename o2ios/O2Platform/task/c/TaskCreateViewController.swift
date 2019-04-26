@@ -84,7 +84,7 @@ class TaskCreateViewController: FormViewController {
             case .failure(let err):
                 DDLogError(err.localizedDescription)
                 DispatchQueue.main.async {
-                     ProgressHUD.showError("读取身份列表失败")
+                    self.showError(title: "读取身份列表失败")
                 }
             }
         }
@@ -103,8 +103,10 @@ class TaskCreateViewController: FormViewController {
         <<< ActionSheetRow<IdentityV2>("selectedIdentity") {
                 $0.title = "用户身份"
                 $0.selectorTitle = "请选择身份?"
-                $0.options = self.identitys!
-                $0.value = self.identitys?[0]
+                $0.options = self.identitys
+                if(self.identitys != nil && self.identitys!.count>0){
+                    $0.value = self.identitys![0]
+                }
         }.cellSetup({ (cell, row) in
             //cell.height = 50
         })
@@ -125,12 +127,16 @@ class TaskCreateViewController: FormViewController {
                 row.title = "创建"
             }.onCellSelection({ (cell, row) in
                 let titleRow:TextRow = self.form.rowBy(tag:"title")!
-                if let title = titleRow.value {
-                    let identityRow:ActionSheetRow<IdentityV2> = self.form.rowBy(tag:"selectedIdentity")!
-                    self.createProcess(title, identity: (identityRow.value?.distinguishedName!)!)
-                }else{
-                    ProgressHUD.showError("请输入标题")
+                let identityRow:ActionSheetRow<IdentityV2> = self.form.rowBy(tag:"selectedIdentity")!
+                guard let title = titleRow.value else{
+                    self.showError(title: "请输入标题")
+                    return
                 }
+                guard let id = identityRow.value  else {
+                    self.showError(title: "请选择身份")
+                    return
+                }
+                self.createProcess(title, identity: id.distinguishedName!)
             })
     }
     
@@ -140,7 +146,7 @@ class TaskCreateViewController: FormViewController {
         bean.title = title
         bean.identity = identity
         let createURL = AppDelegate.o2Collect.generateURLWithAppContextKey(WorkContext.workContextKey, query: WorkContext.workCreateQuery, parameter: ["##id##":(process?.id)! as AnyObject])
-        ProgressHUD.show("创建中，请稍候...")
+        self.showMessage(title: "创建中，请稍候...")
         Alamofire.request(createURL!,method:.post, parameters: bean.toJSON(), encoding: JSONEncoding.default, headers: nil).responseJSON { response in
             debugPrint(response.result)
             switch response.result {
@@ -155,17 +161,17 @@ class TaskCreateViewController: FormViewController {
                     self.navigationController?.pushViewController(todoTaskDetailVC, animated: true)
 //                    self.task = tasks[0]
                     DispatchQueue.main.async {
-                        ProgressHUD.dismiss()
+                        self.dismissProgressHUD()
                         //self.performSegue(withIdentifier: "newToBackMainSegue", sender: nil)
                     }
                     
                     //ProgressHUD.showSuccess("创建成功")
                 } else {
-                    ProgressHUD.showError("创建失败")
+                    self.showError(title: "创建失败")
                 }
             case .failure(let err):
                 DDLogError(err.localizedDescription)
-                ProgressHUD.showError("创建失败")
+                self.showError(title: "创建失败")
 
             }
            

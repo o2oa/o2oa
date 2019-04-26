@@ -9,6 +9,10 @@
 import UIKit
 import SwiftValidator
 
+protocol OOUITextFieldReturnNextDelegate {
+    func next()
+}
+
 @IBDesignable
 open class OOUITextField: UITextField {
     
@@ -30,6 +34,8 @@ open class OOUITextField: UITextField {
             validator.registerField(self, rules: [rule!])
         }
     }
+    
+    var returnNextDelegate: OOUITextFieldReturnNextDelegate?
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -107,6 +113,9 @@ extension OOUITextField:UITextFieldDelegate {
             return true
         }
         validationRule(textField)
+        if returnNextDelegate != nil {
+            returnNextDelegate?.next()
+        }
         return true
     }
     

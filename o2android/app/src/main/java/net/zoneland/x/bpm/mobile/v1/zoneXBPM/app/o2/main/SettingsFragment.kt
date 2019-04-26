@@ -17,9 +17,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.BitmapUtil
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.HttpCacheUtil
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.go
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.goAndClearBefore
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.o2Subscribe
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.permission.PermissionRequester
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.AndroidShareDialog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2AlertIconEnum
@@ -49,13 +47,18 @@ class SettingsFragment : BaseMVPViewPagerFragment<SettingsContract.View, Setting
         setting_button_about_id.setOnClickListener(this)
         setting_button_remind_setting_id.setOnClickListener(this)
         setting_button_common_set_id.setOnClickListener(this)
-        setting_button_customer_service_id.setOnClickListener(this)
+        if (BuildConfig.InnerServer) {
+            id_setting_button_customer_service_split.gone()
+            setting_button_customer_service_id.gone()
+        }else {
+            id_setting_button_customer_service_split.visible()
+            setting_button_customer_service_id.visible()
+            setting_button_customer_service_id.setOnClickListener(this)
+        }
+
         setting_button_feedback_id.setOnClickListener(this)
         myInfo_logout_btn_id.setOnClickListener(this)
 
-//        setting_button_ai_bluetooth.setOnClickListener {
-//            activity.go<BlueToothClientActivity>()
-//        }
         val path = O2CustomStyle.setupAboutImagePath(activity)
         if (!TextUtils.isEmpty(path)) {
             BitmapUtil.setImageFromFile(path!!, setting_image_about_icon)
@@ -70,9 +73,6 @@ class SettingsFragment : BaseMVPViewPagerFragment<SettingsContract.View, Setting
             R.id.setting_button_skin -> activity.go<SkinManagerActivity>()
             R.id.setting_button_remind_setting_id -> activity.go<NoticeSettingActivity>()
             R.id.setting_button_common_set_id -> {
-                //test change index fragment
-//                activity.go<FileReaderActivity>()
-
                 O2DialogSupport.openConfirmDialog(activity, "确认要清除缓存吗？", {
                     HttpCacheUtil.clearCache(activity, 0)
                 }, O2AlertIconEnum.CLEAR)
@@ -99,6 +99,7 @@ class SettingsFragment : BaseMVPViewPagerFragment<SettingsContract.View, Setting
     }
 
     private fun logout() {
+        XLog.debug("acti ity: ${activity == null}")
         O2DialogSupport.openConfirmDialog(activity, "确定要退出登录吗？", {
             mPresenter.logout()
         })

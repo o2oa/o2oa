@@ -153,9 +153,9 @@ extension OOAttanceHeaderView:BMKLocationServiceDelegate {
 
 extension OOAttanceHeaderView:BMKGeoCodeSearchDelegate {
     
-    func onGetReverseGeoCodeResult(_ searcher: BMKGeoCodeSearch!, result: BMKReverseGeoCodeResult!, errorCode error: BMKSearchErrorCode) {
+    func onGetReverseGeoCodeResult(_ searcher: BMKGeoCodeSearch?, result: BMKReverseGeoCodeResult?, errorCode error: BMKSearchErrorCode) {
         //发送定位的实时位置及名称信息
-        if calcErrorRange(result.location) == true {
+        if let location = result?.location, calcErrorRange(location) == true {
             NotificationCenter.post(customeNotification: .location, object: result)
         }else{
               NotificationCenter.post(customeNotification: .location, object: nil)
@@ -164,7 +164,7 @@ extension OOAttanceHeaderView:BMKGeoCodeSearchDelegate {
     
     func onGetGeoCodeResult(_ searcher: BMKGeoCodeSearch!, result: BMKGeoCodeResult!, errorCode error: BMKSearchErrorCode) {
         if Int(error.rawValue) == 0 {
-            O2Logger.debug("result \(result.address)")
+            O2Logger.debug("result \(String(describing: result.address))")
         }else{
             O2Logger.debug("result error  errorCode = \(Int(error.rawValue))")
         }

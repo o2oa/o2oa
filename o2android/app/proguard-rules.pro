@@ -54,8 +54,8 @@
 #如果有引用v4包可以添加下面这行
 -keep public class * extends android.support.v4.app.Fragment
 
-#忽略警告
--ignorewarning
+
+-ignorewarnings
 
 #如果引用了v4或者v7包
 -dontwarn android.support.**

@@ -47,10 +47,10 @@ class SkinManagerActivity : AppCompatActivity() {
 
         }
         changeButton()
-
-        card_skin_manager_puppy2018.setOnClickListener {
-            go<SkinShowActivity>()
-        }
+//
+//        card_skin_manager_puppy2018.setOnClickListener {
+//            go<SkinShowActivity>()
+//        }
     }
 
     override fun onResume() {

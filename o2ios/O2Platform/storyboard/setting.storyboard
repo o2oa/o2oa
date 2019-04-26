@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="OQJ-G9-0KW">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="OQJ-G9-0KW">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -187,10 +187,10 @@
             </objects>
             <point key="canvasLocation" x="2849" y="-56"/>
         </scene>
-        <!--修改手机号-->
+        <!--解绑手机号码-->
         <scene sceneID="BPQ-J7-ifT">
             <objects>
-                <viewController title="修改手机号" id="nTR-f9-edk" customClass="SMobileChangeViewController" customModule="O2Platform" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="解绑手机号码" id="nTR-f9-edk" customClass="SMobileChangeViewController" customModule="O2Platform" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="T5I-1y-fKx"/>
                         <viewControllerLayoutGuide type="bottom" id="A6f-WH-z2c"/>
@@ -203,16 +203,16 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="179"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="X59-Ny-EyR">
-                                        <rect key="frame" x="93" y="35" width="173" height="101"/>
+                                        <rect key="frame" x="0.0" y="35" width="375" height="101"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="当前手机号码" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X3H-tk-H6Z">
-                                                <rect key="frame" x="40" y="0.0" width="93" height="20"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="当前手机号码" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X3H-tk-H6Z">
+                                                <rect key="frame" x="40" y="0.0" width="295" height="20"/>
                                                 <fontDescription key="fontDescription" name="PingFangSC-Thin" family="PingFang SC" pointSize="14"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="C5a-Nu-WLy">
-                                                <rect key="frame" x="0.5" y="26" width="172.5" height="31"/>
+                                                <rect key="frame" x="101.5" y="26" width="172.5" height="31"/>
                                                 <subviews>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Shape" translatesAutoresizingMaskIntoConstraints="NO" id="wb1-Tl-UtY">
                                                         <rect key="frame" x="0.0" y="0.0" width="31" height="31"/>
@@ -229,13 +229,13 @@
                                                 </subviews>
                                             </stackView>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fty-6l-YFO">
-                                                <rect key="frame" x="16.5" y="63" width="140" height="38"/>
+                                                <rect key="frame" x="117.5" y="63" width="140" height="38"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="38" id="Kea-eF-qEV"/>
                                                     <constraint firstAttribute="width" constant="140" id="Zgr-xp-A5M"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="18"/>
-                                                <state key="normal" title="更换手机号码">
+                                                <state key="normal" title="解绑手机号码">
                                                     <color key="titleColor" red="0.98431372549019602" green="0.27843137254901962" blue="0.27843137254901962" alpha="1" colorSpace="calibratedRGB"/>
                                                 </state>
                                                 <connections>
@@ -252,14 +252,14 @@
                                 <constraints>
                                     <constraint firstItem="X59-Ny-EyR" firstAttribute="centerY" secondItem="YT7-Vh-SaP" secondAttribute="centerY" constant="-4" id="6ZO-qF-yTZ"/>
                                     <constraint firstItem="X59-Ny-EyR" firstAttribute="top" secondItem="YT7-Vh-SaP" secondAttribute="top" constant="35" id="FuE-Zt-mOr"/>
-                                    <constraint firstItem="X59-Ny-EyR" firstAttribute="leading" secondItem="YT7-Vh-SaP" secondAttribute="leading" constant="93" id="Th6-M9-ibQ"/>
-                                    <constraint firstAttribute="trailing" secondItem="X59-Ny-EyR" secondAttribute="trailing" constant="109" id="hkN-uk-bof"/>
+                                    <constraint firstItem="X59-Ny-EyR" firstAttribute="leading" secondItem="YT7-Vh-SaP" secondAttribute="leading" id="Th6-M9-ibQ"/>
+                                    <constraint firstAttribute="trailing" secondItem="X59-Ny-EyR" secondAttribute="trailing" id="hkN-uk-bof"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tNQ-ef-Dhh">
                                 <rect key="frame" x="0.0" y="179" width="375" height="488"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="变更手机号码后，企业通讯录也会因此变更，你需要重新登录应用。" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9IQ-aZ-ZWy">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="解绑手机号码后，你需要重新绑定服务器和手机号码后才能继续使用。" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9IQ-aZ-ZWy">
                                         <rect key="frame" x="14" y="8" width="347" height="43"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="43" id="JLo-L1-KvP"/>

@@ -67,7 +67,7 @@ class BBSReplySubjectViewController: UIViewController {
                 let type = JSON(val)["type"]
                 if type == "success" {
                     DispatchQueue.main.async {
-                        ProgressHUD.showSuccess("回复成功")
+                        self.showSuccess(title: "回复成功")
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
                             self.performSegue(withIdentifier: "backSubjectSegue", sender: nil)
                         })
@@ -77,13 +77,13 @@ class BBSReplySubjectViewController: UIViewController {
                 }else{
                     DispatchQueue.main.async {
                         DDLogError(JSON(val).description)
-                        ProgressHUD.showError("回复失败")
+                        self.showError(title: "回复失败")
                     }
                 }
             case .failure(let err):
                 DispatchQueue.main.async {
                     DDLogError(err.localizedDescription)
-                    ProgressHUD.showError("回复失败")
+                    self.showError(title: "回复失败")
                 }
             }
             

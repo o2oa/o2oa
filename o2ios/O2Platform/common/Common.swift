@@ -44,10 +44,14 @@ protocol AppConfigEnable {
     var appBackType: Int {get set}
     var notificationGranted: Bool {get set}
     var firstGranted: Bool {get set}
-    var accountIsSecurity: Bool {get set}
+    // 生物识别登录用户
+    var bioAuthUser: String {get set}
     var firstLoad: Bool {get set}
     //服务器 移动端配置hash值 判断是否更新了
     var customStyleHash: String {get set}
+    
+    //demo服务器提示公告
+    var demoAlertTag: Bool {get set}
 }
 
 
@@ -59,9 +63,11 @@ extension DefaultsKeys {
     static let appBackType = DefaultsKey<Int>("appBackType")
     static let notificationGranted = DefaultsKey<Bool>("notificationGranted")
     static let firstGranted = DefaultsKey<Bool>("fristGranted")
-    static let accountIsSecurity = DefaultsKey<Bool>("accountIsSecurity")
+    
+    static let bioAuthUser = DefaultsKey<String>("bioAuthUser")
     static let firstLoad = DefaultsKey<Bool>("firstLoad")
     static let customStyleHash = DefaultsKey<String>("customStyleHash")
+    static let demoAlertTag = DefaultsKey<Bool>("demoAlertTag")
 }
 
 // MARK:- Default App Config
@@ -121,13 +127,12 @@ public class AppConfigSettings: AppConfigEnable {
         }
     }
     
-    var accountIsSecurity: Bool {
+    var bioAuthUser: String {
         get {
-            return Defaults[.accountIsSecurity]
+            return Defaults[.bioAuthUser]
         }
-        
         set {
-            Defaults[.accountIsSecurity] = newValue
+            Defaults[.bioAuthUser] = newValue
         }
     }
     
@@ -158,6 +163,15 @@ public class AppConfigSettings: AppConfigEnable {
         
         set {
             Defaults[.appBackType] = newValue
+        }
+    }
+    
+    var demoAlertTag: Bool {
+        get {
+            return Defaults[.demoAlertTag]
+        }
+        set {
+            Defaults[.demoAlertTag] = newValue
         }
     }
     
@@ -193,6 +207,10 @@ class OOCustomImageManager {
     private var imageCache = NSCache<NSString,UIImage>()
     
     private init() {
+        self.loadCache()
+    }
+    
+    private func loadCache() {
         if let configInfo = O2AuthSDK.shared.customStyle() {
             configInfo.images?.forEach({ (ooImage) in
                 let value = ooImage.value!
@@ -207,8 +225,33 @@ class OOCustomImageManager {
     func loadImage(_ key:OOCustomImageKey) -> UIImage? {
         if let image = imageCache.object(forKey: key.rawValue) {
             return image
+        }else {
+            self.loadCache()
+            if let image = imageCache.object(forKey: key.rawValue) {
+                return image
+            }else {
+                return UIImage(named: "icon_zhuye_pre")
+            }
         }
-        return UIImage(named: "icon_zhuye_pre")
+    }
+    
+    //异步获取图片
+    func loadImageAsync(key:OOCustomImageKey, block:@escaping (UIImage?)->Void) {
+        let item = DispatchWorkItem {
+            if let configInfo = O2AuthSDK.shared.customStyle() {
+                configInfo.images?.forEach({ (ooImage) in
+                    let name = ooImage.name! as NSString
+                    if name == key.rawValue {
+                        DDLogDebug("name:\(name)")
+                        let value = ooImage.value!
+                        let data = Data(base64Encoded: value)
+                        let image = UIImage(data: data!)
+                        block(image)
+                    }
+                })
+            }
+        }
+        DispatchQueue.main.async(execute: item)
     }
     
    

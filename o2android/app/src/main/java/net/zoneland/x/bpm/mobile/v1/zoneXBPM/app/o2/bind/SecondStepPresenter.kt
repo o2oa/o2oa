@@ -43,6 +43,7 @@ class SecondStepPresenter : BasePresenterImpl<SecondStepContract.View>(), Second
             service.bindDevice(postBody)
                     .subscribeOn(Schedulers.io())
                     .flatMap{
+                        XLog.debug("这里是绑定成功了。。。。")
                         getApiService(mView?.getContext(), url)?.getWebserverDistributeWithSource(unitData.centerHost)
                     }
                     .observeOn(AndroidSchedulers.mainThread())
@@ -50,7 +51,8 @@ class SecondStepPresenter : BasePresenterImpl<SecondStepContract.View>(), Second
                         //绑定成功写入本地存储
                         O2SDKManager.instance().bindUnit(unitData, phone, deviceId)
                         mView?.bindSuccess(data)
-                    }, Action1<Throwable> { e ->
+                    }, ExceptionHandler(mView?.getContext()) { e->
+                        e.printStackTrace()
                         XLog.error("", e)
                         mView?.bindFail()
                     })

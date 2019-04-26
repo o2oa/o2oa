@@ -1,34 +1,38 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.webview
 
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
+import android.net.http.SslError
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.TextUtils
 import android.view.View
-import android.webkit.JavascriptInterface
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import kotlinx.android.synthetic.main.activity_work_web_view.*
 import net.muliba.fancyfilepickerlibrary.FilePicker
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2App
+import net.muliba.fancyfilepickerlibrary.PicturePicker
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.WorkControl
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ReadData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.TaskData
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.WorkControl
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.WorkOpinionData
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.AndroidUtils
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.ZoneUtil
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.O2UploadImageData
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.*
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.o2Subscribe
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.permission.PermissionRequester
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.BottomSheetMenu
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2DialogSupport
 import java.io.File
 
@@ -55,6 +59,8 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
 
     val WORK_WEB_VIEW_UPLOAD_REQUEST_CODE = 1001
     val WORK_WEB_VIEW_REPLACE_REQUEST_CODE = 1002
+    val TAKE_FROM_PICTURES_CODE = 1003
+    val TAKE_FROM_CAMERA_CODE = 1004
 
     var title = ""
     var workId = ""
@@ -71,7 +77,14 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
     val routeNameList = ArrayList<String>()
 
     val downloadDocument: DownloadDocument by lazy { DownloadDocument(this) }
+    val cameraImageUri: Uri by lazy { FileUtil.getUriFromFile(this, File(FileExtensionHelper.getCameraCacheFilePath())) }
+    var imageUploadData: O2UploadImageData? = null
 
+    //web端网页文件选择支持
+    //5.0以下使用
+    private var uploadMessage: ValueCallback<Uri>? = null
+    // 5.0及以上使用
+    private var uploadMessageAboveL: ValueCallback<Array<Uri>>? = null
 
 
     override fun afterSetContentView(savedInstanceState: Bundle?) {
@@ -93,10 +106,36 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
         XLog.debug("title:$title ,  url:$url")
         setupToolBar(title, true)
 
-        web_view.addJavascriptInterface(this, "o2")
-        web_view.setWebViewClient(object : WebViewClient() {
+        web_view.addJavascriptInterface(this, "o2android")
+        web_view.webChromeClient = object : WebChromeClient() {
+
+//            override fun onProgressChanged(view: WebView, newProgress: Int) {
+//                if (newProgress == 100) {
+//                    web_view.progressBar.visibility = View.GONE
+//                } else {
+//                    if (web_view.progressBar.visibility == View.GONE)
+//                        progressBar.visibility = View.VISIBLE
+//                    progressBar.progress = newProgress
+//                }
+//                super.onProgressChanged(view, newProgress)
+//            }
+
+            // For Android >= 5.0
+            override fun onShowFileChooser(webView: WebView, filePathCallback: ValueCallback<Array<Uri>>, fileChooserParams: WebChromeClient.FileChooserParams): Boolean {
+                XLog.debug("选择文件 5。0。。。。。。。。。。。。。。。。。")
+                uploadMessageAboveL = filePathCallback
+                showPictureChooseMenu()
+                return true
+            }
+
+        }
+        web_view.webViewClient = object : WebViewClient() {
+            override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
+                XLog.error("ssl error, $error")
+                handler?.proceed()
+            }
             override fun shouldOverrideUrlLoading(view: WebView?, url: String): Boolean {
-                XLog.debug("shouldOverrideUrlLoading:" + url)
+                XLog.debug("shouldOverrideUrlLoading:$url")
                 if (ZoneUtil.checkUrlIsInner(url)) {
                     view?.loadUrl(url)
                 } else {
@@ -105,11 +144,7 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
                 return true
             }
 
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-
-            }
-        })
+        }
 
 
         web_view.webViewSetCookie(this, url)
@@ -124,7 +159,7 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
                 WORK_WEB_VIEW_UPLOAD_REQUEST_CODE -> {
                     val result = data?.getStringExtra(FilePicker.FANCY_FILE_PICKER_SINGLE_RESULT_KEY)
                     if (!TextUtils.isEmpty(result)) {
-                        XLog.debug("uri path:" + result)
+                        XLog.debug("uri path:$result")
                         showLoadingDialog()
                         mPresenter.uploadAttachment(result!!, site, workId)
                     } else {
@@ -134,12 +169,50 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
                 WORK_WEB_VIEW_REPLACE_REQUEST_CODE -> {
                     val result = data?.getStringExtra(FilePicker.FANCY_FILE_PICKER_SINGLE_RESULT_KEY)
                     if (!TextUtils.isEmpty(result)) {
-                        XLog.debug("uri path:" + result)
+                        XLog.debug("uri path:$result")
                         showLoadingDialog()
                         mPresenter.replaceAttachment(result!!, site, attachmentId, workId)
                     } else {
                         XLog.error("FilePicker 没有返回值！")
                     }
+                }
+                TAKE_FROM_PICTURES_CODE -> {
+                    //选择照片
+                    data?.let {
+                        val result = it.extras.getString(PicturePicker.FANCY_PICTURE_PICKER_SINGLE_RESULT_KEY, "")
+                        if (!TextUtils.isEmpty(result)){
+                            XLog.debug("照片 path:$result")
+                            when {
+                                uploadMessage!=null -> {
+                                    val uri = FileUtil.getUriFromFile(this, File(result))
+                                    uploadMessage?.onReceiveValue(uri)
+                                }
+                                uploadMessageAboveL!=null -> {
+                                    val uri = FileUtil.getUriFromFile(this, File(result))
+                                    val list = ArrayList<Uri>()
+                                    list.add(uri)
+                                    uploadMessageAboveL?.onReceiveValue(list.toTypedArray())
+                                }
+                                else -> uploadImage2FileStorageStart(result)
+                            }
+                        }
+                    }
+                }
+                TAKE_FROM_CAMERA_CODE -> {
+                    //拍照
+                    XLog.debug("拍照//// ")
+                    when {
+                        uploadMessage!=null -> {
+                            uploadMessage?.onReceiveValue(cameraImageUri)
+                        }
+                        uploadMessageAboveL!=null -> {
+                            val list = ArrayList<Uri>()
+                            list.add(cameraImageUri)
+                            uploadMessageAboveL?.onReceiveValue(list.toTypedArray())
+                        }
+                        else -> uploadImage2FileStorageStart(FileExtensionHelper.getCameraCacheFilePath())
+                    }
+
                 }
             }
         }
@@ -197,6 +270,7 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
      */
     @JavascriptInterface
     fun appFormLoaded(result: String) {// 获取control 动态生成操作按钮
+        XLog.debug("表单加载完成回调：$result")
         runOnUiThread {
             if (TextUtils.isEmpty(title)) {
                 web_view.evaluateJavascript("layout.appForm.businessData.work.title") { value ->
@@ -270,7 +344,7 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
      */
     @JavascriptInterface
     fun downloadAttachment(attachmentId: String) {
-        XLog.debug("download attachmentId:" + attachmentId)
+        XLog.debug("download attachmentId:$attachmentId")
         if (TextUtils.isEmpty(attachmentId)) {
             XLog.error("调用失败，附件id没有传入！")
             return
@@ -296,6 +370,37 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
         }
     }
 
+    /**
+     * 弹出窗 js调试用
+     */
+    @JavascriptInterface
+    fun openO2Alert(message: String?) {
+        if (message != null) {
+            XLog.debug("弹出窗。。message:$message")
+            runOnUiThread {
+                O2DialogSupport.openAlertDialog(this, message)
+            }
+        }
+    }
+
+    /**
+     * 图片控件
+     */
+    @JavascriptInterface
+    fun uploadImage2FileStorage(json: String?) {
+        imageUploadData = null
+        XLog.debug("打开图片上传控件， $json")
+        runOnUiThread {
+            if (json != null) {
+                imageUploadData = O2SDKManager.instance().gson.fromJson(json, O2UploadImageData::class.java)
+                showPictureChooseMenu()
+
+            }else {
+                XToast.toastShort(this, "没有传入对象")
+            }
+        }
+    }
+
 
     //MARK: - view implements
 
@@ -303,6 +408,10 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
         hideLoadingDialog()
     }
 
+    override fun saveSuccess() {
+        hideLoadingDialog()
+        XToast.toastShort(this, "保存成功！")
+    }
     override fun submitSuccess() {
         hideLoadingDialog()
         finish()
@@ -320,8 +429,8 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
     }
 
     override fun retractFail() {
-        XToast.toastShort(this, "撤回失败！")
         hideLoadingDialog()
+        XToast.toastShort(this, "撤回失败！")
     }
 
     override fun deleteSuccess() {
@@ -331,8 +440,8 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
     }
 
     override fun deleteFail() {
-        XToast.toastShort(this, "删除失败！")
         hideLoadingDialog()
+        XToast.toastShort(this, "删除失败！")
     }
 
     override fun uploadAttachmentSuccess(attachmentId: String, site: String) {
@@ -353,7 +462,7 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
 
     override fun downloadAttachmentSuccess(file: File) {
         hideLoadingDialog()
-        if (file != null && file.exists()) AndroidUtils.openFileWithDefaultApp(this, file)
+        if (file.exists()) AndroidUtils.openFileWithDefaultApp(this, file)
     }
 
     override fun invalidateArgs() {
@@ -361,11 +470,30 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
     }
 
     override fun downloadFail(message: String) {
-        XToast.toastShort(this, message)
         finishLoading()
+        XToast.toastShort(this, message)
     }
 
+    override fun upload2FileStorageFail(message: String) {
+        hideLoadingDialog()
+        XToast.toastShort(this, message)
+    }
 
+    override fun upload2FileStorageSuccess(id: String) {
+        hideLoadingDialog()
+        if (imageUploadData != null) {
+            imageUploadData!!.fileId = id
+            val callback = imageUploadData!!.callback
+            val json = O2SDKManager.instance().gson.toJson(imageUploadData)
+            val js = "$callback('$json')"
+            XLog.debug("执行js:$js")
+            web_view.evaluateJavascript(js){
+                value -> XLog.debug("replacedAttachment， onReceiveValue value=$value")
+            }
+        }else {
+            XLog.error("图片控件对象不存在。。。。。。。。")
+        }
+    }
 
     //MARK: - private function
 
@@ -471,6 +599,12 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
     private fun evaluateJavascriptGetFormData() {
         web_view.evaluateJavascript("layout.appForm.getData()") { value ->
             XLog.debug("evaluateJavascriptGetFormData， onReceiveValue save value=$value")
+            if (value == null) {
+                runOnUiThread {
+                    XToast.toastShort(getContext(), "没有获取到表单数据！")
+                }
+                return@evaluateJavascript
+            }
             formData = value
             showLoadingDialog()
             mPresenter.save(workId, value)
@@ -517,7 +651,7 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
 
     private fun validateFormBeforeSubmit(routeName: String, opinion: String, data: TaskData) {
         web_view.evaluateJavascript("layout.appForm.formValidation(\"$routeName\", \"$opinion\")") { value ->
-            XLog.debug("validateFormBeforeSubmit,value:" + value)
+            XLog.debug("validateFormBeforeSubmit,value:$value")
             if ("true" == value) {
                 data.opinion = opinion
                 data.routeName = routeName
@@ -529,6 +663,64 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
         }
     }
 
+
+
+    private fun showPictureChooseMenu() {
+        BottomSheetMenu(this)
+                .setTitle("上传照片")
+                .setItem("从相册选择", resources.getColor(R.color.z_color_text_primary)) {
+                    takeFromPictures()
+                }
+                .setItem("拍照", resources.getColor(R.color.z_color_text_primary)) {
+                    takeFromCamera()
+                }
+                .setCancelButton("取消", resources.getColor(R.color.z_color_text_hint)) {
+                    XLog.debug("取消。。。。。")
+                    if (uploadMessage!=null){
+                        uploadMessage?.onReceiveValue(null)
+                    }else if (uploadMessageAboveL!=null) {
+                        uploadMessageAboveL?.onReceiveValue(null)
+                    }
+                }
+                .show()
+    }
+
+    private fun takeFromPictures() {
+        PicturePicker()
+                .withActivity(this)
+                .chooseType(PicturePicker.CHOOSE_TYPE_SINGLE)
+                .requestCode(TAKE_FROM_PICTURES_CODE)
+                .start()
+    }
+
+    private fun takeFromCamera() {
+        PermissionRequester(this).request(Manifest.permission.CAMERA)
+                .o2Subscribe {
+                    onNext { (granted, shouldShowRequestPermissionRationale, deniedPermissions) ->
+                        XLog.info("granted:$granted , shouldShowRequest:$shouldShowRequestPermissionRationale, denied:$deniedPermissions")
+                        if (!granted) {
+                            O2DialogSupport.openAlertDialog(this@TaskWebViewActivity, "非常抱歉，相机权限没有开启，无法使用相机！")
+                        } else {
+                            openCamera()
+                        }
+                    }
+                }
+    }
+
+
+    private fun openCamera() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        //return-data false 不是直接返回拍照后的照片Bitmap 因为照片太大会传输失败
+        intent.putExtra("return-data", false)
+        //改用Uri 传递
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraImageUri)
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString())
+        intent.putExtra("noFaceDetection", true)
+        startActivityForResult(intent, TAKE_FROM_CAMERA_CODE)
+    }
+
+
+
     private fun openFancyFilePicker(requestCode: Int) {
         FilePicker().withActivity(this).requestCode(requestCode)
                 .chooseType(FilePicker.CHOOSE_TYPE_SINGLE)
@@ -536,6 +728,16 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
     }
 
 
+
+    private fun uploadImage2FileStorageStart(filePath: String) {
+        showLoadingDialog()
+        if (imageUploadData != null) {
+            mPresenter.upload2FileStorage(filePath, imageUploadData!!.referencetype, imageUploadData!!.reference)
+        }else {
+            finishLoading()
+            XToast.toastShort(this, "上传文件参数为空！！！")
+        }
+    }
 
 
 }

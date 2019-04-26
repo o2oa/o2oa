@@ -29,7 +29,7 @@ extension FaceRecognizeAPI:OOAccessTokenAuthorizable {
 extension FaceRecognizeAPI: TargetType {
     var baseURL: URL {
         let webhost = O2AuthSDK.shared.centerServerInfo()?.webServer?.host
-        let baseURLString = "http://\(webhost ?? "dev.o2server.io"):8888/\(apiContextKey)"
+        let baseURLString = "http://\(webhost ?? "dev.o2oa.net"):8888/\(apiContextKey)"
         return URL(string: baseURLString)!
     }
     

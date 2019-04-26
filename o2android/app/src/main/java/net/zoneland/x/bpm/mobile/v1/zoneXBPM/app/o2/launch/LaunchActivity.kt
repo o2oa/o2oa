@@ -1,11 +1,14 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.launch
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
@@ -22,20 +25,24 @@ import cn.jpush.android.api.JPushInterface
 import kotlinx.android.synthetic.main.activity_launch.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.DownloadAPKFragment
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.bind.BindPhoneActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.login.LoginActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.main.MainActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.enums.LaunchState
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.receiver.NetworkConnectStatusReceiver
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.AppUpdateUtil
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.BitmapUtil
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.permission.PermissionRequester
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2AlertDialogBuilder
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2AlertIconEnum
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2DialogSupport
 import org.jetbrains.anko.dip
-import java.nio.charset.Charset
+import android.support.annotation.RequiresApi
+import com.pgyersdk.update.PgyUpdateManager
+import com.pgyersdk.update.UpdateManagerListener
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.service.DownloadAPKService
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.PgyUpdateBean
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.*
 
 
 /**
@@ -144,18 +151,102 @@ class LaunchActivity : BaseMVPActivity<LaunchContract.View, LaunchContract.Prese
             XToast.toastShort(this, getString(R.string.launch_network_is_not_connected))
         }else{
             mCheckNetwork = true
+            // 是否使用蒲公英 launch()
             checkAppUpdate()
         }
     }
 
+
+    ////////////////////////////更新 start///////////////////////////////////
+
     /**
      * 检查应用是否需要更新
      */
+
+    private var downloadFragment: DownloadAPKFragment? = null
+    private var versionName = ""
+    private var downloadUrl = ""
+
     private fun checkAppUpdate() {
-        AppUpdateUtil(this).checkAppUpdate(callbackContinue = {
-            launch()
+        checkAppUpdate(callbackContinue = { result ->
+            if (result) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !packageManager.canRequestPackageInstalls()) {// 8.0需要判断安装未知来源的权限
+                    startInstallPermissionSettingActivity()
+                }else { // 下载安装更新
+                    if (downloadFragment == null) {
+                        downloadFragment = DownloadAPKFragment()
+                    }
+                    downloadFragment?.isCancelable = false
+                    downloadFragment?.show(supportFragmentManager, DownloadAPKFragment.DOWNLOAD_FRAGMENT_TAG)
+                    downloadServiceStart()
+                }
+            }else {
+                launch()
+            }
         })
     }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK && requestCode == 10086) { //  下载安装更新
+            if (downloadFragment == null) {
+                downloadFragment = DownloadAPKFragment()
+            }
+            downloadFragment?.isCancelable = false
+            downloadFragment?.show(supportFragmentManager, DownloadAPKFragment.DOWNLOAD_FRAGMENT_TAG)
+            downloadServiceStart()
+        }
+    }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private fun startInstallPermissionSettingActivity() {
+        //注意这个是8.0新API
+        val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES)
+        startActivityForResult(intent, 10086)
+    }
+    private fun checkAppUpdate(noUpdateIsNotify: Boolean = false, callbackContinue:((flag: Boolean)->Unit)? = null) {
+        PgyUpdateManager.register(this, object : UpdateManagerListener() {
+            override fun onUpdateAvailable(p0: String?) {
+                XLog.debug("onUpdateAvailable $p0")
+                val bean = O2SDKManager.instance().gson.fromJson(p0, PgyUpdateBean::class.java)
+                versionName = bean.data.versionName
+                downloadUrl = bean.data.downloadURL
+                XLog.info("versionName:$versionName, downloadUrl:$downloadUrl")
+                if (bean != null) {
+                    val currentversionName = AndroidUtils.getAppVersionName(this@LaunchActivity)
+                    if (currentversionName != versionName) {
+                        O2DialogSupport.openConfirmDialog(this@LaunchActivity,"版本 $versionName 更新："+ bean.data.releaseNote, listener = { _ ->
+                            XLog.info("notification is true..........")
+                            callbackContinue?.invoke(true)
+//                            toDownloadService(activity)
+                        }, icon = O2AlertIconEnum.UPDATE, negativeListener = {_->
+                            callbackContinue?.invoke(false)
+                        })
+
+                    } else {
+                        callbackContinue?.invoke(false)
+                        XLog.info("versionName is same , do not show dialog! versionName:$versionName ")
+                    }
+                }else {
+                    callbackContinue?.invoke(false)
+                }
+
+            }
+
+            override fun onNoUpdateAvailable() {
+                XLog.info("没有发现新版本！")
+
+                callbackContinue?.invoke(false)
+            }
+        })
+    }
+    private fun downloadServiceStart() {
+        val intent = Intent(this, DownloadAPKService::class.java)
+        intent.action = packageName + DownloadAPKService.DOWNLOAD_SERVICE_ACTION
+        intent.putExtra(DownloadAPKService.VERSIN_NAME_EXTRA_NAME, versionName)
+        intent.putExtra(DownloadAPKService.DOWNLOAD_URL_EXTRA_NAME, downloadUrl)
+        startService(intent)
+    }
+
+    /////////////////////////////////////更新 end//////////////////////////////////////
 
 
     private fun launch() {
@@ -169,8 +260,15 @@ class LaunchActivity : BaseMVPActivity<LaunchContract.View, LaunchContract.Prese
                 O2SDKManager.instance().launchInner(String(buffer, Charsets.UTF_8), launchState)
             }else {
                 XLog.error("没有获取到server.json")
-                XToast.toastShort(this, "缺少配置文件！")
-                finish()
+//                XToast.toastShort(this, "缺少配置文件！")
+                O2AlertDialogBuilder(this)
+                        .icon(O2AlertIconEnum.ALERT)
+                        .content("缺少配置文件，请联系App开发人员！")
+                        .positive("关闭")
+                        .onPositiveListener{ _ ->
+                            finish()
+                        }
+                        .show()
             }
         }else {
             if (TextUtils.isEmpty(pushToken)) {
@@ -224,8 +322,32 @@ class LaunchActivity : BaseMVPActivity<LaunchContract.View, LaunchContract.Prese
                     gotoLogin()
                 }
                 LaunchState.UnknownError -> {
-                    XToast.toastShort(this, "未知异常！")
-                    finish()
+                    if (!isFinishing) {
+                        if (BuildConfig.InnerServer) {
+                            O2AlertDialogBuilder(this)
+                                    .icon(O2AlertIconEnum.ALERT)
+                                    .content("未知异常！")
+                                    .positive("关闭")
+                                    .onPositiveListener { _ ->
+                                        finish()
+                                    }
+                                    .show()
+                        } else {
+                            O2AlertDialogBuilder(this)
+                                    .title(R.string.confirm)
+                                    .icon(O2AlertIconEnum.ALERT)
+                                    .content("未知异常！")
+                                    .positive("重新绑定")
+                                    .negative("关闭")
+                                    .onPositiveListener { _ ->
+                                        gotoBindLogin()
+                                    }
+                                    .onNegativeListener { _ ->
+                                        finish()
+                                    }
+                                    .show()
+                        }
+                    }
                 }
                 LaunchState.Success -> {
                     gotoMain()
@@ -247,6 +369,7 @@ class LaunchActivity : BaseMVPActivity<LaunchContract.View, LaunchContract.Prese
     }
 
     private fun gotoMain() {
+        O2App.instance._JMLoginInner()//im
         circleProgressBar_launch.gone()
         if (mStyleUpdate) {
             goAndClearBefore<MainActivity>()

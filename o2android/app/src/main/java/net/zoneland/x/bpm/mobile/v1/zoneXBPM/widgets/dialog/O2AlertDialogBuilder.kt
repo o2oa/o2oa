@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import net.muliba.changeskin.FancySkinManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
 import org.jetbrains.anko.dip
@@ -26,15 +27,14 @@ import org.jetbrains.annotations.NotNull
  */
 
 
-class O2AlertDialogBuilder(val context: Context)  {
+class O2AlertDialogBuilder(val mContext: Context)  {
 
-    private val mContext: Context = context
-    private var dialogTitle: CharSequence = context.getText(R.string.hint)
+    private var dialogTitle: CharSequence = mContext.getText(R.string.hint)
     private var dialogContent: CharSequence = "" //提示内容 和 dialogCustomView互相排斥
     private var dialogCustomView: View? = null //自定义view 和 dialogContent互相排斥
     private var dialogIcon: O2AlertIconEnum = O2AlertIconEnum.ALERT
     private var negativeText: CharSequence? = null
-    private var positiveText: CharSequence = context.getText(R.string.positive)
+    private var positiveText: CharSequence = mContext.getText(R.string.positive)
 
     //event
     private var _onPositiveListener: ((dialog: O2Dialog) -> Unit)? = null
@@ -61,7 +61,7 @@ class O2AlertDialogBuilder(val context: Context)  {
         if (titleRes == 0) {
             return this
         }
-        dialogTitle = context.getString(titleRes)
+        dialogTitle = mContext.getString(titleRes)
         return this
     }
 
@@ -80,7 +80,7 @@ class O2AlertDialogBuilder(val context: Context)  {
         if (dialogCustomView!=null) {
             throw IllegalStateException("You cannot set content When you already have CustomView !")
         }
-        dialogContent = context.getString(contentRes)
+        dialogContent = mContext.getString(contentRes)
         return this
     }
 
@@ -130,7 +130,7 @@ class O2AlertDialogBuilder(val context: Context)  {
         if (positiveRes == 0) {
             return this
         }
-        positiveText = context.getText(positiveRes)
+        positiveText = mContext.getText(positiveRes)
         return this
     }
 
@@ -151,7 +151,7 @@ class O2AlertDialogBuilder(val context: Context)  {
         if (negativeRes == 0) {
             return this
         }
-        negativeText = context.getText(negativeRes)
+        negativeText = mContext.getText(negativeRes)
         return this
     }
 

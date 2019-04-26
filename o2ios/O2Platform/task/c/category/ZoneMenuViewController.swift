@@ -84,16 +84,16 @@ class ZoneMenuViewController: UIViewController {
     
     func loadAppList(){
         let url = AppDelegate.o2Collect.generateURLWithAppContextKey(ApplicationContext.applicationContextKey, query: ApplicationContext.applicationListQuery, parameter: nil)
-        ProgressHUD.show("应用加载中...", interaction: false)
+        self.showMessage(title: "应用加载中...")
         self.apps.removeAll()
         Alamofire.request(url!).responseArray(queue: nil, keyPath: "data", context: nil, completionHandler: { (response:DataResponse<[Application]>) in
             switch response.result {
             case .success(let apps):
                 self.apps.append(contentsOf: apps)
-                ProgressHUD.showSuccess("加载完成")
+                self.showSuccess(title: "加载完成")
             case .failure(let err):
                 DDLogError(err.localizedDescription)
-                ProgressHUD.showError("加载失败")
+                self.showError(title: "加载失败")
             }
             
         })

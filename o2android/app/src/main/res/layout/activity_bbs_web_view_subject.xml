@@ -1,54 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_bbs_web_view_subject"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/z_color_background"
-    android:fitsSystemWindows="true"
-    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.bbs.view.BBSWebViewSubjectActivity">
-
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar_layout_snippet"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:theme="@style/XBPMTheme.AppBarOverlay">
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_snippet_top_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/z_color_primary"
-            app:popupTheme="@style/XBPMTheme.PopupOverlay"
-            app:layout_scrollFlags="scroll|snap|enterAlways">
-            <TextView
-                android:id="@+id/tv_snippet_top_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:ellipsize="marquee"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text=""
-                android:singleLine="true" />
-        </android.support.v7.widget.Toolbar>
-    </android.support.design.widget.AppBarLayout>
-
-    <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.NestedProgressWebView
-        android:id="@+id/web_view_bbs_web_view_subject_content"
+    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.bbs.view.BBSWebViewSubjectActivity"
+    >
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/activity_bbs_web_view_subject"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="105dp"
-        android:background="@android:color/white"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
-    </net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.NestedProgressWebView>
+        android:background="@color/z_color_background"
+        android:fitsSystemWindows="true">
 
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar_layout_snippet"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:theme="@style/XBPMTheme.AppBarOverlay">
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_snippet_top_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/z_color_primary"
+                app:popupTheme="@style/XBPMTheme.PopupOverlay"
+                app:layout_scrollFlags="scroll|snap|enterAlways">
+                <TextView
+                    android:id="@+id/tv_snippet_top_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:ellipsize="marquee"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text=""
+                    android:singleLine="true" />
+            </android.support.v7.widget.Toolbar>
+        </android.support.design.widget.AppBarLayout>
+
+        <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.NestedProgressWebView
+            android:id="@+id/web_view_bbs_web_view_subject_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="105dp"
+            android:background="@android:color/white"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+        </net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.NestedProgressWebView>
+
+    </android.support.design.widget.CoordinatorLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/button_bbs_subject_attach"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/icon_attach_white_24dp"
+        app:backgroundTintMode="src_over"
+        app:backgroundTint="@color/z_color_primary"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="120dp"
+        android:layout_marginEnd="@dimen/spacing_normal"
+        android:visibility="gone"
+        />
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        android:layout_gravity="bottom">
-
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="0dp">
         <LinearLayout
             android:id="@+id/layout_bbs_subject_operation_bar"
             android:layout_width="match_parent"
@@ -112,23 +129,13 @@
                     android:text="发送"
                     android:textColor="@color/white_translucent"
                     android:layout_margin="@dimen/spacing_normal"
-
                     android:background="@drawable/button_submit_comment"/>
 
             </LinearLayout>
         </LinearLayout>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/button_bbs_subject_attach"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/icon_attach_white_24dp"
-            android:backgroundTintMode="src_over"
-            android:backgroundTint="@color/z_color_primary"
-            android:layout_margin="@dimen/spacing_normal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/layout_bbs_subject_operation_bar"/>
+
 
     </android.support.constraint.ConstraintLayout>
+</FrameLayout>
 
-</android.support.design.widget.CoordinatorLayout>

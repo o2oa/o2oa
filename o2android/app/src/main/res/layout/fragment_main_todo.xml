@@ -188,8 +188,8 @@
             android:paddingBottom="10dp">
             <ImageView
                 android:id="@+id/image_todo_fragment_scan_code"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@mipmap/menu_scan_qrcode"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
@@ -210,8 +210,8 @@
 
             <ImageView
                 android:id="@+id/tv_todo_fragment_publish"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@mipmap/menu_index_add"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"

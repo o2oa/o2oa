@@ -15,6 +15,7 @@ import SwiftyJSON
 import SDWebImage
 import CocoaLumberjack
 import O2OA_Auth_SDK
+import Flutter
 
 class SettingViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
     
@@ -30,9 +31,7 @@ class SettingViewController: UIViewController,UITableViewDelegate,UITableViewDat
     
     
     var itemModels:[Int:[SettingHomeCellModel]] {
-        let result = AppConfigSettings.shared.accountIsSecurity
-        let secString = result ? "已保护":"未保护"
-        let item1 = SettingHomeCellModel(iconName: "setting_accout", title: "账号与安全", status: secString,segueIdentifier:"showInfoAndSecuritySegue")
+        let item1 = SettingHomeCellModel(iconName: "setting_accout", title: "账号与安全", status: nil,segueIdentifier:"showInfoAndSecuritySegue")
         let item2 = SettingHomeCellModel(iconName: "setting_newMessage", title: "新消息通知", status: nil,segueIdentifier:"showMessageNotiSegue")
         let item3 = SettingHomeCellModel(iconName: "setting_common", title: "通用", status: nil,segueIdentifier:"showCommonSegue")
         let item4 = SettingHomeCellModel(iconName: "setting_myCRM", title: "我的客服", status: nil,segueIdentifier:"showServiceSegue")

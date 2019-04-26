@@ -270,7 +270,7 @@ extension SegmentedControl: UIGestureRecognizerDelegate {
         return false
     }
 
-    func segmentedControlLongPressed(_ gesture: UIGestureRecognizer) {
+    @objc func segmentedControlLongPressed(_ gesture: UIGestureRecognizer) {
         switch gesture.state {
         case .possible:
             print("LongPressGesture Possible!")

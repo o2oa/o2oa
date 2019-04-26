@@ -10,6 +10,8 @@ import com.prolificinteractive.materialcalendarview.*
 import kotlinx.android.synthetic.main.content_meeting.*
 import net.muliba.changeskin.FancySkinManager
 import net.muliba.fancyfilepickerlibrary.ext.concat
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2App
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPViewPagerFragment
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.meeting.apply.MeetingApplyActivity
@@ -42,7 +44,7 @@ class MeetingMainFragment : BaseMVPViewPagerFragment<MeetingMainFragmentContract
     private lateinit var daySelected: String
     private lateinit var monthSelected: String
     private var identifyDialog: IdentifyChooseDialog? = null
-    private lateinit var meetingConfig: ProcessDataJson
+    private var meetingConfig: ProcessDataJson? = null
     override var mPresenter: MeetingMainFragmentContract.Presenter = MeetingMainFragmentPresenter()
     private var isWeekView = true
 
@@ -162,9 +164,8 @@ class MeetingMainFragment : BaseMVPViewPagerFragment<MeetingMainFragmentContract
         if (TextUtils.isEmpty(config)) {
             fab_meeting_create.gone()
         } else {
-            val gson = Gson()
-            meetingConfig = gson.fromJson<ProcessDataJson>(config, ProcessDataJson::class.java)
-            if (meetingConfig.mobileCreateEnable) {
+            meetingConfig = O2SDKManager.instance().gson.fromJson<ProcessDataJson>(config, ProcessDataJson::class.java)
+            if (meetingConfig?.mobileCreateEnable == true) {
                 fab_meeting_create.visible()
                 fab_meeting_create.setOnClickListener { applyMeeting() }
             } else {
@@ -178,7 +179,13 @@ class MeetingMainFragment : BaseMVPViewPagerFragment<MeetingMainFragmentContract
     override fun loadCurrentPersonIdentity(list: List<ProcessWOIdentityJson>) {
         if (list.size == 1) {
             val identifyId = list[0].distinguishedName
-            mPresenter.startProcess("", identifyId, meetingConfig.process!!.id)
+            val processId = meetingConfig?.process?.id
+            if (TextUtils.isEmpty(processId)) {
+                mPresenter.startProcess("", identifyId, processId!!)
+            }else {
+                XToast.toastShort(context, "流程id缺失")
+            }
+
         } else {
             hideLoadingDialog()
             identifyDialog = IdentifyChooseDialog(activity, list, this)
@@ -189,7 +196,12 @@ class MeetingMainFragment : BaseMVPViewPagerFragment<MeetingMainFragmentContract
     override fun positiveCallback(identifyId: String) {
         identifyDialog?.dismiss()
         showLoadingDialog()
-        mPresenter.startProcess("", identifyId, meetingConfig.process!!.id)
+        val processId = meetingConfig?.process?.id
+        if (TextUtils.isEmpty(processId)) {
+            mPresenter.startProcess("", identifyId, processId!!)
+        }else {
+            XToast.toastShort(context, "流程id缺失")
+        }
     }
 
     override fun negativeCallback() {
@@ -210,10 +222,11 @@ class MeetingMainFragment : BaseMVPViewPagerFragment<MeetingMainFragmentContract
     }
 
     private fun applyMeeting() {
-        if (meetingConfig.process == null || meetingConfig.process?.id?.isBlank() == true) {
+        val processId = meetingConfig?.process?.id
+        if (TextUtils.isEmpty(processId)) {
             activity.go<MeetingApplyActivity>()
-        } else {
-            mPresenter.loadCurrentPersonIdentityWithProcess(meetingConfig.process!!.id)
+        }else {
+            mPresenter.loadCurrentPersonIdentityWithProcess(processId!!)
         }
     }
 

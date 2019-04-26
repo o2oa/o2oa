@@ -12,6 +12,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ReadData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.TaskData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.WorkLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.FileExtensionHelper
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.FileUtil
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.SDCardHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.o2Subscribe
@@ -30,7 +31,8 @@ import java.io.FileOutputStream
 
 class TaskWebViewPresenter : BasePresenterImpl<TaskWebViewContract.View>(), TaskWebViewContract.Presenter {
 
-    override fun save(workId: String, formData: String?) {
+
+    override fun save(workId: String, formData: String) {
         if (TextUtils.isEmpty(workId) || TextUtils.isEmpty(formData)) {
             mView?.invalidateArgs()
             XLog.error("arguments is null  workid:$workId， formData:$formData")
@@ -42,7 +44,7 @@ class TaskWebViewPresenter : BasePresenterImpl<TaskWebViewContract.View>(), Task
             service.saveTaskForm(body, workId)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(ResponseHandler<IdData> { id -> mView?.finishLoading() },
+                    .subscribe(ResponseHandler<IdData> { _ -> mView?.saveSuccess() },
                             ExceptionHandler(mView?.getContext()) { e ->
                                 XLog.error("", e)
                                 mView?.finishLoading() })
@@ -142,7 +144,9 @@ class TaskWebViewPresenter : BasePresenterImpl<TaskWebViewContract.View>(), Task
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(ResponseHandler<IdData> { id -> mView?.uploadAttachmentSuccess(id.id, site) },
-                            ExceptionHandler(mView?.getContext(), { e -> mView?.finishLoading() }))
+                            ExceptionHandler(mView?.getContext()) { e ->
+                                XLog.error("$e")
+                                mView?.finishLoading() })
         }
     }
 
@@ -256,6 +260,37 @@ class TaskWebViewPresenter : BasePresenterImpl<TaskWebViewContract.View>(), Task
         }
     }
 
+
+    override fun upload2FileStorage(filePath: String, referenceType: String, reference: String, scale: Int) {
+        XLog.debug("上传图片，filePath:$filePath, referenceType:$referenceType, reference:$reference, scale:$scale")
+        if (filePath.isEmpty() || reference.isEmpty() || referenceType.isEmpty()) {
+            mView?.upload2FileStorageFail("传入参数不正确！")
+            return
+        }
+        val file = File(filePath)
+        if (!file.exists()) {
+            mView?.upload2FileStorageFail("文件不存在！！！")
+            return
+        }
+        val fileService = getFileAssembleControlService(mView?.getContext())
+        if (fileService!=null) {
+            val mediaType = FileUtil.getMIMEType(file)
+            val requestBody = RequestBody.create(MediaType.parse(mediaType), file)
+            val body = MultipartBody.Part.createFormData("file", file.name, requestBody)
+            fileService.uploadFile2ReferenceZone(body, referenceType, reference, scale)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(ResponseHandler<IdData> {
+                        id -> mView?.upload2FileStorageSuccess(id.id)
+                    },
+                            ExceptionHandler(mView?.getContext()) { e ->
+                                XLog.error("$e")
+                                mView?.upload2FileStorageFail("文件上传异常") })
+        }else {
+            mView?.upload2FileStorageFail("文件模块接入异常！")
+        }
+
+    }
 
 
 

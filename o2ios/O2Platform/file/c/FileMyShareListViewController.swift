@@ -53,17 +53,17 @@ class FileMyShareListViewController: UIViewController {
     
     func loadMyFiles(){
         self.myFiles.removeAll()
-        ProgressHUD.show("加载中...")
+       self.showMessage(title: "加载中...")
         Alamofire.request(fileURL!).responseArray(queue: nil, keyPath: "data", context: nil) { (resp:DataResponse<[OOFile]>) in
             switch resp.result {
             case .success(let files):
                 self.myFiles.append(contentsOf: files)
                 self.tableView.reloadData()
-                ProgressHUD.showSuccess("加载完成")
+                self.showSuccess(title: "加载完成")
             case .failure(let err):
                 DDLogError(err.localizedDescription)
                 self.tableView.reloadData()
-                ProgressHUD.showError("加载失败")
+                self.showError(title: "加载失败")
             }
             if self.tableView.mj_header.isRefreshing(){
                 self.tableView.mj_header.endRefreshing()
@@ -118,10 +118,10 @@ extension FileMyShareListViewController:UITableViewDelegate,UITableViewDataSourc
             fileLocalURL = folder.appendingPathComponent("\(preName!)_\(timestamp).\(extName!)")
             return (fileLocalURL!,[.removePreviousFile, .createIntermediateDirectories])
         }
-        ProgressHUD.show("", interaction: false)
+        self.showMessage(title: "下载中..")
         Alamofire.download(url!, to: destination).downloadProgress { (progress) in
                 if progress.completedUnitCount == progress.totalUnitCount {
-                    ProgressHUD.dismiss()
+                    self.dismissProgressHUD()
                 }
         }.responseData { resp in
             switch resp.result{

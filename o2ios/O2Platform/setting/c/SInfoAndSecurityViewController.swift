@@ -12,12 +12,14 @@ import Eureka
 import O2OA_Auth_SDK
 
 class SInfoAndSecurityViewController: FormViewController {
+    var bioType = O2BiometryType.None
+    var typeTitle = "生物识别登录"
+    var typeValue = "功能不可用"
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let account = O2AuthSDK.shared.myInfo()
-        let isSecurity = AppConfigSettings.shared.accountIsSecurity
         
         LabelRow.defaultCellUpdate = {
             cell,row in
@@ -28,26 +30,31 @@ class SInfoAndSecurityViewController: FormViewController {
             cell.accessoryType = .disclosureIndicator
         }
         
+       form +++ Section()
+            <<< LabelRow(){
+                $0.title = "登录帐号"
+                $0.value = account?.name
+            }
+            <<< LabelRow(){
+                $0.title = "登录密码"
+                $0.value = "修改密码"
+                }.onCellSelection({ (cell,row) in
+                    self.performSegue(withIdentifier: "showPassworChangeSegue", sender: nil)
+                })
         form +++ Section()
-        <<< LabelRow(){
-                $0.title = "帐号保护"
-                $0.value = (isSecurity == true ? "已保护":"未保护")
-        }.onCellSelection({ (cell, row) in
-            self.performSegue(withIdentifier: "showAccountSecSegue", sender: nil)
-        })
+            <<< LabelRow("bioAuthRow"){
+                    $0.title = typeTitle
+                    $0.value = typeValue
+            }.onCellSelection({ (cell, row) in
+                if self.bioType != O2BiometryType.None {
+                    self.performSegue(withIdentifier: "showAccountSecSegue", sender: nil)
+                }else {
+                    self.showError(title: "手机系统未开启或不支持识别功能")
+                }
+            })
             
             
-        +++ Section()
-            <<< LabelRow(){
-            $0.title = "登录帐号"
-            $0.value = account?.name
-        }
-            <<< LabelRow(){
-            $0.title = "登录密码"
-            $0.value = "修改密码"
-        }.onCellSelection({ (cell,row) in
-            self.performSegue(withIdentifier: "showPassworChangeSegue", sender: nil)
-        })
+        
         if O2IsConnect2Collect {
             let mobile = O2AuthSDK.shared.bindDevice()?.mobile
             form +++ Section()
@@ -57,6 +64,36 @@ class SInfoAndSecurityViewController: FormViewController {
             }.onCellSelection({ (cell,row) in
                 self.performSegue(withIdentifier: "showMobileChangeSegue", sender: nil)
             })
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // 显示的时候刷新数据
+        self.checkBioType()
+        let authRow = self.form.rowBy(tag: "bioAuthRow") as? LabelRow
+        authRow?.title = typeTitle
+        authRow?.value = typeValue
+        authRow?.updateCell()
+    }
+    
+    private func checkBioType() {
+        let bioAuthUser = AppConfigSettings.shared.bioAuthUser
+        bioType = O2BioLocalAuth.shared.checkBiometryType()
+        
+        switch bioType {
+        case O2BiometryType.FaceID:
+            typeTitle = "人脸识别登录"
+            typeValue = (bioAuthUser.isEmpty == true ? "未开启":"已开启")
+            break
+        case O2BiometryType.TouchID:
+            typeTitle = "指纹识别登录"
+            typeValue = (bioAuthUser.isEmpty == true ? "未开启":"已开启")
+            break
+        case O2BiometryType.None:
+            typeTitle = "生物识别登录"
+            typeValue = "功能不可用"
+            break
         }
     }
 

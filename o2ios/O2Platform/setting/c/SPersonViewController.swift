@@ -87,7 +87,7 @@ class SPersonViewController: FormViewController {
     
     
     private func loadCurrentPersonInfo(){
-        ProgressHUD.show("加载中...")
+        self.showMessage(title: "加载中...")
         self.viewModel.loadMyInfo().then { (person) in
                 DispatchQueue.main.async {
                     self.person = person
@@ -95,7 +95,7 @@ class SPersonViewController: FormViewController {
                 }
             }.catch { (error) in
                 DispatchQueue.main.async {
-                    ProgressHUD.showError("\(error)\n个人信息载入出错!")
+                    self.showError(title: "\(error)\n个人信息载入出错!")
                 }
         }
     }
@@ -215,7 +215,7 @@ class SPersonViewController: FormViewController {
                     cell.textLabel?.font = UIFont(name: "PingFangSC-Regular", size: 14.0)
                     cell.textLabel?.textColor = RGB(251, g: 71, b: 71)
                 })
-        ProgressHUD.dismiss()
+        self.dismissProgressHUD()
     }
     
     func logout()  {
@@ -229,12 +229,6 @@ class SPersonViewController: FormViewController {
                 print("IM退出失败,error = \(String(describing: errMsg))")
             }
         }
-        self.dismiss(animated: false) {
-            self.gotoLogin()
-        }
-    }
-    
-    func gotoLogin() {
         self.forwardDestVC("login", "loginVC")
     }
     

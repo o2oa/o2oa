@@ -47,7 +47,7 @@ class BBSSubjectListViewController: UIViewController {
                 self.pageModel.nextPage()
                 self.loadNextPageData()
             }else{
-                ProgressHUD.showSuccess("最后一页了，没有帖子了")
+                self.showSuccess(title: "最后一页了，没有帖子了")
             }
         })
         self.loadFirstData()

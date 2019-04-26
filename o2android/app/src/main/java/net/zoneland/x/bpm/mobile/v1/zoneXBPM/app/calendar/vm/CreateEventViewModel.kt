@@ -425,6 +425,7 @@ class CreateEventViewModel(app: Application) : BaseO2ViewModel(app) {
             val reName = CalendarOB.remindOptions[reValue]
             if (reName != null) {
                 remindName.value = reName
+                remindValue.value = reValue
             }
         }
     }

@@ -11,8 +11,11 @@ import ReactiveSwift
 import ReactiveCocoa
 import Promises
 import O2OA_Auth_SDK
+import CocoaLumberjack
 
 class OOBindRegisterController: OOBaseViewController {
+
+    
     
     @IBOutlet weak var phoneNumberTextField: OOUITextField!
     
@@ -24,10 +27,9 @@ class OOBindRegisterController: OOBaseViewController {
        return OOLoginViewModel()
     }()
     
-    
+   
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         ////
         let headerView = Bundle.main.loadNibNamed("OORegisterTableView", owner: self, options: nil)?.first as! OORegisterTableView
         headerView.configTitle(title: "手机验证", actionTitle: nil)
@@ -40,6 +42,8 @@ class OOBindRegisterController: OOBaseViewController {
         
         phoneNumberTextField.rule = OOPhoneNumberRule()
         phoneNumberTextField.keyboardType = .phonePad
+        phoneNumberTextField.returnKeyType = .next
+        phoneNumberTextField.returnNextDelegate = self
         codeTextField.keyboardType = .numberPad
         codeTextField.buttonDelegate = self
         
@@ -93,7 +97,7 @@ class OOBindRegisterController: OOBaseViewController {
                     if self.presentedViewController == nil {
                         self.dismissVC(completion:nil)
                     }
-                    let destVC = OOTabBarController.genernateVC()
+                    let destVC = O2MainController.genernateVC()
                     destVC.selectedIndex = 2
                     UIApplication.shared.keyWindow?.rootViewController = destVC
                     UIApplication.shared.keyWindow?.makeKeyAndVisible()
@@ -115,10 +119,16 @@ class OOBindRegisterController: OOBaseViewController {
     }
     
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        DDLogDebug("viewDidLayoutSubviews...........")
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+   
+    
     
 }
 
@@ -138,6 +148,14 @@ extension OOBindRegisterController:OOUIDownButtonTextFieldDelegate {
                 }
             }
             self.dismissProgressHUD()
+        }
+    }
+}
+
+extension OOBindRegisterController: OOUITextFieldReturnNextDelegate {
+    func next()  {
+        if self.phoneNumberTextField.isFirstResponder {
+            self.codeTextField.becomeFirstResponder()
         }
     }
 }

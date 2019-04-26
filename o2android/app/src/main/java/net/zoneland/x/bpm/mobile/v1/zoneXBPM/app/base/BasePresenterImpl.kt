@@ -220,9 +220,9 @@ open class BasePresenterImpl<V: BaseView> : BasePresenter<V> {
             RetrofitClient.instance().organizationAssembleCustomService()
         }catch (e:Exception){
             XLog.error("", e)
-            if (context!=null){
-                XToast.toastLong(context, "公共配置服务模块异常，请联系管理员！")
-            }
+//            if (context!=null){
+//                XToast.toastLong(context, "公共配置服务模块异常，请联系管理员！")
+//            }
             null
         }
     }

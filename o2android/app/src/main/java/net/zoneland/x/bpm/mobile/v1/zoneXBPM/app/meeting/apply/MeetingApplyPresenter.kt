@@ -43,22 +43,23 @@ class MeetingApplyPresenter : BasePresenterImpl<MeetingApplyContract.View>(), Me
         val json = O2SDKManager.instance().gson.toJson(info)
         XLog.debug("meeting:" + json)
         val body = RequestBody.create(MediaType.parse("text/json"), json)
+        var meetingId = ""
         getMeetingAssembleControlService(mView?.getContext())?.let { service ->
             service.saveMeeting(body)
                     .subscribeOn(Schedulers.io())
                     .flatMap { response ->
-                        val id = response.data.id
+                        meetingId = response.data.id
                         val file = File(meetingFile)
                         val requestBody = RequestBody.create(MediaType.parse("application/octet-stream"), file)
-                        val body = MultipartBody.Part.createFormData("file", file.name, requestBody)
-                        Observable.zip(service.saveMeetingFile(body, id), Observable.just(id), { t1, t2 ->
-                            MeetingFile(t2, t1)
-                        })
+                        val fileBody = MultipartBody.Part.createFormData("file", file.name, requestBody)
+                        service.saveMeetingFile(fileBody, meetingId)
                     }
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ response ->
-                        XLog.debug("save meeting success id：")
-                        mView?.saveMeetingSuccess(response.meetingId, response.idData.data.id)
+                        val fileId = response.data.id
+                        XLog.debug("save meeting success id：$meetingId")
+                        XLog.debug("save meeting file id：$fileId")
+                        mView?.saveMeetingSuccess(meetingId, fileId)
                     }, { e ->
                         XLog.error("", e)
                         mView?.doMeetingFail("申请会议失败，${e.message}")

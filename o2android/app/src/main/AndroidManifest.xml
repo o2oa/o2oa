@@ -5,6 +5,7 @@
 
     <!-- baidu需要 -->
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
     <uses-permission android:name="android.permission.GET_TASKS" />
     <!-- 获取网络状态 -->
@@ -45,7 +46,7 @@
     <!-- gps -->
     <uses-feature android:name="android.hardware.location.gps" />
     <!-- android 8.0 安装未知来源apk的权限问题 -->
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <!-- 获取logcat日志 -->
     <application
@@ -66,6 +67,15 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="o2oa"
+                    android:host="launch"
+                    />
             </intent-filter>
         </activity>
         <activity
@@ -283,9 +293,10 @@
             android:screenOrientation="portrait" />
 
         <!-- ai -->
-        <activity android:name=".app.o2.ai.O2AIActivity"
+        <activity
+            android:name=".app.o2.ai.O2AIActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <!-- calendar -->
         <activity
@@ -416,7 +427,7 @@
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="${BAIDU_APPKEY}" />
+            android:value="${BAIDU_MAP_APPKEY}" />
         <!-- baidu yuyin -->
         <service
             android:name="com.baidu.speech.VoiceRecognitionService"
@@ -424,13 +435,13 @@
 
         <meta-data
             android:name="com.baidu.speech.APP_ID"
-            android:value="${BAIDU_APPID}" />
+            android:value="${BAIDU_SPEECH_APPID}" />
         <meta-data
             android:name="com.baidu.speech.API_KEY"
-            android:value="${BAIDU_APPKEY}" />
+            android:value="${BAIDU_SPEECH_APPKEY}" />
         <meta-data
             android:name="com.baidu.speech.SECRET_KEY"
-            android:value="${BAIDU_SECRET}" />
+            android:value="${BAIDU_SPEECH_SECRET}" />
 
         <!-- 删除临时文件任务 -->
         <service
@@ -447,7 +458,7 @@
             android:name=".core.service.DownloadAPKService"
             android:exported="true">
             <intent-filter>
-                <action android:name="net.zoneland.x.bpm.mobile.v1.zoneXBPM.action.UPDATE" />
+                <action android:name="${applicationId}.action.UPDATE" />
             </intent-filter>
         </service>
 
@@ -463,11 +474,12 @@
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" />
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />
 
-                <category android:name="net.zoneland.x.bpm.mobile.v1.zoneXBPM" />
+                <category android:name="${applicationId}" />
             </intent-filter>
         </receiver>
 
-        <meta-data android:name="JM_IM_USER_PASSWORD"
+        <meta-data
+            android:name="JM_IM_USER_PASSWORD"
             android:value="${JM_IM_USER_PASSWORD}" />
 
         <!-- ```````````````````meta```````````````````` -->
@@ -488,7 +500,7 @@
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="net.zoneland.x.bpm.mobile.v1.zoneXBPM.fileProvider"
+            android:authorities="${applicationId}.fileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -497,11 +509,12 @@
         </provider>
         <provider
             android:name="cn.jpush.android.service.DataProvider"
-            android:authorities="net.zoneland.x.bpm.mobile.v1.zoneXBPM.DataProvider"
+            android:authorities="${applicationId}.DataProvider"
             android:exported="true"
             tools:replace="android:exported, android:authorities" />
 
-        <activity android:name=".app.tbs.FileReaderActivity"></activity>
+        <activity android:name=".app.tbs.FileReaderActivity" />
+        <activity android:name=".flutter.FlutterConnectActivity"></activity>
     </application>
 
 </manifest>

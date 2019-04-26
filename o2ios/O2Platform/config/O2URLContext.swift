@@ -49,6 +49,7 @@ struct FileContext {
     static let fileDownloadPicItemIdQuery = "jaxrs/file/##id##/download/stream"
     static let fileUploadTopQuery = "jaxrs/attachment/upload/folder/(0)"
     static let fileUploadSubQuery = "jaxrs/attachment/upload/folder/##id##"
+    static let fileUploadReference = "jaxrs/file/upload/referencetype/##referencetype##/reference/##reference##/scale/##scale##"
     static let fileEditorQuery = "jaxrs/editor/list"
     static let fileShareQuery = "jaxrs/share/list"
     static let fileDeleteQuery = "jaxrs/attachment/##id##"
@@ -134,7 +135,7 @@ struct TaskContext {
     static let todoTaskListFilterQuery = "jaxrs/task/list/##id##/next/##count##/filter"
     static let todoTaskSubmitQuery = "jaxrs/task/##id##"
     static let todoTaskGetAttachmentInfoQuery = "jaxrs/attachment/##attachmentId##/work/##workId##"
-    static let todoTaskGetAttachmentQuery = "jaxrs/attachment/download/##attachmentId##/work/##workId##/stream/true"
+    static let todoTaskGetAttachmentQuery = "jaxrs/attachment/download/##attachmentId##/work/##workId##"
     static let todoTaskUpReplaceAttachmentQuery = "jaxrs/attachment/update/##attachmentId##/work/##workId##"
     static let todoTaskUploadAttachmentQuery = "jaxrs/attachment/upload/work/##workId##"
     static let todoCreateAvaiableIdentityByIdQuery = "jaxrs/process/list/available/identity/process/##processId##"
@@ -155,7 +156,7 @@ struct TaskedContext {
     static let taskedDataByIdQuery = "jaxrs/taskcompleted/##id##/reference"
     static let taskedRetractQuery = "jaxrs/work/##work##/retract"
     static let taskedGetAttachmentInfoQuery = "jaxrs/attachment/##attachmentId##/work/##workcompletedId##"
-    static let taskedGetAttachmentQuery = "/jaxrs/attachment/download/##attachmentId##/workcompleted/##workcompletedId##/stream/true"
+    static let taskedGetAttachmentQuery = "/jaxrs/attachment/download/##attachmentId##/workcompleted/##workcompletedId##"
 }
 
 

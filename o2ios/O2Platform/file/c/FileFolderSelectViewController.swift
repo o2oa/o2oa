@@ -132,7 +132,7 @@ extension FileFolderSelectViewController:UITableViewDelegate,UITableViewDataSour
     }
     
     func loadDataRequestFileCompleted(_ url:String){
-        ProgressHUD.show("加载中")
+        self.showMessage(title: "加载中")
         Alamofire.request(url).responseJSON { response in
             self.folders.removeAll()
             switch response.result {
@@ -141,11 +141,11 @@ extension FileFolderSelectViewController:UITableViewDelegate,UITableViewDataSour
                 let folders = Mapper<OOFile>().mapArray(JSONString:json["folderList"].description)
                 self.folders.append(contentsOf: folders!)
                 self.tableView.reloadData()
-                ProgressHUD.showSuccess("加载完成")
+                self.showSuccess(title: "加载完成")
             case .failure(let err):
                 DDLogError(err.localizedDescription)
                 self.tableView.reloadData()
-                ProgressHUD.showError("加载失败")
+                self.showError(title: "加载失败")
             }
         }
         

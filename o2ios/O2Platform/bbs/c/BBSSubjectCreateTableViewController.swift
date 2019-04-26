@@ -143,19 +143,19 @@ class BBSSubjectCreateTableViewController: UITableViewController {
                 let type = JSON(val)["type"]
                 if type == "success" {
                     DispatchQueue.main.async {
-                        ProgressHUD.showSuccess("发帖成功")
+                        self.showSuccess(title: "发帖成功")
                         self.performSegue(withIdentifier:"backSectionListSegue", sender: nil)
                     }
                 }else{
                     DDLogError(JSON(val).description)
                     DispatchQueue.main.async {
-                        ProgressHUD.showError("发帖失败")
+                        self.showError(title: "发帖失败")
                     }
                 }
             case .failure(let err):
                 DDLogError(err.localizedDescription)
                 DispatchQueue.main.async {
-                    ProgressHUD.showError("发帖失败")
+                    self.showError(title: "发帖失败")
                 }
             }
         }

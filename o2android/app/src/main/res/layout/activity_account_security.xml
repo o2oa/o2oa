@@ -81,12 +81,13 @@
                         android:textColor="@color/z_color_text_primary_dark"/>
                 </RelativeLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginLeft="@dimen/spacing_normal"
                 android:layout_marginRight="@dimen/spacing_normal"
-                android:background="@color/z_color_split_line_ddd"></View>
+                android:background="@color/z_color_split_line_ddd" />
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
@@ -131,6 +132,46 @@
             </LinearLayout>
 
         </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:background="@android:color/white">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/rl_account_security_biometry_btn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:layout_marginBottom="@dimen/spacing_small"
+                android:layout_marginLeft="@dimen/spacing_normal"
+                android:layout_marginRight="@dimen/spacing_normal">
+                <TextView
+                    android:id="@+id/tv_account_security_biometry_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="指纹识别"
+                    android:layout_alignParentStart="true"
+                    android:textSize="15sp"
+                    android:textColor="@color/z_color_text_hint"
+                    android:layout_centerVertical="true" />
+                <ImageButton
+                    android:id="@+id/image_btn_account_security_biometry_enable"
+                    android:layout_width="48dp"
+                    android:layout_height="29dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:background="@null"
+                    android:src="@mipmap/icon_toggle_off_29dp"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
 
     </LinearLayout>
 </RelativeLayout>

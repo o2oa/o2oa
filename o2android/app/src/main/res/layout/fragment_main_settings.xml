@@ -207,9 +207,10 @@
                     </RelativeLayout>
 
                     <View
+                        android:id="@+id/id_setting_button_customer_service_split"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@color/z_color_split_line_ddd"></View>
+                        android:background="@color/z_color_split_line_ddd" />
                     <!--分享-->
                     <RelativeLayout
                         android:id="@+id/setting_button_customer_service_id"
@@ -223,6 +224,7 @@
                             android:layout_centerVertical="true"
                             android:src="@mipmap/icon_setting_share_22dp"
                             android:layout_alignParentLeft="true"/>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -231,7 +233,7 @@
                             android:layout_marginLeft="10dp"
                             android:text="分享下载"
                             android:textSize="15sp"
-                            android:textColor="@color/z_color_text_primary_dark"></TextView>
+                            android:textColor="@color/z_color_text_primary_dark" />
                         <ImageView
                             android:layout_width="22dp"
                             android:layout_height="22dp"
@@ -245,7 +247,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/z_color_split_line_ddd"
-                        android:padding="0dp"></View>
+                        android:padding="0dp" />
                     <!--反馈-->
                     <RelativeLayout
                         android:id="@+id/setting_button_feedback_id"

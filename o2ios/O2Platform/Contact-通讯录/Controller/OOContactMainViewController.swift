@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Hue
 import EmptyDataSet_Swift
 
 class OOContactMainViewController: UITableViewController {

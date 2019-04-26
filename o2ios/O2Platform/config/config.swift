@@ -9,6 +9,21 @@
 import Foundation
 
 
+//是否连接到collect服务器 直连版本false 需要在Info.plist配置服务器信息
+let O2IsConnect2Collect = true
+
+//一些常量
+//友盟及蒲公英相应的KEY
+let PGY_APP_ID = "84492f465f8f4fb11b8486dc50bf4a38"
+//bugly
+let BUGLY_ID = "0bc87f457b"
+//极光
+let JPUSH_APP_KEY = "9aca7cc20fe0cc987cd913ca"
+let BAIDU_MAP_KEY = "cL9Y2GLhUxgqmKTIcyxv28Y2S7O2DfYj"
+let JPUSH_channel = "Publish channel"
+
+
+
 let SCREEN_WIDTH:CGFloat = UIScreen.main.bounds.width;
 
 let SCREEN_HEIGHT:CGFloat = UIScreen.main.bounds.height;
@@ -21,9 +36,6 @@ let IOS11_TOP_STATUSBAR_HEIGHT = isIPhoneX ? 44 : 20
 
 
 let NAV_HEIGHT = iPhoneX ? (44 + 44) : 64
-
-//是否连接到collect服务器 内网版本false 需要在Info.plist配置服务器信息
-let O2IsConnect2Collect = true
 
 
 func RGB(_ r:Float,g:Float,b:Float)->UIColor{
@@ -78,26 +90,20 @@ let navbar_item_font = toolbar_text_font
 let navbar_text_font = UIFont(name: "PingFangSC-Regular", size: 15.0)!
 
 
-//一些常量
-//友盟及蒲公英相应的KEY
-let PGY_APP_ID = "84492f465f8f4fb11b8486dc50bf4a38"
-let PGY_APP_ID_SZSLB = "31e1d7cd0acb4424baf6ce4d5cad4833"
-let PGY_APP_ID_HZCGW = "ce74b24c98391b3e16b8b699b4d5a9c5"
-let PGY_APP_ID_HLJDX = "a106e4554c23e726c251389291fd8d4c"
-let UM_APP_ID = "57f88c7ce0f55a657200241d"
-let UM_APP_ID_SZSLB = "59ad05ac7f2c7423980019c2"
-let UM_APP_ID_HZCGW = "59e8654aaed1796396000331"
-let UM_APP_ID_HLJDX = "59f5e912f43e487cbe000048"
-//百度 语音
-let BD_SPEECH_APP_ID = "11799270"
-let BD_SPEECH_API_KEY = "FDWx2rKYgYsy8wfzmNf7GMNA"
-let BD_SPEECH_SECRET_KEY = "Z6NkswYlI6NCux7wUpIxuLldI1MCqgjl"
 
-//O2服务的厂商，0表示O2自身，1表示神舟顺利办，2表示杭州城管委，3表示黑龙江电信
+
+//let UM_APP_ID = "57f88c7ce0f55a657200241d"
+//let UM_APP_ID_SZSLB = "59ad05ac7f2c7423980019c2"
+//let UM_APP_ID_HZCGW = "59e8654aaed1796396000331"
+//let UM_APP_ID_HLJDX = "59f5e912f43e487cbe000048"
+//百度 语音
+//let BD_SPEECH_APP_ID = "11799270"
+//let BD_SPEECH_API_KEY = "FDWx2rKYgYsy8wfzmNf7GMNA"
+//let BD_SPEECH_SECRET_KEY = "Z6NkswYlI6NCux7wUpIxuLldI1MCqgjl"
+
+
 var PROJECTMODE = 0
 
-//用户是否绑定
-let IS_BINDED_KEY = "BIND_SUCCESS"
 
 //随机字符串
 class RandomString {

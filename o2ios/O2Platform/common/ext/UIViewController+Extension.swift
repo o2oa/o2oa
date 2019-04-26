@@ -10,7 +10,7 @@ import UIKit
 import JHTAlertController
 import ProgressHUDSwift
 import Whisper
-import DatePickerDialogSwift
+
 
 extension UIViewController {
     
@@ -91,6 +91,13 @@ extension UIViewController {
     func showSystemAlert(title: String, message: String, okHandler: @escaping ((UIAlertAction) -> Void)) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let okAction = UIAlertAction(title: "确定", style: .default, handler: okHandler)
+        alertController.addAction(okAction)
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func showSystemAlertWithButtonName(title: String, message: String, buttonName: String, okHandler: @escaping ((UIAlertAction) -> Void)) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: buttonName, style: .default, handler: okHandler)
         alertController.addAction(okAction)
         self.present(alertController, animated: true, completion: nil)
     }

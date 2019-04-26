@@ -60,11 +60,11 @@ class TodoTaskDetailViewController: BaseTaskWebViewController {
     var todoTask:TodoTask? {
         didSet {
             var url:String?
-            if let workId = todoTask?.work {
+            if let workId = todoTask?.work, workId != "" {
                 url = AppDelegate.o2Collect.genrateURLWithWebContextKey(DesktopContext.DesktopContextKey, query: DesktopContext.todoDesktopQuery, parameter: ["##workid##":workId as AnyObject])
                 self.isWorkCompeleted = false
                 self.workId = workId
-            }else if let workCompletedId = todoTask?.workCompleted {
+            }else if let workCompletedId = todoTask?.workCompleted, workCompletedId != "" {
                 url = AppDelegate.o2Collect.genrateURLWithWebContextKey(DesktopContext.DesktopContextKey, query: DesktopContext.todoedDestopQuery, parameter: ["##workCompletedId##":workCompletedId as AnyObject])
                 self.isWorkCompeleted = true
                 self.workId = workCompletedId
@@ -103,13 +103,13 @@ class TodoTaskDetailViewController: BaseTaskWebViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         //监控进度
-        self.addObserver(webView, forKeyPath: "estimatedProgress", options: .new, context: nil)
+        webView.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: nil)
        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.removeObserver(webView, forKeyPath: "estimatedProgress")
+        webView.removeObserver(self, forKeyPath: "estimatedProgress")
     }
     
     
@@ -181,7 +181,7 @@ class TodoTaskDetailViewController: BaseTaskWebViewController {
     @objc func itemBtnDocDeleteAction() {
         DDLogDebug("btnDeleteDoc Click")
         showDefaultConfirm(title: "提示", message: "确认要删除这个文档吗，删除后无法恢复？", okHandler: { (action) in
-            ProgressHUD.show("删除中...",interaction: false)
+            self.showMessage(title: "删除中...")
             let url = AppDelegate.o2Collect.generateURLWithAppContextKey(TaskContext.taskDataContextKey, query: TaskContext.taskWorkDeleteQuery, parameter: ["##id##":self.workId! as AnyObject])
             Alamofire.request(url!,method:.delete, parameters: nil, encoding: JSONEncoding.default, headers: nil).responseJSON { response in
                 switch response.result {
@@ -189,7 +189,7 @@ class TodoTaskDetailViewController: BaseTaskWebViewController {
                     //DDLogDebug(val)
                     let json = JSON(val)
                     if json["type"] == "success" {
-                        ProgressHUD.showSuccess("删除成功")
+                        self.showSuccess(title: "删除成功")
                         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3, execute: {
                             // 删除之后没有这个工作了，所以直接返回列表 防止返回到已办的TodoedTaskViewController
                             if self.backFlag == 4 {
@@ -199,11 +199,11 @@ class TodoTaskDetailViewController: BaseTaskWebViewController {
                         })
                     }else{
                         DDLogError(json.description)
-                        ProgressHUD.showError("删除失败")
+                        self.showError(title: "删除失败")
                     }
                 case .failure(let err):
                     DDLogError(err.localizedDescription)
-                    ProgressHUD.showError("删除失败")
+                    self.showError(title: "删除失败")
                 }
             }
         })
@@ -212,7 +212,7 @@ class TodoTaskDetailViewController: BaseTaskWebViewController {
     
     @objc func itemBtnDocSaveAction() {
         DDLogDebug("btnSaveDoc Click")
-        ProgressHUD.show("保存中...",interaction: false)
+        self.showMessage(title: "保存中...")
         self.setupData()
         group.notify(queue: DispatchQueue.main) {
             if self.isJSExecuted {
@@ -223,18 +223,18 @@ class TodoTaskDetailViewController: BaseTaskWebViewController {
                         //DDLogDebug(val)
                         let json = JSON(val)
                         if json["type"] == "success" {
-                            ProgressHUD.showSuccess("保存成功")
+                            self.showSuccess(title: "保存成功")
                         }else{
                             DDLogError(json.description)
-                            ProgressHUD.showError("保存失败")
+                            self.showError(title: "保存失败")
                         }
                     case .failure(let err):
                         DDLogError(err.localizedDescription)
-                        ProgressHUD.showError("保存失败")
+                        self.showError(title: "保存失败")
                     }
                 }
             }else{
-                ProgressHUD.showError("保存失败")
+                self.showError(title: "保存失败")
             }
 
         }
@@ -254,11 +254,11 @@ class TodoTaskDetailViewController: BaseTaskWebViewController {
                     })
                 }else{
                     DDLogError("表单验证失败。。。。。。。。。。。。")
-                    ProgressHUD.showError("表单验证失败，请正确填写表单内容")
+                    self.showError(title: "表单验证失败，请正确填写表单内容")
                 }
             }else {
                 DDLogError("没有返回值。。。。。。。。。")
-                ProgressHUD.showError("表单验证失败，请正确填写表单内容")
+                self.showError(title: "表单验证失败，请正确填写表单内容")
             }
         }
 //        let str = self.todoWebView.stringByEvaluatingJavaScript(from: TodoTaskJS.CHECK_FORM)
@@ -274,24 +274,24 @@ class TodoTaskDetailViewController: BaseTaskWebViewController {
     @objc func itemBtnReadDocAction() {
         DDLogDebug("readButtonAction")
         let url = AppDelegate.o2Collect.generateURLWithAppContextKey(ReadContext.readContextKey, query: ReadContext.readProcessing, parameter: ["##id##":(todoTask?.id)! as AnyObject])
-        ProgressHUD.show("提交中...")
+        self.showMessage(title: "提交中...")
         Alamofire.request(url!, method:.post, parameters: myRead, encoding: JSONEncoding.default, headers: nil).responseJSON {  response in
             switch response.result {
             case .success(let val):
                 DDLogDebug(JSON(val).description)
                 let json = JSON(val)
                 if json["type"]=="success"{
-                    ProgressHUD.showSuccess("提交成功")
+                    self.showSuccess(title: "提交成功")
                     DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3, execute: {
                         self.goBack()
                     })
                 }else {
                     DDLogError(json["message"].description)
-                    ProgressHUD.showError("提交失败")
+                    self.showError(title: "提交失败")
                 }
             case .failure(let err):
                 DDLogError(err.localizedDescription)
-                ProgressHUD.showError("提交失败")
+                self.showError(title: "提交失败")
             }
         }
     }
@@ -299,24 +299,24 @@ class TodoTaskDetailViewController: BaseTaskWebViewController {
     @objc func itemBtnRetractDocAction() {
         DDLogDebug("撤回开始。。。")
         let url = AppDelegate.o2Collect.generateURLWithAppContextKey(TaskedContext.taskedContextKey, query: TaskedContext.taskedRetractQuery, parameter: ["##work##":(self.workId)! as AnyObject])
-        ProgressHUD.show("提交中...")
+        self.showMessage(title: "提交中...")
         Alamofire.request(url!, method:.put, parameters: nil, encoding: JSONEncoding.default, headers: nil).responseJSON {  response in
             switch response.result {
             case .success(let val):
                 DDLogDebug(JSON(val).description)
                 let json = JSON(val)
                 if json["type"]=="success"{
-                    ProgressHUD.showSuccess("提交成功")
+                    self.showSuccess(title: "提交成功")
                     DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3, execute: {
                         self.goBack()
                     })
                 }else {
                     DDLogError(json["message"].description)
-                    ProgressHUD.showError("提交失败")
+                    self.showError(title: "提交失败")
                 }
             case .failure(let err):
                 DDLogError(err.localizedDescription)
-                ProgressHUD.showError("提交失败")
+                self.showError(title: "提交失败")
             }
         }
     }

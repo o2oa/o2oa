@@ -95,7 +95,7 @@ extension BSSMainViewController:UICollectionViewDataSource{
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return bbsForums[section].sectionInfoList!.count
+        return bbsForums[section].sectionInfoList?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

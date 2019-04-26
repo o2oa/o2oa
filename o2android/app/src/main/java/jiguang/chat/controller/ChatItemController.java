@@ -24,8 +24,8 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.squareup.picasso.Picasso;
 
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R;
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.person.PersonActivity;
@@ -337,15 +337,15 @@ public class ChatItemController {
                 public void onComplete(int status, String desc, File file) {
                     if (status == 0) {
                         ImageView imageView = setPictureScale(jiguang, msg, file.getPath(), holder.picture);
-                        Picasso.with(mContext).load(file).into(imageView);
-//                        Glide.with(mContext).load(file).dontAnimate().into(imageView);
+                        imageView.setTag(null);
+                        Glide.with(mContext).load(file).dontAnimate().into(imageView);
                     }
                 }
             });
         } else {
             ImageView imageView = setPictureScale(jiguang, msg, path, holder.picture);
-            Picasso.with(mContext).load(new File(path)).into(imageView);
-//            Glide.with(mContext).load(new File(path)).dontAnimate().into(imageView);
+            imageView.setTag(null);
+            Glide.with(mContext).load(new File(path)).dontAnimate().into(imageView);
         }
 
         // 接收图片
@@ -386,13 +386,7 @@ public class ChatItemController {
             }
             // 发送图片方，直接加载缩略图
         } else {
-//            try {
-//                setPictureScale(path, holder.picture);
-//                Picasso.with(mContext).load(new File(path)).into(holder.picture);
-//            } catch (NullPointerException e) {
-//                Picasso.with(mContext).load(IdHelper.getDrawable(mContext, "jmui_picture_not_found"))
-//                        .into(holder.picture);
-//            }
+
             //检查状态
             switch (msg.getStatus()) {
                 case created:
@@ -652,8 +646,8 @@ public class ChatItemController {
                 try {
                     File file = new File(path);
                     if (file.exists() && file.isFile()) {
-                        Picasso.with(mContext).load(file).into(holder.picture);
-//                        Glide.with(mContext).load(file).dontAnimate().into(holder.picture);
+                        holder.picture.setTag(null);
+                        Glide.with(mContext).load(file).dontAnimate().into(holder.picture);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -769,11 +763,11 @@ public class ChatItemController {
             String thumbPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + msg.getServerMessageId();
             String path = BitmapDecoder.extractThumbnail(videoPath, thumbPath);
             setPictureScale(null, msg, path, holder.picture);
-            Picasso.with(mContext).load(new File(path)).into(holder.picture);
-//            Glide.with(mContext).load(new File(path)).dontAnimate().into(holder.picture);
+            holder.picture.setTag(null);
+            Glide.with(mContext).load(new File(path)).dontAnimate().into(holder.picture);
         } else {
-            Picasso.with(mContext).load(R.drawable.video_not_found).into(holder.picture);
-//            Glide.with(mContext).load(R.drawable.video_not_found).dontAnimate().into(holder.picture);
+            holder.picture.setTag(null);
+            Glide.with(mContext).load(R.drawable.video_not_found).dontAnimate().into(holder.picture);
         }
 
 //        if (videoPath != null && new File(videoPath).exists()) {

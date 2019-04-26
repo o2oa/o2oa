@@ -15,7 +15,7 @@ import ObjectMapper
 import BSImagePicker
 import Photos
 import QuickLook
-import GradientCircularProgress
+
 import CocoaLumberjack
 
 import O2OA_Auth_SDK
@@ -78,7 +78,7 @@ class MainFileViewController: UIViewController {
     }
     
     func loadDataRequestFileCompleted(_ url:String){
-        ProgressHUD.show("加载中")
+        self.showMessage(title: "加载中")
         Alamofire.request(url).responseJSON { response in
             self.myFiles.removeAll()
             switch response.result {
@@ -92,13 +92,13 @@ class MainFileViewController: UIViewController {
                         self.myFiles.append(contentsOf: files!)
                         self.myFiles.append(contentsOf: folders!)
                         self.tableView.reloadData()
-                        ProgressHUD.showSuccess("加载完成")
+                        self.showSuccess(title: "加载完成")
                     }
                 }else{
                     DispatchQueue.main.async {
                         DDLogError(JSON(val).description)
                         self.tableView.reloadData()
-                        ProgressHUD.showError("加载失败")
+                        self.showError(title: "加载失败")
                     }
                     
                 }
@@ -106,7 +106,7 @@ class MainFileViewController: UIViewController {
                 DispatchQueue.main.async {
                     DDLogError(err.localizedDescription)
                     self.tableView.reloadData()
-                    ProgressHUD.showError("加载失败")
+                    self.showError(title: "加载失败")
                 }
                 
             }
@@ -121,7 +121,7 @@ class MainFileViewController: UIViewController {
     }
     
     func loadDataRequestFileShareCompleted(_ url:String){
-        ProgressHUD.show("加载中")
+        self.showMessage(title: "加载中")
         Alamofire.request(url).responseArray(queue: nil, keyPath: "data", context: nil)
         { (response:DataResponse<[FileShare]>) in
             self.myFileShare.removeAll()
@@ -131,13 +131,13 @@ class MainFileViewController: UIViewController {
                 DispatchQueue.main.async {
                     self.myFileShare.append(contentsOf: shares)
                     self.tableView.reloadData()
-                    ProgressHUD.showSuccess("加载完成")
+                    self.showSuccess(title: "加载完成")
                 }
             case .failure(let err):
                 DispatchQueue.main.async {
                     DDLogError(err.localizedDescription)
                     self.tableView.reloadData()
-                    ProgressHUD.showError("加载失败")
+                    self.showError(title: "加载失败")
                 }
             }
             DispatchQueue.main.async {
@@ -149,7 +149,7 @@ class MainFileViewController: UIViewController {
     }
     
     func loadDataRequestFileReciveCompleted(_ url:String) {
-        ProgressHUD.show("加载中")
+        self.showMessage(title: "加载中")
         Alamofire.request(url).responseArray(queue: nil, keyPath: "data", context: nil) {
             (response:DataResponse<[FileShare]>) in
             self.myFileRecive.removeAll()
@@ -158,14 +158,14 @@ class MainFileViewController: UIViewController {
                 DispatchQueue.main.async {
                     self.myFileRecive.append(contentsOf: shares)
                     self.tableView.reloadData()
-                    ProgressHUD.showSuccess("加载完成")
+                    self.showSuccess(title: "加载完成")
                 }
                 
             case .failure(let err):
                 DispatchQueue.main.async {
                     DDLogError(err.localizedDescription)
                     self.tableView.reloadData()
-                    ProgressHUD.showError("加载失败")
+                    self.showError(title: "加载失败")
                 }
             }
             DispatchQueue.main.async {
@@ -322,7 +322,7 @@ class MainFileViewController: UIViewController {
                         let fExtName = fName.components(separatedBy: ".").last!
                         let fPreName = fName.components(separatedBy: ".").first!
                         DispatchQueue.main.async {
-                            ProgressHUD.show("上传中...", interaction: false)
+                            self.showMessage(title:"上传中...")
                             Alamofire.upload(multipartFormData: { (mData) in
                                 let formatter = DateFormatter()
                                 formatter.dateFormat = "yyyyMMddHHmmss"
@@ -336,7 +336,7 @@ class MainFileViewController: UIViewController {
                                     upload.responseJSON { response in
                                         debugPrint(response)
                                         DispatchQueue.main.async {
-                                            ProgressHUD.showSuccess("上传成功")
+                                            self.showSuccess(title: "上传成功")
                                             Timer.after(0.8, {
                                                 self.tableView.mj_header.beginRefreshing()
                                             })
@@ -347,7 +347,7 @@ class MainFileViewController: UIViewController {
                                     DispatchQueue.main.async {
                                         DDLogError(errType.localizedDescription)
                                         DispatchQueue.main.async {
-                                            ProgressHUD.showError("上传失败")
+                                            self.showError(title: "上传失败")
                                         }
                                     }
                                 }
@@ -412,7 +412,7 @@ class MainFileViewController: UIViewController {
                         let json = JSON(val)
                         if json["type"] == "success" {
                             DispatchQueue.main.async {
-                                ProgressHUD.showSuccess("创建成功")
+                                self.showSuccess(title: "创建成功")
                                 Timer.after(0.5, {
                                     self.tableView.mj_header.beginRefreshing()
                                 })
@@ -420,14 +420,14 @@ class MainFileViewController: UIViewController {
                         }else{
                             DispatchQueue.main.async {
                                 DDLogError(json.description)
-                                ProgressHUD.showError("创建失败")
+                                self.showError(title: "创建失败")
                             }
                             
                         }
                     case .failure(let err):
                         DispatchQueue.main.async {
                             DDLogError(err.localizedDescription)
-                            ProgressHUD.showError("创建失败")
+                            self.showError(title: "创建失败")
                         }
                     }
                     
@@ -656,19 +656,19 @@ extension MainFileViewController:UITableViewDelegate,UITableViewDataSource{
             fileLocalURL = folder.appendingPathComponent("\(preName!)_\(timestamp).\(extName!)")
             return (fileLocalURL!,[.removePreviousFile, .createIntermediateDirectories])
         }
-        ProgressHUD.show("", interaction: false)
+        self.showMessage(title: "下载中...")
         Alamofire.download(fileURL!,to: destination).downloadProgress(closure: { (progress) in
             print("progress.fractionCompleted = \(progress.fractionCompleted)")
             if progress.completedUnitCount == progress.totalUnitCount {
                 DispatchQueue.main.async {
-                    ProgressHUD.dismiss()
+                    self.dismissProgressHUD()
                 }
             }
         }).responseData { resp in
             switch resp.result {
             case .success(_):
                 DispatchQueue.main.async {
-                    ProgressHUD.dismiss()
+                    self.dismissProgressHUD()
                 }
                 self.fileURLs.removeAll(keepingCapacity: true)
                 if QLPreviewController.canPreview(fileLocalURL! as QLPreviewItem){
@@ -785,7 +785,7 @@ extension MainFileViewController:FileTableViewCellDelegate{
             parameter["name"] = name
             parameter["superior"] = f.superior!
         }
-        ProgressHUD.show("更新中", interaction: false)
+        self.showMessage(title: "更新中")
         Alamofire.request(url, method: .put, parameters: parameter, encoding: JSONEncoding.default, headers: nil).responseJSON { (response) in
             switch response.result {
             case .success(let val):
@@ -798,7 +798,7 @@ extension MainFileViewController:FileTableViewCellDelegate{
                     })
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
-                        ProgressHUD.showSuccess("重命名完成")
+                        self.showSuccess(title: "重命名完成")
                     }
                     
                 }else{
@@ -807,7 +807,7 @@ extension MainFileViewController:FileTableViewCellDelegate{
             case .failure(let err):
                 DispatchQueue.main.async {
                     DDLogError(err.localizedDescription)
-                    ProgressHUD.showError("重命名失败")
+                    self.showError(title: "重命名失败")
                 }
             }
         }
@@ -850,7 +850,7 @@ extension MainFileViewController:FileTableViewCellDelegate{
         }else if f.fileType == .folder {
             url = AppDelegate.o2Collect.generateURLWithAppContextKey(FileContext.fileContextKey, query: FileContext.fileFolderActionIdQuery, parameter: ["##id##":f.id! as AnyObject])!
         }
-        ProgressHUD.show("删除中", interaction: false)
+        self.showMessage(title: "删除中")
         Alamofire.request(url,method:.delete, parameters: nil, encoding: JSONEncoding.default, headers: nil).responseJSON { (response) in
             switch response.result {
             case .success(let val):
@@ -865,20 +865,20 @@ extension MainFileViewController:FileTableViewCellDelegate{
                     })!)
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
-                        ProgressHUD.showSuccess("删除成功")
+                        self.showSuccess(title: "删除成功")
                     }
                     
                 }else{
                     DispatchQueue.main.async {
                         DDLogError("删除失败:\(json)")
-                        ProgressHUD.showError("删除失败")
+                        self.showError(title: "删除失败")
                     }
                     
                 }
             case .failure(let err):
                 DispatchQueue.main.async {
                     DDLogError("删除失败:\(err)")
-                    ProgressHUD.showError("删除失败")
+                    self.showError(title: "删除失败")
                 }
                 
             }
@@ -925,20 +925,20 @@ extension MainFileViewController:FileTableViewCellDelegate{
                     })!)
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
-                        ProgressHUD.showSuccess("移动完成")
+                        self.showSuccess(title: "移动完成")
                     }
                     
                 }else{
                     DispatchQueue.main.async {
                         DDLogError(json.description)
-                        ProgressHUD.showError("移动失败")
+                        self.showError(title: "移动失败")
                     }
                     
                 }
             case .failure(let err):
                 DispatchQueue.main.async {
                     DDLogError(err.localizedDescription)
-                    ProgressHUD.showError("移动失败")
+                    self.showError(title: "移动失败")
                 }
             }
         }
@@ -976,34 +976,28 @@ extension MainFileViewController:FileTableViewCellDelegate{
             return (folder.appendingPathComponent(f.name!), [.removePreviousFile, .createIntermediateDirectories])
         }
         
-        let progressHUD = GradientCircularProgress()
-        let frame = CGRect(x: (SCREEN_WIDTH - 100)/2, y: (SCREEN_HEIGHT - 100)/2, w: 100, h: 100)
-        let progressView = progressHUD.showAtRatio(frame: frame, display: true, style: MyDownloadStyle())
-        progressView?.layer.cornerRadius = 12.0
-        //progressView?.backgroundColor = UIColor(colorLiteralRed: 18, green: 18, blue: 18, alpha: 0.7)
-        self.view.insertSubview(progressView!, at: 99)
-        //progressView?.bringSubview(toFront: self.view)
-        progressHUD.updateRatio(0.0)
+        
+        self.showMessage(title: "下载中...")
         let utilityQueue = DispatchQueue.global(qos: .utility)
         Alamofire.download(url!, to: destination).downloadProgress(queue: utilityQueue) { (progress) in
             print("progress.fractionCompleted = \(progress.fractionCompleted)")
-            DispatchQueue.main.async {
-                progressHUD.updateRatio(CGFloat(progress.fractionCompleted))
-            }
-            
+//            DispatchQueue.main.async {
+//                self.showSuccess(title: "<#T##String#>")
+//            }
+//
             }.responseData { (resp) in
                 DispatchQueue.main.async {
-                    progressHUD.dismiss(progress: progressView!)
+                    self.dismissProgressHUD()
                 }
                 switch resp.result {
                 case .success( _):
                     DispatchQueue.main.async {
-                        ProgressHUD.showSuccess("下载完成")
+                        self.showSuccess(title: "下载完成")
                     }
                 case .failure(let err):
                     DispatchQueue.main.async {
                         DDLogError(err.localizedDescription)
-                        ProgressHUD.showError("下载失败")
+                        self.showError(title: "下载失败")
                     }
                 }
         }
@@ -1021,25 +1015,25 @@ extension MainFileViewController:FileTableViewCellDelegate{
             names.append(p.name!)
         }
         let url = AppDelegate.o2Collect.generateURLWithAppContextKey(FileContext.fileContextKey, query: FileContext.fileShareActionQuery, parameter: ["##id##":(currentSharedFile?.id)! as AnyObject])
-        ProgressHUD.show("分享中...")
+        self.showMessage(title: "分享中...")
         Alamofire.request(url!, method:.put , parameters: ["shareList":names], encoding: JSONEncoding.default, headers: nil).responseJSON { (response) in
             switch response.result {
             case .success(let val):
                 let json = JSON(val)
                 if json["type"] == "success" {
                     DispatchQueue.main.async {
-                        ProgressHUD.showSuccess("分享成功")
+                        self.showSuccess(title: "分享成功")
                     }
                     
                 }else{
                     DispatchQueue.main.async {
-                        ProgressHUD.showError("分享失败")
+                        self.showError(title: "分享失败")
                     }
                 }
             case .failure(let err):
                 DispatchQueue.main.async {
                     DDLogError(err.localizedDescription)
-                    ProgressHUD.showError("分享失败")
+                    self.showError(title: "分享失败")
                 }
             }
         }

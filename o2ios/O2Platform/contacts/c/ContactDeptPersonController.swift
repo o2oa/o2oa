@@ -169,7 +169,7 @@ class ContactDeptPersonController: UITableViewController, UITextViewDelegate {
     
     func loadMyDeptData(_ sender:AnyObject?){
         let urls = [0:"111",1:subUnitURL,2:subIdentityURL]
-        ProgressHUD.show("加载中...")
+        self.showMessage(title:"加载中...")
         var num = 0
         for (tag,url) in urls {
             num += 1
@@ -221,7 +221,7 @@ class ContactDeptPersonController: UITableViewController, UITextViewDelegate {
                 }
                 if num == urls.count {
                     DispatchQueue.main.async {
-                        ProgressHUD.dismiss()
+                        self.dismissProgressHUD()
                         if self.tableView.mj_header.isRefreshing() {
                             self.tableView.mj_header.endRefreshing()
                         }

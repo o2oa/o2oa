@@ -101,97 +101,97 @@
         </android.support.constraint.ConstraintLayout>
 
 
-        <LinearLayout
-            android:id="@+id/linear_skin_manager_online"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_small"
-            android:background="@android:color/transparent"
-            android:paddingBottom="@dimen/spacing_normal"
-            android:paddingStart="@dimen/spacing_normal"
-            android:paddingTop="@dimen/spacing_normal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraint_skin_manager_default">
+        <!--<LinearLayout-->
+            <!--android:id="@+id/linear_skin_manager_online"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="@dimen/spacing_small"-->
+            <!--android:background="@android:color/transparent"-->
+            <!--android:paddingBottom="@dimen/spacing_normal"-->
+            <!--android:paddingStart="@dimen/spacing_normal"-->
+            <!--android:paddingTop="@dimen/spacing_normal"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toBottomOf="@+id/constraint_skin_manager_default">-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/skin_manager_online"
-                android:textColor="@color/z_color_text_primary"
-                android:textSize="@dimen/font_large" />
-        </LinearLayout>
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/skin_manager_online"-->
+                <!--android:textColor="@color/z_color_text_primary"-->
+                <!--android:textSize="@dimen/font_large" />-->
+        <!--</LinearLayout>-->
 
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_small"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linear_skin_manager_online">
+        <!--<android.support.constraint.ConstraintLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="@dimen/spacing_small"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toBottomOf="@+id/linear_skin_manager_online">-->
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/card_skin_manager_puppy2018"
-                android:layout_width="165dp"
-                android:layout_height="235dp"
-                android:layout_marginBottom="@dimen/spacing_normal"
-                android:layout_marginLeft="@dimen/spacing_small"
-                app:cardBackgroundColor="@android:color/white"
-                app:cardCornerRadius="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+            <!--<android.support.v7.widget.CardView-->
+                <!--android:id="@+id/card_skin_manager_puppy2018"-->
+                <!--android:layout_width="165dp"-->
+                <!--android:layout_height="235dp"-->
+                <!--android:layout_marginBottom="@dimen/spacing_normal"-->
+                <!--android:layout_marginLeft="@dimen/spacing_small"-->
+                <!--app:cardBackgroundColor="@android:color/white"-->
+                <!--app:cardCornerRadius="10dp"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintStart_toStartOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent">-->
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="170dp"
-                    android:layout_gravity="top"
-                    android:src="@mipmap/puppy_outside" />
+                <!--<ImageView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="170dp"-->
+                    <!--android:layout_gravity="top"-->
+                    <!--android:src="@mipmap/puppy_outside" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|center_horizontal"
-                    android:layout_marginBottom="@dimen/spacing_large"
-                    android:gravity="center"
-                    android:text="Puppy2018"
-                    android:textColor="@color/z_color_text_primary_dark"
-                    android:textSize="@dimen/font_large" />
-                <ImageView
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:layout_gravity="right|bottom"
-                    android:src="@mipmap/right_bottom_corner_new"/>
-            </android.support.v7.widget.CardView>
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="bottom|center_horizontal"-->
+                    <!--android:layout_marginBottom="@dimen/spacing_large"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="Puppy2018"-->
+                    <!--android:textColor="@color/z_color_text_primary_dark"-->
+                    <!--android:textSize="@dimen/font_large" />-->
+                <!--<ImageView-->
+                    <!--android:layout_width="42dp"-->
+                    <!--android:layout_height="42dp"-->
+                    <!--android:layout_gravity="right|bottom"-->
+                    <!--android:src="@mipmap/right_bottom_corner_new"/>-->
+            <!--</android.support.v7.widget.CardView>-->
 
-            <android.support.v7.widget.CardView
-                android:layout_width="165dp"
-                android:layout_height="235dp"
-                app:cardBackgroundColor="@android:color/white"
-                app:cardCornerRadius="10dp"
-                android:layout_marginBottom="@dimen/spacing_normal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginRight="@dimen/spacing_small">
+            <!--<android.support.v7.widget.CardView-->
+                <!--android:layout_width="165dp"-->
+                <!--android:layout_height="235dp"-->
+                <!--app:cardBackgroundColor="@android:color/white"-->
+                <!--app:cardCornerRadius="10dp"-->
+                <!--android:layout_marginBottom="@dimen/spacing_normal"-->
+                <!--app:layout_constraintEnd_toEndOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--android:layout_marginRight="@dimen/spacing_small">-->
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="170dp"
-                    android:layout_gravity="top"
-                    android:src="@mipmap/new_skin_preparing" />
+                <!--<ImageView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="170dp"-->
+                    <!--android:layout_gravity="top"-->
+                    <!--android:src="@mipmap/new_skin_preparing" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|center_horizontal"
-                    android:layout_marginBottom="@dimen/spacing_large"
-                    android:gravity="center"
-                    android:text="小叶正在赶制中....."
-                    android:textColor="@color/z_color_text_primary_dark"
-                    android:textSize="@dimen/font_large" />
-            </android.support.v7.widget.CardView>
-        </android.support.constraint.ConstraintLayout>
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="bottom|center_horizontal"-->
+                    <!--android:layout_marginBottom="@dimen/spacing_large"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="小叶正在赶制中....."-->
+                    <!--android:textColor="@color/z_color_text_primary_dark"-->
+                    <!--android:textSize="@dimen/font_large" />-->
+            <!--</android.support.v7.widget.CardView>-->
+        <!--</android.support.constraint.ConstraintLayout>-->
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v4.widget.NestedScrollView>

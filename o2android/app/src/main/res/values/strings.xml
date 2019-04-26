@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">O2</string>
-    <string name="app_about">关于O2</string>
-    <string name="app_name_about">O2</string>
+    <string name="app_name">O2OA</string>
+    <string name="app_about">关于O2OA</string>
+    <string name="app_name_about">O2OA</string>
     <string name="copy_right">&#169;</string>
     <string name="reserved">All right reserved.</string>
     <string name="version">版本：</string>
@@ -113,6 +113,8 @@
     <string name="login_code">验证码</string>
     <string name="activity_login_password">密码</string>
     <string name="activity_login_submit">登    录</string>
+    <string name="activity_login_fingerprint">指纹识别登录</string>
+    <string name="activity_login_fingerprint_click">点击开始认证</string>
     <string name="activity_login_face">人脸识别</string>
     <string name="activity_logout">退出登录</string>
     <string name="login_button_next">下一步</string>
@@ -120,6 +122,7 @@
     <string name="login_button_code">发送验证码</string>
     <string name="login_button_code_disabled">重新发送</string>
     <string name="login_button_rebind">重新绑定</string>
+    <string name="login_button_user_fallback">其他方式登录</string>
     <string name="activity_login_save">保存</string>
     <string name="activity_login_remember_login">记住我</string>
     <string-array name="login_facepp_trackig_mode_array">
@@ -677,6 +680,18 @@
     <string name="skin_show_use">使用皮肤</string>
     <string name="skin_show_downloading">下载中...</string>
     <string name="skin_show_installing">安装中...</string>
+
+
+    <!-- 指纹识别-->
+    <string name="biometric_dialog_cancel">取消</string>
+    <string name="biometric_dialog_title">验证</string>
+    <string name="biometric_dialog_subtitle">正在指纹识别中...</string>
+    <string name="biometric_dialog_state_normal">指纹识别</string>
+    <string name="biometric_dialog_state_failed">识别失败，请重试</string>
+    <string name="biometric_dialog_state_error">验证失败，请使用其他方式验证</string>
+    <string name="biometric_dialog_state_error_enable_process">验证识别，没有启用指纹识别</string>
+    <string name="biometric_dialog_state_succeeded">验证成功</string>
+    <string name="biometric_dialog_use_password">其他方式</string>
 
     <!--custom style -->
     <string name="custom_style_install_label">正在从服务器端装载UI资源</string>

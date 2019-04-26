@@ -17,16 +17,18 @@ import CocoaLumberjack
 class MailViewController: BaseWebViewUIViewController {
     
     static var app:O2App?
-    static var isIndexShow:Bool?
+    // 首页显示门户 默认没有NavigationBar
+    var isIndexShow:Bool = false
+    // 门户内部是否有显示NavigationBar
+    var hasInnerBar:Bool = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
         //监听清除缓存之后需要重载
-        NotificationCenter.default.addObserver(self, selector: #selector(loadDetailSubject), name: Notification.Name("reloadPortal"), object: nil)
-        if MailViewController.isIndexShow ?? false {
+        NotificationCenter.default.addObserver(self, selector: #selector(loadDetailSubject), name: OONotification.reloadPortal.notificationName, object: nil)
+        if self.isIndexShow {
             self.navigationItem.leftBarButtonItems = []
         }else {
-            //            self.navigationController?.title = MailViewController.app!.title!
             self.title = MailViewController.app!.title!
             let closeBtn = UIButton(frame: CGRect(x: 0, y: 0, w: 30, h: 30))
             closeBtn.setImage(UIImage(named: "icon_off_white2"), for: .normal)
@@ -45,21 +47,22 @@ class MailViewController: BaseWebViewUIViewController {
             self.navigationItem.leftBarButtonItems = [backItem, closeItem]
         }
         self.theWebView()
+        self.delegate = self
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        if MailViewController.isIndexShow ?? false {
+        if self.isIndexShow || self.hasInnerBar {
             let statusBarWindow : UIView = UIApplication.shared.value(forKey: "statusBarWindow") as! UIView
             let statusBar : UIView = statusBarWindow.value(forKey: "statusBar") as! UIView
             if statusBar.responds(to:#selector(setter: UIView.backgroundColor)) {
                 statusBar.backgroundColor = base_color
             }
-            self.navigationController?.navigationBar.isHidden = true
+            self.navigationController?.setNavigationBarHidden(true, animated: true)
         }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        self.navigationController?.navigationBar.isHidden = false
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
     }
     
     override func didReceiveMemoryWarning() {
@@ -72,10 +75,11 @@ class MailViewController: BaseWebViewUIViewController {
         self.webView.allowsBackForwardNavigationGestures = true
         loadDetailSubject()
     }
-    
+  
     @objc func loadDetailSubject(){
         if let req = Alamofire.request((MailViewController.app?.vcName?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)!).request {
             self.webView?.load(req)
+            
         }else{
             MBProgressHUD_JChat.show(text: "加载出错，请重试", view: webView, 3.0)
         }
@@ -102,4 +106,18 @@ class MailViewController: BaseWebViewUIViewController {
     }
     */
 
+}
+
+extension MailViewController: BaseWebViewUIViewControllerJSDelegate {
+    func closeUIViewWindow() {
+        DDLogDebug("关闭啦。。。。。。。。。。。。。。")
+        self.navigationController?.dismiss(animated: true, completion: nil)
+    }
+    func actionBarLoaded(show: Bool) {
+        DDLogDebug("actionBar 显示了。。。。\(show)。")
+        if(show) {
+            self.hasInnerBar = true
+            self.navigationController?.setNavigationBarHidden(true, animated: true)
+        }
+    }
 }

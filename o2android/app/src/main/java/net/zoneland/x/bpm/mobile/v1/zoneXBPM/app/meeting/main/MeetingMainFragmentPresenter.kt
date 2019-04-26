@@ -172,17 +172,36 @@ class MeetingMainFragmentPresenter : BasePresenterImpl<MeetingMainFragmentContra
     }
 
     override fun getMeetingConfig() {
-        mView.let {
-            getOrganizationAssembleCustomService(it?.getContext())?.getMeetingConfig()!!
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(ResponseHandler { info ->
-                        it?.setMeetingConfig(info)
-                    }, ExceptionHandler(it?.getContext()) { e ->
-                        XLog.error("", e)
-                        it?.setMeetingConfig("")
-                    })
+        val service = getOrganizationAssembleCustomService(mView?.getContext())
+        if (service != null){
+            service.getMeetingConfig()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ResponseHandler { info ->
+                    mView?.setMeetingConfig(info)
+                }, ExceptionHandler(mView?.getContext()) { e ->
+                    XLog.error("", e)
+                    mView?.setMeetingConfig("")
+                })
+        }else {
+            XLog.info("老公共服务器模块已经去掉了！！！")
+            val personService = getAssemblePersonalApi(mView?.getContext())
+            if (personService != null) {
+                personService.getMeetingConfig()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(ResponseHandler { info ->
+                            mView?.setMeetingConfig(info)
+                        }, ExceptionHandler(mView?.getContext()) { e ->
+                            XLog.error("", e)
+                            mView?.setMeetingConfig("")
+                        })
+            }else {
+                XLog.error("公共服务模块不存在")
+                mView?.setMeetingConfig("")
+            }
         }
+
     }
 
     override fun loadCurrentPersonIdentityWithProcess(processId: String) {

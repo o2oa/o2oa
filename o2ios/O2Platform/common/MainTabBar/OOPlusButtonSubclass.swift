@@ -63,7 +63,7 @@ class OOPlusButtonSubclass: CYLPlusButton,CYLPlusButtonSubclassing {
             let app = OOAppsInfoDB.shareInstance.queryData(appid!)
             let destVC = OOTabBarHelper.getVC(storyboardName: "apps", vcName: "OOMainWebVC")
             MailViewController.app = app
-            MailViewController.isIndexShow = true
+            (destVC as? MailViewController)?.isIndexShow = true
             let nav = ZLNavigationController(rootViewController: destVC)
             return nav
         }else{

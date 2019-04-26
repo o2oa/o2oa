@@ -25,7 +25,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.Toast;
 
-import com.sj.emoji.EmojiBean;
 
 import net.muliba.fancyfilepickerlibrary.PicturePicker;
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R;
@@ -453,9 +452,12 @@ public class ChatActivity extends BaseActivity implements FuncLayout.OnFuncKeyBo
                     }
                 } else {
                     String content = null;
-                    if (o instanceof EmojiBean) {
-                        content = ((EmojiBean) o).emoji;
-                    } else if (o instanceof EmoticonEntity) {
+//                    Emoji
+//                    EmojiDisplay.
+//                    if (o instanceof EmojiBean) {
+//                        content = ((EmojiBean) o).emoji;
+//                    } else
+                        if (o instanceof EmoticonEntity) {
                         content = ((EmoticonEntity) o).getContent();
                     }
 
@@ -929,7 +931,8 @@ public class ChatActivity extends BaseActivity implements FuncLayout.OnFuncKeyBo
 
     private Uri getUriFromFile(File file) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return FileProvider.getUriForFile(this, "net.zoneland.x.bpm.mobile.v1.zoneXBPM.fileProvider", file);
+            String applicationId = getApplicationContext().getPackageName();
+            return FileProvider.getUriForFile(this, applicationId+".fileProvider", file);
         }else  {
             return Uri.fromFile(file);
         }

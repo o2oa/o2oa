@@ -22,7 +22,7 @@ public enum OOLoginError:Error {
 
 class OOLoginViewModel: NSObject {
     
-    private let faceRecognizeAPI = OOMoyaProvider<FaceRecognizeAPI>()
+//    private let faceRecognizeAPI = OOMoyaProvider<FaceRecognizeAPI>()
     
     //密码输入及验证码按钮可用
     let passwordIsValid = MutableProperty(false)
@@ -33,7 +33,7 @@ class OOLoginViewModel: NSObject {
     
     let submitButtonCurrentColor = MutableProperty(UIColor.lightGray)
     
-    let faceRecognizeLoginButtonisValid = MutableProperty(false)
+//    let faceRecognizeLoginButtonisValid = MutableProperty(false)
 
     
     override init() {
@@ -152,33 +152,33 @@ extension OOLoginViewModel {
     ///
     /// - Parameter image: 需要识别的图片
     /// - Returns: 如果成功识别 返回userId
-    func faceRecognize(image: UIImage) -> Promise<String> {
-        return Promise { fulfill, reject in
-            //TODO 这里的faceset 到时候要用collect上的unit id代替
-            self.faceRecognizeAPI.request(.search(image, "dev_o2oa_io"), completion: { (result) in
-                switch result {
-                    case .success(let data):
-                    let response = data.mapObject(FaceSearchResponse.self)
-                    var userId = ""
-                    if let ar = response?.data?.results {
-                        if ar.count > 0 {
-                            userId = ar[0].user_id ?? ""
-                            DDLogDebug("userId:\(userId)")
-                        }
-                    }
-                    if userId != "" {
-                        fulfill(userId)
-                    }else {
-                        reject(OOAppError.common(type:"faceError",message:"没有识别到用户",statusCode:1024))
-                    }
-                    break
-                    case .failure(let error):
-                    reject(error)
-                    break
-                }
-            })
-        }
-    }
+//    func faceRecognize(image: UIImage) -> Promise<String> {
+//        return Promise { fulfill, reject in
+//            //TODO 这里的faceset 到时候要用collect上的unit id代替
+//            self.faceRecognizeAPI.request(.search(image, "dev_o2oa_io"), completion: { (result) in
+//                switch result {
+//                    case .success(let data):
+//                    let response = data.mapObject(FaceSearchResponse.self)
+//                    var userId = ""
+//                    if let ar = response?.data?.results {
+//                        if ar.count > 0 {
+//                            userId = ar[0].user_id ?? ""
+//                            DDLogDebug("userId:\(userId)")
+//                        }
+//                    }
+//                    if userId != "" {
+//                        fulfill(userId)
+//                    }else {
+//                        reject(OOAppError.common(type:"faceError",message:"没有识别到用户",statusCode:1024))
+//                    }
+//                    break
+//                    case .failure(let error):
+//                    reject(error)
+//                    break
+//                }
+//            })
+//        }
+//    }
     
     
     
@@ -252,13 +252,13 @@ extension OOLoginViewModel {
     }
     
     
-    /// 人脸识别功能是否可用
-    func faceRecognizeValidate() {
-        // face++ 授权验证
-        MGFaceLicenseHandle.license { (result, date) in
-            DDLogInfo("face++ 验证权限完成， result:\(result)")
-            self.faceRecognizeLoginButtonisValid.value = result
-        }
-        
-    }
+//    /// 人脸识别功能是否可用
+//    func faceRecognizeValidate() {
+//        // face++ 授权验证
+//        MGFaceLicenseHandle.license { (result, date) in
+//            DDLogInfo("face++ 验证权限完成， result:\(result)")
+//            self.faceRecognizeLoginButtonisValid.value = result
+//        }
+//
+//    }
 }

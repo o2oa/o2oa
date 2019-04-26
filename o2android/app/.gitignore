@@ -1,5 +1,7 @@
 /build
-
+.project
+.classpath
+.settings/
 # VsCode
 .vscode/
 

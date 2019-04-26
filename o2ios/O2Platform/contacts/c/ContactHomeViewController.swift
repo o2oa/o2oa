@@ -248,7 +248,7 @@ class ContactHomeViewController: UITableViewController {
             let vm = CellViewModel(name: p.name!, sourceObject: p)
             self.contacts[2]?.append(vm)
         }
-        ProgressHUD.show("加载中...")
+        self.showMessage(title: "加载中...")
         for (order,url) in urls {
             Alamofire.request(url!, method: .get, parameters: nil, encoding:URLEncoding.default, headers: ["X-ORDER":String(order)]).validate().responseJSON {
                 response in
@@ -297,7 +297,7 @@ class ContactHomeViewController: UITableViewController {
                 
                 count += 1
                 if count == urls.count {
-                    ProgressHUD.dismiss()
+                    self.dismissProgressHUD()
                     if self.tableView.mj_header.isRefreshing() == true {
                         self.tableView.mj_header.endRefreshing()
                     }

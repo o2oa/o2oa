@@ -7,6 +7,7 @@
 //
 import AVFoundation
 import swiftScan
+import ProgressHUDSwift
 
 class ScanHelper {
     
@@ -16,7 +17,7 @@ class ScanHelper {
         // 权限判断
         let status = AVCaptureDevice.authorizationStatus(for: .video)
         if status == .denied || status == .restricted {
-            ProgressHUD.showError("没有摄像头权限，请先开启！")
+            ProgressSHD.showError("没有摄像头权限，请先开启！")
             return nil
         }else {
             let scanVC = NewScanViewController()

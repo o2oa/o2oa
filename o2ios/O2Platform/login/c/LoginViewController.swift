@@ -34,21 +34,12 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         
         //load image
-        let launchImage = OOCustomImageManager.default.loadImage(.launch_logo)
-        iconImageView.image = launchImage
-        iconImageView.isHidden = false
-        
-        
-        switch PROJECTMODE {
-        case 1:
-            self.startImage.image = UIImage(named: "startImage_szslb")
-        case 2:
-            self.startImage.image = UIImage(named: "startImage_hzcgw")
-        case 3:
-            self.startImage.image = UIImage(named: "startImage_hljdx")
-        default:
-            self.startImage.image = UIImage(named: "startImage")
+        if AppConfigSettings.shared.isFirstTime != true {
+            let launchImage = OOCustomImageManager.default.loadImage(.launch_logo)
+            iconImageView.image = launchImage
+            iconImageView.isHidden = false
         }
+        self.startImage.image = UIImage(named: "startImage")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -116,7 +107,7 @@ class LoginViewController: UIViewController {
                     //处理移动端应用
                     self.viewModel._saveAppConfigToDb()
                     //跳转到主页
-                    let destVC = OOTabBarController.genernateVC()
+                    let destVC = O2MainController.genernateVC()
                     destVC.selectedIndex = 2 // 首页选中 TODO 图标不亮。。。。。
                     UIApplication.shared.keyWindow?.rootViewController = destVC
                     UIApplication.shared.keyWindow?.makeKeyAndVisible()
@@ -135,13 +126,14 @@ class LoginViewController: UIViewController {
                     //自动登录出错
                     break
                 case .unknownError:
-                    self.showError(title: msg ?? "未知错误！")
+//                    self.showError(title: msg ?? "未知错误！")
+                    self.needReBind(msg ?? "未知错误！")
                     break
                 case .success:
                     //处理移动端应用
                     self.viewModel._saveAppConfigToDb()
                     //跳转到主页
-                    let destVC = OOTabBarController.genernateVC()
+                    let destVC = O2MainController.genernateVC()
                     destVC.selectedIndex = 2 // 首页选中 TODO 图标不亮。。。。。
                     UIApplication.shared.keyWindow?.rootViewController = destVC
                     UIApplication.shared.keyWindow?.makeKeyAndVisible()
@@ -163,6 +155,31 @@ class LoginViewController: UIViewController {
     
     @objc func receiveBindCompleted(customNotification:Notification){
         self.startFlowForPromise()
+    }
+    
+    private func needReBind(_ error: String) {
+        DispatchQueue.main.async {
+            let alertController = UIAlertController(title: "提示", message: "加载出错，是否重新绑定？错误：\(error)", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "重新绑定", style: .default, handler: {(action) in
+                self.rebind()
+            })
+            let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: {(action) in
+                
+            })
+            alertController.addAction(okAction)
+            alertController.addAction(cancelAction)
+            self.present(alertController, animated: true, completion: nil)
+        }
+    }
+    
+    private func rebind() {
+        O2AuthSDK.shared.clearAllInformationBeforeReBind(callback: { (result, msg) in
+            DDLogInfo("清空登录和绑定信息，result:\(result), msg:\(msg ?? "")")
+            OOAppsInfoDB.shareInstance.removeAll()
+            DispatchQueue.main.async {
+                self.forwardToSegue("bindPhoneSegue")
+            }
+        })
     }
     
 

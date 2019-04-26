@@ -22,8 +22,6 @@ PODS:
   - CocoaLumberjack/Swift (3.4.2):
     - CocoaLumberjack/Default
   - CYLTabBarController (1.17.17)
-  - DatePickerDialogSwift (0.1.2):
-    - Hue (~> 3.0.0)
   - EmptyDataSet-Swift (4.0.5)
   - Eureka (4.3.0)
   - EZSwiftExtensions (1.11)
@@ -31,15 +29,14 @@ PODS:
     - FMDB/standard (= 2.6.2)
   - FMDB/standard (2.6.2)
   - FSCalendar (2.8.0)
-  - GradientCircularProgress (3.10.1)
   - HandyJSON (4.2.0)
-  - Hue (3.0.1)
   - ImageSlideshow (1.7.0):
     - ImageSlideshow/Core (= 1.7.0)
   - ImageSlideshow/Alamofire (1.7.0):
     - AlamofireImage (~> 3.0)
     - ImageSlideshow/Core
   - ImageSlideshow/Core (1.7.0)
+  - IQKeyboardManagerSwift (6.2.0)
   - JGProgressHUD (2.0.3)
   - JHTAlertController (0.2.4)
   - JTCalendar (2.2.3)
@@ -105,16 +102,15 @@ DEPENDENCIES:
   - Charts
   - CocoaLumberjack/Swift
   - CYLTabBarController (~> 1.17.4)
-  - DatePickerDialogSwift (from `/Users/fancy/ios/dependence/DatePickerDialogSwift`)
   - EmptyDataSet-Swift (~> 4.0.2)
   - Eureka
   - EZSwiftExtensions (from `/Users/fancy/ios/dependence/EZSwiftExtensions`)
   - FMDB (~> 2.6.2)
   - FSCalendar
-  - GradientCircularProgress (from `https://github.com/keygx/GradientCircularProgress.git`)
   - HandyJSON (~> 4.2.0)
   - ImageSlideshow (~> 1.5)
   - ImageSlideshow/Alamofire
+  - IQKeyboardManagerSwift
   - JGProgressHUD
   - JHTAlertController (from `/Users/fancy/ios/dependence/JHTAlertController`)
   - JTCalendar (~> 2.0)
@@ -160,8 +156,8 @@ SPEC REPOS:
     - FMDB
     - FSCalendar
     - HandyJSON
-    - Hue
     - ImageSlideshow
+    - IQKeyboardManagerSwift
     - JGProgressHUD
     - JTCalendar
     - JZCalendarWeekView
@@ -190,12 +186,8 @@ SPEC REPOS:
     - YHPopupView
 
 EXTERNAL SOURCES:
-  DatePickerDialogSwift:
-    :path: "/Users/fancy/ios/dependence/DatePickerDialogSwift"
   EZSwiftExtensions:
     :path: "/Users/fancy/ios/dependence/EZSwiftExtensions"
-  GradientCircularProgress:
-    :git: https://github.com/keygx/GradientCircularProgress.git
   JHTAlertController:
     :path: "/Users/fancy/ios/dependence/JHTAlertController"
   SwiftValidator:
@@ -203,9 +195,6 @@ EXTERNAL SOURCES:
     :git: https://github.com/jpotts18/SwiftValidator.git
 
 CHECKOUT OPTIONS:
-  GradientCircularProgress:
-    :commit: 29abd46666f370255ae859717e82f907acf21cb4
-    :git: https://github.com/keygx/GradientCircularProgress.git
   SwiftValidator:
     :commit: c0ee801a2d107eca5f748d07932b449666d8effd
     :git: https://github.com/jpotts18/SwiftValidator.git
@@ -224,16 +213,14 @@ SPEC CHECKSUMS:
   Charts: f122fb70b19847fa5817d018b77d6c5a2296ab25
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
   CYLTabBarController: ed3184222048f6e7a57f9b175934580ff6e8d6fb
-  DatePickerDialogSwift: 38fca4a93bcd89ef2295fc9770677ac572388d76
   EmptyDataSet-Swift: a25810f50c3adfaa3840aa33ae8b5ba12ac29279
   Eureka: 6d711cb30ca333b4bc893110285a722ae3840114
   EZSwiftExtensions: d83b4719cd665c7a1556c95a02fcf29e877ced34
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   FSCalendar: 3a5ed3636e2ba1b83ebebfcf0c2603105a6f5efe
-  GradientCircularProgress: 7f3638d14b34b8181888d3a96e6bc045b6c0c184
   HandyJSON: 9dfc026c7d7adc1f0f8ba8b181495f0e0763b0f4
-  Hue: 93e852fa6211ab35922ad8c293f51c43d6c79eb2
   ImageSlideshow: f8eec5e37a980f60923b585ff23b0e140fd24018
+  IQKeyboardManagerSwift: b07ccf9d8cafe993dcd6cb794eb4ba34611a0c4e
   JGProgressHUD: 12b20a8f4ffe05258f8635c1ab92816e451f904d
   JHTAlertController: ef2822083029b44c3adeba626b9904d805591c95
   JTCalendar: f54975f1426facc38d112f372f0d3d955aae8d86
@@ -263,6 +250,6 @@ SPEC CHECKSUMS:
   YHPhotoKit: e88368af1fca0a110d41b88417088f7e49876981
   YHPopupView: 96d9c05c79a2a17cf69c3def09e5305cfae9e8e8
 
-PODFILE CHECKSUM: 15da6aaf4fb7608d2b32c368075e0dfaa5f482d9
+PODFILE CHECKSUM: 1c396af2341cb1fdf1c4aba52733d7e54561f92e
 
 COCOAPODS: 1.5.0

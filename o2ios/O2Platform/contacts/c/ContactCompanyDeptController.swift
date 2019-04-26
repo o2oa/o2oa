@@ -84,7 +84,7 @@ class ContactCompanyDeptController: UITableViewController {
     
     
     func loadCompData(_ obj:AnyObject?){
-        ProgressHUD.show("加载中...")
+        self.showMessage(title: "加载中...")
         Alamofire.request(self.myCompanyURL!).responseJSON {
             response in
             //debugPrint(response)
@@ -103,10 +103,10 @@ class ContactCompanyDeptController: UITableViewController {
                     let vm = CellViewModel(name: dept.name,sourceObject: dept)
                     self.compContacts.append(vm)
                 }
-                ProgressHUD.showSuccess("加载完成")
+                self.showSuccess(title: "加载完成")
             case .failure(let err):
                 DDLogError(err.localizedDescription)
-                ProgressHUD.showError("加载失败")
+                self.showError(title: "加载失败")
             }
             if self.tableView.mj_header.isRefreshing() {
                 self.tableView.mj_header.endRefreshing()

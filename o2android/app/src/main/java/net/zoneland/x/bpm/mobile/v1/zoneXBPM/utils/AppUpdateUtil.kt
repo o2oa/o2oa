@@ -10,6 +10,7 @@ import com.pgyersdk.update.UpdateManagerListener
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2App
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.DownloadAPKFragment
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.service.DownloadAPKService
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.PgyUpdateBean
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2AlertIconEnum
@@ -30,7 +31,7 @@ class AppUpdateUtil(activity: Activity) {
     private var versionName = ""
     private var downloadUrl = ""
 
-    fun checkAppUpdate(noUpdateIsNotify: Boolean = false, callbackContinue:(()->Unit)? = null) {
+    fun checkAppUpdate(noUpdateIsNotify: Boolean = false, callbackContinue:((flag: Boolean)->Unit)? = null) {
         PgyUpdateManager.register(weakReference.get(), object : UpdateManagerListener() {
             override fun onUpdateAvailable(p0: String?) {
                 XLog.debug("onUpdateAvailable $p0")
@@ -44,17 +45,18 @@ class AppUpdateUtil(activity: Activity) {
                     if (currentversionName != versionName) {
                         O2DialogSupport.openConfirmDialog(activity, bean.data.releaseNote, listener = { _ ->
                             XLog.info("notification is true..........")
-                            toDownloadService(activity, callbackContinue)
+                            callbackContinue?.invoke(true)
+//                            toDownloadService(activity)
                         }, icon = O2AlertIconEnum.UPDATE, negativeListener = {_->
-                            callbackContinue?.invoke()
+                            callbackContinue?.invoke(false)
                         })
 
                     } else {
-                        callbackContinue?.invoke()
+                        callbackContinue?.invoke(false)
                         XLog.info("versionName is same , do not show dialog! versionName:$versionName ")
                     }
                 }else {
-                    callbackContinue?.invoke()
+                    callbackContinue?.invoke(false)
                 }
 
             }
@@ -67,7 +69,7 @@ class AppUpdateUtil(activity: Activity) {
                         XToast.toastShort(activity, "没有发现新版本！")
                     }
                 }
-                callbackContinue?.invoke()
+                callbackContinue?.invoke(false)
             }
         })
     }
@@ -98,24 +100,25 @@ class AppUpdateUtil(activity: Activity) {
 
     }
 
-    private fun toDownloadService(activity: Activity, callbackContinue:(()->Unit)? = null) {
+    private fun toDownloadService(activity: Activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !activity.packageManager.canRequestPackageInstalls()) {// 8.0需要判断安装未知来源的权限
             O2DialogSupport.openAlertDialog(activity, "非常抱歉，'安装未知应用' 权限未开通， 马上去设置", { _->
                 AndroidUtils.gotoSettingInstalls(activity)
             })
         } else {
             downloadServiceStart(activity)
-            callbackContinue?.invoke()
+//            callbackContinue?.invoke()
         }
 
 
     }
 
-    private fun downloadServiceStart(activity: Activity) {
+    fun downloadServiceStart(activity: Activity) {
         val intent = Intent(activity, DownloadAPKService::class.java)
-        intent.action = DownloadAPKService.DOWNLOAD_SERVICE_ACTION
+        intent.action = activity.packageName + DownloadAPKService.DOWNLOAD_SERVICE_ACTION
         intent.putExtra(DownloadAPKService.VERSIN_NAME_EXTRA_NAME, versionName)
         intent.putExtra(DownloadAPKService.DOWNLOAD_URL_EXTRA_NAME, downloadUrl)
         activity.startService(intent)
+
     }
 }

@@ -170,17 +170,17 @@ class CMSItemDetailViewController: BaseWebViewUIViewController {
             let fileURL = documentsURL.appendingPathComponent(model.name)
             return (fileURL, [.removePreviousFile, .createIntermediateDirectories])
         }
-        ProgressHUD.show("downloading...", interaction: false)
+        self.showMessage(title: "downloading...")
         Alamofire.download(downURL, to: destination).response { response in
             print(response)
             if response.error == nil, let filePath = response.destinationURL?.path {
                 DispatchQueue.main.async {
-                    ProgressHUD.dismiss()
+                    self.dismissProgressHUD()
                 }
                completed(filePath)
             }else{
                 DispatchQueue.main.async {
-                    ProgressHUD.showError("文件下载出错")
+                    self.showError(title: "文件下载出错")
                 }
             }
         }

@@ -36,7 +36,7 @@ class SFeedbackViewController: UIViewController {
     
     @IBAction func feedbackButtonAction(_ sender: UIButton) {
         DDLogDebug("提交信息到后台服务器")
-        ProgressHUD.showSuccess("意见提交成功")
+        self.showSuccess(title: "意见提交成功")
     }
     
  

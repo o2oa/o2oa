@@ -19,6 +19,11 @@ enum OONotification:String {
     case newWorkPlace
     case staticsTotal
     
+    //重载门户webview
+    case reloadPortal
+    
+    
+    
     var stringValue:String {
         return "OOK" + rawValue
     }

@@ -109,7 +109,7 @@ class TodoTaskProcessViewController:FormViewController {
             return
         }
 
-        ProgressHUD.show("提交中...")
+        self.showMessage(title: "提交中...")
         //保存、提交
         self.saveTaskData().then { (result) -> Promise<String> in
                 DDLogDebug("save task is success ....\(result)")
@@ -124,13 +124,13 @@ class TodoTaskProcessViewController:FormViewController {
             }).then { (result) in
                 DDLogDebug("submit work is success....\(result)")
                 DispatchQueue.main.async {
-                    ProgressHUD.showSuccess("提交成功", interaction: true)
+                    self.showSuccess(title: "提交成功")
                     self.finishSubmit()
                 }
             }.catch { (err) in
                 DDLogError("提交异常。。。。\(err.localizedDescription)")
                 DispatchQueue.main.async {
-                    ProgressHUD.showError("提交失败")
+                    self.showError(title: "提交失败")
                 }
             }
     }

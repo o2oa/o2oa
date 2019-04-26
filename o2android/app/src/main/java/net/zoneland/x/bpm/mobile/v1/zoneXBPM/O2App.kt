@@ -26,7 +26,6 @@ import net.muliba.changeskin.FancySkinManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.skin.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.LogSingletonService
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import java.lang.Exception
 
 
@@ -95,11 +94,11 @@ class O2App : MultiDexApplication() {
         // qb
         QbSdk.initX5Environment(this, object : QbSdk.PreInitCallback{
             override fun onCoreInitFinished() {
-                XLog.info("qb sdk core init finish..........")
+                Log.i("O2app", "qb sdk core init finish..........")
             }
 
             override fun onViewInitFinished(p0: Boolean) {
-                XLog.info("qb sdk init $p0 ..........")
+                Log.i("O2app", "qb sdk init $p0 ..........")
             }
         })
         QbSdk.setDownloadWithoutWifi(true)
@@ -165,7 +164,7 @@ class O2App : MultiDexApplication() {
 
     fun _JMLoginInner(){
         _JMLogin { isSuccess ->
-            XLog.info("登录IM服务器result：$isSuccess *****************************************")
+            Log.i("O2app", "登录IM服务器result：$isSuccess *****************************************")
         }
     }
 
@@ -174,7 +173,7 @@ class O2App : MultiDexApplication() {
      */
     fun _JMLogin(back: (isSuccess: Boolean)->Unit) {
         if (TextUtils.isEmpty(O2SDKManager.instance().cId)) {
-            XLog.error("用户未登录。。。。。。。。。。不能连接到IM服务器")
+            Log.i("O2app", "用户未登录。。。。。。。。。。不能连接到IM服务器")
             return
         }
 
@@ -182,10 +181,10 @@ class O2App : MultiDexApplication() {
             override fun gotResult(responseCode: Int, message: String?) {
                 if (responseCode == 0) {
                     //登录成功
-                    XLog.info("登录极光IM服务器成功！！！！！！！！！！！！")
+                    Log.i("O2app", "登录极光IM服务器成功！！！！！！！！！！！！")
                     back(true)
                 } else {
-                    XLog.error("login JM IM fail, code: $responseCode, message: $message")
+                    Log.i("O2app", "login JM IM fail, code: $responseCode, message: $message")
                     //如果没有注册过 就注册一个
                     when (responseCode) {
                         800004, 800005, 800006, 801003, 898005 -> {
@@ -214,10 +213,10 @@ class O2App : MultiDexApplication() {
             override fun gotResult(responseCode: Int, message: String?) {
                 if (responseCode == 0) {
                     //注册成功
-                    XLog.info("注册极光IM服务器成功！！！！！！！！！！！！开始重新登录。。。。。。。。")
+                    Log.i("O2app", "注册极光IM服务器成功！！！！！！！！！！！！开始重新登录。。。。。。。。")
                     _JMLogin(back)
                 } else {
-                    XLog.error("register JM IM fail, code: $responseCode, message: $message")
+                    Log.i("O2app", "register JM IM fail, code: $responseCode, message: $message")
                     back(false)
                 }
             }

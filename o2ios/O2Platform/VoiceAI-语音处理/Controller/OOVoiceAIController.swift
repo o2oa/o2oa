@@ -189,7 +189,8 @@ class OOVoiceAIController: UIViewController {
         DDLogInfo("speak:\(txt)")
         do {
             let audioSession = AVAudioSession.sharedInstance()
-            try audioSession.overrideOutputAudioPort(.speaker)
+//            try audioSession.overrideOutputAudioPort(.speaker)
+            try audioSession.setCategory(.ambient, mode: .default)
 //            let route = audioSession.currentRoute
 //            route.outputs.forEach { (port) in
 //                DDLogInfo("name:\(port.portName)")

@@ -11,12 +11,18 @@ import BSImagePicker
 
 class FileBSImagePickerViewController: BSImagePickerViewController {
 
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationBar.isTranslucent = false
         self.navigationBar.barTintColor = navbar_barTint_color
         self.navigationBar.tintColor = navbar_tint_color
         self.navigationBar.titleTextAttributes = [NSAttributedString.Key.font:navbar_text_font,NSAttributedString.Key.foregroundColor:navbar_tint_color]
+        self.albumButton.setTitleColor(navbar_tint_color, for: .normal)
+        self.settings.maxNumberOfSelections = 1
+        self.settings.takePhotos = true
+        
+        
         //隐藏返回按钮文字
         let barItem = UIBarButtonItem.appearance()
         let offset = UIOffset(horizontal: -200, vertical: 0)

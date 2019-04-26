@@ -156,9 +156,12 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
                             android:hint="@string/title_please_enter_start_process_step_two"
-                            android:maxLines="1"
                             android:textColor="@color/z_color_text_primary"
                             android:textColorHint="@color/z_color_text_hint"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            android:imeOptions="actionNext"
+                            android:nextFocusForward="@+id/btn_start_process_step_two_positive"
                             android:textSize="14sp"
                             android:background="@null"/>
                     </LinearLayout>
@@ -188,6 +191,8 @@
                     android:text="@string/submit"
                     android:textColor="@android:color/white"
                     android:textSize="18sp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     />
 
                 <Button

@@ -10,17 +10,21 @@ import UIKit
 import CocoaLumberjack
 
 class O2CollectionViewCell: UICollectionViewCell {
+   
     
     override func awakeFromNib() {
         self.backgroundColor = UIColor.white
     }
-    
     
     @IBOutlet weak var appIconImageView: UIImageView!
     
     
     @IBOutlet weak var appTitle: UILabel!
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.appIconImageView.image = nil
+    }
     
     func initImg(app:O2App){
         
@@ -38,20 +42,31 @@ class O2CollectionViewCell: UICollectionViewCell {
             }
             self.appIconImageView.image = UIImage(named: app.normalIcon!)
             self.appIconImageView.highlightedImage = UIImage(named: app.normalIcon!)
-            let cache = Shared.imageCache
-            let format = HanekeGlobals.UIKit.formatWithSize(CGSize(width: 38, height: 38), scaleMode: .AspectFill)
-            let formatName = format.name
-            cache.addFormat(format)
-            let fetcher = NetworkFetcher<UIImage>(URL: url!)
-            cache.fetch(fetcher: fetcher, formatName: formatName).onSuccess { image in
-                self.appIconImageView.image = image
-                self.appIconImageView.highlightedImage = image
-            }
+//            let format = HanekeGlobals.UIKit.formatWithSize(CGSize(width: 38, height: 38), scaleMode: .AspectFill)
+            self.appIconImageView.hnk_setImageFromURL(url!)
+            
+//            let cache = Shared.imageCache
+            
+//            let formatName = format.name
+//            cache.addFormat(format)
+//            let fetcher = NetworkFetcher<UIImage>(URL: url!)
+//            cache.fetch(fetcher: fetcher, formatName: formatName).onSuccess { image in
+//                if(self.o2CellTag != nil && self.o2CellTag == indexPath) {
+//                    DDLogError("eeeeeeee\(app.title)")
+//                    self.appIconImageView.bounds.size = CGSize(width: 38, height: 38)
+//                    self.appIconImageView.hnk_setImageFromURL(<#T##URL: URL##URL#>)
+//                    self.appIconImageView.image = image
+//                    self.appIconImageView.highlightedImage = image
+//                }else {
+//                    DDLogError("ddddddddd\(app.title)")
+//                }
+//            }
         }else {
             self.appIconImageView.image = UIImage(named: app.normalIcon!)
             self.appIconImageView.highlightedImage = UIImage(named: app.normalIcon!)
         }
         
     }
+    
     
 }

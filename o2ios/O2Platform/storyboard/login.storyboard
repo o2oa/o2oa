@@ -68,7 +68,7 @@
         <!--Bind Register Controller-->
         <scene sceneID="vPW-Kt-T9L">
             <objects>
-                <viewController id="Yh7-G2-VLg" customClass="OOBindRegisterController" customModule="O2Platform" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="bindVC" id="Yh7-G2-VLg" customClass="OOBindRegisterController" customModule="O2Platform" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="6T5-Oe-E63"/>
                         <viewControllerLayoutGuide type="bottom" id="7gm-wr-Vo0"/>
@@ -367,33 +367,6 @@
                                             <action selector="btnLogin:" destination="a0S-mR-qpd" eventType="touchUpInside" id="jDa-A9-zCD"/>
                                         </connections>
                                     </button>
-                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HIY-PP-gKr">
-                                        <rect key="frame" x="0.0" y="180" width="343" height="40"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="40" id="Ovv-nX-eSe"/>
-                                        </constraints>
-                                        <state key="normal" title="刷脸登录">
-                                            <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </state>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="layerCornerRadius">
-                                                <integer key="value" value="20"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                <real key="value" value="20"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
-                                                <real key="value" value="1"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
-                                                <color key="value" red="0.82352941180000006" green="0.22352941179999999" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
-                                        <connections>
-                                            <action selector="faceRecgnizeAction:" destination="a0S-mR-qpd" eventType="touchUpInside" id="xHp-Z1-4Xn"/>
-                                        </connections>
-                                    </button>
                                 </subviews>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Copyright © 2017  All Rights Reserved" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A52-E8-znd">
@@ -418,10 +391,24 @@
                                     <action selector="btnReBindNodeAction:" destination="a0S-mR-qpd" eventType="touchUpInside" id="qQA-3H-Xcv"/>
                                 </connections>
                             </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VU6-Hu-1I4">
+                                <rect key="frame" x="32" y="383" width="100" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="35" id="DyV-tz-NyM"/>
+                                    <constraint firstAttribute="width" constant="100" id="xav-tr-QlL"/>
+                                </constraints>
+                                <state key="normal" title="指纹识别登录">
+                                    <color key="titleColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="bioAuthLoginBtnAction:" destination="a0S-mR-qpd" eventType="touchUpInside" id="Ul1-Ln-gkh"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="A52-E8-znd" firstAttribute="trailing" secondItem="5mI-Py-vbm" secondAttribute="trailingMargin" id="8Dk-wa-Ccx"/>
+                            <constraint firstItem="VU6-Hu-1I4" firstAttribute="leading" secondItem="5mI-Py-vbm" secondAttribute="leadingMargin" constant="16" id="Hv5-AB-8oh"/>
                             <constraint firstAttribute="trailingMargin" secondItem="sdH-Rd-Uu5" secondAttribute="trailing" constant="16" id="TtL-jY-jKL"/>
                             <constraint firstItem="wxO-Qg-4fw" firstAttribute="top" secondItem="gLp-Ql-ZqA" secondAttribute="bottom" constant="60" id="fPU-OV-aGc"/>
                             <constraint firstAttribute="trailingMargin" secondItem="VlL-pa-xtW" secondAttribute="trailing" id="gvX-Ce-MAk"/>
@@ -431,14 +418,15 @@
                             <constraint firstItem="sdH-Rd-Uu5" firstAttribute="top" secondItem="VlL-pa-xtW" secondAttribute="bottom" constant="8" id="ucf-wv-zlC"/>
                             <constraint firstItem="A52-E8-znd" firstAttribute="leading" secondItem="5mI-Py-vbm" secondAttribute="leadingMargin" id="vLr-qE-9gX"/>
                             <constraint firstItem="wxO-Qg-4fw" firstAttribute="centerX" secondItem="5mI-Py-vbm" secondAttribute="centerX" id="vca-jj-UD9"/>
+                            <constraint firstItem="VU6-Hu-1I4" firstAttribute="top" secondItem="VlL-pa-xtW" secondAttribute="bottom" constant="8" id="wx3-AY-MMm"/>
                         </constraints>
                     </view>
                     <nil key="simulatedStatusBarMetrics"/>
                     <nil key="simulatedTopBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="bioAuthLoginBtn" destination="VU6-Hu-1I4" id="RDQ-Zu-A9j"/>
                         <outlet property="copyrightLabel" destination="A52-E8-znd" id="Ybu-EC-cUV"/>
-                        <outlet property="faceRecgnizeLoginBtn" destination="HIY-PP-gKr" id="V5c-E6-cbe"/>
                         <outlet property="logoImageView" destination="wxO-Qg-4fw" id="Hh7-Oe-gAu"/>
                         <outlet property="passwordField" destination="Nr9-8F-s20" id="nwD-fE-rjt"/>
                         <outlet property="passwordTextField" destination="uXf-3e-9Bs" id="iZX-5X-X5f"/>
@@ -446,11 +434,79 @@
                         <outlet property="submitButton" destination="bkV-iJ-Vkd" id="QRH-jn-yYN"/>
                         <outlet property="userNameTextField" destination="lEi-tc-UYF" id="wwi-lw-TMN"/>
                         <segue destination="2FW-oB-Z7W" kind="showDetail" identifier="reBindSegue" id="6gx-hN-LjT"/>
+                        <segue destination="cft-aF-Yb3" kind="show" identifier="showBioAuthLogin" id="0Bc-Vx-3oE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rsu-MQ-dYI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1878" y="102"/>
+        </scene>
+        <!--Bio Auth Login View Controller-->
+        <scene sceneID="PUp-Gl-0uU">
+            <objects>
+                <viewController id="cft-aF-Yb3" customClass="BioAuthLoginViewController" customModule="O2Platform" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Qcn-vc-kbg"/>
+                        <viewControllerLayoutGuide type="bottom" id="YUC-Nx-JYU"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="bhD-dv-JgS">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pic_o2_moren1" translatesAutoresizingMaskIntoConstraints="NO" id="8xt-gj-zyd">
+                                <rect key="frame" x="127.5" y="140" width="120" height="120"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="120" id="7sa-Bj-Y2n"/>
+                                    <constraint firstAttribute="height" constant="120" id="bqd-au-JQf"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q9Q-4z-Rfe" customClass="OOBaseUIButton" customModule="O2Platform" customModuleProvider="target">
+                                <rect key="frame" x="26" y="290" width="323" height="40"/>
+                                <color key="backgroundColor" red="0.98431372549999996" green="0.2784313725" blue="0.2784313725" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="m5T-Za-xxO"/>
+                                </constraints>
+                                <state key="normal" title="生物识别登录">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layerCornerRadius">
+                                        <integer key="value" value="20"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="btnLogin:" destination="a0S-mR-qpd" eventType="touchUpInside" id="z11-fO-vqQ"/>
+                                    <action selector="tapBioAuthLogin:" destination="cft-aF-Yb3" eventType="touchUpInside" id="hAV-fd-WqM"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kLj-hW-IW3">
+                                <rect key="frame" x="257" y="350" width="92" height="30"/>
+                                <state key="normal" title="其它方式登录"/>
+                                <connections>
+                                    <segue destination="0kn-3s-0PH" kind="unwind" identifier="goBack2Login" unwindAction="unwindFromBioAuthLogin:" id="Yuv-L0-JEi"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Q9Q-4z-Rfe" firstAttribute="leading" secondItem="bhD-dv-JgS" secondAttribute="leadingMargin" constant="10" id="3Um-bM-pd8"/>
+                            <constraint firstItem="8xt-gj-zyd" firstAttribute="centerX" secondItem="bhD-dv-JgS" secondAttribute="centerX" id="3uH-rZ-hwr"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Q9Q-4z-Rfe" secondAttribute="trailing" constant="10" id="7pM-qJ-kQX"/>
+                            <constraint firstItem="kLj-hW-IW3" firstAttribute="top" secondItem="Q9Q-4z-Rfe" secondAttribute="bottom" constant="20" id="Fyq-YY-5jR"/>
+                            <constraint firstItem="8xt-gj-zyd" firstAttribute="top" secondItem="Qcn-vc-kbg" secondAttribute="bottom" constant="120" id="Svv-8y-quC"/>
+                            <constraint firstItem="Q9Q-4z-Rfe" firstAttribute="top" secondItem="8xt-gj-zyd" secondAttribute="bottom" constant="30" id="T1j-ya-25e"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="kLj-hW-IW3" secondAttribute="trailing" constant="10" id="WmX-Ob-3xi"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="bioAuthBtn" destination="Q9Q-4z-Rfe" id="kXh-cv-anT"/>
+                        <outlet property="bioImageView" destination="8xt-gj-zyd" id="2fS-b2-cza"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="XCI-nI-b3M" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="0kn-3s-0PH" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="2825" y="101"/>
         </scene>
     </scenes>
     <resources>

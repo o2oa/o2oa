@@ -131,11 +131,11 @@ extension ICCheckAppealViewController:BWSwipeRevealCellDelegate{
                      self.tableViewCellUpdate(indexPath)
                 }else{
                     DDLogError(JSON(val).description)
-                    ProgressHUD.showError("提交失败")
+                    self.showError(title: "提交失败")
                 }
             case .failure(let err):
                 DDLogError(err.localizedDescription)
-                ProgressHUD.showError("提交失败")
+                self.showError(title: "提交失败")
             }
         }
         
@@ -154,11 +154,11 @@ extension ICCheckAppealViewController:BWSwipeRevealCellDelegate{
                     self.tableViewCellUpdate(indexPath)
                 }else{
                     DDLogError(JSON(val).description)
-                    ProgressHUD.showError("提交失败")
+                    self.showError(title: "提交失败")
                 }
             case .failure(let err):
                 DDLogError(err.localizedDescription)
-                ProgressHUD.showError("提交失败")
+                self.showError(title: "提交失败")
             }
             }
             

@@ -88,7 +88,7 @@ class CMSWebViewActivity : BaseMVPActivity<CMSWebViewContract.View, CMSWebViewCo
     }
 
     override fun loadAttachList(list: List<AttachmentItemVO>) {
-        if (list.size>0) {
+        if (list.isNotEmpty()) {
             fab_cms_document_attach.visible()
             attachList.clear()
             attachList.addAll(list)
@@ -171,10 +171,10 @@ class CMSWebViewActivity : BaseMVPActivity<CMSWebViewContract.View, CMSWebViewCo
         }
     }
 
-    val taskMap = HashMap<String, Future<Unit>>()
+    private val taskMap = HashMap<String, Future<Unit>>()
     private fun getAttachFileLocalPath(id: String): String {
         var path  = ""
-        attachList.filter { it.id.equals(id) }.map { path = FileExtensionHelper.getXBPMCMSAttachFolder()+File.separator+it.fileName }
+        attachList.asSequence().filter { it.id == id }.map { path = FileExtensionHelper.getXBPMCMSAttachFolder()+File.separator+it.fileName }.toList()
         return path
     }
 }

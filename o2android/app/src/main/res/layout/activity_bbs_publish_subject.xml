@@ -1,225 +1,240 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_bbs_publish_subject"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:fitsSystemWindows="true"
-    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.bbs.publish.BBSPublishSubjectActivity">
-
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar_layout_snippet"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:theme="@style/XBPMTheme.AppBarOverlay">
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_snippet_top_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/z_color_primary"
-            app:popupTheme="@style/XBPMTheme.PopupOverlay"
-            app:layout_scrollFlags="scroll|snap|enterAlways">
-            <TextView
-                android:id="@+id/tv_snippet_top_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:ellipsize="marquee"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text=""
-                android:singleLine="true" />
-        </android.support.v7.widget.Toolbar>
-    </android.support.design.widget.AppBarLayout>
-
-    <ScrollView
+    tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.bbs.publish.BBSPublishSubjectActivity"
+    >
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/activity_bbs_publish_subject"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize">
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        android:background="@android:color/white">
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar_layout_snippet"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:theme="@style/XBPMTheme.AppBarOverlay">
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_snippet_top_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/z_color_primary"
+                app:popupTheme="@style/XBPMTheme.PopupOverlay"
+                app:layout_scrollFlags="scroll|snap|enterAlways">
+                <TextView
+                    android:id="@+id/tv_snippet_top_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:ellipsize="marquee"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text=""
+                    android:singleLine="true" />
+            </android.support.v7.widget.Toolbar>
+        </android.support.design.widget.AppBarLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_small"
-                android:layout_marginLeft="@dimen/spacing_normal"
-                android:layout_marginRight="@dimen/spacing_normal"
-                android:layout_marginTop="@dimen/spacing_small"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/bbs_publish_section_label"
-                    android:textColor="@color/z_color_text_primary"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/tv_bbs_publish_subject_section"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:textColor="@color/z_color_text_hint"
-                    android:textSize="15sp"
-                    tools:text="版块1" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_marginLeft="@dimen/spacing_normal"
-                android:layout_marginRight="@dimen/spacing_normal"
-                android:background="@color/z_color_subtitle_font" />
-
-            <LinearLayout
-                android:id="@+id/layout_bbs_publish_subject_type_choose_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_small"
-                android:layout_marginLeft="@dimen/spacing_normal"
-                android:layout_marginRight="@dimen/spacing_normal"
-                android:layout_marginTop="@dimen/spacing_small"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/bbs_publish_subject_type_label"
-                    android:textColor="@color/z_color_text_primary"
-                    android:textSize="15sp" />
-
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
+                    android:layout_marginBottom="@dimen/spacing_small"
+                    android:layout_marginLeft="@dimen/spacing_normal"
+                    android:layout_marginRight="@dimen/spacing_normal"
+                    android:layout_marginTop="@dimen/spacing_small"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/tv_bbs_publish_subject_type"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentLeft="true"
-                        android:text="@string/bbs_publish_subject_type"
-                        android:textColor="@color/z_color_text_hint"
+                        android:layout_weight="1"
+                        android:text="@string/bbs_publish_section_label"
+                        android:textColor="@color/z_color_text_primary"
                         android:textSize="15sp" />
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_alignParentRight="true"
-                        android:src="@mipmap/icon_select_more_gray" />
-                </RelativeLayout>
+                    <TextView
+                        android:id="@+id/tv_bbs_publish_subject_section"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:textColor="@color/z_color_text_hint"
+                        android:textSize="15sp"
+                        tools:text="版块1" />
 
-            </LinearLayout>
+                </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_marginLeft="@dimen/spacing_normal"
-                android:layout_marginRight="@dimen/spacing_normal"
-                android:background="@color/z_color_subtitle_font" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginLeft="@dimen/spacing_normal"
+                    android:layout_marginRight="@dimen/spacing_normal"
+                    android:background="@color/z_color_subtitle_font" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_small"
-                android:layout_marginLeft="@dimen/spacing_normal"
-                android:layout_marginRight="@dimen/spacing_normal"
-                android:layout_marginTop="@dimen/spacing_small"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/bbs_publish_subject_title_label"
-                    android:textColor="@color/z_color_text_primary"
-                    android:textSize="15sp" />
-
-                <EditText
-                    android:id="@+id/edit_bbs_publish_subject_title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:background="@null"
-                    android:textColor="@color/z_color_text_hint"
-                    android:textSize="15sp"
-                    tools:text="标题111111" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_marginLeft="@dimen/spacing_normal"
-                android:layout_marginRight="@dimen/spacing_normal"
-                android:background="@color/z_color_subtitle_font" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_small"
-                android:layout_marginLeft="@dimen/spacing_normal"
-                android:layout_marginRight="@dimen/spacing_normal"
-                android:layout_marginTop="@dimen/spacing_small"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/bbs_publish_subject_summary_label"
-                    android:textColor="@color/z_color_text_primary"
-                    android:textSize="15sp" />
-
-                <EditText
-                    android:id="@+id/edit_bbs_publish_subject_summary"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:background="@null"
-                    android:textColor="@color/z_color_text_hint"
-                    android:textSize="15sp"
-                    tools:text="摘要111111" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing_meeting"
-                android:background="@color/z_color_bottom_bar_background" />
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_small"
-                android:layout_marginLeft="@dimen/spacing_normal"
-                android:layout_marginRight="@dimen/spacing_normal"
-                android:layout_marginTop="@dimen/spacing_small">
-
-                <EditText
-                    android:id="@+id/edit_bbs_publish_subject_content"
+                <LinearLayout
+                    android:id="@+id/layout_bbs_publish_subject_type_choose_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:gravity="start"
-                    android:hint="@string/bbs_publish_subject_content_label"
-                    android:minLines="15"
-                    android:textColor="@color/z_color_text_hint"
-                    android:textSize="15sp" />
-            </android.support.design.widget.TextInputLayout>
-        </LinearLayout>
-    </ScrollView>
+                    android:layout_marginBottom="@dimen/spacing_small"
+                    android:layout_marginLeft="@dimen/spacing_normal"
+                    android:layout_marginRight="@dimen/spacing_normal"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/bbs_publish_subject_type_label"
+                        android:textColor="@color/z_color_text_primary"
+                        android:textSize="15sp" />
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_bbs_publish_subject_type"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentStart="true"
+                            android:text="@string/bbs_publish_subject_type"
+                            android:textColor="@color/z_color_text_hint"
+                            android:textSize="15sp" />
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_alignParentEnd="true"
+                            android:src="@mipmap/icon_select_more_gray" />
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginLeft="@dimen/spacing_normal"
+                    android:layout_marginRight="@dimen/spacing_normal"
+                    android:background="@color/z_color_subtitle_font" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_small"
+                    android:layout_marginLeft="@dimen/spacing_normal"
+                    android:layout_marginRight="@dimen/spacing_normal"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/bbs_publish_subject_title_label"
+                        android:textColor="@color/z_color_text_primary"
+                        android:textSize="15sp" />
+
+                    <EditText
+                        android:id="@+id/edit_bbs_publish_subject_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:background="@null"
+                        android:textColor="@color/z_color_text_hint"
+                        android:textSize="15sp"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:imeOptions="actionNext"
+                        android:nextFocusForward="@+id/edit_bbs_publish_subject_summary"
+                        tools:text="标题111111" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginLeft="@dimen/spacing_normal"
+                    android:layout_marginRight="@dimen/spacing_normal"
+                    android:background="@color/z_color_subtitle_font" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_small"
+                    android:layout_marginLeft="@dimen/spacing_normal"
+                    android:layout_marginRight="@dimen/spacing_normal"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/bbs_publish_subject_summary_label"
+                        android:textColor="@color/z_color_text_primary"
+                        android:textSize="15sp" />
+
+                    <EditText
+                        android:id="@+id/edit_bbs_publish_subject_summary"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:background="@null"
+                        android:textColor="@color/z_color_text_hint"
+                        android:textSize="15sp"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:imeOptions="actionNext"
+                        android:nextFocusForward="@+id/edit_bbs_publish_subject_content"
+                        tools:text="摘要111111" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spacing_meeting"
+                    android:background="@color/z_color_bottom_bar_background" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_small"
+                    android:layout_marginLeft="@dimen/spacing_normal"
+                    android:layout_marginRight="@dimen/spacing_normal"
+                    android:layout_marginTop="@dimen/spacing_small">
+
+                    <EditText
+                        android:id="@+id/edit_bbs_publish_subject_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:gravity="start"
+                        android:hint="@string/bbs_publish_subject_content_label"
+                        android:inputType="text"
+                        android:imeOptions="actionDone"
+                        android:minLines="15"
+                        android:textColor="@color/z_color_text_hint"
+                        android:textSize="15sp" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+        </ScrollView>
+
+
+
+    </android.support.design.widget.CoordinatorLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -267,5 +282,4 @@
             </LinearLayout>
         </HorizontalScrollView>
     </LinearLayout>
-
-</android.support.design.widget.CoordinatorLayout>
+</FrameLayout>

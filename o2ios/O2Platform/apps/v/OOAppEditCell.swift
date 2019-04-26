@@ -51,15 +51,16 @@ class OOAppEditCell: UITableViewCell,Configurable {
             }
             self.appIcon.image = UIImage(named: app.normalIcon!)
             self.appIcon.highlightedImage = UIImage(named: app.normalIcon!)
-            let cache = Shared.imageCache
-            let format = HanekeGlobals.UIKit.formatWithSize(CGSize(width: 38, height: 38), scaleMode: .AspectFill)
-            let formatName = format.name
-            cache.addFormat(format)
-            let fetcher = NetworkFetcher<UIImage>(URL: url!)
-            cache.fetch(fetcher: fetcher, formatName: formatName).onSuccess { image in
-                self.appIcon.image = image
-                self.appIcon.highlightedImage = image
-            }
+            self.appIcon.hnk_setImageFromURL(url!)
+//            let cache = Shared.imageCache
+//            let format = HanekeGlobals.UIKit.formatWithSize(CGSize(width: 38, height: 38), scaleMode: .AspectFill)
+//            let formatName = format.name
+//            cache.addFormat(format)
+//            let fetcher = NetworkFetcher<UIImage>(URL: url!)
+//            cache.fetch(fetcher: fetcher, formatName: formatName).onSuccess { image in
+//                self.appIcon.image = image
+//                self.appIcon.highlightedImage = image
+//            }
         }else {
             self.appIcon.image = UIImage(named: app.normalIcon!)
             self.appIcon.highlightedImage = UIImage(named: app.normalIcon!)

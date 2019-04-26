@@ -12,7 +12,8 @@ import SwiftyJSON
 import Alamofire
 import ObjectMapper
 import AlamofireObjectMapper
-
+import Flutter
+import O2OA_Auth_SDK
 import CocoaLumberjack
 
 
@@ -83,73 +84,79 @@ class O2AppViewController: UIViewController{
         DDLogDebug("返回应用列表")
     }
 
+    
+    // MARK: - Flutter
+    //打开flutter应用
+    /**
+     @param routeName flutter的路由 打开不同的页面
+    **/
+    func openFlutterApp(routeName: String) {
+        let flutterViewController = O2FlutterViewController()
+        DDLogDebug("init route:\(routeName)")
+        flutterViewController.setInitialRoute(routeName)
+        self.present(flutterViewController, animated: false, completion: nil)
+    }
+    
 
 }
 
 extension O2AppViewController:ZLCollectionViewDelegate{
     func clickWithApp(_ app: O2App) {
-        //设置返回标志，其它应用根据此返回标志调用返回unwindSegue
-        AppConfigSettings.shared.appBackType = 2
-        if let segueIdentifier = app.segueIdentifier,segueIdentifier != "" { // portal 门户 走这边
-            if app.storyBoard! == "webview" { // 打开MailViewController 
-                DDLogDebug("open webview for : "+app.title!+" url: "+app.vcName!)
-                self.performSegue(withIdentifier: segueIdentifier, sender: app)
-            }else {
-                self.performSegue(withIdentifier: segueIdentifier, sender: nil)
-            }
-            
-        } else {
-            if app.storyBoard! == "webview" {
-                DDLogDebug("open webview for : "+app.title!+" url: "+app.vcName!)
-                let webConfiguration = WKWebViewConfiguration()
-                let myURL = URL(string: app.vcName!)
-                let webView = WKWebView(frame: self.view.bounds, configuration: webConfiguration)
-                let myRequest = URLRequest(url: myURL!)
-                webView.load(myRequest)
-                self.view.addSubview(webView)
+        if let flutter = app.storyBoard, flutter == "flutter" {
+            openFlutterApp(routeName: app.appId!)
+        }else {
+            //设置返回标志，其它应用根据此返回标志调用返回unwindSegue
+            AppConfigSettings.shared.appBackType = 2
+            if let segueIdentifier = app.segueIdentifier,segueIdentifier != "" { // portal 门户 走这边
+                if app.storyBoard! == "webview" { // 打开MailViewController
+                    DDLogDebug("open webview for : "+app.title!+" url: "+app.vcName!)
+                    self.performSegue(withIdentifier: segueIdentifier, sender: app)
+                }else {
+                    self.performSegue(withIdentifier: segueIdentifier, sender: nil)
+                }
+                
             } else {
-                // 内置应用走这边  根据appkey 打开对应的storyboard
-                // 语音助手还没做
-                if app.appId == "o2ai" {
-                    DDLogInfo("语音助手还没做，，，，，，，，，，，，，，，，")
-//                    self.showError(title: "语音助手正在开发中......")
-//                    return
-                    app.storyBoard = "ai"
-                }
-                let story = O2AppUtil.apps.first { (appInfo) -> Bool in
-                    return app.appId == appInfo.appId
-                }
-                var storyBoardName = app.storyBoard
-                if story != nil {
-                    storyBoardName = story?.storyBoard
-                }
-                DDLogDebug("storyboard: \(storyBoardName!) , app:\(app.appId!)")
-                let storyBoard = UIStoryboard(name: storyBoardName!, bundle: nil)
-                var destVC:UIViewController!
-                if let vcname = app.vcName,vcname.isEmpty == false {
-                    destVC = storyBoard.instantiateViewController(withIdentifier: app.vcName!)
-                }else{
-                    destVC = storyBoard.instantiateInitialViewController()
-                }
-                
-                if app.vcName == "todoTask" {
-                    
-                    if "taskcompleted" == app.appId {
-                        AppConfigSettings.shared.taskIndex = 2
-                    }else if "read" == app.appId {
-                       AppConfigSettings.shared.taskIndex = 1
-                    }else if "readcompleted" == app.appId {
-                        AppConfigSettings.shared.taskIndex = 3
-                    }else {
-                        AppConfigSettings.shared.taskIndex = 0
+                if app.storyBoard! == "webview" {
+                    DDLogError("321 open webview for : "+app.title!+" url: "+app.vcName!)
+                } else {
+                    // 内置应用走这边  根据appkey 打开对应的storyboard
+                    if app.appId == "o2ai" {
+                        app.storyBoard = "ai"
                     }
+                    let story = O2AppUtil.apps.first { (appInfo) -> Bool in
+                        return app.appId == appInfo.appId
+                    }
+                    var storyBoardName = app.storyBoard
+                    if story != nil {
+                        storyBoardName = story?.storyBoard
+                    }
+                    DDLogDebug("storyboard: \(storyBoardName!) , app:\(app.appId!)")
+                    let storyBoard = UIStoryboard(name: storyBoardName!, bundle: nil)
+                    var destVC:UIViewController!
+                    if let vcname = app.vcName,vcname.isEmpty == false {
+                        destVC = storyBoard.instantiateViewController(withIdentifier: app.vcName!)
+                    }else{
+                        destVC = storyBoard.instantiateInitialViewController()
+                    }
+                    
+                    if app.vcName == "todoTask" {
+                        if "taskcompleted" == app.appId {
+                            AppConfigSettings.shared.taskIndex = 2
+                        }else if "read" == app.appId {
+                           AppConfigSettings.shared.taskIndex = 1
+                        }else if "readcompleted" == app.appId {
+                            AppConfigSettings.shared.taskIndex = 3
+                        }else {
+                            AppConfigSettings.shared.taskIndex = 0
+                        }
+                    }
+                    if destVC.isKind(of: ZLNavigationController.self) {
+                        self.show(destVC, sender: nil)
+                    }else{
+                        self.navigationController?.pushViewController(destVC, animated: true)
+                    }
+                    
                 }
-                if destVC.isKind(of: ZLNavigationController.self) {
-                    self.show(destVC, sender: nil)
-                }else{
-                    self.navigationController?.pushViewController(destVC, animated: true)
-                }
-                
             }
         }
     }
