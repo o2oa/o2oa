@@ -56,7 +56,7 @@ Github : https://github.com/o2oa/o2oa
 O2OA开发相关教程天梯：https://my.oschina.net/o2oa/blog/3016363
 
 
-# 最新版本服务器安装包下载[o2server_20190409085511]\:
+# 最新版本服务器安装包下载[o2server_20190425182257]\:
 
 windows 64Bit : http://download.o2oa.net/download/versions/o2server_20190425182257_windows.zip
 
@@ -72,6 +72,7 @@ AIX : http://download.o2oa.net/download/versions/o2server_20190425182257_aix.zip
 百度云盘：https://pan.baidu.com/s/1oBQ1atXGyXdLaYE5uAqF1w   提取码: pnk9
 
 腾讯微云盘：https://share.weiyun.com/5krUMjj
+
 
 # 最新版本 v4.1660\:
 
