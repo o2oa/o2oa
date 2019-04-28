@@ -799,8 +799,13 @@ public class AeiObjects extends GsonPropertyObject {
 	private void commitData() throws Exception {
 		List<Attachment> os = ListUtils.subtract(this.getAttachments(), this.getDeleteAttachments());
 		os = ListUtils.sum(os, this.getCreateAttachments());
-		this.getWorkDataHelper()
-				.update(this.getData().removeWork().removeAttachmentList().setWork(this.work).setAttachmentList(os));
+		Data data = this.getData().removeWork().removeAttachmentList().setAttachmentList(os);
+		if (ListTools.isNotEmpty(this.createWorkCompleteds)) {
+			data.setWork(this.createWorkCompleteds.get(0));
+		} else {
+			data.setWork(this.work);
+		}
+		this.getWorkDataHelper().update(data);
 	}
 
 	public List<Work> getUpdateWorks() {

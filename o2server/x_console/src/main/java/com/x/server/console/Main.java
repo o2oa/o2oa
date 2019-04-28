@@ -420,8 +420,7 @@ public class Main {
 
 	private static boolean update(String password, String backup, String latest) {
 		try {
-			return new ActionUpdate().execute(password, BooleanUtils.toBoolean(backup),
-					BooleanUtils.toBoolean(latest));
+			return new ActionUpdate().execute(password, BooleanUtils.toBoolean(backup), BooleanUtils.toBoolean(latest));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -647,20 +646,22 @@ public class Main {
 		}
 	}
 
-	private static void dumpData(String password) {
+	private static boolean dumpData(String password) {
 		try {
-			(new ActionDumpData()).execute(password);
+			return (new ActionDumpData()).execute(password);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return true;
 	}
 
-	private static void dumpStorage(String password) {
+	private static boolean dumpStorage(String password) {
 		try {
-			(new ActionDumpStorage()).execute(password);
+			return (new ActionDumpStorage()).execute(password);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return true;
 	}
 
 	private static void resotreData(String dateString, String password) {

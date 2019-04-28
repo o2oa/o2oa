@@ -1174,8 +1174,8 @@ public class Business {
 		return false;
 	}
 
-	public boolean controllerable(Business business, EffectivePerson effectivePerson, Application application,
-			Process process, Attachment attachment) throws Exception {
+	public boolean controllerable(EffectivePerson effectivePerson, Application application, Process process,
+			Attachment attachment) throws Exception {
 		if (ListTools.isEmpty(attachment.getControllerIdentityList(), attachment.getControllerUnitList())) {
 			return true;
 		}
@@ -1183,13 +1183,13 @@ public class Business {
 			return true;
 		}
 		if (!ListTools.isEmpty(attachment.getControllerIdentityList())) {
-			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
+			List<String> identities = this.organization().identity().listWithPerson(effectivePerson);
 			if (ListTools.containsAny(identities, attachment.getControllerIdentityList())) {
 				return true;
 			}
 		}
 		if (!ListTools.isEmpty(attachment.getControllerUnitList())) {
-			List<String> units = business.organization().unit().listWithPersonSupNested(effectivePerson);
+			List<String> units = this.organization().unit().listWithPersonSupNested(effectivePerson);
 			if (ListTools.containsAny(units, attachment.getControllerUnitList())) {
 				return true;
 			}

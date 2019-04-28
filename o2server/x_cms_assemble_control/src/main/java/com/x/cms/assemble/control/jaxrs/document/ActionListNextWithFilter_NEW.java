@@ -40,6 +40,8 @@ public class ActionListNextWithFilter_NEW extends BaseAction {
 		List<String> groupNames = null;
 		Boolean isAnonymous = effectivePerson.isAnonymous();
 		String personName = effectivePerson.getDistinguishedName();
+		Integer minutes = null;		
+		Date lastedPublishTime = null;
 		
 		personNames.add( "所有人" );
 		personNames.add( personName );
@@ -114,12 +116,18 @@ public class ActionListNextWithFilter_NEW extends BaseAction {
 		}
 
 		if (check) {
+			minutes = wi.getMinutes();
+			if ( minutes == null || minutes <= 0) {
+				lastedPublishTime = null;
+			}else {
+				lastedPublishTime = new Date ( new Date().getTime() - minutes*60*1000L );
+			}
 			// 从数据库中查询符合条件的对象总数
 			try {
 				total = documentInfoServiceAdv.countWithCondition( queryCategoryIds, wi.getTitle(), 
 						wi.getPublisherList(), wi.getCreateDateList(), wi.getPublishDateList(), wi.getStatusList(), wi.getDocumentType(), 
 						wi.getCreatorUnitNameList(),
-						wi.getImportBatchNames(), personNames, unitNames, groupNames, manager );
+						wi.getImportBatchNames(), personNames, unitNames, groupNames, manager, lastedPublishTime );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在获取用户可查询到的文档数据条目数量时发生异常。");
@@ -132,7 +140,7 @@ public class ActionListNextWithFilter_NEW extends BaseAction {
 				documentList = documentInfoServiceAdv.listNextWithCondition( id, count, queryCategoryIds, wi.getTitle(), 
 						wi.getPublisherList(), wi.getCreateDateList(), wi.getPublishDateList(), wi.getStatusList(), wi.getDocumentType(), 
 						wi.getCreatorUnitNameList(),
-						wi.importBatchNames, personNames, unitNames, groupNames, wi.getOrderField(), wi.getOrderType(), manager);
+						wi.importBatchNames, personNames, unitNames, groupNames, wi.getOrderField(), wi.getOrderType(), manager, lastedPublishTime );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在根据用户可访问的文档ID列表对文档进行分页查询时发生异常。");
@@ -202,6 +210,9 @@ public class ActionListNextWithFilter_NEW extends BaseAction {
 	
 	public static class Wi {
 		
+		@FieldDescribe( "只查询minutes分钟之类发布的文档，值为null或者为0时不作限制" )
+		private Integer minutes = null;
+		
 		@FieldDescribe( "作为过滤条件的CMS应用ID列表, 可多个, String数组." )
 		private List<String> appIdList;
 		
@@ -251,6 +262,14 @@ public class ActionListNextWithFilter_NEW extends BaseAction {
 		private String title;
 
 		
+		public Integer getMinutes() {
+			return minutes;
+		}
+
+		public void setMinutes(Integer minutes) {
+			this.minutes = minutes;
+		}
+
 		public List<String> getCreatorUnitNameList() {
 			return creatorUnitNameList;
 		}

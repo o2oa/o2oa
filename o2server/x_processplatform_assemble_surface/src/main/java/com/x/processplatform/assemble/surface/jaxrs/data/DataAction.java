@@ -91,7 +91,7 @@ public class DataAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "根据路径获取指定work的data数据.", action = ActionGetWithJobPath2.class)
 	@GET
-	@Path("work/{id}/{path0}/{path1}/{path2}")
+	@Path("job/{job}/{path0}/{path1}/{path2}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void getWithJobPath2(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
@@ -112,7 +112,7 @@ public class DataAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "根据路径获取指定work的data数据.", action = ActionGetWithJobPath3.class)
 	@GET
-	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}")
+	@Path("job/{job}/{path0}/{path1}/{path2}/{path3}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void getWithJobPath3(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
@@ -134,7 +134,7 @@ public class DataAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "根据路径获取指定work的data数据.", action = ActionGetWithJobPath4.class)
 	@GET
-	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}")
+	@Path("job/{job}/{path0}/{path1}/{path2}/{path3}/{path4}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void getWithJobPath4(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
@@ -157,7 +157,7 @@ public class DataAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "根据路径获取指定work的data数据.", action = ActionGetWithJobPath5.class)
 	@GET
-	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}")
+	@Path("job/{job}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void getWithJobPath5(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
@@ -182,7 +182,7 @@ public class DataAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "根据路径获取指定work的data数据.", action = ActionGetWithJobPath6.class)
 	@GET
-	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}")
+	@Path("job/{job}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void getWithJobPath6(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
@@ -208,7 +208,7 @@ public class DataAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "根据路径获取指定work的data数据.", action = ActionGetWithJobPath7.class)
 	@GET
-	@Path("work/{id}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}")
+	@Path("job/{job}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void getWithJobPath7(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,

@@ -24,7 +24,7 @@ public class SlicePropertiesBuilder {
 	public static String driver_gbase = "com.gbasedbt.jdbc.IfxDriver";
 	/** 避免db2在aix版本和lwl版本字段长度不一致的问题 */
 	public static String dictionary_db2 = "db2(createPrimaryKeys=false,characterColumnSize=255,maxColumnNameLength=128,maxIndexNameLength=128,maxConstraintNameLength=128)";
-	public static String dictionary_oracle = "oracle(maxTableNameLength=128,maxColumnNameLength=128,maxIndexNameLength=128,maxConstraintNameLength=128,maxEmbeddedClobSize=104857600)";
+	public static String dictionary_oracle = "oracle(maxTableNameLength=128,maxColumnNameLength=128,maxIndexNameLength=128,maxConstraintNameLength=128,maxEmbeddedClobSize=-1,maxEmbeddedBlobSize=-1)";
 	public static String dictionary_mysql = "mysql(clobTypeName=LONGTEXT,blobTypeName=LONGBLOB,createPrimaryKeys=false,maxIndexesPerTable=64)";
 	public static String dictionary_postgresql = "postgres";
 	public static String dictionary_informix = "informix";

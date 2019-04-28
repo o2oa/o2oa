@@ -55,8 +55,7 @@ public class ThisApplication {
 			/* 政务钉钉拉入同步 */
 			if (Config.zhengwuDingding().getEnable()) {
 				/* 启动同步任务 */
-				context().scheduleLocal(ZhengwuDingdingSyncOrganization.class,
-						Config.zhengwuDingding().getSyncCron());
+				context().scheduleLocal(ZhengwuDingdingSyncOrganization.class, Config.zhengwuDingding().getSyncCron());
 				/* 添加一个强制同步任务 */
 				context().scheduleLocal(ZhengwuDingdingSyncOrganizationTrigger.class,
 						Config.zhengwuDingding().getForceSyncCron());
@@ -85,7 +84,7 @@ public class ThisApplication {
 			context().scheduleLocal(CleanupWarnLog.class, 10, 60 * 30);
 			context().scheduleLocal(CollectPerson.class, 10, 60 * 30);
 			context().scheduleLocal(CollectLog.class, 10, 60 * 30);
-			context().scheduleLocal(TriggerAgent.class, 150, 5);
+			context().scheduleLocal(TriggerAgent.class, 150, 60);
 			/* 行政区域每周更新一次 */
 			context().scheduleLocal(Area.class, 300, 60 * 60 * 24);
 		} catch (Exception e) {

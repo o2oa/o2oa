@@ -51,6 +51,45 @@ public class ConsumeAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
+	@JaxrsMethodDescribe(value = "获取消息,当前人员.", action = ActionListWithCurrentPerson.class)
+	@GET
+	@Path("list/{consume}/currentperson/count/{count}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithCurrentPerson(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("消费者") @PathParam("consume") String consume,
+			@JaxrsParameterDescribe("数量") @PathParam("count") Integer count) {
+		ActionResult<List<ActionListWithCurrentPerson.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithCurrentPerson().execute(effectivePerson, consume, count);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "获取消息,指定人员.", action = ActionListWithPerson.class)
+	@GET
+	@Path("list/{consume}/person/{person}/count/{count}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithPerson(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("消费者") @PathParam("consume") String consume,
+			@JaxrsParameterDescribe("人员") @PathParam("person") String person,
+			@JaxrsParameterDescribe("数量") @PathParam("count") Integer count) {
+		ActionResult<List<ActionListWithPerson.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithPerson().execute(effectivePerson, consume, count, person);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
 	@JaxrsMethodDescribe(value = "更新消息,将消息标志为已处理.", action = ActionUpdateSingle.class)
 	@GET
 	@Path("{id}/type/{type}")

@@ -20,7 +20,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.ImMessage;
-import com.x.base.core.project.tools.ListTools;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.core.entity.Message;
 import com.x.message.core.entity.Message_;
@@ -44,7 +43,7 @@ class ActionList extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Message> cq = cb.createQuery(Message.class);
 		Root<Message> root = cq.from(Message.class);
-		Predicate p = cb.isMember(consume, root.get(Message_.consumerList));
+		Predicate p = cb.equal(root.get(Message_.consumer), consume);
 		List<Message> os = em.createQuery(cq.select(root).where(p).orderBy(cb.asc(root.get(Message_.createTime))))
 				.setMaxResults(count).getResultList();
 		return Wo.copier.copy(os);
@@ -57,7 +56,7 @@ class ActionList extends BaseAction {
 
 		private static final long serialVersionUID = 681982898431236763L;
 		static WrapCopier<Message, Wo> copier = WrapCopierFactory.wo(Message.class, Wo.class, null,
-				ListTools.toList(JpaObject.FieldsInvisible, Message.consumerList_FIELDNAME));
+				JpaObject.FieldsInvisible);
 	}
 
 }

@@ -40,11 +40,11 @@ class ActionExecute extends BaseAction {
 			Query query = em.createQuery(wi.getData());
 			Object data = null;
 			if (StringUtils.equalsIgnoreCase(wi.getType(), Statement.TYPE_SELECT)) {
-				if ((null != wi.getFirstResult()) && (wi.getFirstResult() > 0)) {
-					query.setFirstResult(wi.getFirstResult());
-				}
 				if ((null != wi.getMaxResults()) && (wi.getMaxResults() > 0)) {
 					query.setMaxResults(wi.getMaxResults());
+				}
+				if ((null != wi.getFirstResult()) && (wi.getFirstResult() > 0)) {
+					query.setFirstResult(wi.getFirstResult());
 				}
 				data = query.getResultList();
 			} else {

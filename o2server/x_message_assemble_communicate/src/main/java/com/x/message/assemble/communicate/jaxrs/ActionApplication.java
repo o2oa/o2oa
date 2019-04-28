@@ -9,6 +9,7 @@ import com.x.message.assemble.communicate.jaxrs.connector.ConnectorAction;
 import com.x.message.assemble.communicate.jaxrs.consume.ConsumeAction;
 import com.x.message.assemble.communicate.jaxrs.im.ImAction;
 import com.x.message.assemble.communicate.jaxrs.mass.MassAction;
+import com.x.message.assemble.communicate.jaxrs.message.MessageAction;
 
 @ApplicationPath("jaxrs")
 public class ActionApplication extends AbstractActionApplication {
@@ -18,6 +19,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(ImAction.class);
 		classes.add(ConsumeAction.class);
 		classes.add(MassAction.class);
+		classes.add(MessageAction.class);
 		return classes;
 	}
 

@@ -167,10 +167,10 @@ public class DocumentInfoService {
 			List<String> viewAbleCategoryIds, String title, List<String> publisherList, List<String> createDateList,  
 			List<String> publishDateList,  List<String> statusList, String documentType, List<String>  creatorUnitNameList,
 			List<String> importBatchNames, List<String> personNames, List<String> unitNames, 
-			List<String> groupNames,  Boolean manager ) throws Exception {
+			List<String> groupNames,  Boolean manager, Date lastedPublishTime ) throws Exception {
 		Business business = new Business(emc);	
 		return business.getDocumentFactory().countWithCondition( viewAbleCategoryIds, title, publisherList, createDateList, 
-				publishDateList, statusList, documentType, creatorUnitNameList, importBatchNames, personNames, unitNames, groupNames, manager );
+				publishDateList, statusList, documentType, creatorUnitNameList, importBatchNames, personNames, unitNames, groupNames, manager, lastedPublishTime );
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -178,7 +178,7 @@ public class DocumentInfoService {
 			String id, Integer maxCount, List<String> viewAbleCategoryIds, String title, List<String> publisherList, List<String> createDateList,  
 			List<String> publishDateList,  List<String> statusList, String documentType, List<String>  creatorUnitNameList, 
 			List<String> importBatchNames, List<String> personNames, List<String> unitNames, 
-			List<String> groupNames, String orderField, String order, Boolean manager ) throws Exception {
+			List<String> groupNames, String orderField, String order, Boolean manager, Date lastedPublishTime ) throws Exception {
 		Business business = new Business(emc);
 		Document document = null;
 		Object sequenceFieldValue = null;
@@ -192,7 +192,7 @@ public class DocumentInfoService {
 			}
 		}		
 		return business.getDocumentFactory().listNextWithCondition( maxCount, viewAbleCategoryIds, title, publisherList, createDateList, publishDateList, 
-				statusList, documentType, creatorUnitNameList, importBatchNames, personNames, unitNames, groupNames, sequenceFieldValue, orderField, order,  manager );
+				statusList, documentType, creatorUnitNameList, importBatchNames, personNames, unitNames, groupNames, sequenceFieldValue, orderField, order,  manager, lastedPublishTime );
 	}
 
 	@SuppressWarnings("unchecked")

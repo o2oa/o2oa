@@ -105,14 +105,14 @@ class ActionPrepareCover extends BaseAction {
 						wos.add(new Wo(m.getW().getId(), JpaObject.createId()));
 					}
 				}
-			}
-			for (MatchElement<WrapFormField, FormField> _me : this.match(business, m.getW().getFormFieldList(),
-					ListUtils.union(this.listWithIds(business, m.getW().getFormFieldList(), FormField.class),
-							business.formField().listWithFormObject(m.getT().getId())))) {
-				if (StringUtils.equals(_me.getW().getForm(), _me.getT().getForm())) {
-					wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
-				} else {
-					wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+				for (MatchElement<WrapFormField, FormField> _me : this.match(business, m.getW().getFormFieldList(),
+						ListUtils.union(this.listWithIds(business, m.getW().getFormFieldList(), FormField.class),
+								business.formField().listWithFormObject(m.getT().getId())))) {
+					if (StringUtils.equals(_me.getW().getForm(), _me.getT().getForm())) {
+						wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
+					} else {
+						wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+					}
 				}
 			}
 		}

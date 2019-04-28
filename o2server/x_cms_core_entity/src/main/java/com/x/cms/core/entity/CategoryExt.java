@@ -32,7 +32,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 public class CategoryExt extends SliceJpaObject {
 
 	private static final long serialVersionUID = 3856138316794473794L;
-	//private static final String TABLE = PersistenceProperties.CategoryExt.table;
+	private static final String TABLE = PersistenceProperties.CategoryExt.table;
 
 	public String getId() {
 		return id;
@@ -66,7 +66,7 @@ public class CategoryExt extends SliceJpaObject {
 	@FieldDescribe("扩展信息JSON内容")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column( length = JpaObject.length_1M, name = ColumnNamePrefix + content_FIELDNAME)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + content_FIELDNAME)
 	private String content;
 
 	public String getContent() {

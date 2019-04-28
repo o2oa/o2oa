@@ -47,7 +47,7 @@ class ActionGetLogin extends BaseAction {
 				throw new ExceptionClientNotExist(client);
 			}
 			if (StringUtils.isEmpty(sso.getKey())) {
-				throw new ExceptionKeyEmpty();
+				throw new ExceptionEmptyKey();
 			}
 			String content = null;
 			logger.debug("decrypt sso client:{}, token:{}, key:{}.", client, token, sso.getKey());

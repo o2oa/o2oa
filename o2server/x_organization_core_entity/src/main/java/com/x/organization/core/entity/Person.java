@@ -192,7 +192,7 @@ public class Person extends SliceJpaObject {
 	public static final String controllerList_FIELDNAME = "controllerList";
 	@FieldDescribe("个人管理者.默认为创建者。")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + controllerList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + controllerList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + controllerList_FIELDNAME)
@@ -389,6 +389,18 @@ public class Person extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String open5Id;
 
+	public static final String failureTime_FIELDNAME = "failureTime";
+	@FieldDescribe("登录失败记录时间.")
+	@Temporal(TemporalType.TIMESTAMP)
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + failureTime_FIELDNAME)
+	private Date failureTime;
+
+	public static final String failureCount_FIELDNAME = "failureCount";
+	@FieldDescribe("登录失败次数")
+	@Column(name = ColumnNamePrefix + failureCount_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Integer failureCount;
 	/* flag标志位 */
 
 	public String getName() {
@@ -693,6 +705,22 @@ public class Person extends SliceJpaObject {
 
 	public void setOpen5Id(String open5Id) {
 		this.open5Id = open5Id;
+	}
+
+	public Date getFailureTime() {
+		return failureTime;
+	}
+
+	public void setFailureTime(Date failureTime) {
+		this.failureTime = failureTime;
+	}
+
+	public Integer getFailureCount() {
+		return failureCount;
+	}
+
+	public void setFailureCount(Integer failureCount) {
+		this.failureCount = failureCount;
 	}
 
 }

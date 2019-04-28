@@ -147,7 +147,7 @@ public class Meta extends SliceJpaObject {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + listValueList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + listValueList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + listValueList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + listValueList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)

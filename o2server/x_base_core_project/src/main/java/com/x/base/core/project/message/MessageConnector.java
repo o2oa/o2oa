@@ -6,6 +6,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.Context;
 import com.x.base.core.project.x_message_assemble_communicate;
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.LoggerFactory;
 
@@ -22,6 +24,8 @@ public class MessageConnector {
 	public static final String TYPE_TASK_URGE = "task_urge";
 
 	public static final String TYPE_TASK_EXPIRE = "task_expire";
+
+	public static final String TYPE_TASK_PRESS = "task_press";
 
 	public static final String TYPE_TASKCOMPLETED_CREATE = "taskCompleted_create";
 
@@ -58,6 +62,8 @@ public class MessageConnector {
 	public static final String TYPE_ATTACHMENT_EDITORMODIFY = "attachment_editorModify";
 
 	public static final String TYPE_CALENDAR_ALARM = "calendar_alarm";
+
+	public static final String TYPE_CUSTOM_CREATE = "custom_create";
 
 	public static final String CONSUME_IM = "im";
 
@@ -116,14 +122,18 @@ public class MessageConnector {
 		}
 	}
 
-	public static class Wrap {
+	public static class Wrap extends GsonPropertyObject {
 
+		@FieldDescribe("类型")
 		private String type;
 
+		@FieldDescribe("人员")
 		private String person;
 
+		@FieldDescribe("标题")
 		private String title;
 
+		@FieldDescribe("推送内容")
 		private JsonElement body;
 
 		public String getType() {

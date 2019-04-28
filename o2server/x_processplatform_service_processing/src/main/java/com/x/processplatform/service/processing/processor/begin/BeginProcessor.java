@@ -63,6 +63,13 @@ public class BeginProcessor extends AbstractBeginProcessor {
 
 	@Override
 	protected void executingCommitted(AeiObjects aeiObjects, Begin begin) throws Exception {
+		if (StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterBeginScript())
+				|| StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterBeginScriptText())) {
+			ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects);
+			scriptHelper.eval(aeiObjects.getWork().getApplication(),
+					Objects.toString(aeiObjects.getProcess().getAfterBeginScript()),
+					Objects.toString(aeiObjects.getProcess().getAfterBeginScriptText()));
+		}
 	}
 
 	@Override

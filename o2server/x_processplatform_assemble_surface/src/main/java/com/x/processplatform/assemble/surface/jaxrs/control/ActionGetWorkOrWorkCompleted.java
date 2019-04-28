@@ -40,6 +40,8 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 
 	private Boolean hasTaskWithWork = null;
 
+	private Boolean hasTaskCompletedWithJob = null;
+
 	private Map<String, Boolean> hasTaskCompletedWithActivityToken = new HashMap<>();
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
@@ -144,6 +146,9 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 		wo.setAllowRollback(PropertyTools.getOrElse(activity, Manual.allowRollback_FIELDNAME, Boolean.class, false)
 				&& this.canManageApplicationOrProcess(business, effectivePerson, work.getApplication(),
 						work.getProcess()));
+		/* 是否可以提醒 */
+		wo.setAllowPress(PropertyTools.getOrElse(activity, Manual.allowPress_FIELDNAME, Boolean.class, false)
+				&& this.hasTaskCompletedWithJob(business, effectivePerson, work.getJob()));
 		/* 是否可以看到 */
 		wo.setAllowVisit(true);
 
@@ -169,6 +174,16 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 					Task.person_FIELDNAME, effectivePerson.getDistinguishedName(), Task.work_FIELDNAME, work) > 0;
 		}
 		return this.hasTaskWithWork;
+	}
+
+	private boolean hasTaskCompletedWithJob(Business business, EffectivePerson effectivePerson, String job)
+			throws Exception {
+		if (null == this.hasTaskCompletedWithJob) {
+			this.hasTaskCompletedWithJob = business.entityManagerContainer().countEqualAndEqual(TaskCompleted.class,
+					TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME,
+					job) > 0;
+		}
+		return this.hasTaskCompletedWithJob;
 	}
 
 	private boolean hasReadWithJob(Business business, EffectivePerson effectivePerson, String job) throws Exception {

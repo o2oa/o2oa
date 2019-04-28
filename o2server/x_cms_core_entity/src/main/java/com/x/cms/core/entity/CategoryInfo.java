@@ -273,24 +273,24 @@ public class CategoryInfo extends SliceJpaObject {
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + importViewName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String importViewName = null;
-	
+
 	public static final String anonymousAble_FIELDNAME = "anonymousAble";
 	@FieldDescribe("是否允许匿名访问.")
-	@Column( name = ColumnNamePrefix + anonymousAble_FIELDNAME)
+	@Column(name = ColumnNamePrefix + anonymousAble_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	@Index(name = TABLE + IndexNameMiddle + anonymousAble_FIELDNAME)
 	private Boolean anonymousAble = true;
-	
+
 	public static final String viewablePersonList_FIELDNAME = "viewablePersonList";
 	@FieldDescribe("发布可见人员")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-			+ viewableGroupList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
-					+ viewableGroupList_FIELDNAME + JoinIndexNameSuffix))
+			+ viewablePersonList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ viewablePersonList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
-			+ viewableGroupList_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + viewableGroupList_FIELDNAME + ElementIndexNameSuffix)
+			+ viewablePersonList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + viewablePersonList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> viewablePersonList;
 

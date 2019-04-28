@@ -54,6 +54,7 @@ class ActionBuildAll extends BaseAction {
 			FileUtils.cleanDirectory(src);
 			FileUtils.cleanDirectory(target);
 			List<Table> tables = emc.listAll(Table.class);
+			boolean empty = true;
 			for (Table table : tables) {
 				emc.beginTransaction(Table.class);
 				table.setBuildSuccess(false);
@@ -65,6 +66,7 @@ class ActionBuildAll extends BaseAction {
 						DynamicEntityBuilder builder = new DynamicEntityBuilder(dynamicEntity, src);
 						builder.build();
 						table.setBuildSuccess(true);
+						empty = false;
 					}
 				} catch (Exception e) {
 					throw e;
@@ -73,29 +75,32 @@ class ActionBuildAll extends BaseAction {
 				}
 			}
 
-			List<File> classPath = new ArrayList<>();
-			classPath.addAll(FileUtils.listFiles(Config.dir_commons_ext(), FileFilterUtils.suffixFileFilter(DOT_JAR),
-					DirectoryFileFilter.INSTANCE));
-			classPath.addAll(FileUtils.listFiles(Config.dir_store_jars(), FileFilterUtils.suffixFileFilter(DOT_JAR),
-					DirectoryFileFilter.INSTANCE));
+			if (!empty) {
+				List<File> classPath = new ArrayList<>();
+				classPath.addAll(FileUtils.listFiles(Config.dir_commons_ext(),
+						FileFilterUtils.suffixFileFilter(DOT_JAR), DirectoryFileFilter.INSTANCE));
+				classPath.addAll(FileUtils.listFiles(Config.dir_store_jars(), FileFilterUtils.suffixFileFilter(DOT_JAR),
+						DirectoryFileFilter.INSTANCE));
 
-			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-			StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null,
-					DefaultCharset.charset_utf_8);
-			fileManager.setLocation(StandardLocation.CLASS_OUTPUT, Arrays.asList(target));
-			fileManager.setLocation(StandardLocation.SOURCE_PATH, Arrays.asList(src));
-			fileManager.setLocation(StandardLocation.CLASS_PATH, classPath);
-			Iterable<JavaFileObject> res = fileManager.list(StandardLocation.SOURCE_PATH, DynamicEntity.CLASS_PACKAGE,
-					EnumSet.of(JavaFileObject.Kind.SOURCE), true);
-			compiler.getTask(null, fileManager, null, null, null, res).call();
+				JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+				StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null,
+						DefaultCharset.charset_utf_8);
+				fileManager.setLocation(StandardLocation.CLASS_OUTPUT, Arrays.asList(target));
+				fileManager.setLocation(StandardLocation.SOURCE_PATH, Arrays.asList(src));
+				fileManager.setLocation(StandardLocation.CLASS_PATH, classPath);
 
-			fileManager.close();
+				Iterable<JavaFileObject> res = fileManager.list(StandardLocation.SOURCE_PATH,
+						DynamicEntity.CLASS_PACKAGE, EnumSet.of(JavaFileObject.Kind.SOURCE), true);
 
-			this.enhance();
+				compiler.getTask(null, fileManager, null, null, null, res).call();
 
-			File jar = new File(Config.dir_dynamic_jars(true), DynamicEntity.JAR_NAME + DOT_JAR);
-			JarTools.jar(target, jar);
+				fileManager.close();
 
+				this.enhance();
+
+				File jar = new File(Config.dir_dynamic_jars(true), DynamicEntity.JAR_NAME + DOT_JAR);
+				JarTools.jar(target, jar);
+			}
 			Wo wo = new Wo();
 			wo.setValue(true);
 			result.setData(wo);

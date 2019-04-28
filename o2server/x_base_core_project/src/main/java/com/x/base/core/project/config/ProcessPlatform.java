@@ -25,6 +25,9 @@ public class ProcessPlatform extends ConfigObject {
 		this.maintenanceIdentity = "";
 	}
 
+	@FieldDescribe("提醒设置,设置提醒间隔.")
+	private Press press;
+
 	@FieldDescribe("催办任务设置,发现即将过期时发送提醒消息.")
 	private Urge urge;
 
@@ -39,6 +42,10 @@ public class ProcessPlatform extends ConfigObject {
 
 	@FieldDescribe("维护身份,当工作发生意外错误,无法找到对应的处理人情况下,先尝试将工作分配给创建身份,如果创建身份也不可获取,那么分配给指定人员,默认情况下这个值为空.")
 	private String maintenanceIdentity;
+
+	public Press getPress() {
+		return this.press == null ? new Press() : this.press;
+	}
 
 	public Urge getUrge() {
 		return this.urge == null ? new Urge() : this.urge;
@@ -59,6 +66,41 @@ public class ProcessPlatform extends ConfigObject {
 	public void save() throws Exception {
 		File file = new File(Config.base(), Config.PATH_CONFIG_PROCESSPLATFORM);
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
+	}
+
+	public static class Press extends ConfigObject {
+
+		public static Press defaultInstance() {
+			Press o = new Press();
+			return o;
+		}
+
+		public final static Integer DEFAULT_INTERVALMINUTES = 10;
+
+		public final static Integer DEFAULT_COUNT = 3;
+
+		@FieldDescribe("提醒间隔(分钟)")
+		private Integer intervalMinutes;
+
+		@FieldDescribe("提醒数量限制.")
+		private Integer count;
+
+		public Integer getIntervalMinutes() {
+			return (intervalMinutes == null || intervalMinutes < 0) ? DEFAULT_INTERVALMINUTES : this.intervalMinutes;
+		}
+
+		public Integer getCount() {
+			return (count == null || count < 0) ? DEFAULT_COUNT : this.count;
+		}
+
+		public void setIntervalMinutes(Integer intervalMinutes) {
+			this.intervalMinutes = intervalMinutes;
+		}
+
+		public void setCount(Integer count) {
+			this.count = count;
+		}
+
 	}
 
 	public static class Urge extends ConfigObject {
@@ -156,7 +198,7 @@ public class ProcessPlatform extends ConfigObject {
 	}
 
 	public static class Delay extends ConfigObject {
-		
+
 		public static Delay defaultInstance() {
 			Delay o = new Delay();
 			return o;
@@ -199,7 +241,7 @@ public class ProcessPlatform extends ConfigObject {
 			Reorganize o = new Reorganize();
 			return o;
 		}
-		
+
 		public final static String DEFAULT_CRON = "30 15 8,12,14 * * ?";
 
 		public final static Boolean DEFAULT_ENABLE = true;

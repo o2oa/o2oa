@@ -36,7 +36,7 @@ public class NumberTools {
 	}
 
 	public static Double ofDouble(String str) {
-		if (NumberUtils.isNumber(str)) {
+		if (NumberUtils.isCreatable(str)) {
 			return NumberUtils.toDouble(str);
 		} else if (stirngOfPercent(str)) {
 			return NumberUtils.toDouble(StringUtils.replace(str, "%", "")) / 100;
@@ -72,6 +72,13 @@ public class NumberTools {
 			}
 		}
 		return null;
+	}
+
+	public static boolean nullOrLessThan(Integer value, Number number) {
+		if (value == null) {
+			return true;
+		}
+		return value < number.intValue();
 	}
 
 }

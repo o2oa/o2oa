@@ -44,14 +44,14 @@ public class Area extends BaseAction {
 				String sha = DigestUtils.sha256Hex(XGsonBuilder.toJson(wrapProvince));
 				District province = this.getProvinceDistrict(business, wrapProvince.getName());
 				if (null != province && StringUtils.equals(sha, province.getSha())) {
-					logger.info("{} 无需更新.", wrapProvince.getName());
+					logger.debug("{} 无需更新.", wrapProvince.getName());
 					continue;
 				}
 				if (null != province) {
-					logger.info("删除 {}.", wrapProvince.getName());
+					logger.debug("删除 {}.", wrapProvince.getName());
 					this.removeProvince(business, province);
 				}
-				logger.info("更新 {}.", wrapProvince.getName());
+				logger.debug("更新 {}.", wrapProvince.getName());
 				this.saveProvince(business, wrapProvince, sha);
 			}
 		} catch (Exception e) {

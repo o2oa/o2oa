@@ -77,7 +77,7 @@ public class OkrWorkReportBaseInfo extends SliceJpaObject {
 	public static final String submitTime_FIELDNAME = "submitTime";
 	@FieldDescribe("汇报提交时间.")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column( name = ColumnNamePrefix + submitTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + submitTime_FIELDNAME)
 	private Date submitTime;
 
 	public static final String workTitle_FIELDNAME = "workTitle";
@@ -131,70 +131,78 @@ public class OkrWorkReportBaseInfo extends SliceJpaObject {
 
 	public static final String reportCount_FIELDNAME = "reportCount";
 	@FieldDescribe("工作汇报次序")
-	@Column( name = ColumnNamePrefix + reportCount_FIELDNAME)
+	@Column(name = ColumnNamePrefix + reportCount_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Integer reportCount = 0;
 
 	public static final String reporterName_FIELDNAME = "reporterName";
 	@FieldDescribe("汇报者姓名")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + reporterName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ reporterName_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + reporterName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String reporterName = null;
 
 	public static final String reporterIdentity_FIELDNAME = "reporterIdentity";
 	@FieldDescribe("汇报者身份")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + reporterIdentity_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ reporterIdentity_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + reporterIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String reporterIdentity = null;
 
 	public static final String reporterUnitName_FIELDNAME = "reporterUnitName";
 	@FieldDescribe("汇报者所属组织")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + reporterUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ reporterUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String reporterUnitName = null;
 
 	public static final String reporterTopUnitName_FIELDNAME = "reporterTopUnitName";
 	@FieldDescribe("汇报者所属顶层组织")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + reporterTopUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ reporterTopUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String reporterTopUnitName = null;
 
 	public static final String creatorName_FIELDNAME = "creatorName";
 	@FieldDescribe("创建者姓名")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + creatorName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ creatorName_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + creatorName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String creatorName = null;
 
 	public static final String creatorIdentity_FIELDNAME = "creatorIdentity";
 	@FieldDescribe("创建者身份")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + creatorIdentity_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ creatorIdentity_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + creatorIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String creatorIdentity = null;
 
 	public static final String creatorUnitName_FIELDNAME = "creatorUnitName";
 	@FieldDescribe("创建者所属组织")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + creatorUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ creatorUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String creatorUnitName = null;
 
 	public static final String creatorTopUnitName_FIELDNAME = "creatorTopUnitName";
 	@FieldDescribe("创建者所属顶层组织")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + creatorTopUnitName_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ creatorTopUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String creatorTopUnitName = null;
 
 	public static final String isWorkCompleted_FIELDNAME = "isWorkCompleted";
 	@FieldDescribe("工作是否已经完成")
-	@Column( name = ColumnNamePrefix + isWorkCompleted_FIELDNAME)
+	@Column(name = ColumnNamePrefix + isWorkCompleted_FIELDNAME)
 	private Boolean isWorkCompleted = false;
 
 	public static final String progressPercent_FIELDNAME = "progressPercent";
 	@FieldDescribe("工作完成进度 % ")
-	@Column( name = ColumnNamePrefix + progressPercent_FIELDNAME)
+	@Column(name = ColumnNamePrefix + progressPercent_FIELDNAME)
 	private Integer progressPercent = 0;
 
 	public static final String processStatus_FIELDNAME = "processStatus";
@@ -217,20 +225,20 @@ public class OkrWorkReportBaseInfo extends SliceJpaObject {
 
 	public static final String currentProcessLevel_FIELDNAME = "currentProcessLevel";
 	@FieldDescribe("当前处理级别")
-	@Column( name = ColumnNamePrefix + currentProcessLevel_FIELDNAME)
+	@Column(name = ColumnNamePrefix + currentProcessLevel_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + currentProcessLevel_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Integer currentProcessLevel = 0;
 
 	public static final String needAdminAudit_FIELDNAME = "needAdminAudit";
 	@FieldDescribe("是否需要工作管理员审核")
-	@Column( name = ColumnNamePrefix + needAdminAudit_FIELDNAME)
+	@Column(name = ColumnNamePrefix + needAdminAudit_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean needAdminAudit = false;
 
 	public static final String needLeaderRead_FIELDNAME = "needLeaderRead";
 	@FieldDescribe("是否需要领导批示")
-	@Column( name = ColumnNamePrefix + needLeaderRead_FIELDNAME)
+	@Column(name = ColumnNamePrefix + needLeaderRead_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean needLeaderRead = false;
 
@@ -257,11 +265,11 @@ public class OkrWorkReportBaseInfo extends SliceJpaObject {
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String description = null;
-	
+
 	public static final String currentProcessorNameList_FIELDNAME = "currentProcessorNameList";
 	@FieldDescribe("当前处理人姓名，多值")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ currentProcessorNameList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ currentProcessorNameList_FIELDNAME + JoinIndexNameSuffix))
@@ -274,7 +282,7 @@ public class OkrWorkReportBaseInfo extends SliceJpaObject {
 	public static final String currentProcessorIdentityList_FIELDNAME = "currentProcessorIdentityList";
 	@FieldDescribe("当前处理人身份，多值")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ currentProcessorIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ currentProcessorIdentityList_FIELDNAME + JoinIndexNameSuffix))
@@ -287,7 +295,7 @@ public class OkrWorkReportBaseInfo extends SliceJpaObject {
 	public static final String currentProcessorUnitNameList_FIELDNAME = "currentProcessorUnitNameList";
 	@FieldDescribe("当前处理人所属组织，多值")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ currentProcessorUnitNameList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ currentProcessorUnitNameList_FIELDNAME + JoinIndexNameSuffix))
@@ -300,7 +308,7 @@ public class OkrWorkReportBaseInfo extends SliceJpaObject {
 	public static final String currentProcessorTopUnitNameList_FIELDNAME = "currentProcessorTopUnitNameList";
 	@FieldDescribe("当前处理人所属顶层组织，多值")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ currentProcessorTopUnitNameList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ currentProcessorTopUnitNameList_FIELDNAME + JoinIndexNameSuffix))
@@ -313,7 +321,7 @@ public class OkrWorkReportBaseInfo extends SliceJpaObject {
 	public static final String readLeadersNameList_FIELDNAME = "readLeadersNameList";
 	@FieldDescribe("批示领导姓名列表, 多值")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ readLeadersNameList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ readLeadersNameList_FIELDNAME + JoinIndexNameSuffix))
@@ -326,23 +334,22 @@ public class OkrWorkReportBaseInfo extends SliceJpaObject {
 	public static final String readLeadersIdentityList_FIELDNAME = "readLeadersIdentityList";
 	@FieldDescribe("批示领导身份列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-			+ attachmentList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
-					+ attachmentList_FIELDNAME + JoinIndexNameSuffix))
+			+ readLeadersIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ readLeadersIdentityList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
-			+ attachmentList_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + attachmentList_FIELDNAME + ElementIndexNameSuffix)
+			+ readLeadersIdentityList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + readLeadersIdentityList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> readLeadersIdentityList;
 
 	public static final String attachmentList_FIELDNAME = "attachmentList";
 	@FieldDescribe("附件列表")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-			+ attachmentList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
-					+ attachmentList_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle + attachmentList_FIELDNAME, joinIndex = @Index(name = TABLE
+			+ IndexNameMiddle + attachmentList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
 			+ attachmentList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + attachmentList_FIELDNAME + ElementIndexNameSuffix)

@@ -61,6 +61,11 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 				new Message(MessageConnector.CONSUME_IM, MessageConnector.CONSUME_PMS,
 						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
 						MessageConnector.CONSUME_QIYEWEIXIN));
+		/* 待办提醒通知 */
+		o.put(MessageConnector.TYPE_TASK_PRESS,
+				new Message(MessageConnector.CONSUME_IM, MessageConnector.CONSUME_PMS,
+						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
+						MessageConnector.CONSUME_QIYEWEIXIN));
 
 		o.put(MessageConnector.TYPE_TASK_DELETE, new Message());
 
