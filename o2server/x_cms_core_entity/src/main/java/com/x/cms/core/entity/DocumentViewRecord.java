@@ -113,7 +113,7 @@ public class DocumentViewRecord extends SliceJpaObject {
 
 	public static final String viewerUnitName_FIELDNAME = "viewerUnitName";
 	@FieldDescribe("访问者所属组织名称")
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + viewerTopUnitName_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + viewerUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String viewerUnitName;
 

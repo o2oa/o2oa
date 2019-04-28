@@ -1,8 +1,8 @@
 package com.x.program.center.schedule;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.TimerTask;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -18,6 +18,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.SimpleScriptContext;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.CronExpression;
 import org.quartz.Job;
@@ -60,12 +61,23 @@ public class TriggerAgent implements Job {
 			if (StringUtils.isEmpty(pair.getCron())) {
 				return;
 			}
-			Date date = this.cron(pair.getCron(), pair.getLastEndTime());
+			Date date = this.cron(pair.getCron(), pair.getLastStartTime());
 			if (date.before(new Date())) {
-				logger.info("trigger agent : {}, cron: {}, last end time: {}.", pair.getName(), pair.getCron(),
-						(pair.getLastEndTime() == null ? "" : DateTools.format(pair.getLastEndTime())));
+				logger.info("trigger agent : {}, cron: {}, appointment time:{}, last start time: {}.", pair.getName(),
+						pair.getCron(), DateTools.format(date),
+						(pair.getLastStartTime() == null ? "" : DateTools.format(pair.getLastStartTime())));
 				ExecuteThread thread = new ExecuteThread(pair.getId());
 				thread.start();
+			} else {
+				if ((null == pair.getAppointmentTime())
+						|| (!DateUtils.truncatedEquals(date, pair.getAppointmentTime(), Calendar.SECOND))) {
+					Agent agent = business.entityManagerContainer().find(pair.getId(), Agent.class);
+					if (null != agent) {
+						business.entityManagerContainer().beginTransaction(Agent.class);
+						agent.setAppointmentTime(date);
+						business.entityManagerContainer().commit();
+					}
+				}
 			}
 		} catch (Exception e) {
 			logger.error(e);
@@ -87,21 +99,27 @@ public class TriggerAgent implements Job {
 		Path<String> path_name = root.get(Agent_.name);
 		Path<String> path_cron = root.get(Agent_.cron);
 		Path<Date> path_lastEndTime = root.get(Agent_.lastEndTime);
+		Path<Date> path_lastStartTime = root.get(Agent_.lastStartTime);
+		Path<Date> path_appointmentTime = root.get(Agent_.appointmentTime);
 		Predicate p = cb.equal(root.get(Agent_.enable), true);
-		List<Tuple> list = em.createQuery(cq.multiselect(path_id, path_name, path_cron, path_lastEndTime).where(p))
-				.getResultList();
+		List<Tuple> list = em.createQuery(cq
+				.multiselect(path_id, path_name, path_cron, path_lastEndTime, path_lastStartTime, path_appointmentTime)
+				.where(p)).getResultList();
 		List<Pair> pairs = list.stream().map(o -> {
-			return new Pair(o.get(path_id), o.get(path_name), o.get(path_cron), o.get(path_lastEndTime));
+			return new Pair(o.get(path_id), o.get(path_name), o.get(path_cron), o.get(path_lastEndTime),
+					o.get(path_lastStartTime), o.get(path_appointmentTime));
 		}).distinct().collect(Collectors.toList());
 		return pairs;
 	}
 
 	class Pair {
-		Pair(String id, String name, String cron, Date lastEndTime) {
+		Pair(String id, String name, String cron, Date lastEndTime, Date lastStartTime, Date appointmentTime) {
 			this.id = id;
 			this.name = name;
 			this.cron = cron;
 			this.lastEndTime = lastEndTime;
+			this.lastStartTime = lastStartTime;
+			this.appointmentTime = appointmentTime;
 		}
 
 		private String id;
@@ -111,6 +129,10 @@ public class TriggerAgent implements Job {
 		private String cron;
 
 		private Date lastEndTime;
+
+		private Date lastStartTime;
+
+		private Date appointmentTime;
 
 		public String getId() {
 			return id;
@@ -144,6 +166,22 @@ public class TriggerAgent implements Job {
 			this.name = name;
 		}
 
+		public Date getLastStartTime() {
+			return lastStartTime;
+		}
+
+		public void setLastStartTime(Date lastStartTime) {
+			this.lastStartTime = lastStartTime;
+		}
+
+		public Date getAppointmentTime() {
+			return appointmentTime;
+		}
+
+		public void setAppointmentTime(Date appointmentTime) {
+			this.appointmentTime = appointmentTime;
+		}
+
 	}
 
 	public class ExecuteThread extends Thread {
@@ -173,17 +211,29 @@ public class TriggerAgent implements Job {
 		}
 
 		public void run() {
+			String text = "";
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Agent agent = emc.find(agentId, Agent.class);
-				if (null != agent && StringUtils.isNotEmpty(agent.getText())) {
-					agent.setLastStartTime(new Date());
+				if (null != agent) {
+					text = agent.getText();
 					emc.beginTransaction(Agent.class);
-					/** 单独处理错误,保证保存上次运行时间 */
-					try {
-						this.eval(agent.getText());
-					} catch (Exception e) {
-						logger.error(e);
-					}
+					agent.setLastStartTime(new Date());
+					emc.commit();
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+			if (StringUtils.isNotEmpty(text)) {
+				try {
+					this.eval(text);
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			}
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Agent agent = emc.find(agentId, Agent.class);
+				if (null != agent) {
+					emc.beginTransaction(Agent.class);
 					agent.setLastEndTime(new Date());
 					emc.commit();
 				}

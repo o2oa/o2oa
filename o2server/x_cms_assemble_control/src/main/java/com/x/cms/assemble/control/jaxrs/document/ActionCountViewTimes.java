@@ -8,9 +8,9 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-public class ActionGetViewCount extends BaseAction {
+public class ActionCountViewTimes extends BaseAction {
 
-	private static  Logger logger = LoggerFactory.getLogger( ActionGetViewCount.class );
+	private static  Logger logger = LoggerFactory.getLogger( ActionCountViewTimes.class );
 	
 	protected ActionResult<Wo> execute( HttpServletRequest request, String id, EffectivePerson effectivePerson ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();

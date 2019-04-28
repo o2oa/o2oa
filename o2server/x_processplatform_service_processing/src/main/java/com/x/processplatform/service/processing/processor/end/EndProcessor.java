@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -20,6 +21,8 @@ import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.service.processing.ScriptHelper;
+import com.x.processplatform.service.processing.ScriptHelperFactory;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class EndProcessor extends AbstractEndProcessor {
@@ -113,6 +116,13 @@ public class EndProcessor extends AbstractEndProcessor {
 
 	@Override
 	protected void executingCommitted(AeiObjects aeiObjects, End end) throws Exception {
+		if (StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterEndScript())
+				|| StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterEndScriptText())) {
+			ScriptHelper scriptHelper = ScriptHelperFactory.create(aeiObjects);
+			scriptHelper.eval(aeiObjects.getWork().getApplication(),
+					Objects.toString(aeiObjects.getProcess().getAfterEndScript()),
+					Objects.toString(aeiObjects.getProcess().getAfterEndScriptText()));
+		}
 	}
 
 	@Override

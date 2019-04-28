@@ -27,6 +27,7 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.assemble.authentication.wrapout.WrapOutAuthentication;
@@ -258,6 +259,24 @@ abstract class BaseAction extends StandardJaxrsAction {
 			String refreshToken) throws Exception {
 		return StringUtils.replaceEach(url, INFO_PARAMETER_TAGS, new String[] { oauthClient.getClientId(),
 				oauthClient.getClientSecret(), redirectUri, accessToken, refreshToken });
+	}
+
+	protected boolean failureLocked(Person person) throws Exception {
+		if ((person.getFailureCount() != null) && (person.getFailureCount() >= Config.person().getFailureCount())) {
+			if (!DateTools.beforeNowMinutesNullIsTrue(person.getFailureTime(), Config.person().getFailureInterval())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	protected void failure(Person person) throws Exception {
+		if (!DateTools.beforeNowMinutesNullIsTrue(person.getFailureTime(), Config.person().getFailureInterval())) {
+			person.setFailureCount(person.getFailureCount() + 1);
+		} else {
+			person.setFailureCount(1);
+			person.setFailureTime(new Date());
+		}
 	}
 
 }

@@ -178,7 +178,7 @@ public class DocumentAction extends StandardJaxrsAction{
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}
 	
-	@JaxrsMethodDescribe(value = "根据ID获取信息发布文档信息被访问次数.", action = ActionGetViewCount.class)
+	@JaxrsMethodDescribe(value = "根据ID获取信息发布文档信息被访问次数.", action = ActionCountViewTimes.class)
 	@GET
 	@Path("{id}/view/count")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -186,13 +186,35 @@ public class DocumentAction extends StandardJaxrsAction{
 	public Response getViewCount(@Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionGetViewCount.Wo> result = new ActionResult<>();
+		ActionResult<ActionCountViewTimes.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionGetViewCount().execute( request, id, effectivePerson );
+			result = new ActionCountViewTimes().execute( request, id, effectivePerson );
 		} catch (Exception e) {
 			result = new ActionResult<>();
 			result.error( e );
 			logger.error( e, effectivePerson, request, null);
+		}
+		return ResponseFactory.getDefaultActionResultResponse(result);
+	}
+	
+	@JaxrsMethodDescribe(value = "查询符合过滤条件的已发布的信息数量.", action = ActionCountLatestDocumentWithFilter.class)
+	@PUT
+	@Path("filter/count")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response countDocumentWithFilter( @Context HttpServletRequest request, JsonElement jsonElement ) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<ActionCountLatestDocumentWithFilter.Wo> result = new ActionResult<>();
+		Boolean check = true;
+
+		if( check ){
+			try {
+				result = new ActionCountLatestDocumentWithFilter().execute( request,  jsonElement, effectivePerson );
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error( e );
+				logger.error( e, effectivePerson, request, null);
+			}
 		}
 		return ResponseFactory.getDefaultActionResultResponse(result);
 	}

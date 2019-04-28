@@ -298,7 +298,8 @@ public class PersonAction extends StandardJaxrsAction {
 	@Path("check/password/{password}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response checkPassword(@Context HttpServletRequest request, @PathParam("password") String password) {
+	public void checkPassword(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("校验密码") @PathParam("password") String password) {
 		ActionResult<ActionCheckPassword.Wo> result = new ActionResult<>();
 		try {
 			result = new ActionCheckPassword().execute(password);
@@ -306,7 +307,7 @@ public class PersonAction extends StandardJaxrsAction {
 			th.printStackTrace();
 			result.error(th);
 		}
-		return ResponseFactory.getDefaultActionResultResponse(result);
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取个人头像.", action = ActionGetIconWithPerson.class)

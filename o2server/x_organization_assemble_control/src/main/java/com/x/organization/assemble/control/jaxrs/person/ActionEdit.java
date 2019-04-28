@@ -35,8 +35,6 @@ class ActionEdit extends BaseAction {
 			if (!business.editable(effectivePerson, person)) {
 				throw new ExceptionDenyEditPerson(effectivePerson, person.getName());
 			}
-			/** 从内存中pick出来的无法作为实体保存 */
-			person = emc.find(person.getId(), Person.class);
 			Wi.copier.copy(wi, person);
 			this.checkName(business, person.getName(), person.getId());
 			this.checkMobile(business, person.getMobile(), person.getId());
@@ -54,7 +52,10 @@ class ActionEdit extends BaseAction {
 			}
 			this.convertControllerList(effectivePerson, business, person);
 			emc.beginTransaction(Person.class);
-			emc.check(person, CheckPersistType.all);
+			/* 从内存中pick出来的无法作为实体保存,不能在前面执行,以为后面的convertControllerList也有一个pick,会导致一当前这个对象再次被detech */
+			Person entityPerson = emc.find(person.getId(), Person.class);
+			person.copyTo(entityPerson);
+			emc.check(entityPerson, CheckPersistType.all);
 			emc.commit();
 			/** 刷新缓存 */
 			ApplicationCache.notify(Person.class);

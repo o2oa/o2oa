@@ -17,10 +17,11 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
+import com.x.base.core.project.tools.DefaultCharset;
 
-class ActionEncrypt extends BaseAction {
+class ActionPostEncrypt extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionEncrypt.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionPostEncrypt.class);
 
 	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson,
 			JsonElement jsonElement) throws Exception {
@@ -30,19 +31,19 @@ class ActionEncrypt extends BaseAction {
 		if (StringUtils.isEmpty(wi.getClient())) {
 			throw new ExceptionClientEmpty();
 		}
-		if (StringUtils.isEmpty(wi.getUserName())) {
-			throw new ExceptionNameEmpty();
+		if (StringUtils.isEmpty(wi.getCredential())) {
+			throw new ExceptionEmptyCredential();
 		}
 		if (StringUtils.isEmpty(wi.getKey())) {
-			throw new ExceptionKeyEmpty();
+			throw new ExceptionEmptyKey();
 		}
 		Sso sso = Config.token().findSso(wi.getClient());
 		if (null == sso) {
 			throw new ExceptionClientNotExist(wi.getClient());
 		}
-		String str = wi.getUserName() + "#" + new Date().getTime();
-		byte[] bs = Crypto.encrypt(str.getBytes("utf8"), wi.getKey().getBytes());
-		String token = new String(Base64.encodeBase64(bs), "utf-8");
+		String str = wi.getCredential() + TOKEN_SPLIT + new Date().getTime();
+		byte[] bs = Crypto.encrypt(str.getBytes(DefaultCharset.charset), wi.getKey().getBytes());
+		String token = new String(Base64.encodeBase64(bs), DefaultCharset.charset);
 		Wo wo = new Wo();
 		wo.setToken(token);
 		result.setData(wo);
@@ -52,7 +53,7 @@ class ActionEncrypt extends BaseAction {
 	public static class Wi extends GsonPropertyObject {
 
 		private String client;
-		private String userName;
+		private String credential;
 		private String key;
 
 		public String getClient() {
@@ -71,13 +72,15 @@ class ActionEncrypt extends BaseAction {
 			this.key = key;
 		}
 
-		public String getUserName() {
-			return userName;
+		public String getCredential() {
+			return credential;
 		}
 
-		public void setUserName(String userName) {
-			this.userName = userName;
+		public void setCredential(String credential) {
+			this.credential = credential;
 		}
+
+ 
 
 	}
 

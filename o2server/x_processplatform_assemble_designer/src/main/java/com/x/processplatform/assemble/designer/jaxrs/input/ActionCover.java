@@ -203,8 +203,8 @@ class ActionCover extends BaseAction {
 				process.setAlias(this.idleAliasWithApplication(business, application.getId(), process.getAlias(),
 						Process.class, process.getId()));
 			}
-			if (StringUtils.isNotEmpty(process.getAlias())) {
-				process.setAlias(this.idleNameWithApplication(business, application.getId(), process.getName(),
+			if (StringUtils.isNotEmpty(process.getName())) {
+				process.setName(this.idleNameWithApplication(business, application.getId(), process.getName(),
 						Process.class, process.getId()));
 			}
 			process.setApplication(application.getId());

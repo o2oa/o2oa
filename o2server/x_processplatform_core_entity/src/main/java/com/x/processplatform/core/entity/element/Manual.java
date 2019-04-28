@@ -489,6 +489,12 @@ public class Manual extends Activity {
 	@Column(name = ColumnNamePrefix + allowAddSplit_FIELDNAME)
 	private Boolean allowAddSplit;
 
+	public static final String allowPress_FIELDNAME = "allowPress";
+	@FieldDescribe("允许提醒.")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + allowPress_FIELDNAME)
+	private Boolean allowPress;
+
 	public static final String group_FIELDNAME = "group";
 	@FieldDescribe("分组")
 	@CheckPersist(allowEmpty = true)
@@ -554,6 +560,21 @@ public class Manual extends Activity {
 	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + manualStayScriptText_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String manualStayScriptText;
+
+//	public static final String manualPressScript_FIELDNAME = "manualPressScript";
+//	@IdReference(Script.class)
+//	@FieldDescribe("提醒内容脚本.")
+//	@Column(length = length_255B, name = ColumnNamePrefix + manualPressScript_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private String manualPressScript;
+//
+//	public static final String manualPressScriptText_FIELDNAME = "manualPressScriptText";
+//	@FieldDescribe("提醒内容脚本文本.")
+//	@Lob
+//	@Basic(fetch = FetchType.EAGER)
+//	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + manualPressScriptText_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private String manualPressScriptText;
 
 	public String getName() {
 		return name;
@@ -1110,5 +1131,29 @@ public class Manual extends Activity {
 	public void setAllowAddSplit(Boolean allowAddSplit) {
 		this.allowAddSplit = allowAddSplit;
 	}
+
+	public Boolean getAllowPress() {
+		return allowPress;
+	}
+
+	public void setAllowPress(Boolean allowPress) {
+		this.allowPress = allowPress;
+	}
+
+//	public String getManualPressScript() {
+//		return manualPressScript;
+//	}
+//
+//	public void setManualPressScript(String manualPressScript) {
+//		this.manualPressScript = manualPressScript;
+//	}
+//
+//	public String getManualPressScriptText() {
+//		return manualPressScriptText;
+//	}
+//
+//	public void setManualPressScriptText(String manualPressScriptText) {
+//		this.manualPressScriptText = manualPressScriptText;
+//	}
 
 }

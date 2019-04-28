@@ -65,7 +65,7 @@ public class CreateSample {
 			map = this.describe(cls, map);
 			String name = StringUtils.lowerCase(cls.getSimpleName().substring(0, 1)) + cls.getSimpleName().substring(1)
 					+ ".json";
-			File file = new File(FileTools.parent(FileTools.parent(new File("./"))), "config/sample/" + name);
+			File file = new File(FileTools.parent(FileTools.parent(new File("./"))), "configSample/" + name);
 			logger.print("create file:{}.", file.getAbsoluteFile());
 			FileUtils.write(file, XGsonBuilder.toJson(map), DefaultCharset.charset);
 		}
@@ -76,9 +76,9 @@ public class CreateSample {
 
 	private void convertExternalDataSource2ExternalDataSources() throws Exception, IOException {
 		File file_externalDataSource = new File(FileTools.parent(FileTools.parent(new File("./"))),
-				"config/sample/externalDataSource.json");
+				"configSample/externalDataSource.json");
 		File file_externalDataSources = new File(FileTools.parent(FileTools.parent(new File("./"))),
-				"config/sample/externalDataSources.json");
+				"configSample/externalDataSources.json");
 		JsonElement jsonElement = XGsonBuilder.instance().fromJson(FileUtils.readFileToString(file_externalDataSource),
 				JsonElement.class);
 		List<JsonElement> list = new ArrayList<>();
@@ -88,9 +88,9 @@ public class CreateSample {
 	}
 
 	private void renameNode() throws Exception, IOException {
-		File file_node = new File(FileTools.parent(FileTools.parent(new File("./"))), "config/sample/node.json");
+		File file_node = new File(FileTools.parent(FileTools.parent(new File("./"))), "configSample/node.json");
 		File file_node_local = new File(FileTools.parent(FileTools.parent(new File("./"))),
-				"config/sample/node_127.0.0.1.json");
+				"configSample/node_127.0.0.1.json");
 		if (file_node_local.exists()) {
 			file_node_local.delete();
 		}

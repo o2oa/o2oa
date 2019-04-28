@@ -1,5 +1,6 @@
 package com.x.cms.assemble.control.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -219,13 +220,13 @@ public class DocumentInfoServiceAdv {
 			List<String> createDateList,  List<String> publishDateList,  List<String> statusList, String documentType, 
 			List<String>  creatorUnitNameList,
 			List<String> importBatchNames, List<String> personNames, 
-			List<String> unitNames, List<String> groupNames, Boolean manager) throws Exception {
+			List<String> unitNames, List<String> groupNames, Boolean manager, Date lastedPublishTime ) throws Exception {
 		if( ListTools.isEmpty( viewAbleCategoryIds ) && !manager ){
 			return 0L;
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			return documentInfoService.countWithCondition( emc, viewAbleCategoryIds, title, publisherList, createDateList, publishDateList, 
-					statusList, documentType, creatorUnitNameList, importBatchNames, personNames, unitNames, groupNames, manager );
+					statusList, documentType, creatorUnitNameList, importBatchNames, personNames, unitNames, groupNames, manager, lastedPublishTime );
 		} catch ( Exception e ) {
 			throw e;
 		}
@@ -234,7 +235,7 @@ public class DocumentInfoServiceAdv {
 	public List<Document> listNextWithCondition(String id, Integer count, List<String> viewAbleCategoryIds, String title, List<String> publisherList, 
 			List<String> createDateList,  List<String> publishDateList,  List<String> statusList, String documentType, 
 			List<String>  creatorUnitNameList, List<String> importBatchNames, List<String> personNames, 
-			List<String> unitNames, List<String> groupNames,  String orderField, String order, Boolean manager) throws Exception {
+			List<String> unitNames, List<String> groupNames,  String orderField, String order, Boolean manager, Date lastedPublishTime ) throws Exception {
 		if( ListTools.isEmpty( viewAbleCategoryIds ) && !manager ){
 			return null;
 		}
@@ -246,7 +247,7 @@ public class DocumentInfoServiceAdv {
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			return documentInfoService.listNextWithCondition( emc, id, count, viewAbleCategoryIds, title, publisherList, createDateList, publishDateList, 
-					statusList, documentType, creatorUnitNameList, importBatchNames, personNames, unitNames,  groupNames, orderField, order, manager );
+					statusList, documentType, creatorUnitNameList, importBatchNames, personNames, unitNames,  groupNames, orderField, order, manager, lastedPublishTime );
 		} catch ( Exception e ) {
 			throw e;
 		}

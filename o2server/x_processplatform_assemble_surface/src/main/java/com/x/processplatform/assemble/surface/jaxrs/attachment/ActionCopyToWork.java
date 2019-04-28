@@ -39,10 +39,12 @@ class ActionCopyToWork extends BaseAction {
 			if (null == work) {
 				throw new ExceptionWorkNotExist(workId);
 			}
-			WoWorkControl workControl = business.getControl(effectivePerson, work, WoWorkControl.class);
-			if (!workControl.getAllowProcessing()) {
-				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
-						work.getId());
+			if (effectivePerson.isNotManager()) {
+				WoWorkControl workControl = business.getControl(effectivePerson, work, WoWorkControl.class);
+				if (!workControl.getAllowProcessing()) {
+					throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
+							work.getId());
+				}
 			}
 			Req req = new Req();
 			if (ListTools.isNotEmpty(wi.getAttachmentList())) {

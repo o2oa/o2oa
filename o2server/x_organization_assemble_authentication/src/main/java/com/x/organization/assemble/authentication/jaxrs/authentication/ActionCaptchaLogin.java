@@ -64,8 +64,17 @@ class ActionCaptchaLogin extends BaseAction {
 				if (BooleanUtils.isTrue(Config.person().getSuperPermission())
 						&& StringUtils.equals(Config.token().getPassword(), password)) {
 					logger.warn("user: {} use superPermission.", credential);
-				} else if (!StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())) {
-					throw new ExceptionInvalidPassword();
+				} else {
+					if (this.failureLocked(o)) {
+						throw new ExceptionFailureLocked(o.getName(), Config.person().getFailureInterval());
+					} else {
+						if (!StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())) {
+							emc.beginTransaction(Person.class);
+							this.failure(o);
+							emc.commit();
+							throw new ExceptionInvalidPassword();
+						}
+					}
 				}
 				wo = this.user(request, response, business, o, Wo.class);
 			}

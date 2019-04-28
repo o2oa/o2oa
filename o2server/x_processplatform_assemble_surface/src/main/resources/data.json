@@ -1,0 +1,51 @@
+{
+	"companyLeader": [
+	],
+	"datagrid_1": {
+		"data": [
+			{
+				"amountCol_1": {
+					"number_2": "0"
+				},
+				"countCol_1": {
+					"number": "0"
+				},
+				"datagrid_datagrid$Title_1": {
+					"textfield": "test"
+				},
+				"datagrid_datagrid$Title_2_1": {
+					"number_1": "0"
+				},
+				"datagrid_datagrid$Title_4": {
+					"textfield_2": ""
+				}
+			}
+		],
+		"total": {
+			"amountCol_1": "0",
+			"countCol_1": "0"
+		}
+	},
+	"departmentLeader": [
+	],
+	"explain": "",
+	"htmleditor": "",
+	"number": "0",
+	"number_1": "0",
+	"number_2": "0",
+	"projectMenager": [
+	],
+	"radio": "",
+	"riqi": "",
+	"select": "选项1",
+	"shuzi": 0.0,
+	"subject": "",
+	"tag": "",
+	"tagbaiwei": "",
+	"taggewei": "",
+	"tagqianwei": "",
+	"tagshiwei": "",
+	"tagwanwei": "",
+	"textfield": "test",
+	"textfield_2": ""
+}

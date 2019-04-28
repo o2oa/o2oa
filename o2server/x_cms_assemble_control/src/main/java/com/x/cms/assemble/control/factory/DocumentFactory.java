@@ -130,7 +130,7 @@ public class DocumentFactory<T> extends AbstractFactory {
 	public List<Document> listNextWithCondition( 
 			Integer maxCount, List<String> viewAbleCategoryIds, String title, List<String> publisherList, List<String> createDateList, 
 			List<String> publishDateList,  List<String> statusList, String documentType, List<String> creatorUnitNameList, List<String> importBatchNames, List<String> personNames, List<String> unitNames, List<String> groupNames, 
-			Object sequenceFieldValue, String orderField, String order, Boolean manager
+			Object sequenceFieldValue, String orderField, String order, Boolean manager, Date lastedPublishTime 
 	) throws Exception {
 		if( ListTools.isEmpty( viewAbleCategoryIds ) ){
 			order = "DESC";
@@ -220,7 +220,12 @@ public class DocumentFactory<T> extends AbstractFactory {
 				}
 			}
 		}
+		
 		//组织查询条件
+		//根据最晚发布时间来过滤
+		if( lastedPublishTime != null ) {
+			p = cb.and( p, cb.greaterThan( root.get( Document_.publishTime ) , lastedPublishTime));
+		}
 		if( StringUtils.isNotEmpty( documentType ) && !"全部".equals( documentType ) ){
 			p = cb.and( p, cb.equal( root.get( Document_.documentType ) , documentType));
 		}
@@ -329,7 +334,7 @@ public class DocumentFactory<T> extends AbstractFactory {
 	public Long countWithCondition( 
 			List<String> viewAbleCategoryIds, String title, List<String> publisherList, List<String> createDateList,  List<String> publishDateList,  
 			List<String> statusList, String documentType, List<String>  creatorUnitNameList, List<String> importBatchNames, List<String> personNames, List<String> unitNames,
-			List<String> groupNames, Boolean manager
+			List<String> groupNames, Boolean manager, Date lastedPublishTime
 	) throws Exception {
 		Date startDate = null;
 		Date endDate = null;
@@ -367,6 +372,10 @@ public class DocumentFactory<T> extends AbstractFactory {
 			p = cb.and( p, permission );
 		}
 		
+		//根据最晚发布时间来过滤
+		if( lastedPublishTime != null ) {
+			p = cb.and( p, cb.greaterThan( root.get( Document_.publishTime ) , lastedPublishTime));
+		}
 		//组织查询条件
 		if( StringUtils.isNotEmpty( documentType ) && !"全部".equals( documentType ) ){
 			p = cb.and( p, cb.equal( root.get( Document_.documentType ) , documentType));

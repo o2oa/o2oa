@@ -210,7 +210,7 @@ public class OkrCenterWorkInfo extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String description = "";
 
-	public static final String workTotal_FIELDNAME = " workTotal";
+	public static final String workTotal_FIELDNAME = "workTotal";
 	@FieldDescribe("工作总个数")
 	@Column(name = ColumnNamePrefix + workTotal_FIELDNAME)
 	@CheckPersist(allowEmpty = true)

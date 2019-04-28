@@ -103,7 +103,7 @@ class ActionCurrentStyle extends BaseAction {
 			CriteriaQuery<Portal> cq = cb.createQuery(Portal.class);
 			Root<Portal> root = cq.from(Portal.class);
 			Predicate p = root.get(Portal_.firstPage).in(pageIds);
-			//p = cb.and(p, cb.or(cb.isNull(root.get(Portal_.mobileClient)), cb.isTrue(root.get(Portal_.mobileClient))));
+			p = cb.and(p, cb.or(cb.isNull(root.get(Portal_.mobileClient)), cb.isTrue(root.get(Portal_.mobileClient))));
 			List<Portal> os = em.createQuery(cq.select(root).where(p)).getResultList();
 			os = os.stream().sorted(Comparator.comparing(Portal::getUpdateTime, Comparator.nullsLast(Date::compareTo)))
 					.collect(Collectors.toList());

@@ -190,7 +190,7 @@ public class Token extends ConfigObject {
 		o.id = name;
 		o.employee = name;
 		o.display = name;
-		o.mail = name + "@o2oa.io";
+		o.mail = name + "@o2oa.net";
 		o.setDistinguishedName(defaultInitialManagerDistinguishedName);
 		o.weixin = "";
 		o.qq = "";

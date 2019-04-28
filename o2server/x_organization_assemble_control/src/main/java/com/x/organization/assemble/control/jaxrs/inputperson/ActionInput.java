@@ -34,6 +34,7 @@ import com.x.base.core.project.scripting.Scripting;
 import com.x.base.core.project.scripting.ScriptingEngine;
 import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Group;
@@ -175,6 +176,7 @@ class ActionInput extends BaseAction {
 		Person p = null;
 		boolean validate = true;
 		for (PersonItem o : people) {
+			logger.debug("正在校验用户:{}.", o.getName());
 			if (StringUtils.isEmpty(o.getName())) {
 				this.setMemo(workbook, configurator, o, "姓名不能为空.");
 				validate = false;
@@ -229,7 +231,7 @@ class ActionInput extends BaseAction {
 			}
 			if (validate) {
 				for (PersonItem o : people) {
-					p = emc.flag(o.getName(), Person.class);
+//					p = emc.flag(o.getName(), Person.class);
 //					if (null != p) {
 //						this.setMemo(workbook, configurator, o,
 //								"姓名: " + o.getName() + " 与已经存在用户: " + p.getName() + " 冲突.");
@@ -279,25 +281,28 @@ class ActionInput extends BaseAction {
 				}
 			}
 			if (validate) {
-				emc.beginTransaction(Person.class);
-				emc.beginTransaction(PersonAttribute.class);
-				for (PersonItem o : people) {
-					Person person = new Person();
-					o.copyTo(person);
-					emc.persist(person, CheckPersistType.all);
-					for (Entry<String, String> en : o.getAttributes().entrySet()) {
-						if (StringUtils.isNotEmpty(en.getValue())) {
-							PersonAttribute personAttribute = new PersonAttribute();
-							personAttribute.setName(en.getKey());
-							personAttribute.setAttributeList(new ArrayList<String>());
-							personAttribute.getAttributeList().add(en.getValue());
-							personAttribute.setPerson(person.getId());
-							emc.persist(personAttribute);
+				for (List<PersonItem> list : ListTools.batch(people, 200)) {
+					emc.beginTransaction(Person.class);
+					emc.beginTransaction(PersonAttribute.class);
+					for (PersonItem o : list) {
+						logger.debug("正在保存用户:{}.", o.getName());
+						Person person = new Person();
+						o.copyTo(person);
+						emc.persist(person, CheckPersistType.all);
+						for (Entry<String, String> en : o.getAttributes().entrySet()) {
+							if (StringUtils.isNotEmpty(en.getValue())) {
+								PersonAttribute personAttribute = new PersonAttribute();
+								personAttribute.setName(en.getKey());
+								personAttribute.setAttributeList(new ArrayList<String>());
+								personAttribute.getAttributeList().add(en.getValue());
+								personAttribute.setPerson(person.getId());
+								emc.persist(personAttribute);
+							}
 						}
+						this.setMemo(workbook, configurator, o, "已导入.");
 					}
-					this.setMemo(workbook, configurator, o, "已导入.");
+					emc.commit();
 				}
-				emc.commit();
 			}
 		}
 	}

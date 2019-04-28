@@ -444,15 +444,6 @@ public class TaskCompleted extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private Long duration;
 
-	// public static final String manualMode_FIELDNAME = "manualMode";
-	// @Enumerated(EnumType.ORDINAL)
-	// @FieldDescribe("人工节点的处理方式.")
-	// @Column(length = ManualMode.length, name = ColumnNamePrefix +
-	// manualMode_FIELDNAME)
-	// @Index(name = TABLE + IndexNameMiddle + manualMode_FIELDNAME)
-	// @CheckPersist(allowEmpty = false)
-	// private ManualMode manualMode;
-
 	public static final String processingType_FIELDNAME = "processingType";
 	@FieldDescribe("流程流转类型")
 	@Enumerated(EnumType.STRING)
@@ -480,6 +471,25 @@ public class TaskCompleted extends SliceJpaObject {
 	@Column(length = length_255B, name = ColumnNamePrefix + mediaOpinion_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String mediaOpinion;
+
+	public static final String pressCount_FIELDNAME = "pressCount";
+	@FieldDescribe("提醒次数")
+	@Column(name = ColumnNamePrefix + pressCount_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Integer pressCount;
+
+	public static final String pressTime_FIELDNAME = "pressTime";
+	@FieldDescribe("提醒办理时间.")
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = ColumnNamePrefix + pressTime_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Date pressTime;
+
+	public static final String pressActivityToken_FIELDNAME = "pressActivityToken";
+	@FieldDescribe("提醒办理环节.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + pressActivityToken_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String pressActivityToken;
 
 	public String getJob() {
 		return job;
@@ -791,6 +801,30 @@ public class TaskCompleted extends SliceJpaObject {
 
 	public void setMediaOpinion(String mediaOpinion) {
 		this.mediaOpinion = mediaOpinion;
+	}
+
+	public Date getPressTime() {
+		return pressTime;
+	}
+
+	public void setPressTime(Date pressTime) {
+		this.pressTime = pressTime;
+	}
+
+	public String getPressActivityToken() {
+		return pressActivityToken;
+	}
+
+	public void setPressActivityToken(String pressActivityToken) {
+		this.pressActivityToken = pressActivityToken;
+	}
+
+	public Integer getPressCount() {
+		return pressCount;
+	}
+
+	public void setPressCount(Integer pressCount) {
+		this.pressCount = pressCount;
 	}
 
 }

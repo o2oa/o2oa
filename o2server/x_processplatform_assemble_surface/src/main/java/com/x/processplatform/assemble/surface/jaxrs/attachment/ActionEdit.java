@@ -50,7 +50,7 @@ class ActionEdit extends BaseAction {
 			}
 			Application application = business.application().pick(work.getApplication());
 			Process process = business.process().pick(work.getProcess());
-			if (!business.controllerable(business, effectivePerson, application, process, attachment)) {
+			if (!business.controllerable(effectivePerson, application, process, attachment)) {
 				throw new ExceptionAccessDenied(effectivePerson, attachment);
 			}
 			emc.beginTransaction(Attachment.class);

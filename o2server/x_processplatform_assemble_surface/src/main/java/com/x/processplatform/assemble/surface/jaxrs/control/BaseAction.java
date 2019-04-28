@@ -26,6 +26,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		private Boolean allowRetract = false;
 		/* 是否可以回滚 */
 		private Boolean allowRollback = false;
+		/* 是否可以回滚 */
+		private Boolean allowPress = false;
 
 		public Boolean getAllowSave() {
 			return allowSave;
@@ -105,6 +107,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 		public void setAllowRollback(Boolean allowRollback) {
 			this.allowRollback = allowRollback;
+		}
+
+		public Boolean getAllowPress() {
+			return allowPress;
+		}
+
+		public void setAllowPress(Boolean allowPress) {
+			this.allowPress = allowPress;
 		}
 
 	}
