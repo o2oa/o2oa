@@ -1,6 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Objects;
 
@@ -9,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -55,8 +55,7 @@ class ActionReroute extends BaseAction {
 				throw new ExceptionProcessNotMatch();
 			}
 			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-					"work/" + URLEncoder.encode(work.getId(), "UTF-8") + "/reroute/activity/"
-							+ URLEncoder.encode(destinationActivity.getId(), "UTF-8"),
+					Applications.joinQueryUri("work", work.getId(), "reroute", "activity", destinationActivity.getId()),
 					null);
 			Wo wo = new Wo();
 			wo.setId(work.getId());

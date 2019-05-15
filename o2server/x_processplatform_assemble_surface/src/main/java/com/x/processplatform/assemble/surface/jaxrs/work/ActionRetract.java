@@ -1,9 +1,8 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
-import java.net.URLEncoder;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -11,7 +10,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.PropertyTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
@@ -70,34 +68,29 @@ class ActionRetract extends BaseAction {
 				throw new ExceptionRetractNoneWorkLog(work.getId());
 			}
 
-//			TaskCompleted taskCompleted = null;
-//			WorkLog workLog = null;
-//
-//			String taskCompletedId = business.taskCompleted().getAllowRetract(effectivePerson.getDistinguishedName(),
-//					work);
-//			if (StringUtils.isEmpty(taskCompletedId)) {
-//				throw new ExceptionRetractNoneTaskCompleted(effectivePerson.getDistinguishedName(), work.getTitle(),
-//						work.getId());
-//			}
-//			taskCompleted = emc.find(taskCompletedId, TaskCompleted.class);
-//			workLog = this.getWorkLog(business, taskCompleted);
-//			if (null == workLog) {
-//				throw new ExceptionRetractNoneWorkLog(effectivePerson.getDistinguishedName(), work.getTitle(),
-//						work.getId(), taskCompletedId);
-//			}
-//			emc.beginTransaction(TaskCompleted.class);
-//			taskCompleted.setProcessingType(ProcessingType.retract);
-//			taskCompleted.setRetractTime(new Date());
-//			emc.commit();
+			Req req = new Req();
+			req.setWorkLog(workLog.getId());
 			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-					"work/" + URLEncoder.encode(work.getId(), DefaultCharset.name) + "/retract/worklog/"
-							+ URLEncoder.encode(workLog.getId(), DefaultCharset.name),
-					null);
+					Applications.joinQueryUri("work", work.getId(), "rollback"), req);
 			Wo wo = new Wo();
 			wo.setId(work.getId());
 			result.setData(wo);
 			return result;
 		}
+	}
+
+	public static class Req {
+
+		private String workLog;
+
+		public String getWorkLog() {
+			return workLog;
+		}
+
+		public void setWorkLog(String workLog) {
+			this.workLog = workLog;
+		}
+
 	}
 
 	public static class Wo extends WoId {

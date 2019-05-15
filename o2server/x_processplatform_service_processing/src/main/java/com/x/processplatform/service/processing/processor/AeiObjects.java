@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -191,8 +192,13 @@ public class AeiObjects extends GsonPropertyObject {
 
 	public List<WorkLog> getWorkLogs() throws Exception {
 		if (null == this.workLogs) {
-			this.workLogs = this.business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.job_FIELDNAME,
+			List<WorkLog> os = this.business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.job_FIELDNAME,
 					this.work.getJob());
+			/* 保持和前端得到的相同排序 */
+			this.workLogs = os.stream()
+					.sorted(Comparator.comparing(WorkLog::getFromTime, Comparator.nullsLast(Date::compareTo))
+							.thenComparing(WorkLog::getArrivedTime, Comparator.nullsLast(Date::compareTo)))
+					.collect(Collectors.toList());
 		}
 		return this.workLogs;
 	}
@@ -550,6 +556,14 @@ public class AeiObjects extends GsonPropertyObject {
 					MessageFactory.task_create(o);
 					/* 创建待办的参阅 */
 					this.createReview(new Review(this.getWork(), o.getPerson()));
+					/* 创建授权的review */
+					if (StringUtils.isNotEmpty(o.getTrustIdentity())) {
+						String trustPerson = this.business().organization().person()
+								.getWithIdentity(o.getTrustIdentity());
+						if (StringUtils.isNotEmpty(trustPerson)) {
+							this.createReview(new Review(this.getWork(), trustPerson));
+						}
+					}
 				} catch (Exception e) {
 					logger.error(e);
 				}

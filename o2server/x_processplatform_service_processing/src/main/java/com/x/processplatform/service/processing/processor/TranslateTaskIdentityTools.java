@@ -12,6 +12,7 @@ import com.google.gson.JsonObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.Trust;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.express.Organization.ClassifyDistinguishedName;
 import com.x.processplatform.core.entity.content.Data;

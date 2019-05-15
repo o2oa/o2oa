@@ -126,7 +126,7 @@ public class Route extends SliceJpaObject {
 
 	public static final String position_FIELDNAME = "position";
 	@FieldDescribe("文本位置.")
-	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + position_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + position_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String position;
 

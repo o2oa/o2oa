@@ -23,7 +23,6 @@ import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
 
-import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
@@ -126,7 +125,7 @@ public class Process extends SliceJpaObject {
 	public static final String controllerList_FIELDNAME = "controllerList";
 	@FieldDescribe("流程管理者.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle + controllerList_FIELDNAME, joinIndex = @Index(name = TABLE
 			+ IndexNameMiddle + controllerList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + controllerList_FIELDNAME)
@@ -145,7 +144,7 @@ public class Process extends SliceJpaObject {
 	public static final String reviewIdentityList_FIELDNAME = "reviewIdentityList";
 	@FieldDescribe("Work的参阅人员.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ reviewIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ reviewIdentityList_FIELDNAME + JoinIndexNameSuffix))
@@ -224,7 +223,7 @@ public class Process extends SliceJpaObject {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ startableIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ startableIdentityList_FIELDNAME))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + startableIdentityList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + startableIdentityList_FIELDNAME + JoinIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -236,7 +235,7 @@ public class Process extends SliceJpaObject {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ startableUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ startableUnitList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + startableUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + startableUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -300,11 +299,13 @@ public class Process extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String expireScriptText;
 
-	/* flag标志位 */
-	// public static String[] FLA GS = new String[] { id_FIELDNAME, alias_FIELDNAME
-	// };
+	public static final String checkDraft_FIELDNAME = "checkDraft";
+	@FieldDescribe("是否进行无内容的草稿删除校验.")
+	@Column(name = ColumnNamePrefix + checkDraft_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean checkDraft;
 
-	// public static String[] RESTRICTFLA GS = new String[] { name_FIELDNAME };
+	/* flag标志位 */
 
 	public String getName() {
 		return name;
@@ -528,6 +529,14 @@ public class Process extends SliceJpaObject {
 
 	public void setIcon(String icon) {
 		this.icon = icon;
+	}
+
+	public Boolean getCheckDraft() {
+		return checkDraft;
+	}
+
+	public void setCheckDraft(Boolean checkDraft) {
+		this.checkDraft = checkDraft;
 	}
 
 }

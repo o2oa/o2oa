@@ -1,19 +1,19 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.WorkCompletedControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
@@ -24,23 +24,30 @@ class ActionGetWithWorkCompleted extends BaseAction {
 			Business business = new Business(emc);
 			WorkCompleted workCompleted = emc.find(workCompletedId, WorkCompleted.class);
 			if (null == workCompleted) {
-				throw new ExceptionWorkCompletedNotExist(workCompletedId);
+				throw new ExceptionWorkNotExist(workCompletedId);
 			}
 			Attachment attachment = emc.find(id, Attachment.class);
 			if (null == attachment) {
 				throw new ExceptionAttachmentNotExist(id);
 			}
-			WoControl control = business.getControl(effectivePerson, workCompleted, WoControl.class);
-			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
-				throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(),
-						workCompleted.getTitle(), workCompleted.getId());
+
+			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workCompleted.getId(),
+					new ExceptionEntityNotExist(workCompleted.getId()))) {
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
-			List<String> ids = business.attachment().listWithJob(workCompleted.getJob());
-			if (!ids.contains(id)) {
-				throw new ExceptionWorkCompletedNotContainsAttachment(workCompleted.getTitle(), workCompleted.getId(),
-						attachment.getName(), attachment.getId());
-			}
+
 			Wo wo = Wo.copier.copy(attachment);
+
+			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
+
+			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
+
+			if (this.read(wo, effectivePerson, identities, units)) {
+				wo.getControl().setAllowRead(true);
+				wo.getControl().setAllowEdit(this.edit(wo, effectivePerson, identities, units));
+				wo.getControl().setAllowControl(this.control(wo, effectivePerson, identities, units));
+			}
+
 			result.setData(wo);
 			return result;
 		}
@@ -50,13 +57,99 @@ class ActionGetWithWorkCompleted extends BaseAction {
 
 		private static final long serialVersionUID = 1954637399762611493L;
 
-		static WrapCopier<Attachment, Wo> copier = WrapCopierFactory.wo(Attachment.class, Wo.class, null, Wo.Excludes);
+		static WrapCopier<Attachment, Wo> copier = WrapCopierFactory.wo(Attachment.class, Wo.class, null,
+				JpaObject.FieldsInvisible);
 
-		public static List<String> Excludes = new ArrayList<>(JpaObject.FieldsInvisible);
+		private WoControl control = new WoControl();
+
+		public WoControl getControl() {
+			return control;
+		}
+
+		public void setControl(WoControl control) {
+			this.control = control;
+		}
 
 	}
 
-	public static class WoControl extends WorkCompletedControl {
+	public static class WoControl extends GsonPropertyObject {
 
+		private Boolean allowRead = false;
+		private Boolean allowEdit = false;
+		private Boolean allowControl = false;
+
+		public Boolean getAllowRead() {
+			return allowRead;
+		}
+
+		public void setAllowRead(Boolean allowRead) {
+			this.allowRead = allowRead;
+		}
+
+		public Boolean getAllowEdit() {
+			return allowEdit;
+		}
+
+		public void setAllowEdit(Boolean allowEdit) {
+			this.allowEdit = allowEdit;
+		}
+
+		public Boolean getAllowControl() {
+			return allowControl;
+		}
+
+		public void setAllowControl(Boolean allowControl) {
+			this.allowControl = allowControl;
+		}
+
+	}
+
+	private boolean read(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
+			throws Exception {
+		boolean value = false;
+		if (effectivePerson.isPerson(wo.getPerson())) {
+			value = true;
+		} else if (ListTools.isEmpty(wo.getReadIdentityList()) && ListTools.isEmpty(wo.getReadUnitList())) {
+			value = true;
+		} else {
+			if (ListTools.containsAny(identities, wo.getReadIdentityList())
+					|| ListTools.containsAny(identities, wo.getReadUnitList())) {
+				value = true;
+			}
+		}
+		wo.getControl().setAllowRead(value);
+		return value;
+	}
+
+	private boolean edit(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
+			throws Exception {
+		boolean value = false;
+		if (effectivePerson.isPerson(wo.getPerson())) {
+			value = true;
+		} else if (ListTools.isEmpty(wo.getEditIdentityList()) && ListTools.isEmpty(wo.getEditUnitList())) {
+			value = true;
+		} else {
+			if (ListTools.containsAny(identities, wo.getEditIdentityList())
+					|| ListTools.containsAny(identities, wo.getEditUnitList())) {
+				value = true;
+			}
+		}
+		return value;
+	}
+
+	private boolean control(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
+			throws Exception {
+		boolean value = false;
+		if (effectivePerson.isPerson(wo.getPerson())) {
+			value = true;
+		} else if (ListTools.isEmpty(wo.getControllerUnitList()) && ListTools.isEmpty(wo.getControllerIdentityList())) {
+			value = true;
+		} else {
+			if (ListTools.containsAny(identities, wo.getControllerIdentityList())
+					|| ListTools.containsAny(identities, wo.getControllerUnitList())) {
+				value = true;
+			}
+		}
+		return value;
 	}
 }

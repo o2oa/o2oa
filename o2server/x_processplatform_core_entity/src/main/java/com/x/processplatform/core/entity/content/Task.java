@@ -102,8 +102,8 @@ public class Task extends SliceJpaObject {
 	public Task() {
 	}
 
-	public Task(Work work, String identity, String person, String unit, Date startTime, Date expireTime,
-			List<Route> routes, Boolean allowRapid) {
+	public Task(Work work, String identity, String person, String unit, String trustIdentity, Date startTime,
+			Date expireTime, List<Route> routes, Boolean allowRapid) {
 		this.job = work.getJob();
 		this.title = work.getTitle();
 		this.startTime = startTime;
@@ -118,6 +118,7 @@ public class Task extends SliceJpaObject {
 		this.person = person;
 		this.identity = identity;
 		this.unit = unit;
+		this.trustIdentity = trustIdentity;
 		this.activity = work.getActivity();
 		this.activityName = work.getActivityName();
 		this.activityAlias = work.getActivityAlias();
@@ -250,6 +251,13 @@ public class Task extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + unit_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String unit;
+
+	public static final String trustIdentity_FIELDNAME = "trustIdentity";
+	@FieldDescribe("委托人Identity")
+	@Column(length = length_255B, name = ColumnNamePrefix + trustIdentity_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + trustIdentity_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String trustIdentity;
 
 	public static final String activity_FIELDNAME = "activity";
 	@FieldDescribe("活动ID.")
@@ -432,6 +440,12 @@ public class Task extends SliceJpaObject {
 	@Column(length = length_255B, name = ColumnNamePrefix + mediaOpinion_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String mediaOpinion;
+
+	public static final String first_FIELDNAME = "first";
+	@FieldDescribe("是否是第一条待办.")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + first_FIELDNAME)
+	private Boolean first;
 
 	public String getProcess() {
 		return process;
@@ -743,6 +757,22 @@ public class Task extends SliceJpaObject {
 
 	public void setRouteDecisionOpinionList(List<String> routeDecisionOpinionList) {
 		this.routeDecisionOpinionList = routeDecisionOpinionList;
+	}
+
+	public String getTrustIdentity() {
+		return trustIdentity;
+	}
+
+	public void setTrustIdentity(String trustIdentity) {
+		this.trustIdentity = trustIdentity;
+	}
+
+	public Boolean getFirst() {
+		return first;
+	}
+
+	public void setFirst(Boolean first) {
+		this.first = first;
 	}
 
 }

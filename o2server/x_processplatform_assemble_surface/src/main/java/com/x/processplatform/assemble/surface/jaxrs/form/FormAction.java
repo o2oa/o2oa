@@ -45,7 +45,8 @@ public class FormAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		/* 修改过的方法 */
+		asyncResponse.resume(ResponseFactory.getMaxAgeActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "根据工作或完成工作标识获取移动表单.", action = ActionGetWithWorkOrWorkCompletedMobile.class)
@@ -64,7 +65,8 @@ public class FormAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+		/* 修改过的方法 */
+		asyncResponse.resume(ResponseFactory.getMaxAgeActionResultResponse(result));
 	}
 
 	@JaxrsMethodDescribe(value = "获取表单.", action = ActionGet.class)

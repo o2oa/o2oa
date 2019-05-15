@@ -21,8 +21,6 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
-import com.x.collaboration.core.message.Collaboration;
-import com.x.collaboration.core.message.notification.ReadMessage;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.ReadCompleted_;
@@ -99,8 +97,6 @@ class ActionReset extends BaseAction {
 				emc.commit();
 				MessageFactory.read_delete(read);
 				for (Read obj : list) {
-					ReadMessage message = new ReadMessage(obj.getPerson(), obj.getWork(), obj.getId());
-					Collaboration.send(message);
 					MessageFactory.read_create(obj);
 				}
 				Wo wo = new Wo();

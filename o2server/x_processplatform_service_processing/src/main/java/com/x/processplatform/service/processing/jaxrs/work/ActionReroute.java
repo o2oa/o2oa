@@ -1,6 +1,5 @@
 package com.x.processplatform.service.processing.jaxrs.work;
 
-import java.net.URLEncoder;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -10,6 +9,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -52,7 +52,7 @@ class ActionReroute extends BaseAction {
 			this.removeTask(business, work);
 			emc.commit();
 			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-					"work/" + URLEncoder.encode(work.getId(), "UTF-8") + "/processing", null);
+					Applications.joinQueryUri("work", work.getId(), "processing"), null);
 			Wo wo = new Wo();
 			wo.setId(work.getId());
 			result.setData(wo);

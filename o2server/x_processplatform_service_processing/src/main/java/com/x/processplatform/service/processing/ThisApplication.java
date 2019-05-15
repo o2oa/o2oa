@@ -6,7 +6,6 @@ import com.x.base.core.project.Context;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
-import com.x.collaboration.core.message.Collaboration;
 import com.x.processplatform.service.processing.processor.embed.SyncEmbedQueue;
 import com.x.processplatform.service.processing.processor.invoke.SyncJaxrsInvokeQueue;
 import com.x.processplatform.service.processing.processor.invoke.SyncJaxwsInvokeQueue;
@@ -33,7 +32,6 @@ public class ThisApplication {
 		try {
 			LoggerFactory.setLevel(Config.logLevel().x_processplatform_service_processing());
 			ScriptHelperFactory.initialScriptText = Config.initialScriptText();
-			Collaboration.start(context());
 			MessageConnector.start(context());
 			context().startQueue(syncJaxrsInvokeQueue);
 			context().startQueue(syncJaxwsInvokeQueue);
@@ -57,7 +55,6 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
-			Collaboration.stop();
 			MessageConnector.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
