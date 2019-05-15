@@ -26,7 +26,7 @@ MWF.xApplication.process.Application.MyWorkExplorer = new Class({
         });
     },
     loadProcess: function(){
-        this.actions.listProcess(this.app.options.id, function(json){
+        this.actions.listProcessCount(this.app.options.id, function(json){
             json.data.each(function(process){
                 this.loadProcessNode(process);
             }.bind(this));

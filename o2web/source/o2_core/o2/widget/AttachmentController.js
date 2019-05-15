@@ -479,11 +479,11 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
     uploadAttachment: function(e, node){
         if (this.module) this.module.uploadAttachment(e, node);
     },
-    doUploadAttachment: function(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept){
+    doUploadAttachment: function(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size){
         if (FormData.expiredIE){
-            this.doInputUploadAttachment(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept);
+            this.doInputUploadAttachment(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size);
         }else{
-            this.doFormDataUploadAttachment(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept);
+            this.doFormDataUploadAttachment(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size);
         }
     },
     addUploadMessage: function(fileName){
@@ -634,7 +634,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
             }.bind(this));
         }.bind(this));
     },
-    doFormDataUploadAttachment: function(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept){
+    doFormDataUploadAttachment: function(obj, action, invokeUrl, parameter, finish, every, beforeUpload, multiple, accept, size){
         if (!this.uploadFileAreaNode){
             this.uploadFileAreaNode = new Element("div");
             var html = "<input name=\"file\" multiple type=\"file\" accept=\"*/*\"/>";
@@ -661,27 +661,46 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
 
                     var isContinue = true;
                     if (beforeUpload) isContinue = beforeUpload(files);
-
+debugger;
                     if (isContinue){
+                        var accepts = (accept) ? accept.split(o2.splitStr) : null;
+
                         for (var i = 0; i < files.length; i++) {
                             var file = files.item(i);
-                            var formData = new FormData();
-                            Object.each(obj, function(v, k){
-                                formData.append(k, v)
-                            });
-                            formData.append('file', file);
-                            restActions.invoke({
-                                "name": invokeUrl,
-                                "async": true,
-                                "data": formData,
-                                "file": file,
-                                "parameter": parameter,
-                                "success": function(json){
-                                    current++;
-                                    if (every) every(json, current, count);
-                                    callback();
-                                }
-                            });
+                            var ext = file.name.substr(file.name.lastIndexOf("."), file.name.length);
+                            if (accepts && (accepts.indexOf(ext)===-1 && accepts.indexOf("*")===-1 && accepts.indexOf("*/*")===-1)){
+                                var msg = {
+                                    "subject": o2.LP.widget.refuseUpload,
+                                    "content": "<div>名为：<font style='color:#0000ff'>“"+file.name+"”</font>的附件不符合允许上传类型，<font style='color:#ff0000'>已经被剔除</font></div>"
+                                };
+                                layout.desktop.message.addTooltip(msg);
+                                layout.desktop.message.addMessage(msg);
+                            }else if (size && file.size> size*1024*1024){
+                                var msg = {
+                                    "subject": o2.LP.widget.refuseUpload,
+                                    "content": "<div>名为：<font style='color:#0000ff'>“"+file.name+"”</font>的附件超出允许的大小，<font style='color:#ff0000'>已经被剔除</font>（仅允许上传小于"+size+"M的文件）</div>"
+                                };
+                                layout.desktop.message.addTooltip(msg);
+                                layout.desktop.message.addMessage(msg);
+                            }else{
+                                var formData = new FormData();
+                                Object.each(obj, function(v, k){
+                                    formData.append(k, v)
+                                });
+                                formData.append('file', file);
+                                restActions.invoke({
+                                    "name": invokeUrl,
+                                    "async": true,
+                                    "data": formData,
+                                    "file": file,
+                                    "parameter": parameter,
+                                    "success": function(json){
+                                        current++;
+                                        if (every) every(json, current, count);
+                                        callback();
+                                    }
+                                });
+                            }
                         }
                     }
                     this.uploadFileAreaNode.destroy();
@@ -706,11 +725,11 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
             if (this.module) this.module.replaceAttachment(e, node, this.selectedAttachments[0]);
         }
     },
-    doReplaceAttachment: function(obj, action, invokeUrl, parameter, callback, multiple, accept){
+    doReplaceAttachment: function(obj, action, invokeUrl, parameter, callback, multiple, accept, accept, size){
         if (FormData.expiredIE){
-            this.doInputUploadAttachment(obj, action, invokeUrl, parameter, callback, multiple, accept);
+            this.doInputUploadAttachment(obj, action, invokeUrl, parameter, callback, multiple, accept, accept, size);
         }else{
-            this.doFormDataUploadAttachment(obj, action, invokeUrl, parameter, callback, multiple, accept);
+            this.doFormDataUploadAttachment(obj, action, invokeUrl, parameter, callback, multiple, accept, accept, size);
         }
     },
 

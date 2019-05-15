@@ -503,6 +503,9 @@ MWF.xApplication.service.AgentDesigner.Main = new Class({
         node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.lastEndTime+":"}).inject(this.propertyContentArea);
         this.propertyLastEndTimeNode = new Element("div", {"styles": this.css.propertyTextNode, "value": ""}).inject(this.propertyContentArea);
 
+        node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.appointmentTime+":"}).inject(this.propertyContentArea);
+        this.propertyAppointmentTimeNode = new Element("div", {"styles": this.css.propertyTextNode, "value": ""}).inject(this.propertyContentArea);
+
         node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.description+":"}).inject(this.propertyContentArea);
         this.propertyDescriptionNode = new Element("textarea", {"styles": this.css.propertyInputAreaNode, "value": ""}).inject(this.propertyContentArea);
 
@@ -726,7 +729,8 @@ MWF.xApplication.service.AgentDesigner.Main = new Class({
                 "enable" : true,
                 "cron" : "",
                 "lastStartTime" : "",
-                "lastEndTime" : ""
+                "lastEndTime" : "",
+                "appointmentTime" : ""
             };
             this.createListAgentItem(data, true);
             if (callback) callback(data);

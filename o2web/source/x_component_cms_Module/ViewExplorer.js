@@ -86,11 +86,13 @@ MWF.xApplication.cms.Module.ViewExplorer = new Class({
             "type" : "cms",
             "hasAction" : this.options.isAdmin,
             "actions": {
-                "lookup": {"uri": "/jaxrs/queryview/flag/{view}/application/flag/{application}/execute", "method":"PUT"},
-                "getView": {"uri": "/jaxrs/queryview/flag/{view}/application/flag/{application}"},
+                //"lookup": {"uri": "/jaxrs/queryview/flag/{view}/application/flag/{application}/execute", "method":"PUT"},
+                //"getView": {"uri": "/jaxrs/queryview/flag/{view}/application/flag/{application}"},
+                "lookup": {"uri": "/jaxrs/view/{view}/execute", "method":"PUT"},
+                "getView": {"uri": "/jaxrs/view/{view}"},
                 "deleteDocument" : {"uri":"/jaxrs/document/{id}","method": "DELETE"}
             },
-            "actionRoot": "x_cms_assemble_control",
+            "actionRoot": "x_query_assemble_surface",
             "resizeNode": true,
             "onSelect": function(){
                 this.fireEvent("select");
@@ -123,8 +125,10 @@ MWF.xApplication.cms.Module.Viewer = new Class({
         "hasAction" : false, //cxy add
         "resizeNode": true,
         "actions": {
-            "lookup": {"uri": "/jaxrs/queryview/flag/{view}/application/flag/{application}/execute", "method":"PUT"},
-            "getView": {"uri": "/jaxrs/queryview/flag/{view}/application/flag/{application}"},
+            //"lookup": {"uri": "/jaxrs/queryview/flag/{view}/application/flag/{application}/execute", "method":"PUT"},
+            //"getView": {"uri": "/jaxrs/queryview/flag/{view}/application/flag/{application}"},
+            "lookup": {"uri": "/jaxrs/view/{view}/execute", "method":"PUT"},
+            "getView": {"uri": "/jaxrs/view/{view}"},
             "listWorkByJob": {"uri": "/jaxrs/job/{job}/find/work/workcompleted"},
             "listTaskByWork": {"uri": "/jaxrs/work/{id}/assignment/manage"}
 
@@ -183,7 +187,7 @@ MWF.xApplication.cms.Module.Viewer = new Class({
             if (this.json.titleStyles) this.selectTitleCell.setStyles(this.json.titleStyles);
             //}
             this.entries = {};
-            this.viewJson.selectEntryList.each(function(column){
+            this.viewJson.selectList.each(function(column){
                 this.entries[column.column] = column;
 
                 if (!column.hideColumn){
@@ -215,6 +219,26 @@ MWF.xApplication.cms.Module.Viewer = new Class({
             }.bind(this));
             this.lookup(data);
         }
+    },
+    lookup: function(data){
+        this.getLookupAction(function(){
+            if (this.json.application){
+                this.lookupAction.invoke({"name": "lookup","async": true, "data": (data || null), "parameter": {"view": this.json.name, "application": this.json.application},"success": function(json){
+                    this.viewData = json.data;
+                    if (this.viewJson.group.column){
+                        this.gridJson = json.data.groupGrid;
+                        this.loadGroupData();
+                    }else{
+                        this.gridJson = json.data.grid;
+                        this.loadData();
+                    }
+                    if (this.loadingAreaNode){
+                        this.loadingAreaNode.destroy();
+                        this.loadingAreaNode = null;
+                    }
+                }.bind(this)});
+            }
+        }.bind(this));
     },
     loadLayout: function(){
         this.node = new Element("div", {"styles": this.css.node}).inject(this.container);
@@ -277,7 +301,7 @@ MWF.xApplication.cms.Module.Viewer.Item = new Class({
         Object.each(this.data.data, function(cell, k){
             if (this.view.hideColumns.indexOf(k)===-1){
                 var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
-                if (k!== this.view.viewJson.groupEntry.column){
+                if (k!== this.view.viewJson.group.column){
                     var v = (this.view.entries[k].code) ? MWF.Macro.exec(this.view.entries[k].code, {"value": cell, "gridData": this.view.gridJson, "data": this.view.viewData, "entry": this.data}) : cell;
                     td.set("text", v);
                 }
@@ -296,6 +320,7 @@ MWF.xApplication.cms.Module.Viewer.Item = new Class({
 
         this.setEvent();
     },
+
     loadActions : function( container ){
         this.deleteNode = new Element("div", {"styles": this.css.actionDeleteNode, "title": "删除"}).inject(container);
         this.deleteNode.addEvents({
@@ -328,12 +353,12 @@ MWF.xApplication.cms.Module.Viewer.Item = new Class({
         }.bind(this));
     },
     openCMSDocument : function( isEdited ){
-        var appId = "cms.Document"+this.data.job;
+        var appId = "cms.Document"+this.data.bundle;
         if (layout.desktop.apps[appId]){
             layout.desktop.apps[appId].setCurrent();
         }else {
             var options = {
-                "documentId": this.data.job,
+                "documentId": this.data.bundle,
                 "readonly" : !isEdited
             };
             layout.desktop.openApplication(null, "cms.Document", options);
@@ -360,7 +385,7 @@ MWF.xApplication.cms.Module.Viewer.Item = new Class({
         });
     },
     removeCMSDocument: function(){
-        var id = this.data.job;
+        var id = this.data.bundle;
         MWF.Actions.get("x_cms_assemble_control").removeDocument(id, function(json){
             //this.viewJson = JSON.decode(json.data.data);
             //this.json = Object.merge(this.json, json.data);
@@ -382,7 +407,7 @@ MWF.xApplication.cms.Module.Viewer.ItemCategory = new Class({
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
         //}
 
-        var colsapn = this.view.viewJson.selectEntryList.length;
+        var colsapn = this.view.viewJson.selectList.length;
         if( this.view.options.hasAction ){
             colsapn ++
         }
@@ -393,9 +418,9 @@ MWF.xApplication.cms.Module.Viewer.ItemCategory = new Class({
         }).inject(this.node);
 
         this.groupColumn = null;
-        for (var c = 0; c<this.view.viewJson.selectEntryList.length; c++){
-            if (this.view.viewJson.selectEntryList[c].column === this.view.viewJson.groupEntry.column){
-                this.groupColumn = this.view.viewJson.selectEntryList[c];
+        for (var c = 0; c<this.view.viewJson.selectList.length; c++){
+            if (this.view.viewJson.selectList[c].column === this.view.viewJson.group.column){
+                this.groupColumn = this.view.viewJson.selectList[c];
                 break;
             }
         }

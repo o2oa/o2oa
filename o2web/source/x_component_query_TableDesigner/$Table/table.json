@@ -1,13 +1,14 @@
 {
   "id": "",
-  "name": "新建数据表",
+  "name": "newTable",
   "alias": "",
   "description": "",
   "query": "",
   "readPersonList": [],
   "readUnitList": [],
   "editPersonList": [],
-  "editUnitList": []                                                                                    ,
+  "editUnitList": [],
+  "status": "draft",
   "draftData": {
     "fieldList": []
   }

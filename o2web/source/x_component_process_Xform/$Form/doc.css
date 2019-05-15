@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css?family=Nunito+Sans:200,200i,400,400i,600,600i,700,700i');
+
+html.CSS1Compat {
+    background: #f1f1f1;
+}
+body.document-editor {
+    background: #f1f1f1;
+    /*width: 15.6cm;*/
+    /*height: 22.5cm;*/
+    /*padding: 3.7cm 2.6cm 3.5cm 2.8cm;*/
+    /*margin: 30px auto;*/
+    /*border: 1px #D3D3D3 solid;*/
+    /*border-radius: 5px;*/
+    /*background: #ffffff;*/
+    /*box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);*/
+    /*font-size: 16pt;*/
+    /*font-family: "仿宋", serif;*/
+    /*line-height: 1.02cm;*/
+    /*letter-spacing:-0.1cm;*/
+}
+
+body.document-editor td, body.document-editor th {
+    font-size: 0.9em;
+}
+
+body.document-editor h1 {
+    margin-bottom:1cm;
+}
+
+body.document-editor table {
+    margin-top:0.5cm;
+    margin-bottom:0.5cm;
+}
+
+body.document-editor table td {
+    border-right: 1px solid #d0d0d0;
+    border-bottom: 1px solid #d0d0d0;
+}
+
+body.document-editor table td:first-of-type {
+    border-left: 1px solid #d0d0d0;
+}
+
+body.document-editor table tr:first-of-type td {
+    border-top: 1px solid #d0d0d0;
+}
+
+body.document-editor table thead th {
+    border-top: 1px solid #d0d0d0;
+    border-right: 1px solid #d0d0d0;
+}
+
+body.document-editor table thead th:first-of-type {
+    border-left: 1px solid #d0d0d0;
+}

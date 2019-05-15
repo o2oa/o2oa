@@ -1,18 +1,20 @@
 <div id="MWFFormToolbar">
 	<span MWFnodetype="MWFToolBarSeparator"></span>
 	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="save.gif" title="保存数据表" MWFButtonAction="saveView" MWFButtonText=""></span>
-	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="build.png" title="发布数据表，进入可构建状态" MWFButtonAction="saveViewAs" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarSeparator"></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="build.png" title="发布数据表，进入可编译状态" MWFButtonAction="statusBuild" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="draft.png" title="取消数据库编译，重新编译时会删除已编译的数据表" MWFButtonAction="statusDraft" MWFButtonText=""></span>
 	<span MWFnodetype="MWFToolBarSeparator"></span>
 
 
-	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="run.png" title="构建所有数据表" MWFButtonAction="saveViewAs" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="run.png" title="编译所有数据表" MWFButtonAction="buildAllView" MWFButtonText=""></span>
 	
 	<!--<span MWFnodetype="MWFToolBarButton" MWFButtonImage="formExplode.gif" title="视图导出" MWFButtonAction="viewExplode" MWFButtonText=""></span>-->
 	<!--<span MWFnodetype="MWFToolBarButton" MWFButtonImage="formImplode.gif" title="视图导入" MWFButtonAction="viewImplode" MWFButtonText=""></span>-->
 
     <span MWFnodetype="MWFToolBarSeparator"></span>
 	
-	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="help.png" title="帮助" MWFButtonAction="viewHelp" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="help.png" title="帮助" MWFButtonAction="tableHelp" MWFButtonText=""></span>
 
     <span MWFnodetype="MWFToolBarSeparator"></span>
     <input type="checkbox" value="autoSave" id="MWFDictionaryAutoSaveCheck">自动保存

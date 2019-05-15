@@ -3,7 +3,40 @@ MWF.xDesktop.requireApp("process.FormDesigner", "Module.$Module", null, false);
 MWF.xApplication.process.FormDesigner.Module.$Container = MWF.FC$Container = new Class({
 	Extends: MWF.FC$Module,
 	Implements: [Options, Events],
-	
+
+	options : {
+		"injectActions" : [
+			{
+				"name" : "before",
+				"styles" : "injectActionBefore",
+				"event" : "click",
+				"action" : "injectBefore",
+				"title": MWF.APPFD.LP.formAction["insertBefore"]
+			},
+			{
+				"name" : "after",
+				"styles" : "injectActionAfter",
+				"event" : "click",
+				"action" : "injectAfter",
+				"title": MWF.APPFD.LP.formAction["insertAfter"]
+			},
+			{
+				"name" : "top",
+				"styles" : "injectActionTop",
+				"event" : "click",
+				"action" : "injectTop",
+				"title": MWF.APPFD.LP.formAction["insertTop"]
+			},
+			{
+				"name" : "bottom",
+				"styles" : "injectActionBottom",
+				"event" : "click",
+				"action" : "injectBottom",
+				"title": MWF.APPFD.LP.formAction["insertBottom"]
+			}
+		]
+	},
+
 	_setNodeProperty: function(){
 		this.node.store("module", this);
 		if (this.form.moduleList.indexOf(this)==-1) this.form.moduleList.push(this);
@@ -13,13 +46,34 @@ MWF.xApplication.process.FormDesigner.Module.$Container = MWF.FC$Container = new
 	},
 	
 	_dragIn: function(module){
+		module.onDragModule = this;
 		if (!this.Component) module.inContainer = this;
 		module.parentContainer = this;
 		module.nextModule = null;
+
 		this.node.setStyles({"border": "1px solid #ffa200"});
-		var copyNode = module._getCopyNode();
-		copyNode.inject(this.node);
+
+		if (module.controlMode){
+			if (module.copyNode) module.copyNode.hide();
+		}else{
+			var copyNode = module._getCopyNode(this);
+			copyNode.show();
+			copyNode.inject(this.node);
+		}
+		//this._showInjectAction( module );
+
+		// var copyNode = module._getCopyNode();
+		// copyNode.inject(this.node);
 	},
+	_setControlModeNode: function(){
+		debugger;
+		if (this.controlMode){
+			if (this.copyNode) this.copyNode.hide();
+		}else{
+			if (this.onDragModule) this.onDragModule._dragIn(this);
+		}
+	},
+
 	_dragOut: function(module){
 		module.inContainer = null;
 		module.parentContainer = null;
@@ -27,21 +81,29 @@ MWF.xApplication.process.FormDesigner.Module.$Container = MWF.FC$Container = new
 		this.node.setStyles(this.css.moduleNode);
 	//	this.node.setStyles(this.json.styles);
 		this.setCustomStyles();
+
+		//this._hideInjectAction();
+
 		var copyNode = module._getCopyNode();
 		copyNode.setStyle("display", "none");
 	},
-	_dragDrop: function(module){
-		this.node.setStyles(this.css.moduleNode);
-		//this.node.setStyles(this.json.styles);
-		this.setCustomStyles();
-		this.parentContainer.node.setStyles(this.css.moduleNode);
-		//this.node.setStyles(this.json.styles);
-		this.parentContainer.setCustomStyles();
+	_dragDrop: function(module, flag){
+		var f = flag || !(new Event(event)).control;
+		if( f ){
+			this.node.setStyles(this.css.moduleNode);
+			this.setCustomStyles();
+		}
+
+		//this.parentContainer.node.setStyles(this.css.moduleNode);
+		//this.parentContainer.setCustomStyles();
 	},
 	_dragInLikeElement: function(module){
 		module.parentContainer = this.parentContainer;
 		module.nextModule = this;
-		this.parentContainer.node.setStyles({"border": "1px solid #ffa200"});
+
+		this.node.setStyles({"border": "1px solid #ffa200"});
+
+		//this.parentContainer.node.setStyles({"border": "1px solid #ffa200"});
 		var copyNode = module._getCopyNode();
 		copyNode.inject(this.node, "before");
 	},

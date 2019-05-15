@@ -21,7 +21,7 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid$Data = MWF.FCDatagrid$Data
 		    	"title": MWF.LP.process.formAction.deleteCol
 		    }
 		],
-		"allowModules": ["textfield", "number", "personfield", "orgfield", "calendar", "textarea", "select", "radio", "checkbox", "html", "image", "label", "htmleditor", "button"]
+		"allowModules": ["textfield", "number", "personfield", "orgfield", "calendar", "textarea", "select", "radio", "checkbox", "html", "image", "label", "htmleditor", "button","imageclipper"]
 	},
 	
 	initialize: function(form, options){
@@ -139,6 +139,9 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid$Data = MWF.FCDatagrid$Data
 				module.parentContainer = this;
 				module.nextModule = null;
 				this.node.setStyles({"border": "1px solid #ffa200"});
+
+				//this._showInjectAction( module );
+
 				var copyNode = module._getCopyNode();
 				copyNode.inject(this.node);
 			}else{

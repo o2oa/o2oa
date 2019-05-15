@@ -597,17 +597,17 @@ MWF.xDesktop.Layout = new Class({
             if (select.toString()!=="text" && select.toString()!=="auto") e.preventDefault();
         });
         window.onunload = function(e){
-            if (this.socket){
-                this.socket.close();
+            if (this.socket && this.socket.webSocket &&  this.socket.webSocket.readyState.toInt() === 1) {
+                this.socket.webSocket.close();
             }
         }.bind(this);
 
         window.onbeforeunload = function(e){
             if (!this.isLogout){
                 if (!this.notRecordStatus) this.recordDesktopStatus();
-                if (this.socket && this.socket.webSocket &&  this.socket.webSocket.readyState.toInt() === 1) {
-                    this.socket.webSocket.close();
-                }
+                // if (this.socket && this.socket.webSocket &&  this.socket.webSocket.readyState.toInt() === 1) {
+                //     this.socket.webSocket.close();
+                // }
                 this.fireEvent("unload");
                 e = e || window.event;
                 e.returnValue = MWF.LP.desktop.notice.unload;

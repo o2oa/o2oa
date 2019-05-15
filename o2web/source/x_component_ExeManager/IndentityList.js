@@ -311,6 +311,9 @@ MWF.xApplication.ExeManager.IndentityList.IndentityForm = new Class({
         }
 
     },
+    _close: function(){
+        if(this.formMarkNode)this.formMarkNode.destroy()
+    },
     createTopNode: function () {
         if (!this.formTopNode) {
             this.formTopNode = new Element("div.formTopNode", {
@@ -372,7 +375,7 @@ MWF.xApplication.ExeManager.IndentityList.IndentityForm = new Class({
                     this.replaceIdentity(e);
                 }
             }.bind(this)
-        })
+        });
         this.contentDiv = new Element("div.contentDiv",{"styles":this.css.contentDiv}).inject(this.formTableArea);
         this.naviTabDiv = new Element("div.naviTabDiv",{"styles":this.css.naviTabDiv}).inject(this.contentDiv);
 

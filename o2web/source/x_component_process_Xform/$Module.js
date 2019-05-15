@@ -1,17 +1,17 @@
 MWF.require("MWF.widget.Common", null, false);
 MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class({
-	Implements: [Events],
+    Implements: [Events],
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"]
     },
-	
-	initialize: function(node, json, form, options){
 
-		this.node = $(node);
+    initialize: function(node, json, form, options){
+
+        this.node = $(node);
         this.node.store("module", this);
-		this.json = json;
-		this.form = form;
-	},
+        this.json = json;
+        this.form = form;
+    },
     _getSource: function(){
         var parent = this.node.getParent();
         while(parent && (
@@ -32,28 +32,29 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class({
         this.node.setStyle("display", dsp);
         if (this.iconNode) this.iconNode.setStyle("display", "block");
     },
-	load: function(){
+    load: function(){
 
-		if (this.fireEvent("queryLoad")){
+        if (this.fireEvent("queryLoad")){
             this._queryLoaded();
-			this._loadUserInterface();
-			this._loadStyles();
-			this._loadEvents();
-			
-			this._afterLoaded();
-			this.fireEvent("postLoad");
+            this._loadUserInterface();
+            this._loadStyles();
+            this._loadEvents();
+
+            this._afterLoaded();
+            this.fireEvent("postLoad");
             this.fireEvent("load");
-		}
-	},
-	_loadUserInterface: function(){
-	//	this.node = this.node;
-	},
-	
-	_loadStyles: function(){
+        }
+    },
+    _loadUserInterface: function(){
+        //	this.node = this.node;
+    },
+
+    _loadStyles: function(){
         if (this.json.styles) Object.each(this.json.styles, function(value, key){
-              if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
+            if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1 || value.indexOf("x_cms_assemble_control")!=-1)){
                 var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
                 var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
+                var host3 = MWF.Actions.getHost("x_cms_assemble_control");
                 if (value.indexOf("/x_processplatform_assemble_surface")!==-1){
                     value = value.replace("/x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
                 }else if (value.indexOf("x_processplatform_assemble_surface")!==-1){
@@ -64,6 +65,11 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class({
                 }else if (value.indexOf("x_portal_assemble_surface")!==-1){
                     value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
                 }
+                if (value.indexOf("/x_cms_assemble_control")!==-1){
+                    value = value.replace("/x_cms_assemble_control", host3+"/x_cms_assemble_control");
+                }else if (value.indexOf("x_cms_assemble_control")!==-1){
+                    value = value.replace("x_cms_assemble_control", host3+"/x_cms_assemble_control");
+                }
             }
             this.node.setStyle(key, value);
         }.bind(this));
@@ -72,11 +78,11 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class({
         //     var host = MWF.Actions.getHost(root);
         //     return (flag==="/") ? host+this.json.template : host+"/"+this.json.template
         // }
-		//if (this.json.styles) this.node.setStyles(this.json.styles);
-	},
-	_loadEvents: function(){
-		Object.each(this.json.events, function(e, key){
-			if (e.code){
+        //if (this.json.styles) this.node.setStyles(this.json.styles);
+    },
+    _loadEvents: function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
                 if (this.options.moduleEvents.indexOf(key)!=-1){
                     this.addEvent(key, function(event){
                         return this.form.Macro.fire(e.code, this, event);
@@ -86,10 +92,10 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class({
                         return this.form.Macro.fire(e.code, this, event);
                     }.bind(this));
                 }
-			}
-		}.bind(this));
-	},
-	_getBusinessData: function(){
+            }
+        }.bind(this));
+    },
+    _getBusinessData: function(){
         if (this.json.section=="yes"){
             return this._getBusinessSectionData();
         }else {
@@ -99,7 +105,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class({
                 return this.form.businessData.data[this.json.id] || "";
             }
         }
-	},
+    },
     _getBusinessSectionData: function(){
         switch (this.json.sectionBy){
             case "person":
@@ -249,12 +255,12 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class({
     },
 
     _queryLoaded: function(){},
-	_afterLoaded: function(){},
-	
-	setValue: function(){
-	},
-	focus: function(){
-		this.node.focus();
-	}
-	
+    _afterLoaded: function(){},
+
+    setValue: function(){
+    },
+    focus: function(){
+        this.node.focus();
+    }
+
 });

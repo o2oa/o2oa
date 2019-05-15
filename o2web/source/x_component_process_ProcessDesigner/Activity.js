@@ -546,6 +546,8 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
         this.center.x = this.center.x.toInt();
         this.center.y = this.center.y.toInt();
         this.data.position = this.center.x+","+this.center.y;
+
+
         this.set.animate({"fill-opacity": 1}, 500);
   //      this.reSizePaper(this.center.x, this.center.y);
         //    this.cloneMoveShap.remove();
@@ -561,10 +563,10 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
             //	this.paperSize.x;
             //	this.paperSize.y;
             var xi = Math.random();
-            x = (this.paperSize.x-300) * xi;
+            x = ((this.paperSize.x-300) * xi).toInt();
 
             var yi = Math.random();
-            y = (this.paperSize.y-300) * yi;
+            y = ((this.paperSize.y-300) * yi).toInt();
 
             this.data.position = x+","+y;
         }

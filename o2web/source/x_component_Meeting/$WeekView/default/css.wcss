@@ -19,7 +19,9 @@
     },
     "scrollNode_inContainer" : {
         "overflow-x": "hidden",
-        "overflow-y": "hidden",
+        "overflow-y": "scroll",
+//        "overflow-x": "hidden",
+//        "overflow-y": "hidden",
         "background-color" : "#f0f0f0"
     },
     "contentWarpNode" : {
