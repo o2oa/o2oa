@@ -8,12 +8,15 @@ import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.Context;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.message.assemble.communicate.schedule.Clean;
+import com.x.message.assemble.communicate.schedule.CleanConnections;
 
 public class ThisApplication {
 
 	protected static Context context;
 
-	public static ImConsumeQueue imConsumeQueue = new ImConsumeQueue();
+	public static WsConsumeQueue wsConsumeQueue = new WsConsumeQueue();
 
 	public static PmsConsumeQueue pmsConsumeQueue = new PmsConsumeQueue();
 
@@ -33,7 +36,8 @@ public class ThisApplication {
 
 	public static void init() {
 		try {
-			imConsumeQueue.start();
+			LoggerFactory.setLevel(Config.logLevel().x_message_assemble_communicate());
+			wsConsumeQueue.start();
 			pmsConsumeQueue.start();
 			calendarConsumeQueue.start();
 			if (BooleanUtils.isTrue(Config.qiyeweixin().getEnable())
@@ -48,6 +52,10 @@ public class ThisApplication {
 					&& BooleanUtils.isTrue(Config.dingding().getMessageEnable())) {
 				dingdingConsumeQueue.start();
 			}
+			if (BooleanUtils.isTrue(Config.messages().clean().getEnable())) {
+				context().schedule(Clean.class, Config.messages().clean().getCron());
+			}
+			context().scheduleLocal(CleanConnections.class, 180, 900);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -55,7 +63,7 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
-			imConsumeQueue.stop();
+			wsConsumeQueue.stop();
 			pmsConsumeQueue.stop();
 			calendarConsumeQueue.stop();
 			if (BooleanUtils.isTrue(Config.qiyeweixin().getEnable())

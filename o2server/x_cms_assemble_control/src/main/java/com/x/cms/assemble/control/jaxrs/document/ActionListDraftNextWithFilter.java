@@ -49,13 +49,13 @@ public class ActionListDraftNextWithFilter extends BaseAction {
 			wos = (List<Wo>) element.getObjectValue();
 			result.setData(wos);
 		} else {
-			if (check) {
-				if (wi.getCategoryIdList() == null || wi.getCategoryIdList().isEmpty()) {
-					check = false;
-					Exception exception = new ExceptionDocumentCategoryIdEmpty();
-					result.error(exception);
-				}
-			}
+//			if (check) {
+//				if (wi.getCategoryIdList() == null || wi.getCategoryIdList().isEmpty()) {
+//					check = false;
+//					Exception exception = new ExceptionDocumentCategoryIdEmpty();
+//					result.error(exception);
+//				}
+//			}
 
 			if (check) {
 				try {

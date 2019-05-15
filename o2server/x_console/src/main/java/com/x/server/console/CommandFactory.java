@@ -37,8 +37,8 @@ public class CommandFactory {
 
 	public static final Pattern exit_pattern = Pattern.compile("^ {0,}exit {0,}$", Pattern.CASE_INSENSITIVE);
 
-	public static final Pattern update_pattern = Pattern.compile("^ {0,}update (true|false) (true|false) (.+)$",
-			Pattern.CASE_INSENSITIVE);
+//	public static final Pattern update_pattern = Pattern.compile("^ {0,}update (true|false) (true|false) (.+)$",
+//			Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern updateFile_pattern = Pattern.compile("^ {0,}update file (.+) (true|false) (.+)$",
 			Pattern.CASE_INSENSITIVE);
@@ -114,8 +114,8 @@ public class CommandFactory {
 			help += " restore storage yyyyMMddHHmmss (passwd)" + "\t\t" + "restore storage to database,file.";
 			help += StringUtils.LF;
 			help += " setPassword (oldpasswd) (newpasswd)" + "\t\t\t" + "change initial manager password.";
-			help += StringUtils.LF;
-			help += " update (backup) (latest) (passwd)" + "\t\t\t" + "upgrade to new version.";
+//			help += StringUtils.LF;
+//			help += " update (backup) (latest) (passwd)" + "\t\t\t" + "upgrade to new version.";
 			help += StringUtils.LF;
 			help += " update file (path) (backup) (passwd)" + "\t\t\t" + "upgrade to new version from local zip file.";
 			help += StringUtils.LF;

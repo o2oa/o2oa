@@ -1,4 +1,4 @@
-package com.x.message.assemble.communicate.jaxrs.im;
+package com.x.message.assemble.communicate.jaxrs.ws;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -22,13 +22,13 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-@Path("im")
-@JaxrsDescribe("即时消息")
-public class ImAction extends StandardJaxrsAction {
+@Path("ws")
+@JaxrsDescribe("webSocket消息")
+public class WsAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ImAction.class);
+	private static Logger logger = LoggerFactory.getLogger(WsAction.class);
 
-	@JaxrsMethodDescribe(value = "发送推送消息.", action = ActionCreate.class)
+	@JaxrsMethodDescribe(value = "发送webSocket消息.", action = ActionCreate.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)

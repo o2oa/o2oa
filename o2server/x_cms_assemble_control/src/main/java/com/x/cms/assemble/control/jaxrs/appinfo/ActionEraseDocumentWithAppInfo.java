@@ -59,7 +59,7 @@ public class ActionEraseDocumentWithAppInfo extends BaseAction {
 			List<String> idsForDelete = null;
 			List<String> allFileInfoIds = null;	
 			Document document = null;
-			Integer queryMaxCount = 5000;
+			Integer queryMaxCount = 100;
 			Integer whileCount = 0;
 			Integer currentWhileCount = 0;
 			FileInfo fileInfo = null;
@@ -75,7 +75,7 @@ public class ActionEraseDocumentWithAppInfo extends BaseAction {
 					
 					//循环清除分类下所有的文档信息
 					while( count > 0 && currentWhileCount<=whileCount ) {
-						logger.info(">>>>正在根据appId查询"+count+"个需要删除的文档ID列表。");
+						logger.info(">>>>正在根据appId查询"+queryMaxCount+"个需要删除的文档ID列表。");
 						idsForDelete = documentServiceAdv.listIdsByAppId( id, null, queryMaxCount );
 						if( ListTools.isNotEmpty(  idsForDelete )) {
 							emc.beginTransaction( Document.class );

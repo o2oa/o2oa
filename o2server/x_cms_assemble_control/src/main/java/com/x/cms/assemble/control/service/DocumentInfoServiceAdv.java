@@ -257,9 +257,9 @@ public class DocumentInfoServiceAdv {
 		if( name == null || name.isEmpty()){
 			throw new Exception("name is null!");
 		}
-		if( categoryIdList == null || categoryIdList.isEmpty() ){
-			throw new Exception("categoryIdList is null!");
-		}
+//		if( categoryIdList == null || categoryIdList.isEmpty() ){
+//			throw new Exception("categoryIdList is null!");
+//		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			return documentInfoService.listMyDraft( emc, name, categoryIdList, documentType );
 		} catch ( Exception e ) {

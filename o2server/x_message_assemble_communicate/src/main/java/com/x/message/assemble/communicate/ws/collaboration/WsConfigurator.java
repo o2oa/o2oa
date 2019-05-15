@@ -14,6 +14,7 @@ import com.x.base.core.project.http.HttpToken;
 import com.x.base.core.project.tools.ListTools;
 
 public class WsConfigurator extends ServerEndpointConfig.Configurator {
+
 	@Override
 	public void modifyHandshake(ServerEndpointConfig config, HandshakeRequest request, HandshakeResponse response) {
 		try {
@@ -33,7 +34,7 @@ public class WsConfigurator extends ServerEndpointConfig.Configurator {
 			}
 			if (StringUtils.isNotEmpty(token)) {
 				HttpToken httpToken = new HttpToken();
-				return httpToken.who(token,  Config.token().getCipher());
+				return httpToken.who(token, Config.token().getCipher());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

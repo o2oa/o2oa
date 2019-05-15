@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.x.base.core.project.Context;
-import com.x.collaboration.core.message.Collaboration;
 import com.x.okr.assemble.control.jaxrs.queue.QueueWorkDynamicRecord;
 import com.x.okr.assemble.control.jaxrs.workimport.CacheImportFileStatus;
 import com.x.okr.assemble.control.schedule.ErrorIdentityCheckTask;
@@ -19,11 +18,11 @@ import com.x.okr.assemble.control.service.OkrConfigSystemService;
 public class ThisApplication {
 
 	protected static Context context;
-	
+
 	public static Map<String, CacheImportFileStatus> importFileStatusMap = new HashMap<String, CacheImportFileStatus>();
-	
+
 	public static final String OKRMANAGER = "OKRManager";
-	
+
 	public static QueueWorkDynamicRecord queueWorkDynamicRecord;
 
 	public static Context context() {
@@ -32,12 +31,10 @@ public class ThisApplication {
 
 	public static void init() {
 		try {
-			
-			Collaboration.start( ThisApplication.context() );
-			
+
 			queueWorkDynamicRecord = new QueueWorkDynamicRecord();
-			context().startQueue( queueWorkDynamicRecord );
-			
+			context().startQueue(queueWorkDynamicRecord);
+
 			new OkrConfigSystemService().initAllSystemConfig();
 
 			// 每天凌晨2点执行一次
@@ -62,13 +59,12 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
-			Collaboration.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public static String getOkrUserInfoCacheKey( String personName ) {
+
+	public static String getOkrUserInfoCacheKey(String personName) {
 		return "OkrUserInfo.withPerson." + personName;
 	}
 

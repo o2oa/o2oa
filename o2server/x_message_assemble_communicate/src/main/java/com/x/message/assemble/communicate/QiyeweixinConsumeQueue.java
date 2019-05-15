@@ -34,7 +34,7 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 					Message messageEntityObject = emc.find(message.getId(), Message.class);
 					if (null != messageEntityObject) {
 						emc.beginTransaction(Message.class);
-						emc.remove(messageEntityObject);
+						message.setConsumed(true);
 						emc.commit();
 					}
 				}

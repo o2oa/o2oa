@@ -1,4 +1,4 @@
-package com.x.message.assemble.communicate.jaxrs.consume;
+package com.x.message.assemble.communicate.jaxrs.instant;
 
 import java.util.List;
 
@@ -19,43 +19,42 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.message.WsMessage;
 import com.x.message.assemble.communicate.Business;
+import com.x.message.core.entity.Instant;
+import com.x.message.core.entity.Instant_;
 import com.x.message.core.entity.Message;
 import com.x.message.core.entity.Message_;
 
-class ActionList extends BaseAction {
+class ActionListWithCurrentPersonNotConsumedAsc extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionList.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionListWithCurrentPersonNotConsumedAsc.class);
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String consume, Integer count) throws Exception {
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer count) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			List<Wo> wos = this.list(business, consume, NumberUtils.min(200, NumberUtils.max(1, count)));
+			List<Wo> wos = this.list(business, NumberUtils.min(200, NumberUtils.max(1, count)), effectivePerson);
 			result.setData(wos);
 			return result;
 		}
 	}
 
-	private List<Wo> list(Business business, String consume, Integer count) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Message.class);
+	private List<Wo> list(Business business, Integer count, EffectivePerson effectivePerson) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(Instant.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Message> cq = cb.createQuery(Message.class);
-		Root<Message> root = cq.from(Message.class);
-		Predicate p = cb.equal(root.get(Message_.consumer), consume);
-		List<Message> os = em.createQuery(cq.select(root).where(p).orderBy(cb.asc(root.get(Message_.createTime))))
+		CriteriaQuery<Instant> cq = cb.createQuery(Instant.class);
+		Root<Instant> root = cq.from(Instant.class);
+		Predicate p = cb.equal(root.get(Instant_.person), effectivePerson.getDistinguishedName());
+		p = cb.and(p, cb.equal(root.get(Instant_.consumed), false));
+		List<Instant> os = em.createQuery(cq.select(root).where(p).orderBy(cb.asc(root.get(Instant_.createTime))))
 				.setMaxResults(count).getResultList();
 		return Wo.copier.copy(os);
 	}
 
-	public static class Wi extends WsMessage {
-	}
-
-	public static class Wo extends Message {
+	public static class Wo extends Instant {
 
 		private static final long serialVersionUID = 681982898431236763L;
-		static WrapCopier<Message, Wo> copier = WrapCopierFactory.wo(Message.class, Wo.class, null,
+		static WrapCopier<Instant, Wo> copier = WrapCopierFactory.wo(Instant.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 	}
 
