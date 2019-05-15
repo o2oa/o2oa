@@ -43,9 +43,10 @@ public class WorkLogTree {
 			throw new ExceptionBeginNotFound();
 		}
 		root = this.find(begin);
-		for (Node o : nodes) {
-			this.associate();
-		}
+//		for (Node o : nodes) {
+//			this.associate();
+//		}
+		this.associate();
 	}
 
 	private void associate() {
@@ -53,7 +54,7 @@ public class WorkLogTree {
 			this.nodes.stream().filter(
 					o -> StringUtils.equals(node.workLog.getFromActivityToken(), o.workLog.getArrivedActivityToken()))
 					.forEach(o -> {
-						node.parent.add(o);
+						node.parents.add(o);
 					});
 			this.nodes.stream().filter(
 					o -> StringUtils.equals(node.workLog.getArrivedActivityToken(), o.workLog.getFromActivityToken()))
@@ -114,7 +115,7 @@ public class WorkLogTree {
 		}
 
 		private WorkLog workLog;
-		private Nodes parent = new Nodes();
+		private Nodes parents = new Nodes();
 		private Nodes children = new Nodes();
 
 		public Nodes upTo(ActivityType activityType, ActivityType... pass) {
@@ -128,7 +129,7 @@ public class WorkLogTree {
 		}
 
 		private void upTo(ActivityType activityType, List<ActivityType> pass, Nodes result) {
-			for (Node o : this.parent) {
+			for (Node o : this.parents) {
 				if (Objects.equals(o.workLog.getFromActivityType(), activityType)) {
 					result.add(o);
 				} else {
@@ -137,6 +138,14 @@ public class WorkLogTree {
 					}
 				}
 			}
+		}
+
+		public Nodes parents() {
+			return parents;
+		}
+
+		public Nodes children() {
+			return children;
 		}
 
 		public WorkLog getWorkLog() {
@@ -201,7 +210,7 @@ public class WorkLogTree {
 	}
 
 	private void up(Node node, Nodes result) {
-		for (Node o : node.parent) {
+		for (Node o : node.parents) {
 			result.add(o);
 			up(o, result);
 		}
@@ -249,7 +258,6 @@ public class WorkLogTree {
 			}
 		}
 		return node;
-
 	}
 
 }

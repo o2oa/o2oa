@@ -14,15 +14,14 @@ import org.apache.commons.lang3.time.DateUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.Trust;
+import com.x.base.core.project.organization.TrustLog;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.NumberTools;
 import com.x.base.core.project.utils.time.WorkTime;
-import com.x.collaboration.core.message.Collaboration;
-import com.x.collaboration.core.message.notification.TaskMessage;
 import com.x.processplatform.core.entity.content.Hint;
 import com.x.processplatform.core.entity.content.ProcessingType;
 import com.x.processplatform.core.entity.content.Task;
@@ -75,7 +74,6 @@ public class ManualProcessor extends AbstractManualProcessor {
 							manual.getName(), manual.getId());
 				}
 			}
-			identities.add(effectiveCreatorIdentity);
 			aeiObjects.createHint(Hint.EmptyTaskIdentityOnManual(aeiObjects.getWork(), manual));
 		}
 		aeiObjects.getWork().setManualTaskIdentityList(identities);
@@ -156,49 +154,58 @@ public class ManualProcessor extends AbstractManualProcessor {
 		 * TranslateTaskIdentityTools.translate(aeiObjects, manual)
 		 * 将全部重新计算人员,那么重置处理人将被去掉
 		 */
-		List<String> identities = aeiObjects.business().organization().identity()
-				.list(aeiObjects.getWork().getManualTaskIdentityList());
-		if (identities.isEmpty()) {
-			identities = TranslateTaskIdentityTools.translate(aeiObjects, manual);
+		TaskIdentities taskIdentities = new TaskIdentities(
+				aeiObjects.business().organization().identity().list(aeiObjects.getWork().getManualTaskIdentityList()));
+		if (taskIdentities.isEmpty()) {
+			List<String> identities = TranslateTaskIdentityTools.translate(aeiObjects, manual);
+			taskIdentities.addIdentities(identities);
 			logger.info("工作设置的处理人已经全部无效,重新计算当前环节所有处理人进行处理,标题:{}, id:{}, 设置的处理人:{}.", aeiObjects.getWork().getTitle(),
 					aeiObjects.getWork().getId(), identities);
 		}
-		if (identities.isEmpty()) {
+		if (taskIdentities.isEmpty()) {
 			/* 如果活动没有找到任何可用的处理人,那么强制设置处理人为文档创建者,或者配置的 maintenanceIdentity */
 			String effectiveCreatorIdentity = aeiObjects.business().organization().identity()
 					.get(aeiObjects.getWork().getCreatorIdentity());
 			if (StringUtils.isNotEmpty(effectiveCreatorIdentity)) {
 				logger.info("人工活动执行未找到指定的处理身份, 标题:{}, id:{}, 强制指定为工作的创建身份:{}.", aeiObjects.getWork().getTitle(),
 						aeiObjects.getWork().getId(), effectiveCreatorIdentity);
-				identities.add(effectiveCreatorIdentity);
+				taskIdentities.addIdentity(effectiveCreatorIdentity);
 			} else {
 				effectiveCreatorIdentity = aeiObjects.business().organization().identity()
 						.get(Config.processPlatform().getMaintenanceIdentity());
 				if (StringUtils.isNotEmpty(effectiveCreatorIdentity)) {
 					logger.info("人工活动执行未找到指定的处理身份, 标题:{}, id:{}, 强制指定为系统维护身份:{}.", aeiObjects.getWork().getTitle(),
 							aeiObjects.getWork().getId(), effectiveCreatorIdentity);
-					identities.add(effectiveCreatorIdentity);
+					taskIdentities.addIdentity(effectiveCreatorIdentity);
 				} else {
 					throw new ExceptionExpectedEmpty(aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(),
 							manual.getName(), manual.getId());
 				}
 			}
-			identities.add(effectiveCreatorIdentity);
+			// identities.add(effectiveCreatorIdentity);
 			aeiObjects.createHint(Hint.EmptyTaskIdentityOnManual(aeiObjects.getWork(), manual));
 		}
-		aeiObjects.getWork().setManualTaskIdentityList(identities);
+
+		aeiObjects.getWork().setManualTaskIdentityList(taskIdentities.identities());
+
+		List<Trust> trusts = aeiObjects.business().organization().trust().listWithIdentityObject(
+				aeiObjects.getWork().getApplication(), aeiObjects.getWork().getProcess(),
+				aeiObjects.getWork().getManualTaskIdentityList());
+
+		taskIdentities.update(trusts);
+
 		switch (manual.getManualMode()) {
 		case single:
-			passThrough = this.single(aeiObjects, manual);
+			passThrough = this.single(aeiObjects, manual, taskIdentities);
 			break;
 		case parallel:
-			passThrough = this.parallel(aeiObjects, manual);
+			passThrough = this.parallel(aeiObjects, manual, taskIdentities);
 			break;
 		case queue:
-			passThrough = this.queue(aeiObjects, manual);
+			passThrough = this.queue(aeiObjects, manual, taskIdentities);
 			break;
 		case grab:
-			passThrough = this.single(aeiObjects, manual);
+			passThrough = this.single(aeiObjects, manual, taskIdentities);
 			break;
 		default:
 			throw new ExceptionManualModeError(manual.getId());
@@ -211,11 +218,11 @@ public class ManualProcessor extends AbstractManualProcessor {
 
 	@Override
 	protected void executingCommitted(AeiObjects aeiObjects, Manual manual) throws Exception {
-		for (Task o : aeiObjects.getCreateTasks()) {
-			TaskMessage message = new TaskMessage(o.getPerson(), o.getWork(), o.getId());
-			logger.debug("concrete task message:{}.", XGsonBuilder.toText(message));
-			Collaboration.send(message);
-		}
+//		for (Task o : aeiObjects.getCreateTasks()) {
+//			TaskMessage message = new TaskMessage(o.getPerson(), o.getWork(), o.getId());
+//			logger.debug("concrete task message:{}.", XGsonBuilder.toText(message));
+//			Collaboration.send(message);
+//		}
 	}
 
 	@Override
@@ -276,7 +283,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 		return result;
 	}
 
-	private boolean single(AeiObjects aeiObjects, Manual manual) throws Exception {
+	private boolean single(AeiObjects aeiObjects, Manual manual, TaskIdentities taskIdentities) throws Exception {
 		boolean passThrough = false;
 		/* 找到所有的已办 */
 		Long count = aeiObjects.getTaskCompleteds().stream().filter(o -> {
@@ -299,44 +306,39 @@ public class ManualProcessor extends AbstractManualProcessor {
 			passThrough = true;
 		} else {
 			/* 取到期望的待办人员，由于要进行处理需要转换成可读写List */
-			List<String> expected = this.business().organization().identity()
-					.list(aeiObjects.getWork().getManualTaskIdentityList());
-			if (ListTools.isEmpty(expected)) {
+			if (ListTools.isEmpty(taskIdentities)) {
 				throw new ExceptionExpectedEmpty(aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(),
 						manual.getName(), manual.getId());
 			}
 			/* 删除多余的待办 */
 			aeiObjects.getTasks().stream()
 					.filter(o -> StringUtils.equals(aeiObjects.getWork().getActivityToken(), o.getActivityToken())
-							&& (!ListTools.contains(expected, o.getIdentity())))
+							&& (!ListTools.contains(taskIdentities.identities(), o.getIdentity())))
 					.forEach(o -> {
 						aeiObjects.deleteTask(o);
 					});
 			/* 将待办已经产生的人从预期值中删除 */
 			aeiObjects.getTasks().stream()
 					.filter(o -> StringUtils.equals(aeiObjects.getWork().getActivityToken(), o.getActivityToken())
-							&& (ListTools.contains(expected, o.getIdentity())))
+							&& (ListTools.contains(taskIdentities.identities(), o.getIdentity())))
 					.forEach(o -> {
-						expected.remove(o.getIdentity());
+						taskIdentities.removeIdentity(o.getIdentity());
 					});
 			/* 这里剩余的应该是没有生成待办的人员 */
-			if (!expected.isEmpty()) {
-				for (String str : expected) {
-					aeiObjects.createTask(this.createTask(aeiObjects, manual, str));
+			if (!taskIdentities.isEmpty()) {
+				for (TaskIdentity taskIdentity : taskIdentities) {
+					aeiObjects.createTask(this.createTask(aeiObjects, manual, taskIdentity));
 				}
 			}
 		}
 		return passThrough;
 	}
 
-	private boolean parallel(AeiObjects aeiObjects, Manual manual) throws Exception {
+	private boolean parallel(AeiObjects aeiObjects, Manual manual, TaskIdentities taskIdentities) throws Exception {
 		boolean passThrough = false;
-		/** 取到期望的待办人员，由于要进行处理需要转换成可读写List */
-		List<String> expected = this.business().organization().identity()
-				.list(aeiObjects.getWork().getManualTaskIdentityList());
 		/** 取得本环节已经处理的已办 */
-		List<TaskCompleted> taskCompleteds = this.listEffectiveTaskCompleted(aeiObjects.getWork());
-		if (ListTools.isEmpty(expected)) {
+		List<TaskCompleted> taskCompleteds = this.listEffectiveTaskCompleted(aeiObjects.getWork(), taskIdentities);
+		if (ListTools.isEmpty(taskIdentities)) {
 			if (ListTools.isNotEmpty(taskCompleteds)) {
 				/** 预计的处理人全部不存在,且已经有人处理过了 */
 				passThrough = true;
@@ -350,16 +352,16 @@ public class ManualProcessor extends AbstractManualProcessor {
 		aeiObjects.getTaskCompleteds().stream().filter(o -> {
 			return StringUtils.equals(aeiObjects.getWork().getActivityToken(), o.getActivityToken());
 		}).forEach(o -> {
-			expected.remove(o.getIdentity());
+			taskIdentities.removeIdentity(o.getIdentity());
 		});
 		/* 清空可能的多余的待办 */
 		aeiObjects.getTasks().stream().filter(o -> {
 			return StringUtils.equals(aeiObjects.getWork().getActivityToken(), o.getActivityToken())
-					&& (!ListTools.contains(expected, o.getIdentity()));
+					&& (!ListTools.contains(taskIdentities.identities(), o.getIdentity()));
 		}).forEach(o -> {
 			aeiObjects.deleteTask(o);
 		});
-		if (expected.isEmpty()) {
+		if (taskIdentities.isEmpty()) {
 			/* 所有人已经处理完成。 */
 			passThrough = true;
 		} else {
@@ -368,38 +370,35 @@ public class ManualProcessor extends AbstractManualProcessor {
 			aeiObjects.getTasks().stream().filter(o -> {
 				return StringUtils.equals(aeiObjects.getWork().getActivityToken(), o.getActivityToken());
 			}).forEach(o -> {
-				expected.remove(o.getIdentity());
+				taskIdentities.removeIdentity(o.getIdentity());
 			});
 			/* 这里剩余的应该是没有生成待办的人员 */
-			if (!expected.isEmpty()) {
-				for (String str : expected) {
-					aeiObjects.createTask(this.createTask(aeiObjects, manual, str));
+			if (!taskIdentities.isEmpty()) {
+				for (TaskIdentity taskIdentity : taskIdentities) {
+					aeiObjects.createTask(this.createTask(aeiObjects, manual, taskIdentity));
 				}
 			}
 		}
 		return passThrough;
 	}
 
-	private boolean queue(AeiObjects aeiObjects, Manual manual) throws Exception {
+	private boolean queue(AeiObjects aeiObjects, Manual manual, TaskIdentities taskIdentities) throws Exception {
 		boolean passThrough = false;
-		/** 取到期望的待办人员，由于要进行处理需要转换成可读写List */
-		List<String> expected = this.business().organization().identity()
-				.list(aeiObjects.getWork().getManualTaskIdentityList());
-		if (expected.isEmpty() || StringUtils.isBlank(StringUtils.join(expected, ""))) {
+		if (taskIdentities.isEmpty()) {
 			throw new ExceptionExpectedEmpty(aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(),
 					manual.getName(), manual.getId());
 		}
-		List<TaskCompleted> done = this.listEffectiveTaskCompleted(aeiObjects.getWork());
+		List<TaskCompleted> done = this.listEffectiveTaskCompleted(aeiObjects.getWork(), taskIdentities);
 		/** 将已经处理的人从期望值中移除 */
 		for (TaskCompleted o : done) {
-			expected.remove(o.getIdentity());
+			taskIdentities.removeIdentity(o.getIdentity());
 		}
-		if (expected.isEmpty()) {
+		if (taskIdentities.isEmpty()) {
 			/** 所有人已经处理完成。 */
 			passThrough = true;
 		} else {
 			passThrough = false;
-			String next = expected.get(0);
+			TaskIdentity taskIdentity = taskIdentities.get(0);
 			/** 还有人没有处理，开始判断待办,取到本环节的所有待办,理论上只能有一条待办 */
 			List<Task> existed = this.entityManagerContainer().fetch(
 					this.business().task().listWithActivityToken(aeiObjects.getWork().getActivityToken()), Task.class,
@@ -407,7 +406,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 			/** 理论上只能有一条待办 */
 			boolean find = false;
 			for (Task _o : existed) {
-				if (!StringUtils.equals(_o.getIdentity(), next)) {
+				if (!StringUtils.equals(_o.getIdentity(), taskIdentity.getIdentity())) {
 					this.entityManagerContainer().delete(Task.class, _o.getId());
 					MessageFactory.task_delete(_o);
 				} else {
@@ -416,16 +415,16 @@ public class ManualProcessor extends AbstractManualProcessor {
 			}
 			/** 当前处理人没有待办 */
 			if (!find) {
-				aeiObjects.createTask(this.createTask(aeiObjects, manual, next));
+				aeiObjects.createTask(this.createTask(aeiObjects, manual, taskIdentity));
 			}
 		}
 		return passThrough;
 	}
 
 	/** 所有有效的已办,去除 reset,retract */
-	private List<TaskCompleted> listEffectiveTaskCompleted(Work work) throws Exception {
+	private List<TaskCompleted> listEffectiveTaskCompleted(Work work, TaskIdentities taskIdentities) throws Exception {
 		List<String> ids = this.business().taskCompleted().listWithActivityTokenInIdentityList(work.getActivityToken(),
-				work.getManualTaskIdentityList());
+				taskIdentities.identities());
 		List<TaskCompleted> list = new ArrayList<>();
 		for (TaskCompleted o : this.business().entityManagerContainer().list(TaskCompleted.class, ids)) {
 			if ((!o.getProcessingType().equals(ProcessingType.retract))
@@ -557,13 +556,36 @@ public class ManualProcessor extends AbstractManualProcessor {
 		}
 	}
 
-	private Task createTask(AeiObjects aeiObjects, Manual manual, String identity) throws Exception {
-		String person = aeiObjects.business().organization().person().getWithIdentity(identity);
-		String unit = aeiObjects.business().organization().unit().getWithIdentity(identity);
-		Task task = new Task(aeiObjects.getWork(), identity, person, unit, new Date(), null, aeiObjects.getRoutes(),
-				manual.getAllowRapid());
+	private Task createTask(AeiObjects aeiObjects, Manual manual, TaskIdentity taskIdentity) throws Exception {
+		String person = aeiObjects.business().organization().person().getWithIdentity(taskIdentity.getIdentity());
+		String unit = aeiObjects.business().organization().unit().getWithIdentity(taskIdentity.getIdentity());
+		Task task = new Task(aeiObjects.getWork(), taskIdentity.getIdentity(), person, unit,
+				taskIdentity.getFromIdentity(), new Date(), null, aeiObjects.getRoutes(), manual.getAllowRapid());
+		/* 是第一条待办,进行标记 */
+		if (ListTools.isEmpty(aeiObjects.getTaskCompleteds())) {
+			task.setFirst(true);
+		} else {
+			task.setFirst(false);
+		}
 		this.calculateExpire(aeiObjects, manual, task);
+		if (StringUtils.isNotEmpty(taskIdentity.getFromIdentity())) {
+			aeiObjects.business().organization().trustLog()
+					.log(this.createTrustLog(aeiObjects.getWork(), taskIdentity));
+			task.setTrustIdentity(taskIdentity.getFromIdentity());
+		}
 		return task;
+	}
+
+	private TrustLog createTrustLog(Work work, TaskIdentity taskIdentity) {
+		TrustLog trustLog = new TrustLog().setApplication(work.getApplication())
+				.setApplicationAlias(work.getApplicationAlias()).setApplicationName(work.getApplicationName())
+				.setProcess(work.getProcess()).setProcessAlias(work.getProcessAlias())
+				.setProcessName(work.getProcessName()).setTitle(work.getTitle()).setWork(work.getId())
+				.setJob(work.getJob()).setFromIdentity(taskIdentity.getFromIdentity())
+				.setToIdentity(taskIdentity.getIdentity()).setActivity(work.getActivity())
+				.setActivityAlias(work.getActivityAlias()).setActivityName(work.getActivityName())
+				.setTrustTime(new Date());
+		return trustLog;
 	}
 
 	public class ExpireScriptResult {

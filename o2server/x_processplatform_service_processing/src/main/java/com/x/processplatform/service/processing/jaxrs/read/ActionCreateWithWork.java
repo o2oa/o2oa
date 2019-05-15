@@ -25,8 +25,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
-import com.x.collaboration.core.message.Collaboration;
-import com.x.collaboration.core.message.notification.ReadMessage;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Read_;
 import com.x.processplatform.core.entity.content.Work;
@@ -99,13 +97,9 @@ class ActionCreateWithWork extends BaseAction {
 				emc.commit();
 				if (BooleanUtils.isNotFalse(wi.getNotify())) {
 					for (Read read : adds) {
-						ReadMessage message = new ReadMessage(read.getPerson(), read.getWork(), read.getId());
-						Collaboration.send(message);
 						MessageFactory.read_create(read);
 					}
 					for (Read read : updates) {
-						ReadMessage message = new ReadMessage(read.getPerson(), read.getWork(), read.getId());
-						Collaboration.send(message);
 						MessageFactory.read_create(read);
 					}
 				}

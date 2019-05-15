@@ -45,13 +45,6 @@ public class WorkContext {
 		this.processingAttributes = aeiObjects.getProcessingAttributes();
 	}
 
-//	WorkContext(Business business, Work work, Activity activity) throws Exception {
-//		this.business = business;
-//		this.work = work;
-//		this.activity = activity;
-//		this.gson = XGsonBuilder.instance();
-//	}
-
 	WorkContext(Business business, Work work, Activity activity, Task task) throws Exception {
 		this.business = business;
 		this.work = work;
@@ -90,6 +83,11 @@ public class WorkContext {
 		try {
 			List<String> ids = business.workLog().listWithWork(work.getId());
 			List<WorkLog> list = business.entityManagerContainer().list(WorkLog.class, ids);
+			/* 保持和前台一直顺序 */
+			list = list.stream()
+					.sorted(Comparator.comparing(WorkLog::getFromTime, Comparator.nullsLast(Date::compareTo))
+							.thenComparing(WorkLog::getArrivedTime, Comparator.nullsLast(Date::compareTo)))
+					.collect(Collectors.toList());
 			return gson.toJson(list);
 		} catch (Exception e) {
 			throw new Exception("getWorkLogList error.", e);

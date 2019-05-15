@@ -413,7 +413,7 @@ public class TaskCompletedAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void press(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("work") String work) {
+			@JaxrsParameterDescribe("工作标识") @PathParam("work") String work) {
 		ActionResult<ActionPress.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {

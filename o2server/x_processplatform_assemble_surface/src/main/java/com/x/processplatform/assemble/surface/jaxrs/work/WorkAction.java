@@ -275,6 +275,24 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
+	@JaxrsMethodDescribe(value = "完成工作关闭时候的检查,1.检查是否要删除处于草稿状态的工作,没有保存过任何数据将被认为是草稿.2.检查是否需要释放抢办.", action = ActionCloseCheck.class)
+	@GET
+	@Path("{id}/close/check")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void closeCheck(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
+		ActionResult<ActionCloseCheck.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCloseCheck().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
 	@JaxrsMethodDescribe(value = "列示指定应用当前用户创建的Work对象,下一页.", action = ActionListNextWithApplication.class)
 	@GET
 	@Path("list/{id}/next/{count}/application/{applicationFlag}")
@@ -409,7 +427,7 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示根据过滤条件的Work,下一页,限定范围为我创建的工作.", action = ActionListNextWithFilter.class)
+	@JaxrsMethodDescribe(value = "列示根据过滤条件的Work,下一页,限定范围为我创建的工作以及应用.", action = ActionListNextWithFilter.class)
 	@POST
 	@Path("list/{id}/next/{count}/application/{applicationFlag}/filter")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -429,7 +447,7 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示根据过滤条件的Work,上一页,限定范围为我创建的工作.", action = ActionListPrevWithFilter.class)
+	@JaxrsMethodDescribe(value = "列示根据过滤条件的Work,上一页,限定范围为我创建的工作以及应用.", action = ActionListPrevWithFilter.class)
 	@POST
 	@Path("list/{id}/prev/{count}/application/{applicationFlag}/filter")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -445,6 +463,80 @@ public class WorkAction extends StandardJaxrsAction {
 			result = new ActionListPrevWithFilter().execute(effectivePerson, id, count, applicationFlag, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "列示当前用户创建的Work对象,下一页.", action = ActionListNextCreatorWithCurrent.class)
+	@GET
+	@Path("list/{id}/next/{count}/creator/current")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listNextCreatorWithCurrent(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("数量") @PathParam("count") Integer count) {
+		ActionResult<List<ActionListNextCreatorWithCurrent.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListNextCreatorWithCurrent().execute(effectivePerson, id, count);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "列示当前用户创建的Work对象,上一页.", action = ActionListPrevCreatorWithCurrent.class)
+	@GET
+	@Path("list/{id}/prev/{count}/creator/current")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listPrevCreatorWithCurrent(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("数量") @PathParam("count") Integer count) {
+		ActionResult<List<ActionListPrevCreatorWithCurrent.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListPrevCreatorWithCurrent().execute(effectivePerson, id, count);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "列示根据过滤条件的我创建的工作,下一页", action = ActionListNextCreatorWithCurrentFilter.class)
+	@POST
+	@Path("list/{id}/next/{count}/creator/current/filter")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listNextCreatorWithCurrentFilter(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("数量") @PathParam("count") Integer count, JsonElement jsonElement) {
+		ActionResult<List<ActionListNextCreatorWithCurrentFilter.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListNextCreatorWithCurrentFilter().execute(effectivePerson, id, count, jsonElement);
+		} catch (Exception e) {
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+	}
+
+	@JaxrsMethodDescribe(value = "列示根据过滤条件的我创建的工作,上一页.", action = ActionListPrevCreatorWithCurrentFilter.class)
+	@POST
+	@Path("list/{id}/prev/{count}/creator/current/filter")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listPrevCreatorWithCurrentFilter(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("数量") @PathParam("count") Integer count, JsonElement jsonElement) {
+		ActionResult<List<ActionListPrevCreatorWithCurrentFilter.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListPrevCreatorWithCurrentFilter().execute(effectivePerson, id, count, jsonElement);
+		} catch (Exception e) {
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
@@ -495,7 +587,7 @@ public class WorkAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void addSplit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
-		ActionResult<ActionAddSplit.Wo> result = new ActionResult<>();
+		ActionResult<List<ActionAddSplit.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionAddSplit().execute(effectivePerson, id, jsonElement);

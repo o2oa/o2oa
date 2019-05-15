@@ -135,7 +135,7 @@ public class Review extends SliceJpaObject {
 	private String workCompleted;
 
 	public static final String completed_FIELDNAME = "completed";
-	@FieldDescribe("工作是否已经完成.")
+	@FieldDescribe("整个job是否已经完成.")
 	@Column(name = ColumnNamePrefix + completed_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + completed_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
@@ -172,7 +172,7 @@ public class Review extends SliceJpaObject {
 	private String startTimeMonth;
 
 	public static final String completedTime_FIELDNAME = "completedTime";
-	@FieldDescribe("任务完成时间.")
+	@FieldDescribe("work的任务完成时间,review本身并没有完成时间.")
 	@Temporal(TemporalType.TIMESTAMP)
 	/* 结束时间不能为空,如果为空排序可能出错 */
 	@Column(name = ColumnNamePrefix + completedTime_FIELDNAME)
@@ -181,7 +181,7 @@ public class Review extends SliceJpaObject {
 	private Date completedTime;
 
 	public static final String completedTimeMonth_FIELDNAME = "completedTimeMonth";
-	@FieldDescribe("用于在Filter中分类使用.")
+	@FieldDescribe("work的任务完成月份,review本身并没有完成时间,用于filter过滤.")
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + completedTimeMonth_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + completedTimeMonth_FIELDNAME)
 	@CheckPersist(allowEmpty = true)

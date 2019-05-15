@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.task;
 
 import java.util.List;
 
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,6 +18,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
@@ -31,15 +33,20 @@ public class ActionReset extends BaseAction {
 			Business business = new Business(emc);
 			Task task = emc.find(id, Task.class);
 			if (null == task) {
-				throw new ExceptionEntityNotExist(id,Task.class);
+				throw new ExceptionEntityNotExist(id, Task.class);
 			}
 			WoControl control = business.getControl(effectivePerson, task, WoControl.class);
 
 			if (BooleanUtils.isNotTrue(control.getAllowReset())) {
 				throw new ExceptionAccessDenied(effectivePerson, task);
 			}
+
 			/* 检查reset人员 */
 			List<String> identites = business.organization().identity().list(wi.getIdentityList());
+
+			/* 在新增待办人员中删除当前的处理人 */
+			identites = ListUtils.subtract(identites, ListTools.toList(task.getIdentity()));
+
 			if (!identites.isEmpty()) {
 				emc.beginTransaction(Task.class);
 				/* 如果有选择新的路由那么覆盖之前的选择 */
@@ -73,6 +80,9 @@ public class ActionReset extends BaseAction {
 		@FieldDescribe("重置身份")
 		private List<String> identityList;
 
+		@FieldDescribe("保留自身待办.")
+		private Boolean keep;
+
 		public List<String> getIdentityList() {
 			return identityList;
 		}
@@ -95,6 +105,14 @@ public class ActionReset extends BaseAction {
 
 		public void setOpinion(String opinion) {
 			this.opinion = opinion;
+		}
+
+		public Boolean getKeep() {
+			return keep;
+		}
+
+		public void setKeep(Boolean keep) {
+			this.keep = keep;
 		}
 	}
 

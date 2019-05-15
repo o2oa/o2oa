@@ -10,7 +10,6 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -41,7 +40,7 @@ class ActionPress extends BaseAction {
 			}
 			TaskCompleted taskCompleted = emc
 					.listEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
-							effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME, Work.job_FIELDNAME)
+							effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME, work.getJob())
 					.stream().sorted(Comparator.comparing(TaskCompleted::getCompletedTime,
 							Comparator.nullsLast(Date::compareTo)))
 					.findFirst().orElse(null);
@@ -50,7 +49,7 @@ class ActionPress extends BaseAction {
 			}
 			if (!PropertyTools.getOrElse(business.getActivity(work), Manual.allowPress_FIELDNAME, Boolean.class,
 					false)) {
-				throw new ExceptionAccessDenied(effectivePerson);
+				throw new ExceptionNotAllowPress(work.getActivityName());
 			}
 			if (StringUtils.equals(taskCompleted.getPressActivityToken(), work.getActivityToken())) {
 				if (!NumberTools.nullOrLessThan(taskCompleted.getPressCount(),

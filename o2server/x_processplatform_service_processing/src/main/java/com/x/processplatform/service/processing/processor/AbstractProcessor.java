@@ -13,8 +13,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.scripting.ScriptingEngine;
 import com.x.base.core.project.tools.ListTools;
-import com.x.collaboration.core.message.Collaboration;
-import com.x.collaboration.core.message.notification.ReadMessage;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Work;
@@ -102,10 +100,10 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			aeiObjects.commit();
 			this.arriveCommitted(aeiObjects);
 			/* 待阅需要在数据提交后再发出提醒 */
-			for (Read read : aeiObjects.getCreateReads()) {
-				ReadMessage message = new ReadMessage(read.getPerson(), read.getWork(), read.getId());
-				Collaboration.send(message);
-			}
+//			for (Read read : aeiObjects.getCreateReads()) {
+//				ReadMessage message = new ReadMessage(read.getPerson(), read.getWork(), read.getId());
+//				Collaboration.send(message);
+//			}
 			/* 运行AfterArriveScript时间 */
 			this.callAfterArriveScript(aeiObjects);
 			return work.getId();

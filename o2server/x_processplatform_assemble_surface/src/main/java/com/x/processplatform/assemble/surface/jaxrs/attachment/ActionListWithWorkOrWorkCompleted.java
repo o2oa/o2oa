@@ -45,9 +45,9 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 			List<Wo> wos = new ArrayList<>();
 
 			for (Wo wo : this.list(business, job)) {
-				if (this.read(wo, identities, units)) {
+				if (this.read(wo, effectivePerson, identities, units)) {
 					wo.getControl().setAllowRead(true);
-					wo.getControl().setAllowEdit(this.edit(wo, identities, units));
+					wo.getControl().setAllowEdit(this.edit(wo, effectivePerson, identities, units));
 					wo.getControl().setAllowControl(this.control(wo, effectivePerson, identities, units));
 					wos.add(wo);
 				}
@@ -60,27 +60,32 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 		}
 	}
 
-	private boolean read(Wo wo, List<String> identities, List<String> units) throws Exception {
+	private boolean read(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
+			throws Exception {
 		boolean value = false;
-		if (ListTools.isEmpty(wo.getReadIdentityList()) && ListTools.isEmpty(wo.getReadUnitList())) {
+		if (effectivePerson.isPerson(wo.getPerson())) {
+			value = true;
+		} else if (ListTools.isEmpty(wo.getReadIdentityList()) && ListTools.isEmpty(wo.getReadUnitList())) {
 			value = true;
 		} else {
 			if (ListTools.containsAny(identities, wo.getReadIdentityList())
-					|| ListTools.containsAny(identities, wo.getReadUnitList())) {
+					|| ListTools.containsAny(units, wo.getReadUnitList())) {
 				value = true;
 			}
 		}
-		wo.getControl().setAllowRead(value);
 		return value;
 	}
 
-	private boolean edit(Wo wo, List<String> identities, List<String> units) throws Exception {
+	private boolean edit(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
+			throws Exception {
 		boolean value = false;
-		if (ListTools.isEmpty(wo.getEditIdentityList()) && ListTools.isEmpty(wo.getEditUnitList())) {
+		if (effectivePerson.isPerson(wo.getPerson())) {
+			value = true;
+		} else if (ListTools.isEmpty(wo.getEditIdentityList()) && ListTools.isEmpty(wo.getEditUnitList())) {
 			value = true;
 		} else {
 			if (ListTools.containsAny(identities, wo.getEditIdentityList())
-					|| ListTools.containsAny(identities, wo.getEditUnitList())) {
+					|| ListTools.containsAny(units, wo.getEditUnitList())) {
 				value = true;
 			}
 		}
@@ -90,16 +95,15 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 	private boolean control(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
 			throws Exception {
 		boolean value = false;
-		if (ListTools.isEmpty(wo.getControllerUnitList()) && ListTools.isEmpty(wo.getControllerIdentityList())) {
+		if (effectivePerson.isPerson(wo.getPerson())) {
+			value = true;
+		} else if (ListTools.isEmpty(wo.getControllerUnitList()) && ListTools.isEmpty(wo.getControllerIdentityList())) {
 			value = true;
 		} else {
 			if (ListTools.containsAny(identities, wo.getControllerIdentityList())
-					|| ListTools.containsAny(identities, wo.getControllerUnitList())) {
+					|| ListTools.containsAny(units, wo.getControllerUnitList())) {
 				value = true;
 			}
-		}
-		if (effectivePerson.isPerson(wo.getPerson())) {
-			value = true;
 		}
 		return value;
 	}

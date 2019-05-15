@@ -15,16 +15,11 @@ import com.x.base.core.project.jaxrs.WrapStringList;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
-import com.x.base.core.project.tools.PropertyTools;
-import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.element.Activity;
-import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
-import com.x.processplatform.service.processing.WorkDataHelper;
 
 class ActionPress extends BaseAction {
 
@@ -44,19 +39,6 @@ class ActionPress extends BaseAction {
 			}
 
 			List<Task> list = emc.listEqual(Task.class, Task.work_FIELDNAME, work.getId());
-
-			Activity activity = business.element().getActivity(work.getActivity());
-
-			if (null == activity) {
-
-			}
-
-//			String script = PropertyTools.getOrElse(activity, Manual.manualPressScript_FIELDNAME, String.class, "");
-//
-//			String scriptText = PropertyTools.getOrElse(activity, Manual.manualPressScriptText_FIELDNAME, String.class,
-//					"");
-
-//			Data data = new WorkDataHelper(business.entityManagerContainer(), work).get();
 
 			Wo wo = new Wo();
 

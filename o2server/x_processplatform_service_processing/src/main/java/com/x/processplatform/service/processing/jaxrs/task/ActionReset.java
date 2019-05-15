@@ -1,11 +1,10 @@
 package com.x.processplatform.service.processing.jaxrs.task;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -50,33 +49,34 @@ class ActionReset extends BaseAction {
 				throw new ExceptionEntityNotExist(task.getWork(), Work.class);
 			}
 			/* 检查reset人员 */
-			List<String> identites = new ArrayList<>();
-			for (String str : ListTools.trim(business.organization().identity().list(wi.getIdentityList()), true,
-					true)) {
-				/** 去掉重置给自己 */
-				if (!StringUtils.equals(task.getIdentity(), str)) {
-					identites.add(str);
-				}
-			}
+			List<String> identites = ListTools.trim(business.organization().identity().list(wi.getIdentityList()), true,
+					true);
+
+			/* 在新增待办人员中删除当前的处理人 */
+
+			identites = ListUtils.subtract(identites, ListTools.toList(task.getIdentity()));
+
 			if (identites.isEmpty()) {
 				throw new ExceptionResetEmpty();
 			}
-			Date now = new Date();
-			Long duration = Config.workTime().betweenMinutes(task.getStartTime(), now);
-			TaskCompleted taskCompleted = new TaskCompleted(task, ProcessingType.reset, now, duration);
-			emc.beginTransaction(TaskCompleted.class);
-			emc.beginTransaction(Task.class);
 			emc.beginTransaction(Work.class);
-			emc.persist(taskCompleted, CheckPersistType.all);
-			emc.remove(task, CheckRemoveType.all);
 			List<String> os = ListTools.trim(work.getManualTaskIdentityList(), true, true);
-			os.remove(task.getIdentity());
+			if (BooleanUtils.isNotTrue(wi.getKeep())) {
+				Date now = new Date();
+				Long duration = Config.workTime().betweenMinutes(task.getStartTime(), now);
+				TaskCompleted taskCompleted = new TaskCompleted(task, ProcessingType.reset, now, duration);
+				emc.beginTransaction(TaskCompleted.class);
+				emc.beginTransaction(Task.class);
+				emc.persist(taskCompleted, CheckPersistType.all);
+				emc.remove(task, CheckRemoveType.all);
+				os.remove(task.getIdentity());
+				MessageFactory.taskCompleted_create(taskCompleted);
+				MessageFactory.task_delete(task);
+			}
 			os = ListUtils.union(os, identites);
 			work.setManualTaskIdentityList(ListTools.trim(os, true, true));
 			emc.check(work, CheckPersistType.all);
 			emc.commit();
-			MessageFactory.taskCompleted_create(taskCompleted);
-			MessageFactory.task_delete(task);
 			ProcessingAttributes processingAttributes = new ProcessingAttributes();
 			processingAttributes.setDebugger(effectivePerson.getDebugger());
 			Processing processing = new Processing(processingAttributes);
@@ -93,12 +93,23 @@ class ActionReset extends BaseAction {
 		@FieldDescribe("身份")
 		private List<String> identityList;
 
+		@FieldDescribe("保留自身待办.")
+		private Boolean keep;
+
 		public List<String> getIdentityList() {
 			return identityList;
 		}
 
 		public void setIdentityList(List<String> identityList) {
 			this.identityList = identityList;
+		}
+
+		public Boolean getKeep() {
+			return keep;
+		}
+
+		public void setKeep(Boolean keep) {
+			this.keep = keep;
 		}
 	}
 
