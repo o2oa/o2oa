@@ -273,15 +273,15 @@ public class Main {
 						continue;
 					}
 
-					matcher = CommandFactory.update_pattern.matcher(cmd);
-					if (matcher.find()) {
-						if (update(matcher.group(1), matcher.group(2), matcher.group(3))) {
-							stopAll();
-							System.exit(0);
-						} else {
-							continue;
-						}
-					}
+//					matcher = CommandFactory.update_pattern.matcher(cmd);
+//					if (matcher.find()) {
+//						if (update(matcher.group(1), matcher.group(2), matcher.group(3))) {
+//							stopAll();
+//							System.exit(0);
+//						} else {
+//							continue;
+//						}
+//					}
 
 					matcher = CommandFactory.updateFile_pattern.matcher(cmd);
 					if (matcher.find()) {
@@ -418,14 +418,14 @@ public class Main {
 		return true;
 	}
 
-	private static boolean update(String password, String backup, String latest) {
-		try {
-			return new ActionUpdate().execute(password, BooleanUtils.toBoolean(backup), BooleanUtils.toBoolean(latest));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return true;
-	}
+//	private static boolean update(String password, String backup, String latest) {
+//		try {
+//			return new ActionUpdate().execute(password, BooleanUtils.toBoolean(backup), BooleanUtils.toBoolean(latest));
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return true;
+//	}
 
 	private static boolean updateFile(String path, String backup, String password) {
 		try {

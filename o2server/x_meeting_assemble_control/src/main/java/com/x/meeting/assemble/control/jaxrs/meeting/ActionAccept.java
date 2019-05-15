@@ -30,7 +30,6 @@ class ActionAccept extends BaseAction {
 				emc.check(meeting, CheckPersistType.all);
 				emc.commit();
 				MessageFactory.meeting_accept(effectivePerson.getDistinguishedName(), meeting);
-				// this.notifyMeetingAcceptMessage(business, meeting, meeting.getApplicant());
 			}
 			Wo wo = new Wo();
 			wo.setId(meeting.getId());

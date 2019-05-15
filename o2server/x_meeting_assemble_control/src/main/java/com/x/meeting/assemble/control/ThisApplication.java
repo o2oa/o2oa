@@ -4,7 +4,6 @@ import com.x.base.core.project.Context;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
-import com.x.collaboration.core.message.Collaboration;
 
 public class ThisApplication {
 
@@ -18,7 +17,6 @@ public class ThisApplication {
 		try {
 			LoggerFactory.setLevel(Config.logLevel().x_meeting_assemble_control());
 			MessageConnector.start(context());
-			Collaboration.start(context());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -26,7 +24,7 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
-			Collaboration.stop();
+			MessageConnector.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

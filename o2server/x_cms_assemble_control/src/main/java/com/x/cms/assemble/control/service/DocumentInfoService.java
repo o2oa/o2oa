@@ -80,6 +80,11 @@ public class DocumentInfoService {
 		document = emc.find( wrapIn.getId(), Document.class );
 		emc.beginTransaction( Document.class );
 		emc.beginTransaction(Log.class);
+		
+		if( wrapIn.getTitle() != null &&  wrapIn.getTitle().length() > 70 ) {
+			wrapIn.setTitle( wrapIn.getTitle().substring(0, 70) );
+		}
+		
 		if( document == null ){
 			document = new Document();
 			wrapIn.copyTo( document );

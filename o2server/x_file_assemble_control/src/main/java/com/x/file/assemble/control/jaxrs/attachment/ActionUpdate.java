@@ -19,9 +19,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
-import com.x.collaboration.core.message.Collaboration;
-import com.x.collaboration.core.message.notification.FileModifyMessage;
-import com.x.collaboration.core.message.notification.FileShareMessage;
 import com.x.file.assemble.control.Business;
 import com.x.file.core.entity.personal.Attachment;
 
@@ -67,14 +64,14 @@ class ActionUpdate extends BaseAction {
 			/* 发送共享通知 */
 			for (String str : shareAdds) {
 				this.message_send_attachment_share(attachment, str);
-				FileShareMessage message = new FileShareMessage(str, attachment.getId());
-				Collaboration.send(message);
+//				FileShareMessage message = new FileShareMessage(str, attachment.getId());
+//				Collaboration.send(message);
 			}
 			/* 发送编辑通知 */
 			for (String str : editorAdds) {
 				this.message_send_attachment_editor(attachment, str);
-				FileModifyMessage message = new FileModifyMessage(str, attachment.getId());
-				Collaboration.send(message);
+//				FileModifyMessage message = new FileModifyMessage(str, attachment.getId());
+//				Collaboration.send(message);
 			}
 			/* 发送取消共享通知 */
 			for (String str : shareCancels) {

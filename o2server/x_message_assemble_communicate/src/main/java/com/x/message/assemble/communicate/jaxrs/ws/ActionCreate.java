@@ -1,4 +1,4 @@
-package com.x.message.assemble.communicate.jaxrs.im;
+package com.x.message.assemble.communicate.jaxrs.ws;
 
 import javax.websocket.Session;
 
@@ -8,7 +8,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.message.ImMessage;
+import com.x.base.core.project.message.WsMessage;
 import com.x.message.assemble.communicate.ThisApplication;
 
 class ActionCreate extends BaseAction {
@@ -22,7 +22,7 @@ class ActionCreate extends BaseAction {
 		wo.setValue(false);
 		Session session = ThisApplication.connections.get(wi.getPerson());
 		if (session != null && session.isOpen()) {
-			logger.debug(effectivePerson, "send pms, message: {}.", wi);
+			logger.debug(effectivePerson, "send ws, message: {}.", wi);
 			session.getBasicRemote().sendText(jsonElement.toString());
 			wo.setValue(true);
 		}
@@ -30,7 +30,7 @@ class ActionCreate extends BaseAction {
 		return result;
 	}
 
-	public static class Wi extends ImMessage {
+	public static class Wi extends WsMessage {
 	}
 
 	public static class Wo extends WrapBoolean {
